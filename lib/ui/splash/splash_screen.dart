@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:possystem/app_localizations.dart';
+import 'package:possystem/models/user_model.dart';
+import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -17,6 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -24,26 +29,35 @@ class _SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Center(
-              child: Text(
-                AppLocalizations.of(context).t('welcome'),
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.headline.fontSize,
-                ),
-              )
+              child: StreamBuilder(
+                stream: authProvider.user,
+                builder: (context, snapshot) {
+                  final UserModel user = snapshot.data;
+                  if (user == null) {
+                    return Center(child: null);
+                  }
+
+                  return Text(
+                    AppLocalizations.of(context).tf('welcome', [user.name]),
+                    style: TextStyle(
+                      fontSize: Theme.of(context).textTheme.headline.fontSize,
+                    ),
+                  );
+                },
+              ),
             ),
-            Image.asset('assets/logo.png', width: 128, height: 128),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
 
-  startTimer() {
+  dynamic startTimer() {
     var duration = Duration(milliseconds: 3000);
     return Timer(duration, redirect);
   }
 
-  redirect() async {
-    Navigator.of(context).pushReplacementNamed(Routes.home);
+  dynamic redirect() async {
+    await Navigator.of(context).pushReplacementNamed(Routes.home);
   }
 }

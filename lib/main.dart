@@ -9,22 +9,23 @@ import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) async {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) async {
     runApp(
       /*
-      * MultiProvider for top services that do not depends on any runtime values
-      * such as user uid/email.
+       * MultiProvider for top services that do not depends on any runtime values
+       * such as user uid/email.
        */
       MultiProvider(
         providers: [
           ChangeNotifierProvider<ThemeProvider>(
-            create: (context) => ThemeProvider(),
+            create: (_) => ThemeProvider(),
           ),
           ChangeNotifierProvider<AuthProvider>(
-            create: (context) => AuthProvider(),
+            create: (_) => AuthProvider(),
           ),
           ChangeNotifierProvider<LanguageProvider>(
-            create: (context) => LanguageProvider(),
+            create: (_) => LanguageProvider(),
           ),
         ],
         child: MyApp(

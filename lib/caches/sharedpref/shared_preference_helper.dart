@@ -30,6 +30,7 @@ class SharedPreferenceHelper {
   }
 
   Future<void> changeLanguage(String value) {
+    print('change language ${value}');
     return _sharedPreference.then((prefs) {
       return prefs.setString(language_code, value);
     });

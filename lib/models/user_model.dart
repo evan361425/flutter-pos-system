@@ -12,4 +12,9 @@ class UserModel {
       this.phoneNumber,
       this.photoUrl});
 
+  UserModel.empty() {
+    uid = null;
+  }
+
+  get name => uid == null ? '' : displayName;
 }

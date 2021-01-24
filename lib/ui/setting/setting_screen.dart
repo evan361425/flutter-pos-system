@@ -12,7 +12,7 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate("settingAppTitle")),
+        title: Text(AppLocalizations.of(context).t('setting.title')),
       ),
       body: _buildLayoutSection(context),
     );
@@ -22,10 +22,8 @@ class SettingScreen extends StatelessWidget {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text(
-              AppLocalizations.of(context).translate("settingThemeListTitle")),
-          subtitle: Text(AppLocalizations.of(context)
-              .translate("settingThemeListSubTitle")),
+          title: Text(AppLocalizations.of(context).t('setting.theme')),
+          subtitle: Text(AppLocalizations.of(context).t('setting.theme_title')),
           trailing: Switch(
             activeColor: Theme.of(context).appBarTheme.color,
             activeTrackColor: Theme.of(context).textTheme.title.color,
@@ -37,45 +35,41 @@ class SettingScreen extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: Text(AppLocalizations.of(context).translate("settingLanguageListTitle")),
-          subtitle: Text(AppLocalizations.of(context).translate("settingLanguageListSubTitle")),
+          title: Text(AppLocalizations.of(context).t('setting.language')),
+          subtitle:
+              Text(AppLocalizations.of(context).t('setting.language_title')),
           trailing: SettingLanguageActions(),
         ),
         ListTile(
-          title: Text(
-              AppLocalizations.of(context).translate("settingLogoutListTitle")),
-          subtitle: Text(AppLocalizations.of(context)
-              .translate("settingLogoutListSubTitle")),
+          title: Text(AppLocalizations.of(context).t('setting.logout')),
+          subtitle:
+              Text(AppLocalizations.of(context).t('setting.logout_title')),
           trailing: RaisedButton(
               onPressed: () {
                 _confirmSignOut(context);
               },
-              child: Text(AppLocalizations.of(context)
-                  .translate("settingLogoutButton"))),
+              child: Text(
+                  AppLocalizations.of(context).t('setting.logout_button'))),
         )
       ],
     );
   }
 
-  _confirmSignOut(BuildContext context) {
+  void _confirmSignOut(BuildContext context) {
     showPlatformDialog(
         context: context,
         builder: (_) => PlatformAlertDialog(
-              android: (_) => MaterialAlertDialogData(
-                  backgroundColor: Theme.of(context).appBarTheme.color),
-              title: Text(
-                  AppLocalizations.of(context).translate("alertDialogTitle")),
-              content: Text(
-                  AppLocalizations.of(context).translate("alertDialogMessage")),
+              title: Text(AppLocalizations.of(context).t('alert_title')),
+              content:
+                  Text(AppLocalizations.of(context).t('setting.logout_alert')),
               actions: <Widget>[
                 PlatformDialogAction(
-                  child: PlatformText(AppLocalizations.of(context)
-                      .translate("alertDialogCancelBtn")),
+                  child: PlatformText(AppLocalizations.of(context).t('cancel')),
                   onPressed: () => Navigator.pop(context),
                 ),
                 PlatformDialogAction(
-                  child: PlatformText(AppLocalizations.of(context)
-                      .translate("alertDialogYesBtn")),
+                  child:
+                      PlatformText(AppLocalizations.of(context).t('confirm')),
                   onPressed: () {
                     final authProvider =
                         Provider.of<AuthProvider>(context, listen: false);

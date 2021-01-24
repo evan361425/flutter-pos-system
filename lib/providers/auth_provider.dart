@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:possystem/models/user_model.dart';
 
 enum Status {
@@ -27,8 +28,6 @@ class AuthProvider extends ChangeNotifier {
   //Default status
   Status _status = Status.Uninitialized;
 
-  Status get status => _status;
-
   Stream<UserModel> get user => _auth.authStateChanges().map(_userFromFirebase);
 
   AuthProvider() {
@@ -42,42 +41,34 @@ class AuthProvider extends ChangeNotifier {
   //Create user object based on the given User
   UserModel _userFromFirebase(User user) {
     if (user == null) {
-      return null;
+      return UserModel.empty();
     }
 
     return UserModel(
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      phoneNumber: user.phoneNumber,
-      photoUrl: user.photoURL
-    );
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        phoneNumber: user.phoneNumber,
+        photoUrl: user.photoURL);
   }
 
   //Method to detect live auth changes such as user sign in and sign out
   Future<void> onAuthStateChanged(User user) async {
-    if (user == null) {
-      _status = Status.Unauthenticated;
-    } else {
-      _userFromFirebase(user);
-      _status = Status.Authenticated;
-    }
-    notifyListeners();
+    status = user == null ? Status.Unauthenticated : Status.Authenticated;
   }
 
   //Method for google sign-in
-  Future<UserModel> signInByGoogle(String email, String password) async {
+  Future<UserModel> signInByGoogle() async {
     try {
-      _status = Status.Authenticating;
-      notifyListeners();
+      status = Status.Authenticating;
 
       // Trigger the authentication flow
-      final GoogleSignInAccount account = await GoogleSignIn(
-        scopes: [ 'email', 'profile' ],
+      var account = await GoogleSignIn(
+        scopes: ['email', 'profile'],
       ).signIn();
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication auth = await account.authentication;
+      var auth = await account.authentication;
 
       // Create a new credential
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -86,13 +77,12 @@ class AuthProvider extends ChangeNotifier {
       );
 
       // Once signed in, return the UserCredential
-      final UserCredential result = await _auth.signInWithCredential(credential);
+      var result = await _auth.signInWithCredential(credential);
 
       return _userFromFirebase(result.user);
     } catch (e) {
-      print("Error on the google registration = " +e.toString());
-      _status = Status.Failed;
-      notifyListeners();
+      Logger().e('google sign in happen error: $e');
+      status = Status.Failed;
       return null;
     }
   }
@@ -100,8 +90,14 @@ class AuthProvider extends ChangeNotifier {
   //Method to handle user signing out
   Future signOut() async {
     _auth.signOut();
-    _status = Status.Unauthenticated;
-    notifyListeners();
+    status = Status.Unauthenticated;
     return Future.delayed(Duration.zero);
   }
+
+  set status(Status value) {
+    _status = value;
+    notifyListeners();
+  }
+
+  Status get status => _status;
 }

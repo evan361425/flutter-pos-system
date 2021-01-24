@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/app_localizations.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:possystem/providers/auth_provider.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -10,17 +11,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
-  final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController(text: "");
-    _passwordController = TextEditingController(text: "");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,149 +20,102 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Stack(
         children: <Widget>[
           _buildBackground(),
-          Align(
-            alignment: Alignment.center,
-            child: _buildForm(context),
-          ),
+          _buildBody(),
+          _buildName(),
         ],
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void _googleSignIn(AuthProvider authProvider) async {
+    FocusScope.of(context).unfocus(); //to hide the keyboard - if any
+
+    var user = await authProvider.signInByGoogle();
+
+    if (user == null) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context).t('sign_in.reject')),
+      ));
+    }
   }
 
-  Widget _buildForm(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-
-    return Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+  Widget _buildBody() {
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FlutterLogo(
-                    size: 128,
-                  ),
-                ),
-                TextFormField(
-                  controller: _emailController,
-                  style: Theme.of(context).textTheme.body1,
-                  validator: (value) => value.isEmpty
-                      ? AppLocalizations.of(context)
-                          .translate("loginTxtErrorEmail")
-                      : null,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.email,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      labelText: AppLocalizations.of(context)
-                          .translate("loginTxtEmail"),
-                      border: OutlineInputBorder()),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: TextFormField(
-                    obscureText: true,
-                    maxLength: 12,
-                    controller: _passwordController,
-                    style: Theme.of(context).textTheme.body1,
-                    validator: (value) => value.length < 6
-                        ? AppLocalizations.of(context)
-                            .translate("loginTxtErrorPassword")
-                        : null,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.lock,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        labelText: AppLocalizations.of(context)
-                            .translate("loginTxtPassword"),
-                        border: OutlineInputBorder()),
-                  ),
-                ),
-                authProvider.status == Status.Authenticating
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : RaisedButton(
-                        child: Text(
-                          AppLocalizations.of(context)
-                              .translate("loginBtnSignIn"),
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            FocusScope.of(context)
-                                .unfocus(); //to hide the keyboard - if any
+                _buildLogo(),
+                _buildForm(),
+              ]),
+        ),
+      ),
+    );
+  }
 
-                            bool status =
-                                await authProvider.signInWithEmailAndPassword(
-                                    _emailController.text,
-                                    _passwordController.text);
+  Widget _buildLogo() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Image.asset(
+        'assets/logo.png',
+        width: 128,
+        height: 128,
+      ),
+    );
+  }
 
-                            if (!status) {
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text(AppLocalizations.of(context)
-                                    .translate("loginTxtErrorSignIn")),
-                              ));
-                            }
-                          }
-                        }),
-                authProvider.status == Status.Authenticating
-                    ? Center(
-                        child: null,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 48),
-                        child: Center(
-                            child: Text(
-                          AppLocalizations.of(context)
-                              .translate("loginTxtDontHaveAccount"),
-                          style: Theme.of(context).textTheme.button,
-                        )),
-                      ),
-                authProvider.status == Status.Authenticating
-                    ? Center(
-                        child: null,
-                      )
-                    : FlatButton(
-                        child: Text(AppLocalizations.of(context)
-                            .translate("loginBtnLinkCreateAccount")),
-                        textColor: Theme.of(context).iconTheme.color,
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacementNamed(Routes.register);
-                        },
-                      ),
-                Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 70,
-                    ),
-                    Text(
-                      Provider.of<Flavor>(context).toString(),
-                      style: Theme.of(context).textTheme.body2,
-                    ),
-                  ],
-                )),
-              ],
-            ),
-          ),
-        ));
+  Widget _buildForm() {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          authProvider.status == Status.Authenticating
+              ? themeProvider.component(context, 'spinner')
+              : SignInButton(
+                  themeProvider.isDarkModeOn
+                      ? Buttons.GoogleDark
+                      : Buttons.Google,
+                  onPressed: () async {
+                    await _googleSignIn(authProvider);
+                  },
+                ),
+          authProvider.status == Status.Failed
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: themeProvider.text(context, 'sign_in.reject'),
+                )
+              : Center(
+                  child: null,
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildName() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context).t('app'),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10),
+            )
+          ],
+        )
+      ],
+    );
   }
 
   Widget _buildBackground() {
@@ -189,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
 class SignInCustomClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    Path path = Path();
+    var path = Path();
     path.lineTo(0, size.height);
 
     var firstEndPoint = Offset(size.width / 2, size.height - 95);

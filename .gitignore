@@ -41,9 +41,9 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-/android/app/debug
+/android/app/src/debug
 /android/app/profile
 /android/app/release
 
 # Sensitive data
-/android/app/google-services.json
+google-services.json
