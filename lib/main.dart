@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
@@ -12,7 +13,7 @@ void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(
-      /*
+      /**
        * MultiProvider for top services that do not depends on any runtime values
        * such as user uid/email.
        */
@@ -27,6 +28,7 @@ void main() {
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),
+          Provider(create: (_) => Logger()),
         ],
         child: MyApp(
           databaseBuilder: (_, uid) => FirestoreDatabase(uid: uid),

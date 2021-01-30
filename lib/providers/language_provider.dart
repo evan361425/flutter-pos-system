@@ -17,7 +17,7 @@ class LanguageProvider extends ChangeNotifier {
   // language is loaded
   static const delegates = [
     //A class which loads the translations from YAML files
-    AppLocalizations.delegate,
+    Trans.delegate,
     //Built-in localization of basic text for Material widgets
     // (means those default Material widget such as alert dialog icon text)
     GlobalMaterialLocalizations.delegate,

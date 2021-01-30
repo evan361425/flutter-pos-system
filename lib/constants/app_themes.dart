@@ -15,25 +15,27 @@ class AppThemes {
   static Color _lightSnackBarBackgroundErrorColor = Colors.redAccent;
 
   //text theme for light theme
-  static final TextStyle _lightScreenHeadingTextStyle =
-      TextStyle(fontSize: 20.0, color: _lightOnPrimaryColor);
-  static final TextStyle _lightScreenTaskNameTextStyle =
-      TextStyle(fontSize: 16.0, color: _lightOnPrimaryColor);
-  static final TextStyle _lightScreenTaskDurationTextStyle =
+  static final TextStyle _lightTextStyle =
+      TextStyle(color: _lightOnPrimaryColor);
+  static final TextStyle _lightTaskDurationTextStyle =
       TextStyle(fontSize: 14.0, color: Colors.grey);
-  static final TextStyle _lightScreenButtonTextStyle = TextStyle(
-      fontSize: 14.0, color: _lightOnPrimaryColor, fontWeight: FontWeight.w500);
-  static final TextStyle _lightScreenCaptionTextStyle = TextStyle(
+  static final TextStyle _lightButtonTextStyle =
+      _lightTextStyle.copyWith(fontSize: 14.0, fontWeight: FontWeight.w500);
+  static final TextStyle _lightCaptionTextStyle = TextStyle(
       fontSize: 12.0, color: _lightAppBarColor, fontWeight: FontWeight.w100);
 
   static final TextTheme _lightTextTheme = TextTheme(
-    headline: _lightScreenHeadingTextStyle,
-    body1: _lightScreenTaskNameTextStyle,
-    body2: _lightScreenTaskDurationTextStyle,
-    button: _lightScreenButtonTextStyle,
-    title: _lightScreenTaskNameTextStyle,
-    subhead: _lightScreenTaskNameTextStyle,
-    caption: _lightScreenCaptionTextStyle,
+    headline1: _lightTextStyle.copyWith(fontSize: 40),
+    headline2: _lightTextStyle.copyWith(fontSize: 36),
+    headline3: _lightTextStyle.copyWith(fontSize: 32),
+    headline4: _lightTextStyle.copyWith(fontSize: 28),
+    headline5: _lightTextStyle.copyWith(fontSize: 24),
+    headline6: _lightTextStyle.copyWith(fontSize: 20),
+    bodyText1: _lightTextStyle.copyWith(fontSize: 16),
+    bodyText2: _lightTaskDurationTextStyle,
+    subtitle1: _lightTextStyle.copyWith(fontSize: 16),
+    button: _lightButtonTextStyle,
+    caption: _lightCaptionTextStyle,
   );
 
   //constants color range for dark theme
@@ -47,25 +49,26 @@ class AppThemes {
   static Color _darkSnackBarBackgroundErrorColor = Colors.redAccent;
 
   //text theme for dark theme
-  static final TextStyle _darkScreenHeadingTextStyle =
-      _lightScreenHeadingTextStyle.copyWith(color: _darkOnPrimaryColor);
-  static final TextStyle _darkScreenTaskNameTextStyle =
-      _lightScreenTaskNameTextStyle.copyWith(color: _darkOnPrimaryColor);
-  static final TextStyle _darkScreenTaskDurationTextStyle =
-      _lightScreenTaskDurationTextStyle;
-  static final TextStyle _darkScreenButtonTextStyle = TextStyle(
+  static final TextStyle _darkTextStyle = TextStyle(color: _darkOnPrimaryColor);
+  static final TextStyle _darkTaskDurationTextStyle =
+      _lightTaskDurationTextStyle;
+  static final TextStyle _darkButtonTextStyle = TextStyle(
       fontSize: 14.0, color: _darkOnPrimaryColor, fontWeight: FontWeight.w500);
-  static final TextStyle _darkScreenCaptionTextStyle = TextStyle(
+  static final TextStyle _darkCaptionTextStyle = TextStyle(
       fontSize: 12.0, color: _darkAppBarColor, fontWeight: FontWeight.w100);
 
   static final TextTheme _darkTextTheme = TextTheme(
-    headline: _darkScreenHeadingTextStyle,
-    body1: _darkScreenTaskNameTextStyle,
-    body2: _darkScreenTaskDurationTextStyle,
-    button: _darkScreenButtonTextStyle,
-    title: _darkScreenTaskNameTextStyle,
-    subhead: _darkScreenTaskNameTextStyle,
-    caption: _darkScreenCaptionTextStyle,
+    headline1: _darkTextStyle.copyWith(fontSize: 40),
+    headline2: _darkTextStyle.copyWith(fontSize: 36),
+    headline3: _darkTextStyle.copyWith(fontSize: 32),
+    headline4: _darkTextStyle.copyWith(fontSize: 28),
+    headline5: _darkTextStyle.copyWith(fontSize: 24),
+    headline6: _darkTextStyle.copyWith(fontSize: 20),
+    bodyText1: _darkTextStyle.copyWith(fontSize: 16),
+    bodyText2: _darkTaskDurationTextStyle,
+    subtitle1: _darkTextStyle.copyWith(fontSize: 16),
+    button: _darkButtonTextStyle,
+    caption: _darkCaptionTextStyle,
   );
 
   //the light theme
@@ -98,10 +101,11 @@ class AppThemes {
         textTheme: ButtonTextTheme.primary),
     unselectedWidgetColor: _lightPrimaryColor,
     inputDecorationTheme: InputDecorationTheme(
-        fillColor: _lightPrimaryColor,
-        labelStyle: TextStyle(
-          color: _lightPrimaryColor,
-        )),
+      fillColor: _lightPrimaryColor,
+      labelStyle: TextStyle(
+        color: _lightPrimaryColor,
+      ),
+    ),
   );
 
   //the dark theme
@@ -134,9 +138,10 @@ class AppThemes {
         textTheme: ButtonTextTheme.primary),
     unselectedWidgetColor: _darkPrimaryColor,
     inputDecorationTheme: InputDecorationTheme(
-        fillColor: _darkPrimaryColor,
-        labelStyle: TextStyle(
-          color: _darkPrimaryColor,
-        )),
+      fillColor: _darkPrimaryColor,
+      labelStyle: TextStyle(
+        color: _darkPrimaryColor,
+      ),
+    ),
   );
 }

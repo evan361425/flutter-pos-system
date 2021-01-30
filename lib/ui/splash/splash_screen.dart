@@ -38,9 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   }
 
                   return Text(
-                    AppLocalizations.of(context).tf('welcome', [user.name]),
+                    Trans.of(context).tf('welcome', [user.name]),
                     style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.headline.fontSize,
+                      fontSize: Theme.of(context).textTheme.headline4.fontSize,
                     ),
                   );
                 },
@@ -58,6 +58,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   dynamic redirect() async {
-    await Navigator.of(context).pushReplacementNamed(Routes.home);
+    await Navigator.of(context).pushReplacementNamed(Routes.menu);
   }
 }

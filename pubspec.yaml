@@ -31,9 +31,11 @@ dependencies:
   firebase_auth: ^0.20.0+1
   cloud_firestore: ^0.16.0
 
+  google_sign_in: ^4.5.0+9
+
   flutter_signin_button: 1.1.0
   flutter_platform_widgets: ^0.72.0
-  google_sign_in: ^4.5.0+9
+  flutter_slidable: ^0.5.7
 
   shared_preferences: ^0.5.12+4
   yaml: ^2.2.1

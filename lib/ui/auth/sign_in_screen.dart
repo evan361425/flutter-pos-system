@@ -30,11 +30,11 @@ class _SignInScreenState extends State<SignInScreen> {
   void _googleSignIn(AuthProvider authProvider) async {
     FocusScope.of(context).unfocus(); //to hide the keyboard - if any
 
-    var user = await authProvider.signInByGoogle();
+    var user = await authProvider.signInByGoogle(context);
 
     if (user == null) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context).t('sign_in.reject')),
+        content: Text(Trans.of(context).t('sign_in.reject')),
       ));
     }
   }
@@ -45,13 +45,14 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildLogo(),
-                _buildForm(),
-              ]),
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildLogo(),
+              _buildForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -78,7 +79,7 @@ class _SignInScreenState extends State<SignInScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           authProvider.status == Status.Authenticating
-              ? themeProvider.component(context, 'spinner')
+              ? Center(child: CircularProgressIndicator())
               : SignInButton(
                   themeProvider.isDarkModeOn
                       ? Buttons.GoogleDark
@@ -90,11 +91,14 @@ class _SignInScreenState extends State<SignInScreen> {
           authProvider.status == Status.Failed
               ? Padding(
                   padding: const EdgeInsets.only(top: 24),
-                  child: themeProvider.text(context, 'sign_in.reject'),
+                  child: Center(
+                    child: Text(
+                      Trans.of(context).t('sign_in.reject'),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ),
                 )
-              : Center(
-                  child: null,
-                ),
+              : Center(child: null)
         ],
       ),
     );
@@ -108,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context).t('app'),
+              Trans.of(context).t('app'),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 10),
             )

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:possystem/models/user_model.dart';
+import 'package:provider/provider.dart';
 
 enum Status {
   Uninitialized,
@@ -11,15 +12,15 @@ enum Status {
   Unauthenticated,
   Failed
 }
-/*
-The UI will depends on the Status to decide which screen/action to be done.
-
-- Uninitialized - Checking user is logged or not, the Splash Screen will be shown
-- Authenticated - User is authenticated successfully, Home Page will be shown
-- Authenticating - Sign In button just been pressed, progress bar will be shown
-- Unauthenticated - User is not authenticated, login page will be shown
-- Failed - Authentication failed by any reason
-*/
+/**
+ * The UI will depends on the Status to decide which screen/action to be done.
+ *
+ * - Uninitialized - Checking user is logged or not, the Splash Screen will be shown
+ * - Authenticated - User is authenticated successfully, Home Page will be shown
+ * - Authenticating - Sign In button just been pressed, progress bar will be shown
+ *- Unauthenticated - User is not authenticated, login page will be shown
+ *- Failed - Authentication failed by any reason
+ */
 
 class AuthProvider extends ChangeNotifier {
   //Firebase Auth object
@@ -58,7 +59,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //Method for google sign-in
-  Future<UserModel> signInByGoogle() async {
+  Future<UserModel> signInByGoogle(BuildContext context) async {
     try {
       status = Status.Authenticating;
 
@@ -81,7 +82,7 @@ class AuthProvider extends ChangeNotifier {
 
       return _userFromFirebase(result.user);
     } catch (e) {
-      Logger().e('google sign in happen error: $e');
+      context.read<Logger>().e('google sign in happen error: $e');
       status = Status.Failed;
       return null;
     }

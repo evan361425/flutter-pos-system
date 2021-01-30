@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/caches/sharedpref/shared_preference_helper.dart';
-import 'package:possystem/components/index.dart';
 
 class ThemeProvider extends ChangeNotifier {
   // shared pref object
@@ -31,21 +30,5 @@ class ThemeProvider extends ChangeNotifier {
     });
 
     notifyListeners();
-  }
-
-  Widget text(BuildContext context, text) {
-    var component = Component(context);
-    return component.text(text);
-  }
-
-  Widget component(BuildContext context, String method) {
-    var component = Component(context);
-
-    switch(method) {
-      case 'spinner':
-        return component.spinner();
-      default:
-        return Center(child: null,);
-    }
   }
 }

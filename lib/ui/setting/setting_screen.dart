@@ -12,7 +12,7 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).t('setting.title')),
+        title: Text(Trans.of(context).t('setting.title')),
       ),
       body: _buildLayoutSection(context),
     );
@@ -22,11 +22,11 @@ class SettingScreen extends StatelessWidget {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text(AppLocalizations.of(context).t('setting.theme')),
-          subtitle: Text(AppLocalizations.of(context).t('setting.theme_title')),
+          title: Text(Trans.of(context).t('setting.theme')),
+          subtitle: Text(Trans.of(context).t('setting.theme_title')),
           trailing: Switch(
             activeColor: Theme.of(context).appBarTheme.color,
-            activeTrackColor: Theme.of(context).textTheme.title.color,
+            activeTrackColor: Theme.of(context).textTheme.headline6.color,
             value: Provider.of<ThemeProvider>(context).isDarkModeOn,
             onChanged: (booleanValue) {
               Provider.of<ThemeProvider>(context, listen: false)
@@ -35,21 +35,23 @@ class SettingScreen extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: Text(AppLocalizations.of(context).t('setting.language')),
+          title: Text(Trans.of(context).t('setting.language')),
           subtitle:
-              Text(AppLocalizations.of(context).t('setting.language_title')),
+              Text(Trans.of(context).t('setting.language_title')),
           trailing: SettingLanguageActions(),
         ),
         ListTile(
-          title: Text(AppLocalizations.of(context).t('setting.logout')),
+          title: Text(Trans.of(context).t('setting.logout')),
           subtitle:
-              Text(AppLocalizations.of(context).t('setting.logout_title')),
+              Text(Trans.of(context).t('setting.logout_title')),
           trailing: RaisedButton(
-              onPressed: () {
-                _confirmSignOut(context);
-              },
-              child: Text(
-                  AppLocalizations.of(context).t('setting.logout_button'))),
+            onPressed: () {
+              _confirmSignOut(context);
+            },
+            child: Text(
+              Trans.of(context).t('setting.logout_button'),
+            ),
+          ),
         )
       ],
     );
@@ -57,31 +59,32 @@ class SettingScreen extends StatelessWidget {
 
   void _confirmSignOut(BuildContext context) {
     showPlatformDialog(
-        context: context,
-        builder: (_) => PlatformAlertDialog(
-              title: Text(AppLocalizations.of(context).t('alert_title')),
-              content:
-                  Text(AppLocalizations.of(context).t('setting.logout_alert')),
-              actions: <Widget>[
-                PlatformDialogAction(
-                  child: PlatformText(AppLocalizations.of(context).t('cancel')),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                PlatformDialogAction(
-                  child:
-                      PlatformText(AppLocalizations.of(context).t('confirm')),
-                  onPressed: () {
-                    final authProvider =
-                        Provider.of<AuthProvider>(context, listen: false);
+      context: context,
+      builder: (_) => PlatformAlertDialog(
+        title: Text(Trans.of(context).t('alert_title')),
+        content: Text(Trans.of(context).t('setting.logout_alert')),
+        actions: <Widget>[
+          PlatformDialogAction(
+            child: PlatformText(Trans.of(context).t('cancel')),
+            onPressed: () => Navigator.pop(context),
+          ),
+          PlatformDialogAction(
+            child: PlatformText(Trans.of(context).t('confirm')),
+            onPressed: () {
+              final authProvider =
+                  Provider.of<AuthProvider>(context, listen: false);
 
-                    authProvider.signOut();
+              authProvider.signOut();
 
-                    Navigator.pop(context);
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        Routes.login, ModalRoute.withName(Routes.login));
-                  },
-                )
-              ],
-            ));
+              Navigator.pop(context);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                Routes.login,
+                ModalRoute.withName(Routes.login),
+              );
+            },
+          )
+        ],
+      ),
+    );
   }
 }

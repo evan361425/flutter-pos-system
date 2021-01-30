@@ -5,20 +5,20 @@ import 'package:yaml/yaml.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AppLocalizations {
+class Trans {
   final Locale locale;
 
-  AppLocalizations(this.locale);
+  Trans(this.locale);
 
   // Helper method to keep the code in the widgets concise
   // Localizations are accessed using an InheritedWidget "of" syntax
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  static Trans of(BuildContext context) {
+    return Localizations.of<Trans>(context, Trans);
   }
 
   //This is the static member for allowing simple access to the delegate
   // from the MaterialApp
-  static const LocalizationsDelegate<AppLocalizations> delegate =
+  static const LocalizationsDelegate<Trans> delegate =
       _AppLocalizationsDelegate();
 
   static const List<String> files = ['app', 'setting', 'sign_in'];
@@ -32,10 +32,8 @@ class AppLocalizations {
     // Load the language YAML file from the "lang" folder
     for(var filename in files) {
       var raw = await rootBundle.loadString('${folder}/${filename}.yaml');
-      var keyPrefix = filename == 'app' ? '' : '${filename}.';
-      loadYaml(raw).forEach((key, value) {
-        _localizedStrings[keyPrefix + key] = value.toString();
-      });
+      var prefix = filename == 'app' ? '' : '${filename}.';
+      _dynamicLoadMap(prefix, loadYaml(raw));
     }
 
     return true;
@@ -56,12 +54,22 @@ class AppLocalizations {
   String translatef(String key, List<dynamic> data) {
     return sprintf(translate(key), data);
   }
+
+  void _dynamicLoadMap(String prefix, YamlMap data) {
+    data.forEach((key, value) {
+      if (value is YamlMap) {
+        _dynamicLoadMap('${prefix}${key}.', value);
+      } else {
+        _localizedStrings[prefix + key] = value.toString();
+      }
+    });
+  }
 }
 
 // LocalizationsDelegate is a factory for a set of localized resources
 // In this case, the localized strings will be gotten in an AppLocalizations object
 class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+    extends LocalizationsDelegate<Trans> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -72,9 +80,9 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  Future<AppLocalizations> load(Locale locale) async {
+  Future<Trans> load(Locale locale) async {
     // AppLocalizations class is where the YAML loading actually runs
-    AppLocalizations localizations = new AppLocalizations(locale);
+    Trans localizations = new Trans(locale);
     await localizations.load();
     return localizations;
   }
