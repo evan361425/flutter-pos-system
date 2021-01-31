@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/models/user_model.dart';
 import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/services/firestore_database.dart';
@@ -39,6 +40,18 @@ class AuthWidgetBuilder extends StatelessWidget {
               Provider<FirestoreDatabase>(
                 create: (context) => databaseBuilder(context, user.uid),
               ),
+              FutureProvider<MenuModel>(
+                create: (context) async {
+                  print('getting data');
+                  var firestore = Provider.of<FirestoreDatabase>(
+                    context,
+                    listen: false,
+                  );
+                  var snapshot = await firestore.get(Collections.menu);
+                  return MenuModel.fromMap(snapshot.data());
+                },
+                initialData: MenuModel({}),
+              )
             ],
             child: builder(context, snapshot),
           );

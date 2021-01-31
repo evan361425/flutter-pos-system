@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:possystem/app_localizations.dart';
 import 'package:possystem/models/user_model.dart';
-import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = Provider.of<AuthProvider>(context);
+    var user = Provider.of<UserModel>(context);
 
     return Scaffold(
       body: Center(
@@ -29,21 +28,9 @@ class _SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Center(
-              child: StreamBuilder(
-                stream: authProvider.user,
-                builder: (context, snapshot) {
-                  final UserModel user = snapshot.data;
-                  if (user == null) {
-                    return Center(child: null);
-                  }
-
-                  return Text(
-                    Trans.of(context).tf('welcome', [user.name]),
-                    style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.headline4.fontSize,
-                    ),
-                  );
-                },
+              child: Text(
+                Trans.of(context).tf('welcome', [user.name]),
+                style: Theme.of(context).textTheme.headline4,
               ),
             ),
           ],
@@ -58,6 +45,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   dynamic redirect() async {
-    await Navigator.of(context).pushReplacementNamed(Routes.menu);
+    await Navigator.of(context).pushReplacementNamed(Routes.backend);
   }
 }

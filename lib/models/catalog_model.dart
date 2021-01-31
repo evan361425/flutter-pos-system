@@ -3,49 +3,53 @@ import 'package:possystem/services/firestore_database.dart';
 
 class CatalogModel {
   String _name;
+  final int _index;
   final Timestamp createdAt;
   final bool enable;
 
-  CatalogModel(this._name, {this.createdAt, this.enable: true});
+  CatalogModel(this._name, this._index, {this.createdAt, this.enable: true});
 
-  factory CatalogModel.fromMap(Map<String, dynamic> data) {
+  factory CatalogModel.fromMap(String name, Map<String, dynamic> data) {
     if (data == null) {
       return null;
     }
 
     return CatalogModel(
-      data['name'],
+      name,
+      data['index'],
       createdAt: data['createdAt'],
       enable: data['enable'],
     );
   }
 
-  factory CatalogModel.add(String name) {
+  factory CatalogModel.add(String name, int index) {
     var unix = (DateTime.now().millisecondsSinceEpoch / 1000).round();
 
     return CatalogModel(
       name,
+      index,
       createdAt: Timestamp(unix, 0),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': _name,
+      'index': _index,
       'createdAt': createdAt,
       'enable': enable,
     };
   }
 
-  void setName(String name, FirestoreDatabase firestore) async {
-    _name = name;
-
-    await firestore.update(Collections.menu, {
-      'catalogs': FieldValue.arrayUnion([
-        {'name': _name}
-      ])
+  void setName(String name, FirestoreDatabase db) async {
+    await db.update(Collections.menu, {
+      _name: FieldValue.delete(),
+      name: toMap(),
     });
+
+    _name = name;
   }
 
-  get name => _name;
+  int get index => _index;
+
+  String get name => _name;
 }

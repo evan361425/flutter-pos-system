@@ -21,7 +21,7 @@ class Trans {
   static const LocalizationsDelegate<Trans> delegate =
       _AppLocalizationsDelegate();
 
-  static const List<String> files = ['app', 'setting', 'sign_in'];
+  static const List<String> files = ['app', 'setting', 'auth', 'menu'];
 
   final Map<String, String> _localizedStrings = {};
 

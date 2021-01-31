@@ -1,6 +1,11 @@
+# this page should not use map, avoid misunderstanding
 app: POS 系統
 welcome: "您好😎，%s"
 # diagram
 alert_title: 再想一下！
 cancel: 取消
 confirm: 確認
+
+# Backend List
+menu: 菜單
+setting: 設定

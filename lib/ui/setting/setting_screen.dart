@@ -10,20 +10,11 @@ import 'package:provider/provider.dart';
 class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Trans.of(context).t('setting.title')),
-      ),
-      body: _buildLayoutSection(context),
-    );
-  }
-
-  Widget _buildLayoutSection(BuildContext context) {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text(Trans.of(context).t('setting.theme')),
-          subtitle: Text(Trans.of(context).t('setting.theme_title')),
+          title: Text(Trans.of(context).t('setting.theme.title')),
+          subtitle: Text(Trans.of(context).t('setting.theme.subtitle')),
           trailing: Switch(
             activeColor: Theme.of(context).appBarTheme.color,
             activeTrackColor: Theme.of(context).textTheme.headline6.color,
@@ -35,21 +26,21 @@ class SettingScreen extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: Text(Trans.of(context).t('setting.language')),
+          title: Text(Trans.of(context).t('setting.language.title')),
           subtitle:
-              Text(Trans.of(context).t('setting.language_title')),
+              Text(Trans.of(context).t('setting.language.subtitle')),
           trailing: SettingLanguageActions(),
         ),
         ListTile(
-          title: Text(Trans.of(context).t('setting.logout')),
+          title: Text(Trans.of(context).t('setting.logout.title')),
           subtitle:
-              Text(Trans.of(context).t('setting.logout_title')),
+              Text(Trans.of(context).t('setting.logout.subtitle')),
           trailing: RaisedButton(
             onPressed: () {
               _confirmSignOut(context);
             },
             child: Text(
-              Trans.of(context).t('setting.logout_button'),
+              Trans.of(context).t('setting.logout.button'),
             ),
           ),
         )
@@ -62,7 +53,7 @@ class SettingScreen extends StatelessWidget {
       context: context,
       builder: (_) => PlatformAlertDialog(
         title: Text(Trans.of(context).t('alert_title')),
-        content: Text(Trans.of(context).t('setting.logout_alert')),
+        content: Text(Trans.of(context).t('setting.logout.alert')),
         actions: <Widget>[
           PlatformDialogAction(
             child: PlatformText(Trans.of(context).t('cancel')),

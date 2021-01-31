@@ -9,7 +9,7 @@ import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/firestore_database.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
-import 'package:possystem/ui/home/home.dart';
+import 'package:possystem/ui/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
       home: Consumer<AuthProvider>(
         builder: (_, auth, __) {
           if (user.connectionState == ConnectionState.active) {
-            return user.hasData ? HomeScreen() : SignInScreen();
+            return user.hasData ? SplashScreen() : SignInScreen();
           }
 
           return Material(

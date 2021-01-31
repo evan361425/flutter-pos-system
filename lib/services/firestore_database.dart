@@ -31,7 +31,7 @@ class FirestoreDatabase {
         .set(data);
   }
 
-  Future<DocumentSnapshot> update(String collection, Map<String, dynamic> data) {
+  Future<void> update(String collection, Map<String, dynamic> data) {
     return FirebaseFirestore.instance
         .collection(collection)
         .doc(uid)
@@ -43,11 +43,5 @@ class FirestoreDatabase {
         .collection(collection)
         .doc(uid)
         .snapshots();
-  }
-
-  Future<void> add(String collection, Map<String, dynamic> data) {
-    return FirebaseFirestore.instance
-        .collection(collection)
-        .add(data);
   }
 }

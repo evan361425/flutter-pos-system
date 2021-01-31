@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class BackendAppBar extends AppBar {
+class BackendAppBar {
   final AppBar appBar;
 
-  BackendAppBar(String currentPage)
+  BackendAppBar(title, BuildContext context)
       : appBar = AppBar(
-          title: Text('menu'),
+          title: Center(
+            child: Text(title, style: Theme.of(context).textTheme.headline4),
+          ),
           leading: IconButton(
             padding: EdgeInsets.only(left: 30.0),
             onPressed: () => print('Menu'),
