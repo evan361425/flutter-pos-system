@@ -47,7 +47,7 @@ class LanguageProvider extends ChangeNotifier {
   }
 
   Locale _parseLocale(String value) {
-    List<String> values = value.split('_');
+    var values = value.split('_');
     return values.length == 2
         ? Locale(values[0], values[1])
         : Locale('zh', 'TW');

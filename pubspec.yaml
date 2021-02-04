@@ -38,25 +38,24 @@ dependencies:
   flutter_slidable: ^0.5.7
 
   shared_preferences: ^0.5.12+4
+  # for l18n
   yaml: ^2.2.1
-  logger: ^0.9.4
   sprintf: ^5.0.0
+  # TODO: what the purpose of this package?
+  logger: ^0.9.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-#  cupertino_icons: ^1.0.1
+  #  cupertino_icons: ^1.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test: ^1.0.1
-
+  # help to build launcher icons for each device
   flutter_launcher_icons: ^0.8.1
-
-# https://github.com/FirebaseExtended/flutterfire/issues/4342
-#dependency_overrides:
-#  intl: ^0.17.0-nullsafety.2
-#  pedantic: ^1.9.2
+  # analysis code
+  pedantic: ^1.9.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

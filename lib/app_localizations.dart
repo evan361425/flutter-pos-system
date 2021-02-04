@@ -30,7 +30,7 @@ class Trans {
         locale.countryCode == null ? '' : '-${locale.countryCode}';
     var folder = 'lang/${locale.languageCode}${countryCode}';
     // Load the language YAML file from the "lang" folder
-    for(var filename in files) {
+    for (var filename in files) {
       var raw = await rootBundle.loadString('${folder}/${filename}.yaml');
       var prefix = filename == 'app' ? '' : '${filename}.';
       _dynamicLoadMap(prefix, loadYaml(raw));
@@ -42,6 +42,7 @@ class Trans {
   String t(String key) {
     return translate(key);
   }
+
   String tf(String key, List<dynamic> data) {
     return translatef(key, data);
   }
@@ -68,8 +69,7 @@ class Trans {
 
 // LocalizationsDelegate is a factory for a set of localized resources
 // In this case, the localized strings will be gotten in an AppLocalizations object
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<Trans> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<Trans> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -82,7 +82,7 @@ class _AppLocalizationsDelegate
   @override
   Future<Trans> load(Locale locale) async {
     // AppLocalizations class is where the YAML loading actually runs
-    Trans localizations = new Trans(locale);
+    var localizations = Trans(locale);
     await localizations.load();
     return localizations;
   }

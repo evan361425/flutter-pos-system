@@ -12,15 +12,14 @@ enum Status {
   Unauthenticated,
   Failed
 }
-/**
- * The UI will depends on the Status to decide which screen/action to be done.
- *
- * - Uninitialized - Checking user is logged or not, the Splash Screen will be shown
- * - Authenticated - User is authenticated successfully, Home Page will be shown
- * - Authenticating - Sign In button just been pressed, progress bar will be shown
- *- Unauthenticated - User is not authenticated, login page will be shown
- *- Failed - Authentication failed by any reason
- */
+
+/// The UI will depends on the Status to decide which screen/action to be done.
+///
+/// - Uninitialized - Checking user is logged or not, the Splash Screen will be shown
+/// - Authenticated - User is authenticated successfully, Home Page will be shown
+/// - Authenticating - Sign In button just been pressed, progress bar will be shown
+///- Unauthenticated - User is not authenticated, login page will be shown
+///- Failed - Authentication failed by any reason
 
 class AuthProvider extends ChangeNotifier {
   //Firebase Auth object
@@ -92,7 +91,7 @@ class AuthProvider extends ChangeNotifier {
 
   //Method to handle user signing out
   Future signOut() async {
-    _auth.signOut();
+    await _auth.signOut();
     status = Status.Unauthenticated;
     return Future.delayed(Duration.zero);
   }

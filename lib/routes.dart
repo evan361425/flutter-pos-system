@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
 import 'package:possystem/ui/home/backend.dart';
-import 'package:possystem/ui/menu/index.dart' as Menu;
+import 'package:possystem/ui/menu/index.dart' as menus;
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:possystem/ui/splash/splash_screen.dart';
 
@@ -20,7 +20,7 @@ class Routes {
     splash: (BuildContext context) => SplashScreen(),
     backend: (BuildContext context) => BackendScreen(),
     setting: (BuildContext context) => SettingScreen(),
-    menu: (BuildContext context) => Menu.HomeScreen(),
-    menu_catalog_add: (BuildContext context) => Menu.CatalogDetailScreen(),
+    menu: (BuildContext context) => menus.HomeScreen(),
+    menu_catalog_add: (BuildContext context) => menus.CatalogDetailScreen(),
   };
 }

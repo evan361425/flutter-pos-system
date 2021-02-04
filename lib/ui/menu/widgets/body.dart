@@ -12,9 +12,7 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var menu = Provider.of<MenuModel>(context);
-    if (menu == null) {
-      menu = MenuModel({});
-    }
+    menu ??= MenuModel({});
 
     return Container(
       padding: EdgeInsets.all(defaultPadding / 2),

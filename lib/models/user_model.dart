@@ -16,5 +16,5 @@ class UserModel {
     uid = null;
   }
 
-  get name => uid == null ? '' : displayName;
+  String get name => uid == null ? '' : displayName;
 }

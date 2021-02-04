@@ -1,4 +1,5 @@
-# possystem
+
+![flutter-build](https://github.com/evan361425/flutter-pos-system/workflows/flutter-build/badge.svg)
 
 POS System
 

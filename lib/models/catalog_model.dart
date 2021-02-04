@@ -7,7 +7,7 @@ class CatalogModel {
   final Timestamp createdAt;
   final bool enable;
 
-  CatalogModel(this._name, this._index, {this.createdAt, this.enable: true});
+  CatalogModel(this._name, this._index, {this.createdAt, this.enable = true});
 
   factory CatalogModel.fromMap(String name, Map<String, dynamic> data) {
     if (data == null) {

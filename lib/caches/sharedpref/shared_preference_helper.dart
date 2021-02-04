@@ -2,8 +2,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceHelper {
   Future<SharedPreferences> _sharedPreference;
-  static const String is_dark_mode = "is_dark_mode";
-  static const String language_code = "language_code";
+  static const String is_dark_mode = 'is_dark_mode';
+  static const String language_code = 'language_code';
 
   SharedPreferenceHelper() {
     _sharedPreference = SharedPreferences.getInstance();
@@ -25,7 +25,7 @@ class SharedPreferenceHelper {
   //Locale module
   Future<String> get appLocale {
     return _sharedPreference.then((prefs) {
-      return prefs.getString(language_code) ?? null;
+      return prefs.getString(language_code);
     });
   }
 

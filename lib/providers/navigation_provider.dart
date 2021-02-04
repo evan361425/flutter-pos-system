@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/index.dart' as Menu;
+import 'package:possystem/ui/menu/index.dart' as menus;
 import 'package:possystem/ui/setting/setting_screen.dart';
 
 class NavigationProvider with ChangeNotifier {
@@ -9,7 +8,7 @@ class NavigationProvider with ChangeNotifier {
 
   Widget get body {
     if (_page == 'menu') {
-      return Menu.HomeScreen();
+      return menus.HomeScreen();
     } else if (_page == 'setting') {
       return SettingScreen();
     } else {
@@ -19,7 +18,7 @@ class NavigationProvider with ChangeNotifier {
 
   String get page => _page;
 
-  void set page(String navigation) {
+  set page(String navigation) {
     _page = navigation;
     notifyListeners();
   }

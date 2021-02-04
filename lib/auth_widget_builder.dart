@@ -5,14 +5,12 @@ import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/services/firestore_database.dart';
 import 'package:provider/provider.dart';
 
-/**
- * This class is mainly to help with creating user dependent object that
- * need to be available by all downstream widgets.
- * Thus, this widget builder is a must to live above [MaterialApp].
- * As we rely on uid to decide which main screen to display (eg: Home or Sign In),
- * this class will helps to create all providers needed that depends on
- * the user logged data uid.
- */
+/// This class is mainly to help with creating user dependent object that
+/// need to be available by all downstream widgets.
+/// Thus, this widget builder is a must to live above [MaterialApp].
+/// As we rely on uid to decide which main screen to display (eg: Home or Sign In),
+/// this class will helps to create all providers needed that depends on
+/// the user logged data uid.
 class AuthWidgetBuilder extends StatelessWidget {
   const AuthWidgetBuilder(
       {Key key, @required this.builder, @required this.databaseBuilder})
@@ -27,7 +25,7 @@ class AuthWidgetBuilder extends StatelessWidget {
     return StreamBuilder<UserModel>(
       stream: authService?.user,
       builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-        final UserModel user = snapshot.data;
+        final user = snapshot.data;
         if (user != null) {
           /**
            * For any other Provider services that rely on user data can be

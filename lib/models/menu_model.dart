@@ -11,7 +11,7 @@ class MenuModel {
     }
 
     try {
-      Map<String, CatalogModel> catalogs = data.map((key, value) {
+      var catalogs = data.map((key, value) {
         if (value is Map) {
           value['name'] = key;
           return MapEntry(key, CatalogModel.fromMap(key, value));
@@ -41,7 +41,7 @@ class MenuModel {
   }
 
   CatalogModel operator [](int index) {
-    for(CatalogModel catalog in _catalogs.values) {
+    for (var catalog in _catalogs.values) {
       if (catalog.index == index) return catalog;
     }
     return null;
