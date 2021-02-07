@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/ui/auth/widgets/google_signin.dart';
 
 class Body extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey;
-
-  Body(this._scaffoldKey);
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -18,7 +14,7 @@ class Body extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _buildLogo(),
-              GoogleSignIn(_scaffoldKey),
+              GoogleSignIn(),
             ],
           ),
         ),

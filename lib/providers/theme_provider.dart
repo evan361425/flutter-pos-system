@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/caches/sharedpref/shared_preference_helper.dart';
+import 'package:possystem/caches/shared_preference_cache.dart';
 
 class ThemeProvider extends ChangeNotifier {
   // shared pref object
-  SharedPreferenceHelper _sharedPrefsHelper;
+  final SharedPreferenceCache _sharedPrefsCache = SharedPreferenceCache();
 
   bool _isDarkModeOn = false;
 
-  ThemeProvider() {
-    _sharedPrefsHelper = SharedPreferenceHelper();
-  }
-
   bool get isDarkModeOn {
-    _sharedPrefsHelper.isDarkMode.then((statusValue) {
+    _sharedPrefsCache.isDarkMode.then((statusValue) {
       _isDarkModeOn = statusValue;
     });
 
@@ -24,8 +20,8 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   void updateTheme(bool isDarkModeOn) {
-    _sharedPrefsHelper.changeTheme(isDarkModeOn);
-    _sharedPrefsHelper.isDarkMode.then((darkModeStatus) {
+    _sharedPrefsCache.setTheme(isDarkModeOn);
+    _sharedPrefsCache.isDarkMode.then((darkModeStatus) {
       _isDarkModeOn = darkModeStatus;
     });
 

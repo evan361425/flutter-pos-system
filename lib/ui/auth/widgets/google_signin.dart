@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:possystem/app_localizations.dart';
-import 'package:possystem/providers/auth_provider.dart';
+import 'package:possystem/localizations.dart';
 import 'package:possystem/providers/theme_provider.dart';
+import 'package:possystem/services/authentication.dart';
+import 'package:possystem/services/sign_in_method/sign_in_by_google.dart';
 import 'package:provider/provider.dart';
 
 class GoogleSignIn extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey;
-
-  GoogleSignIn(this._scaffoldKey);
-
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final authProvider = context.read<Authentication>();
+    final themeProvider = context.read<ThemeProvider>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          authProvider.status == Status.Authenticating
+          authProvider.status == AuthStatus.Authenticating
               ? Center(child: CircularProgressIndicator())
               : SignInButton(
                   themeProvider.isDarkModeOn
@@ -30,12 +27,12 @@ class GoogleSignIn extends StatelessWidget {
                     await _confirm(context);
                   },
                 ),
-          authProvider.status == Status.Failed
+          authProvider.status == AuthStatus.Failed
               ? Padding(
                   padding: const EdgeInsets.only(top: 24),
                   child: Center(
                     child: Text(
-                      Trans.of(context).t('auth.reject'),
+                      Local.of(context).t('auth.reject'),
                       style: Theme.of(context).textTheme.button,
                     ),
                   ),
@@ -47,14 +44,14 @@ class GoogleSignIn extends StatelessWidget {
   }
 
   void _confirm(BuildContext context) async {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = context.read<Authentication>();
     FocusScope.of(context).unfocus(); //to hide the keyboard - if any
 
-    var user = await authProvider.signInByGoogle(context);
+    var user = await authProvider.signIn(context, SignInByGoogle());
 
     if (user == null) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(Trans.of(context).t('auth.reject')),
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(Local.of(context).t('auth.reject')),
         backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
       ));
     }

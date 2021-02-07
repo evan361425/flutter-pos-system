@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/app_localizations.dart';
+import 'package:possystem/localizations.dart';
 
 class ButtomSmallText extends StatelessWidget {
   @override
@@ -11,7 +11,7 @@ class ButtomSmallText extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              Trans.of(context).t('app'),
+              Local.of(context).t('app'),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 10),
             )

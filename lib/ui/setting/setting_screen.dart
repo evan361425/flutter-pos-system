@@ -1,80 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:possystem/app_localizations.dart';
-import 'package:possystem/providers/auth_provider.dart';
-import 'package:possystem/providers/theme_provider.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/ui/setting/setting_language_actions.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/localizations.dart';
+import 'package:possystem/ui/setting/widgets/language.dart';
+import 'package:possystem/ui/setting/widgets/signout.dart';
+import 'package:possystem/ui/setting/widgets/theme.dart';
 
 class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          title: Text(Trans.of(context).t('setting.theme.title')),
-          subtitle: Text(Trans.of(context).t('setting.theme.subtitle')),
-          trailing: Switch(
-            activeColor: Theme.of(context).appBarTheme.color,
-            activeTrackColor: Theme.of(context).textTheme.headline6.color,
-            value: Provider.of<ThemeProvider>(context).isDarkModeOn,
-            onChanged: (booleanValue) {
-              Provider.of<ThemeProvider>(context, listen: false)
-                  .updateTheme(booleanValue);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(Local.of(context).t('setting')),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(Icons.arrow_back_ios),
         ),
-        ListTile(
-          title: Text(Trans.of(context).t('setting.language.title')),
-          subtitle:
-              Text(Trans.of(context).t('setting.language.subtitle')),
-          trailing: SettingLanguageActions(),
-        ),
-        ListTile(
-          title: Text(Trans.of(context).t('setting.logout.title')),
-          subtitle:
-              Text(Trans.of(context).t('setting.logout.subtitle')),
-          trailing: RaisedButton(
-            onPressed: () {
-              _confirmSignOut(context);
-            },
-            child: Text(
-              Trans.of(context).t('setting.logout.button'),
-            ),
+      ),
+      body: ListView(
+        children: <Widget>[
+          _buildCard(
+            Local.of(context).t('setting.theme.title'),
+            Local.of(context).t('setting.theme.subtitle'),
+            ThemeSwitch(),
           ),
-        )
-      ],
+          _buildCard(
+            Local.of(context).t('setting.language.title'),
+            Local.of(context).t('setting.language.subtitle'),
+            LanguagePopupMenu(),
+          ),
+          _buildCard(
+            Local.of(context).t('setting.logout.title'),
+            Local.of(context).t('setting.logout.subtitle'),
+            SignoutButton(),
+          ),
+        ],
+      ),
     );
   }
 
-  void _confirmSignOut(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      builder: (_) => PlatformAlertDialog(
-        title: Text(Trans.of(context).t('alert_title')),
-        content: Text(Trans.of(context).t('setting.logout.alert')),
-        actions: <Widget>[
-          PlatformDialogAction(
-            child: PlatformText(Trans.of(context).t('cancel')),
-            onPressed: () => Navigator.pop(context),
-          ),
-          PlatformDialogAction(
-            child: PlatformText(Trans.of(context).t('confirm')),
-            onPressed: () {
-              final authProvider =
-                  Provider.of<AuthProvider>(context, listen: false);
-
-              authProvider.signOut();
-
-              Navigator.pop(context);
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                Routes.login,
-                ModalRoute.withName(Routes.login),
-              );
-            },
-          )
-        ],
+  Widget _buildCard(String title, String subtitle, Widget trailing) {
+    return Card(
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: trailing,
       ),
     );
   }

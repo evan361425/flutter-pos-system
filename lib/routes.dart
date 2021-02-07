@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
-import 'package:possystem/ui/home/backend.dart';
-import 'package:possystem/ui/menu/index.dart' as menus;
+import 'package:possystem/ui/menu/catalog_navigator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
-import 'package:possystem/ui/splash/splash_screen.dart';
+import 'package:possystem/ui/analysis/analysis_screen.dart';
+import 'package:possystem/ui/customer/customer_screen.dart';
+import 'package:possystem/ui/menu/menu_screen.dart';
+import 'package:possystem/ui/spreadsheet/spreadsheet_screen.dart';
+import 'package:possystem/ui/stock/stock_screen.dart';
 
 class Routes {
-  Routes._(); //this is to prevent anyone from instantiate this object
-
   static const String login = '/login';
-  static const String splash = '/splash';
-  static const String backend = '/backend';
   static const String setting = '/setting';
+
+  static const String analysis = '/analysis';
+  static const String customer = '/customer';
   static const String menu = '/menu';
-  static const String menu_catalog_add = '/menu/catalog/add';
+  static const String catalog = '/catalog';
+  static const String spreadsheet = '/spreadsheet';
+  static const String stock = '/stock';
 
   static final routes = <String, WidgetBuilder>{
     login: (BuildContext context) => SignInScreen(),
-    splash: (BuildContext context) => SplashScreen(),
-    backend: (BuildContext context) => BackendScreen(),
     setting: (BuildContext context) => SettingScreen(),
-    menu: (BuildContext context) => menus.HomeScreen(),
-    menu_catalog_add: (BuildContext context) => menus.CatalogDetailScreen(),
+    analysis: (BuildContext context) => AnalysisScreen(),
+    customer: (BuildContext context) => CustomerScreen(),
+    menu: (BuildContext context) => MenuScreen(),
+    catalog: (BuildContext context) => CatalogNavigator(),
+    spreadsheet: (BuildContext context) => SpreadsheetScreen(),
+    stock: (BuildContext context) => StockScreen(),
   };
+
+  Routes._(); //this is to prevent anyone from instantiate this object
 }

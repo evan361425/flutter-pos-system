@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Want to build your own theme?
+/// https://github.com/rxlabz/panache
 class AppThemes {
+  // Avoid someone build the instance
   AppThemes._();
 
   static final TextTheme _lightTextTheme = TextTheme(
@@ -165,8 +168,10 @@ class AppThemes {
     ),
   );
 
-  //the light theme
   static final ThemeData lightTheme = ThemeData(
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Color(0xffff9800),
+    ),
     primarySwatch: Colors.amber,
     brightness: Brightness.light,
     primaryColor: Color(0xffffc107),
@@ -177,7 +182,11 @@ class AppThemes {
     accentColorBrightness: Brightness.light,
     canvasColor: Color(0xfffafafa),
     scaffoldBackgroundColor: Color(0xfffafafa),
-    bottomAppBarColor: Color(0xffffffff),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedIconTheme: IconThemeData(size: 28, color: Color(0xffffa000)),
+      unselectedIconTheme: IconThemeData(size: 24, color: Color(0xffffa000)),
+      showUnselectedLabels: false,
+    ),
     cardColor: Color(0xffffffff),
     dividerColor: Color(0x1f000000),
     highlightColor: Color(0x66bcbcbc),
@@ -416,7 +425,6 @@ class AppThemes {
     )),
   );
 
-  //the dark theme
   static final ThemeData darkTheme = ThemeData(
     primarySwatch: Colors.deepPurple,
     brightness: Brightness.dark,
@@ -429,6 +437,11 @@ class AppThemes {
     canvasColor: Color(0xff303030),
     scaffoldBackgroundColor: Color(0xff303030),
     bottomAppBarColor: Color(0xff424242),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedIconTheme: IconThemeData(size: 28, color: Color(0xff563ab7)),
+      unselectedIconTheme: IconThemeData(size: 24, color: Color(0xff563ab7)),
+      showUnselectedLabels: false,
+    ),
     cardColor: Color(0xff424242),
     dividerColor: Color(0x1fffffff),
     highlightColor: Color(0x40cccccc),

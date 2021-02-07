@@ -1,24 +1,23 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/auth_widget_builder.dart';
+import 'package:possystem/ui/product.dart';
+import 'package:possystem/user_dependencies.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/user_model.dart';
-import 'package:possystem/providers/auth_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/firestore_database.dart';
+import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
-import 'package:possystem/ui/splash/splash_screen.dart';
+// import 'package:possystem/ui/splash/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key, this.databaseBuilder}) : super(key: key);
-
   // Expose builders for 3rd party services at the root of the widget tree
   // This is useful when mocking services while testing
-  final FirestoreDatabase Function(BuildContext context, String uid)
-      databaseBuilder;
+  final Database Function(BuildContext context, String uid) databaseBuilder;
+
+  const MyApp({Key key, this.databaseBuilder}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -28,6 +27,7 @@ class MyApp extends StatelessWidget {
       builder: (_, AsyncSnapshot<FirebaseApp> firebase) {
         if (firebase.hasError) {
           print('firebase has error...');
+          // TODO: error handler
           return Text('QQ');
         }
 
@@ -41,54 +41,55 @@ class MyApp extends StatelessWidget {
             children: [
               Image.asset('assets/logo.png', width: 128, height: 128),
             ],
-          )
+          ),
         );
       },
     );
   }
 
   Widget _buildProviders() {
-    return Consumer<ThemeProvider>(
-      builder: (_, ThemeProvider theme, __) {
-        return Consumer<LanguageProvider>(
-          builder: (_, LanguageProvider language, __) {
-            return AuthWidgetBuilder(
-              databaseBuilder: databaseBuilder,
-              builder: (_, AsyncSnapshot<UserModel> user) {
-                return _buildApp(theme, language, user);
-              },
-            );
+    /// Why use Consumer, not Provider.of?
+    /// https://stackoverflow.com/questions/58774301/when-to-use-provider-ofx-vs-consumerx-in-flutter
+    return Consumer2<ThemeProvider, LanguageProvider>(
+      builder: (_, ThemeProvider theme, LanguageProvider language, __) {
+        // get data from user
+        return UserDependencies(
+          databaseBuilder: databaseBuilder,
+          builder: (_, AsyncSnapshot<UserModel> user) {
+            return _buildApp(theme, language, user);
           },
         );
       },
     );
   }
 
-  Widget _buildApp(ThemeProvider theme, LanguageProvider language,
-      AsyncSnapshot<UserModel> user) {
+  Widget _buildApp(
+    ThemeProvider theme,
+    LanguageProvider language,
+    AsyncSnapshot<UserModel> user,
+  ) {
+    // TODO: handle more connection state
+    final home = user.connectionState == ConnectionState.waiting
+        ? Material(child: Center(child: CircularProgressIndicator()))
+        : user.hasData
+            ? ProductScreen()
+            : SignInScreen();
+
     return MaterialApp(
       title: 'POS System',
       routes: Routes.routes,
       debugShowCheckedModeBanner: false,
-      locale: language.appLocale,
+      // === language setting ===
+      locale: language.initLocale(),
       supportedLocales: LanguageProvider.supports,
       localizationsDelegates: LanguageProvider.delegates,
-      //return a locale which will be used by the app
       localeResolutionCallback: LanguageProvider.localResolutionCallback,
+      // === theme setting ===
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
       themeMode: theme.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-      home: Consumer<AuthProvider>(
-        builder: (_, auth, __) {
-          if (user.connectionState == ConnectionState.active) {
-            return user.hasData ? SplashScreen() : SignInScreen();
-          }
-
-          return Material(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
+      // === home widget ===
+      home: home,
     );
   }
 }

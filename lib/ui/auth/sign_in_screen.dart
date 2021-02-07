@@ -18,7 +18,7 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Stack(
         children: <Widget>[
           Background(),
-          Body(_scaffoldKey),
+          Body(),
           ButtomSmallText(),
         ],
       ),

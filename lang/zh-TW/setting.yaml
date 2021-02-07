@@ -1,11 +1,11 @@
 theme:
   title: 暗黑模式
-  subtitle: 打開暗黑模式看起來帥帥的
+  subtitle: 換個皮囊
 language:
   title: 語言
   subtitle: Set Your Language
 logout:
   title: "登出😱"
-  subtitle: 希望成功把你的資料清乾淨！
-  button: 掰掰
-  alert: 你不是按錯了吧？
+  subtitle: 不會清除您的菜單和點單資料
+  button: 登出
+  alert: 登出確認通知
