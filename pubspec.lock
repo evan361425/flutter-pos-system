@@ -177,13 +177,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_platform_widgets:
-    dependency: "direct main"
-    description:
-      name: flutter_platform_widgets
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.72.0"
   flutter_signin_button:
     dependency: "direct main"
     description:
@@ -304,6 +297,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0-nullsafety.3"
+  modal_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: modal_bottom_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+1"
   nested:
     dependency: transitive
     description:
@@ -570,4 +570,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.10.0-110 <2.11.0"
-  flutter: ">=1.20.4 <2.0.0"
+  flutter: ">=1.16.0 <2.0.0"

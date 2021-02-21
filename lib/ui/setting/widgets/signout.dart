@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/authentication.dart';
@@ -17,32 +16,29 @@ class SignoutButton extends StatelessWidget {
   }
 
   void _confirm(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      builder: (_) => PlatformAlertDialog(
-        title: Text(Local.of(context).t('alert_title')),
-        content: Text(Local.of(context).t('setting.logout.alert')),
-        actions: <Widget>[
-          PlatformDialogAction(
-            child: PlatformText(Local.of(context).t('cancel')),
-            onPressed: () => Navigator.pop(context),
-          ),
-          PlatformDialogAction(
-            child: PlatformText(Local.of(context).t('confirm')),
-            onPressed: () {
-              final authProvider = context.read<Authentication>();
+    AlertDialog(
+      title: Text(Local.of(context).t('alert_title')),
+      content: Text(Local.of(context).t('setting.logout.alert')),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(Local.of(context).t('confirm')),
+          onPressed: () {
+            final authProvider = context.read<Authentication>();
 
-              authProvider.signOut();
+            authProvider.signOut();
 
-              Navigator.pop(context);
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                Routes.login,
-                ModalRoute.withName(Routes.login),
-              );
-            },
-          )
-        ],
-      ),
+            Navigator.pop(context);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              Routes.login,
+              ModalRoute.withName(Routes.login),
+            );
+          },
+        ),
+        RaisedButton(
+          child: Text(Local.of(context).t('cancel')),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
     );
   }
 }
