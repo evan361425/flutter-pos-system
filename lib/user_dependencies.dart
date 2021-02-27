@@ -43,7 +43,6 @@ class UserDependencies extends StatelessWidget {
             ChangeNotifierProvider<MenuModel>(
               create: (context) {
                 // strictly equal to: Provider.of<Logger>(context, listen: false)
-                context.read<Logger>().d('Getting menu data');
                 return MenuModel(context);
               },
             ),

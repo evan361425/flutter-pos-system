@@ -25,7 +25,6 @@ class Routes {
     analysis: (BuildContext context) => AnalysisScreen(),
     customer: (BuildContext context) => CustomerScreen(),
     menu: (BuildContext context) => MenuScreen(),
-    catalog: (BuildContext context) => CatalogNavigator(),
     spreadsheet: (BuildContext context) => SpreadsheetScreen(),
     stock: (BuildContext context) => StockScreen(),
   };

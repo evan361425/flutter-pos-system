@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:possystem/caches/shared_preference_cache.dart';
@@ -19,6 +20,7 @@ class LanguageProvider extends ChangeNotifier {
     GlobalMaterialLocalizations.delegate,
     // Built-in localization for text direction LTR/RTL
     GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
   ];
 
   static const Locale defaultLocale = Locale('zh', 'TW');

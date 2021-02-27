@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/ingredient_model.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_set_modal.dart';
+import 'package:possystem/models/models.dart';
+import 'package:possystem/ui/menu/product/widgets/widgets.dart';
 
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({
@@ -88,7 +88,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         icon: Icon(Icons.add),
         label: Text('新增特殊份量'),
         onPressed: () {
-          goToIngredientSetModel(IngredientSet(name: ''), ingredient);;
+          goToIngredientSetModel(IngredientSet(name: ''), ingredient);
+          ;
         },
       ),
     );

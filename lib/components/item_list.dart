@@ -12,11 +12,8 @@ abstract class ItemList<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: items.length,
-      itemBuilder: (BuildContext context, int index) =>
-          _itemBuilder(context, items[index]),
+    return Column(
+      children: [for (var item in items) _itemBuilder(context, item)],
     );
   }
 

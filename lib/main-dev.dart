@@ -51,9 +51,30 @@ class _MenuSnapshot {
         'products': {
           'cheeseburger': {
             'price': 30,
+            'cost': 20,
             'index': 0,
             'enable': true,
             'createdAt': Timestamp.now(),
+            'ingredients': {
+              'cheese': {
+                'defaultAmount': 20,
+                'additionalSets': {
+                  'less': {
+                    'ammount': 10,
+                    'additionalPrice': 0,
+                    'additionalCost': -5,
+                  },
+                  'more': {
+                    'ammount': 30,
+                    'additionalPrice': 10,
+                    'additionalCost': 5,
+                  },
+                },
+              },
+              'bread': {
+                'defaultAmount': 1,
+              }
+            },
           },
           'hamburger': {
             'price': 50,

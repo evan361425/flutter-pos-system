@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/ui/product.dart';
+import 'package:possystem/ui/home_container.dart';
 import 'package:possystem/user_dependencies.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/user_model.dart';
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
     final home = user.connectionState == ConnectionState.waiting
         ? Material(child: Center(child: CircularProgressIndicator()))
         : user.hasData
-            ? ProductScreen()
+            ? HomeContainer()
             : SignInScreen();
 
     return MaterialApp(

@@ -31,8 +31,8 @@ class BackendBottomNavBar extends StatelessWidget {
           label: Local.of(context).t('stock'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.assignment_ind_outlined),
-          activeIcon: Icon(Icons.assignment_ind),
+          icon: Icon(Icons.settings_outlined),
+          activeIcon: Icon(Icons.settings_sharp),
           label: Local.of(context).t('customer'),
         ),
       ],
