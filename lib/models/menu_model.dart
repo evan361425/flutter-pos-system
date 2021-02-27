@@ -87,6 +87,10 @@ class MenuModel extends ChangeNotifier {
 
   // GETTER
 
+  CatalogModel operator [](String name) {
+    return _catalogs[name];
+  }
+
   List<CatalogModel> get catalogs {
     final catalogs = _catalogs.values.toList();
     catalogs.sort((a, b) => a.index.compareTo(b.index));

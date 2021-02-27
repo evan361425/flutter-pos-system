@@ -28,7 +28,7 @@ class CatalogList extends ItemList<CatalogModel> {
       subtitle: Text('${catalog.length} products'),
       onTap: () {
         if (shouldProcess()) {
-          Navigator.of(context).pushNamed(Routes.catalog, arguments: catalog);
+          Navigator.of(context).push(Routes.catalogRoute(catalog));
         }
       },
     );

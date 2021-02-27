@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/models.dart';
 import 'package:provider/provider.dart';
 
 class ProductName extends StatefulWidget {
@@ -107,7 +106,7 @@ class _ProductNameState extends State<ProductName> {
       await _product.setName(_controller.text, context);
     } else if (_controller.text != _product.name) {
       // add product
-      final catalog = context.read<CatalogModel>();
+      final catalog = context.read<MenuModel>()[_product.catalogName];
       _product.initial(_controller.text, catalog.length);
       await catalog.add(_product, context);
     }

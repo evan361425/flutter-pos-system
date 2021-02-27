@@ -23,7 +23,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   @override
   void initState() {
-    showIngredient = List.filled(widget.ingredients.length, true);
+    showIngredient = List.filled(widget.ingredients.length, false);
     super.initState();
   }
 

@@ -1,18 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FadeInTitleScaffold extends StatefulWidget {
   FadeInTitleScaffold({
     Key key,
-    this.appBarLeading,
-    this.appBarActions,
-    this.appBarTitle,
+    this.leading,
+    this.trailing,
+    this.title,
     this.body,
     this.floatingActionButton,
   }) : super(key: key);
 
-  final Widget appBarLeading;
-  final List<Widget> appBarActions;
-  final String appBarTitle;
+  final Widget leading;
+  final Widget trailing;
+  final String title;
   final Widget body;
   final Widget floatingActionButton;
 
@@ -37,21 +38,25 @@ class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: widget.appBarLeading,
-        actions: widget.appBarActions,
-        title: AnimatedOpacity(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        leading: widget.leading,
+        trailing: widget.trailing,
+        middle: AnimatedOpacity(
           duration: Duration(seconds: 0),
           opacity: _opacity,
-          child: Text(widget.appBarTitle),
+          child: Text(widget.title),
         ),
       ),
-      floatingActionButton: widget.floatingActionButton,
-      body: NotificationListener<ScrollNotification>(
-        onNotification: _scrollListener,
-        child: SingleChildScrollView(
-          child: widget.body,
+      child: SafeArea(
+        child: Scaffold(
+          floatingActionButton: widget.floatingActionButton,
+          body: NotificationListener<ScrollNotification>(
+            onNotification: _scrollListener,
+            child: SingleChildScrollView(
+              child: widget.body,
+            ),
+          ),
         ),
       ),
     );

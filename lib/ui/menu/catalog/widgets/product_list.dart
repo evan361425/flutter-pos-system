@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/item_list.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/ui/menu/catalog_navigator.dart';
+import 'package:possystem/routes.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products) : super(products);
@@ -25,15 +26,30 @@ class ProductList extends ItemList<ProductModel> {
         ],
       ),
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
-      subtitle: Text('ham, bread, fish, ...'),
+      subtitle: _ingredientList(product),
       onTap: () {
         if (shouldProcess()) {
-          Navigator.of(context).pushNamed(
-            CatalogRoutes.product,
-            arguments: product,
-          );
+          Navigator.of(context).push(Routes.productRoute(product));
         }
       },
     );
+  }
+
+  Widget _ingredientList(ProductModel product) {
+    final children = <Widget>[];
+    product.ingredients.values.forEach((ingredient) {
+      children.add(Text(ingredient.name));
+      children.add(MetaBlock());
+    });
+
+    if (children.isNotEmpty) {
+      children.removeLast();
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: children,
+      );
+    }
+
+    return null;
   }
 }
