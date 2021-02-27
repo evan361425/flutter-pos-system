@@ -23,23 +23,12 @@ class ProductScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: product.name,
-        trailing: Material(
-          child: PopupMenuButton(
-            icon: Icon(Icons.more_horiz),
-            itemBuilder: (BuildContext context) {
-              return <String>[
-                'change',
-                product.enable ? 'disable' : 'enable',
-              ].map<PopupMenuItem<String>>((String value) {
-                return PopupMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    Local.of(context).t('menu.product.actions.${value}'),
-                  ),
-                );
-              }).toList();
-            },
-            onSelected: (value) {},
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(Icons.more_horiz_sharp),
+          onPressed: () => showCupertinoModalPopup(
+            context: context,
+            builder: _moreActions,
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -69,6 +58,22 @@ class ProductScreen extends StatelessWidget {
         ),
         IngredientExpansion(ingredients: product.ingredients),
       ],
+    );
+  }
+
+  Widget _moreActions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: Text('變更名稱'),
+          onPressed: () => Navigator.pop(context, 'cancel'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('取消'),
+        isDefaultAction: true,
+        onPressed: () => Navigator.pop(context, 'cancel'),
+      ),
     );
   }
 

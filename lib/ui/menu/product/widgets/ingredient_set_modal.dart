@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/ingredient_model.dart';
@@ -14,38 +16,40 @@ class IngredientSetModal extends StatelessWidget {
     final IngredientModel ingredient =
         ModalRoute.of(context).settings.arguments;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('設定${ingredient.name}的特殊份量'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('設定${ingredient.name}的特殊份量'),
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          FlatButton(
-            child: Text(ingredientSet.name.isEmpty ? '新增' : '儲存'),
-            onPressed: () {
-              final newSet = _formKey.currentState.getData();
-              if (newSet == null) return;
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Text(ingredientSet.name.isEmpty ? '新增' : '儲存'),
+          onPressed: () {
+            final newSet = _formKey.currentState.getData();
+            if (newSet == null) return;
 
-              if (ingredientSet.name.isEmpty) {
-                ingredient.addSet(newSet);
-              } else if (newSet.name != ingredientSet.name) {
-                ingredient.replaceSet(ingredientSet, newSet);
-              } else {
-                ingredientSet.update(newSet);
-              }
+            if (ingredientSet.name.isEmpty) {
+              ingredient.addSet(newSet);
+            } else if (newSet.name != ingredientSet.name) {
+              ingredient.replaceSet(ingredientSet, newSet);
+            } else {
+              ingredientSet.update(newSet);
+            }
 
-              Navigator.of(context).pop();
-            },
-          )
-        ],
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(defaultPadding),
-        child: _IngredientSetForm(
-          key: _formKey,
-          iSet: ingredientSet,
+      child: Material(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(defaultPadding),
+          child: _IngredientSetForm(
+            key: _formKey,
+            iSet: ingredientSet,
+          ),
         ),
       ),
     );

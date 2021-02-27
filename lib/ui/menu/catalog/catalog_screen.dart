@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/constants/constant.dart';
@@ -23,6 +24,14 @@ class CatalogScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: catalog.name,
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(Icons.more_horiz_sharp),
+          onPressed: () => showCupertinoModalPopup(
+            context: context,
+            builder: _moreActions,
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: catalog.isReady
@@ -59,6 +68,22 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
+  Widget _moreActions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: Text('變更名稱'),
+          onPressed: () => Navigator.pop(context, 'cancel'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('取消'),
+        isDefaultAction: true,
+        onPressed: () => Navigator.pop(context, 'cancel'),
+      ),
+    );
+  }
+
   Widget _catalogName(CatalogModel catalog, BuildContext context) {
     return Text(
       catalog.name,
@@ -67,19 +92,30 @@ class CatalogScreen extends StatelessWidget {
   }
 
   Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
-    if (!catalog.isReady || catalog.length == 0) return null;
+    if (!catalog.isReady) return null;
 
-    return RichText(
-      text: TextSpan(
-        text: '產品數量：',
-        children: [
-          TextSpan(
-            text: catalog.length.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )
-        ],
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-    );
+    final children = <Widget>[];
+
+    if (catalog.length != 0) {
+      children.add(RichText(
+        text: TextSpan(
+          text: '產品數量：',
+          children: [
+            TextSpan(
+              text: catalog.length.toString(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )
+          ],
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      ));
+    }
+
+    children.addAll([
+      MetaBlock(),
+      Text(catalog.createdAt),
+    ]);
+
+    return Row(children: children);
   }
 }

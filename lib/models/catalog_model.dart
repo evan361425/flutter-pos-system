@@ -180,10 +180,6 @@ class CatalogModel extends ChangeNotifier {
 
   String get createdAt {
     final date = _createdAt.toDate();
-    if (date.year == DateTime.now().year) {
-      return sprintf('%02d-%02d', [date.month, date.day]);
-    } else {
-      return sprintf('%04d-%02d', [date.year, date.month]);
-    }
+    return sprintf('%04d-%02d-%02d', [date.year, date.month, date.day]);
   }
 }
