@@ -46,14 +46,12 @@ class _MenuSnapshot {
     return {
       'burger': {
         'createdAt': Timestamp.now(),
-        'enable': true,
         'index': 0,
         'products': {
           'cheeseburger': {
             'price': 30,
             'cost': 20,
             'index': 0,
-            'enable': true,
             'createdAt': Timestamp.now(),
             'ingredients': {
               'cheese': {
@@ -73,14 +71,43 @@ class _MenuSnapshot {
               },
               'bread': {
                 'defaultAmount': 1,
+              },
+              'vegetable': {
+                'defaultAmount': 1,
+              },
+              'some-other-very-long-name 👎👎👎': {
+                'defaultAmount': 1,
               }
             },
           },
           'hamburger': {
             'price': 50,
-            'index': 0,
-            'enable': true,
-            'createdAt': Timestamp.now(),
+            'index': 2,
+          },
+          'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-':
+              {
+            'price': 30,
+            'index': 3,
+          },
+          'product1': {
+            'price': 30,
+            'index': 4,
+          },
+          'product2': {
+            'price': 30,
+            'index': 5,
+          },
+          'product3': {
+            'price': 30,
+            'index': 6,
+          },
+          '😂product4': {
+            'price': 30,
+            'index': 7,
+          },
+          '產品五': {
+            'price': 30,
+            'index': 8,
           }
         },
       },

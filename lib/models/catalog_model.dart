@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:possystem/components/text_snack_bar.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/models/product_model.dart';
@@ -14,8 +13,6 @@ class CatalogModel extends ChangeNotifier {
   String _name;
   // index in menu
   int _index;
-  // is this orderable?
-  bool enable;
   // when it has been added to menu
   final Timestamp _createdAt;
   // product list
@@ -26,7 +23,6 @@ class CatalogModel extends ChangeNotifier {
     @required int index,
     Map<String, ProductModel> products,
     Timestamp createdAt,
-    this.enable = true,
   })  : _index = index,
         _createdAt = createdAt ?? Timestamp.now(),
         _products = products ?? {};
@@ -38,23 +34,16 @@ class CatalogModel extends ChangeNotifier {
       return null;
     }
 
-    var rawProducts = data['products'];
-    var products;
+    final rawProducts = data['products'];
+    final products = <String, ProductModel>{};
 
     if (rawProducts is Map) {
-      try {
-        products = rawProducts.map((key, product) {
-          if (key is String && product is Map) {
-            product['catalogName'] = name;
-            return MapEntry(key, ProductModel.fromMap(key, product));
-          } else {
-            throw TypeError();
-          }
-        });
-      } catch (e) {
-        Logger().e(e);
-        products = null;
-      }
+      rawProducts.forEach((key, product) {
+        if (key is String && product is Map) {
+          product['catalogName'] = name;
+          products[key] = ProductModel.fromMap(key, product);
+        }
+      });
     }
 
     return CatalogModel(
@@ -62,7 +51,6 @@ class CatalogModel extends ChangeNotifier {
       index: data['index'],
       createdAt: data['createdAt'],
       products: products,
-      enable: data['enable'],
     );
   }
 
@@ -77,14 +65,13 @@ class CatalogModel extends ChangeNotifier {
       'products': _products.map(
         (name, product) => MapEntry(name, product.toMap()),
       ),
-      'enable': enable,
     };
   }
 
   // STATE CHANGE
 
   Future<ProductModel> add(ProductModel product, BuildContext context) async {
-    if (!product.isReady) throw UnsupportedError('Catalog is not ready');
+    if (!product.isReady) throw UnsupportedError('Product is not ready');
 
     final db = context.read<Database>();
     await db.update(Collections.menu, {
@@ -121,23 +108,6 @@ class CatalogModel extends ChangeNotifier {
     return db.update(Collections.menu, {
       '$_name.index': index,
     }).then((_) => _index = index);
-  }
-
-  Future<void> setEnable(bool isEnable, BuildContext context) {
-    final db = context.read<Database>();
-
-    return db.update(
-      Collections.menu,
-      {'$_name.enable': isEnable},
-    ).then((_) {
-      TextSnackBar.success(context);
-
-      enable = isEnable;
-      final menu = context.read<MenuModel>();
-      menu.changeCatalog();
-    }).catchError((_) {
-      TextSnackBar.failed(context);
-    });
   }
 
   void changeProduct({String oldName, String newName}) {

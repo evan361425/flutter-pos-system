@@ -61,22 +61,6 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _moreActions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          child: Text('變更名稱'),
-          onPressed: () => Navigator.pop(context, 'cancel'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        child: Text('取消'),
-        isDefaultAction: true,
-        onPressed: () => Navigator.pop(context, 'cancel'),
-      ),
-    );
-  }
-
   Widget _productName(ProductModel product, BuildContext context) {
     return Text(
       product.name,
@@ -104,6 +88,22 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _moreActions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: Text('變更名稱'),
+          onPressed: () => Navigator.pop(context, 'cancel'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('取消'),
+        isDefaultAction: true,
+        onPressed: () => Navigator.pop(context, 'cancel'),
+      ),
     );
   }
 }

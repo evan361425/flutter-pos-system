@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/services/authentication.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +27,10 @@ class SignoutButton extends StatelessWidget {
             authProvider.signOut();
 
             Navigator.pop(context);
+            // TODO: go to other page
             Navigator.of(context).pushNamedAndRemoveUntil(
-              Routes.login,
-              ModalRoute.withName(Routes.login),
+              '/login',
+              ModalRoute.withName('/login'),
             );
           },
         ),

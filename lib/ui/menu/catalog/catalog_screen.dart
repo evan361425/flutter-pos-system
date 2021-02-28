@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
-import 'package:possystem/localizations.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/catalog/widgets/catalog_body.dart';
+import 'package:possystem/localizations.dart';
+import 'package:possystem/models/models.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/catalog_body.dart';
 
 class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final CatalogModel catalog = ModalRoute.of(context).settings.arguments;
+    final CatalogModel catalog =
+        ModalRoute.of(context).settings.arguments ?? CatalogModel.empty();
     // Logger().d('${catalog.isReady ? 'Edit' : 'Create'} catalog');
 
     return ChangeNotifierProvider<CatalogModel>.value(
@@ -35,7 +37,10 @@ class CatalogScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: catalog.isReady
-              ? () => Navigator.of(context).pushNamed(Routes.product)
+              ? () => Navigator.of(context).pushNamed(
+                    MenuRoutes.product,
+                    arguments: ProductModel.empty(catalog.name),
+                  )
               : () => Scaffold.of(context).showSnackBar(
                     SnackBar(
                       content: Text('menu.catalog.error.add'),
@@ -65,22 +70,6 @@ class CatalogScreen extends StatelessWidget {
         ),
         CatalogBody(),
       ],
-    );
-  }
-
-  Widget _moreActions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          child: Text('變更名稱'),
-          onPressed: () => Navigator.pop(context, 'cancel'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        child: Text('取消'),
-        isDefaultAction: true,
-        onPressed: () => Navigator.pop(context, 'cancel'),
-      ),
     );
   }
 
@@ -117,5 +106,21 @@ class CatalogScreen extends StatelessWidget {
     ]);
 
     return Row(children: children);
+  }
+
+  Widget _moreActions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: Text('變更名稱'),
+          onPressed: () => Navigator.pop(context, 'cancel'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('取消'),
+        isDefaultAction: true,
+        onPressed: () => Navigator.pop(context, 'cancel'),
+      ),
+    );
   }
 }

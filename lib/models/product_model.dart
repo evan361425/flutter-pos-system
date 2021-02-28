@@ -12,7 +12,6 @@ class ProductModel extends ChangeNotifier {
   int _index;
   num _price;
   num _cost;
-  bool enable;
   final Map<String, IngredientModel> ingredients;
   final String catalogName;
   final Timestamp _createdAt;
@@ -24,7 +23,6 @@ class ProductModel extends ChangeNotifier {
     num price = 0,
     num cost = 0,
     Timestamp createdAt,
-    this.enable = true,
     this.ingredients = const {},
   })  : _index = index,
         _price = price,
@@ -55,7 +53,6 @@ class ProductModel extends ChangeNotifier {
       price: data['price'],
       catalogName: data['catalogName'],
       createdAt: data['createdAt'],
-      enable: data['enable'],
       ingredients: actualIngredients,
     );
   }
@@ -70,7 +67,6 @@ class ProductModel extends ChangeNotifier {
       'catalogName': catalogName,
       'price': _price,
       'createdAt': _createdAt,
-      'enable': enable,
     };
   }
 

@@ -3,7 +3,7 @@ import 'package:possystem/components/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products) : super(products);
@@ -16,20 +16,15 @@ class ProductList extends ItemList<ProductModel> {
   @override
   Widget itemTile(BuildContext context, ProductModel product) {
     return ListTile(
-      leading: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          product.enable
-              ? Icon(Icons.check_circle, color: colorPositive)
-              : Icon(Icons.remove_circle, color: colorWarning),
-        ],
-      ),
+      leading: CircleAvatar(child: Text(product.name[0])),
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
       subtitle: _ingredientList(product),
       onTap: () {
         if (shouldProcess()) {
-          Navigator.of(context).push(Routes.productRoute(product));
+          Navigator.of(context).pushNamed(
+            MenuRoutes.product,
+            arguments: product,
+          );
         }
       },
     );

@@ -6,7 +6,6 @@ import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/user_model.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
 // import 'package:possystem/ui/splash/welcome_screen.dart';
@@ -77,7 +76,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'POS System',
-      routes: Routes.routes,
       debugShowCheckedModeBanner: false,
       // === language setting ===
       locale: language.initLocale(),
