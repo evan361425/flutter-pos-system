@@ -57,7 +57,7 @@ class CatalogScreen extends StatelessWidget {
     final catalog = context.watch<CatalogModel>();
 
     return Column(
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Column(
@@ -83,29 +83,20 @@ class CatalogScreen extends StatelessWidget {
   Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
     if (!catalog.isReady) return null;
 
-    final children = <Widget>[];
-
-    if (catalog.length != 0) {
-      children.add(RichText(
-        text: TextSpan(
-          text: '產品數量：',
-          children: [
-            TextSpan(
-              text: catalog.length.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )
-          ],
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-      ));
-    }
-
-    children.addAll([
-      MetaBlock(),
-      Text(catalog.createdAt),
-    ]);
-
-    return Row(children: children);
+    return RichText(
+      text: TextSpan(
+        text: '產品數量：',
+        children: [
+          TextSpan(
+            text: catalog.length.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          MetaBlock.span(),
+          TextSpan(text: catalog.createdAt),
+        ],
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
+    );
   }
 
   Widget _moreActions(BuildContext context) {

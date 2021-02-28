@@ -45,14 +45,12 @@ class _MenuSnapshot {
   Map<String, Map<String, dynamic>> data() {
     return {
       'burger': {
-        'createdAt': Timestamp.now(),
         'index': 0,
         'products': {
           'cheeseburger': {
             'price': 30,
             'cost': 20,
             'index': 0,
-            'createdAt': Timestamp.now(),
             'ingredients': {
               'cheese': {
                 'defaultAmount': 20,
@@ -80,40 +78,19 @@ class _MenuSnapshot {
               }
             },
           },
-          'hamburger': {
-            'price': 50,
-            'index': 2,
-          },
+          'hamburger': {'price': 50, 'index': 1, 'ingredients': {}},
+          'kamburger': {'price': 50, 'index': 2, 'ingredients': {}},
           'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-':
-              {
-            'price': 30,
-            'index': 3,
-          },
-          'product1': {
-            'price': 30,
-            'index': 4,
-          },
-          'product2': {
-            'price': 30,
-            'index': 5,
-          },
-          'product3': {
-            'price': 30,
-            'index': 6,
-          },
-          '😂product4': {
-            'price': 30,
-            'index': 7,
-          },
-          '產品五': {
-            'price': 30,
-            'index': 8,
-          }
+              {'price': 30, 'index': 3, 'ingredients': {}},
+          'product1': {'price': 30, 'index': 4, 'ingredients': {}},
+          'product2': {'price': 30, 'index': 5, 'ingredients': {}},
+          'product3': {'price': 30, 'index': 6, 'ingredients': {}},
+          '😂product4': {'price': 30, 'index': 7, 'ingredients': {}},
+          '產品五': {'price': 30, 'index': 8, 'ingredients': {}}
         },
       },
       'sandwitch': {
         'createdAt': Timestamp.now(),
-        'enable': true,
         'index': 1,
       }
     };

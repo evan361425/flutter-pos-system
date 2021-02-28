@@ -15,9 +15,14 @@ class ProductList extends ItemList<ProductModel> {
   @override
   Widget itemTile(BuildContext context, ProductModel product) {
     return ListTile(
-      leading: CircleAvatar(child: Text(product.name[0])),
+      leading: CircleAvatar(
+        child: Text(product.name.characters.first.toUpperCase()),
+      ),
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
-      subtitle: _ingredientList(product),
+      subtitle: MetaBlock.withString(
+        product.ingredients.keys,
+        context,
+      ),
       onTap: () {
         if (shouldProcess()) {
           Navigator.of(context).pushNamed(
@@ -27,23 +32,5 @@ class ProductList extends ItemList<ProductModel> {
         }
       },
     );
-  }
-
-  Widget _ingredientList(ProductModel product) {
-    final children = <Widget>[];
-    product.ingredients.values.forEach((ingredient) {
-      children.add(Text(ingredient.name));
-      children.add(MetaBlock());
-    });
-
-    if (children.isNotEmpty) {
-      children.removeLast();
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: children,
-      );
-    }
-
-    return null;
   }
 }

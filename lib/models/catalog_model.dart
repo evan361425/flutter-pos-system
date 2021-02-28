@@ -38,7 +38,7 @@ class CatalogModel extends ChangeNotifier {
     final products = <String, ProductModel>{};
 
     if (rawProducts is Map) {
-      rawProducts.forEach((key, product) {
+      rawProducts.forEach((final key, final product) {
         if (key is String && product is Map) {
           product['catalogName'] = name;
           products[key] = ProductModel.fromMap(key, product);

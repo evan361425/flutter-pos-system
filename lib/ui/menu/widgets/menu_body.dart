@@ -21,7 +21,7 @@ class MenuBody extends StatelessWidget {
       final catalogs = menu.catalogs;
       return SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             MenuSearchBar(),
             CatalogList(catalogs),
           ],
