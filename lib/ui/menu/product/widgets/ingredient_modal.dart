@@ -44,7 +44,7 @@ class _IngredientModalState extends State<IngredientModal> {
       child: SafeArea(
         child: Material(
           child: Padding(
-            padding: const EdgeInsets.all(defaultPadding),
+            padding: const EdgeInsets.all(kPadding),
             child: Center(child: _form()),
           ),
         ),
@@ -81,7 +81,7 @@ class _IngredientModalState extends State<IngredientModal> {
       child: Column(
         children: [
           _nameField(),
-          SizedBox(height: defaultMargin),
+          SizedBox(height: kMargin),
           _amountField(),
         ],
       ),
@@ -96,7 +96,7 @@ class _IngredientModalState extends State<IngredientModal> {
       decoration: InputDecoration(
         labelText: '成份名稱，起司',
         filled: false,
-        errorStyle: TextStyle(color: colorNegative),
+        errorStyle: TextStyle(color: kNegativeColor),
       ),
       maxLength: 30,
       validator: (String value) {
@@ -118,7 +118,7 @@ class _IngredientModalState extends State<IngredientModal> {
       decoration: InputDecoration(
         labelText: '成份預設用量',
         filled: false,
-        errorStyle: TextStyle(color: colorNegative),
+        errorStyle: TextStyle(color: kNegativeColor),
       ),
       validator: Validator.positiveDouble('成份預設用量'),
     );

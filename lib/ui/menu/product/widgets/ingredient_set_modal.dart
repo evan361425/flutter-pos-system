@@ -51,7 +51,7 @@ class IngredientSetModal extends StatelessWidget {
       child: SafeArea(
         child: Material(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(defaultPadding),
+            padding: EdgeInsets.all(kPadding),
             child: _IngredientSetForm(
               key: _formKey,
               iSet: ingredientSet,
@@ -99,7 +99,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             maxLength: 30,
             validator: Validator.textLimit('份量名稱', 30),
           ),
-          SizedBox(height: defaultMargin),
+          SizedBox(height: kMargin),
           TextFormField(
             controller: _ammountController,
             keyboardType: TextInputType.number,
@@ -109,7 +109,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             ),
             validator: Validator.positiveDouble('成分份量'),
           ),
-          SizedBox(height: defaultMargin),
+          SizedBox(height: kMargin),
           TextFormField(
             controller: _additionalPriceController,
             keyboardType: TextInputType.number,

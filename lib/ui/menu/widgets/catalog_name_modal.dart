@@ -38,7 +38,7 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
       ),
       child: Material(
         child: Padding(
-          padding: const EdgeInsets.all(defaultPadding),
+          padding: const EdgeInsets.all(kPadding),
           child: Center(
             child: Form(
               key: _formKey,
@@ -70,7 +70,7 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
       decoration: InputDecoration(
         labelText: '種類名稱，漢堡',
         filled: false,
-        errorStyle: TextStyle(color: colorNegative),
+        errorStyle: TextStyle(color: kNegativeColor),
       ),
       onFieldSubmitted: _onSubmit,
       maxLength: 30,

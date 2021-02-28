@@ -7,7 +7,7 @@ class MenuSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(defaultPadding),
+      padding: EdgeInsets.all(kPadding),
       child: TextField(
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search),

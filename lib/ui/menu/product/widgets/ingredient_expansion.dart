@@ -86,7 +86,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return Row(children: [
       Expanded(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          padding: const EdgeInsets.symmetric(horizontal: kPadding),
           child: RaisedButton.icon(
             color: Theme.of(context).secondaryHeaderColor,
             icon: Icon(Icons.settings_sharp),
@@ -105,7 +105,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       ),
       Expanded(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          padding: const EdgeInsets.symmetric(horizontal: kPadding),
           child: RaisedButton.icon(
             icon: Icon(Icons.add),
             label: Text('新增特殊份量'),
@@ -144,7 +144,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   Widget _ingredientSetTitle() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,

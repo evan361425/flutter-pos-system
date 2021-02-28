@@ -27,7 +27,7 @@ abstract class ItemList<T> extends StatelessWidget {
         child: itemTile(context, item),
         secondaryActions: <Widget>[
           IconSlideAction(
-            color: colorNegative,
+            color: kNegativeColor,
             caption: Local.of(context).t('delete'),
             icon: Icons.delete,
             onTap: () => onDelete(item),
