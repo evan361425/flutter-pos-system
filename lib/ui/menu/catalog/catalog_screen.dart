@@ -6,6 +6,8 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/models.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
+import 'package:possystem/ui/menu/widgets/catalog_name_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/catalog_body.dart';
@@ -31,16 +33,17 @@ class CatalogScreen extends StatelessWidget {
           child: Icon(Icons.more_horiz_sharp),
           onPressed: () => showCupertinoModalPopup(
             context: context,
-            builder: _moreActions,
+            builder: _moreActions(catalog),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: catalog.isReady
-              ? () => Navigator.of(context).pushNamed(
-                    Routes.product,
-                    arguments: ProductModel.empty(catalog.name),
-                  )
+              ? () => Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (_) => ProductModal(
+                      product: ProductModel.empty(catalog.name),
+                    ),
+                  ))
               : () => Scaffold.of(context).showSnackBar(
                     SnackBar(
                       content: Text('menu.catalog.error.add'),
@@ -61,7 +64,7 @@ class CatalogScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               _catalogName(catalog, context),
               _catalogMetadata(catalog, context),
@@ -99,19 +102,24 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _moreActions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          child: Text('變更名稱'),
+  Widget Function(BuildContext) _moreActions(CatalogModel catalog) {
+    return (BuildContext context) {
+      return CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            child: Text('變更名稱'),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              CupertinoPageRoute(
+                builder: (_) => CatalogNameModal(oldName: catalog.name),
+              ),
+            ),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('取消'),
           onPressed: () => Navigator.pop(context, 'cancel'),
         ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        child: Text('取消'),
-        isDefaultAction: true,
-        onPressed: () => Navigator.pop(context, 'cancel'),
-      ),
-    );
+      );
+    };
   }
 }

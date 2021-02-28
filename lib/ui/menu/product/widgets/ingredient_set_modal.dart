@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/models.dart';
 
 class IngredientSetModal extends StatelessWidget {
-  IngredientSetModal(this.ingredientSet, {Key key}) : super(key: key);
+  IngredientSetModal({
+    Key key,
+    this.ingredientSet,
+    this.product,
+    this.ingredient,
+  }) : super(key: key);
 
   final _formKey = GlobalKey<_IngredientSetFormState>();
   final IngredientSet ingredientSet;
+  final IngredientModel ingredient;
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
-    final IngredientModel ingredient =
-        ModalRoute.of(context).settings.arguments;
-
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text('設定${ingredient.name}的特殊份量'),
@@ -26,29 +29,33 @@ class IngredientSetModal extends StatelessWidget {
         ),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Text(ingredientSet.name.isEmpty ? '新增' : '儲存'),
-          onPressed: () {
+          child: Text(ingredientSet.isNotReady ? '新增' : '儲存'),
+          onPressed: () async {
             final newSet = _formKey.currentState.getData();
             if (newSet == null) return;
 
-            if (ingredientSet.name.isEmpty) {
-              ingredient.addSet(newSet);
+            if (ingredientSet.isNotReady) {
+              await ingredient.addSet(newSet);
             } else if (newSet.name != ingredientSet.name) {
-              ingredient.replaceSet(ingredientSet, newSet);
+              await ingredient.replaceSet(ingredientSet, newSet);
             } else {
-              ingredientSet.update(newSet);
+              await ingredientSet.update(newSet);
             }
+
+            product.changeIngredient();
 
             Navigator.of(context).pop();
           },
         ),
       ),
-      child: Material(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(defaultPadding),
-          child: _IngredientSetForm(
-            key: _formKey,
-            iSet: ingredientSet,
+      child: SafeArea(
+        child: Material(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(defaultPadding),
+            child: _IngredientSetForm(
+              key: _formKey,
+              iSet: ingredientSet,
+            ),
           ),
         ),
       ),
@@ -74,34 +81,6 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
   TextEditingController _ammountController;
   TextEditingController _additionalPriceController;
   TextEditingController _additionalCostController;
-
-  IngredientSet getData() {
-    if (!_formKey.currentState.validate()) {
-      return null;
-    }
-
-    return IngredientSet(
-      name: _nameController.text,
-      ammount: num.parse(_ammountController.text),
-      additionalPrice: num.parse(_additionalPriceController.text),
-      additionalCost: num.parse(_additionalCostController.text),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.iSet.name);
-    _ammountController = TextEditingController(
-      text: widget.iSet.ammount.toString(),
-    );
-    _additionalPriceController = TextEditingController(
-      text: widget.iSet.additionalPrice.toString(),
-    );
-    _additionalCostController = TextEditingController(
-      text: widget.iSet.additionalCost.toString(),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +132,34 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
           ),
         ],
       ),
+    );
+  }
+
+  IngredientSet getData() {
+    if (!_formKey.currentState.validate()) {
+      return null;
+    }
+
+    return IngredientSet(
+      name: _nameController.text,
+      ammount: num.parse(_ammountController.text),
+      additionalPrice: num.parse(_additionalPriceController.text),
+      additionalCost: num.parse(_additionalCostController.text),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.iSet.name);
+    _ammountController = TextEditingController(
+      text: widget.iSet.ammount.toString(),
+    );
+    _additionalPriceController = TextEditingController(
+      text: widget.iSet.additionalPrice.toString(),
+    );
+    _additionalCostController = TextEditingController(
+      text: widget.iSet.additionalCost.toString(),
     );
   }
 }

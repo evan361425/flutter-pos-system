@@ -76,7 +76,7 @@ class MenuModel extends ChangeNotifier {
 
   // SETTER
 
-  void changeCatalog({String oldName, String newName}) {
+  Future<void> changeCatalog({String oldName, String newName}) async {
     if (oldName != newName) {
       _catalogs[newName] = _catalogs[oldName];
       _catalogs.remove(oldName);

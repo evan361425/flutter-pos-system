@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/models/user_model.dart';
 import 'package:possystem/services/authentication.dart';

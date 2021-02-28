@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/models.dart';
+import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 import 'package:possystem/ui/menu/product/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -28,12 +30,19 @@ class ProductScreen extends StatelessWidget {
           child: Icon(Icons.more_horiz_sharp),
           onPressed: () => showCupertinoModalPopup(
             context: context,
-            builder: _moreActions,
+            builder: _moreActions(product),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(CupertinoPageRoute(
+              builder: (_) => IngredientModal(
+                product: product,
+                ingredient: IngredientModel.empty(),
+              ),
+            ));
+          },
           tooltip: Local.of(context).t('menu.product.add_integredient'),
         ),
         body: _body(context),
@@ -56,7 +65,9 @@ class ProductScreen extends StatelessWidget {
             ],
           ),
         ),
-        IngredientExpansion(ingredients: product.ingredients),
+        product.ingredients.isEmpty
+            ? EmptyBody('趕緊按右下角的按鈕新增成份吧！')
+            : IngredientExpansion(ingredients: product.ingredients),
       ],
     );
   }
@@ -91,19 +102,24 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _moreActions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          child: Text('變更名稱'),
+  Widget Function(BuildContext) _moreActions(ProductModel product) {
+    return (BuildContext context) {
+      return CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            child: Text('變更產品'),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              CupertinoPageRoute(
+                builder: (_) => ProductModal(product: product),
+              ),
+            ),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('取消'),
           onPressed: () => Navigator.pop(context, 'cancel'),
         ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        child: Text('取消'),
-        isDefaultAction: true,
-        onPressed: () => Navigator.pop(context, 'cancel'),
-      ),
-    );
+      );
+    };
   }
 }

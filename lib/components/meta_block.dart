@@ -20,6 +20,8 @@ class MetaBlock extends StatelessWidget {
         children.add(TextSpan(text: value));
         children.add(MetaBlock.span());
       });
+      // remove last block
+      children.removeLast();
       return RichText(
         overflow: TextOverflow.ellipsis,
         text: TextSpan(

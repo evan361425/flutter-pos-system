@@ -26,10 +26,12 @@ class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
 
   bool _scrollListener(ScrollNotification scrollInfo) {
     if (scrollInfo.metrics.axis == Axis.vertical) {
-      setState(() {
-        _opacity = scrollInfo.metrics.pixels >= 40
-            ? 1
-            : scrollInfo.metrics.pixels / 40;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _opacity = scrollInfo.metrics.pixels >= 40
+              ? 1
+              : scrollInfo.metrics.pixels / 40;
+        });
       });
     }
     // continue bubbleing

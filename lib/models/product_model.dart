@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/text_snack_bar.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';
 
@@ -72,33 +70,57 @@ class ProductModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> setName(String name, BuildContext context) async {
-    return setter<String>(
-      updateData: {
-        '$catalogName.$_name': FieldValue.delete(),
+  Future<void> add(IngredientModel ingredient, BuildContext context) async {
+    if (!ingredient.isReady) throw UnsupportedError('Product is not ready');
+
+    final db = context.read<Database>();
+    await db.update(Collections.menu, {
+      '$catalogName.$name.ingredients.${ingredient.name}': ingredient.toMap(),
+    });
+
+    ingredients[ingredient.name] = ingredient;
+    notifyListeners();
+  }
+
+  Future<void> update(
+    BuildContext context, {
+    String name,
+    num price,
+    num cost,
+  }) async {
+    var updateData = <String, dynamic>{};
+    if (price != _price) updateData['$catalogName.$name.price'] = price;
+    if (cost != _cost) updateData['$catalogName.$name.cost'] = cost;
+    if (name != _name) {
+      updateData = {
         '$catalogName.$name': toMap(),
-      },
-      context: context,
-      cb: (value) => _name = value,
-    );
+        '$catalogName.$_name': FieldValue.delete(),
+      };
+    }
+
+    final db = context.read<Database>();
+    return db.update(Collections.menu, updateData).then((_) {
+      final menu = context.read<MenuModel>();
+
+      _price = price;
+      _cost = cost;
+
+      if (name == _name) {
+        menu[catalogName].changeProduct();
+      } else {
+        menu[catalogName].changeProduct(oldName: _name, newName: name);
+        _name = name;
+      }
+    });
   }
 
-  Future<void> setPrice(num price, BuildContext context) async {
-    return setter<num>(
-      key: 'price',
-      value: price,
-      cb: (value) => _price = value,
-      context: context,
-    );
-  }
+  void changeIngredient({String old, String last}) {
+    if (old != null && last != null && old != last) {
+      ingredients[last] = ingredients[old];
+      ingredients.remove(old);
+    }
 
-  Future<void> setCost(num cost, BuildContext context) async {
-    return setter<num>(
-      key: 'price',
-      value: cost,
-      cb: (value) => _cost = value,
-      context: context,
-    );
+    notifyListeners();
   }
 
   void initial(String name, int index) {
@@ -110,35 +132,7 @@ class ProductModel extends ChangeNotifier {
 
   // HELPER
 
-  Future<void> setter<T>({
-    String key,
-    T value,
-    @required BuildContext context,
-    Function(T value) cb,
-    Map<String, dynamic> updateData,
-  }) async {
-    if (updateData == null) {
-      if (key == null || value == null) throw ArgumentError();
-      updateData = {
-        '$catalogName.$_name.$key': value,
-      };
-    }
-
-    final db = context.read<Database>();
-
-    return db.update(Collections.menu, updateData).then((_) {
-      TextSnackBar.success(context);
-
-      final catalog = context.read<CatalogModel>();
-      catalog.changeProduct();
-
-      if (cb != null) {
-        cb(value);
-      }
-    }).catchError((_) {
-      TextSnackBar.failed(context);
-    });
-  }
+  bool has(String name) => ingredients.containsKey(name);
 
   // GETTER
 

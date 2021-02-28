@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/text_snack_bar.dart';
-import 'package:possystem/models/menu_model.dart';
-import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -78,7 +76,7 @@ class CatalogModel extends ChangeNotifier {
       '$_name.products.${product.name}': product.toMap(),
     });
 
-    _products[name] = product;
+    _products[product.name] = product;
     notifyListeners();
 
     return product;
@@ -91,14 +89,11 @@ class CatalogModel extends ChangeNotifier {
       _name: FieldValue.delete(),
       name: toMap(),
     }).then((_) {
-      TextSnackBar.success(context);
-
       final menu = context.read<MenuModel>();
       menu.changeCatalog(oldName: _name, newName: name);
 
       _name = name;
-    }).catchError((_) {
-      TextSnackBar.failed(context);
+      notifyListeners();
     });
   }
 
@@ -135,6 +130,10 @@ class CatalogModel extends ChangeNotifier {
   bool get isReady => _name != null;
 
   // GETTER
+
+  ProductModel operator [](String name) {
+    return _products[name];
+  }
 
   List<ProductModel> get products {
     final products = _products.values.toList();

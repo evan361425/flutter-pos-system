@@ -3,26 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/models.dart';
+import 'package:provider/provider.dart';
 
-class IngredientModal extends StatefulWidget {
-  IngredientModal({
-    Key key,
-    @required this.ingredient,
-    @required this.product,
-  }) : super(key: key);
+class ProductModal extends StatefulWidget {
+  ProductModal({Key key, @required this.product}) : super(key: key);
 
-  final IngredientModel ingredient;
   final ProductModel product;
 
   @override
-  _IngredientModalState createState() => _IngredientModalState();
+  _ProductModalState createState() => _ProductModalState();
 }
 
-class _IngredientModalState extends State<IngredientModal> {
+class _ProductModalState extends State<ProductModal> {
   final _formKey = GlobalKey<FormState>();
   bool isSaving = false;
   TextEditingController _nameController;
-  TextEditingController _amountController;
+  TextEditingController _priceController;
+  TextEditingController _costController;
+  CatalogModel catalog;
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +53,21 @@ class _IngredientModalState extends State<IngredientModal> {
   Future<void> _onSubmit(String value) async {
     if (_formKey.currentState.validate()) {
       setState(() => isSaving = true);
-      if (widget.ingredient.isReady) {
-        await widget.product.ingredients[widget.ingredient.name].update(
+      if (widget.product.isReady) {
+        await catalog[widget.product.name].update(
           context,
-          widget.product,
           name: _nameController.text,
-          amount: num.parse(_amountController.text),
+          price: num.parse(_priceController.text),
+          cost: num.parse(_costController.text),
         );
       } else {
-        await widget.product.add(
-          IngredientModel(
+        await catalog.add(
+          ProductModel(
             _nameController.text,
-            num.parse(_amountController.text),
+            index: catalog.length,
+            catalogName: catalog.name,
+            price: num.parse(_priceController.text),
+            cost: num.parse(_costController.text),
           ),
           context,
         );
@@ -82,7 +83,9 @@ class _IngredientModalState extends State<IngredientModal> {
         children: [
           _nameField(),
           SizedBox(height: defaultMargin),
-          _amountField(),
+          _priceField(),
+          SizedBox(height: defaultMargin),
+          _costField(),
         ],
       ),
     );
@@ -94,48 +97,70 @@ class _IngredientModalState extends State<IngredientModal> {
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        labelText: '成份名稱，起司',
+        labelText: '產品名稱，起司漢堡',
         filled: false,
         errorStyle: TextStyle(color: colorNegative),
       ),
       maxLength: 30,
       validator: (String value) {
-        final errorMsg = Validator.textLimit('成份名稱', 30)(value);
+        final errorMsg = Validator.textLimit('產品名稱', 30)(value);
         if (errorMsg != null) return errorMsg;
-        if (value != widget.ingredient.name && widget.product.has(value)) {
-          return '成份名稱重複';
-        }
+        if (value != widget.product.name && catalog.has(value)) return '產品名稱重複';
         return null;
       },
     );
   }
 
-  Widget _amountField() {
+  Widget _priceField() {
     return TextFormField(
-      controller: _amountController,
+      controller: _priceController,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText: '成份預設用量',
+        labelText: '產品價格，給客人看的價錢',
         filled: false,
         errorStyle: TextStyle(color: colorNegative),
       ),
-      validator: Validator.positiveDouble('成份預設用量'),
+      validator: Validator.positiveDouble('產品價格'),
+    );
+  }
+
+  Widget _costField() {
+    return TextFormField(
+      controller: _costController,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: '產品成本，幫助你算出利潤',
+        filled: false,
+        errorStyle: TextStyle(color: colorNegative),
+      ),
+      onFieldSubmitted: _onSubmit,
+      validator: Validator.positiveDouble('產品成本'),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.ingredient.name);
-    _amountController =
-        TextEditingController(text: widget.ingredient.defaultAmount.toString());
+    _nameController = TextEditingController(text: widget.product.name);
+    _priceController =
+        TextEditingController(text: widget.product.price.toString());
+    _costController =
+        TextEditingController(text: widget.product.cost.toString());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    catalog = context.read<MenuModel>()[widget.product.catalogName];
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _amountController.dispose();
+    _priceController.dispose();
+    _costController.dispose();
     super.dispose();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/localizations.dart';
 
 class EmptyBody extends StatelessWidget {
   final String text;
@@ -7,35 +6,16 @@ class EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      // background color follow by image
-      color: Color(0xFFFFF9EF),
-      child: Center(
-        // ignore overflow when keyboard open
-        child: OverflowBox(
-          maxHeight: 300,
-          child: _center(context),
-        ),
+    return Container(
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('哎呀！這裡還是空的', style: Theme.of(context).textTheme.headline4),
+          Text(text),
+        ],
       ),
-    );
-  }
-
-  Widget _center(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          'assets/empty_body.png',
-          width: 128,
-          height: 128,
-        ),
-        Text(
-          Local.of(context).t(text),
-          style: Theme.of(context).textTheme.headline5.copyWith(
-                color: Colors.black87,
-              ),
-        ),
-      ],
     );
   }
 }

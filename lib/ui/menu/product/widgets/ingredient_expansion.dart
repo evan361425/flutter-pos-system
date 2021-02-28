@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/models.dart';
 import 'package:possystem/ui/menu/product/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({
@@ -65,7 +67,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     }
 
     // append add bottom
-    body.add(_addButton(ingredient));
+    body.add(_addButtons(ingredient));
 
     return ExpansionPanel(
       canTapOnHeader: true,
@@ -80,24 +82,46 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Container _addButton(IngredientModel ingredient) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: defaultMargin),
-      width: double.infinity,
-      child: RaisedButton.icon(
-        icon: Icon(Icons.add),
-        label: Text('新增特殊份量'),
-        onPressed: () {
-          goToIngredientSetModel(IngredientSet(name: ''), ingredient);
-          ;
-        },
+  Widget _addButtons(IngredientModel ingredient) {
+    return Row(children: [
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: RaisedButton.icon(
+            color: Theme.of(context).secondaryHeaderColor,
+            icon: Icon(Icons.settings_sharp),
+            label: Text('設定成份資料'),
+            onPressed: () {
+              final product = context.read<ProductModel>();
+              Navigator.of(context).push(CupertinoPageRoute(
+                builder: (_) => IngredientModal(
+                  product: product,
+                  ingredient: ingredient,
+                ),
+              ));
+            },
+          ),
+        ),
       ),
-    );
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: RaisedButton.icon(
+            icon: Icon(Icons.add),
+            label: Text('新增特殊份量'),
+            onPressed: () {
+              goToIngredientSetModel(IngredientSet(name: ''), ingredient);
+            },
+          ),
+        ),
+      ),
+    ]);
   }
 
   Widget _ingredientSetMetadata(IngredientSet ingredientSet) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Tooltip(
           message: '額外售價',
@@ -143,10 +167,14 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     IngredientSet ingredientSet,
     IngredientModel ingredient,
   ) {
+    final product = context.read<ProductModel>();
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => IngredientSetModal(ingredientSet),
-        settings: RouteSettings(arguments: ingredient),
+      CupertinoPageRoute(
+        builder: (_) => IngredientSetModal(
+          ingredientSet: ingredientSet,
+          ingredient: ingredient,
+          product: product,
+        ),
       ),
     );
   }

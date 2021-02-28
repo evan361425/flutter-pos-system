@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/label_switch.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:provider/provider.dart';
 
