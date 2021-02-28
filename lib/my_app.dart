@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home_container.dart';
 import 'package:possystem/user_dependencies.dart';
 import 'package:possystem/constants/app_themes.dart';
@@ -8,7 +9,6 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/auth/sign_in_screen.dart';
-// import 'package:possystem/ui/splash/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -76,6 +76,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'POS System',
+      routes: Routes.routes,
       debugShowCheckedModeBanner: false,
       // === language setting ===
       locale: language.initLocale(),

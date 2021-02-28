@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/menu_screen.dart';
 
 class HomeContainer extends StatelessWidget {
   HomeContainer({Key key}) : super(key: key);
@@ -13,7 +13,7 @@ class HomeContainer extends StatelessWidget {
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
-            return CupertinoTabView(routes: MenuRoutes.routes);
+            return MenuScreen();
           default:
             return buildPage(context, index);
             break;

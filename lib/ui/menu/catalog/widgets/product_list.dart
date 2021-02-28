@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products) : super(products);
@@ -22,7 +21,7 @@ class ProductList extends ItemList<ProductModel> {
       onTap: () {
         if (shouldProcess()) {
           Navigator.of(context).pushNamed(
-            MenuRoutes.product,
+            Routes.product,
             arguments: product,
           );
         }

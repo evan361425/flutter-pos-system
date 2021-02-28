@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 
 import 'widgets/menu_body.dart';
 
@@ -27,7 +27,7 @@ class MenuScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).pushNamed(MenuRoutes.catalog),
+        onPressed: () => Navigator.of(context).pushNamed(Routes.catalog),
         tooltip: Local.of(context).t('menu.add_catalog'),
       ),
       // When click android go back, it will avoid closing APP

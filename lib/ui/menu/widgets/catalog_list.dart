@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/item_list.dart';
 import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 
 class CatalogList extends ItemList<CatalogModel> {
   CatalogList(List<CatalogModel> catalogs) : super(catalogs);
@@ -20,7 +20,7 @@ class CatalogList extends ItemList<CatalogModel> {
       onTap: () {
         if (shouldProcess()) {
           Navigator.of(context).pushNamed(
-            MenuRoutes.catalog,
+            Routes.catalog,
             arguments: catalog,
           );
         }

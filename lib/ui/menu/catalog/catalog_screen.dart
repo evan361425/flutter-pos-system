@@ -5,7 +5,7 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/models.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/catalog_body.dart';
@@ -38,7 +38,7 @@ class CatalogScreen extends StatelessWidget {
           child: Icon(Icons.add),
           onPressed: catalog.isReady
               ? () => Navigator.of(context).pushNamed(
-                    MenuRoutes.product,
+                    Routes.product,
                     arguments: ProductModel.empty(catalog.name),
                   )
               : () => Scaffold.of(context).showSnackBar(
