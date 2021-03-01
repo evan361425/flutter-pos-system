@@ -7,148 +7,151 @@ import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
 class CatalogModel extends ChangeNotifier {
-  // catalog's name
-  String _name;
-  // index in menu
-  int _index;
-  // when it has been added to menu
-  final Timestamp _createdAt;
-  // product list
-  final Map<String, ProductModel> _products;
-
-  CatalogModel(
-    this._name, {
-    @required int index,
-    Map<String, ProductModel> products,
+  CatalogModel({
+    @required this.name,
+    this.index = 0,
+    this.products = const {},
     Timestamp createdAt,
-  })  : _index = index,
-        _createdAt = createdAt ?? Timestamp.now(),
-        _products = products ?? {};
+  }) : createdAt = createdAt ?? Timestamp.now();
+
+  // catalog's name
+  String name;
+  // index in menu
+  int index;
+  // when it has been added to menu
+  final Timestamp createdAt;
+  // product list
+  final Map<String, ProductModel> products;
 
   // I/O
 
   factory CatalogModel.fromMap(String name, Map<String, dynamic> data) {
-    if (data == null) {
-      return null;
-    }
-
-    final rawProducts = data['products'];
+    final oriProducts = data['products'];
     final products = <String, ProductModel>{};
 
-    if (rawProducts is Map) {
-      rawProducts.forEach((final key, final product) {
+    if (oriProducts is Map) {
+      oriProducts.forEach((final key, final product) {
         if (key is String && product is Map) {
-          product['catalogName'] = name;
-          products[key] = ProductModel.fromMap(key, product);
+          products[key] = ProductModel.fromMap(
+            catalogName: name,
+            name: key,
+            data: product,
+          );
         }
       });
     }
 
     return CatalogModel(
-      name,
+      name: name,
       index: data['index'],
       createdAt: data['createdAt'],
       products: products,
     );
   }
 
+  factory CatalogModel.fromMenu(MenuModel menu, String name) {
+    return CatalogModel(name: name, index: menu.length);
+  }
+
   factory CatalogModel.empty() {
-    return CatalogModel(null, index: 0);
+    return CatalogModel(name: null);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'index': _index,
-      'createdAt': _createdAt,
-      'products': _products.map(
-        (name, product) => MapEntry(name, product.toMap()),
-      ),
+      'index': index,
+      'createdAt': createdAt,
+      'products': {
+        for (var entry in products.entries) entry.key: entry.value.toMap()
+      },
     };
   }
 
   // STATE CHANGE
 
-  Future<ProductModel> add(ProductModel product, BuildContext context) async {
-    if (!product.isReady) throw UnsupportedError('Product is not ready');
-
+  Future<void> add(BuildContext context, ProductModel product) async {
     final db = context.read<Database>();
     await db.update(Collections.menu, {
-      '$_name.products.${product.name}': product.toMap(),
+      '$name.products.${product.name}': product.toMap(),
     });
 
-    _products[product.name] = product;
+    products[product.name] = product;
     notifyListeners();
-
-    return product;
   }
 
-  Future<void> setName(String name, BuildContext context) {
-    final db = context.read<Database>();
+  Future<void> update(
+    BuildContext context, {
+    String name,
+    int index,
+  }) async {
+    final updateData = getUpdateData(
+      name: name,
+      index: index,
+    );
 
-    return db.update(Collections.menu, {
-      _name: FieldValue.delete(),
-      name: toMap(),
-    }).then((_) {
+    if (updateData.isEmpty) return;
+
+    final db = context.read<Database>();
+    return db.update(Collections.menu, updateData).then((_) {
       final menu = context.read<MenuModel>();
-      menu.changeCatalog(oldName: _name, newName: name);
 
-      _name = name;
-      notifyListeners();
+      if (name == this.name) {
+        menu.changeCatalog();
+      } else {
+        menu.changeCatalog(oldName: this.name, newName: name);
+        this.name = name;
+      }
     });
-  }
-
-  Future<void> setIndex(int index, BuildContext context) async {
-    final db = context.read<Database>();
-
-    return db.update(Collections.menu, {
-      '$_name.index': index,
-    }).then((_) => _index = index);
   }
 
   void changeProduct({String oldName, String newName}) {
     if (oldName != newName) {
-      _products[newName] = _products[oldName];
-      _products.remove(oldName);
+      products[newName] = products[oldName];
+      products.remove(oldName);
     }
 
     notifyListeners();
   }
 
-  void initial(String name, int index) {
-    if (_name != null) throw UnsupportedError('Catalog has initialized');
-    _name = name;
-    _index = index;
-    notifyListeners();
-  }
-
   // HELPER
 
-  bool has(String key) {
-    return _products.containsKey(key);
-  }
+  bool has(String key) => products.containsKey(key);
 
-  bool get isReady => _name != null;
+  Map<String, dynamic> getUpdateData({
+    String name,
+    int index,
+  }) {
+    final updateData = <String, dynamic>{};
+    if (index != this.index) {
+      this.index = index;
+      updateData['${this.name}.index'] = index;
+    }
+    if (name != this.name) {
+      updateData.clear();
+      updateData[this.name] = FieldValue.delete();
+      updateData[name] = toMap();
+    }
+    return updateData;
+  }
 
   // GETTER
 
   ProductModel operator [](String name) {
-    return _products[name];
+    return products[name];
   }
 
-  List<ProductModel> get products {
-    final products = _products.values.toList();
-    products.sort((a, b) => a.index.compareTo(b.index));
-    return products;
+  List<ProductModel> get productList {
+    final productList = products.values.toList();
+    productList.sort((a, b) => a.index.compareTo(b.index));
+    return productList;
   }
 
-  int get index => _index;
+  bool get isReady => name != null;
 
-  String get name => _name ?? '';
+  int get length => products.length;
 
-  int get length => _products.length;
-
-  String get createdAt {
-    final date = _createdAt.toDate();
+  String get createdDate {
+    final date = createdAt.toDate();
     return sprintf('%04d-%02d-%02d', [date.year, date.month, date.day]);
   }
 }

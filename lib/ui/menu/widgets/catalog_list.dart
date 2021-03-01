@@ -20,7 +20,7 @@ class CatalogList extends ItemList<CatalogModel> {
       ),
       title: Text(catalog.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(
-        catalog.products.map((product) => product.name),
+        catalog.productList.map((product) => product.name),
         context,
       ),
       onTap: () {

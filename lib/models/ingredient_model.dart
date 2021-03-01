@@ -5,139 +5,202 @@ import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';
 
 class IngredientModel {
-  IngredientModel(
-    this.name,
-    this.defaultAmount, {
+  IngredientModel({
+    @required this.name,
+    @required this.product,
+    this.defaultAmount = 0,
     this.additionalSets = const {},
   });
 
   String name;
   num defaultAmount;
-  Map<String, IngredientSet> additionalSets;
+  final ProductModel product;
+  final Map<String, IngredientSet> additionalSets;
 
-  factory IngredientModel.fromMap(String name, Map<String, dynamic> data) {
-    final additionalSets = data['additionalSets'];
-    final actualAdditionalSets = <String, IngredientSet>{};
+  factory IngredientModel.fromMap({
+    ProductModel product,
+    String name,
+    Map<String, dynamic> data,
+  }) {
+    final oriAdditionalSets = data['additionalSets'];
+    final additionalSets = <String, IngredientSet>{};
 
-    if (additionalSets is Map) {
-      additionalSets.forEach((key, additionalSet) {
+    if (oriAdditionalSets is Map) {
+      oriAdditionalSets.forEach((key, additionalSet) {
         if (additionalSet is Map) {
-          actualAdditionalSets[key] = IngredientSet.fromMap(key, additionalSet);
+          additionalSets[key] = IngredientSet.fromMap(key, additionalSet);
         }
       });
     }
 
     return IngredientModel(
-      name,
-      data['defaultAmount'],
-      additionalSets: actualAdditionalSets,
+      name: name,
+      product: product,
+      defaultAmount: data['defaultAmount'],
+      additionalSets: additionalSets,
     );
   }
 
-  static IngredientModel empty() {
-    return IngredientModel(null, 0);
+  factory IngredientModel.empty(ProductModel product) {
+    return IngredientModel(name: null, product: product);
   }
 
   Map<String, dynamic> toMap() {
-    final additionalSetsMap = <String, Map<String, num>>{};
-
-    additionalSets.forEach((key, additionalSet) {
-      additionalSetsMap[key] = additionalSet.toMap();
-    });
-
     return {
       'defaultAmount': defaultAmount,
-      'additionalSets': additionalSetsMap,
+      'additionalSets': {
+        for (var entry in additionalSets.entries) entry.key: entry.value.toMap()
+      },
     };
   }
 
-  Future<void> addSet(IngredientSet newSet) async {
-    additionalSets[newSet.name] = newSet;
-  }
+  // STATE CHANGE
 
-  Future<void> replaceSet(IngredientSet oldSet, IngredientSet newSet) async {
-    additionalSets.remove(oldSet.name);
+  Future<void> add(BuildContext context, IngredientSet newSet) async {
+    final db = context.read<Database>();
+    await db.update(Collections.menu, {
+      '$prefix.additionalSets.${newSet.name}': newSet.toMap(),
+    });
+
     additionalSets[newSet.name] = newSet;
   }
 
   Future<void> update(
-    BuildContext context,
-    ProductModel product, {
+    BuildContext context, {
     String name,
-    num amount,
+    num defaultAmount,
   }) async {
-    final prefix = '${product.catalogName}.${product.name}.ingredients.';
-    var updateData = <String, dynamic>{};
-    if (defaultAmount != amount) {
-      updateData['$prefix${this.name}.defaultAmount'] = amount;
-    }
-    if (name != this.name) {
-      updateData = {
-        '$prefix$name': toMap(),
-        '$prefix${this.name}': FieldValue.delete(),
-      };
-    }
+    final updateData = getUpdateData(
+      name: name,
+      defaultAmount: defaultAmount,
+    );
 
     final db = context.read<Database>();
     return db.update(Collections.menu, updateData).then((_) {
-      defaultAmount = amount;
-
       if (name == this.name) {
         product.changeIngredient();
       } else {
-        product.changeIngredient(old: this.name, last: name);
+        product.changeIngredient(oldName: this.name, newName: name);
         this.name = name;
       }
     });
   }
 
+  void changeSet({String oldName, String newName}) {
+    if (oldName != null && oldName != newName) {
+      additionalSets[newName] = additionalSets[oldName];
+      additionalSets.remove(oldName);
+    }
+  }
+
+  // HELPER
+
+  Map<String, dynamic> getUpdateData({
+    String name,
+    num defaultAmount,
+  }) {
+    final updateData = <String, dynamic>{};
+    if (defaultAmount != this.defaultAmount) {
+      this.defaultAmount = defaultAmount;
+      updateData['$prefix.defaultAmount'] = defaultAmount;
+    }
+    if (name != this.name) {
+      updateData.clear();
+      updateData[prefix] = FieldValue.delete();
+      updateData['${product.prefix}.ingredients.$name'] = toMap();
+    }
+    return updateData;
+  }
+
+  // GETTER
+
   bool get isReady => name != null;
+  bool get isNotReady => name == null;
+  String get prefix => '${product.prefix}.ingredients.$name';
 }
 
 class IngredientSet {
   IngredientSet({
     @required this.name,
-    this.ammount = 0,
+    this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
   });
 
   String name;
-  num ammount;
+  num amount;
   num additionalCost;
   num additionalPrice;
 
   factory IngredientSet.fromMap(
     String name,
-    Map<String, dynamic> map,
+    Map<String, dynamic> data,
   ) {
     return IngredientSet(
       name: name,
-      ammount: map['ammount'],
-      additionalCost: map['additionalCost'],
-      additionalPrice: map['additionalPrice'],
+      amount: data['amount'],
+      additionalCost: data['additionalCost'],
+      additionalPrice: data['additionalPrice'],
     );
   }
 
   Map<String, num> toMap() {
     return {
-      'ammount': ammount,
+      'amount': amount,
       'additionalCost': additionalCost,
       'additionalPrice': additionalPrice,
     };
   }
 
-  Future<void> update(IngredientSet newSet) async {
-    if (newSet.name != name) {
-      throw ArgumentError(
-        'you should not change name, try replaceSet in IngredientModel',
-      );
-    }
+  // STATE CHANGE
 
-    ammount = newSet.ammount;
-    additionalCost = newSet.additionalCost;
-    additionalPrice = newSet.additionalPrice;
+  Future<void> update(
+    BuildContext context,
+    IngredientSet newSet,
+    IngredientModel ingredient,
+  ) async {
+    final updateData = getUpdateData(ingredient, newSet);
+
+    final db = context.read<Database>();
+    return db.update(Collections.menu, updateData).then((_) {
+      if (name == newSet.name) {
+        ingredient.changeSet();
+      } else {
+        ingredient.changeSet(oldName: name, newName: newSet.name);
+        name = newSet.name;
+      }
+    });
   }
+
+  // HELPER
+
+  Map<String, dynamic> getUpdateData(
+    IngredientModel ingredient,
+    IngredientSet newSet,
+  ) {
+    final updateData = <String, dynamic>{};
+    final prefix = '${ingredient.prefix}.additionalSets';
+    if (amount != newSet.amount) {
+      amount = newSet.amount;
+      updateData['$prefix.$name.amount'] = amount;
+    }
+    if (additionalCost != newSet.additionalCost) {
+      additionalCost = newSet.additionalCost;
+      updateData['$prefix.$name.additionalCost'] = additionalCost;
+    }
+    if (additionalPrice != newSet.additionalPrice) {
+      additionalPrice = newSet.additionalPrice;
+      updateData['$prefix.$name.additionalPrice'] = additionalPrice;
+    }
+    if (name != newSet.name) {
+      updateData.clear();
+      updateData['$prefix.$name'] = FieldValue.delete();
+      updateData['$prefix.${newSet.name}'] = toMap();
+    }
+    return updateData;
+  }
+
+  // GETTER
 
   bool get isNotReady => name.isEmpty;
 }

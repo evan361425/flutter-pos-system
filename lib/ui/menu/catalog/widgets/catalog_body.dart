@@ -14,7 +14,6 @@ class CatalogBody extends StatelessWidget {
     }
 
     // get sorted products
-    final products = catalog.products;
-    return ProductList(products);
+    return ProductList(catalog.productList);
   }
 }

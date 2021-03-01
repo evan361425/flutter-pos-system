@@ -12,18 +12,17 @@ class MenuBody extends StatelessWidget {
     // context.read<T>() === Provider.of<T>(context, listen: false)
     final menu = context.watch<MenuModel>();
 
-    if (!menu.isReady()) {
+    if (menu.isNotReady) {
       return Center(child: CircularProgressIndicator());
     } else if (menu.length == 0) {
       return EmptyBody('menu.empty');
     } else {
-      // get sorted catalogs
-      final catalogs = menu.catalogs;
       return SingleChildScrollView(
         child: Column(
           children: <Widget>[
             MenuSearchBar(),
-            CatalogList(catalogs),
+            // get sorted catalogs
+            CatalogList(menu.catalogList),
           ],
         ),
       );

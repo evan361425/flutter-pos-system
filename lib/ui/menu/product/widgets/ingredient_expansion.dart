@@ -4,8 +4,10 @@ import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/models.dart';
-import 'package:possystem/ui/menu/product/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+
+import 'ingredient_modal.dart';
+import 'ingredient_set_modal.dart';
 
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({
@@ -56,7 +58,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           goToIngredientSetModel(ingredientSet, ingredient);
         },
         title: Text(ingredientSet.name),
-        trailing: Text('${ingredientSet.ammount}'),
+        trailing: Text('${ingredientSet.amount}'),
         subtitle: _ingredientSetMetadata(ingredientSet),
       );
     }).toList();
@@ -92,12 +94,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.settings_sharp),
             label: Text('設定成份資料'),
             onPressed: () {
-              final product = context.read<ProductModel>();
               Navigator.of(context).push(CupertinoPageRoute(
-                builder: (_) => IngredientModal(
-                  product: product,
-                  ingredient: ingredient,
-                ),
+                builder: (_) => IngredientModal(ingredient: ingredient),
               ));
             },
           ),

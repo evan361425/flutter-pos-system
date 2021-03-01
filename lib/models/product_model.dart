@@ -6,76 +6,94 @@ import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';
 
 class ProductModel extends ChangeNotifier {
-  String _name;
-  int _index;
-  num _price;
-  num _cost;
+  ProductModel({
+    @required this.name,
+    @required this.catalogName,
+    this.index = 0,
+    this.price = 0,
+    this.cost = 0,
+    this.ingredients = const {},
+    Timestamp createdAt,
+  }) : createdAt = createdAt ?? Timestamp.now();
+
+  String name;
+  int index;
+  num price;
+  num cost;
   final Map<String, IngredientModel> ingredients;
   final String catalogName;
-  final Timestamp _createdAt;
-
-  ProductModel(
-    this._name, {
-    @required int index,
-    @required this.catalogName,
-    num price = 0,
-    num cost = 0,
-    Timestamp createdAt,
-    this.ingredients = const {},
-  })  : _index = index,
-        _price = price,
-        _cost = cost,
-        _createdAt = createdAt ?? Timestamp.now();
+  final Timestamp createdAt;
 
   // I/O
 
-  factory ProductModel.fromMap(String name, Map<String, dynamic> data) {
+  factory ProductModel.fromMap({
+    String catalogName,
+    String name,
+    Map<String, dynamic> data,
+  }) {
     if (data == null) {
-      return null;
+      return ProductModel.empty(data['catalogName']);
     }
 
-    final ingredients = data['ingredients'];
-    final actualIngredients = <String, IngredientModel>{};
+    final product = ProductModel(
+      name: name,
+      index: data['index'],
+      price: data['price'],
+      catalogName: catalogName,
+      createdAt: data['createdAt'],
+    );
 
-    if (ingredients is Map) {
-      ingredients.forEach((key, ingredient) {
+    final oriIngredients = data['ingredients'];
+    final ingredients = <String, IngredientModel>{};
+
+    if (oriIngredients is Map) {
+      oriIngredients.forEach((final key, final ingredient) {
         if (ingredient is Map) {
-          actualIngredients[key] = IngredientModel.fromMap(key, ingredient);
+          ingredients[key] = IngredientModel.fromMap(
+            product: product,
+            name: key,
+            data: ingredient,
+          );
         }
       });
     }
 
+    return product;
+  }
+
+  factory ProductModel.fromCatalog(String name, CatalogModel catalog) {
     return ProductModel(
-      name,
-      index: data['index'],
-      price: data['price'],
-      catalogName: data['catalogName'],
-      createdAt: data['createdAt'],
-      ingredients: actualIngredients,
+      name: name,
+      index: catalog.length,
+      catalogName: catalog.name,
     );
   }
 
   factory ProductModel.empty(String catalogName) {
-    return ProductModel(null, index: 0, catalogName: catalogName);
+    return ProductModel(
+      name: null,
+      catalogName: catalogName,
+    );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'index': _index,
+      'index': index,
       'catalogName': catalogName,
-      'price': _price,
-      'createdAt': _createdAt,
+      'price': price,
+      'createdAt': createdAt,
+      'ingredients': {
+        for (var entry in ingredients.entries) entry.key: entry.value.toMap()
+      }
     };
   }
 
   // STATE CHANGE
 
-  Future<void> add(IngredientModel ingredient, BuildContext context) async {
-    if (!ingredient.isReady) throw UnsupportedError('Product is not ready');
-
+  Future<void> add(BuildContext context, IngredientModel ingredient) async {
     final db = context.read<Database>();
     await db.update(Collections.menu, {
-      '$catalogName.$name.ingredients.${ingredient.name}': ingredient.toMap(),
+      '$prefix.ingredients.${ingredient.name}': ingredient.toMap(),
     });
 
     ingredients[ingredient.name] = ingredient;
@@ -85,48 +103,38 @@ class ProductModel extends ChangeNotifier {
   Future<void> update(
     BuildContext context, {
     String name,
+    int index,
     num price,
     num cost,
   }) async {
-    var updateData = <String, dynamic>{};
-    if (price != _price) updateData['$catalogName.$name.price'] = price;
-    if (cost != _cost) updateData['$catalogName.$name.cost'] = cost;
-    if (name != _name) {
-      updateData = {
-        '$catalogName.$name': toMap(),
-        '$catalogName.$_name': FieldValue.delete(),
-      };
-    }
+    final updateData = getUpdateData(
+      name: name,
+      index: index,
+      price: price,
+      cost: cost,
+    );
+
+    if (updateData.isEmpty) return;
 
     final db = context.read<Database>();
     return db.update(Collections.menu, updateData).then((_) {
       final menu = context.read<MenuModel>();
 
-      _price = price;
-      _cost = cost;
-
-      if (name == _name) {
+      if (name == this.name) {
         menu[catalogName].changeProduct();
       } else {
-        menu[catalogName].changeProduct(oldName: _name, newName: name);
-        _name = name;
+        menu[catalogName].changeProduct(oldName: this.name, newName: name);
+        this.name = name;
       }
     });
   }
 
-  void changeIngredient({String old, String last}) {
-    if (old != null && last != null && old != last) {
-      ingredients[last] = ingredients[old];
-      ingredients.remove(old);
+  void changeIngredient({String oldName, String newName}) {
+    if (oldName != null && oldName != newName) {
+      ingredients[newName] = ingredients[oldName];
+      ingredients.remove(oldName);
     }
 
-    notifyListeners();
-  }
-
-  void initial(String name, int index) {
-    if (_name != null) throw UnsupportedError('Product has initialized');
-    _name = name;
-    _index = index;
     notifyListeners();
   }
 
@@ -134,12 +142,36 @@ class ProductModel extends ChangeNotifier {
 
   bool has(String name) => ingredients.containsKey(name);
 
+  Map<String, dynamic> getUpdateData({
+    String name,
+    int index,
+    num price,
+    num cost,
+  }) {
+    final updateData = <String, dynamic>{};
+    if (index != this.index) {
+      this.index = index;
+      updateData['$prefix.index'] = index;
+    }
+    if (price != this.price) {
+      this.price = price;
+      updateData['$prefix.price'] = price;
+    }
+    if (cost != this.cost) {
+      this.cost = cost;
+      updateData['$prefix.cost'] = cost;
+    }
+    if (name != this.name) {
+      updateData.clear();
+      updateData[prefix] = FieldValue.delete();
+      updateData['$catalogName.products.$name'] = toMap();
+    }
+    return updateData;
+  }
+
   // GETTER
 
-  bool get isReady => _name != null;
+  bool get isReady => name != null;
 
-  String get name => _name ?? '';
-  int get index => _index;
-  num get price => _price;
-  num get cost => _cost;
+  String get prefix => '$catalogName.products.$name';
 }

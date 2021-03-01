@@ -35,11 +35,9 @@ class IngredientSetModal extends StatelessWidget {
             if (newSet == null) return;
 
             if (ingredientSet.isNotReady) {
-              await ingredient.addSet(newSet);
-            } else if (newSet.name != ingredientSet.name) {
-              await ingredient.replaceSet(ingredientSet, newSet);
+              await ingredient.add(context, newSet);
             } else {
-              await ingredientSet.update(newSet);
+              await ingredientSet.update(context, newSet, ingredient);
             }
 
             product.changeIngredient();
@@ -142,7 +140,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
 
     return IngredientSet(
       name: _nameController.text,
-      ammount: num.parse(_ammountController.text),
+      amount: num.parse(_ammountController.text),
       additionalPrice: num.parse(_additionalPriceController.text),
       additionalCost: num.parse(_additionalCostController.text),
     );
@@ -153,7 +151,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
     super.initState();
     _nameController = TextEditingController(text: widget.iSet.name);
     _ammountController = TextEditingController(
-      text: widget.iSet.ammount.toString(),
+      text: widget.iSet.amount.toString(),
     );
     _additionalPriceController = TextEditingController(
       text: widget.iSet.additionalPrice.toString(),

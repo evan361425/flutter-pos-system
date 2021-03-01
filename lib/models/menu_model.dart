@@ -1,101 +1,84 @@
 import 'package:flutter/widgets.dart';
-import 'package:logger/logger.dart';
-import 'package:possystem/models/catalog_model.dart';
+import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';
 
 class MenuModel extends ChangeNotifier {
-  Map<String, CatalogModel> _catalogs;
-
   MenuModel(BuildContext context) {
     loadFromDb(context);
   }
 
+  Map<String, CatalogModel> catalogs;
+
   // I/O
 
-  void loadFromDb(BuildContext context) async {
+  Future<void> loadFromDb(BuildContext context) async {
     var db = context.read<Database>();
     var snapshot = await db.get(Collections.menu);
     // TODO: handle exception
-    _catalogs = buildFromMap(snapshot.data());
+    buildFromMap(snapshot.data());
 
     notifyListeners();
   }
 
-  Map<String, CatalogModel> buildFromMap(Map<String, dynamic> data) {
+  void buildFromMap(Map<String, dynamic> data) {
     if (data == null) {
       return null;
     }
 
-    try {
-      var catalogs = data.map((key, value) {
-        if (value is Map) {
-          return MapEntry(key, CatalogModel.fromMap(key, value));
-        } else {
-          throw TypeError();
-        }
-      });
-
-      return catalogs;
-    } catch (err) {
-      Logger().e(err);
-      // TODO: error handler
-      return null;
-    }
+    data.forEach((key, value) {
+      if (value is Map) {
+        catalogs[key] = CatalogModel.fromMap(key, value);
+      }
+    });
   }
 
-  Map<String, dynamic> toMap() {
-    return _catalogs.map((key, CatalogModel catalog) {
-      return MapEntry(key, catalog.toMap());
-    });
+  Map<String, Map<String, dynamic>> toMap() {
+    return {for (var entry in catalogs.entries) entry.key: entry.value.toMap()};
   }
 
   // STATE CHANGER
 
-  Future<void> add(CatalogModel catalog, BuildContext context) async {
-    if (!catalog.isReady) throw UnsupportedError('Catalog is not ready');
-
+  Future<void> add(BuildContext context, CatalogModel catalog) async {
     final db = context.read<Database>();
     await db.update(Collections.menu, {
       catalog.name: catalog.toMap(),
     });
 
-    _catalogs[catalog.name] = catalog;
+    catalogs[catalog.name] = catalog;
     notifyListeners();
-
-    return catalog;
-  }
-
-  // HELPER
-
-  bool isReady() => _catalogs != null;
-
-  bool has(String key) {
-    return _catalogs.containsKey(key);
   }
 
   // SETTER
 
   Future<void> changeCatalog({String oldName, String newName}) async {
     if (oldName != newName) {
-      _catalogs[newName] = _catalogs[oldName];
-      _catalogs.remove(oldName);
+      catalogs[newName] = catalogs[oldName];
+      catalogs.remove(oldName);
     }
 
     notifyListeners();
   }
 
+  // HELPER
+
+  bool has(String key) {
+    return catalogs.containsKey(key);
+  }
+
   // GETTER
 
   CatalogModel operator [](String name) {
-    return _catalogs[name];
+    return catalogs[name];
   }
 
-  List<CatalogModel> get catalogs {
-    final catalogs = _catalogs.values.toList();
-    catalogs.sort((a, b) => a.index.compareTo(b.index));
-    return catalogs;
+  List<CatalogModel> get catalogList {
+    final catalogList = catalogs.values.toList();
+    catalogList.sort((a, b) => a.index.compareTo(b.index));
+    return catalogList;
   }
 
-  int get length => _catalogs.length;
+  bool get isNotReady => catalogs == null;
+
+  int get length => catalogs.length;
 }

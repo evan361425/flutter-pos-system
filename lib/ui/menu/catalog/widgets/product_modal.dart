@@ -62,14 +62,14 @@ class _ProductModalState extends State<ProductModal> {
         );
       } else {
         await catalog.add(
+          context,
           ProductModel(
-            _nameController.text,
-            index: catalog.length,
+            name: _nameController.text,
             catalogName: catalog.name,
+            index: catalog.length,
             price: num.parse(_priceController.text),
             cost: num.parse(_costController.text),
           ),
-          context,
         );
       }
       Navigator.of(context).pop();

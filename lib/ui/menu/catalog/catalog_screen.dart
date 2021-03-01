@@ -5,7 +5,6 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/models.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 import 'package:possystem/ui/menu/widgets/catalog_name_modal.dart';
 import 'package:provider/provider.dart';
@@ -95,7 +94,7 @@ class CatalogScreen extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           MetaBlock.span(),
-          TextSpan(text: catalog.createdAt),
+          TextSpan(text: catalog.createdDate),
         ],
         style: Theme.of(context).textTheme.bodyText1,
       ),

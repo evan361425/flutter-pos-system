@@ -8,11 +8,9 @@ class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
     @required this.ingredient,
-    @required this.product,
   }) : super(key: key);
 
   final IngredientModel ingredient;
-  final ProductModel product;
 
   @override
   _IngredientModalState createState() => _IngredientModalState();
@@ -56,19 +54,19 @@ class _IngredientModalState extends State<IngredientModal> {
     if (_formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.ingredient.isReady) {
-        await widget.product.ingredients[widget.ingredient.name].update(
+        await widget.ingredient.update(
           context,
-          widget.product,
           name: _nameController.text,
-          amount: num.parse(_amountController.text),
+          defaultAmount: num.parse(_amountController.text),
         );
       } else {
-        await widget.product.add(
-          IngredientModel(
-            _nameController.text,
-            num.parse(_amountController.text),
-          ),
+        await widget.ingredient.product.add(
           context,
+          IngredientModel(
+            name: _nameController.text,
+            defaultAmount: num.parse(_amountController.text),
+            product: widget.ingredient.product,
+          ),
         );
       }
       Navigator.of(context).pop();
@@ -102,7 +100,8 @@ class _IngredientModalState extends State<IngredientModal> {
       validator: (String value) {
         final errorMsg = Validator.textLimit('成份名稱', 30)(value);
         if (errorMsg != null) return errorMsg;
-        if (value != widget.ingredient.name && widget.product.has(value)) {
+        if (value != widget.ingredient.name &&
+            widget.ingredient.product.has(value)) {
           return '成份名稱重複';
         }
         return null;

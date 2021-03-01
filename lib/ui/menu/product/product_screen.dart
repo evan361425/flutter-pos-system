@@ -8,8 +8,10 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/models.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
-import 'package:possystem/ui/menu/product/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/ingredient_expansion.dart';
+import 'widgets/ingredient_modal.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -38,8 +40,7 @@ class ProductScreen extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(CupertinoPageRoute(
               builder: (_) => IngredientModal(
-                product: product,
-                ingredient: IngredientModel.empty(),
+                ingredient: IngredientModel.empty(product),
               ),
             ));
           },

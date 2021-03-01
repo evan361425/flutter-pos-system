@@ -54,9 +54,9 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
     if (_formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.oldName.isEmpty) {
-        await menu.add(CatalogModel(value, index: menu.length), context);
+        await menu.add(context, CatalogModel.fromMenu(menu, value));
       } else {
-        await menu[widget.oldName].setName(value, context);
+        await menu[widget.oldName].update(context, name: value);
       }
       Navigator.of(context).pop();
     }
