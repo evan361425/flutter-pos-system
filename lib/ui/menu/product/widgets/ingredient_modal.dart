@@ -112,13 +112,14 @@ class _IngredientModalState extends State<IngredientModal> {
   Widget _amountField() {
     return TextFormField(
       controller: _amountController,
-      textInputAction: TextInputAction.next,
+      textInputAction: TextInputAction.send,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: '成份預設用量',
         filled: false,
         errorStyle: TextStyle(color: kNegativeColor),
       ),
+      onFieldSubmitted: _onSubmit,
       validator: Validator.positiveDouble('成份預設用量'),
     );
   }

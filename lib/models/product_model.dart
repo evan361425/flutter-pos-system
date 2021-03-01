@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 class ProductModel extends ChangeNotifier {
   ProductModel({
     @required this.name,
-    @required this.catalogName,
+    @required this.catalog,
     this.index = 0,
     this.price = 0,
     this.cost = 0,
@@ -22,13 +22,13 @@ class ProductModel extends ChangeNotifier {
   num price;
   num cost;
   final Map<String, IngredientModel> ingredients;
-  final String catalogName;
+  final CatalogModel catalog;
   final Timestamp createdAt;
 
   // I/O
 
   factory ProductModel.fromMap({
-    String catalogName,
+    CatalogModel catalog,
     String name,
     Map<String, dynamic> data,
   }) {
@@ -36,16 +36,16 @@ class ProductModel extends ChangeNotifier {
       return ProductModel.empty(data['catalogName']);
     }
 
-    final product = ProductModel(
-      name: name,
-      index: data['index'],
-      price: data['price'],
-      catalogName: catalogName,
-      createdAt: data['createdAt'],
-    );
-
     final oriIngredients = data['ingredients'];
     final ingredients = <String, IngredientModel>{};
+    final product = ProductModel(
+      name: name,
+      catalog: catalog,
+      index: data['index'],
+      price: data['price'],
+      createdAt: data['createdAt'],
+      ingredients: ingredients,
+    );
 
     if (oriIngredients is Map) {
       oriIngredients.forEach((final key, final ingredient) {
@@ -66,21 +66,20 @@ class ProductModel extends ChangeNotifier {
     return ProductModel(
       name: name,
       index: catalog.length,
-      catalogName: catalog.name,
+      catalog: catalog,
     );
   }
 
-  factory ProductModel.empty(String catalogName) {
+  factory ProductModel.empty(CatalogModel catalog) {
     return ProductModel(
       name: null,
-      catalogName: catalogName,
+      catalog: catalog,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'index': index,
-      'catalogName': catalogName,
       'price': price,
       'createdAt': createdAt,
       'ingredients': {
@@ -122,9 +121,9 @@ class ProductModel extends ChangeNotifier {
       final menu = context.read<MenuModel>();
 
       if (name == this.name) {
-        menu[catalogName].changeProduct();
+        catalog.changeProduct();
       } else {
-        menu[catalogName].changeProduct(oldName: this.name, newName: name);
+        catalog.changeProduct(oldName: this.name, newName: name);
         this.name = name;
       }
     });
@@ -137,6 +136,7 @@ class ProductModel extends ChangeNotifier {
     }
 
     notifyListeners();
+    catalog.changeProduct();
   }
 
   // HELPER
@@ -165,7 +165,7 @@ class ProductModel extends ChangeNotifier {
     if (name != this.name) {
       updateData.clear();
       updateData[prefix] = FieldValue.delete();
-      updateData['$catalogName.products.$name'] = toMap();
+      updateData['${catalog.name}.products.$name'] = toMap();
     }
     return updateData;
   }
@@ -174,5 +174,5 @@ class ProductModel extends ChangeNotifier {
 
   bool get isReady => name != null;
 
-  String get prefix => '$catalogName.products.$name';
+  String get prefix => '${catalog.name}.products.$name';
 }

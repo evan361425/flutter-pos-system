@@ -30,11 +30,18 @@ class CatalogModel extends ChangeNotifier {
     final oriProducts = data['products'];
     final products = <String, ProductModel>{};
 
+    final catalog = CatalogModel(
+      name: name,
+      index: data['index'],
+      createdAt: data['createdAt'],
+      products: products,
+    );
+
     if (oriProducts is Map) {
       oriProducts.forEach((final key, final product) {
         if (key is String && product is Map) {
           products[key] = ProductModel.fromMap(
-            catalogName: name,
+            catalog: catalog,
             name: key,
             data: product,
           );
@@ -42,12 +49,7 @@ class CatalogModel extends ChangeNotifier {
       });
     }
 
-    return CatalogModel(
-      name: name,
-      index: data['index'],
-      createdAt: data['createdAt'],
-      products: products,
-    );
+    return catalog;
   }
 
   factory CatalogModel.empty() {

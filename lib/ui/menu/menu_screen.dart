@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
+import 'package:possystem/models/models.dart';
 import 'package:possystem/ui/menu/widgets/catalog_name_modal.dart';
+import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/menu_body.dart';
 
@@ -12,11 +15,12 @@ class MenuScreen extends StatelessWidget {
       navigationBar: CupertinoNavigationBar(
         middle: Text('主頁'),
         trailing: CupertinoButton(
-          onPressed: () {
-            print('go order');
-          },
-          child: Icon(Icons.shopping_bag_sharp),
           padding: EdgeInsets.zero,
+          child: Icon(Icons.more_horiz_sharp),
+          onPressed: () => showCupertinoModalPopup(
+            context: context,
+            builder: _moreActions,
+          ),
         ),
       ),
       child: SafeArea(child: _body(context)),
@@ -36,6 +40,28 @@ class MenuScreen extends StatelessWidget {
       body: WillPopScope(
         onWillPop: () async => false,
         child: MenuBody(),
+      ),
+    );
+  }
+
+  Widget _moreActions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: Text('排序產品種類'),
+          onPressed: () => Navigator.of(context).pushReplacement(
+            CupertinoPageRoute(
+              builder: (BuildContext context) {
+                final items = context.watch<MenuModel>().catalogList;
+                return CatalogOrderableList(items: items);
+              },
+            ),
+          ),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('取消'),
+        onPressed: () => Navigator.pop(context, 'cancel'),
       ),
     );
   }

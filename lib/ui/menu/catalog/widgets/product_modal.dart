@@ -4,7 +4,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/models.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class ProductModal extends StatefulWidget {
   ProductModal({Key key, @required this.product}) : super(key: key);
@@ -21,7 +20,6 @@ class _ProductModalState extends State<ProductModal> {
   TextEditingController _nameController;
   TextEditingController _priceController;
   TextEditingController _costController;
-  CatalogModel catalog;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class _ProductModalState extends State<ProductModal> {
     if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.product.isReady) {
-        await catalog[widget.product.name].update(
+        await widget.product.update(
           context,
           name: _nameController.text,
           price: num.parse(_priceController.text),
@@ -65,12 +63,12 @@ class _ProductModalState extends State<ProductModal> {
       } else {
         final product = ProductModel(
           name: _nameController.text,
-          catalogName: catalog.name,
-          index: catalog.length,
+          catalog: widget.product.catalog,
+          index: widget.product.catalog.length,
           price: num.parse(_priceController.text),
           cost: num.parse(_costController.text),
         );
-        await catalog.add(context, product);
+        await widget.product.catalog.add(context, product);
         await Navigator.of(context)
             .popAndPushNamed(Routes.product, arguments: product);
       }
@@ -106,7 +104,9 @@ class _ProductModalState extends State<ProductModal> {
       validator: (String value) {
         final errorMsg = Validator.textLimit('產品名稱', 30)(value);
         if (errorMsg != null) return errorMsg;
-        if (value != widget.product.name && catalog.has(value)) return '產品名稱重複';
+        if (value != widget.product.name && widget.product.catalog.has(value)) {
+          return '產品名稱重複';
+        }
         return null;
       },
     );
@@ -149,12 +149,6 @@ class _ProductModalState extends State<ProductModal> {
         TextEditingController(text: widget.product.price.toString());
     _costController =
         TextEditingController(text: widget.product.cost.toString());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    catalog = context.read<MenuModel>()[widget.product.catalogName];
   }
 
   @override

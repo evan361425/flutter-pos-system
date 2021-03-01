@@ -12,11 +12,10 @@ import 'ingredient_set_modal.dart';
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({
     Key key,
-    @required Map<String, IngredientModel> ingredients,
-  })  : ingredients = ingredients.values.toList(),
-        super(key: key);
+    @required this.product,
+  }) : super(key: key);
 
-  final List<IngredientModel> ingredients;
+  final ProductModel product;
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
@@ -24,18 +23,22 @@ class IngredientExpansion extends StatefulWidget {
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
   List<bool> showIngredient;
+  List<IngredientModel> ingredients;
 
   @override
-  void initState() {
-    showIngredient = List.filled(widget.ingredients.length, false);
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ingredients = widget.product.ingredients.values.toList();
+    showIngredient = List.filled(ingredients.length, false);
+    print(ingredients);
   }
 
   @override
   Widget build(BuildContext context) {
+    print('start build');
     return Container(
       child: ExpansionPanelList(
-        children: widget.ingredients
+        children: ingredients
             .asMap()
             .map((index, ingredient) {
               return MapEntry(index, _panelBuilder(index, ingredient));

@@ -37,6 +37,8 @@ dependencies:
   flutter_slidable: ^0.5.7
   modal_bottom_sheet: ^1.0.0+1
 
+  flutter_reorderable_list: ^0.1.5
+
   shared_preferences: ^0.5.12+4
   # for l18n
   yaml: ^2.2.1

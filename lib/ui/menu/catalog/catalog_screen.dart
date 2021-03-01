@@ -10,6 +10,7 @@ import 'package:possystem/ui/menu/widgets/catalog_name_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/catalog_body.dart';
+import 'widgets/product_orderable_list.dart';
 
 class CatalogScreen extends StatelessWidget {
   @override
@@ -39,7 +40,7 @@ class CatalogScreen extends StatelessWidget {
           child: Icon(Icons.add),
           onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (_) => ProductModal(
-              product: ProductModel.empty(catalog.name),
+              product: ProductModel.empty(catalog),
             ),
           )),
           tooltip: Local.of(context).t('menu.catalog.add_product'),
@@ -104,6 +105,16 @@ class CatalogScreen extends StatelessWidget {
             onPressed: () => Navigator.of(context).pushReplacement(
               CupertinoPageRoute(
                 builder: (_) => CatalogNameModal(oldName: catalog.name),
+              ),
+            ),
+          ),
+          CupertinoActionSheetAction(
+            child: Text('排序產品'),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              CupertinoPageRoute(
+                builder: (BuildContext context) {
+                  return ProductOrderableList(items: catalog.productList);
+                },
               ),
             ),
           ),

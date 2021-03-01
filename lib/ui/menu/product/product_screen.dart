@@ -68,7 +68,7 @@ class ProductScreen extends StatelessWidget {
         ),
         product.ingredients.isEmpty
             ? EmptyBody('趕緊按右下角的按鈕新增成份吧！')
-            : IngredientExpansion(ingredients: product.ingredients),
+            : IngredientExpansion(product: product),
       ],
     );
   }
