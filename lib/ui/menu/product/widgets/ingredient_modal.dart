@@ -51,7 +51,7 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   Future<void> _onSubmit(String value) async {
-    if (_formKey.currentState.validate()) {
+    if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.ingredient.isReady) {
         await widget.ingredient.update(

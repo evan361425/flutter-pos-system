@@ -90,8 +90,13 @@ class _MenuSnapshot {
         },
       },
       'sandwitch': {
-        'createdAt': Timestamp.now(),
         'index': 1,
+        'products': {
+          'cheese-sandwitch': {'price': 30, 'index': 0, 'ingredients': {}},
+        },
+      },
+      'drink': {
+        'index': 2,
       }
     };
   }

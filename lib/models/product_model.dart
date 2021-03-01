@@ -12,9 +12,10 @@ class ProductModel extends ChangeNotifier {
     this.index = 0,
     this.price = 0,
     this.cost = 0,
-    this.ingredients = const {},
+    Map<String, IngredientModel> ingredients,
     Timestamp createdAt,
-  }) : createdAt = createdAt ?? Timestamp.now();
+  })  : createdAt = createdAt ?? Timestamp.now(),
+        ingredients = ingredients ?? {};
 
   String name;
   int index;

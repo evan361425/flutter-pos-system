@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/models.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 class ProductModal extends StatefulWidget {
@@ -51,7 +52,7 @@ class _ProductModalState extends State<ProductModal> {
   }
 
   Future<void> _onSubmit(String value) async {
-    if (_formKey.currentState.validate()) {
+    if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.product.isReady) {
         await catalog[widget.product.name].update(
@@ -60,19 +61,19 @@ class _ProductModalState extends State<ProductModal> {
           price: num.parse(_priceController.text),
           cost: num.parse(_costController.text),
         );
+        Navigator.of(context).pop();
       } else {
-        await catalog.add(
-          context,
-          ProductModel(
-            name: _nameController.text,
-            catalogName: catalog.name,
-            index: catalog.length,
-            price: num.parse(_priceController.text),
-            cost: num.parse(_costController.text),
-          ),
+        final product = ProductModel(
+          name: _nameController.text,
+          catalogName: catalog.name,
+          index: catalog.length,
+          price: num.parse(_priceController.text),
+          cost: num.parse(_costController.text),
         );
+        await catalog.add(context, product);
+        await Navigator.of(context)
+            .popAndPushNamed(Routes.product, arguments: product);
       }
-      Navigator.of(context).pop();
     }
   }
 

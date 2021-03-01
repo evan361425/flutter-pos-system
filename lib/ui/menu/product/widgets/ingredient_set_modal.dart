@@ -93,6 +93,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
               labelText: '份量名稱',
+              filled: false,
             ),
             maxLength: 30,
             validator: Validator.textLimit('份量名稱', 30),
@@ -104,6 +105,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               labelText: '成分份量',
+              filled: false,
             ),
             validator: Validator.positiveDouble('成分份量'),
           ),
@@ -115,9 +117,11 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.loyalty_sharp),
               labelText: '額外售價',
+              filled: false,
             ),
             validator: Validator.isDouble('額外售價'),
           ),
+          SizedBox(height: kMargin / 2),
           TextFormField(
             controller: _additionalCostController,
             keyboardType: TextInputType.number,
@@ -125,6 +129,7 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.attach_money_sharp),
               labelText: '額外成本',
+              filled: false,
             ),
             validator: Validator.isDouble('額外成本'),
           ),

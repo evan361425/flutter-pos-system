@@ -37,17 +37,11 @@ class CatalogScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: catalog.isReady
-              ? () => Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (_) => ProductModal(
-                      product: ProductModel.empty(catalog.name),
-                    ),
-                  ))
-              : () => Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('menu.catalog.error.add'),
-                    ),
-                  ),
+          onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
+            builder: (_) => ProductModal(
+              product: ProductModel.empty(catalog.name),
+            ),
+          )),
           tooltip: Local.of(context).t('menu.catalog.add_product'),
         ),
         body: _body(context),

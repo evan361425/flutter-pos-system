@@ -54,9 +54,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   ExpansionPanel _panelBuilder(int index, IngredientModel ingredient) {
     final body = ingredient.additionalSets.values.map<Widget>((ingredientSet) {
       return ListTile(
-        onTap: () {
-          goToIngredientSetModel(ingredientSet, ingredient);
-        },
+        onTap: () => goToIngredientSetModel(ingredient, ingredientSet),
         title: Text(ingredientSet.name),
         trailing: Text('${ingredientSet.amount}'),
         subtitle: _ingredientSetMetadata(ingredientSet),
@@ -108,7 +106,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.add),
             label: Text('新增特殊份量'),
             onPressed: () {
-              goToIngredientSetModel(IngredientSet(name: ''), ingredient);
+              goToIngredientSetModel(ingredient, IngredientSet.empty());
             },
           ),
         ),
@@ -162,8 +160,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   }
 
   void goToIngredientSetModel(
-    IngredientSet ingredientSet,
     IngredientModel ingredient,
+    IngredientSet ingredientSet,
   ) {
     final product = context.read<ProductModel>();
     Navigator.of(context).push(

@@ -9,8 +9,8 @@ class IngredientModel {
     @required this.name,
     @required this.product,
     this.defaultAmount = 0,
-    this.additionalSets = const {},
-  });
+    Map<String, IngredientSet> additionalSets,
+  }) : additionalSets = additionalSets ?? {};
 
   String name;
   num defaultAmount;
@@ -74,6 +74,8 @@ class IngredientModel {
       name: name,
       defaultAmount: defaultAmount,
     );
+
+    if (updateData.isEmpty) return;
 
     final db = context.read<Database>();
     return db.update(Collections.menu, updateData).then((_) {
@@ -144,6 +146,10 @@ class IngredientSet {
     );
   }
 
+  factory IngredientSet.empty() {
+    return IngredientSet(name: null);
+  }
+
   Map<String, num> toMap() {
     return {
       'amount': amount,
@@ -160,6 +166,8 @@ class IngredientSet {
     IngredientModel ingredient,
   ) async {
     final updateData = getUpdateData(ingredient, newSet);
+
+    if (updateData.isEmpty) return;
 
     final db = context.read<Database>();
     return db.update(Collections.menu, updateData).then((_) {
@@ -202,5 +210,5 @@ class IngredientSet {
 
   // GETTER
 
-  bool get isNotReady => name.isEmpty;
+  bool get isNotReady => name == null;
 }

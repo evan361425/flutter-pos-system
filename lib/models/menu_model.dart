@@ -16,6 +16,7 @@ class MenuModel extends ChangeNotifier {
     var db = context.read<Database>();
     var snapshot = await db.get(Collections.menu);
     // TODO: handle exception
+    catalogs = {};
     buildFromMap(snapshot.data());
 
     notifyListeners();
@@ -26,11 +27,15 @@ class MenuModel extends ChangeNotifier {
       return null;
     }
 
-    data.forEach((key, value) {
-      if (value is Map) {
-        catalogs[key] = CatalogModel.fromMap(key, value);
-      }
-    });
+    try {
+      data.forEach((key, value) {
+        if (value is Map) {
+          catalogs[key] = CatalogModel.fromMap(key, value);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Map<String, Map<String, dynamic>> toMap() {

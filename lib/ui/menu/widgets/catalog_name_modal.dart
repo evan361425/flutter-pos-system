@@ -4,6 +4,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/menu_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 class CatalogNameModal extends StatefulWidget {
@@ -30,11 +31,13 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
           child: Icon(Icons.arrow_back_ios_sharp),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: isSaving ? CircularProgressIndicator() : Text('儲存'),
-          onPressed: () => _onSubmit(_controller.text),
-        ),
+        trailing: isSaving
+            ? CircularProgressIndicator()
+            : CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text('儲存'),
+                onPressed: () => _onSubmit(_controller.text),
+              ),
       ),
       child: Material(
         child: Padding(
@@ -51,14 +54,17 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
   }
 
   Future<void> _onSubmit(String value) async {
-    if (_formKey.currentState.validate()) {
+    if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.oldName.isEmpty) {
-        await menu.add(context, CatalogModel.fromMenu(menu, value));
+        final catalog = CatalogModel(name: value, index: menu.length);
+        await menu.add(context, catalog);
+        await Navigator.of(context)
+            .popAndPushNamed(Routes.catalog, arguments: catalog);
       } else {
         await menu[widget.oldName].update(context, name: value);
+        Navigator.of(context).pop();
       }
-      Navigator.of(context).pop();
     }
   }
 

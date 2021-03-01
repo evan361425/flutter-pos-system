@@ -10,9 +10,10 @@ class CatalogModel extends ChangeNotifier {
   CatalogModel({
     @required this.name,
     this.index = 0,
-    this.products = const {},
+    Map<String, ProductModel> products,
     Timestamp createdAt,
-  }) : createdAt = createdAt ?? Timestamp.now();
+  })  : createdAt = createdAt ?? Timestamp.now(),
+        products = products ?? {};
 
   // catalog's name
   String name;
@@ -47,10 +48,6 @@ class CatalogModel extends ChangeNotifier {
       createdAt: data['createdAt'],
       products: products,
     );
-  }
-
-  factory CatalogModel.fromMenu(MenuModel menu, String name) {
-    return CatalogModel(name: name, index: menu.length);
   }
 
   factory CatalogModel.empty() {
