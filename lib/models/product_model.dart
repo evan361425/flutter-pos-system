@@ -118,8 +118,6 @@ class ProductModel extends ChangeNotifier {
 
     final db = context.read<Database>();
     return db.update(Collections.menu, updateData).then((_) {
-      final menu = context.read<MenuModel>();
-
       if (name == this.name) {
         catalog.changeProduct();
       } else {
