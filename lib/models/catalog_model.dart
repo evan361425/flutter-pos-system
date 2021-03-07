@@ -9,6 +9,7 @@ import 'product_model.dart';
 
 class CatalogModel extends ChangeNotifier {
   CatalogModel({
+    @required this.id,
     @required this.name,
     this.index = 0,
     Map<String, ProductModel> products,
@@ -16,6 +17,7 @@ class CatalogModel extends ChangeNotifier {
   })  : createdAt = createdAt ?? Timestamp.now(),
         products = products ?? {};
 
+  int id;
   // catalog's name
   String name;
   // index in menu
@@ -27,12 +29,13 @@ class CatalogModel extends ChangeNotifier {
 
   // I/O
 
-  factory CatalogModel.fromMap(String name, Map<String, dynamic> data) {
+  factory CatalogModel.fromMap(Map<String, dynamic> data) {
     final oriProducts = data['products'];
     final products = <String, ProductModel>{};
 
     final catalog = CatalogModel(
-      name: name,
+      id: data['id'],
+      name: data['name'],
       index: data['index'],
       createdAt: data['createdAt'],
       products: products,
@@ -43,8 +46,7 @@ class CatalogModel extends ChangeNotifier {
         if (key is String && product is Map) {
           products[key] = ProductModel.fromMap(
             catalog: catalog,
-            name: key,
-            data: product,
+            data: {'name': key, ...product},
           );
         }
       });
@@ -53,12 +55,10 @@ class CatalogModel extends ChangeNotifier {
     return catalog;
   }
 
-  factory CatalogModel.empty() {
-    return CatalogModel(name: null);
-  }
-
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
+      'name': name,
       'index': index,
       'createdAt': createdAt,
       'products': {
@@ -97,6 +97,7 @@ class CatalogModel extends ChangeNotifier {
         menu.changeCatalog(oldName: this.name, newName: name);
         this.name = name;
       }
+      notifyListeners();
     });
   }
 
@@ -118,11 +119,11 @@ class CatalogModel extends ChangeNotifier {
     int index,
   }) {
     final updateData = <String, dynamic>{};
-    if (index != this.index) {
+    if (index != null && index != this.index) {
       this.index = index;
       updateData['${this.name}.index'] = index;
     }
-    if (name != this.name) {
+    if (name != null && name != this.name) {
       updateData.clear();
       updateData[this.name] = FieldValue.delete();
       updateData[name] = toMap();
@@ -145,6 +146,26 @@ class CatalogModel extends ChangeNotifier {
   bool get isReady => name != null;
 
   int get length => products.length;
+
+  int get newId {
+    var maxId = 0;
+    products.forEach((key, product) {
+      if (product.id > maxId) {
+        maxId = product.id;
+      }
+    });
+    return maxId + 1;
+  }
+
+  int get newIndex {
+    var maxIndex = 0;
+    products.forEach((key, product) {
+      if (product.index > maxIndex) {
+        maxIndex = product.index;
+      }
+    });
+    return maxIndex + 1;
+  }
 
   String get createdDate {
     final date = createdAt.toDate();

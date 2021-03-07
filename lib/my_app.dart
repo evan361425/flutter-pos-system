@@ -43,14 +43,13 @@ class MyApp extends StatelessWidget {
   Widget _buildProviders() {
     /// Why use Consumer, not Provider.of?
     /// https://stackoverflow.com/questions/58774301/when-to-use-provider-ofx-vs-consumerx-in-flutter
-    return Consumer2<ThemeProvider, LanguageProvider>(
-      builder: (_, ThemeProvider theme, LanguageProvider language, __) {
-        // get data from user
-        return UserDependencies(
-          databaseBuilder: databaseBuilder,
-          builder: (_, AsyncSnapshot<UserModel> user) {
-            return _buildApp(theme, language, user);
-          },
+    return UserDependencies(
+      databaseBuilder: databaseBuilder,
+      builder: (BuildContext context, AsyncSnapshot<UserModel> user) {
+        return _buildApp(
+          context.watch<ThemeProvider>(),
+          context.watch<LanguageProvider>(),
+          user,
         );
       },
     );

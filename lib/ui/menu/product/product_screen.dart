@@ -17,38 +17,35 @@ import 'widgets/ingredient_modal.dart';
 class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final ProductModel product = ModalRoute.of(context).settings.arguments;
+    final product = context.read<ProductModel>();
 
-    return ChangeNotifierProvider<ProductModel>.value(
-      value: product,
-      builder: (BuildContext context, _) => FadeInTitleScaffold(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
-        ),
-        title: product.name,
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () => showCupertinoModalPopup(
-            context: context,
-            builder: _moreActions(product),
-          ),
-          child: Icon(Icons.more_horiz_sharp),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(CupertinoPageRoute(
-              builder: (_) => IngredientModal(
-                ingredient: IngredientModel.empty(product),
-              ),
-            ));
-          },
-          tooltip: Local.of(context).t('menu.product.add_integredient'),
-          child: Icon(Icons.add),
-        ),
-        body: _body(context),
+    return FadeInTitleScaffold(
+      leading: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => Navigator.of(context).pop(),
+        child: Icon(Icons.arrow_back_ios_sharp),
       ),
+      title: product.name,
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => showCupertinoModalPopup(
+          context: context,
+          builder: _moreActions(product),
+        ),
+        child: Icon(Icons.more_horiz_sharp),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(CupertinoPageRoute(
+            builder: (_) => IngredientModal(
+              ingredient: IngredientModel.empty(product),
+            ),
+          ));
+        },
+        tooltip: Local.of(context).t('menu.product.add_integredient'),
+        child: Icon(Icons.add),
+      ),
+      body: _body(context),
     );
   }
 
@@ -69,7 +66,7 @@ class ProductScreen extends StatelessWidget {
         ),
         product.ingredients.isEmpty
             ? EmptyBody('趕緊按右下角的按鈕新增成份吧！')
-            : IngredientExpansion(product: product),
+            : IngredientExpansion(),
       ],
     );
   }

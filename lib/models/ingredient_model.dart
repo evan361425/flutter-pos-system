@@ -62,18 +62,24 @@ class IngredientModel {
     });
 
     additionalSets[newSet.name] = newSet;
+    product.changeIngredient();
   }
 
   Future<void> update({
     String name,
     num defaultAmount,
+    bool updateDB = true,
   }) async {
     final updateData = getUpdateData(
       name: name,
       defaultAmount: defaultAmount,
     );
-
     if (updateData.isEmpty) return;
+
+    if (!updateDB) {
+      this.name = name;
+      return;
+    }
 
     return Database.service.update(Collections.menu, updateData).then((_) {
       if (name == this.name) {
@@ -99,11 +105,11 @@ class IngredientModel {
     num defaultAmount,
   }) {
     final updateData = <String, dynamic>{};
-    if (defaultAmount != this.defaultAmount) {
+    if (defaultAmount != null && defaultAmount != this.defaultAmount) {
       this.defaultAmount = defaultAmount;
       updateData['$prefix.defaultAmount'] = defaultAmount;
     }
-    if (name != this.name) {
+    if (name != null && name != this.name) {
       updateData.clear();
       updateData[prefix] = FieldValue.delete();
       updateData['${product.prefix}.ingredients.$name'] = toMap();
@@ -183,19 +189,19 @@ class IngredientSet {
   ) {
     final updateData = <String, dynamic>{};
     final prefix = '${ingredient.prefix}.additionalSets';
-    if (amount != newSet.amount) {
+    if (amount != null && amount != newSet.amount) {
       amount = newSet.amount;
       updateData['$prefix.$name.amount'] = amount;
     }
-    if (additionalCost != newSet.additionalCost) {
+    if (additionalCost != null && additionalCost != newSet.additionalCost) {
       additionalCost = newSet.additionalCost;
       updateData['$prefix.$name.additionalCost'] = additionalCost;
     }
-    if (additionalPrice != newSet.additionalPrice) {
+    if (additionalPrice != null && additionalPrice != newSet.additionalPrice) {
       additionalPrice = newSet.additionalPrice;
       updateData['$prefix.$name.additionalPrice'] = additionalPrice;
     }
-    if (name != newSet.name) {
+    if (name != null && name != newSet.name) {
       updateData.clear();
       updateData['$prefix.$name'] = FieldValue.delete();
       updateData['$prefix.${newSet.name}'] = toMap();

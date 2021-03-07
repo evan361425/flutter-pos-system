@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
+import 'package:provider/provider.dart';
 
 class ProductModal extends StatefulWidget {
   ProductModal({Key key, @required this.product}) : super(key: key);
@@ -60,16 +62,15 @@ class _ProductModalState extends State<ProductModal> {
         );
         Navigator.of(context).pop();
       } else {
-        final product = ProductModel(
+        await widget.product.update(
           name: _nameController.text,
-          catalog: widget.product.catalog,
-          index: widget.product.catalog.length,
           price: num.parse(_priceController.text),
           cost: num.parse(_costController.text),
+          updateDB: false,
         );
-        await widget.product.catalog.add(product);
-        await Navigator.of(context)
-            .popAndPushNamed(Routes.product, arguments: product);
+        await context.read<CatalogModel>().add(widget.product);
+        Navigator.of(context).pop();
+        context.read<CatalogNavigatorState>().product = widget.product;
       }
     }
   }
@@ -103,8 +104,10 @@ class _ProductModalState extends State<ProductModal> {
       validator: (String value) {
         final errorMsg = Validator.textLimit('產品名稱', 30)(value);
         if (errorMsg != null) return errorMsg;
-        if (value != widget.product.name && widget.product.catalog.has(value)) {
-          return '產品名稱重複';
+        if (value != widget.product.name) {
+          if (context.read<CatalogModel>().has(value)) {
+            return '產品名稱重複';
+          }
         }
         return null;
       },

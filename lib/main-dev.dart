@@ -47,9 +47,11 @@ class _MenuSnapshot {
   Map<String, Map<String, dynamic>> data() {
     return {
       'burger': {
+        'id': 1,
         'index': 0,
         'products': {
           'cheeseburger': {
+            'id': 1,
             'price': 30,
             'cost': 20,
             'index': 0,
@@ -80,30 +82,32 @@ class _MenuSnapshot {
               }
             },
           },
-          'hamburger': {'price': 50, 'index': 1, 'ingredients': {}},
-          'kamburger': {'price': 50, 'index': 2, 'ingredients': {}},
+          'hamburger': {'id': 1, 'price': 50, 'index': 1, 'ingredients': {}},
+          'kamburger': {'id': 2, 'price': 50, 'index': 2, 'ingredients': {}},
           'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-':
-              {'price': 30, 'index': 3, 'ingredients': {}},
-          'product1': {'price': 30, 'index': 4, 'ingredients': {}},
-          'product2': {'price': 30, 'index': 5, 'ingredients': {}},
-          'product3': {'price': 30, 'index': 6, 'ingredients': {}},
-          '😂product4': {'price': 30, 'index': 7, 'ingredients': {}},
-          '產品五': {'price': 30, 'index': 8, 'ingredients': {}},
-          '😂product6': {'price': 30, 'index': 9, 'ingredients': {}},
-          '😂product7': {'price': 30, 'index': 10, 'ingredients': {}},
-          '😂product8': {'price': 30, 'index': 11, 'ingredients': {}},
-          '😂product9': {'price': 30, 'index': 12, 'ingredients': {}},
-          '😂produc1': {'price': 30, 'index': 13, 'ingredients': {}},
-          '😂produc2': {'price': 30, 'index': 14, 'ingredients': {}},
+              {'id': 3, 'price': 30, 'index': 3, 'ingredients': {}},
+          'product1': {'id': 4, 'price': 30, 'index': 4, 'ingredients': {}},
+          'product2': {'id': 5, 'price': 30, 'index': 5, 'ingredients': {}},
+          'product3': {'id': 6, 'price': 30, 'index': 6, 'ingredients': {}},
+          '😂product4': {'id': 7, 'price': 30, 'index': 7, 'ingredients': {}},
+          '產品五': {'id': 8, 'price': 30, 'index': 8, 'ingredients': {}},
+          '😂product6': {'id': 10, 'price': 30, 'index': 9, 'ingredients': {}},
+          '😂product7': {'id': 11, 'price': 30, 'index': 10, 'ingredients': {}},
+          '😂product8': {'id': 12, 'price': 30, 'index': 11, 'ingredients': {}},
+          '😂product9': {'id': 13, 'price': 30, 'index': 12, 'ingredients': {}},
+          '😂producs1': {'id': 14, 'price': 30, 'index': 13, 'ingredients': {}},
+          '😂producs2': {'id': 15, 'price': 30, 'index': 14, 'ingredients': {}},
         },
       },
       'sandwitch': {
+        'id': 2,
         'index': 1,
         'products': {
-          'cheese-sandwitch': {'price': 30, 'index': 0, 'ingredients': {}},
+          'c-sandwitch': {'id': 1, 'price': 30, 'index': 0, 'ingredients': {}},
         },
       },
       'drink': {
+        'id': 3,
         'index': 2,
       }
     };

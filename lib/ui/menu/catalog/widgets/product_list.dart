@@ -3,6 +3,8 @@ import 'package:possystem/components/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products) : super(products);
@@ -25,10 +27,7 @@ class ProductList extends ItemList<ProductModel> {
       ),
       onTap: () {
         if (shouldProcess()) {
-          Navigator.of(context).pushNamed(
-            Routes.product,
-            arguments: product,
-          );
+          context.read<CatalogNavigatorState>().product = product;
         }
       },
     );

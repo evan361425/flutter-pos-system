@@ -15,7 +15,7 @@ class MenuBody extends StatelessWidget {
     if (menu.isNotReady) {
       return Center(child: CircularProgressIndicator());
     } else if (menu.length == 0) {
-      return EmptyBody('menu.empty');
+      return Center(child: EmptyBody('menu.empty'));
     } else {
       return SingleChildScrollView(
         child: Column(

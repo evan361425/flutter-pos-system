@@ -29,7 +29,7 @@ class MenuModel extends ChangeNotifier {
     try {
       data.forEach((key, value) {
         if (value is Map) {
-          catalogs[key] = CatalogModel.fromMap(key, value);
+          catalogs[key] = CatalogModel.fromMap({'name': key, ...value});
         }
       });
     } catch (e) {
@@ -43,7 +43,15 @@ class MenuModel extends ChangeNotifier {
 
   // STATE CHANGER
 
-  Future<void> add(CatalogModel catalog) async {
+  Future<CatalogModel> buildCatalog({String name}) async {
+    final catalog = CatalogModel(id: newId, name: name, index: newIndex);
+
+    await addCatalog(catalog);
+
+    return catalog;
+  }
+
+  Future<void> addCatalog(CatalogModel catalog) async {
     await Database.service.update(Collections.menu, {
       catalog.name: catalog.toMap(),
     });
@@ -79,6 +87,26 @@ class MenuModel extends ChangeNotifier {
     final catalogList = catalogs.values.toList();
     catalogList.sort((a, b) => a.index.compareTo(b.index));
     return catalogList;
+  }
+
+  int get newIndex {
+    var maxIndex = -1;
+    catalogs.forEach((key, catalog) {
+      if (catalog.index > maxIndex) {
+        maxIndex = catalog.index;
+      }
+    });
+    return maxIndex + 1;
+  }
+
+  int get newId {
+    var maxId = 0;
+    catalogs.forEach((key, catalog) {
+      if (catalog.id > maxId) {
+        maxId = catalog.id;
+      }
+    });
+    return maxId + 1;
   }
 
   bool get isNotReady => catalogs == null;

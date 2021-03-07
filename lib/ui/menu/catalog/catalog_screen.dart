@@ -6,6 +6,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
+import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/catalog_name_modal.dart';
@@ -16,38 +17,34 @@ import 'widgets/product_orderable_list.dart';
 class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final CatalogModel catalog =
-        ModalRoute.of(context).settings.arguments ?? CatalogModel.empty();
+    final catalog = context.read<CatalogModel>();
     // Logger().d('${catalog.isReady ? 'Edit' : 'Create'} catalog');
 
-    return ChangeNotifierProvider<CatalogModel>.value(
-      value: catalog,
-      builder: (BuildContext context, _) => FadeInTitleScaffold(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
-        ),
-        title: catalog.name,
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () => showCupertinoModalPopup(
-            context: context,
-            builder: _moreActions(catalog),
-          ),
-          child: Icon(Icons.more_horiz_sharp),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: (_) => ProductModal(
-              product: ProductModel.empty(catalog),
-            ),
-          )),
-          tooltip: Local.of(context).t('menu.catalog.add_product'),
-          child: Icon(Icons.add),
-        ),
-        body: _body(context),
+    return FadeInTitleScaffold(
+      leading: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => Navigator.of(context).pop(),
+        child: Icon(Icons.arrow_back_ios_sharp),
       ),
+      title: catalog.name,
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => showCupertinoModalPopup(
+          context: context,
+          builder: _moreActions(catalog),
+        ),
+        child: Icon(Icons.more_horiz_sharp),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (_) => ProductModal(
+            product: ProductModel.empty(catalog),
+          ),
+        )),
+        tooltip: Local.of(context).t('menu.catalog.add_product'),
+        child: Icon(Icons.add),
+      ),
+      body: _body(context),
     );
   }
 

@@ -59,13 +59,12 @@ class _IngredientModalState extends State<IngredientModal> {
           defaultAmount: num.parse(_amountController.text),
         );
       } else {
-        await widget.ingredient.product.add(
-          IngredientModel(
-            name: _nameController.text,
-            defaultAmount: num.parse(_amountController.text),
-            product: widget.ingredient.product,
-          ),
+        await widget.ingredient.update(
+          name: _nameController.text,
+          defaultAmount: num.parse(_amountController.text),
+          updateDB: false,
         );
+        await widget.ingredient.product.addIngredient(widget.ingredient);
       }
       Navigator.of(context).pop();
     }

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
@@ -57,8 +56,7 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
     if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.oldName.isEmpty) {
-        final catalog = CatalogModel(name: value, index: menu.length);
-        await menu.add(catalog);
+        final catalog = await menu.buildCatalog(name: value);
         await Navigator.of(context)
             .popAndPushNamed(Routes.catalog, arguments: catalog);
       } else {

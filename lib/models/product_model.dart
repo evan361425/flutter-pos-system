@@ -8,6 +8,7 @@ import 'ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
   ProductModel({
+    @required this.id,
     @required this.name,
     @required this.catalog,
     this.index = 0,
@@ -18,6 +19,7 @@ class ProductModel extends ChangeNotifier {
   })  : createdAt = createdAt ?? Timestamp.now(),
         ingredients = ingredients ?? {};
 
+  int id;
   String name;
   int index;
   num price;
@@ -30,7 +32,6 @@ class ProductModel extends ChangeNotifier {
 
   factory ProductModel.fromMap({
     CatalogModel catalog,
-    String name,
     Map<String, dynamic> data,
   }) {
     if (data == null) {
@@ -40,7 +41,8 @@ class ProductModel extends ChangeNotifier {
     final oriIngredients = data['ingredients'];
     final ingredients = <String, IngredientModel>{};
     final product = ProductModel(
-      name: name,
+      id: data['id'],
+      name: data['name'],
       catalog: catalog,
       index: data['index'],
       price: data['price'],
@@ -63,18 +65,12 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  factory ProductModel.fromCatalog(String name, CatalogModel catalog) {
-    return ProductModel(
-      name: name,
-      index: catalog.length,
-      catalog: catalog,
-    );
-  }
-
   factory ProductModel.empty(CatalogModel catalog) {
     return ProductModel(
+      id: catalog.newId,
       name: null,
       catalog: catalog,
+      index: catalog.newIndex,
     );
   }
 
@@ -91,7 +87,7 @@ class ProductModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> add(IngredientModel ingredient) async {
+  Future<void> addIngredient(IngredientModel ingredient) async {
     await Database.service.update(Collections.menu, {
       '$prefix.ingredients.${ingredient.name}': ingredient.toMap(),
     });
@@ -105,6 +101,7 @@ class ProductModel extends ChangeNotifier {
     int index,
     num price,
     num cost,
+    bool updateDB = true,
   }) async {
     final updateData = getUpdateData(
       name: name,
@@ -112,8 +109,12 @@ class ProductModel extends ChangeNotifier {
       price: price,
       cost: cost,
     );
-
     if (updateData.isEmpty) return;
+
+    if (!updateDB) {
+      this.name = name;
+      return;
+    }
 
     return Database.service.update(Collections.menu, updateData).then((_) {
       if (name == this.name) {
@@ -122,6 +123,7 @@ class ProductModel extends ChangeNotifier {
         catalog.changeProduct(oldName: this.name, newName: name);
         this.name = name;
       }
+      notifyListeners();
     });
   }
 
@@ -146,19 +148,19 @@ class ProductModel extends ChangeNotifier {
     num cost,
   }) {
     final updateData = <String, dynamic>{};
-    if (index != this.index) {
+    if (index != null && index != this.index) {
       this.index = index;
       updateData['$prefix.index'] = index;
     }
-    if (price != this.price) {
+    if (price != null && price != this.price) {
       this.price = price;
       updateData['$prefix.price'] = price;
     }
-    if (cost != this.cost) {
+    if (cost != null && cost != this.cost) {
       this.cost = cost;
       updateData['$prefix.cost'] = cost;
     }
-    if (name != this.name) {
+    if (name != null && name != this.name) {
       updateData.clear();
       updateData[prefix] = FieldValue.delete();
       updateData['${catalog.name}.products.$name'] = toMap();
