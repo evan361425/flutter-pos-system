@@ -4,12 +4,13 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/models.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
-import 'package:possystem/ui/menu/widgets/catalog_name_modal.dart';
+import 'package:possystem/models/catalog_model.dart';
+import 'package:possystem/models/product_model.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/catalog_name_modal.dart';
 import 'widgets/catalog_body.dart';
+import 'widgets/product_modal.dart';
 import 'widgets/product_orderable_list.dart';
 
 class CatalogScreen extends StatelessWidget {
@@ -70,13 +71,6 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _catalogName(CatalogModel catalog, BuildContext context) {
-    return Text(
-      catalog.name,
-      style: Theme.of(context).textTheme.headline4,
-    );
-  }
-
   Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
     if (!catalog.isReady) return null;
 
@@ -93,6 +87,13 @@ class CatalogScreen extends StatelessWidget {
         ],
         style: Theme.of(context).textTheme.bodyText1,
       ),
+    );
+  }
+
+  Widget _catalogName(CatalogModel catalog, BuildContext context) {
+    return Text(
+      catalog.name,
+      style: Theme.of(context).textTheme.headline4,
     );
   }
 

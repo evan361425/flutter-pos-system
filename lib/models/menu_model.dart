@@ -1,20 +1,19 @@
 import 'package:flutter/widgets.dart';
-import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
-import 'package:provider/provider.dart';
+
+import 'catalog_model.dart';
 
 class MenuModel extends ChangeNotifier {
-  MenuModel(BuildContext context) {
-    loadFromDb(context);
+  MenuModel() {
+    loadFromDb();
   }
 
   Map<String, CatalogModel> catalogs;
 
   // I/O
 
-  Future<void> loadFromDb(BuildContext context) async {
-    var db = context.read<Database>();
-    var snapshot = await db.get(Collections.menu);
+  Future<void> loadFromDb() async {
+    var snapshot = await Database.service.get(Collections.menu);
     // TODO: handle exception
     catalogs = {};
     buildFromMap(snapshot.data());
@@ -44,9 +43,8 @@ class MenuModel extends ChangeNotifier {
 
   // STATE CHANGER
 
-  Future<void> add(BuildContext context, CatalogModel catalog) async {
-    final db = context.read<Database>();
-    await db.update(Collections.menu, {
+  Future<void> add(CatalogModel catalog) async {
+    await Database.service.update(Collections.menu, {
       catalog.name: catalog.toMap(),
     });
 

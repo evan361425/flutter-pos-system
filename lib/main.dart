@@ -31,7 +31,7 @@ void main() {
           Provider(create: (_) => Logger()),
         ],
         child: MyApp(
-          databaseBuilder: (_, uid) => Firestore(uid: uid),
+          databaseBuilder: (uid) => Firestore(uid: uid),
         ),
       ),
     );

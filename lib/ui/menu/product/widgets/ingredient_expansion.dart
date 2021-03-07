@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/models.dart';
+import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/product_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ingredient_modal.dart';
@@ -90,8 +91,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kPadding),
-          child: RaisedButton.icon(
-            color: Theme.of(context).secondaryHeaderColor,
+          child: ElevatedButton.icon(
+            // color: Theme.of(context).secondaryHeaderColor,
             icon: Icon(Icons.settings_sharp),
             label: Text('設定成份資料'),
             onPressed: () {
@@ -105,7 +106,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kPadding),
-          child: RaisedButton.icon(
+          child: ElevatedButton.icon(
             icon: Icon(Icons.add),
             label: Text('新增特殊份量'),
             onPressed: () {

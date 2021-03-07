@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/models.dart';
+import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/product_model.dart';
 
 class IngredientSetModal extends StatelessWidget {
   IngredientSetModal({
@@ -35,9 +36,9 @@ class IngredientSetModal extends StatelessWidget {
             if (newSet == null) return;
 
             if (ingredientSet.isNotReady) {
-              await ingredient.add(context, newSet);
+              await ingredient.add(newSet);
             } else {
-              await ingredientSet.update(context, newSet, ingredient);
+              await ingredientSet.update(ingredient, newSet);
             }
 
             product.changeIngredient();

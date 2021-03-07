@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/models.dart';
+import 'package:possystem/models/ingredient_model.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
@@ -55,13 +55,11 @@ class _IngredientModalState extends State<IngredientModal> {
       setState(() => isSaving = true);
       if (widget.ingredient.isReady) {
         await widget.ingredient.update(
-          context,
           name: _nameController.text,
           defaultAmount: num.parse(_amountController.text),
         );
       } else {
         await widget.ingredient.product.add(
-          context,
           IngredientModel(
             name: _nameController.text,
             defaultAmount: num.parse(_amountController.text),

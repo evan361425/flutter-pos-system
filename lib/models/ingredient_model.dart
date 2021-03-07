@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
-import 'package:provider/provider.dart';
+
+import 'product_model.dart';
 
 class IngredientModel {
   IngredientModel({
@@ -56,17 +56,15 @@ class IngredientModel {
 
   // STATE CHANGE
 
-  Future<void> add(BuildContext context, IngredientSet newSet) async {
-    final db = context.read<Database>();
-    await db.update(Collections.menu, {
+  Future<void> add(IngredientSet newSet) async {
+    await Database.service.update(Collections.menu, {
       '$prefix.additionalSets.${newSet.name}': newSet.toMap(),
     });
 
     additionalSets[newSet.name] = newSet;
   }
 
-  Future<void> update(
-    BuildContext context, {
+  Future<void> update({
     String name,
     num defaultAmount,
   }) async {
@@ -77,8 +75,7 @@ class IngredientModel {
 
     if (updateData.isEmpty) return;
 
-    final db = context.read<Database>();
-    return db.update(Collections.menu, updateData).then((_) {
+    return Database.service.update(Collections.menu, updateData).then((_) {
       if (name == this.name) {
         product.changeIngredient();
       } else {
@@ -161,16 +158,14 @@ class IngredientSet {
   // STATE CHANGE
 
   Future<void> update(
-    BuildContext context,
-    IngredientSet newSet,
     IngredientModel ingredient,
+    IngredientSet newSet,
   ) async {
     final updateData = getUpdateData(ingredient, newSet);
 
     if (updateData.isEmpty) return;
 
-    final db = context.read<Database>();
-    return db.update(Collections.menu, updateData).then((_) {
+    return Database.service.update(Collections.menu, updateData).then((_) {
       if (name == newSet.name) {
         ingredient.changeSet();
       } else {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as rl;
 import 'package:possystem/constants/constant.dart';
 
 abstract class OrderableList<T> extends StatefulWidget {
@@ -61,7 +61,7 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
               ),
             ),
             Expanded(
-              child: ReorderableList(
+              child: rl.ReorderableList(
                 onReorder: _reorderCallback,
                 child: listWithScrollableView(),
               ),
@@ -85,15 +85,15 @@ class OrderableListItem<T> extends StatelessWidget {
   final String title;
   final T keyValue;
 
-  Widget _builder(BuildContext context, ReorderableItemState state) {
-    final color = state == ReorderableItemState.dragProxy ||
-            state == ReorderableItemState.dragProxyFinished
+  Widget _builder(BuildContext context, rl.ReorderableItemState state) {
+    final color = state == rl.ReorderableItemState.dragProxy ||
+            state == rl.ReorderableItemState.dragProxyFinished
         ? Theme.of(context).cardColor.withAlpha(224)
         : null;
 
     return Opacity(
       // hide content for placeholder
-      opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+      opacity: state == rl.ReorderableItemState.placeholder ? 0.0 : 1.0,
       child: Card(
         shape: const RoundedRectangleBorder(),
         margin: const EdgeInsets.all(0.5),
@@ -103,7 +103,7 @@ class OrderableListItem<T> extends StatelessWidget {
           // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: DelayedReorderableListener(
+              child: rl.DelayedReorderableListener(
                 child: Padding(
                   padding: const EdgeInsets.all(kPadding),
                   child: Text(title),
@@ -111,7 +111,7 @@ class OrderableListItem<T> extends StatelessWidget {
                 delay: Duration(milliseconds: 300),
               ),
             ),
-            ReorderableListener(
+            rl.ReorderableListener(
               child: Padding(
                 padding: const EdgeInsets.only(right: kPadding),
                 child: Center(child: Icon(Icons.reorder)),
@@ -125,6 +125,7 @@ class OrderableListItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReorderableItem(key: ValueKey<T>(keyValue), childBuilder: _builder);
+    return rl.ReorderableItem(
+        key: ValueKey<T>(keyValue), childBuilder: _builder);
   }
 }

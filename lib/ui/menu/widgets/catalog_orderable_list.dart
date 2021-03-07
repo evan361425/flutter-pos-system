@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/orderable_list.dart';
-import 'package:possystem/models/models.dart';
+import 'package:possystem/models/catalog_model.dart';
 
 class CatalogOrderableList extends OrderableList<CatalogModel> {
   CatalogOrderableList({Key key, @required List<CatalogModel> items})

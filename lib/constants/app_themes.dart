@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 /// Want to build your own theme?
 /// https://github.com/rxlabz/panache
 class AppThemes {
-  // Avoid someone build the instance
-  AppThemes._();
-
   static final TextTheme _lightTextTheme = TextTheme(
     headline1: TextStyle(
       color: Color(0xdd000000),
@@ -197,9 +194,11 @@ class AppThemes {
     buttonColor: Color(0xffff9800),
     toggleableActiveColor: Color(0xffffb300),
     secondaryHeaderColor: Color(0xfffff8e1),
-    textSelectionColor: Color(0xffffe082),
-    cursorColor: Color(0xff4285f4),
-    textSelectionHandleColor: Color(0xffffd54f),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: Color(0xffffe082),
+      cursorColor: Color(0xff4285f4),
+      selectionHandleColor: Color(0xffffd54f),
+    ),
     backgroundColor: Color(0xffffe082),
     dialogBackgroundColor: Color(0xffffffff),
     indicatorColor: Color(0xffffc107),
@@ -452,9 +451,11 @@ class AppThemes {
     buttonColor: Color(0xff5e35b1),
     toggleableActiveColor: Color(0xff64ffda),
     secondaryHeaderColor: Color(0xff616161),
-    textSelectionColor: Color(0xff64ffda),
-    cursorColor: Color(0xff4285f4),
-    textSelectionHandleColor: Color(0xff1de9b6),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: Color(0xff64ffda),
+      cursorColor: Color(0xff4285f4),
+      selectionHandleColor: Color(0xff1de9b6),
+    ),
     backgroundColor: Color(0xff616161),
     dialogBackgroundColor: Color(0xff424242),
     indicatorColor: Color(0xff64ffda),
@@ -679,4 +680,7 @@ class AppThemes {
       borderRadius: BorderRadius.all(Radius.circular(0.0)),
     )),
   );
+
+  // Avoid someone build the instance
+  AppThemes._();
 }

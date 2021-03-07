@@ -50,7 +50,7 @@ class GoogleSignIn extends StatelessWidget {
     var user = await authProvider.signIn(context, SignInByGoogle());
 
     if (user == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(Local.of(context).t('auth.reject')),
         backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
       ));

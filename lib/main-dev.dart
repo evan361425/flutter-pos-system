@@ -13,6 +13,9 @@ import 'package:provider/provider.dart';
 void main() {
   // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
   WidgetsFlutterBinding.ensureInitialized();
+  // Status bar style on Android/iOS
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle());
+
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
   ).then((_) async {
@@ -21,19 +24,19 @@ void main() {
       /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
       MultiProvider(
         providers: [
+          Provider(create: (_) => Logger()),
+          ChangeNotifierProvider<Authentication>(
+            create: (_) => _MockAuth(),
+          ),
           ChangeNotifierProvider<ThemeProvider>(
             create: (_) => ThemeProvider(),
           ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),
-          ChangeNotifierProvider<Authentication>(
-            create: (_) => _MockAuth(),
-          ),
-          Provider(create: (_) => Logger()),
         ],
         child: MyApp(
-          databaseBuilder: (_, uid) => _MockDatabase(uid: uid),
+          databaseBuilder: (uid) => _MockDatabase(uid: uid),
         ),
       ),
     );

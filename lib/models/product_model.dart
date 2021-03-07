@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/models/models.dart';
 import 'package:possystem/services/database.dart';
-import 'package:provider/provider.dart';
+
+import 'catalog_model.dart';
+import 'ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
   ProductModel({
@@ -90,9 +91,8 @@ class ProductModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> add(BuildContext context, IngredientModel ingredient) async {
-    final db = context.read<Database>();
-    await db.update(Collections.menu, {
+  Future<void> add(IngredientModel ingredient) async {
+    await Database.service.update(Collections.menu, {
       '$prefix.ingredients.${ingredient.name}': ingredient.toMap(),
     });
 
@@ -100,8 +100,7 @@ class ProductModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update(
-    BuildContext context, {
+  Future<void> update({
     String name,
     int index,
     num price,
@@ -116,8 +115,7 @@ class ProductModel extends ChangeNotifier {
 
     if (updateData.isEmpty) return;
 
-    final db = context.read<Database>();
-    return db.update(Collections.menu, updateData).then((_) {
+    return Database.service.update(Collections.menu, updateData).then((_) {
       if (name == this.name) {
         catalog.changeProduct();
       } else {

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home_container.dart';
+import 'package:possystem/ui/splash/logo_splash.dart';
 import 'package:possystem/user_dependencies.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/user_model.dart';
@@ -14,7 +15,7 @@ import 'package:provider/provider.dart';
 class MyApp extends StatelessWidget {
   // Expose builders for 3rd party services at the root of the widget tree
   // This is useful when mocking services while testing
-  final Database Function(BuildContext context, String uid) databaseBuilder;
+  final Database Function(String uid) databaseBuilder;
 
   const MyApp({Key key, this.databaseBuilder}) : super(key: key);
 
@@ -34,14 +35,7 @@ class MyApp extends StatelessWidget {
           return _buildProviders();
         }
 
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/logo.png', width: 128, height: 128),
-            ],
-          ),
-        );
+        return LogoSplash();
       },
     );
   }

@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 /// the user logged data uid.
 class UserDependencies extends StatelessWidget {
   final Widget Function(BuildContext, AsyncSnapshot<UserModel>) builder;
-  final Database Function(BuildContext context, String uid) databaseBuilder;
+  final Database Function(String uid) databaseBuilder;
 
   const UserDependencies({
     Key key,
@@ -30,21 +30,15 @@ class UserDependencies extends StatelessWidget {
         final user = snapshot.data;
         if (user == null) return builder(context, snapshot);
 
+        Database.service = databaseBuilder(user.uid);
+
         /// For any other Provider services that rely on user data can be
         /// added to the following MultiProvider list.
         /// Once a user has been detected, a re-build will be initiated.
         return MultiProvider(
           providers: [
             Provider<UserModel>.value(value: user),
-            Provider<Database>(
-              create: (context) => databaseBuilder(context, user.uid),
-            ),
-            ChangeNotifierProvider<MenuModel>(
-              create: (context) {
-                // strictly equal to: Provider.of<Logger>(context, listen: false)
-                return MenuModel(context);
-              },
-            ),
+            ChangeNotifierProvider<MenuModel>.value(value: MenuModel()),
           ],
           builder: (context, child) => builder(context, snapshot),
         );

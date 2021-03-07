@@ -3,6 +3,8 @@ enum Collections {
 }
 
 abstract class Database<T> {
+  static Database service;
+
   final Map<Collections, String> CollectionName = {
     Collections.menu: 'menu',
   };

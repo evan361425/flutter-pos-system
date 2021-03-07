@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/models.dart';
+import 'package:possystem/models/product_model.dart';
 import 'package:possystem/routes.dart';
 
 class ProductModal extends StatefulWidget {
@@ -54,7 +54,6 @@ class _ProductModalState extends State<ProductModal> {
       setState(() => isSaving = true);
       if (widget.product.isReady) {
         await widget.product.update(
-          context,
           name: _nameController.text,
           price: num.parse(_priceController.text),
           cost: num.parse(_costController.text),
@@ -68,7 +67,7 @@ class _ProductModalState extends State<ProductModal> {
           price: num.parse(_priceController.text),
           cost: num.parse(_costController.text),
         );
-        await widget.product.catalog.add(context, product);
+        await widget.product.catalog.add(product);
         await Navigator.of(context)
             .popAndPushNamed(Routes.product, arguments: product);
       }

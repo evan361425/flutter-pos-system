@@ -58,11 +58,11 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
       setState(() => isSaving = true);
       if (widget.oldName.isEmpty) {
         final catalog = CatalogModel(name: value, index: menu.length);
-        await menu.add(context, catalog);
+        await menu.add(catalog);
         await Navigator.of(context)
             .popAndPushNamed(Routes.catalog, arguments: catalog);
       } else {
-        await menu[widget.oldName].update(context, name: value);
+        await menu[widget.oldName].update(menu, name: value);
         Navigator.of(context).pop();
       }
     }

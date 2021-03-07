@@ -7,7 +7,7 @@ class SignoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () => _confirm(context),
         child: Text(Local.of(context).t('setting.logout.button')),
       ),
@@ -19,7 +19,7 @@ class SignoutButton extends StatelessWidget {
       title: Text(Local.of(context).t('alert_title')),
       content: Text(Local.of(context).t('setting.logout.alert')),
       actions: <Widget>[
-        FlatButton(
+        ElevatedButton(
           child: Text(Local.of(context).t('confirm')),
           onPressed: () {
             final authProvider = context.read<Authentication>();
@@ -34,7 +34,7 @@ class SignoutButton extends StatelessWidget {
             );
           },
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text(Local.of(context).t('cancel')),
           onPressed: () => Navigator.pop(context),
         ),
