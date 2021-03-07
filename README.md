@@ -7,5 +7,20 @@ POS System
 
 ## Structure
 
-Providers
-  - AuthWidgetsBuilder
+### Providers
+
+- Authentication
+- Theme
+- Language
+- User
+- Menu
+
+## TODO
+
+- [ ] Ingredient Set's name selectable
+- [ ] Reorder Menu
+- [ ] Searching Menu
+- [ ] Custom Info
+- [ ] Stock
+- [ ] Ordering
+-
