@@ -39,8 +39,8 @@ class LabeledCheckbox extends StatelessWidget {
               ),
               Expanded(
                 child: Align(
-                  child: Text(Local.of(context).t(label), style: labelStyle),
                   alignment: Alignment.centerLeft,
+                  child: Text(Local.of(context).t(label), style: labelStyle),
                 ),
               ),
             ],

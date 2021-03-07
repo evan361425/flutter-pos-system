@@ -20,7 +20,6 @@ class SignoutButton extends StatelessWidget {
       content: Text(Local.of(context).t('setting.logout.alert')),
       actions: <Widget>[
         ElevatedButton(
-          child: Text(Local.of(context).t('confirm')),
           onPressed: () {
             final authProvider = context.read<Authentication>();
 
@@ -33,10 +32,11 @@ class SignoutButton extends StatelessWidget {
               ModalRoute.withName('/login'),
             );
           },
+          child: Text(Local.of(context).t('confirm')),
         ),
         ElevatedButton(
-          child: Text(Local.of(context).t('cancel')),
           onPressed: () => Navigator.pop(context),
+          child: Text(Local.of(context).t('cancel')),
         ),
       ],
     );

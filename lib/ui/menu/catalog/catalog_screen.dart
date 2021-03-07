@@ -25,26 +25,26 @@ class CatalogScreen extends StatelessWidget {
       builder: (BuildContext context, _) => FadeInTitleScaffold(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.arrow_back_ios_sharp),
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_sharp),
         ),
         title: catalog.name,
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.more_horiz_sharp),
           onPressed: () => showCupertinoModalPopup(
             context: context,
             builder: _moreActions(catalog),
           ),
+          child: Icon(Icons.more_horiz_sharp),
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
           onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (_) => ProductModal(
               product: ProductModel.empty(catalog),
             ),
           )),
           tooltip: Local.of(context).t('menu.catalog.add_product'),
+          child: Icon(Icons.add),
         ),
         body: _body(context),
       ),
@@ -102,15 +102,14 @@ class CatalogScreen extends StatelessWidget {
       return CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            child: Text('變更名稱'),
             onPressed: () => Navigator.of(context).pushReplacement(
               CupertinoPageRoute(
                 builder: (_) => CatalogNameModal(oldName: catalog.name),
               ),
             ),
+            child: Text('變更名稱'),
           ),
           CupertinoActionSheetAction(
-            child: Text('排序產品'),
             onPressed: () => Navigator.of(context).pushReplacement(
               CupertinoPageRoute(
                 builder: (BuildContext context) {
@@ -118,11 +117,12 @@ class CatalogScreen extends StatelessWidget {
                 },
               ),
             ),
+            child: Text('排序產品'),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('取消'),
           onPressed: () => Navigator.pop(context, 'cancel'),
+          child: Text('取消'),
         ),
       );
     };

@@ -24,7 +24,6 @@ abstract class ItemList<T> extends StatelessWidget {
       child: Slidable(
         controller: _slidableController,
         actionPane: SlidableDrawerActionPane(),
-        child: itemTile(context, item),
         secondaryActions: <Widget>[
           IconSlideAction(
             color: kNegativeColor,
@@ -33,6 +32,7 @@ abstract class ItemList<T> extends StatelessWidget {
             onTap: () => onDelete(item),
           ),
         ],
+        child: itemTile(context, item),
       ),
     );
   }

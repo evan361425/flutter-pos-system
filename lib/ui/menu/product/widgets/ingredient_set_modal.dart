@@ -25,12 +25,11 @@ class IngredientSetModal extends StatelessWidget {
         middle: Text('設定${ingredient.name}的特殊份量'),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_rounded),
         ),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Text(ingredientSet.isNotReady ? '新增' : '儲存'),
           onPressed: () async {
             final newSet = _formKey.currentState.getData();
             if (newSet == null) return;
@@ -45,6 +44,7 @@ class IngredientSetModal extends StatelessWidget {
 
             Navigator.of(context).pop();
           },
+          child: Text(ingredientSet.isNotReady ? '新增' : '儲存'),
         ),
       ),
       child: SafeArea(

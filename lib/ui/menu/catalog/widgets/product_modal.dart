@@ -27,15 +27,15 @@ class _ProductModalState extends State<ProductModal> {
       navigationBar: CupertinoNavigationBar(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.arrow_back_ios_sharp),
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_sharp),
         ),
         trailing: isSaving
             ? CircularProgressIndicator()
             : CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Text('儲存'),
                 onPressed: () => _onSubmit(_nameController.text),
+                child: Text('儲存'),
               ),
       ),
       child: SafeArea(

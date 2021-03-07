@@ -31,8 +31,8 @@ class LabeledSwitch extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: Align(
-                  child: Text(Local.of(context).t(label)),
                   alignment: Alignment.centerRight,
+                  child: Text(Local.of(context).t(label)),
                 ),
               ),
               Switch(

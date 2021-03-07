@@ -16,11 +16,11 @@ class MenuScreen extends StatelessWidget {
         middle: Text('主頁'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.more_horiz_sharp),
           onPressed: () => showCupertinoModalPopup(
             context: context,
             builder: _moreActions,
           ),
+          child: Icon(Icons.more_horiz_sharp),
         ),
       ),
       child: SafeArea(child: _body(context)),
@@ -30,11 +30,11 @@ class MenuScreen extends StatelessWidget {
   Widget _body(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (_) => CatalogNameModal(),
         )),
         tooltip: Local.of(context).t('menu.add_catalog'),
+        child: Icon(Icons.add),
       ),
       // When click android go back, it will avoid closing APP
       body: WillPopScope(
@@ -48,7 +48,6 @@ class MenuScreen extends StatelessWidget {
     return CupertinoActionSheet(
       actions: [
         CupertinoActionSheetAction(
-          child: Text('排序產品種類'),
           onPressed: () => Navigator.of(context).pushReplacement(
             CupertinoPageRoute(
               builder: (BuildContext context) {
@@ -57,11 +56,12 @@ class MenuScreen extends StatelessWidget {
               },
             ),
           ),
+          child: Text('排序產品種類'),
         ),
       ],
       cancelButton: CupertinoActionSheetAction(
-        child: Text('取消'),
         onPressed: () => Navigator.pop(context, 'cancel'),
+        child: Text('取消'),
       ),
     );
   }

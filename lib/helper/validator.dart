@@ -7,10 +7,10 @@ class Validator {
     return (String value) {
       try {
         if (double.parse(value) < 0) {
-          return '${fieldName}不能為負數';
+          return '$fieldName不能為負數';
         }
       } catch (err) {
-        return '${fieldName}必須是數字';
+        return '$fieldName必須是數字';
       }
       return null;
     };
@@ -21,7 +21,7 @@ class Validator {
       try {
         double.parse(value);
       } catch (err) {
-        return '${fieldName}必須是數字';
+        return '$fieldName必須是數字';
       }
       return null;
     };
@@ -31,11 +31,11 @@ class Validator {
     return (String value) {
       try {
         if (value.isEmpty) {
-          return '${fieldName}不能為空';
+          return '$fieldName不能為空';
         }
 
         if (value.length > limit) {
-          return '${fieldName}的長度不能超過${limit}';
+          return '$fieldName的長度不能超過$limit';
         }
       } catch (err) {
         return '發生無法預期的錯誤..';

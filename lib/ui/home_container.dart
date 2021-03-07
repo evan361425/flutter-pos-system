@@ -58,7 +58,6 @@ class HomeContainer extends StatelessWidget {
       ),
       child: Center(
         child: CupertinoButton(
-          child: const Text('Next page'),
           onPressed: () {
             Navigator.of(context).push(
               CupertinoPageRoute<void>(
@@ -69,10 +68,10 @@ class HomeContainer extends StatelessWidget {
                     ),
                     child: Center(
                       child: CupertinoButton(
-                        child: const Text('Back'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
+                        child: const Text('Back'),
                       ),
                     ),
                   );
@@ -80,6 +79,7 @@ class HomeContainer extends StatelessWidget {
               ),
             );
           },
+          child: const Text('Next page'),
         ),
       ),
     );

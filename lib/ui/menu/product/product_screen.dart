@@ -24,20 +24,19 @@ class ProductScreen extends StatelessWidget {
       builder: (BuildContext context, _) => FadeInTitleScaffold(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.arrow_back_ios_sharp),
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_sharp),
         ),
         title: product.name,
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.more_horiz_sharp),
           onPressed: () => showCupertinoModalPopup(
             context: context,
             builder: _moreActions(product),
           ),
+          child: Icon(Icons.more_horiz_sharp),
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
           onPressed: () {
             Navigator.of(context).push(CupertinoPageRoute(
               builder: (_) => IngredientModal(
@@ -46,6 +45,7 @@ class ProductScreen extends StatelessWidget {
             ));
           },
           tooltip: Local.of(context).t('menu.product.add_integredient'),
+          child: Icon(Icons.add),
         ),
         body: _body(context),
       ),
@@ -109,17 +109,17 @@ class ProductScreen extends StatelessWidget {
       return CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            child: Text('變更產品'),
             onPressed: () => Navigator.of(context).pushReplacement(
               CupertinoPageRoute(
                 builder: (_) => ProductModal(product: product),
               ),
             ),
+            child: Text('變更產品'),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('取消'),
           onPressed: () => Navigator.pop(context, 'cancel'),
+          child: Text('取消'),
         ),
       );
     };

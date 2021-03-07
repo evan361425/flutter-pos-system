@@ -28,11 +28,11 @@ class Local {
   Future<bool> load() async {
     var countryCode =
         locale.countryCode == null ? '' : '-${locale.countryCode}';
-    var folder = 'lang/${locale.languageCode}${countryCode}';
+    var folder = 'lang/${locale.languageCode}$countryCode';
     // Load the language YAML file from the "lang" folder
     for (var filename in files) {
-      var raw = await rootBundle.loadString('${folder}/${filename}.yaml');
-      var prefix = filename == 'app' ? '' : '${filename}.';
+      var raw = await rootBundle.loadString('$folder/$filename.yaml');
+      var prefix = filename == 'app' ? '' : '$filename.';
       _dynamicLoadMap(prefix, loadYaml(raw));
     }
 
@@ -59,7 +59,7 @@ class Local {
   void _dynamicLoadMap(String prefix, YamlMap data) {
     data.forEach((key, value) {
       if (value is YamlMap) {
-        _dynamicLoadMap('${prefix}${key}.', value);
+        _dynamicLoadMap('$prefix$key.', value);
       } else {
         _localizedStrings[prefix + key] = value.toString();
       }

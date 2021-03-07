@@ -26,12 +26,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  provider: ^4.3.2+4
-  firebase_core: ^0.7.0
-  firebase_auth: ^0.20.0+1
-  cloud_firestore: ^0.16.0
+  provider: ^5.0.0
+  firebase_core: ^1.0.0
+  firebase_auth: ^1.0.0
+  cloud_firestore: ^1.0.0
 
-  google_sign_in: ^4.5.0+9
+  google_sign_in: ^5.0.0
 
   flutter_signin_button: ^1.1.0
   flutter_slidable: ^0.5.7
@@ -39,10 +39,10 @@ dependencies:
 
   flutter_reorderable_list: ^0.1.5
 
-  shared_preferences: ^0.5.12+4
+  shared_preferences: ^2.0.3
   # for l18n
-  yaml: ^2.2.1
-  sprintf: ^5.0.0
+  yaml: ^3.1.0
+  sprintf: ^6.0.0
   # TODO: what the purpose of this package?
   logger: ^0.9.4
 
@@ -51,9 +51,9 @@ dev_dependencies:
     sdk: flutter
   integration_test: ^1.0.1
   # help to build launcher icons for each device
-  flutter_launcher_icons: ^0.8.1
+  # flutter_launcher_icons: ^0.8.1
   # analysis code
-  pedantic: ^1.9.2
+  pedantic: ^1.11.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

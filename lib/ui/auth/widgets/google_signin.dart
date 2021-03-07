@@ -23,9 +23,7 @@ class GoogleSignIn extends StatelessWidget {
                   themeProvider.isDarkModeOn
                       ? Buttons.GoogleDark
                       : Buttons.Google,
-                  onPressed: () async {
-                    await _confirm(context);
-                  },
+                  onPressed: () => _confirm(context),
                 ),
           authProvider.status == AuthStatus.Failed
               ? Padding(

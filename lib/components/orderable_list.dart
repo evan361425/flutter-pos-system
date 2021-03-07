@@ -36,15 +36,15 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
       navigationBar: CupertinoNavigationBar(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(Icons.arrow_back_ios_sharp),
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_sharp),
         ),
         trailing: isSaving
             ? CircularProgressIndicator()
             : CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Text('儲存'),
                 onPressed: onSubmit,
+                child: Text('儲存'),
               ),
         middle: Text(widget.title),
       ),
@@ -104,11 +104,11 @@ class OrderableListItem<T> extends StatelessWidget {
           children: [
             Expanded(
               child: rl.DelayedReorderableListener(
+                delay: Duration(milliseconds: 300),
                 child: Padding(
                   padding: const EdgeInsets.all(kPadding),
                   child: Text(title),
                 ),
-                delay: Duration(milliseconds: 300),
               ),
             ),
             rl.ReorderableListener(
