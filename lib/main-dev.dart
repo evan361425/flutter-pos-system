@@ -88,7 +88,13 @@ class _MenuSnapshot {
           'product2': {'price': 30, 'index': 5, 'ingredients': {}},
           'product3': {'price': 30, 'index': 6, 'ingredients': {}},
           '😂product4': {'price': 30, 'index': 7, 'ingredients': {}},
-          '產品五': {'price': 30, 'index': 8, 'ingredients': {}}
+          '產品五': {'price': 30, 'index': 8, 'ingredients': {}},
+          '😂product6': {'price': 30, 'index': 9, 'ingredients': {}},
+          '😂product7': {'price': 30, 'index': 10, 'ingredients': {}},
+          '😂product8': {'price': 30, 'index': 11, 'ingredients': {}},
+          '😂product9': {'price': 30, 'index': 12, 'ingredients': {}},
+          '😂produc1': {'price': 30, 'index': 13, 'ingredients': {}},
+          '😂produc2': {'price': 30, 'index': 14, 'ingredients': {}},
         },
       },
       'sandwitch': {

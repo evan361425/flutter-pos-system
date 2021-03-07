@@ -12,20 +12,6 @@ class ProductOrderableList extends OrderableList<ProductModel> {
 
 class _ProductOrderListState extends OrderableListState<ProductModel, int> {
   @override
-  Widget listWithScrollableView() {
-    return ListView.builder(
-      itemCount: widget.items.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = widget.items[index];
-        return OrderableListItem<int>(
-          title: item.name,
-          keyValue: item.index,
-        );
-      },
-    );
-  }
-
-  @override
   int indexOfKey(int key) {
     return widget.items.indexWhere((item) => item.index == key);
   }
@@ -35,4 +21,17 @@ class _ProductOrderListState extends OrderableListState<ProductModel, int> {
     // TODO: implement onSubmit
     throw UnimplementedError();
   }
+
+  @override
+  Widget itemBuilder(BuildContext context, int index) {
+    final item = widget.items[index];
+    return OrderableListItem(
+      key: ValueKey(item.index),
+      index: index,
+      title: item.name,
+    );
+  }
+
+  @override
+  int get itemCount => widget.items.length;
 }

@@ -170,13 +170,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_reorderable_list:
-    dependency: "direct main"
-    description:
-      name: flutter_reorderable_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.5"
   flutter_signin_button:
     dependency: "direct main"
     description:
@@ -521,4 +514,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0-259.9.beta <3.0.0"
-  flutter: ">=1.22.0"
+  flutter: ">=1.20.0"
