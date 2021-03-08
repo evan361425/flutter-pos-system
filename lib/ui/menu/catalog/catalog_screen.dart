@@ -6,7 +6,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/catalog_name_modal.dart';

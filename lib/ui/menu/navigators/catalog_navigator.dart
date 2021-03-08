@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 import '../catalog/catalog_screen.dart';
