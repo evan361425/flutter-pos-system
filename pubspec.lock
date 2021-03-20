@@ -217,6 +217,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  loadmore:
+    dependency: "direct main"
+    description:
+      name: loadmore
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   logger:
     dependency: "direct main"
     description:
@@ -462,4 +469,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0-259.9.beta <3.0.0"
-  flutter: ">=1.20.0"
+  flutter: ">=2.0.0"

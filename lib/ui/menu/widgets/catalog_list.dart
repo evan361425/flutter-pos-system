@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/item_list.dart';
+import 'package:possystem/components/page/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/routes.dart';
