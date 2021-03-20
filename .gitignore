@@ -47,6 +47,3 @@ app.*.map.json
 
 # Sensitive data
 google-services.json
-
-# Custom
-.vscode
