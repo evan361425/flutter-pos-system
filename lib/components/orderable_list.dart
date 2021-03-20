@@ -76,8 +76,6 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
 
   Widget itemBuilder(BuildContext context, int index);
 
-  int indexOfKey(U key);
-
   Future<void> onSubmit();
 }
 

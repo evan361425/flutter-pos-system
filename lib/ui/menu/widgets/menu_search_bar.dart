@@ -11,7 +11,7 @@ class MenuSearchBar extends StatelessWidget {
       child: TextField(
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search),
-          hintText: '搜尋種類、產品、成分',
+          hintText: '搜尋種類、產品、成份',
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
         ),

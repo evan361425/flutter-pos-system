@@ -37,7 +37,8 @@ dependencies:
   flutter_slidable: ^0.5.7
   modal_bottom_sheet: ^1.0.0+1
 
-  # flutter_reorderable_list: ^0.1.5
+  # tools
+  uuid: ^3.0.1
 
   shared_preferences: ^2.0.3
   # for l18n
@@ -49,7 +50,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  integration_test: ^1.0.1
+  # integration_test: ^1.0.2+2
   # help to build launcher icons for each device
   # flutter_launcher_icons: ^0.8.1
   # analysis code

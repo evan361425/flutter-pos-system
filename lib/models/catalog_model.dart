@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -9,15 +10,16 @@ import 'product_model.dart';
 
 class CatalogModel extends ChangeNotifier {
   CatalogModel({
-    @required this.id,
     @required this.name,
     this.index = 0,
+    String id,
     Map<String, ProductModel> products,
     Timestamp createdAt,
   })  : createdAt = createdAt ?? Timestamp.now(),
-        products = products ?? {};
+        products = products ?? {},
+        id = id ?? Util.uuidV4();
 
-  int id;
+  final String id;
   // catalog's name
   String name;
   // index in menu
@@ -46,7 +48,7 @@ class CatalogModel extends ChangeNotifier {
         if (key is String && product is Map) {
           products[key] = ProductModel.fromMap(
             catalog: catalog,
-            data: {'name': key, ...product},
+            data: {'id': key, ...product},
           );
         }
       });
@@ -57,7 +59,6 @@ class CatalogModel extends ChangeNotifier {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'index': index,
       'createdAt': createdAt,
@@ -71,10 +72,10 @@ class CatalogModel extends ChangeNotifier {
 
   Future<void> add(ProductModel product) async {
     await Database.service.update(Collections.menu, {
-      '$name.products.${product.name}': product.toMap(),
+      '$id.products.${product.id}': product.toMap(),
     });
 
-    products[product.name] = product;
+    products[product.id] = product;
     notifyListeners();
   }
 
@@ -91,22 +92,12 @@ class CatalogModel extends ChangeNotifier {
     if (updateData.isEmpty) return;
 
     return Database.service.update(Collections.menu, updateData).then((_) {
-      if (name == this.name) {
-        menu.changeCatalog();
-      } else {
-        menu.changeCatalog(oldName: this.name, newName: name);
-        this.name = name;
-      }
+      menu.catalogChanged();
       notifyListeners();
     });
   }
 
-  void changeProduct({String oldName, String newName}) {
-    if (oldName != newName) {
-      products[newName] = products[oldName];
-      products.remove(oldName);
-    }
-
+  void productChanged() {
     notifyListeners();
   }
 
@@ -121,12 +112,11 @@ class CatalogModel extends ChangeNotifier {
     final updateData = <String, dynamic>{};
     if (index != null && index != this.index) {
       this.index = index;
-      updateData['${this.name}.index'] = index;
+      updateData['$id.index'] = index;
     }
     if (name != null && name != this.name) {
-      updateData.clear();
-      updateData[this.name] = FieldValue.delete();
-      updateData[name] = toMap();
+      this.name = name;
+      updateData['$id.name'] = name;
     }
     return updateData;
   }
@@ -143,19 +133,11 @@ class CatalogModel extends ChangeNotifier {
     return productList;
   }
 
+  bool get isEmpty => length == 0;
+
   bool get isReady => name != null;
 
   int get length => products.length;
-
-  int get newId {
-    var maxId = 0;
-    products.forEach((key, product) {
-      if (product.id > maxId) {
-        maxId = product.id;
-      }
-    });
-    return maxId + 1;
-  }
 
   int get newIndex {
     var maxIndex = 0;

@@ -6,7 +6,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/product_ingredient_model.dart';
 import 'package:possystem/models/product_model.dart';
 import '../catalog/widgets/product_modal.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +38,7 @@ class ProductScreen extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(CupertinoPageRoute(
             builder: (_) => IngredientModal(
-              ingredient: IngredientModel.empty(product),
+              ingredient: ProductIngredientModel.empty(product),
             ),
           ));
         },

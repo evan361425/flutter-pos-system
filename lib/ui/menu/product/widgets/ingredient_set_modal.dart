@@ -2,8 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/ingredient_set_index_model.dart';
+import 'package:possystem/models/product_ingredient_model.dart';
+import 'package:possystem/models/product_ingredient_set_model.dart';
 import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/stock_model.dart';
+import 'package:provider/provider.dart';
 
 class IngredientSetModal extends StatelessWidget {
   IngredientSetModal({
@@ -14,15 +18,16 @@ class IngredientSetModal extends StatelessWidget {
   }) : super(key: key);
 
   final _formKey = GlobalKey<_IngredientSetFormState>();
-  final IngredientSet ingredientSet;
-  final IngredientModel ingredient;
+  final ProductIngredientSetModel ingredientSet;
+  final ProductIngredientModel ingredient;
   final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
+    final stock = context.read<StockModel>();
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('設定${ingredient.name}的特殊份量'),
+        middle: Text('設定${stock[ingredient.id].name}的特殊份量'),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
@@ -40,7 +45,7 @@ class IngredientSetModal extends StatelessWidget {
               await ingredientSet.update(ingredient, newSet);
             }
 
-            product.changeIngredient();
+            product.ingredientChanged();
 
             Navigator.of(context).pop();
           },
@@ -68,7 +73,7 @@ class _IngredientSetForm extends StatefulWidget {
     @required this.iSet,
   }) : super(key: key);
 
-  final IngredientSet iSet;
+  final ProductIngredientSetModel iSet;
 
   @override
   _IngredientSetFormState createState() => _IngredientSetFormState();
@@ -76,10 +81,11 @@ class _IngredientSetForm extends StatefulWidget {
 
 class _IngredientSetFormState extends State<_IngredientSetForm> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController;
-  TextEditingController _ammountController;
-  TextEditingController _additionalPriceController;
-  TextEditingController _additionalCostController;
+  final _nameController = TextEditingController(text: '');
+  final _ammountController = TextEditingController();
+  final _additionalPriceController = TextEditingController();
+  final _additionalCostController = TextEditingController();
+  IngredientSetIndexModel ingredietSetIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -139,13 +145,13 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
     );
   }
 
-  IngredientSet getData() {
+  ProductIngredientSetModel getData() {
     if (!_formKey.currentState.validate()) {
       return null;
     }
 
-    return IngredientSet(
-      name: _nameController.text,
+    return ProductIngredientSetModel(
+      ingredientSetId: 'todo',
       amount: num.parse(_ammountController.text),
       additionalPrice: num.parse(_additionalPriceController.text),
       additionalCost: num.parse(_additionalCostController.text),
@@ -154,16 +160,28 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
 
   @override
   void initState() {
+    print(ingredietSetIndex);
+    _ammountController.text = widget.iSet.amount.toString();
+    _additionalPriceController.text = widget.iSet.additionalPrice.toString();
+    _additionalCostController.text = widget.iSet.additionalCost.toString();
     super.initState();
-    _nameController = TextEditingController(text: widget.iSet.name);
-    _ammountController = TextEditingController(
-      text: widget.iSet.amount.toString(),
-    );
-    _additionalPriceController = TextEditingController(
-      text: widget.iSet.additionalPrice.toString(),
-    );
-    _additionalCostController = TextEditingController(
-      text: widget.iSet.additionalCost.toString(),
-    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ingredietSetIndex = context.watch<IngredientSetIndexModel>();
+    if (ingredietSetIndex.isReady) {
+      _nameController.text = ingredietSetIndex[widget.iSet.id]?.name;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ammountController.dispose();
+    _additionalPriceController.dispose();
+    _additionalCostController.dispose();
+    super.dispose();
   }
 }

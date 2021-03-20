@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/menu_model.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 
 import 'widgets/catalog_name_modal.dart';
-import 'widgets/catalog_orderable_list.dart';
 import 'widgets/menu_body.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -49,12 +47,7 @@ class MenuScreen extends StatelessWidget {
       actions: [
         CupertinoActionSheetAction(
           onPressed: () => Navigator.of(context).pushReplacement(
-            CupertinoPageRoute(
-              builder: (BuildContext context) {
-                final items = context.watch<MenuModel>().catalogList;
-                return CatalogOrderableList(items: items);
-              },
-            ),
+            MenuRoutes.reorderCatalog(),
           ),
           child: Text('排序產品種類'),
         ),

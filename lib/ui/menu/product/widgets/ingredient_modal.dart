@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/product_ingredient_model.dart';
+import 'package:possystem/models/stock_model.dart';
+import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
@@ -10,7 +12,7 @@ class IngredientModal extends StatefulWidget {
     @required this.ingredient,
   }) : super(key: key);
 
-  final IngredientModel ingredient;
+  final ProductIngredientModel ingredient;
 
   @override
   _IngredientModalState createState() => _IngredientModalState();
@@ -19,8 +21,9 @@ class IngredientModal extends StatefulWidget {
 class _IngredientModalState extends State<IngredientModal> {
   final _formKey = GlobalKey<FormState>();
   bool isSaving = false;
-  TextEditingController _nameController;
-  TextEditingController _amountController;
+  StockModel stock;
+  final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +58,15 @@ class _IngredientModalState extends State<IngredientModal> {
       setState(() => isSaving = true);
       if (widget.ingredient.isReady) {
         await widget.ingredient.update(
-          name: _nameController.text,
           defaultAmount: num.parse(_amountController.text),
         );
       } else {
-        await widget.ingredient.update(
-          name: _nameController.text,
+        final ingredient = ProductIngredientModel(
+          ingredientId: 'todo',
+          product: widget.ingredient.product,
           defaultAmount: num.parse(_amountController.text),
-          updateDB: false,
         );
-        await widget.ingredient.product.addIngredient(widget.ingredient);
+        await widget.ingredient.product.addIngredient(ingredient);
       }
       Navigator.of(context).pop();
     }
@@ -97,10 +99,10 @@ class _IngredientModalState extends State<IngredientModal> {
       validator: (String value) {
         final errorMsg = Validator.textLimit('成份名稱', 30)(value);
         if (errorMsg != null) return errorMsg;
-        if (value != widget.ingredient.name &&
-            widget.ingredient.product.has(value)) {
-          return '成份名稱重複';
-        }
+        // if (value != stock[widget.ingredient.id].name &&
+        //     widget.ingredient.product.has(value)) {
+        //   return '成份名稱重複';
+        // }
         return null;
       },
     );
@@ -124,9 +126,15 @@ class _IngredientModalState extends State<IngredientModal> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.ingredient.name);
-    _amountController =
-        TextEditingController(text: widget.ingredient.defaultAmount.toString());
+    _amountController.text = widget.ingredient.defaultAmount.toString();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    stock = context.watch<StockModel>();
+    _nameController.text = stock[widget.ingredient.id].name;
   }
 
   @override

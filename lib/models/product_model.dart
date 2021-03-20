@@ -1,30 +1,32 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
 
 import 'catalog_model.dart';
-import 'ingredient_model.dart';
+import 'product_ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
   ProductModel({
-    @required this.id,
     @required this.name,
     @required this.catalog,
     this.index = 0,
     this.price = 0,
     this.cost = 0,
-    Map<String, IngredientModel> ingredients,
+    String id,
+    Map<String, ProductIngredientModel> ingredients,
     Timestamp createdAt,
   })  : createdAt = createdAt ?? Timestamp.now(),
-        ingredients = ingredients ?? {};
+        ingredients = ingredients ?? {},
+        id = id ?? Util.uuidV4();
 
-  int id;
   String name;
   int index;
   num price;
   num cost;
-  final Map<String, IngredientModel> ingredients;
+  final String id;
+  final Map<String, ProductIngredientModel> ingredients;
   final CatalogModel catalog;
   final Timestamp createdAt;
 
@@ -39,23 +41,23 @@ class ProductModel extends ChangeNotifier {
     }
 
     final oriIngredients = data['ingredients'];
-    final ingredients = <String, IngredientModel>{};
+    final ingredients = <String, ProductIngredientModel>{};
     final product = ProductModel(
+      catalog: catalog,
+      ingredients: ingredients,
       id: data['id'],
       name: data['name'],
-      catalog: catalog,
       index: data['index'],
       price: data['price'],
       createdAt: data['createdAt'],
-      ingredients: ingredients,
     );
 
     if (oriIngredients is Map) {
-      oriIngredients.forEach((final key, final ingredient) {
+      oriIngredients.forEach((final ingredientId, final ingredient) {
         if (ingredient is Map) {
-          ingredients[key] = IngredientModel.fromMap(
+          ingredients[ingredientId] = ProductIngredientModel.fromMap(
             product: product,
-            name: key,
+            ingredientId: ingredientId,
             data: ingredient,
           );
         }
@@ -67,7 +69,6 @@ class ProductModel extends ChangeNotifier {
 
   factory ProductModel.empty(CatalogModel catalog) {
     return ProductModel(
-      id: catalog.newId,
       name: null,
       catalog: catalog,
       index: catalog.newIndex,
@@ -76,6 +77,7 @@ class ProductModel extends ChangeNotifier {
 
   Map<String, dynamic> toMap() {
     return {
+      'name': name,
       'index': index,
       'price': price,
       'createdAt': createdAt,
@@ -87,12 +89,12 @@ class ProductModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> addIngredient(IngredientModel ingredient) async {
+  Future<void> addIngredient(ProductIngredientModel ingredient) async {
     await Database.service.update(Collections.menu, {
-      '$prefix.ingredients.${ingredient.name}': ingredient.toMap(),
+      '$prefix.ingredients.${ingredient.id}': ingredient.toMap(),
     });
 
-    ingredients[ingredient.name] = ingredient;
+    ingredients[ingredient.id] = ingredient;
     notifyListeners();
   }
 
@@ -112,29 +114,18 @@ class ProductModel extends ChangeNotifier {
     if (updateData.isEmpty) return;
 
     if (!updateDB) {
-      this.name = name;
       return;
     }
 
     return Database.service.update(Collections.menu, updateData).then((_) {
-      if (name == this.name) {
-        catalog.changeProduct();
-      } else {
-        catalog.changeProduct(oldName: this.name, newName: name);
-        this.name = name;
-      }
+      catalog.productChanged();
       notifyListeners();
     });
   }
 
-  void changeIngredient({String oldName, String newName}) {
-    if (oldName != null && oldName != newName) {
-      ingredients[newName] = ingredients[oldName];
-      ingredients.remove(oldName);
-    }
-
+  void ingredientChanged() {
+    catalog.productChanged();
     notifyListeners();
-    catalog.changeProduct();
   }
 
   // HELPER
@@ -161,9 +152,8 @@ class ProductModel extends ChangeNotifier {
       updateData['$prefix.cost'] = cost;
     }
     if (name != null && name != this.name) {
-      updateData.clear();
-      updateData[prefix] = FieldValue.delete();
-      updateData['${catalog.name}.products.$name'] = toMap();
+      this.name = name;
+      updateData['$prefix.name'] = name;
     }
     return updateData;
   }
@@ -172,5 +162,5 @@ class ProductModel extends ChangeNotifier {
 
   bool get isReady => name != null;
 
-  String get prefix => '${catalog.name}.products.$name';
+  String get prefix => '${catalog.id}.products.$id';
 }

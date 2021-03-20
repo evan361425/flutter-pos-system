@@ -1,5 +1,7 @@
 enum Collections {
   menu,
+  ingredient,
+  ingredient_sets,
 }
 
 abstract class Database<T> {
@@ -7,6 +9,8 @@ abstract class Database<T> {
 
   final Map<Collections, String> CollectionName = {
     Collections.menu: 'menu',
+    Collections.ingredient: 'ingredient',
+    Collections.ingredient_sets: 'ingredient_sets',
   };
 
   Future<T> get(Collections collection);

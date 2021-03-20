@@ -14,22 +14,19 @@ class MenuModel extends ChangeNotifier {
 
   Future<void> loadFromDb() async {
     var snapshot = await Database.service.get(Collections.menu);
-    // TODO: handle exception
-    catalogs = {};
     buildFromMap(snapshot.data());
 
     notifyListeners();
   }
 
   void buildFromMap(Map<String, dynamic> data) {
-    if (data == null) {
-      return null;
-    }
+    catalogs = {};
+    if (data == null) return;
 
     try {
       data.forEach((key, value) {
         if (value is Map) {
-          catalogs[key] = CatalogModel.fromMap({'name': key, ...value});
+          catalogs[key] = CatalogModel.fromMap({'id': key, ...value});
         }
       });
     } catch (e) {
@@ -44,7 +41,7 @@ class MenuModel extends ChangeNotifier {
   // STATE CHANGER
 
   Future<CatalogModel> buildCatalog({String name}) async {
-    final catalog = CatalogModel(id: newId, name: name, index: newIndex);
+    final catalog = CatalogModel(name: name, index: newIndex);
 
     await addCatalog(catalog);
 
@@ -53,34 +50,29 @@ class MenuModel extends ChangeNotifier {
 
   Future<void> addCatalog(CatalogModel catalog) async {
     await Database.service.update(Collections.menu, {
-      catalog.name: catalog.toMap(),
+      catalog.id: catalog.toMap(),
     });
 
-    catalogs[catalog.name] = catalog;
+    catalogs[catalog.id] = catalog;
     notifyListeners();
   }
 
   // SETTER
 
-  Future<void> changeCatalog({String oldName, String newName}) async {
-    if (oldName != newName) {
-      catalogs[newName] = catalogs[oldName];
-      catalogs.remove(oldName);
-    }
-
+  Future<void> catalogChanged() async {
     notifyListeners();
   }
 
   // HELPER
 
-  bool has(String key) {
-    return catalogs.containsKey(key);
+  bool has(String name) {
+    return !catalogs.values.every((catalog) => catalog.name != name);
   }
 
   // GETTER
 
-  CatalogModel operator [](String name) {
-    return catalogs[name];
+  CatalogModel operator [](String id) {
+    return catalogs[id];
   }
 
   List<CatalogModel> get catalogList {
@@ -97,16 +89,6 @@ class MenuModel extends ChangeNotifier {
       }
     });
     return maxIndex + 1;
-  }
-
-  int get newId {
-    var maxId = 0;
-    catalogs.forEach((key, catalog) {
-      if (catalog.id > maxId) {
-        maxId = catalog.id;
-      }
-    });
-    return maxId + 1;
   }
 
   bool get isNotReady => catalogs == null;

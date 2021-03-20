@@ -12,11 +12,6 @@ class ProductOrderableList extends OrderableList<ProductModel> {
 
 class _ProductOrderListState extends OrderableListState<ProductModel, int> {
   @override
-  int indexOfKey(int key) {
-    return widget.items.indexWhere((item) => item.index == key);
-  }
-
-  @override
   Future<void> onSubmit() {
     // TODO: implement onSubmit
     throw UnimplementedError();

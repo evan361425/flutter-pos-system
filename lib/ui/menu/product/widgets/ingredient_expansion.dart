@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/ingredient_set_index_model.dart';
+import 'package:possystem/models/product_ingredient_model.dart';
+import 'package:possystem/models/product_ingredient_set_model.dart';
 import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/stock_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ingredient_modal.dart';
@@ -19,12 +22,17 @@ class IngredientExpansion extends StatefulWidget {
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
   List<bool> showIngredient = [];
-  List<IngredientModel> ingredients;
+  List<ProductIngredientModel> ingredients;
+  StockModel stock;
+  IngredientSetIndexModel ingredientSetIndex;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
+    stock = context.watch<StockModel>();
+    ingredientSetIndex = context.watch<IngredientSetIndexModel>();
+
     // Don't rebuild make old expansion still opening
     for (var i = showIngredient.length; i < ingredients.length; i++) {
       showIngredient.add(false);
@@ -33,6 +41,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   @override
   Widget build(BuildContext context) {
+    if (ingredientSetIndex.isNotReady) return CircularProgressIndicator();
+
     return Container(
       child: ExpansionPanelList(
         children: ingredients
@@ -51,11 +61,11 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  ExpansionPanel _panelBuilder(int index, IngredientModel ingredient) {
-    final body = ingredient.additionalSets.values.map<Widget>((ingredientSet) {
+  ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
+    final body = ingredient.ingredientSets.values.map<Widget>((ingredientSet) {
       return ListTile(
         onTap: () => goToIngredientSetModel(ingredient, ingredientSet),
-        title: Text(ingredientSet.name),
+        title: Text(ingredientSetIndex[ingredientSet.id].name),
         trailing: Text('${ingredientSet.amount}'),
         subtitle: _ingredientSetMetadata(ingredientSet),
       );
@@ -72,7 +82,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return ExpansionPanel(
       canTapOnHeader: true,
       headerBuilder: (_, __) => ListTile(
-        title: Text(ingredient.name),
+        title: Text(stock[ingredient.id].name),
         subtitle: Text('使用量：${ingredient.defaultAmount}'),
       ),
       body: Column(
@@ -82,7 +92,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Widget _addButtons(IngredientModel ingredient) {
+  Widget _addButtons(ProductIngredientModel ingredient) {
     return Row(children: [
       Expanded(
         child: Padding(
@@ -106,7 +116,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.add),
             label: Text('新增特殊份量'),
             onPressed: () {
-              goToIngredientSetModel(ingredient, IngredientSet.empty());
+              goToIngredientSetModel(
+                ingredient,
+                ProductIngredientSetModel.empty(),
+              );
             },
           ),
         ),
@@ -114,7 +127,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     ]);
   }
 
-  Widget _ingredientSetMetadata(IngredientSet ingredientSet) {
+  Widget _ingredientSetMetadata(ProductIngredientSetModel ingredientSet) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -160,8 +173,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   }
 
   void goToIngredientSetModel(
-    IngredientModel ingredient,
-    IngredientSet ingredientSet,
+    ProductIngredientModel ingredient,
+    ProductIngredientSetModel ingredientSet,
   ) {
     final product = context.read<ProductModel>();
     Navigator.of(context).push(

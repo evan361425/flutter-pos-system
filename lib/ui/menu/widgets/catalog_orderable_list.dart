@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/orderable_list.dart';
 import 'package:possystem/models/catalog_model.dart';
+import 'package:possystem/models/menu_model.dart';
+import 'package:provider/provider.dart';
 
 class CatalogOrderableList extends OrderableList<CatalogModel> {
   CatalogOrderableList({Key key, @required List<CatalogModel> items})
@@ -12,21 +14,19 @@ class CatalogOrderableList extends OrderableList<CatalogModel> {
 
 class _CatalogOrderListState extends OrderableListState<CatalogModel, int> {
   @override
-  int indexOfKey(int key) {
-    return widget.items.indexWhere((item) => item.index == key);
-  }
+  Future<void> onSubmit() async {
+    final menu = context.read<MenuModel>();
 
-  @override
-  Future<void> onSubmit() {
-    // TODO: implement onSubmit
-    throw UnimplementedError();
+    for (var i = 1, n = widget.items.length; i <= n; i++) {
+      await widget.items[i - 1].update(menu, index: i);
+    }
   }
 
   @override
   Widget itemBuilder(BuildContext context, int index) {
     final item = widget.items[index];
     return OrderableListItem(
-      key: ValueKey(item.index),
+      key: ValueKey(item.id),
       index: index,
       title: item.name,
     );

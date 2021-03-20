@@ -43,88 +43,192 @@ void main() {
   });
 }
 
-class _MenuSnapshot {
+class _IngredientSnapshot extends Snapshot {
+  @override
   Map<String, Map<String, dynamic>> data() {
     return {
-      'burger': {
-        'id': 1,
+      'i1': {
+        'name': 'cheese',
+        'currentAmount': 20.0,
+        'warningAmount': 20.0,
+        'alertAmount': 20.0,
+        'lastAmount': 20.0,
+      },
+      'i2': {
+        'name': 'bread',
+      },
+      'i3': {
+        'name': 'vegetable',
+      },
+      'i4': {
+        'name': 'some-other-very-long-name 👎👎👎',
+      },
+    };
+  }
+}
+
+class _IngredientSetSnapshot extends Snapshot {
+  @override
+  Map<String, Map<String, dynamic>> data() {
+    return {
+      'is1': {
+        'name': 'less',
+        'defaultProportion': 0.5,
+      },
+      'is2': {
+        'name': 'more',
+        'defaultProportion': 1.5,
+      },
+    };
+  }
+}
+
+class _MenuSnapshot extends Snapshot {
+  @override
+  Map<String, Map<String, dynamic>> data() {
+    return {
+      'c1': {
+        'name': 'burger',
         'index': 0,
         'products': {
-          'cheeseburger': {
-            'id': 1,
+          '0': {
+            'name': 'cheeseburger',
             'price': 30,
             'cost': 20,
             'index': 0,
             'ingredients': {
-              'cheese': {
+              'i1': {
                 'defaultAmount': 20,
                 'additionalSets': {
-                  'less': {
-                    'ammount': 10,
+                  'is1': {
+                    'amount': 10,
                     'additionalPrice': 0,
                     'additionalCost': -5,
                   },
-                  'more': {
-                    'ammount': 30,
+                  'is2': {
+                    'amount': 30,
                     'additionalPrice': 10,
                     'additionalCost': 5,
                   },
                 },
               },
-              'bread': {
+              'i2': {
                 'defaultAmount': 1,
               },
-              'vegetable': {
+              'i3': {
                 'defaultAmount': 1,
               },
-              'some-other-very-long-name 👎👎👎': {
+              'i4': {
                 'defaultAmount': 1,
               }
             },
           },
-          'hamburger': {'id': 1, 'price': 50, 'index': 1, 'ingredients': {}},
-          'kamburger': {'id': 2, 'price': 50, 'index': 2, 'ingredients': {}},
-          'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-':
-              {'id': 3, 'price': 30, 'index': 3, 'ingredients': {}},
-          'product1': {'id': 4, 'price': 30, 'index': 4, 'ingredients': {}},
-          'product2': {'id': 5, 'price': 30, 'index': 5, 'ingredients': {}},
-          'product3': {'id': 6, 'price': 30, 'index': 6, 'ingredients': {}},
-          '😂product4': {'id': 7, 'price': 30, 'index': 7, 'ingredients': {}},
-          '產品五': {'id': 8, 'price': 30, 'index': 8, 'ingredients': {}},
-          '😂product6': {'id': 10, 'price': 30, 'index': 9, 'ingredients': {}},
-          '😂product7': {'id': 11, 'price': 30, 'index': 10, 'ingredients': {}},
-          '😂product8': {'id': 12, 'price': 30, 'index': 11, 'ingredients': {}},
-          '😂product9': {'id': 13, 'price': 30, 'index': 12, 'ingredients': {}},
-          '😂producs1': {'id': 14, 'price': 30, 'index': 13, 'ingredients': {}},
-          '😂producs2': {'id': 15, 'price': 30, 'index': 14, 'ingredients': {}},
+          '1': {
+            'name': 'hamburger',
+            'price': 50,
+            'index': 1,
+            'ingredients': {}
+          },
+          '2': {
+            'name': 'kamburger',
+            'price': 50,
+            'index': 2,
+            'ingredients': {}
+          },
+          '3': {
+            'name':
+                'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-',
+            'price': 30,
+            'index': 3,
+            'ingredients': {}
+          },
+          '4': {'name': 'product1', 'price': 30, 'index': 4, 'ingredients': {}},
+          '5': {'name': 'product2', 'price': 30, 'index': 5, 'ingredients': {}},
+          '6': {'name': 'product6', 'price': 30, 'index': 6, 'ingredients': {}},
+          '7': {
+            'name': '😂product4',
+            'price': 30,
+            'index': 7,
+            'ingredients': {}
+          },
+          '8': {'name': '產品五', 'price': 30, 'index': 8, 'ingredients': {}},
+          '9': {
+            'name': '😂product6',
+            'price': 30,
+            'index': 9,
+            'ingredients': {}
+          },
+          '10': {
+            'name': '😂product7',
+            'price': 30,
+            'index': 10,
+            'ingredients': {}
+          },
+          '11': {
+            'name': '😂product8',
+            'price': 30,
+            'index': 11,
+            'ingredients': {}
+          },
+          '12': {
+            'name': '😂product9',
+            'price': 30,
+            'index': 12,
+            'ingredients': {}
+          },
+          '13': {
+            'name': '😂product.1',
+            'price': 30,
+            'index': 13,
+            'ingredients': {}
+          },
+          '14': {
+            'name': '😂product.2',
+            'price': 30,
+            'index': 14,
+            'ingredients': {}
+          },
         },
       },
-      'sandwitch': {
-        'id': 2,
+      'c2': {
+        'name': 'sandwitch',
         'index': 1,
         'products': {
-          'c-sandwitch': {'id': 1, 'price': 30, 'index': 0, 'ingredients': {}},
+          '15': {
+            'name': 'c-sandwitch',
+            'price': 30,
+            'index': 0,
+            'ingredients': {}
+          },
         },
       },
-      'drink': {
-        'id': 3,
+      'c3': {
+        'name': 'drink',
         'index': 2,
       }
     };
   }
 }
 
-class _MockDatabase extends Database<_MenuSnapshot> {
+class _MockDatabase extends Database<Snapshot> {
   final String uid;
   _MockDatabase({@required this.uid});
 
   @override
-  Future<_MenuSnapshot> get(Collections collection) {
-    return Future.delayed(Duration(seconds: 0), () => _MenuSnapshot());
+  Future<Snapshot> get(Collections collection) {
+    if (collection == Collections.menu) {
+      return Future.delayed(Duration(seconds: 0), () => _MenuSnapshot());
+    } else if (collection == Collections.ingredient) {
+      return Future.delayed(Duration(seconds: 0), () => _IngredientSnapshot());
+    } else {
+      // } else if (collection == Collections.ingredient_sets) {
+      return Future.delayed(
+          Duration(seconds: 0), () => _IngredientSetSnapshot());
+    }
   }
 
   @override
-  Future<_MenuSnapshot> set(Collections collection, Map<String, dynamic> data) {
+  Future<Snapshot> set(Collections collection, Map<String, dynamic> data) {
     return Future.delayed(Duration(seconds: 0));
   }
 
@@ -161,4 +265,8 @@ class _MockAuth extends Authentication {
   Stream<UserModel> get user async* {
     yield _user;
   }
+}
+
+abstract class Snapshot {
+  Map<String, Map<String, dynamic>> data();
 }
