@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/product_ingredient_model.dart';
 import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
 import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
@@ -21,8 +23,8 @@ class IngredientModal extends StatefulWidget {
 class _IngredientModalState extends State<IngredientModal> {
   final _formKey = GlobalKey<FormState>();
   bool isSaving = false;
-  StockModel stock;
-  final _nameController = TextEditingController();
+
+  String _ingredientId;
   final _amountController = TextEditingController();
 
   @override
@@ -38,7 +40,7 @@ class _IngredientModalState extends State<IngredientModal> {
             ? CircularProgressIndicator()
             : CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: () => _onSubmit(_nameController.text),
+                onPressed: () => _onSubmit(),
                 child: Text('儲存'),
               ),
       ),
@@ -53,7 +55,7 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Future<void> _onSubmit(String value) async {
+  Future<void> _onSubmit() async {
     if (!isSaving && _formKey.currentState.validate()) {
       setState(() => isSaving = true);
       if (widget.ingredient.isReady) {
@@ -86,25 +88,14 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   Widget _nameField() {
-    return TextFormField(
-      controller: _nameController,
-      textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        labelText: '成份名稱，起司',
-        filled: false,
-        errorStyle: TextStyle(color: kNegativeColor),
-      ),
-      maxLength: 30,
-      validator: (String value) {
-        final errorMsg = Validator.textLimit('成份名稱', 30)(value);
-        if (errorMsg != null) return errorMsg;
-        // if (value != stock[widget.ingredient.id].name &&
-        //     widget.ingredient.product.has(value)) {
-        //   return '成份名稱重複';
-        // }
-        return null;
-      },
+    final stock = context.read<StockModel>();
+    final name = stock[_ingredientId]?.name ?? '';
+    return SearchBarInline(
+      heroTag: IngredientSearchScaffold.tag,
+      text: name,
+      hintText: '成份名稱，起司',
+      helperText: '新增成份種類後，可至庫存設定相關資訊',
+      newPageBuilder: (BuildContext _) => IngredientSearchScaffold(text: name),
     );
   }
 
@@ -118,9 +109,15 @@ class _IngredientModalState extends State<IngredientModal> {
         filled: false,
         errorStyle: TextStyle(color: kNegativeColor),
       ),
-      onFieldSubmitted: _onSubmit,
+      onFieldSubmitted: (_) => _onSubmit(),
       validator: Validator.positiveDouble('成份預設用量'),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _ingredientId = widget.ingredient.id;
   }
 
   @override
@@ -130,16 +127,7 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    stock = context.watch<StockModel>();
-    _nameController.text = stock[widget.ingredient.id].name;
-  }
-
-  @override
   void dispose() {
-    _nameController.dispose();
     _amountController.dispose();
     super.dispose();
   }

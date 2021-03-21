@@ -40,6 +40,7 @@ dependencies:
   # tools
   uuid: ^3.0.1
   loadmore: ^2.0.0
+  string_similarity: ^2.0.0
 
   shared_preferences: ^2.0.3
   # for l18n
