@@ -55,6 +55,14 @@ class IngredientSetModel extends ChangeNotifier {
     });
   }
 
+  int _similarityRating;
+  void setSimilarity(String searchText) {
+    _similarityRating = Util.similarity(name, searchText);
+    // print('$name Similarity to $searchText is $_similarityRating');
+  }
+
+  int get similarity => _similarityRating;
+
   // GETTER
 
   bool get isReady => name != null;

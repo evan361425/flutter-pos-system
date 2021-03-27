@@ -81,6 +81,10 @@ class ProductIngredientModel {
     });
   }
 
+  bool has(String id) {
+    return ingredientSets.containsKey(id);
+  }
+
   // GETTER
 
   bool get isReady => ingredientId != null;

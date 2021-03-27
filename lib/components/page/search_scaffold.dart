@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loadmore/loadmore.dart';
 import 'package:possystem/components/search_bar.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   const SearchScaffold({
     Key key,
     @required this.onChanged,
-    @required this.onLoad,
     @required this.itemBuilder,
     @required this.emptyBuilder,
+    @required this.initialBuilder,
     this.heroTag,
     this.text = '',
     this.hintText = '',
@@ -20,7 +19,6 @@ class SearchScaffold<T> extends StatefulWidget {
   }) : super(key: key);
 
   final Future<List<T>> Function(String) onChanged;
-  final Future<List<T>> Function(int) onLoad;
   final String heroTag;
   final int maxLength;
   final String text;
@@ -28,6 +26,7 @@ class SearchScaffold<T> extends StatefulWidget {
   final String hintText;
   final String labelText;
   final TextCapitalization textCapitalization;
+  final Widget Function(BuildContext) initialBuilder;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
 
@@ -37,19 +36,28 @@ class SearchScaffold<T> extends StatefulWidget {
 
 class SearchScaffoldState<T> extends State<SearchScaffold> {
   final GlobalKey<SearchBarState> searchBar = GlobalKey<SearchBarState>();
-  bool isFinish = false;
-  bool isSearching = false;
+  bool isSearching = true;
+  bool get isNotEmpty => list.isNotEmpty;
   int get count => list.length;
-  bool get isEmpty => list.isEmpty;
   List<T> list = [];
+
+  void setSearchKeyword(String keyword) {
+    searchBar.currentState.text = keyword;
+  }
 
   @override
   Widget build(BuildContext context) {
+    // very first time
+    if (searchBar.currentState == null) {
+      Future.delayed(Duration.zero).then((value) => _onChanged(widget.text));
+    }
+
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back),
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
+          child: Icon(Icons.arrow_back_ios_sharp),
         ),
         middle: SearchBar(
           key: searchBar,
@@ -60,48 +68,46 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           helperText: widget.helperText,
           maxLength: widget.maxLength,
           textCapitalization: widget.textCapitalization,
+          hideCounter: true,
         ),
         heroTag: widget.heroTag,
-        transitionBetweenRoutes: widget.heroTag != null,
+        transitionBetweenRoutes: false,
       ),
-      child: SafeArea(
-        child: Center(
+      child: Material(
+        child: SafeArea(
           child: RefreshIndicator(
             onRefresh: _onRefresh,
-            child: isSearching
-                ? CircularProgressIndicator()
-                : isEmpty
-                    ? widget.emptyBuilder(context, searchBar.currentState.text)
-                    : _loadMore(),
+            child: isSearching ? CircularProgressIndicator() : _body(context),
           ),
         ),
       ),
     );
   }
 
-  LoadMore _loadMore() {
-    return LoadMore(
-      isFinish: isFinish,
-      onLoadMore: _onLoadMore,
-      textBuilder: (LoadMoreStatus status) {
-        switch (status) {
-          case LoadMoreStatus.fail:
-            return '加載失敗，請點擊重試';
-          case LoadMoreStatus.idle:
-            return '加載更多';
-          case LoadMoreStatus.loading:
-            return '加載中';
-          case LoadMoreStatus.nomore:
-            return '加載完畢';
-          default:
-            return '';
-        }
-      },
-      child: ListView.builder(
-        itemBuilder: (context, index) =>
-            widget.itemBuilder(context, list[index]),
-        itemCount: count,
-      ),
+  Widget _body(BuildContext context) {
+    if (searchBar.currentState.text.isEmpty) {
+      return widget.initialBuilder(context);
+    } else if (isNotEmpty) {
+      return Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            '搜尋到$count個結果',
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ),
+        Expanded(child: _resultList()),
+      ]);
+    } else {
+      return widget.emptyBuilder(context, searchBar.currentState.text);
+    }
+  }
+
+  Widget _resultList() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) =>
+          widget.itemBuilder(context, list[index]),
+      itemCount: list.length,
     );
   }
 
@@ -115,17 +121,6 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
       list.addAll(newList);
       isSearching = false;
     });
-  }
-
-  Future<bool> _onLoadMore() async {
-    final List<T> newList = await widget.onLoad(count);
-    if (newList.isEmpty) {
-      setState(() => isFinish = true);
-    } else {
-      setState(() => list.addAll(newList));
-    }
-
-    return true;
   }
 
   Future<void> _onRefresh() async {

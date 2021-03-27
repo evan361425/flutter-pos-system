@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 
 /// Want to build your own theme?
 /// https://github.com/rxlabz/panache
@@ -263,7 +264,7 @@ class AppThemes {
         fontStyle: FontStyle.normal,
       ),
       errorStyle: TextStyle(
-        color: Color(0xdd000000),
+        color: kNegativeColor,
         fontSize: null,
         fontWeight: FontWeight.w400,
         fontStyle: FontStyle.normal,
@@ -520,7 +521,7 @@ class AppThemes {
         fontStyle: FontStyle.normal,
       ),
       errorStyle: TextStyle(
-        color: Color(0xffffffff),
+        color: kNegativeColor,
         fontSize: null,
         fontWeight: FontWeight.w400,
         fontStyle: FontStyle.normal,

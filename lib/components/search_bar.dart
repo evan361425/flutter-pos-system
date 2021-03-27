@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/constant.dart';
+import 'package:flutter/services.dart';
 
 class SearchBar extends StatefulWidget {
   SearchBar({
@@ -11,6 +11,7 @@ class SearchBar extends StatefulWidget {
     this.labelText = '',
     this.helperText = '',
     this.maxLength = 30,
+    this.hideCounter = false,
     this.textCapitalization = TextCapitalization.none,
   }) : super(key: key);
 
@@ -19,6 +20,7 @@ class SearchBar extends StatefulWidget {
   final String helperText;
   final String hintText;
   final String labelText;
+  final bool hideCounter;
   final TextCapitalization textCapitalization;
   final void Function(String) onChanged;
 
@@ -29,49 +31,61 @@ class SearchBar extends StatefulWidget {
 class SearchBarState extends State<SearchBar> {
   final controller = TextEditingController();
 
-  set text(String text) => controller.text = text;
+  set text(String text) {
+    controller.text = text;
+    _onChanged(text);
+  }
+
   String get text => controller.text;
 
   bool isEmpty;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(kPadding),
-      child: TextField(
-        controller: controller,
-        maxLength: widget.maxLength,
-        onChanged: (String text) {
-          if (text.isEmpty) {
-            setState(() => isEmpty = true);
-          } else if (isEmpty) {
-            setState(() => isEmpty = false);
-          }
-          widget.onChanged(text);
-        },
-        textCapitalization: widget.textCapitalization,
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: widget.hintText,
-          labelText: widget.labelText,
-          helperText: widget.helperText,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          suffixIcon: isEmpty
-              ? null
-              : IconButton(
-                  onPressed: controller.clear,
-                  icon: Icon(Icons.clear),
-                ),
-        ),
-      ),
+    return CupertinoTextField(
+      controller: controller,
+      maxLength: widget.maxLength,
+      autofocus: true,
+      onChanged: (String text) {
+        if (text.isEmpty) {
+          setState(() => isEmpty = true);
+        } else if (isEmpty) {
+          setState(() => isEmpty = false);
+        }
+        widget.onChanged(text);
+      },
+      textCapitalization: widget.textCapitalization,
+      textInputAction: TextInputAction.search,
+      padding: EdgeInsets.zero,
+      placeholder: widget.hintText,
+      onSubmitted: _onChanged,
+      // expands: true,
+      suffix: isEmpty
+          ? null
+          : CupertinoButton(
+              onPressed: () {
+                controller.clear();
+                _onChanged('');
+              },
+              child: Icon(Icons.clear),
+            ),
     );
+  }
+
+  void _onChanged(String text) {
+    text = text.trim();
+    if (text.isEmpty) {
+      setState(() => isEmpty = true);
+    } else if (isEmpty) {
+      setState(() => isEmpty = false);
+    }
+    widget.onChanged(text);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    text = widget.text;
+    controller.text = widget.text;
     isEmpty = widget.text.isEmpty;
   }
 

@@ -176,13 +176,12 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     ProductIngredientModel ingredient,
     ProductIngredientSetModel ingredientSet,
   ) {
-    final product = context.read<ProductModel>();
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (_) => IngredientSetModal(
           ingredientSet: ingredientSet,
           ingredient: ingredient,
-          product: product,
+          ingredientSetName: ingredientSetIndex[ingredientSet.id]?.name ?? '',
         ),
       ),
     );

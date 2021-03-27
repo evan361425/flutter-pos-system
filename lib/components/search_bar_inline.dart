@@ -1,43 +1,42 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/constant.dart';
 
 class SearchBarInline extends StatelessWidget {
   const SearchBarInline({
     Key key,
     @required this.heroTag,
     this.text,
+    this.errorText,
     this.hintText,
     this.helperText,
-    @required this.newPageBuilder,
+    @required this.onTap,
   }) : super(key: key);
 
   final String heroTag;
   final String text;
+  final String errorText;
   final String hintText;
   final String helperText;
-  final Widget Function(BuildContext) newPageBuilder;
+  final Future<void> Function(BuildContext) onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(kPadding),
-      child: Hero(
-        tag: heroTag,
-        child: TextFormField(
-          readOnly: true,
-          initialValue: text,
-          onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: newPageBuilder,
-          )),
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            hintText: hintText,
-            helperText: helperText,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            prefixIcon: Icon(Icons.search),
-          ),
+    final textController = TextEditingController(text: text);
+    return Hero(
+      tag: heroTag,
+      // transitionOnUserGestures: true,
+      child: TextField(
+        readOnly: true,
+        controller: textController,
+        onTap: () => onTap(context),
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          hintText: hintText,
+          helperText: helperText,
+          errorText: errorText,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          prefixIcon: Icon(Icons.search),
         ),
       ),
     );

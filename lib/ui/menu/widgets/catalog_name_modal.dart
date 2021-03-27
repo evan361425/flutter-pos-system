@@ -74,7 +74,6 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
       decoration: InputDecoration(
         labelText: '種類名稱，漢堡',
         filled: false,
-        errorStyle: TextStyle(color: kNegativeColor),
       ),
       onFieldSubmitted: _onSubmit,
       maxLength: 30,

@@ -31,6 +31,16 @@ class StockModel extends ChangeNotifier {
     }
   }
 
+  IngredientModel addIngredient(String name) {
+    final ingredient = IngredientModel(name: name);
+    ingredients[ingredient.id] = ingredient;
+
+    final updateData = {'${ingredient.id}': ingredient};
+    Database.service.set(Collections.ingredient, updateData);
+
+    return ingredient;
+  }
+
   IngredientModel operator [](String id) {
     return ingredients[id];
   }

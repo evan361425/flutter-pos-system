@@ -1,110 +1,118 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/ingredient_set_index_model.dart';
+import 'package:possystem/models/ingredient_set_model.dart';
 import 'package:possystem/models/product_ingredient_model.dart';
 import 'package:possystem/models/product_ingredient_set_model.dart';
-import 'package:possystem/models/product_model.dart';
-import 'package:possystem/models/stock_model.dart';
 import 'package:provider/provider.dart';
 
-class IngredientSetModal extends StatelessWidget {
+import 'ingredient_set_search_scaffold.dart';
+
+class IngredientSetModal extends StatefulWidget {
   IngredientSetModal({
     Key key,
+    this.ingredientSetName,
     this.ingredientSet,
-    this.product,
     this.ingredient,
   }) : super(key: key);
 
-  final _formKey = GlobalKey<_IngredientSetFormState>();
+  final String ingredientSetName;
   final ProductIngredientSetModel ingredientSet;
   final ProductIngredientModel ingredient;
-  final ProductModel product;
+
+  @override
+  _IngredientSetModalState createState() => _IngredientSetModalState();
+}
+
+class _IngredientSetModalState extends State<IngredientSetModal> {
+  final _formKey = GlobalKey<FormState>();
+  final _ammountController = TextEditingController();
+  final _additionalPriceController = TextEditingController();
+  final _additionalCostController = TextEditingController();
+
+  bool isSaving = false;
+  String ingredientSetName;
+  String ingredientSetId;
+  String errorMessage;
+
+  Future<void> _onSubmit() async {
+    final newSet = _getSet();
+    if (newSet == null) return;
+
+    if (widget.ingredientSet.isNotReady) {
+      await widget.ingredient.add(newSet);
+    } else {
+      await widget.ingredientSet.update(widget.ingredient, newSet);
+    }
+
+    widget.ingredient.product.ingredientChanged();
+
+    Navigator.of(context).pop();
+  }
+
+  ProductIngredientSetModel _getSet() {
+    if (!_formKey.currentState.validate()) {
+      return null;
+    }
+    if (ingredientSetId.isEmpty) {
+      setState(() => errorMessage = '必須設定成份份量名稱。');
+      return null;
+    }
+    if (widget.ingredientSet.id != ingredientSetId &&
+        widget.ingredient.has(ingredientSetId)) {
+      setState(() => errorMessage = '成份份量重複。');
+      return null;
+    }
+
+    return ProductIngredientSetModel(
+      ingredientSetId: ingredientSetId,
+      amount: num.parse(_ammountController.text),
+      additionalPrice: num.parse(_additionalPriceController.text),
+      additionalCost: num.parse(_additionalCostController.text),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.read<StockModel>();
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('設定${stock[ingredient.id].name}的特殊份量'),
+        middle: Text(widget.ingredientSet.isNotReady
+            ? '新增成份份量'
+            : '設定成份份量「${widget.ingredientSetName}」'),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
           child: Icon(Icons.arrow_back_ios_rounded),
         ),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () async {
-            final newSet = _formKey.currentState.getData();
-            if (newSet == null) return;
-
-            if (ingredientSet.isNotReady) {
-              await ingredient.add(newSet);
-            } else {
-              await ingredientSet.update(ingredient, newSet);
-            }
-
-            product.ingredientChanged();
-
-            Navigator.of(context).pop();
-          },
-          child: Text(ingredientSet.isNotReady ? '新增' : '儲存'),
-        ),
+        trailing: isSaving
+            ? CircularProgressIndicator()
+            : CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => _onSubmit(),
+                child: Text('儲存'),
+              ),
       ),
       child: SafeArea(
         child: Material(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(kPadding),
-            child: _IngredientSetForm(
-              key: _formKey,
-              iSet: ingredientSet,
-            ),
+            child: _form(context),
           ),
         ),
       ),
     );
   }
-}
 
-class _IngredientSetForm extends StatefulWidget {
-  const _IngredientSetForm({
-    Key key,
-    @required this.iSet,
-  }) : super(key: key);
-
-  final ProductIngredientSetModel iSet;
-
-  @override
-  _IngredientSetFormState createState() => _IngredientSetFormState();
-}
-
-class _IngredientSetFormState extends State<_IngredientSetForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: '');
-  final _ammountController = TextEditingController();
-  final _additionalPriceController = TextEditingController();
-  final _additionalCostController = TextEditingController();
-  IngredientSetIndexModel ingredietSetIndex;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _form(BuildContext context) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-          TextFormField(
-            controller: _nameController,
-            textInputAction: TextInputAction.next,
-            textCapitalization: TextCapitalization.words,
-            decoration: InputDecoration(
-              labelText: '份量名稱',
-              filled: false,
-            ),
-            maxLength: 30,
-            validator: Validator.textLimit('份量名稱', 30),
-          ),
+          _nameSearchBar(),
           SizedBox(height: kMargin),
           TextFormField(
             controller: _ammountController,
@@ -145,40 +153,61 @@ class _IngredientSetFormState extends State<_IngredientSetForm> {
     );
   }
 
-  ProductIngredientSetModel getData() {
-    if (!_formKey.currentState.validate()) {
-      return null;
-    }
+  Widget _nameSearchBar() {
+    return SearchBarInline(
+      heroTag: IngredientSetSearchScaffold.tag,
+      text: ingredientSetName,
+      hintText: '成份份量名稱，例如：少量',
+      errorText: errorMessage,
+      helperText: '新增成份份量後，可至庫存設定相關資訊',
+      onTap: (BuildContext context) async {
+        final ingredientSet = await Navigator.of(context)
+            .push<IngredientSetModel>(CupertinoPageRoute(
+          builder: (_) => IngredientSetSearchScaffold(text: ingredientSetName),
+        ));
 
-    return ProductIngredientSetModel(
-      ingredientSetId: 'todo',
-      amount: num.parse(_ammountController.text),
-      additionalPrice: num.parse(_additionalPriceController.text),
-      additionalCost: num.parse(_additionalCostController.text),
+        if (ingredientSet != null) {
+          print('User choose ingreidnet set: ${ingredientSet.name}');
+          setState(() {
+            errorMessage = null;
+            ingredientSetId = ingredientSet.id;
+            ingredientSetName = ingredientSet.name;
+            _updateByProportion(ingredientSet.defaultProportion);
+          });
+        }
+      },
     );
   }
 
-  @override
-  void initState() {
-    print(ingredietSetIndex);
-    _ammountController.text = widget.iSet.amount.toString();
-    _additionalPriceController.text = widget.iSet.additionalPrice.toString();
-    _additionalCostController.text = widget.iSet.additionalCost.toString();
-    super.initState();
+  void _updateByProportion(double proportion) {
+    _ammountController.text =
+        (widget.ingredient.defaultAmount * proportion).toString();
+    _additionalPriceController.text =
+        (widget.ingredient.product.price * proportion).toString();
+    _additionalCostController.text =
+        (widget.ingredient.product.cost * proportion).toString();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ingredietSetIndex = context.watch<IngredientSetIndexModel>();
-    if (ingredietSetIndex.isReady) {
-      _nameController.text = ingredietSetIndex[widget.iSet.id]?.name;
-    }
+    ingredientSetId = widget.ingredientSet.id ?? '';
+    final ingredientSetIndex = context.read<IngredientSetIndexModel>();
+    ingredientSetName = ingredientSetIndex[widget.ingredientSet.id]?.name ?? '';
+  }
+
+  @override
+  void initState() {
+    _ammountController.text = widget.ingredientSet.amount.toString();
+    _additionalPriceController.text =
+        widget.ingredientSet.additionalPrice.toString();
+    _additionalCostController.text =
+        widget.ingredientSet.additionalCost.toString();
+    super.initState();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
     _ammountController.dispose();
     _additionalPriceController.dispose();
     _additionalCostController.dispose();

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
-import 'package:string_similarity/string_similarity.dart';
 
 class IngredientModel extends ChangeNotifier {
   IngredientModel({
@@ -73,12 +72,13 @@ class IngredientModel extends ChangeNotifier {
 
   // SETTER
 
-  double _similarityRating;
+  int _similarityRating;
   void setSimilarity(String searchText) {
-    _similarityRating = searchText.similarityTo(name);
+    _similarityRating = Util.similarity(name, searchText);
+    // print('$name Similarity to $searchText is $_similarityRating');
   }
 
-  double get similarity => _similarityRating;
+  int get similarity => _similarityRating;
 
   // GETTER
 

@@ -197,8 +197,11 @@ class _MenuSnapshot extends Snapshot {
           '15': {
             'name': 'c-sandwitch',
             'price': 30,
+            'cost': 20,
             'index': 0,
-            'ingredients': {}
+            'ingredients': {
+              'i1': {'defaultAmount': 20, 'additionalSets': {}}
+            }
           },
         },
       },

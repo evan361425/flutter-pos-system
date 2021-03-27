@@ -32,6 +32,16 @@ class IngredientSetIndexModel extends ChangeNotifier {
     }
   }
 
+  IngredientSetModel addIngredientSet(String name) {
+    final ingredientSet = IngredientSetModel(name: name);
+    ingredientSets[ingredientSet.id] = ingredientSet;
+
+    final updateData = {'${ingredientSet.id}': ingredientSet};
+    Database.service.set(Collections.ingredient_sets, updateData);
+
+    return ingredientSet;
+  }
+
   IngredientSetModel operator [](String id) {
     return ingredientSets[id];
   }

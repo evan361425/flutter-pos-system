@@ -3,22 +3,22 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/page/search_scaffold.dart';
-import 'package:possystem/models/ingredient_model.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/ingredient_set_index_model.dart';
+import 'package:possystem/models/ingredient_set_model.dart';
 import 'package:provider/provider.dart';
 
-class IngredientSearchScaffold extends StatelessWidget {
-  IngredientSearchScaffold({Key key, this.text}) : super(key: key);
+class IngredientSetSearchScaffold extends StatelessWidget {
+  IngredientSetSearchScaffold({Key key, this.text}) : super(key: key);
 
-  static final String tag = 'menu.poduct.ingredient.search';
+  static final String tag = 'menu.poduct.ingredient.set.search';
   final String text;
   final scaffold = GlobalKey<SearchScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.watch<StockModel>();
-    var sortedIngredients = <IngredientModel>[];
-    return SearchScaffold<IngredientModel>(
+    final sets = context.watch<IngredientSetIndexModel>();
+    var sortedIngredients = <IngredientSetModel>[];
+    return SearchScaffold<IngredientSetModel>(
       key: scaffold,
       onChanged: (String text) async {
         if (text.isEmpty) {
@@ -26,8 +26,8 @@ class IngredientSearchScaffold extends StatelessWidget {
           return [];
         }
 
-        sortedIngredients = stock.ingredients.values
-            .map<IngredientModel>((e) => e..setSimilarity(text))
+        sortedIngredients = sets.ingredientSets.values
+            .map<IngredientSetModel>((e) => e..setSimilarity(text))
             .toList()
             .where((element) => element.similarity > 0)
             .toList()
@@ -42,9 +42,9 @@ class IngredientSearchScaffold extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialBuilder: _initialBuilder,
-      heroTag: IngredientSearchScaffold.tag,
+      heroTag: IngredientSetSearchScaffold.tag,
       text: text,
-      hintText: '成份名稱，起司',
+      hintText: '成份份量名稱，例如：少量',
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -52,17 +52,17 @@ class IngredientSearchScaffold extends StatelessWidget {
   Widget _itemBuilder(BuildContext context, dynamic ingredient) {
     return CardTile(
       title: Text(ingredient.name),
-      onTap: () => Navigator.of(context).pop<IngredientModel>(ingredient),
+      onTap: () => Navigator.of(context).pop<IngredientSetModel>(ingredient),
     );
   }
 
   Widget _emptyBuilder(BuildContext context, String text) {
     return CardTile(
-      title: Text('新增成份「$text」'),
+      title: Text('新增成份份量「$text」'),
       onTap: () {
-        final stock = context.read<StockModel>();
-        final ingredient = stock.addIngredient(text);
-        Navigator.of(context).pop<IngredientModel>(ingredient);
+        final sets = context.read<IngredientSetIndexModel>();
+        final ingredientSet = sets.addIngredientSet(text);
+        Navigator.of(context).pop<IngredientSetModel>(ingredientSet);
       },
     );
   }

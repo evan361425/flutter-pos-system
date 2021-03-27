@@ -98,7 +98,6 @@ class _ProductModalState extends State<ProductModal> {
       decoration: InputDecoration(
         labelText: '產品名稱，起司漢堡',
         filled: false,
-        errorStyle: TextStyle(color: kNegativeColor),
       ),
       maxLength: 30,
       validator: (String value) {
@@ -122,7 +121,6 @@ class _ProductModalState extends State<ProductModal> {
       decoration: InputDecoration(
         labelText: '產品價格，給客人看的價錢',
         filled: false,
-        errorStyle: TextStyle(color: kNegativeColor),
       ),
       validator: Validator.positiveDouble('產品價格'),
     );
@@ -136,7 +134,6 @@ class _ProductModalState extends State<ProductModal> {
       decoration: InputDecoration(
         labelText: '產品成本，幫助你算出利潤',
         filled: false,
-        errorStyle: TextStyle(color: kNegativeColor),
       ),
       onFieldSubmitted: _onSubmit,
       validator: Validator.positiveDouble('產品成本'),
