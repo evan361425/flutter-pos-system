@@ -3,8 +3,7 @@ import 'package:possystem/components/page/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/models/stock_model.dart';
-import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products, this.stock) : super(products);
@@ -35,7 +34,10 @@ class ProductList extends ItemList<ProductModel> {
       ),
       onTap: () {
         if (shouldProcess()) {
-          context.read<CatalogNavigatorState>().product = product;
+          Navigator.of(context).pushNamed(
+            MenuRoutes.routeProduct,
+            arguments: product,
+          );
         }
       },
     );

@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/widgets/menu_actions.dart';
 
 import 'widgets/catalog_modal.dart';
 import 'widgets/menu_body.dart';
@@ -17,7 +18,7 @@ class MenuScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           onPressed: () => showCupertinoModalPopup(
             context: context,
-            builder: _moreActions,
+            builder: (_) => MenuActions(),
           ),
           child: Icon(Icons.more_horiz_sharp),
         ),
@@ -29,9 +30,10 @@ class MenuScreen extends StatelessWidget {
   Widget _body(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (_) => CatalogModal(catalog: CatalogModel.empty()),
-        )),
+        onPressed: () => Navigator.of(context).pushNamed(
+          Routes.catalogModal,
+          arguments: CatalogModel.empty(),
+        ),
         tooltip: Local.of(context).t('menu.add_catalog'),
         child: Icon(Icons.add),
       ),
@@ -39,23 +41,6 @@ class MenuScreen extends StatelessWidget {
       body: WillPopScope(
         onWillPop: () async => false,
         child: MenuBody(),
-      ),
-    );
-  }
-
-  Widget _moreActions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MenuRoutes.reorderCatalog(),
-          ),
-          child: Text('排序產品種類'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
-        child: Text('取消'),
       ),
     );
   }

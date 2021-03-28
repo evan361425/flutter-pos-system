@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/page/orderable_list.dart';
+import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
+import 'package:provider/provider.dart';
 
 class ProductOrderableList extends OrderableList<ProductModel> {
   ProductOrderableList({Key key, @required List<ProductModel> items})
@@ -12,9 +14,14 @@ class ProductOrderableList extends OrderableList<ProductModel> {
 
 class _ProductOrderListState extends OrderableListState<ProductModel, int> {
   @override
-  Future<void> onSubmit() {
-    // TODO: implement onSubmit
-    throw UnimplementedError();
+  Future<void> onSubmit() async {
+    final catalog = context.read<CatalogModel>();
+
+    for (var i = 0, n = widget.items.length; i < n; i++) {
+      widget.items[i].update(index: i + 1);
+    }
+
+    catalog.productChanged();
   }
 
   @override

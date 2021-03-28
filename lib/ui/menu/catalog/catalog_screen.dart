@@ -6,12 +6,11 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/catalog_modal.dart';
 import 'widgets/catalog_body.dart';
-import 'widgets/product_modal.dart';
-import 'widgets/product_orderable_list.dart';
 
 class CatalogScreen extends StatelessWidget {
   @override
@@ -31,15 +30,15 @@ class CatalogScreen extends StatelessWidget {
         onPressed: () => showCupertinoModalPopup(
           context: context,
           builder: _moreActions(catalog),
+          useRootNavigator: false,
         ),
         child: Icon(Icons.more_horiz_sharp),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (_) => ProductModal(
-            product: ProductModel.empty(),
-          ),
-        )),
+        onPressed: () => Navigator.of(context).pushNamed(
+          MenuRoutes.routeProductModal,
+          arguments: ProductModel.empty(),
+        ),
         tooltip: Local.of(context).t('menu.catalog.add_product'),
         child: Icon(Icons.add),
       ),
@@ -93,7 +92,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget Function(BuildContext) _moreActions(CatalogModel catalog) {
+  WidgetBuilder _moreActions(CatalogModel catalog) {
     return (BuildContext context) {
       return CupertinoActionSheet(
         actions: [
@@ -106,12 +105,8 @@ class CatalogScreen extends StatelessWidget {
             child: Text('變更名稱'),
           ),
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pushReplacement(
-              CupertinoPageRoute(
-                builder: (BuildContext context) {
-                  return ProductOrderableList(items: catalog.productList);
-                },
-              ),
+            onPressed: () => Navigator.of(context).pushReplacementNamed(
+              MenuRoutes.routeProductOrder,
             ),
             child: Text('排序產品'),
           ),

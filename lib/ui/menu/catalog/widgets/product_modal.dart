@@ -5,7 +5,7 @@ import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/models/product_model.dart';
-import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 class ProductModal extends StatefulWidget {
@@ -84,9 +84,10 @@ class _ProductModalState extends State<ProductModal> {
         cost: num.parse(_costController.text),
       );
       catalog.addProduct(product);
-      Navigator.of(context).pop();
-      // go to product page
-      context.read<CatalogNavigatorState>().product = product;
+      Navigator.of(context).popAndPushNamed(
+        MenuRoutes.routeProduct,
+        arguments: product,
+      );
     }
   }
 
