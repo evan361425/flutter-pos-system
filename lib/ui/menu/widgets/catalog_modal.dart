@@ -2,24 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
-class CatalogNameModal extends StatefulWidget {
-  CatalogNameModal({Key key, this.oldName = ''}) : super(key: key);
+class CatalogModal extends StatefulWidget {
+  CatalogModal({Key key, this.catalog}) : super(key: key);
 
-  final String oldName;
+  final CatalogModel catalog;
 
   @override
-  _CatalogNameModalState createState() => _CatalogNameModalState();
+  _CatalogModalState createState() => _CatalogModalState();
 }
 
-class _CatalogNameModalState extends State<CatalogNameModal> {
+class _CatalogModalState extends State<CatalogModal> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _controller = TextEditingController();
+
   bool isSaving = false;
-  TextEditingController _controller;
-  MenuModel menu;
+  String errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +54,27 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
     );
   }
 
-  Future<void> _onSubmit(String value) async {
-    if (!isSaving && _formKey.currentState.validate()) {
-      setState(() => isSaving = true);
-      if (widget.oldName.isEmpty) {
-        final catalog = await menu.buildCatalog(name: value);
-        await Navigator.of(context)
-            .popAndPushNamed(Routes.catalog, arguments: catalog);
-      } else {
-        await menu[widget.oldName].update(menu, name: value);
-        Navigator.of(context).pop();
-      }
+  void _onSubmit(String name) {
+    if (isSaving || !_formKey.currentState.validate()) return;
+
+    final menu = context.read<MenuModel>();
+
+    if (widget.catalog.name != name && menu.hasCatalog(name)) {
+      return setState(() => errorMessage = '種類名稱重複');
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+
+    if (widget.catalog.isReady) {
+      widget.catalog.update(name: name);
+      menu.catalogChanged();
+      Navigator.of(context).pop();
+    } else {
+      final catalog = menu.buildCatalog(name: name);
+      Navigator.of(context).popAndPushNamed(Routes.catalog, arguments: catalog);
     }
   }
 
@@ -71,31 +83,22 @@ class _CatalogNameModalState extends State<CatalogNameModal> {
       controller: _controller,
       textInputAction: TextInputAction.send,
       textCapitalization: TextCapitalization.words,
+      autofocus: true,
       decoration: InputDecoration(
         labelText: '種類名稱，漢堡',
+        errorText: errorMessage,
         filled: false,
       ),
       onFieldSubmitted: _onSubmit,
       maxLength: 30,
-      validator: (String value) {
-        final errorMsg = Validator.textLimit('種類名稱', 30)(value);
-        if (errorMsg != null) return errorMsg;
-        if (value != widget.oldName && menu.has(value)) return '種類名稱重複';
-        return null;
-      },
+      validator: Validator.textLimit('種類名稱', 30),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.oldName);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    menu = context.read<MenuModel>();
+    _controller.text = widget.catalog.name;
   }
 
   @override

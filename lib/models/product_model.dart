@@ -36,10 +36,6 @@ class ProductModel extends ChangeNotifier {
     CatalogModel catalog,
     Map<String, dynamic> data,
   }) {
-    if (data == null) {
-      return ProductModel.empty(data['catalogName']);
-    }
-
     final oriIngredients = data['ingredients'];
     final ingredients = <String, ProductIngredientModel>{};
     final product = ProductModel(
@@ -67,11 +63,11 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  factory ProductModel.empty(CatalogModel catalog) {
+  factory ProductModel.empty() {
     return ProductModel(
       name: null,
-      catalog: catalog,
-      index: catalog.newIndex,
+      id: null,
+      catalog: null,
     );
   }
 
@@ -98,29 +94,24 @@ class ProductModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update({
+  void update({
     String name,
     int index,
     num price,
     num cost,
-    bool updateDB = true,
-  }) async {
+  }) {
     final updateData = getUpdateData(
       name: name,
       index: index,
       price: price,
       cost: cost,
     );
+
     if (updateData.isEmpty) return;
 
-    if (!updateDB) {
-      return;
-    }
+    Database.service.update(Collections.menu, updateData);
 
-    return Database.service.update(Collections.menu, updateData).then((_) {
-      catalog.productChanged();
-      notifyListeners();
-    });
+    notifyListeners();
   }
 
   void ingredientChanged() {

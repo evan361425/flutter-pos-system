@@ -17,9 +17,11 @@ class _CatalogOrderListState extends OrderableListState<CatalogModel, int> {
   Future<void> onSubmit() async {
     final menu = context.read<MenuModel>();
 
-    for (var i = 1, n = widget.items.length; i <= n; i++) {
-      await widget.items[i - 1].update(menu, index: i);
+    for (var i = 0, n = widget.items.length; i < n; i++) {
+      widget.items[i].update(index: i + 1);
     }
+
+    menu.catalogChanged();
   }
 
   @override

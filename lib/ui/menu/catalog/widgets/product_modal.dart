@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/catalog_model.dart';
+import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/ui/menu/navigators/catalog_navigator.dart';
 import 'package:provider/provider.dart';
@@ -18,10 +19,12 @@ class ProductModal extends StatefulWidget {
 
 class _ProductModalState extends State<ProductModal> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _costController = TextEditingController();
+
   bool isSaving = false;
-  TextEditingController _nameController;
-  TextEditingController _priceController;
-  TextEditingController _costController;
+  String errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -51,27 +54,39 @@ class _ProductModalState extends State<ProductModal> {
     );
   }
 
-  Future<void> _onSubmit(String value) async {
-    if (!isSaving && _formKey.currentState.validate()) {
-      setState(() => isSaving = true);
-      if (widget.product.isReady) {
-        await widget.product.update(
-          name: _nameController.text,
-          price: num.parse(_priceController.text),
-          cost: num.parse(_costController.text),
-        );
-        Navigator.of(context).pop();
-      } else {
-        await widget.product.update(
-          name: _nameController.text,
-          price: num.parse(_priceController.text),
-          cost: num.parse(_costController.text),
-          updateDB: false,
-        );
-        await context.read<CatalogModel>().add(widget.product);
-        Navigator.of(context).pop();
-        context.read<CatalogNavigatorState>().product = widget.product;
-      }
+  void _onSubmit(String name) {
+    if (isSaving || !_formKey.currentState.validate()) return;
+
+    final menu = context.read<MenuModel>();
+
+    if (widget.product.name != name && menu.hasProduct(name)) {
+      return setState(() => errorMessage = '產品名稱重複');
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+
+    if (widget.product.isReady) {
+      widget.product.update(
+        name: _nameController.text,
+        price: num.parse(_priceController.text),
+        cost: num.parse(_costController.text),
+      );
+      Navigator.of(context).pop();
+    } else {
+      final catalog = context.read<CatalogModel>();
+      final product = ProductModel(
+        name: _nameController.text,
+        catalog: catalog,
+        price: num.parse(_priceController.text),
+        cost: num.parse(_costController.text),
+      );
+      catalog.addProduct(product);
+      Navigator.of(context).pop();
+      // go to product page
+      context.read<CatalogNavigatorState>().product = product;
     }
   }
 
@@ -95,21 +110,14 @@ class _ProductModalState extends State<ProductModal> {
       controller: _nameController,
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,
+      autofocus: true,
       decoration: InputDecoration(
         labelText: '產品名稱，起司漢堡',
+        errorText: errorMessage,
         filled: false,
       ),
       maxLength: 30,
-      validator: (String value) {
-        final errorMsg = Validator.textLimit('產品名稱', 30)(value);
-        if (errorMsg != null) return errorMsg;
-        if (value != widget.product.name) {
-          if (context.read<CatalogModel>().has(value)) {
-            return '產品名稱重複';
-          }
-        }
-        return null;
-      },
+      validator: Validator.textLimit('產品名稱', 30),
     );
   }
 
@@ -143,11 +151,9 @@ class _ProductModalState extends State<ProductModal> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.product.name);
-    _priceController =
-        TextEditingController(text: widget.product.price.toString());
-    _costController =
-        TextEditingController(text: widget.product.cost.toString());
+    _nameController.text = widget.product.name;
+    _priceController.text = widget.product.price.toString();
+    _costController.text = widget.product.cost.toString();
   }
 
   @override

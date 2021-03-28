@@ -12,9 +12,9 @@ class ProductIngredientModel {
     Map<String, ProductIngredientSetModel> ingredientSets,
   }) : ingredientSets = ingredientSets ?? {};
 
-  final String ingredientId;
   final ProductModel product;
   final Map<String, ProductIngredientSetModel> ingredientSets;
+  String ingredientId;
   num defaultAmount;
 
   factory ProductIngredientModel.fromMap({
@@ -59,8 +59,8 @@ class ProductIngredientModel {
 
   // STATE CHANGE
 
-  Future<void> add(ProductIngredientSetModel newSet) async {
-    await Database.service.update(Collections.menu, {
+  void addIngredientSet(ProductIngredientSetModel newSet) {
+    Database.service.update(Collections.menu, {
       '$prefix.additionalSets.${newSet.id}': newSet.toMap(),
     });
 
@@ -68,17 +68,26 @@ class ProductIngredientModel {
     product.ingredientChanged();
   }
 
-  Future<void> update({
+  void update({
     num defaultAmount,
-  }) async {
-    if (defaultAmount == this.defaultAmount) return;
-
-    final updateData = {'$prefix.defaultAmount': defaultAmount};
-
-    return Database.service.update(Collections.menu, updateData).then((_) {
+    String ingredientId,
+  }) {
+    final updateData = {};
+    if (defaultAmount != this.defaultAmount) {
       this.defaultAmount = defaultAmount;
-      product.ingredientChanged();
-    });
+      updateData['$prefix.$id.defaultAmount'] = defaultAmount;
+    }
+    // after all property set
+    if (ingredientId != this.ingredientId) {
+      // delete old value
+      updateData['$prefix.$id'] = null;
+      this.ingredientId = ingredientId;
+      updateData['$prefix.$ingredientId'] = toMap();
+    }
+
+    if (updateData.isEmpty) return;
+
+    Database.service.update(Collections.menu, updateData);
   }
 
   bool has(String id) {
@@ -89,6 +98,6 @@ class ProductIngredientModel {
 
   bool get isReady => ingredientId != null;
   bool get isNotReady => ingredientId == null;
-  String get prefix => '${product.prefix}.ingredients.$id';
+  String get prefix => '${product.prefix}.ingredients';
   String get id => ingredientId;
 }

@@ -38,14 +38,14 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
   String ingredientSetId;
   String errorMessage;
 
-  Future<void> _onSubmit() async {
+  void _onSubmit() {
     final newSet = _getSet();
     if (newSet == null) return;
 
     if (widget.ingredientSet.isNotReady) {
-      await widget.ingredient.add(newSet);
+      widget.ingredient.addIngredientSet(newSet);
     } else {
-      await widget.ingredientSet.update(widget.ingredient, newSet);
+      widget.ingredientSet.update(widget.ingredient, newSet);
     }
 
     widget.ingredient.product.ingredientChanged();

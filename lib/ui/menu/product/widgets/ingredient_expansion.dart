@@ -103,7 +103,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             label: Text('設定成份資料'),
             onPressed: () {
               Navigator.of(context).push(CupertinoPageRoute(
-                builder: (_) => IngredientModal(ingredient: ingredient),
+                builder: (_) => IngredientModal(
+                  ingredient: ingredient,
+                  ingredientName: ingredientSetIndex[ingredient.id].name,
+                ),
               ));
             },
           ),

@@ -42,7 +42,10 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
             ? CircularProgressIndicator()
             : CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: onSubmit,
+                onPressed: () async {
+                  await onSubmit();
+                  Navigator.of(context).pop();
+                },
                 child: Text('儲存'),
               ),
         middle: Text(widget.title),

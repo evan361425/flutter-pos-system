@@ -8,7 +8,7 @@ import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/catalog_name_modal.dart';
+import '../widgets/catalog_modal.dart';
 import 'widgets/catalog_body.dart';
 import 'widgets/product_modal.dart';
 import 'widgets/product_orderable_list.dart';
@@ -37,7 +37,7 @@ class CatalogScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (_) => ProductModal(
-            product: ProductModel.empty(catalog),
+            product: ProductModel.empty(),
           ),
         )),
         tooltip: Local.of(context).t('menu.catalog.add_product'),
@@ -100,7 +100,7 @@ class CatalogScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () => Navigator.of(context).pushReplacement(
               CupertinoPageRoute(
-                builder: (_) => CatalogNameModal(oldName: catalog.name),
+                builder: (_) => CatalogModal(catalog: catalog),
               ),
             ),
             child: Text('變更名稱'),

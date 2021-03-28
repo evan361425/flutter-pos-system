@@ -13,9 +13,11 @@ class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
     @required this.ingredient,
+    this.ingredientName,
   }) : super(key: key);
 
   final ProductIngredientModel ingredient;
+  final String ingredientName;
 
   @override
   _IngredientModalState createState() => _IngredientModalState();
@@ -34,7 +36,9 @@ class _IngredientModalState extends State<IngredientModal> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(ingredientName.isEmpty ? '新增成份' : '設定成份「$ingredientName」'),
+        middle: Text(widget.ingredient.isNotReady
+            ? '新增成份'
+            : '設定成份「${widget.ingredientName}」'),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
@@ -59,32 +63,35 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Future<void> _onSubmit() async {
-    if (!isSaving && _formKey.currentState.validate()) {
-      if (ingredientId.isEmpty) {
-        return setState(() => errorMessage = '必須設定成份種類。');
-      }
-      if (widget.ingredient.id != ingredientId &&
-          widget.ingredient.product.has(ingredientId)) {
-        setState(() => errorMessage = '成份重複。');
-        return null;
-      }
-
-      setState(() => isSaving = true);
-      if (widget.ingredient.isReady) {
-        await widget.ingredient.update(
-          defaultAmount: num.parse(_amountController.text),
-        );
-      } else {
-        final ingredient = ProductIngredientModel(
-          ingredientId: ingredientId,
-          product: widget.ingredient.product,
-          defaultAmount: num.parse(_amountController.text),
-        );
-        await widget.ingredient.product.addIngredient(ingredient);
-      }
-      Navigator.of(context).pop();
+  void _onSubmit() {
+    if (isSaving || !_formKey.currentState.validate()) return;
+    if (ingredientId.isEmpty) {
+      return setState(() => errorMessage = '必須設定成份種類。');
     }
+    if (widget.ingredient.id != ingredientId &&
+        widget.ingredient.product.has(ingredientId)) {
+      return setState(() => errorMessage = '成份重複。');
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+    if (widget.ingredient.isReady) {
+      widget.ingredient.update(
+        ingredientId: ingredientId,
+        defaultAmount: num.parse(_amountController.text),
+      );
+      widget.ingredient.product.ingredientChanged();
+    } else {
+      final ingredient = ProductIngredientModel(
+        ingredientId: ingredientId,
+        product: widget.ingredient.product,
+        defaultAmount: num.parse(_amountController.text),
+      );
+      widget.ingredient.product.addIngredient(ingredient);
+    }
+    Navigator.of(context).pop();
   }
 
   Widget _form(BuildContext context) {

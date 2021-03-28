@@ -5,7 +5,6 @@ import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
-import 'menu_model.dart';
 import 'product_model.dart';
 
 class CatalogModel extends ChangeNotifier {
@@ -57,6 +56,10 @@ class CatalogModel extends ChangeNotifier {
     return catalog;
   }
 
+  factory CatalogModel.empty() {
+    return CatalogModel(name: null, id: null);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -70,8 +73,8 @@ class CatalogModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> add(ProductModel product) async {
-    await Database.service.update(Collections.menu, {
+  void addProduct(ProductModel product) {
+    Database.service.update(Collections.menu, {
       '$id.products.${product.id}': product.toMap(),
     });
 
@@ -79,11 +82,10 @@ class CatalogModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update(
-    MenuModel menu, {
+  void update({
     String name,
     int index,
-  }) async {
+  }) {
     final updateData = getUpdateData(
       name: name,
       index: index,
@@ -91,10 +93,9 @@ class CatalogModel extends ChangeNotifier {
 
     if (updateData.isEmpty) return;
 
-    return Database.service.update(Collections.menu, updateData).then((_) {
-      menu.catalogChanged();
-      notifyListeners();
-    });
+    Database.service.update(Collections.menu, updateData);
+
+    notifyListeners();
   }
 
   void productChanged() {
@@ -102,8 +103,6 @@ class CatalogModel extends ChangeNotifier {
   }
 
   // HELPER
-
-  bool has(String key) => products.containsKey(key);
 
   Map<String, dynamic> getUpdateData({
     String name,

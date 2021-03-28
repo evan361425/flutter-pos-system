@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/localizations.dart';
+import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 
-import 'widgets/catalog_name_modal.dart';
+import 'widgets/catalog_modal.dart';
 import 'widgets/menu_body.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class MenuScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (_) => CatalogNameModal(),
+          builder: (_) => CatalogModal(catalog: CatalogModel.empty()),
         )),
         tooltip: Local.of(context).t('menu.add_catalog'),
         child: Icon(Icons.add),

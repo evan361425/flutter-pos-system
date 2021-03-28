@@ -40,33 +40,39 @@ class MenuModel extends ChangeNotifier {
 
   // STATE CHANGER
 
-  Future<CatalogModel> buildCatalog({String name}) async {
+  CatalogModel buildCatalog({String name}) {
     final catalog = CatalogModel(name: name, index: newIndex);
 
-    await addCatalog(catalog);
+    addCatalog(catalog);
 
     return catalog;
   }
 
-  Future<void> addCatalog(CatalogModel catalog) async {
-    await Database.service.update(Collections.menu, {
+  void addCatalog(CatalogModel catalog) {
+    Database.service.update(Collections.menu, {
       catalog.id: catalog.toMap(),
     });
 
     catalogs[catalog.id] = catalog;
-    notifyListeners();
+    catalogChanged();
   }
 
   // SETTER
 
-  Future<void> catalogChanged() async {
+  void catalogChanged() async {
     notifyListeners();
   }
 
   // HELPER
 
-  bool has(String name) {
+  bool hasCatalog(String name) {
     return !catalogs.values.every((catalog) => catalog.name != name);
+  }
+
+  bool hasProduct(String name) {
+    return !catalogs.values.every((catalog) {
+      return catalog.products.values.every((product) => product.name != name);
+    });
   }
 
   // GETTER

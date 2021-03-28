@@ -10,7 +10,7 @@ class ProductIngredientSetModel {
     this.additionalPrice = 0,
   });
 
-  final String ingredientSetId;
+  String ingredientSetId;
   num amount;
   num additionalCost;
   num additionalPrice;
@@ -41,29 +41,46 @@ class ProductIngredientSetModel {
 
   // STATE CHANGE
 
-  Future<void> update(
+  void update(
     ProductIngredientModel ingredient,
     ProductIngredientSetModel newSet,
-  ) async {
-    final prefix = '${ingredient.prefix}.additionalSets.$id';
-    final updateData = {};
-    final originData = toMap();
-    newSet.toMap().forEach((key, value) {
-      if (originData[key] != value) {
-        updateData['$prefix.$key'] = value;
-      }
-    });
+  ) {
+    final updateData = getUpdateData(ingredient, newSet);
 
     if (updateData.isEmpty) return;
 
-    return Database.service.update(Collections.menu, updateData).then((_) {
-      amount = newSet.amount;
-      additionalCost = newSet.additionalCost;
-      additionalPrice = newSet.additionalPrice;
-    });
+    Database.service.update(Collections.menu, updateData);
   }
 
   // GETTER
+
+  Map<String, dynamic> getUpdateData(
+    ProductIngredientModel ingredient,
+    ProductIngredientSetModel newSet,
+  ) {
+    final prefix = '${ingredient.prefix}.additionalSets.$id';
+    final updateData = <String, dynamic>{};
+    if (newSet.amount != amount) {
+      amount = newSet.amount;
+      updateData['$prefix.amount'] = amount;
+    }
+    if (newSet.additionalCost != additionalCost) {
+      additionalCost = newSet.additionalCost;
+      updateData['$prefix.additionalCost'] = additionalCost;
+    }
+    if (newSet.additionalPrice != additionalPrice) {
+      additionalPrice = newSet.additionalPrice;
+      updateData['$prefix.additionalPrice'] = additionalPrice;
+    }
+    // final
+    if (newSet.ingredientSetId != ingredientSetId) {
+      updateData['$prefix'] = null;
+      ingredientSetId = newSet.ingredientSetId;
+      updateData['${ingredient.prefix}.additionalSets.$id'] = toMap();
+    }
+
+    return updateData;
+  }
 
   bool get isNotReady => ingredientSetId == null;
 

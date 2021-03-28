@@ -37,6 +37,10 @@ class Firestore extends Database<DocumentSnapshot> {
 
   @override
   Future<void> update(Collections collection, Map<String, dynamic> data) {
+    data.entries.forEach((element) {
+      if (element.value == null) data[element.key] = FieldValue.delete();
+    });
+
     return FirebaseFirestore.instance
         .collection(CollectionName[collection])
         .doc(uid)
