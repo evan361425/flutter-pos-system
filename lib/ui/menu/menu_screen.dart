@@ -10,36 +10,33 @@ import 'widgets/menu_body.dart';
 class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('主頁'),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () => showCupertinoModalPopup(
-            context: context,
-            builder: (_) => MenuActions(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('主頁'),
+          actions: [
+            IconButton(
+              onPressed: () => showCupertinoModalPopup(
+                context: context,
+                builder: (_) => MenuActions(),
+              ),
+              icon: Icon(Icons.more_horiz_sharp),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.of(context).pushNamed(
+            Routes.catalogModal,
+            arguments: CatalogModel.empty(),
           ),
-          child: Icon(Icons.more_horiz_sharp),
+          tooltip: Local.of(context).t('menu.add_catalog'),
+          child: Icon(Icons.add),
         ),
-      ),
-      child: SafeArea(child: _body(context)),
-    );
-  }
-
-  Widget _body(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed(
-          Routes.catalogModal,
-          arguments: CatalogModel.empty(),
+        // When click android go back, it will avoid closing APP
+        body: WillPopScope(
+          onWillPop: () async => false,
+          child: MenuBody(),
         ),
-        tooltip: Local.of(context).t('menu.add_catalog'),
-        child: Icon(Icons.add),
-      ),
-      // When click android go back, it will avoid closing APP
-      body: WillPopScope(
-        onWillPop: () async => false,
-        child: MenuBody(),
       ),
     );
   }

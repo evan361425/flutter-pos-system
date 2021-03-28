@@ -167,6 +167,10 @@ class AppThemes {
   );
 
   static final ThemeData lightTheme = ThemeData(
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      color: Color(0xfffafafa),
+    ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Color(0xffff9800),
     ),
@@ -175,7 +179,7 @@ class AppThemes {
     primaryColor: Color(0xffffc107),
     primaryColorBrightness: Brightness.light,
     primaryColorLight: Color(0xffffecb3),
-    primaryColorDark: Color(0xffffa000),
+    primaryColorDark: Color(0xff673ab7),
     accentColor: Color(0xffede487),
     accentColorBrightness: Brightness.light,
     canvasColor: Color(0xfffafafa),
@@ -426,6 +430,10 @@ class AppThemes {
   );
 
   static final ThemeData darkTheme = ThemeData(
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      color: Color(0xff303030),
+    ),
     primarySwatch: Colors.deepPurple,
     brightness: Brightness.dark,
     primaryColor: Color(0xff673ab7),
