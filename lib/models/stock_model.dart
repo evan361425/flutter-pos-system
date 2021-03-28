@@ -45,6 +45,8 @@ class StockModel extends ChangeNotifier {
     return ingredients[id];
   }
 
+  // GETTER
+
   bool get isReady => ingredients != null;
   bool get isEmpty => ingredients.isEmpty;
 }

@@ -2,6 +2,7 @@ enum Collections {
   menu,
   ingredient,
   ingredient_sets,
+  search_history,
 }
 
 abstract class Database<T> {
@@ -11,6 +12,7 @@ abstract class Database<T> {
     Collections.menu: 'menu',
     Collections.ingredient: 'ingredient',
     Collections.ingredient_sets: 'ingredient_sets',
+    Collections.search_history: 'search_history',
   };
 
   Future<T> get(Collections collection);

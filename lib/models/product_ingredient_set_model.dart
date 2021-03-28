@@ -52,8 +52,6 @@ class ProductIngredientSetModel {
     Database.service.update(Collections.menu, updateData);
   }
 
-  // GETTER
-
   Map<String, dynamic> getUpdateData(
     ProductIngredientModel ingredient,
     ProductIngredientSetModel newSet,
@@ -81,6 +79,8 @@ class ProductIngredientSetModel {
 
     return updateData;
   }
+
+  // GETTER
 
   bool get isNotReady => ingredientSetId == null;
 

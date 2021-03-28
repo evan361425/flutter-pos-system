@@ -5,6 +5,7 @@ import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/page/search_scaffold.dart';
 import 'package:possystem/models/ingredient_set_index_model.dart';
 import 'package:possystem/models/ingredient_set_model.dart';
+import 'package:possystem/models/search_history_model.dart';
 import 'package:provider/provider.dart';
 
 class IngredientSetSearchScaffold extends StatelessWidget {
@@ -13,6 +14,7 @@ class IngredientSetSearchScaffold extends StatelessWidget {
   static final String tag = 'menu.poduct.ingredient.set.search';
   final String text;
   final scaffold = GlobalKey<SearchScaffoldState>();
+  final histories = SearchHistoryModel(SearchHistoryTypes.ingredient_set);
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,7 @@ class IngredientSetSearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text('新增成份份量「$text」'),
       onTap: () {
+        histories.add(scaffold.currentState.searchBar.currentState.text);
         final sets = context.read<IngredientSetIndexModel>();
         final ingredientSet = sets.addIngredientSet(text);
         Navigator.of(context).pop<IngredientSetModel>(ingredientSet);
@@ -68,7 +71,10 @@ class IngredientSetSearchScaffold extends StatelessWidget {
   }
 
   Widget _initialBuilder(BuildContext context) {
-    final searchHistory = ['hello', 'world'];
+    final searchHistory = histories.get(
+      () => scaffold.currentState.updateView(),
+    );
+    if (searchHistory == null) return CircularProgressIndicator();
 
     return Column(
       children: [
@@ -77,9 +83,11 @@ class IngredientSetSearchScaffold extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return CardTile(
-                title: Text(searchHistory[index]),
+                title: Text(searchHistory.elementAt(index)),
                 onTap: () {
-                  scaffold.currentState.setSearchKeyword(searchHistory[index]);
+                  scaffold.currentState.setSearchKeyword(
+                    searchHistory.elementAt(index),
+                  );
                 },
               );
             },

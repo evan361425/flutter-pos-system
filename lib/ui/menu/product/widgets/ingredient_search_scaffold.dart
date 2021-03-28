@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/page/search_scaffold.dart';
 import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/search_history_model.dart';
 import 'package:possystem/models/stock_model.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,7 @@ class IngredientSearchScaffold extends StatelessWidget {
   static final String tag = 'menu.poduct.ingredient.search';
   final String text;
   final scaffold = GlobalKey<SearchScaffoldState>();
+  final histories = SearchHistoryModel(SearchHistoryTypes.ingredient);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,10 @@ class IngredientSearchScaffold extends StatelessWidget {
   Widget _itemBuilder(BuildContext context, dynamic ingredient) {
     return CardTile(
       title: Text(ingredient.name),
-      onTap: () => Navigator.of(context).pop<IngredientModel>(ingredient),
+      onTap: () {
+        histories.add(scaffold.currentState.searchBar.currentState.text);
+        Navigator.of(context).pop<IngredientModel>(ingredient);
+      },
     );
   }
 
@@ -68,7 +73,10 @@ class IngredientSearchScaffold extends StatelessWidget {
   }
 
   Widget _initialBuilder(BuildContext context) {
-    final searchHistory = ['hello', 'world'];
+    final searchHistory = histories.get(
+      () => scaffold.currentState.updateView(),
+    );
+    if (searchHistory == null) return CircularProgressIndicator();
 
     return Column(
       children: [
@@ -77,9 +85,10 @@ class IngredientSearchScaffold extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return CardTile(
-                title: Text(searchHistory[index]),
+                title: Text(searchHistory.elementAt(index)),
                 onTap: () {
-                  scaffold.currentState.setSearchKeyword(searchHistory[index]);
+                  scaffold.currentState
+                      .setSearchKeyword(searchHistory.elementAt(index));
                 },
               );
             },

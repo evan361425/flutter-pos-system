@@ -36,6 +36,7 @@ class SearchScaffold<T> extends StatefulWidget {
 
 class SearchScaffoldState<T> extends State<SearchScaffold> {
   final GlobalKey<SearchBarState> searchBar = GlobalKey<SearchBarState>();
+
   bool isSearching = true;
   bool get isNotEmpty => list.isNotEmpty;
   int get count => list.length;
@@ -43,6 +44,10 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
 
   void setSearchKeyword(String keyword) {
     searchBar.currentState.text = keyword;
+  }
+
+  void updateView() {
+    setState(() {});
   }
 
   @override
@@ -86,7 +91,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
 
   Widget _body(BuildContext context) {
     if (searchBar.currentState.text.isEmpty) {
-      return widget.initialBuilder(context);
+      return Center(child: widget.initialBuilder(context));
     } else if (isNotEmpty) {
       return Column(children: [
         Padding(

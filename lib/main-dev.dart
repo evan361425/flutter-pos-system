@@ -46,7 +46,7 @@ void main() {
 class _IngredientSnapshot extends Snapshot {
   @override
   Map<String, Map<String, dynamic>> data() {
-    return {
+    return const {
       'i1': {
         'name': 'cheese',
         'currentAmount': 20.0,
@@ -70,7 +70,7 @@ class _IngredientSnapshot extends Snapshot {
 class _IngredientSetSnapshot extends Snapshot {
   @override
   Map<String, Map<String, dynamic>> data() {
-    return {
+    return const {
       'is1': {
         'name': 'less',
         'defaultProportion': 0.5,
@@ -83,10 +83,20 @@ class _IngredientSetSnapshot extends Snapshot {
   }
 }
 
+class _SearchSnapshot extends Snapshot {
+  @override
+  Map<String, List<String>> data() {
+    return const {
+      'ingredient': ['che', 'br'],
+      'ingredient_set': ['l'],
+    };
+  }
+}
+
 class _MenuSnapshot extends Snapshot {
   @override
   Map<String, Map<String, dynamic>> data() {
-    return {
+    return const {
       'c1': {
         'name': 'burger',
         'index': 0,
@@ -223,6 +233,8 @@ class _MockDatabase extends Database<Snapshot> {
       return Future.delayed(Duration(seconds: 0), () => _MenuSnapshot());
     } else if (collection == Collections.ingredient) {
       return Future.delayed(Duration(seconds: 0), () => _IngredientSnapshot());
+    } else if (collection == Collections.search_history) {
+      return Future.delayed(Duration(seconds: 0), () => _SearchSnapshot());
     } else {
       // } else if (collection == Collections.ingredient_sets) {
       return Future.delayed(
@@ -271,5 +283,5 @@ class _MockAuth extends Authentication {
 }
 
 abstract class Snapshot {
-  Map<String, Map<String, dynamic>> data();
+  Map<String, dynamic> data();
 }
