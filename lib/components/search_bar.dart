@@ -7,6 +7,7 @@ class SearchBar extends StatefulWidget {
     Key key,
     @required this.onChanged,
     this.text = '',
+    this.heroTag,
     this.hintText = '',
     this.labelText = '',
     this.helperText = '',
@@ -16,6 +17,7 @@ class SearchBar extends StatefulWidget {
   }) : super(key: key);
 
   final int maxLength;
+  final String heroTag;
   final String text;
   final String helperText;
   final String hintText;
@@ -42,33 +44,40 @@ class SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTextField(
-      controller: controller,
-      maxLength: widget.maxLength,
-      autofocus: true,
-      onChanged: (String text) {
-        if (text.isEmpty) {
-          setState(() => isEmpty = true);
-        } else if (isEmpty) {
-          setState(() => isEmpty = false);
-        }
-        widget.onChanged(text);
-      },
-      textCapitalization: widget.textCapitalization,
-      textInputAction: TextInputAction.search,
-      padding: EdgeInsets.zero,
-      placeholder: widget.hintText,
-      onSubmitted: _onChanged,
-      // expands: true,
-      suffix: isEmpty
-          ? null
-          : CupertinoButton(
-              onPressed: () {
-                controller.clear();
-                _onChanged('');
-              },
-              child: Icon(Icons.clear),
-            ),
+    return Hero(
+      tag: widget.heroTag,
+      child: TextField(
+        controller: controller,
+        maxLength: widget.maxLength,
+        autofocus: true,
+        onChanged: (String text) {
+          if (text.isEmpty) {
+            setState(() => isEmpty = true);
+          } else if (isEmpty) {
+            setState(() => isEmpty = false);
+          }
+          widget.onChanged(text);
+        },
+        textCapitalization: widget.textCapitalization,
+        textInputAction: TextInputAction.search,
+        onSubmitted: _onChanged,
+        decoration: InputDecoration(
+          isDense: true,
+          suffix: isEmpty
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    controller.clear();
+                    _onChanged('');
+                  },
+                  icon: Icon(Icons.clear),
+                ),
+          hintText: widget.hintText,
+          counterText: '',
+        ),
+        // padding: EdgeInsets.zero,
+        // placeholder: widget.hintText,
+      ),
     );
   }
 

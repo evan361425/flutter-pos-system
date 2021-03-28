@@ -33,6 +33,7 @@ class SearchHistoryModel {
     if (SearchHistoryModel.data[type] == null) {
       SearchHistoryModel.data[type] = Queue.of([history]);
     } else {
+      SearchHistoryModel.data[type].remove(history);
       SearchHistoryModel.data[type].addFirst(history);
     }
 

@@ -57,15 +57,15 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
       Future.delayed(Duration.zero).then((value) => _onChanged(widget.text));
     }
 
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(Icons.arrow_back_ios_sharp),
         ),
-        middle: SearchBar(
+        title: SearchBar(
           key: searchBar,
+          heroTag: widget.heroTag,
           onChanged: _onChanged,
           text: widget.text,
           hintText: widget.hintText,
@@ -75,15 +75,11 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           textCapitalization: widget.textCapitalization,
           hideCounter: true,
         ),
-        heroTag: widget.heroTag,
-        transitionBetweenRoutes: false,
       ),
-      child: Material(
-        child: SafeArea(
-          child: RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: isSearching ? CircularProgressIndicator() : _body(context),
-          ),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: isSearching ? CircularProgressIndicator() : _body(context),
         ),
       ),
     );
