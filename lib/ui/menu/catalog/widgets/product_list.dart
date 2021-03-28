@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/page/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/models/stock_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends ItemList<ProductModel> {
   ProductList(List<ProductModel> products, this.stock) : super(products);
@@ -11,13 +13,9 @@ class ProductList extends ItemList<ProductModel> {
   final StockModel stock;
 
   @override
-  Widget build(BuildContext context) {
-    return super.build(context);
-  }
-
-  @override
-  void onDelete(ProductModel product) {
-    print('Deletet');
+  Future<void> onDelete(context, product) async {
+    final catalog = context.read<CatalogModel>();
+    catalog.removeProduct(product.id);
   }
 
   @override

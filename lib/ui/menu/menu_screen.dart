@@ -5,7 +5,6 @@ import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/menu_actions.dart';
 
-import 'widgets/catalog_modal.dart';
 import 'widgets/menu_body.dart';
 
 class MenuScreen extends StatelessWidget {

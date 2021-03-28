@@ -98,6 +98,16 @@ class CatalogModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeProduct(String productId) {
+    products.remove(productId);
+
+    Database.service.update(Collections.menu, {
+      '$id.products.$productId': null,
+    });
+
+    productChanged();
+  }
+
   void productChanged() {
     notifyListeners();
   }

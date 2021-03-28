@@ -57,13 +57,17 @@ class MenuModel extends ChangeNotifier {
     catalogChanged();
   }
 
-  // SETTER
+  void removeCatalog(String id) {
+    catalogs.remove(id);
+    Database.service.update(Collections.menu, {id: null});
+    catalogChanged();
+  }
+
+  // HELPER
 
   void catalogChanged() async {
     notifyListeners();
   }
-
-  // HELPER
 
   bool hasCatalog(String name) {
     return !catalogs.values.every((catalog) => catalog.name != name);

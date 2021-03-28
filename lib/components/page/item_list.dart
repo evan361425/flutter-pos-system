@@ -29,7 +29,7 @@ abstract class ItemList<T> extends StatelessWidget {
             color: kNegativeColor,
             caption: Local.of(context).t('delete'),
             icon: Icons.delete,
-            onTap: () => onDelete(item),
+            onTap: () => showDeleteDialog(context, item),
           ),
         ],
         child: itemTile(context, item),
@@ -48,9 +48,41 @@ abstract class ItemList<T> extends StatelessWidget {
     }
   }
 
+  Future<void> showDeleteDialog(BuildContext context, T item) {
+    return showDialog<void>(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('確認刪除通知'),
+          content: SingleChildScrollView(
+            child: deleteWarnContext(context),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                onDelete(context, item);
+                Navigator.of(context).pop();
+              },
+              child: Text('刪除', style: TextStyle(color: kNegativeColor)),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('取消'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Abstract Methods
 
   Widget itemTile(BuildContext context, T item);
 
-  void onDelete(T item);
+  void onDelete(BuildContext context, T item);
+
+  Widget deleteWarnContext(BuildContext context) {
+    return Text('若刪除，將無法復原本動作');
+  }
 }

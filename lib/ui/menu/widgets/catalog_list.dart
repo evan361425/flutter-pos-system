@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/page/item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/catalog_model.dart';
+import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:provider/provider.dart';
 
 class CatalogList extends ItemList<CatalogModel> {
   CatalogList(List<CatalogModel> catalogs) : super(catalogs);
 
   @override
-  void onDelete(CatalogModel catalog) {
-    print('Deletet');
+  Future<void> onDelete(context, catalog) async {
+    final menu = context.read<MenuModel>();
+    menu.removeCatalog(catalog.id);
   }
 
   @override
