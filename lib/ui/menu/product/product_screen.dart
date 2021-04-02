@@ -20,23 +20,21 @@ class ProductScreen extends StatelessWidget {
     final product = context.read<ProductModel>();
 
     return FadeInTitleScaffold(
-      leading: CupertinoButton(
-        padding: EdgeInsets.zero,
+      leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: Icon(Icons.arrow_back_ios_sharp),
+        icon: Icon(Icons.arrow_back_ios_sharp),
       ),
       title: product.name,
-      trailing: CupertinoButton(
-        padding: EdgeInsets.zero,
+      trailing: IconButton(
         onPressed: () => showCupertinoModalPopup(
           context: context,
           builder: _moreActions(product),
         ),
-        child: Icon(Icons.more_horiz_sharp),
+        icon: Icon(Icons.more_horiz_sharp),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute(
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => IngredientModal(
               ingredient: ProductIngredientModel.empty(product),
             ),
@@ -107,7 +105,7 @@ class ProductScreen extends StatelessWidget {
         actions: [
           CupertinoActionSheetAction(
             onPressed: () => Navigator.of(context).pushReplacement(
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (_) => ProductModal(product: product),
               ),
             ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
@@ -30,7 +29,7 @@ class CatalogNavigator extends StatelessWidget {
     return Navigator(
       key: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
-        return CupertinoPageRoute(
+        return MaterialPageRoute(
           builder: MenuRoutes.getBuilder(settings),
           settings: settings,
         );

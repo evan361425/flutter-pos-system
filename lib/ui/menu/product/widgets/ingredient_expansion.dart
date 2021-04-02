@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -102,7 +101,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.settings_sharp),
             label: Text('設定成份資料'),
             onPressed: () {
-              Navigator.of(context).push(CupertinoPageRoute(
+              Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => IngredientModal(
                   ingredient: ingredient,
                   ingredientName: ingredientSetIndex[ingredient.id].name,
@@ -180,7 +179,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     ProductIngredientSetModel ingredientSet,
   ) {
     Navigator.of(context).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (_) => IngredientSetModal(
           ingredientSet: ingredientSet,
           ingredient: ingredient,

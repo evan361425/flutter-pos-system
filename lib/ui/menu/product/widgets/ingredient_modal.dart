@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -34,31 +33,19 @@ class _IngredientModalState extends State<IngredientModal> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.ingredient.isNotReady
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.ingredient.isNotReady
             ? '新增成份'
             : '設定成份「${widget.ingredientName}」'),
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(Icons.arrow_back_ios_sharp),
         ),
-        trailing: isSaving
-            ? CircularProgressIndicator()
-            : CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => _onSubmit(),
-                child: Text('儲存'),
-              ),
+        actions: [_trailingAction()],
       ),
-      child: SafeArea(
-        child: Material(
-          child: Padding(
-            padding: const EdgeInsets.all(kPadding),
-            child: Center(child: _form(context)),
-          ),
-        ),
+      body: SafeArea(
+        child: Center(child: _form(context)),
       ),
     );
   }
@@ -94,6 +81,15 @@ class _IngredientModalState extends State<IngredientModal> {
     Navigator.of(context).pop();
   }
 
+  Widget _trailingAction() {
+    return isSaving
+        ? CircularProgressIndicator()
+        : TextButton(
+            onPressed: () => _onSubmit(),
+            child: Text('儲存'),
+          );
+  }
+
   Widget _form(BuildContext context) {
     return Form(
       key: _formKey,
@@ -115,8 +111,8 @@ class _IngredientModalState extends State<IngredientModal> {
       errorText: errorMessage,
       helperText: '新增成份種類後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
-        final ingredient = await Navigator.of(context)
-            .push<IngredientModel>(CupertinoPageRoute(
+        final ingredient =
+            await Navigator.of(context).push<IngredientModel>(MaterialPageRoute(
           builder: (_) => IngredientSearchScaffold(text: ingredientName),
         ));
 

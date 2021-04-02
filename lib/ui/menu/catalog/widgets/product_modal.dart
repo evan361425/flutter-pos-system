@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
@@ -28,27 +27,18 @@ class _ProductModalState extends State<ProductModal> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(Icons.arrow_back_ios_sharp),
         ),
-        trailing: isSaving
-            ? CircularProgressIndicator()
-            : CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => _onSubmit(_nameController.text),
-                child: Text('儲存'),
-              ),
+        actions: [_trailingAction()],
       ),
-      child: SafeArea(
-        child: Material(
-          child: Padding(
-            padding: const EdgeInsets.all(kPadding),
-            child: Center(child: _form()),
-          ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(kPadding),
+          child: Center(child: _form()),
         ),
       ),
     );
@@ -89,6 +79,15 @@ class _ProductModalState extends State<ProductModal> {
         arguments: product,
       );
     }
+  }
+
+  Widget _trailingAction() {
+    return isSaving
+        ? CircularProgressIndicator()
+        : TextButton(
+            onPressed: () => _onSubmit(_nameController.text),
+            child: Text('儲存'),
+          );
   }
 
   Widget _form() {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -77,33 +76,33 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.ingredientSet.isNotReady
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.ingredientSet.isNotReady
             ? '新增成份份量'
             : '設定成份份量「${widget.ingredientSetName}」'),
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_rounded),
+          icon: Icon(Icons.arrow_back_ios_rounded),
         ),
-        trailing: isSaving
-            ? CircularProgressIndicator()
-            : CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => _onSubmit(),
-                child: Text('儲存'),
-              ),
+        actions: [_trailingAction()],
       ),
-      child: SafeArea(
-        child: Material(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(kPadding),
-            child: _form(context),
-          ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(kPadding),
+          child: _form(context),
         ),
       ),
     );
+  }
+
+  Widget _trailingAction() {
+    return isSaving
+        ? CircularProgressIndicator()
+        : TextButton(
+            onPressed: () => _onSubmit(),
+            child: Text('儲存'),
+          );
   }
 
   Widget _form(BuildContext context) {
@@ -162,7 +161,7 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
       helperText: '新增成份份量後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
         final ingredientSet = await Navigator.of(context)
-            .push<IngredientSetModel>(CupertinoPageRoute(
+            .push<IngredientSetModel>(MaterialPageRoute(
           builder: (_) => IngredientSetSearchScaffold(text: ingredientSetName),
         ));
 

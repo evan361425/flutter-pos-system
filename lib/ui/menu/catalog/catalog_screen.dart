@@ -19,20 +19,18 @@ class CatalogScreen extends StatelessWidget {
     // Logger().d('${catalog.isReady ? 'Edit' : 'Create'} catalog');
 
     return FadeInTitleScaffold(
-      leading: CupertinoButton(
-        padding: EdgeInsets.zero,
+      leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: Icon(Icons.arrow_back_ios_sharp),
+        icon: Icon(Icons.arrow_back_ios_sharp),
       ),
       title: catalog.name,
-      trailing: CupertinoButton(
-        padding: EdgeInsets.zero,
+      trailing: IconButton(
         onPressed: () => showCupertinoModalPopup(
           context: context,
           builder: _moreActions(catalog),
           useRootNavigator: false,
         ),
-        child: Icon(Icons.more_horiz_sharp),
+        icon: Icon(Icons.more_horiz_sharp),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
@@ -98,7 +96,7 @@ class CatalogScreen extends StatelessWidget {
         actions: [
           CupertinoActionSheetAction(
             onPressed: () => Navigator.of(context).pushReplacement(
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (_) => CatalogModal(catalog: catalog),
               ),
             ),

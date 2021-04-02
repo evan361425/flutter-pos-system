@@ -14,10 +14,13 @@ class CatalogBody extends StatelessWidget {
       return EmptyBody('menu.catalog.empty_body');
     }
 
-    // get sorted products
     final stock = context.watch<StockModel>();
     if (stock.isReady) {
-      return ProductList(catalog.productList, stock);
+      // get sorted products
+      return ProductList(
+        products: catalog.productList,
+        stock: stock,
+      );
     } else {
       return CircularProgressIndicator();
     }

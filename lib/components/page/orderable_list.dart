@@ -31,48 +31,50 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+      appBar: AppBar(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
           child: Icon(Icons.arrow_back_ios_sharp),
         ),
-        trailing: isSaving
-            ? CircularProgressIndicator()
-            : CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () async {
-                  await onSubmit();
-                  Navigator.of(context).pop();
-                },
-                child: Text('儲存'),
-              ),
-        middle: Text(widget.title),
+        actions: [_trailingAction(context)],
+        title: Text(widget.title),
       ),
-      child: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(kPadding / 4),
-              child: Text(
-                '總共 ${widget.items.length} 項',
-                style: Theme.of(context).textTheme.caption,
-              ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(kPadding / 4),
+            child: Text(
+              '總共 ${widget.items.length} 項',
+              style: Theme.of(context).textTheme.caption,
             ),
-            Expanded(
-              child: ReorderableList(
-                itemCount: itemCount,
-                itemBuilder: itemBuilder,
-                onReorder: _reorderCallback,
-              ),
+          ),
+          Expanded(
+            child: ReorderableList(
+              itemCount: itemCount,
+              itemBuilder: itemBuilder,
+              onReorder: _reorderCallback,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  StatefulWidget _trailingAction(BuildContext context) {
+    return isSaving
+        ? CircularProgressIndicator()
+        : CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () async {
+              await onSubmit();
+              Navigator.of(context).pop();
+            },
+            child: Text('儲存'),
+          );
   }
 
   int get itemCount;

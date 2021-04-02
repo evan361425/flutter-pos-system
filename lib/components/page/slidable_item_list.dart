@@ -4,16 +4,33 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/localizations.dart';
 
 // use inherit objects to make your life better
-abstract class ItemList<T> extends StatelessWidget {
-  final List<T> items;
-  final SlidableController _slidableController = SlidableController();
+class SlidableItemList<T> extends StatefulWidget {
+  const SlidableItemList({
+    Key key,
+    @required this.items,
+    @required this.onDelete,
+    @required this.tileBuilder,
+    @required this.warningContext,
+    @required this.onTap,
+  }) : super(key: key);
 
-  ItemList(this.items, {key}) : super(key: key);
+  final List<T> items;
+  final void Function(BuildContext, T) onDelete;
+  final Widget Function(BuildContext, T) tileBuilder;
+  final Widget Function(BuildContext, T) warningContext;
+  final void Function(BuildContext, T) onTap;
+
+  @override
+  _SlidableItemListState<T> createState() => _SlidableItemListState<T>();
+}
+
+class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
+  final SlidableController _slidableController = SlidableController();
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [for (var item in items) _itemBuilder(context, item)],
+      children: [for (var item in widget.items) _itemBuilder(context, item)],
     );
   }
 
@@ -29,26 +46,32 @@ abstract class ItemList<T> extends StatelessWidget {
             color: kNegativeColor,
             caption: Local.of(context).t('delete'),
             icon: Icons.delete,
-            onTap: () => showDeleteDialog(context, item),
+            onTap: () => _showDeleteDialog(context, item),
           ),
         ],
-        child: itemTile(context, item),
+        child: GestureDetector(
+          onTap: () {
+            if (_checkPanelStatus()) {
+              widget.onTap(context, item);
+            }
+          },
+          child: widget.tileBuilder(context, item),
+        ),
       ),
     );
   }
 
   /// If there is any action panel opening, close it
-  /// Do things after [shouldProcess] return true;
-  bool shouldProcess() {
-    if (_slidableController.activeState == null) {
-      return true;
-    } else {
+  bool _checkPanelStatus() {
+    if (_slidableController.activeState != null) {
       _slidableController.activeState.close();
       return false;
+    } else {
+      return true;
     }
   }
 
-  Future<void> showDeleteDialog(BuildContext context, T item) {
+  Future<void> _showDeleteDialog(BuildContext context, T item) {
     return showDialog<void>(
       context: context,
       useRootNavigator: false,
@@ -56,12 +79,12 @@ abstract class ItemList<T> extends StatelessWidget {
         return AlertDialog(
           title: Text('確認刪除通知'),
           content: SingleChildScrollView(
-            child: deleteWarnContext(context),
+            child: widget.warningContext(context, item),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                onDelete(context, item);
+                widget.onDelete(context, item);
                 Navigator.of(context).pop();
               },
               child: Text('刪除', style: TextStyle(color: kNegativeColor)),
@@ -74,15 +97,5 @@ abstract class ItemList<T> extends StatelessWidget {
         );
       },
     );
-  }
-
-  // Abstract Methods
-
-  Widget itemTile(BuildContext context, T item);
-
-  void onDelete(BuildContext context, T item);
-
-  Widget deleteWarnContext(BuildContext context) {
-    return Text('若刪除，將無法復原本動作');
   }
 }

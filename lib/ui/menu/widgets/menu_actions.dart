@@ -14,7 +14,7 @@ class MenuActions extends StatelessWidget {
       actions: [
         CupertinoActionSheetAction(
           onPressed: () => Navigator.of(context).pushReplacement(
-            CupertinoPageRoute(
+            MaterialPageRoute(
               builder: (BuildContext context) {
                 final items = context.watch<MenuModel>().catalogList;
                 return CatalogOrderableList(items: items);

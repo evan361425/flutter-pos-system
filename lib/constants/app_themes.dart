@@ -180,6 +180,9 @@ class AppThemes {
     primaryColorBrightness: Brightness.light,
     primaryColorLight: Color(0xffffecb3),
     primaryColorDark: Color(0xff673ab7),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(primary: Color(0xdd000000)),
+    ),
     accentColor: Color(0xffede487),
     accentColorBrightness: Brightness.light,
     canvasColor: Color(0xfffafafa),

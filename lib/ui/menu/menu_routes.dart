@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';

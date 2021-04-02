@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
@@ -25,29 +24,20 @@ class _CatalogModalState extends State<CatalogModal> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(Icons.arrow_back_ios_sharp),
         ),
-        trailing: isSaving
-            ? CircularProgressIndicator()
-            : CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => _onSubmit(_controller.text),
-                child: Text('儲存'),
-              ),
+        actions: [_trailingAction()],
       ),
-      child: Material(
-        child: Padding(
-          padding: const EdgeInsets.all(kPadding),
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: _nameField(),
-            ),
+      body: Padding(
+        padding: const EdgeInsets.all(kPadding),
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: _nameField(),
           ),
         ),
       ),
@@ -76,6 +66,15 @@ class _CatalogModalState extends State<CatalogModal> {
       final catalog = menu.buildCatalog(name: name);
       Navigator.of(context).popAndPushNamed(Routes.catalog, arguments: catalog);
     }
+  }
+
+  Widget _trailingAction() {
+    return isSaving
+        ? CircularProgressIndicator()
+        : TextButton(
+            onPressed: () => _onSubmit(_controller.text),
+            child: Text('儲存'),
+          );
   }
 
   Widget _nameField() {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FadeInTitleScaffold extends StatefulWidget {
@@ -40,24 +39,22 @@ class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+      appBar: AppBar(
         leading: widget.leading,
-        trailing: widget.trailing,
-        middle: AnimatedOpacity(
+        actions: <Widget>[widget.trailing],
+        title: AnimatedOpacity(
           duration: Duration(seconds: 0),
           opacity: _opacity,
           child: Text(widget.title),
         ),
       ),
-      child: SafeArea(
-        child: Scaffold(
-          floatingActionButton: widget.floatingActionButton,
-          body: NotificationListener<ScrollNotification>(
-            onNotification: _scrollListener,
-            child: SingleChildScrollView(
-              child: widget.body,
-            ),
+      floatingActionButton: widget.floatingActionButton,
+      body: SafeArea(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _scrollListener,
+          child: SingleChildScrollView(
+            child: widget.body,
           ),
         ),
       ),
