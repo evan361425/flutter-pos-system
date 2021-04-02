@@ -6,6 +6,7 @@ import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/product_model.dart';
 import 'package:possystem/models/stock_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends StatelessWidget {
   const ProductList({
@@ -27,18 +28,22 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  void onDelete(context, product) {
+  void onDelete(BuildContext context, ProductModel product) {
     final catalog = context.read<CatalogModel>();
     catalog.removeProduct(product.id);
   }
 
   Widget warningContextBuild(BuildContext context, ProductModel product) {
     return RichText(
-      text: TextSpan(text: '確定要刪除', children: [
-        TextSpan(text: product.name, style: TextStyle(color: kNegativeColor)),
-        TextSpan(text: '嗎？\n'),
-        TextSpan(text: '此動作將無法復原'),
-      ]),
+      text: TextSpan(
+        text: '確定要刪除 ',
+        children: [
+          TextSpan(text: product.name, style: TextStyle(color: kNegativeColor)),
+          TextSpan(text: ' 嗎？\n\n'),
+          TextSpan(text: '此動作將無法復原！'),
+        ],
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
     );
   }
 

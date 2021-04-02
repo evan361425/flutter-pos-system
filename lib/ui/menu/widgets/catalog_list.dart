@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/catalog_model.dart';
 import 'package:possystem/models/menu_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:provider/provider.dart';
 
 class CatalogList extends StatelessWidget {
   const CatalogList(this.catalogs);
@@ -21,17 +23,32 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  void onDelete(context, catalog) {
+  void onDelete(BuildContext context, CatalogModel catalog) {
+    debugPrint('Delete ${catalog.id} - ${catalog.name}');
     final menu = context.read<MenuModel>();
     menu.removeCatalog(catalog.id);
   }
 
   Widget warningContextBuild(BuildContext context, CatalogModel catalog) {
-    return Column(
-      children: [
-        Text('刪除將會連同${catalog.length}個產品一起刪除'),
-        Text('此動作將無法復原'),
-      ],
+    final productCount = catalog.isEmpty
+        ? TextSpan()
+        : TextSpan(children: [
+            TextSpan(text: '將會一同刪除掉 '),
+            TextSpan(text: catalog.length.toString()),
+            TextSpan(text: ' 個產品\n\n'),
+          ]);
+
+    return RichText(
+      text: TextSpan(
+        text: '確定要刪除 ',
+        children: [
+          TextSpan(text: catalog.name, style: TextStyle(color: kNegativeColor)),
+          TextSpan(text: ' 嗎？\n\n'),
+          productCount,
+          TextSpan(text: '此動作將無法復原！'),
+        ],
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
     );
   }
 
