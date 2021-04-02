@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
+import 'package:sprintf/sprintf.dart';
 
 class StockModel extends ChangeNotifier {
   StockModel() {
     loadFromDb();
+    StockModel.instnace = this;
   }
 
   Map<String, IngredientModel> ingredients;
+  DateTime updatedTime;
 
   // I/O
   Future<void> loadFromDb() async {
@@ -31,22 +34,47 @@ class StockModel extends ChangeNotifier {
     }
   }
 
-  IngredientModel addIngredient(String name) {
-    final ingredient = IngredientModel(name: name);
+  void addIngredient(IngredientModel ingredient) {
     ingredients[ingredient.id] = ingredient;
 
-    final updateData = {'${ingredient.id}': ingredient};
+    final updateData = {'${ingredient.id}': ingredient.toMap()};
     Database.service.set(Collections.ingredient, updateData);
-
-    return ingredient;
   }
+
+  void removeIngredient(String id) {
+    ingredients.remove(id);
+    Database.service.update(Collections.ingredient, {id: null});
+    notifyListeners();
+  }
+
+  void changedIngredient() {
+    updatedTime = DateTime.now();
+    // notifyListeners();
+  }
+
+  // TOOLS
+
+  bool hasContain(String id) {
+    return ingredients.containsKey(id);
+  }
+
+  // GETTER
 
   IngredientModel operator [](String id) {
     return ingredients[id];
   }
 
-  // GETTER
-
+  List<IngredientModel> get ingredientList => ingredients.values.toList();
   bool get isReady => ingredients != null;
+  bool get isNotReady => ingredients == null;
   bool get isEmpty => ingredients.isEmpty;
+  String get updatedDate => updatedTime == null
+      ? null
+      : sprintf('%04d-%02d-%02d', [
+          updatedTime.year,
+          updatedTime.month,
+          updatedTime.day,
+        ]);
+
+  static StockModel instnace;
 }

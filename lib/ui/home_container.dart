@@ -13,9 +13,9 @@ class HomeContainer extends StatelessWidget {
       tabBuilder: (context, index) {
         switch (_MainPageTypes.values[index]) {
           case _MainPageTypes.menu:
-            return MenuScreen();
-          case _MainPageTypes.stock:
             return StockScreen();
+          case _MainPageTypes.stock:
+            return MenuScreen();
           default:
             return buildPage(context, index);
             break;

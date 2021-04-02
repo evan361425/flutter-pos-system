@@ -5,29 +5,27 @@ class IconText extends StatelessWidget {
     Key key,
     @required this.text,
     @required this.iconName,
-    this.iconColor,
+    this.textStyle,
   }) : super(key: key);
 
   final String text;
   final String iconName;
-  final String iconColor;
+  final TextStyle textStyle;
 
   @override
   Widget build(BuildContext context) {
+    final style = textStyle ?? Theme.of(context).textTheme.bodyText1;
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: Theme.of(context).textTheme.bodyText1,
+        style: style,
         children: [
           TextSpan(
             text: iconName,
-            style: TextStyle(
-              fontFamily: 'MaterialIcons',
-              color: iconColor ?? Theme.of(context).primaryColor,
-            ),
+            style: style.copyWith(fontFamily: 'MaterialIcons'),
           ),
           TextSpan(
-            text: text,
+            text: ' $text',
           )
         ],
       ),

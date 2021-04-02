@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientModel extends ChangeNotifier {
   IngredientModel({
     @required this.name,
-    this.currentAmount = 0,
-    this.warningAmount = 0,
-    this.alertAmount = 0,
-    this.lastAmount = 0,
+    this.currentAmount,
+    this.warningAmount,
+    this.alertAmount,
+    this.lastAmount,
+    this.lastAddAmount,
     String id,
   }) : id = id ?? Util.uuidV4();
 
@@ -18,6 +20,7 @@ class IngredientModel extends ChangeNotifier {
   double warningAmount;
   double alertAmount;
   double lastAmount;
+  double lastAddAmount;
 
   factory IngredientModel.fromMap({
     String id,
@@ -29,6 +32,7 @@ class IngredientModel extends ChangeNotifier {
       warningAmount: data['warningAmount'],
       alertAmount: data['alertAmount'],
       lastAmount: data['lastAmount'],
+      lastAddAmount: data['lastAddAmount'],
       id: id,
     );
   }
@@ -38,39 +42,50 @@ class IngredientModel extends ChangeNotifier {
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    final nonNullProperties = {
       'name': name,
       'currentAmount': currentAmount,
       'warningAmount': warningAmount,
       'alertAmount': alertAmount,
       'lastAmount': lastAmount,
-    };
+      'lastAddAmount': lastAddAmount,
+    }.entries.where((element) => element != null).toList();
+
+    return {for (var p in nonNullProperties) p.key: p.value};
   }
 
   // STATE CHANGE
 
-  Future<void> update(IngredientModel newIngredient) async {
-    final updateData = {};
-    final originData = toMap();
-    newIngredient.toMap().forEach((key, value) {
-      if (originData[key] != value) {
-        updateData['$id.$key'] = value;
-      }
-    });
+  void update({
+    String name,
+    double amount,
+  }) {
+    final updateData = <String, dynamic>{};
+    if (name != null && name != this.name) {
+      this.name = name;
+      updateData['$id.name'] = name;
+    }
+    if (amount != null && amount != currentAmount) {
+      currentAmount = amount;
+      updateData['$id.currentAmount'] = amount;
+    }
 
-    return Database.service
-        .update(Collections.ingredient, updateData)
-        .then((_) {
-      name = newIngredient.name;
-      currentAmount = newIngredient.currentAmount;
-      warningAmount = newIngredient.warningAmount;
-      alertAmount = newIngredient.alertAmount;
-      lastAmount = newIngredient.lastAmount;
+    if (updateData.isNotEmpty) {
+      Database.service.update(Collections.ingredient, updateData);
+
       notifyListeners();
-    });
+    }
   }
 
-  // SETTER
+  void addAmount(num amount) {
+    currentAmount = currentAmount == null ? amount : currentAmount + amount;
+
+    Database.service.update(Collections.ingredient, {
+      '$id.currentAmount': currentAmount,
+    });
+
+    StockModel.instnace.changedIngredient();
+  }
 
   int _similarityRating;
   void setSimilarity(String searchText) {
@@ -79,9 +94,4 @@ class IngredientModel extends ChangeNotifier {
   }
 
   int get similarity => _similarityRating;
-
-  // GETTER
-
-  bool get isReady => name != null;
-  bool get isNotReady => name == null;
 }

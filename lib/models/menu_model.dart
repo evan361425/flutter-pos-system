@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:possystem/models/product_ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
 import 'catalog_model.dart';
@@ -61,6 +62,36 @@ class MenuModel extends ChangeNotifier {
     catalogs.remove(id);
     Database.service.update(Collections.menu, {id: null});
     catalogChanged();
+  }
+
+  int removeIngredient(String id) {
+    final products = productContainsIngredient(id);
+    final updateData = {
+      for (var product in products) '${product.prefix}.$id': null
+    };
+    Database.service.update(Collections.menu, updateData);
+
+    if (updateData.isNotEmpty) {
+      catalogChanged();
+      return updateData.length;
+    } else {
+      return 0;
+    }
+  }
+
+  List<ProductIngredientModel> productContainsIngredient(String id) {
+    final result = <ProductIngredientModel>[];
+
+    catalogs.values.forEach((catalog) {
+      catalog.products.values.forEach((product) {
+        final ingredient = product.ingredients.remove(id);
+        if (ingredient != null) {
+          result.add(ingredient);
+        }
+      });
+    });
+
+    return result;
   }
 
   // HELPER

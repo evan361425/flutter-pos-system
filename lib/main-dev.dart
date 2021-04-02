@@ -61,8 +61,18 @@ class _IngredientSnapshot extends Snapshot {
         'name': 'vegetable',
       },
       'i4': {
-        'name': 'some-other-very-long-name 👎👎👎',
+        'name': 'some-other-very-long-namesome-other-very-long-name 👎👎👎',
       },
+      'i5': {'name': 'i5'},
+      'i6': {'name': 'i6'},
+      'i7': {'name': 'i7'},
+      'i8': {'name': 'i8'},
+      'i9': {'name': 'i9'},
+      'ii5': {'name': 'i5'},
+      'ii6': {'name': 'i6'},
+      'ii7': {'name': 'i7'},
+      'ii8': {'name': 'i8'},
+      'ii9': {'name': 'i9'},
     };
   }
 }
