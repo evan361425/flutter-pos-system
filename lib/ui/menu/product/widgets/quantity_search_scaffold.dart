@@ -64,7 +64,8 @@ class QuantitySearchScaffold extends StatelessWidget {
       onTap: () {
         histories.add(scaffold.currentState.searchBar.currentState.text);
         final quantities = context.read<QuantityIndexModel>();
-        final quantity = quantities.addQuantity(text);
+        final quantity = QuantityModel(name: text);
+        quantities.addQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
     );

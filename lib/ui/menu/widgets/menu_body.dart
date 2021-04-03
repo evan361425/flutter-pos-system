@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/empty_body.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:possystem/ui/menu/widgets/menu_search_bar.dart';
@@ -14,16 +15,20 @@ class MenuBody extends StatelessWidget {
 
     if (menu.isNotReady) {
       return Center(child: CircularProgressIndicator());
-    } else if (menu.length == 0) {
+    } else if (menu.isEmpty) {
       return Center(child: EmptyBody('menu.empty'));
     } else {
-      return SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            MenuSearchBar(),
-            // get sorted catalogs
-            CatalogList(menu.catalogList),
-          ],
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              // TODO: search bar
+              // MenuSearchBar(),
+              // get sorted catalogs
+              CatalogList(menu.catalogList),
+            ],
+          ),
         ),
       );
     }

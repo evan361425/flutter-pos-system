@@ -62,7 +62,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
     final stock = context.read<StockModel>();
 
     if (widget.ingredient?.name != name && stock.hasContain(name)) {
-      return setState(() => errorMessage = '種類名稱重複');
+      return setState(() => errorMessage = '成份名稱重複');
     }
 
     setState(() {

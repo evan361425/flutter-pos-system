@@ -9,9 +9,9 @@ class QuantityModel extends ChangeNotifier {
     String id,
   }) : id = id ?? Util.uuidV4();
 
+  final String id;
   String name;
   double defaultProportion;
-  final String id;
 
   factory QuantityModel.fromMap({
     String id,
@@ -37,22 +37,25 @@ class QuantityModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> update(QuantityModel quantity) async {
-    final updateData = {};
-    final originData = toMap();
-    quantity.toMap().forEach((key, value) {
-      if (originData[key] != value) {
-        updateData['$id.$key'] = value;
-      }
-    });
+  void update({
+    String name,
+    double proportion,
+  }) {
+    final updateData = <String, dynamic>{};
+    if (name != null && name != this.name) {
+      this.name = name;
+      updateData['$id.name'] = name;
+    }
+    if (proportion != null && proportion != defaultProportion) {
+      defaultProportion = proportion;
+      updateData['$id.defaultProportion'] = proportion;
+    }
 
-    return Database.service
-        .update(Collections.ingredient, updateData)
-        .then((_) {
-      name = quantity.name;
-      defaultProportion = quantity.defaultProportion;
+    if (updateData.isNotEmpty) {
+      Database.service.update(Collections.quantities, updateData);
+
       notifyListeners();
-    });
+    }
   }
 
   int _similarityRating;

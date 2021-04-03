@@ -39,7 +39,7 @@ class MenuModel extends ChangeNotifier {
     return {for (var entry in catalogs.entries) entry.key: entry.value.toMap()};
   }
 
-  // STATE CHANGER
+  // MENU STATE
 
   CatalogModel buildCatalog({String name}) {
     final catalog = CatalogModel(name: name, index: newIndex);
@@ -64,18 +64,34 @@ class MenuModel extends ChangeNotifier {
     catalogChanged();
   }
 
-  int removeIngredient(String id) {
-    final products = productContainsIngredient(id);
+  // STOCK STATE
+
+  void removeIngredient(String id) {
+    final ingredients = productContainsIngredient(id);
     final updateData = {
-      for (var product in products) '${product.prefix}.$id': null
+      for (var ingredient in ingredients) ingredient.prefix: null
     };
     Database.service.update(Collections.menu, updateData);
 
     if (updateData.isNotEmpty) {
+      ingredients.forEach((ingredient) {
+        ingredient.product.ingredients.remove(id);
+      });
       catalogChanged();
-      return updateData.length;
-    } else {
-      return 0;
+    }
+  }
+
+  void removeQuantity(String id) {
+    final ingredients = productContainsQuantity(id);
+    final updateData = {
+      for (var ingredient in ingredients)
+        '${ingredient.prefixQuantities}.$id': null
+    };
+    Database.service.update(Collections.menu, updateData);
+
+    if (updateData.isNotEmpty) {
+      ingredients.forEach((ingredient) => ingredient.quantities.remove(id));
+      catalogChanged();
     }
   }
 
@@ -84,10 +100,21 @@ class MenuModel extends ChangeNotifier {
 
     catalogs.values.forEach((catalog) {
       catalog.products.values.forEach((product) {
-        final ingredient = product.ingredients.remove(id);
-        if (ingredient != null) {
-          result.add(ingredient);
-        }
+        if (product.has(id)) result.add(product[id]);
+      });
+    });
+
+    return result;
+  }
+
+  List<ProductIngredientModel> productContainsQuantity(String id) {
+    final result = <ProductIngredientModel>[];
+
+    catalogs.values.forEach((catalog) {
+      catalog.products.values.forEach((product) {
+        product.ingredients.values.forEach((ingredient) {
+          if (ingredient.has(id)) result.add(ingredient);
+        });
       });
     });
 
@@ -133,6 +160,5 @@ class MenuModel extends ChangeNotifier {
   }
 
   bool get isNotReady => catalogs == null;
-
-  int get length => catalogs.length;
+  bool get isEmpty => catalogs.isEmpty;
 }

@@ -31,21 +31,31 @@ class QuantityIndexModel extends ChangeNotifier {
     }
   }
 
-  QuantityModel addQuantity(String name) {
-    final quantity = QuantityModel(name: name);
+  void addQuantity(QuantityModel quantity) {
     quantities[quantity.id] = quantity;
 
-    final updateData = {'${quantity.id}': quantity};
+    final updateData = {'${quantity.id}': quantity.toMap()};
     Database.service.set(Collections.quantities, updateData);
-
-    return quantity;
   }
+
+  void removeQuantity(String id) {
+    quantities.remove(id);
+    Database.service.update(Collections.quantities, {id: null});
+    notifyListeners();
+  }
+
+  // TOOLS
+
+  bool hasContain(String id) {
+    return quantities.containsKey(id);
+  }
+
+  // GETTER
 
   QuantityModel operator [](String id) {
     return quantities[id];
   }
 
-  bool get isReady => quantities != null;
   bool get isNotReady => quantities == null;
   bool get isEmpty => quantities.isEmpty;
 }

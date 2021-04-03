@@ -3,16 +3,23 @@ import 'package:possystem/localizations.dart';
 class Validator {
   static Local tranlator;
 
-  static String Function(String) positiveDouble(String fieldName) {
+  static String Function(String) positiveDouble(
+    String fieldName, {
+    double maximum,
+  }) {
     return (String value) {
       try {
-        if (double.parse(value) < 0) {
-          return '$fieldName不能為負數';
+        final number = double.parse(value);
+        if (number < 0) {
+          return '$fieldName 不能為負數';
+        } else if (maximum != null && maximum < number) {
+          return '$fieldName 不能大於 $maximum';
         }
+
+        return null;
       } catch (err) {
-        return '$fieldName必須是數字';
+        return '$fieldName 必須是數字';
       }
-      return null;
     };
   }
 
@@ -20,10 +27,11 @@ class Validator {
     return (String value) {
       try {
         double.parse(value);
+
+        return null;
       } catch (err) {
-        return '$fieldName必須是數字';
+        return '$fieldName 必須是數字';
       }
-      return null;
     };
   }
 
@@ -31,16 +39,15 @@ class Validator {
     return (String value) {
       try {
         if (value.isEmpty) {
-          return '$fieldName不能為空';
+          return '$fieldName 不能為空';
+        } else if (value.length > limit) {
+          return '$fieldName 的長度不能超過 $limit';
         }
 
-        if (value.length > limit) {
-          return '$fieldName的長度不能超過$limit';
-        }
+        return null;
       } catch (err) {
         return '發生無法預期的錯誤..';
       }
-      return null;
     };
   }
 }

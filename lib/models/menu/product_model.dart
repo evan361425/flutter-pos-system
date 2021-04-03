@@ -119,10 +119,6 @@ class ProductModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // HELPER
-
-  bool has(String name) => ingredients.containsKey(name);
-
   Map<String, dynamic> getUpdateData({
     String name,
     int index,
@@ -149,9 +145,13 @@ class ProductModel extends ChangeNotifier {
     return updateData;
   }
 
+  // HELPER
+
+  bool has(String id) => ingredients.containsKey(id);
+  ProductIngredientModel operator [](String id) => ingredients[id];
+
   // GETTER
 
   bool get isReady => name != null;
-
   String get prefix => '${catalog.id}.products.$id';
 }

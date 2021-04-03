@@ -48,6 +48,7 @@ class StockModel extends ChangeNotifier {
 
   void changedIngredient() {
     updatedTime = DateTime.now();
+    // NOTE: not notifing still can update UI?!
     // notifyListeners();
   }
 

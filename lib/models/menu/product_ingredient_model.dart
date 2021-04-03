@@ -61,7 +61,7 @@ class ProductIngredientModel {
 
   void addQuantity(ProductQuantityModel quantity) {
     Database.service.update(Collections.menu, {
-      '$prefix.quantities.${quantity.id}': quantity.toMap(),
+      '$prefixQuantities.${quantity.id}': quantity.toMap(),
     });
 
     quantities[quantity.id] = quantity;
@@ -75,14 +75,14 @@ class ProductIngredientModel {
     final updateData = {};
     if (defaultAmount != this.defaultAmount) {
       this.defaultAmount = defaultAmount;
-      updateData['$prefix.$id.defaultAmount'] = defaultAmount;
+      updateData['$prefix.defaultAmount'] = defaultAmount;
     }
     // after all property set
     if (ingredientId != this.ingredientId) {
       // delete old value
-      updateData['$prefix.$id'] = null;
+      updateData[prefix] = null;
       this.ingredientId = ingredientId;
-      updateData['$prefix.$ingredientId'] = toMap();
+      updateData[prefix] = toMap();
     }
 
     if (updateData.isEmpty) return;
@@ -90,14 +90,16 @@ class ProductIngredientModel {
     Database.service.update(Collections.menu, updateData);
   }
 
-  bool has(String id) {
-    return quantities.containsKey(id);
-  }
+  // HELPER
+
+  bool has(String id) => quantities.containsKey(id);
+  ProductQuantityModel operator [](String id) => quantities[id];
 
   // GETTER
 
   bool get isReady => ingredientId != null;
   bool get isNotReady => ingredientId == null;
-  String get prefix => '${product.prefix}.ingredients';
   String get id => ingredientId;
+  String get prefix => '${product.prefix}.ingredients.$id';
+  String get prefixQuantities => '$prefix.quantities';
 }
