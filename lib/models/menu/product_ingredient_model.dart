@@ -61,7 +61,7 @@ class ProductIngredientModel {
 
   void addQuantity(ProductQuantityModel quantity) {
     Database.service.update(Collections.menu, {
-      '$prefixQuantities.${quantity.id}': quantity.toMap(),
+      '$prefix.quantities.${quantity.id}': quantity.toMap(),
     });
 
     quantities[quantity.id] = quantity;
@@ -101,5 +101,4 @@ class ProductIngredientModel {
   bool get isNotReady => ingredientId == null;
   String get id => ingredientId;
   String get prefix => '${product.prefix}.ingredients.$id';
-  String get prefixQuantities => '$prefix.quantities';
 }

@@ -76,6 +76,7 @@ class ProductModel extends ChangeNotifier {
       'name': name,
       'index': index,
       'price': price,
+      'cost': cost,
       'createdAt': createdAt,
       'ingredients': {
         for (var entry in ingredients.entries) entry.key: entry.value.toMap()
