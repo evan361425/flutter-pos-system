@@ -8,16 +8,16 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 import 'package:provider/provider.dart';
 
-class BatchUpdateModal extends StatefulWidget {
-  const BatchUpdateModal({Key key, this.batch}) : super(key: key);
+class StockBatchModal extends StatefulWidget {
+  const StockBatchModal({Key key, this.batch}) : super(key: key);
 
   final StockBatchModel batch;
 
   @override
-  _BatchUpdateModalState createState() => _BatchUpdateModalState();
+  _StockBatchModalState createState() => _StockBatchModalState();
 }
 
-class _BatchUpdateModalState extends State<BatchUpdateModal> {
+class _StockBatchModalState extends State<StockBatchModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final updateData = <String, double>{};
