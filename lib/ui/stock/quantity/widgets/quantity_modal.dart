@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/repository/quantity_index_model.dart';
@@ -32,7 +33,8 @@ class _QuantityModalState extends State<QuantityModal> {
         ),
         actions: [_trailingAction()],
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(kPadding),
         child: Form(
           key: _formKey,
           child: Column(
@@ -76,7 +78,7 @@ class _QuantityModalState extends State<QuantityModal> {
       );
     }
 
-    // quantities.changedQuantity();
+    quantities.changedQuantity();
   }
 
   Widget _trailingAction() {
@@ -94,10 +96,11 @@ class _QuantityModalState extends State<QuantityModal> {
       textInputAction: TextInputAction.done,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        labelText: '份量名稱，少量',
+        labelText: '份量名稱，多量',
         errorText: errorMessage,
         filled: false,
       ),
+      style: Theme.of(context).textTheme.headline6,
       autofocus: widget.quantity == null,
       maxLength: 30,
       validator: Validator.textLimit('份量名稱', 30),
@@ -112,6 +115,9 @@ class _QuantityModalState extends State<QuantityModal> {
       decoration: InputDecoration(
         labelText: '預設比例',
         errorText: errorMessage,
+        helperText:
+            '當產品成份使用此份量時，預設替該成份增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成份「起司」，且每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。',
+        helperMaxLines: 100,
         filled: false,
       ),
       // NOTE: do we need maximum?
@@ -123,7 +129,8 @@ class _QuantityModalState extends State<QuantityModal> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _nameController.text = widget.quantity?.name;
-    _proportionController.text = widget.quantity?.defaultProportion.toString();
+    _proportionController.text =
+        widget.quantity?.defaultProportion?.toString() ?? '1';
   }
 
   @override

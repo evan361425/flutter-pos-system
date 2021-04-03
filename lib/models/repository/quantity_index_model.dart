@@ -50,12 +50,17 @@ class QuantityIndexModel extends ChangeNotifier {
     return quantities.containsKey(id);
   }
 
+  void changedQuantity() {
+    notifyListeners();
+  }
+
   // GETTER
 
   QuantityModel operator [](String id) {
     return quantities[id];
   }
 
+  List<QuantityModel> get quantitiesList => quantities.values.toList();
   bool get isNotReady => quantities == null;
   bool get isEmpty => quantities.isEmpty;
 }

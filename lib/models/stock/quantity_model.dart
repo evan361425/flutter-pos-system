@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
 
-class QuantityModel extends ChangeNotifier {
+class QuantityModel {
   QuantityModel({
     @required this.name,
     this.defaultProportion = 0,
@@ -53,8 +53,6 @@ class QuantityModel extends ChangeNotifier {
 
     if (updateData.isNotEmpty) {
       Database.service.update(Collections.quantities, updateData);
-
-      notifyListeners();
     }
   }
 

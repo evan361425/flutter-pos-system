@@ -23,7 +23,7 @@ class QuantityBoby extends StatelessWidget {
         child: Column(
           children: [
             // TODO: search bar
-            QuantityList(quantities: quantityIndex.quantities.values.toList()),
+            QuantityList(quantities: quantityIndex.quantitiesList),
           ],
         ),
       ),

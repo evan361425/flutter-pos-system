@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientModel extends ChangeNotifier {
@@ -78,10 +77,16 @@ class IngredientModel extends ChangeNotifier {
   }
 
   void addAmount(num amount) {
+    if (amount > 0) {
+      lastAddAmount = amount;
+      lastAmount = currentAmount ?? amount;
+    }
     currentAmount = currentAmount == null ? amount : currentAmount + amount;
 
     Database.service.update(Collections.ingredient, {
       '$id.currentAmount': currentAmount,
+      '$id.lastAddAmount': lastAddAmount,
+      '$id.lastAmount': lastAmount,
     });
   }
 

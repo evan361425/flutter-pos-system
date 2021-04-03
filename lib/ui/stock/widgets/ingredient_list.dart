@@ -54,7 +54,7 @@ class IngredientList extends StatelessWidget {
         title: '減少 ${ingredient.name} 的庫存',
       );
 
-      updateAmount(-result);
+      updateAmount(result == null ? null : -result);
     }
 
     return ListTile(

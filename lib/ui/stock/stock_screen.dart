@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/ui/stock/quantity/quantity_screen.dart';
 
 import 'ingredient/ingredient_screen.dart';
 import 'widgets/stock_body.dart';
@@ -13,7 +14,9 @@ class StockScreen extends StatelessWidget {
           title: Text('庫存'),
           actions: [
             TextButton(
-              onPressed: () => print('hi'),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => QuantityScreen(),
+              )),
               child: Text('設定份量'),
             )
           ],
