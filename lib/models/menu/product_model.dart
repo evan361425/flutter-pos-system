@@ -63,14 +63,6 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  factory ProductModel.empty() {
-    return ProductModel(
-      name: null,
-      id: null,
-      catalog: null,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -86,13 +78,23 @@ class ProductModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> addIngredient(ProductIngredientModel ingredient) async {
-    await Database.service.update(Collections.menu, {
-      '$prefix.ingredients.${ingredient.id}': ingredient.toMap(),
-    });
+  void updateIngredient(ProductIngredientModel ingredient) {
+    if (!ingredients.containsKey(ingredient.id)) {
+      ingredients[ingredient.id] = ingredient;
+      final updateData = {
+        '$prefix.ingredients.${ingredient.id}': ingredient.toMap()
+      };
 
-    ingredients[ingredient.id] = ingredient;
-    notifyListeners();
+      Database.service.update(Collections.menu, updateData);
+    }
+    ingredientChanged();
+  }
+
+  void removeIngredient(ProductIngredientModel ingredient) {
+    ingredients.remove(ingredient.id);
+    final updateData = {'$prefix.ingredients.${ingredient.id}': null};
+    Database.service.update(Collections.menu, updateData);
+    ingredientChanged();
   }
 
   void update({
@@ -101,7 +103,7 @@ class ProductModel extends ChangeNotifier {
     num price,
     num cost,
   }) {
-    final updateData = getUpdateData(
+    final updateData = _getUpdateData(
       name: name,
       index: index,
       price: price,
@@ -120,7 +122,9 @@ class ProductModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> getUpdateData({
+  // HELPER
+
+  Map<String, dynamic> _getUpdateData({
     String name,
     int index,
     num price,
@@ -145,8 +149,6 @@ class ProductModel extends ChangeNotifier {
     }
     return updateData;
   }
-
-  // HELPER
 
   bool has(String id) => ingredients.containsKey(id);
   ProductIngredientModel operator [](String id) => ingredients[id];

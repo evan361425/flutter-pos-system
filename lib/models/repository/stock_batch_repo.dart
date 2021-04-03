@@ -37,7 +37,7 @@ class StockBatchRepo extends ChangeNotifier {
     if (hasNotContain(batch.id)) {
       batches[batch.id] = batch;
 
-      final updateData = {'${batch.id}': batch.toMap()};
+      final updateData = {batch.id: batch.toMap()};
       Database.service.set(Collections.stock_batch, updateData);
     }
     notifyListeners();

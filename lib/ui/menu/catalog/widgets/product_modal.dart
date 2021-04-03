@@ -12,6 +12,7 @@ class ProductModal extends StatefulWidget {
   ProductModal({Key key, @required this.product}) : super(key: key);
 
   final ProductModel product;
+  bool get isNew => product == null;
 
   @override
   _ProductModalState createState() => _ProductModalState();
@@ -36,7 +37,7 @@ class _ProductModalState extends State<ProductModal> {
         ),
         actions: [_trailingAction()],
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(kPadding),
           child: Center(child: _form()),
@@ -50,7 +51,7 @@ class _ProductModalState extends State<ProductModal> {
 
     final menu = context.read<MenuModel>();
 
-    if (widget.product.name != name && menu.hasProduct(name)) {
+    if (widget.product?.name != name && menu.hasProduct(name)) {
       return setState(() => errorMessage = '產品名稱重複');
     }
 
@@ -59,27 +60,34 @@ class _ProductModalState extends State<ProductModal> {
       errorMessage = null;
     });
 
-    if (widget.product.isReady) {
-      widget.product.update(
-        name: _nameController.text,
-        price: num.parse(_priceController.text),
-        cost: num.parse(_costController.text),
-      );
-      Navigator.of(context).pop();
-    } else {
-      final catalog = context.read<CatalogModel>();
-      final product = ProductModel(
-        name: _nameController.text,
-        catalog: catalog,
-        price: num.parse(_priceController.text),
-        cost: num.parse(_costController.text),
-      );
-      catalog.addProduct(product);
-      Navigator.of(context).popAndPushNamed(
-        MenuRoutes.routeProduct,
-        arguments: product,
-      );
-    }
+    final product = _updateProduct();
+
+    widget.isNew
+        ? Navigator.of(context).popAndPushNamed(
+            MenuRoutes.routeProduct,
+            arguments: product,
+          )
+        : Navigator.of(context).pop();
+  }
+
+  ProductModel _updateProduct() {
+    widget.product?.update(
+      name: _nameController.text,
+      price: num.parse(_priceController.text),
+      cost: num.parse(_costController.text),
+    );
+
+    final product = widget.product ??
+        ProductModel(
+          name: _nameController.text,
+          catalog: context.read<CatalogModel>(),
+          price: num.parse(_priceController.text),
+          cost: num.parse(_costController.text),
+        );
+
+    product.catalog.updateProduct(product);
+
+    return product;
   }
 
   Widget _trailingAction() {
@@ -152,9 +160,9 @@ class _ProductModalState extends State<ProductModal> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.product.name;
-    _priceController.text = widget.product.price.toString();
-    _costController.text = widget.product.cost.toString();
+    _nameController.text = widget.product?.name;
+    _priceController.text = widget.product?.price?.toString();
+    _costController.text = widget.product?.cost?.toString();
   }
 
   @override

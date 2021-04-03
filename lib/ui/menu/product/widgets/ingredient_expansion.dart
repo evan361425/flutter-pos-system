@@ -64,7 +64,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
     final body = ingredient.quantities.values.map<Widget>((quantity) {
       return ListTile(
-        onTap: () => goToQuantityModel(ingredient, quantity),
+        onTap: () => goToQuantityModel(
+          ingredient: ingredient,
+          quantity: quantity,
+        ),
         title: Text(quantityIndex[quantity.id].name),
         trailing: Text('${quantity.amount}'),
         subtitle: _quantityMetadata(quantity),
@@ -105,7 +108,8 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => IngredientModal(
                   ingredient: ingredient,
-                  ingredientName: quantityIndex[ingredient.id].name,
+                  ingredientName: stock[ingredient.id]?.name,
+                  product: ingredient.product,
                 ),
               ));
             },
@@ -118,12 +122,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           child: ElevatedButton.icon(
             icon: Icon(KIcons.add),
             label: Text('新增特殊份量'),
-            onPressed: () {
-              goToQuantityModel(
-                ingredient,
-                ProductQuantityModel.empty(),
-              );
-            },
+            onPressed: () => goToQuantityModel(ingredient: ingredient),
           ),
         ),
       ),
@@ -175,16 +174,16 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  void goToQuantityModel(
-    ProductIngredientModel ingredient,
+  void goToQuantityModel({
+    @required ProductIngredientModel ingredient,
     ProductQuantityModel quantity,
-  ) {
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuantityModal(
           quantity: quantity,
           ingredient: ingredient,
-          quantityName: quantityIndex[quantity.id]?.name ?? '',
+          quantityName: quantityIndex[quantity?.id]?.name ?? '',
         ),
       ),
     );

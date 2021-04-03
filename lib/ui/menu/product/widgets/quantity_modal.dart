@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:provider/provider.dart';
 
 import 'quantity_search_scaffold.dart';
 
 class QuantityModal extends StatefulWidget {
   QuantityModal({
     Key key,
-    this.quantityName,
+    @required this.ingredient,
     this.quantity,
-    this.ingredient,
+    this.quantityName,
   }) : super(key: key);
 
   final String quantityName;
@@ -42,15 +41,25 @@ class _QuantityModalState extends State<QuantityModal> {
     final quantity = _getQuantityFromTextField();
     if (quantity == null) return;
 
-    if (widget.quantity.isNotReady) {
-      widget.ingredient.addQuantity(quantity);
-    } else {
-      widget.quantity.update(widget.ingredient, quantity);
-    }
+    widget.quantity?.update(widget.ingredient, quantity);
 
-    widget.ingredient.product.ingredientChanged();
+    widget.ingredient.updateQuantity(quantity);
 
     Navigator.of(context).pop();
+  }
+
+  void _onDelete() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog(
+          content: Text('此動作將無法復原'),
+          onDelete: (BuildContext context) {
+            widget.ingredient.removeQuantity(widget.quantity);
+          },
+        );
+      },
+    );
   }
 
   ProductQuantityModel _getQuantityFromTextField() {
@@ -61,7 +70,8 @@ class _QuantityModalState extends State<QuantityModal> {
       setState(() => errorMessage = '必須設定成份份量名稱。');
       return null;
     }
-    if (widget.quantity.id != quantityId && widget.ingredient.has(quantityId)) {
+    if (widget.quantity?.id != quantityId &&
+        widget.ingredient.has(quantityId)) {
       setState(() => errorMessage = '成份份量重複。');
       return null;
     }
@@ -78,7 +88,7 @@ class _QuantityModalState extends State<QuantityModal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.quantity.isNotReady
+        title: Text(widget.quantity == null
             ? '新增成份份量'
             : '設定成份份量「${widget.quantityName}」'),
         leading: IconButton(
@@ -87,10 +97,24 @@ class _QuantityModalState extends State<QuantityModal> {
         ),
         actions: [_trailingAction()],
       ),
-      body: SafeArea(
+      body: Padding(
+        padding: const EdgeInsets.all(kPadding),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(kPadding),
-          child: _form(context),
+          child: Column(
+            children: [
+              _form(context),
+              // TODO: spacer?
+              widget.quantity == null
+                  ? Container()
+                  : ElevatedButton(
+                      onPressed: _onDelete,
+                      style: ElevatedButton.styleFrom(primary: kNegativeColor),
+                      child: Text(
+                        '刪除份量 ${widget.quantityName}',
+                      ),
+                    ),
+            ],
+          ),
         ),
       ),
     );
@@ -191,17 +215,17 @@ class _QuantityModalState extends State<QuantityModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    quantityId = widget.quantity.id ?? '';
-    final quantityIndex = context.read<QuantityIndexModel>();
-    quantityName = quantityIndex[widget.quantity.id]?.name ?? '';
+    quantityId = widget.quantity?.id ?? '';
+    quantityName = widget.quantityName ?? '';
   }
 
   @override
   void initState() {
-    _ammountController.text = widget.quantity.amount.toString();
+    _ammountController.text = widget.quantity?.amount?.toString();
     _additionalPriceController.text =
-        widget.quantity.additionalPrice.toString();
-    _additionalCostController.text = widget.quantity.additionalCost.toString();
+        widget.quantity?.additionalPrice?.toString();
+    _additionalCostController.text =
+        widget.quantity?.additionalCost?.toString();
     super.initState();
   }
 

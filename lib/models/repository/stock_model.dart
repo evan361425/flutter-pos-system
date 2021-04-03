@@ -33,11 +33,14 @@ class StockModel extends ChangeNotifier {
     }
   }
 
-  void addIngredient(IngredientModel ingredient) {
-    ingredients[ingredient.id] = ingredient;
+  void updateIngredient(IngredientModel ingredient) {
+    if (!hasContain(ingredient.id)) {
+      ingredients[ingredient.id] = ingredient;
 
-    final updateData = {'${ingredient.id}': ingredient.toMap()};
-    Database.service.set(Collections.ingredient, updateData);
+      final updateData = {'${ingredient.id}': ingredient.toMap()};
+      Database.service.set(Collections.ingredient, updateData);
+      notifyListeners();
+    }
   }
 
   void removeIngredient(String id) {
@@ -48,21 +51,14 @@ class StockModel extends ChangeNotifier {
 
   void changedIngredient() {
     updatedTime = DateTime.now();
-    // NOTE: not notifing still can update UI?!
-    // notifyListeners();
   }
 
   // TOOLS
 
-  bool hasContain(String id) {
-    return ingredients.containsKey(id);
-  }
+  bool hasContain(String id) => ingredients.containsKey(id);
+  IngredientModel operator [](String id) => ingredients[id];
 
   // GETTER
-
-  IngredientModel operator [](String id) {
-    return ingredients[id];
-  }
 
   List<IngredientModel> get ingredientList => ingredients.values.toList();
   bool get isReady => ingredients != null;

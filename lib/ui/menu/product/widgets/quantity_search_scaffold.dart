@@ -54,7 +54,10 @@ class QuantitySearchScaffold extends StatelessWidget {
   Widget _itemBuilder(BuildContext context, dynamic ingredient) {
     return CardTile(
       title: Text(ingredient.name),
-      onTap: () => Navigator.of(context).pop<QuantityModel>(ingredient),
+      onTap: () {
+        histories.add(scaffold.currentState.searchBar.currentState.text);
+        Navigator.of(context).pop<QuantityModel>(ingredient);
+      },
     );
   }
 

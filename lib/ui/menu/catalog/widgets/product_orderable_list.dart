@@ -14,14 +14,9 @@ class ProductOrderableList extends OrderableList<ProductModel> {
 
 class _ProductOrderListState extends OrderableListState<ProductModel, int> {
   @override
-  Future<void> onSubmit() async {
+  Future<void> onSubmit() {
     final catalog = context.read<CatalogModel>();
-
-    for (var i = 0, n = widget.items.length; i < n; i++) {
-      widget.items[i].update(index: i + 1);
-    }
-
-    catalog.productChanged();
+    return catalog.reorderProducts(widget.items);
   }
 
   @override

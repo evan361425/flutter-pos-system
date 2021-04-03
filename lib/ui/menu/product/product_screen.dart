@@ -7,9 +7,8 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import '../catalog/widgets/product_modal.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
@@ -37,7 +36,7 @@ class ProductScreen extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => IngredientModal(
-              ingredient: ProductIngredientModel.empty(product),
+              product: product,
             ),
           ));
         },
@@ -105,10 +104,9 @@ class ProductScreen extends StatelessWidget {
       return CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => ProductModal(product: product),
-              ),
+            onPressed: () => Navigator.of(context).pushReplacementNamed(
+              MenuRoutes.routeProductModal,
+              arguments: product,
             ),
             child: Text('變更產品'),
           ),

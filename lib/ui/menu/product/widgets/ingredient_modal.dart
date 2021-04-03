@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
-import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
-    @required this.ingredient,
+    this.product,
+    this.ingredient,
     this.ingredientName,
-  }) : super(key: key);
+  })  : isNew = ingredient == null,
+        super(key: key);
 
+  final ProductModel product;
   final ProductIngredientModel ingredient;
   final String ingredientName;
+  final bool isNew;
 
   @override
   _IngredientModalState createState() => _IngredientModalState();
@@ -32,22 +36,17 @@ class _IngredientModalState extends State<IngredientModal> {
   String ingredientId;
   String ingredientName;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.ingredient.isNotReady
-            ? '新增成份'
-            : '設定成份「${widget.ingredientName}」'),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
-        actions: [_trailingAction()],
-      ),
-      body: SafeArea(
-        child: Center(child: _form(context)),
-      ),
+  void _onDelete() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog(
+          content: Text('此動作將無法復原'),
+          onDelete: (BuildContext context) {
+            widget.product.removeIngredient(widget.ingredient);
+          },
+        );
+      },
     );
   }
 
@@ -56,8 +55,8 @@ class _IngredientModalState extends State<IngredientModal> {
     if (ingredientId.isEmpty) {
       return setState(() => errorMessage = '必須設定成份種類。');
     }
-    if (widget.ingredient.id != ingredientId &&
-        widget.ingredient.product.has(ingredientId)) {
+    if (widget.ingredient?.id != ingredientId &&
+        widget.product.has(ingredientId)) {
       return setState(() => errorMessage = '成份重複。');
     }
 
@@ -65,21 +64,72 @@ class _IngredientModalState extends State<IngredientModal> {
       isSaving = true;
       errorMessage = null;
     });
-    if (widget.ingredient.isReady) {
-      widget.ingredient.update(
-        ingredientId: ingredientId,
-        defaultAmount: num.parse(_amountController.text),
-      );
-      widget.ingredient.product.ingredientChanged();
-    } else {
-      final ingredient = ProductIngredientModel(
-        ingredientId: ingredientId,
-        product: widget.ingredient.product,
-        defaultAmount: num.parse(_amountController.text),
-      );
-      widget.ingredient.product.addIngredient(ingredient);
-    }
+
+    _updateIngredient();
+
     Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.isNew ? '新增成份' : '設定成份「${widget.ingredientName}」'),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(KIcons.back),
+        ),
+        actions: [_trailingAction()],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(kPadding),
+        child: Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  _nameField(context),
+                  SizedBox(height: kMargin),
+                  _amountField(context),
+                ],
+              ),
+            ),
+            Spacer(),
+            widget.isNew
+                ? Container()
+                : SingleChildScrollView(
+                    child: ElevatedButton(
+                      onPressed: _onDelete,
+                      style: ElevatedButton.styleFrom(primary: kNegativeColor),
+                      child: Text(
+                        '刪除${widget.product.name}的成份 ${widget.ingredientName}',
+                      ),
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _updateIngredient() {
+    final ingredient = widget.isNew
+        ? ProductIngredientModel(
+            ingredientId: ingredientId,
+            product: widget.product,
+            defaultAmount: num.parse(_amountController.text),
+          )
+        : widget.ingredient;
+
+    if (!widget.isNew) {
+      ingredient.update(
+        ingredientId: ingredientId,
+        defaultAmount: num.parse(_amountController.text),
+      );
+    }
+
+    widget.product.updateIngredient(ingredient);
   }
 
   Widget _trailingAction() {
@@ -89,19 +139,6 @@ class _IngredientModalState extends State<IngredientModal> {
             onPressed: () => _onSubmit(),
             child: Text('儲存'),
           );
-  }
-
-  Widget _form(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          _nameField(context),
-          SizedBox(height: kMargin),
-          _amountField(context),
-        ],
-      ),
-    );
   }
 
   Widget _nameField(BuildContext context) {
@@ -146,15 +183,14 @@ class _IngredientModalState extends State<IngredientModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ingredientId = widget.ingredient.id ?? '';
-    final stock = context.read<StockModel>();
-    ingredientName = stock[ingredientId]?.name ?? '';
+    ingredientId = widget.ingredient?.id ?? '';
+    ingredientName = widget.ingredientName ?? '';
   }
 
   @override
   void initState() {
     super.initState();
-    _amountController.text = widget.ingredient.defaultAmount.toString();
+    _amountController.text = widget.ingredient?.defaultAmount?.toString();
   }
 
   @override

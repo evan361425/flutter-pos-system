@@ -41,27 +41,28 @@ class MenuModel extends ChangeNotifier {
 
   // MENU STATE
 
-  CatalogModel buildCatalog({String name}) {
-    final catalog = CatalogModel(name: name, index: newIndex);
+  void updateCatalog(CatalogModel catalog) {
+    if (!has(catalog.id)) {
+      catalogs[catalog.id] = catalog;
 
-    addCatalog(catalog);
-
-    return catalog;
-  }
-
-  void addCatalog(CatalogModel catalog) {
-    Database.service.update(Collections.menu, {
-      catalog.id: catalog.toMap(),
-    });
-
-    catalogs[catalog.id] = catalog;
-    catalogChanged();
+      final updateData = {catalog.id: catalog.toMap()};
+      Database.service.update(Collections.menu, updateData);
+    }
+    notifyListeners();
   }
 
   void removeCatalog(String id) {
     catalogs.remove(id);
     Database.service.update(Collections.menu, {id: null});
-    catalogChanged();
+    notifyListeners();
+  }
+
+  Future<void> reorderCatalogs(List<CatalogModel> catalogs) async {
+    for (var i = 0, n = catalogs.length; i < n; i++) {
+      catalogs[i].update(index: i + 1);
+    }
+
+    notifyListeners();
   }
 
   // STOCK STATE
@@ -77,7 +78,7 @@ class MenuModel extends ChangeNotifier {
       ingredients.forEach((ingredient) {
         ingredient.product.ingredients.remove(id);
       });
-      catalogChanged();
+      notifyListeners();
     }
   }
 
@@ -91,7 +92,7 @@ class MenuModel extends ChangeNotifier {
 
     if (updateData.isNotEmpty) {
       ingredients.forEach((ingredient) => ingredient.quantities.remove(id));
-      catalogChanged();
+      notifyListeners();
     }
   }
 
@@ -123,25 +124,14 @@ class MenuModel extends ChangeNotifier {
 
   // HELPER
 
-  void catalogChanged() async {
-    notifyListeners();
-  }
-
-  bool hasCatalog(String name) {
-    return !catalogs.values.every((catalog) => catalog.name != name);
-  }
-
-  bool hasProduct(String name) {
-    return !catalogs.values.every((catalog) {
-      return catalog.products.values.every((product) => product.name != name);
-    });
-  }
+  bool has(String id) => catalogs.containsKey(id);
+  bool hasCatalog(String name) =>
+      !catalogs.values.every((catalog) => catalog.name != name);
+  bool hasProduct(String name) => !catalogs.values.every((catalog) =>
+      catalog.products.values.every((product) => product.name != name));
+  CatalogModel operator [](String id) => catalogs[id];
 
   // GETTER
-
-  CatalogModel operator [](String id) {
-    return catalogs[id];
-  }
 
   List<CatalogModel> get catalogList {
     final catalogList = catalogs.values.toList();

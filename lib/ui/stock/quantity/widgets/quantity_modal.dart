@@ -33,15 +33,17 @@ class _QuantityModalState extends State<QuantityModal> {
         ),
         actions: [_trailingAction()],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(kPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _nameField(),
-              _proportionField(),
-            ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(kPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _nameField(),
+                _proportionField(),
+              ],
+            ),
           ),
         ),
       ),

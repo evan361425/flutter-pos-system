@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';

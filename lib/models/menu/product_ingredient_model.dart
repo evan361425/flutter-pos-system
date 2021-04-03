@@ -59,28 +59,39 @@ class ProductIngredientModel {
 
   // STATE CHANGE
 
-  void addQuantity(ProductQuantityModel quantity) {
-    Database.service.update(Collections.menu, {
-      '$prefixQuantities.${quantity.id}': quantity.toMap(),
-    });
+  void updateQuantity(ProductQuantityModel quantity) {
+    print('update quantity ${quantity.id}');
+    if (!quantities.containsKey(quantity.id)) {
+      quantities[quantity.id] = quantity;
+      final updateData = {
+        '$prefixQuantities.${quantity.id}': quantity.toMap(),
+      };
 
-    quantities[quantity.id] = quantity;
-    product.ingredientChanged();
+      Database.service.update(Collections.menu, updateData);
+    }
+
+    product.updateIngredient(this);
+  }
+
+  void removeQuantity(ProductQuantityModel quantity) {
+    print('remove quantity ${quantity.id}');
+    quantities.remove(quantity.id);
+    final updateData = {'$prefixQuantities.${quantity.id}': null};
+    Database.service.update(Collections.menu, updateData);
   }
 
   void update({
     num defaultAmount,
     String ingredientId,
   }) {
-    final updateData = {};
+    final updateData = <String, dynamic>{};
     if (defaultAmount != this.defaultAmount) {
       this.defaultAmount = defaultAmount;
       updateData['$prefix.defaultAmount'] = defaultAmount;
     }
     // after all property set
     if (ingredientId != this.ingredientId) {
-      // delete old value
-      updateData[prefix] = null;
+      product.removeIngredient(this);
       this.ingredientId = ingredientId;
       updateData[prefix] = toMap();
     }

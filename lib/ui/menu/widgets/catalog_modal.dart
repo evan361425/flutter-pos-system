@@ -12,6 +12,8 @@ class CatalogModal extends StatefulWidget {
 
   final CatalogModel catalog;
 
+  bool get isNew => catalog == null;
+
   @override
   _CatalogModalState createState() => _CatalogModalState();
 }
@@ -50,7 +52,7 @@ class _CatalogModalState extends State<CatalogModal> {
 
     final menu = context.read<MenuModel>();
 
-    if (widget.catalog.name != name && menu.hasCatalog(name)) {
+    if (widget.catalog?.name != name && menu.hasCatalog(name)) {
       return setState(() => errorMessage = '種類名稱重複');
     }
 
@@ -59,14 +61,22 @@ class _CatalogModalState extends State<CatalogModal> {
       errorMessage = null;
     });
 
-    if (widget.catalog.isReady) {
-      widget.catalog.update(name: name);
-      menu.catalogChanged();
-      Navigator.of(context).pop();
-    } else {
-      final catalog = menu.buildCatalog(name: name);
-      Navigator.of(context).popAndPushNamed(Routes.catalog, arguments: catalog);
-    }
+    final catalog = _updateCatalog(name, menu);
+
+    widget.isNew
+        ? Navigator.of(context)
+            .popAndPushNamed(Routes.catalog, arguments: catalog)
+        : Navigator.of(context).pop();
+  }
+
+  CatalogModel _updateCatalog(String name, MenuModel menu) {
+    widget.catalog?.update(name: name);
+
+    final catalog =
+        widget.catalog ?? CatalogModel(name: name, index: menu.newIndex);
+
+    menu.updateCatalog(catalog);
+    return catalog;
   }
 
   Widget _trailingAction() {
@@ -98,7 +108,7 @@ class _CatalogModalState extends State<CatalogModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _controller.text = widget.catalog.name;
+    _controller.text = widget.catalog?.name;
   }
 
   @override

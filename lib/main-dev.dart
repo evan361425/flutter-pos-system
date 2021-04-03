@@ -248,6 +248,7 @@ class _MockDatabase extends Database<Snapshot> {
     } else if (collection == Collections.quantities) {
       return Future.delayed(Duration(seconds: 0), () => _QuantitySnapshot());
     }
+    return null;
   }
 
   @override

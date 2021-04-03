@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
@@ -77,24 +78,9 @@ class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
       context: context,
       useRootNavigator: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('確認刪除通知'),
-          content: SingleChildScrollView(
-            child: widget.warningContext(context, item),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                widget.onDelete(context, item);
-                Navigator.of(context).pop();
-              },
-              child: Text('刪除', style: TextStyle(color: kNegativeColor)),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('取消'),
-            ),
-          ],
+        return DeleteDialog(
+          content: widget.warningContext(context, item),
+          onDelete: (BuildContext context) => widget.onDelete(context, item),
         );
       },
     );

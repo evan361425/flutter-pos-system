@@ -16,7 +16,6 @@ class Routes {
     },
     catalogModal: (BuildContext context) {
       final CatalogModel catalog = ModalRoute.of(context).settings.arguments;
-      assert(catalog != null);
       return CatalogModal(catalog: catalog);
     }
   };

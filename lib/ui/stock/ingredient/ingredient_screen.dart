@@ -78,13 +78,11 @@ class _IngredientScreenState extends State<IngredientScreen> {
   void _updateIngredient(String name, StockModel stock) {
     final amount = double.parse(_amountController.text);
 
-    if (widget.ingredient != null) {
-      widget.ingredient.update(name: name, amount: amount);
-    } else {
-      stock.addIngredient(IngredientModel(name: name, currentAmount: amount));
-    }
+    widget.ingredient?.update(name: name, amount: amount);
 
-    stock.changedIngredient();
+    stock.updateIngredient(
+      widget.ingredient ?? IngredientModel(name: name, currentAmount: amount),
+    );
   }
 
   List<Widget> _productList() {
@@ -163,7 +161,8 @@ class _IngredientScreenState extends State<IngredientScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _nameController.text = widget.ingredient?.name;
-    _amountController.text = widget.ingredient?.currentAmount?.toString();
+    _amountController.text =
+        widget.ingredient?.currentAmount?.toString() ?? '0';
   }
 
   @override

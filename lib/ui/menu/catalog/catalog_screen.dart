@@ -6,11 +6,10 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/catalog_modal.dart';
 import 'widgets/catalog_body.dart';
 
 class CatalogScreen extends StatelessWidget {
@@ -36,7 +35,6 @@ class CatalogScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
           MenuRoutes.routeProductModal,
-          arguments: ProductModel.empty(),
         ),
         tooltip: Local.of(context).t('menu.catalog.add_product'),
         child: Icon(KIcons.add),
@@ -96,11 +94,8 @@ class CatalogScreen extends StatelessWidget {
       return CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => CatalogModal(catalog: catalog),
-              ),
-            ),
+            onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(Routes.catalogModal, arguments: catalog),
             child: Text('變更名稱'),
           ),
           CupertinoActionSheetAction(

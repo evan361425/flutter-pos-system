@@ -52,12 +52,9 @@ class QuantityIndexModel extends ChangeNotifier {
 
   bool hasContain(String id) => quantities.containsKey(id);
   bool hasNotContain(String id) => !quantities.containsKey(id);
+  QuantityModel operator [](String id) => quantities[id];
 
   // GETTER
-
-  QuantityModel operator [](String id) {
-    return quantities[id];
-  }
 
   List<QuantityModel> get quantitiesList => quantities.values.toList();
   bool get isNotReady => quantities == null;
