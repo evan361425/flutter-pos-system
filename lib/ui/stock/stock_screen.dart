@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/icons.dart';
 
 import 'ingredient/ingredient_screen.dart';
 import 'widgets/stock_body.dart';
@@ -24,7 +25,7 @@ class StockScreen extends StatelessWidget {
             ),
           ),
           tooltip: '新增成份',
-          child: Icon(Icons.add),
+          child: Icon(KIcons.add),
         ),
         body: WillPopScope(
           onWillPop: () async => false,

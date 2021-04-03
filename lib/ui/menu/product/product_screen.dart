@@ -5,6 +5,7 @@ import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -22,7 +23,7 @@ class ProductScreen extends StatelessWidget {
     return FadeInTitleScaffold(
       leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(Icons.arrow_back_ios_sharp),
+        icon: Icon(KIcons.back),
       ),
       title: product.name,
       trailing: IconButton(
@@ -30,7 +31,7 @@ class ProductScreen extends StatelessWidget {
           context: context,
           builder: _moreActions(product),
         ),
-        icon: Icon(Icons.more_horiz_sharp),
+        icon: Icon(KIcons.more),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -41,7 +42,7 @@ class ProductScreen extends StatelessWidget {
           ));
         },
         tooltip: Local.of(context).t('menu.product.add_integredient'),
-        child: Icon(Icons.add),
+        child: Icon(KIcons.add),
       ),
       body: _body(context),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 
 // use inherit objects to make your life better
@@ -45,7 +46,7 @@ class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
           IconSlideAction(
             color: kNegativeColor,
             caption: Local.of(context).t('delete'),
-            icon: Icons.delete,
+            icon: KIcons.delete,
             onTap: () => _showDeleteDialog(context, item),
           ),
         ],

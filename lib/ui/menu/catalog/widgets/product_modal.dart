@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
@@ -31,7 +32,7 @@ class _ProductModalState extends State<ProductModal> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(KIcons.back),
         ),
         actions: [_trailingAction()],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
@@ -27,7 +28,7 @@ class _QuantityModalState extends State<QuantityModal> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(KIcons.back),
         ),
         actions: [_trailingAction()],
       ),

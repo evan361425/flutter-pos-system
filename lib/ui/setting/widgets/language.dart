@@ -10,7 +10,7 @@ class LanguagePopupMenu extends StatelessWidget {
     final current = language.locale;
 
     return PopupMenuButton<Locale>(
-      icon: Icon(Icons.language),
+      icon: Icon(Icons.language_sharp),
       onSelected: (Locale selected) => language.locale = selected,
       itemBuilder: (BuildContext context) => _buildItem(context, current),
     );

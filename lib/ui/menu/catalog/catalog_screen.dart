@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -21,7 +22,7 @@ class CatalogScreen extends StatelessWidget {
     return FadeInTitleScaffold(
       leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(Icons.arrow_back_ios_sharp),
+        icon: Icon(KIcons.back),
       ),
       title: catalog.name,
       trailing: IconButton(
@@ -30,7 +31,7 @@ class CatalogScreen extends StatelessWidget {
           builder: _moreActions(catalog),
           useRootNavigator: false,
         ),
-        icon: Icon(Icons.more_horiz_sharp),
+        icon: Icon(KIcons.more),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
@@ -38,7 +39,7 @@ class CatalogScreen extends StatelessWidget {
           arguments: ProductModel.empty(),
         ),
         tooltip: Local.of(context).t('menu.catalog.add_product'),
-        child: Icon(Icons.add),
+        child: Icon(KIcons.add),
       ),
       body: _body(context),
     );

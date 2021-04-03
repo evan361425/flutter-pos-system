@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
@@ -115,7 +116,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kPadding),
           child: ElevatedButton.icon(
-            icon: Icon(Icons.add),
+            icon: Icon(KIcons.add),
             label: Text('新增特殊份量'),
             onPressed: () {
               goToQuantityModel(

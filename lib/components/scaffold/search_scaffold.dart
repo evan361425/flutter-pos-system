@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   const SearchScaffold({
@@ -60,7 +61,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(KIcons.back),
         ),
         title: SearchBar(
           key: searchBar,

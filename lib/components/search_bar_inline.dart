@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchBarInline extends StatelessWidget {
   const SearchBarInline({
@@ -35,7 +36,7 @@ class SearchBarInline extends StatelessWidget {
           errorText: errorText,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: Icon(KIcons.search),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/ui/setting/widgets/language.dart';
 import 'package:possystem/ui/setting/widgets/signout.dart';
@@ -12,7 +13,7 @@ class SettingScreen extends StatelessWidget {
         title: Text(Local.of(context).t('setting')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(KIcons.back),
         ),
       ),
       body: ListView(

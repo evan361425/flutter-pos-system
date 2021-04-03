@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchBar extends StatefulWidget {
   SearchBar({
@@ -69,7 +70,7 @@ class SearchBarState extends State<SearchBar> {
                     controller.clear();
                     _onChanged('');
                   },
-                  icon: Icon(Icons.clear),
+                  icon: Icon(KIcons.clear),
                 ),
           hintText: widget.hintText,
           counterText: '',

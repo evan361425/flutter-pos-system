@@ -4,6 +4,7 @@ import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
@@ -81,11 +82,11 @@ class IngredientList extends StatelessWidget {
         children: <Widget>[
           IconFilledButton(
             onPressed: onAddAmount,
-            child: Icon(Icons.add_sharp),
+            child: Icon(KIcons.add),
           ),
           IconFilledButton(
             onPressed: onMinusAmount,
-            child: Icon(Icons.remove_sharp),
+            child: Icon(KIcons.remove),
           ),
         ],
       ),

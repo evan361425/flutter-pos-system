@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
@@ -30,7 +31,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back_ios_sharp),
+          icon: Icon(KIcons.back),
         ),
         actions: [_trailingAction()],
       ),

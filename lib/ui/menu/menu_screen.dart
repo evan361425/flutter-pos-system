@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
@@ -20,7 +21,7 @@ class MenuScreen extends StatelessWidget {
                 context: context,
                 builder: (_) => MenuActions(),
               ),
-              icon: Icon(Icons.more_horiz_sharp),
+              icon: Icon(KIcons.more),
             ),
           ],
         ),
@@ -30,7 +31,7 @@ class MenuScreen extends StatelessWidget {
             arguments: CatalogModel.empty(),
           ),
           tooltip: Local.of(context).t('menu.add_catalog'),
-          child: Icon(Icons.add),
+          child: Icon(KIcons.add),
         ),
         // When click android go back, it will avoid closing APP
         body: WillPopScope(

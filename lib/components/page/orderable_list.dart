@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 
 abstract class OrderableList<T> extends StatefulWidget {
   OrderableList({
@@ -36,7 +37,7 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios_sharp),
+          child: Icon(KIcons.back),
         ),
         actions: [_trailingAction(context)],
         title: Text(widget.title),
@@ -107,7 +108,7 @@ class OrderableListItem extends StatelessWidget {
           index: index,
           child: Padding(
             padding: const EdgeInsets.only(right: kPadding),
-            child: Center(child: Icon(Icons.reorder)),
+            child: Center(child: Icon(Icons.reorder_sharp)),
           ),
         ),
       ],
