@@ -65,7 +65,7 @@ class QuantitySearchScaffold extends StatelessWidget {
         histories.add(scaffold.currentState.searchBar.currentState.text);
         final quantities = context.read<QuantityIndexModel>();
         final quantity = QuantityModel(name: text);
-        quantities.addQuantity(quantity);
+        quantities.updateQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
     );

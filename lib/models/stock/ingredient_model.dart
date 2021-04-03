@@ -36,10 +36,6 @@ class IngredientModel extends ChangeNotifier {
     );
   }
 
-  factory IngredientModel.empty() {
-    return IngredientModel(name: null);
-  }
-
   Map<String, dynamic> toMap() {
     final nonNullProperties = {
       'name': name,

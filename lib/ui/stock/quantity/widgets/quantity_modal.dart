@@ -72,13 +72,12 @@ class _QuantityModalState extends State<QuantityModal> {
 
     if (widget.quantity != null) {
       widget.quantity.update(name: name, proportion: proportion);
-    } else {
-      quantities.addQuantity(
-        QuantityModel(name: name, defaultProportion: proportion),
-      );
     }
 
-    quantities.changedQuantity();
+    quantities.updateQuantity(
+      widget.quantity ??
+          QuantityModel(name: name, defaultProportion: proportion),
+    );
   }
 
   Widget _trailingAction() {

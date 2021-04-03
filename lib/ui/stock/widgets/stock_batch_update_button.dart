@@ -13,6 +13,9 @@ class StockUpdateMultipleButton extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () => print('hi'),
           icon: Icon(Icons.add_circle_outline_sharp),
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).primaryColorLight,
+          ),
           label: Text('批量設定'),
         ),
       ],

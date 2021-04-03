@@ -31,11 +31,15 @@ class QuantityIndexModel extends ChangeNotifier {
     }
   }
 
-  void addQuantity(QuantityModel quantity) {
-    quantities[quantity.id] = quantity;
+  void updateQuantity(QuantityModel quantity) {
+    if (hasNotContain(quantity.id)) {
+      quantities[quantity.id] = quantity;
 
-    final updateData = {'${quantity.id}': quantity.toMap()};
-    Database.service.set(Collections.quantities, updateData);
+      final updateData = {'${quantity.id}': quantity.toMap()};
+      Database.service.set(Collections.quantities, updateData);
+    }
+
+    notifyListeners();
   }
 
   void removeQuantity(String id) {
@@ -46,13 +50,8 @@ class QuantityIndexModel extends ChangeNotifier {
 
   // TOOLS
 
-  bool hasContain(String id) {
-    return quantities.containsKey(id);
-  }
-
-  void changedQuantity() {
-    notifyListeners();
-  }
+  bool hasContain(String id) => quantities.containsKey(id);
+  bool hasNotContain(String id) => !quantities.containsKey(id);
 
   // GETTER
 
