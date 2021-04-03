@@ -56,7 +56,7 @@ class ProductQuantityModel {
     ProductIngredientModel ingredient,
     ProductQuantityModel quantity,
   ) {
-    final prefix = '${ingredient.prefix}.quantities.$id';
+    final prefix = '${ingredient.prefixQuantities}.$id';
     final updateData = <String, dynamic>{};
     if (quantity.amount != amount) {
       amount = quantity.amount;
@@ -74,7 +74,7 @@ class ProductQuantityModel {
     if (quantity.quantityId != quantityId) {
       updateData['$prefix'] = null;
       quantityId = quantity.quantityId;
-      updateData['${ingredient.prefix}.quantities.$id'] = toMap();
+      updateData['${ingredient.prefixQuantities}.$id'] = toMap();
     }
 
     return updateData;
