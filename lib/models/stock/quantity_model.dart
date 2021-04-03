@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
 
-class IngredientSetModel extends ChangeNotifier {
-  IngredientSetModel({
+class QuantityModel extends ChangeNotifier {
+  QuantityModel({
     @required this.name,
     this.defaultProportion = 0,
     String id,
@@ -13,19 +13,19 @@ class IngredientSetModel extends ChangeNotifier {
   double defaultProportion;
   final String id;
 
-  factory IngredientSetModel.fromMap({
+  factory QuantityModel.fromMap({
     String id,
     Map<String, dynamic> data,
   }) {
-    return IngredientSetModel(
+    return QuantityModel(
       name: data['name'],
       defaultProportion: data['defaultProportion'],
       id: id,
     );
   }
 
-  factory IngredientSetModel.empty() {
-    return IngredientSetModel(name: null);
+  factory QuantityModel.empty() {
+    return QuantityModel(name: null);
   }
 
   Map<String, dynamic> toMap() {
@@ -37,10 +37,10 @@ class IngredientSetModel extends ChangeNotifier {
 
   // STATE CHANGE
 
-  Future<void> update(IngredientSetModel newIngredientSet) async {
+  Future<void> update(QuantityModel quantity) async {
     final updateData = {};
     final originData = toMap();
-    newIngredientSet.toMap().forEach((key, value) {
+    quantity.toMap().forEach((key, value) {
       if (originData[key] != value) {
         updateData['$id.$key'] = value;
       }
@@ -49,8 +49,8 @@ class IngredientSetModel extends ChangeNotifier {
     return Database.service
         .update(Collections.ingredient, updateData)
         .then((_) {
-      name = newIngredientSet.name;
-      defaultProportion = newIngredientSet.defaultProportion;
+      name = quantity.name;
+      defaultProportion = quantity.defaultProportion;
       notifyListeners();
     });
   }

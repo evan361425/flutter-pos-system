@@ -50,10 +50,10 @@ class SearchHistoryModel {
 
 enum SearchHistoryTypes {
   ingredient,
-  ingredient_set,
+  quantity,
 }
 
 final _SearchHistoryTypeString = const <SearchHistoryTypes, String>{
   SearchHistoryTypes.ingredient: 'ingredient',
-  SearchHistoryTypes.ingredient_set: 'ingredient_set',
+  SearchHistoryTypes.quantity: 'quantity',
 };

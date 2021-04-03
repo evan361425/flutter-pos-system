@@ -77,7 +77,7 @@ class _IngredientSnapshot extends Snapshot {
   }
 }
 
-class _IngredientSetSnapshot extends Snapshot {
+class _QuantitySnapshot extends Snapshot {
   @override
   Map<String, Map<String, dynamic>> data() {
     return const {
@@ -98,7 +98,7 @@ class _SearchSnapshot extends Snapshot {
   Map<String, List<String>> data() {
     return const {
       'ingredient': ['che', 'br'],
-      'ingredient_set': ['l'],
+      'quantity': ['l'],
     };
   }
 }
@@ -119,7 +119,7 @@ class _MenuSnapshot extends Snapshot {
             'ingredients': {
               'i1': {
                 'defaultAmount': 20,
-                'additionalSets': {
+                'quantities': {
                   'is1': {
                     'amount': 10,
                     'additionalPrice': 0,
@@ -220,7 +220,7 @@ class _MenuSnapshot extends Snapshot {
             'cost': 20,
             'index': 0,
             'ingredients': {
-              'i1': {'defaultAmount': 20, 'additionalSets': {}}
+              'i1': {'defaultAmount': 20}
             }
           },
         },
@@ -245,10 +245,8 @@ class _MockDatabase extends Database<Snapshot> {
       return Future.delayed(Duration(seconds: 0), () => _IngredientSnapshot());
     } else if (collection == Collections.search_history) {
       return Future.delayed(Duration(seconds: 0), () => _SearchSnapshot());
-    } else {
-      // } else if (collection == Collections.ingredient_sets) {
-      return Future.delayed(
-          Duration(seconds: 0), () => _IngredientSetSnapshot());
+    } else if (collection == Collections.quantities) {
+      return Future.delayed(Duration(seconds: 0), () => _QuantitySnapshot());
     }
   }
 

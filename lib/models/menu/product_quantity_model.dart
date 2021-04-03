@@ -2,33 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
-class ProductIngredientSetModel {
-  ProductIngredientSetModel({
-    @required this.ingredientSetId,
+class ProductQuantityModel {
+  ProductQuantityModel({
+    @required this.quantityId,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
   });
 
-  String ingredientSetId;
+  String quantityId;
   num amount;
   num additionalCost;
   num additionalPrice;
 
-  factory ProductIngredientSetModel.fromMap(
-    String ingredientSetId,
+  factory ProductQuantityModel.fromMap(
+    String quantityId,
     Map<String, dynamic> data,
   ) {
-    return ProductIngredientSetModel(
-      ingredientSetId: ingredientSetId,
+    return ProductQuantityModel(
+      quantityId: quantityId,
       amount: data['amount'],
       additionalCost: data['additionalCost'],
       additionalPrice: data['additionalPrice'],
     );
   }
 
-  factory ProductIngredientSetModel.empty() {
-    return ProductIngredientSetModel(ingredientSetId: null);
+  factory ProductQuantityModel.empty() {
+    return ProductQuantityModel(quantityId: null);
   }
 
   Map<String, num> toMap() {
@@ -43,9 +43,9 @@ class ProductIngredientSetModel {
 
   void update(
     ProductIngredientModel ingredient,
-    ProductIngredientSetModel newSet,
+    ProductQuantityModel quantity,
   ) {
-    final updateData = getUpdateData(ingredient, newSet);
+    final updateData = getUpdateData(ingredient, quantity);
 
     if (updateData.isEmpty) return;
 
@@ -54,27 +54,27 @@ class ProductIngredientSetModel {
 
   Map<String, dynamic> getUpdateData(
     ProductIngredientModel ingredient,
-    ProductIngredientSetModel newSet,
+    ProductQuantityModel quantity,
   ) {
-    final prefix = '${ingredient.prefix}.additionalSets.$id';
+    final prefix = '${ingredient.prefix}.quantities.$id';
     final updateData = <String, dynamic>{};
-    if (newSet.amount != amount) {
-      amount = newSet.amount;
+    if (quantity.amount != amount) {
+      amount = quantity.amount;
       updateData['$prefix.amount'] = amount;
     }
-    if (newSet.additionalCost != additionalCost) {
-      additionalCost = newSet.additionalCost;
+    if (quantity.additionalCost != additionalCost) {
+      additionalCost = quantity.additionalCost;
       updateData['$prefix.additionalCost'] = additionalCost;
     }
-    if (newSet.additionalPrice != additionalPrice) {
-      additionalPrice = newSet.additionalPrice;
+    if (quantity.additionalPrice != additionalPrice) {
+      additionalPrice = quantity.additionalPrice;
       updateData['$prefix.additionalPrice'] = additionalPrice;
     }
     // final
-    if (newSet.ingredientSetId != ingredientSetId) {
+    if (quantity.quantityId != quantityId) {
       updateData['$prefix'] = null;
-      ingredientSetId = newSet.ingredientSetId;
-      updateData['${ingredient.prefix}.additionalSets.$id'] = toMap();
+      quantityId = quantity.quantityId;
+      updateData['${ingredient.prefix}.quantities.$id'] = toMap();
     }
 
     return updateData;
@@ -82,7 +82,7 @@ class ProductIngredientSetModel {
 
   // GETTER
 
-  bool get isNotReady => ingredientSetId == null;
+  bool get isNotReady => quantityId == null;
 
-  String get id => ingredientSetId;
+  String get id => quantityId;
 }

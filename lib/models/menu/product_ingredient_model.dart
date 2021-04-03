@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/menu/product_ingredient_set_model.dart';
+import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
 import 'product_model.dart';
@@ -9,11 +9,11 @@ class ProductIngredientModel {
     @required this.ingredientId,
     @required this.product,
     this.defaultAmount = 0,
-    Map<String, ProductIngredientSetModel> ingredientSets,
-  }) : ingredientSets = ingredientSets ?? {};
+    Map<String, ProductQuantityModel> quantities,
+  }) : quantities = quantities ?? {};
 
   final ProductModel product;
-  final Map<String, ProductIngredientSetModel> ingredientSets;
+  final Map<String, ProductQuantityModel> quantities;
   String ingredientId;
   num defaultAmount;
 
@@ -22,15 +22,15 @@ class ProductIngredientModel {
     Map<String, dynamic> data,
     String ingredientId,
   }) {
-    final ingredientSetsMap = data['additionalSets'];
-    final ingredientSets = <String, ProductIngredientSetModel>{};
+    final quantitiesMap = data['quantities'];
+    final quantities = <String, ProductQuantityModel>{};
 
-    if (ingredientSetsMap is Map<String, Map>) {
-      ingredientSetsMap.forEach((ingredientSetId, ingredientSet) {
-        if (ingredientSet is Map) {
-          ingredientSets[ingredientSetId] = ProductIngredientSetModel.fromMap(
-            ingredientSetId,
-            ingredientSet,
+    if (quantitiesMap is Map<String, Map>) {
+      quantitiesMap.forEach((quantityId, quantity) {
+        if (quantity is Map) {
+          quantities[quantityId] = ProductQuantityModel.fromMap(
+            quantityId,
+            quantity,
           );
         }
       });
@@ -40,7 +40,7 @@ class ProductIngredientModel {
       product: product,
       ingredientId: ingredientId,
       defaultAmount: data['defaultAmount'],
-      ingredientSets: ingredientSets,
+      quantities: quantities,
     );
   }
 
@@ -51,20 +51,20 @@ class ProductIngredientModel {
   Map<String, dynamic> toMap() {
     return {
       'defaultAmount': defaultAmount,
-      'additionalSets': {
-        for (var entry in ingredientSets.entries) entry.key: entry.value.toMap()
+      'quantities': {
+        for (var entry in quantities.entries) entry.key: entry.value.toMap()
       },
     };
   }
 
   // STATE CHANGE
 
-  void addIngredientSet(ProductIngredientSetModel newSet) {
+  void addQuantity(ProductQuantityModel quantity) {
     Database.service.update(Collections.menu, {
-      '$prefix.additionalSets.${newSet.id}': newSet.toMap(),
+      '$prefix.quantities.${quantity.id}': quantity.toMap(),
     });
 
-    ingredientSets[newSet.id] = newSet;
+    quantities[quantity.id] = quantity;
     product.ingredientChanged();
   }
 
@@ -91,7 +91,7 @@ class ProductIngredientModel {
   }
 
   bool has(String id) {
-    return ingredientSets.containsKey(id);
+    return quantities.containsKey(id);
   }
 
   // GETTER

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/repository/ingredient_set_index_model.dart';
+import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_ingredient_set_model.dart';
+import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ingredient_modal.dart';
-import 'ingredient_set_modal.dart';
+import 'quantity_modal.dart';
 
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({Key key}) : super(key: key);
@@ -23,14 +23,14 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   List<bool> showIngredient = [];
   List<ProductIngredientModel> ingredients;
   StockModel stock;
-  IngredientSetIndexModel ingredientSetIndex;
+  QuantityIndexModel quantityIndex;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
     stock = context.watch<StockModel>();
-    ingredientSetIndex = context.watch<IngredientSetIndexModel>();
+    quantityIndex = context.watch<QuantityIndexModel>();
 
     // Don't rebuild make old expansion still opening
     for (var i = showIngredient.length; i < ingredients.length; i++) {
@@ -40,7 +40,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   @override
   Widget build(BuildContext context) {
-    if (ingredientSetIndex.isNotReady) return CircularProgressIndicator();
+    if (quantityIndex.isNotReady) return CircularProgressIndicator();
 
     return Container(
       child: ExpansionPanelList(
@@ -61,18 +61,18 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   }
 
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
-    final body = ingredient.ingredientSets.values.map<Widget>((ingredientSet) {
+    final body = ingredient.quantities.values.map<Widget>((quantity) {
       return ListTile(
-        onTap: () => goToIngredientSetModel(ingredient, ingredientSet),
-        title: Text(ingredientSetIndex[ingredientSet.id].name),
-        trailing: Text('${ingredientSet.amount}'),
-        subtitle: _ingredientSetMetadata(ingredientSet),
+        onTap: () => goToQuantityModel(ingredient, quantity),
+        title: Text(quantityIndex[quantity.id].name),
+        trailing: Text('${quantity.amount}'),
+        subtitle: _quantityMetadata(quantity),
       );
     }).toList();
 
     // prepend first row as title
     if (body.isNotEmpty) {
-      body.insert(0, _ingredientSetTitle());
+      body.insert(0, _quantityTitle());
     }
 
     // append add bottom
@@ -104,7 +104,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => IngredientModal(
                   ingredient: ingredient,
-                  ingredientName: ingredientSetIndex[ingredient.id].name,
+                  ingredientName: quantityIndex[ingredient.id].name,
                 ),
               ));
             },
@@ -118,9 +118,9 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.add),
             label: Text('新增特殊份量'),
             onPressed: () {
-              goToIngredientSetModel(
+              goToQuantityModel(
                 ingredient,
-                ProductIngredientSetModel.empty(),
+                ProductQuantityModel.empty(),
               );
             },
           ),
@@ -129,7 +129,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     ]);
   }
 
-  Widget _ingredientSetMetadata(ProductIngredientSetModel ingredientSet) {
+  Widget _quantityMetadata(ProductQuantityModel quantity) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,7 +137,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         Tooltip(
           message: '額外售價',
           child: IconText(
-            text: ingredientSet.additionalPrice.toString(),
+            text: quantity.additionalPrice.toString(),
             iconName: 'loyalty_sharp',
           ),
         ),
@@ -145,7 +145,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         Tooltip(
           message: '額外成本',
           child: IconText(
-            text: ingredientSet.additionalCost.toString(),
+            text: quantity.additionalCost.toString(),
             iconName: 'attach_money_sharp',
           ),
         ),
@@ -153,7 +153,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Widget _ingredientSetTitle() {
+  Widget _quantityTitle() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kPadding),
       child: Row(
@@ -174,16 +174,16 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  void goToIngredientSetModel(
+  void goToQuantityModel(
     ProductIngredientModel ingredient,
-    ProductIngredientSetModel ingredientSet,
+    ProductQuantityModel quantity,
   ) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => IngredientSetModal(
-          ingredientSet: ingredientSet,
+        builder: (_) => QuantityModal(
+          quantity: quantity,
           ingredient: ingredient,
-          ingredientSetName: ingredientSetIndex[ingredientSet.id]?.name ?? '',
+          quantityName: quantityIndex[quantity.id]?.name ?? '',
         ),
       ),
     );

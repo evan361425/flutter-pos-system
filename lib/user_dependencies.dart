@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/repository/ingredient_set_index_model.dart';
+import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/user_model.dart';
@@ -43,7 +43,7 @@ class UserDependencies extends StatelessWidget {
             Provider<UserModel>.value(value: user),
             ChangeNotifierProvider.value(value: MenuModel()),
             ChangeNotifierProvider.value(value: StockModel()),
-            ChangeNotifierProvider.value(value: IngredientSetIndexModel()),
+            ChangeNotifierProvider.value(value: QuantityIndexModel()),
           ],
           builder: (context, child) => builder(context, snapshot),
         );

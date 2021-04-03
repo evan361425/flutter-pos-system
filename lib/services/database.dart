@@ -1,7 +1,7 @@
 enum Collections {
   menu,
   ingredient,
-  ingredient_sets,
+  quantities,
   search_history,
 }
 
@@ -11,7 +11,7 @@ abstract class Database<T> {
   final Map<Collections, String> CollectionName = {
     Collections.menu: 'menu',
     Collections.ingredient: 'ingredient',
-    Collections.ingredient_sets: 'ingredient_sets',
+    Collections.quantities: 'quantities',
     Collections.search_history: 'search_history',
   };
 

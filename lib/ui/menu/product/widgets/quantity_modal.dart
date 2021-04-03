@@ -2,49 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/repository/ingredient_set_index_model.dart';
-import 'package:possystem/models/stock/ingredient_set_model.dart';
+import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_ingredient_set_model.dart';
+import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:provider/provider.dart';
 
-import 'ingredient_set_search_scaffold.dart';
+import 'quantity_search_scaffold.dart';
 
-class IngredientSetModal extends StatefulWidget {
-  IngredientSetModal({
+class QuantityModal extends StatefulWidget {
+  QuantityModal({
     Key key,
-    this.ingredientSetName,
-    this.ingredientSet,
+    this.quantityName,
+    this.quantity,
     this.ingredient,
   }) : super(key: key);
 
-  final String ingredientSetName;
-  final ProductIngredientSetModel ingredientSet;
+  final String quantityName;
+  final ProductQuantityModel quantity;
   final ProductIngredientModel ingredient;
 
   @override
-  _IngredientSetModalState createState() => _IngredientSetModalState();
+  _QuantityModalState createState() => _QuantityModalState();
 }
 
-class _IngredientSetModalState extends State<IngredientSetModal> {
+class _QuantityModalState extends State<QuantityModal> {
   final _formKey = GlobalKey<FormState>();
   final _ammountController = TextEditingController();
   final _additionalPriceController = TextEditingController();
   final _additionalCostController = TextEditingController();
 
   bool isSaving = false;
-  String ingredientSetName;
-  String ingredientSetId;
+  String quantityName;
+  String quantityId;
   String errorMessage;
 
   void _onSubmit() {
-    final newSet = _getSet();
-    if (newSet == null) return;
+    final quantity = _getQuantityFromTextField();
+    if (quantity == null) return;
 
-    if (widget.ingredientSet.isNotReady) {
-      widget.ingredient.addIngredientSet(newSet);
+    if (widget.quantity.isNotReady) {
+      widget.ingredient.addQuantity(quantity);
     } else {
-      widget.ingredientSet.update(widget.ingredient, newSet);
+      widget.quantity.update(widget.ingredient, quantity);
     }
 
     widget.ingredient.product.ingredientChanged();
@@ -52,22 +52,21 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
     Navigator.of(context).pop();
   }
 
-  ProductIngredientSetModel _getSet() {
+  ProductQuantityModel _getQuantityFromTextField() {
     if (!_formKey.currentState.validate()) {
       return null;
     }
-    if (ingredientSetId.isEmpty) {
+    if (quantityId.isEmpty) {
       setState(() => errorMessage = '必須設定成份份量名稱。');
       return null;
     }
-    if (widget.ingredientSet.id != ingredientSetId &&
-        widget.ingredient.has(ingredientSetId)) {
+    if (widget.quantity.id != quantityId && widget.ingredient.has(quantityId)) {
       setState(() => errorMessage = '成份份量重複。');
       return null;
     }
 
-    return ProductIngredientSetModel(
-      ingredientSetId: ingredientSetId,
+    return ProductQuantityModel(
+      quantityId: quantityId,
       amount: num.parse(_ammountController.text),
       additionalPrice: num.parse(_additionalPriceController.text),
       additionalCost: num.parse(_additionalCostController.text),
@@ -78,9 +77,9 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.ingredientSet.isNotReady
+        title: Text(widget.quantity.isNotReady
             ? '新增成份份量'
-            : '設定成份份量「${widget.ingredientSetName}」'),
+            : '設定成份份量「${widget.quantityName}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(Icons.arrow_back_ios_rounded),
@@ -154,24 +153,25 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
 
   Widget _nameSearchBar() {
     return SearchBarInline(
-      heroTag: IngredientSetSearchScaffold.tag,
-      text: ingredientSetName,
+      heroTag: QuantitySearchScaffold.tag,
+      text: quantityName,
       hintText: '成份份量名稱，例如：少量',
       errorText: errorMessage,
       helperText: '新增成份份量後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
-        final ingredientSet = await Navigator.of(context)
-            .push<IngredientSetModel>(MaterialPageRoute(
-          builder: (_) => IngredientSetSearchScaffold(text: ingredientSetName),
-        ));
+        final quantity = await Navigator.of(context).push<QuantityModel>(
+          MaterialPageRoute(
+            builder: (_) => QuantitySearchScaffold(text: quantityName),
+          ),
+        );
 
-        if (ingredientSet != null) {
-          print('User choose ingreidnet set: ${ingredientSet.name}');
+        if (quantity != null) {
+          print('User choose quantity: ${quantity.name}');
           setState(() {
             errorMessage = null;
-            ingredientSetId = ingredientSet.id;
-            ingredientSetName = ingredientSet.name;
-            _updateByProportion(ingredientSet.defaultProportion);
+            quantityId = quantity.id;
+            quantityName = quantity.name;
+            _updateByProportion(quantity.defaultProportion);
           });
         }
       },
@@ -190,18 +190,17 @@ class _IngredientSetModalState extends State<IngredientSetModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ingredientSetId = widget.ingredientSet.id ?? '';
-    final ingredientSetIndex = context.read<IngredientSetIndexModel>();
-    ingredientSetName = ingredientSetIndex[widget.ingredientSet.id]?.name ?? '';
+    quantityId = widget.quantity.id ?? '';
+    final quantityIndex = context.read<QuantityIndexModel>();
+    quantityName = quantityIndex[widget.quantity.id]?.name ?? '';
   }
 
   @override
   void initState() {
-    _ammountController.text = widget.ingredientSet.amount.toString();
+    _ammountController.text = widget.quantity.amount.toString();
     _additionalPriceController.text =
-        widget.ingredientSet.additionalPrice.toString();
-    _additionalCostController.text =
-        widget.ingredientSet.additionalCost.toString();
+        widget.quantity.additionalPrice.toString();
+    _additionalCostController.text = widget.quantity.additionalCost.toString();
     super.initState();
   }
 
