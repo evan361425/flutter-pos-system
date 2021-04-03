@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
@@ -34,39 +35,22 @@ class _IngredientScreenState extends State<IngredientScreen> {
         actions: [_trailingAction()],
       ),
       body: Column(
-        children: [
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(kPadding),
-            child: Center(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    _nameField(),
-                    _amountField(),
-                  ],
-                ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  _nameField(),
+                  _amountField(),
+                ],
               ),
             ),
           ),
-          widget.ingredient == null ? Container() : _productList(),
+          if (widget.ingredient != null) ..._productList(),
         ],
-      ),
-    );
-  }
-
-  Expanded _productList() {
-    final menu = context.read<MenuModel>();
-
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            for (var ingredient
-                in menu.productContainsIngredient(widget.ingredient.id))
-              Text(ingredient.product.name)
-          ],
-        ),
       ),
     );
   }
@@ -102,6 +86,39 @@ class _IngredientScreenState extends State<IngredientScreen> {
     stock.changedIngredient();
   }
 
+  List<Widget> _productList() {
+    final products = context
+        .read<MenuModel>()
+        .productContainsIngredient(widget.ingredient.id);
+
+    return [
+      Divider(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kPadding),
+        child: Text(
+          '使用 ${widget.ingredient.name} 的產品',
+          style: Theme.of(context).textTheme.caption,
+        ),
+      ),
+      Expanded(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              for (var ingredient in products)
+                CardTile(
+                  title: Text(
+                    '${ingredient.product.catalog.name} - ${ingredient.product.name}',
+                  ),
+                  // TODO: add link to product
+                  onTap: () {},
+                )
+            ],
+          ),
+        ),
+      )
+    ];
+  }
+
   Widget _trailingAction() {
     return isSaving
         ? CircularProgressIndicator()
@@ -121,6 +138,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         errorText: errorMessage,
         filled: false,
       ),
+      autofocus: widget.ingredient == null,
       maxLength: 30,
       validator: Validator.textLimit('成份名稱', 30),
     );
@@ -132,19 +150,19 @@ class _IngredientScreenState extends State<IngredientScreen> {
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText: '種類名稱，漢堡',
+        labelText: '庫存',
         errorText: errorMessage,
         filled: false,
       ),
-      validator: Validator.positiveDouble('種類名稱'),
+      validator: Validator.positiveDouble('庫存'),
     );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _nameController.text = widget.ingredient.name;
-    _amountController.text = widget.ingredient.currentAmount?.toString();
+    _nameController.text = widget.ingredient?.name;
+    _amountController.text = widget.ingredient?.currentAmount?.toString();
   }
 
   @override
