@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/product_ingredient_set_model.dart';
+import 'package:possystem/models/menu/product_ingredient_set_model.dart';
 import 'package:possystem/services/database.dart';
 
 import 'product_model.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 import 'package:provider/provider.dart';
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/product_model.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 

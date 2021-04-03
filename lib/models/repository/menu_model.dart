@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:possystem/models/product_ingredient_model.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
-import 'catalog_model.dart';
+import '../menu/catalog_model.dart';
 
 class MenuModel extends ChangeNotifier {
   MenuModel() {

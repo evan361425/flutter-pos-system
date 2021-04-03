@@ -5,9 +5,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_model.dart';
-import 'package:possystem/models/menu_model.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/stock/ingredient/ingredient_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,33 @@ class IngredientList extends StatelessWidget {
 
   Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
     final theme = Theme.of(context);
+
+    void updateAmount(double amount) {
+      if (amount != null) {
+        ingredient.addAmount(amount);
+        context.read<StockModel>()?.changedIngredient();
+      }
+    }
+
+    Future<void> onAddAmount() async {
+      final result = await _showTextDialog(
+        context,
+        defaultValue: ingredient.lastAddAmount?.toString(),
+        title: '增加 ${ingredient.name} 的庫存',
+      );
+
+      updateAmount(result);
+    }
+
+    Future<void> onMinusAmount() async {
+      final result = await _showTextDialog(
+        context,
+        title: '減少 ${ingredient.name} 的庫存',
+      );
+
+      updateAmount(-result);
+    }
+
     return ListTile(
       title: Text(
         ingredient.name,
@@ -53,28 +80,11 @@ class IngredientList extends StatelessWidget {
         spacing: kMargin / 2,
         children: <Widget>[
           IconFilledButton(
-            onPressed: () async {
-              final result = await _showTextDialog(
-                context,
-                defaultValue: ingredient.lastAddAmount?.toString(),
-                title: '增加 ${ingredient.name} 的庫存',
-              );
-              if (result == null) return;
-
-              ingredient.addAmount(result);
-            },
+            onPressed: onAddAmount,
             child: Icon(Icons.add_sharp),
           ),
           IconFilledButton(
-            onPressed: () async {
-              final result = await _showTextDialog(
-                context,
-                title: '減少 ${ingredient.name} 的庫存',
-              );
-              if (result == null) return;
-
-              ingredient.addAmount(-result);
-            },
+            onPressed: onMinusAmount,
             child: Icon(Icons.remove_sharp),
           ),
         ],

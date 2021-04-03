@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/ingredient_set_index_model.dart';
-import 'package:possystem/models/menu_model.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/repository/ingredient_set_index_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/user_model.dart';
 import 'package:possystem/services/authentication.dart';
 import 'package:possystem/services/database.dart';

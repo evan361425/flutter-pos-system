@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_model.dart';
-import 'package:possystem/models/menu_model.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';
 
 class IngredientScreen extends StatefulWidget {
@@ -75,7 +75,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
     if (isSaving || !_formKey.currentState.validate()) return;
 
     final name = _nameController.text;
-    final stock = StockModel.instnace;
+    final stock = context.read<StockModel>();
 
     if (widget.ingredient?.name != name && stock.hasContain(name)) {
       return setState(() => errorMessage = '種類名稱重複');

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/ingredient_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
 class StockModel extends ChangeNotifier {
   StockModel() {
     loadFromDb();
-    StockModel.instnace = this;
   }
 
   Map<String, IngredientModel> ingredients;
@@ -75,6 +74,4 @@ class StockModel extends ChangeNotifier {
           updatedTime.month,
           updatedTime.day,
         ]);
-
-  static StockModel instnace;
 }

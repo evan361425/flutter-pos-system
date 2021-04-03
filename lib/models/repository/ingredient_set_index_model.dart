@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/ingredient_set_model.dart';
+import 'package:possystem/models/stock/ingredient_set_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientSetIndexModel extends ChangeNotifier {

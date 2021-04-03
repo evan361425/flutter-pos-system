@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/models/menu_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
 import 'package:provider/provider.dart';
 
 import 'catalog_orderable_list.dart';

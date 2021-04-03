@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/page/orderable_list.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/product_model.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:provider/provider.dart';
 
 class ProductOrderableList extends OrderableList<ProductModel> {

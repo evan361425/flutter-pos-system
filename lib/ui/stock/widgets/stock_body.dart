@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/stock/widgets/stock_metadata.dart';
 import 'package:provider/provider.dart';
 

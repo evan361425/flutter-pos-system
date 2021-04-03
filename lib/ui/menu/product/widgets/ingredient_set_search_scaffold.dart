@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
-import 'package:possystem/models/ingredient_set_index_model.dart';
-import 'package:possystem/models/ingredient_set_model.dart';
+import 'package:possystem/models/repository/ingredient_set_index_model.dart';
+import 'package:possystem/models/stock/ingredient_set_model.dart';
 import 'package:possystem/models/search_history_model.dart';
 import 'package:provider/provider.dart';
 

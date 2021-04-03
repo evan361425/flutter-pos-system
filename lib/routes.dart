@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'models/catalog_model.dart';
+import 'models/menu/catalog_model.dart';
 import 'ui/menu/catalog_navigator.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 

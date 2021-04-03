@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
-import 'package:possystem/models/stock_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientModel extends ChangeNotifier {
@@ -83,8 +83,6 @@ class IngredientModel extends ChangeNotifier {
     Database.service.update(Collections.ingredient, {
       '$id.currentAmount': currentAmount,
     });
-
-    StockModel.instnace.changedIngredient();
   }
 
   int _similarityRating;

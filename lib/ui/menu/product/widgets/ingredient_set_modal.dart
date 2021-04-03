@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/ingredient_set_index_model.dart';
-import 'package:possystem/models/ingredient_set_model.dart';
-import 'package:possystem/models/product_ingredient_model.dart';
-import 'package:possystem/models/product_ingredient_set_model.dart';
+import 'package:possystem/models/repository/ingredient_set_index_model.dart';
+import 'package:possystem/models/stock/ingredient_set_model.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/menu/product_ingredient_set_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ingredient_set_search_scaffold.dart';

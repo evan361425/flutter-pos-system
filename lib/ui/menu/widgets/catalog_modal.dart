@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/catalog_model.dart';
-import 'package:possystem/models/menu_model.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
