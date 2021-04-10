@@ -27,6 +27,9 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final menu = context.watch<MenuModel>();
+    if (menu.isNotReady) return Center(child: CircularProgressIndicator());
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

@@ -12,7 +12,9 @@ class QuantityBoby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quantityIndex = context.watch<QuantityIndexModel>();
-    if (quantityIndex.isNotReady) return CircularProgressIndicator();
+    if (quantityIndex.isNotReady) {
+      return Center(child: CircularProgressIndicator());
+    }
     if (quantityIndex.isEmpty) {
       return Center(child: EmptyBody('quantity.empty'));
     }

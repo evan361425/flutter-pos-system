@@ -93,6 +93,25 @@ class _QuantitySnapshot extends Snapshot {
   }
 }
 
+class _StockBatchSnapshot extends Snapshot {
+  @override
+  Map<String, Map<String, dynamic>> data() {
+    return const {
+      'sb1': {
+        'name': 'Costco',
+        'data': {
+          'i1': 1.2,
+          'i2': 3,
+          'i4': 5,
+        },
+      },
+      'sb2': {
+        'name': '7-11',
+      },
+    };
+  }
+}
+
 class _SearchSnapshot extends Snapshot {
   @override
   Map<String, List<String>> data() {
@@ -247,6 +266,8 @@ class _MockDatabase extends Database<Snapshot> {
       return Future.delayed(Duration(seconds: 0), () => _SearchSnapshot());
     } else if (collection == Collections.quantities) {
       return Future.delayed(Duration(seconds: 0), () => _QuantitySnapshot());
+    } else if (collection == Collections.stock_batch) {
+      return Future.delayed(Duration(seconds: 0), () => _StockBatchSnapshot());
     }
     return null;
   }

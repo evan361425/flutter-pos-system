@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
-import 'package:possystem/ui/stock/stock_screen.dart';
+import 'package:possystem/ui/stock/stock_navigator.dart';
 
 class HomeContainer extends StatelessWidget {
   HomeContainer({Key key}) : super(key: key);
@@ -13,9 +13,9 @@ class HomeContainer extends StatelessWidget {
       tabBuilder: (context, index) {
         switch (_MainPageTypes.values[index]) {
           case _MainPageTypes.menu:
-            return MenuScreen();
+            return StockNavigator();
           case _MainPageTypes.stock:
-            return StockScreen();
+            return MenuScreen();
           default:
             return buildPage(context, index);
             break;

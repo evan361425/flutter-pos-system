@@ -17,7 +17,10 @@ class StockBatchRepo extends ChangeNotifier {
 
   void buildFromMap(Map<String, dynamic> data) {
     batches = {};
-    if (data == null) return;
+    if (data == null) {
+      notifyListeners();
+      return;
+    }
 
     try {
       data.forEach((key, value) {

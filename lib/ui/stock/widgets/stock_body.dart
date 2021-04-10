@@ -5,7 +5,7 @@ import 'package:possystem/ui/stock/widgets/stock_metadata.dart';
 import 'package:provider/provider.dart';
 
 import 'ingredient_list.dart';
-import 'stock_batch_update_button.dart';
+import 'stock_batch_actions.dart';
 
 class StockBody extends StatelessWidget {
   const StockBody({Key key}) : super(key: key);
@@ -13,7 +13,7 @@ class StockBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stock = context.watch<StockModel>();
-    if (stock.isNotReady) return CircularProgressIndicator();
+    if (stock.isNotReady) return Center(child: CircularProgressIndicator());
     if (stock.isEmpty) {
       return Center(child: EmptyBody('stock.empty'));
     }
@@ -21,7 +21,7 @@ class StockBody extends StatelessWidget {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: StockUpdateMultipleButton(),
+        child: StockBatchActions(),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

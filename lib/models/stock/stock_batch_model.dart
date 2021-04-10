@@ -6,13 +6,13 @@ class StockBatchModel {
   StockBatchModel({
     @required this.name,
     id,
-    Map<String, double> data,
+    Map<String, num> data,
   })  : id = id ?? Util.uuidV4(),
         data = data ?? {};
 
   String name;
   final String id;
-  final Map<String, double> data;
+  final Map<String, num> data;
 
   // I/O
 
@@ -20,10 +20,19 @@ class StockBatchModel {
     String id,
     Map<String, dynamic> data,
   }) {
+    final batchData = <String, num>{};
+    final oriData = data['data'];
+
+    if (oriData is Map) {
+      oriData.forEach((key, value) {
+        batchData[key] = value;
+      });
+    }
+
     return StockBatchModel(
       id: id,
       name: data['name'],
-      data: data['data'],
+      data: batchData,
     );
   }
 

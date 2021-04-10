@@ -8,4 +8,5 @@ class KIcons {
   static const clear = Icons.clear_sharp;
   static const delete = Icons.delete_sharp;
   static const more = Icons.more_horiz_sharp;
+  static const edit = Icons.edit_sharp;
 }

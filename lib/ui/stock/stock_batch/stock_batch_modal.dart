@@ -25,42 +25,6 @@ class _StockBatchModalState extends State<StockBatchModal> {
   bool isSaving = false;
   String errorMessage;
 
-  @override
-  Widget build(BuildContext context) {
-    final stock = context.read<StockModel>();
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
-        actions: [_trailingAction()],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(kPadding),
-            child: _nameField(),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    for (var ingredient in stock.ingredientList)
-                      _ingredientField(ingredient)
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _onSubmit() {
     if (isSaving || !_formKey.currentState.validate()) return;
 
@@ -90,6 +54,42 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
     repo.updateBatch(
       widget.batch ?? StockBatchModel(name: name, data: updateData),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final stock = context.read<StockModel>();
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(KIcons.back),
+        ),
+        actions: [_trailingAction()],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(kPadding),
+            child: _nameField(),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    //           for (var ingredient in stock.ingredientList)
+                    //             _ingredientField(ingredient)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -141,5 +141,17 @@ class _StockBatchModalState extends State<StockBatchModal> {
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _nameController.text = widget.batch?.name;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }

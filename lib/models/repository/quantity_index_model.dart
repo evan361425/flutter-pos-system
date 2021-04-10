@@ -17,7 +17,10 @@ class QuantityIndexModel extends ChangeNotifier {
 
   void buildFromMap(Map<String, dynamic> data) {
     quantities = {};
-    if (data == null) return;
+    if (data == null) {
+      notifyListeners();
+      return;
+    }
 
     try {
       data.forEach((key, value) {
