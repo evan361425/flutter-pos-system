@@ -45,7 +45,7 @@ class StockBatchModel {
 
   // STATE CHANGE
 
-  void update({String name, Map<String, double> data}) {
+  void update({String name, Map<String, num> data}) {
     final updateData = <String, dynamic>{};
     if (name != null && name != this.name) {
       this.name = name;
@@ -69,5 +69,5 @@ class StockBatchModel {
 
   bool has(String id) => data.containsKey(id);
   bool hasNot(String id) => !data.containsKey(id);
-  double operator [](String id) => data[id];
+  num operator [](String id) => data[id];
 }

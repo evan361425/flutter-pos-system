@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
@@ -20,7 +21,7 @@ class StockBatchModal extends StatefulWidget {
 class _StockBatchModalState extends State<StockBatchModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final updateData = <String, double>{};
+  final updateData = <String, num>{};
 
   bool isSaving = false;
   String errorMessage;
@@ -61,34 +62,25 @@ class _StockBatchModalState extends State<StockBatchModal> {
   Widget build(BuildContext context) {
     final stock = context.read<StockModel>();
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
-        actions: [_trailingAction()],
+    return FadeInTitleScaffold(
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: Icon(KIcons.back),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(kPadding),
-            child: _nameField(),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    //           for (var ingredient in stock.ingredientList)
-                    //             _ingredientField(ingredient)
-                  ],
-                ),
-              ),
+      trailing: _trailingAction(),
+      title: widget.batch?.name ?? '',
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(kPadding),
+              child: _nameField(),
             ),
-          ),
-        ],
+            for (var ingredient in stock.ingredientList)
+              _ingredientField(ingredient),
+          ],
+        ),
       ),
     );
   }
@@ -122,23 +114,23 @@ class _StockBatchModalState extends State<StockBatchModal> {
   Widget _ingredientField(IngredientModel ingredient) {
     final nonSet = widget.batch == null || widget.batch.hasNot(ingredient.id);
 
-    return ListTile(
-      title: Text(ingredient.name),
-      trailing: TextFormField(
-        onSaved: (String value) {
-          try {
-            updateData[ingredient.id] = double.parse(value);
-          } catch (e) {
-            // do nothing
+    return TextFormField(
+      onSaved: (String value) {
+        try {
+          final numValue = num.parse(value);
+          if (numValue != 0) {
+            updateData[ingredient.id] = numValue;
           }
-        },
-        initialValue: nonSet ? '0' : widget.batch[ingredient.name],
-        textInputAction: TextInputAction.done,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          errorText: errorMessage,
-          filled: false,
-        ),
+        } catch (e) {
+          // do nothing
+        }
+      },
+      initialValue: nonSet ? '' : widget.batch[ingredient.id].toString(),
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: ingredient.name,
+        hintText: '設定增加／減少的量',
       ),
     );
   }
