@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/widgets/menu_actions.dart';
 
 import 'widgets/menu_body.dart';
@@ -25,7 +25,11 @@ class MenuScreen extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).pushNamed(Routes.catalogModal),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: MenuRoutes.getBuilder(
+              RouteSettings(name: MenuRoutes.routeCatalogModal),
+            ),
+          )),
           tooltip: Local.of(context).t('menu.add_catalog'),
           child: Icon(KIcons.add),
         ),

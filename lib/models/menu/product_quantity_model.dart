@@ -50,7 +50,6 @@ class ProductQuantityModel {
     if (updateData.isEmpty) return;
 
     Database.service.update(Collections.menu, updateData);
-    ingredient.updateQuantity(quantity);
   }
 
   Map<String, dynamic> getUpdateData(
@@ -73,7 +72,7 @@ class ProductQuantityModel {
     }
     // final
     if (quantity.quantityId != quantityId) {
-      ingredient.removeQuantity(this);
+      ingredient.removeQuantity(id);
       quantityId = quantity.quantityId;
       updateData['${ingredient.prefixQuantities}.$id'] = toMap();
     }

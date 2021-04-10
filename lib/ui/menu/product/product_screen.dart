@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
 import 'widgets/ingredient_modal.dart';
+import 'widgets/product_actions.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -28,7 +29,8 @@ class ProductScreen extends StatelessWidget {
       trailing: IconButton(
         onPressed: () => showCupertinoModalPopup(
           context: context,
-          builder: _moreActions(product),
+          useRootNavigator: false,
+          builder: (BuildContext context) => ProductActions(product: product),
         ),
         icon: Icon(KIcons.more),
       ),
@@ -97,25 +99,5 @@ class ProductScreen extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget Function(BuildContext) _moreActions(ProductModel product) {
-    return (BuildContext context) {
-      return CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pushReplacementNamed(
-              MenuRoutes.routeProductModal,
-              arguments: product,
-            ),
-            child: Text('變更產品'),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, 'cancel'),
-          child: Text('取消'),
-        ),
-      );
-    };
   }
 }

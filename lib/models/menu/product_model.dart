@@ -90,11 +90,15 @@ class ProductModel extends ChangeNotifier {
     ingredientChanged();
   }
 
-  void removeIngredient(ProductIngredientModel ingredient) {
-    ingredients.remove(ingredient.id);
-    final updateData = {'$prefix.ingredients.${ingredient.id}': null};
+  ProductIngredientModel removeIngredient(String id) {
+    print('remove product ingredient $id');
+
+    final ingredient = ingredients.remove(id);
+    final updateData = {'$prefix.ingredients.$id': null};
     Database.service.update(Collections.menu, updateData);
     ingredientChanged();
+
+    return ingredient;
   }
 
   void update({

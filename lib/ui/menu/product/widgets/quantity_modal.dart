@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/danger_button.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -16,11 +17,13 @@ class QuantityModal extends StatefulWidget {
     @required this.ingredient,
     this.quantity,
     this.quantityName,
-  }) : super(key: key);
+  })  : isNew = quantity == null,
+        super(key: key);
 
   final String quantityName;
   final ProductQuantityModel quantity;
   final ProductIngredientModel ingredient;
+  final bool isNew;
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -48,18 +51,19 @@ class _QuantityModalState extends State<QuantityModal> {
     Navigator.of(context).pop();
   }
 
-  void _onDelete() {
-    showDialog<void>(
+  Future<void> _onDelete() async {
+    final isDeleted = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
           onDelete: (BuildContext context) {
-            widget.ingredient.removeQuantity(widget.quantity);
+            widget.ingredient.removeQuantity(widget.quantity.id);
           },
         );
       },
     );
+    if (isDeleted == true) Navigator.of(context).pop();
   }
 
   ProductQuantityModel _getQuantityFromTextField() {
@@ -88,9 +92,7 @@ class _QuantityModalState extends State<QuantityModal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.quantity == null
-            ? '新增成份份量'
-            : '設定成份份量「${widget.quantityName}」'),
+        title: Text(widget.isNew ? '新增成份份量' : '設定成份份量「${widget.quantityName}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -103,19 +105,21 @@ class _QuantityModalState extends State<QuantityModal> {
           child: Column(
             children: [
               _form(context),
-              // TODO: spacer?
-              widget.quantity == null
-                  ? Container()
-                  : ElevatedButton(
-                      onPressed: _onDelete,
-                      style: ElevatedButton.styleFrom(primary: kNegativeColor),
-                      child: Text(
-                        '刪除份量 ${widget.quantityName}',
-                      ),
-                    ),
+              _deleteButton(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _deleteButton() {
+    if (widget.isNew) return Container();
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: kMargin),
+      child: DangerButton(
+        onPressed: _onDelete,
+        child: Text('刪除份量 ${widget.quantityName}'),
       ),
     );
   }

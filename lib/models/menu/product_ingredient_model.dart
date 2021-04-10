@@ -70,14 +70,18 @@ class ProductIngredientModel {
       Database.service.update(Collections.menu, updateData);
     }
 
-    product.updateIngredient(this);
+    product.ingredientChanged();
   }
 
-  void removeQuantity(ProductQuantityModel quantity) {
-    print('remove quantity ${quantity.id}');
-    quantities.remove(quantity.id);
-    final updateData = {'$prefixQuantities.${quantity.id}': null};
+  ProductQuantityModel removeQuantity(String id) {
+    print('remove quantity $id');
+
+    final quantity = quantities.remove(id);
+    final updateData = {'$prefixQuantities.$id': null};
     Database.service.update(Collections.menu, updateData);
+    product.ingredientChanged();
+
+    return quantity;
   }
 
   void update({
@@ -90,8 +94,8 @@ class ProductIngredientModel {
       updateData['$prefix.defaultAmount'] = defaultAmount;
     }
     // after all property set
-    if (ingredientId != this.ingredientId) {
-      product.removeIngredient(this);
+    if (ingredientId != id) {
+      product.removeIngredient(id);
       this.ingredientId = ingredientId;
       updateData[prefix] = toMap();
     }

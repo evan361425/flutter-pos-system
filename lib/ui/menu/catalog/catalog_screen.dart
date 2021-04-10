@@ -6,7 +6,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/catalog/widgets/catalog_actions.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class CatalogScreen extends StatelessWidget {
       trailing: IconButton(
         onPressed: () => showCupertinoModalPopup(
           context: context,
-          builder: _moreActions(catalog),
+          builder: (BuildContext context) => CatalogActions(catalog: catalog),
           useRootNavigator: false,
         ),
         icon: Icon(KIcons.more),
@@ -87,29 +87,5 @@ class CatalogScreen extends StatelessWidget {
       catalog.name,
       style: Theme.of(context).textTheme.headline4,
     );
-  }
-
-  WidgetBuilder _moreActions(CatalogModel catalog) {
-    return (BuildContext context) {
-      return CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context)
-                .pushReplacementNamed(Routes.catalogModal, arguments: catalog),
-            child: Text('變更名稱'),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pushReplacementNamed(
-              MenuRoutes.routeProductOrder,
-            ),
-            child: Text('排序產品'),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, 'cancel'),
-          child: Text('取消'),
-        ),
-      );
-    };
   }
 }

@@ -22,7 +22,7 @@ class DeleteDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             onDelete(context);
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           },
           child: Text('刪除', style: TextStyle(color: kNegativeColor)),
         ),

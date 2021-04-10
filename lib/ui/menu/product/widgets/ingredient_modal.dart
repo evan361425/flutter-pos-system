@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/danger_button.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -36,20 +37,6 @@ class _IngredientModalState extends State<IngredientModal> {
   String ingredientId;
   String ingredientName;
 
-  void _onDelete() {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteDialog(
-          content: Text('此動作將無法復原'),
-          onDelete: (BuildContext context) {
-            widget.product.removeIngredient(widget.ingredient);
-          },
-        );
-      },
-    );
-  }
-
   void _onSubmit() {
     if (isSaving || !_formKey.currentState.validate()) return;
     if (ingredientId.isEmpty) {
@@ -70,6 +57,21 @@ class _IngredientModalState extends State<IngredientModal> {
     Navigator.of(context).pop();
   }
 
+  Future<void> _onDelete() async {
+    final isDeleted = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog(
+          content: Text('此動作將無法復原'),
+          onDelete: (BuildContext context) {
+            widget.product.removeIngredient(widget.ingredient.id);
+          },
+        );
+      },
+    );
+    if (isDeleted == true) Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,31 +85,22 @@ class _IngredientModalState extends State<IngredientModal> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(kPadding),
-        child: Column(
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  _nameField(context),
-                  SizedBox(height: kMargin),
-                  _amountField(context),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _nameField(context),
+                    SizedBox(height: kMargin),
+                    _amountField(context),
+                  ],
+                ),
               ),
-            ),
-            Spacer(),
-            widget.isNew
-                ? Container()
-                : SingleChildScrollView(
-                    child: ElevatedButton(
-                      onPressed: _onDelete,
-                      style: ElevatedButton.styleFrom(primary: kNegativeColor),
-                      child: Text(
-                        '刪除${widget.product.name}的成份 ${widget.ingredientName}',
-                      ),
-                    ),
-                  ),
-          ],
+              _deleteButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -139,6 +132,17 @@ class _IngredientModalState extends State<IngredientModal> {
             onPressed: () => _onSubmit(),
             child: Text('儲存'),
           );
+  }
+
+  Widget _deleteButton() {
+    if (widget.isNew) return Container();
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: kMargin),
+      child: DangerButton(
+        onPressed: _onDelete,
+        child: Text('刪除${widget.product.name}的成份 ${widget.ingredientName}'),
+      ),
+    );
   }
 
   Widget _nameField(BuildContext context) {
