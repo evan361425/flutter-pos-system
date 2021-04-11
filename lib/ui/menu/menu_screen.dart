@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/widgets/menu_actions.dart';
 
@@ -14,6 +15,10 @@ class MenuScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('主頁'),
+          leading: TextButton(
+            onPressed: () => Navigator.of(context).pushNamed(Routes.order),
+            child: Text('點餐'),
+          ),
           actions: [
             IconButton(
               onPressed: () => showCupertinoModalPopup(
