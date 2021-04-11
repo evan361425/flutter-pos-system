@@ -4,6 +4,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/quantity_index_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/ui/stock/stock_routes.dart';
 import 'package:provider/provider.dart';
 
 import 'quantity_modal.dart';
@@ -71,12 +72,9 @@ class QuantityList extends StatelessWidget {
   }
 
   void _onTap(BuildContext context, QuantityModel quantity) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => QuantityModal(
-          quantity: quantity,
-        ),
-      ),
+    Navigator.of(context).pushNamed(
+      StockRoutes.routeQuantityModal,
+      arguments: quantity,
     );
   }
 }

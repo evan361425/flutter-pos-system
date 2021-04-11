@@ -20,7 +20,7 @@ class CatalogModal extends StatefulWidget {
 
 class _CatalogModalState extends State<CatalogModal> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controller = TextEditingController();
+  final _controller = TextEditingController();
 
   bool isSaving = false;
   String errorMessage;

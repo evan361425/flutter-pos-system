@@ -4,11 +4,14 @@ import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:possystem/ui/stock/stock_navigator.dart';
 
 class HomeContainer extends StatelessWidget {
-  HomeContainer({Key key}) : super(key: key);
+  const HomeContainer({Key key}) : super(key: key);
+
+  static final tabController = CupertinoTabController();
 
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
+      controller: tabController,
       tabBar: tabBar(),
       tabBuilder: (context, index) {
         switch (_MainPageTypes.values[index]) {

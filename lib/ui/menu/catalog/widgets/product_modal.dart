@@ -20,9 +20,9 @@ class ProductModal extends StatefulWidget {
 
 class _ProductModalState extends State<ProductModal> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _costController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _costController = TextEditingController();
 
   bool isSaving = false;
   String errorMessage;

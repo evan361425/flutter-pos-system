@@ -17,8 +17,8 @@ class QuantityModal extends StatefulWidget {
 
 class _QuantityModalState extends State<QuantityModal> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _proportionController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _proportionController = TextEditingController();
 
   bool isSaving = false;
   String errorMessage;

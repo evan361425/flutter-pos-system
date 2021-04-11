@@ -19,8 +19,8 @@ class IngredientScreen extends StatefulWidget {
 
 class _IngredientScreenState extends State<IngredientScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
 
   bool isSaving = false;
   String errorMessage;

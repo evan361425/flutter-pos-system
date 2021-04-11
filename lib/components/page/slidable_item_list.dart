@@ -27,7 +27,7 @@ class SlidableItemList<T> extends StatefulWidget {
 }
 
 class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
-  final SlidableController _slidableController = SlidableController();
+  final _slidableController = SlidableController();
 
   @override
   Widget build(BuildContext context) {

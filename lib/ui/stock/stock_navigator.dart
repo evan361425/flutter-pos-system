@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
+import 'package:possystem/ui/home_container.dart';
 import 'package:possystem/ui/stock/stock_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,8 @@ class StockNavigator extends StatelessWidget {
       onWillPop: () async {
         if (navigatorKey.currentState.canPop()) {
           navigatorKey.currentState.pop();
+        } else {
+          HomeContainer.tabController.index = 0;
         }
         return false;
       },
