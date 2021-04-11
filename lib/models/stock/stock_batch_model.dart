@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
-import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 import 'package:provider/provider.dart';

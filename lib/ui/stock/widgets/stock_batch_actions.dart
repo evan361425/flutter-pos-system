@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
