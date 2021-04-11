@@ -79,7 +79,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
   }
 
   void _updateIngredient(String name, StockModel stock) {
-    final amount = double.parse(_amountController.text);
+    final amount = num.parse(_amountController.text);
 
     widget.ingredient?.update(name: name, amount: amount);
 
@@ -156,7 +156,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         errorText: errorMessage,
         filled: false,
       ),
-      validator: Validator.positiveDouble('庫存'),
+      validator: Validator.positiveNumber('庫存'),
     );
   }
 

@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 import 'catalog/catalog_screen.dart';
 import 'catalog/widgets/product_modal.dart';
 import 'catalog/widgets/product_orderable_list.dart';
-import 'catalog_navigator.dart';
-import 'menu_screen.dart';
 import 'product/product_screen.dart';
 import 'product/widgets/ingredient_modal.dart';
 import 'product/widgets/ingredient_search_scaffold.dart';

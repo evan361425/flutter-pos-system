@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/repository/stock_batch_repo.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
+import 'package:provider/provider.dart';
 
 class StockBatchModel {
   StockBatchModel({
@@ -63,6 +66,17 @@ class StockBatchModel {
     if (updateData.isNotEmpty) {
       Database.service.update(Collections.stock_batch, updateData);
     }
+  }
+
+  void apply(BuildContext context) {
+    final stock = context.read<StockModel>();
+    final updateData = <String, dynamic>{};
+    data.forEach((ingredientId, amount) {
+      updateData.addAll(stock[ingredientId]?.addAmountUpdateData(amount));
+    });
+
+    Database.service.update(Collections.ingredient, updateData);
+    stock.changedIngredient();
   }
 
   // HELPER

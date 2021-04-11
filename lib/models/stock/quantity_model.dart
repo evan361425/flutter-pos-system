@@ -11,7 +11,7 @@ class QuantityModel {
 
   final String id;
   String name;
-  double defaultProportion;
+  num defaultProportion;
 
   factory QuantityModel.fromMap({
     String id,
@@ -39,7 +39,7 @@ class QuantityModel {
 
   void update({
     String name,
-    double proportion,
+    num proportion,
   }) {
     final updateData = <String, dynamic>{};
     if (name != null && name != this.name) {

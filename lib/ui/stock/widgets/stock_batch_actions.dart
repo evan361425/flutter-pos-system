@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 class StockBatchActions extends StatelessWidget {
-  StockBatchActions({Key key}) : super(key: key);
-
   static final selector = GlobalKey<_BatchItemSelectorState>();
 
   @override
@@ -38,11 +39,40 @@ class StockBatchActions extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               primary: Theme.of(context).primaryColorLight,
             ),
-            onPressed: () => print('hi'),
+            onPressed: () {
+              final batch = selector.currentState.currentBatch;
+              if (batch != null) onApplyBatchUpdate(context, batch);
+            },
           ),
         ),
       ],
     );
+  }
+
+  Future<void> onApplyBatchUpdate(
+    BuildContext context,
+    StockBatchModel batch,
+  ) async {
+    final stock = context.read<StockModel>();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        title: '是否要套用 ${batch.name} ？',
+        content: Column(
+          children: [
+            Text('將會影響以下的成份：'),
+            for (var ingredientId in batch.data.keys)
+              Text(stock[ingredientId]?.name),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    selector.currentState.currentBatch.apply(context);
+    selector.currentState.clear();
   }
 }
 
@@ -62,6 +92,9 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
   String selectedBatchId;
 
   StockBatchModel get currentBatch => widget.batchRepo[selectedBatchId];
+  void clear() {
+    setState(() => selectedBatchId = null);
+  }
 
   @override
   Widget build(BuildContext context) {

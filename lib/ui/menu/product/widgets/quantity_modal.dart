@@ -150,7 +150,7 @@ class _QuantityModalState extends State<QuantityModal> {
               labelText: '成分份量',
               filled: false,
             ),
-            validator: Validator.positiveDouble('成分份量'),
+            validator: Validator.positiveNumber('成分份量'),
           ),
           SizedBox(height: kMargin),
           TextFormField(
@@ -162,7 +162,7 @@ class _QuantityModalState extends State<QuantityModal> {
               labelText: '額外售價',
               filled: false,
             ),
-            validator: Validator.isDouble('額外售價'),
+            validator: Validator.isNumber('額外售價'),
           ),
           SizedBox(height: kMargin / 2),
           TextFormField(
@@ -174,7 +174,7 @@ class _QuantityModalState extends State<QuantityModal> {
               labelText: '額外成本',
               filled: false,
             ),
-            validator: Validator.isDouble('額外成本'),
+            validator: Validator.isNumber('額外成本'),
           ),
         ],
       ),
@@ -207,7 +207,7 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  void _updateByProportion(double proportion) {
+  void _updateByProportion(num proportion) {
     _ammountController.text =
         (widget.ingredient.defaultAmount * proportion).toString();
     _additionalPriceController.text =

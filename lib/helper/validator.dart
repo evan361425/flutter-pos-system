@@ -3,13 +3,13 @@ import 'package:possystem/localizations.dart';
 class Validator {
   static Local tranlator;
 
-  static String Function(String) positiveDouble(
+  static String Function(String) positiveNumber(
     String fieldName, {
-    double maximum,
+    num maximum,
   }) {
     return (String value) {
       try {
-        final number = double.parse(value);
+        final number = num.parse(value);
         if (number < 0) {
           return '$fieldName 不能為負數';
         } else if (maximum != null && maximum < number) {
@@ -23,10 +23,10 @@ class Validator {
     };
   }
 
-  static String Function(String) isDouble(String fieldName) {
+  static String Function(String) isNumber(String fieldName) {
     return (String value) {
       try {
-        double.parse(value);
+        num.parse(value);
 
         return null;
       } catch (err) {

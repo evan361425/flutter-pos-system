@@ -181,7 +181,7 @@ class _IngredientModalState extends State<IngredientModal> {
         filled: false,
       ),
       onFieldSubmitted: (_) => _onSubmit(),
-      validator: Validator.positiveDouble('成份預設用量'),
+      validator: Validator.positiveNumber('成份預設用量'),
     );
   }
 

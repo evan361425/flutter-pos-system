@@ -54,6 +54,7 @@ class StockModel extends ChangeNotifier {
 
   void changedIngredient() {
     updatedTime = DateTime.now();
+    notifyListeners();
   }
 
   // TOOLS

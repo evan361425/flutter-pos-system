@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
@@ -15,11 +17,11 @@ class IngredientModel extends ChangeNotifier {
 
   final String id;
   String name;
-  double currentAmount;
-  double warningAmount;
-  double alertAmount;
-  double lastAmount;
-  double lastAddAmount;
+  num currentAmount;
+  num warningAmount;
+  num alertAmount;
+  num lastAmount;
+  num lastAddAmount;
 
   factory IngredientModel.fromMap({
     String id,
@@ -53,7 +55,7 @@ class IngredientModel extends ChangeNotifier {
 
   void update({
     String name,
-    double amount,
+    num amount,
   }) {
     final updateData = <String, dynamic>{};
     if (name != null && name != this.name) {
@@ -73,17 +75,28 @@ class IngredientModel extends ChangeNotifier {
   }
 
   void addAmount(num amount) {
-    if (amount > 0) {
-      lastAddAmount = amount;
-      lastAmount = currentAmount ?? amount;
-    }
-    currentAmount = currentAmount == null ? amount : currentAmount + amount;
+    Database.service.update(
+      Collections.ingredient,
+      addAmountUpdateData(amount),
+    );
+  }
 
-    Database.service.update(Collections.ingredient, {
+  Map<String, dynamic> addAmountUpdateData(num amount) {
+    if (amount > 0) lastAddAmount = amount;
+
+    lastAmount = currentAmount;
+
+    if (currentAmount == null) {
+      currentAmount = amount > 0 ? amount : 0;
+    } else {
+      currentAmount = max(currentAmount + amount, 0);
+    }
+
+    return {
       '$id.currentAmount': currentAmount,
       '$id.lastAddAmount': lastAddAmount,
       '$id.lastAmount': lastAmount,
-    });
+    };
   }
 
   int _similarityRating;

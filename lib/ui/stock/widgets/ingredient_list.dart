@@ -31,7 +31,7 @@ class IngredientList extends StatelessWidget {
   Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
     final theme = Theme.of(context);
 
-    void updateAmount(double amount) {
+    void updateAmount(num amount) {
       if (amount != null) {
         ingredient.addAmount(amount);
         context.read<StockModel>()?.changedIngredient();
@@ -131,7 +131,7 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Future<double> _showTextDialog(
+  Future<num> _showTextDialog(
     BuildContext context, {
     String defaultValue,
     @required String title,
@@ -157,7 +157,7 @@ class IngredientList extends StatelessWidget {
               autofocus: true,
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.number,
-              validator: Validator.positiveDouble(''),
+              validator: Validator.positiveNumber(''),
               onFieldSubmitted: action,
             ),
           ),
@@ -171,7 +171,7 @@ class IngredientList extends StatelessWidget {
       },
     );
 
-    return result == null ? null : double.parse(result);
+    return result == null ? null : num.parse(result);
   }
 
   void _onTap(BuildContext context, IngredientModel ingredient) {

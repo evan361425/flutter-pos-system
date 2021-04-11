@@ -139,7 +139,7 @@ class _ProductModalState extends State<ProductModal> {
         labelText: '產品價格，給客人看的價錢',
         filled: false,
       ),
-      validator: Validator.positiveDouble('產品價格'),
+      validator: Validator.positiveNumber('產品價格'),
     );
   }
 
@@ -153,7 +153,7 @@ class _ProductModalState extends State<ProductModal> {
         filled: false,
       ),
       onFieldSubmitted: _onSubmit,
-      validator: Validator.positiveDouble('產品成本'),
+      validator: Validator.positiveNumber('產品成本'),
     );
   }
 

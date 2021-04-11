@@ -70,7 +70,7 @@ class _QuantityModalState extends State<QuantityModal> {
   }
 
   void _updateQuantity(String name, QuantityIndexModel quantities) {
-    final proportion = double.parse(_proportionController.text);
+    final proportion = num.parse(_proportionController.text);
 
     if (widget.quantity != null) {
       widget.quantity.update(name: name, proportion: proportion);
@@ -122,7 +122,7 @@ class _QuantityModalState extends State<QuantityModal> {
         filled: false,
       ),
       // NOTE: do we need maximum?
-      validator: Validator.positiveDouble('庫存', maximum: 10),
+      validator: Validator.positiveNumber('庫存', maximum: 10),
     );
   }
 
