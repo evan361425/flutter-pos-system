@@ -25,20 +25,38 @@ class MenuScreen extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: MenuRoutes.getBuilder(
-              RouteSettings(name: MenuRoutes.routeCatalogModal),
-            ),
-          )),
+          onPressed: () => Navigator.of(context).pushNamed(
+            MenuRoutes.catalogModal,
+          ),
           tooltip: Local.of(context).t('menu.add_catalog'),
           child: Icon(KIcons.add),
         ),
         // When click android go back, it will avoid closing APP
         body: WillPopScope(
-          onWillPop: () async => false,
+          onWillPop: () => showConfirmDialog(context),
           child: MenuBody(),
         ),
       ),
     );
+  }
+
+  Future<bool> showConfirmDialog(BuildContext context) async {
+    final result = await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('確定要離開 APP 嗎？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('確認'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('取消'),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
   }
 }

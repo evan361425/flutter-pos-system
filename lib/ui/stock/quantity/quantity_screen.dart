@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/ui/stock/stock_routes.dart';
+import 'package:possystem/routes.dart';
 
 import 'widgets/quantity_body.dart';
 
@@ -19,7 +19,7 @@ class QuantityScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
-          StockRoutes.routeQuantityModal,
+          Routes.stockQuantityModal,
         ),
         tooltip: '新增份量',
         child: Icon(KIcons.add),

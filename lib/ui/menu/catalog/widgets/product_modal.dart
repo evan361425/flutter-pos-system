@@ -64,7 +64,7 @@ class _ProductModalState extends State<ProductModal> {
 
     widget.isNew
         ? Navigator.of(context).popAndPushNamed(
-            MenuRoutes.routeProduct,
+            MenuRoutes.product,
             arguments: product,
           )
         : Navigator.of(context).pop();

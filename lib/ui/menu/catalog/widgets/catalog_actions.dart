@@ -14,14 +14,14 @@ class CatalogActions extends StatelessWidget {
       actions: [
         CupertinoActionSheetAction(
           onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.routeCatalogModal,
+            MenuRoutes.catalogModal,
             arguments: catalog,
           ),
           child: Text('變更名稱'),
         ),
         CupertinoActionSheetAction(
           onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.routeProductOrder,
+            MenuRoutes.productOrder,
           ),
           child: Text('排序產品'),
         ),

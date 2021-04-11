@@ -63,7 +63,7 @@ class ProductList extends StatelessWidget {
 
   void onTap(BuildContext context, ProductModel product) {
     Navigator.of(context).pushNamed(
-      MenuRoutes.routeProduct,
+      MenuRoutes.product,
       arguments: product,
     );
   }

@@ -64,8 +64,10 @@ class _CatalogModalState extends State<CatalogModal> {
     final catalog = _updateCatalog(name, menu);
 
     widget.isNew
-        ? Navigator.of(context)
-            .popAndPushNamed(Routes.catalog, arguments: catalog)
+        ? Navigator.of(context).popAndPushNamed(
+            Routes.menuCatalog,
+            arguments: catalog,
+          )
         : Navigator.of(context).pop();
   }
 

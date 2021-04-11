@@ -28,6 +28,7 @@ class CatalogNavigator extends StatelessWidget {
   Navigator _navigator(BuildContext context) {
     return Navigator(
       key: navigatorKey,
+      initialRoute: MenuRoutes.catalog,
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           builder: MenuRoutes.getBuilder(settings),

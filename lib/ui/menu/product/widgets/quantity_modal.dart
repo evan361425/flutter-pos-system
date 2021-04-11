@@ -8,6 +8,7 @@ import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 
 import 'quantity_search_scaffold.dart';
 
@@ -188,13 +189,12 @@ class _QuantityModalState extends State<QuantityModal> {
       errorText: errorMessage,
       helperText: '新增成份份量後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
-        final quantity = await Navigator.of(context).push<QuantityModel>(
-          MaterialPageRoute(
-            builder: (_) => QuantitySearchScaffold(text: quantityName),
-          ),
+        final quantity = await Navigator.of(context).pushNamed(
+          MenuRoutes.productQuantitySearch,
+          arguments: quantityName,
         );
 
-        if (quantity != null) {
+        if (quantity != null && quantity is QuantityModel) {
           print('User choose quantity: ${quantity.name}');
           setState(() {
             errorMessage = null;

@@ -8,10 +8,10 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
-import 'widgets/ingredient_modal.dart';
 import 'widgets/product_actions.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -35,11 +35,10 @@ class ProductScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => IngredientModal(
-              product: product,
-            ),
-          ));
+          Navigator.of(context).pushNamed(
+            MenuRoutes.productIngredient,
+            arguments: product,
+          );
         },
         tooltip: Local.of(context).t('menu.product.add_integredient'),
         child: Icon(KIcons.add),

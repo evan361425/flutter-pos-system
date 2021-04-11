@@ -1,38 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
-import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
+import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/ui/menu/product/widgets/quantity_search_scaffold.dart';
+import 'package:possystem/ui/splash/not_found_splash.dart';
 import 'package:provider/provider.dart';
 
 import 'catalog/catalog_screen.dart';
+import 'catalog/widgets/product_modal.dart';
 import 'catalog/widgets/product_orderable_list.dart';
+import 'catalog_navigator.dart';
+import 'menu_screen.dart';
 import 'product/product_screen.dart';
+import 'product/widgets/ingredient_modal.dart';
+import 'product/widgets/ingredient_search_scaffold.dart';
+import 'widgets/catalog_modal.dart';
 
 class MenuRoutes {
-  static const String routeProduct = 'product';
-  static const String routeProductOrder = 'product/order';
-  static const String routeProductModal = 'product/modal';
-  static const String routeCatalogModal = 'catalog/modal';
+  static const String catalog = 'catalog/screen';
+  static const String catalogModal = 'catalog/modal';
+  static const String product = 'product';
+  static const String productOrder = 'product/order';
+  static const String productModal = 'product/modal';
+  static const String productIngredient = 'product/ingredient';
+  static const String productIngredientSearch = 'product/ingredient/search';
+  static const String productQuantitySearch = 'product/quantity/search';
 
   static WidgetBuilder getBuilder(RouteSettings settings) {
     switch (settings.name) {
-      case routeProduct:
+      case catalog:
+        return (_) => CatalogScreen();
+      case catalogModal:
+        return (_) => CatalogModal(catalog: settings.arguments);
+      case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
               value: settings.arguments,
               builder: (_, __) => ProductScreen(),
             );
-      case routeProductOrder:
+      case productOrder:
         return (BuildContext context) {
           final catalog = context.read<CatalogModel>();
           return ProductOrderableList(items: catalog.productList);
         };
-      case routeProductModal:
+      case productModal:
         return (_) => ProductModal(product: settings.arguments);
-      case routeCatalogModal:
-        return (_) => CatalogModal(catalog: settings.arguments);
+      case productIngredient:
+        return (BuildContext context) {
+          final stock = context.read<StockModel>();
+          final arg = settings.arguments;
+
+          return arg is ProductIngredientModel
+              ? IngredientModal(
+                  ingredient: arg,
+                  ingredientName: stock[arg?.id]?.name,
+                  product: arg?.product,
+                )
+              : IngredientModal(product: arg);
+        };
+      case productIngredientSearch:
+        return (_) => IngredientSearchScaffold(text: settings.arguments);
+      case productQuantitySearch:
+        return (_) => QuantitySearchScaffold(text: settings.arguments);
       default:
-        return (_) => CatalogScreen();
+        print(settings);
+        return (_) => NotFoundSplash();
     }
   }
 }

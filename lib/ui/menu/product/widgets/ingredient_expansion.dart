@@ -8,9 +8,9 @@ import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
-import 'ingredient_modal.dart';
 import 'quantity_modal.dart';
 
 class IngredientExpansion extends StatefulWidget {
@@ -105,13 +105,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             icon: Icon(Icons.settings_sharp),
             label: Text('設定成份資料'),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => IngredientModal(
-                  ingredient: ingredient,
-                  ingredientName: stock[ingredient.id]?.name,
-                  product: ingredient.product,
-                ),
-              ));
+              Navigator.of(context).pushNamed(
+                MenuRoutes.productIngredient,
+                arguments: ingredient,
+              );
             },
           ),
         ),

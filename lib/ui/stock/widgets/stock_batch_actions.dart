@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
-import 'package:possystem/ui/stock/stock_routes.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 class StockBatchActions extends StatelessWidget {
@@ -22,7 +22,7 @@ class StockBatchActions extends StatelessWidget {
           child: IconButton(
             icon: Icon(KIcons.edit),
             onPressed: () => Navigator.of(context).pushNamed(
-              StockRoutes.routeBatchModal,
+              Routes.stockBatchModal,
               arguments: selector.currentState.currentBatch,
             ),
           ),
@@ -71,7 +71,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
       isExpanded: true,
       onChanged: (String newValue) {
         if (newValue == null) {
-          Navigator.of(context).pushNamed(StockRoutes.routeBatchModal);
+          Navigator.of(context).pushNamed(Routes.stockBatchModal);
         } else {
           setState(() => selectedBatchId = newValue);
         }

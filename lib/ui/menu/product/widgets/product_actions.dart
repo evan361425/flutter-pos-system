@@ -14,7 +14,7 @@ class ProductActions extends StatelessWidget {
       actions: [
         CupertinoActionSheetAction(
           onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.routeProductModal,
+            MenuRoutes.productModal,
             arguments: product,
           ),
           child: Text('變更產品'),

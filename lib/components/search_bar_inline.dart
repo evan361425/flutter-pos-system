@@ -21,12 +21,13 @@ class SearchBarInline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textController = TextEditingController(text: text);
     return Hero(
       tag: heroTag,
       // transitionOnUserGestures: true,
-      child: TextFormField(
+      child: TextField(
         readOnly: true,
-        initialValue: text,
+        controller: textController,
         onTap: () => onTap(context),
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(

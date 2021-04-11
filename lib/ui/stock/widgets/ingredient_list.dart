@@ -9,7 +9,7 @@ import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
-import 'package:possystem/ui/stock/stock_routes.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
 class IngredientList extends StatelessWidget {
@@ -176,7 +176,7 @@ class IngredientList extends StatelessWidget {
 
   void _onTap(BuildContext context, IngredientModel ingredient) {
     Navigator.of(context).pushNamed(
-      StockRoutes.routeIngredient,
+      Routes.stockIngredient,
       arguments: ingredient,
     );
   }

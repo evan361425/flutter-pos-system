@@ -8,6 +8,7 @@ import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
 
 class IngredientModal extends StatefulWidget {
@@ -153,12 +154,12 @@ class _IngredientModalState extends State<IngredientModal> {
       errorText: errorMessage,
       helperText: '新增成份種類後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
-        final ingredient =
-            await Navigator.of(context).push<IngredientModel>(MaterialPageRoute(
-          builder: (_) => IngredientSearchScaffold(text: ingredientName),
-        ));
+        final ingredient = await Navigator.of(context).pushNamed(
+          MenuRoutes.productIngredientSearch,
+          arguments: ingredientName,
+        );
 
-        if (ingredient != null) {
+        if (ingredient != null && ingredient is IngredientModel) {
           print('User choose ingreidnet: ${ingredient.name}');
           setState(() {
             errorMessage = null;

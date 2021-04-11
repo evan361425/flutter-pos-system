@@ -34,7 +34,7 @@ class CatalogScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
-          MenuRoutes.routeProductModal,
+          MenuRoutes.productModal,
         ),
         tooltip: Local.of(context).t('menu.catalog.add_product'),
         child: Icon(KIcons.add),

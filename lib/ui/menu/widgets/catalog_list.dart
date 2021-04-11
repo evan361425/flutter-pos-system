@@ -68,7 +68,7 @@ class CatalogList extends StatelessWidget {
 
   void onTap(BuildContext context, CatalogModel catalog) {
     Navigator.of(context).pushNamed(
-      Routes.catalog,
+      Routes.menuCatalog,
       arguments: catalog,
     );
   }
