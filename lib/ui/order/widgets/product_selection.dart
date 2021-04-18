@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';

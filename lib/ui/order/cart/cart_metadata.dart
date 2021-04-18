@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_mode.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 import 'package:provider/provider.dart';
 
 class CartMetadata extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
 import 'product_model.dart';
@@ -16,6 +17,7 @@ class ProductIngredientModel {
   final Map<String, ProductQuantityModel> quantities;
   String ingredientId;
   num defaultAmount;
+  IngredientModel ingredient;
 
   factory ProductIngredientModel.fromMap({
     ProductModel product,

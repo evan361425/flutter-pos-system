@@ -5,11 +5,8 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_mode.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/ui/order/order_screen.dart';
-import 'package:provider/provider.dart';
 
 class IngredientSelection extends StatefulWidget {
   const IngredientSelection({Key key}) : super(key: key);
@@ -24,12 +21,6 @@ class _IngredientSelectionState extends State<IngredientSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.watch<StockModel>();
-    final quantities = context.watch<QuantityRepo>();
-    if (stock.isNotReady || quantities.isNotReady) {
-      return Center(child: CircularProgressIndicator());
-    }
-
     final product = OrderScreen.cart.selectedSameProduct?.first?.product;
     if (product == null) return emptyWidget(context, '請選擇相同的產品來設定其成份');
 
@@ -54,7 +45,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
               },
               groupId: INGREDIENT_GROUP,
               value: ingredient.id,
-              child: Text(stock[ingredient.id].name),
+              child: Text(ingredient.ingredient.name),
             ),
         ]),
         SingleRowWrap(children: <Widget>[
@@ -65,16 +56,13 @@ class _IngredientSelectionState extends State<IngredientSelection> {
                 final ingredient = OrderIngredientModel(
                   ingredient: selectedIngredient,
                   quantity: quantity,
-                  ingredientName: stock[selectedIngredient.id].name,
-                  quantityName: quantities[quantity.id].name,
                 );
                 OrderScreen.cart.updateSelectedIngredient(ingredient);
               },
               groupId: QUANTITY_GROUP,
               value: quantity.id,
               isSelected: quantity.id == selectedQuantityId,
-              child:
-                  Text('${quantities[quantity.id].name}（${quantity.amount}）'),
+              child: Text('${quantity.quantity.name}（${quantity.amount}）'),
             ),
         ]),
       ],

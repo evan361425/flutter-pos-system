@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_mode.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_product_list_tile.dart';

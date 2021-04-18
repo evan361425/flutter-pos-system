@@ -1,24 +1,43 @@
 import 'package:flutter/widgets.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
-import '../menu/catalog_model.dart';
+import 'quantity_repo.dart';
+import 'stock_model.dart';
 
 class MenuModel extends ChangeNotifier {
+  Map<String, CatalogModel> catalogs;
+
   MenuModel() {
     loadFromDb();
   }
 
-  Map<String, CatalogModel> catalogs;
-
   // I/O
 
-  Future<void> loadFromDb() async {
-    var snapshot = await Database.service.get(Collections.menu);
-    buildFromMap(snapshot.data());
-
-    notifyListeners();
+  List<CatalogModel> get catalogList {
+    final catalogList = catalogs.values.toList();
+    catalogList.sort((a, b) => a.index.compareTo(b.index));
+    return catalogList;
   }
+
+  bool get isEmpty => catalogs.isEmpty;
+
+  bool get isNotReady => catalogs == null;
+
+  int get newIndex {
+    var maxIndex = -1;
+    catalogs.forEach((key, catalog) {
+      if (catalog.index > maxIndex) {
+        maxIndex = catalog.index;
+      }
+    });
+    return maxIndex + 1;
+  }
+
+  // MENU STATE
+
+  CatalogModel operator [](String id) => catalogs[id];
 
   void buildFromMap(Map<String, dynamic> data) {
     catalogs = {};
@@ -38,20 +57,45 @@ class MenuModel extends ChangeNotifier {
     }
   }
 
-  Map<String, Map<String, dynamic>> toMap() {
-    return {for (var entry in catalogs.entries) entry.key: entry.value.toMap()};
+  bool has(String id) => catalogs.containsKey(id);
+
+  bool hasCatalog(String name) =>
+      !catalogs.values.every((catalog) => catalog.name != name);
+
+  bool hasProduct(String name) => !catalogs.values.every((catalog) =>
+      catalog.products.values.every((product) => product.name != name));
+
+  Future<void> loadFromDb() async {
+    var snapshot = await Database.service.get(Collections.menu);
+    buildFromMap(snapshot.data());
+
+    notifyListeners();
   }
 
-  // MENU STATE
+  List<ProductIngredientModel> productContainsIngredient(String id) {
+    final result = <ProductIngredientModel>[];
 
-  void updateCatalog(CatalogModel catalog) {
-    if (!has(catalog.id)) {
-      catalogs[catalog.id] = catalog;
+    catalogs.values.forEach((catalog) {
+      catalog.products.values.forEach((product) {
+        if (product.has(id)) result.add(product[id]);
+      });
+    });
 
-      final updateData = {catalog.id: catalog.toMap()};
-      Database.service.update(Collections.menu, updateData);
-    }
-    notifyListeners();
+    return result;
+  }
+
+  List<ProductIngredientModel> productContainsQuantity(String id) {
+    final result = <ProductIngredientModel>[];
+
+    catalogs.values.forEach((catalog) {
+      catalog.products.values.forEach((product) {
+        product.ingredients.values.forEach((ingredient) {
+          if (ingredient.has(id)) result.add(ingredient);
+        });
+      });
+    });
+
+    return result;
   }
 
   void removeCatalog(String id) {
@@ -59,16 +103,6 @@ class MenuModel extends ChangeNotifier {
     Database.service.update(Collections.menu, {id: null});
     notifyListeners();
   }
-
-  Future<void> reorderCatalogs(List<CatalogModel> catalogs) async {
-    for (var i = 0, n = catalogs.length; i < n; i++) {
-      catalogs[i].update(index: i + 1);
-    }
-
-    notifyListeners();
-  }
-
-  // STOCK STATE
 
   void removeIngredient(String id) {
     final ingredients = productContainsIngredient(id);
@@ -99,59 +133,41 @@ class MenuModel extends ChangeNotifier {
     }
   }
 
-  List<ProductIngredientModel> productContainsIngredient(String id) {
-    final result = <ProductIngredientModel>[];
+  Future<void> reorderCatalogs(List<CatalogModel> catalogs) async {
+    for (var i = 0, n = catalogs.length; i < n; i++) {
+      catalogs[i].update(index: i + 1);
+    }
 
-    catalogs.values.forEach((catalog) {
-      catalog.products.values.forEach((product) {
-        if (product.has(id)) result.add(product[id]);
-      });
-    });
-
-    return result;
+    notifyListeners();
   }
 
-  List<ProductIngredientModel> productContainsQuantity(String id) {
-    final result = <ProductIngredientModel>[];
+  void setUpRrderMode(StockModel stock, QuantityRepo quantities) {
+    assert(stock.isNotReady, 'should ready');
+    assert(quantities.isNotReady, 'should ready');
 
-    catalogs.values.forEach((catalog) {
-      catalog.products.values.forEach((product) {
-        product.ingredients.values.forEach((ingredient) {
-          if (ingredient.has(id)) result.add(ingredient);
+    catalogs.forEach((catalogId, catalog) {
+      catalog.products.forEach((productId, product) {
+        product.ingredients.forEach((ingredientId, ingredient) {
+          ingredient.ingredient = stock[ingredientId];
+          ingredient.quantities.forEach((quantityId, quantity) {
+            quantity.quantity = quantities[quantityId];
+          });
         });
       });
     });
-
-    return result;
   }
 
-  // HELPER
-
-  bool has(String id) => catalogs.containsKey(id);
-  bool hasCatalog(String name) =>
-      !catalogs.values.every((catalog) => catalog.name != name);
-  bool hasProduct(String name) => !catalogs.values.every((catalog) =>
-      catalog.products.values.every((product) => product.name != name));
-  CatalogModel operator [](String id) => catalogs[id];
-
-  // GETTER
-
-  List<CatalogModel> get catalogList {
-    final catalogList = catalogs.values.toList();
-    catalogList.sort((a, b) => a.index.compareTo(b.index));
-    return catalogList;
+  Map<String, Map<String, dynamic>> toMap() {
+    return {for (var entry in catalogs.entries) entry.key: entry.value.toMap()};
   }
 
-  int get newIndex {
-    var maxIndex = -1;
-    catalogs.forEach((key, catalog) {
-      if (catalog.index > maxIndex) {
-        maxIndex = catalog.index;
-      }
-    });
-    return maxIndex + 1;
-  }
+  void updateCatalog(CatalogModel catalog) {
+    if (!has(catalog.id)) {
+      catalogs[catalog.id] = catalog;
 
-  bool get isNotReady => catalogs == null;
-  bool get isEmpty => catalogs.isEmpty;
+      final updateData = {catalog.id: catalog.toMap()};
+      Database.service.update(Collections.menu, updateData);
+    }
+    notifyListeners();
+  }
 }

@@ -6,19 +6,16 @@ class OrderIngredientModel {
   OrderIngredientModel({
     @required this.ingredient,
     @required this.quantity,
-    @required this.ingredientName,
-    @required this.quantityName,
   });
 
   final ProductIngredientModel ingredient;
   final ProductQuantityModel quantity;
-  final String ingredientName;
-  final String quantityName;
 
   String get id => ingredient.id;
 
   @override
-  String toString() => '$ingredientName - $quantityName';
+  String toString() =>
+      '${ingredient.ingredient.name} - ${quantity.quantity.name}';
 
   @override
   bool operator ==(Object other) {
