@@ -180,10 +180,7 @@ class AppThemes {
     primaryColorBrightness: Brightness.light,
     primaryColorLight: Color(0xffffecb3),
     primaryColorDark: Color(0xff673ab7),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(primary: Color(0xdd000000)),
-    ),
-    accentColor: Color(0xffede487),
+    accentColor: Color(0x8a000000),
     accentColorBrightness: Brightness.light,
     canvasColor: Color(0xfffafafa),
     scaffoldBackgroundColor: Color(0xfffafafa),
@@ -199,7 +196,7 @@ class AppThemes {
     selectedRowColor: Color(0xfff5f5f5),
     unselectedWidgetColor: Color(0x8a000000),
     disabledColor: Color(0x61000000),
-    buttonColor: Color(0xffff9800),
+    buttonColor: Color(0x8a000000),
     toggleableActiveColor: Color(0xffffb300),
     secondaryHeaderColor: Color(0xfffff8e1),
     textSelectionTheme: TextSelectionThemeData(
@@ -212,6 +209,12 @@ class AppThemes {
     indicatorColor: Color(0xffffc107),
     hintColor: Color(0x8a000000),
     errorColor: Color(0xffd32f2f),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(primary: Color(0xdd000000)),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(primary: Color(0xdd000000)),
+    ),
     buttonTheme: ButtonThemeData(
       textTheme: ButtonTextTheme.normal,
       minWidth: 88,
@@ -443,7 +446,7 @@ class AppThemes {
     primaryColorBrightness: Brightness.dark,
     primaryColorLight: Color(0xff9e9e9e),
     primaryColorDark: Color(0xff2196f3),
-    accentColor: Color(0xffffc107),
+    accentColor: Color(0xb3ffffff),
     accentColorBrightness: Brightness.light,
     canvasColor: Color(0xff303030),
     scaffoldBackgroundColor: Color(0xff303030),
@@ -473,6 +476,12 @@ class AppThemes {
     indicatorColor: Color(0xff64ffda),
     hintColor: Color(0x80ffffff),
     errorColor: Color(0xffd32f2f),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(primary: Color(0xffffffff)),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(primary: Color(0xffffffff)),
+    ),
     buttonTheme: ButtonThemeData(
       textTheme: ButtonTextTheme.normal,
       minWidth: 88,

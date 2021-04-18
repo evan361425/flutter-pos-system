@@ -13,8 +13,8 @@ class MetaBlock extends StatelessWidget {
     return TextSpan(text: ' • ');
   }
 
-  static Widget withString(
-      BuildContext context, Iterable<String> data, String emptyText) {
+  static Widget withString(BuildContext context, Iterable<String> data,
+      [String emptyText]) {
     if (data.isNotEmpty) {
       final children = <InlineSpan>[];
       data.forEach((value) {

@@ -159,6 +159,10 @@ class ProductModel extends ChangeNotifier {
 
   // GETTER
 
+  Iterable<ProductIngredientModel> get ingredientsWithQuantity {
+    return ingredients.values.where((e) => e.quantities.isNotEmpty);
+  }
+
   bool get isReady => name != null;
   String get prefix => '${catalog.id}.products.$id';
 }

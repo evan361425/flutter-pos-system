@@ -2,32 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 
 class RadioText extends StatefulWidget {
-  const RadioText({
+  RadioText({
     Key key,
     @required this.onSelected,
     @required this.child,
     @required this.groupId,
     @required this.value,
-  }) : super(key: key);
-
-  static final _groups = <String, _Item>{};
+    bool isSelected,
+  }) : super(key: key) {
+    // if not set initial a new one
+    if (group == null) {
+      group = _Item(isSelected == null || isSelected ? value : null);
+    } else if (isSelected != null) {
+      // if specific setting
+      // update previous one to unchecked
+      if (isSelected && group.selected != value) group.updateSelect(value);
+    }
+  }
 
   final void Function() onSelected;
   final Widget child;
   final String groupId;
   final String value;
 
-  @override
-  _RadioTextState createState() => _RadioTextState();
+  static final _groups = <String, _Item>{};
+  static void clearSelected(String groupId) {
+    _groups[groupId]?.updateSelect(null);
+  }
 
   bool get isSelected => group?.checkSelect(value) ?? false;
 
   _Item get group => _groups[groupId];
+  set group(_Item item) => _groups[groupId] = item;
 
   void dispose() {
     group.removeElement(value);
     if (group.isEmpty) _groups.remove(groupId);
   }
+
+  @override
+  _RadioTextState createState() => _RadioTextState();
 }
 
 class _RadioTextState extends State<RadioText> {
@@ -45,7 +59,7 @@ class _RadioTextState extends State<RadioText> {
         ],
         border: Border.all(
           width: 1.0,
-          color: widget.isSelected ? defaultColor : Colors.grey,
+          color: widget.isSelected ? defaultColor : BORDER_COLOR,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(2.0)),
       ),
@@ -63,16 +77,12 @@ class _RadioTextState extends State<RadioText> {
     );
   }
 
-  void select() =>
-      RadioText._groups[widget.groupId]?.updateSelect(widget.value);
+  void select() => widget.group?.updateSelect(widget.value);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (RadioText._groups[widget.groupId] == null) {
-      RadioText._groups[widget.groupId] = _Item(widget.value);
-    }
-    RadioText._groups[widget.groupId].addElement(widget.value, setState);
+    widget.group.addElement(widget.value, setState);
   }
 
   @override
@@ -80,6 +90,8 @@ class _RadioTextState extends State<RadioText> {
     widget.dispose();
     super.dispose();
   }
+
+  static final BORDER_COLOR = Colors.grey.withAlpha(100);
 }
 
 class _Item {
@@ -106,4 +118,5 @@ class _Item {
   }
 
   bool get isEmpty => _elements.isEmpty;
+  String get selected => _selected;
 }

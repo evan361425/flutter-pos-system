@@ -3,16 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/cart_repo.dart';
+import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
+import 'package:possystem/ui/order/widgets/product_selection.dart';
+import 'package:provider/provider.dart';
 
-import 'chart/chart_screen.dart';
+import 'cart/cart_product_list.dart';
+import 'cart/cart_screen.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({Key key}) : super(key: key);
 
+  static final productSelection = GlobalKey<ProductSelectionState>();
+  static final productsKey = GlobalKey<CartProductListState>();
+  static final cart = CartRepo();
+
   @override
   Widget build(BuildContext context) {
+    final menu = context.watch<MenuModel>();
+    if (menu.isNotReady) return Center(child: CircularProgressIndicator());
+
+    final catalogs = menu.catalogList.where((catalog) => catalog.isNotEmpty);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -28,59 +44,33 @@ class OrderScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SingleRowWrap(children: <Widget>[
-            for (var catalog in ['hambuger', 'sandwitch', 'drink'])
+            for (final catalog in catalogs)
               RadioText(
-                onSelected: () {},
+                onSelected: () {
+                  productSelection.currentState.catalog = catalog;
+                },
                 groupId: 'order.catalogs',
-                value: catalog,
-                child: Text(catalog),
+                value: catalog.id,
+                child: Text(catalog.name),
               ),
           ]),
           Expanded(
-            child: Card(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Wrap(
-                    spacing: 4.0,
-                    children: [
-                      for (var product in ['cheeseburger', 'hameburger'])
-                        RadioText(
-                          onSelected: () {},
-                          groupId: 'order.products',
-                          value: product,
-                          child: Text(product),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+            child: ProductSelection(
+              key: productSelection,
+              catalog: catalogs.first,
+              productsKey: productsKey,
             ),
           ),
           Expanded(
             flex: 3,
             child: Card(
-              child: ChartScreen(),
+              child: ChangeNotifierProvider.value(
+                value: cart,
+                builder: (_, __) => CartScreen(productsKey: productsKey),
+              ),
             ),
           ),
-          SingleRowWrap(children: <Widget>[
-            for (var ingredient in ['cheese', 'bread'])
-              RadioText(
-                onSelected: () {},
-                groupId: 'order.ingredients',
-                value: ingredient,
-                child: Text(ingredient),
-              ),
-          ]),
-          SingleRowWrap(children: <Widget>[
-            for (var quantity in ['less', 'more'])
-              RadioText(
-                onSelected: () {},
-                groupId: 'order.quantities',
-                value: quantity,
-                child: Text(quantity),
-              ),
-          ]),
+          IngredientSelection(),
         ],
       ),
     );
@@ -95,30 +85,5 @@ class OrderScreen extends StatelessWidget {
     );
 
     if (result == true) Navigator.of(context).pop();
-  }
-}
-
-class SingleRowWrap extends StatelessWidget {
-  const SingleRowWrap({
-    Key key,
-    @required this.children,
-  }) : super(key: key);
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Wrap(
-            spacing: 4.0,
-            children: children,
-          ),
-        ),
-      ),
-    );
   }
 }

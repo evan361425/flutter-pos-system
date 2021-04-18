@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/ui/order/order_screen.dart';
 
-import 'chart_actions.dart';
-import 'chart_product_list.dart';
+import 'cart_actions.dart';
+import 'cart_metadata.dart';
+import 'cart_product_list.dart';
 
-class ChartScreen extends StatelessWidget {
-  const ChartScreen({Key key}) : super(key: key);
+class CartScreen extends StatelessWidget {
+  const CartScreen({Key key, this.productsKey}) : super(key: key);
+
+  final Key productsKey;
 
   @override
   Widget build(BuildContext context) {
@@ -16,36 +20,28 @@ class ChartScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => OrderScreen.cart.toggleAll(true),
                 child: Text('全選'),
               ),
             ),
             SizedBox(width: 4),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => OrderScreen.cart.toggleAll(),
                 child: Text('反選'),
               ),
             ),
           ],
         ),
-        Expanded(child: ChartProductList()),
+        Expanded(child: CartProductList(key: productsKey)),
         Row(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kPadding),
-              child: ChartActions(),
+              child: CartActions(),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Row(
-                  children: [
-                    Text('總數：2'),
-                    SizedBox(width: 4.0),
-                    Text('總價：200'),
-                  ],
-                ),
-              ),
+              child: CartMetadata(),
             ),
           ],
         ),

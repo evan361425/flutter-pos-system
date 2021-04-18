@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/single_row_warp.dart';
+import 'package:possystem/constants/constant.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/order/order_ingredient_model.dart';
+import 'package:possystem/models/order/order_product_model.dart';
+import 'package:possystem/models/repository/cart_repo.dart';
+import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/ui/order/order_screen.dart';
+import 'package:provider/provider.dart';
+
+class IngredientSelection extends StatefulWidget {
+  const IngredientSelection({Key key}) : super(key: key);
+
+  @override
+  _IngredientSelectionState createState() => _IngredientSelectionState();
+}
+
+class _IngredientSelectionState extends State<IngredientSelection> {
+  ProductIngredientModel selectedIngredient;
+  String selectedQuantityId;
+
+  @override
+  Widget build(BuildContext context) {
+    final stock = context.watch<StockModel>();
+    final quantities = context.watch<QuantityIndexModel>();
+    if (stock.isNotReady || quantities.isNotReady) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    final product = OrderScreen.cart.selectedSameProduct?.first?.product;
+    if (product == null) return emptyWidget(context, '請選擇相同的產品來設定其成份');
+
+    final ingredients = product.ingredientsWithQuantity;
+    if (ingredients.isEmpty) return emptyWidget(context, '該產品無可設定的成份');
+
+    selectedIngredient ??= ingredients.first;
+    selectedQuantityId = OrderScreen.cart.getSelectedQuantityId(
+      selectedIngredient,
+    );
+
+    if (selectedQuantityId == null) RadioText.clearSelected(QUANTITY_GROUP);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SingleRowWrap(children: <Widget>[
+          for (var ingredient in ingredients)
+            RadioText(
+              onSelected: () {
+                setState(() => selectedIngredient = ingredient);
+              },
+              groupId: INGREDIENT_GROUP,
+              value: ingredient.id,
+              child: Text(stock[ingredient.id].name),
+            ),
+        ]),
+        SingleRowWrap(children: <Widget>[
+          quantityDefaultOption(),
+          for (var quantity in selectedIngredient.quantities.values)
+            RadioText(
+              onSelected: () {
+                final ingredient = OrderIngredientModel(
+                  ingredient: selectedIngredient,
+                  quantity: quantity,
+                  ingredientName: stock[selectedIngredient.id].name,
+                  quantityName: quantities[quantity.id].name,
+                );
+                OrderScreen.cart.updateSelectedIngredient(ingredient);
+              },
+              groupId: QUANTITY_GROUP,
+              value: quantity.id,
+              isSelected: quantity.id == selectedQuantityId,
+              child:
+                  Text('${quantities[quantity.id].name}（${quantity.amount}）'),
+            ),
+        ]),
+      ],
+    );
+  }
+
+  Widget quantityDefaultOption() {
+    return RadioText(
+      onSelected: () {
+        OrderScreen.cart.removeSelectedIngredient(selectedIngredient);
+      },
+      groupId: 'order.quantities',
+      value: CartRepo.DEFAULT_QUANTITY_ID,
+      isSelected: selectedQuantityId == CartRepo.DEFAULT_QUANTITY_ID,
+      child: Text('預設值（${selectedIngredient.defaultAmount}）'),
+    );
+  }
+
+  Widget emptyWidget(BuildContext context, String ingredientMessage) {
+    final textTheme = Theme.of(context).textTheme;
+    Widget mockRadioText(String text) {
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.all(kPadding / 2),
+        child: Text(
+          text,
+          style: textTheme.bodyText1.copyWith(color: textTheme.caption.color),
+        ),
+      );
+    }
+
+    selectedIngredient = null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SingleRowWrap(
+          children: <Widget>[mockRadioText(ingredientMessage)],
+        ),
+        SingleRowWrap(
+          children: <Widget>[mockRadioText('請選擇成份來設定份量')],
+        ),
+      ],
+    );
+  }
+
+  void _listener() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    OrderProductModel.addListener(
+      _listener,
+      OrderProductListenerTypes.selection,
+    );
+  }
+
+  @override
+  void dispose() {
+    OrderProductModel.removeListener(_listener);
+    super.dispose();
+  }
+
+  static const QUANTITY_GROUP = 'order.quantities';
+  static const INGREDIENT_GROUP = 'order.ingredients';
+}

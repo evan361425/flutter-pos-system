@@ -89,6 +89,14 @@ class _QuantitySnapshot extends Snapshot {
         'name': 'more',
         'defaultProportion': 1.5,
       },
+      'is3': {
+        'name': 'really less',
+        'defaultProportion': 0.1,
+      },
+      'is4': {
+        'name': 'really more',
+        'defaultProportion': 3,
+      },
     };
   }
 }
@@ -153,6 +161,28 @@ class _MenuSnapshot extends Snapshot {
               },
               'i2': {
                 'defaultAmount': 1,
+                'quantities': {
+                  'is1': {
+                    'amount': 10,
+                    'additionalPrice': 0,
+                    'additionalCost': -5,
+                  },
+                  'is2': {
+                    'amount': 30,
+                    'additionalPrice': 10,
+                    'additionalCost': 5,
+                  },
+                  'is3': {
+                    'amount': 1,
+                    'additionalPrice': -5,
+                    'additionalCost': -10,
+                  },
+                  'is4': {
+                    'amount': 50,
+                    'additionalPrice': 20,
+                    'additionalCost': 10,
+                  },
+                },
               },
               'i3': {
                 'defaultAmount': 1,
@@ -170,7 +200,7 @@ class _MenuSnapshot extends Snapshot {
           },
           '2': {
             'name': 'kamburger',
-            'price': 50,
+            'price': 500000,
             'index': 2,
             'ingredients': {}
           },

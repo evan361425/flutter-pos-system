@@ -23,6 +23,26 @@ class Validator {
     };
   }
 
+  static String Function(String) positiveInt(
+    String fieldName, {
+    num maximum,
+  }) {
+    return (String value) {
+      try {
+        final number = int.parse(value);
+        if (number < 0) {
+          return '$fieldName 不能為負數';
+        } else if (maximum != null && maximum < number) {
+          return '$fieldName 不能大於 $maximum';
+        }
+
+        return null;
+      } catch (err) {
+        return '$fieldName 必須是整數';
+      }
+    };
+  }
+
   static String Function(String) isNumber(String fieldName) {
     return (String value) {
       try {

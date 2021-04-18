@@ -165,6 +165,7 @@ class CatalogModel extends ChangeNotifier {
   }
 
   bool get isEmpty => length == 0;
+  bool get isNotEmpty => length != 0;
   bool get isReady => name != null;
   int get length => products.length;
 }

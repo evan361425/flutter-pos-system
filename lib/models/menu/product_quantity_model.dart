@@ -81,6 +81,10 @@ class ProductQuantityModel {
   }
 
   // GETTER
+  @override
+  bool operator ==(Object other) {
+    return other is ProductQuantityModel ? other.id == id : false;
+  }
 
   bool get isNotReady => quantityId == null;
 
