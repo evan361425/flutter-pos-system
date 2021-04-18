@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +54,7 @@ class _QuantityModalState extends State<QuantityModal> {
     if (isSaving || !_formKey.currentState.validate()) return;
 
     final name = _nameController.text;
-    final quantities = context.read<QuantityIndexModel>();
+    final quantities = context.read<QuantityRepo>();
 
     if (widget.quantity?.name != name && quantities.hasContain(name)) {
       return setState(() => errorMessage = '份量名稱重複');
@@ -69,7 +69,7 @@ class _QuantityModalState extends State<QuantityModal> {
     Navigator.of(context).pop();
   }
 
-  void _updateQuantity(String name, QuantityIndexModel quantities) {
+  void _updateQuantity(String name, QuantityRepo quantities) {
     final proportion = num.parse(_proportionController.text);
 
     if (widget.quantity != null) {

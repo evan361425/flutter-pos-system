@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_repo.dart';
+import 'package:possystem/models/repository/cart_mode.dart';
 import 'package:provider/provider.dart';
 
 class CartMetadata extends StatefulWidget {
@@ -15,7 +15,7 @@ class CartMetadata extends StatefulWidget {
 class _CartMetadataState extends State<CartMetadata> {
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<CartRepo>();
+    final cart = context.watch<CartModel>();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

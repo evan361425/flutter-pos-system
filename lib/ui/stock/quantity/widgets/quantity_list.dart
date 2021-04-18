@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class QuantityList extends StatelessWidget {
 
   void _onDelete(BuildContext context, QuantityModel quantity) {
     debugPrint('Delete quantity ${quantity.id} - ${quantity.name}');
-    final quantities = context.read<QuantityIndexModel>();
+    final quantities = context.read<QuantityRepo>();
     final menu = context.read<MenuModel>();
 
     // remove from quantity index

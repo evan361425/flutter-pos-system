@@ -5,7 +5,7 @@ import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
-class CartRepo extends ChangeNotifier {
+class CartModel extends ChangeNotifier {
   List<OrderProductModel> products = [];
 
   int get totalCount {

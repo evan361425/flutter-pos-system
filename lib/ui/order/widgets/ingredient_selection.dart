@@ -5,8 +5,8 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_repo.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/cart_mode.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
   @override
   Widget build(BuildContext context) {
     final stock = context.watch<StockModel>();
-    final quantities = context.watch<QuantityIndexModel>();
+    final quantities = context.watch<QuantityRepo>();
     if (stock.isNotReady || quantities.isNotReady) {
       return Center(child: CircularProgressIndicator());
     }
@@ -87,8 +87,8 @@ class _IngredientSelectionState extends State<IngredientSelection> {
         OrderScreen.cart.removeSelectedIngredient(selectedIngredient);
       },
       groupId: 'order.quantities',
-      value: CartRepo.DEFAULT_QUANTITY_ID,
-      isSelected: selectedQuantityId == CartRepo.DEFAULT_QUANTITY_ID,
+      value: CartModel.DEFAULT_QUANTITY_ID,
+      isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
       child: Text('預設值（${selectedIngredient.defaultAmount}）'),
     );
   }

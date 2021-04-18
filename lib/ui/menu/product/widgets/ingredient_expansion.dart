@@ -3,7 +3,7 @@ import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -24,14 +24,14 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   List<bool> showIngredient = [];
   List<ProductIngredientModel> ingredients;
   StockModel stock;
-  QuantityIndexModel quantityIndex;
+  QuantityRepo quantityIndex;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
     stock = context.watch<StockModel>();
-    quantityIndex = context.watch<QuantityIndexModel>();
+    quantityIndex = context.watch<QuantityRepo>();
 
     // Don't rebuild make old expansion still opening
     for (var i = showIngredient.length; i < ingredients.length; i++) {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
-class QuantityIndexModel extends ChangeNotifier {
-  QuantityIndexModel() {
+class QuantityRepo extends ChangeNotifier {
+  QuantityRepo() {
     loadFromDb();
   }
 

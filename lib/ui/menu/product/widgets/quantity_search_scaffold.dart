@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/search_history_model.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,7 @@ class QuantitySearchScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quantitiesIndex = context.watch<QuantityIndexModel>();
+    final quantitiesIndex = context.watch<QuantityRepo>();
     var sortedIngredients = <QuantityModel>[];
     return SearchScaffold<QuantityModel>(
       key: scaffold,
@@ -66,7 +66,7 @@ class QuantitySearchScaffold extends StatelessWidget {
       title: Text('新增成份份量「$text」'),
       onTap: () {
         histories.add(scaffold.currentState.searchBar.currentState.text);
-        final quantities = context.read<QuantityIndexModel>();
+        final quantities = context.read<QuantityRepo>();
         final quantity = QuantityModel(name: text);
         quantities.updateQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);

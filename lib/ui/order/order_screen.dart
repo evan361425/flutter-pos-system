@@ -5,7 +5,7 @@ import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/cart_repo.dart';
+import 'package:possystem/models/repository/cart_mode.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
@@ -20,7 +20,7 @@ class OrderScreen extends StatelessWidget {
 
   static final productSelection = GlobalKey<ProductSelectionState>();
   static final productsKey = GlobalKey<CartProductListState>();
-  static final cart = CartRepo();
+  static final cart = CartModel();
 
   @override
   Widget build(BuildContext context) {

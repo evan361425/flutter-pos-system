@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/repository/quantity_index_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:provider/provider.dart';
 
 import 'quantity_list.dart';
@@ -11,7 +11,7 @@ class QuantityBoby extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quantityIndex = context.watch<QuantityIndexModel>();
+    final quantityIndex = context.watch<QuantityRepo>();
     if (quantityIndex.isNotReady) {
       return Center(child: CircularProgressIndicator());
     }
