@@ -21,7 +21,7 @@ class OrderProductModel {
   void decrement([int value = 1]) => setCount(-value);
   void setCount(int value) {
     count += value;
-    notifyListener(OrderProductListenerTypes.quantity);
+    notifyListener(OrderProductListenerTypes.count);
   }
 
   bool toggleSelected([bool checked]) {
@@ -65,7 +65,7 @@ class OrderProductModel {
   // Custom Listeners for performace
 
   static final listeners = <OrderProductListenerTypes, List<void Function()>>{
-    OrderProductListenerTypes.quantity: [],
+    OrderProductListenerTypes.count: [],
     OrderProductListenerTypes.selection: [],
   };
   static void addListener(
@@ -74,28 +74,24 @@ class OrderProductModel {
   ]) {
     if (type != null) return listeners[type].add(listener);
 
-    listeners[OrderProductListenerTypes.quantity].add(listener);
+    listeners[OrderProductListenerTypes.count].add(listener);
     listeners[OrderProductListenerTypes.selection].add(listener);
   }
 
   static void removeListener(void Function() listener) {
-    listeners[OrderProductListenerTypes.quantity].remove(listener);
+    listeners[OrderProductListenerTypes.count].remove(listener);
     listeners[OrderProductListenerTypes.selection].remove(listener);
   }
 
   static void notifyListener([OrderProductListenerTypes type]) {
     if (type != null) return listeners[type].forEach((lisnter) => lisnter());
 
-    listeners[OrderProductListenerTypes.quantity].forEach(
-      (lisnter) => lisnter(),
-    );
-    listeners[OrderProductListenerTypes.selection].forEach(
-      (lisnter) => lisnter(),
-    );
+    listeners[OrderProductListenerTypes.count].forEach((e) => e());
+    listeners[OrderProductListenerTypes.selection].forEach((e) => e());
   }
 }
 
 enum OrderProductListenerTypes {
-  quantity,
+  count,
   selection,
 }

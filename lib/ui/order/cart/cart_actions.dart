@@ -24,7 +24,7 @@ class CartActions extends StatelessWidget {
             child: Text('變價'),
           ),
           DropdownMenuItem(
-            value: _DialogItems.quantity,
+            value: _DialogItems.count,
             child: Text('變更數量'),
           ),
           DropdownMenuItem(
@@ -59,7 +59,7 @@ class CartActions extends StatelessWidget {
 enum _DialogItems {
   discount,
   price,
-  quantity,
+  count,
 }
 
 class _DialogItem {
@@ -117,7 +117,7 @@ class _DialogItem {
           action: (result) =>
               OrderScreen.cart.updateSelectedPrice(parseInt(result)),
         );
-      case _DialogItems.quantity:
+      case _DialogItems.count:
         return _DialogItem(
           validator: Validator.positiveInt('數量', maximum: 10000),
           decoration: InputDecoration(
@@ -127,7 +127,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              OrderScreen.cart.updateSelectedQuantity(parseInt(result)),
+              OrderScreen.cart.updateSelectedCount(parseInt(result)),
         );
       default:
         return null;

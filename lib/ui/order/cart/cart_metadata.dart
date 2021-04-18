@@ -21,7 +21,7 @@ class _CartMetadataState extends State<CartMetadata> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          Text('總數： ${cart.totalQuantity}'),
+          Text('總數： ${cart.totalCount}'),
           SizedBox(width: 4.0),
           Text('總價： ${cart.totalPrice}'),
         ],
@@ -38,7 +38,7 @@ class _CartMetadataState extends State<CartMetadata> {
     super.initState();
     OrderProductModel.addListener(
       _listener,
-      OrderProductListenerTypes.quantity,
+      OrderProductListenerTypes.count,
     );
   }
 

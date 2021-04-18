@@ -4,6 +4,8 @@ import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_repo.dart';
 import 'package:provider/provider.dart';
 
+import 'cart_product_list_tile.dart';
+
 class CartProductList extends StatefulWidget {
   const CartProductList({Key key}) : super(key: key);
 
@@ -16,28 +18,30 @@ class CartProductListState extends State<CartProductList> {
 
   @override
   Widget build(BuildContext context) {
-    final products = context.watch<CartRepo>().products;
+    final cart = context.watch<CartRepo>();
 
     return SingleChildScrollView(
       controller: scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var item in products)
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              value: item.isSelected,
-              selected: item.isSelected,
-              selectedTileColor: Theme.of(context).primaryColorLight,
-              onChanged: (bool checked) => onSelected(checked, item),
+          for (var product in cart.products)
+            CartProductListTile(
+              value: product.isSelected,
+              selected: product.isSelected,
+              onChanged: (bool checked) => onSelected(checked, product),
+              onTap: () {
+                cart.toggleAll(false);
+                onSelected(true, product);
+              },
               title: Text(
-                item.product.name,
+                product.product.name,
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: item.ingredients.isEmpty
+              subtitle: product.ingredients.isEmpty
                   ? null
-                  : MetaBlock.withString(context, item.ingredientNames),
-              secondary: _ProductQuantityAction(product: item),
+                  : MetaBlock.withString(context, product.ingredientNames),
+              trailing: _ProductCountAction(product: product),
             )
         ],
       ),
@@ -65,8 +69,8 @@ class CartProductListState extends State<CartProductList> {
   }
 }
 
-class _ProductQuantityAction extends StatefulWidget {
-  _ProductQuantityAction({
+class _ProductCountAction extends StatefulWidget {
+  _ProductCountAction({
     Key key,
     @required this.product,
   }) : super(key: key);
@@ -74,10 +78,10 @@ class _ProductQuantityAction extends StatefulWidget {
   final OrderProductModel product;
 
   @override
-  _ProductQuantityActionState createState() => _ProductQuantityActionState();
+  _ProductCountActionState createState() => _ProductCountActionState();
 }
 
-class _ProductQuantityActionState extends State<_ProductQuantityAction> {
+class _ProductCountActionState extends State<_ProductCountAction> {
   @override
   Widget build(BuildContext context) {
     return Wrap(

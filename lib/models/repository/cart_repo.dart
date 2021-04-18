@@ -8,7 +8,7 @@ import 'package:possystem/models/order/order_product_model.dart';
 class CartRepo extends ChangeNotifier {
   List<OrderProductModel> products = [];
 
-  int get totalQuantity {
+  int get totalCount {
     return products.fold(0, (value, product) => value + product.count);
   }
 
@@ -29,7 +29,7 @@ class CartRepo extends ChangeNotifier {
 
   void toggleAll([bool checked]) {
     products.forEach((product) => product.toggleSelected(checked));
-    notifyListeners();
+    // notifyListeners();
   }
 
   Iterable<OrderProductModel> get selectedSameProduct {
@@ -85,11 +85,11 @@ class CartRepo extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedQuantity(int quantity) {
-    if (quantity == null) return;
+  void updateSelectedCount(int count) {
+    if (count == null) return;
 
     selectedProducts.forEach((e) {
-      e.count = quantity;
+      e.count = count;
     });
     notifyListeners();
   }
