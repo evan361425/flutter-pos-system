@@ -7,8 +7,6 @@ import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 import 'package:possystem/ui/order/widgets/product_selection.dart';
@@ -26,14 +24,7 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menu = context.watch<MenuModel>();
-    final stock = context.watch<StockModel>();
-    final quantities = context.watch<QuantityRepo>();
-    if (menu.isNotReady || stock.isNotReady || quantities.isNotReady) {
-      return Center(child: CircularProgressIndicator());
-    }
-    menu.setUpRrderMode(stock, quantities);
-
+    final menu = context.read<MenuModel>();
     final catalogs = menu.catalogList.where((catalog) => catalog.isNotEmpty);
 
     return Scaffold(

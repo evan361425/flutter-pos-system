@@ -1,15 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
 class ProductQuantityModel {
   ProductQuantityModel({
-    @required this.quantityId,
+    this.quantityId,
+    this.quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  });
+  }) : assert(quantity != null || quantityId != null) {
+    quantityId ??= quantity.id;
+  }
 
   String quantityId;
   num amount;
@@ -75,8 +77,11 @@ class ProductQuantityModel {
     // final
     if (quantity.quantityId != quantityId) {
       ingredient.removeQuantity(id);
+
       quantityId = quantity.quantityId;
-      updateData['${ingredient.prefixQuantities}.$id'] = toMap();
+      this.quantity = quantity.quantity;
+
+      updateData.clear();
     }
 
     return updateData;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/quantity_search_scaffold.dart';
 import 'package:possystem/ui/splash/not_found_splash.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +34,9 @@ class MenuRoutes {
       case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
               value: settings.arguments,
-              builder: (_, __) => ProductScreen(),
+              builder: (context, __) => Routes.setUpStockMode(context)
+                  ? ProductScreen()
+                  : Center(child: CircularProgressIndicator()),
             );
       case productOrder:
         return (BuildContext context) {
@@ -44,15 +46,13 @@ class MenuRoutes {
       case productModal:
         return (_) => ProductModal(product: settings.arguments);
       case productIngredient:
-        return (BuildContext context) {
-          final stock = context.read<StockModel>();
+        return (_) {
           final arg = settings.arguments;
 
           return arg is ProductIngredientModel
               ? IngredientModal(
                   ingredient: arg,
-                  ingredientName: stock[arg?.id]?.name,
-                  product: arg?.product,
+                  product: arg.product,
                 )
               : IngredientModal(product: arg);
         };

@@ -6,23 +6,23 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
+import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
-    this.product,
+    @required this.product,
     this.ingredient,
-    this.ingredientName,
   })  : isNew = ingredient == null,
         super(key: key);
 
   final ProductModel product;
   final ProductIngredientModel ingredient;
-  final String ingredientName;
   final bool isNew;
 
   @override
@@ -77,7 +77,9 @@ class _IngredientModalState extends State<IngredientModal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isNew ? '新增成份' : '設定成份「${widget.ingredientName}」'),
+        title: Text(widget.isNew
+            ? '新增成份'
+            : '設定成份「${widget.ingredient.ingredient.name}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -108,22 +110,25 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   void _updateIngredient() {
-    final ingredient = widget.isNew
+    final stock = context.read<StockModel>();
+    final ingredient = stock[ingredientId] ?? stock.ingredients.values.first;
+
+    final productIngredient = widget.isNew
         ? ProductIngredientModel(
-            ingredientId: ingredientId,
+            ingredient: ingredient,
             product: widget.product,
             defaultAmount: num.parse(_amountController.text),
           )
         : widget.ingredient;
 
     if (!widget.isNew) {
-      ingredient.update(
-        ingredientId: ingredientId,
+      productIngredient.update(
+        ingredient: ingredient,
         defaultAmount: num.parse(_amountController.text),
       );
     }
 
-    widget.product.updateIngredient(ingredient);
+    widget.product.updateIngredient(productIngredient);
   }
 
   Widget _trailingAction() {
@@ -141,7 +146,8 @@ class _IngredientModalState extends State<IngredientModal> {
       margin: const EdgeInsets.symmetric(vertical: kMargin),
       child: DangerButton(
         onPressed: _onDelete,
-        child: Text('刪除${widget.product.name}的成份 ${widget.ingredientName}'),
+        child: Text(
+            '刪除${widget.product.name}的成份 ${widget.ingredient.ingredient.name}'),
       ),
     );
   }
@@ -189,7 +195,7 @@ class _IngredientModalState extends State<IngredientModal> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredientId = widget.ingredient?.id ?? '';
-    ingredientName = widget.ingredientName ?? '';
+    ingredientName = widget.ingredient?.ingredient?.name ?? '';
   }
 
   @override

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/order/order_screen.dart';
+import 'package:provider/provider.dart';
 
+import 'models/repository/menu_model.dart';
+import 'models/repository/quantity_repo.dart';
+import 'models/repository/stock_model.dart';
 import 'ui/menu/catalog_navigator.dart';
 import 'ui/stock/ingredient/ingredient_screen.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
@@ -16,7 +20,9 @@ class Routes {
   static const String stockQuantityModal = 'stcok/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
-    order: (context) => OrderScreen(),
+    order: (context) => setUpStockMode(context)
+        ? OrderScreen()
+        : Center(child: CircularProgressIndicator()),
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),
@@ -31,4 +37,18 @@ class Routes {
           batch: ModalRoute.of(context).settings.arguments,
         ),
   };
+
+  static bool setUpStockMode(BuildContext context) {
+    final menu = context.watch<MenuModel>();
+    if (menu.stockMode) return true;
+
+    final stock = context.watch<StockModel>();
+    final quantities = context.watch<QuantityRepo>();
+    if (menu.isNotReady || stock.isNotReady || quantities.isNotReady) {
+      return false;
+    }
+
+    menu.setUpStock(stock, quantities);
+    return true;
+  }
 }

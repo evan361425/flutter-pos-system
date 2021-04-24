@@ -3,11 +3,9 @@ import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -23,15 +21,11 @@ class IngredientExpansion extends StatefulWidget {
 class _IngredientExpansionState extends State<IngredientExpansion> {
   List<bool> showIngredient = [];
   List<ProductIngredientModel> ingredients;
-  StockModel stock;
-  QuantityRepo quantityIndex;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
-    stock = context.watch<StockModel>();
-    quantityIndex = context.watch<QuantityRepo>();
 
     // Don't rebuild make old expansion still opening
     for (var i = showIngredient.length; i < ingredients.length; i++) {
@@ -41,8 +35,6 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   @override
   Widget build(BuildContext context) {
-    if (quantityIndex.isNotReady) return CircularProgressIndicator();
-
     return Container(
       child: ExpansionPanelList(
         children: ingredients
@@ -68,7 +60,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           ingredient: ingredient,
           quantity: quantity,
         ),
-        title: Text(quantityIndex[quantity.id].name),
+        title: Text(quantity.quantity.name),
         trailing: Text('${quantity.amount}'),
         subtitle: _quantityMetadata(quantity),
       );
@@ -85,7 +77,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return ExpansionPanel(
       canTapOnHeader: true,
       headerBuilder: (_, __) => ListTile(
-        title: Text(stock[ingredient.id].name),
+        title: Text(ingredient.ingredient.name),
         subtitle: Text('使用量：${ingredient.defaultAmount}'),
       ),
       body: Column(
@@ -180,7 +172,6 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         builder: (_) => QuantityModal(
           quantity: quantity,
           ingredient: ingredient,
-          quantityName: quantityIndex[quantity?.id]?.name ?? '',
         ),
       ),
     );

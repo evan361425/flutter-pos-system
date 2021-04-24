@@ -5,10 +5,12 @@ import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:provider/provider.dart';
 
 import 'quantity_search_scaffold.dart';
 
@@ -17,11 +19,9 @@ class QuantityModal extends StatefulWidget {
     Key key,
     @required this.ingredient,
     this.quantity,
-    this.quantityName,
   })  : isNew = quantity == null,
         super(key: key);
 
-  final String quantityName;
   final ProductQuantityModel quantity;
   final ProductIngredientModel ingredient;
   final bool isNew;
@@ -81,11 +81,15 @@ class _QuantityModalState extends State<QuantityModal> {
       return null;
     }
 
+    final quantities = context.read<QuantityRepo>();
+    final quantity =
+        quantities[quantityId] ?? quantities.quantities.values.first;
+
     return ProductQuantityModel(
-      quantityId: quantityId,
       amount: num.parse(_ammountController.text),
       additionalPrice: num.parse(_additionalPriceController.text),
       additionalCost: num.parse(_additionalCostController.text),
+      quantity: quantity,
     );
   }
 
@@ -93,7 +97,9 @@ class _QuantityModalState extends State<QuantityModal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isNew ? '新增成份份量' : '設定成份份量「${widget.quantityName}」'),
+        title: Text(widget.isNew
+            ? '新增成份份量'
+            : '設定成份份量「${widget.quantity.quantity.name}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -120,7 +126,7 @@ class _QuantityModalState extends State<QuantityModal> {
       margin: const EdgeInsets.symmetric(vertical: kMargin),
       child: DangerButton(
         onPressed: _onDelete,
-        child: Text('刪除份量 ${widget.quantityName}'),
+        child: Text('刪除份量 ${widget.quantity.quantity.name}'),
       ),
     );
   }
@@ -220,7 +226,7 @@ class _QuantityModalState extends State<QuantityModal> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     quantityId = widget.quantity?.id ?? '';
-    quantityName = widget.quantityName ?? '';
+    quantityName = widget.quantity?.quantity?.name ?? '';
   }
 
   @override

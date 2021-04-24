@@ -7,11 +7,12 @@ import 'quantity_repo.dart';
 import 'stock_model.dart';
 
 class MenuModel extends ChangeNotifier {
-  Map<String, CatalogModel> catalogs;
-
   MenuModel() {
     loadFromDb();
   }
+
+  Map<String, CatalogModel> catalogs;
+  bool stockMode = false;
 
   // I/O
 
@@ -141,9 +142,11 @@ class MenuModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUpRrderMode(StockModel stock, QuantityRepo quantities) {
-    assert(stock.isNotReady, 'should ready');
-    assert(quantities.isNotReady, 'should ready');
+  void setUpStock(StockModel stock, QuantityRepo quantities) {
+    assert(stock.isReady, 'should ready');
+    assert(quantities.isReady, 'should ready');
+
+    if (stockMode) return;
 
     catalogs.forEach((catalogId, catalog) {
       catalog.products.forEach((productId, product) {
@@ -155,6 +158,7 @@ class MenuModel extends ChangeNotifier {
         });
       });
     });
+    stockMode = true;
   }
 
   Map<String, Map<String, dynamic>> toMap() {

@@ -81,9 +81,7 @@ class ProductModel extends ChangeNotifier {
   void updateIngredient(ProductIngredientModel ingredient) {
     if (!ingredients.containsKey(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
-      final updateData = {
-        '$prefix.ingredients.${ingredient.id}': ingredient.toMap()
-      };
+      final updateData = {ingredient.prefix: ingredient.toMap()};
 
       Database.service.update(Collections.menu, updateData);
     }

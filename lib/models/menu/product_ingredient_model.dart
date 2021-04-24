@@ -7,11 +7,14 @@ import 'product_model.dart';
 
 class ProductIngredientModel {
   ProductIngredientModel({
-    @required this.ingredientId,
+    this.ingredientId,
+    this.ingredient,
     @required this.product,
     this.defaultAmount = 0,
     Map<String, ProductQuantityModel> quantities,
-  }) : quantities = quantities ?? {};
+  }) : quantities = quantities ?? {} {
+    ingredientId ??= ingredient.id;
+  }
 
   final ProductModel product;
   final Map<String, ProductQuantityModel> quantities;
@@ -88,7 +91,7 @@ class ProductIngredientModel {
 
   void update({
     num defaultAmount,
-    String ingredientId,
+    IngredientModel ingredient,
   }) {
     final updateData = <String, dynamic>{};
     if (defaultAmount != this.defaultAmount) {
@@ -96,10 +99,13 @@ class ProductIngredientModel {
       updateData['$prefix.defaultAmount'] = defaultAmount;
     }
     // after all property set
-    if (ingredientId != id) {
+    if (id != ingredient.id) {
       product.removeIngredient(id);
-      this.ingredientId = ingredientId;
-      updateData[prefix] = toMap();
+
+      ingredientId = ingredient.id;
+      this.ingredient = ingredient;
+
+      updateData.clear();
     }
 
     if (updateData.isEmpty) return;

@@ -60,6 +60,7 @@ class QuantityRepo extends ChangeNotifier {
   // GETTER
 
   List<QuantityModel> get quantitiesList => quantities.values.toList();
+  bool get isReady => quantities != null;
   bool get isNotReady => quantities == null;
   bool get isEmpty => quantities.isEmpty;
 }
