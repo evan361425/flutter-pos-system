@@ -143,7 +143,11 @@ class CatalogModel extends ChangeNotifier {
   // GETTER
 
   ProductModel getProduct(String productId) {
-    return products.values.firstWhere((e) => e.id == productId);
+    try {
+      return products.values.firstWhere((e) => e.id == productId);
+    } catch (e) {
+      return null;
+    }
   }
 
   List<ProductModel> get productList {

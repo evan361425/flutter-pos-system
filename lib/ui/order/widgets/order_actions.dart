@@ -9,6 +9,21 @@ class OrderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (CartModel.instance.isHistoryMode) {
+      return CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context, OrderActionTypes.leave_pop),
+            child: Text('退出改單模式'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(context),
+          child: Text('取消'),
+        ),
+      );
+    }
+
     return CupertinoActionSheet(
       actions: [
         CupertinoActionSheetAction(
@@ -40,6 +55,8 @@ class OrderActions extends StatelessWidget {
     OrderActionTypes action,
   ) async {
     switch (action) {
+      case OrderActionTypes.leave_pop:
+        return CartModel.instance.leaveHistory();
       case OrderActionTypes.leave:
         return showLeaveConfirm(context);
       case OrderActionTypes.pop:
@@ -59,8 +76,9 @@ class OrderActions extends StatelessWidget {
           return showSnackbar(context, '目前沒有暫存的紀錄唷');
         }
 
-        CartModel.instance.stash();
-        CartModel.instance.updateProductions(order.parseToProduct());
+        CartModel.instance
+          ..stash()
+          ..updateProductions(order.parseToProduct());
         return;
       case OrderActionTypes.stash:
         return CartModel.instance.stash();
@@ -101,4 +119,5 @@ enum OrderActionTypes {
   pop_stash,
   stash,
   leave,
+  leave_pop,
 }

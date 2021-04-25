@@ -16,7 +16,7 @@ class OrderHistory {
       paid: paid,
       totalPrice: CartModel.instance.totalPrice,
       totalCount: CartModel.instance.totalCount,
-      products: CartModel.instance.products.map((e) => e.toMap()),
+      products: CartModel.instance.products.map<ProductMap>((e) => e.toMap()),
     );
   }
 
@@ -25,10 +25,10 @@ class OrderHistory {
     Database.instance.push(Collections.order_history, order.output());
   }
 
-  Future<_OrderMap> pop() async {
+  Future<_OrderMap> pop([remove = false]) async {
     final snapshot = await Database.instance.pop(
       Collections.order_history,
-      false,
+      remove,
     );
     return _OrderMap.input(snapshot.data());
   }
@@ -59,7 +59,7 @@ class _OrderMap {
     DateTime createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  Iterable<OrderProductModel> parseToProduct() {
+  List<OrderProductModel> parseToProduct() {
     return products.map<OrderProductModel>((productMap) {
       final product = MenuModel.instance.getProduct(productMap.productId);
       if (product == null) return null;
@@ -84,7 +84,7 @@ class _OrderMap {
         singlePrice: productMap.singlePrice,
         ingredients: ingredients,
       );
-    });
+    }).toList();
   }
 
   Map<String, dynamic> output() {
@@ -92,18 +92,20 @@ class _OrderMap {
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
-      'products': products.map((e) => e.output()),
+      'products': products.map((e) => e.output()).toList(),
     };
   }
 
   factory _OrderMap.input(Map<String, dynamic> data) {
     if (data == null) return null;
 
+    final List<Map<String, dynamic>> products = data['products'];
+
     return _OrderMap(
       paid: data['paid'],
       totalPrice: data['totalPrice'],
       totalCount: data['totalCount'],
-      products: data['products'].map((product) => ProductMap.input(product)),
+      products: products.map((product) => ProductMap.input(product)),
     );
   }
 }

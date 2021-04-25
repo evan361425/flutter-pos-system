@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
@@ -15,10 +16,11 @@ class CalculatorDialog extends StatefulWidget {
 class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
   String errorMessage;
+  bool isUpdating = false;
 
   String get paid => paidController.text;
 
-  void handlePressed(_ButtonTypes type) {
+  Future<void> handlePressed(_ButtonTypes type) async {
     switch (type) {
       case _ButtonTypes.back:
         if (paid.isEmpty) return;
@@ -34,12 +36,23 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
+        if (isUpdating) return;
+        isUpdating = true;
+
+        if (!await showHistoryConfirm(context)) {
+          isUpdating = false;
+          return;
+        }
+
         try {
-          CartModel.instance.paid(num.tryParse(paid));
+          await CartModel.instance.paid(num.tryParse(paid));
           Navigator.of(context).pop();
         } catch (e) {
+          isUpdating = false;
           if (e == 'too low') {
             setState(() => errorMessage = '糟糕，付額小於總價唷');
+          } else {
+            setState(() => errorMessage = e.toString());
           }
         }
         return;
@@ -148,7 +161,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
-          onPressed: () => handlePressed(type),
+          onPressed: () async => await handlePressed(type),
           child: Icon(icon),
         ),
       ),
@@ -172,6 +185,17 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     if (errorMessage != null) {
       setState(() => errorMessage = null);
     }
+  }
+
+  static Future<bool> showHistoryConfirm(BuildContext context) async {
+    if (!CartModel.instance.isHistoryMode) return true;
+
+    final result = await showDialog(
+      context: context,
+      builder: (_) => ConfirmDialog(title: '確定要要變更上次的點餐紀錄嗎？'),
+    );
+
+    return result ?? false;
   }
 }
 

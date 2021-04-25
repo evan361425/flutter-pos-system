@@ -14,6 +14,7 @@ class CartModel extends ChangeNotifier {
   static CartModel get instance => _instance;
 
   List<OrderProductModel> products = [];
+  bool isHistoryMode = false;
 
   CartModel._constructor();
 
@@ -44,13 +45,17 @@ class CartModel extends ChangeNotifier {
     return true;
   }
 
-  void paid(num paid) {
+  Future<void> paid(num paid) async {
     final price = totalPrice;
     paid ??= price;
     if (paid < price) throw 'too low';
 
+    if (isHistoryMode) {
+      await OrderHistory.instance.pop(true);
+    }
+
     OrderHistory.instance.push(paid);
-    clear();
+    leaveHistory();
   }
 
   Future<bool> popHistory() async {
@@ -58,7 +63,13 @@ class CartModel extends ChangeNotifier {
     if (order == null) return false;
 
     updateProductions(order.parseToProduct());
+    isHistoryMode = true;
     return true;
+  }
+
+  void leaveHistory() {
+    isHistoryMode = false;
+    clear();
   }
 
   int get totalCount {
