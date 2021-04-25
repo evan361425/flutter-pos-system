@@ -52,7 +52,7 @@ class QuantityModel {
     }
 
     if (updateData.isNotEmpty) {
-      Database.service.update(Collections.quantities, updateData);
+      Database.instance.update(Collections.quantities, updateData);
     }
   }
 

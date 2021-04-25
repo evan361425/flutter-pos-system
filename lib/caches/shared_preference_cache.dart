@@ -7,10 +7,10 @@ class SharedPreferenceCache {
   static const String language_code = 'language_code';
   static const String currency_code = 'currency_code';
 
-  SharedPreferenceCache._privateConstructor();
+  SharedPreferenceCache._constructor();
 
   static final SharedPreferenceCache _instance =
-      SharedPreferenceCache._privateConstructor();
+      SharedPreferenceCache._constructor();
 
   static SharedPreferenceCache get instance => _instance;
 

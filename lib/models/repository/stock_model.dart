@@ -13,7 +13,7 @@ class StockModel extends ChangeNotifier {
 
   // I/O
   Future<void> loadFromDb() async {
-    var snapshot = await Database.service.get(Collections.ingredient);
+    var snapshot = await Database.instance.get(Collections.ingredient);
     buildFromMap(snapshot.data());
   }
 
@@ -41,14 +41,14 @@ class StockModel extends ChangeNotifier {
       ingredients[ingredient.id] = ingredient;
 
       final updateData = {'${ingredient.id}': ingredient.toMap()};
-      Database.service.set(Collections.ingredient, updateData);
+      Database.instance.set(Collections.ingredient, updateData);
       notifyListeners();
     }
   }
 
   void removeIngredient(String id) {
     ingredients.remove(id);
-    Database.service.update(Collections.ingredient, {id: null});
+    Database.instance.update(Collections.ingredient, {id: null});
     notifyListeners();
   }
 

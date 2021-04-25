@@ -35,7 +35,7 @@ class ProductQuantityModel {
     return ProductQuantityModel(quantityId: null);
   }
 
-  Map<String, num> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'amount': amount,
       'additionalCost': additionalCost,
@@ -53,7 +53,7 @@ class ProductQuantityModel {
 
     if (updateData.isEmpty) return;
 
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
   }
 
   Map<String, dynamic> getUpdateData(

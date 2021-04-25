@@ -10,9 +10,12 @@ class ProductIngredientModel {
     this.ingredientId,
     this.ingredient,
     @required this.product,
-    this.defaultAmount = 0,
+    num defaultAmount,
+    num cost,
     Map<String, ProductQuantityModel> quantities,
-  }) : quantities = quantities ?? {} {
+  })  : quantities = quantities ?? {},
+        defaultAmount = defaultAmount ?? 0,
+        cost = cost ?? 0 {
     ingredientId ??= ingredient.id;
   }
 
@@ -20,6 +23,7 @@ class ProductIngredientModel {
   final Map<String, ProductQuantityModel> quantities;
   String ingredientId;
   num defaultAmount;
+  num cost;
   IngredientModel ingredient;
 
   factory ProductIngredientModel.fromMap({
@@ -72,7 +76,7 @@ class ProductIngredientModel {
         '$prefixQuantities.${quantity.id}': quantity.toMap(),
       };
 
-      Database.service.update(Collections.menu, updateData);
+      Database.instance.update(Collections.menu, updateData);
     }
 
     product.ingredientChanged();
@@ -83,7 +87,7 @@ class ProductIngredientModel {
 
     final quantity = quantities.remove(id);
     final updateData = {'$prefixQuantities.$id': null};
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
     product.ingredientChanged();
 
     return quantity;
@@ -110,7 +114,7 @@ class ProductIngredientModel {
 
     if (updateData.isEmpty) return;
 
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
   }
 
   // HELPER

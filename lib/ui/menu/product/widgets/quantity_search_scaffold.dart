@@ -5,7 +5,7 @@ import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/models/search_history_model.dart';
+import 'package:possystem/models/histories/search_history.dart';
 import 'package:provider/provider.dart';
 
 class QuantitySearchScaffold extends StatelessWidget {
@@ -14,7 +14,7 @@ class QuantitySearchScaffold extends StatelessWidget {
   static final String tag = 'menu.poduct.quantity.search';
   final String text;
   final scaffold = GlobalKey<SearchScaffoldState>();
-  final histories = SearchHistoryModel(SearchHistoryTypes.quantity);
+  final histories = SearchHistory(SearchHistoryTypes.quantity);
 
   @override
   Widget build(BuildContext context) {

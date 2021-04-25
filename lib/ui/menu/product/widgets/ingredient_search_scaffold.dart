@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/search_history_model.dart';
+import 'package:possystem/models/histories/search_history.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,7 @@ class IngredientSearchScaffold extends StatelessWidget {
   static final String tag = 'menu.poduct.ingredient.search';
   final String text;
   final scaffold = GlobalKey<SearchScaffoldState>();
-  final histories = SearchHistoryModel(SearchHistoryTypes.ingredient);
+  final histories = SearchHistory(SearchHistoryTypes.ingredient);
 
   @override
   Widget build(BuildContext context) {

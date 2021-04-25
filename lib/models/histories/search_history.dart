@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:possystem/services/database.dart';
 
-class SearchHistoryModel {
-  SearchHistoryModel(SearchHistoryTypes type)
+class SearchHistory {
+  SearchHistory(SearchHistoryTypes type)
       : type = _SearchHistoryTypeString[type];
 
   final String type;
@@ -11,10 +11,10 @@ class SearchHistoryModel {
   static Map<String, Queue<String>> data;
 
   Queue<String> get(void Function() cb) {
-    if (SearchHistoryModel.data == null) {
-      Database.service.get(Collections.search_history).then((snapshot) {
+    if (SearchHistory.data == null) {
+      Database.instance.get(Collections.search_history).then((snapshot) {
         final Map<String, List<String>> data = snapshot.data();
-        SearchHistoryModel.data = data == null
+        SearchHistory.data = data == null
             ? {}
             : data.map<String, Queue<String>>(
                 (key, value) => MapEntry(key, Queue.of(value)),
@@ -25,25 +25,25 @@ class SearchHistoryModel {
       return Queue();
     }
 
-    return SearchHistoryModel.data[type] ?? Queue();
+    return SearchHistory.data[type] ?? Queue();
   }
 
   void add(String history) {
     print('$type history add: $history');
-    if (SearchHistoryModel.data[type] == null) {
-      SearchHistoryModel.data[type] = Queue.of([history]);
+    if (SearchHistory.data[type] == null) {
+      SearchHistory.data[type] = Queue.of([history]);
     } else {
-      SearchHistoryModel.data[type].remove(history);
-      SearchHistoryModel.data[type].addFirst(history);
+      SearchHistory.data[type].remove(history);
+      SearchHistory.data[type].addFirst(history);
     }
 
-    if (SearchHistoryModel.data[type].length > 8) {
-      SearchHistoryModel.data[type].removeLast();
+    if (SearchHistory.data[type].length > 8) {
+      SearchHistory.data[type].removeLast();
     }
 
-    Database.service.update(
+    Database.instance.update(
       Collections.search_history,
-      {type: SearchHistoryModel.data[type].toList()},
+      {type: SearchHistory.data[type].toList()},
     );
   }
 }

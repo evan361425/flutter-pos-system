@@ -33,7 +33,7 @@ class UserDependencies extends StatelessWidget {
 
         final user = snapshot.data;
 
-        Database.service = databaseBuilder(user.uid);
+        Database.instance = databaseBuilder(user.uid);
 
         /// For any other Provider services that rely on user data can be
         /// added to the following MultiProvider list.

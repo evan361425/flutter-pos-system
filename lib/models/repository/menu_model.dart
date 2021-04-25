@@ -67,7 +67,7 @@ class MenuModel extends ChangeNotifier {
       catalog.products.values.every((product) => product.name != name));
 
   Future<void> loadFromDb() async {
-    var snapshot = await Database.service.get(Collections.menu);
+    var snapshot = await Database.instance.get(Collections.menu);
     buildFromMap(snapshot.data());
 
     notifyListeners();
@@ -101,7 +101,7 @@ class MenuModel extends ChangeNotifier {
 
   void removeCatalog(String id) {
     catalogs.remove(id);
-    Database.service.update(Collections.menu, {id: null});
+    Database.instance.update(Collections.menu, {id: null});
     notifyListeners();
   }
 
@@ -110,7 +110,7 @@ class MenuModel extends ChangeNotifier {
     final updateData = {
       for (var ingredient in ingredients) ingredient.prefix: null
     };
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
 
     if (updateData.isNotEmpty) {
       ingredients.forEach((ingredient) {
@@ -126,7 +126,7 @@ class MenuModel extends ChangeNotifier {
       for (var ingredient in ingredients)
         '${ingredient.prefixQuantities}.$id': null
     };
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
 
     if (updateData.isNotEmpty) {
       ingredients.forEach((ingredient) => ingredient.quantities.remove(id));
@@ -170,7 +170,7 @@ class MenuModel extends ChangeNotifier {
       catalogs[catalog.id] = catalog;
 
       final updateData = {catalog.id: catalog.toMap()};
-      Database.service.update(Collections.menu, updateData);
+      Database.instance.update(Collections.menu, updateData);
     }
     notifyListeners();
   }

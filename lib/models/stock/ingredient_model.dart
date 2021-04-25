@@ -68,14 +68,14 @@ class IngredientModel extends ChangeNotifier {
     }
 
     if (updateData.isNotEmpty) {
-      Database.service.update(Collections.ingredient, updateData);
+      Database.instance.update(Collections.ingredient, updateData);
 
       notifyListeners();
     }
   }
 
   void addAmount(num amount) {
-    Database.service.update(
+    Database.instance.update(
       Collections.ingredient,
       addAmountUpdateData(amount),
     );

@@ -14,23 +14,30 @@ class CalculatorDialog extends StatefulWidget {
 
 class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
+  String errorMessage;
 
   void handlePressed(_ButtonTypes type) {
+    final value = paidController.text;
     switch (type) {
       case _ButtonTypes.back:
-        if (paidController.text.isEmpty) return;
-        final value = paidController.text;
+        if (value.isEmpty) return;
         paidController.text = value.substring(0, value.length - 1);
         return;
       case _ButtonTypes.clear:
         paidController.text = '';
         return;
       case _ButtonTypes.ceil:
-        final value = paidController.text;
         final paid =
             value.isEmpty ? CartModel.instance.totalPrice : num.tryParse(value);
         final ceilPaid = context.read<CurrencyProvider>().ceil(paid);
         paidController.text = ceilPaid?.toString() ?? '';
+        return;
+      case _ButtonTypes.done:
+        final error = CartModel.instance.paid(num.tryParse(value));
+        if (error == 'too low') {
+          setState(() => errorMessage = '糟糕，付額小於總價唷');
+        }
+        Navigator.of(context).pop();
         return;
       default:
         return;
@@ -68,12 +75,14 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
                     hintText: CartModel.instance.totalPrice.toString(),
+                    errorText: '',
                   ),
                 ),
               ),
             ],
           ),
         ),
+        Divider(),
         Padding(
           padding: const EdgeInsets.all(kPadding / 4),
           child: Column(
@@ -83,29 +92,31 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 numberWidget('1'),
                 numberWidget('2'),
                 numberWidget('3'),
-                buttonWidget(KIcons.clear, _ButtonTypes.clear),
+                iconWidget(KIcons.clear, _ButtonTypes.clear),
               ]),
               Row(children: [
                 numberWidget('4'),
                 numberWidget('5'),
                 numberWidget('6'),
-                buttonWidget(Icons.arrow_back_rounded, _ButtonTypes.back),
+                iconWidget(Icons.arrow_back_rounded, _ButtonTypes.back),
               ]),
               Row(children: [
                 numberWidget('7'),
                 numberWidget('8'),
                 numberWidget('9'),
-                buttonWidget(Icons.merge_type_rounded, _ButtonTypes.ceil),
+                iconWidget(Icons.merge_type_rounded, _ButtonTypes.ceil),
               ]),
               Row(children: [
-                buttonWidget(Icons.select_all_rounded, _ButtonTypes.select),
+                iconWidget(Icons.select_all_rounded, _ButtonTypes.select),
                 numberWidget('0'),
-                numberWidget('.', () {
-                  if (int.tryParse(paidController.text) != null) {
-                    paidController.text += '.';
-                  }
-                }),
-                buttonWidget(Icons.done_rounded, _ButtonTypes.done),
+                context.read<CurrencyProvider>().isInt
+                    ? Spacer()
+                    : numberWidget('.', () {
+                        if (int.tryParse(paidController.text) != null) {
+                          paidController.text += '.';
+                        }
+                      }),
+                iconWidget(Icons.done_rounded, _ButtonTypes.done),
               ]),
             ],
           ),
@@ -128,20 +139,26 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     );
   }
 
-  Widget buttonWidget(IconData icon, _ButtonTypes type) {
+  Widget iconWidget(IconData icon, _ButtonTypes type) {
     return Expanded(
-      child: OutlinedButton(
-        onPressed: () => handlePressed(type),
-        child: Icon(icon),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: OutlinedButton(
+          onPressed: () => handlePressed(type),
+          child: Icon(icon),
+        ),
       ),
     );
   }
 
   Widget numberWidget(String text, [void Function() onPressed]) {
     return Expanded(
-      child: OutlinedButton(
-        onPressed: onPressed ?? () => paidController.text += text,
-        child: Text(text),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: OutlinedButton(
+          onPressed: onPressed ?? () => paidController.text += text,
+          child: Text(text),
+        ),
       ),
     );
   }

@@ -11,7 +11,7 @@ class StockBatchRepo extends ChangeNotifier {
 
   // I/O
   Future<void> loadFromDb() async {
-    var snapshot = await Database.service.get(Collections.stock_batch);
+    var snapshot = await Database.instance.get(Collections.stock_batch);
     buildFromMap(snapshot.data());
   }
 
@@ -41,14 +41,14 @@ class StockBatchRepo extends ChangeNotifier {
       batches[batch.id] = batch;
 
       final updateData = {batch.id: batch.toMap()};
-      Database.service.set(Collections.stock_batch, updateData);
+      Database.instance.set(Collections.stock_batch, updateData);
     }
     notifyListeners();
   }
 
   void removeBatch(String id) {
     batches.remove(id);
-    Database.service.update(Collections.stock_batch, {id: null});
+    Database.instance.update(Collections.stock_batch, {id: null});
     notifyListeners();
   }
 

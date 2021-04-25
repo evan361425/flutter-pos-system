@@ -84,7 +84,7 @@ class CatalogModel extends ChangeNotifier {
 
     if (updateData.isEmpty) return;
 
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
 
     notifyListeners();
   }
@@ -102,7 +102,7 @@ class CatalogModel extends ChangeNotifier {
       products[product.id] = product;
       final updateData = {'$id.products.${product.id}': product.toMap()};
 
-      Database.service.update(Collections.menu, updateData);
+      Database.instance.update(Collections.menu, updateData);
     }
     notifyListeners();
   }
@@ -110,7 +110,7 @@ class CatalogModel extends ChangeNotifier {
   void removeProduct(String productId) {
     products.remove(productId);
 
-    Database.service.update(Collections.menu, {
+    Database.instance.update(Collections.menu, {
       '$id.products.$productId': null,
     });
 

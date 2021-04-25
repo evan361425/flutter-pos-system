@@ -83,7 +83,7 @@ class ProductModel extends ChangeNotifier {
       ingredients[ingredient.id] = ingredient;
       final updateData = {ingredient.prefix: ingredient.toMap()};
 
-      Database.service.update(Collections.menu, updateData);
+      Database.instance.update(Collections.menu, updateData);
     }
     ingredientChanged();
   }
@@ -93,7 +93,7 @@ class ProductModel extends ChangeNotifier {
 
     final ingredient = ingredients.remove(id);
     final updateData = {'$prefix.ingredients.$id': null};
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
     ingredientChanged();
 
     return ingredient;
@@ -114,7 +114,7 @@ class ProductModel extends ChangeNotifier {
 
     if (updateData.isEmpty) return;
 
-    Database.service.update(Collections.menu, updateData);
+    Database.instance.update(Collections.menu, updateData);
 
     notifyListeners();
   }

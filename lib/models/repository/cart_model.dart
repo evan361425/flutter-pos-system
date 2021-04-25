@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/histories/order_history.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
@@ -6,7 +7,7 @@ import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
 class CartModel extends ChangeNotifier {
-  static final CartModel _instance = CartModel._privateConstructor();
+  static final CartModel _instance = CartModel._constructor();
 
   static const DEFAULT_QUANTITY_ID = '';
 
@@ -14,7 +15,7 @@ class CartModel extends ChangeNotifier {
 
   List<OrderProductModel> products = [];
 
-  CartModel._privateConstructor();
+  CartModel._constructor();
 
   Iterable<OrderProductModel> get selectedProducts =>
       products.where((product) => product.isSelected);
@@ -43,13 +44,14 @@ class CartModel extends ChangeNotifier {
     return orderProduct;
   }
 
-  void discountSelected(int discount) {
-    if (discount == null) return;
+  void clear() {
+    products.clear();
+  }
 
-    selectedProducts.forEach((e) {
-      e.singlePrice = e.product.price * discount / 100;
-    });
-    notifyListeners();
+  @override
+  void dispose() {
+    clear();
+    super.dispose();
   }
 
   /// Get quantity of selected product in specific [ingredient]
@@ -70,6 +72,24 @@ class CartModel extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  String paid(num paid) {
+    final price = totalPrice;
+    paid ??= price;
+
+    if (paid < price) return 'too low';
+
+    OrderHistory.instance.add({
+      'paid': paid,
+      'totalPrice': price,
+      'totalCount': totalCount,
+      'products': products.map((e) => e.toMap()).toList(),
+    });
+
+    clear();
+
+    return null;
   }
 
   void removeSelected() {
@@ -94,6 +114,15 @@ class CartModel extends ChangeNotifier {
 
     selectedProducts.forEach((e) {
       e.count = count;
+    });
+    notifyListeners();
+  }
+
+  void updateSelectedDiscount(int discount) {
+    if (discount == null) return;
+
+    selectedProducts.forEach((e) {
+      e.singlePrice = e.product.price * discount / 100;
     });
     notifyListeners();
   }

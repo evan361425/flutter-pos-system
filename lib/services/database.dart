@@ -3,17 +3,19 @@ enum Collections {
   ingredient,
   quantities,
   search_history,
+  order_history,
   stock_batch,
 }
 
 abstract class Database<T> {
-  static Database service;
+  static Database instance;
 
   final Map<Collections, String> CollectionName = {
     Collections.menu: 'menu',
     Collections.ingredient: 'ingredient',
     Collections.quantities: 'quantities',
     Collections.search_history: 'search_history',
+    Collections.order_history: 'order_history',
     Collections.stock_batch: 'stock_batch',
   };
 

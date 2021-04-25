@@ -104,7 +104,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              CartModel.instance.discountSelected(parseNum(result)),
+              CartModel.instance.updateSelectedDiscount(parseNum(result)),
         );
       case _DialogItems.price:
         return _DialogItem(

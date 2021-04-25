@@ -11,7 +11,7 @@ class QuantityRepo extends ChangeNotifier {
 
   // I/O
   Future<void> loadFromDb() async {
-    var snapshot = await Database.service.get(Collections.quantities);
+    var snapshot = await Database.instance.get(Collections.quantities);
     buildFromMap(snapshot.data());
   }
 
@@ -39,7 +39,7 @@ class QuantityRepo extends ChangeNotifier {
       quantities[quantity.id] = quantity;
 
       final updateData = {'${quantity.id}': quantity.toMap()};
-      Database.service.set(Collections.quantities, updateData);
+      Database.instance.set(Collections.quantities, updateData);
     }
 
     notifyListeners();
@@ -47,7 +47,7 @@ class QuantityRepo extends ChangeNotifier {
 
   void removeQuantity(String id) {
     quantities.remove(id);
-    Database.service.update(Collections.quantities, {id: null});
+    Database.instance.update(Collections.quantities, {id: null});
     notifyListeners();
   }
 

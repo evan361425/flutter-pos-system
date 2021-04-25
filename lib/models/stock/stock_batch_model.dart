@@ -63,7 +63,7 @@ class StockBatchModel {
     }
 
     if (updateData.isNotEmpty) {
-      Database.service.update(Collections.stock_batch, updateData);
+      Database.instance.update(Collections.stock_batch, updateData);
     }
   }
 
@@ -74,7 +74,7 @@ class StockBatchModel {
       updateData.addAll(stock[ingredientId]?.addAmountUpdateData(amount));
     });
 
-    Database.service.update(Collections.ingredient, updateData);
+    Database.instance.update(Collections.ingredient, updateData);
     stock.changedIngredient();
   }
 

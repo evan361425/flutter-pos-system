@@ -6,7 +6,8 @@ class OrderProductModel {
   OrderProductModel(
     this.product, {
     this.count = 1,
-  }) : singlePrice = product.price;
+    num singlePrice,
+  }) : singlePrice = singlePrice ?? product.price;
 
   ProductModel product;
   bool isSelected = false;
@@ -22,6 +23,33 @@ class OrderProductModel {
   void setCount(int value) {
     count += value;
     notifyListener(OrderProductListenerTypes.count);
+  }
+
+  Map<String, dynamic> toMap() {
+    final allIngredients = <String, Map<String, dynamic>>{
+      for (var e in product.ingredients.entries)
+        e.key: {
+          'name': e.value.ingredient.name,
+          'cost': e.value.cost,
+          'amount': e.value.defaultAmount,
+        }
+    };
+    ingredients.forEach((e) {
+      allIngredients[e.id].addEntries([
+        MapEntry('cost', e.cost),
+        MapEntry('amount', e.amount),
+        MapEntry('price', e.price),
+      ]);
+    });
+
+    return {
+      'singlePrice': singlePrice,
+      'count': count,
+      'productId': product.id,
+      'productName': product.name,
+      'isDiscount': singlePrice != product.price,
+      'ingredients': allIngredients,
+    };
   }
 
   bool toggleSelected([bool checked]) {
@@ -48,18 +76,25 @@ class OrderProductModel {
     var i = 0;
     for (var oldOne in ingredients) {
       if (oldOne == newOne) {
-        singlePrice +=
-            newOne.quantity.additionalPrice - oldOne.quantity.additionalPrice;
+        singlePrice -= oldOne.price;
         ingredients.removeAt(i);
         break;
       }
       i++;
     }
+
+    singlePrice += newOne.price;
     ingredients.add(newOne);
   }
 
   void removeIngredient(ProductIngredientModel ingredient) {
-    ingredients.removeWhere((e) => e.ingredient.id == ingredient.id);
+    ingredients.removeWhere((e) {
+      if (e.ingredient.id == ingredient.id) {
+        singlePrice -= e.price;
+        return true;
+      }
+      return false;
+    });
   }
 
   // Custom Listeners for performace
