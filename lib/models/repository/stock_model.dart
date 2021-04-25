@@ -4,7 +4,11 @@ import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
 class StockModel extends ChangeNotifier {
-  StockModel() {
+  static final StockModel _instance = StockModel._constructor();
+
+  static StockModel get instance => _instance;
+
+  StockModel._constructor() {
     loadFromDb();
   }
 

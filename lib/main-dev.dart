@@ -315,6 +315,27 @@ class _MockDatabase extends Database<Snapshot> {
   Future<void> update(Collections collection, Map<String, dynamic> data) {
     return Future.delayed(Duration(seconds: 0));
   }
+
+  static final inMemoryPush = <Collections, List<Map<String, dynamic>>>{};
+
+  @override
+  Future<void> push(Collections collection, Map<String, dynamic> data) async {
+    if (inMemoryPush[collection] == null) {
+      inMemoryPush[collection] = [data];
+    } else {
+      inMemoryPush[collection].add(data);
+    }
+  }
+
+  @override
+  Future<Snapshot> pop(Collections collection, [remove = true]) async {
+    final data = inMemoryPush[collection];
+    if (data == null || data.isEmpty) {
+      return Snapshot();
+    } else {
+      return remove ? Snapshot(data.removeLast()) : Snapshot(data.last);
+    }
+  }
 }
 
 class _MockAuth extends Authentication {
@@ -346,6 +367,9 @@ class _MockAuth extends Authentication {
   }
 }
 
-abstract class Snapshot {
-  Map<String, dynamic> data();
+class Snapshot {
+  Snapshot([this.values]);
+  final Map<String, dynamic> values;
+
+  Map<String, dynamic> data() => values;
 }

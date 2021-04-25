@@ -46,4 +46,14 @@ class Firestore extends Database<DocumentSnapshot> {
         .doc(uid)
         .update(data);
   }
+
+  @override
+  Future<void> push(Collections collection, Map<String, dynamic> data) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DocumentSnapshot> pop(Collections collection, [remove = true]) {
+    throw UnimplementedError();
+  }
 }

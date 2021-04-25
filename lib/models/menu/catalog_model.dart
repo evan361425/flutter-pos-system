@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
@@ -13,8 +12,8 @@ class CatalogModel extends ChangeNotifier {
     this.index = 0,
     String id,
     Map<String, ProductModel> products,
-    Timestamp createdAt,
-  })  : createdAt = createdAt ?? Timestamp.now(),
+    DateTime createdAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
         products = products ?? {},
         id = id ?? Util.uuidV4();
 
@@ -24,7 +23,7 @@ class CatalogModel extends ChangeNotifier {
   // index in menu
   int index;
   // when it has been added to menu
-  final Timestamp createdAt;
+  final DateTime createdAt;
   // product list
   final Map<String, ProductModel> products;
 
@@ -143,6 +142,10 @@ class CatalogModel extends ChangeNotifier {
 
   // GETTER
 
+  ProductModel getProduct(String productId) {
+    return products.values.firstWhere((e) => e.id == productId);
+  }
+
   List<ProductModel> get productList {
     final productList = products.values.toList();
     productList.sort((a, b) => a.index.compareTo(b.index));
@@ -160,8 +163,11 @@ class CatalogModel extends ChangeNotifier {
   }
 
   String get createdDate {
-    final date = createdAt.toDate();
-    return sprintf('%04d-%02d-%02d', [date.year, date.month, date.day]);
+    return sprintf('%04d-%02d-%02d', [
+      createdAt.year,
+      createdAt.month,
+      createdAt.day,
+    ]);
   }
 
   bool get isEmpty => length == 0;

@@ -1,13 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/services/database.dart';
 
 import 'quantity_repo.dart';
 import 'stock_model.dart';
 
 class MenuModel extends ChangeNotifier {
-  MenuModel() {
+  static final MenuModel _instance = MenuModel._constructor();
+
+  static MenuModel get instance => _instance;
+
+  MenuModel._constructor() {
     loadFromDb();
   }
 
@@ -36,8 +41,6 @@ class MenuModel extends ChangeNotifier {
     return maxIndex + 1;
   }
 
-  // MENU STATE
-
   CatalogModel operator [](String id) => catalogs[id];
 
   void buildFromMap(Map<String, dynamic> data) {
@@ -56,6 +59,16 @@ class MenuModel extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  ProductModel getProduct(String productId) {
+    for (var catalog in catalogs.values) {
+      final product = catalog.getProduct(productId);
+      if (product != null) {
+        return product;
+      }
+    }
+    return null;
   }
 
   bool has(String id) => catalogs.containsKey(id);

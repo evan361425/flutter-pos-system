@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/services/database.dart';
@@ -16,8 +15,8 @@ class ProductModel extends ChangeNotifier {
     this.cost = 0,
     String id,
     Map<String, ProductIngredientModel> ingredients,
-    Timestamp createdAt,
-  })  : createdAt = createdAt ?? Timestamp.now(),
+    DateTime createdAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
         ingredients = ingredients ?? {},
         id = id ?? Util.uuidV4();
 
@@ -28,7 +27,7 @@ class ProductModel extends ChangeNotifier {
   final String id;
   final Map<String, ProductIngredientModel> ingredients;
   final CatalogModel catalog;
-  final Timestamp createdAt;
+  final DateTime createdAt;
 
   // I/O
 

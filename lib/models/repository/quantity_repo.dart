@@ -3,7 +3,11 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
 class QuantityRepo extends ChangeNotifier {
-  QuantityRepo() {
+  static final QuantityRepo _instance = QuantityRepo._constructor();
+
+  static QuantityRepo get instance => _instance;
+
+  QuantityRepo._constructor() {
     loadFromDb();
   }
 

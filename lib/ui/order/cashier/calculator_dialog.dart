@@ -34,11 +34,14 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
-        final error = CartModel.instance.paid(num.tryParse(paid));
-        if (error == 'too low') {
-          return setState(() => errorMessage = '糟糕，付額小於總價唷');
+        try {
+          CartModel.instance.paid(num.tryParse(paid));
+          Navigator.of(context).pop();
+        } catch (e) {
+          if (e == 'too low') {
+            setState(() => errorMessage = '糟糕，付額小於總價唷');
+          }
         }
-        Navigator.of(context).pop();
         return;
       default:
         return;

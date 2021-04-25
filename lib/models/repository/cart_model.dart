@@ -28,6 +28,39 @@ class CartModel extends ChangeNotifier {
     return products.every((e) => e.product.id == firstId) ? products : null;
   }
 
+  bool get isEmpty => products.isEmpty;
+
+  void stash() {
+    if (isEmpty) return;
+    OrderHistory.instance.stash();
+    clear();
+  }
+
+  Future<bool> popStash() async {
+    final order = await OrderHistory.instance.popStash();
+    if (order == null) return false;
+
+    updateProductions(order.parseToProduct());
+    return true;
+  }
+
+  void paid(num paid) {
+    final price = totalPrice;
+    paid ??= price;
+    if (paid < price) throw 'too low';
+
+    OrderHistory.instance.push(paid);
+    clear();
+  }
+
+  Future<bool> popHistory() async {
+    final order = await OrderHistory.instance.pop();
+    if (order == null) return false;
+
+    updateProductions(order.parseToProduct());
+    return true;
+  }
+
   int get totalCount {
     return products.fold(0, (value, product) => value + product.count);
   }
@@ -46,11 +79,12 @@ class CartModel extends ChangeNotifier {
 
   void clear() {
     products.clear();
+    notifyListeners();
   }
 
   @override
   void dispose() {
-    clear();
+    products.clear();
     super.dispose();
   }
 
@@ -74,25 +108,6 @@ class CartModel extends ChangeNotifier {
     }
   }
 
-  String paid(num paid) {
-    final price = totalPrice;
-    paid ??= price;
-
-    if (paid < price) return 'too low';
-
-    OrderHistory.instance.add({
-      'paid': paid,
-      'totalPrice': price,
-      'totalCount': totalCount,
-      'products': products.map((e) => e.toMap()).toList(),
-    });
-
-    clear();
-    notifyListeners();
-
-    return null;
-  }
-
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
     notifyListeners();
@@ -107,6 +122,11 @@ class CartModel extends ChangeNotifier {
 
   void toggleAll([bool checked]) {
     products.forEach((product) => product.toggleSelected(checked));
+    notifyListeners();
+  }
+
+  void updateProductions(List<OrderProductModel> products) {
+    this.products = products;
     notifyListeners();
   }
 

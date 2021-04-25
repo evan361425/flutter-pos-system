@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
@@ -35,7 +34,7 @@ class OrderScreen extends StatelessWidget {
               context: context,
               builder: (_) => OrderActions(),
             );
-            onAction(context, result);
+            await OrderActions.onAction(context, result);
           },
           icon: Icon(KIcons.more),
         ),
@@ -87,26 +86,5 @@ class OrderScreen extends StatelessWidget {
       context: context,
       builder: (_) => CalculatorDialog(),
     );
-  }
-
-  void onAction(BuildContext context, OrderActionTypes action) {
-    switch (action) {
-      case OrderActionTypes.leave:
-        showConfirmDialog(context);
-        return;
-      case OrderActionTypes.pop_stash:
-        return print('pop');
-      case OrderActionTypes.stash:
-        return print('stash');
-    }
-  }
-
-  Future<void> showConfirmDialog(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (_) => ConfirmDialog(title: '確定要回到菜單頁嗎？'),
-    );
-
-    if (result == true) Navigator.of(context).pop();
   }
 }

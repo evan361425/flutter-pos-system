@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
@@ -7,13 +8,14 @@ class OrderProductModel {
     this.product, {
     this.count = 1,
     num singlePrice,
+    this.ingredients = const [],
   }) : singlePrice = singlePrice ?? product.price;
 
   ProductModel product;
   bool isSelected = false;
   num singlePrice;
   int count;
-  final List<OrderIngredientModel> ingredients = [];
+  final List<OrderIngredientModel> ingredients;
 
   num get price => count * singlePrice;
   Iterable<String> get ingredientNames => ingredients.map((e) => e.toString());
@@ -25,31 +27,33 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
-  Map<String, dynamic> toMap() {
-    final allIngredients = <String, Map<String, dynamic>>{
-      for (var e in product.ingredients.entries)
-        e.key: {
-          'name': e.value.ingredient.name,
-          'cost': e.value.cost,
-          'amount': e.value.amount,
-        }
+  ProductMap toMap() {
+    final allIngredients = <String, _IngredientMap>{
+      for (var ingredientEntry in product.ingredients.entries)
+        ingredientEntry.key: _IngredientMap(
+          ingredientId: ingredientEntry.key,
+          name: ingredientEntry.value.ingredient.name,
+          cost: ingredientEntry.value.cost,
+          amount: ingredientEntry.value.amount,
+        )
     };
-    ingredients.forEach((e) {
-      allIngredients[e.id].addEntries([
-        MapEntry('cost', e.cost),
-        MapEntry('amount', e.amount),
-        MapEntry('price', e.price),
-      ]);
+    ingredients.forEach((ingredient) {
+      allIngredients[ingredient.id].update(
+        cost: ingredient.cost,
+        amount: ingredient.amount,
+        price: ingredient.price,
+        quantityId: ingredient.quantity.id,
+      );
     });
 
-    return {
-      'singlePrice': singlePrice,
-      'count': count,
-      'productId': product.id,
-      'productName': product.name,
-      'isDiscount': singlePrice != product.price,
-      'ingredients': allIngredients,
-    };
+    return ProductMap(
+      singlePrice: singlePrice,
+      count: count,
+      productId: product.id,
+      productName: product.name,
+      isDiscount: singlePrice != product.price,
+      ingredients: allIngredients,
+    );
   }
 
   bool toggleSelected([bool checked]) {
@@ -129,4 +133,99 @@ class OrderProductModel {
 enum OrderProductListenerTypes {
   count,
   selection,
+}
+
+class ProductMap {
+  final num singlePrice;
+  final int count;
+  final String productId;
+  final String productName;
+  final bool isDiscount;
+  final Map<String, _IngredientMap> ingredients;
+
+  ProductMap({
+    @required this.singlePrice,
+    @required this.count,
+    @required this.productId,
+    @required this.productName,
+    @required this.isDiscount,
+    @required this.ingredients,
+  });
+
+  Map<String, dynamic> output() {
+    return {
+      'singlePrice': singlePrice,
+      'count': count,
+      'productId': productId,
+      'productName': productName,
+      'isDiscount': isDiscount,
+      'ingredients': ingredients.values.map((e) => e.output()),
+    };
+  }
+
+  factory ProductMap.input(Map<String, dynamic> data) {
+    return ProductMap(
+      singlePrice: data['singlePrice'],
+      count: data['count'],
+      productId: data['productId'],
+      productName: data['productName'],
+      isDiscount: data['isDiscount'],
+      ingredients: {
+        for (var ingredient in data['ingredients'])
+          ingredient['ingredientId']: _IngredientMap.input(ingredient)
+      },
+    );
+  }
+}
+
+class _IngredientMap {
+  final String name;
+  final String ingredientId;
+  int price;
+  int amount;
+  num cost;
+  String quantityId;
+
+  _IngredientMap({
+    @required this.name,
+    @required this.ingredientId,
+    this.price,
+    @required this.amount,
+    @required this.cost,
+    this.quantityId,
+  });
+
+  void update({
+    @required price,
+    @required amount,
+    @required cost,
+    @required quantityId,
+  }) {
+    this.price = price;
+    this.amount = amount;
+    this.cost = cost;
+    this.quantityId = quantityId;
+  }
+
+  Map<String, dynamic> output() {
+    return {
+      'name': name,
+      'ingredientId': ingredientId,
+      'price': price,
+      'amount': amount,
+      'cost': cost,
+      'quantityId': quantityId,
+    };
+  }
+
+  factory _IngredientMap.input(Map<String, dynamic> data) {
+    return _IngredientMap(
+      name: data['name'],
+      ingredientId: data['ingredientId'],
+      price: data['price'],
+      amount: data['amount'],
+      cost: data['cost'],
+      quantityId: data['quantityId'],
+    );
+  }
 }

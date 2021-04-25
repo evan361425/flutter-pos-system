@@ -41,9 +41,9 @@ class UserDependencies extends StatelessWidget {
         return MultiProvider(
           providers: [
             Provider<UserModel>.value(value: user),
-            ChangeNotifierProvider(create: (_) => MenuModel()),
-            ChangeNotifierProvider(create: (_) => StockModel()),
-            ChangeNotifierProvider(create: (_) => QuantityRepo()),
+            ChangeNotifierProvider.value(value: MenuModel.instance),
+            ChangeNotifierProvider.value(value: StockModel.instance),
+            ChangeNotifierProvider.value(value: QuantityRepo.instance),
           ],
           builder: (context, child) => builder(context, snapshot),
         );
