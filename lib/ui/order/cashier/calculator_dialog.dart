@@ -16,26 +16,27 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
   String errorMessage;
 
+  String get paid => paidController.text;
+
   void handlePressed(_ButtonTypes type) {
-    final value = paidController.text;
     switch (type) {
       case _ButtonTypes.back:
-        if (value.isEmpty) return;
-        paidController.text = value.substring(0, value.length - 1);
+        if (paid.isEmpty) return;
+        updatePaid(paid.substring(0, paid.length - 1));
         return;
       case _ButtonTypes.clear:
-        paidController.text = '';
+        updatePaid('');
         return;
       case _ButtonTypes.ceil:
-        final paid =
-            value.isEmpty ? CartModel.instance.totalPrice : num.tryParse(value);
-        final ceilPaid = context.read<CurrencyProvider>().ceil(paid);
-        paidController.text = ceilPaid?.toString() ?? '';
+        final price =
+            paid.isEmpty ? CartModel.instance.totalPrice : num.tryParse(paid);
+        final ceilPrice = context.read<CurrencyProvider>().ceil(price);
+        updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
-        final error = CartModel.instance.paid(num.tryParse(value));
+        final error = CartModel.instance.paid(num.tryParse(paid));
         if (error == 'too low') {
-          setState(() => errorMessage = '糟糕，付額小於總價唷');
+          return setState(() => errorMessage = '糟糕，付額小於總價唷');
         }
         Navigator.of(context).pop();
         return;
@@ -75,7 +76,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
                     hintText: CartModel.instance.totalPrice.toString(),
-                    errorText: '',
+                    errorText: errorMessage,
                   ),
                 ),
               ),
@@ -112,8 +113,8 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 context.read<CurrencyProvider>().isInt
                     ? Spacer()
                     : numberWidget('.', () {
-                        if (int.tryParse(paidController.text) != null) {
-                          paidController.text += '.';
+                        if (int.tryParse(paid) != null) {
+                          updatePaid(paid + '.');
                         }
                       }),
                 iconWidget(Icons.done_rounded, _ButtonTypes.done),
@@ -156,11 +157,18 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
-          onPressed: onPressed ?? () => paidController.text += text,
+          onPressed: onPressed ?? () => updatePaid(paid + text),
           child: Text(text),
         ),
       ),
     );
+  }
+
+  void updatePaid(String text) {
+    paidController.text = text;
+    if (errorMessage != null) {
+      setState(() => errorMessage = null);
+    }
   }
 }
 

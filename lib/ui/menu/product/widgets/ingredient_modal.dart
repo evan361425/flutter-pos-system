@@ -32,6 +32,7 @@ class IngredientModal extends StatefulWidget {
 class _IngredientModalState extends State<IngredientModal> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
+  final _costController = TextEditingController();
 
   bool isSaving = false;
   String errorMessage;
@@ -98,6 +99,7 @@ class _IngredientModalState extends State<IngredientModal> {
                     _nameField(context),
                     SizedBox(height: kMargin),
                     _amountField(context),
+                    _costField(context),
                   ],
                 ),
               ),
@@ -117,14 +119,16 @@ class _IngredientModalState extends State<IngredientModal> {
         ? ProductIngredientModel(
             ingredient: ingredient,
             product: widget.product,
-            defaultAmount: num.parse(_amountController.text),
+            amount: num.tryParse(_amountController.text),
+            cost: num.tryParse(_costController.text),
           )
         : widget.ingredient;
 
     if (!widget.isNew) {
       productIngredient.update(
         ingredient: ingredient,
-        defaultAmount: num.parse(_amountController.text),
+        amount: num.tryParse(_amountController.text),
+        cost: num.tryParse(_costController.text),
       );
     }
 
@@ -180,14 +184,27 @@ class _IngredientModalState extends State<IngredientModal> {
   Widget _amountField(BuildContext context) {
     return TextFormField(
       controller: _amountController,
-      textInputAction: TextInputAction.send,
+      textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: '成份預設用量',
         filled: false,
       ),
-      onFieldSubmitted: (_) => _onSubmit(),
       validator: Validator.positiveNumber('成份預設用量'),
+    );
+  }
+
+  Widget _costField(BuildContext context) {
+    return TextFormField(
+      controller: _costController,
+      textInputAction: TextInputAction.send,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: '成份成本',
+        filled: false,
+      ),
+      onFieldSubmitted: (_) => _onSubmit(),
+      validator: Validator.positiveNumber('成份成本'),
     );
   }
 
@@ -201,12 +218,14 @@ class _IngredientModalState extends State<IngredientModal> {
   @override
   void initState() {
     super.initState();
-    _amountController.text = widget.ingredient?.defaultAmount?.toString();
+    _amountController.text = widget.ingredient?.amount?.toString();
+    _costController.text = widget.ingredient?.cost?.toString();
   }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _costController.dispose();
     super.dispose();
   }
 }

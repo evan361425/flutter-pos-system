@@ -73,16 +73,16 @@ class _ProductModalState extends State<ProductModal> {
   ProductModel _updateProduct() {
     widget.product?.update(
       name: _nameController.text,
-      price: num.parse(_priceController.text),
-      cost: num.parse(_costController.text),
+      price: num.tryParse(_priceController.text),
+      cost: num.tryParse(_costController.text),
     );
 
     final product = widget.product ??
         ProductModel(
           name: _nameController.text,
           catalog: context.read<CatalogModel>(),
-          price: num.parse(_priceController.text),
-          cost: num.parse(_costController.text),
+          price: num.tryParse(_priceController.text),
+          cost: num.tryParse(_costController.text),
         );
 
     product.catalog.updateProduct(product);

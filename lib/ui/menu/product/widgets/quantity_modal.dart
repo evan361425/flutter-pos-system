@@ -86,9 +86,9 @@ class _QuantityModalState extends State<QuantityModal> {
         quantities[quantityId] ?? quantities.quantities.values.first;
 
     return ProductQuantityModel(
-      amount: num.parse(_ammountController.text),
-      additionalPrice: num.parse(_additionalPriceController.text),
-      additionalCost: num.parse(_additionalCostController.text),
+      amount: num.tryParse(_ammountController.text),
+      additionalPrice: num.tryParse(_additionalPriceController.text),
+      additionalCost: num.tryParse(_additionalCostController.text),
       quantity: quantity,
     );
   }
@@ -215,7 +215,7 @@ class _QuantityModalState extends State<QuantityModal> {
 
   void _updateByProportion(num proportion) {
     _ammountController.text =
-        (widget.ingredient.defaultAmount * proportion).toString();
+        (widget.ingredient.amount * proportion).toString();
     _additionalPriceController.text =
         (widget.ingredient.product.price * proportion).toString();
     _additionalCostController.text =

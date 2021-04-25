@@ -10,11 +10,11 @@ class ProductIngredientModel {
     this.ingredientId,
     this.ingredient,
     @required this.product,
-    num defaultAmount,
+    num amount,
     num cost,
     Map<String, ProductQuantityModel> quantities,
   })  : quantities = quantities ?? {},
-        defaultAmount = defaultAmount ?? 0,
+        amount = amount ?? 0,
         cost = cost ?? 0 {
     ingredientId ??= ingredient.id;
   }
@@ -22,7 +22,7 @@ class ProductIngredientModel {
   final ProductModel product;
   final Map<String, ProductQuantityModel> quantities;
   String ingredientId;
-  num defaultAmount;
+  num amount;
   num cost;
   IngredientModel ingredient;
 
@@ -48,7 +48,8 @@ class ProductIngredientModel {
     return ProductIngredientModel(
       product: product,
       ingredientId: ingredientId,
-      defaultAmount: data['defaultAmount'],
+      amount: data['amount'],
+      cost: data['cost'],
       quantities: quantities,
     );
   }
@@ -59,7 +60,8 @@ class ProductIngredientModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'defaultAmount': defaultAmount,
+      'cost': cost,
+      'amount': amount,
       'quantities': {
         for (var entry in quantities.entries) entry.key: entry.value.toMap()
       },
@@ -94,13 +96,18 @@ class ProductIngredientModel {
   }
 
   void update({
-    num defaultAmount,
+    num amount,
+    num cost,
     IngredientModel ingredient,
   }) {
     final updateData = <String, dynamic>{};
-    if (defaultAmount != this.defaultAmount) {
-      this.defaultAmount = defaultAmount;
-      updateData['$prefix.defaultAmount'] = defaultAmount;
+    if (amount != this.amount) {
+      this.amount = amount;
+      updateData['$prefix.amount'] = amount;
+    }
+    if (cost != this.cost) {
+      this.cost = cost;
+      updateData['$prefix.cost'] = cost;
     }
     // after all property set
     if (id != ingredient.id) {

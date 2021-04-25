@@ -79,7 +79,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
   }
 
   void _updateIngredient(String name, StockModel stock) {
-    final amount = num.parse(_amountController.text);
+    final amount = num.tryParse(_amountController.text);
 
     widget.ingredient?.update(name: name, amount: amount);
 

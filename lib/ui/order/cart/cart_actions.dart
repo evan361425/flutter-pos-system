@@ -76,22 +76,6 @@ class _DialogItem {
   final void Function(String) action;
 
   static _DialogItem fromEnum(_DialogItems type) {
-    int parseInt(String source) {
-      try {
-        return int.parse(source);
-      } catch (e) {
-        return null;
-      }
-    }
-
-    num parseNum(String source) {
-      try {
-        return num.parse(source);
-      } catch (e) {
-        return null;
-      }
-    }
-
     switch (type) {
       case _DialogItems.discount:
         return _DialogItem(
@@ -104,7 +88,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              CartModel.instance.updateSelectedDiscount(parseNum(result)),
+              CartModel.instance.updateSelectedDiscount(num.tryParse(result)),
         );
       case _DialogItems.price:
         return _DialogItem(
@@ -115,7 +99,7 @@ class _DialogItem {
           ),
           isInt: false,
           action: (result) =>
-              CartModel.instance.updateSelectedPrice(parseInt(result)),
+              CartModel.instance.updateSelectedPrice(int.tryParse(result)),
         );
       case _DialogItems.count:
         return _DialogItem(
@@ -127,7 +111,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              CartModel.instance.updateSelectedCount(parseInt(result)),
+              CartModel.instance.updateSelectedCount(int.tryParse(result)),
         );
       default:
         return null;

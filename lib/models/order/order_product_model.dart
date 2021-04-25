@@ -31,7 +31,7 @@ class OrderProductModel {
         e.key: {
           'name': e.value.ingredient.name,
           'cost': e.value.cost,
-          'amount': e.value.defaultAmount,
+          'amount': e.value.amount,
         }
     };
     ingredients.forEach((e) {

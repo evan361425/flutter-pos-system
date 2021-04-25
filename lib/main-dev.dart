@@ -149,7 +149,7 @@ class _MenuSnapshot extends Snapshot {
             'index': 0,
             'ingredients': {
               'i1': {
-                'defaultAmount': 20,
+                'amount': 20,
                 'quantities': {
                   'is1': {
                     'amount': 10,
@@ -164,7 +164,7 @@ class _MenuSnapshot extends Snapshot {
                 },
               },
               'i2': {
-                'defaultAmount': 1,
+                'amount': 1,
                 'quantities': {
                   'is1': {
                     'amount': 10,
@@ -189,10 +189,10 @@ class _MenuSnapshot extends Snapshot {
                 },
               },
               'i3': {
-                'defaultAmount': 1,
+                'amount': 1,
               },
               'i4': {
-                'defaultAmount': 1,
+                'amount': 1,
               }
             },
           },
@@ -273,7 +273,7 @@ class _MenuSnapshot extends Snapshot {
             'cost': 20,
             'index': 0,
             'ingredients': {
-              'i1': {'defaultAmount': 20}
+              'i1': {'amount': 20}
             }
           },
         },

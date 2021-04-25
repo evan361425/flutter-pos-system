@@ -8,18 +8,17 @@ class Validator {
     num maximum,
   }) {
     return (String value) {
-      try {
-        final number = num.parse(value);
-        if (number < 0) {
-          return '$fieldName 不能為負數';
-        } else if (maximum != null && maximum < number) {
-          return '$fieldName 不能大於 $maximum';
-        }
+      final number = num.tryParse(value);
 
-        return null;
-      } catch (err) {
+      if (number == null) {
         return '$fieldName 必須是數字';
+      } else if (number < 0) {
+        return '$fieldName 不能為負數';
+      } else if (maximum != null && maximum < number) {
+        return '$fieldName 不能大於 $maximum';
       }
+
+      return null;
     };
   }
 

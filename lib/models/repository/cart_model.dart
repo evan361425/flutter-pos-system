@@ -88,6 +88,7 @@ class CartModel extends ChangeNotifier {
     });
 
     clear();
+    notifyListeners();
 
     return null;
   }
@@ -106,7 +107,7 @@ class CartModel extends ChangeNotifier {
 
   void toggleAll([bool checked]) {
     products.forEach((product) => product.toggleSelected(checked));
-    // notifyListeners();
+    notifyListeners();
   }
 
   void updateSelectedCount(int count) {

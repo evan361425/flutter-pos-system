@@ -116,13 +116,9 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
     return TextFormField(
       onSaved: (String value) {
-        try {
-          final numValue = num.parse(value);
-          if (numValue != 0) {
-            updateData[ingredient.id] = numValue;
-          }
-        } catch (e) {
-          // do nothing
+        final numValue = num.tryParse(value);
+        if (numValue != null && numValue != 0) {
+          updateData[ingredient.id] = numValue;
         }
       },
       initialValue: nonSet ? '' : widget.batch[ingredient.id].toString(),

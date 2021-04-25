@@ -78,7 +78,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       canTapOnHeader: true,
       headerBuilder: (_, __) => ListTile(
         title: Text(ingredient.ingredient.name),
-        subtitle: Text('使用量：${ingredient.defaultAmount}'),
+        subtitle: Text('使用量：${ingredient.amount}'),
       ),
       body: Column(
         children: body,

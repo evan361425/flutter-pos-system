@@ -171,7 +171,7 @@ class IngredientList extends StatelessWidget {
       },
     );
 
-    return result == null ? null : num.parse(result);
+    return result == null ? null : num.tryParse(result);
   }
 
   void _onTap(BuildContext context, IngredientModel ingredient) {

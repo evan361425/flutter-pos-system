@@ -70,7 +70,7 @@ class _QuantityModalState extends State<QuantityModal> {
   }
 
   void _updateQuantity(String name, QuantityRepo quantities) {
-    final proportion = num.parse(_proportionController.text);
+    final proportion = num.tryParse(_proportionController.text);
 
     if (widget.quantity != null) {
       widget.quantity.update(name: name, proportion: proportion);

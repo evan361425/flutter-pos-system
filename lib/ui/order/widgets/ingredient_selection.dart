@@ -76,7 +76,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
       groupId: 'order.quantities',
       value: CartModel.DEFAULT_QUANTITY_ID,
       isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
-      child: Text('預設值（${selectedIngredient.defaultAmount}）'),
+      child: Text('預設值（${selectedIngredient.amount}）'),
     );
   }
 
