@@ -7,6 +7,7 @@ import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 import 'package:possystem/ui/order/widgets/product_selection.dart';
@@ -18,7 +19,6 @@ import 'cart/cart_screen.dart';
 class OrderScreen extends StatelessWidget {
   static final productSelection = GlobalKey<ProductSelectionState>();
   static final productsKey = GlobalKey<CartProductListState>();
-  static final cart = CartModel();
 
   const OrderScreen({Key key}) : super(key: key);
 
@@ -30,13 +30,18 @@ class OrderScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => showCupertinoModalPopup(
-            context: context,
-            builder: (_) => OrderActions(),
-          ),
+          onPressed: () async {
+            final result = await showCupertinoModalPopup<OrderActionTypes>(
+              context: context,
+              builder: (_) => OrderActions(),
+            );
+            onAction(context, result);
+          },
           icon: Icon(KIcons.more),
         ),
-        actions: [TextButton(onPressed: onOrder, child: Text('點餐'))],
+        actions: [
+          TextButton(onPressed: () => onOrder(context), child: Text('點餐')),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -63,7 +68,7 @@ class OrderScreen extends StatelessWidget {
             flex: 3,
             child: Card(
               child: ChangeNotifierProvider.value(
-                value: cart,
+                value: CartModel.instance,
                 builder: (_, __) => CartScreen(productsKey: productsKey),
               ),
             ),
@@ -74,7 +79,21 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  void onOrder() {}
+  void onOrder(BuildContext context) {
+    showDialog(context: context, builder: (_) => CalculatorDialog());
+  }
+
+  void onAction(BuildContext context, OrderActionTypes action) {
+    switch (action) {
+      case OrderActionTypes.leave:
+        showConfirmDialog(context);
+        return;
+      case OrderActionTypes.pop_stash:
+        return print('pop');
+      case OrderActionTypes.stash:
+        return print('stash');
+    }
+  }
 
   Future<void> showConfirmDialog(BuildContext context) async {
     final result = await showDialog(

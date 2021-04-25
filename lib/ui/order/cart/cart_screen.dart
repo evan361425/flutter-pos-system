@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 
 import 'cart_actions.dart';
 import 'cart_metadata.dart';
@@ -20,14 +20,14 @@ class CartScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () => OrderScreen.cart.toggleAll(true),
+                onPressed: () => CartModel.instance.toggleAll(true),
                 child: Text('全選'),
               ),
             ),
             SizedBox(width: 4),
             Expanded(
               child: ElevatedButton(
-                onPressed: () => OrderScreen.cart.toggleAll(),
+                onPressed: () => CartModel.instance.toggleAll(),
                 child: Text('反選'),
               ),
             ),

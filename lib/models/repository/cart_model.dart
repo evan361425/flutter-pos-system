@@ -6,7 +6,26 @@ import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
 class CartModel extends ChangeNotifier {
+  static final CartModel _instance = CartModel._privateConstructor();
+
+  static const DEFAULT_QUANTITY_ID = '';
+
+  static CartModel get instance => _instance;
+
   List<OrderProductModel> products = [];
+
+  CartModel._privateConstructor();
+
+  Iterable<OrderProductModel> get selectedProducts =>
+      products.where((product) => product.isSelected);
+
+  Iterable<OrderProductModel> get selectedSameProduct {
+    final products = selectedProducts;
+    if (products.isEmpty) return null;
+
+    final firstId = products.first.product.id;
+    return products.every((e) => e.product.id == firstId) ? products : null;
+  }
 
   int get totalCount {
     return products.fold(0, (value, product) => value + product.count);
@@ -16,9 +35,6 @@ class CartModel extends ChangeNotifier {
     return products.fold(0, (value, product) => value + product.price);
   }
 
-  Iterable<OrderProductModel> get selectedProducts =>
-      products.where((product) => product.isSelected);
-
   OrderProductModel add(ProductModel product) {
     final orderProduct = OrderProductModel(product);
     products.add(orderProduct);
@@ -27,17 +43,13 @@ class CartModel extends ChangeNotifier {
     return orderProduct;
   }
 
-  void toggleAll([bool checked]) {
-    products.forEach((product) => product.toggleSelected(checked));
-    // notifyListeners();
-  }
+  void discountSelected(int discount) {
+    if (discount == null) return;
 
-  Iterable<OrderProductModel> get selectedSameProduct {
-    final products = selectedProducts;
-    if (products.isEmpty) return null;
-
-    final firstId = products.first.product.id;
-    return products.every((e) => e.product.id == firstId) ? products : null;
+    selectedProducts.forEach((e) {
+      e.singlePrice = e.product.price * discount / 100;
+    });
+    notifyListeners();
   }
 
   /// Get quantity of selected product in specific [ingredient]
@@ -60,29 +72,21 @@ class CartModel extends ChangeNotifier {
     }
   }
 
-  // ACTIONS
-
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
     notifyListeners();
   }
 
-  void discountSelected(int discount) {
-    if (discount == null) return;
-
+  void removeSelectedIngredient(ProductIngredientModel ingredient) {
     selectedProducts.forEach((e) {
-      e.singlePrice = e.product.price * discount / 100;
+      e.removeIngredient(ingredient);
     });
     notifyListeners();
   }
 
-  void updateSelectedPrice(num price) {
-    if (price == null) return;
-
-    selectedProducts.forEach((e) {
-      e.singlePrice = price;
-    });
-    notifyListeners();
+  void toggleAll([bool checked]) {
+    products.forEach((product) => product.toggleSelected(checked));
+    // notifyListeners();
   }
 
   void updateSelectedCount(int count) {
@@ -101,14 +105,12 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSelectedIngredient(ProductIngredientModel ingredient) {
+  void updateSelectedPrice(num price) {
+    if (price == null) return;
+
     selectedProducts.forEach((e) {
-      e.removeIngredient(ingredient);
+      e.singlePrice = price;
     });
     notifyListeners();
   }
-
-  // CONST
-
-  static const DEFAULT_QUANTITY_ID = '';
 }

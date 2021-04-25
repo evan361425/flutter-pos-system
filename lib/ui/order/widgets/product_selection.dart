@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
-import 'package:possystem/ui/order/order_screen.dart';
 
 class ProductSelection extends StatefulWidget {
   const ProductSelection({
@@ -45,8 +45,8 @@ class ProductSelectionState extends State<ProductSelection> {
   }
 
   void onSelected(ProductModel product) {
-    OrderScreen.cart.toggleAll(false);
-    OrderScreen.cart.add(product).toggleSelected(true);
+    CartModel.instance.toggleAll(false);
+    CartModel.instance.add(product).toggleSelected(true);
     widget.productsKey.currentState.scrollToBottom();
   }
 

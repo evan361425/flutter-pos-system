@@ -6,7 +6,6 @@ import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/ui/order/order_screen.dart';
 
 class IngredientSelection extends StatefulWidget {
   const IngredientSelection({Key key}) : super(key: key);
@@ -21,14 +20,14 @@ class _IngredientSelectionState extends State<IngredientSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final product = OrderScreen.cart.selectedSameProduct?.first?.product;
+    final product = CartModel.instance.selectedSameProduct?.first?.product;
     if (product == null) return emptyWidget(context, '請選擇相同的產品來設定其成份');
 
     final ingredients = product.ingredientsWithQuantity;
     if (ingredients.isEmpty) return emptyWidget(context, '該產品無可設定的成份');
 
     selectedIngredient ??= ingredients.first;
-    selectedQuantityId = OrderScreen.cart.getSelectedQuantityId(
+    selectedQuantityId = CartModel.instance.getSelectedQuantityId(
       selectedIngredient,
     );
 
@@ -57,7 +56,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
                   ingredient: selectedIngredient,
                   quantity: quantity,
                 );
-                OrderScreen.cart.updateSelectedIngredient(ingredient);
+                CartModel.instance.updateSelectedIngredient(ingredient);
               },
               groupId: QUANTITY_GROUP,
               value: quantity.id,
@@ -72,7 +71,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
   Widget quantityDefaultOption() {
     return RadioText(
       onSelected: () {
-        OrderScreen.cart.removeSelectedIngredient(selectedIngredient);
+        CartModel.instance.removeSelectedIngredient(selectedIngredient);
       },
       groupId: 'order.quantities',
       value: CartModel.DEFAULT_QUANTITY_ID,

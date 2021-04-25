@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/helper/validator.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 
 class CartActions extends StatelessWidget {
   @override
@@ -28,11 +28,11 @@ class CartActions extends StatelessWidget {
             child: Text('變更數量'),
           ),
           DropdownMenuItem(
-            onTap: () => OrderScreen.cart.updateSelectedPrice(0),
+            onTap: () => CartModel.instance.updateSelectedPrice(0),
             child: Text('招待'),
           ),
           DropdownMenuItem(
-            onTap: () => OrderScreen.cart.removeSelected(),
+            onTap: () => CartModel.instance.removeSelected(),
             child: Text('刪除'),
           ),
         ],
@@ -104,7 +104,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              OrderScreen.cart.discountSelected(parseNum(result)),
+              CartModel.instance.discountSelected(parseNum(result)),
         );
       case _DialogItems.price:
         return _DialogItem(
@@ -115,7 +115,7 @@ class _DialogItem {
           ),
           isInt: false,
           action: (result) =>
-              OrderScreen.cart.updateSelectedPrice(parseInt(result)),
+              CartModel.instance.updateSelectedPrice(parseInt(result)),
         );
       case _DialogItems.count:
         return _DialogItem(
@@ -127,7 +127,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              OrderScreen.cart.updateSelectedCount(parseInt(result)),
+              CartModel.instance.updateSelectedCount(parseInt(result)),
         );
       default:
         return null;

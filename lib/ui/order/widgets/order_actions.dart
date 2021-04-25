@@ -9,25 +9,28 @@ class OrderActions extends StatelessWidget {
     return CupertinoActionSheet(
       actions: [
         CupertinoActionSheetAction(
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context, OrderActionTypes.pop_stash),
           child: Text('顯示最後一次點餐'),
         ),
         CupertinoActionSheetAction(
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context, OrderActionTypes.stash),
           child: Text('暫存本次點餐'),
         ),
         CupertinoActionSheetAction(
-          onPressed: () {
-            var count = 0;
-            Navigator.of(context).popUntil((route) => count++ == 2);
-          },
+          onPressed: () => Navigator.pop(context, OrderActionTypes.leave),
           child: Text('離開點餐頁面'),
         ),
       ],
       cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
+        onPressed: () => Navigator.pop(context),
         child: Text('取消'),
       ),
     );
   }
+}
+
+enum OrderActionTypes {
+  pop_stash,
+  stash,
+  leave,
 }
