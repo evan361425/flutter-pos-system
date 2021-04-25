@@ -7,10 +7,10 @@ class ThemeSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return Switch(
       activeColor: Theme.of(context).appBarTheme.color,
-      value: context.watch<ThemeProvider>().isDarkModeOn,
-      onChanged: (booleanValue) {
+      value: context.watch<ThemeProvider>().darkMode,
+      onChanged: (value) {
         final theme = context.read<ThemeProvider>();
-        theme.updateTheme(booleanValue);
+        theme.darkMode = value;
       },
     );
   }

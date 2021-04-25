@@ -72,14 +72,14 @@ class MyApp extends StatelessWidget {
       routes: Routes.routes,
       debugShowCheckedModeBanner: false,
       // === language setting ===
-      locale: language.initLocale(),
+      locale: language.locale,
       supportedLocales: LanguageProvider.supports,
       localizationsDelegates: LanguageProvider.delegates,
       localeResolutionCallback: LanguageProvider.localResolutionCallback,
       // === theme setting ===
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
-      themeMode: theme.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
+      themeMode: theme.darkMode ? ThemeMode.dark : ThemeMode.light,
       // === home widget ===
       home: home,
     );

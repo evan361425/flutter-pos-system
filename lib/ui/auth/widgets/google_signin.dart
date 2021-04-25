@@ -20,9 +20,7 @@ class GoogleSignIn extends StatelessWidget {
           authProvider.status == AuthStatus.Authenticating
               ? Center(child: CircularProgressIndicator())
               : SignInButton(
-                  themeProvider.isDarkModeOn
-                      ? Buttons.GoogleDark
-                      : Buttons.Google,
+                  themeProvider.darkMode ? Buttons.GoogleDark : Buttons.Google,
                   onPressed: () => _confirm(context),
                 ),
           authProvider.status == AuthStatus.Failed

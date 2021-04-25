@@ -40,7 +40,10 @@ class OrderScreen extends StatelessWidget {
           icon: Icon(KIcons.more),
         ),
         actions: [
-          TextButton(onPressed: () => onOrder(context), child: Text('點餐')),
+          TextButton(
+            onPressed: () => onOrder(context),
+            child: Text('點餐'),
+          ),
         ],
       ),
       body: Column(
@@ -80,7 +83,10 @@ class OrderScreen extends StatelessWidget {
   }
 
   void onOrder(BuildContext context) {
-    showDialog(context: context, builder: (_) => CalculatorDialog());
+    showDialog<void>(
+      context: context,
+      builder: (_) => CalculatorDialog(),
+    );
   }
 
   void onAction(BuildContext context, OrderActionTypes action) {

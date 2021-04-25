@@ -24,36 +24,32 @@ class LanguageProvider extends ChangeNotifier {
 
   static const Locale defaultLocale = Locale('zh', 'TW');
 
-  // These delegates make sure that the localization data for the proper
-  // language is loaded
-  final SharedPreferenceCache _sharedPrefsCache = SharedPreferenceCache();
+  Locale _locale = defaultLocale;
 
-  // return a locale which will be used by the app
-  Locale _locale;
+  LanguageProvider();
 
-  LanguageProvider() : _locale = defaultLocale;
-
-  Locale initLocale() {
-    _sharedPrefsCache.language.then((language) {
-      if (language != null) {
-        final codes = language.split('_');
-        if (codes.length == 2) {
-          _locale = Locale(codes[0], codes[1]);
-        }
-      }
-    });
-
+  Locale get locale {
+    SharedPreferenceCache.instance.language.then(_setLanguage);
     return _locale;
   }
 
-  Locale get locale => _locale;
-
   set locale(Locale locale) {
-    _locale = locale;
+    final code = '${locale.languageCode}_${locale.countryCode}';
 
-    var code = '${locale.languageCode}_${locale.countryCode}';
-    _sharedPrefsCache.setLanguage(code);
+    SharedPreferenceCache.instance.setLanguage(code);
+    _setLanguage(code);
+  }
 
+  void _setLanguage(String value) {
+    if (value == null) return;
+
+    final codes = value.split('_');
+    if (codes.isEmpty) return;
+
+    if (codes[0] == _locale.languageCode && codes.length == 1 ||
+        codes[1] == _locale.countryCode) return;
+
+    _locale = Locale(codes[0], codes.length == 1 ? null : codes[1]);
     notifyListeners();
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:possystem/my_app.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/services/auth_firebase.dart';
@@ -21,6 +22,9 @@ void main() {
         providers: [
           ChangeNotifierProvider<ThemeProvider>(
             create: (_) => ThemeProvider(),
+          ),
+          ChangeNotifierProvider<CurrencyProvider>(
+            create: (_) => CurrencyProvider(),
           ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
