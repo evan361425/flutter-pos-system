@@ -42,6 +42,10 @@ class OrderHistory {
     final snapshot = await Database.instance.pop(Collections.order_stash);
     return _OrderMap.input(snapshot.data());
   }
+
+  Future<num> getStashLength() {
+    return Database.instance.length(Collections.order_stash);
+  }
 }
 
 class _OrderMap {

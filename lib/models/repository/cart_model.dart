@@ -31,10 +31,17 @@ class CartModel extends ChangeNotifier {
 
   bool get isEmpty => products.isEmpty;
 
-  void stash() {
-    if (isEmpty) return;
+  /// If not stashable return false
+  /// Rate limit = 5
+  Future<bool> stash() async {
+    if (isEmpty) return true;
+
+    // disallow before stash, so need minus 1
+    if (await OrderHistory.instance.getStashLength() > 4) return false;
+
     OrderHistory.instance.stash();
     clear();
+    return true;
   }
 
   Future<bool> popStash() async {

@@ -8,6 +8,7 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/services/authentication.dart';
 import 'package:possystem/services/database.dart';
+import 'package:possystem/services/in_memory.dart';
 import 'package:possystem/services/sign_in_method/sign_in_method.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ void main() {
 
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
-  ).then((_) async {
+  ).then((_) {
     runApp(
       /// Why use provider?
       /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
@@ -40,303 +41,211 @@ void main() {
           ),
         ],
         child: MyApp(
-          databaseBuilder: (uid) => _MockDatabase(uid: uid),
+          databaseBuilder: (uid) => InMemory(uid: uid, data: DefaultData),
         ),
       ),
     );
   });
 }
 
-class _IngredientSnapshot extends Snapshot {
-  @override
-  Map<String, Map<String, dynamic>> data() {
-    return const {
-      'i1': {
-        'name': 'cheese',
-        'currentAmount': 20.0,
-        'warningAmount': 20.0,
-        'alertAmount': 20.0,
-        'lastAmount': 20.0,
-      },
-      'i2': {
-        'name': 'bread',
-      },
-      'i3': {
-        'name': 'vegetable',
-      },
-      'i4': {
-        'name': 'some-other-very-long-namesome-other-very-long-name 👎👎👎',
-      },
-      'i5': {'name': 'i5'},
-      'i6': {'name': 'i6'},
-      'i7': {'name': 'i7'},
-      'i8': {'name': 'i8'},
-      'i9': {'name': 'i9'},
-      'ii5': {'name': 'i5'},
-      'ii6': {'name': 'i6'},
-      'ii7': {'name': 'i7'},
-      'ii8': {'name': 'i8'},
-      'ii9': {'name': 'i9'},
-    };
-  }
-}
-
-class _QuantitySnapshot extends Snapshot {
-  @override
-  Map<String, Map<String, dynamic>> data() {
-    return const {
-      'is1': {
-        'name': 'less',
-        'defaultProportion': 0.5,
-      },
-      'is2': {
-        'name': 'more',
-        'defaultProportion': 1.5,
-      },
-      'is3': {
-        'name': 'really less',
-        'defaultProportion': 0.1,
-      },
-      'is4': {
-        'name': 'really more',
-        'defaultProportion': 3,
-      },
-    };
-  }
-}
-
-class _StockBatchSnapshot extends Snapshot {
-  @override
-  Map<String, Map<String, dynamic>> data() {
-    return const {
-      'sb1': {
-        'name': 'Costco',
-        'data': {
-          'i1': 1.2,
-          'i2': 3,
-          'i4': 5,
-        },
-      },
-      'sb2': {
-        'name': '7-11',
-      },
-    };
-  }
-}
-
-class _SearchSnapshot extends Snapshot {
-  @override
-  Map<String, List<String>> data() {
-    return const {
-      'ingredient': ['che', 'br'],
-      'quantity': ['l'],
-    };
-  }
-}
-
-class _MenuSnapshot extends Snapshot {
-  @override
-  Map<String, Map<String, dynamic>> data() {
-    return const {
-      'c1': {
-        'name': 'burger',
-        'index': 0,
-        'products': {
-          '0': {
-            'name': 'cheeseburger',
-            'price': 30,
-            'cost': 20,
-            'index': 0,
-            'ingredients': {
-              'i1': {
-                'amount': 20,
-                'quantities': {
-                  'is1': {
-                    'amount': 10,
-                    'additionalPrice': 0,
-                    'additionalCost': -5,
-                  },
-                  'is2': {
-                    'amount': 30,
-                    'additionalPrice': 10,
-                    'additionalCost': 5,
-                  },
+final DefaultData = <Collections, Map<String, dynamic>>{
+  Collections.ingredient: {
+    'i1': {
+      'name': 'cheese',
+      'currentAmount': 20.0,
+      'warningAmount': 20.0,
+      'alertAmount': 20.0,
+      'lastAmount': 20.0,
+    },
+    'i2': {
+      'name': 'bread',
+    },
+    'i3': {
+      'name': 'vegetable',
+    },
+    'i4': {
+      'name': 'some-other-very-long-namesome-other-very-long-name 👎👎👎',
+    },
+    'i5': {'name': 'i5'},
+    'i6': {'name': 'i6'},
+    'i7': {'name': 'i7'},
+    'i8': {'name': 'i8'},
+    'i9': {'name': 'i9'},
+    'ii5': {'name': 'i5'},
+    'ii6': {'name': 'i6'},
+    'ii7': {'name': 'i7'},
+    'ii8': {'name': 'i8'},
+    'ii9': {'name': 'i9'},
+  },
+  Collections.menu: {
+    'c1': {
+      'name': 'burger',
+      'index': 0,
+      'products': {
+        '0': {
+          'name': 'cheeseburger',
+          'price': 30,
+          'cost': 20,
+          'index': 0,
+          'ingredients': {
+            'i1': {
+              'amount': 20,
+              'quantities': {
+                'is1': {
+                  'amount': 10,
+                  'additionalPrice': 0,
+                  'additionalCost': -5,
+                },
+                'is2': {
+                  'amount': 30,
+                  'additionalPrice': 10,
+                  'additionalCost': 5,
                 },
               },
-              'i2': {
-                'amount': 1,
-                'quantities': {
-                  'is1': {
-                    'amount': 10,
-                    'additionalPrice': 0,
-                    'additionalCost': -5,
-                  },
-                  'is2': {
-                    'amount': 30,
-                    'additionalPrice': 10,
-                    'additionalCost': 5,
-                  },
-                  'is3': {
-                    'amount': 1,
-                    'additionalPrice': -5,
-                    'additionalCost': -10,
-                  },
-                  'is4': {
-                    'amount': 50,
-                    'additionalPrice': 20,
-                    'additionalCost': 10,
-                  },
-                },
-              },
-              'i3': {
-                'amount': 1,
-              },
-              'i4': {
-                'amount': 1,
-              }
             },
-          },
-          '1': {
-            'name': 'hamburger',
-            'price': 50,
-            'index': 1,
-            'ingredients': {}
-          },
-          '2': {
-            'name': 'kamburger',
-            'price': 500000,
-            'index': 2,
-            'ingredients': {}
-          },
-          '3': {
-            'name':
-                'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-',
-            'price': 30,
-            'index': 3,
-            'ingredients': {}
-          },
-          '4': {'name': 'product1', 'price': 30, 'index': 4, 'ingredients': {}},
-          '5': {'name': 'product2', 'price': 30, 'index': 5, 'ingredients': {}},
-          '6': {'name': 'product6', 'price': 30, 'index': 6, 'ingredients': {}},
-          '7': {
-            'name': '😂product4',
-            'price': 30,
-            'index': 7,
-            'ingredients': {}
-          },
-          '8': {'name': '產品五', 'price': 30, 'index': 8, 'ingredients': {}},
-          '9': {
-            'name': '😂product6',
-            'price': 30,
-            'index': 9,
-            'ingredients': {}
-          },
-          '10': {
-            'name': '😂product7',
-            'price': 30,
-            'index': 10,
-            'ingredients': {}
-          },
-          '11': {
-            'name': '😂product8',
-            'price': 30,
-            'index': 11,
-            'ingredients': {}
-          },
-          '12': {
-            'name': '😂product9',
-            'price': 30,
-            'index': 12,
-            'ingredients': {}
-          },
-          '13': {
-            'name': '😂product.1',
-            'price': 30,
-            'index': 13,
-            'ingredients': {}
-          },
-          '14': {
-            'name': '😂product.2',
-            'price': 30,
-            'index': 14,
-            'ingredients': {}
-          },
-        },
-      },
-      'c2': {
-        'name': 'sandwitch',
-        'index': 1,
-        'products': {
-          '15': {
-            'name': 'c-sandwitch',
-            'price': 30,
-            'cost': 20,
-            'index': 0,
-            'ingredients': {
-              'i1': {'amount': 20}
+            'i2': {
+              'amount': 1,
+              'quantities': {
+                'is1': {
+                  'amount': 10,
+                  'additionalPrice': 0,
+                  'additionalCost': -5,
+                },
+                'is2': {
+                  'amount': 30,
+                  'additionalPrice': 10,
+                  'additionalCost': 5,
+                },
+                'is3': {
+                  'amount': 1,
+                  'additionalPrice': -5,
+                  'additionalCost': -10,
+                },
+                'is4': {
+                  'amount': 50,
+                  'additionalPrice': 20,
+                  'additionalCost': 10,
+                },
+              },
+            },
+            'i3': {
+              'amount': 1,
+            },
+            'i4': {
+              'amount': 1,
             }
           },
         },
+        '1': {'name': 'hamburger', 'price': 50, 'index': 1, 'ingredients': {}},
+        '2': {
+          'name': 'kamburger',
+          'price': 500000,
+          'index': 2,
+          'ingredients': {}
+        },
+        '3': {
+          'name':
+              'some-other-very-long-name-product-some-other-very-long-name-product-some-other-very-long-name-product-',
+          'price': 30,
+          'index': 3,
+          'ingredients': {}
+        },
+        '4': {'name': 'product1', 'price': 30, 'index': 4, 'ingredients': {}},
+        '5': {'name': 'product2', 'price': 30, 'index': 5, 'ingredients': {}},
+        '6': {'name': 'product6', 'price': 30, 'index': 6, 'ingredients': {}},
+        '7': {'name': '😂product4', 'price': 30, 'index': 7, 'ingredients': {}},
+        '8': {'name': '產品五', 'price': 30, 'index': 8, 'ingredients': {}},
+        '9': {'name': '😂product6', 'price': 30, 'index': 9, 'ingredients': {}},
+        '10': {
+          'name': '😂product7',
+          'price': 30,
+          'index': 10,
+          'ingredients': {}
+        },
+        '11': {
+          'name': '😂product8',
+          'price': 30,
+          'index': 11,
+          'ingredients': {}
+        },
+        '12': {
+          'name': '😂product9',
+          'price': 30,
+          'index': 12,
+          'ingredients': {}
+        },
+        '13': {
+          'name': '😂product.1',
+          'price': 30,
+          'index': 13,
+          'ingredients': {}
+        },
+        '14': {
+          'name': '😂product.2',
+          'price': 30,
+          'index': 14,
+          'ingredients': {}
+        },
       },
-      'c3': {
-        'name': 'drink',
-        'index': 2,
-      }
-    };
-  }
-}
-
-class _MockDatabase extends Database<Snapshot> {
-  final String uid;
-  _MockDatabase({@required this.uid});
-
-  @override
-  Future<Snapshot> get(Collections collection) {
-    if (collection == Collections.menu) {
-      return Future.delayed(Duration(seconds: 0), () => _MenuSnapshot());
-    } else if (collection == Collections.ingredient) {
-      return Future.delayed(Duration(seconds: 0), () => _IngredientSnapshot());
-    } else if (collection == Collections.search_history) {
-      return Future.delayed(Duration(seconds: 0), () => _SearchSnapshot());
-    } else if (collection == Collections.quantities) {
-      return Future.delayed(Duration(seconds: 0), () => _QuantitySnapshot());
-    } else if (collection == Collections.stock_batch) {
-      return Future.delayed(Duration(seconds: 0), () => _StockBatchSnapshot());
+    },
+    'c2': {
+      'name': 'sandwitch',
+      'index': 1,
+      'products': {
+        '15': {
+          'name': 'c-sandwitch',
+          'price': 30,
+          'cost': 20,
+          'index': 0,
+          'ingredients': {
+            'i1': {'amount': 20}
+          }
+        },
+      },
+    },
+    'c3': {
+      'name': 'drink',
+      'index': 2,
     }
-    return null;
-  }
-
-  @override
-  Future<Snapshot> set(Collections collection, Map<String, dynamic> data) {
-    return Future.delayed(Duration(seconds: 0));
-  }
-
-  @override
-  Future<void> update(Collections collection, Map<String, dynamic> data) {
-    return Future.delayed(Duration(seconds: 0));
-  }
-
-  static final inMemoryPush = <Collections, List<Map<String, dynamic>>>{};
-
-  @override
-  Future<void> push(Collections collection, Map<String, dynamic> data) async {
-    if (inMemoryPush[collection] == null) {
-      inMemoryPush[collection] = [data];
-    } else {
-      inMemoryPush[collection].add(data);
-    }
-  }
-
-  @override
-  Future<Snapshot> pop(Collections collection, [remove = true]) async {
-    final data = inMemoryPush[collection];
-    if (data == null || data.isEmpty) {
-      return Snapshot();
-    } else {
-      return remove ? Snapshot(data.removeLast()) : Snapshot(data.last);
-    }
-  }
-}
+  },
+  // Collections.order_history: {},
+  // Collections.order_stash: {},
+  Collections.quantities: {
+    'is1': {
+      'name': 'less',
+      'defaultProportion': 0.5,
+    },
+    'is2': {
+      'name': 'more',
+      'defaultProportion': 1.5,
+    },
+    'is3': {
+      'name': 'really less',
+      'defaultProportion': 0.1,
+    },
+    'is4': {
+      'name': 'really more',
+      'defaultProportion': 3,
+    },
+  },
+  Collections.search_history: {
+    'ingredient': ['che', 'br'],
+    'quantity': ['l'],
+  },
+  Collections.stock_batch: {
+    'sb1': {
+      'name': 'Costco',
+      'data': {
+        'i1': 1.2,
+        'i2': 3,
+        'i4': 5,
+      },
+    },
+    'sb2': {
+      'name': '7-11',
+    },
+  },
+};
 
 class _MockAuth extends Authentication {
   final UserModel _user;
@@ -365,11 +274,4 @@ class _MockAuth extends Authentication {
   Stream<UserModel> get user async* {
     yield _user;
   }
-}
-
-class Snapshot {
-  Snapshot([this.values]);
-  final Map<String, dynamic> values;
-
-  Map<String, dynamic> data() => values;
 }

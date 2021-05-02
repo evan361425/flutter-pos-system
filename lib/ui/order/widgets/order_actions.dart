@@ -62,7 +62,9 @@ class OrderActions extends StatelessWidget {
       case OrderActionTypes.pop:
         if (!await showPopConfirm(context)) return;
 
-        CartModel.instance.stash();
+        if (!await CartModel.instance.stash()) {
+          showSnackbar(context, '暫存檔案的次數超過上限');
+        }
 
         if (!await CartModel.instance.popHistory()) {
           showSnackbar(context, '找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄');
@@ -76,19 +78,21 @@ class OrderActions extends StatelessWidget {
           return showSnackbar(context, '目前沒有暫存的紀錄唷');
         }
 
-        CartModel.instance
-          ..stash()
-          ..updateProductions(order.parseToProduct());
-        return;
+        // imposible to over limit
+        showSnackbar(context, '暫存檔案的次數超過上限');
+
+        return CartModel.instance.updateProductions(order.parseToProduct());
       case OrderActionTypes.stash:
-        return CartModel.instance.stash();
+        if (!await CartModel.instance.stash()) {
+          showSnackbar(context, '暫存檔案的次數超過上限');
+        }
     }
   }
 
   static Future<void> showLeaveConfirm(BuildContext context) async {
     final result = await showDialog(
       context: context,
-      builder: (_) => ConfirmDialog(title: '確定要回到菜單頁嗎？'),
+      builder: (_) => ConfirmDialog(title: '確定要離開點餐頁面嗎？'),
     );
 
     if (result == true) Navigator.of(context).pop();
