@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/histories/order_history.dart';
-import 'package:possystem/models/maps/order_map.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
@@ -85,12 +85,12 @@ class CartModel extends ChangeNotifier {
     clear();
   }
 
-  OrderMap output([num paid]) {
-    return OrderMap(
+  OrderObject output([num paid]) {
+    return OrderObject(
       paid: paid,
       totalPrice: totalPrice,
       totalCount: totalCount,
-      products: products.map<OrderProductMap>((e) => e.toMap()),
+      products: products.map<OrderProductObject>((e) => e.toMap()),
     );
   }
 

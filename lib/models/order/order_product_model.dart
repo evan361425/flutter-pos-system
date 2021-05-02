@@ -1,4 +1,4 @@
-import 'package:possystem/models/maps/order_map.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
@@ -27,10 +27,10 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
-  OrderProductMap toMap() {
-    final allIngredients = <String, OrderIngredientMap>{
+  OrderProductObject toMap() {
+    final allIngredients = <String, OrderIngredientObject>{
       for (var ingredientEntry in product.ingredients.entries)
-        ingredientEntry.key: OrderIngredientMap(
+        ingredientEntry.key: OrderIngredientObject(
           ingredientId: ingredientEntry.key,
           name: ingredientEntry.value.ingredient.name,
           cost: ingredientEntry.value.cost,
@@ -46,7 +46,7 @@ class OrderProductModel {
       );
     });
 
-    return OrderProductMap(
+    return OrderProductObject(
       singlePrice: singlePrice,
       count: count,
       productId: product.id,

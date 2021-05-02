@@ -30,7 +30,7 @@ class ProductList extends StatelessWidget {
 
   void onDelete(BuildContext context, ProductModel product) {
     final catalog = context.read<CatalogModel>();
-    catalog.removeProduct(product.id);
+    catalog.removeProduct(product);
   }
 
   Widget warningContextBuild(BuildContext context, ProductModel product) {

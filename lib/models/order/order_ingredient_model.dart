@@ -11,12 +11,6 @@ class OrderIngredientModel {
   final ProductIngredientModel ingredient;
   final ProductQuantityModel quantity;
 
-  Map<String, dynamic> toMap() {
-    final result = quantity.toMap();
-    result['name'] = quantity.quantity.name;
-    return result;
-  }
-
   num get amount => quantity.amount;
   num get price => quantity.additionalPrice;
   num get cost => ingredient.cost + quantity.additionalCost;

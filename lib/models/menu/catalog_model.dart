@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
-import 'package:possystem/models/maps/menu_map.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -9,11 +9,11 @@ import 'product_model.dart';
 
 class CatalogModel extends ChangeNotifier {
   CatalogModel({
-    @required this.name,
-    this.index = 0,
-    String id,
-    Map<String, ProductModel> products,
     DateTime createdAt,
+    String id,
+    @required int index,
+    @required this.name,
+    Map<String, ProductModel> products,
   })  : createdAt = createdAt ?? DateTime.now(),
         products = products ?? {},
         id = id ?? Util.uuidV4();
@@ -28,18 +28,16 @@ class CatalogModel extends ChangeNotifier {
   // product list
   final Map<String, ProductModel> products;
 
-  // I/O
-
   factory CatalogModel.fromMap(Map<String, dynamic> data) {
-    final map = CatalogMap.build(data);
+    final object = CatalogObject.build(data);
 
     final catalog = CatalogModel(
-      id: map.id,
-      index: map.index,
-      name: map.name,
-      createdAt: map.createdAt,
+      id: object.id,
+      index: object.index,
+      name: object.name,
+      createdAt: object.createdAt,
       products: {
-        for (var product in map.products)
+        for (var product in object.products)
           product.id: ProductModel.fromMap(product)
       },
     );
@@ -51,12 +49,8 @@ class CatalogModel extends ChangeNotifier {
     return catalog;
   }
 
-  factory CatalogModel.empty() {
-    return CatalogModel(name: null, id: null);
-  }
-
-  CatalogMap toMap() {
-    return CatalogMap(
+  CatalogObject toMap() {
+    return CatalogObject(
       id: id,
       index: index,
       name: name,
@@ -65,87 +59,53 @@ class CatalogModel extends ChangeNotifier {
     );
   }
 
-  // STATE CHANGE
+  Future<void> update(CatalogObject catalog) {
+    final updateData = catalog.diff(this);
 
-  void update({
-    String name,
-    int index,
-  }) {
-    final updateData = _getUpdateData(
-      name: name,
-      index: index,
-    );
-
-    if (updateData.isEmpty) return;
-
-    Database.instance.update(Collections.menu, updateData);
+    if (updateData.isEmpty) return Future.value();
 
     notifyListeners();
+
+    return Database.instance.update(Collections.menu, updateData);
   }
 
-  Future<void> reorderProducts(List<ProductModel> products) async {
-    for (var i = 0, n = products.length; i < n; i++) {
-      products[i].update(index: i + 1);
-    }
+  Future<void> reorderProducts(List<ProductModel> products) {
+    final updateData = <String, dynamic>{};
+    var i = 1;
+
+    products.forEach((product) {
+      updateData.addAll(ProductObject.build({'index': i++}).diff(product));
+    });
 
     notifyListeners();
+
+    return Database.instance.update(Collections.menu, updateData);
   }
 
   void updateProduct(ProductModel product) {
     if (!products.containsKey(product.id)) {
       products[product.id] = product;
-      final updateData = {
-        '$id.products.${product.id}': product.toMap().output()
-      };
 
+      final updateData = {product.prefix: product.toMap().output()};
       Database.instance.update(Collections.menu, updateData);
     }
-    notifyListeners();
-  }
-
-  void removeProduct(String productId) {
-    products.remove(productId);
-
-    Database.instance.update(Collections.menu, {
-      '$id.products.$productId': null,
-    });
 
     notifyListeners();
   }
 
-  void productChanged() {
+  void removeProduct(ProductModel product) {
+    products.remove(product.id);
+
+    Database.instance.update(Collections.menu, {product.prefix: null});
+
     notifyListeners();
   }
 
-  // HELPER
+  // void productChanged() {
+  //   notifyListeners();
+  // }
 
-  Map<String, dynamic> _getUpdateData({
-    String name,
-    int index,
-  }) {
-    final updateData = <String, dynamic>{};
-    if (index != null && index != this.index) {
-      this.index = index;
-      updateData['$id.index'] = index;
-    }
-    if (name != null && name != this.name) {
-      this.name = name;
-      updateData['$id.name'] = name;
-    }
-    return updateData;
-  }
-
-  ProductModel operator [](String name) => products[name];
-
-  // GETTER
-
-  ProductModel getProduct(String productId) {
-    try {
-      return products.values.firstWhere((e) => e.id == productId);
-    } catch (e) {
-      return null;
-    }
-  }
+  ProductModel operator [](String id) => products[id];
 
   List<ProductModel> get productList {
     final productList = products.values.toList();
@@ -155,7 +115,7 @@ class CatalogModel extends ChangeNotifier {
 
   int get newIndex {
     var maxIndex = 0;
-    products.forEach((key, product) {
+    products.forEach((id, product) {
       if (product.index > maxIndex) {
         maxIndex = product.index;
       }
@@ -171,8 +131,7 @@ class CatalogModel extends ChangeNotifier {
     ]);
   }
 
-  bool get isEmpty => length == 0;
-  bool get isNotEmpty => length != 0;
-  bool get isReady => name != null;
+  bool get isEmpty => products.isEmpty;
+  bool get isNotEmpty => products.isNotEmpty;
   int get length => products.length;
 }

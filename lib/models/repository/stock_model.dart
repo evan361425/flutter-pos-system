@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/maps/order_map.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
@@ -41,7 +41,7 @@ class StockModel extends ChangeNotifier {
     }
   }
 
-  void order(OrderMap data) {
+  void order(OrderObject data) {
     final amounts = <String, num>{};
 
     data.products.forEach((product) {

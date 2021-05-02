@@ -3,14 +3,14 @@ import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 
-class OrderMap {
+class OrderObject {
   num paid;
   final num totalPrice;
   final int totalCount;
   final DateTime createdAt;
-  final Iterable<OrderProductMap> products;
+  final Iterable<OrderProductObject> products;
 
-  OrderMap({
+  OrderObject({
     this.paid,
     this.totalPrice,
     this.totalCount,
@@ -55,29 +55,29 @@ class OrderMap {
     };
   }
 
-  factory OrderMap.build(Map<String, dynamic> data) {
+  factory OrderObject.build(Map<String, dynamic> data) {
     if (data == null) return null;
 
     final List<Map<String, dynamic>> products = data['products'];
 
-    return OrderMap(
+    return OrderObject(
       paid: data['paid'],
       totalPrice: data['totalPrice'],
       totalCount: data['totalCount'],
-      products: products.map((product) => OrderProductMap.input(product)),
+      products: products.map((product) => OrderProductObject.input(product)),
     );
   }
 }
 
-class OrderProductMap {
+class OrderProductObject {
   final num singlePrice;
   final int count;
   final String productId;
   final String productName;
   final bool isDiscount;
-  final Map<String, OrderIngredientMap> ingredients;
+  final Map<String, OrderIngredientObject> ingredients;
 
-  OrderProductMap({
+  OrderProductObject({
     @required this.singlePrice,
     @required this.count,
     @required this.productId,
@@ -97,8 +97,8 @@ class OrderProductMap {
     };
   }
 
-  factory OrderProductMap.input(Map<String, dynamic> data) {
-    return OrderProductMap(
+  factory OrderProductObject.input(Map<String, dynamic> data) {
+    return OrderProductObject(
       singlePrice: data['singlePrice'],
       count: data['count'],
       productId: data['productId'],
@@ -106,13 +106,13 @@ class OrderProductMap {
       isDiscount: data['isDiscount'],
       ingredients: {
         for (var ingredient in data['ingredients'])
-          ingredient['ingredientId']: OrderIngredientMap.input(ingredient)
+          ingredient['ingredientId']: OrderIngredientObject.input(ingredient)
       },
     );
   }
 }
 
-class OrderIngredientMap {
+class OrderIngredientObject {
   final String name;
   final String ingredientId;
   int price;
@@ -120,7 +120,7 @@ class OrderIngredientMap {
   num cost;
   String quantityId;
 
-  OrderIngredientMap({
+  OrderIngredientObject({
     @required this.name,
     @required this.ingredientId,
     this.price,
@@ -152,8 +152,8 @@ class OrderIngredientMap {
     };
   }
 
-  factory OrderIngredientMap.input(Map<String, dynamic> data) {
-    return OrderIngredientMap(
+  factory OrderIngredientObject.input(Map<String, dynamic> data) {
+    return OrderIngredientObject(
       name: data['name'],
       ingredientId: data['ingredientId'],
       price: data['price'],

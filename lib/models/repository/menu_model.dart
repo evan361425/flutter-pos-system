@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/services/database.dart';
 
 import 'quantity_repo.dart';
@@ -63,7 +64,7 @@ class MenuModel extends ChangeNotifier {
 
   ProductModel getProduct(String productId) {
     for (var catalog in catalogs.values) {
-      final product = catalog.getProduct(productId);
+      final product = catalog[productId];
       if (product != null) {
         return product;
       }
@@ -140,12 +141,17 @@ class MenuModel extends ChangeNotifier {
     }
   }
 
-  Future<void> reorderCatalogs(List<CatalogModel> catalogs) async {
-    for (var i = 0, n = catalogs.length; i < n; i++) {
-      catalogs[i].update(index: i + 1);
-    }
+  Future<void> reorderCatalogs(List<CatalogModel> catalogs) {
+    final updateData = <String, dynamic>{};
+    var i = 1;
+
+    catalogs.forEach((catalog) {
+      updateData.addAll(CatalogObject.build({'index': i++}).diff(catalog));
+    });
 
     notifyListeners();
+
+    return Database.instance.update(Collections.menu, updateData);
   }
 
   void setUpStock(StockModel stock, QuantityRepo quantities) {

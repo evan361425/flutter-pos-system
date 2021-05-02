@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:possystem/models/maps/menu_map.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 
@@ -8,7 +8,7 @@ import 'product_model.dart';
 
 class ProductIngredientModel {
   ProductIngredientModel({
-    this.ingredientId,
+    this.id,
     this.ingredient,
     this.product,
     num amount,
@@ -17,19 +17,19 @@ class ProductIngredientModel {
   })  : quantities = quantities ?? {},
         amount = amount ?? 0,
         cost = cost ?? 0 {
-    ingredientId ??= ingredient.id;
+    id ??= ingredient.id;
   }
 
   final Map<String, ProductQuantityModel> quantities;
   ProductModel product;
-  String ingredientId;
+  String id;
   num amount;
   num cost;
   IngredientModel ingredient;
 
-  factory ProductIngredientModel.fromMap(ProductIngredientMap map) {
+  factory ProductIngredientModel.fromMap(ProductIngredientObject map) {
     return ProductIngredientModel(
-      ingredientId: map.id,
+      id: map.id,
       amount: map.amount,
       cost: map.cost,
       quantities: {
@@ -39,12 +39,8 @@ class ProductIngredientModel {
     );
   }
 
-  factory ProductIngredientModel.empty(ProductModel product) {
-    return ProductIngredientModel(product: product, ingredientId: null);
-  }
-
-  ProductIngredientMap toMap() {
-    return ProductIngredientMap(
+  ProductIngredientObject toMap() {
+    return ProductIngredientObject(
       id: id,
       cost: cost,
       amount: amount,
@@ -58,54 +54,39 @@ class ProductIngredientModel {
     print('update quantity ${quantity.id}');
     if (!quantities.containsKey(quantity.id)) {
       quantities[quantity.id] = quantity;
-      final updateData = {
-        '$prefixQuantities.${quantity.id}': quantity.toMap(),
-      };
 
+      final updateData = {
+        '$prefixQuantities.${quantity.id}': quantity.toMap().output(),
+      };
       Database.instance.update(Collections.menu, updateData);
     }
 
-    product.ingredientChanged();
+    // product.ingredientChanged();
   }
 
-  ProductQuantityModel removeQuantity(String id) {
+  void removeQuantity(ProductQuantityModel quantity) {
     print('remove quantity $id');
+    quantities.remove(quantity.id);
 
-    final quantity = quantities.remove(id);
-    final updateData = {'$prefixQuantities.$id': null};
+    final updateData = {'$prefixQuantities.${quantity.id}': null};
     Database.instance.update(Collections.menu, updateData);
-    product.ingredientChanged();
 
-    return quantity;
+    // product.ingredientChanged();
   }
 
-  void update({
-    num amount,
-    num cost,
-    IngredientModel ingredient,
-  }) {
-    final updateData = <String, dynamic>{};
-    if (amount != this.amount) {
-      this.amount = amount;
-      updateData['$prefix.amount'] = amount;
-    }
-    if (cost != this.cost) {
-      this.cost = cost;
-      updateData['$prefix.cost'] = cost;
-    }
-    // after all property set
-    if (id != ingredient.id) {
-      product.removeIngredient(id);
+  Future<void> update(ProductIngredientObject ingredient) {
+    final updateData = ingredient.diff(this);
 
-      ingredientId = ingredient.id;
-      this.ingredient = ingredient;
+    if (updateData.isEmpty) return Future.value();
 
-      updateData.clear();
-    }
+    // notify
 
-    if (updateData.isEmpty) return;
+    return Database.instance.update(Collections.menu, updateData);
+  }
 
-    Database.instance.update(Collections.menu, updateData);
+  void changeIngredient(String id) {
+    this.id = id;
+    ingredient = StockModel.instance[id];
   }
 
   // HELPER
@@ -115,9 +96,8 @@ class ProductIngredientModel {
 
   // GETTER
 
-  bool get isReady => ingredientId != null;
-  bool get isNotReady => ingredientId == null;
-  String get id => ingredientId;
+  bool get isReady => id != null;
+  bool get isNotReady => id == null;
   String get prefix => '${product.prefix}.ingredients.$id';
   String get prefixQuantities => '$prefix.quantities';
 }

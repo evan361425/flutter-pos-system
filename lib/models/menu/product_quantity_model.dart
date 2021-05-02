@@ -1,36 +1,36 @@
-import 'package:possystem/models/maps/menu_map.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
 class ProductQuantityModel {
   ProductQuantityModel({
-    this.quantityId,
+    this.id,
     this.quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : assert(quantity != null || quantityId != null) {
-    quantityId ??= quantity.id;
+  }) : assert(quantity != null || id != null) {
+    id ??= quantity.id;
   }
 
-  String quantityId;
+  String id;
   num amount;
   num additionalCost;
   num additionalPrice;
   QuantityModel quantity;
 
-  factory ProductQuantityModel.fromMap(ProductQuantityMap map) {
+  factory ProductQuantityModel.fromMap(ProductQuantityObject map) {
     return ProductQuantityModel(
-      quantityId: map.id,
+      id: map.id,
       amount: map.amount,
       additionalCost: map.additionalCost,
       additionalPrice: map.additionalPrice,
     );
   }
 
-  ProductQuantityMap toMap() {
-    return ProductQuantityMap(
+  ProductQuantityObject toMap() {
+    return ProductQuantityObject(
       id: id,
       amount: amount,
       additionalCost: additionalCost,
@@ -70,10 +70,10 @@ class ProductQuantityModel {
       updateData['$prefix.additionalPrice'] = additionalPrice;
     }
     // final
-    if (quantity.quantityId != quantityId) {
-      ingredient.removeQuantity(id);
+    if (quantity.id != id) {
+      ingredient.removeQuantity(quantity);
 
-      quantityId = quantity.quantityId;
+      id = quantity.id;
       this.quantity = quantity.quantity;
 
       updateData.clear();
@@ -88,7 +88,5 @@ class ProductQuantityModel {
     return other is ProductQuantityModel ? other.id == id : false;
   }
 
-  bool get isNotReady => quantityId == null;
-
-  String get id => quantityId;
+  bool get isNotReady => id == null;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
-import 'package:possystem/models/maps/menu_map.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/services/database.dart';
 
 import 'catalog_model.dart';
@@ -9,30 +9,28 @@ import 'product_ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
   ProductModel({
+    @required this.index,
     @required this.name,
     this.catalog,
-    this.index = 0,
-    this.price = 0,
     this.cost = 0,
+    this.price = 0,
+    DateTime createdAt,
     String id,
     Map<String, ProductIngredientModel> ingredients,
-    DateTime createdAt,
   })  : createdAt = createdAt ?? DateTime.now(),
         ingredients = ingredients ?? {},
         id = id ?? Util.uuidV4();
 
-  String name;
   int index;
-  num price;
-  num cost;
+  String name;
   CatalogModel catalog;
+  num cost;
+  num price;
+  final DateTime createdAt;
   final String id;
   final Map<String, ProductIngredientModel> ingredients;
-  final DateTime createdAt;
 
-  // I/O
-
-  factory ProductModel.fromMap(ProductMap map) {
+  factory ProductModel.fromMap(ProductObject map) {
     final product = ProductModel(
       id: map.id,
       name: map.name,
@@ -53,8 +51,8 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  ProductMap toMap() {
-    return ProductMap(
+  ProductObject toMap() {
+    return ProductObject(
       id: id,
       name: name,
       index: index,
@@ -65,91 +63,43 @@ class ProductModel extends ChangeNotifier {
     );
   }
 
-  // STATE CHANGE
+  Future<void> update(ProductObject product) {
+    final updateData = product.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    notifyListeners();
+
+    return Database.instance.update(Collections.menu, updateData);
+  }
 
   void updateIngredient(ProductIngredientModel ingredient) {
     if (!ingredients.containsKey(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
-      final updateData = {ingredient.prefix: ingredient.toMap()};
 
+      final updateData = {ingredient.prefix: ingredient.toMap().output()};
       Database.instance.update(Collections.menu, updateData);
     }
-    ingredientChanged();
-  }
-
-  ProductIngredientModel removeIngredient(String id) {
-    print('remove product ingredient $id');
-
-    final ingredient = ingredients.remove(id);
-    final updateData = {'$prefix.ingredients.$id': null};
-    Database.instance.update(Collections.menu, updateData);
-    ingredientChanged();
-
-    return ingredient;
-  }
-
-  void update({
-    String name,
-    int index,
-    num price,
-    num cost,
-  }) {
-    final updateData = _getUpdateData(
-      name: name,
-      index: index,
-      price: price,
-      cost: cost,
-    );
-
-    if (updateData.isEmpty) return;
-
-    Database.instance.update(Collections.menu, updateData);
 
     notifyListeners();
   }
 
-  void ingredientChanged() {
-    catalog.productChanged();
+  void removeIngredient(ProductIngredientModel ingredient) {
+    print('remove product ingredient ${ingredient.id}');
+    ingredients.remove(id);
+
+    Database.instance.update(Collections.menu, {ingredient.prefix: null});
+
     notifyListeners();
-  }
-
-  // HELPER
-
-  Map<String, dynamic> _getUpdateData({
-    String name,
-    int index,
-    num price,
-    num cost,
-  }) {
-    final updateData = <String, dynamic>{};
-    if (index != null && index != this.index) {
-      this.index = index;
-      updateData['$prefix.index'] = index;
-    }
-    if (price != null && price != this.price) {
-      this.price = price;
-      updateData['$prefix.price'] = price;
-    }
-    if (cost != null && cost != this.cost) {
-      this.cost = cost;
-      updateData['$prefix.cost'] = cost;
-    }
-    if (name != null && name != this.name) {
-      this.name = name;
-      updateData['$prefix.name'] = name;
-    }
-    return updateData;
   }
 
   bool has(String id) => ingredients.containsKey(id);
-  ProductIngredientModel operator [](String id) => ingredients[id];
 
-  // GETTER
+  ProductIngredientModel operator [](String id) => ingredients[id];
 
   Iterable<ProductIngredientModel> get ingredientsWithQuantity {
     return ingredients.values.where((e) => e.quantities.isNotEmpty);
   }
 
-  bool get isReady => name != null;
   String get prefix => '${catalog.id}.products.$id';
 }
