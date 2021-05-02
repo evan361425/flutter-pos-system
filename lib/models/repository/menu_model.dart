@@ -13,7 +13,10 @@ class MenuModel extends ChangeNotifier {
   static MenuModel get instance => _instance;
 
   MenuModel._constructor() {
-    loadFromDb();
+    Database.instance.get(Collections.menu).then((snapshot) {
+      buildFromMap(snapshot.data());
+      notifyListeners();
+    });
   }
 
   Map<String, CatalogModel> catalogs;
@@ -45,10 +48,7 @@ class MenuModel extends ChangeNotifier {
 
   void buildFromMap(Map<String, dynamic> data) {
     catalogs = {};
-    if (data == null) {
-      notifyListeners();
-      return;
-    }
+    if (data == null) return;
 
     try {
       data.forEach((key, value) {
@@ -78,13 +78,6 @@ class MenuModel extends ChangeNotifier {
 
   bool hasProduct(String name) => !catalogs.values.every((catalog) =>
       catalog.products.values.every((product) => product.name != name));
-
-  Future<void> loadFromDb() async {
-    var snapshot = await Database.instance.get(Collections.menu);
-    buildFromMap(snapshot.data());
-
-    notifyListeners();
-  }
 
   List<ProductIngredientModel> productContainsIngredient(String id) {
     final result = <ProductIngredientModel>[];
@@ -174,15 +167,11 @@ class MenuModel extends ChangeNotifier {
     stockMode = true;
   }
 
-  Map<String, Map<String, dynamic>> toMap() {
-    return {for (var entry in catalogs.entries) entry.key: entry.value.toMap()};
-  }
-
   void updateCatalog(CatalogModel catalog) {
     if (!has(catalog.id)) {
       catalogs[catalog.id] = catalog;
 
-      final updateData = {catalog.id: catalog.toMap()};
+      final updateData = {catalog.id: catalog.toMap().output()};
       Database.instance.update(Collections.menu, updateData);
     }
     notifyListeners();

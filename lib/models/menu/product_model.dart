@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/maps/menu_map.dart';
 import 'package:possystem/services/database.dart';
 
 import 'catalog_model.dart';
@@ -9,7 +10,7 @@ import 'product_ingredient_model.dart';
 class ProductModel extends ChangeNotifier {
   ProductModel({
     @required this.name,
-    @required this.catalog,
+    this.catalog,
     this.index = 0,
     this.price = 0,
     this.cost = 0,
@@ -24,55 +25,44 @@ class ProductModel extends ChangeNotifier {
   int index;
   num price;
   num cost;
+  CatalogModel catalog;
   final String id;
   final Map<String, ProductIngredientModel> ingredients;
-  final CatalogModel catalog;
   final DateTime createdAt;
 
   // I/O
 
-  factory ProductModel.fromMap({
-    CatalogModel catalog,
-    Map<String, dynamic> data,
-  }) {
-    final oriIngredients = data['ingredients'];
-    final ingredients = <String, ProductIngredientModel>{};
+  factory ProductModel.fromMap(ProductMap map) {
     final product = ProductModel(
-      catalog: catalog,
-      ingredients: ingredients,
-      id: data['id'],
-      name: data['name'],
-      index: data['index'],
-      price: data['price'],
-      createdAt: data['createdAt'],
+      id: map.id,
+      name: map.name,
+      index: map.index,
+      price: map.price,
+      cost: map.cost,
+      createdAt: map.createdAt,
+      ingredients: {
+        for (var ingredient in map.ingredients)
+          ingredient.id: ProductIngredientModel.fromMap(ingredient)
+      },
     );
 
-    if (oriIngredients is Map) {
-      oriIngredients.forEach((final ingredientId, final ingredient) {
-        if (ingredient is Map) {
-          ingredients[ingredientId] = ProductIngredientModel.fromMap(
-            product: product,
-            ingredientId: ingredientId,
-            data: ingredient,
-          );
-        }
-      });
-    }
+    product.ingredients.values.forEach((e) {
+      e.product = product;
+    });
 
     return product;
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'index': index,
-      'price': price,
-      'cost': cost,
-      'createdAt': createdAt,
-      'ingredients': {
-        for (var entry in ingredients.entries) entry.key: entry.value.toMap()
-      }
-    };
+  ProductMap toMap() {
+    return ProductMap(
+      id: id,
+      name: name,
+      index: index,
+      price: price,
+      cost: cost,
+      createdAt: createdAt,
+      ingredients: ingredients.values.map((e) => e.toMap()),
+    );
   }
 
   // STATE CHANGE

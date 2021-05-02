@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/maps/menu_map.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
@@ -9,7 +10,7 @@ class ProductIngredientModel {
   ProductIngredientModel({
     this.ingredientId,
     this.ingredient,
-    @required this.product,
+    this.product,
     num amount,
     num cost,
     Map<String, ProductQuantityModel> quantities,
@@ -19,38 +20,22 @@ class ProductIngredientModel {
     ingredientId ??= ingredient.id;
   }
 
-  final ProductModel product;
   final Map<String, ProductQuantityModel> quantities;
+  ProductModel product;
   String ingredientId;
   num amount;
   num cost;
   IngredientModel ingredient;
 
-  factory ProductIngredientModel.fromMap({
-    ProductModel product,
-    Map<String, dynamic> data,
-    String ingredientId,
-  }) {
-    final quantitiesMap = data['quantities'];
-    final quantities = <String, ProductQuantityModel>{};
-
-    if (quantitiesMap is Map<String, Map>) {
-      quantitiesMap.forEach((quantityId, quantity) {
-        if (quantity is Map) {
-          quantities[quantityId] = ProductQuantityModel.fromMap(
-            quantityId,
-            quantity,
-          );
-        }
-      });
-    }
-
+  factory ProductIngredientModel.fromMap(ProductIngredientMap map) {
     return ProductIngredientModel(
-      product: product,
-      ingredientId: ingredientId,
-      amount: data['amount'],
-      cost: data['cost'],
-      quantities: quantities,
+      ingredientId: map.id,
+      amount: map.amount,
+      cost: map.cost,
+      quantities: {
+        for (var quantity in map.quantities)
+          quantity.id: ProductQuantityModel.fromMap(quantity)
+      },
     );
   }
 
@@ -58,14 +43,13 @@ class ProductIngredientModel {
     return ProductIngredientModel(product: product, ingredientId: null);
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'cost': cost,
-      'amount': amount,
-      'quantities': {
-        for (var entry in quantities.entries) entry.key: entry.value.toMap()
-      },
-    };
+  ProductIngredientMap toMap() {
+    return ProductIngredientMap(
+      id: id,
+      cost: cost,
+      amount: amount,
+      quantities: quantities.values.map((e) => e.toMap()),
+    );
   }
 
   // STATE CHANGE

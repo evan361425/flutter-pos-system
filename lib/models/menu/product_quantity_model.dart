@@ -1,3 +1,4 @@
+import 'package:possystem/models/maps/menu_map.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
@@ -19,28 +20,22 @@ class ProductQuantityModel {
   num additionalPrice;
   QuantityModel quantity;
 
-  factory ProductQuantityModel.fromMap(
-    String quantityId,
-    Map<String, dynamic> data,
-  ) {
+  factory ProductQuantityModel.fromMap(ProductQuantityMap map) {
     return ProductQuantityModel(
-      quantityId: quantityId,
-      amount: data['amount'],
-      additionalCost: data['additionalCost'],
-      additionalPrice: data['additionalPrice'],
+      quantityId: map.id,
+      amount: map.amount,
+      additionalCost: map.additionalCost,
+      additionalPrice: map.additionalPrice,
     );
   }
 
-  factory ProductQuantityModel.empty() {
-    return ProductQuantityModel(quantityId: null);
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'amount': amount,
-      'additionalCost': additionalCost,
-      'additionalPrice': additionalPrice,
-    };
+  ProductQuantityMap toMap() {
+    return ProductQuantityMap(
+      id: id,
+      amount: amount,
+      additionalCost: additionalCost,
+      additionalPrice: additionalPrice,
+    );
   }
 
   // STATE CHANGE

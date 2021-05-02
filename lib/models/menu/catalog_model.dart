@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/maps/menu_map.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -30,27 +31,22 @@ class CatalogModel extends ChangeNotifier {
   // I/O
 
   factory CatalogModel.fromMap(Map<String, dynamic> data) {
-    final oriProducts = data['products'];
-    final products = <String, ProductModel>{};
+    final map = CatalogMap.build(data);
 
     final catalog = CatalogModel(
-      id: data['id'],
-      name: data['name'],
-      index: data['index'],
-      createdAt: data['createdAt'],
-      products: products,
+      id: map.id,
+      index: map.index,
+      name: map.name,
+      createdAt: map.createdAt,
+      products: {
+        for (var product in map.products)
+          product.id: ProductModel.fromMap(product)
+      },
     );
 
-    if (oriProducts is Map) {
-      oriProducts.forEach((final key, final product) {
-        if (key is String && product is Map) {
-          products[key] = ProductModel.fromMap(
-            catalog: catalog,
-            data: {'id': key, ...product},
-          );
-        }
-      });
-    }
+    catalog.products.values.forEach((e) {
+      e.catalog = catalog;
+    });
 
     return catalog;
   }
@@ -59,15 +55,14 @@ class CatalogModel extends ChangeNotifier {
     return CatalogModel(name: null, id: null);
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'index': index,
-      'createdAt': createdAt,
-      'products': {
-        for (var entry in products.entries) entry.key: entry.value.toMap()
-      },
-    };
+  CatalogMap toMap() {
+    return CatalogMap(
+      id: id,
+      index: index,
+      name: name,
+      createdAt: createdAt,
+      products: products.values.map((e) => e.toMap()),
+    );
   }
 
   // STATE CHANGE
@@ -99,7 +94,9 @@ class CatalogModel extends ChangeNotifier {
   void updateProduct(ProductModel product) {
     if (!products.containsKey(product.id)) {
       products[product.id] = product;
-      final updateData = {'$id.products.${product.id}': product.toMap()};
+      final updateData = {
+        '$id.products.${product.id}': product.toMap().output()
+      };
 
       Database.instance.update(Collections.menu, updateData);
     }
