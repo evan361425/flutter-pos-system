@@ -14,28 +14,34 @@ class StockMetadata extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Icon(
-          Icons.shopping_cart_sharp,
-          size: captionStyle.fontSize,
-          color: captionStyle.color,
-        ),
         Flexible(
           fit: FlexFit.tight,
-          flex: 2,
-          child: Text('上次補貨後的數量', style: captionStyle),
+          child: Row(
+            children: [
+              Icon(
+                Icons.store_sharp,
+                size: captionStyle.fontSize,
+                color: captionStyle.color,
+              ),
+              Text(
+                '現在庫存的數量',
+                style: captionStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+              MetaBlock(),
+              Icon(
+                Icons.shopping_cart_sharp,
+                size: captionStyle.fontSize,
+                color: captionStyle.color,
+              ),
+              Text(
+                '上次補貨後的數量',
+                style: captionStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
-        MetaBlock(),
-        Icon(
-          Icons.store_sharp,
-          size: captionStyle.fontSize,
-          color: captionStyle.color,
-        ),
-        Flexible(
-          fit: FlexFit.tight,
-          flex: 2,
-          child: Text('現在庫存的數量', style: captionStyle),
-        ),
-        Spacer(),
         Padding(
           padding: const EdgeInsets.only(right: 4.0),
           child: Tooltip(

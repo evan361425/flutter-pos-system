@@ -56,9 +56,9 @@ class OrderActions extends StatelessWidget {
   ) async {
     switch (action) {
       case OrderActionTypes.leave_pop:
-        return CartModel.instance.leaveHistory();
+        return CartModel.instance.leaveHistoryMode();
       case OrderActionTypes.leave:
-        return showLeaveConfirm(context);
+        return Navigator.of(context).pop();
       case OrderActionTypes.pop:
         if (!await showPopConfirm(context)) return;
 
@@ -87,15 +87,6 @@ class OrderActions extends StatelessWidget {
           showSnackbar(context, '暫存檔案的次數超過上限');
         }
     }
-  }
-
-  static Future<void> showLeaveConfirm(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (_) => ConfirmDialog(title: '確定要離開點餐頁面嗎？'),
-    );
-
-    if (result == true) Navigator.of(context).pop();
   }
 
   static Future<bool> showPopConfirm(BuildContext context) async {

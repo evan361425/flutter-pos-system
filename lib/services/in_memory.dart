@@ -39,14 +39,18 @@ class InMemory extends Database<InMemorySnapshot> {
       queue[QueueValue].add(data);
       queue[QueueLength]++;
     }
-    print('${CollectionName[collection]} length: ${queue[QueueLength]}');
+    print(
+        '${CollectionName[collection]} length: ${_data[collection][QueueLength]}');
   }
 
   @override
   Future<InMemorySnapshot> pop(Collections collection, [remove = true]) async {
-    final queue = _data[collection];
-    final List<Map<String, dynamic>> data =
-        queue == null ? List.empty() : queue[QueueValue];
+    final queue = _data[collection] ??
+        {
+          QueueValue: [],
+          QueueLength: 0,
+        };
+    final List<Map<String, dynamic>> data = queue[QueueValue];
     final value =
         data.isEmpty ? null : (remove ? data.removeLast() : data.last);
 

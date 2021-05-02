@@ -49,33 +49,36 @@ void main() {
 }
 
 final DefaultData = <Collections, Map<String, dynamic>>{
-  Collections.ingredient: {
-    'i1': {
-      'name': 'cheese',
-      'currentAmount': 20.0,
-      'warningAmount': 20.0,
-      'alertAmount': 20.0,
-      'lastAmount': 20.0,
-    },
-    'i2': {
-      'name': 'bread',
-    },
-    'i3': {
-      'name': 'vegetable',
-    },
-    'i4': {
-      'name': 'some-other-very-long-namesome-other-very-long-name 👎👎👎',
-    },
-    'i5': {'name': 'i5'},
-    'i6': {'name': 'i6'},
-    'i7': {'name': 'i7'},
-    'i8': {'name': 'i8'},
-    'i9': {'name': 'i9'},
-    'ii5': {'name': 'i5'},
-    'ii6': {'name': 'i6'},
-    'ii7': {'name': 'i7'},
-    'ii8': {'name': 'i8'},
-    'ii9': {'name': 'i9'},
+  Collections.stock: {
+    'updatedTime': '2021-03-20 00:00:00.000',
+    'ingredients': {
+      'i1': {
+        'name': 'cheese',
+        'currentAmount': 20.0,
+        'warningAmount': 20.0,
+        'alertAmount': 20.0,
+        'lastAmount': 20.0,
+      },
+      'i2': {
+        'name': 'bread',
+      },
+      'i3': {
+        'name': 'vegetable',
+      },
+      'i4': {
+        'name': 'some-other-very-long-namesome-other-very-long-name 👎👎👎',
+      },
+      'i5': {'name': 'i5'},
+      'i6': {'name': 'i6'},
+      'i7': {'name': 'i7'},
+      'i8': {'name': 'i8'},
+      'i9': {'name': 'i9'},
+      'ii5': {'name': 'i5'},
+      'ii6': {'name': 'i6'},
+      'ii7': {'name': 'i7'},
+      'ii8': {'name': 'i8'},
+      'ii9': {'name': 'i9'},
+    }
   },
   Collections.menu: {
     'c1': {

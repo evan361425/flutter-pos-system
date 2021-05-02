@@ -4,16 +4,12 @@ import 'package:possystem/services/database.dart';
 
 class StockBatchRepo extends ChangeNotifier {
   StockBatchRepo() {
-    loadFromDb();
+    Database.instance
+        .get(Collections.stock_batch)
+        .then((snapshot) => buildFromMap(snapshot.data()));
   }
 
   Map<String, StockBatchModel> batches;
-
-  // I/O
-  Future<void> loadFromDb() async {
-    var snapshot = await Database.instance.get(Collections.stock_batch);
-    buildFromMap(snapshot.data());
-  }
 
   void buildFromMap(Map<String, dynamic> data) {
     batches = {};

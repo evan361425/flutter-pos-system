@@ -70,7 +70,7 @@ class StockBatchActions extends StatelessWidget {
 
     if (confirmed != true) return;
 
-    selector.currentState.currentBatch.apply(context);
+    selector.currentState.currentBatch.apply();
     selector.currentState.clear();
   }
 }

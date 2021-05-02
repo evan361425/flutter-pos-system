@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientModel extends ChangeNotifier {
@@ -60,42 +61,39 @@ class IngredientModel extends ChangeNotifier {
     final updateData = <String, dynamic>{};
     if (name != null && name != this.name) {
       this.name = name;
-      updateData['$id.name'] = name;
+      updateData['$ColumnIngredient$id.name'] = name;
     }
     if (amount != null && amount != currentAmount) {
       currentAmount = amount;
-      updateData['$id.currentAmount'] = amount;
+      updateData['$ColumnIngredient.$id.currentAmount'] = amount;
     }
 
     if (updateData.isNotEmpty) {
-      Database.instance.update(Collections.ingredient, updateData);
+      Database.instance.update(Collections.stock, updateData);
 
       notifyListeners();
     }
   }
 
   void addAmount(num amount) {
-    Database.instance.update(
-      Collections.ingredient,
-      addAmountUpdateData(amount),
-    );
+    StockModel.instance.applyIngredients({id: amount});
   }
 
   Map<String, dynamic> addAmountUpdateData(num amount) {
-    if (amount > 0) lastAddAmount = amount;
-
-    lastAmount = currentAmount;
-
-    if (currentAmount == null) {
-      currentAmount = amount > 0 ? amount : 0;
+    if (amount > 0) {
+      lastAddAmount = amount;
+      currentAmount = (currentAmount ?? 0) + amount;
+      lastAmount = currentAmount;
     } else {
-      currentAmount = max(currentAmount + amount, 0);
+      currentAmount = max((currentAmount ?? 0) + amount, 0);
     }
 
+    print('$name current: $currentAmount, last: $lastAmount');
+
     return {
-      '$id.currentAmount': currentAmount,
-      '$id.lastAddAmount': lastAddAmount,
-      '$id.lastAmount': lastAmount,
+      '$ColumnIngredient.$id.currentAmount': currentAmount,
+      '$ColumnIngredient.$id.lastAddAmount': lastAddAmount,
+      '$ColumnIngredient.$id.lastAmount': lastAmount,
     };
   }
 

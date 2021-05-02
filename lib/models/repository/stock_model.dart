@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/maps/order_map.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sprintf/sprintf.dart';
@@ -9,55 +10,84 @@ class StockModel extends ChangeNotifier {
   static StockModel get instance => _instance;
 
   StockModel._constructor() {
-    loadFromDb();
+    Database.instance.get(Collections.stock).then((snapsnot) {
+      final data = snapsnot.data();
+      buildFromMap(data);
+      notifyListeners();
+    });
   }
 
   Map<String, IngredientModel> ingredients;
   DateTime updatedTime;
 
-  // I/O
-  Future<void> loadFromDb() async {
-    var snapshot = await Database.instance.get(Collections.ingredient);
-    buildFromMap(snapshot.data());
-  }
-
   void buildFromMap(Map<String, dynamic> data) {
     ingredients = {};
-    if (data == null) {
-      notifyListeners();
-      return;
+    if (data == null) return;
+
+    try {
+      updatedTime = DateTime.parse(data[ColumnUpdatedTime]);
+    } catch (e) {
+      updatedTime = null;
     }
 
     try {
-      data.forEach((key, value) {
+      data[ColumnIngredient].forEach((key, value) {
         if (value is Map) {
           ingredients[key] = IngredientModel.fromMap(id: key, data: value);
         }
       });
-      notifyListeners();
     } catch (e) {
       print(e);
     }
+  }
+
+  void order(OrderMap data) {
+    final amounts = <String, num>{};
+
+    data.products.forEach((product) {
+      product.ingredients.forEach((id, ingredient) {
+        if (amounts.containsKey(id)) {
+          amounts[id] -= ingredient.amount;
+        } else {
+          amounts[id] = -ingredient.amount;
+        }
+      });
+    });
+
+    applyIngredients(amounts);
   }
 
   void updateIngredient(IngredientModel ingredient) {
     if (!hasContain(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 
-      final updateData = {'${ingredient.id}': ingredient.toMap()};
-      Database.instance.set(Collections.ingredient, updateData);
+      final updateData = {
+        '$ColumnIngredient.${ingredient.id}': ingredient.toMap(),
+      };
+      Database.instance.set(Collections.stock, updateData);
       notifyListeners();
     }
   }
 
   void removeIngredient(String id) {
     ingredients.remove(id);
-    Database.instance.update(Collections.ingredient, {id: null});
+    Database.instance.update(Collections.stock, {
+      '$ColumnIngredient$id': null,
+    });
     notifyListeners();
   }
 
-  void changedIngredient() {
+  void applyIngredients(Map<String, num> amounts) {
+    final updateData = <String, dynamic>{};
+    amounts.forEach((ingredientId, amount) {
+      updateData.addAll(
+        ingredients[ingredientId].addAmountUpdateData(amount),
+      );
+    });
+
     updatedTime = DateTime.now();
+    updateData[ColumnUpdatedTime] = updatedTime.toString();
+
     notifyListeners();
   }
 
@@ -80,3 +110,6 @@ class StockModel extends ChangeNotifier {
           updatedTime.day,
         ]);
 }
+
+const ColumnUpdatedTime = 'updatedTime';
+const ColumnIngredient = 'ingredients';

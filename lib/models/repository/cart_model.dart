@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/histories/order_history.dart';
+import 'package:possystem/models/maps/order_map.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
+import 'package:possystem/models/repository/stock_model.dart';
 
 class CartModel extends ChangeNotifier {
   static final CartModel _instance = CartModel._constructor();
@@ -39,7 +41,7 @@ class CartModel extends ChangeNotifier {
     // disallow before stash, so need minus 1
     if (await OrderHistory.instance.getStashLength() > 4) return false;
 
-    OrderHistory.instance.stash();
+    OrderHistory.instance.stash(output());
     clear();
     return true;
   }
@@ -57,12 +59,16 @@ class CartModel extends ChangeNotifier {
     paid ??= price;
     if (paid < price) throw 'too low';
 
+    // if history mode, remove last order info
     if (isHistoryMode) {
       await OrderHistory.instance.pop(true);
     }
 
-    OrderHistory.instance.push(paid);
-    leaveHistory();
+    final data = output(paid);
+
+    OrderHistory.instance.push(data);
+    StockModel.instance.order(data);
+    leaveHistoryMode();
   }
 
   Future<bool> popHistory() async {
@@ -74,9 +80,18 @@ class CartModel extends ChangeNotifier {
     return true;
   }
 
-  void leaveHistory() {
+  void leaveHistoryMode() {
     isHistoryMode = false;
     clear();
+  }
+
+  OrderMap output([num paid]) {
+    return OrderMap(
+      paid: paid,
+      totalPrice: totalPrice,
+      totalCount: totalCount,
+      products: products.map<OrderProductMap>((e) => e.toMap()),
+    );
   }
 
   int get totalCount {

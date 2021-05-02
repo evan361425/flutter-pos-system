@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:possystem/models/maps/order_map.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
@@ -27,10 +27,10 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
-  ProductMap toMap() {
-    final allIngredients = <String, _IngredientMap>{
+  OrderProductMap toMap() {
+    final allIngredients = <String, OrderIngredientMap>{
       for (var ingredientEntry in product.ingredients.entries)
-        ingredientEntry.key: _IngredientMap(
+        ingredientEntry.key: OrderIngredientMap(
           ingredientId: ingredientEntry.key,
           name: ingredientEntry.value.ingredient.name,
           cost: ingredientEntry.value.cost,
@@ -46,7 +46,7 @@ class OrderProductModel {
       );
     });
 
-    return ProductMap(
+    return OrderProductMap(
       singlePrice: singlePrice,
       count: count,
       productId: product.id,
@@ -133,99 +133,4 @@ class OrderProductModel {
 enum OrderProductListenerTypes {
   count,
   selection,
-}
-
-class ProductMap {
-  final num singlePrice;
-  final int count;
-  final String productId;
-  final String productName;
-  final bool isDiscount;
-  final Map<String, _IngredientMap> ingredients;
-
-  ProductMap({
-    @required this.singlePrice,
-    @required this.count,
-    @required this.productId,
-    @required this.productName,
-    @required this.isDiscount,
-    @required this.ingredients,
-  });
-
-  Map<String, dynamic> output() {
-    return {
-      'singlePrice': singlePrice,
-      'count': count,
-      'productId': productId,
-      'productName': productName,
-      'isDiscount': isDiscount,
-      'ingredients': ingredients.values.map((e) => e.output()),
-    };
-  }
-
-  factory ProductMap.input(Map<String, dynamic> data) {
-    return ProductMap(
-      singlePrice: data['singlePrice'],
-      count: data['count'],
-      productId: data['productId'],
-      productName: data['productName'],
-      isDiscount: data['isDiscount'],
-      ingredients: {
-        for (var ingredient in data['ingredients'])
-          ingredient['ingredientId']: _IngredientMap.input(ingredient)
-      },
-    );
-  }
-}
-
-class _IngredientMap {
-  final String name;
-  final String ingredientId;
-  int price;
-  int amount;
-  num cost;
-  String quantityId;
-
-  _IngredientMap({
-    @required this.name,
-    @required this.ingredientId,
-    this.price,
-    @required this.amount,
-    @required this.cost,
-    this.quantityId,
-  });
-
-  void update({
-    @required price,
-    @required amount,
-    @required cost,
-    @required quantityId,
-  }) {
-    this.price = price;
-    this.amount = amount;
-    this.cost = cost;
-    this.quantityId = quantityId;
-  }
-
-  Map<String, dynamic> output() {
-    return {
-      'name': name,
-      'ingredientId': ingredientId,
-      'price': price,
-      'amount': amount,
-      'cost': cost,
-      'quantityId': quantityId,
-    };
-  }
-
-  factory _IngredientMap.input(Map<String, dynamic> data) {
-    return _IngredientMap(
-      name: data['name'],
-      ingredientId: data['ingredientId'],
-      price: data['price'],
-      amount: data['amount'],
-      cost: data['cost'],
-      quantityId: data['quantityId'],
-    );
-  }
 }

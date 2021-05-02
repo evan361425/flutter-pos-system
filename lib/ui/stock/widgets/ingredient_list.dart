@@ -34,7 +34,6 @@ class IngredientList extends StatelessWidget {
     void updateAmount(num amount) {
       if (amount != null) {
         ingredient.addAmount(amount);
-        context.read<StockModel>()?.changedIngredient();
       }
     }
 
@@ -65,14 +64,14 @@ class IngredientList extends StatelessWidget {
       subtitle: Row(
         children: <Widget>[
           IconText(
-            text: ingredient.lastAmount?.toString() ?? '尚未補貨',
-            iconName: 'shopping_cart_sharp',
+            text: ingredient.currentAmount?.toString() ?? '尚未設定',
+            iconName: 'store_sharp',
             textStyle: theme.textTheme.caption,
           ),
           MetaBlock(),
           IconText(
-            text: ingredient.currentAmount?.toString() ?? '尚未設定',
-            iconName: 'store_sharp',
+            text: ingredient.lastAmount?.toString() ?? '尚未補貨',
+            iconName: 'shopping_cart_sharp',
             textStyle: theme.textTheme.caption,
           ),
         ],

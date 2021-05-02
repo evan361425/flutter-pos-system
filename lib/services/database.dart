@@ -1,21 +1,21 @@
 enum Collections {
   menu,
-  ingredient,
   quantities,
   search_history,
   order_history,
   order_stash,
   stock_batch,
+  stock,
 }
 
 const Map<Collections, String> CollectionName = {
   Collections.menu: 'menu',
-  Collections.ingredient: 'ingredient',
   Collections.quantities: 'quantities',
   Collections.search_history: 'search_history',
   Collections.order_history: 'order_history',
   Collections.order_stash: 'order_stash',
   Collections.stock_batch: 'stock_batch',
+  Collections.stock: 'stock',
 };
 
 const QueueValue = 'data';
