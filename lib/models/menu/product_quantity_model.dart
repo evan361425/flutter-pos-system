@@ -1,5 +1,6 @@
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
@@ -20,16 +21,16 @@ class ProductQuantityModel {
   num additionalPrice;
   QuantityModel quantity;
 
-  factory ProductQuantityModel.fromMap(ProductQuantityObject map) {
+  factory ProductQuantityModel.fromObject(ProductQuantityObject object) {
     return ProductQuantityModel(
-      id: map.id,
-      amount: map.amount,
-      additionalCost: map.additionalCost,
-      additionalPrice: map.additionalPrice,
+      id: object.id,
+      amount: object.amount,
+      additionalCost: object.additionalCost,
+      additionalPrice: object.additionalPrice,
     );
   }
 
-  ProductQuantityObject toMap() {
+  ProductQuantityObject toObject() {
     return ProductQuantityObject(
       id: id,
       amount: amount,
@@ -40,46 +41,23 @@ class ProductQuantityModel {
 
   // STATE CHANGE
 
-  void update(
+  Future<void> update(
     ProductIngredientModel ingredient,
-    ProductQuantityModel quantity,
+    ProductQuantityObject quantity,
   ) {
-    final updateData = getUpdateData(ingredient, quantity);
+    final updateData = quantity.diff(ingredient, this);
 
-    if (updateData.isEmpty) return;
+    if (updateData.isEmpty) return Future.value();
 
-    Database.instance.update(Collections.menu, updateData);
+    ingredient.updateQuantity(this);
+
+    return Database.instance.update(Collections.menu, updateData);
   }
 
-  Map<String, dynamic> getUpdateData(
-    ProductIngredientModel ingredient,
-    ProductQuantityModel quantity,
-  ) {
-    final prefix = '${ingredient.prefixQuantities}.$id';
-    final updateData = <String, dynamic>{};
-    if (quantity.amount != amount) {
-      amount = quantity.amount;
-      updateData['$prefix.amount'] = amount;
-    }
-    if (quantity.additionalCost != additionalCost) {
-      additionalCost = quantity.additionalCost;
-      updateData['$prefix.additionalCost'] = additionalCost;
-    }
-    if (quantity.additionalPrice != additionalPrice) {
-      additionalPrice = quantity.additionalPrice;
-      updateData['$prefix.additionalPrice'] = additionalPrice;
-    }
-    // final
-    if (quantity.id != id) {
-      ingredient.removeQuantity(quantity);
-
-      id = quantity.id;
-      this.quantity = quantity.quantity;
-
-      updateData.clear();
-    }
-
-    return updateData;
+  void changeQuantity(ProductIngredientModel ingredient, String id) {
+    ingredient.removeQuantity(this);
+    this.id = id;
+    quantity = QuantityRepo.instance[id];
   }
 
   // GETTER

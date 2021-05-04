@@ -177,7 +177,7 @@ class MenuModel extends ChangeNotifier {
     if (!has(catalog.id)) {
       catalogs[catalog.id] = catalog;
 
-      final updateData = {catalog.id: catalog.toMap().output()};
+      final updateData = {catalog.id: catalog.toObject().toMap()};
       Database.instance.update(Collections.menu, updateData);
     }
     notifyListeners();

@@ -27,41 +27,40 @@ class ProductIngredientModel {
   num cost;
   IngredientModel ingredient;
 
-  factory ProductIngredientModel.fromMap(ProductIngredientObject map) {
+  factory ProductIngredientModel.fromObject(ProductIngredientObject object) {
     return ProductIngredientModel(
-      id: map.id,
-      amount: map.amount,
-      cost: map.cost,
+      id: object.id,
+      amount: object.amount,
+      cost: object.cost,
       quantities: {
-        for (var quantity in map.quantities)
-          quantity.id: ProductQuantityModel.fromMap(quantity)
+        for (var quantity in object.quantities)
+          quantity.id: ProductQuantityModel.fromObject(quantity)
       },
     );
   }
 
-  ProductIngredientObject toMap() {
+  ProductIngredientObject toObject() {
     return ProductIngredientObject(
       id: id,
       cost: cost,
       amount: amount,
-      quantities: quantities.values.map((e) => e.toMap()),
+      quantities: quantities.values.map((e) => e.toObject()),
     );
   }
 
   // STATE CHANGE
 
   void updateQuantity(ProductQuantityModel quantity) {
-    print('update quantity ${quantity.id}');
     if (!quantities.containsKey(quantity.id)) {
       quantities[quantity.id] = quantity;
 
       final updateData = {
-        '$prefixQuantities.${quantity.id}': quantity.toMap().output(),
+        '$prefixQuantities.${quantity.id}': quantity.toObject().toMap(),
       };
       Database.instance.update(Collections.menu, updateData);
     }
 
-    // product.ingredientChanged();
+    product.updateIngredient(this);
   }
 
   void removeQuantity(ProductQuantityModel quantity) {
@@ -71,7 +70,7 @@ class ProductIngredientModel {
     final updateData = {'$prefixQuantities.${quantity.id}': null};
     Database.instance.update(Collections.menu, updateData);
 
-    // product.ingredientChanged();
+    product.updateIngredient(this);
   }
 
   Future<void> update(ProductIngredientObject ingredient) {
@@ -79,12 +78,13 @@ class ProductIngredientModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    // notify
+    product.updateIngredient(this);
 
     return Database.instance.update(Collections.menu, updateData);
   }
 
   void changeIngredient(String id) {
+    product.removeIngredient(this);
     this.id = id;
     ingredient = StockModel.instance[id];
   }

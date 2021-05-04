@@ -49,13 +49,13 @@ class CatalogModel extends ChangeNotifier {
     return catalog;
   }
 
-  CatalogObject toMap() {
+  CatalogObject toObject() {
     return CatalogObject(
       id: id,
       index: index,
       name: name,
       createdAt: createdAt,
-      products: products.values.map((e) => e.toMap()),
+      products: products.values.map((e) => e.toObject()),
     );
   }
 
@@ -86,7 +86,7 @@ class CatalogModel extends ChangeNotifier {
     if (!products.containsKey(product.id)) {
       products[product.id] = product;
 
-      final updateData = {product.prefix: product.toMap().output()};
+      final updateData = {product.prefix: product.toObject().toMap()};
       Database.instance.update(Collections.menu, updateData);
     }
 

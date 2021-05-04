@@ -46,12 +46,12 @@ class OrderObject {
     }).toList();
   }
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
-      'products': products.map((e) => e.output()).toList(),
+      'products': products.map((e) => e.toMap()).toList(),
     };
   }
 
@@ -86,14 +86,14 @@ class OrderProductObject {
     @required this.ingredients,
   });
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'singlePrice': singlePrice,
       'count': count,
       'productId': productId,
       'productName': productName,
       'isDiscount': isDiscount,
-      'ingredients': ingredients.values.map((e) => e.output()),
+      'ingredients': ingredients.values.map((e) => e.toMap()),
     };
   }
 
@@ -141,7 +141,7 @@ class OrderIngredientObject {
     this.quantityId = quantityId;
   }
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'name': name,
       'ingredientId': ingredientId,

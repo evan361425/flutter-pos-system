@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product_quantity_model.dart';
 
 class CatalogObject {
   CatalogObject({
@@ -18,12 +19,12 @@ class CatalogObject {
   final DateTime createdAt;
   final Iterable<ProductObject> products;
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'index': index,
       'name': name,
       'createdAt': createdAt.toString(),
-      'products': {for (var product in products) product.id: product.output()}
+      'products': {for (var product in products) product.id: product.toMap()}
     };
   }
 
@@ -74,7 +75,7 @@ class ProductObject {
   final DateTime createdAt;
   final Iterable<ProductIngredientObject> ingredients;
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'price': price,
       'cost': cost,
@@ -82,7 +83,7 @@ class ProductObject {
       'name': name,
       'createdAt': createdAt.toString(),
       'ingredients': {
-        for (var ingredient in ingredients) ingredient.id: ingredient.output()
+        for (var ingredient in ingredients) ingredient.id: ingredient.toMap()
       }
     };
   }
@@ -137,12 +138,12 @@ class ProductIngredientObject {
   final num cost;
   final Iterable<ProductQuantityObject> quantities;
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'amount': amount,
       'cost': cost,
       'quantities': {
-        for (var quantity in quantities) quantity.id: quantity.output()
+        for (var quantity in quantities) quantity.id: quantity.toMap()
       },
     };
   }
@@ -161,11 +162,9 @@ class ProductIngredientObject {
     }
     // after all property set
     if (id != null && id != ingredient.id) {
-      ingredient.product.removeIngredient(ingredient);
-
       ingredient.changeIngredient(id);
 
-      return {prefix: ingredient.toMap().output()};
+      return {ingredient.prefix: ingredient.toObject().toMap()};
     }
 
     return result;
@@ -197,12 +196,44 @@ class ProductQuantityObject {
   final num additionalCost;
   final num additionalPrice;
 
-  Map<String, dynamic> output() {
+  Map<String, dynamic> toMap() {
     return {
       'amount': amount,
       'additionalCost': additionalCost,
       'additionalPrice': additionalPrice,
     };
+  }
+
+  Map<String, dynamic> diff(
+    ProductIngredientModel ingredient,
+    ProductQuantityModel quantity,
+  ) {
+    final result = <String, dynamic>{};
+    final prefix = '${ingredient.prefixQuantities}.${quantity.id}';
+
+    if (amount != null && amount != quantity.amount) {
+      quantity.amount = amount;
+      result['$prefix.amount'] = amount;
+    }
+    if (additionalCost != null && additionalCost != quantity.additionalCost) {
+      quantity.additionalCost = additionalCost;
+      result['$prefix.additionalCost'] = additionalCost;
+    }
+    if (additionalPrice != null &&
+        additionalPrice != quantity.additionalPrice) {
+      quantity.additionalPrice = additionalPrice;
+      result['$prefix.additionalPrice'] = additionalPrice;
+    }
+    // after all property set
+    if (id != null && id != quantity.id) {
+      quantity.changeQuantity(ingredient, id);
+
+      return {
+        '${ingredient.prefixQuantities}.$id': quantity.toObject().toMap(),
+      };
+    }
+
+    return result;
   }
 
   factory ProductQuantityObject.build(Map<String, dynamic> data) {

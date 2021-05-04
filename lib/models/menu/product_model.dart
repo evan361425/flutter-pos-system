@@ -30,17 +30,17 @@ class ProductModel extends ChangeNotifier {
   final String id;
   final Map<String, ProductIngredientModel> ingredients;
 
-  factory ProductModel.fromMap(ProductObject map) {
+  factory ProductModel.fromMap(ProductObject object) {
     final product = ProductModel(
-      id: map.id,
-      name: map.name,
-      index: map.index,
-      price: map.price,
-      cost: map.cost,
-      createdAt: map.createdAt,
+      id: object.id,
+      name: object.name,
+      index: object.index,
+      price: object.price,
+      cost: object.cost,
+      createdAt: object.createdAt,
       ingredients: {
-        for (var ingredient in map.ingredients)
-          ingredient.id: ProductIngredientModel.fromMap(ingredient)
+        for (var ingredient in object.ingredients)
+          ingredient.id: ProductIngredientModel.fromObject(ingredient)
       },
     );
 
@@ -51,7 +51,7 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  ProductObject toMap() {
+  ProductObject toObject() {
     return ProductObject(
       id: id,
       name: name,
@@ -59,7 +59,7 @@ class ProductModel extends ChangeNotifier {
       price: price,
       cost: cost,
       createdAt: createdAt,
-      ingredients: ingredients.values.map((e) => e.toMap()),
+      ingredients: ingredients.values.map((e) => e.toObject()),
     );
   }
 
@@ -77,7 +77,7 @@ class ProductModel extends ChangeNotifier {
     if (!ingredients.containsKey(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 
-      final updateData = {ingredient.prefix: ingredient.toMap().output()};
+      final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
       Database.instance.update(Collections.menu, updateData);
     }
 

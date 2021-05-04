@@ -1,4 +1,4 @@
-import 'package:possystem/models/maps/order_map.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 
 class OrderHistory {
@@ -8,25 +8,25 @@ class OrderHistory {
 
   OrderHistory._constructor();
 
-  void push(OrderMap order) {
-    Database.instance.push(Collections.order_history, order.output());
+  void push(OrderObject order) {
+    Database.instance.push(Collections.order_history, order.toMap());
   }
 
-  Future<OrderMap> pop([remove = false]) async {
+  Future<OrderObject> pop([remove = false]) async {
     final snapshot = await Database.instance.pop(
       Collections.order_history,
       remove,
     );
-    return OrderMap.build(snapshot.data());
+    return OrderObject.build(snapshot.data());
   }
 
-  void stash(OrderMap order) {
-    Database.instance.push(Collections.order_stash, order.output());
+  void stash(OrderObject order) {
+    Database.instance.push(Collections.order_stash, order.toMap());
   }
 
-  Future<OrderMap> popStash() async {
+  Future<OrderObject> popStash() async {
     final snapshot = await Database.instance.pop(Collections.order_stash);
-    return OrderMap.build(snapshot.data());
+    return OrderObject.build(snapshot.data());
   }
 
   Future<num> getStashLength() {
