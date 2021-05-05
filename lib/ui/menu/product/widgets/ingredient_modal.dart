@@ -6,12 +6,12 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
-import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
@@ -66,7 +66,7 @@ class _IngredientModalState extends State<IngredientModal> {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
           onDelete: (BuildContext context) {
-            widget.product.removeIngredient(widget.ingredient.id);
+            widget.product.removeIngredient(widget.ingredient);
           },
         );
       },
@@ -112,27 +112,22 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   void _updateIngredient() {
-    final stock = context.read<StockModel>();
-    final ingredient = stock[ingredientId] ?? stock.ingredients.values.first;
+    final object = ProductIngredientObject(
+      id: ingredientId,
+      amount: num.tryParse(_amountController.text),
+      cost: num.tryParse(_costController.text),
+    );
+    widget.ingredient?.update(object);
 
-    final productIngredient = widget.isNew
-        ? ProductIngredientModel(
-            ingredient: ingredient,
-            product: widget.product,
-            amount: num.tryParse(_amountController.text),
-            cost: num.tryParse(_costController.text),
-          )
-        : widget.ingredient;
+    final ingredient = widget.ingredient ??
+        ProductIngredientModel(
+          ingredient: StockModel.instance[ingredientId],
+          product: widget.product,
+          amount: object.amount,
+          cost: object.cost,
+        );
 
-    if (!widget.isNew) {
-      productIngredient.update(
-        ingredient: ingredient,
-        amount: num.tryParse(_amountController.text),
-        cost: num.tryParse(_costController.text),
-      );
-    }
-
-    widget.product.updateIngredient(productIngredient);
+    widget.product.updateIngredient(ingredient);
   }
 
   Widget _trailingAction() {

@@ -64,8 +64,6 @@ class CatalogScreen extends StatelessWidget {
   }
 
   Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
-    if (!catalog.isReady) return null;
-
     return RichText(
       text: TextSpan(
         text: '產品數量：',

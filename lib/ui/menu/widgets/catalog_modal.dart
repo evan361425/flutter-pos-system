@@ -3,9 +3,9 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class CatalogModal extends StatefulWidget {
   CatalogModal({Key key, this.catalog}) : super(key: key);
@@ -47,12 +47,12 @@ class _CatalogModalState extends State<CatalogModal> {
     );
   }
 
-  void _onSubmit(String name) {
+  void _onSubmit() {
     if (isSaving || !_formKey.currentState.validate()) return;
 
-    final menu = context.read<MenuModel>();
+    final name = _controller.text;
 
-    if (widget.catalog?.name != name && menu.hasCatalog(name)) {
+    if (widget.catalog?.name != name && MenuModel.instance.hasCatalog(name)) {
       return setState(() => errorMessage = '種類名稱重複');
     }
 
@@ -61,7 +61,7 @@ class _CatalogModalState extends State<CatalogModal> {
       errorMessage = null;
     });
 
-    final catalog = _updateCatalog(name, menu);
+    final catalog = _updateCatalog();
 
     widget.isNew
         ? Navigator.of(context).popAndPushNamed(
@@ -71,13 +71,20 @@ class _CatalogModalState extends State<CatalogModal> {
         : Navigator.of(context).pop();
   }
 
-  CatalogModel _updateCatalog(String name, MenuModel menu) {
-    widget.catalog?.update(name: name);
+  CatalogModel _updateCatalog() {
+    final object = CatalogObject(
+      name: _controller.text,
+    );
+    widget.catalog?.update(object);
 
-    final catalog =
-        widget.catalog ?? CatalogModel(name: name, index: menu.newIndex);
+    final catalog = widget.catalog ??
+        CatalogModel(
+          name: object.name,
+          index: MenuModel.instance.newIndex,
+        );
 
-    menu.updateCatalog(catalog);
+    MenuModel.instance.updateCatalog(catalog);
+
     return catalog;
   }
 
@@ -85,7 +92,7 @@ class _CatalogModalState extends State<CatalogModal> {
     return isSaving
         ? CircularProgressIndicator()
         : TextButton(
-            onPressed: () => _onSubmit(_controller.text),
+            onPressed: () => _onSubmit(),
             child: Text('儲存'),
           );
   }
@@ -101,7 +108,7 @@ class _CatalogModalState extends State<CatalogModal> {
         errorText: errorMessage,
         filled: false,
       ),
-      onFieldSubmitted: _onSubmit,
+      onFieldSubmitted: (_) => _onSubmit(),
       maxLength: 30,
       validator: Validator.textLimit('種類名稱', 30),
     );

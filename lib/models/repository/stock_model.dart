@@ -94,7 +94,8 @@ class StockModel extends ChangeNotifier {
   // TOOLS
 
   bool hasContain(String id) => ingredients.containsKey(id);
-  IngredientModel operator [](String id) => ingredients[id];
+  IngredientModel operator [](String id) =>
+      ingredients[id] ?? ingredients.values.first;
 
   // GETTER
 

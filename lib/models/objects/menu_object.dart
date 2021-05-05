@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -6,11 +5,11 @@ import 'package:possystem/models/menu/product_quantity_model.dart';
 
 class CatalogObject {
   CatalogObject({
-    @required this.id,
-    @required this.index,
-    @required this.name,
-    @required this.createdAt,
-    @required this.products,
+    this.id,
+    this.index,
+    this.name,
+    this.createdAt,
+    this.products,
   });
 
   final String id;
@@ -58,13 +57,13 @@ class CatalogObject {
 
 class ProductObject {
   ProductObject({
-    @required this.id,
-    @required this.price,
-    @required this.cost,
-    @required this.index,
-    @required this.name,
-    @required this.createdAt,
-    @required this.ingredients,
+    this.id,
+    this.price,
+    this.cost,
+    this.index,
+    this.name,
+    this.createdAt,
+    this.ingredients,
   });
 
   final String id;
@@ -127,10 +126,10 @@ class ProductObject {
 
 class ProductIngredientObject {
   ProductIngredientObject({
-    @required this.id,
-    @required this.amount,
-    @required this.cost,
-    @required this.quantities,
+    this.id,
+    this.amount,
+    this.cost,
+    this.quantities,
   });
 
   final String id;
@@ -185,10 +184,10 @@ class ProductIngredientObject {
 
 class ProductQuantityObject {
   ProductQuantityObject({
-    @required this.id,
-    @required this.amount,
-    @required this.additionalCost,
-    @required this.additionalPrice,
+    this.id,
+    this.amount,
+    this.additionalCost,
+    this.additionalPrice,
   });
 
   final String id;

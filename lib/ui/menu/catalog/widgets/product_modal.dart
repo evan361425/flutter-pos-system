@@ -3,6 +3,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
@@ -46,12 +47,12 @@ class _ProductModalState extends State<ProductModal> {
     );
   }
 
-  void _onSubmit(String name) {
+  void _onSubmit() {
     if (isSaving || !_formKey.currentState.validate()) return;
 
-    final menu = context.read<MenuModel>();
+    final name = _nameController.text;
 
-    if (widget.product?.name != name && menu.hasProduct(name)) {
+    if (widget.product?.name != name && MenuModel.instance.hasProduct(name)) {
       return setState(() => errorMessage = '產品名稱重複');
     }
 
@@ -71,21 +72,24 @@ class _ProductModalState extends State<ProductModal> {
   }
 
   ProductModel _updateProduct() {
-    widget.product?.update(
+    final object = ProductObject(
       name: _nameController.text,
       price: num.tryParse(_priceController.text),
       cost: num.tryParse(_costController.text),
     );
+    widget.product?.update(object);
 
+    final catalog = widget.product?.catalog ?? context.read<CatalogModel>();
     final product = widget.product ??
         ProductModel(
-          name: _nameController.text,
-          catalog: context.read<CatalogModel>(),
-          price: num.tryParse(_priceController.text),
-          cost: num.tryParse(_costController.text),
+          catalog: catalog,
+          index: catalog.newIndex,
+          name: object.name,
+          price: object.price,
+          cost: object.cost,
         );
 
-    product.catalog.updateProduct(product);
+    catalog.updateProduct(product);
 
     return product;
   }
@@ -94,7 +98,7 @@ class _ProductModalState extends State<ProductModal> {
     return isSaving
         ? CircularProgressIndicator()
         : TextButton(
-            onPressed: () => _onSubmit(_nameController.text),
+            onPressed: () => _onSubmit(),
             child: Text('儲存'),
           );
   }
@@ -152,7 +156,7 @@ class _ProductModalState extends State<ProductModal> {
         labelText: '產品成本，幫助你算出利潤',
         filled: false,
       ),
-      onFieldSubmitted: _onSubmit,
+      onFieldSubmitted: (_) => _onSubmit(),
       validator: Validator.positiveNumber('產品成本'),
     );
   }

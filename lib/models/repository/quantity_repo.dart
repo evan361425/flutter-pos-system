@@ -59,7 +59,8 @@ class QuantityRepo extends ChangeNotifier {
 
   bool hasContain(String id) => quantities.containsKey(id);
   bool hasNotContain(String id) => !quantities.containsKey(id);
-  QuantityModel operator [](String id) => quantities[id];
+  QuantityModel operator [](String id) =>
+      quantities[id] ?? quantities.values.first;
 
   // GETTER
 

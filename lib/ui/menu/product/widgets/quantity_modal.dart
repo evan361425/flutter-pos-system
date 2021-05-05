@@ -5,12 +5,12 @@ import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
-import 'package:provider/provider.dart';
 
 import 'quantity_search_scaffold.dart';
 
@@ -42,12 +42,21 @@ class _QuantityModalState extends State<QuantityModal> {
   String errorMessage;
 
   void _onSubmit() {
-    final quantity = _getQuantityFromTextField();
-    if (quantity == null) return;
+    if (isSaving || !_formKey.currentState.validate()) return;
+    if (quantityId.isEmpty) {
+      return setState(() => errorMessage = '必須設定成份份量名稱。');
+    }
+    if (widget.quantity?.id != quantityId &&
+        widget.ingredient.has(quantityId)) {
+      return setState(() => errorMessage = '成份份量重複。');
+    }
 
-    widget.quantity?.update(widget.ingredient, quantity);
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
 
-    widget.ingredient.updateQuantity(quantity);
+    _updateQuantity();
 
     Navigator.of(context).pop();
   }
@@ -59,7 +68,7 @@ class _QuantityModalState extends State<QuantityModal> {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
           onDelete: (BuildContext context) {
-            widget.ingredient.removeQuantity(widget.quantity.id);
+            widget.ingredient.removeQuantity(widget.quantity);
           },
         );
       },
@@ -67,30 +76,24 @@ class _QuantityModalState extends State<QuantityModal> {
     if (isDeleted == true) Navigator.of(context).pop();
   }
 
-  ProductQuantityModel _getQuantityFromTextField() {
-    if (!_formKey.currentState.validate()) {
-      return null;
-    }
-    if (quantityId.isEmpty) {
-      setState(() => errorMessage = '必須設定成份份量名稱。');
-      return null;
-    }
-    if (widget.quantity?.id != quantityId &&
-        widget.ingredient.has(quantityId)) {
-      setState(() => errorMessage = '成份份量重複。');
-      return null;
-    }
-
-    final quantities = context.read<QuantityRepo>();
-    final quantity =
-        quantities[quantityId] ?? quantities.quantities.values.first;
-
-    return ProductQuantityModel(
+  void _updateQuantity() {
+    final object = ProductQuantityObject(
+      id: quantityId,
       amount: num.tryParse(_ammountController.text),
       additionalPrice: num.tryParse(_additionalPriceController.text),
       additionalCost: num.tryParse(_additionalCostController.text),
-      quantity: quantity,
     );
+    widget.quantity?.update(widget.ingredient, object);
+
+    final quantity = widget.quantity ??
+        ProductQuantityModel(
+          quantity: QuantityRepo.instance[quantityId],
+          amount: object.amount,
+          additionalPrice: object.additionalPrice,
+          additionalCost: object.additionalCost,
+        );
+
+    widget.ingredient.updateQuantity(quantity);
   }
 
   @override
