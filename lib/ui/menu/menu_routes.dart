@@ -46,16 +46,7 @@ class MenuRoutes {
       case productModal:
         return (_) => ProductModal(product: settings.arguments);
       case productIngredient:
-        return (_) {
-          final arg = settings.arguments;
-
-          return arg is ProductIngredientModel
-              ? IngredientModal(
-                  ingredient: arg,
-                  product: arg.product,
-                )
-              : IngredientModal(product: arg);
-        };
+        return (_) => IngredientModal(ingredient: settings.arguments);
       case productIngredientSearch:
         return (_) => IngredientSearchScaffold(text: settings.arguments);
       case productQuantitySearch:

@@ -12,16 +12,15 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
+import 'package:provider/provider.dart';
 
 class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
-    @required this.product,
     this.ingredient,
   })  : isNew = ingredient == null,
         super(key: key);
 
-  final ProductModel product;
   final ProductIngredientModel ingredient;
   final bool isNew;
 
@@ -45,7 +44,7 @@ class _IngredientModalState extends State<IngredientModal> {
       return setState(() => errorMessage = '必須設定成份種類。');
     }
     if (widget.ingredient?.id != ingredientId &&
-        widget.product.has(ingredientId)) {
+        widget.ingredient.product.has(ingredientId)) {
       return setState(() => errorMessage = '成份重複。');
     }
 
@@ -66,7 +65,7 @@ class _IngredientModalState extends State<IngredientModal> {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
           onDelete: (BuildContext context) {
-            widget.product.removeIngredient(widget.ingredient);
+            widget.ingredient.product.removeIngredient(widget.ingredient);
           },
         );
       },
@@ -122,12 +121,12 @@ class _IngredientModalState extends State<IngredientModal> {
     final ingredient = widget.ingredient ??
         ProductIngredientModel(
           ingredient: StockModel.instance[ingredientId],
-          product: widget.product,
+          product: context.read<ProductModel>(),
           amount: object.amount,
           cost: object.cost,
         );
 
-    widget.product.updateIngredient(ingredient);
+    ingredient.product.updateIngredient(ingredient);
   }
 
   Widget _trailingAction() {
@@ -146,7 +145,7 @@ class _IngredientModalState extends State<IngredientModal> {
       child: DangerButton(
         onPressed: _onDelete,
         child: Text(
-            '刪除${widget.product.name}的成份 ${widget.ingredient.ingredient.name}'),
+            '刪除${widget.ingredient.product.name}的成份 ${widget.ingredient.ingredient.name}'),
       ),
     );
   }

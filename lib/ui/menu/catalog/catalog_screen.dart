@@ -15,7 +15,7 @@ import 'widgets/catalog_body.dart';
 class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final catalog = context.read<CatalogModel>();
+    final catalog = context.watch<CatalogModel>();
     // Logger().d('${catalog.isReady ? 'Edit' : 'Create'} catalog');
 
     return FadeInTitleScaffold(
@@ -39,13 +39,11 @@ class CatalogScreen extends StatelessWidget {
         tooltip: Local.of(context).t('menu.catalog.add_product'),
         child: Icon(KIcons.add),
       ),
-      body: _body(context),
+      body: _body(catalog, context),
     );
   }
 
-  Widget _body(BuildContext context) {
-    final catalog = context.watch<CatalogModel>();
-
+  Widget _body(CatalogModel catalog, BuildContext context) {
     return Column(
       children: <Widget>[
         Padding(

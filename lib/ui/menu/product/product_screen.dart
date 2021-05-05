@@ -35,10 +35,7 @@ class ProductScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(
-            MenuRoutes.productIngredient,
-            arguments: product,
-          );
+          Navigator.of(context).pushNamed(MenuRoutes.productIngredient);
         },
         tooltip: Local.of(context).t('menu.product.add_integredient'),
         child: Icon(KIcons.add),
