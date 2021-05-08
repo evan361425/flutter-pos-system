@@ -22,8 +22,9 @@ class StockBatchRepo extends ChangeNotifier {
               StockBatchObject.build({'id': id, ...map}),
             );
           });
-        } catch (e) {
+        } catch (e, stack) {
           print(e);
+          print(stack);
         }
       }
 

@@ -29,7 +29,7 @@ class ProductIngredientModel {
   })  : quantities = quantities ?? {},
         amount = amount ?? 0,
         cost = cost ?? 0 {
-    id ??= ingredient.id;
+    id ??= ingredient?.id;
   }
 
   factory ProductIngredientModel.fromObject(ProductIngredientObject object) =>
@@ -55,8 +55,10 @@ class ProductIngredientModel {
 
   void changeIngredient(String id) {
     product.removeIngredient(this);
+
     this.id = id;
     ingredient = StockModel.instance[id];
+    print('change ingredient to $id');
   }
 
   bool has(String id) => quantities.containsKey(id);

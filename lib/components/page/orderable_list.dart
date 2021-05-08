@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 
@@ -67,7 +68,7 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
 
   StatefulWidget _trailingAction(BuildContext context) {
     return isSaving
-        ? CircularProgressIndicator()
+        ? CircularLoading()
         : CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: () async {

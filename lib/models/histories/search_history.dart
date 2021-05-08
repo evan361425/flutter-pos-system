@@ -37,7 +37,7 @@ class SearchHistory {
   Queue<String> get(void Function() cb) {
     if (SearchHistory.data == null) {
       Database.instance.get(Collections.search_history).then((snapshot) {
-        final Map<String, List<String>> data = snapshot.data();
+        final data = snapshot.data();
         SearchHistory.data = data == null
             ? {}
             : data.map<String, Queue<String>>(

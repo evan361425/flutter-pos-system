@@ -12,24 +12,20 @@ class MenuBody extends StatelessWidget {
     // context.read<T>() === Provider.of<T>(context, listen: false)
     final menu = context.watch<MenuModel>();
 
-    if (menu.isNotReady) {
-      return Center(child: CircularProgressIndicator());
-    } else if (menu.isEmpty) {
-      return Center(child: EmptyBody('menu.empty'));
-    } else {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              // TODO: search bar
-              // MenuSearchBar(),
-              // get sorted catalogs
-              CatalogList(menu.catalogList),
-            ],
-          ),
+    if (menu.isEmpty) return Center(child: EmptyBody('menu.empty'));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            // TODO: search bar
+            // MenuSearchBar(),
+            // get sorted catalogs
+            CatalogList(menu.catalogList),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
 }

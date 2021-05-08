@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'components/circular_loading.dart';
 import 'models/repository/menu_model.dart';
 import 'models/repository/quantity_repo.dart';
 import 'models/repository/stock_model.dart';
@@ -20,9 +21,8 @@ class Routes {
   static const String stockQuantityModal = 'stcok/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
-    order: (context) => setUpStockMode(context)
-        ? OrderScreen()
-        : Center(child: CircularProgressIndicator()),
+    order: (context) =>
+        setUpStockMode(context) ? OrderScreen() : CircularLoading(),
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),
@@ -30,7 +30,7 @@ class Routes {
         ? IngredientScreen(
             ingredient: ModalRoute.of(context).settings.arguments,
           )
-        : Center(child: CircularProgressIndicator()),
+        : CircularLoading(),
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) => QuantityModal(
           quantity: ModalRoute.of(context).settings.arguments,

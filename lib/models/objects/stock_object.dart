@@ -187,7 +187,7 @@ class StockBatchObject {
 
     if (oriData is Map) {
       oriData.forEach((key, value) {
-        batchData[key] = num.tryParse(value);
+        batchData[key] = value;
       });
     }
 

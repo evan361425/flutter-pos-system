@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
@@ -55,7 +56,7 @@ class QuantitySearchScaffold extends StatelessWidget {
     final searchHistory = histories.get(
       () => scaffold.currentState.updateView(),
     );
-    if (searchHistory == null) return CircularProgressIndicator();
+    if (searchHistory == null) return CircularLoading();
 
     return Column(
       children: [

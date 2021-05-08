@@ -7,6 +7,7 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ import 'widgets/product_actions.dart';
 class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = context.read<ProductModel>();
+    final product = context.watch<ProductModel>();
 
     return FadeInTitleScaffold(
       leading: IconButton(
@@ -34,19 +35,18 @@ class ProductScreen extends StatelessWidget {
         icon: Icon(KIcons.more),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(MenuRoutes.productIngredient);
-        },
+        onPressed: () => Navigator.of(context).pushNamed(
+          MenuRoutes.productIngredient,
+          arguments: ProductIngredientModel(product: product),
+        ),
         tooltip: Local.of(context).t('menu.product.add_integredient'),
         child: Icon(KIcons.add),
       ),
-      body: _body(context),
+      body: _body(context, product),
     );
   }
 
-  Widget _body(BuildContext context) {
-    final product = context.watch<ProductModel>();
-
+  Widget _body(BuildContext context, ProductModel product) {
     return Column(
       children: [
         Padding(

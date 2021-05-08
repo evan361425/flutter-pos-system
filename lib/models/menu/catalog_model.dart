@@ -25,16 +25,14 @@ class CatalogModel extends ChangeNotifier {
   CatalogModel({
     DateTime createdAt,
     String id,
-    @required int index,
+    @required this.index,
     @required this.name,
     Map<String, ProductModel> products,
   })  : createdAt = createdAt ?? DateTime.now(),
         products = products ?? {},
         id = id ?? Util.uuidV4();
 
-  factory CatalogModel.fromMap(Map<String, dynamic> data) {
-    final object = CatalogObject.build(data);
-
+  factory CatalogModel.fromObject(CatalogObject object) {
     final catalog = CatalogModel(
       id: object.id,
       index: object.index,

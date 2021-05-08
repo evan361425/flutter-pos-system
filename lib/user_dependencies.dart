@@ -44,6 +44,9 @@ class UserDependencies extends StatelessWidget {
             ChangeNotifierProvider.value(value: MenuModel.instance),
             ChangeNotifierProvider.value(value: StockModel.instance),
             ChangeNotifierProvider.value(value: QuantityRepo.instance),
+            // ChangeNotifierProvider(create: (_) => MenuModel.instance),
+            // ChangeNotifierProvider(create: (_) => StockModel.instance),
+            // ChangeNotifierProvider(create: (_) => QuantityRepo.instance),
           ],
           builder: (context, child) => builder(context, snapshot),
         );

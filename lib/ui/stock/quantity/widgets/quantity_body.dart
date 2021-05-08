@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
@@ -12,9 +13,7 @@ class QuantityBoby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quantityIndex = context.watch<QuantityRepo>();
-    if (quantityIndex.isNotReady) {
-      return Center(child: CircularProgressIndicator());
-    }
+    if (quantityIndex.isNotReady) return CircularLoading();
     if (quantityIndex.isEmpty) {
       return Center(child: EmptyBody('quantity.empty'));
     }

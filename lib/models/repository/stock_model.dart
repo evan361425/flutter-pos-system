@@ -21,16 +21,17 @@ class StockModel extends ChangeNotifier {
       ingredients = {};
 
       final data = snapsnot.data();
-      if (data == null) return;
-
-      try {
-        final stock = StockObject.build(data);
-        updatedTime = stock.updatedTime;
-        stock.ingredients.forEach((ingredient) {
-          ingredients[ingredient.id] = IngredientModel.fromObject(ingredient);
-        });
-      } catch (e) {
-        print(e);
+      if (data != null) {
+        try {
+          final stock = StockObject.build(data);
+          updatedTime = stock.updatedTime;
+          stock.ingredients.forEach((ingredient) {
+            ingredients[ingredient.id] = IngredientModel.fromObject(ingredient);
+          });
+        } catch (e, stack) {
+          print(e);
+          print(stack);
+        }
       }
 
       notifyListeners();
@@ -123,6 +124,6 @@ class StockModel extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => ingredients[e.key]);
+    return similarities.sublist(0, end).map((e) => ingredients[e.key]).toList();
   }
 }

@@ -17,16 +17,17 @@ class QuantityRepo extends ChangeNotifier {
       quantities = {};
 
       final data = snapsnot.data();
-      if (data == null) return;
-
-      try {
-        data.forEach((id, map) {
-          quantities[id] = QuantityModel.fromObject(
-            QuantityObject.build({'id': id, ...map}),
-          );
-        });
-      } catch (e) {
-        print(e);
+      if (data != null) {
+        try {
+          data.forEach((id, map) {
+            quantities[id] = QuantityModel.fromObject(
+              QuantityObject.build({'id': id, ...map}),
+            );
+          });
+        } catch (e, stack) {
+          print(e);
+          print(stack);
+        }
       }
 
       notifyListeners();
@@ -84,6 +85,6 @@ class QuantityRepo extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => quantities[e.key]);
+    return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
   }
 }

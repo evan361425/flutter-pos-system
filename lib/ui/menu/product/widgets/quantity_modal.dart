@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/danger_button.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
@@ -136,7 +137,7 @@ class _QuantityModalState extends State<QuantityModal> {
 
   Widget _trailingAction() {
     return isSaving
-        ? CircularProgressIndicator()
+        ? CircularLoading()
         : TextButton(
             onPressed: () => _onSubmit(),
             child: Text('儲存'),

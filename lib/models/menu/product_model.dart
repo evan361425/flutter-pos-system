@@ -68,8 +68,8 @@ class ProductModel extends ChangeNotifier {
   bool has(String id) => ingredients.containsKey(id);
 
   Future<void> removeIngredient(ProductIngredientModel ingredient) {
+    ingredients.remove(ingredient.id);
     print('remove product ingredient ${ingredient.id}');
-    ingredients.remove(id);
 
     notifyListeners();
 
@@ -105,6 +105,8 @@ class ProductModel extends ChangeNotifier {
 
       Database.instance.update(Collections.menu, updateData);
     }
+
+    catalog.notifyListeners();
 
     notifyListeners();
   }

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home_container.dart';
 import 'package:possystem/ui/splash/logo_splash.dart';
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
   ) {
     // TODO: handle more connection state
     final home = user.connectionState == ConnectionState.waiting
-        ? Material(child: Center(child: CircularProgressIndicator()))
+        ? Material(child: CircularLoading())
         : user.hasData
             ? HomeContainer()
             : SignInScreen();

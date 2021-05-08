@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/danger_button.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
@@ -18,7 +19,7 @@ class IngredientModal extends StatefulWidget {
   IngredientModal({
     Key key,
     this.ingredient,
-  })  : isNew = ingredient == null,
+  })  : isNew = ingredient.id == null,
         super(key: key);
 
   final ProductIngredientModel ingredient;
@@ -35,15 +36,16 @@ class _IngredientModalState extends State<IngredientModal> {
 
   bool isSaving = false;
   String errorMessage;
-  String ingredientId;
-  String ingredientName;
+  String ingredientId = '';
+  String ingredientName = '';
 
   void _onSubmit() {
     if (isSaving || !_formKey.currentState.validate()) return;
+
     if (ingredientId.isEmpty) {
       return setState(() => errorMessage = '必須設定成份種類。');
     }
-    if (widget.ingredient?.id != ingredientId &&
+    if (widget.ingredient.id != ingredientId &&
         widget.ingredient.product.has(ingredientId)) {
       return setState(() => errorMessage = '成份重複。');
     }
@@ -116,22 +118,23 @@ class _IngredientModalState extends State<IngredientModal> {
       amount: num.tryParse(_amountController.text),
       cost: num.tryParse(_costController.text),
     );
-    widget.ingredient?.update(object);
+    if (!widget.isNew) widget.ingredient.update(object);
 
-    final ingredient = widget.ingredient ??
-        ProductIngredientModel(
-          ingredient: StockModel.instance[ingredientId],
-          product: context.read<ProductModel>(),
-          amount: object.amount,
-          cost: object.cost,
-        );
+    final ingredient = widget.isNew
+        ? ProductIngredientModel(
+            ingredient: StockModel.instance[ingredientId],
+            product: widget.ingredient.product,
+            amount: object.amount,
+            cost: object.cost,
+          )
+        : widget.ingredient;
 
     ingredient.product.updateIngredient(ingredient);
   }
 
   Widget _trailingAction() {
     return isSaving
-        ? CircularProgressIndicator()
+        ? CircularLoading()
         : TextButton(
             onPressed: () => _onSubmit(),
             child: Text('儲存'),
@@ -145,7 +148,7 @@ class _IngredientModalState extends State<IngredientModal> {
       child: DangerButton(
         onPressed: _onDelete,
         child: Text(
-            '刪除${widget.ingredient.product.name}的成份 ${widget.ingredient.ingredient.name}'),
+            '刪除${widget.ingredient.product.name}的成份「${widget.ingredient.ingredient.name}」'),
       ),
     );
   }
@@ -203,17 +206,15 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    ingredientId = widget.ingredient?.id ?? '';
-    ingredientName = widget.ingredient?.ingredient?.name ?? '';
-  }
-
-  @override
   void initState() {
     super.initState();
-    _amountController.text = widget.ingredient?.amount?.toString();
-    _costController.text = widget.ingredient?.cost?.toString();
+
+    if (!widget.isNew) {
+      _amountController.text = widget.ingredient.amount?.toString();
+      _costController.text = widget.ingredient.cost?.toString();
+      ingredientId = widget.ingredient.id;
+      ingredientName = widget.ingredient.ingredient.name;
+    }
   }
 
   @override

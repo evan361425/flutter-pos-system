@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/histories/search_history.dart';
@@ -52,7 +53,7 @@ class IngredientSearchScaffold extends StatelessWidget {
 
   Widget _initialBuilder(BuildContext context) {
     final history = histories.get(() => scaffold.currentState.updateView());
-    if (history == null) return CircularProgressIndicator();
+    if (history == null) return CircularLoading();
 
     return Column(
       children: [

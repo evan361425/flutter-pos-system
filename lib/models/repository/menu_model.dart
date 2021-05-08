@@ -19,7 +19,24 @@ class MenuModel extends ChangeNotifier {
 
   MenuModel._constructor() {
     Database.instance.get(Collections.menu).then((snapshot) {
-      buildFromMap(snapshot.data());
+      catalogs = {};
+
+      final data = snapshot.data();
+      if (data != null) {
+        try {
+          data.forEach((key, value) {
+            if (value is Map) {
+              catalogs[key] = CatalogModel.fromObject(
+                CatalogObject.build({'id': key, ...value}),
+              );
+            }
+          });
+        } catch (e, stack) {
+          print(e);
+          print(stack);
+        }
+      }
+
       notifyListeners();
     });
   }
@@ -47,21 +64,6 @@ class MenuModel extends ChangeNotifier {
   }
 
   CatalogModel operator [](String id) => catalogs[id];
-
-  void buildFromMap(Map<String, dynamic> data) {
-    catalogs = {};
-    if (data == null) return;
-
-    try {
-      data.forEach((key, value) {
-        if (value is Map) {
-          catalogs[key] = CatalogModel.fromMap({'id': key, ...value});
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
 
   ProductModel getProduct(String productId) {
     for (var catalog in catalogs.values) {

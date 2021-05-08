@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -85,7 +86,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
   Widget _trailingAction() {
     return isSaving
-        ? CircularProgressIndicator()
+        ? CircularLoading()
         : TextButton(
             onPressed: () => _onSubmit(),
             child: Text('儲存'),

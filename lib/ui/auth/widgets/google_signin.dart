@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/services/authentication.dart';
@@ -18,7 +19,7 @@ class GoogleSignIn extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           authProvider.status == AuthStatus.Authenticating
-              ? Center(child: CircularProgressIndicator())
+              ? CircularLoading()
               : SignInButton(
                   themeProvider.darkMode ? Buttons.GoogleDark : Buttons.Google,
                   onPressed: () => _confirm(context),

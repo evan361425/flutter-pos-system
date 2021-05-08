@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/stock/widgets/stock_metadata.dart';
@@ -13,7 +14,7 @@ class StockBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stock = context.watch<StockModel>();
-    if (stock.isNotReady) return Center(child: CircularProgressIndicator());
+    if (stock.isNotReady) return CircularLoading();
     if (stock.isEmpty) {
       return Center(child: EmptyBody('stock.empty'));
     }

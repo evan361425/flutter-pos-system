@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
@@ -122,7 +123,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
   Widget _trailingAction() {
     return isSaving
-        ? CircularProgressIndicator()
+        ? CircularLoading()
         : TextButton(
             onPressed: () => _onSubmit(),
             child: Text('儲存'),

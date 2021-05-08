@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
@@ -19,7 +20,7 @@ class CatalogBody extends StatelessWidget {
       // get sorted products
       return ProductList(products: catalog.productList);
     } else {
-      return CircularProgressIndicator();
+      return CircularLoading();
     }
   }
 }

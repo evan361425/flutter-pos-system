@@ -10,8 +10,8 @@ class CatalogObject {
     this.index,
     this.name,
     this.createdAt,
-    this.products,
-  });
+    Iterable<ProductObject> products,
+  }) : products = products ?? Iterable.empty();
 
   final String id;
   final int index;
@@ -130,8 +130,8 @@ class ProductIngredientObject {
     this.id,
     this.amount,
     this.cost,
-    this.quantities,
-  });
+    Iterable<ProductQuantityObject> quantities,
+  }) : quantities = quantities ?? Iterable.empty();
 
   final String id;
   final num amount;
@@ -176,7 +176,7 @@ class ProductIngredientObject {
       id: data['id'],
       amount: data['amount'],
       cost: data['cost'],
-      quantities: quantities.entries.map<ProductQuantityObject>(
+      quantities: quantities?.entries?.map<ProductQuantityObject>(
         (e) => ProductQuantityObject.build({'id': e.key, ...e.value}),
       ),
     );

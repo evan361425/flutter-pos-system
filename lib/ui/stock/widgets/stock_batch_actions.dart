@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
@@ -13,7 +14,7 @@ class StockBatchActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = context.watch<StockBatchRepo>();
-    if (repo.isNotReady) return Center(child: CircularProgressIndicator());
+    if (repo.isNotReady) return CircularLoading();
 
     return Row(
       children: [
