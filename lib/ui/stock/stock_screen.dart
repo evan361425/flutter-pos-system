@@ -10,8 +10,8 @@ import 'widgets/stock_body.dart';
 class StockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<StockBatchRepo>(
-      create: (_) => StockBatchRepo(),
+    return ChangeNotifierProvider.value(
+      value: StockBatchRepo.instance,
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(

@@ -3,10 +3,10 @@ import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
-import 'package:provider/provider.dart';
 
 class IngredientScreen extends StatefulWidget {
   IngredientScreen({Key key, this.ingredient}) : super(key: key);
@@ -27,9 +27,6 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final menu = context.watch<MenuModel>();
-    if (menu.isNotReady) return Center(child: CircularProgressIndicator());
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -63,9 +60,9 @@ class _IngredientScreenState extends State<IngredientScreen> {
     if (isSaving || !_formKey.currentState.validate()) return;
 
     final name = _nameController.text;
-    final stock = context.read<StockModel>();
 
-    if (widget.ingredient?.name != name && stock.hasContain(name)) {
+    if (widget.ingredient?.name != name &&
+        StockModel.instance.hasContain(name)) {
       return setState(() => errorMessage = '成份名稱重複');
     }
 
@@ -74,24 +71,26 @@ class _IngredientScreenState extends State<IngredientScreen> {
       errorMessage = null;
     });
 
-    _updateIngredient(name, stock);
+    _updateIngredient(name);
     Navigator.of(context).pop();
   }
 
-  void _updateIngredient(String name, StockModel stock) {
+  void _updateIngredient(String name) {
     final amount = num.tryParse(_amountController.text);
 
-    widget.ingredient?.update(name: name, amount: amount);
+    widget.ingredient?.update(IngredientObject(
+      name: name,
+      currentAmount: amount,
+    ));
 
-    stock.updateIngredient(
+    StockModel.instance.updateIngredient(
       widget.ingredient ?? IngredientModel(name: name, currentAmount: amount),
     );
   }
 
   List<Widget> _productList() {
-    final products = context
-        .read<MenuModel>()
-        .productContainsIngredient(widget.ingredient.id);
+    final products =
+        MenuModel.instance.productContainsIngredient(widget.ingredient.id);
 
     return [
       Divider(),

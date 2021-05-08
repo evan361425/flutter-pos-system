@@ -1,5 +1,5 @@
-import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/database.dart';
@@ -7,6 +7,18 @@ import 'package:possystem/services/database.dart';
 import 'product_model.dart';
 
 class ProductIngredientModel {
+  final Map<String, ProductQuantityModel> quantities;
+
+  ProductModel product;
+
+  String id;
+
+  num amount;
+
+  num cost;
+
+  IngredientModel ingredient;
+
   ProductIngredientModel({
     this.id,
     this.ingredient,
@@ -20,58 +32,52 @@ class ProductIngredientModel {
     id ??= ingredient.id;
   }
 
-  final Map<String, ProductQuantityModel> quantities;
-  ProductModel product;
-  String id;
-  num amount;
-  num cost;
-  IngredientModel ingredient;
+  factory ProductIngredientModel.fromObject(ProductIngredientObject object) =>
+      ProductIngredientModel(
+        id: object.id,
+        amount: object.amount,
+        cost: object.cost,
+        quantities: {
+          for (var quantity in object.quantities)
+            quantity.id: ProductQuantityModel.fromObject(quantity)
+        },
+      );
 
-  factory ProductIngredientModel.fromObject(ProductIngredientObject object) {
-    return ProductIngredientModel(
-      id: object.id,
-      amount: object.amount,
-      cost: object.cost,
-      quantities: {
-        for (var quantity in object.quantities)
-          quantity.id: ProductQuantityModel.fromObject(quantity)
-      },
-    );
+  bool get isNotReady => id == null;
+
+  bool get isReady => id != null;
+
+  String get prefix => '${product.prefix}.ingredients.$id';
+
+  String get prefixQuantities => '$prefix.quantities';
+
+  ProductQuantityModel operator [](String id) => quantities[id];
+
+  void changeIngredient(String id) {
+    product.removeIngredient(this);
+    this.id = id;
+    ingredient = StockModel.instance[id];
   }
 
-  ProductIngredientObject toObject() {
-    return ProductIngredientObject(
-      id: id,
-      cost: cost,
-      amount: amount,
-      quantities: quantities.values.map((e) => e.toObject()),
-    );
-  }
+  bool has(String id) => quantities.containsKey(id);
 
-  // STATE CHANGE
-
-  void updateQuantity(ProductQuantityModel quantity) {
-    if (!quantities.containsKey(quantity.id)) {
-      quantities[quantity.id] = quantity;
-
-      final updateData = {
-        '$prefixQuantities.${quantity.id}': quantity.toObject().toMap(),
-      };
-      Database.instance.update(Collections.menu, updateData);
-    }
-
-    product.updateIngredient(this);
-  }
-
-  void removeQuantity(ProductQuantityModel quantity) {
+  Future<void> removeQuantity(ProductQuantityModel quantity) {
     print('remove quantity $id');
     quantities.remove(quantity.id);
 
     final updateData = {'$prefixQuantities.${quantity.id}': null};
-    Database.instance.update(Collections.menu, updateData);
 
     product.updateIngredient(this);
+
+    return Database.instance.update(Collections.menu, updateData);
   }
+
+  ProductIngredientObject toObject() => ProductIngredientObject(
+        id: id,
+        cost: cost,
+        amount: amount,
+        quantities: quantities.values.map((e) => e.toObject()),
+      );
 
   Future<void> update(ProductIngredientObject ingredient) {
     final updateData = ingredient.diff(this);
@@ -83,21 +89,17 @@ class ProductIngredientModel {
     return Database.instance.update(Collections.menu, updateData);
   }
 
-  void changeIngredient(String id) {
-    product.removeIngredient(this);
-    this.id = id;
-    ingredient = StockModel.instance[id];
+  void updateQuantity(ProductQuantityModel quantity) {
+    if (!quantities.containsKey(quantity.id)) {
+      quantities[quantity.id] = quantity;
+
+      final updateData = {
+        '$prefixQuantities.${quantity.id}': quantity.toObject().toMap(),
+      };
+
+      Database.instance.update(Collections.menu, updateData);
+    }
+
+    product.updateIngredient(this);
   }
-
-  // HELPER
-
-  bool has(String id) => quantities.containsKey(id);
-  ProductQuantityModel operator [](String id) => quantities[id];
-
-  // GETTER
-
-  bool get isReady => id != null;
-  bool get isNotReady => id == null;
-  String get prefix => '${product.prefix}.ingredients.$id';
-  String get prefixQuantities => '$prefix.quantities';
 }

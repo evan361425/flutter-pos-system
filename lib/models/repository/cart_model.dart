@@ -16,6 +16,7 @@ class CartModel extends ChangeNotifier {
   static CartModel get instance => _instance;
 
   List<OrderProductModel> products = [];
+
   bool isHistoryMode = false;
 
   CartModel._constructor();

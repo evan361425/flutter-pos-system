@@ -5,7 +5,6 @@ import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class QuantityList extends StatelessWidget {
   const QuantityList({Key key, this.quantities}) : super(key: key);
@@ -25,13 +24,11 @@ class QuantityList extends StatelessWidget {
 
   void _onDelete(BuildContext context, QuantityModel quantity) {
     debugPrint('Delete quantity ${quantity.id} - ${quantity.name}');
-    final quantities = context.read<QuantityRepo>();
-    final menu = context.read<MenuModel>();
 
     // remove from quantity index
-    quantities.removeQuantity(quantity.id);
+    QuantityRepo.instance.removeQuantity(quantity);
     // remove from menu
-    menu.removeQuantity(quantity.id);
+    MenuModel.instance.removeQuantity(quantity.id);
   }
 
   Widget _tileBuilder(BuildContext context, QuantityModel quantity) {
@@ -42,8 +39,8 @@ class QuantityList extends StatelessWidget {
   }
 
   Widget _warningContext(BuildContext context, QuantityModel quantity) {
-    final menu = context.read<MenuModel>();
-    final count = menu.productContainsQuantity(quantity.id).length;
+    final count =
+        MenuModel.instance.productContainsQuantity(quantity.id).length;
     final countText = count == 0
         ? TextSpan()
         : TextSpan(children: [

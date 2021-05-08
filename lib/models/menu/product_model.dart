@@ -8,6 +8,22 @@ import 'catalog_model.dart';
 import 'product_ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
+  int index;
+
+  String name;
+
+  CatalogModel catalog;
+
+  num cost;
+
+  num price;
+
+  final DateTime createdAt;
+
+  final String id;
+
+  final Map<String, ProductIngredientModel> ingredients;
+
   ProductModel({
     @required this.index,
     @required this.name,
@@ -20,15 +36,6 @@ class ProductModel extends ChangeNotifier {
   })  : createdAt = createdAt ?? DateTime.now(),
         ingredients = ingredients ?? {},
         id = id ?? Util.uuidV4();
-
-  int index;
-  String name;
-  CatalogModel catalog;
-  num cost;
-  num price;
-  final DateTime createdAt;
-  final String id;
-  final Map<String, ProductIngredientModel> ingredients;
 
   factory ProductModel.fromMap(ProductObject object) {
     final product = ProductModel(
@@ -51,17 +58,34 @@ class ProductModel extends ChangeNotifier {
     return product;
   }
 
-  ProductObject toObject() {
-    return ProductObject(
-      id: id,
-      name: name,
-      index: index,
-      price: price,
-      cost: cost,
-      createdAt: createdAt,
-      ingredients: ingredients.values.map((e) => e.toObject()),
-    );
+  Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
+      ingredients.values.where((e) => e.quantities.isNotEmpty);
+
+  String get prefix => '${catalog.id}.products.$id';
+
+  ProductIngredientModel operator [](String id) => ingredients[id];
+
+  bool has(String id) => ingredients.containsKey(id);
+
+  Future<void> removeIngredient(ProductIngredientModel ingredient) {
+    print('remove product ingredient ${ingredient.id}');
+    ingredients.remove(id);
+
+    notifyListeners();
+
+    return Database.instance
+        .update(Collections.menu, {ingredient.prefix: null});
   }
+
+  ProductObject toObject() => ProductObject(
+        id: id,
+        name: name,
+        index: index,
+        price: price,
+        cost: cost,
+        createdAt: createdAt,
+        ingredients: ingredients.values.map((e) => e.toObject()),
+      );
 
   Future<void> update(ProductObject product) {
     final updateData = product.diff(this);
@@ -78,28 +102,10 @@ class ProductModel extends ChangeNotifier {
       ingredients[ingredient.id] = ingredient;
 
       final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
+
       Database.instance.update(Collections.menu, updateData);
     }
 
     notifyListeners();
   }
-
-  void removeIngredient(ProductIngredientModel ingredient) {
-    print('remove product ingredient ${ingredient.id}');
-    ingredients.remove(id);
-
-    Database.instance.update(Collections.menu, {ingredient.prefix: null});
-
-    notifyListeners();
-  }
-
-  bool has(String id) => ingredients.containsKey(id);
-
-  ProductIngredientModel operator [](String id) => ingredients[id];
-
-  Iterable<ProductIngredientModel> get ingredientsWithQuantity {
-    return ingredients.values.where((e) => e.quantities.isNotEmpty);
-  }
-
-  String get prefix => '${catalog.id}.products.$id';
 }

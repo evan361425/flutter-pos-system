@@ -2,10 +2,25 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class IngredientModel extends ChangeNotifier {
+  final String id;
+
+  String name;
+
+  num currentAmount;
+
+  num warningAmount;
+
+  num alertAmount;
+
+  num lastAmount;
+
+  num lastAddAmount;
+
   IngredientModel({
     @required this.name,
     this.currentAmount,
@@ -16,92 +31,64 @@ class IngredientModel extends ChangeNotifier {
     String id,
   }) : id = id ?? Util.uuidV4();
 
-  final String id;
-  String name;
-  num currentAmount;
-  num warningAmount;
-  num alertAmount;
-  num lastAmount;
-  num lastAddAmount;
+  factory IngredientModel.fromObject(IngredientObject object) =>
+      IngredientModel(
+        id: object.id,
+        name: object.name,
+        currentAmount: object.currentAmount,
+        warningAmount: object.warningAmount,
+        alertAmount: object.alertAmount,
+        lastAmount: object.lastAmount,
+        lastAddAmount: object.lastAddAmount,
+      );
 
-  factory IngredientModel.fromMap({
-    String id,
-    Map<String, dynamic> data,
-  }) {
-    return IngredientModel(
-      name: data['name'],
-      currentAmount: data['currentAmount'],
-      warningAmount: data['warningAmount'],
-      alertAmount: data['alertAmount'],
-      lastAmount: data['lastAmount'],
-      lastAddAmount: data['lastAddAmount'],
-      id: id,
-    );
+  String get prefix => 'ingredients.$id';
+
+  void addAmount(num amount) => StockModel.instance.applyAmounts({id: amount});
+
+  int getSimilarity(String searchText) {
+    return Util.similarity(name, searchText);
+    // print('$name Similarity to $searchText is $_similarityRating');
   }
 
-  Map<String, dynamic> toMap() {
-    final nonNullProperties = {
-      'name': name,
-      'currentAmount': currentAmount,
-      'warningAmount': warningAmount,
-      'alertAmount': alertAmount,
-      'lastAmount': lastAmount,
-      'lastAddAmount': lastAddAmount,
-    }.entries.where((element) => element != null).toList();
+  IngredientObject toObject() => IngredientObject(
+        id: id,
+        name: name,
+        currentAmount: currentAmount,
+        warningAmount: warningAmount,
+        alertAmount: alertAmount,
+        lastAddAmount: lastAddAmount,
+        lastAmount: lastAmount,
+      );
 
-    return {for (var p in nonNullProperties) p.key: p.value};
+  Future<void> update(IngredientObject object) {
+    final updateData = object.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    notifyListeners();
+
+    return Database.instance.update(Collections.stock, updateData);
   }
 
-  // STATE CHANGE
-
-  void update({
-    String name,
-    num amount,
-  }) {
-    final updateData = <String, dynamic>{};
-    if (name != null && name != this.name) {
-      this.name = name;
-      updateData['$ColumnIngredient$id.name'] = name;
-    }
-    if (amount != null && amount != currentAmount) {
-      currentAmount = amount;
-      updateData['$ColumnIngredient.$id.currentAmount'] = amount;
-    }
-
-    if (updateData.isNotEmpty) {
-      Database.instance.update(Collections.stock, updateData);
-
-      notifyListeners();
-    }
-  }
-
-  void addAmount(num amount) {
-    StockModel.instance.applyIngredients({id: amount});
-  }
-
-  Map<String, dynamic> addAmountUpdateData(num amount) {
+  Map<String, num> updateInfo(num amount) {
     if (amount > 0) {
       lastAddAmount = amount;
       currentAmount = (currentAmount ?? 0) + amount;
       lastAmount = currentAmount;
+
+      print('$name current: $currentAmount, last: $lastAmount');
+
+      return {
+        '$prefix.currentAmount': currentAmount,
+        '$prefix.lastAddAmount': lastAddAmount,
+        '$prefix.lastAmount': lastAmount,
+      };
     } else {
       currentAmount = max((currentAmount ?? 0) + amount, 0);
+      print('$name current: $currentAmount');
+
+      return {'$prefix.currentAmount': currentAmount};
     }
-
-    print('$name current: $currentAmount, last: $lastAmount');
-
-    return {
-      '$ColumnIngredient.$id.currentAmount': currentAmount,
-      '$ColumnIngredient.$id.lastAddAmount': lastAddAmount,
-      '$ColumnIngredient.$id.lastAmount': lastAmount,
-    };
   }
-
-  int _similarityRating;
-  void setSimilarity(String searchText) {
-    _similarityRating = Util.similarity(name, searchText);
-    // print('$name Similarity to $searchText is $_similarityRating');
-  }
-
-  int get similarity => _similarityRating;
 }

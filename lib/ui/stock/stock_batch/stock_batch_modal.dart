@@ -3,11 +3,11 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
-import 'package:provider/provider.dart';
 
 class StockBatchModal extends StatefulWidget {
   const StockBatchModal({Key key, this.batch}) : super(key: key);
@@ -30,9 +30,9 @@ class _StockBatchModalState extends State<StockBatchModal> {
     if (isSaving || !_formKey.currentState.validate()) return;
 
     final name = _nameController.text;
-    final repo = context.read<StockBatchRepo>();
 
-    if (widget.batch?.name != name && repo.hasContain(name)) {
+    if (widget.batch?.name != name &&
+        StockBatchRepo.instance.hasContain(name)) {
       return setState(() => errorMessage = '批量名稱重複');
     }
 
@@ -41,27 +41,25 @@ class _StockBatchModalState extends State<StockBatchModal> {
       errorMessage = null;
     });
 
-    _updateBatches(name, repo);
+    _updateBatches(name);
     Navigator.of(context).pop();
   }
 
-  void _updateBatches(String name, StockBatchRepo repo) {
+  void _updateBatches(String name) {
     updateData.clear();
     _formKey.currentState.save();
 
     if (widget.batch != null) {
-      widget.batch.update(name: name, data: updateData);
+      widget.batch.update(StockBatchObject(name: name, data: updateData));
     }
 
-    repo.updateBatch(
+    StockBatchRepo.instance.updateBatch(
       widget.batch ?? StockBatchModel(name: name, data: updateData),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.read<StockModel>();
-
     return FadeInTitleScaffold(
       leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
@@ -77,7 +75,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
               padding: const EdgeInsets.all(kPadding),
               child: _nameField(),
             ),
-            for (var ingredient in stock.ingredientList)
+            for (var ingredient in StockModel.instance.ingredients.values)
               _ingredientField(ingredient),
           ],
         ),

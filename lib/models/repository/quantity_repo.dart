@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
@@ -7,65 +10,80 @@ class QuantityRepo extends ChangeNotifier {
 
   static QuantityRepo get instance => _instance;
 
-  QuantityRepo._constructor() {
-    loadFromDb();
-  }
-
   Map<String, QuantityModel> quantities;
 
-  // I/O
-  Future<void> loadFromDb() async {
-    var snapshot = await Database.instance.get(Collections.quantities);
-    buildFromMap(snapshot.data());
+  QuantityRepo._constructor() {
+    Database.instance.get(Collections.quantities).then((snapsnot) {
+      quantities = {};
+
+      final data = snapsnot.data();
+      if (data == null) return;
+
+      try {
+        data.forEach((id, map) {
+          quantities[id] = QuantityModel.fromObject(
+            QuantityObject.build({'id': id, ...map}),
+          );
+        });
+      } catch (e) {
+        print(e);
+      }
+
+      notifyListeners();
+    });
   }
 
-  void buildFromMap(Map<String, dynamic> data) {
-    quantities = {};
-    if (data == null) {
-      notifyListeners();
-      return;
-    }
+  bool get isEmpty => quantities.isEmpty;
 
-    try {
-      data.forEach((key, value) {
-        if (value is Map) {
-          quantities[key] = QuantityModel.fromMap(id: key, data: value);
-        }
-      });
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+  bool get isNotReady => quantities == null;
+
+  bool get isReady => quantities != null;
+
+  List<QuantityModel> get quantitiesList => quantities.values.toList();
+
+  QuantityModel operator [](String id) =>
+      quantities[id] ?? quantities.values.first;
+
+  bool hasContain(String id) => quantities.containsKey(id);
+
+  Future<void> removeQuantity(QuantityModel quantity) {
+    quantities.remove(quantity.id);
+
+    notifyListeners();
+
+    return Database.instance.update(Collections.quantities, {
+      quantity.prefix: null,
+    });
   }
 
   void updateQuantity(QuantityModel quantity) {
-    if (hasNotContain(quantity.id)) {
+    if (!hasContain(quantity.id)) {
       quantities[quantity.id] = quantity;
 
-      final updateData = {'${quantity.id}': quantity.toMap()};
+      final updateData = {'${quantity.id}': quantity.toObject().toMap()};
+
       Database.instance.set(Collections.quantities, updateData);
     }
 
     notifyListeners();
   }
 
-  void removeQuantity(String id) {
-    quantities.remove(id);
-    Database.instance.update(Collections.quantities, {id: null});
-    notifyListeners();
+  List<QuantityModel> sortBySimilarity(String text) {
+    if (text.isEmpty) {
+      return [];
+    }
+
+    final similarities = quantities.entries
+        .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
+        .where((e) => e.value > 0)
+        .toList();
+    similarities.sort((ing1, ing2) {
+      // if ing1 < ing2 return -1 will make ing1 be the first one
+      if (ing1.value == ing2.value) return 0;
+      return ing1.value < ing2.value ? 1 : -1;
+    });
+
+    final end = min(10, similarities.length);
+    return similarities.sublist(0, end).map((e) => quantities[e.key]);
   }
-
-  // TOOLS
-
-  bool hasContain(String id) => quantities.containsKey(id);
-  bool hasNotContain(String id) => !quantities.containsKey(id);
-  QuantityModel operator [](String id) =>
-      quantities[id] ?? quantities.values.first;
-
-  // GETTER
-
-  List<QuantityModel> get quantitiesList => quantities.values.toList();
-  bool get isReady => quantities != null;
-  bool get isNotReady => quantities == null;
-  bool get isEmpty => quantities.isEmpty;
 }

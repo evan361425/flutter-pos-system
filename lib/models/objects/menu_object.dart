@@ -1,3 +1,4 @@
+import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -47,7 +48,7 @@ class CatalogObject {
       id: data['id'],
       index: data['index'],
       name: data['name'],
-      createdAt: _parseDate(data['createdAt']),
+      createdAt: Util.parseDate(data['createdAt']),
       products: products?.entries?.map<ProductObject>(
         (e) => ProductObject.build({'id': e.key, ...e.value}),
       ),
@@ -116,7 +117,7 @@ class ProductObject {
       cost: data['cost'],
       index: data['index'],
       name: data['name'],
-      createdAt: _parseDate(data['createdAt']),
+      createdAt: Util.parseDate(data['createdAt']),
       ingredients: data['ingredients']?.entries?.map<ProductIngredientObject>(
             (e) => ProductIngredientObject.build({'id': e.key, ...e.value}),
           ),
@@ -242,13 +243,5 @@ class ProductQuantityObject {
       additionalCost: data['additionalCost'],
       additionalPrice: data['additionalPrice'],
     );
-  }
-}
-
-DateTime _parseDate(String createdAt) {
-  try {
-    return DateTime.parse(createdAt);
-  } catch (e) {
-    return DateTime.now();
   }
 }

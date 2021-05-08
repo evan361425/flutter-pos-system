@@ -1,10 +1,20 @@
-import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/database.dart';
 
 class ProductQuantityModel {
+  String id;
+
+  num amount;
+
+  num additionalCost;
+
+  num additionalPrice;
+
+  QuantityModel quantity;
+
   ProductQuantityModel({
     this.id,
     this.quantity,
@@ -15,31 +25,33 @@ class ProductQuantityModel {
     id ??= quantity.id;
   }
 
-  String id;
-  num amount;
-  num additionalCost;
-  num additionalPrice;
-  QuantityModel quantity;
+  factory ProductQuantityModel.fromObject(ProductQuantityObject object) =>
+      ProductQuantityModel(
+        id: object.id,
+        amount: object.amount,
+        additionalCost: object.additionalCost,
+        additionalPrice: object.additionalPrice,
+      );
 
-  factory ProductQuantityModel.fromObject(ProductQuantityObject object) {
-    return ProductQuantityModel(
-      id: object.id,
-      amount: object.amount,
-      additionalCost: object.additionalCost,
-      additionalPrice: object.additionalPrice,
-    );
+  bool get isNotReady => id == null;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProductQuantityModel ? other.id == id : false;
   }
 
-  ProductQuantityObject toObject() {
-    return ProductQuantityObject(
-      id: id,
-      amount: amount,
-      additionalCost: additionalCost,
-      additionalPrice: additionalPrice,
-    );
+  void changeQuantity(ProductIngredientModel ingredient, String id) {
+    ingredient.removeQuantity(this);
+    this.id = id;
+    quantity = QuantityRepo.instance[id];
   }
 
-  // STATE CHANGE
+  ProductQuantityObject toObject() => ProductQuantityObject(
+        id: id,
+        amount: amount,
+        additionalCost: additionalCost,
+        additionalPrice: additionalPrice,
+      );
 
   Future<void> update(
     ProductIngredientModel ingredient,
@@ -53,18 +65,4 @@ class ProductQuantityModel {
 
     return Database.instance.update(Collections.menu, updateData);
   }
-
-  void changeQuantity(ProductIngredientModel ingredient, String id) {
-    ingredient.removeQuantity(this);
-    this.id = id;
-    quantity = QuantityRepo.instance[id];
-  }
-
-  // GETTER
-  @override
-  bool operator ==(Object other) {
-    return other is ProductQuantityModel ? other.id == id : false;
-  }
-
-  bool get isNotReady => id == null;
 }

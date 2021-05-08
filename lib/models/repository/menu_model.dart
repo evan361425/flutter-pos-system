@@ -13,17 +13,16 @@ class MenuModel extends ChangeNotifier {
 
   static MenuModel get instance => _instance;
 
+  Map<String, CatalogModel> catalogs;
+
+  bool stockMode = false;
+
   MenuModel._constructor() {
     Database.instance.get(Collections.menu).then((snapshot) {
       buildFromMap(snapshot.data());
       notifyListeners();
     });
   }
-
-  Map<String, CatalogModel> catalogs;
-  bool stockMode = false;
-
-  // I/O
 
   List<CatalogModel> get catalogList {
     final catalogList = catalogs.values.toList();
@@ -34,6 +33,8 @@ class MenuModel extends ChangeNotifier {
   bool get isEmpty => catalogs.isEmpty;
 
   bool get isNotReady => catalogs == null;
+
+  bool get isReady => catalogs != null;
 
   int get newIndex {
     var maxIndex = -1;
@@ -106,25 +107,29 @@ class MenuModel extends ChangeNotifier {
     return result;
   }
 
-  void removeCatalog(String id) {
+  Future<void> removeCatalog(String id) {
     catalogs.remove(id);
-    Database.instance.update(Collections.menu, {id: null});
+
     notifyListeners();
+
+    return Database.instance.update(Collections.menu, {id: null});
   }
 
-  void removeIngredient(String id) {
+  Future<void> removeIngredient(String id) {
     final ingredients = productContainsIngredient(id);
     final updateData = {
       for (var ingredient in ingredients) ingredient.prefix: null
     };
-    Database.instance.update(Collections.menu, updateData);
 
-    if (updateData.isNotEmpty) {
-      ingredients.forEach((ingredient) {
-        ingredient.product.ingredients.remove(id);
-      });
-      notifyListeners();
-    }
+    if (updateData.isEmpty) return Future.value();
+
+    ingredients.forEach((ingredient) {
+      ingredient.product.ingredients.remove(id);
+    });
+
+    notifyListeners();
+
+    return Database.instance.update(Collections.menu, updateData);
   }
 
   void removeQuantity(String id) {

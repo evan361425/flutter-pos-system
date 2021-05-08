@@ -11,11 +11,9 @@ import 'package:provider/provider.dart';
 class ProductList extends StatelessWidget {
   const ProductList({
     @required this.products,
-    @required this.stock,
   });
 
   final List<ProductModel> products;
-  final StockModel stock;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class ProductList extends StatelessWidget {
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(
         context,
-        product.ingredients.keys.map((id) => stock[id]?.name),
+        product.ingredients.keys.map((id) => StockModel.instance[id]?.name),
         '尚未設定成份',
       ),
     );

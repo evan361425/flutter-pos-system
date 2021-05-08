@@ -26,9 +26,11 @@ class Routes {
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),
-    stockIngredient: (context) => IngredientScreen(
-          ingredient: ModalRoute.of(context).settings.arguments,
-        ),
+    stockIngredient: (context) => setUpStockMode(context)
+        ? IngredientScreen(
+            ingredient: ModalRoute.of(context).settings.arguments,
+          )
+        : Center(child: CircularProgressIndicator()),
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) => QuantityModal(
           quantity: ModalRoute.of(context).settings.arguments,

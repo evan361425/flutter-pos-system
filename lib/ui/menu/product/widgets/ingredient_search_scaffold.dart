@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/histories/search_history.dart';
 import 'package:possystem/models/repository/stock_model.dart';
-import 'package:provider/provider.dart';
 
 class IngredientSearchScaffold extends StatelessWidget {
   IngredientSearchScaffold({Key key, this.text}) : super(key: key);
@@ -18,29 +15,10 @@ class IngredientSearchScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.watch<StockModel>();
-    var sortedIngredients = <IngredientModel>[];
     return SearchScaffold<IngredientModel>(
       key: scaffold,
-      onChanged: (String text) async {
-        if (text.isEmpty) {
-          sortedIngredients = [];
-          return [];
-        }
-
-        sortedIngredients = stock.ingredients.values
-            .map<IngredientModel>((e) => e..setSimilarity(text))
-            .toList()
-            .where((element) => element.similarity > 0)
-            .toList()
-              // if ing1 < ing2 return -1 will make ing1 be the first one
-              ..sort((ing1, ing2) {
-                if (ing1.similarity == ing2.similarity) return 0;
-                return ing1.similarity < ing2.similarity ? 1 : -1;
-              });
-        final end = min(10, sortedIngredients.length);
-        return sortedIngredients.sublist(0, end);
-      },
+      onChanged: (String text) async =>
+          StockModel.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialBuilder: _initialBuilder,
@@ -65,19 +43,16 @@ class IngredientSearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text('新增成份「$text」'),
       onTap: () {
-        final stock = context.read<StockModel>();
         final ingredient = IngredientModel(name: text);
-        stock.updateIngredient(ingredient);
+        StockModel.instance.updateIngredient(ingredient);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );
   }
 
   Widget _initialBuilder(BuildContext context) {
-    final searchHistory = histories.get(
-      () => scaffold.currentState.updateView(),
-    );
-    if (searchHistory == null) return CircularProgressIndicator();
+    final history = histories.get(() => scaffold.currentState.updateView());
+    if (history == null) return CircularProgressIndicator();
 
     return Column(
       children: [
@@ -86,14 +61,12 @@ class IngredientSearchScaffold extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return CardTile(
-                title: Text(searchHistory.elementAt(index)),
-                onTap: () {
-                  scaffold.currentState
-                      .setSearchKeyword(searchHistory.elementAt(index));
-                },
+                title: Text(history.elementAt(index)),
+                onTap: () => scaffold.currentState
+                    .setSearchKeyword(history.elementAt(index)),
               );
             },
-            itemCount: searchHistory.length,
+            itemCount: history.length,
           ),
         ),
       ],

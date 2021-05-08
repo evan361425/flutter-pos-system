@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/database.dart';
 
 class StockBatchModel {
+  String name;
+
+  final String id;
+
+  final Map<String, num> data;
+
   StockBatchModel({
     @required this.name,
     id,
@@ -11,68 +18,31 @@ class StockBatchModel {
   })  : id = id ?? Util.uuidV4(),
         data = data ?? {};
 
-  String name;
-  final String id;
-  final Map<String, num> data;
+  factory StockBatchModel.fromObject(StockBatchObject object) =>
+      StockBatchModel(
+        id: object.id,
+        name: object.name,
+        data: object.data,
+      );
 
-  // I/O
+  String get prefix => id;
 
-  factory StockBatchModel.fromMap({
-    String id,
-    Map<String, dynamic> data,
-  }) {
-    final batchData = <String, num>{};
-    final oriData = data['data'];
-
-    if (oriData is Map) {
-      oriData.forEach((key, value) {
-        batchData[key] = value;
-      });
-    }
-
-    return StockBatchModel(
-      id: id,
-      name: data['name'],
-      data: batchData,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'data': data,
-    };
-  }
-
-  // STATE CHANGE
-
-  void update({String name, Map<String, num> data}) {
-    final updateData = <String, dynamic>{};
-    if (name != null && name != this.name) {
-      this.name = name;
-      updateData['$id.name'] = name;
-    }
-    if (data != null) {
-      data.forEach((key, value) {
-        if (this.data[key] != value) {
-          this.data[key] = value;
-          updateData['$id.data.$key'] = value;
-        }
-      });
-    }
-
-    if (updateData.isNotEmpty) {
-      Database.instance.update(Collections.stock_batch, updateData);
-    }
-  }
-
-  void apply() {
-    StockModel.instance.applyIngredients(data);
-  }
-
-  // HELPER
-
-  bool has(String id) => data.containsKey(id);
-  bool hasNot(String id) => !data.containsKey(id);
   num operator [](String id) => data[id];
+
+  void apply() => StockModel.instance.applyAmounts(data);
+
+  bool hasNot(String id) => !data.containsKey(id);
+
+  Map<String, dynamic> toMap() => {
+        'name': name,
+        'data': data,
+      };
+
+  Future<void> update(StockBatchObject object) {
+    final updateData = object.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    return Database.instance.update(Collections.stock_batch, updateData);
+  }
 }

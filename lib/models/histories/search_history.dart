@@ -22,7 +22,7 @@ class SearchHistory {
         cb();
       });
 
-      return Queue();
+      return null;
     }
 
     return SearchHistory.data[type] ?? Queue();

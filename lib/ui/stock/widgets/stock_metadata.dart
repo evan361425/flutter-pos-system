@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/repository/stock_model.dart';
-import 'package:provider/provider.dart';
 
 class StockMetadata extends StatelessWidget {
   const StockMetadata({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.read<StockModel>();
     final captionStyle = Theme.of(context).textTheme.caption;
 
     return Row(
@@ -53,7 +51,10 @@ class StockMetadata extends StatelessWidget {
             ),
           ),
         ),
-        Text(stock.updatedDate ?? '尚未開始設定', style: captionStyle),
+        Text(
+          StockModel.instance.updatedDate ?? '尚未開始設定',
+          style: captionStyle,
+        ),
       ],
     );
   }

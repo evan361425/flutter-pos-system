@@ -52,8 +52,6 @@ class StockBatchActions extends StatelessWidget {
     BuildContext context,
     StockBatchModel batch,
   ) async {
-    final stock = context.read<StockModel>();
-
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => ConfirmDialog(
@@ -62,7 +60,7 @@ class StockBatchActions extends StatelessWidget {
           children: [
             Text('將會影響以下的成份：'),
             for (var ingredientId in batch.data.keys)
-              Text(stock[ingredientId]?.name),
+              Text(StockModel.instance[ingredientId]?.name),
           ],
         ),
       ),

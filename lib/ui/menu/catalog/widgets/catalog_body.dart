@@ -17,10 +17,7 @@ class CatalogBody extends StatelessWidget {
     final stock = context.watch<StockModel>();
     if (stock.isReady) {
       // get sorted products
-      return ProductList(
-        products: catalog.productList,
-        stock: stock,
-      );
+      return ProductList(products: catalog.productList);
     } else {
       return CircularProgressIndicator();
     }

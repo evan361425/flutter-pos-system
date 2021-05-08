@@ -10,7 +10,6 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class IngredientList extends StatelessWidget {
   const IngredientList({Key key, @required this.ingredients}) : super(key: key);
@@ -94,17 +93,15 @@ class IngredientList extends StatelessWidget {
 
   void _onDelete(BuildContext context, IngredientModel ingredient) {
     debugPrint('Delete ingredient - ${ingredient.id} : ${ingredient.name}');
-    final stock = context.read<StockModel>();
-    final menu = context.read<MenuModel>();
 
-    stock.removeIngredient(ingredient.id);
-    menu.removeIngredient(ingredient.id);
+    StockModel.instance.removeIngredient(ingredient);
+    MenuModel.instance.removeIngredient(ingredient.id);
   }
 
   Widget _warningContextBuild(
       BuildContext context, IngredientModel ingredient) {
-    final menu = context.read<MenuModel>();
-    final productCount = menu.productContainsIngredient(ingredient.id).length;
+    final productCount =
+        MenuModel.instance.productContainsIngredient(ingredient.id).length;
     final productCountText = productCount == 0
         ? TextSpan()
         : TextSpan(children: [

@@ -1,71 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/services/database.dart';
 
 class QuantityModel {
-  QuantityModel({
-    @required this.name,
-    this.defaultProportion = 0,
-    String id,
-  }) : id = id ?? Util.uuidV4();
-
   final String id;
+
   String name;
+
   num defaultProportion;
 
-  factory QuantityModel.fromMap({
+  QuantityModel({
     String id,
-    Map<String, dynamic> data,
-  }) {
-    return QuantityModel(
-      name: data['name'],
-      defaultProportion: data['defaultProportion'],
-      id: id,
-    );
-  }
+    @required this.name,
+    this.defaultProportion = 0,
+  }) : id = id ?? Util.uuidV4();
 
-  factory QuantityModel.empty() {
-    return QuantityModel(name: null);
-  }
+  factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
+        id: object.id,
+        name: object.name,
+        defaultProportion: object.defaultProportion,
+      );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'defaultProportion': defaultProportion,
-    };
-  }
+  bool get isNotReady => name == null;
 
-  // STATE CHANGE
+  bool get isReady => name != null;
 
-  void update({
-    String name,
-    num proportion,
-  }) {
-    final updateData = <String, dynamic>{};
-    if (name != null && name != this.name) {
-      this.name = name;
-      updateData['$id.name'] = name;
-    }
-    if (proportion != null && proportion != defaultProportion) {
-      defaultProportion = proportion;
-      updateData['$id.defaultProportion'] = proportion;
-    }
+  String get prefix => id;
 
-    if (updateData.isNotEmpty) {
-      Database.instance.update(Collections.quantities, updateData);
-    }
-  }
-
-  int _similarityRating;
-  void setSimilarity(String searchText) {
-    _similarityRating = Util.similarity(name, searchText);
+  int getSimilarity(String searchText) {
+    return Util.similarity(name, searchText);
     // print('$name Similarity to $searchText is $_similarityRating');
   }
 
-  int get similarity => _similarityRating;
+  QuantityObject toObject() => QuantityObject(
+        id: id,
+        name: name,
+        defaultProportion: defaultProportion,
+      );
 
-  // GETTER
+  Future<void> update(QuantityObject object) {
+    final updateData = object.diff(this);
 
-  bool get isReady => name != null;
-  bool get isNotReady => name == null;
+    if (updateData.isEmpty) return Future.value();
+
+    return Database.instance.update(Collections.quantities, updateData);
+  }
 }
