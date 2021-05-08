@@ -42,7 +42,8 @@ class CartModel extends ChangeNotifier {
     // disallow before stash, so need minus 1
     if (await OrderHistory.instance.getStashLength() > 4) return false;
 
-    OrderHistory.instance.stash(output());
+    await OrderHistory.instance.stash(output());
+
     clear();
     return true;
   }
@@ -67,9 +68,12 @@ class CartModel extends ChangeNotifier {
 
     final data = output(paid);
 
-    OrderHistory.instance.push(data);
-    StockModel.instance.order(data);
     leaveHistoryMode();
+
+    return Future.wait([
+      OrderHistory.instance.push(data),
+      StockModel.instance.order(data),
+    ]);
   }
 
   Future<bool> popHistory() async {

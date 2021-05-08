@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/quantity_search_scaffold.dart';

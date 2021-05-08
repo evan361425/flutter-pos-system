@@ -21,6 +21,8 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   String get paid => paidController.text;
 
   Future<void> handlePressed(_ButtonTypes type) async {
+    if (isUpdating) return;
+
     switch (type) {
       case _ButtonTypes.back:
         if (paid.isEmpty) return;
@@ -36,7 +38,6 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
-        if (isUpdating) return;
         isUpdating = true;
 
         if (!await showHistoryConfirm(context)) {
@@ -173,7 +174,10 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
-          onPressed: onPressed ?? () => updatePaid(paid + text),
+          onPressed: () {
+            if (isUpdating) return;
+            onPressed == null ? onPressed() : updatePaid(paid + text);
+          },
           child: Text(text),
         ),
       ),
