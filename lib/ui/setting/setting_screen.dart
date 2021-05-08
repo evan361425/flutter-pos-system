@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/ui/setting/widgets/language.dart';
-import 'package:possystem/ui/setting/widgets/signout.dart';
+import 'package:possystem/providers/language_provider.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/setting/widgets/theme.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final language = context.watch<LanguageProvider>();
+    final locale = Local.of(context).t(
+      'setting.language.${language.locale.toString()}',
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(Local.of(context).t('setting')),
@@ -18,32 +24,27 @@ class SettingScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          _buildCard(
-            Local.of(context).t('setting.theme.title'),
-            Local.of(context).t('setting.theme.subtitle'),
-            ThemeSwitch(),
+          CardTile(
+            title: Text(Local.of(context).t('setting.theme.title')),
+            trailing: ThemeSwitch(),
           ),
-          _buildCard(
-            Local.of(context).t('setting.language.title'),
-            Local.of(context).t('setting.language.subtitle'),
-            LanguagePopupMenu(),
-          ),
-          _buildCard(
-            Local.of(context).t('setting.logout.title'),
-            Local.of(context).t('setting.logout.subtitle'),
-            SignoutButton(),
+          CardTile(
+            title: Text(Local.of(context).t('setting.language.title')),
+            subtitle: Text(locale),
+            trailing: Icon(Icons.arrow_forward_ios_sharp),
+            onTap: () async {
+              final selected = await Navigator.of(context).pushNamed(
+                Routes.settingLanguage,
+              );
+
+              print(selected);
+
+              if (selected != null && selected != language.locale) {
+                language.locale = selected;
+              }
+            },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCard(String title, String subtitle, Widget trailing) {
-    return Card(
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: trailing,
       ),
     );
   }

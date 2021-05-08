@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 
+import 'analysis/analysis_screen.dart';
+
 class HomeContainer extends StatelessWidget {
   const HomeContainer({Key key}) : super(key: key);
 
@@ -15,13 +17,13 @@ class HomeContainer extends StatelessWidget {
       tabBar: tabBar(),
       tabBuilder: (context, index) {
         switch (_MainPageTypes.values[index]) {
-          case _MainPageTypes.menu:
-            return HomeScreen();
           case _MainPageTypes.stock:
             return StockScreen();
+          case _MainPageTypes.analysis:
+            return AnalysisScreen();
+          case _MainPageTypes.home:
           default:
-            return buildPage(context, index);
-            break;
+            return HomeScreen();
         }
       },
     );
@@ -46,46 +48,10 @@ class HomeContainer extends StatelessWidget {
       ),
     ]);
   }
-
-  Widget buildPage(BuildContext context, int index) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('Page 1 of tab $index'),
-      ),
-      child: Center(
-        child: CupertinoButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              CupertinoPageRoute<void>(
-                builder: (BuildContext context) {
-                  return CupertinoPageScaffold(
-                    navigationBar: CupertinoNavigationBar(
-                      middle: Text('Page 2 of tab $index'),
-                    ),
-                    child: Center(
-                      child: CupertinoButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Back'),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-          child: const Text('Next page'),
-        ),
-      ),
-    );
-  }
 }
 
 enum _MainPageTypes {
-  menu,
+  home,
   analysis,
   stock,
-  customer,
-  settings,
 }

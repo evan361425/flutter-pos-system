@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/ui/customer/customer_screen.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/setting/setting_screen.dart';
+import 'package:possystem/ui/setting/widgets/language_modal.dart';
+import 'package:possystem/ui/transfer/transfer_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'components/circular_loading.dart';
@@ -16,16 +20,23 @@ import 'ui/stock/stock_batch/stock_batch_modal.dart';
 class Routes {
   static final String order = 'order';
   static final String menu = 'menu';
+  static final String customer = 'customer';
+  static final String setting = 'setting';
+  static final String transfer = 'transfer';
   static final String menuCatalog = 'menu/catalog';
   static const String stockBatchModal = 'stock/batch/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
   static const String stockQuantityModal = 'stock/quantity/modal';
+  static final String settingLanguage = 'setting/language';
 
   static final routes = <String, WidgetBuilder>{
     order: (context) =>
         setUpStockMode(context) ? OrderScreen() : CircularLoading(),
     menu: (context) => MenuScreen(),
+    customer: (context) => CustomerScreen(),
+    setting: (context) => SettingScreen(),
+    transfer: (context) => TransferScreen(),
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),
@@ -41,6 +52,7 @@ class Routes {
     stockBatchModal: (context) => StockBatchModal(
           batch: ModalRoute.of(context).settings.arguments,
         ),
+    settingLanguage: (context) => LanguageModal(),
   };
 
   static bool setUpStockMode(BuildContext context) {

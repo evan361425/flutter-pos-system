@@ -17,7 +17,7 @@ class IconActions extends StatelessWidget {
         _LabeledIcon(
           icon: Icons.assignment_ind_outlined,
           label: '客戶資訊',
-          route: '',
+          route: Routes.customer,
         ),
         _LabeledIcon(
           icon: Icons.exposure_outlined,
@@ -27,12 +27,12 @@ class IconActions extends StatelessWidget {
         _LabeledIcon(
           icon: Icons.import_export_outlined,
           label: '匯出匯入',
-          route: '',
+          route: Routes.transfer,
         ),
         _LabeledIcon(
           icon: Icons.settings_outlined,
           label: '設定',
-          route: '',
+          route: Routes.setting,
         ),
       ],
     );

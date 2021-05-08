@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 
-class CustomerScreen extends StatelessWidget {
+class TransferScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('顧客資訊'),
+        title: Text('匯出匯入'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),

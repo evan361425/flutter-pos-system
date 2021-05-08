@@ -1,0 +1,11 @@
+theme:
+  title: 暗黑模式
+  subtitle: 換個皮囊
+language:
+  title: 語言
+  subtitle: Set Your Language
+logout:
+  title: "登出😱"
+  subtitle: 不會清除您的菜單和點單資料
+  button: 登出
+  alert: 登出確認通知

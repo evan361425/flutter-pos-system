@@ -68,6 +68,7 @@ flutter:
   assets:
     - assets/
     - lang/zh-TW/
+    - lang/en-US/
 
 flutter_icons:
   android: true

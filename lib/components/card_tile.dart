@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 
 class CardTile extends StatelessWidget {
-  const CardTile({Key key, this.title, this.onTap}) : super(key: key);
+  const CardTile({
+    Key key,
+    this.title,
+    this.subtitle,
+    this.onTap,
+    this.trailing,
+  }) : super(key: key);
 
   final Widget title;
+  final Widget subtitle;
+  final Widget trailing;
   final void Function() onTap;
 
   @override
@@ -13,7 +21,9 @@ class CardTile extends StatelessWidget {
       margin: EdgeInsets.all(0),
       child: ListTile(
         title: title,
+        subtitle: subtitle,
         onTap: onTap,
+        trailing: trailing,
       ),
     );
   }
