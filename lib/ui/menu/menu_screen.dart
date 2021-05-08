@@ -4,7 +4,6 @@ import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
 import 'package:possystem/ui/menu/widgets/menu_actions.dart';
 import 'package:provider/provider.dart';
@@ -17,57 +16,28 @@ class MenuScreen extends StatelessWidget {
     final menu = context.watch<MenuModel>();
     if (menu.isNotReady) return CircularLoading();
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('主頁'),
-          leading: TextButton(
-            onPressed: () => Navigator.of(context).pushNamed(Routes.order),
-            child: Text('點餐'),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => showCupertinoModalPopup(
-                context: context,
-                builder: (_) => MenuActions(),
-              ),
-              icon: Icon(KIcons.more),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => CatalogModal()),
-          ),
-          tooltip: Local.of(context).t('menu.add_catalog'),
-          child: Icon(KIcons.add),
-        ),
-        // When click android go back, it will avoid closing APP
-        body: WillPopScope(
-          onWillPop: () => showConfirmDialog(context),
-          child: MenuBody(),
-        ),
-      ),
-    );
-  }
-
-  Future<bool> showConfirmDialog(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('確定要離開 APP 嗎？'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('主頁'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('確認'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('取消'),
+          IconButton(
+            onPressed: () => showCupertinoModalPopup(
+              context: context,
+              builder: (_) => MenuActions(),
+            ),
+            icon: Icon(KIcons.more),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => CatalogModal()),
+        ),
+        tooltip: Local.of(context).t('menu.add_catalog'),
+        child: Icon(KIcons.add),
+      ),
+      // When click android go back, it will avoid closing APP
+      body: MenuBody(),
     );
-    return result ?? false;
   }
 }

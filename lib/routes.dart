@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -14,15 +15,17 @@ import 'ui/stock/stock_batch/stock_batch_modal.dart';
 
 class Routes {
   static final String order = 'order';
+  static final String menu = 'menu';
   static final String menuCatalog = 'menu/catalog';
-  static const String stockBatchModal = 'stcok/batch/modal';
-  static const String stockQuantity = 'stcok/quantity';
-  static const String stockIngredient = 'stcok/ingredient';
-  static const String stockQuantityModal = 'stcok/quantity/modal';
+  static const String stockBatchModal = 'stock/batch/modal';
+  static const String stockQuantity = 'stock/quantity';
+  static const String stockIngredient = 'stock/ingredient';
+  static const String stockQuantityModal = 'stock/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
     order: (context) =>
         setUpStockMode(context) ? OrderScreen() : CircularLoading(),
+    menu: (context) => MenuScreen(),
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),

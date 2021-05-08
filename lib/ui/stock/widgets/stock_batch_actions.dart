@@ -20,12 +20,12 @@ class StockBatchActions extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
-          child: IconButton(
-            icon: Icon(KIcons.edit),
+          child: TextButton(
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.stockBatchModal,
               arguments: selector.currentState.currentBatch,
             ),
+            child: Icon(KIcons.edit),
           ),
         ),
         Expanded(

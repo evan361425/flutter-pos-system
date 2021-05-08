@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/ui/menu/menu_screen.dart';
+import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 
 class HomeContainer extends StatelessWidget {
@@ -16,7 +16,7 @@ class HomeContainer extends StatelessWidget {
       tabBuilder: (context, index) {
         switch (_MainPageTypes.values[index]) {
           case _MainPageTypes.menu:
-            return MenuScreen();
+            return HomeScreen();
           case _MainPageTypes.stock:
             return StockScreen();
           default:
@@ -30,8 +30,8 @@ class HomeContainer extends StatelessWidget {
   CupertinoTabBar tabBar() {
     return CupertinoTabBar(items: <BottomNavigationBarItem>[
       BottomNavigationBarItem(
-        icon: Icon(Icons.collections_outlined),
-        activeIcon: Icon(Icons.collections_sharp),
+        icon: Icon(Icons.home_outlined),
+        activeIcon: Icon(Icons.home_sharp),
         label: '主頁',
       ),
       BottomNavigationBarItem(
@@ -43,16 +43,6 @@ class HomeContainer extends StatelessWidget {
         icon: Icon(Icons.store_outlined),
         activeIcon: Icon(Icons.store_sharp),
         label: '庫存',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.assignment_ind_outlined),
-        activeIcon: Icon(Icons.assignment_ind_sharp),
-        label: '客戶資訊',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.article_outlined),
-        activeIcon: Icon(Icons.article_sharp),
-        label: '設定',
       ),
     ]);
   }

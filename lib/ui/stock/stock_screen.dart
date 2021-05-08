@@ -14,17 +14,6 @@ class StockScreen extends StatelessWidget {
       value: StockBatchRepo.instance,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            title: Text('庫存'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  Routes.stockQuantity,
-                ),
-                child: Text('設定份量'),
-              )
-            ],
-          ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.stockIngredient,
