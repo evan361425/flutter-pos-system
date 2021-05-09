@@ -4,6 +4,7 @@ import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 
 class OrderObject {
+  final int id;
   num paid;
   final num totalPrice;
   final int totalCount;
@@ -11,6 +12,7 @@ class OrderObject {
   final Iterable<OrderProductObject> products;
 
   OrderObject({
+    this.id,
     this.paid,
     this.totalPrice,
     this.totalCount,
@@ -66,6 +68,7 @@ class OrderObject {
 
     return OrderObject(
       createdAt: data['createdAt'],
+      id: data['id'],
       paid: data['paid'],
       totalPrice: data['totalPrice'],
       totalCount: data['totalCount'],

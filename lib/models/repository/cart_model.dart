@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/histories/order_history.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
@@ -40,16 +40,16 @@ class CartModel extends ChangeNotifier {
     if (isEmpty) return true;
 
     // disallow before stash, so need minus 1
-    if (await OrderHistory.instance.getStashLength() > 4) return false;
+    if (await OrderRepo.instance.getStashLength() > 4) return false;
 
-    await OrderHistory.instance.stash(output());
+    await OrderRepo.instance.stash(output());
 
     clear();
     return true;
   }
 
   Future<bool> popStash() async {
-    final order = await OrderHistory.instance.popStash();
+    final order = await OrderRepo.instance.popStash();
     if (order == null) return false;
 
     updateProductions(order.parseToProduct());
@@ -61,23 +61,31 @@ class CartModel extends ChangeNotifier {
     paid ??= price;
     if (paid < price) throw 'too low';
 
-    // if history mode, remove last order info
+    // if history mode update data
     if (isHistoryMode) {
-      await OrderHistory.instance.pop(true);
+      final oldOrder = await OrderRepo.instance.pop();
+      await StockModel.instance.order(oldOrder, reverse: true);
+
+      final data = output(paid: paid, id: oldOrder.id);
+      leaveHistoryMode();
+
+      return Future.wait([
+        OrderRepo.instance.update(data),
+        StockModel.instance.order(data),
+      ]);
+    } else {
+      final data = output(paid: paid);
+      clear();
+
+      return Future.wait([
+        OrderRepo.instance.push(data),
+        StockModel.instance.order(data),
+      ]);
     }
-
-    final data = output(paid);
-
-    leaveHistoryMode();
-
-    return Future.wait([
-      OrderHistory.instance.push(data),
-      StockModel.instance.order(data),
-    ]);
   }
 
   Future<bool> popHistory() async {
-    final order = await OrderHistory.instance.pop();
+    final order = await OrderRepo.instance.pop();
     if (order == null) return false;
 
     updateProductions(order.parseToProduct());
@@ -90,8 +98,9 @@ class CartModel extends ChangeNotifier {
     clear();
   }
 
-  OrderObject output([num paid]) {
+  OrderObject output({num paid, int id}) {
     return OrderObject(
+      id: id,
       paid: paid,
       totalPrice: totalPrice,
       totalCount: totalCount,

@@ -70,15 +70,15 @@ class StockModel extends ChangeNotifier {
 
   bool hasContain(String id) => ingredients.containsKey(id);
 
-  Future<void> order(OrderObject data) {
+  Future<void> order(OrderObject data, {bool reverse = false}) {
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
       product.ingredients.forEach((id, ingredient) {
         if (amounts.containsKey(id)) {
-          amounts[id] -= ingredient.amount;
+          amounts[id] -= reverse ? -ingredient.amount : ingredient.amount;
         } else {
-          amounts[id] = -ingredient.amount;
+          amounts[id] = reverse ? ingredient.amount : -ingredient.amount;
         }
       });
     });

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/models/histories/order_history.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
 class OrderActions extends StatelessWidget {
@@ -73,7 +73,7 @@ class OrderActions extends StatelessWidget {
       case OrderActionTypes.pop_stash:
         if (!await showPopConfirm(context)) return;
 
-        final order = await OrderHistory.instance.popStash();
+        final order = await OrderRepo.instance.popStash();
         if (order == null) {
           return showSnackbar(context, '目前沒有暫存的紀錄唷');
         }

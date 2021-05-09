@@ -34,16 +34,16 @@ abstract class Document<T extends Snapshot> {
   Future<void> update(Collections collection, Map<String, dynamic> data);
 }
 
-class SQLite {
-  static final SQLite _instance = SQLite._constructor();
+class Storage {
+  static final Storage _instance = Storage._constructor();
 
-  static SQLite get instance => _instance;
+  static Storage get instance => _instance;
 
   Database db;
 
-  SQLite._constructor() {
+  Storage._constructor() {
     getDatabasesPath().then((databasesPath) async {
-      SQLite._instance.db = await openDatabase(
+      Storage._instance.db = await openDatabase(
         databasesPath + '/pos_system.db',
         version: 1,
         onCreate: (db, version) async {
@@ -55,12 +55,12 @@ class SQLite {
             ['createdAt', 'INTEGER NOT NULL'],
             ['usedProducts', 'TEXT NOT NULL'],
             ['usedIngredients', 'TEXT NOT NULL'],
-            ['products', 'BLOB NOT NULL'],
+            ['encodedProducts', 'BLOB NOT NULL'],
           ];
           const orderStashColumns = <List<String>>[
             ['id', 'INTEGER PRIMARY KEY AUTOINCREMENT'],
             ['createdAt', 'INTEGER NOT NULL'],
-            ['products', 'BLOB NOT NULL'],
+            ['encodedProducts', 'BLOB NOT NULL'],
           ];
           await db.execute(
             'CREATE TABLE ${TableName[Tables.order]} (${orderColumns.map((column) => column.join(' ')).join(',')})',
@@ -77,13 +77,39 @@ class SQLite {
     return db.insert(TableName[table], data);
   }
 
-  Future<int> pop(Tables table, Map<String, Object> data) {
-    return db.query(TableName[table], data);
+  Future<int> update(
+    Tables table,
+    Object key,
+    Map<String, Object> data, {
+    column = 'id',
+  }) {
+    return db.update(
+      TableName[table],
+      data,
+      where: '$column = ?',
+      whereArgs: [key],
+    );
+  }
+
+  Future<Map<String, Object>> getLast(
+    Tables table, {
+    String column = 'id',
+  }) async {
+    try {
+      final data = await db.query(
+        TableName[table],
+        orderBy: '$column DESC',
+        limit: 1,
+      );
+      return data.first;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<int> count(Tables table) async {
     return Sqflite.firstIntValue(
-      await db.rawQuery('SELECT COUNT(*) FROM ${TableName[table]}'),
+      await db.rawQuery('SELECT COUNT(*) FROM "${TableName[table]}"'),
     );
   }
 }
