@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/ui/cashier/cashier_screen.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
+import 'package:possystem/ui/invoicer/invoicer_screen.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/printer/printer_screen.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:possystem/ui/setting/widgets/language_modal.dart';
 import 'package:possystem/ui/transfer/transfer_screen.dart';
@@ -23,6 +26,9 @@ class Routes {
   static final String customer = 'customer';
   static final String setting = 'setting';
   static final String transfer = 'transfer';
+  static final String cashier = 'cashier';
+  static final String invoicer = 'invoicer';
+  static final String printer = 'printer';
   static final String menuCatalog = 'menu/catalog';
   static const String stockBatchModal = 'stock/batch/modal';
   static const String stockQuantity = 'stock/quantity';
@@ -37,6 +43,9 @@ class Routes {
     customer: (context) => CustomerScreen(),
     setting: (context) => SettingScreen(),
     transfer: (context) => TransferScreen(),
+    cashier: (context) => CashierScreen(),
+    invoicer: (context) => InvoicerScreen(),
+    printer: (context) => PrinterScreen(),
     menuCatalog: (context) => CatalogNavigator(
           catalog: ModalRoute.of(context).settings.arguments,
         ),
