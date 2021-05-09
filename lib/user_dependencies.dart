@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 /// the user logged data uid.
 class UserDependencies extends StatelessWidget {
   final Widget Function(BuildContext, AsyncSnapshot<UserModel>) builder;
-  final Database Function(String uid) databaseBuilder;
+  final Document Function(String uid) databaseBuilder;
 
   const UserDependencies({
     Key key,
@@ -33,7 +33,7 @@ class UserDependencies extends StatelessWidget {
 
         final user = snapshot.data;
 
-        Database.instance = databaseBuilder(user.uid);
+        Document.instance = databaseBuilder(user.uid);
 
         /// For any other Provider services that rely on user data can be
         /// added to the following MultiProvider list.

@@ -73,7 +73,7 @@ class ProductModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance
+    return Document.instance
         .update(Collections.menu, {ingredient.prefix: null});
   }
 
@@ -94,7 +94,7 @@ class ProductModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   void updateIngredient(ProductIngredientModel ingredient) {
@@ -103,7 +103,7 @@ class ProductModel extends ChangeNotifier {
 
       final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
 
-      Database.instance.update(Collections.menu, updateData);
+      Document.instance.update(Collections.menu, updateData);
     }
 
     catalog.notifyListeners();

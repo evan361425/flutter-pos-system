@@ -18,7 +18,7 @@ class MenuModel extends ChangeNotifier {
   bool stockMode = false;
 
   MenuModel._constructor() {
-    Database.instance.get(Collections.menu).then((snapshot) {
+    Document.instance.get(Collections.menu).then((snapshot) {
       catalogs = {};
 
       final data = snapshot.data();
@@ -114,7 +114,7 @@ class MenuModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, {id: null});
+    return Document.instance.update(Collections.menu, {id: null});
   }
 
   Future<void> removeIngredient(String id) {
@@ -131,7 +131,7 @@ class MenuModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   void removeQuantity(String id) {
@@ -140,7 +140,7 @@ class MenuModel extends ChangeNotifier {
       for (var ingredient in ingredients)
         '${ingredient.prefixQuantities}.$id': null
     };
-    Database.instance.update(Collections.menu, updateData);
+    Document.instance.update(Collections.menu, updateData);
 
     if (updateData.isNotEmpty) {
       ingredients.forEach((ingredient) => ingredient.quantities.remove(id));
@@ -158,7 +158,7 @@ class MenuModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   void setUpStock(StockModel stock, QuantityRepo quantities) {
@@ -185,7 +185,7 @@ class MenuModel extends ChangeNotifier {
       catalogs[catalog.id] = catalog;
 
       final updateData = {catalog.id: catalog.toObject().toMap()};
-      Database.instance.update(Collections.menu, updateData);
+      Document.instance.update(Collections.menu, updateData);
     }
     notifyListeners();
   }

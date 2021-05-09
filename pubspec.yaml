@@ -39,14 +39,13 @@ dependencies:
 
   # tools
   uuid: ^3.0.1
+  sqflite: ^2.0.0
   # loadmore: ^2.0.0
   # string_similarity: ^2.0.0
 
   shared_preferences: ^2.0.3
   # for l18n
-  yaml: ^3.1.0
   sprintf: ^6.0.0
-  # TODO: what the purpose of this package?
   logger: ^0.9.4
 
 dev_dependencies:
@@ -57,6 +56,8 @@ dev_dependencies:
   # flutter_launcher_icons: ^0.8.1
   # analysis code
   pedantic: ^1.11.0
+  # TODO: build json from yaml for performance
+  yaml: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

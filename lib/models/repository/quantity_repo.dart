@@ -13,7 +13,7 @@ class QuantityRepo extends ChangeNotifier {
   Map<String, QuantityModel> quantities;
 
   QuantityRepo._constructor() {
-    Database.instance.get(Collections.quantities).then((snapsnot) {
+    Document.instance.get(Collections.quantities).then((snapsnot) {
       quantities = {};
 
       final data = snapsnot.data();
@@ -52,7 +52,7 @@ class QuantityRepo extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.quantities, {
+    return Document.instance.update(Collections.quantities, {
       quantity.prefix: null,
     });
   }
@@ -63,7 +63,7 @@ class QuantityRepo extends ChangeNotifier {
 
       final updateData = {'${quantity.id}': quantity.toObject().toMap()};
 
-      Database.instance.set(Collections.quantities, updateData);
+      Document.instance.set(Collections.quantities, updateData);
     }
 
     notifyListeners();

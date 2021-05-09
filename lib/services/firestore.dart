@@ -7,7 +7,7 @@ import 'package:possystem/services/database.dart';
 
 /// This is the main class access/call for any UI widgets that require to perform
 /// any CRUD activities operation in Firestore database.
-class Firestore extends Database<FirestoreSnapshot> {
+class Firestore extends Document<FirestoreSnapshot> {
   final String uid;
   Firestore({@required this.uid}) : assert(uid != null);
 
@@ -45,22 +45,6 @@ class Firestore extends Database<FirestoreSnapshot> {
         .collection(CollectionName[collection])
         .doc(uid)
         .update(data);
-  }
-
-  @override
-  Future<void> push(Collections collection, Map<String, dynamic> data) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<FirestoreSnapshot> pop(Collections collection, [remove = true]) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<int> length(Collections collection) {
-    // TODO: implement length
-    throw UnimplementedError();
   }
 }
 

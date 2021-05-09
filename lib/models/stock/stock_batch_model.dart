@@ -43,6 +43,6 @@ class StockBatchModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    return Database.instance.update(Collections.stock_batch, updateData);
+    return Document.instance.update(Collections.stock_batch, updateData);
   }
 }

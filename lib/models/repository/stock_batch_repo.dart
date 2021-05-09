@@ -11,7 +11,7 @@ class StockBatchRepo extends ChangeNotifier {
   Map<String, StockBatchModel> batches;
 
   StockBatchRepo._constructor() {
-    Database.instance.get(Collections.stock_batch).then((snapsnot) {
+    Document.instance.get(Collections.stock_batch).then((snapsnot) {
       batches = {};
 
       final data = snapsnot.data();
@@ -45,7 +45,7 @@ class StockBatchRepo extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.stock_batch, {id: null});
+    return Document.instance.update(Collections.stock_batch, {id: null});
   }
 
   void updateBatch(StockBatchModel batch) {
@@ -54,7 +54,7 @@ class StockBatchRepo extends ChangeNotifier {
 
       final updateData = {batch.id: batch.toMap()};
 
-      Database.instance.set(Collections.stock_batch, updateData);
+      Document.instance.set(Collections.stock_batch, updateData);
     }
 
     notifyListeners();

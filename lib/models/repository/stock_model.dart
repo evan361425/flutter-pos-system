@@ -17,7 +17,7 @@ class StockModel extends ChangeNotifier {
   DateTime updatedTime;
 
   StockModel._constructor() {
-    Database.instance.get(Collections.stock).then((snapsnot) {
+    Document.instance.get(Collections.stock).then((snapsnot) {
       ingredients = {};
 
       final data = snapsnot.data();
@@ -65,7 +65,7 @@ class StockModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.stock, updateData);
+    return Document.instance.update(Collections.stock, updateData);
   }
 
   bool hasContain(String id) => ingredients.containsKey(id);
@@ -91,7 +91,7 @@ class StockModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.stock, {
+    return Document.instance.update(Collections.stock, {
       ingredient.prefix: null,
     });
   }
@@ -102,7 +102,7 @@ class StockModel extends ChangeNotifier {
 
       final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
 
-      Database.instance.set(Collections.stock, updateData);
+      Document.instance.set(Collections.stock, updateData);
     }
 
     notifyListeners();

@@ -63,6 +63,6 @@ class ProductQuantityModel {
 
     ingredient.updateQuantity(this);
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 }

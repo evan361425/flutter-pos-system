@@ -3,7 +3,7 @@ import 'package:possystem/services/database.dart';
 
 /// This is the main class access/call for any UI widgets that require to perform
 /// any CRUD activities operation in Firestore database.
-class InMemory extends Database<InMemorySnapshot> {
+class InMemory extends Document<InMemorySnapshot> {
   final String uid;
   InMemory({
     @required this.uid,
@@ -32,31 +32,22 @@ class InMemory extends Database<InMemorySnapshot> {
     final queue = _data[collection];
     if (queue == null) {
       _data[collection] = {
-        QueueValue: [data],
-        QueueLength: 1,
+        'data': [data],
       };
     } else {
-      queue[QueueValue].add(data);
-      queue[QueueLength]++;
+      queue['data'].add(data);
     }
-    print(
-        '${CollectionName[collection]} length: ${_data[collection][QueueLength]}');
+    print('${CollectionName[collection]} length: ${_data[collection].length}');
   }
 
   @override
   Future<InMemorySnapshot> pop(Collections collection, [remove = true]) async {
-    final queue = _data[collection] ??
-        {
-          QueueValue: [],
-          QueueLength: 0,
-        };
-    final List<Map<String, dynamic>> data = queue[QueueValue];
+    final queue = _data[collection] ?? {'data': []};
+    final List<Map<String, dynamic>> data = queue['data'];
     final value =
         data.isEmpty ? null : (remove ? data.removeLast() : data.last);
 
-    queue[QueueLength] = data.length;
-
-    print('${CollectionName[collection]} length: ${queue[QueueLength]}');
+    print('${CollectionName[collection]} length: ${data.length}');
 
     return InMemorySnapshot(value);
   }
@@ -64,7 +55,7 @@ class InMemory extends Database<InMemorySnapshot> {
   @override
   Future<int> length(Collections collection) async {
     final queue = _data[collection];
-    return queue == null ? 0 : (queue[QueueLength] ?? 0);
+    return queue == null ? 0 : (queue['data'].length);
   }
 }
 

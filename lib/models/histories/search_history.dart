@@ -28,7 +28,7 @@ class SearchHistory {
       SearchHistory.data[type].removeLast();
     }
 
-    return Database.instance.update(
+    return Document.instance.update(
       Collections.search_history,
       {type: SearchHistory.data[type].toList()},
     );
@@ -36,7 +36,7 @@ class SearchHistory {
 
   Queue<String> get(void Function() cb) {
     if (SearchHistory.data == null) {
-      Database.instance.get(Collections.search_history).then((snapshot) {
+      Document.instance.get(Collections.search_history).then((snapshot) {
         final data = snapshot.data();
         SearchHistory.data = data == null
             ? {}

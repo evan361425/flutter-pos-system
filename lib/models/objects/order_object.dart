@@ -19,35 +19,39 @@ class OrderObject {
   }) : createdAt = createdAt ?? DateTime.now();
 
   List<OrderProductModel> parseToProduct() {
-    return products.map<OrderProductModel>((productMap) {
-      final product = MenuModel.instance.getProduct(productMap.productId);
-      if (product == null) return null;
+    return products
+        .map<OrderProductModel>((productMap) {
+          final product = MenuModel.instance.getProduct(productMap.productId);
+          if (product == null) return null;
 
-      final ingredients = <OrderIngredientModel>[];
-      for (var ingredientMap in productMap.ingredients.values) {
-        if (ingredientMap.quantityId == null) continue;
+          final ingredients = <OrderIngredientModel>[];
+          for (var ingredientMap in productMap.ingredients.values) {
+            if (ingredientMap.quantityId == null) continue;
 
-        final ingredient = product[ingredientMap.ingredientId];
+            final ingredient = product[ingredientMap.ingredientId];
 
-        ingredients.add(
-          OrderIngredientModel(
-            ingredient: ingredient,
-            quantity: ingredient[ingredientMap.quantityId],
-          ),
-        );
-      }
+            ingredients.add(
+              OrderIngredientModel(
+                ingredient: ingredient,
+                quantity: ingredient[ingredientMap.quantityId],
+              ),
+            );
+          }
 
-      return OrderProductModel(
-        product,
-        count: productMap.count,
-        singlePrice: productMap.singlePrice,
-        ingredients: ingredients,
-      );
-    }).toList();
+          return OrderProductModel(
+            product,
+            count: productMap.count,
+            singlePrice: productMap.singlePrice,
+            ingredients: ingredients,
+          );
+        })
+        .where((product) => product != null)
+        .toList();
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'createdAt': createdAt,
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
@@ -61,6 +65,7 @@ class OrderObject {
     final List<Map<String, dynamic>> products = data['products'];
 
     return OrderObject(
+      createdAt: data['createdAt'],
       paid: data['paid'],
       totalPrice: data['totalPrice'],
       totalCount: data['totalCount'],

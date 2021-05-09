@@ -86,7 +86,7 @@ class CatalogModel extends ChangeNotifier {
   void removeProduct(ProductModel product) {
     products.remove(product.id);
 
-    Database.instance.update(Collections.menu, {product.prefix: null});
+    Document.instance.update(Collections.menu, {product.prefix: null});
 
     notifyListeners();
   }
@@ -101,7 +101,7 @@ class CatalogModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   CatalogObject toObject() => CatalogObject(
@@ -119,7 +119,7 @@ class CatalogModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   void updateProduct(ProductModel product) {
@@ -128,7 +128,7 @@ class CatalogModel extends ChangeNotifier {
 
       final updateData = {product.prefix: product.toObject().toMap()};
 
-      Database.instance.update(Collections.menu, updateData);
+      Document.instance.update(Collections.menu, updateData);
     }
 
     notifyListeners();

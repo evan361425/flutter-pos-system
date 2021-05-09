@@ -44,6 +44,6 @@ class QuantityModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    return Database.instance.update(Collections.quantities, updateData);
+    return Document.instance.update(Collections.quantities, updateData);
   }
 }

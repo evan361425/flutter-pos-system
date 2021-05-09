@@ -68,7 +68,7 @@ class IngredientModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Database.instance.update(Collections.stock, updateData);
+    return Document.instance.update(Collections.stock, updateData);
   }
 
   Map<String, num> updateInfo(num amount) {

@@ -71,7 +71,7 @@ class ProductIngredientModel {
 
     product.updateIngredient(this);
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   ProductIngredientObject toObject() => ProductIngredientObject(
@@ -88,7 +88,7 @@ class ProductIngredientModel {
 
     product.updateIngredient(this);
 
-    return Database.instance.update(Collections.menu, updateData);
+    return Document.instance.update(Collections.menu, updateData);
   }
 
   void updateQuantity(ProductQuantityModel quantity) {
@@ -99,7 +99,7 @@ class ProductIngredientModel {
         '$prefixQuantities.${quantity.id}': quantity.toObject().toMap(),
       };
 
-      Database.instance.update(Collections.menu, updateData);
+      Document.instance.update(Collections.menu, updateData);
     }
 
     product.updateIngredient(this);

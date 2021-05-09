@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/search_bar_inline.dart';
+import 'package:possystem/constants/constant.dart';
 
 class AnalysisScreen extends StatelessWidget {
   @override
@@ -6,16 +8,32 @@ class AnalysisScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Container(
+          padding: EdgeInsets.all(kPadding),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Image.asset('assets/working_on_it.png'),
-              Text(
-                '正在加緊趕工中！',
-                style: Theme.of(context).textTheme.headline4,
-                textAlign: TextAlign.center,
+              Row(
+                children: [
+                  Expanded(
+                    child: SearchBarInline(
+                      heroTag: 'analysis.product.search',
+                      hintText: '產品或成份名稱',
+                      onTap: (BuildContext context) async {},
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Icon(Icons.date_range_sharp),
+                  )
+                ],
               ),
+              Divider(),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) => Text(index.toString()),
+                  itemCount: 2,
+                ),
+              )
             ],
           ),
         ),

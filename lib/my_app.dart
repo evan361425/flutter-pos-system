@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 class MyApp extends StatelessWidget {
   // Expose builders for 3rd party services at the root of the widget tree
   // This is useful when mocking services while testing
-  final Database Function(String uid) databaseBuilder;
+  final Document Function(String uid) databaseBuilder;
 
   const MyApp({Key key, this.databaseBuilder}) : super(key: key);
 
