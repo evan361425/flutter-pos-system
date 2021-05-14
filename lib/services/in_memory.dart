@@ -27,7 +27,6 @@ class InMemory extends Document<InMemorySnapshot> {
     return Future.delayed(Duration(seconds: 0));
   }
 
-  @override
   Future<void> push(Collections collection, Map<String, dynamic> data) async {
     final queue = _data[collection];
     if (queue == null) {
@@ -40,7 +39,6 @@ class InMemory extends Document<InMemorySnapshot> {
     print('${CollectionName[collection]} length: ${_data[collection].length}');
   }
 
-  @override
   Future<InMemorySnapshot> pop(Collections collection, [remove = true]) async {
     final queue = _data[collection] ?? {'data': []};
     final List<Map<String, dynamic>> data = queue['data'];
@@ -52,7 +50,6 @@ class InMemory extends Document<InMemorySnapshot> {
     return InMemorySnapshot(value);
   }
 
-  @override
   Future<int> length(Collections collection) async {
     final queue = _data[collection];
     return queue == null ? 0 : (queue['data'].length);
