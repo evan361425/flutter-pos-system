@@ -95,18 +95,17 @@ class IngredientList extends StatelessWidget {
     debugPrint('Delete ingredient - ${ingredient.id} : ${ingredient.name}');
 
     StockModel.instance.removeIngredient(ingredient);
-    MenuModel.instance.removeIngredient(ingredient.id);
+    MenuModel.instance.removeIngredients(ingredient.id);
   }
 
   Widget _warningContextBuild(
       BuildContext context, IngredientModel ingredient) {
-    final productCount =
-        MenuModel.instance.productContainsIngredient(ingredient.id).length;
-    final productCountText = productCount == 0
+    final count = MenuModel.instance.getIngredients(ingredient.id).length;
+    final countText = count == 0
         ? TextSpan()
         : TextSpan(children: [
             TextSpan(text: '將會一同刪除掉 '),
-            TextSpan(text: productCount.toString()),
+            TextSpan(text: count.toString()),
             TextSpan(text: ' 個產品的成分\n\n'),
           ]);
 
@@ -119,7 +118,7 @@ class IngredientList extends StatelessWidget {
             style: TextStyle(color: kNegativeColor),
           ),
           TextSpan(text: ' 嗎？\n\n'),
-          productCountText,
+          countText,
           TextSpan(text: '此動作將無法復原！'),
         ],
         style: Theme.of(context).textTheme.bodyText1,

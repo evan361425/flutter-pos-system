@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/services/storage.dart';
 
 class QuantityModel {
   final String id;
 
+  // quantity name: less, more, ...
   String name;
 
+  // between 0 ~ 1
   num defaultProportion;
 
   QuantityModel({
     String id,
     @required this.name,
-    this.defaultProportion = 0,
-  }) : id = id ?? Util.uuidV4();
+    num defaultProportion,
+  })  : id = id ?? Util.uuidV4(),
+        defaultProportion = defaultProportion ?? 0;
 
   factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
         id: object.id,
@@ -23,14 +27,16 @@ class QuantityModel {
       );
 
   bool get isNotReady => name == null;
-
   bool get isReady => name != null;
 
   String get prefix => id;
 
-  int getSimilarity(String searchText) {
-    return Util.similarity(name, searchText);
-    // print('$name Similarity to $searchText is $_similarityRating');
+  int getSimilarity(String searchText) => Util.similarity(name, searchText);
+
+  Future<void> remove() async {
+    await Storage.instance.set(Stores.stock, {prefix: null});
+
+    return QuantityRepo.instance.removeQuantity(prefix);
   }
 
   QuantityObject toObject() => QuantityObject(
@@ -44,6 +50,6 @@ class QuantityModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    return Document.instance.update(Collections.quantities, updateData);
+    return Storage.instance.set(Stores.quantities, updateData);
   }
 }

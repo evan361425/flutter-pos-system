@@ -17,7 +17,7 @@ class SlidableItemList<T> extends StatefulWidget {
   }) : super(key: key);
 
   final List<T> items;
-  final void Function(BuildContext, T) onDelete;
+  final Future<void> Function(BuildContext, T) onDelete;
   final Widget Function(BuildContext, T) tileBuilder;
   final Widget Function(BuildContext, T) warningContext;
   final void Function(BuildContext, T) onTap;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/storage.dart';
 
 class StockBatchRepo extends ChangeNotifier {
   static final StockBatchRepo _instance = StockBatchRepo._constructor();
@@ -11,16 +11,17 @@ class StockBatchRepo extends ChangeNotifier {
   Map<String, StockBatchModel> batches;
 
   StockBatchRepo._constructor() {
-    Document.instance.get(Collections.stock_batch).then((snapsnot) {
+    Storage.instance.get(Stores.stock_batch).then((data) {
       batches = {};
 
-      final data = snapsnot.data();
       if (data != null) {
         try {
-          data.forEach((id, map) {
-            batches[id] = StockBatchModel.fromObject(
-              StockBatchObject.build({'id': id, ...map}),
-            );
+          data.forEach((id, value) {
+            if (value is Map) {
+              batches[id] = StockBatchModel.fromObject(
+                StockBatchObject.build({'id': id, ...value}),
+              );
+            }
           });
         } catch (e, stack) {
           print(e);
@@ -33,28 +34,30 @@ class StockBatchRepo extends ChangeNotifier {
   }
 
   bool get isEmpty => batches.isEmpty;
-
+  bool get isNotEmpty => batches.isNotEmpty;
+  bool get isReady => batches != null;
   bool get isNotReady => batches == null;
+  int get length => batches.length;
 
-  StockBatchModel operator [](String id) => batches[id];
+  StockBatchModel getBatch(String id) => exist(id) ? batches[id] : null;
 
-  bool hasContain(String id) => batches.containsKey(id);
+  bool exist(String id) => batches.containsKey(id);
 
-  Future<void> removeBatch(String id) {
+  void removeBatch(String id) {
     batches.remove(id);
 
     notifyListeners();
-
-    return Document.instance.update(Collections.stock_batch, {id: null});
   }
 
   void updateBatch(StockBatchModel batch) {
-    if (!hasContain(batch.id)) {
+    if (!exist(batch.id)) {
       batches[batch.id] = batch;
 
-      final updateData = {batch.id: batch.toMap()};
-
-      Document.instance.set(Collections.stock_batch, updateData);
+      Storage.instance.add(
+        Stores.stock_batch,
+        batch.id,
+        batch.toObject().toMap(),
+      );
     }
 
     notifyListeners();

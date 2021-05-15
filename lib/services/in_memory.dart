@@ -3,18 +3,16 @@ import 'package:possystem/services/database.dart';
 
 /// This is the main class access/call for any UI widgets that require to perform
 /// any CRUD activities operation in Firestore database.
-class InMemory extends Document<InMemorySnapshot> {
-  final String uid;
+class InMemory extends Database {
   InMemory({
-    @required this.uid,
-    Map<Collections, Map<String, dynamic>> data,
+    Map<Tables, Map<String, Object>> data,
   }) : _data = data ?? {};
 
-  final Map<Collections, Map<String, dynamic>> _data;
+  final Map<Tables, Map<String, Object>> _data;
 
   @override
-  Future<InMemorySnapshot> get(Collections collection) async {
-    return InMemorySnapshot(_data[collection]);
+  Future<Map<String, Object>> get(Tables collection) async {
+    return _data[collection];
   }
 
   @override
@@ -53,6 +51,18 @@ class InMemory extends Document<InMemorySnapshot> {
   Future<int> length(Collections collection) async {
     final queue = _data[collection];
     return queue == null ? 0 : (queue['data'].length);
+  }
+
+  @override
+  Future<int> count(Tables table) {
+    // TODO: implement count
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, Object>> getLast(Tables table, {String sortBy = 'id'}) {
+    // TODO: implement getLast
+    throw UnimplementedError();
   }
 }
 

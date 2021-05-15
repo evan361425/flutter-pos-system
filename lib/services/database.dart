@@ -1,73 +1,50 @@
-import 'package:sqflite/sqflite.dart';
-
-enum Collections {
-  menu,
-  quantities,
-  search_history,
-  stock_batch,
-  stock,
-}
+import 'package:sqflite/sqflite.dart' hide Database;
+import 'package:sqflite/sqflite.dart' as no_sql show Database;
 
 enum Tables {
+  search_history,
+  // order
   order,
   order_stash,
 }
 
-const Map<Collections, String> CollectionName = {
-  Collections.menu: 'menu',
-  Collections.quantities: 'quantities',
-  Collections.search_history: 'search_history',
-  Collections.stock_batch: 'stock_batch',
-  Collections.stock: 'stock',
-};
-
 const Map<Tables, String> TableName = {
-  Tables.order: 't_order',
-  Tables.order_stash: 't_order_stash',
+  Tables.search_history: 'search_history',
+  // order
+  Tables.order: 'order',
+  Tables.order_stash: 'order_stash',
 };
 
-abstract class Document<T extends Snapshot> {
-  static Document instance;
+class Database {
+  static final Database _instance = Database._constructor();
 
-  Future<T> get(Collections collection);
-  Future<void> set(Collections collection, Map<String, dynamic> data);
-  Future<void> update(Collections collection, Map<String, dynamic> data);
-}
+  static Database get instance => _instance;
 
-class Storage {
-  static final Storage _instance = Storage._constructor();
+  no_sql.Database db;
 
-  static Storage get instance => _instance;
-
-  Database db;
-
-  Storage._constructor() {
+  Database._constructor() {
     getDatabasesPath().then((databasesPath) async {
-      Storage._instance.db = await openDatabase(
-        databasesPath + '/pos_system.db',
+      db = await openDatabase(
+        databasesPath + '/pos_system.sqlite',
         version: 1,
         onCreate: (db, version) async {
-          const orderColumns = <List<String>>[
-            ['id', 'INTEGER PRIMARY KEY AUTOINCREMENT'],
-            ['paid', 'REAL NOT NULL'],
-            ['totalPrice', 'REAL NOT NULL'],
-            ['totalCount', 'INTEGER NOT NULL'],
-            ['createdAt', 'INTEGER NOT NULL'],
-            ['usedProducts', 'TEXT NOT NULL'],
-            ['usedIngredients', 'TEXT NOT NULL'],
-            ['encodedProducts', 'BLOB NOT NULL'],
-          ];
-          const orderStashColumns = <List<String>>[
-            ['id', 'INTEGER PRIMARY KEY AUTOINCREMENT'],
-            ['createdAt', 'INTEGER NOT NULL'],
-            ['encodedProducts', 'BLOB NOT NULL'],
-          ];
-          await db.execute(
-            'CREATE TABLE ${TableName[Tables.order]} (${orderColumns.map((column) => column.join(' ')).join(',')})',
-          );
-          await db.execute(
-            'CREATE TABLE ${TableName[Tables.order_stash]} (${orderStashColumns.map((column) => column.join(' ')).join(',')})',
-          );
+          await db.execute('''CREATE TABLE order (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  paid REAL NOT NULL,
+  totalPrice REAL NOT NULL,
+  totalCount INTEGER NOT NULL,
+  createdAt INTEGER NOT NULL,
+  usedProducts TEXT NOT NULL,
+  usedIngredients TEXT NOT NULL,
+  encodedProducts BLOB NOT NULL
+)
+''');
+          await db.execute('''CREATE TABLE order_stash (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  createdAt INTEGER NOT NULL,
+  encodedProducts BLOB NOT NULL
+)
+''');
         },
       );
     });
@@ -81,24 +58,24 @@ class Storage {
     Tables table,
     Object key,
     Map<String, Object> data, {
-    column = 'id',
+    keyName = 'id',
   }) {
     return db.update(
       TableName[table],
       data,
-      where: '$column = ?',
+      where: '$keyName = ?',
       whereArgs: [key],
     );
   }
 
   Future<Map<String, Object>> getLast(
     Tables table, {
-    String column = 'id',
+    String sortBy = 'id',
   }) async {
     try {
       final data = await db.query(
         TableName[table],
-        orderBy: '$column DESC',
+        orderBy: '$sortBy DESC',
         limit: 1,
       );
       return data.first;
@@ -112,8 +89,12 @@ class Storage {
       await db.rawQuery('SELECT COUNT(*) FROM "${TableName[table]}"'),
     );
   }
-}
 
-abstract class Snapshot {
-  Map<String, dynamic> data();
+  Future<List<Map<String, Object>>> get(
+    Tables table, {
+    String where,
+    List<Object> whereArgs,
+  }) {
+    return db.query(TableName[table], where: where, whereArgs: whereArgs);
+  }
 }

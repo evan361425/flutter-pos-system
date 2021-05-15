@@ -3,9 +3,7 @@ import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class CatalogList extends StatelessWidget {
   const CatalogList(this.catalogs);
@@ -23,10 +21,9 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  void onDelete(BuildContext context, CatalogModel catalog) {
-    debugPrint('Delete ${catalog.id} - ${catalog.name}');
-    final menu = context.read<MenuModel>();
-    menu.removeCatalog(catalog.id);
+  Future<void> onDelete(BuildContext context, CatalogModel catalog) {
+    debugPrint('Delete ${catalog.name}');
+    return catalog.remove();
   }
 
   Widget warningContextBuild(BuildContext context, CatalogModel catalog) {

@@ -55,8 +55,7 @@ class _QuantityModalState extends State<QuantityModal> {
     if (isSaving || !_formKey.currentState.validate()) return;
 
     final name = _nameController.text;
-    if (widget.quantity?.name != name &&
-        QuantityRepo.instance.hasContain(name)) {
+    if (widget.quantity?.name != name && QuantityRepo.instance.exist(name)) {
       return setState(() => errorMessage = '份量名稱重複');
     }
 

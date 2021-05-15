@@ -27,15 +27,15 @@ class OrderObject {
           if (product == null) return null;
 
           final ingredients = <OrderIngredientModel>[];
-          for (var ingredientMap in productMap.ingredients.values) {
-            if (ingredientMap.quantityId == null) continue;
+          for (var object in productMap.ingredients.values) {
+            if (object.quantityId == null) continue;
 
-            final ingredient = product[ingredientMap.ingredientId];
+            final ingredient = product.getIngredient(object.ingredientId);
 
             ingredients.add(
               OrderIngredientModel(
                 ingredient: ingredient,
-                quantity: ingredient[ingredientMap.quantityId],
+                quantity: ingredient.getQuantity(object.quantityId),
               ),
             );
           }

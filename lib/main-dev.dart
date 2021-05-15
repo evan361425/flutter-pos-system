@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
-import 'package:possystem/models/user_model.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
-import 'package:possystem/services/authentication.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/in_memory.dart';
-import 'package:possystem/services/sign_in_method/sign_in_method.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -26,10 +23,6 @@ void main() {
       /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
       MultiProvider(
         providers: [
-          Provider(create: (_) => Logger()),
-          ChangeNotifierProvider<Authentication>(
-            create: (_) => _MockAuth(),
-          ),
           ChangeNotifierProvider<ThemeProvider>(
             create: (_) => ThemeProvider(),
           ),
@@ -39,10 +32,9 @@ void main() {
           ChangeNotifierProvider<CurrencyProvider>(
             create: (_) => CurrencyProvider(),
           ),
+          Provider(create: (_) => Logger()),
         ],
-        child: MyApp(
-          databaseBuilder: (uid) => InMemory(uid: uid, data: DefaultData),
-        ),
+        child: MyApp(),
       ),
     );
   });
@@ -249,32 +241,3 @@ final DefaultData = <Collections, Map<String, dynamic>>{
     },
   },
 };
-
-class _MockAuth extends Authentication {
-  final UserModel _user;
-
-  _MockAuth()
-      : _user = UserModel(
-          uid: 'test-uid',
-          email: 'test@email.com',
-          displayName: 'Test User',
-        ) {
-    status = AuthStatus.Authenticated;
-  }
-
-  @override
-  Future<UserModel> signIn(BuildContext context, SignInMethod method) async {
-    status = AuthStatus.Authenticated;
-    return _user;
-  }
-
-  @override
-  Future<void> signOut() async {
-    status = AuthStatus.Unauthenticated;
-  }
-
-  @override
-  Stream<UserModel> get user async* {
-    yield _user;
-  }
-}

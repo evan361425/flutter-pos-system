@@ -44,7 +44,7 @@ class _IngredientModalState extends State<IngredientModal> {
       return setState(() => errorMessage = '必須設定成份種類。');
     }
     if (widget.ingredient.id != ingredientId &&
-        widget.ingredient.product.has(ingredientId)) {
+        widget.ingredient.product.exist(ingredientId)) {
       return setState(() => errorMessage = '成份重複。');
     }
 

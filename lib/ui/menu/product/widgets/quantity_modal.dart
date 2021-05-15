@@ -48,7 +48,7 @@ class _QuantityModalState extends State<QuantityModal> {
       return setState(() => errorMessage = '必須設定成份份量名稱。');
     }
     if (widget.quantity?.id != quantityId &&
-        widget.ingredient.has(quantityId)) {
+        widget.ingredient.exist(quantityId)) {
       return setState(() => errorMessage = '成份份量重複。');
     }
 

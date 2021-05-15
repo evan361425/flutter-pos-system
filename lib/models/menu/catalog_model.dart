@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/services/storage.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'product_model.dart';
@@ -32,24 +33,16 @@ class CatalogModel extends ChangeNotifier {
         products = products ?? {},
         id = id ?? Util.uuidV4();
 
-  factory CatalogModel.fromObject(CatalogObject object) {
-    final catalog = CatalogModel(
-      id: object.id,
-      index: object.index,
-      name: object.name,
-      createdAt: object.createdAt,
-      products: {
-        for (var product in object.products)
-          product.id: ProductModel.fromMap(product)
-      },
-    );
-
-    catalog.products.values.forEach((e) {
-      e.catalog = catalog;
-    });
-
-    return catalog;
-  }
+  factory CatalogModel.fromObject(CatalogObject object) => CatalogModel(
+        id: object.id,
+        index: object.index,
+        name: object.name,
+        createdAt: object.createdAt,
+        products: {
+          for (var product in object.products)
+            product.id: ProductModel.fromMap(product)
+        },
+      ).._preparePorducts();
 
   String get createdDate => sprintf('%04d-%02d-%02d', [
         createdAt.year,
@@ -58,41 +51,34 @@ class CatalogModel extends ChangeNotifier {
       ]);
 
   bool get isEmpty => products.isEmpty;
-
   bool get isNotEmpty => products.isNotEmpty;
-
   int get length => products.length;
 
-  int get newIndex {
-    var maxIndex = 0;
-    products.forEach((id, product) {
-      if (product.index > maxIndex) {
-        maxIndex = product.index;
-      }
-    });
-    return maxIndex + 1;
+  /// 1-index
+  int get newIndex => products.length + 1;
+
+  /// sorted by index
+  List<ProductModel> get productList =>
+      products.values.toList()..sort((a, b) => a.index.compareTo(b.index));
+
+  bool exist(String id) => products.containsKey(id);
+
+  ProductModel getProduct(String id) => exist(id) ? products[id] : null;
+
+  Future<void> remove() async {
+    await Storage.instance.set(Stores.menu, {id: null});
+
+    MenuModel.instance.removeCatalog(id);
   }
 
-  List<ProductModel> get productList {
-    final productList = products.values.toList();
-
-    productList.sort((a, b) => a.index.compareTo(b.index));
-
-    return productList;
-  }
-
-  ProductModel operator [](String id) => products[id];
-
-  void removeProduct(ProductModel product) {
-    products.remove(product.id);
-
-    Document.instance.update(Collections.menu, {product.prefix: null});
+  void removeProduct(String id) {
+    products.remove(id);
 
     notifyListeners();
   }
 
   Future<void> reorderProducts(List<ProductModel> products) {
-    final updateData = <String, dynamic>{};
+    final updateData = <String, int>{};
     var i = 1;
 
     products.forEach((product) {
@@ -101,7 +87,7 @@ class CatalogModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Document.instance.update(Collections.menu, updateData);
+    return Storage.instance.set(Stores.menu, updateData);
   }
 
   CatalogObject toObject() => CatalogObject(
@@ -119,18 +105,24 @@ class CatalogModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Document.instance.update(Collections.menu, updateData);
+    return Storage.instance.set(Stores.menu, updateData);
   }
 
   void updateProduct(ProductModel product) {
-    if (!products.containsKey(product.id)) {
+    if (!exist(product.id)) {
       products[product.id] = product;
 
       final updateData = {product.prefix: product.toObject().toMap()};
 
-      Document.instance.update(Collections.menu, updateData);
+      Storage.instance.set(Stores.menu, updateData);
     }
 
     notifyListeners();
+  }
+
+  void _preparePorducts() {
+    products.values.forEach((e) {
+      e.catalog = this;
+    });
   }
 }

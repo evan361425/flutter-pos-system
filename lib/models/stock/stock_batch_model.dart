@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
+import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/storage.dart';
 
 class StockBatchModel {
-  String name;
-
   final String id;
 
+  String name;
+
+  // ingredient id => add number
   final Map<String, num> data;
 
   StockBatchModel({
@@ -26,23 +28,29 @@ class StockBatchModel {
       );
 
   String get prefix => id;
-
-  num operator [](String id) => data[id];
+  num getNumOfId(String id) => exist(id) ? data[id] : null;
 
   void apply() => StockModel.instance.applyAmounts(data);
 
-  bool hasNot(String id) => !data.containsKey(id);
+  bool exist(String id) => data.containsKey(id);
 
-  Map<String, dynamic> toMap() => {
-        'name': name,
-        'data': data,
-      };
+  StockBatchObject toObject() => StockBatchObject(
+        id: id,
+        name: name,
+        data: data,
+      );
+
+  Future<void> remove() async {
+    await Storage.instance.set(Stores.quantities, {prefix: null});
+
+    StockBatchRepo.instance.removeBatch(id);
+  }
 
   Future<void> update(StockBatchObject object) {
     final updateData = object.diff(this);
 
     if (updateData.isEmpty) return Future.value();
 
-    return Document.instance.update(Collections.stock_batch, updateData);
+    return Storage.instance.set(Stores.stock_batch, updateData);
   }
 }

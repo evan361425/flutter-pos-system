@@ -8,48 +8,29 @@ final _SearchHistoryTypeString = const <SearchHistoryTypes, String>{
 };
 
 class SearchHistory {
-  static Map<String, Queue<String>> data;
-
   final String type;
 
   SearchHistory(SearchHistoryTypes type)
       : type = _SearchHistoryTypeString[type];
 
   Future<void> add(String history) {
-    print('$type history add: $history');
-    if (SearchHistory.data[type] == null) {
-      SearchHistory.data[type] = Queue.of([history]);
-    } else {
-      SearchHistory.data[type].remove(history);
-      SearchHistory.data[type].addFirst(history);
-    }
-
-    if (SearchHistory.data[type].length > 8) {
-      SearchHistory.data[type].removeLast();
-    }
-
-    return Document.instance.update(
-      Collections.search_history,
-      {type: SearchHistory.data[type].toList()},
+    return Database.instance.push(
+      Tables.search_history,
+      {
+        'type': type,
+        'value': history,
+      },
     );
   }
 
-  Queue<String> get(void Function() cb) {
-    if (SearchHistory.data == null) {
-      Document.instance.get(Collections.search_history).then((snapshot) {
-        final data = snapshot.data();
-        SearchHistory.data = data == null
-            ? {}
-            : data.map<String, Queue<String>>(
-                (key, value) => MapEntry(key, Queue.of(value)),
-              );
-        cb();
-      });
+  Future<Iterable<String>> get() async {
+    final list = await Database.instance.get(
+      Tables.search_history,
+      where: 'type = ?',
+      whereArgs: [type],
+    );
 
-      return null;
-    }
-
-    return SearchHistory.data[type] ?? Queue();
+    return list.map<String>((e) => e['value']);
   }
 }
 

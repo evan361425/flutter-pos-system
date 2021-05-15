@@ -2,25 +2,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/storage.dart';
 
 import 'catalog_model.dart';
 import 'product_ingredient_model.dart';
 
 class ProductModel extends ChangeNotifier {
-  int index;
+  final String id;
 
-  String name;
-
+  // connect to parent object
   CatalogModel catalog;
 
+  // product's name
+  String name;
+
+  // index in catalog
+  int index;
+
+  // help to calculate daily earn
   num cost;
 
+  // money show to customer/order
   num price;
 
+  // when it has been added to catalog
   final DateTime createdAt;
-
-  final String id;
 
   final Map<String, ProductIngredientModel> ingredients;
 
@@ -37,44 +43,41 @@ class ProductModel extends ChangeNotifier {
         ingredients = ingredients ?? {},
         id = id ?? Util.uuidV4();
 
-  factory ProductModel.fromMap(ProductObject object) {
-    final product = ProductModel(
-      id: object.id,
-      name: object.name,
-      index: object.index,
-      price: object.price,
-      cost: object.cost,
-      createdAt: object.createdAt,
-      ingredients: {
-        for (var ingredient in object.ingredients)
-          ingredient.id: ProductIngredientModel.fromObject(ingredient)
-      },
-    );
+  factory ProductModel.fromMap(ProductObject object) => ProductModel(
+        id: object.id,
+        name: object.name,
+        index: object.index,
+        price: object.price,
+        cost: object.cost,
+        createdAt: object.createdAt,
+        ingredients: {
+          for (var ingredient in object.ingredients)
+            ingredient.id: ProductIngredientModel.fromObject(ingredient)
+        },
+      ).._prepareIngredients();
 
-    product.ingredients.values.forEach((e) {
-      e.product = product;
-    });
-
-    return product;
-  }
-
+  // help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
       ingredients.values.where((e) => e.quantities.isNotEmpty);
 
   String get prefix => '${catalog.id}.products.$id';
 
-  ProductIngredientModel operator [](String id) => ingredients[id];
+  bool exist(String id) => ingredients.containsKey(id);
 
-  bool has(String id) => ingredients.containsKey(id);
+  ProductIngredientModel getIngredient(String id) =>
+      exist(id) ? ingredients[id] : null;
 
-  Future<void> removeIngredient(ProductIngredientModel ingredient) {
-    ingredients.remove(ingredient.id);
-    print('remove product ingredient ${ingredient.id}');
+  Future<void> remove() async {
+    print('remove product $name');
+    await Storage.instance.set(Stores.menu, {prefix: null});
+
+    catalog.removeProduct(id);
+  }
+
+  void removeIngredient(String id) {
+    ingredients.remove(id);
 
     notifyListeners();
-
-    return Document.instance
-        .update(Collections.menu, {ingredient.prefix: null});
   }
 
   ProductObject toObject() => ProductObject(
@@ -94,20 +97,27 @@ class ProductModel extends ChangeNotifier {
 
     notifyListeners();
 
-    return Document.instance.update(Collections.menu, updateData);
+    return Storage.instance.set(Stores.menu, updateData);
   }
 
   void updateIngredient(ProductIngredientModel ingredient) {
-    if (!ingredients.containsKey(ingredient.id)) {
+    if (!exist(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 
       final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
 
-      Document.instance.update(Collections.menu, updateData);
+      Storage.instance.set(Stores.menu, updateData);
     }
 
+    // catalog screen will also shows ingredients
     catalog.notifyListeners();
 
     notifyListeners();
+  }
+
+  void _prepareIngredients() {
+    ingredients.values.forEach((e) {
+      e.product = this;
+    });
   }
 }

@@ -5,8 +5,6 @@ import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
-import 'package:possystem/services/auth_firebase.dart';
-import 'package:possystem/services/firestore.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -29,14 +27,9 @@ void main() {
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),
-          ChangeNotifierProvider<AuthFirebase>(
-            create: (_) => AuthFirebase(),
-          ),
           Provider(create: (_) => Logger()),
         ],
-        child: MyApp(
-          databaseBuilder: (uid) => Firestore(uid: uid),
-        ),
+        child: MyApp(),
       ),
     );
   });

@@ -19,7 +19,7 @@ class CatalogObject {
   final DateTime createdAt;
   final Iterable<ProductObject> products;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'index': index,
       'name': name,
@@ -28,8 +28,8 @@ class CatalogObject {
     };
   }
 
-  Map<String, dynamic> diff(CatalogModel catalog) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(CatalogModel catalog) {
+    final result = <String, Object>{};
     if (index != null && index != catalog.index) {
       catalog.index = index;
       result['$id.index'] = index;
@@ -41,8 +41,8 @@ class CatalogObject {
     return result;
   }
 
-  factory CatalogObject.build(Map<String, dynamic> data) {
-    Map<String, Map<String, dynamic>> products = data['products'];
+  factory CatalogObject.build(Map<String, Object> data) {
+    Map<String, Map<String, Object>> products = data['products'];
 
     return CatalogObject(
       id: data['id'],
@@ -75,7 +75,7 @@ class ProductObject {
   final DateTime createdAt;
   final Iterable<ProductIngredientObject> ingredients;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'price': price,
       'cost': cost,
@@ -88,8 +88,8 @@ class ProductObject {
     };
   }
 
-  Map<String, dynamic> diff(ProductModel product) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(ProductModel product) {
+    final result = <String, Object>{};
     final prefix = product.prefix;
     if (index != null && index != product.index) {
       product.index = index;
@@ -110,7 +110,8 @@ class ProductObject {
     return result;
   }
 
-  factory ProductObject.build(Map<String, dynamic> data) {
+  factory ProductObject.build(Map<String, Object> data) {
+    final Map<String, Map<String, Object>> ingredients = data['ingredients'];
     return ProductObject(
       id: data['id'],
       price: data['price'],
@@ -118,9 +119,9 @@ class ProductObject {
       index: data['index'],
       name: data['name'],
       createdAt: Util.parseDate(data['createdAt']),
-      ingredients: data['ingredients']?.entries?.map<ProductIngredientObject>(
-            (e) => ProductIngredientObject.build({'id': e.key, ...e.value}),
-          ),
+      ingredients: ingredients?.entries?.map<ProductIngredientObject>(
+        (e) => ProductIngredientObject.build({'id': e.key, ...e.value}),
+      ),
     );
   }
 }
@@ -138,7 +139,7 @@ class ProductIngredientObject {
   final num cost;
   final Iterable<ProductQuantityObject> quantities;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'amount': amount,
       'cost': cost,
@@ -148,8 +149,8 @@ class ProductIngredientObject {
     };
   }
 
-  Map<String, dynamic> diff(ProductIngredientModel ingredient) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(ProductIngredientModel ingredient) {
+    final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
     if (amount != null && amount != ingredient.amount) {
@@ -170,8 +171,8 @@ class ProductIngredientObject {
     return result;
   }
 
-  factory ProductIngredientObject.build(Map<String, dynamic> data) {
-    Map<String, Map<String, dynamic>> quantities = data['quantities'];
+  factory ProductIngredientObject.build(Map<String, Object> data) {
+    Map<String, Map<String, Object>> quantities = data['quantities'];
     return ProductIngredientObject(
       id: data['id'],
       amount: data['amount'],
@@ -196,7 +197,7 @@ class ProductQuantityObject {
   final num additionalCost;
   final num additionalPrice;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'amount': amount,
       'additionalCost': additionalCost,
@@ -204,12 +205,9 @@ class ProductQuantityObject {
     };
   }
 
-  Map<String, dynamic> diff(
-    ProductIngredientModel ingredient,
-    ProductQuantityModel quantity,
-  ) {
-    final result = <String, dynamic>{};
-    final prefix = '${ingredient.prefixQuantities}.${quantity.id}';
+  Map<String, Object> diff(ProductQuantityModel quantity) {
+    final result = <String, Object>{};
+    final prefix = quantity.prefix;
 
     if (amount != null && amount != quantity.amount) {
       quantity.amount = amount;
@@ -226,17 +224,15 @@ class ProductQuantityObject {
     }
     // after all property set
     if (id != null && id != quantity.id) {
-      quantity.changeQuantity(ingredient, id);
+      quantity.changeQuantity(id);
 
-      return {
-        '${ingredient.prefixQuantities}.$id': quantity.toObject().toMap(),
-      };
+      return {quantity.prefix: quantity.toObject().toMap()};
     }
 
     return result;
   }
 
-  factory ProductQuantityObject.build(Map<String, dynamic> data) {
+  factory ProductQuantityObject.build(Map<String, Object> data) {
     return ProductQuantityObject(
       id: data['id'],
       amount: data['amount'],

@@ -28,7 +28,7 @@ class QuantityList extends StatelessWidget {
     // remove from quantity index
     QuantityRepo.instance.removeQuantity(quantity);
     // remove from menu
-    MenuModel.instance.removeQuantity(quantity.id);
+    MenuModel.instance.removeQuantities(quantity.id);
   }
 
   Widget _tileBuilder(BuildContext context, QuantityModel quantity) {
@@ -39,8 +39,7 @@ class QuantityList extends StatelessWidget {
   }
 
   Widget _warningContext(BuildContext context, QuantityModel quantity) {
-    final count =
-        MenuModel.instance.productContainsQuantity(quantity.id).length;
+    final count = MenuModel.instance.getQuantities(quantity.id).length;
     final countText = count == 0
         ? TextSpan()
         : TextSpan(children: [

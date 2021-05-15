@@ -3,27 +3,6 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
-class StockObject {
-  StockObject({
-    this.updatedTime,
-    this.ingredients,
-  });
-
-  final DateTime updatedTime;
-  final Iterable<IngredientObject> ingredients;
-
-  factory StockObject.build(Map<String, dynamic> data) {
-    Map<String, Map<String, dynamic>> ingredients = data['ingredients'];
-
-    return StockObject(
-      updatedTime: Util.parseDate(data['updatedTime'], true),
-      ingredients: ingredients?.entries?.map<IngredientObject>(
-        (e) => IngredientObject.build({'id': e.key, ...e.value}),
-      ),
-    );
-  }
-}
-
 class IngredientObject {
   IngredientObject({
     this.id,
@@ -33,6 +12,7 @@ class IngredientObject {
     this.alertAmount,
     this.lastAmount,
     this.lastAddAmount,
+    this.updatedAt,
   });
 
   String id;
@@ -42,8 +22,9 @@ class IngredientObject {
   num alertAmount;
   num lastAmount;
   num lastAddAmount;
+  DateTime updatedAt;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'name': name,
       'currentAmount': currentAmount,
@@ -51,11 +32,12 @@ class IngredientObject {
       'alertAmount': alertAmount,
       'lastAmount': lastAmount,
       'lastAddAmount': lastAddAmount,
+      'updatedAt': updatedAt.toString(),
     };
   }
 
-  Map<String, dynamic> diff(IngredientModel ingredient) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(IngredientModel ingredient) {
+    final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
     if (name != null && name != ingredient.name) {
@@ -83,10 +65,15 @@ class IngredientObject {
       result['$prefix.lastAddAmount'] = lastAddAmount;
     }
 
+    if (result.isNotEmpty) {
+      ingredient.updatedAt = DateTime.now();
+      result['$prefix.updatedAt'] = ingredient.updatedAt.toString();
+    }
+
     return result;
   }
 
-  factory IngredientObject.build(Map<String, dynamic> data) {
+  factory IngredientObject.build(Map<String, Object> data) {
     return IngredientObject(
       id: data['id'],
       name: data['name'],
@@ -95,6 +82,7 @@ class IngredientObject {
       alertAmount: data['alertAmount'],
       lastAmount: data['lastAmount'],
       lastAddAmount: data['lastAddAmount'],
+      updatedAt: Util.parseDate(data['updatedTime'], true),
     );
   }
 }
@@ -110,15 +98,15 @@ class QuantityObject {
   final String name;
   final num defaultProportion;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'name': name,
       'defaultProportion': defaultProportion,
     };
   }
 
-  Map<String, dynamic> diff(QuantityModel quantity) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(QuantityModel quantity) {
+    final result = <String, Object>{};
     final prefix = quantity.prefix;
 
     if (name != null && name != quantity.name) {
@@ -134,7 +122,7 @@ class QuantityObject {
     return result;
   }
 
-  factory QuantityObject.build(Map<String, dynamic> data) {
+  factory QuantityObject.build(Map<String, Object> data) {
     return QuantityObject(
       id: data['id'],
       name: data['name'],
@@ -154,15 +142,15 @@ class StockBatchObject {
   final Map<String, num> data;
   final String id;
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'name': name,
       'data': data,
     };
   }
 
-  Map<String, dynamic> diff(StockBatchModel batch) {
-    final result = <String, dynamic>{};
+  Map<String, Object> diff(StockBatchModel batch) {
+    final result = <String, Object>{};
     final prefix = batch.prefix;
 
     if (name != null && name != batch.name) {
@@ -181,7 +169,7 @@ class StockBatchObject {
     return result;
   }
 
-  factory StockBatchObject.build(Map<String, dynamic> data) {
+  factory StockBatchObject.build(Map<String, Object> data) {
     final batchData = <String, num>{};
     final oriData = data['data'];
 

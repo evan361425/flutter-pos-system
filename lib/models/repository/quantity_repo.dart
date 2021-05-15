@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/storage.dart';
 
 class QuantityRepo extends ChangeNotifier {
   static final QuantityRepo _instance = QuantityRepo._constructor();
@@ -13,16 +13,17 @@ class QuantityRepo extends ChangeNotifier {
   Map<String, QuantityModel> quantities;
 
   QuantityRepo._constructor() {
-    Document.instance.get(Collections.quantities).then((snapsnot) {
+    Storage.instance.get(Stores.quantities).then((data) {
       quantities = {};
 
-      final data = snapsnot.data();
       if (data != null) {
         try {
-          data.forEach((id, map) {
-            quantities[id] = QuantityModel.fromObject(
-              QuantityObject.build({'id': id, ...map}),
-            );
+          data.forEach((key, value) {
+            if (value is Map) {
+              quantities[key] = QuantityModel.fromObject(
+                QuantityObject.build({'id': key, ...value}),
+              );
+            }
           });
         } catch (e, stack) {
           print(e);
@@ -35,36 +36,19 @@ class QuantityRepo extends ChangeNotifier {
   }
 
   bool get isEmpty => quantities.isEmpty;
-
+  bool get isNotEmpty => quantities.isNotEmpty;
   bool get isNotReady => quantities == null;
-
   bool get isReady => quantities != null;
+  int get length => quantities.length;
 
   List<QuantityModel> get quantitiesList => quantities.values.toList();
 
-  QuantityModel operator [](String id) =>
-      quantities[id] ?? quantities.values.first;
+  bool exist(String id) => quantities.containsKey(id);
 
-  bool hasContain(String id) => quantities.containsKey(id);
+  QuantityModel getQuantity(String id) => exist(id) ? quantities[id] : null;
 
-  Future<void> removeQuantity(QuantityModel quantity) {
-    quantities.remove(quantity.id);
-
-    notifyListeners();
-
-    return Document.instance.update(Collections.quantities, {
-      quantity.prefix: null,
-    });
-  }
-
-  void updateQuantity(QuantityModel quantity) {
-    if (!hasContain(quantity.id)) {
-      quantities[quantity.id] = quantity;
-
-      final updateData = {'${quantity.id}': quantity.toObject().toMap()};
-
-      Document.instance.set(Collections.quantities, updateData);
-    }
+  void removeQuantity(String id) {
+    quantities.remove(id);
 
     notifyListeners();
   }
@@ -86,5 +70,19 @@ class QuantityRepo extends ChangeNotifier {
 
     final end = min(10, similarities.length);
     return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
+  }
+
+  void updateQuantity(QuantityModel quantity) {
+    if (!exist(quantity.id)) {
+      quantities[quantity.id] = quantity;
+
+      Storage.instance.add(
+        Stores.quantities,
+        quantity.id,
+        quantity.toObject().toMap(),
+      );
+    }
+
+    notifyListeners();
   }
 }

@@ -5,7 +5,7 @@ import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/storage.dart';
 
 class StockModel extends ChangeNotifier {
   static final StockModel _instance = StockModel._constructor();
@@ -14,19 +14,18 @@ class StockModel extends ChangeNotifier {
 
   Map<String, IngredientModel> ingredients;
 
-  DateTime updatedTime;
-
   StockModel._constructor() {
-    Document.instance.get(Collections.stock).then((snapsnot) {
+    Storage.instance.get(Stores.stock).then((data) {
       ingredients = {};
 
-      final data = snapsnot.data();
       if (data != null) {
         try {
-          final stock = StockObject.build(data);
-          updatedTime = stock.updatedTime;
-          stock.ingredients.forEach((ingredient) {
-            ingredients[ingredient.id] = IngredientModel.fromObject(ingredient);
+          data.forEach((key, value) {
+            if (value is Map) {
+              ingredients[key] = IngredientModel.fromObject(
+                IngredientObject.build({'id': key, ...value}),
+              );
+            }
           });
         } catch (e, stack) {
           print(e);
@@ -41,35 +40,46 @@ class StockModel extends ChangeNotifier {
   List<IngredientModel> get ingredientList => ingredients.values.toList();
 
   bool get isEmpty => ingredients.isEmpty;
-
+  bool get isNotEmpty => ingredients.isNotEmpty;
   bool get isNotReady => ingredients == null;
-
   bool get isReady => ingredients != null;
+  int get length => ingredients.length;
 
-  String get updatedDate => Util.timeToDate(updatedTime);
+  String get updatedDate {
+    if (isEmpty) return null;
 
-  IngredientModel operator [](String id) =>
-      ingredients[id] ?? ingredients.values.first;
+    DateTime lastest;
+    ingredients.values.forEach((element) {
+      if (lastest == null) {
+        lastest = element.updatedAt;
+      } else if (element.updatedAt?.isAfter(lastest) == true) {
+        lastest = element.updatedAt;
+      }
+    });
+
+    return Util.timeToDate(lastest);
+  }
 
   Future<void> applyAmounts(Map<String, num> amounts) {
-    final updateData = <String, dynamic>{};
+    final updateData = <String, Object>{};
 
-    amounts.forEach((ingredientId, amount) {
-      updateData.addAll(ingredients[ingredientId].updateInfo(amount));
+    amounts.forEach((id, amount) {
+      updateData.addAll(getIngredient(id)?.updateInfo(amount) ?? {});
     });
 
     if (updateData.isEmpty) return Future.value();
 
-    updatedTime = DateTime.now();
-    updateData['updatedTime'] = updatedTime.toString();
-
     notifyListeners();
 
-    return Document.instance.update(Collections.stock, updateData);
+    return Storage.instance.set(Stores.stock, updateData);
   }
 
-  bool hasContain(String id) => ingredients.containsKey(id);
+  bool exist(String id) => ingredients.containsKey(id);
 
+  IngredientModel getIngredient(String id) =>
+      exist(id) ? ingredients[id] : null;
+
+  // reverse is helpful when reverting order
   Future<void> order(OrderObject data, {bool reverse = false}) {
     final amounts = <String, num>{};
 
@@ -86,24 +96,8 @@ class StockModel extends ChangeNotifier {
     return applyAmounts(amounts);
   }
 
-  Future<void> removeIngredient(IngredientModel ingredient) {
-    ingredients.remove(ingredient.id);
-
-    notifyListeners();
-
-    return Document.instance.update(Collections.stock, {
-      ingredient.prefix: null,
-    });
-  }
-
-  void updateIngredient(IngredientModel ingredient) {
-    if (!hasContain(ingredient.id)) {
-      ingredients[ingredient.id] = ingredient;
-
-      final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
-
-      Document.instance.set(Collections.stock, updateData);
-    }
+  void removeIngredient(String id) {
+    ingredients.remove(id);
 
     notifyListeners();
   }
@@ -125,5 +119,19 @@ class StockModel extends ChangeNotifier {
 
     final end = min(10, similarities.length);
     return similarities.sublist(0, end).map((e) => ingredients[e.key]).toList();
+  }
+
+  void updateIngredient(IngredientModel ingredient) {
+    if (!exist(ingredient.id)) {
+      ingredients[ingredient.id] = ingredient;
+
+      Storage.instance.add(
+        Stores.stock,
+        ingredient.id,
+        ingredient.toObject().toMap(),
+      );
+    }
+
+    notifyListeners();
   }
 }

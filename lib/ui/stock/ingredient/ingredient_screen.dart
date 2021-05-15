@@ -62,8 +62,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
     final name = _nameController.text;
 
-    if (widget.ingredient?.name != name &&
-        StockModel.instance.hasContain(name)) {
+    if (widget.ingredient?.name != name && StockModel.instance.exist(name)) {
       return setState(() => errorMessage = '成份名稱重複');
     }
 
@@ -90,8 +89,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
   }
 
   List<Widget> _productList() {
-    final products =
-        MenuModel.instance.productContainsIngredient(widget.ingredient.id);
+    final ingredients = MenuModel.instance.getIngredients(widget.ingredient.id);
 
     return [
       Divider(),
@@ -106,7 +104,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              for (var ingredient in products)
+              for (var ingredient in ingredients)
                 CardTile(
                   title: Text(
                     '${ingredient.product.catalog.name} - ${ingredient.product.name}',
