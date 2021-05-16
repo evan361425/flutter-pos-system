@@ -31,9 +31,7 @@ class MenuRoutes {
       case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
               value: settings.arguments,
-              builder: (context, __) => Routes.setUpStockMode(context)
-                  ? ProductScreen()
-                  : CircularLoading(),
+              builder: (context, __) => ProductScreen(),
             );
       case productModal:
         return (_) => ProductModal(product: settings.arguments);

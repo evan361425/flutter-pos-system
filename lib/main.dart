@@ -25,9 +25,6 @@ void main() {
           ChangeNotifierProvider<ThemeProvider>(
             create: (_) => ThemeProvider(),
           ),
-          ChangeNotifierProvider<CurrencyProvider>(
-            create: (_) => CurrencyProvider(),
-          ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),

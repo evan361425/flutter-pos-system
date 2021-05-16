@@ -79,7 +79,7 @@ class CatalogModel extends ChangeNotifier {
   }
 
   Future<void> reorderProducts(List<ProductModel> products) {
-    final updateData = <String, int>{};
+    final updateData = <String, Object>{};
     var i = 1;
 
     products.forEach((product) {

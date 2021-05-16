@@ -5,13 +5,12 @@ import 'package:provider/provider.dart';
 class ThemeSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+
     return Switch(
       activeColor: Theme.of(context).appBarTheme.color,
-      value: context.watch<ThemeProvider>().darkMode,
-      onChanged: (value) {
-        final theme = context.read<ThemeProvider>();
-        theme.darkMode = value;
-      },
+      value: theme.darkMode,
+      onChanged: (value) => theme.setDarkMode(value),
     );
   }
 }

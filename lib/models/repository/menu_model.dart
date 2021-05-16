@@ -147,7 +147,7 @@ class MenuModel extends ChangeNotifier {
   }
 
   Future<void> reorderCatalogs(List<CatalogModel> catalogs) {
-    final updateData = <String, int>{};
+    final updateData = <String, Object>{};
     var i = 1;
 
     catalogs.forEach((catalog) {

@@ -4,7 +4,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/providers/currency_provider.dart';
-import 'package:provider/provider.dart';
 
 class CalculatorDialog extends StatefulWidget {
   const CalculatorDialog({Key key}) : super(key: key);
@@ -34,7 +33,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       case _ButtonTypes.ceil:
         final price =
             paid.isEmpty ? CartModel.instance.totalPrice : num.tryParse(paid);
-        final ceilPrice = context.read<CurrencyProvider>().ceil(price);
+        final ceilPrice = CurrencyProvider.instance.ceil(price);
         updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
@@ -127,7 +126,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
               Row(children: [
                 iconWidget(Icons.select_all_rounded, _ButtonTypes.select),
                 numberWidget('0'),
-                context.read<CurrencyProvider>().isInt
+                CurrencyProvider.instance.isInt
                     ? Spacer()
                     : numberWidget('.', () {
                         if (int.tryParse(paid) != null) {

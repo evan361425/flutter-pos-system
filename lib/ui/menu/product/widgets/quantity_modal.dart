@@ -149,7 +149,7 @@ class _QuantityModalState extends State<QuantityModal> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-          _nameSearchBar(),
+          _quantitySearchBar(),
           SizedBox(height: kMargin),
           TextFormField(
             controller: _ammountController,
@@ -190,7 +190,7 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  Widget _nameSearchBar() {
+  Widget _quantitySearchBar() {
     return SearchBarInline(
       heroTag: QuantitySearchScaffold.tag,
       text: quantityName,
@@ -219,10 +219,8 @@ class _QuantityModalState extends State<QuantityModal> {
   void _updateByProportion(num proportion) {
     _ammountController.text =
         (widget.quantity.ingredient.amount * proportion).toString();
-    _additionalPriceController.text =
-        (widget.quantity.ingredient.product.price * proportion).toString();
-    _additionalCostController.text =
-        (widget.quantity.ingredient.product.cost * proportion).toString();
+    _additionalPriceController.text = '0';
+    _additionalCostController.text = '0';
   }
 
   @override

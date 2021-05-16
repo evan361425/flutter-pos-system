@@ -92,7 +92,7 @@ class _IngredientModalState extends State<IngredientModal> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    _nameField(context),
+                    _ingredientSearchBar(context),
                     SizedBox(height: kMargin),
                     _amountField(context),
                   ],
@@ -146,7 +146,7 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Widget _nameField(BuildContext context) {
+  Widget _ingredientSearchBar(BuildContext context) {
     return SearchBarInline(
       heroTag: IngredientSearchScaffold.tag,
       text: ingredientName,

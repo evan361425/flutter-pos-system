@@ -1,34 +1,27 @@
-import 'package:possystem/services/database.dart';
+import 'package:possystem/services/cache.dart';
 
-final _SearchHistoryTypeString = const <SearchHistoryTypes, String>{
-  SearchHistoryTypes.ingredient: 'ingredient',
-  SearchHistoryTypes.quantity: 'quantity',
+final _ToCaches = const <SearchHistoryTypes, Caches>{
+  SearchHistoryTypes.ingredient: Caches.search_ingredient,
+  SearchHistoryTypes.quantity: Caches.search_quantity,
 };
 
 class SearchHistory {
-  final String type;
+  final Caches type;
+  List<String> histories;
 
-  SearchHistory(SearchHistoryTypes type)
-      : type = _SearchHistoryTypeString[type];
+  SearchHistory(SearchHistoryTypes type) : type = _ToCaches[type];
 
   Future<void> add(String history) {
-    return Database.instance.push(
-      Tables.search_history,
-      {
-        'type': type,
-        'value': history,
-      },
-    );
+    histories.remove(history);
+    histories.insert(0, history);
+    if (histories.length > 8) histories.removeLast();
+
+    return Cache.instance.set<List>(type, histories);
   }
 
   Future<Iterable<String>> get() async {
-    final list = await Database.instance.get(
-      Tables.search_history,
-      where: 'type = ?',
-      whereArgs: [type],
-    );
-
-    return list.map<String>((e) => e['value']);
+    histories ??= await Cache.instance.get<List>(type) ?? [];
+    return histories;
   }
 }
 

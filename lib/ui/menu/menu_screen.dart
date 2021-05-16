@@ -18,7 +18,7 @@ class MenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('主頁'),
+        title: Text('種類列表'),
         actions: [
           IconButton(
             onPressed: () => showCupertinoModalPopup(

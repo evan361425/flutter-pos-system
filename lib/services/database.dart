@@ -28,11 +28,6 @@ class Database {
         databasesPath + '/pos_system.sqlite',
         version: 1,
         onCreate: (db, version) async {
-          await db.execute('''CREATE TABLE `search_history` (
-  type TEXT NOT NULL,
-  value TEXT NOT NULL
-);
-''');
           await db.execute('''CREATE TABLE `order` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   paid REAL NOT NULL,

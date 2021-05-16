@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/caches/shared_preference_cache.dart';
+import 'package:possystem/services/cache.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  bool _darkMode = false;
+  bool _darkMode;
 
-  bool get darkMode {
-    SharedPreferenceCache.instance.darkMode.then(setDarkMode);
+  bool get darkMode => _darkMode;
+
+  Future<bool> getDarkMode() async {
+    _darkMode ??= await Cache.instance.get<bool>(Caches.dark_mode);
     return _darkMode;
   }
 
-  set darkMode(bool value) {
-    setDarkMode(value);
-    SharedPreferenceCache.instance.setDarkMode(value);
-  }
-
-  void setDarkMode(bool value) {
-    if (value != null && _darkMode != value) {
+  Future<void> setDarkMode(bool value) async {
+    await Cache.instance.set(Caches.dark_mode, value);
+    if (_darkMode != value) {
       _darkMode = value;
       notifyListeners();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
@@ -7,6 +8,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/catalog_actions.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
@@ -56,9 +58,11 @@ class CatalogScreen extends StatelessWidget {
             ],
           ),
         ),
-        catalog.length == 0
+        catalog.isEmpty
             ? EmptyBody('menu.catalog.empty_body')
-            : ProductList(products: catalog.productList),
+            : Routes.setUpStockMode(context)
+                ? ProductList(products: catalog.productList)
+                : CircularLoading(),
       ],
     );
   }

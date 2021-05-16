@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:possystem/caches/shared_preference_cache.dart';
 import 'package:possystem/localizations.dart';
+import 'package:possystem/services/cache.dart';
 
 class LanguageProvider extends ChangeNotifier {
   // shared pref object
@@ -24,33 +24,36 @@ class LanguageProvider extends ChangeNotifier {
 
   static const Locale defaultLocale = Locale('zh', 'TW');
 
-  Locale _locale = defaultLocale;
+  Locale _locale;
 
   LanguageProvider();
 
-  Locale get locale {
-    SharedPreferenceCache.instance.language.then(_setLanguage);
+  Locale get locale => _locale;
+
+  Future<Locale> getLocale() async {
+    _locale ??= _parseLanguage(
+          await Cache.instance.get<String>(Caches.language_code),
+        ) ??
+        LanguageProvider.defaultLocale;
     return _locale;
   }
 
-  set locale(Locale locale) {
+  Future<void> setLocale(Locale locale) async {
     final code = '${locale.languageCode}_${locale.countryCode}';
+    await Cache.instance.set<String>(Caches.language_code, code);
 
-    SharedPreferenceCache.instance.setLanguage(code);
-    _setLanguage(code);
+    if (locale != _locale) {
+      print('language select $locale');
+      _locale = locale;
+      notifyListeners();
+    }
   }
 
-  void _setLanguage(String value) {
-    if (value == null) return;
-
+  Locale _parseLanguage(String value) {
     final codes = value.split('_');
-    if (codes.isEmpty) return;
+    if (codes.isEmpty) return null;
 
-    if (codes[0] == _locale.languageCode && codes.length == 1 ||
-        codes[1] == _locale.countryCode) return;
-
-    _locale = Locale(codes[0], codes.length == 1 ? null : codes[1]);
-    notifyListeners();
+    return Locale(codes[0], codes.length == 1 ? null : codes[1]);
   }
 
   static Locale localResolutionCallback(

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/caches/shared_preference_cache.dart';
+import 'package:possystem/services/cache.dart';
 
 class CurrencyProvider extends ChangeNotifier {
+  static final _instance = CurrencyProvider._constructor();
+
   static const candidates = {
     '新台幣': [1, 5, 10, 50, 100, 500, 1000],
   };
+
+  static CurrencyProvider get instance => _instance;
 
   String _usage;
 
@@ -14,7 +18,8 @@ class CurrencyProvider extends ChangeNotifier {
 
   int intIndex;
 
-  CurrencyProvider() {
+  CurrencyProvider._constructor() {
+    // TODO: make it setable
     _setUsage('新台幣');
   }
 
@@ -38,16 +43,14 @@ class CurrencyProvider extends ChangeNotifier {
     return value;
   }
 
-  String get usage {
-    SharedPreferenceCache.instance.currency.then((value) => _setUsage(value));
-
+  Future<String> getUsage() async {
+    _usage = await Cache.instance.get<String>(Caches.currency_code);
     return _usage;
   }
 
-  set usage(String value) {
-    SharedPreferenceCache.instance
-        .setCurrency(value)
-        .then<void>((_) => _setUsage(value));
+  Future<void> setUsage(String value) async {
+    await Cache.instance.set<String>(Caches.currency_code, value);
+    _setUsage(value);
   }
 
   void _setUsage(String value) {

@@ -49,10 +49,10 @@ class CatalogObject {
       index: data['index'],
       name: data['name'],
       createdAt: Util.parseDate(data['createdAt']),
-      products: products.entries
+      products: products?.entries
           // sembast can't delete map entry, filter null value
-          .where((e) => e.value != null)
-          .map<ProductObject>((e) => ProductObject.build({
+          ?.where((e) => e.value != null)
+          ?.map<ProductObject>((e) => ProductObject.build({
                 'id': e.key,
                 ...e.value as Map,
               })),
@@ -124,10 +124,10 @@ class ProductObject {
       index: data['index'],
       name: data['name'],
       createdAt: Util.parseDate(data['createdAt']),
-      ingredients: ingredients.entries
+      ingredients: ingredients?.entries
           // sembast can't delete map entry, filter null value
-          .where((e) => e.value != null)
-          .map<ProductIngredientObject>((e) => ProductIngredientObject.build({
+          ?.where((e) => e.value != null)
+          ?.map<ProductIngredientObject>((e) => ProductIngredientObject.build({
                 'id': e.key,
                 ...e.value as Map,
               })),
@@ -179,10 +179,10 @@ class ProductIngredientObject {
     return ProductIngredientObject(
       id: data['id'],
       amount: data['amount'],
-      quantities: quantities.entries
+      quantities: quantities?.entries
           // sembast can't delete map entry, filter null value
-          .where((e) => e.value != null)
-          .map<ProductQuantityObject>((e) => ProductQuantityObject.build({
+          ?.where((e) => e.value != null)
+          ?.map<ProductQuantityObject>((e) => ProductQuantityObject.build({
                 'id': e.key,
                 ...e.value as Map,
               })),
