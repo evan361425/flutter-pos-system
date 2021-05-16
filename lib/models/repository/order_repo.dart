@@ -15,8 +15,13 @@ class OrderRepo {
   }
 
   Future<OrderObject> pop() async {
-    final data = await Database.instance.getLast(Tables.order);
-    data['products'] = jsonDecode(data['encodedProducts']);
+    final encoded = await Database.instance.getLast(Tables.order);
+    if (encoded == null) return null;
+
+    final data = <String, Object>{
+      'id': encoded['id'],
+      'products': jsonDecode(encoded['encodedProducts']),
+    };
     return OrderObject.build(data);
   }
 
@@ -61,13 +66,29 @@ class OrderRepo {
   Future<void> stash(OrderObject order) {
     return Database.instance.push(Tables.order_stash, {
       'createdAt': DateTime.now().millisecondsSinceEpoch,
-      'encodedProducts': jsonEncode(order.products.map((e) => e.toMap())),
+      'encodedProducts': jsonEncode(
+        order.products.map<Map<String, Object>>((e) => e.toMap()).toList(),
+      ),
     });
   }
 
   Future<OrderObject> popStash() async {
-    final data = await Database.instance.getLast(Tables.order_stash);
-    data['products'] = jsonDecode(data['encodedProducts']);
-    return OrderObject.build(data);
+    final encoded = await Database.instance.getLast(Tables.order_stash);
+    if (encoded == null) return null;
+
+    print('pop stash ${encoded['id']}');
+
+    final object = OrderObject.build({
+      'id': encoded['id'],
+      'products': jsonDecode(encoded['encodedProducts']),
+    });
+
+    await Database.instance.delete(Tables.order_stash, object.id);
+
+    return object;
+  }
+
+  Future<void> remove(OrderObject object) {
+    return Database.instance.delete(Tables.order_stash, object.id);
   }
 }

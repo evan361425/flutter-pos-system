@@ -53,6 +53,7 @@ class OrderObject {
 
   Map<String, Object> toMap() {
     return {
+      'id': id,
       'createdAt': createdAt,
       'paid': paid,
       'totalPrice': totalPrice,
@@ -64,7 +65,7 @@ class OrderObject {
   factory OrderObject.build(Map<String, Object> data) {
     if (data == null) return null;
 
-    final List<Map<String, Object>> products = data['products'];
+    final List<dynamic> products = data['products'];
 
     return OrderObject(
       createdAt: data['createdAt'],

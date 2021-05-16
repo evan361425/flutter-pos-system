@@ -71,6 +71,7 @@ class CartModel extends ChangeNotifier {
       // must follow the order, avoid missing data
       await OrderRepo.instance.push(data);
       await StockModel.instance.order(data);
+      await OrderRepo.instance.remove(oldOrder);
       leaveHistoryMode();
     } else {
       final data = output(paid: paid);

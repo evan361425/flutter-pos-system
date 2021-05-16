@@ -78,9 +78,6 @@ class OrderActions extends StatelessWidget {
           return showSnackbar(context, '目前沒有暫存的紀錄唷');
         }
 
-        // imposible to over limit
-        showSnackbar(context, '暫存檔案的次數超過上限');
-
         return CartModel.instance.updateProductions(order.parseToProduct());
       case OrderActionTypes.stash:
         if (!await CartModel.instance.stash()) {

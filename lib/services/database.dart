@@ -92,6 +92,14 @@ class Database {
     }
   }
 
+  Future<void> delete(
+    Tables table,
+    Object id, {
+    String keyName = 'id',
+  }) {
+    return db.delete(TableName[table], where: '$keyName = ?', whereArgs: [id]);
+  }
+
   Future<int> count(Tables table) async {
     return Sqflite.firstIntValue(
       await db.rawQuery('SELECT COUNT(*) FROM "${TableName[table]}"'),
