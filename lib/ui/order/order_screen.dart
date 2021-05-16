@@ -23,8 +23,7 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menu = context.read<MenuModel>();
-    final catalogs = menu.catalogList.where((catalog) => catalog.isNotEmpty);
+    final catalogs = MenuModel.instance.catalogList;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +61,7 @@ class OrderScreen extends StatelessWidget {
           Expanded(
             child: ProductSelection(
               key: productSelection,
-              catalog: catalogs.first,
+              catalog: catalogs.isEmpty ? null : catalogs.first,
               productsKey: productsKey,
             ),
           ),

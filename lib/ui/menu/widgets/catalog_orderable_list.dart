@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/page/orderable_list.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:provider/provider.dart';
 
 class CatalogOrderableList extends OrderableList<CatalogModel> {
   CatalogOrderableList({Key key, @required List<CatalogModel> items})
@@ -15,8 +14,7 @@ class CatalogOrderableList extends OrderableList<CatalogModel> {
 class _CatalogOrderListState extends OrderableListState<CatalogModel, int> {
   @override
   Future<void> onSubmit() {
-    final menu = context.read<MenuModel>();
-    return menu.reorderCatalogs(widget.items);
+    return MenuModel.instance.reorderCatalogs(widget.items);
   }
 
   @override

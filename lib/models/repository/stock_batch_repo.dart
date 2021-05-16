@@ -42,6 +42,7 @@ class StockBatchRepo extends ChangeNotifier {
   StockBatchModel getBatch(String id) => exist(id) ? batches[id] : null;
 
   bool exist(String id) => batches.containsKey(id);
+  bool hasBatch(String name) => !batches.values.every((e) => e.name != name);
 
   void removeBatch(String id) {
     batches.remove(id);

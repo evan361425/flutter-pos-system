@@ -49,9 +49,13 @@ class CatalogObject {
       index: data['index'],
       name: data['name'],
       createdAt: Util.parseDate(data['createdAt']),
-      products: products?.entries?.map<ProductObject>(
-        (e) => ProductObject.build({'id': e.key, ...e.value}),
-      ),
+      products: products.entries
+          // sembast can't delete map entry, filter null value
+          .where((e) => e.value != null)
+          .map<ProductObject>((e) => ProductObject.build({
+                'id': e.key,
+                ...e.value,
+              })),
     );
   }
 }
@@ -112,6 +116,7 @@ class ProductObject {
 
   factory ProductObject.build(Map<String, Object> data) {
     final Map<String, Map<String, Object>> ingredients = data['ingredients'];
+
     return ProductObject(
       id: data['id'],
       price: data['price'],
@@ -119,9 +124,13 @@ class ProductObject {
       index: data['index'],
       name: data['name'],
       createdAt: Util.parseDate(data['createdAt']),
-      ingredients: ingredients?.entries?.map<ProductIngredientObject>(
-        (e) => ProductIngredientObject.build({'id': e.key, ...e.value}),
-      ),
+      ingredients: ingredients.entries
+          // sembast can't delete map entry, filter null value
+          .where((e) => e.value != null)
+          .map<ProductIngredientObject>((e) => ProductIngredientObject.build({
+                'id': e.key,
+                ...e.value,
+              })),
     );
   }
 }
@@ -173,13 +182,18 @@ class ProductIngredientObject {
 
   factory ProductIngredientObject.build(Map<String, Object> data) {
     Map<String, Map<String, Object>> quantities = data['quantities'];
+
     return ProductIngredientObject(
       id: data['id'],
       amount: data['amount'],
       cost: data['cost'],
-      quantities: quantities?.entries?.map<ProductQuantityObject>(
-        (e) => ProductQuantityObject.build({'id': e.key, ...e.value}),
-      ),
+      quantities: quantities.entries
+          // sembast can't delete map entry, filter null value
+          .where((e) => e.value != null)
+          .map<ProductQuantityObject>((e) => ProductQuantityObject.build({
+                'id': e.key,
+                ...e.value,
+              })),
     );
   }
 }

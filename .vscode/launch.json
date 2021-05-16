@@ -8,7 +8,7 @@
       "name": "pos-system",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main-dev.dart"
+      "program": "lib/main.dart"
     }
   ]
 }

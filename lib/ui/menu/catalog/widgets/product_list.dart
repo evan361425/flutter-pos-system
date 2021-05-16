@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
-import 'package:provider/provider.dart';
 
 class ProductList extends StatelessWidget {
   const ProductList({
@@ -19,19 +16,18 @@ class ProductList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableItemList<ProductModel>(
       items: products,
-      onDelete: onDelete,
-      tileBuilder: tileBuilder,
-      warningContext: warningContextBuild,
-      onTap: onTap,
+      onDelete: _onDelete,
+      tileBuilder: _tileBuilder,
+      warningContext: _warningContextBuild,
+      onTap: _onTap,
     );
   }
 
-  void onDelete(BuildContext context, ProductModel product) {
-    final catalog = context.read<CatalogModel>();
-    catalog.removeProduct(product);
+  Future<void> _onDelete(BuildContext context, ProductModel product) {
+    return product.remove();
   }
 
-  Widget warningContextBuild(BuildContext context, ProductModel product) {
+  Widget _warningContextBuild(BuildContext context, ProductModel product) {
     return RichText(
       text: TextSpan(
         text: '確定要刪除 ',
@@ -45,7 +41,7 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Widget tileBuilder(BuildContext context, ProductModel product) {
+  Widget _tileBuilder(BuildContext context, ProductModel product) {
     return ListTile(
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),
@@ -53,13 +49,13 @@ class ProductList extends StatelessWidget {
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(
         context,
-        product.ingredients.keys.map((id) => StockModel.instance[id]?.name),
+        product.ingredients.values.map((e) => e.ingredient.name),
         '尚未設定成份',
       ),
     );
   }
 
-  void onTap(BuildContext context, ProductModel product) {
+  void _onTap(BuildContext context, ProductModel product) {
     Navigator.of(context).pushNamed(
       MenuRoutes.product,
       arguments: product,

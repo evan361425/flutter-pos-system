@@ -66,6 +66,7 @@ class CatalogModel extends ChangeNotifier {
   ProductModel getProduct(String id) => exist(id) ? products[id] : null;
 
   Future<void> remove() async {
+    print('remove catalog $name');
     await Storage.instance.set(Stores.menu, {id: null});
 
     MenuModel.instance.removeCatalog(id);

@@ -22,13 +22,9 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  void _onDelete(BuildContext context, QuantityModel quantity) {
-    debugPrint('Delete quantity ${quantity.id} - ${quantity.name}');
-
-    // remove from quantity index
-    QuantityRepo.instance.removeQuantity(quantity);
-    // remove from menu
-    MenuModel.instance.removeQuantities(quantity.id);
+  Future<void> _onDelete(BuildContext context, QuantityModel quantity) async {
+    await quantity.remove();
+    return MenuModel.instance.removeQuantities(quantity.id);
   }
 
   Widget _tileBuilder(BuildContext context, QuantityModel quantity) {

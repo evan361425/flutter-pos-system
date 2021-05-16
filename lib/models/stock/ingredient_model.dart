@@ -59,6 +59,7 @@ class IngredientModel extends ChangeNotifier {
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
   Future<void> remove() async {
+    print('Remove ingredient $name');
     await Storage.instance.set(Stores.stock, {prefix: null});
 
     return StockModel.instance.removeIngredient(id);

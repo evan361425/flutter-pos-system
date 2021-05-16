@@ -37,6 +37,7 @@ class _StockScreenState extends State<StockScreen> {
   @override
   void initState() {
     super.initState();
+    // stock body is very heavy, try anonymous it to switch page efficiently
     Future.delayed(Duration(milliseconds: 10), () {
       setState(() {
         initialized = true;

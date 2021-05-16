@@ -8,7 +8,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/routes.dart';
 
 class IngredientList extends StatelessWidget {
@@ -91,11 +90,12 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  void _onDelete(BuildContext context, IngredientModel ingredient) {
-    debugPrint('Delete ingredient - ${ingredient.id} : ${ingredient.name}');
-
-    StockModel.instance.removeIngredient(ingredient);
-    MenuModel.instance.removeIngredients(ingredient.id);
+  Future<void> _onDelete(
+    BuildContext context,
+    IngredientModel ingredient,
+  ) async {
+    await ingredient.remove();
+    return MenuModel.instance.removeIngredients(ingredient.id);
   }
 
   Widget _warningContextBuild(

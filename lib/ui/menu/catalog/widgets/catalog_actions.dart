@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/ui/menu/catalog/widgets/product_orderable_list.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 
 class CatalogActions extends StatelessWidget {
@@ -20,8 +21,10 @@ class CatalogActions extends StatelessWidget {
           child: Text('變更名稱'),
         ),
         CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.productOrder,
+          onPressed: () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => ProductOrderableList(items: catalog.productList),
+            ),
           ),
           child: Text('排序產品'),
         ),

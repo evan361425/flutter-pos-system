@@ -14,19 +14,18 @@ class CatalogList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableItemList<CatalogModel>(
       items: catalogs,
-      onDelete: onDelete,
-      tileBuilder: tileBuilder,
-      warningContext: warningContextBuild,
-      onTap: onTap,
+      onDelete: _onDelete,
+      tileBuilder: _tileBuilder,
+      warningContext: _warningContextBuild,
+      onTap: _onTap,
     );
   }
 
-  Future<void> onDelete(BuildContext context, CatalogModel catalog) {
-    debugPrint('Delete ${catalog.name}');
+  Future<void> _onDelete(BuildContext context, CatalogModel catalog) {
     return catalog.remove();
   }
 
-  Widget warningContextBuild(BuildContext context, CatalogModel catalog) {
+  Widget _warningContextBuild(BuildContext context, CatalogModel catalog) {
     final productCount = catalog.isEmpty
         ? TextSpan()
         : TextSpan(children: [
@@ -49,7 +48,7 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Widget tileBuilder(BuildContext context, CatalogModel catalog) {
+  Widget _tileBuilder(BuildContext context, CatalogModel catalog) {
     return ListTile(
       leading: CircleAvatar(
         child: Text(catalog.name.characters.first.toUpperCase()),
@@ -63,7 +62,7 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  void onTap(BuildContext context, CatalogModel catalog) {
+  void _onTap(BuildContext context, CatalogModel catalog) {
     Navigator.of(context).pushNamed(
       Routes.menuCatalog,
       arguments: catalog,

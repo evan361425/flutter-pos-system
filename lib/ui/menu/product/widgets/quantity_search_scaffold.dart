@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
@@ -22,7 +21,7 @@ class QuantitySearchScaffold extends StatelessWidget {
           QuantityRepo.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialBuilder: _initialBuilder,
+      searchHistory: histories.get,
       heroTag: QuantitySearchScaffold.tag,
       text: text,
       hintText: '成份份量名稱，例如：少量',
@@ -49,34 +48,6 @@ class QuantitySearchScaffold extends StatelessWidget {
         QuantityRepo.instance.updateQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
-    );
-  }
-
-  Widget _initialBuilder(BuildContext context) {
-    final searchHistory = histories.get(
-      () => scaffold.currentState.updateView(),
-    );
-    if (searchHistory == null) return CircularLoading();
-
-    return Column(
-      children: [
-        Text('搜尋紀錄', style: Theme.of(context).textTheme.caption),
-        Expanded(
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return CardTile(
-                title: Text(searchHistory.elementAt(index)),
-                onTap: () {
-                  scaffold.currentState.setSearchKeyword(
-                    searchHistory.elementAt(index),
-                  );
-                },
-              );
-            },
-            itemCount: searchHistory.length,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/constants/icons.dart';
@@ -9,7 +10,7 @@ class SearchScaffold<T> extends StatefulWidget {
     @required this.onChanged,
     @required this.itemBuilder,
     @required this.emptyBuilder,
-    @required this.initialBuilder,
+    @required this.searchHistory,
     this.heroTag,
     this.text = '',
     this.hintText = '',
@@ -27,7 +28,7 @@ class SearchScaffold<T> extends StatefulWidget {
   final String hintText;
   final String labelText;
   final TextCapitalization textCapitalization;
-  final Widget Function(BuildContext) initialBuilder;
+  final Future<Iterable<String>> Function() searchHistory;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
 
@@ -88,7 +89,15 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
 
   Widget _body(BuildContext context) {
     if (searchBar.currentState.text.isEmpty) {
-      return Center(child: widget.initialBuilder(context));
+      return FutureBuilder<Iterable<String>>(
+        future: widget.searchHistory(),
+        builder: (context, snapshot) {
+          // while data is loading:
+          if (!snapshot.hasData) return CircularLoading();
+
+          return _bodyHistories(context, snapshot.data);
+        },
+      );
     } else if (isNotEmpty) {
       return Column(children: [
         Padding(
@@ -103,6 +112,29 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
     } else {
       return widget.emptyBuilder(context, searchBar.currentState.text);
     }
+  }
+
+  Column _bodyHistories(BuildContext context, Iterable<String> histories) {
+    return Column(
+      children: [
+        Text('搜尋紀錄', style: Theme.of(context).textTheme.caption),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              return CardTile(
+                title: Text(histories.elementAt(index)),
+                onTap: () {
+                  setSearchKeyword(
+                    histories.elementAt(index),
+                  );
+                },
+              );
+            },
+            itemCount: histories.length,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _resultList() {

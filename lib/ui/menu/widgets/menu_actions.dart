@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:provider/provider.dart';
 
 import 'catalog_orderable_list.dart';
 
@@ -16,7 +15,7 @@ class MenuActions extends StatelessWidget {
           onPressed: () => Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                final items = context.watch<MenuModel>().catalogList;
+                final items = MenuModel.instance.catalogList;
                 return CatalogOrderableList(items: items);
               },
             ),

@@ -26,11 +26,12 @@ class ProductQuantityModel {
   ProductQuantityModel({
     this.id,
     this.quantity,
+    this.ingredient,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : assert(quantity != null || id != null) {
-    id ??= quantity.id;
+  }) {
+    id ??= quantity?.id;
   }
 
   factory ProductQuantityModel.fromObject(ProductQuantityObject object) =>

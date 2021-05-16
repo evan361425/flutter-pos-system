@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/histories/search_history.dart';
@@ -22,7 +21,7 @@ class IngredientSearchScaffold extends StatelessWidget {
           StockModel.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialBuilder: _initialBuilder,
+      searchHistory: histories.get,
       heroTag: IngredientSearchScaffold.tag,
       text: text,
       hintText: '成份名稱，起司',
@@ -48,29 +47,6 @@ class IngredientSearchScaffold extends StatelessWidget {
         StockModel.instance.updateIngredient(ingredient);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
-    );
-  }
-
-  Widget _initialBuilder(BuildContext context) {
-    final history = histories.get(() => scaffold.currentState.updateView());
-    if (history == null) return CircularLoading();
-
-    return Column(
-      children: [
-        Text('搜尋紀錄', style: Theme.of(context).textTheme.caption),
-        Expanded(
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return CardTile(
-                title: Text(history.elementAt(index)),
-                onTap: () => scaffold.currentState
-                    .setSearchKeyword(history.elementAt(index)),
-              );
-            },
-            itemCount: history.length,
-          ),
-        ),
-      ],
     );
   }
 }

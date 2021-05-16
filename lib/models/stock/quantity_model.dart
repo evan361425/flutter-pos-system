@@ -34,6 +34,7 @@ class QuantityModel {
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
   Future<void> remove() async {
+    print('Remove quantity $name');
     await Storage.instance.set(Stores.stock, {prefix: null});
 
     return QuantityRepo.instance.removeQuantity(prefix);

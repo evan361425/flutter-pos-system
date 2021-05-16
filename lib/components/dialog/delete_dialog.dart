@@ -9,7 +9,7 @@ class DeleteDialog extends StatelessWidget {
   }) : super(key: key);
 
   final Widget content;
-  final Function(BuildContext) onDelete;
+  final Future<void> Function(BuildContext) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,8 @@ class DeleteDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () {
-            onDelete(context);
+          onPressed: () async {
+            await onDelete(context);
             Navigator.of(context).pop(true);
           },
           child: Text('刪除', style: TextStyle(color: kNegativeColor)),

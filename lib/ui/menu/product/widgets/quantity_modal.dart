@@ -9,7 +9,6 @@ import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 
@@ -18,13 +17,12 @@ import 'quantity_search_scaffold.dart';
 class QuantityModal extends StatefulWidget {
   QuantityModal({
     Key key,
-    @required this.ingredient,
     this.quantity,
-  })  : isNew = quantity == null,
+  })  : isNew = quantity.id == null,
+        assert(quantity.ingredient != null),
         super(key: key);
 
   final ProductQuantityModel quantity;
-  final ProductIngredientModel ingredient;
   final bool isNew;
 
   @override
@@ -47,8 +45,8 @@ class _QuantityModalState extends State<QuantityModal> {
     if (quantityId.isEmpty) {
       return setState(() => errorMessage = '必須設定成份份量名稱。');
     }
-    if (widget.quantity?.id != quantityId &&
-        widget.ingredient.exist(quantityId)) {
+    if (widget.quantity.id != quantityId &&
+        widget.quantity.ingredient.exist(quantityId)) {
       return setState(() => errorMessage = '成份份量重複。');
     }
 
@@ -68,9 +66,7 @@ class _QuantityModalState extends State<QuantityModal> {
       builder: (BuildContext context) {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
-          onDelete: (BuildContext context) {
-            widget.ingredient.removeQuantity(widget.quantity);
-          },
+          onDelete: (_) => widget.quantity.remove(),
         );
       },
     );
@@ -84,17 +80,20 @@ class _QuantityModalState extends State<QuantityModal> {
       additionalPrice: num.tryParse(_additionalPriceController.text),
       additionalCost: num.tryParse(_additionalCostController.text),
     );
-    widget.quantity?.update(widget.ingredient, object);
 
-    final quantity = widget.quantity ??
-        ProductQuantityModel(
-          quantity: QuantityRepo.instance[quantityId],
-          amount: object.amount,
-          additionalPrice: object.additionalPrice,
-          additionalCost: object.additionalCost,
-        );
+    if (!widget.isNew) {
+      widget.quantity.update(object);
+    } else {
+      final quantity = ProductQuantityModel(
+        quantity: QuantityRepo.instance.getQuantity(object.id),
+        ingredient: widget.quantity.ingredient,
+        amount: object.amount,
+        additionalPrice: object.additionalPrice,
+        additionalCost: object.additionalCost,
+      );
 
-    widget.ingredient.updateQuantity(quantity);
+      quantity.ingredient.updateQuantity(quantity);
+    }
   }
 
   @override
@@ -219,11 +218,11 @@ class _QuantityModalState extends State<QuantityModal> {
 
   void _updateByProportion(num proportion) {
     _ammountController.text =
-        (widget.ingredient.amount * proportion).toString();
+        (widget.quantity.ingredient.amount * proportion).toString();
     _additionalPriceController.text =
-        (widget.ingredient.product.price * proportion).toString();
+        (widget.quantity.ingredient.product.price * proportion).toString();
     _additionalCostController.text =
-        (widget.ingredient.product.cost * proportion).toString();
+        (widget.quantity.ingredient.product.cost * proportion).toString();
   }
 
   @override

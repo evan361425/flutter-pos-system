@@ -64,9 +64,7 @@ class _IngredientModalState extends State<IngredientModal> {
       builder: (BuildContext context) {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
-          onDelete: (BuildContext context) {
-            widget.ingredient.product.removeIngredient(widget.ingredient);
-          },
+          onDelete: (_) => widget.ingredient.remove(),
         );
       },
     );
@@ -120,7 +118,7 @@ class _IngredientModalState extends State<IngredientModal> {
 
     final ingredient = widget.isNew
         ? ProductIngredientModel(
-            ingredient: StockModel.instance[ingredientId],
+            ingredient: StockModel.instance.getIngredient(ingredientId),
             product: widget.ingredient.product,
             amount: object.amount,
             cost: object.cost,

@@ -27,7 +27,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
 
-    // Don't rebuild make old expansion still opening
+    // Make old expansion still opening when rebuilding
     for (var i = showIngredient.length; i < ingredients.length; i++) {
       showIngredient.add(false);
     }
@@ -56,10 +56,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
     final body = ingredient.quantities.values.map<Widget>((quantity) {
       return ListTile(
-        onTap: () => goToQuantityModel(
-          ingredient: ingredient,
-          quantity: quantity,
-        ),
+        onTap: () => goToQuantityModel(quantity),
         title: Text(quantity.quantity.name),
         trailing: Text('${quantity.amount}'),
         subtitle: _quantityMetadata(quantity),
@@ -111,7 +108,9 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           child: ElevatedButton.icon(
             icon: Icon(KIcons.add),
             label: Text('新增特殊份量'),
-            onPressed: () => goToQuantityModel(ingredient: ingredient),
+            onPressed: () => goToQuantityModel(
+              ProductQuantityModel(ingredient: ingredient),
+            ),
           ),
         ),
       ),
@@ -163,16 +162,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  void goToQuantityModel({
-    @required ProductIngredientModel ingredient,
-    ProductQuantityModel quantity,
-  }) {
+  void goToQuantityModel(ProductQuantityModel quantity) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => QuantityModal(
-          quantity: quantity,
-          ingredient: ingredient,
-        ),
+        builder: (_) => QuantityModal(quantity: quantity),
       ),
     );
   }

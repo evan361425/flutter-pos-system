@@ -32,8 +32,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
     final name = _nameController.text;
 
-    if (widget.batch?.name != name &&
-        StockBatchRepo.instance.hasContain(name)) {
+    if (widget.batch?.name != name && StockBatchRepo.instance.hasBatch(name)) {
       return setState(() => errorMessage = '批量名稱重複');
     }
 
@@ -111,8 +110,6 @@ class _StockBatchModalState extends State<StockBatchModal> {
   }
 
   Widget _ingredientField(IngredientModel ingredient) {
-    final nonSet = widget.batch == null || widget.batch.hasNot(ingredient.id);
-
     return TextFormField(
       onSaved: (String value) {
         final numValue = num.tryParse(value);
@@ -120,7 +117,9 @@ class _StockBatchModalState extends State<StockBatchModal> {
           updateData[ingredient.id] = numValue;
         }
       },
-      initialValue: nonSet ? '' : widget.batch[ingredient.id].toString(),
+      initialValue: widget.batch?.exist(ingredient.id) == true
+          ? widget.batch.getNumOfId(ingredient.id).toString()
+          : '',
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
