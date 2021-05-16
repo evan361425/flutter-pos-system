@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
-
-import 'menu_actions.dart';
 
 class MenuBody extends StatelessWidget {
   @override
