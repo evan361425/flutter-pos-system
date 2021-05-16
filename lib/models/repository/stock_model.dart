@@ -79,7 +79,7 @@ class StockModel extends ChangeNotifier {
   IngredientModel getIngredient(String id) =>
       exist(id) ? ingredients[id] : null;
 
-  // reverse is helpful when reverting order
+  /// [reverse] is helpful when reverting order
   Future<void> order(OrderObject data, {bool reverse = false}) {
     final amounts = <String, num>{};
 

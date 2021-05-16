@@ -10,7 +10,7 @@ class StockBatchModel {
 
   String name;
 
-  // ingredient id => add number
+  /// ingredient id => add number
   final Map<String, num> data;
 
   StockBatchModel({

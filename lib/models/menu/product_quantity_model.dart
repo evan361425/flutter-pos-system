@@ -7,20 +7,20 @@ import 'package:possystem/services/storage.dart';
 class ProductQuantityModel {
   String id;
 
-  // connect to parent object
+  /// connect to parent object
   ProductIngredientModel ingredient;
 
   /// connect to stock.
   /// When it set, [MenuModel.stockMode] must be true
   QuantityModel quantity;
 
-  // ingredient per product
+  /// ingredient per product
   num amount;
 
-  // finalCost = product.cost + additionalCost
+  /// finalCost = product.cost + additionalCost
   num additionalCost;
 
-  // finalPrice = product.price + additionPrice
+  /// finalPrice = product.price + additionPrice
   num additionalPrice;
 
   ProductQuantityModel({

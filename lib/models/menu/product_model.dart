@@ -10,22 +10,22 @@ import 'product_ingredient_model.dart';
 class ProductModel extends ChangeNotifier {
   final String id;
 
-  // connect to parent object
+  /// connect to parent object
   CatalogModel catalog;
 
-  // product's name
+  /// product's name
   String name;
 
-  // index in catalog
+  /// index in catalog
   int index;
 
-  // help to calculate daily earn
+  /// help to calculate daily earn
   num cost;
 
-  // money show to customer/order
+  /// money show to customer/order
   num price;
 
-  // when it has been added to catalog
+  /// when it has been added to catalog
   final DateTime createdAt;
 
   final Map<String, ProductIngredientModel> ingredients;
@@ -56,7 +56,7 @@ class ProductModel extends ChangeNotifier {
         },
       ).._prepareIngredients();
 
-  // help to decide wheather showing ingredient panel in cart
+  /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
       ingredients.values.where((e) => e.quantities.isNotEmpty);
 

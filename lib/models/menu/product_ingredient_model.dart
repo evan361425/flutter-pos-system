@@ -9,17 +9,17 @@ import 'product_model.dart';
 class ProductIngredientModel {
   String id;
 
-  // connect to parent object
+  /// connect to parent object
   ProductModel product;
 
   /// connect to stock.
   /// When it set, [MenuModel.stockMode] must be true
   IngredientModel ingredient;
 
-  // ingredient per product
+  /// ingredient per product
   num amount;
 
-  // cost per product
+  /// cost per product
   num cost;
 
   final Map<String, ProductQuantityModel> quantities;

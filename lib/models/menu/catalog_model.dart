@@ -11,16 +11,16 @@ import 'product_model.dart';
 class CatalogModel extends ChangeNotifier {
   final String id;
 
-  // catalog's name
+  /// catalog's name
   String name;
 
-  // index in menu
+  /// index in menu
   int index;
 
-  // when it has been added to menu
+  /// when it has been added to menu
   final DateTime createdAt;
 
-  // product list
+  /// product list
   final Map<String, ProductModel> products;
 
   CatalogModel({
