@@ -19,9 +19,6 @@ class ProductIngredientModel {
   /// ingredient per product
   num amount;
 
-  /// cost per product
-  num cost;
-
   final Map<String, ProductQuantityModel> quantities;
 
   ProductIngredientModel({
@@ -32,8 +29,7 @@ class ProductIngredientModel {
     num cost,
     Map<String, ProductQuantityModel> quantities,
   })  : quantities = quantities ?? {},
-        amount = amount ?? 0,
-        cost = cost ?? 0 {
+        amount = amount ?? 0 {
     id ??= ingredient?.id;
   }
 
@@ -41,7 +37,6 @@ class ProductIngredientModel {
       ProductIngredientModel(
         id: object.id,
         amount: object.amount,
-        cost: object.cost,
         quantities: {
           for (var quantity in object.quantities)
             quantity.id: ProductQuantityModel.fromObject(quantity)
@@ -81,7 +76,6 @@ class ProductIngredientModel {
 
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
-        cost: cost,
         amount: amount,
         quantities: quantities.values.map((e) => e.toObject()),
       );

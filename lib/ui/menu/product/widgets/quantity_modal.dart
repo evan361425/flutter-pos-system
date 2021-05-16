@@ -81,9 +81,7 @@ class _QuantityModalState extends State<QuantityModal> {
       additionalCost: num.tryParse(_additionalCostController.text),
     );
 
-    if (!widget.isNew) {
-      widget.quantity.update(object);
-    } else {
+    if (widget.isNew) {
       final quantity = ProductQuantityModel(
         quantity: QuantityRepo.instance.getQuantity(object.id),
         ingredient: widget.quantity.ingredient,
@@ -93,6 +91,8 @@ class _QuantityModalState extends State<QuantityModal> {
       );
 
       quantity.ingredient.updateQuantity(quantity);
+    } else {
+      widget.quantity.update(object);
     }
   }
 

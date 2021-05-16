@@ -9,11 +9,12 @@ import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 
 class CatalogModal extends StatefulWidget {
-  CatalogModal({Key key, this.catalog}) : super(key: key);
+  CatalogModal({Key key, this.catalog})
+      : isNew = catalog == null,
+        super(key: key);
 
   final CatalogModel catalog;
-
-  bool get isNew => catalog == null;
+  final bool isNew;
 
   @override
   _CatalogModalState createState() => _CatalogModalState();
@@ -76,17 +77,19 @@ class _CatalogModalState extends State<CatalogModal> {
     final object = CatalogObject(
       name: _controller.text,
     );
-    widget.catalog?.update(object);
 
-    final catalog = widget.catalog ??
-        CatalogModel(
-          name: object.name,
-          index: MenuModel.instance.newIndex,
-        );
+    if (widget.isNew) {
+      final catalog = CatalogModel(
+        name: object.name,
+        index: MenuModel.instance.newIndex,
+      );
 
-    MenuModel.instance.updateCatalog(catalog);
-
-    return catalog;
+      MenuModel.instance.updateCatalog(catalog);
+      return catalog;
+    } else {
+      widget.catalog.update(object);
+      return widget.catalog;
+    }
   }
 
   Widget _trailingAction() {

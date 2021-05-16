@@ -125,7 +125,6 @@ class OrderIngredientObject {
   final String ingredientId;
   int price;
   int amount;
-  num cost;
   String quantityId;
 
   OrderIngredientObject({
@@ -133,7 +132,6 @@ class OrderIngredientObject {
     @required this.ingredientId,
     this.price,
     @required this.amount,
-    @required this.cost,
     this.quantityId,
   });
 
@@ -145,7 +143,6 @@ class OrderIngredientObject {
   }) {
     this.price = price;
     this.amount = amount;
-    this.cost = cost;
     this.quantityId = quantityId;
   }
 
@@ -155,7 +152,6 @@ class OrderIngredientObject {
       'ingredientId': ingredientId,
       'price': price,
       'amount': amount,
-      'cost': cost,
       'quantityId': quantityId,
     };
   }
@@ -166,7 +162,6 @@ class OrderIngredientObject {
       ingredientId: data['ingredientId'],
       price: data['price'],
       amount: data['amount'],
-      cost: data['cost'],
       quantityId: data['quantityId'],
     );
   }

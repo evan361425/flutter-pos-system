@@ -33,7 +33,6 @@ class OrderProductModel {
         ingredientEntry.key: OrderIngredientObject(
           ingredientId: ingredientEntry.key,
           name: ingredientEntry.value.ingredient.name,
-          cost: ingredientEntry.value.cost,
           amount: ingredientEntry.value.amount,
         )
     };

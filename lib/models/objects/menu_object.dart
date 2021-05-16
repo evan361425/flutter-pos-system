@@ -42,7 +42,7 @@ class CatalogObject {
   }
 
   factory CatalogObject.build(Map<String, Object> data) {
-    Map<String, Map<String, Object>> products = data['products'];
+    final Map<String, Object> products = data['products'];
 
     return CatalogObject(
       id: data['id'],
@@ -54,7 +54,7 @@ class CatalogObject {
           .where((e) => e.value != null)
           .map<ProductObject>((e) => ProductObject.build({
                 'id': e.key,
-                ...e.value,
+                ...e.value as Map,
               })),
     );
   }
@@ -115,7 +115,7 @@ class ProductObject {
   }
 
   factory ProductObject.build(Map<String, Object> data) {
-    final Map<String, Map<String, Object>> ingredients = data['ingredients'];
+    final Map<String, Object> ingredients = data['ingredients'];
 
     return ProductObject(
       id: data['id'],
@@ -129,7 +129,7 @@ class ProductObject {
           .where((e) => e.value != null)
           .map<ProductIngredientObject>((e) => ProductIngredientObject.build({
                 'id': e.key,
-                ...e.value,
+                ...e.value as Map,
               })),
     );
   }
@@ -139,19 +139,16 @@ class ProductIngredientObject {
   ProductIngredientObject({
     this.id,
     this.amount,
-    this.cost,
     Iterable<ProductQuantityObject> quantities,
   }) : quantities = quantities ?? Iterable.empty();
 
   final String id;
   final num amount;
-  final num cost;
   final Iterable<ProductQuantityObject> quantities;
 
   Map<String, Object> toMap() {
     return {
       'amount': amount,
-      'cost': cost,
       'quantities': {
         for (var quantity in quantities) quantity.id: quantity.toMap()
       },
@@ -166,10 +163,6 @@ class ProductIngredientObject {
       ingredient.amount = amount;
       result['$prefix.amount'] = amount;
     }
-    if (cost != null && cost != ingredient.cost) {
-      ingredient.cost = cost;
-      result['$prefix.cost'] = cost;
-    }
     // after all property set
     if (id != null && id != ingredient.id) {
       ingredient.changeIngredient(id);
@@ -181,18 +174,17 @@ class ProductIngredientObject {
   }
 
   factory ProductIngredientObject.build(Map<String, Object> data) {
-    Map<String, Map<String, Object>> quantities = data['quantities'];
+    Map<String, Object> quantities = data['quantities'];
 
     return ProductIngredientObject(
       id: data['id'],
       amount: data['amount'],
-      cost: data['cost'],
       quantities: quantities.entries
           // sembast can't delete map entry, filter null value
           .where((e) => e.value != null)
           .map<ProductQuantityObject>((e) => ProductQuantityObject.build({
                 'id': e.key,
-                ...e.value,
+                ...e.value as Map,
               })),
     );
   }

@@ -10,16 +10,14 @@ import 'quantity_repo.dart';
 import 'stock_model.dart';
 
 class MenuModel extends ChangeNotifier {
-  static final MenuModel _instance = MenuModel._constructor();
-
-  static MenuModel get instance => _instance;
+  static MenuModel instance;
 
   Map<String, CatalogModel> catalogs;
 
   /// wheather ingredient/quantity has connect to stock
   bool stockMode = false;
 
-  MenuModel._constructor() {
+  MenuModel() {
     Storage.instance.get(Stores.menu).then((data) {
       catalogs = {};
 
@@ -40,6 +38,7 @@ class MenuModel extends ChangeNotifier {
 
       notifyListeners();
     });
+    MenuModel.instance = this;
   }
 
   /// sorted by index

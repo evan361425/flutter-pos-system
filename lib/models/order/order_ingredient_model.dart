@@ -13,7 +13,7 @@ class OrderIngredientModel {
 
   num get amount => quantity.amount;
   num get price => quantity.additionalPrice;
-  num get cost => ingredient.cost + quantity.additionalCost;
+  num get cost => quantity.additionalCost;
 
   String get id => ingredient.id;
 

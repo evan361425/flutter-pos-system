@@ -78,21 +78,23 @@ class _ProductModalState extends State<ProductModal> {
       price: num.tryParse(_priceController.text),
       cost: num.tryParse(_costController.text),
     );
-    widget.product?.update(object);
 
-    final catalog = widget.product?.catalog ?? context.read<CatalogModel>();
-    final product = widget.product ??
-        ProductModel(
-          catalog: catalog,
-          index: catalog.newIndex,
-          name: object.name,
-          price: object.price,
-          cost: object.cost,
-        );
+    if (widget.isNew) {
+      final catalog = context.read<CatalogModel>();
+      final product = ProductModel(
+        catalog: catalog,
+        index: catalog.newIndex,
+        name: object.name,
+        price: object.price,
+        cost: object.cost,
+      );
 
-    catalog.updateProduct(product);
-
-    return product;
+      catalog.updateProduct(product);
+      return product;
+    } else {
+      widget.product.update(object);
+      return widget.product;
+    }
   }
 
   Widget _trailingAction() {

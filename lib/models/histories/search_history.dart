@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:possystem/services/database.dart';
 
 final _SearchHistoryTypeString = const <SearchHistoryTypes, String>{

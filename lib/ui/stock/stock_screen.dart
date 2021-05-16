@@ -17,8 +17,8 @@ class _StockScreenState extends State<StockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: StockBatchRepo.instance,
+    return ChangeNotifierProvider(
+      create: (_) => StockBatchRepo(),
       child: SafeArea(
         child: Scaffold(
           floatingActionButton: FloatingActionButton(

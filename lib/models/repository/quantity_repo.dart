@@ -6,13 +6,11 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class QuantityRepo extends ChangeNotifier {
-  static final QuantityRepo _instance = QuantityRepo._constructor();
-
-  static QuantityRepo get instance => _instance;
+  static QuantityRepo instance;
 
   Map<String, QuantityModel> quantities;
 
-  QuantityRepo._constructor() {
+  QuantityRepo() {
     Storage.instance.get(Stores.quantities).then((data) {
       quantities = {};
 
@@ -33,6 +31,7 @@ class QuantityRepo extends ChangeNotifier {
 
       notifyListeners();
     });
+    QuantityRepo.instance = this;
   }
 
   bool get isEmpty => quantities.isEmpty;

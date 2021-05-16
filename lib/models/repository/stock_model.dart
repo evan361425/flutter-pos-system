@@ -8,13 +8,11 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class StockModel extends ChangeNotifier {
-  static final StockModel _instance = StockModel._constructor();
-
-  static StockModel get instance => _instance;
+  static StockModel instance;
 
   Map<String, IngredientModel> ingredients;
 
-  StockModel._constructor() {
+  StockModel() {
     Storage.instance.get(Stores.stock).then((data) {
       ingredients = {};
 
@@ -35,6 +33,7 @@ class StockModel extends ChangeNotifier {
 
       notifyListeners();
     });
+    StockModel.instance = this;
   }
 
   List<IngredientModel> get ingredientList => ingredients.values.toList();

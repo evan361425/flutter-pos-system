@@ -28,7 +28,12 @@ class Database {
         databasesPath + '/pos_system.sqlite',
         version: 1,
         onCreate: (db, version) async {
-          await db.execute('''CREATE TABLE order (
+          await db.execute('''CREATE TABLE `search_history` (
+  type TEXT NOT NULL,
+  value TEXT NOT NULL
+);
+''');
+          await db.execute('''CREATE TABLE `order` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   paid REAL NOT NULL,
   totalPrice REAL NOT NULL,
@@ -37,13 +42,13 @@ class Database {
   usedProducts TEXT NOT NULL,
   usedIngredients TEXT NOT NULL,
   encodedProducts BLOB NOT NULL
-)
+);
 ''');
-          await db.execute('''CREATE TABLE order_stash (
+          await db.execute('''CREATE TABLE `order_stash` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   createdAt INTEGER NOT NULL,
   encodedProducts BLOB NOT NULL
-)
+);
 ''');
         },
       );

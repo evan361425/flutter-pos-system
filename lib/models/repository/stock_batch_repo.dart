@@ -4,13 +4,11 @@ import 'package:possystem/models/stock/stock_batch_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class StockBatchRepo extends ChangeNotifier {
-  static final StockBatchRepo _instance = StockBatchRepo._constructor();
-
-  static StockBatchRepo get instance => _instance;
+  static StockBatchRepo instance;
 
   Map<String, StockBatchModel> batches;
 
-  StockBatchRepo._constructor() {
+  StockBatchRepo() {
     Storage.instance.get(Stores.stock_batch).then((data) {
       batches = {};
 
@@ -31,6 +29,7 @@ class StockBatchRepo extends ChangeNotifier {
 
       notifyListeners();
     });
+    StockBatchRepo.instance = this;
   }
 
   bool get isEmpty => batches.isEmpty;
