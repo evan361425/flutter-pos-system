@@ -18,7 +18,7 @@ class QuantityModel {
     @required this.name,
     num defaultProportion,
   })  : id = id ?? Util.uuidV4(),
-        defaultProportion = defaultProportion ?? 0;
+        defaultProportion = defaultProportion ?? 1;
 
   factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
         id: object.id,
