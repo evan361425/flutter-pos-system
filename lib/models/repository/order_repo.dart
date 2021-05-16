@@ -48,9 +48,13 @@ class OrderRepo {
       'paid': order.paid,
       'totalPrice': order.totalPrice,
       'totalCount': order.totalCount,
-      'usedProducts': order.products.map((e) => e.productName).join(','),
-      'usedIngredients': usedIngredients.join(','),
-      'encodedProducts': jsonEncode(order.products.map((e) => e.toMap())),
+      'usedProducts': Database.join(
+        order.products.map<String>((e) => e.productName),
+      ),
+      'usedIngredients': Database.join(usedIngredients),
+      'encodedProducts': jsonEncode(
+        order.products.map<Map<String, Object>>((e) => e.toMap()).toList(),
+      ),
     };
   }
 

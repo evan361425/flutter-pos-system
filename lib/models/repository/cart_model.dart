@@ -67,20 +67,18 @@ class CartModel extends ChangeNotifier {
       await StockModel.instance.order(oldOrder, reverse: true);
 
       final data = output(paid: paid, id: oldOrder.id);
-      leaveHistoryMode();
 
-      return Future.wait([
-        OrderRepo.instance.update(data),
-        StockModel.instance.order(data),
-      ]);
+      // must follow the order, avoid missing data
+      await OrderRepo.instance.push(data);
+      await StockModel.instance.order(data);
+      leaveHistoryMode();
     } else {
       final data = output(paid: paid);
-      clear();
 
-      return Future.wait([
-        OrderRepo.instance.push(data),
-        StockModel.instance.order(data),
-      ]);
+      // must follow the order, avoid missing data
+      await OrderRepo.instance.push(data);
+      await StockModel.instance.order(data);
+      clear();
     }
   }
 

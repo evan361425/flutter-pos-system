@@ -20,15 +20,24 @@ class Database {
 
   static Database get instance => _instance;
 
+  // delimiter: https://stackoverflow.com/a/29811033/12089368
+  static final String delimiter = String.fromCharCode(13);
+
+  static String join(Iterable<String> data) {
+    return data.join(delimiter) + delimiter;
+  }
+
   no_sql.Database db;
 
-  Database._constructor() {
-    getDatabasesPath().then((databasesPath) async {
-      db = await openDatabase(
-        databasesPath + '/pos_system.sqlite',
-        version: 1,
-        onCreate: (db, version) async {
-          await db.execute('''CREATE TABLE `order` (
+  Database._constructor();
+
+  Future<void> initialize() async {
+    final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
+    db = await openDatabase(
+      databasePath,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''CREATE TABLE `order` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   paid REAL NOT NULL,
   totalPrice REAL NOT NULL,
@@ -39,15 +48,14 @@ class Database {
   encodedProducts BLOB NOT NULL
 );
 ''');
-          await db.execute('''CREATE TABLE `order_stash` (
+        await db.execute('''CREATE TABLE `order_stash` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   createdAt INTEGER NOT NULL,
   encodedProducts BLOB NOT NULL
 );
 ''');
-        },
-      );
-    });
+      },
+    );
   }
 
   Future<int> push(Tables table, Map<String, Object> data) {

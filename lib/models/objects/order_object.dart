@@ -51,7 +51,7 @@ class OrderObject {
         .toList();
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'createdAt': createdAt,
       'paid': paid,
@@ -61,10 +61,10 @@ class OrderObject {
     };
   }
 
-  factory OrderObject.build(Map<String, dynamic> data) {
+  factory OrderObject.build(Map<String, Object> data) {
     if (data == null) return null;
 
-    final List<Map<String, dynamic>> products = data['products'];
+    final List<Map<String, Object>> products = data['products'];
 
     return OrderObject(
       createdAt: data['createdAt'],
@@ -94,18 +94,22 @@ class OrderProductObject {
     @required this.ingredients,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'singlePrice': singlePrice,
       'count': count,
       'productId': productId,
       'productName': productName,
       'isDiscount': isDiscount,
-      'ingredients': ingredients.values.map((e) => e.toMap()),
+      'ingredients': ingredients.values
+          .map<Map<String, Object>>(
+            (e) => e.toMap(),
+          )
+          .toList(),
     };
   }
 
-  factory OrderProductObject.input(Map<String, dynamic> data) {
+  factory OrderProductObject.input(Map<String, Object> data) {
     return OrderProductObject(
       singlePrice: data['singlePrice'],
       count: data['count'],
@@ -146,7 +150,7 @@ class OrderIngredientObject {
     this.quantityId = quantityId;
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object> toMap() {
     return {
       'name': name,
       'ingredientId': ingredientId,
@@ -156,7 +160,7 @@ class OrderIngredientObject {
     };
   }
 
-  factory OrderIngredientObject.input(Map<String, dynamic> data) {
+  factory OrderIngredientObject.input(Map<String, Object> data) {
     return OrderIngredientObject(
       name: data['name'],
       ingredientId: data['ingredientId'],

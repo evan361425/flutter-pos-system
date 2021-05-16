@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/home_container.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/providers/language_provider.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
   Future<Map<String, Object>> _waitPreferences(BuildContext context) async {
     final theme = context.watch<ThemeProvider>();
     final language = context.watch<LanguageProvider>();
+    await Database.instance.initialize();
 
     return {
       'theme': await theme.getDarkMode(),
