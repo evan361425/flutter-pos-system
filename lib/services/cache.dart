@@ -20,7 +20,7 @@ class Cache {
 
   Future<T> get<T>(Caches cache) async {
     final sp = await _sharedPreference;
-    final name = _Names[cache];
+    final name = _Names.containsKey(cache) ? _Names[cache] : cache.toString();
 
     if (T == bool) {
       return sp.getBool(name) as T;
@@ -39,7 +39,7 @@ class Cache {
 
   Future<void> set<T>(Caches cache, T value) async {
     final sp = await _sharedPreference;
-    final name = _Names[cache];
+    final name = _Names.containsKey(cache) ? _Names[cache] : cache.toString();
 
     if (T == bool) {
       return sp.setBool(name, value as bool);
@@ -61,4 +61,6 @@ enum Caches {
   currency_code,
   search_ingredient,
   search_quantity,
+  // application
+  analyze_calendar_format,
 }

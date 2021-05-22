@@ -64,7 +64,8 @@ class CartModel extends ChangeNotifier {
     // if history mode update data
     if (isHistoryMode) {
       final oldData = await OrderRepo.instance.pop();
-      final data = output(paid: paid, id: oldData.id);
+      final data =
+          output(paid: paid, id: oldData.id, createdAt: oldData.createdAt);
 
       // must follow the order, avoid missing data
       await OrderRepo.instance.update(data);
@@ -95,10 +96,11 @@ class CartModel extends ChangeNotifier {
     clear();
   }
 
-  OrderObject output({num paid, int id}) {
+  OrderObject output({num paid, int id, DateTime createdAt}) {
     return OrderObject(
       id: id,
       paid: paid,
+      createdAt: createdAt,
       totalPrice: totalPrice,
       totalCount: totalCount,
       products: products.map<OrderProductObject>((e) => e.toMap()),

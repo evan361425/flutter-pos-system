@@ -8,7 +8,7 @@ import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
-import 'package:possystem/ui/menu/widgets/menu_actions.dart';
+import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -25,8 +25,8 @@ class MenuScreen extends StatelessWidget {
             icon: Icon(KIcons.back)),
         actions: [
           IconButton(
-            onPressed: () => showCupertinoModalPopup(
-                context: context, builder: (_) => MenuActions()),
+            onPressed: () =>
+                showCupertinoModalPopup(context: context, builder: _actions),
             icon: Icon(KIcons.more),
           ),
         ],
@@ -39,6 +39,28 @@ class MenuScreen extends StatelessWidget {
       ),
       // When click android go back, it will avoid closing APP
       body: _body(context),
+    );
+  }
+
+  Widget _actions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          onPressed: () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                final items = MenuModel.instance.catalogList;
+                return CatalogOrderableList(items: items);
+              },
+            ),
+          ),
+          child: Text('排序產品種類'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () => Navigator.pop(context, 'cancel'),
+        child: Text('取消'),
+      ),
     );
   }
 

@@ -23,9 +23,9 @@ class Database {
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
-  static String join(Iterable<String> data) {
-    return data.join(delimiter) + delimiter;
-  }
+  static String join(Iterable<String> data) => data.join(delimiter) + delimiter;
+
+  static List<String> split(String value) => value?.trim()?.split(delimiter);
 
   no_sql.Database db;
 
@@ -136,5 +136,19 @@ class Database {
       limit: limit,
       offset: offset,
     );
+  }
+
+  static Future<List<Map<String, Object>>> rawQuery(
+    Tables table, {
+    String where,
+    List<Object> whereArgs,
+    List<String> columns,
+    String groupBy,
+  }) {
+    final select = columns.join(',');
+    return instance.db.rawQuery('''
+    SELECT $select FROM "${TableName[table]}"
+    WHERE $where
+    GROUP BY $groupBy''', whereArgs);
   }
 }

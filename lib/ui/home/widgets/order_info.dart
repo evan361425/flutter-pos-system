@@ -68,8 +68,9 @@ class OrderInfoState extends State<OrderInfo> {
       where: 'createdAt > 1',
     ).then(
       (result) => setState(() {
-        revenue = CurrencyProvider.instance.numToString(result[0]['revenue']);
-        count = result[0]['count'];
+        revenue =
+            CurrencyProvider.instance.numToString(result[0]['revenue'] ?? 0);
+        count = result[0]['count'] ?? 0;
       }),
     );
   }

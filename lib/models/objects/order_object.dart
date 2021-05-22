@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/services/database.dart';
 
 class OrderObject {
   final int id;
   num paid;
   final num totalPrice;
   final int totalCount;
+  final List<String> productNames;
+  final List<String> ingredientNames;
   final DateTime createdAt;
   final Iterable<OrderProductObject> products;
 
@@ -16,6 +21,8 @@ class OrderObject {
     this.paid,
     this.totalPrice,
     this.totalCount,
+    this.productNames,
+    this.ingredientNames,
     this.products,
     DateTime createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
@@ -52,27 +59,43 @@ class OrderObject {
   }
 
   Map<String, Object> toMap() {
+    final usedIngredients = <String>[];
+
+    products.forEach(
+      (product) => product.ingredients.values.forEach(
+        (ingredient) => usedIngredients.add(ingredient.name),
+      ),
+    );
+
     return {
-      'id': id,
-      'createdAt': createdAt,
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
-      'products': products.map((e) => e.toMap()).toList(),
+      'createdAt': createdAt.millisecondsSinceEpoch ~/ 1000,
+      'usedProducts': Database.join(
+        products.map<String>((e) => e.productName),
+      ),
+      'usedIngredients': Database.join(usedIngredients),
+      'encodedProducts': jsonEncode(
+        products.map<Map<String, Object>>((e) => e.toMap()).toList(),
+      ),
     };
   }
 
   factory OrderObject.build(Map<String, Object> data) {
     if (data == null) return null;
 
-    final List<dynamic> products = data['products'];
+    final List<dynamic> products = jsonDecode(data['encodedProducts']);
+    final int createdAt = data['createdAt'];
 
     return OrderObject(
-      createdAt: data['createdAt'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(createdAt * 1000),
       id: data['id'],
       paid: data['paid'],
       totalPrice: data['totalPrice'],
       totalCount: data['totalCount'],
+      productNames: Database.split(data['usedProducts']),
+      ingredientNames: Database.split(data['usedIngredients']),
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }
@@ -109,6 +132,9 @@ class OrderProductObject {
           .toList(),
     };
   }
+
+  @override
+  String toString() => '$productName * $count';
 
   factory OrderProductObject.input(Map<String, Object> data) {
     return OrderProductObject(

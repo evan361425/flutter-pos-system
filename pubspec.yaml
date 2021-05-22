@@ -3,7 +3,7 @@ description: POS system by Flutter
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -41,6 +41,7 @@ dependencies:
   uuid: ^3.0.1
   sqflite: ^2.0.0
   sembast: ^3.0.2
+  table_calendar: ^3.0.0
   # loadmore: ^2.0.0
   # string_similarity: ^2.0.0
 

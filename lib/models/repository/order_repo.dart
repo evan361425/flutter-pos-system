@@ -18,24 +18,19 @@ class OrderRepo {
   Future<OrderObject> pop() async {
     final row = await Database.instance.getLast(
       Tables.order,
-      columns: ['id', 'encodedProducts'],
+      columns: ['id', 'encodedProducts', 'createdAt'],
     );
     if (row == null) return null;
     print('order pop ${row['id']}');
 
-    return OrderObject.build(<String, Object>{
-      'id': row['id'],
-      'products': jsonDecode(row['encodedProducts']),
-    });
+    return OrderObject.build(row);
   }
 
   Future<void> push(OrderObject order) {
     print('add order ${order.totalPrice}');
     HomeScreen.orderInfo?.currentState?.reset();
 
-    final data = _parseObject(order);
-    data['createdAt'] = order.createdAt.toUtc().millisecondsSinceEpoch;
-    return Database.instance.push(Tables.order, data);
+    return Database.instance.push(Tables.order, order.toMap());
   }
 
   Future<void> update(OrderObject order) {
@@ -45,55 +40,28 @@ class OrderRepo {
     return Database.instance.update(
       Tables.order,
       order.id,
-      _parseObject(order),
+      order.toMap(),
     );
-  }
-
-  Map<String, Object> _parseObject(OrderObject order) {
-    final usedIngredients = <String>[];
-
-    order.products.forEach(
-      (product) => product.ingredients.values.forEach(
-        (ingredient) => usedIngredients.add(ingredient.name),
-      ),
-    );
-
-    return {
-      'paid': order.paid,
-      'totalPrice': order.totalPrice,
-      'totalCount': order.totalCount,
-      'usedProducts': Database.join(
-        order.products.map<String>((e) => e.productName),
-      ),
-      'usedIngredients': Database.join(usedIngredients),
-      'encodedProducts': jsonEncode(
-        order.products.map<Map<String, Object>>((e) => e.toMap()).toList(),
-      ),
-    };
   }
 
   Future<void> stash(OrderObject order) {
+    final data = order.toMap();
     return Database.instance.push(Tables.order_stash, {
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-      'encodedProducts': jsonEncode(
-        order.products.map<Map<String, Object>>((e) => e.toMap()).toList(),
-      ),
+      'createdAt': data['createdAt'],
+      'encodedProducts': data['encodedProducts'],
     });
   }
 
   Future<OrderObject> popStash() async {
     final row = await Database.instance.getLast(
       Tables.order_stash,
-      columns: ['id', 'encodedProducts'],
+      columns: ['id', 'encodedProducts', 'createdAt'],
     );
     if (row == null) return null;
 
     print('pop stash ${row['id']}');
 
-    final object = OrderObject.build({
-      'id': row['id'],
-      'products': jsonDecode(row['encodedProducts']),
-    });
+    final object = OrderObject.build(row);
 
     await Database.instance.delete(Tables.order_stash, object.id);
 
