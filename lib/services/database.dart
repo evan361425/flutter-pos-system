@@ -79,10 +79,12 @@ class Database {
   Future<Map<String, Object>> getLast(
     Tables table, {
     String sortBy = 'id',
+    List<String> columns,
   }) async {
     try {
       final data = await db.query(
         TableName[table],
+        columns: columns,
         orderBy: '$sortBy DESC',
         limit: 1,
       );
@@ -100,17 +102,39 @@ class Database {
     return db.delete(TableName[table], where: '$keyName = ?', whereArgs: [id]);
   }
 
-  Future<int> count(Tables table) async {
-    return Sqflite.firstIntValue(
-      await db.rawQuery('SELECT COUNT(*) FROM "${TableName[table]}"'),
-    );
-  }
-
-  Future<List<Map<String, Object>>> get(
+  Future<int> count(
     Tables table, {
     String where,
     List<Object> whereArgs,
+  }) async {
+    final result = await db.query(TableName[table], columns: ['COUNT(*)']);
+
+    return Sqflite.firstIntValue(result);
+  }
+
+  static Future<List<Map<String, Object>>> query(
+    Tables table, {
+    String where,
+    List<Object> whereArgs,
+    bool distinct,
+    List<String> columns,
+    String groupBy,
+    String orderBy,
+    String having,
+    int limit,
+    int offset,
   }) {
-    return db.query(TableName[table], where: where, whereArgs: whereArgs);
+    return instance.db.query(
+      TableName[table],
+      where: where,
+      whereArgs: whereArgs,
+      distinct: distinct,
+      columns: columns,
+      groupBy: groupBy,
+      orderBy: orderBy,
+      having: having,
+      limit: limit,
+      offset: offset,
+    );
   }
 }

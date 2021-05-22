@@ -63,15 +63,13 @@ class CartModel extends ChangeNotifier {
 
     // if history mode update data
     if (isHistoryMode) {
-      final oldOrder = await OrderRepo.instance.pop();
-      await StockModel.instance.order(oldOrder, reverse: true);
-
-      final data = output(paid: paid, id: oldOrder.id);
+      final oldData = await OrderRepo.instance.pop();
+      final data = output(paid: paid, id: oldData.id);
 
       // must follow the order, avoid missing data
-      await OrderRepo.instance.push(data);
+      await OrderRepo.instance.update(data);
+      await StockModel.instance.order(oldData, reverse: true);
       await StockModel.instance.order(data);
-      await OrderRepo.instance.remove(oldOrder);
       leaveHistoryMode();
     } else {
       final data = output(paid: paid);

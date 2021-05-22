@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/database.dart';
 
-class OrderInfo extends StatelessWidget {
+class OrderInfo extends StatefulWidget {
   const OrderInfo({Key key}) : super(key: key);
 
   @override
+  OrderInfoState createState() => OrderInfoState();
+}
+
+class OrderInfoState extends State<OrderInfo> {
+  int count;
+  String revenue;
+
+  void reset() {
+    setState(() {
+      count = null;
+      revenue = null;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (count == null) _queryValue();
+
     final theme = Theme.of(context);
-    final textStyle = theme.textTheme.headline3.copyWith(
-      color: theme.primaryColor,
-    );
+    final textStyle =
+        theme.textTheme.headline3.copyWith(color: theme.primaryColor);
 
     return Stack(
       alignment: Alignment.center,
@@ -21,31 +39,9 @@ class OrderInfo extends StatelessWidget {
             padding: const EdgeInsets.all(kPadding / 2),
             child: Row(
               children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text('今日單量', textAlign: TextAlign.center),
-                      Text(
-                        '20',
-                        textAlign: TextAlign.center,
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                ),
+                _column('今日單量', count?.toString(), textStyle),
                 SizedBox(width: 64),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text('今日獲利', textAlign: TextAlign.center),
-                      Text(
-                        '200000',
-                        textAlign: TextAlign.center,
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                ),
+                _column('今日營收', revenue?.toString(), textStyle),
               ],
             ),
           ),
@@ -62,6 +58,34 @@ class OrderInfo extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _queryValue() {
+    Database.query(
+      Tables.order,
+      columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
+      where: 'createdAt > 1',
+    ).then(
+      (result) => setState(() {
+        revenue = CurrencyProvider.instance.numToString(result[0]['revenue']);
+        count = result[0]['count'];
+      }),
+    );
+  }
+
+  Expanded _column(String title, String value, TextStyle textStyle) {
+    return Expanded(
+      child: Column(
+        children: <Widget>[
+          Text(title, textAlign: TextAlign.center),
+          Text(
+            value ?? '...',
+            textAlign: TextAlign.center,
+            style: textStyle,
+          ),
+        ],
+      ),
     );
   }
 }

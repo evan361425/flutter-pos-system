@@ -8,6 +8,7 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/routes.dart';
 
 class IngredientScreen extends StatefulWidget {
   IngredientScreen({Key key, this.ingredient}) : super(key: key);
@@ -36,24 +37,28 @@ class _IngredientScreenState extends State<IngredientScreen> {
         ),
         actions: [_trailingAction()],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(kPadding),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  _nameField(),
-                  _amountField(),
-                ],
-              ),
+      body: Routes.setUpStockMode(context) ? _body() : CircularLoading(),
+    );
+  }
+
+  Column _body() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(kPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _nameField(),
+                _amountField(),
+              ],
             ),
           ),
-          if (widget.ingredient != null) ..._productList(),
-        ],
-      ),
+        ),
+        if (widget.ingredient != null) ..._productList(),
+      ],
     );
   }
 

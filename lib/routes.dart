@@ -10,7 +10,6 @@ import 'package:possystem/ui/setting/widgets/language_modal.dart';
 import 'package:possystem/ui/transfer/transfer_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'components/circular_loading.dart';
 import 'models/repository/menu_model.dart';
 import 'models/repository/quantity_repo.dart';
 import 'models/repository/stock_model.dart';
@@ -37,8 +36,7 @@ class Routes {
   static final String settingLanguage = 'setting/language';
 
   static final routes = <String, WidgetBuilder>{
-    order: (context) =>
-        setUpStockMode(context) ? OrderScreen() : CircularLoading(),
+    order: (context) => OrderScreen(),
     menu: (context) => MenuScreen(),
     customer: (context) => CustomerScreen(),
     setting: (context) => SettingScreen(),
@@ -46,21 +44,15 @@ class Routes {
     cashier: (context) => CashierScreen(),
     invoicer: (context) => InvoicerScreen(),
     printer: (context) => PrinterScreen(),
-    menuCatalog: (context) => CatalogNavigator(
-          catalog: ModalRoute.of(context).settings.arguments,
-        ),
-    stockIngredient: (context) => setUpStockMode(context)
-        ? IngredientScreen(
-            ingredient: ModalRoute.of(context).settings.arguments,
-          )
-        : CircularLoading(),
+    menuCatalog: (context) =>
+        CatalogNavigator(catalog: ModalRoute.of(context).settings.arguments),
+    stockIngredient: (context) =>
+        IngredientScreen(ingredient: ModalRoute.of(context).settings.arguments),
     stockQuantity: (_) => QuantityScreen(),
-    stockQuantityModal: (context) => QuantityModal(
-          quantity: ModalRoute.of(context).settings.arguments,
-        ),
-    stockBatchModal: (context) => StockBatchModal(
-          batch: ModalRoute.of(context).settings.arguments,
-        ),
+    stockQuantityModal: (context) =>
+        QuantityModal(quantity: ModalRoute.of(context).settings.arguments),
+    stockBatchModal: (context) =>
+        StockBatchModal(batch: ModalRoute.of(context).settings.arguments),
     settingLanguage: (context) => LanguageModal(),
   };
 

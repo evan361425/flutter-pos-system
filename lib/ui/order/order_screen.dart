@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/single_row_warp.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
@@ -23,8 +26,6 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final catalogs = MenuModel.instance.catalogList;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -44,39 +45,44 @@ class OrderScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SingleRowWrap(children: <Widget>[
-            for (final catalog in catalogs)
-              RadioText(
-                onSelected: () {
-                  productSelection.currentState.catalog = catalog;
-                },
-                groupId: 'order.catalogs',
-                value: catalog.id,
-                child: Text(catalog.name),
-              ),
-          ]),
-          Expanded(
-            child: ProductSelection(
-              key: productSelection,
-              catalog: catalogs.isEmpty ? null : catalogs.first,
-              productsKey: productsKey,
+      body: Routes.setUpStockMode(context) ? _body() : CircularLoading(),
+    );
+  }
+
+  Column _body() {
+    final catalogs = MenuModel.instance.catalogList;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SingleRowWrap(children: <Widget>[
+          for (final catalog in catalogs)
+            RadioText(
+              onSelected: () {
+                productSelection.currentState.catalog = catalog;
+              },
+              groupId: 'order.catalogs',
+              value: catalog.id,
+              child: Text(catalog.name),
+            ),
+        ]),
+        Expanded(
+          child: ProductSelection(
+            key: productSelection,
+            catalog: catalogs.isEmpty ? null : catalogs.first,
+            productsKey: productsKey,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Card(
+            child: ChangeNotifierProvider.value(
+              value: CartModel.instance,
+              builder: (_, __) => CartScreen(productsKey: productsKey),
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Card(
-              child: ChangeNotifierProvider.value(
-                value: CartModel.instance,
-                builder: (_, __) => CartScreen(productsKey: productsKey),
-              ),
-            ),
-          ),
-          IngredientSelection(),
-        ],
-      ),
+        ),
+        IngredientSelection(),
+      ],
     );
   }
 

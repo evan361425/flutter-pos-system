@@ -53,6 +53,10 @@ class CurrencyProvider extends ChangeNotifier {
     _setUsage(value);
   }
 
+  String numToString(num value) {
+    return isInt ? value.round().toString() : value.toString();
+  }
+
   void _setUsage(String value) {
     if (value != null && value != _usage) {
       types = candidates[value];

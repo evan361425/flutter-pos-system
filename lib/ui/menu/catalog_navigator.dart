@@ -35,13 +35,13 @@ class CatalogNavigator extends StatelessWidget {
           settings: settings,
         );
       },
-      observers: [CatalogRouteObserver(context)],
+      observers: [_CatalogRouteObserver(context)],
     );
   }
 }
 
-class CatalogRouteObserver extends RouteObserver<PageRoute> {
-  CatalogRouteObserver(this.context);
+class _CatalogRouteObserver extends RouteObserver<PageRoute> {
+  _CatalogRouteObserver(this.context);
   final BuildContext context;
 
   @override
