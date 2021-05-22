@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
