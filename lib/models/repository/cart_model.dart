@@ -42,7 +42,7 @@ class CartModel extends ChangeNotifier {
     // disallow before stash, so need minus 1
     if (await OrderRepo.instance.getStashLength() > 4) return false;
 
-    await OrderRepo.instance.stash(output());
+    await OrderRepo.instance.stash(toObject());
 
     clear();
     return true;
@@ -64,16 +64,14 @@ class CartModel extends ChangeNotifier {
     // if history mode update data
     if (isHistoryMode) {
       final oldData = await OrderRepo.instance.pop();
-      final data =
-          output(paid: paid, id: oldData.id, createdAt: oldData.createdAt);
+      final data = toObject(paid: paid, object: oldData);
 
       // must follow the order, avoid missing data
       await OrderRepo.instance.update(data);
-      await StockModel.instance.order(oldData, reverse: true);
-      await StockModel.instance.order(data);
+      await StockModel.instance.order(data, oldData: oldData);
       leaveHistoryMode();
     } else {
-      final data = output(paid: paid);
+      final data = toObject(paid: paid);
 
       // must follow the order, avoid missing data
       await OrderRepo.instance.push(data);
@@ -96,11 +94,11 @@ class CartModel extends ChangeNotifier {
     clear();
   }
 
-  OrderObject output({num paid, int id, DateTime createdAt}) {
+  OrderObject toObject({num paid, OrderObject object}) {
     return OrderObject(
-      id: id,
+      id: object?.id,
       paid: paid,
-      createdAt: createdAt,
+      createdAt: object?.createdAt,
       totalPrice: totalPrice,
       totalCount: totalCount,
       products: products.map<OrderProductObject>((e) => e.toMap()),

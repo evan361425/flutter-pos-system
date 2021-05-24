@@ -19,12 +19,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   final LinkedHashMap<DateTime, int> _orderCounts = LinkedHashMap(
     equals: isSameDay,
-    hashCode: _hashDateTime,
+    hashCode: _hashDate,
   );
   final List<int> _loadedCounts = <int>[];
 
   List<OrderObject> _data;
   DateTime _selectedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.week;
 
   @override
@@ -36,7 +37,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           children: [
             TableCalendar<Null>(
               firstDay: DateTime(2021, 1),
-              focusedDay: _selectedDay,
+              focusedDay: _focusedDay,
               selectedDayPredicate: (DateTime day) =>
                   isSameDay(day, _selectedDay),
               lastDay: DateTime.now(),
@@ -58,7 +59,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               onPageChanged: _handlePageChange,
               calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder),
             ),
-            Expanded(child: _data == null ? CircularLoading() : _body())
+            Expanded(child: _data == null ? CircularLoading() : _body(context))
           ],
         ),
       ),
@@ -79,10 +80,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
   }
 
-  void _handlePageChange(DateTime day) {
-    if (!_loadedCounts.contains(_hashDateTime(day))) {
-      _loadedCounts.add(_hashDateTime(day));
-      _getCounts(day);
+  Future<void> _handlePageChange(DateTime day) async {
+    _focusedDay = day;
+    if (!_loadedCounts.contains(_hashMonth(day))) {
+      _loadedCounts.add(_hashMonth(day));
+      await _getCounts(day);
     }
   }
 
@@ -94,6 +96,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       bottom: 0,
       child: Material(
         shape: CircleBorder(side: BorderSide.none),
+        // TODO: add to themes
         color: Colors.cyan,
         child: Padding(
           padding: const EdgeInsets.all(6.0),
@@ -103,14 +106,21 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
-  Widget _body() {
-    return _data.isEmpty
-        ? Text('空的')
-        : ListView.builder(
-            itemBuilder: (context, index) =>
-                Text(_data[index].productNames.join(',')),
-            itemCount: _data.length,
-          );
+  Widget _body(BuildContext context) {
+    final theme = Theme.of(context);
+    if (_data.isEmpty) {
+      return Text('本日期無點餐紀錄', style: theme.textTheme.caption);
+    }
+
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(_data[index].productNames.join(',')),
+          onTap: () {},
+        );
+      },
+      itemCount: _data.length,
+    );
   }
 
   Future<void> _getCounts(DateTime day) async {
@@ -121,7 +131,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       Tables.order,
       columns: ['COUNT(*) count', 'createdAt'],
       where: 'createdAt BETWEEN ? AND ?',
-      groupBy: 'STRFTIME("%d", createdAt)',
+      groupBy: "STRFTIME('%m', createdAt,'unixepoch')",
       whereArgs: [
         minTime.millisecondsSinceEpoch ~/ 1000,
         maxTime.millisecondsSinceEpoch ~/ 1000,
@@ -194,4 +204,5 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 }
 
-int _hashDateTime(DateTime e) => e.day + e.month * 100 + e.year * 10000;
+int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
+int _hashMonth(DateTime e) => e.month + e.year * 100;

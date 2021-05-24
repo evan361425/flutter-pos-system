@@ -63,7 +63,9 @@ class StockModel extends ChangeNotifier {
     final updateData = <String, Object>{};
 
     amounts.forEach((id, amount) {
-      updateData.addAll(getIngredient(id)?.updateInfo(amount) ?? {});
+      if (amount != 0) {
+        updateData.addAll(getIngredient(id)?.updateInfo(amount) ?? {});
+      }
     });
 
     if (updateData.isEmpty) return Future.value();
@@ -79,15 +81,26 @@ class StockModel extends ChangeNotifier {
       exist(id) ? ingredients[id] : null;
 
   /// [reverse] is helpful when reverting order
-  Future<void> order(OrderObject data, {bool reverse = false}) {
+  Future<void> order(OrderObject data, {OrderObject oldData}) {
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
       product.ingredients.forEach((id, ingredient) {
         if (amounts.containsKey(id)) {
-          amounts[id] -= reverse ? -ingredient.amount : ingredient.amount;
+          amounts[id] -= ingredient.amount;
         } else {
-          amounts[id] = reverse ? ingredient.amount : -ingredient.amount;
+          amounts[id] = -ingredient.amount;
+        }
+      });
+    });
+
+    // if we need to update order, need to revert stock status
+    oldData?.products?.forEach((product) {
+      product.ingredients.forEach((id, ingredient) {
+        if (amounts.containsKey(id)) {
+          amounts[id] += ingredient.amount;
+        } else {
+          amounts[id] = ingredient.amount;
         }
       });
     });

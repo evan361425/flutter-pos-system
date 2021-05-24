@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/home_container.dart';
@@ -16,14 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, Object>>(
         future: _waitPreferences(context),
-        builder: (context, values) {
-          var darkMode = false;
-          var locale = LanguageProvider.defaultLocale;
-          final data = values.data;
-          if (data != null) {
-            darkMode = data['theme'];
-            locale = data['language'];
-          }
+        builder: (context, snapshot) {
+          final data = snapshot.data;
+
+          final darkMode =
+              snapshot.hasData ? data['theme'] : ThemeProvider.defaultTheme;
+          final locale = snapshot.hasData
+              ? data['language']
+              : LanguageProvider.defaultLocale;
 
           return MaterialApp(
             title: 'POS System',
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
             darkTheme: AppThemes.darkTheme,
             themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
             // === home widget ===
-            home: values.hasData ? HomeContainer() : LogoSplash(),
+            home: snapshot.hasData ? HomeContainer() : LogoSplash(),
           );
         });
   }
@@ -47,7 +49,11 @@ class MyApp extends StatelessWidget {
   Future<Map<String, Object>> _waitPreferences(BuildContext context) async {
     final theme = context.watch<ThemeProvider>();
     final language = context.watch<LanguageProvider>();
-    await Database.instance.initialize();
+    try {
+      await Database.instance.initialize();
+    } catch (e) {
+      print(e);
+    }
 
     return {
       'theme': await theme.getDarkMode(),

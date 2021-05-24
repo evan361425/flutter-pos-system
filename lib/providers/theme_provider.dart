@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:possystem/services/cache.dart';
 
 class ThemeProvider extends ChangeNotifier {
@@ -7,7 +8,10 @@ class ThemeProvider extends ChangeNotifier {
   bool get darkMode => _darkMode;
 
   Future<bool> getDarkMode() async {
-    _darkMode ??= await Cache.instance.get<bool>(Caches.dark_mode);
+    // get from cache, is not found get system setting
+    _darkMode ??=
+        (await Cache.instance.get<bool>(Caches.dark_mode)) ?? defaultTheme;
+
     return _darkMode;
   }
 
@@ -18,4 +22,7 @@ class ThemeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  static bool get defaultTheme =>
+      SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
 }
