@@ -19,7 +19,7 @@ class QuantityBoby extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
+      padding: const EdgeInsets.symmetric(vertical: kSpacing2),
       child: SingleChildScrollView(
         child: Column(
           children: [

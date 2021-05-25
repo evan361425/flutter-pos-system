@@ -2,12 +2,13 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/components/circular_loading.dart';
+import 'package:possystem/helper/util.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/services/database.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override
@@ -124,26 +125,15 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 
   Future<void> _getCounts(DateTime day) async {
-    final maxTime = DateTime(day.year, day.month + 1);
-    final minTime = DateTime(day.year, day.month);
+    final end = DateTime(day.year, day.month + 1);
+    final start = DateTime(day.year, day.month);
 
-    final result = await Database.rawQuery(
-      Tables.order,
-      columns: ['COUNT(*) count', 'createdAt'],
-      where: 'createdAt BETWEEN ? AND ?',
-      groupBy: "STRFTIME('%m', createdAt,'unixepoch')",
-      whereArgs: [
-        minTime.millisecondsSinceEpoch ~/ 1000,
-        maxTime.millisecondsSinceEpoch ~/ 1000,
-      ],
-    );
+    final result = await OrderRepo.instance.countByDay(start, end);
 
     setState(() {
       try {
         _orderCounts.addAll(<DateTime, int>{
-          for (final row in result)
-            DateTime.fromMillisecondsSinceEpoch(
-                (row['createdAt'] as int) * 1000): row['count']
+          for (final row in result) Util.fromUTC(row['createdAt']): row['count']
         });
       } catch (e) {
         print(e);
@@ -152,30 +142,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 
   void _filter() {
-    // final hour = _selectedTime?.hour ?? 23;
-    // final minute = _selectedTime?.minute ?? 59;
-    final maxTime = DateTime(
-      _selectedDay.year,
-      _selectedDay.month,
-      _selectedDay.day + 1,
-    );
-    final minTime = DateTime(
-      _selectedDay.year,
-      _selectedDay.month,
-      _selectedDay.day,
-    );
+    final end =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day + 1);
+    final start =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
 
     setState(() => _data = null);
 
-    Database.query(
-      Tables.order,
-      where: 'createdAt BETWEEN ? AND ?',
-      whereArgs: [
-        minTime.millisecondsSinceEpoch ~/ 1000,
-        maxTime.millisecondsSinceEpoch ~/ 1000,
-      ],
-      orderBy: 'createdAt desc',
-    ).then((result) {
+    OrderRepo.instance.getBetween(start, end).then((result) {
       setState(() {
         _data = result.map((row) => OrderObject.build(row)).toList();
       });

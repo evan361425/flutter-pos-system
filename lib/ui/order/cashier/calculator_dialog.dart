@@ -71,7 +71,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       contentPadding: EdgeInsets.zero,
       children: [
         Padding(
-          padding: const EdgeInsets.all(kPadding / 2),
+          padding: const EdgeInsets.all(kSpacing2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -103,7 +103,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         ),
         Divider(),
         Padding(
-          padding: const EdgeInsets.all(kPadding / 4),
+          padding: const EdgeInsets.all(kSpacing0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -148,7 +148,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.only(right: kPadding / 2),
+          padding: const EdgeInsets.only(right: kSpacing2),
           child: Text(title),
         ),
         Expanded(

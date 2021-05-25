@@ -219,7 +219,7 @@ class AppThemes {
       textTheme: ButtonTextTheme.normal,
       minWidth: 88,
       height: 36,
-      padding: EdgeInsets.only(top: 0, bottom: 0, left: 16, right: 16),
+      padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
       shape: RoundedRectangleBorder(
         side: BorderSide(
           color: Color(0xff000000),
@@ -282,7 +282,7 @@ class AppThemes {
       errorMaxLines: null,
       floatingLabelBehavior: FloatingLabelBehavior.auto,
       isDense: false,
-      contentPadding: EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
+      contentPadding: const EdgeInsets.all(kSpacing1),
       isCollapsed: false,
       prefixStyle: TextStyle(
         color: Color(0xdd000000),
@@ -401,7 +401,7 @@ class AppThemes {
       brightness: Brightness.light,
       deleteIconColor: Color(0xde000000),
       disabledColor: Color(0x0c000000),
-      labelPadding: EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+      labelPadding: const EdgeInsets.symmetric(horizontal: kSpacing0),
       labelStyle: TextStyle(
         color: Color(0xde000000),
         fontSize: null,

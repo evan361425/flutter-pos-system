@@ -18,7 +18,7 @@ class CardTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(),
-      margin: EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
       child: ListTile(
         title: title,
         subtitle: subtitle,

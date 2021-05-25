@@ -74,7 +74,7 @@ class MenuScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(kPadding / 2),
+          padding: const EdgeInsets.all(kSpacing1),
           child: Text('共 ${menu.length} 項',
               style: Theme.of(context).textTheme.caption),
         ),

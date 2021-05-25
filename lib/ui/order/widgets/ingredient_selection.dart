@@ -85,7 +85,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     Widget mockRadioText(String text) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.all(kPadding / 2),
+        padding: const EdgeInsets.all(kSpacing2),
         child: Text(
           text,
           style: textTheme.bodyText1.copyWith(color: textTheme.caption.color),

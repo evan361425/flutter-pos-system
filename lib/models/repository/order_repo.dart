@@ -1,3 +1,4 @@
+import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/ui/home/home_screen.dart';
@@ -64,5 +65,40 @@ class OrderRepo {
     await Database.instance.delete(Tables.order_stash, object.id);
 
     return object;
+  }
+
+  Future<Map<String, num>> todayOrder() async {
+    final result = await Database.query(
+      Tables.order,
+      columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
+      where: 'createdAt > ${Util.toUTC(hour: 0)}',
+    );
+
+    return result.isEmpty ? {'revenue': 0, 'count': 0} : result[0];
+  }
+
+  Future<List<Map<String, Object>>> countByDay(DateTime start, DateTime end) {
+    return Database.rawQuery(
+      Tables.order,
+      columns: ['COUNT(*) count', 'createdAt'],
+      where: 'createdAt BETWEEN ? AND ?',
+      groupBy: "STRFTIME('%d', createdAt,'unixepoch')",
+      whereArgs: [
+        Util.toUTC(now: start),
+        Util.toUTC(now: end),
+      ],
+    );
+  }
+
+  Future getBetween(DateTime start, DateTime end) {
+    return Database.query(
+      Tables.order,
+      where: 'createdAt BETWEEN ? AND ?',
+      whereArgs: [
+        Util.toUTC(now: start),
+        Util.toUTC(now: end),
+      ],
+      orderBy: 'createdAt desc',
+    );
   }
 }

@@ -41,7 +41,7 @@ class _ProductModalState extends State<ProductModal> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(kPadding),
+          padding: const EdgeInsets.all(kSpacing3),
           child: Center(child: _form()),
         ),
       ),
@@ -112,9 +112,9 @@ class _ProductModalState extends State<ProductModal> {
       child: Column(
         children: [
           _nameField(),
-          SizedBox(height: kMargin),
+          const SizedBox(height: kSpacing2),
           _priceField(),
-          SizedBox(height: kMargin),
+          const SizedBox(height: kSpacing2),
           _costField(),
         ],
       ),

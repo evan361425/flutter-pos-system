@@ -72,7 +72,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(kPadding),
+              padding: const EdgeInsets.all(kSpacing3),
               child: _nameField(),
             ),
             for (var ingredient in StockModel.instance.ingredients.values)

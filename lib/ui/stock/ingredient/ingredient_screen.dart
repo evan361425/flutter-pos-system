@@ -46,7 +46,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(kPadding),
+          padding: const EdgeInsets.all(kSpacing3),
           child: Form(
             key: _formKey,
             child: Column(
@@ -97,9 +97,9 @@ class _IngredientScreenState extends State<IngredientScreen> {
     final ingredients = MenuModel.instance.getIngredients(widget.ingredient.id);
 
     return [
-      Divider(),
+      const Divider(),
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kPadding),
+        padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
         child: Text(
           '使用 ${widget.ingredient.name} 的產品',
           style: Theme.of(context).textTheme.caption,

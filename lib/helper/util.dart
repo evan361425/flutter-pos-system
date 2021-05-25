@@ -18,6 +18,25 @@ class Util {
     return score;
   }
 
+  static int toUTC({int hour, DateTime now}) {
+    now ??= getNow(hour: hour);
+
+    return now.millisecondsSinceEpoch ~/ 1000;
+  }
+
+  static DateTime fromUTC(int utc) {
+    return DateTime.fromMillisecondsSinceEpoch(utc * 1000, isUtc: true);
+  }
+
+  static DateTime getNow({int hour}) {
+    final now = DateTime.now();
+    if (hour != null) {
+      return DateTime(now.year, now.month, now.day, hour);
+    }
+
+    return now;
+  }
+
   static DateTime parseDate(String stringValue, [bool returnNull = false]) {
     try {
       return DateTime.parse(stringValue);

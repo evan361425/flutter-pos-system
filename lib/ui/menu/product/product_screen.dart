@@ -50,7 +50,7 @@ class ProductScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(kPadding),
+          padding: const EdgeInsets.all(kSpacing3),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

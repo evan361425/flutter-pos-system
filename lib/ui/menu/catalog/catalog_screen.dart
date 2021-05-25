@@ -49,7 +49,7 @@ class CatalogScreen extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(kPadding),
+          padding: const EdgeInsets.all(kSpacing3),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[

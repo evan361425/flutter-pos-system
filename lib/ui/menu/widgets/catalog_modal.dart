@@ -38,7 +38,7 @@ class _CatalogModalState extends State<CatalogModal> {
         actions: [_trailingAction()],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(kPadding),
+        padding: const EdgeInsets.all(kSpacing3),
         child: Center(
           child: Form(
             key: _formKey,

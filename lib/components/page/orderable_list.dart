@@ -48,7 +48,7 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
-            padding: const EdgeInsets.all(kPadding / 4),
+            padding: const EdgeInsets.all(kSpacing0),
             child: Text(
               '總共 ${widget.items.length} 項',
               style: Theme.of(context).textTheme.caption,
@@ -100,7 +100,7 @@ class OrderableListItem extends StatelessWidget {
           child: ReorderableDelayedDragStartListener(
             index: index,
             child: Padding(
-              padding: const EdgeInsets.all(kPadding),
+              padding: const EdgeInsets.all(kSpacing3),
               child: Text(title),
             ),
           ),
@@ -108,7 +108,7 @@ class OrderableListItem extends StatelessWidget {
         ReorderableDragStartListener(
           index: index,
           child: Padding(
-            padding: const EdgeInsets.only(right: kPadding),
+            padding: const EdgeInsets.only(right: kSpacing3),
             child: Center(child: Icon(Icons.reorder_sharp)),
           ),
         ),

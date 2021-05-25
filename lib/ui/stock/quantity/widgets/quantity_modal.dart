@@ -36,7 +36,7 @@ class _QuantityModalState extends State<QuantityModal> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(kPadding),
+          padding: const EdgeInsets.all(kSpacing3),
           child: Form(
             key: _formKey,
             child: Column(

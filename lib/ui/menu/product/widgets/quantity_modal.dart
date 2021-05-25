@@ -110,7 +110,7 @@ class _QuantityModalState extends State<QuantityModal> {
         actions: [_trailingAction()],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(kPadding),
+        padding: const EdgeInsets.all(kSpacing3),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -126,7 +126,7 @@ class _QuantityModalState extends State<QuantityModal> {
   Widget _deleteButton() {
     if (widget.isNew) return Container();
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: kMargin),
+      margin: const EdgeInsets.symmetric(vertical: kSpacing2),
       child: DangerButton(
         onPressed: _onDelete,
         child: Text('刪除份量 ${widget.quantity.quantity.name}'),
@@ -150,7 +150,7 @@ class _QuantityModalState extends State<QuantityModal> {
       child: Column(
         children: [
           _quantitySearchBar(),
-          SizedBox(height: kMargin),
+          SizedBox(height: kSpacing2),
           TextFormField(
             controller: _ammountController,
             keyboardType: TextInputType.number,
@@ -161,7 +161,7 @@ class _QuantityModalState extends State<QuantityModal> {
             ),
             validator: Validator.positiveNumber('成分份量'),
           ),
-          SizedBox(height: kMargin),
+          SizedBox(height: kSpacing2),
           TextFormField(
             controller: _additionalPriceController,
             keyboardType: TextInputType.number,
@@ -173,7 +173,7 @@ class _QuantityModalState extends State<QuantityModal> {
             ),
             validator: Validator.isNumber('額外售價'),
           ),
-          SizedBox(height: kMargin / 2),
+          SizedBox(height: kSpacing1),
           TextFormField(
             controller: _additionalCostController,
             keyboardType: TextInputType.number,

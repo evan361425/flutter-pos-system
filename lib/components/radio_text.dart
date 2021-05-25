@@ -70,7 +70,7 @@ class _RadioTextState extends State<RadioText> {
         },
         splashColor: Theme.of(context).primaryColor,
         child: Padding(
-          padding: const EdgeInsets.all(kPadding / 2),
+          padding: const EdgeInsets.all(kSpacing1),
           child: widget.child,
         ),
       ),

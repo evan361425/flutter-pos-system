@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/database.dart';
 
 class OrderInfo extends StatefulWidget {
   const OrderInfo({Key key}) : super(key: key);
@@ -36,11 +36,11 @@ class OrderInfoState extends State<OrderInfo> {
         Card(
           margin: const EdgeInsets.only(bottom: 32.0),
           child: Padding(
-            padding: const EdgeInsets.all(kPadding / 2),
+            padding: const EdgeInsets.all(kSpacing1),
             child: Row(
               children: <Widget>[
                 _column('今日單量', count?.toString(), textStyle),
-                SizedBox(width: 64),
+                const SizedBox(width: 64.0),
                 _column('今日營收', revenue?.toString(), textStyle),
               ],
             ),
@@ -52,7 +52,7 @@ class OrderInfoState extends State<OrderInfo> {
             onPressed: () => Navigator.of(context).pushNamed(Routes.order),
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
-              padding: EdgeInsets.all(18.0),
+              padding: const EdgeInsets.all(kSpacing3),
             ),
             child: Text('點餐', style: theme.textTheme.headline4),
           ),
@@ -62,17 +62,10 @@ class OrderInfoState extends State<OrderInfo> {
   }
 
   void _queryValue() {
-    Database.query(
-      Tables.order,
-      columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
-      where: 'createdAt > 1',
-    ).then(
-      (result) => setState(() {
-        revenue =
-            CurrencyProvider.instance.numToString(result[0]['revenue'] ?? 0);
-        count = result[0]['count'] ?? 0;
-      }),
-    );
+    OrderRepo.instance.todayOrder().then((result) => setState(() {
+          revenue = CurrencyProvider.instance.numToString(result['revenue']);
+          count = result['count'];
+        }));
   }
 
   Expanded _column(String title, String value, TextStyle textStyle) {

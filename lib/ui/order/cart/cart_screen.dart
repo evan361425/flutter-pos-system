@@ -37,7 +37,7 @@ class CartScreen extends StatelessWidget {
         Row(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
               child: CartActions(),
             ),
             Expanded(

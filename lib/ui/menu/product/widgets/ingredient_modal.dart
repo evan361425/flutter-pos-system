@@ -84,7 +84,7 @@ class _IngredientModalState extends State<IngredientModal> {
         actions: [_trailingAction()],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(kPadding),
+        padding: const EdgeInsets.all(kSpacing3),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -93,7 +93,7 @@ class _IngredientModalState extends State<IngredientModal> {
                 child: Column(
                   children: [
                     _ingredientSearchBar(context),
-                    SizedBox(height: kMargin),
+                    SizedBox(height: kSpacing2),
                     _amountField(context),
                   ],
                 ),
@@ -137,7 +137,7 @@ class _IngredientModalState extends State<IngredientModal> {
   Widget _deleteButton() {
     if (widget.isNew) return Container();
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: kMargin),
+      margin: const EdgeInsets.symmetric(vertical: kSpacing2),
       child: DangerButton(
         onPressed: _onDelete,
         child: Text(

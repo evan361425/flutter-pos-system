@@ -75,7 +75,7 @@ class IngredientList extends StatelessWidget {
         ],
       ),
       trailing: Wrap(
-        spacing: kMargin / 2,
+        spacing: kSpacing1,
         children: <Widget>[
           IconFilledButton(
             onPressed: onAddAmount,

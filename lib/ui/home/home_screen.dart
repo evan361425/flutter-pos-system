@@ -58,11 +58,11 @@ class HomeScreen extends StatelessWidget {
         body: WillPopScope(
           onWillPop: () => _showConfirmDialog(context),
           child: Padding(
-            padding: const EdgeInsets.all(kPadding),
+            padding: const EdgeInsets.all(kSpacing3),
             child: Column(
               children: [
                 OrderInfo(key: orderInfo),
-                SizedBox(height: kMargin),
+                const SizedBox(height: kSpacing2),
                 Expanded(
                   child: GridView.extent(
                     maxCrossAxisExtent: 150.0,
