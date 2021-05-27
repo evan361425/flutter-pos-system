@@ -5,15 +5,19 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
 
 class IngredientScreen extends StatefulWidget {
-  IngredientScreen({Key key, this.ingredient}) : super(key: key);
-
   final IngredientModel ingredient;
+
+  final bool isNew;
+
+  IngredientScreen({Key key, this.ingredient})
+      : isNew = ingredient == null,
+        super(key: key);
 
   @override
   _IngredientScreenState createState() => _IngredientScreenState();
@@ -35,10 +39,30 @@ class _IngredientScreenState extends State<IngredientScreen> {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
         ),
-        actions: [_trailingAction()],
+        actions: [
+          TextButton(
+            onPressed: () => _handleSubmit(),
+            child: Text('儲存'),
+          ),
+        ],
       ),
       body: Routes.setUpStockMode(context) ? _body() : CircularLoading(),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _nameController.text = widget.ingredient?.name;
+    _amountController.text =
+        widget.ingredient?.currentAmount?.toString() ?? '0';
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _amountController.dispose();
+    super.dispose();
   }
 
   Column _body() {
@@ -51,49 +75,48 @@ class _IngredientScreenState extends State<IngredientScreen> {
             key: _formKey,
             child: Column(
               children: [
-                _nameField(),
-                _amountField(),
+                _fieldName(),
+                _fieldAmount(),
               ],
             ),
           ),
         ),
-        if (widget.ingredient != null) ..._productList(),
+        if (widget.ingredient != null) ..._fieldProducts(),
       ],
     );
   }
 
-  void _onSubmit() {
-    if (isSaving || !_formKey.currentState.validate()) return;
-
-    final name = _nameController.text;
-
-    if (widget.ingredient?.name != name && StockModel.instance.exist(name)) {
-      return setState(() => errorMessage = '成份名稱重複');
-    }
-
-    setState(() {
-      isSaving = true;
-      errorMessage = null;
-    });
-
-    _updateIngredient(name);
-    Navigator.of(context).pop();
-  }
-
-  void _updateIngredient(String name) {
-    final amount = num.tryParse(_amountController.text);
-
-    widget.ingredient?.update(IngredientObject(
-      name: name,
-      currentAmount: amount,
-    ));
-
-    StockModel.instance.updateIngredient(
-      widget.ingredient ?? IngredientModel(name: name, currentAmount: amount),
+  Widget _fieldAmount() {
+    return TextFormField(
+      controller: _amountController,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: '庫存',
+        errorText: errorMessage,
+        filled: false,
+      ),
+      validator: Validator.positiveNumber('庫存'),
     );
   }
 
-  List<Widget> _productList() {
+  Widget _fieldName() {
+    return TextFormField(
+      controller: _nameController,
+      textInputAction: TextInputAction.done,
+      textCapitalization: TextCapitalization.words,
+      decoration: InputDecoration(
+        labelText: '成份名稱，起司',
+        errorText: errorMessage,
+        filled: false,
+      ),
+      autofocus: widget.ingredient == null,
+      maxLength: 30,
+      validator: Validator.textLimit('成份名稱', 30),
+    );
+  }
+
+  List<Widget> _fieldProducts() {
     final ingredients = MenuModel.instance.getIngredients(widget.ingredient.id);
 
     return [
@@ -124,57 +147,51 @@ class _IngredientScreenState extends State<IngredientScreen> {
     ];
   }
 
-  Widget _trailingAction() {
-    return isSaving
-        ? CircularLoading()
-        : TextButton(
-            onPressed: () => _onSubmit(),
-            child: Text('儲存'),
-          );
+  void _handleSubmit() {
+    if (!_validate()) return;
+
+    _updateIngredient();
+
+    Navigator.of(context).pop();
   }
 
-  Widget _nameField() {
-    return TextFormField(
-      controller: _nameController,
-      textInputAction: TextInputAction.done,
-      textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        labelText: '成份名稱，起司',
-        errorText: errorMessage,
-        filled: false,
-      ),
-      autofocus: widget.ingredient == null,
-      maxLength: 30,
-      validator: Validator.textLimit('成份名稱', 30),
+  IngredientObject _parseObject() {
+    return IngredientObject(
+      name: _nameController.text,
+      currentAmount: num.tryParse(_amountController.text),
     );
   }
 
-  Widget _amountField() {
-    return TextFormField(
-      controller: _amountController,
-      textInputAction: TextInputAction.done,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: '庫存',
-        errorText: errorMessage,
-        filled: false,
-      ),
-      validator: Validator.positiveNumber('庫存'),
-    );
+  void _updateIngredient() {
+    final object = _parseObject();
+
+    if (widget.isNew) {
+      final ingredient = IngredientModel(
+        name: object.name,
+        currentAmount: object.currentAmount,
+      );
+
+      StockModel.instance.updateIngredient(ingredient);
+    } else {
+      widget.ingredient.update(object);
+    }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _nameController.text = widget.ingredient?.name;
-    _amountController.text =
-        widget.ingredient?.currentAmount?.toString() ?? '0';
-  }
+  bool _validate() {
+    if (isSaving || !_formKey.currentState.validate()) return false;
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _amountController.dispose();
-    super.dispose();
+    final name = _nameController.text;
+
+    if (widget.ingredient?.name != name && StockModel.instance.exist(name)) {
+      setState(() => errorMessage = '成份名稱重複');
+      return false;
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+
+    return true;
   }
 }

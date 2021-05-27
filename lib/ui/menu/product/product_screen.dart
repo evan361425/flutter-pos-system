@@ -13,7 +13,6 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
-import 'widgets/product_actions.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -30,7 +29,7 @@ class ProductScreen extends StatelessWidget {
         onPressed: () => showCupertinoModalPopup(
           context: context,
           useRootNavigator: false,
-          builder: (BuildContext context) => ProductActions(product: product),
+          builder: (BuildContext context) => _actions(context, product),
         ),
         icon: Icon(KIcons.more),
       ),
@@ -43,6 +42,24 @@ class ProductScreen extends StatelessWidget {
         child: Icon(KIcons.add),
       ),
       body: _body(context, product),
+    );
+  }
+
+  Widget _actions(BuildContext context, ProductModel product) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          onPressed: () => Navigator.of(context).pushReplacementNamed(
+            MenuRoutes.productModal,
+            arguments: product,
+          ),
+          child: Text('變更產品'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () => Navigator.pop(context, 'cancel'),
+        child: Text('取消'),
+      ),
     );
   }
 
@@ -66,13 +83,6 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _productName(ProductModel product, BuildContext context) {
-    return Text(
-      product.name,
-      style: Theme.of(context).textTheme.headline4,
-    );
-  }
-
   Widget _productMetadata(ProductModel product, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -93,6 +103,13 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _productName(ProductModel product, BuildContext context) {
+    return Text(
+      product.name,
+      style: Theme.of(context).textTheme.headline4,
     );
   }
 }

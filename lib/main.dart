@@ -8,6 +8,7 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'models/repository/stock_batch_repo.dart';
 import 'models/repository/stock_model.dart';
 
 void main() {
@@ -35,6 +36,9 @@ void main() {
           ),
           ChangeNotifierProvider<QuantityRepo>(
             create: (_) => QuantityRepo(),
+          ),
+          ChangeNotifierProvider<StockBatchRepo>(
+            create: (_) => StockBatchRepo(),
           ),
           Provider(create: (_) => Logger()),
         ],

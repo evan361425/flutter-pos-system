@@ -1,27 +1,28 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/danger_button.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
 
 class IngredientModal extends StatefulWidget {
+  final ProductIngredientModel ingredient;
+
+  final bool isNew;
+
   IngredientModal({
     Key key,
     this.ingredient,
   })  : isNew = ingredient.id == null,
         super(key: key);
-
-  final ProductIngredientModel ingredient;
-  final bool isNew;
 
   @override
   _IngredientModalState createState() => _IngredientModalState();
@@ -36,40 +37,6 @@ class _IngredientModalState extends State<IngredientModal> {
   String ingredientId = '';
   String ingredientName = '';
 
-  void _onSubmit() {
-    if (isSaving || !_formKey.currentState.validate()) return;
-
-    if (ingredientId.isEmpty) {
-      return setState(() => errorMessage = '必須設定成份種類。');
-    }
-    if (widget.ingredient.id != ingredientId &&
-        widget.ingredient.product.exist(ingredientId)) {
-      return setState(() => errorMessage = '成份重複。');
-    }
-
-    setState(() {
-      isSaving = true;
-      errorMessage = null;
-    });
-
-    _updateIngredient();
-
-    Navigator.of(context).pop();
-  }
-
-  Future<void> _onDelete() async {
-    final isDeleted = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteDialog(
-          content: Text('此動作將無法復原'),
-          onDelete: (_) => widget.ingredient.remove(),
-        );
-      },
-    );
-    if (isDeleted == true) Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,72 +48,83 @@ class _IngredientModalState extends State<IngredientModal> {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
         ),
-        actions: [_trailingAction()],
+        actions: _appBarTrailings(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(kSpacing3),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    _ingredientSearchBar(context),
-                    SizedBox(height: kSpacing2),
-                    _amountField(context),
-                  ],
-                ),
-              ),
-              _deleteButton(),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(kSpacing3),
+          child: _form(context),
         ),
       ),
     );
   }
 
-  void _updateIngredient() {
-    final object = ProductIngredientObject(
-      id: ingredientId,
-      amount: num.tryParse(_amountController.text),
-    );
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
 
-    if (widget.isNew) {
-      final ingredient = ProductIngredientModel(
-        ingredient: StockModel.instance.getIngredient(ingredientId),
-        product: widget.ingredient.product,
-        amount: object.amount,
-      );
+  @override
+  void initState() {
+    super.initState();
 
-      ingredient.product.updateIngredient(ingredient);
-    } else {
-      widget.ingredient.update(object);
+    if (!widget.isNew) {
+      _amountController.text = widget.ingredient.amount?.toString();
+      ingredientId = widget.ingredient.id;
+      ingredientName = widget.ingredient.ingredient.name;
     }
   }
 
-  Widget _trailingAction() {
-    return isSaving
-        ? CircularLoading()
-        : TextButton(
-            onPressed: () => _onSubmit(),
-            child: Text('儲存'),
-          );
-  }
-
-  Widget _deleteButton() {
-    if (widget.isNew) return Container();
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: kSpacing2),
-      child: DangerButton(
-        onPressed: _onDelete,
-        child: Text(
-            '刪除${widget.ingredient.product.name}的成份「${widget.ingredient.ingredient.name}」'),
+  Widget _actions(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          onPressed: () => _handleDelete(),
+          child: Text('刪除'),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () => Navigator.pop(context, 'cancel'),
+        child: Text('取消'),
       ),
     );
   }
 
-  Widget _ingredientSearchBar(BuildContext context) {
+  List<Widget> _appBarTrailings() {
+    final submit = TextButton(
+      onPressed: () => _handleSubmit(),
+      child: Text('儲存'),
+    );
+
+    return widget.isNew
+        ? [submit]
+        : [
+            submit,
+            IconButton(
+              onPressed: () => showCupertinoModalPopup(
+                context: context,
+                builder: (BuildContext context) => _actions(context),
+              ),
+              icon: Icon(KIcons.more),
+            )
+          ];
+  }
+
+  Widget _fieldAmount(BuildContext context) {
+    return TextFormField(
+      controller: _amountController,
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: '成份預設用量',
+        filled: false,
+      ),
+      validator: Validator.positiveNumber('成份預設用量'),
+    );
+  }
+
+  Widget _fieldIngredient(BuildContext context) {
     return SearchBarInline(
       heroTag: IngredientSearchScaffold.tag,
       text: ingredientName,
@@ -171,33 +149,81 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Widget _amountField(BuildContext context) {
-    return TextFormField(
-      controller: _amountController,
-      textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: '成份預設用量',
-        filled: false,
+  Form _form(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          _fieldIngredient(context),
+          const SizedBox(height: kSpacing2),
+          _fieldAmount(context),
+        ],
       ),
-      validator: Validator.positiveNumber('成份預設用量'),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> _handleDelete() async {
+    final isDeleted = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog(
+          content: Text('此動作將無法復原'),
+          onDelete: (_) => widget.ingredient.remove(),
+        );
+      },
+    );
+    if (isDeleted == true) Navigator.of(context).pop();
+  }
 
-    if (!widget.isNew) {
-      _amountController.text = widget.ingredient.amount?.toString();
-      ingredientId = widget.ingredient.id;
-      ingredientName = widget.ingredient.ingredient.name;
+  void _handleSubmit() {
+    if (!_validate()) return;
+
+    _updateIngredient();
+
+    Navigator.of(context).pop();
+  }
+
+  ProductIngredientObject _parseObject() {
+    return ProductIngredientObject(
+      id: ingredientId,
+      amount: num.tryParse(_amountController.text),
+    );
+  }
+
+  void _updateIngredient() {
+    final object = _parseObject();
+
+    if (widget.isNew) {
+      final ingredient = ProductIngredientModel(
+        ingredient: StockModel.instance.getIngredient(ingredientId),
+        product: widget.ingredient.product,
+        amount: object.amount,
+      );
+
+      ingredient.product.updateIngredient(ingredient);
+    } else {
+      widget.ingredient.update(object);
     }
   }
 
-  @override
-  void dispose() {
-    _amountController.dispose();
-    super.dispose();
+  bool _validate() {
+    if (isSaving || !_formKey.currentState.validate()) return false;
+
+    if (ingredientId.isEmpty) {
+      setState(() => errorMessage = '必須設定成份種類。');
+      return false;
+    }
+    if (widget.ingredient.id != ingredientId &&
+        widget.ingredient.product.exist(ingredientId)) {
+      setState(() => errorMessage = '成份重複。');
+      return false;
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+
+    return true;
   }
 }

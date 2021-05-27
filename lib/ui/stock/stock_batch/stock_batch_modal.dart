@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -27,35 +26,44 @@ class _StockBatchModalState extends State<StockBatchModal> {
   bool isSaving = false;
   String errorMessage;
 
-  void _onSubmit() {
-    if (isSaving || !_formKey.currentState.validate()) return;
+  void _handleSubmit() {
+    if (!_validate()) return;
+
+    _updateBatches();
+
+    Navigator.of(context).pop();
+  }
+
+  bool _validate() {
+    if (isSaving || !_formKey.currentState.validate()) return false;
 
     final name = _nameController.text;
 
     if (widget.batch?.name != name && StockBatchRepo.instance.hasBatch(name)) {
-      return setState(() => errorMessage = '批量名稱重複');
+      setState(() => errorMessage = '批量名稱重複');
+      return false;
     }
 
     setState(() {
       isSaving = true;
       errorMessage = null;
     });
-
-    _updateBatches(name);
-    Navigator.of(context).pop();
+    return true;
   }
 
-  void _updateBatches(String name) {
+  void _updateBatches() {
     updateData.clear();
     _formKey.currentState.save();
 
+    final name = _nameController.text;
+
     if (widget.batch != null) {
       widget.batch.update(StockBatchObject(name: name, data: updateData));
-    }
+    } else {
+      final model = StockBatchModel(name: name, data: updateData);
 
-    StockBatchRepo.instance.updateBatch(
-      widget.batch ?? StockBatchModel(name: name, data: updateData),
-    );
+      StockBatchRepo.instance.updateBatch(model);
+    }
   }
 
   @override
@@ -65,7 +73,10 @@ class _StockBatchModalState extends State<StockBatchModal> {
         onPressed: () => Navigator.of(context).pop(),
         icon: Icon(KIcons.back),
       ),
-      trailing: _trailingAction(),
+      trailing: TextButton(
+        onPressed: () => _handleSubmit(),
+        child: Text('儲存'),
+      ),
       title: widget.batch?.name ?? '',
       body: Form(
         key: _formKey,
@@ -73,26 +84,17 @@ class _StockBatchModalState extends State<StockBatchModal> {
           children: [
             Padding(
               padding: const EdgeInsets.all(kSpacing3),
-              child: _nameField(),
+              child: _fieldName(),
             ),
             for (var ingredient in StockModel.instance.ingredients.values)
-              _ingredientField(ingredient),
+              _fieldIngredient(ingredient),
           ],
         ),
       ),
     );
   }
 
-  Widget _trailingAction() {
-    return isSaving
-        ? CircularLoading()
-        : TextButton(
-            onPressed: () => _onSubmit(),
-            child: Text('儲存'),
-          );
-  }
-
-  Widget _nameField() {
+  Widget _fieldName() {
     return TextFormField(
       controller: _nameController,
       textInputAction: TextInputAction.done,
@@ -109,7 +111,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
     );
   }
 
-  Widget _ingredientField(IngredientModel ingredient) {
+  Widget _fieldIngredient(IngredientModel ingredient) {
     return TextFormField(
       onSaved: (String value) {
         final numValue = num.tryParse(value);

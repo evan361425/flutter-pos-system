@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/circular_loading.dart';
+import 'package:possystem/components/empty_body.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/routes.dart';
-
-import 'widgets/quantity_body.dart';
+import 'package:possystem/ui/stock/quantity/widgets/quantity_list.dart';
+import 'package:provider/provider.dart';
 
 class QuantityScreen extends StatelessWidget {
   const QuantityScreen({Key key}) : super(key: key);
@@ -24,7 +28,27 @@ class QuantityScreen extends StatelessWidget {
         tooltip: '新增份量',
         child: Icon(KIcons.add),
       ),
-      body: QuantityBoby(),
+      body: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    final quantityIndex = context.watch<QuantityRepo>();
+    if (quantityIndex.isNotReady) return CircularLoading();
+    if (quantityIndex.isEmpty) {
+      return Center(child: EmptyBody('quantity.empty'));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kSpacing2),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // TODO: search bar
+            QuantityList(quantities: quantityIndex.quantitiesList),
+          ],
+        ),
+      ),
     );
   }
 }

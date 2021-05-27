@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
@@ -8,9 +7,9 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
 class QuantityModal extends StatefulWidget {
-  const QuantityModal({Key key, this.quantity}) : super(key: key);
-
   final QuantityModel quantity;
+
+  const QuantityModal({Key key, this.quantity}) : super(key: key);
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -32,7 +31,12 @@ class _QuantityModalState extends State<QuantityModal> {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
         ),
-        actions: [_trailingAction()],
+        actions: [
+          TextButton(
+            onPressed: () => _handleSubmit(),
+            child: Text('儲存'),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,8 +45,8 @@ class _QuantityModalState extends State<QuantityModal> {
             key: _formKey,
             child: Column(
               children: [
-                _nameField(),
-                _proportionField(),
+                _fieldName(),
+                _fieldProportion(),
               ],
             ),
           ),
@@ -51,49 +55,22 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  void _onSubmit() {
-    if (isSaving || !_formKey.currentState.validate()) return;
-
-    final name = _nameController.text;
-    if (widget.quantity?.name != name && QuantityRepo.instance.exist(name)) {
-      return setState(() => errorMessage = '份量名稱重複');
-    }
-
-    setState(() {
-      isSaving = true;
-      errorMessage = null;
-    });
-
-    _updateQuantity(name);
-    Navigator.of(context).pop();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _nameController.text = widget.quantity?.name;
+    _proportionController.text =
+        widget.quantity?.defaultProportion?.toString() ?? '1';
   }
 
-  void _updateQuantity(String name) {
-    final proportion = num.tryParse(_proportionController.text);
-
-    if (widget.quantity != null) {
-      widget.quantity.update(QuantityObject(
-        name: name,
-        defaultProportion: proportion,
-      ));
-    }
-
-    QuantityRepo.instance.updateQuantity(
-      widget.quantity ??
-          QuantityModel(name: name, defaultProportion: proportion),
-    );
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _proportionController.dispose();
+    super.dispose();
   }
 
-  Widget _trailingAction() {
-    return isSaving
-        ? CircularLoading()
-        : TextButton(
-            onPressed: () => _onSubmit(),
-            child: Text('儲存'),
-          );
-  }
-
-  Widget _nameField() {
+  Widget _fieldName() {
     return TextFormField(
       controller: _nameController,
       textInputAction: TextInputAction.done,
@@ -110,7 +87,7 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  Widget _proportionField() {
+  Widget _fieldProportion() {
     return TextFormField(
       controller: _proportionController,
       textInputAction: TextInputAction.done,
@@ -128,18 +105,49 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _nameController.text = widget.quantity?.name;
-    _proportionController.text =
-        widget.quantity?.defaultProportion?.toString() ?? '1';
+  void _handleSubmit() {
+    if (!_validate()) return;
+
+    _updateQuantity();
+
+    Navigator.of(context).pop();
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _proportionController.dispose();
-    super.dispose();
+  QuantityObject _parseObject() {
+    return QuantityObject(
+      name: _nameController.text,
+      defaultProportion: num.tryParse(_proportionController.text),
+    );
+  }
+
+  void _updateQuantity() {
+    final object = _parseObject();
+
+    if (widget.quantity != null) {
+      widget.quantity.update(object);
+    } else {
+      final quantity = QuantityModel(
+        name: object.name,
+        defaultProportion: object.defaultProportion,
+      );
+
+      QuantityRepo.instance.updateQuantity(quantity);
+    }
+  }
+
+  bool _validate() {
+    if (isSaving || !_formKey.currentState.validate()) return false;
+
+    final name = _nameController.text;
+    if (widget.quantity?.name != name && QuantityRepo.instance.exist(name)) {
+      setState(() => errorMessage = '份量名稱重複');
+      return false;
+    }
+
+    setState(() {
+      isSaving = true;
+      errorMessage = null;
+    });
+    return true;
   }
 }
