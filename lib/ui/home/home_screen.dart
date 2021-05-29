@@ -73,26 +73,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  Future<bool> _showConfirmDialog(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('確定要離開 APP 嗎？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('確認'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('取消'),
-          ),
-        ],
-      ),
-    );
-    return result ?? false;
-  }
 }
 
 class _LabeledIcon extends StatelessWidget {
