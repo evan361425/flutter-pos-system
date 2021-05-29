@@ -19,13 +19,6 @@ class OrderModal extends StatelessWidget {
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(KIcons.back)),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () =>
-        //         showCupertinoModalPopup(context: context, builder: _actions),
-        //     icon: Icon(KIcons.more),
-        //   ),
-        // ],
       ),
       body: Column(
         children: [
@@ -45,32 +38,6 @@ class OrderModal extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _actions(BuildContext context) {
-  //   return CupertinoActionSheet(
-  //     actions: [
-  //       CupertinoActionSheetAction(
-  //         onPressed: () async {
-  //           Navigator.of(context).pop();
-  //           final needRecover = await showDialog(
-  //             context: context,
-  //             builder: (context) => _deleteDialog(context),
-  //           );
-
-  //           if (needRecover != null) {
-  //             _handleDeletion(needRecover);
-  //             // need use parent context to pop
-  //           }
-  //         },
-  //         child: Text('刪除'),
-  //       ),
-  //     ],
-  //     cancelButton: CupertinoActionSheetAction(
-  //       onPressed: () => Navigator.pop(context, 'cancel'),
-  //       child: Text('取消'),
-  //     ),
-  //   );
-  // }
 
   Widget _metadata(BuildContext context) {
     // YYYY-MM-DD HH:mm:ss
@@ -101,51 +68,4 @@ class OrderModal extends StatelessWidget {
       trailing: Text(CurrencyProvider.instance.numToString(price)),
     );
   }
-
-  // Widget _deleteDialog(BuildContext context) {
-  //   var needRecover = true;
-  //   return AlertDialog(
-  //     title: Text('確認刪除通知'),
-  //     content: SingleChildScrollView(
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: <Widget>[
-  //           Text('是否刪除本訂單記錄'),
-  //           const SizedBox(height: kSpacing3),
-  //           Text('注意：刪除後將無法復原', style: TextStyle(color: kNegativeColor)),
-  //           StatefulBuilder(
-  //             builder: (BuildContext context, StateSetter setState) =>
-  //                 CheckboxListTile(
-  //               controlAffinity: ListTileControlAffinity.leading,
-  //               title: Text('復原成份庫存'),
-  //               contentPadding: EdgeInsets.zero,
-  //               value: needRecover,
-  //               onChanged: (value) => setState(
-  //                 () => needRecover = value,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //     actions: <Widget>[
-  //       TextButton(
-  //         onPressed: () async {
-  //           Navigator.of(context).pop(needRecover);
-  //         },
-  //         child: Text('刪除', style: TextStyle(color: kNegativeColor)),
-  //       ),
-  //       ElevatedButton(
-  //         onPressed: () => Navigator.of(context).pop(),
-  //         child: Text('取消'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // void _handleDeletion(BuildContext context, bool needRecover) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(content: Text('目前還未支持本功能..')),
-  //   );
-  // }
 }
