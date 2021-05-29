@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
@@ -26,8 +25,8 @@ class OrderModal extends StatelessWidget {
   Widget _metadata(BuildContext context) {
     return Center(
       child: MetaBlock.withString(context, [
-        '售價： ${order.totalPrice}',
-        '付款： ${order.paid}',
+        '售價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
+        '付款：${CurrencyProvider.instance.numToString(order.paid)}',
       ]),
     );
   }

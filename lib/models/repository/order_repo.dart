@@ -1,7 +1,6 @@
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
-import 'package:possystem/ui/home/home_screen.dart';
 
 class OrderRepo {
   static final OrderRepo _instance = OrderRepo._constructor();
@@ -27,14 +26,12 @@ class OrderRepo {
 
   Future<void> push(OrderObject order) {
     print('add order ${order.totalPrice}');
-    HomeScreen.orderInfo?.currentState?.reset();
 
     return Database.instance.push(Tables.order, order.toMap());
   }
 
   Future<void> update(OrderObject order) {
     print('update order ${order.id}');
-    HomeScreen.orderInfo?.currentState?.reset();
 
     return Database.instance.update(
       Tables.order,
@@ -68,16 +65,15 @@ class OrderRepo {
   }
 
   Future<Map<String, num>> todayOrder() async {
+    print('seearching today order');
     final result = await Database.query(
       Tables.order,
       columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
       where: 'createdAt > ${Util.toUTC(hour: 0)}',
     );
-    print('totay order $result');
 
-    return result.isEmpty || result[0]['count'] == 0
-        ? {'revenue': 0, 'count': 0}
-        : result[0];
+    final row = result[0];
+    return {'revenue': row['revenue'] ?? 0, 'count': row['count']};
 
     // return result.isEmpty ? {'revenue': 0, 'count': 0} : result[0];
   }

@@ -19,13 +19,12 @@ class OrderInfoState extends State<OrderInfo> {
     setState(() {
       count = null;
       revenue = null;
+      _queryValue();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (count == null) _queryValue();
-
     final theme = Theme.of(context);
     final textStyle =
         theme.textTheme.headline3.copyWith(color: theme.primaryColor);
@@ -81,5 +80,11 @@ class OrderInfoState extends State<OrderInfo> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _queryValue();
   }
 }

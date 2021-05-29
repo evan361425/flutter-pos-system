@@ -8,8 +8,9 @@ class OrderProductModel {
     this.product, {
     this.count = 1,
     num singlePrice,
-    this.ingredients = const [],
-  }) : singlePrice = singlePrice ?? product.price;
+    List<OrderIngredientModel> ingredients,
+  })  : singlePrice = singlePrice ?? product.price,
+        ingredients = ingredients ?? [];
 
   ProductModel product;
   bool isSelected = false;

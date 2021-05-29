@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/order_repo.dart';
@@ -17,12 +18,29 @@ int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
 
 int _hashMonth(DateTime e) => e.month + e.year * 100;
 
-class AnalysisScreen extends StatefulWidget {
+class AnalysisScreen extends StatelessWidget {
+  static final state = GlobalKey<_BodyState>();
+
+  const AnalysisScreen({Key key}) : super(key: key);
+
   @override
-  _AnalysisScreenState createState() => _AnalysisScreenState();
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: _Body(key: state),
+      ),
+    );
+  }
 }
 
-class _AnalysisScreenState extends State<AnalysisScreen> {
+class _Body extends StatefulWidget {
+  const _Body({Key key}) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
   Locale _locale;
 
   final LinkedHashMap<DateTime, int> _orderCounts = LinkedHashMap(
@@ -46,21 +64,17 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   set selectedDay(DateTime day) {
     setState(() {
       _selectedDay = day;
-      _filter();
+      _searchOrders();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            _calendar(),
-            Expanded(child: _data == null ? CircularLoading() : _body(context))
-          ],
-        ),
-      ),
+    return Column(
+      children: [
+        _calendar(),
+        Expanded(child: _data == null ? CircularLoading() : _body(context))
+      ],
     );
   }
 
@@ -81,8 +95,17 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   @override
   void initState() {
     super.initState();
-    _filter();
+    _searchOrders();
     _handlePageChange(_selectedDay);
+  }
+
+  void reset() {
+    setState(() {
+      _orderCounts.clear();
+      _loadedCounts.clear();
+      _searchOrders();
+      _handlePageChange(_selectedDay);
+    });
   }
 
   Widget _badgeBuilder(BuildContext context, DateTime day, List value) {
@@ -124,6 +147,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       startingDayOfWeek: StartingDayOfWeek.monday,
       locale: _locale.toString(),
       rangeSelectionMode: RangeSelectionMode.disabled,
+      holidayPredicate: (day) => false,
+      weekendDays: const [],
       eventLoader: (DateTime day) {
         return List.filled(_orderCounts[day] ?? 0, null);
       },
@@ -140,7 +165,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
-  void _filter() {
+  void _searchOrders() {
     final end =
         DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day + 1);
     final start =
@@ -185,11 +210,16 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     final title = order.products.map<String>((e) {
       final count = e.count > 1 ? ' * ${e.count}' : '';
       return '${e.productName}$count';
-    }).join(',');
+    }).join('、');
+    final hour = order.createdAt.hour.toString().padLeft(2, '0');
+    final minute = order.createdAt.minute.toString().padLeft(2, '0');
 
     return ListTile(
-      leading: Text('${order.createdAt.hour}:${order.createdAt.minute}'),
-      title: Text(title),
+      leading: Padding(
+        padding: const EdgeInsets.only(top: kSpacing1),
+        child: Text('$hour:$minute'),
+      ),
+      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: MetaBlock.withString(context, [
         '總價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
         '付額：${CurrencyProvider.instance.numToString(order.paid)}',

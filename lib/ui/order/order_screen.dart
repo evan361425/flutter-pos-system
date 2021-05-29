@@ -8,6 +8,8 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/analysis/analysis_screen.dart';
+import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
@@ -48,40 +50,47 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  Column _body() {
+  Widget _body() {
     final catalogs = MenuModel.instance.catalogList;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SingleRowWrap(children: <Widget>[
-          for (final catalog in catalogs)
-            RadioText(
-              onSelected: () {
-                productSelection.currentState.catalog = catalog;
-              },
-              groupId: 'order.catalogs',
-              value: catalog.id,
-              child: Text(catalog.name),
-            ),
-        ]),
-        Expanded(
-          child: ProductSelection(
-            key: productSelection,
-            catalog: catalogs.isEmpty ? null : catalogs.first,
-            productsKey: productsKey,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Card(
-            child: ChangeNotifierProvider.value(
-              value: CartModel.instance,
-              builder: (_, __) => CartScreen(productsKey: productsKey),
+    return WillPopScope(
+      onWillPop: () async {
+        HomeScreen.orderInfo.currentState?.reset();
+        AnalysisScreen.state.currentState?.reset();
+        return true;
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SingleRowWrap(children: <Widget>[
+            for (final catalog in catalogs)
+              RadioText(
+                onSelected: () {
+                  productSelection.currentState.catalog = catalog;
+                },
+                groupId: 'order.catalogs',
+                value: catalog.id,
+                child: Text(catalog.name),
+              ),
+          ]),
+          Expanded(
+            child: ProductSelection(
+              key: productSelection,
+              catalog: catalogs.isEmpty ? null : catalogs.first,
+              productsKey: productsKey,
             ),
           ),
-        ),
-        IngredientSelection(),
-      ],
+          Expanded(
+            flex: 3,
+            child: Card(
+              child: ChangeNotifierProvider.value(
+                value: CartModel.instance,
+                builder: (_, __) => CartScreen(productsKey: productsKey),
+              ),
+            ),
+          ),
+          IngredientSelection(),
+        ],
+      ),
     );
   }
 
