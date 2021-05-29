@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
@@ -58,10 +59,12 @@ class StockBatchActions extends StatelessWidget {
       builder: (context) => ConfirmDialog(
         title: '是否要套用 ${batch.name} ？',
         content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('將會影響以下的成份：'),
+            const SizedBox(height: kSpacing1),
             for (var id in batch.data.keys)
-              Text(StockModel.instance.getIngredient(id)?.name),
+              Text('- ${StockModel.instance.getIngredient(id)?.name}'),
           ],
         ),
       ),

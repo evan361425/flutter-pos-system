@@ -165,22 +165,6 @@ class _BodyState extends State<_Body> {
     );
   }
 
-  void _searchOrders() {
-    final end =
-        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day + 1);
-    final start =
-        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
-
-    setState(() => _data = null);
-
-    OrderRepo.instance.getBetween(start, end).then((result) {
-      setState(() {
-        _data =
-            result.map<OrderObject>((row) => OrderObject.build(row)).toList();
-      });
-    }).catchError((err) => print(err));
-  }
-
   Future<void> _getCounts(DateTime day) async {
     final end = DateTime(day.year, day.month + 1);
     final start = DateTime(day.year, day.month);
@@ -224,9 +208,25 @@ class _BodyState extends State<_Body> {
         '總價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
         '付額：${CurrencyProvider.instance.numToString(order.paid)}',
       ]),
-      onTap: () {
-        showDialog(context: context, builder: (_) => OrderModal(order: order));
-      },
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => OrderModal(order: order)),
+      ),
     );
+  }
+
+  void _searchOrders() {
+    final end =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day + 1);
+    final start =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+
+    setState(() => _data = null);
+
+    OrderRepo.instance.getBetween(start, end).then((result) {
+      setState(() {
+        _data =
+            result.map<OrderObject>((row) => OrderObject.build(row)).toList();
+      });
+    }).catchError((err) => print(err));
   }
 }
