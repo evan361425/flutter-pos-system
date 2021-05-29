@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
@@ -25,8 +25,10 @@ class MenuScreen extends StatelessWidget {
             icon: Icon(KIcons.back)),
         actions: [
           IconButton(
-            onPressed: () =>
-                showCupertinoModalPopup(context: context, builder: _actions),
+            onPressed: () => showCircularBottomSheet(
+              context,
+              actions: _actions(context),
+            ),
             icon: Icon(KIcons.more),
           ),
         ],
@@ -42,26 +44,21 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  Widget _actions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                final items = MenuModel.instance.catalogList;
-                return CatalogOrderableList(items: items);
-              },
-            ),
+  Iterable<Widget> _actions(BuildContext context) {
+    return <Widget>[
+      ListTile(
+        title: Text('排序產品種類'),
+        leading: Icon(Icons.reorder_sharp),
+        onTap: () => Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              final items = MenuModel.instance.catalogList;
+              return CatalogOrderableList(items: items);
+            },
           ),
-          child: Text('排序產品種類'),
         ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
-        child: Text('取消'),
       ),
-    );
+    ];
   }
 
   Widget _body(BuildContext context) {

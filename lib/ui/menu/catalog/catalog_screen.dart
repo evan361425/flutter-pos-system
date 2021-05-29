@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -27,9 +27,9 @@ class CatalogScreen extends StatelessWidget {
       ),
       title: catalog.name,
       trailing: IconButton(
-        onPressed: () => showCupertinoModalPopup(
-          context: context,
-          builder: (BuildContext context) => _actions(context, catalog),
+        onPressed: () => showCircularBottomSheet(
+          context,
+          actions: _actions(context, catalog),
           useRootNavigator: false,
         ),
         icon: Icon(KIcons.more),
@@ -45,30 +45,26 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _actions(BuildContext context, CatalogModel catalog) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.catalogModal,
-            arguments: catalog,
-          ),
-          child: Text('變更名稱'),
+  Iterable<Widget> _actions(BuildContext context, CatalogModel catalog) {
+    return [
+      ListTile(
+        title: Text('變更名稱'),
+        leading: Icon(Icons.text_fields_sharp),
+        onTap: () => Navigator.of(context).pushReplacementNamed(
+          MenuRoutes.catalogModal,
+          arguments: catalog,
         ),
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => ProductOrderableList(items: catalog.productList),
-            ),
-          ),
-          child: Text('排序產品'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
-        child: Text('取消'),
       ),
-    );
+      ListTile(
+        title: Text('排序產品'),
+        leading: Icon(Icons.reorder_sharp),
+        onTap: () => Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ProductOrderableList(items: catalog.productList),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _body(CatalogModel catalog, BuildContext context) {

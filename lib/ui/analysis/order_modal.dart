@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/meta_block.dart';

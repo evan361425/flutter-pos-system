@@ -13,7 +13,7 @@ class CatalogOrderableList extends OrderableList<CatalogModel> {
 
 class _CatalogOrderListState extends OrderableListState<CatalogModel, int> {
   @override
-  Future<void> onSubmit() {
+  Future<void> handleSubmit() {
     return MenuModel.instance.reorderCatalogs(widget.items);
   }
 

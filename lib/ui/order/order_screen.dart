@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/single_row_warp.dart';
@@ -31,8 +31,8 @@ class OrderScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () async {
-            final result = await showCupertinoModalPopup<OrderActionTypes>(
-              context: context,
+            final result = await showCircularBottomSheet<OrderActionTypes>(
+              context,
               builder: (_) => OrderActions(),
             );
             await OrderActions.onAction(context, result);

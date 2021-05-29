@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/models/repository/order_repo.dart';
@@ -9,45 +8,54 @@ class OrderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (CartModel.instance.isHistoryMode) {
-      return CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(context, OrderActionTypes.leave_pop),
-            child: Text('退出改單模式'),
+    return Material(
+      child: SafeArea(
+        top: false,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ..._actions(context),
+          ListTile(
+            title: Text('取消'),
+            leading: Icon(Icons.cancel_sharp),
+            onTap: () => Navigator.of(context).pop(),
           ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context),
-          child: Text('取消'),
-        ),
-      );
-    }
-
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, OrderActionTypes.pop),
-          child: Text('顯示最後一次點餐'),
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, OrderActionTypes.stash),
-          child: Text('暫存本次點餐'),
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, OrderActionTypes.pop_stash),
-          child: Text('顯示暫存餐點'),
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.pop(context, OrderActionTypes.leave),
-          child: Text('離開點餐頁面'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context),
-        child: Text('取消'),
+        ]),
       ),
     );
+  }
+
+  Iterable<Widget> _actions(BuildContext context) {
+    if (CartModel.instance.isHistoryMode) {
+      return [
+        ListTile(
+          title: Text('退出改單模式'),
+          leading: Icon(Icons.assignment_return_sharp),
+          onTap: () => Navigator.pop(context, OrderActionTypes.leave_pop),
+        ),
+      ];
+    }
+
+    return [
+      ListTile(
+        title: Text('顯示最後一次點餐'),
+        leading: Icon(Icons.history_sharp),
+        onTap: () => Navigator.pop(context, OrderActionTypes.pop),
+      ),
+      ListTile(
+        title: Text('暫存本次點餐'),
+        leading: Icon(Icons.file_download),
+        onTap: () => Navigator.pop(context, OrderActionTypes.stash),
+      ),
+      ListTile(
+        title: Text('顯示暫存餐點'),
+        leading: Icon(Icons.file_upload),
+        onTap: () => Navigator.pop(context, OrderActionTypes.pop_stash),
+      ),
+      ListTile(
+        title: Text('離開點餐頁面'),
+        leading: Icon(Icons.logout),
+        onTap: () => Navigator.pop(context, OrderActionTypes.leave),
+      ),
+    ];
   }
 
   static Future<void> onAction(

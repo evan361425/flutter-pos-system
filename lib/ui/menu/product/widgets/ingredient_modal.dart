@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -75,22 +75,17 @@ class _IngredientModalState extends State<IngredientModal> {
     }
   }
 
-  Widget _actions(BuildContext context) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () async {
-            Navigator.of(context).pop();
-            await _handleDelete();
-          },
-          child: Text('刪除'),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
-        child: Text('取消'),
+  Iterable<Widget> _actions(BuildContext context) {
+    return [
+      ListTile(
+        title: Text('刪除'),
+        leading: Icon(KIcons.delete, color: kNegativeColor),
+        onTap: () async {
+          Navigator.of(context).pop();
+          await _handleDelete();
+        },
       ),
-    );
+    ];
   }
 
   List<Widget> _appBarTrailings() {
@@ -104,9 +99,9 @@ class _IngredientModalState extends State<IngredientModal> {
         : [
             submit,
             IconButton(
-              onPressed: () => showCupertinoModalPopup(
-                context: context,
-                builder: (BuildContext context) => _actions(context),
+              onPressed: () => showCircularBottomSheet(
+                context,
+                actions: _actions(context),
               ),
               icon: Icon(KIcons.more),
             )

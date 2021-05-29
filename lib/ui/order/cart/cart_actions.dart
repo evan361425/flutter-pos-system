@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/helper/validator.dart';

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 
@@ -35,12 +33,18 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+        leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Icon(KIcons.back),
+          icon: Icon(KIcons.back),
         ),
-        actions: [_trailingAction(context)],
+        actions: [
+          TextButton(
+              onPressed: () async {
+                await handleSubmit();
+                Navigator.of(context).pop();
+              },
+              child: Text('儲存')),
+        ],
         title: Text(widget.title),
       ),
       body: Column(
@@ -66,24 +70,11 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
     );
   }
 
-  StatefulWidget _trailingAction(BuildContext context) {
-    return isSaving
-        ? CircularLoading()
-        : CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () async {
-              await onSubmit();
-              Navigator.of(context).pop();
-            },
-            child: Text('儲存'),
-          );
-  }
-
   int get itemCount;
 
   Widget itemBuilder(BuildContext context, int index);
 
-  Future<void> onSubmit();
+  Future<void> handleSubmit();
 }
 
 class OrderableListItem extends StatelessWidget {

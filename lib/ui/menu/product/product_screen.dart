@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -26,10 +26,10 @@ class ProductScreen extends StatelessWidget {
       ),
       title: product.name,
       trailing: IconButton(
-        onPressed: () => showCupertinoModalPopup(
-          context: context,
+        onPressed: () => showCircularBottomSheet(
+          context,
+          actions: _actions(context, product),
           useRootNavigator: false,
-          builder: (BuildContext context) => _actions(context, product),
         ),
         icon: Icon(KIcons.more),
       ),
@@ -45,22 +45,17 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _actions(BuildContext context, ProductModel product) {
-    return CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          onPressed: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.productModal,
-            arguments: product,
-          ),
-          child: Text('變更產品'),
+  Iterable<Widget> _actions(BuildContext context, ProductModel product) {
+    return [
+      ListTile(
+        title: Text('變更產品'),
+        leading: Icon(Icons.text_fields_sharp),
+        onTap: () => Navigator.of(context).pushReplacementNamed(
+          MenuRoutes.productModal,
+          arguments: product,
         ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context, 'cancel'),
-        child: Text('取消'),
       ),
-    );
+    ];
   }
 
   Widget _body(BuildContext context, ProductModel product) {

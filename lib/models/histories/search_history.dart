@@ -12,6 +12,7 @@ class SearchHistory {
   SearchHistory(SearchHistoryTypes type) : type = _ToCaches[type];
 
   Future<void> add(String history) {
+    histories ??= [];
     histories.remove(history);
     histories.insert(0, history);
     if (histories.length > 8) histories.removeLast();
