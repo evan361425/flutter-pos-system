@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/helper/custom_styles.dart';
 
 class MetaBlock extends StatelessWidget {
   @override
@@ -10,11 +11,11 @@ class MetaBlock extends StatelessWidget {
   }
 
   static TextSpan span() {
-    return TextSpan(text: ' • ');
+    return const TextSpan(text: ' • ');
   }
 
   static Widget withString(BuildContext context, Iterable<String> data,
-      [String emptyText]) {
+      [String emptyText, TextStyle style]) {
     if (data.isNotEmpty) {
       final children = <InlineSpan>[];
       data.forEach((value) {
@@ -27,14 +28,14 @@ class MetaBlock extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
           children: children,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: style,
         ),
       );
     } else if (emptyText != null) {
       return RichText(
         text: TextSpan(
           text: emptyText,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.muted,
         ),
       );
     } else {

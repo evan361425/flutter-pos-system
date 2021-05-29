@@ -80,7 +80,10 @@ class _IngredientModalState extends State<IngredientModal> {
     return CupertinoActionSheet(
       actions: [
         CupertinoActionSheetAction(
-          onPressed: () => _handleDelete(),
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await _handleDelete();
+          },
           child: Text('刪除'),
         ),
       ],

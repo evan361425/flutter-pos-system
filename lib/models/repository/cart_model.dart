@@ -101,7 +101,7 @@ class CartModel extends ChangeNotifier {
       createdAt: object?.createdAt,
       totalPrice: totalPrice,
       totalCount: totalCount,
-      products: products.map<OrderProductObject>((e) => e.toMap()),
+      products: products.map<OrderProductObject>((e) => e.toObject()),
     );
   }
 

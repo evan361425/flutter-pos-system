@@ -27,21 +27,24 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
-  OrderProductObject toMap() {
+  OrderProductObject toObject() {
+    // including default quantity ingredient
     final allIngredients = <String, OrderIngredientObject>{
       for (var ingredientEntry in product.ingredients.entries)
         ingredientEntry.key: OrderIngredientObject(
-          ingredientId: ingredientEntry.key,
+          id: ingredientEntry.key,
           name: ingredientEntry.value.ingredient.name,
           amount: ingredientEntry.value.amount,
         )
     };
+    // ingredient with special quantity
     ingredients.forEach((ingredient) {
       allIngredients[ingredient.id].update(
-        cost: ingredient.cost,
+        additionalCost: ingredient.cost,
+        additionalPrice: ingredient.price,
         amount: ingredient.amount,
-        price: ingredient.price,
         quantityId: ingredient.quantity.id,
+        quantityName: ingredient.quantity.quantity.name,
       );
     });
 

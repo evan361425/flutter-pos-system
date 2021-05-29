@@ -37,7 +37,7 @@ class OrderObject {
           for (var object in productMap.ingredients.values) {
             if (object.quantityId == null) continue;
 
-            final ingredient = product.getIngredient(object.ingredientId);
+            final ingredient = product.getIngredient(object.id);
 
             ingredients.add(
               OrderIngredientModel(
@@ -153,47 +153,60 @@ class OrderProductObject {
 
 class OrderIngredientObject {
   final String name;
-  final String ingredientId;
-  int price;
-  int amount;
+  final String id;
+  num additionalPrice;
+  num additionalCost;
+  num amount;
   String quantityId;
+  String quantityName;
 
   OrderIngredientObject({
     @required this.name,
-    @required this.ingredientId,
-    this.price,
+    @required this.id,
+    this.additionalPrice,
+    this.additionalCost,
     @required this.amount,
     this.quantityId,
+    this.quantityName,
   });
 
   void update({
-    @required price,
-    @required amount,
-    @required cost,
-    @required quantityId,
+    @required num additionalPrice,
+    @required num additionalCost,
+    @required num amount,
+    @required String quantityId,
+    @required String quantityName,
   }) {
-    this.price = price;
+    this.additionalPrice = additionalPrice;
+    this.additionalCost = additionalCost;
+    // amount with special quantity
     this.amount = amount;
+    // quantity info
     this.quantityId = quantityId;
+    this.quantityName = quantityName;
   }
 
   Map<String, Object> toMap() {
     return {
       'name': name,
-      'ingredientId': ingredientId,
-      'price': price,
+      'id': id,
+      'additionalPrice': additionalPrice,
+      'additionalCost': additionalCost,
       'amount': amount,
       'quantityId': quantityId,
+      'quantityName': quantityName,
     };
   }
 
   factory OrderIngredientObject.input(Map<String, Object> data) {
     return OrderIngredientObject(
       name: data['name'],
-      ingredientId: data['ingredientId'],
-      price: data['price'],
+      id: data['id'],
+      additionalPrice: data['additionalPrice'],
+      additionalCost: data['additionalCost'],
       amount: data['amount'],
       quantityId: data['quantityId'],
+      quantityName: data['quantityName'],
     );
   }
 }

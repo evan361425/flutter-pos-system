@@ -73,8 +73,13 @@ class OrderRepo {
       columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
       where: 'createdAt > ${Util.toUTC(hour: 0)}',
     );
+    print('totay order $result');
 
-    return result.isEmpty ? {'revenue': 0, 'count': 0} : result[0];
+    return result.isEmpty || result[0]['count'] == 0
+        ? {'revenue': 0, 'count': 0}
+        : result[0];
+
+    // return result.isEmpty ? {'revenue': 0, 'count': 0} : result[0];
   }
 
   Future<List<Map<String, Object>>> countByDay(DateTime start, DateTime end) {
