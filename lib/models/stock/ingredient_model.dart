@@ -13,38 +13,38 @@ class IngredientModel extends ChangeNotifier {
   String name;
 
   // current amount in stock
-  num currentAmount;
+  num? currentAmount;
 
   // warning threshold
-  num warningAmount;
+  num? warningAmount;
 
   // alert threshold
-  num alertAmount;
+  num? alertAmount;
 
   // amount after last replenishment
-  num lastAmount;
+  num? lastAmount;
 
   // value of last added
-  num lastAddAmount;
+  num? lastAddAmount;
 
-  DateTime updatedAt;
+  DateTime? updatedAt;
 
   IngredientModel({
-    @required this.name,
+    required this.name,
     this.currentAmount,
     this.warningAmount,
     this.alertAmount,
     this.lastAmount,
     this.lastAddAmount,
     this.updatedAt,
-    String id,
+    String? id,
   }) : id = id ?? Util.uuidV4();
 
   factory IngredientModel.fromObject(IngredientObject object) =>
       IngredientModel(
         id: object.id,
-        name: object.name,
-        currentAmount: object.currentAmount,
+        name: object.name ?? '',
+        currentAmount: object.currentAmount ?? 0,
         warningAmount: object.warningAmount,
         alertAmount: object.alertAmount,
         lastAmount: object.lastAmount,
@@ -85,7 +85,7 @@ class IngredientModel extends ChangeNotifier {
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  Map<String, Object> updateInfo(num amount) {
+  Map<String, Object?> updateInfo(num amount) {
     final object = amount > 0
         ? IngredientObject(
             lastAddAmount: amount,

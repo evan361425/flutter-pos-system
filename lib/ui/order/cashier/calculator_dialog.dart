@@ -6,7 +6,7 @@ import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 class CalculatorDialog extends StatefulWidget {
-  const CalculatorDialog({Key key}) : super(key: key);
+  const CalculatorDialog({Key? key}) : super(key: key);
 
   @override
   _CalculatorDialogState createState() => _CalculatorDialogState();
@@ -14,7 +14,7 @@ class CalculatorDialog extends StatefulWidget {
 
 class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
-  String errorMessage;
+  String? errorMessage;
   bool isUpdating = false;
 
   String get paid => paidController.text;
@@ -170,14 +170,14 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     );
   }
 
-  Widget numberWidget(String text, [void Function() onPressed]) {
+  Widget numberWidget(String text, [void Function()? onPressed]) {
     return Expanded(
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
           onPressed: () {
             if (isUpdating) return;
-            onPressed == null ? onPressed() : updatePaid(paid + text);
+            onPressed == null ? onPressed!() : updatePaid(paid + text);
           },
           child: Text(text),
         ),

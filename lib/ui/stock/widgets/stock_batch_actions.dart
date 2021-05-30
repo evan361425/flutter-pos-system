@@ -24,7 +24,7 @@ class StockBatchActions extends StatelessWidget {
           child: TextButton(
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.stockBatchModal,
-              arguments: selector.currentState.currentBatch,
+              arguments: selector.currentState!.currentBatch,
             ),
             child: Icon(KIcons.edit),
           ),
@@ -41,7 +41,7 @@ class StockBatchActions extends StatelessWidget {
               primary: Theme.of(context).primaryColorLight,
             ),
             onPressed: () {
-              final batch = selector.currentState.currentBatch;
+              final batch = selector.currentState!.currentBatch;
               if (batch != null) onApplyBatchUpdate(context, batch);
             },
           ),
@@ -72,15 +72,15 @@ class StockBatchActions extends StatelessWidget {
 
     if (confirmed != true) return;
 
-    selector.currentState.currentBatch.apply();
-    selector.currentState.clear();
+    selector.currentState!.currentBatch!.apply();
+    selector.currentState!.clear();
   }
 }
 
 class _BatchItemSelector extends StatefulWidget {
   const _BatchItemSelector({
-    Key key,
-    @required this.batchRepo,
+    Key? key,
+    required this.batchRepo,
   }) : super(key: key);
 
   final StockBatchRepo batchRepo;
@@ -90,9 +90,9 @@ class _BatchItemSelector extends StatefulWidget {
 }
 
 class _BatchItemSelectorState extends State<_BatchItemSelector> {
-  String selectedBatchId;
+  String? selectedBatchId;
 
-  StockBatchModel get currentBatch => widget.batchRepo.getBatch(
+  StockBatchModel? get currentBatch => widget.batchRepo.getBatch(
         selectedBatchId,
       );
 
@@ -106,16 +106,16 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
       value: selectedBatchId,
       hint: Text('選擇批量種類'),
       isExpanded: true,
-      onChanged: (String newValue) {
+      onChanged: (String? newValue) {
         if (newValue == null) {
           Navigator.of(context).pushNamed(Routes.stockBatchModal);
         } else {
           setState(() => selectedBatchId = newValue);
         }
       },
-      items: <StockBatchModel>[null, ...widget.batchRepo.batches.values]
+      items: <StockBatchModel?>[null, ...widget.batchRepo.batches!.values]
           .map<DropdownMenuItem<String>>(
-            (StockBatchModel batch) => DropdownMenuItem<String>(
+            (StockBatchModel? batch) => DropdownMenuItem<String>(
               value: batch?.id,
               child: Text(batch?.name ?? '增加新種類'),
             ),

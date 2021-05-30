@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class CartMetadata extends StatefulWidget {
   const CartMetadata({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

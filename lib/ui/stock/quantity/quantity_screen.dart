@@ -9,7 +9,7 @@ import 'package:possystem/ui/stock/quantity/widgets/quantity_list.dart';
 import 'package:provider/provider.dart';
 
 class QuantityScreen extends StatelessWidget {
-  const QuantityScreen({Key key}) : super(key: key);
+  const QuantityScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

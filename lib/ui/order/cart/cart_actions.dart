@@ -27,10 +27,12 @@ class CartActions extends StatelessWidget {
             child: Text('變更數量'),
           ),
           DropdownMenuItem(
+            value: _DialogItems.free,
             onTap: () => CartModel.instance.updateSelectedPrice(0),
             child: Text('招待'),
           ),
           DropdownMenuItem(
+            value: _DialogItems.delete,
             onTap: () => CartModel.instance.removeSelected(),
             child: Text('刪除'),
           ),
@@ -39,7 +41,7 @@ class CartActions extends StatelessWidget {
     );
   }
 
-  Future<void> showInputDialog(BuildContext context, _DialogItem item) async {
+  Future<void> showInputDialog(BuildContext context, _DialogItem? item) async {
     if (item == null) return;
 
     final result = await showDialog<String>(
@@ -51,7 +53,7 @@ class CartActions extends StatelessWidget {
       ),
     );
 
-    item.action(result);
+    item.action(result ?? '');
   }
 }
 
@@ -59,22 +61,24 @@ enum _DialogItems {
   discount,
   price,
   count,
+  free,
+  delete,
 }
 
 class _DialogItem {
   _DialogItem({
-    @required this.validator,
-    @required this.decoration,
-    @required this.isInt,
-    @required this.action,
+    required this.validator,
+    required this.decoration,
+    required this.isInt,
+    required this.action,
   });
 
-  final String Function(String) validator;
+  final String? Function(String?) validator;
   final InputDecoration decoration;
   final bool isInt;
   final void Function(String) action;
 
-  static _DialogItem fromEnum(_DialogItems type) {
+  static _DialogItem? fromEnum(_DialogItems? type) {
     switch (type) {
       case _DialogItems.discount:
         return _DialogItem(
@@ -87,7 +91,7 @@ class _DialogItem {
           ),
           isInt: true,
           action: (result) =>
-              CartModel.instance.updateSelectedDiscount(num.tryParse(result)),
+              CartModel.instance.updateSelectedDiscount(int.tryParse(result)),
         );
       case _DialogItems.price:
         return _DialogItem(

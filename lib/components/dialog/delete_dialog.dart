@@ -3,9 +3,9 @@ import 'package:possystem/constants/constant.dart';
 
 class DeleteDialog extends StatelessWidget {
   const DeleteDialog({
-    Key key,
-    @required this.content,
-    @required this.onDelete,
+    Key? key,
+    required this.content,
+    required this.onDelete,
   }) : super(key: key);
 
   final Widget content;

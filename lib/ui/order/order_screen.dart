@@ -23,7 +23,7 @@ class OrderScreen extends StatelessWidget {
   static final productSelection = GlobalKey<ProductSelectionState>();
   static final productsKey = GlobalKey<CartProductListState>();
 
-  const OrderScreen({Key key}) : super(key: key);
+  const OrderScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class OrderScreen extends StatelessWidget {
             for (final catalog in catalogs)
               RadioText(
                 onSelected: () {
-                  productSelection.currentState.catalog = catalog;
+                  productSelection.currentState!.catalog = catalog;
                 },
                 groupId: 'order.catalogs',
                 value: catalog.id,

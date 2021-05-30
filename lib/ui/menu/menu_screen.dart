@@ -15,7 +15,6 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menu = context.watch<MenuModel>();
-    if (menu.isNotReady) return CircularLoading();
 
     return Scaffold(
       appBar: AppBar(
@@ -36,11 +35,11 @@ class MenuScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => CatalogModal())),
-        tooltip: Local.of(context).t('menu.add_catalog'),
+        tooltip: Local.of(context)!.t('menu.add_catalog'),
         child: Icon(KIcons.add),
       ),
       // When click android go back, it will avoid closing APP
-      body: _body(context),
+      body: menu.isReady ? _body(context) : CircularLoading(),
     );
   }
 

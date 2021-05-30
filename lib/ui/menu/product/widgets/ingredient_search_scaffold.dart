@@ -6,24 +6,24 @@ import 'package:possystem/models/histories/search_history.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 
 class IngredientSearchScaffold extends StatelessWidget {
-  IngredientSearchScaffold({Key key, this.text}) : super(key: key);
+  IngredientSearchScaffold({Key? key, this.text}) : super(key: key);
 
   static final String tag = 'menu.poduct.ingredient.search';
-  final String text;
+  final String? text;
   final scaffold = GlobalKey<SearchScaffoldState>();
   final histories = SearchHistory(SearchHistoryTypes.ingredient);
 
   @override
   Widget build(BuildContext context) {
-    return SearchScaffold<IngredientModel>(
+    return SearchScaffold<IngredientModel?>(
       key: scaffold,
       onChanged: (String text) async =>
           StockModel.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      searchHistory: histories.get,
+      searchHistory: () => histories.get(),
       heroTag: IngredientSearchScaffold.tag,
-      text: text,
+      text: text ?? '',
       hintText: '成份名稱，起司',
       textCapitalization: TextCapitalization.words,
     );
@@ -33,7 +33,7 @@ class IngredientSearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text(ingredient.name),
       onTap: () {
-        histories.add(scaffold.currentState.searchBar.currentState.text);
+        histories.add(scaffold.currentState!.searchBar.currentState!.text);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );

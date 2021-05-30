@@ -11,7 +11,7 @@ class ProductModel extends ChangeNotifier {
   final String id;
 
   /// connect to parent object
-  CatalogModel catalog;
+  late final CatalogModel catalog;
 
   /// product's name
   String name;
@@ -31,28 +31,30 @@ class ProductModel extends ChangeNotifier {
   final Map<String, ProductIngredientModel> ingredients;
 
   ProductModel({
-    @required this.index,
-    @required this.name,
-    this.catalog,
+    required this.index,
+    required this.name,
+    CatalogModel? catalog,
     this.cost = 0,
     this.price = 0,
-    DateTime createdAt,
-    String id,
-    Map<String, ProductIngredientModel> ingredients,
+    DateTime? createdAt,
+    String? id,
+    Map<String, ProductIngredientModel>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         ingredients = ingredients ?? {},
-        id = id ?? Util.uuidV4();
+        id = id ?? Util.uuidV4() {
+    if (catalog != null) this.catalog = catalog;
+  }
 
   factory ProductModel.fromMap(ProductObject object) => ProductModel(
         id: object.id,
-        name: object.name,
-        index: object.index,
-        price: object.price,
-        cost: object.cost,
+        name: object.name!,
+        index: object.index!,
+        price: object.price!,
+        cost: object.cost!,
         createdAt: object.createdAt,
         ingredients: {
           for (var ingredient in object.ingredients)
-            ingredient.id: ProductIngredientModel.fromObject(ingredient)
+            ingredient.id!: ProductIngredientModel.fromObject(ingredient)
         },
       ).._prepareIngredients();
 
@@ -62,9 +64,9 @@ class ProductModel extends ChangeNotifier {
 
   String get prefix => '${catalog.id}.products.$id';
 
-  bool exist(String id) => ingredients.containsKey(id);
+  bool exist(String? id) => ingredients.containsKey(id);
 
-  ProductIngredientModel getIngredient(String id) =>
+  ProductIngredientModel? getIngredient(String? id) =>
       exist(id) ? ingredients[id] : null;
 
   Future<void> remove() async {
@@ -74,7 +76,7 @@ class ProductModel extends ChangeNotifier {
     catalog.removeProduct(id);
   }
 
-  void removeIngredient(String id) {
+  void removeIngredient(String? id) {
     ingredients.remove(id);
 
     notifyListeners();
@@ -100,13 +102,13 @@ class ProductModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  void updateIngredient(ProductIngredientModel ingredient) {
+  Future<void> updateIngredient(ProductIngredientModel ingredient) async {
     if (!exist(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 
       final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
 
-      Storage.instance.set(Stores.menu, updateData);
+      await Storage.instance.set(Stores.menu, updateData);
     }
 
     // catalog screen will also shows ingredients

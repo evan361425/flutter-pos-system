@@ -7,9 +7,9 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
 class QuantityModal extends StatefulWidget {
-  final QuantityModel quantity;
+  final QuantityModel? quantity;
 
-  const QuantityModal({Key key, this.quantity}) : super(key: key);
+  const QuantityModal({Key? key, this.quantity}) : super(key: key);
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -21,7 +21,7 @@ class _QuantityModalState extends State<QuantityModal> {
   final _proportionController = TextEditingController();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +58,9 @@ class _QuantityModalState extends State<QuantityModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _nameController.text = widget.quantity?.name;
+    _nameController.text = widget.quantity?.name ?? '';
     _proportionController.text =
-        widget.quantity?.defaultProportion?.toString() ?? '1';
+        widget.quantity?.defaultProportion.toString() ?? '1';
   }
 
   @override
@@ -105,10 +105,10 @@ class _QuantityModalState extends State<QuantityModal> {
     );
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (!_validate()) return;
 
-    _updateQuantity();
+    await _updateQuantity();
 
     Navigator.of(context).pop();
   }
@@ -116,27 +116,26 @@ class _QuantityModalState extends State<QuantityModal> {
   QuantityObject _parseObject() {
     return QuantityObject(
       name: _nameController.text,
-      defaultProportion: num.tryParse(_proportionController.text),
+      defaultProportion: num.parse(_proportionController.text),
     );
   }
 
-  void _updateQuantity() {
+  Future<void> _updateQuantity() async {
     final object = _parseObject();
 
     if (widget.quantity != null) {
-      widget.quantity.update(object);
-    } else {
-      final quantity = QuantityModel(
-        name: object.name,
-        defaultProportion: object.defaultProportion,
-      );
-
-      QuantityRepo.instance.updateQuantity(quantity);
+      await widget.quantity!.update(object);
     }
+
+    await QuantityRepo.instance.updateQuantity(widget.quantity ??
+        QuantityModel(
+          name: object.name!,
+          defaultProportion: object.defaultProportion!,
+        ));
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
     if (widget.quantity?.name != name && QuantityRepo.instance.exist(name)) {

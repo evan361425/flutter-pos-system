@@ -7,7 +7,7 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 
 class ProductList extends StatelessWidget {
   const ProductList({
-    @required this.products,
+    required this.products,
   });
 
   final List<ProductModel> products;

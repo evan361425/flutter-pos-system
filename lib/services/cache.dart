@@ -18,28 +18,28 @@ class Cache {
 
   Cache._constructor();
 
-  Future<T> get<T>(Caches cache) async {
+  Future<T?> get<T>(Caches cache) async {
     final sp = await _sharedPreference;
-    final name = _Names.containsKey(cache) ? _Names[cache] : cache.toString();
+    final name = _Names[cache] ?? cache.toString();
 
     if (T == bool) {
-      return sp.getBool(name) as T;
+      return sp.getBool(name) as T?;
     } else if (T == String) {
-      return sp.getString(name) as T;
+      return sp.getString(name) as T?;
     } else if (T == int) {
-      return sp.getInt(name) as T;
+      return sp.getInt(name) as T?;
     } else if (T == double) {
-      return sp.getDouble(name) as T;
+      return sp.getDouble(name) as T?;
     } else if (T == List) {
-      return sp.getStringList(name) as T;
+      return sp.getStringList(name) as T?;
     } else {
       throw Error();
     }
   }
 
-  Future<void> set<T>(Caches cache, T value) async {
+  Future<bool> set<T>(Caches cache, T value) async {
     final sp = await _sharedPreference;
-    final name = _Names.containsKey(cache) ? _Names[cache] : cache.toString();
+    final name = _Names[cache] ?? cache.toString();
 
     if (T == bool) {
       return sp.setBool(name, value as bool);
@@ -51,6 +51,8 @@ class Cache {
       return sp.setDouble(name, value as double);
     } else if (T == List) {
       return sp.setStringList(name, value as List<String>);
+    } else {
+      throw Error();
     }
   }
 }

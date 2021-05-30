@@ -12,15 +12,15 @@ import 'package:provider/provider.dart';
 import 'quantity_modal.dart';
 
 class IngredientExpansion extends StatefulWidget {
-  IngredientExpansion({Key key}) : super(key: key);
+  IngredientExpansion({Key? key}) : super(key: key);
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
 }
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
-  List<bool> showIngredient = [];
-  List<ProductIngredientModel> ingredients;
+  late List<bool> showIngredient;
+  late List<ProductIngredientModel> ingredients;
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     ingredients = context.watch<ProductModel>().ingredients.values.toList();
-
-    // Make old expansion still opening when rebuilding
-    for (var i = showIngredient.length; i < ingredients.length; i++) {
-      showIngredient.add(false);
-    }
+    showIngredient = List.filled(ingredients.length, false);
   }
 
   Widget _addButtons(ProductIngredientModel ingredient) {
@@ -77,19 +73,21 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           child: ElevatedButton.icon(
             icon: Icon(KIcons.add),
             label: Text('新增特殊份量'),
-            onPressed: () => _goToQuantityModel(
-              ProductQuantityModel(ingredient: ingredient),
-            ),
+            onPressed: () => _goToQuantityModel(ingredient: ingredient),
           ),
         ),
       ),
     ]);
   }
 
-  void _goToQuantityModel(ProductQuantityModel quantity) {
+  void _goToQuantityModel({
+    ProductQuantityModel? quantity,
+    required ProductIngredientModel ingredient,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => QuantityModal(quantity: quantity),
+        builder: (_) =>
+            QuantityModal(quantity: quantity, ingredient: ingredient),
       ),
     );
   }
@@ -97,7 +95,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
     final body = ingredient.quantities.values.map<Widget>((quantity) {
       return ListTile(
-        onTap: () => _goToQuantityModel(quantity),
+        onTap: () => _goToQuantityModel(
+          quantity: quantity,
+          ingredient: quantity.ingredient,
+        ),
         title: Text(quantity.quantity.name),
         trailing: Text('${quantity.amount}'),
         subtitle: _quantityMetadata(quantity),

@@ -11,7 +11,7 @@ import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 
 class IngredientList extends StatelessWidget {
-  const IngredientList({Key key, @required this.ingredients}) : super(key: key);
+  const IngredientList({Key? key, required this.ingredients}) : super(key: key);
 
   final List<IngredientModel> ingredients;
 
@@ -29,7 +29,7 @@ class IngredientList extends StatelessWidget {
   Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
     final theme = Theme.of(context);
 
-    void updateAmount(num amount) {
+    void updateAmount(num? amount) {
       if (amount != null) {
         ingredient.addAmount(amount);
       }
@@ -126,10 +126,10 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Future<num> _showTextDialog(
+  Future<num?> _showTextDialog(
     BuildContext context, {
-    String defaultValue,
-    @required String title,
+    String? defaultValue,
+    required String title,
   }) async {
     final controller = TextEditingController(text: defaultValue);
     final formKey = GlobalKey<FormState>();
@@ -138,7 +138,7 @@ class IngredientList extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         final action = (String value) {
-          if (formKey.currentState.validate()) {
+          if (formKey.currentState!.validate()) {
             Navigator.of(context).pop<String>(value);
           }
         };

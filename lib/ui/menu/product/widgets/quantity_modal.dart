@@ -5,6 +5,7 @@ import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
@@ -14,14 +15,15 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 import 'quantity_search_scaffold.dart';
 
 class QuantityModal extends StatefulWidget {
-  final ProductQuantityModel quantity;
+  final ProductQuantityModel? quantity;
+  final ProductIngredientModel ingredient;
 
   final bool isNew;
   QuantityModal({
-    Key key,
+    Key? key,
     this.quantity,
-  })  : isNew = quantity.id == null,
-        assert(quantity.ingredient != null),
+    required this.ingredient,
+  })  : isNew = quantity == null,
         super(key: key);
 
   @override
@@ -35,9 +37,9 @@ class _QuantityModalState extends State<QuantityModal> {
   final _costController = TextEditingController();
 
   bool isSaving = false;
-  String quantityName;
-  String quantityId;
-  String errorMessage;
+  String quantityName = '';
+  String quantityId = '';
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class _QuantityModalState extends State<QuantityModal> {
       appBar: AppBar(
         title: Text(widget.isNew
             ? '新增成份份量'
-            : '設定成份份量「${widget.quantity.quantity.name}」'),
+            : '設定成份份量「${widget.quantity!.quantity.name}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -62,13 +64,6 @@ class _QuantityModalState extends State<QuantityModal> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    quantityId = widget.quantity?.id ?? '';
-    quantityName = widget.quantity?.quantity?.name ?? '';
-  }
-
-  @override
   void dispose() {
     _amountController.dispose();
     _priceController.dispose();
@@ -78,13 +73,17 @@ class _QuantityModalState extends State<QuantityModal> {
 
   @override
   void initState() {
-    _amountController.text = widget.quantity?.amount?.toString();
-    _priceController.text = widget.quantity?.additionalPrice?.toString();
-    _costController.text = widget.quantity?.additionalCost?.toString();
+    if (!widget.isNew) {
+      quantityId = widget.quantity!.id;
+      quantityName = widget.quantity!.quantity.name;
+      _amountController.text = widget.quantity!.amount.toString();
+      _priceController.text = widget.quantity!.additionalPrice.toString();
+      _costController.text = widget.quantity!.additionalCost.toString();
+    }
     super.initState();
   }
 
-  Iterable<Widget> _actions(BuildContext context) {
+  Iterable<Widget> _actions() {
     return [
       ListTile(
         title: Text('刪除'),
@@ -110,7 +109,8 @@ class _QuantityModalState extends State<QuantityModal> {
             IconButton(
               onPressed: () => showCircularBottomSheet(
                 context,
-                actions: _actions(context),
+                useRootNavigator: false,
+                actions: _actions(),
               ),
               icon: Icon(KIcons.more),
             )
@@ -208,17 +208,17 @@ class _QuantityModalState extends State<QuantityModal> {
       builder: (BuildContext context) {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
-          onDelete: (_) => widget.quantity.remove(),
+          onDelete: (_) => widget.quantity!.remove(),
         );
       },
     );
     if (isDeleted == true) Navigator.of(context).pop();
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (!_validate()) return;
 
-    _updateQuantity();
+    await _updateQuantity();
 
     Navigator.of(context).pop();
   }
@@ -226,45 +226,42 @@ class _QuantityModalState extends State<QuantityModal> {
   ProductQuantityObject _parseObject() {
     return ProductQuantityObject(
       id: quantityId,
-      amount: num.tryParse(_amountController.text),
-      additionalPrice: num.tryParse(_priceController.text),
-      additionalCost: num.tryParse(_costController.text),
+      amount: num.parse(_amountController.text),
+      additionalPrice: num.parse(_priceController.text),
+      additionalCost: num.parse(_costController.text),
     );
   }
 
   void _updateByProportion(num proportion) {
-    _amountController.text =
-        (widget.quantity.ingredient.amount * proportion).toString();
-    _priceController.text = '0';
-    _costController.text = '0';
+    _amountController.text = (widget.ingredient.amount * proportion).toString();
   }
 
-  void _updateQuantity() {
+  Future<void> _updateQuantity() async {
     final object = _parseObject();
 
     if (widget.isNew) {
       final quantity = ProductQuantityModel(
-        quantity: QuantityRepo.instance.getQuantity(object.id),
-        ingredient: widget.quantity.ingredient,
+        quantity: QuantityRepo.instance.getQuantity(object.id!),
+        ingredient: widget.ingredient,
         amount: object.amount,
         additionalPrice: object.additionalPrice,
         additionalCost: object.additionalCost,
       );
 
-      quantity.ingredient.updateQuantity(quantity);
+      await quantity.ingredient.updateQuantity(quantity);
     } else {
-      widget.quantity.update(object);
+      await widget.quantity!.update(object);
     }
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
     if (quantityId.isEmpty) {
       setState(() => errorMessage = '必須設定成份份量名稱。');
       return false;
     }
-    if (widget.quantity.id != quantityId &&
-        widget.quantity.ingredient.exist(quantityId)) {
+    if (widget.quantity?.id != quantityId &&
+        widget.ingredient.exist(quantityId)) {
       setState(() => errorMessage = '成份份量重複。');
       return false;
     }

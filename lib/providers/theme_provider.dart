@@ -3,16 +3,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:possystem/services/cache.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  bool _darkMode;
+  late bool _darkMode;
 
   bool get darkMode => _darkMode;
 
-  Future<bool> getDarkMode() async {
-    // get from cache, is not found get system setting
-    _darkMode ??=
-        (await Cache.instance.get<bool>(Caches.dark_mode)) ?? defaultTheme;
-
-    return _darkMode;
+  Future<void> initialize() async {
+    // get from cache, if not found get system setting
+    final value = await Cache.instance.get<bool>(Caches.dark_mode);
+    _darkMode = value ?? defaultTheme;
   }
 
   Future<void> setDarkMode(bool value) async {
@@ -24,5 +22,5 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   static bool get defaultTheme =>
-      SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
+      SchedulerBinding.instance?.window.platformBrightness == Brightness.dark;
 }

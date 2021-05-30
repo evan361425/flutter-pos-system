@@ -8,15 +8,15 @@ import 'package:possystem/localizations.dart';
 // use inherit objects to make your life better
 class SlidableItemList<T> extends StatefulWidget {
   const SlidableItemList({
-    Key key,
-    @required this.items,
-    @required this.onDelete,
-    @required this.tileBuilder,
-    @required this.warningContext,
-    @required this.onTap,
+    Key? key,
+    required this.items,
+    required this.onDelete,
+    required this.tileBuilder,
+    required this.warningContext,
+    required this.onTap,
   }) : super(key: key);
 
-  final List<T> items;
+  final List<T>? items;
   final Future<void> Function(BuildContext, T) onDelete;
   final Widget Function(BuildContext, T) tileBuilder;
   final Widget Function(BuildContext, T) warningContext;
@@ -32,7 +32,7 @@ class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [for (var item in widget.items) _itemBuilder(context, item)],
+      children: [for (var item in widget.items!) _itemBuilder(context, item)],
     );
   }
 
@@ -46,7 +46,7 @@ class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
         secondaryActions: <Widget>[
           IconSlideAction(
             color: kNegativeColor,
-            caption: Local.of(context).t('delete'),
+            caption: Local.of(context)!.t('delete'),
             icon: KIcons.delete,
             onTap: () => _showDeleteDialog(context, item),
           ),
@@ -66,7 +66,7 @@ class _SlidableItemListState<T> extends State<SlidableItemList<T>> {
   /// If there is any action panel opening, close it
   bool _checkPanelStatus() {
     if (_slidableController.activeState != null) {
-      _slidableController.activeState.close();
+      _slidableController.activeState!.close();
       return false;
     } else {
       return true;

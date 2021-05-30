@@ -6,12 +6,12 @@ import 'package:possystem/ui/order/cart/cart_product_list.dart';
 
 class ProductSelection extends StatefulWidget {
   const ProductSelection({
-    Key key,
-    @required this.catalog,
-    @required this.productsKey,
+    Key? key,
+    required this.catalog,
+    required this.productsKey,
   }) : super(key: key);
 
-  final CatalogModel catalog;
+  final CatalogModel? catalog;
   final GlobalKey<CartProductListState> productsKey;
 
   @override
@@ -19,7 +19,7 @@ class ProductSelection extends StatefulWidget {
 }
 
 class ProductSelectionState extends State<ProductSelection> {
-  CatalogModel _catalog;
+  CatalogModel? _catalog;
 
   set catalog(CatalogModel catalog) => setState(() => _catalog = catalog);
 
@@ -47,7 +47,7 @@ class ProductSelectionState extends State<ProductSelection> {
   void onSelected(ProductModel product) {
     CartModel.instance.toggleAll(false);
     CartModel.instance.add(product).toggleSelected(true);
-    widget.productsKey.currentState.scrollToBottom();
+    widget.productsKey.currentState!.scrollToBottom();
   }
 
   @override

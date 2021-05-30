@@ -8,10 +8,10 @@ import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 
 class CatalogModal extends StatefulWidget {
-  final CatalogModel catalog;
+  final CatalogModel? catalog;
 
   final bool isNew;
-  CatalogModal({Key key, this.catalog})
+  CatalogModal({Key? key, this.catalog})
       : isNew = catalog == null,
         super(key: key);
 
@@ -24,7 +24,7 @@ class _CatalogModalState extends State<CatalogModal> {
   final _nameController = TextEditingController();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _CatalogModalState extends State<CatalogModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _nameController.text = widget.catalog?.name;
+    _nameController.text = widget.catalog?.name ?? '';
   }
 
   @override
@@ -79,10 +79,10 @@ class _CatalogModalState extends State<CatalogModal> {
     );
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (!_validate()) return;
 
-    final catalog = _updateCatalog();
+    final catalog = await _updateCatalog();
 
     // go to catalog screen
     widget.isNew
@@ -99,7 +99,7 @@ class _CatalogModalState extends State<CatalogModal> {
     );
   }
 
-  CatalogModel _updateCatalog() {
+  Future<CatalogModel> _updateCatalog() async {
     final object = _parseObject();
 
     if (widget.isNew) {
@@ -108,16 +108,16 @@ class _CatalogModalState extends State<CatalogModal> {
         index: MenuModel.instance.newIndex,
       );
 
-      MenuModel.instance.updateCatalog(catalog);
+      await MenuModel.instance.updateCatalog(catalog);
       return catalog;
     } else {
-      widget.catalog.update(object);
-      return widget.catalog;
+      await widget.catalog!.update(object);
+      return widget.catalog!;
     }
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
 

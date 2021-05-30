@@ -38,7 +38,7 @@ class CatalogScreen extends StatelessWidget {
         onPressed: () => Navigator.of(context).pushNamed(
           MenuRoutes.productModal,
         ),
-        tooltip: Local.of(context).t('menu.catalog.add_product'),
+        tooltip: Local.of(context)!.t('menu.catalog.add_product'),
         child: Icon(KIcons.add),
       ),
       body: _body(catalog, context),
@@ -80,11 +80,11 @@ class CatalogScreen extends StatelessWidget {
             ],
           ),
         ),
-        catalog.isEmpty
-            ? EmptyBody('menu.catalog.empty_body')
-            : Routes.setUpStockMode(context)
-                ? ProductList(products: catalog.productList)
-                : CircularLoading(),
+        Routes.setUpStockMode(context)
+            ? catalog.isEmpty
+                ? EmptyBody('menu.catalog.empty_body')
+                : ProductList(products: catalog.productList)
+            : CircularLoading(),
       ],
     );
   }

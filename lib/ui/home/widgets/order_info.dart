@@ -5,15 +5,15 @@ import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 
 class OrderInfo extends StatefulWidget {
-  const OrderInfo({Key key}) : super(key: key);
+  const OrderInfo({Key? key}) : super(key: key);
 
   @override
   OrderInfoState createState() => OrderInfoState();
 }
 
 class OrderInfoState extends State<OrderInfo> {
-  int count;
-  String revenue;
+  int? count;
+  String? revenue;
 
   void reset() {
     setState(() {
@@ -27,7 +27,7 @@ class OrderInfoState extends State<OrderInfo> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textStyle =
-        theme.textTheme.headline3.copyWith(color: theme.primaryColor);
+        theme.textTheme.headline3!.copyWith(color: theme.primaryColor);
 
     return Stack(
       alignment: Alignment.center,
@@ -62,12 +62,12 @@ class OrderInfoState extends State<OrderInfo> {
 
   void _queryValue() {
     OrderRepo.instance.todayOrder().then((result) => setState(() {
-          revenue = CurrencyProvider.instance.numToString(result['revenue']);
-          count = result['count'];
+          revenue = CurrencyProvider.instance.numToString(result['revenue']!);
+          count = result['count'] as int?;
         }));
   }
 
-  Expanded _column(String title, String value, TextStyle textStyle) {
+  Expanded _column(String title, String? value, TextStyle textStyle) {
     return Expanded(
       child: Column(
         children: <Widget>[

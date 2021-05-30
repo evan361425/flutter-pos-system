@@ -12,7 +12,7 @@ class Local {
 
   // Helper method to keep the code in the widgets concise
   // Localizations are accessed using an InheritedWidget "of" syntax
-  static Local of(BuildContext context) {
+  static Local? of(BuildContext context) {
     return Localizations.of<Local>(context, Local);
   }
 
@@ -43,7 +43,7 @@ class Local {
     return translate(key);
   }
 
-  String tf(String key, List<dynamic> data) {
+  String? tf(String key, List<dynamic> data) {
     return translatef(key, data);
   }
 
@@ -52,7 +52,7 @@ class Local {
     return _localizedStrings[key] ?? key;
   }
 
-  String translatef(String key, List<dynamic> data) {
+  String? translatef(String key, List<dynamic> data) {
     return sprintf(translate(key), data);
   }
 

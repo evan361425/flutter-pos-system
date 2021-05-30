@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
@@ -14,20 +13,17 @@ class QuantityModel {
   num defaultProportion;
 
   QuantityModel({
-    String id,
-    @required this.name,
-    num defaultProportion,
+    String? id,
+    required this.name,
+    num? defaultProportion,
   })  : id = id ?? Util.uuidV4(),
         defaultProportion = defaultProportion ?? 1;
 
   factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
         id: object.id,
-        name: object.name,
-        defaultProportion: object.defaultProportion,
+        name: object.name!,
+        defaultProportion: object.defaultProportion!,
       );
-
-  bool get isNotReady => name == null;
-  bool get isReady => name != null;
 
   String get prefix => id;
 
@@ -46,7 +42,7 @@ class QuantityModel {
         defaultProportion: defaultProportion,
       );
 
-  Future<void> update(QuantityObject object) {
+  Future<void> update(QuantityObject object) async {
     final updateData = object.diff(this);
 
     if (updateData.isEmpty) return Future.value();

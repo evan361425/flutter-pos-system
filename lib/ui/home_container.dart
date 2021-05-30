@@ -6,7 +6,7 @@ import 'package:possystem/ui/stock/stock_screen.dart';
 import 'analysis/analysis_screen.dart';
 
 class HomeContainer extends StatelessWidget {
-  const HomeContainer({Key key}) : super(key: key);
+  const HomeContainer({Key? key}) : super(key: key);
 
   static final tabController = CupertinoTabController();
 

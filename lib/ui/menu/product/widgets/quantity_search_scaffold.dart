@@ -6,16 +6,16 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/histories/search_history.dart';
 
 class QuantitySearchScaffold extends StatelessWidget {
-  QuantitySearchScaffold({Key key, this.text}) : super(key: key);
+  QuantitySearchScaffold({Key? key, this.text}) : super(key: key);
 
   static final String tag = 'menu.poduct.quantity.search';
-  final String text;
+  final String? text;
   final scaffold = GlobalKey<SearchScaffoldState>();
   final histories = SearchHistory(SearchHistoryTypes.quantity);
 
   @override
   Widget build(BuildContext context) {
-    return SearchScaffold<QuantityModel>(
+    return SearchScaffold<QuantityModel?>(
       key: scaffold,
       onChanged: (String text) async =>
           QuantityRepo.instance.sortBySimilarity(text),
@@ -23,7 +23,7 @@ class QuantitySearchScaffold extends StatelessWidget {
       emptyBuilder: _emptyBuilder,
       searchHistory: histories.get,
       heroTag: QuantitySearchScaffold.tag,
-      text: text,
+      text: text ?? '',
       hintText: '成份份量名稱，例如：少量',
       textCapitalization: TextCapitalization.words,
     );
@@ -33,7 +33,7 @@ class QuantitySearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text(ingredient.name),
       onTap: () {
-        histories.add(scaffold.currentState.searchBar.currentState.text);
+        histories.add(scaffold.currentState!.searchBar.currentState!.text);
         Navigator.of(context).pop<QuantityModel>(ingredient);
       },
     );
@@ -43,7 +43,7 @@ class QuantitySearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text('新增成份份量「$text」'),
       onTap: () {
-        histories.add(scaffold.currentState.searchBar.currentState.text);
+        histories.add(scaffold.currentState!.searchBar.currentState!.text);
         final quantity = QuantityModel(name: text);
         QuantityRepo.instance.updateQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);

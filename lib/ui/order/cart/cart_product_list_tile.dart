@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 
 class CartProductListTile extends StatelessWidget {
   const CartProductListTile({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
+    Key? key,
+    required this.value,
+    required this.onChanged,
     this.title,
     this.subtitle,
     this.trailing,
-    this.selected = false,
+    bool? selected,
     this.onTap,
-  })  : assert(selected != null),
+  })  : selected = selected ?? false,
         super(key: key);
 
   final bool value;
-  final ValueChanged<bool> onChanged;
-  final void Function() onTap;
-  final Widget title;
-  final Widget subtitle;
-  final Widget trailing;
+  final ValueChanged<bool?> onChanged;
+  final void Function()? onTap;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
   final bool selected;
 
   @override

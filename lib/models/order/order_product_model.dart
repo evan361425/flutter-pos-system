@@ -6,11 +6,12 @@ import 'package:possystem/models/order/order_ingredient_model.dart';
 class OrderProductModel {
   OrderProductModel(
     this.product, {
-    this.count = 1,
-    num singlePrice,
-    List<OrderIngredientModel> ingredients,
+    int? count,
+    num? singlePrice,
+    List<OrderIngredientModel>? ingredients,
   })  : singlePrice = singlePrice ?? product.price,
-        ingredients = ingredients ?? [];
+        ingredients = ingredients ?? [],
+        count = count ?? 1;
 
   ProductModel product;
   bool isSelected = false;
@@ -40,10 +41,10 @@ class OrderProductModel {
     };
     // ingredient with special quantity
     ingredients.forEach((ingredient) {
-      allIngredients[ingredient.id].update(
-        additionalCost: ingredient.cost,
-        additionalPrice: ingredient.price,
-        amount: ingredient.amount,
+      allIngredients[ingredient.id]!.update(
+        additionalCost: ingredient.cost!,
+        additionalPrice: ingredient.price!,
+        amount: ingredient.amount!,
         quantityId: ingredient.quantity.id,
         quantityName: ingredient.quantity.quantity.name,
       );
@@ -59,7 +60,7 @@ class OrderProductModel {
     );
   }
 
-  bool toggleSelected([bool checked]) {
+  bool toggleSelected([bool? checked]) {
     checked ??= !isSelected;
     final changed = isSelected != checked;
 
@@ -71,7 +72,7 @@ class OrderProductModel {
     return changed;
   }
 
-  OrderIngredientModel getIngredientOf(String id) {
+  OrderIngredientModel? getIngredientOf(String? id) {
     try {
       return ingredients.firstWhere((e) => e.id == id);
     } catch (e) {
@@ -83,21 +84,21 @@ class OrderProductModel {
     var i = 0;
     for (var oldOne in ingredients) {
       if (oldOne == newOne) {
-        singlePrice -= oldOne.price;
+        singlePrice -= oldOne.price!;
         ingredients.removeAt(i);
         break;
       }
       i++;
     }
 
-    singlePrice += newOne.price;
+    singlePrice += newOne.price!;
     ingredients.add(newOne);
   }
 
-  void removeIngredient(ProductIngredientModel ingredient) {
+  void removeIngredient(ProductIngredientModel? ingredient) {
     ingredients.removeWhere((e) {
-      if (e.ingredient.id == ingredient.id) {
-        singlePrice -= e.price;
+      if (e.ingredient.id == ingredient!.id) {
+        singlePrice -= e.price!;
         return true;
       }
       return false;
@@ -112,24 +113,24 @@ class OrderProductModel {
   };
   static void addListener(
     void Function() listener, [
-    OrderProductListenerTypes type,
+    OrderProductListenerTypes? type,
   ]) {
-    if (type != null) return listeners[type].add(listener);
+    if (type != null) return listeners[type]!.add(listener);
 
-    listeners[OrderProductListenerTypes.count].add(listener);
-    listeners[OrderProductListenerTypes.selection].add(listener);
+    listeners[OrderProductListenerTypes.count]!.add(listener);
+    listeners[OrderProductListenerTypes.selection]!.add(listener);
   }
 
   static void removeListener(void Function() listener) {
-    listeners[OrderProductListenerTypes.count].remove(listener);
-    listeners[OrderProductListenerTypes.selection].remove(listener);
+    listeners[OrderProductListenerTypes.count]!.remove(listener);
+    listeners[OrderProductListenerTypes.selection]!.remove(listener);
   }
 
-  static void notifyListener([OrderProductListenerTypes type]) {
-    if (type != null) return listeners[type].forEach((lisnter) => lisnter());
+  static void notifyListener([OrderProductListenerTypes? type]) {
+    if (type != null) return listeners[type]!.forEach((lisnter) => lisnter());
 
-    listeners[OrderProductListenerTypes.count].forEach((e) => e());
-    listeners[OrderProductListenerTypes.selection].forEach((e) => e());
+    listeners[OrderProductListenerTypes.count]!.forEach((e) => e());
+    listeners[OrderProductListenerTypes.selection]!.forEach((e) => e());
   }
 }
 

@@ -4,7 +4,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   static final orderInfo = GlobalKey<OrderInfoState>();
 
@@ -77,10 +77,10 @@ class HomeScreen extends StatelessWidget {
 
 class _LabeledIcon extends StatelessWidget {
   const _LabeledIcon({
-    Key key,
-    @required this.icon,
-    @required this.label,
-    @required this.route,
+    Key? key,
+    required this.icon,
+    required this.label,
+    required this.route,
   }) : super(key: key);
 
   final IconData icon;
@@ -97,7 +97,7 @@ class _LabeledIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(icon, size: 48.0, color: theme.primaryColorDark),
-          Text(label, style: TextStyle(color: theme.textTheme.caption.color)),
+          Text(label, style: TextStyle(color: theme.textTheme.caption!.color)),
         ],
       ),
     );

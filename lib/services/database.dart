@@ -23,11 +23,13 @@ class Database {
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
-  static String join(Iterable<String> data) => data.join(delimiter) + delimiter;
+  static String join(Iterable<String>? data) =>
+      (data?.join(delimiter) ?? '') + delimiter;
 
-  static List<String> split(String value) => value?.trim()?.split(delimiter);
+  static List<String> split(String? value) =>
+      value?.trim().split(delimiter) ?? [];
 
-  no_sql.Database db;
+  late no_sql.Database db;
 
   Database._constructor();
 
@@ -42,35 +44,39 @@ class Database {
     );
   }
 
-  Future<int> push(Tables table, Map<String, Object> data) {
-    return db.insert(TableName[table], data);
+  Future<int> push(Tables table, Map<String, Object?> data) {
+    return db.insert(TableName[table]!, data);
   }
 
   Future<int> update(
     Tables table,
-    Object key,
-    Map<String, Object> data, {
+    Object? key,
+    Map<String, Object?> data, {
     keyName = 'id',
   }) {
     return db.update(
-      TableName[table],
+      TableName[table]!,
       data,
       where: '$keyName = ?',
       whereArgs: [key],
     );
   }
 
-  Future<Map<String, Object>> getLast(
+  Future<Map<String, Object?>?> getLast(
     Tables table, {
     String sortBy = 'id',
-    List<String> columns,
+    List<String>? columns,
+    String? where,
+    List<Object?>? whereArgs,
   }) async {
     try {
       final data = await db.query(
-        TableName[table],
+        TableName[table]!,
         columns: columns,
         orderBy: '$sortBy DESC',
         limit: 1,
+        where: where,
+        whereArgs: whereArgs,
       );
       return data.first;
     } catch (e) {
@@ -80,36 +86,36 @@ class Database {
 
   Future<void> delete(
     Tables table,
-    Object id, {
+    Object? id, {
     String keyName = 'id',
   }) {
-    return db.delete(TableName[table], where: '$keyName = ?', whereArgs: [id]);
+    return db.delete(TableName[table]!, where: '$keyName = ?', whereArgs: [id]);
   }
 
-  Future<int> count(
+  Future<int?> count(
     Tables table, {
-    String where,
-    List<Object> whereArgs,
+    String? where,
+    List<Object>? whereArgs,
   }) async {
-    final result = await db.query(TableName[table], columns: ['COUNT(*)']);
+    final result = await db.query(TableName[table]!, columns: ['COUNT(*)']);
 
     return Sqflite.firstIntValue(result);
   }
 
-  static Future<List<Map<String, Object>>> query(
+  static Future<List<Map<String, Object?>>> query(
     Tables table, {
-    String where,
-    List<Object> whereArgs,
-    bool distinct,
-    List<String> columns,
-    String groupBy,
-    String orderBy,
-    String having,
-    int limit,
-    int offset,
+    String? where,
+    List<Object>? whereArgs,
+    bool? distinct,
+    List<String>? columns,
+    String? groupBy,
+    String? orderBy,
+    String? having,
+    int? limit,
+    int? offset,
   }) {
     return instance.db.query(
-      TableName[table],
+      TableName[table]!,
       where: where,
       whereArgs: whereArgs,
       distinct: distinct,
@@ -122,12 +128,12 @@ class Database {
     );
   }
 
-  static Future<List<Map<String, Object>>> rawQuery(
+  static Future<List<Map<String, Object?>>> rawQuery(
     Tables table, {
-    String where,
-    List<Object> whereArgs,
-    List<String> columns,
-    String groupBy,
+    String? where,
+    List<Object>? whereArgs,
+    required List<String> columns,
+    String? groupBy,
   }) {
     final select = columns.join(',');
     return instance.db.rawQuery('''

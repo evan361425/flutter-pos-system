@@ -6,27 +6,28 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class QuantityRepo extends ChangeNotifier {
-  static QuantityRepo instance;
+  static late QuantityRepo instance;
 
-  Map<String, QuantityModel> quantities;
+  Map<String, QuantityModel>? quantities;
 
   QuantityRepo() {
     Storage.instance.get(Stores.quantities).then((data) {
       quantities = {};
 
-      if (data != null) {
-        try {
-          data.forEach((key, value) {
-            if (value is Map) {
-              quantities[key] = QuantityModel.fromObject(
-                QuantityObject.build({'id': key, ...value}),
-              );
-            }
-          });
-        } catch (e, stack) {
-          print(e);
-          print(stack);
-        }
+      try {
+        data.forEach((key, value) {
+          if (value is Map) {
+            quantities![key] = QuantityModel.fromObject(
+              QuantityObject.build({
+                'id': key,
+                ...value as Map<String, Object?>,
+              }),
+            );
+          }
+        });
+      } catch (e, stack) {
+        print(e);
+        print(stack);
       }
 
       notifyListeners();
@@ -34,30 +35,30 @@ class QuantityRepo extends ChangeNotifier {
     QuantityRepo.instance = this;
   }
 
-  bool get isEmpty => quantities.isEmpty;
-  bool get isNotEmpty => quantities.isNotEmpty;
+  bool get isEmpty => quantities!.isEmpty;
+  bool get isNotEmpty => quantities!.isNotEmpty;
   bool get isNotReady => quantities == null;
   bool get isReady => quantities != null;
-  int get length => quantities.length;
+  int get length => quantities!.length;
 
-  List<QuantityModel> get quantitiesList => quantities.values.toList();
+  List<QuantityModel> get quantitiesList => quantities!.values.toList();
 
-  bool exist(String id) => quantities.containsKey(id);
+  bool exist(String id) => quantities!.containsKey(id);
 
-  QuantityModel getQuantity(String id) => exist(id) ? quantities[id] : null;
+  QuantityModel? getQuantity(String id) => quantities![id];
 
   void removeQuantity(String id) {
-    quantities.remove(id);
+    quantities!.remove(id);
 
     notifyListeners();
   }
 
-  List<QuantityModel> sortBySimilarity(String text) {
+  List<QuantityModel?> sortBySimilarity(String text) {
     if (text.isEmpty) {
       return [];
     }
 
-    final similarities = quantities.entries
+    final similarities = quantities!.entries
         .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
         .where((e) => e.value > 0)
         .toList();
@@ -68,14 +69,14 @@ class QuantityRepo extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
+    return similarities.sublist(0, end).map((e) => quantities![e.key]).toList();
   }
 
-  void updateQuantity(QuantityModel quantity) {
+  Future<void> updateQuantity(QuantityModel quantity) async {
     if (!exist(quantity.id)) {
-      quantities[quantity.id] = quantity;
+      quantities![quantity.id] = quantity;
 
-      Storage.instance.add(
+      await Storage.instance.add(
         Stores.quantities,
         quantity.id,
         quantity.toObject().toMap(),

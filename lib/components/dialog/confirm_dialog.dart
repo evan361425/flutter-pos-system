@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class ConfirmDialog extends StatelessWidget {
   const ConfirmDialog({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.content,
   }) : super(key: key);
 
   final String title;
-  final Widget content;
+  final Widget? content;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:provider/provider.dart';
 
 class ProductOrderableList extends OrderableList<ProductModel> {
-  ProductOrderableList({Key key, @required List<ProductModel> items})
+  ProductOrderableList({Key? key, required List<ProductModel> items})
       : super(key: key, items: items, title: '排序產品');
 
   @override

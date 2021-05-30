@@ -14,8 +14,12 @@ class MetaBlock extends StatelessWidget {
     return const TextSpan(text: ' • ');
   }
 
-  static Widget withString(BuildContext context, Iterable<String> data,
-      [String emptyText, TextStyle style]) {
+  static Widget? withString(
+    BuildContext context,
+    Iterable<String> data, [
+    String? emptyText,
+    TextStyle? style,
+  ]) {
     if (data.isNotEmpty) {
       final children = <InlineSpan>[];
       data.forEach((value) {
@@ -28,7 +32,7 @@ class MetaBlock extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
           children: children,
-          style: style,
+          style: style ?? Theme.of(context).textTheme.bodyText1,
         ),
       );
     } else if (emptyText != null) {

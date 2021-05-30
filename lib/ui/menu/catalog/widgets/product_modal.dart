@@ -10,9 +10,9 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 class ProductModal extends StatefulWidget {
-  final ProductModel product;
+  final ProductModel? product;
 
-  ProductModal({Key key, @required this.product}) : super(key: key);
+  ProductModal({Key? key, required this.product}) : super(key: key);
   bool get isNew => product == null;
 
   @override
@@ -26,7 +26,7 @@ class _ProductModalState extends State<ProductModal> {
   final _costController = TextEditingController();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +60,11 @@ class _ProductModalState extends State<ProductModal> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.product?.name;
-    _priceController.text = widget.product?.price?.toString();
-    _costController.text = widget.product?.cost?.toString();
+    if (!widget.isNew) {
+      _nameController.text = widget.product!.name;
+      _priceController.text = widget.product!.price.toString();
+      _costController.text = widget.product!.cost.toString();
+    }
   }
 
   Widget _fieldCost() {
@@ -123,10 +125,10 @@ class _ProductModalState extends State<ProductModal> {
     );
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (!_validate()) return;
 
-    final product = _updateProduct();
+    final product = await _updateProduct();
 
     // go to product screen
     widget.isNew
@@ -145,7 +147,7 @@ class _ProductModalState extends State<ProductModal> {
     );
   }
 
-  ProductModel _updateProduct() {
+  Future<ProductModel> _updateProduct() async {
     final object = _parseObject();
 
     if (widget.isNew) {
@@ -153,21 +155,21 @@ class _ProductModalState extends State<ProductModal> {
       final product = ProductModel(
         catalog: catalog,
         index: catalog.newIndex,
-        name: object.name,
-        price: object.price,
-        cost: object.cost,
+        name: object.name!,
+        price: object.price!,
+        cost: object.cost!,
       );
 
-      catalog.updateProduct(product);
+      await catalog.updateProduct(product);
       return product;
     } else {
-      widget.product.update(object);
-      return widget.product;
+      await widget.product!.update(object);
+      return widget.product!;
     }
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
 

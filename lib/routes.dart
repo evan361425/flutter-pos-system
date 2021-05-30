@@ -10,9 +10,13 @@ import 'package:possystem/ui/setting/widgets/language_modal.dart';
 import 'package:possystem/ui/transfer/transfer_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'models/menu/catalog_model.dart';
 import 'models/repository/menu_model.dart';
 import 'models/repository/quantity_repo.dart';
 import 'models/repository/stock_model.dart';
+import 'models/stock/ingredient_model.dart';
+import 'models/stock/quantity_model.dart';
+import 'models/stock/stock_batch_model.dart';
 import 'ui/menu/catalog_navigator.dart';
 import 'ui/stock/ingredient/ingredient_screen.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
@@ -44,15 +48,16 @@ class Routes {
     cashier: (context) => CashierScreen(),
     invoicer: (context) => InvoicerScreen(),
     printer: (context) => PrinterScreen(),
-    menuCatalog: (context) =>
-        CatalogNavigator(catalog: ModalRoute.of(context).settings.arguments),
-    stockIngredient: (context) =>
-        IngredientScreen(ingredient: ModalRoute.of(context).settings.arguments),
+    menuCatalog: (context) => CatalogNavigator(
+        catalog: ModalRoute.of(context)!.settings.arguments as CatalogModel),
+    stockIngredient: (context) => IngredientScreen(
+        ingredient:
+            ModalRoute.of(context)!.settings.arguments as IngredientModel?),
     stockQuantity: (_) => QuantityScreen(),
-    stockQuantityModal: (context) =>
-        QuantityModal(quantity: ModalRoute.of(context).settings.arguments),
-    stockBatchModal: (context) =>
-        StockBatchModal(batch: ModalRoute.of(context).settings.arguments),
+    stockQuantityModal: (context) => QuantityModal(
+        quantity: ModalRoute.of(context)!.settings.arguments as QuantityModel?),
+    stockBatchModal: (context) => StockBatchModal(
+        batch: ModalRoute.of(context)!.settings.arguments as StockBatchModel?),
     settingLanguage: (context) => LanguageModal(),
   };
 
@@ -60,6 +65,7 @@ class Routes {
     final menu = context.watch<MenuModel>();
     if (menu.stockMode) return true;
 
+    print('setting up stock mode');
     final stock = context.watch<StockModel>();
     final quantities = context.watch<QuantityRepo>();
     if (menu.isNotReady || stock.isNotReady || quantities.isNotReady) {

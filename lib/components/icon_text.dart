@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 class IconText extends StatelessWidget {
   const IconText({
-    Key key,
-    @required this.text,
-    @required this.iconName,
+    Key? key,
+    required this.text,
+    required this.iconName,
     this.textStyle,
   }) : super(key: key);
 
   final String text;
   final String iconName;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
-    final style = textStyle ?? Theme.of(context).textTheme.bodyText1;
+    final style = textStyle ?? Theme.of(context).textTheme.bodyText1!;
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(

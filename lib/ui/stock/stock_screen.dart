@@ -56,7 +56,7 @@ class StockScreen extends StatelessWidget {
   }
 
   Widget _metadata(BuildContext context) {
-    final captionStyle = Theme.of(context).textTheme.caption;
+    final captionStyle = Theme.of(context).textTheme.caption!;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

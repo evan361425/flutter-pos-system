@@ -7,7 +7,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -49,7 +49,7 @@ packages:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -63,14 +63,14 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.1"
   file:
     dependency: transitive
     description:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -87,7 +87,7 @@ packages:
       name: flutter_slidable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.7"
+    version: "0.6.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -118,7 +118,7 @@ packages:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4"
+    version: "1.0.0"
   matcher:
     dependency: transitive
     description:
@@ -139,7 +139,7 @@ packages:
       name: modal_bottom_sheet
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0+1"
+    version: "2.0.0"
   nested:
     dependency: transitive
     description:
@@ -174,7 +174,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   pedantic:
     dependency: "direct dev"
     description:
@@ -202,7 +202,7 @@ packages:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.2.1"
   provider:
     dependency: "direct main"
     description:
@@ -216,14 +216,14 @@ packages:
       name: sembast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.2"
+    version: "3.0.3"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.6"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -277,7 +277,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   sprintf:
     dependency: "direct main"
     description:
@@ -347,7 +347,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:
@@ -361,7 +361,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.4"
   vector_math:
     dependency: transitive
     description:
@@ -375,7 +375,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -391,5 +391,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.13.0 <3.0.0"
   flutter: ">=1.24.0-10"

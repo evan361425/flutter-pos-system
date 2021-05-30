@@ -7,14 +7,14 @@ import 'package:possystem/services/storage.dart';
 import 'product_model.dart';
 
 class ProductIngredientModel {
-  String id;
+  late String id;
 
   /// connect to parent object
-  ProductModel product;
+  late final ProductModel product;
 
   /// connect to stock.
   /// When it set, [MenuModel.stockMode] must be true
-  IngredientModel ingredient;
+  late IngredientModel ingredient;
 
   /// ingredient per product
   num amount;
@@ -22,15 +22,21 @@ class ProductIngredientModel {
   final Map<String, ProductQuantityModel> quantities;
 
   ProductIngredientModel({
-    this.id,
-    this.ingredient,
-    this.product,
-    num amount,
-    num cost,
-    Map<String, ProductQuantityModel> quantities,
+    String? id,
+    IngredientModel? ingredient,
+    ProductModel? product,
+    num? amount,
+    num? cost,
+    Map<String, ProductQuantityModel>? quantities,
   })  : quantities = quantities ?? {},
         amount = amount ?? 0 {
-    id ??= ingredient?.id;
+    if (id != null) this.id = id;
+
+    if (ingredient != null) {
+      this.id = ingredient.id;
+      this.ingredient = ingredient;
+    }
+    if (product != null) this.product = product;
   }
 
   factory ProductIngredientModel.fromObject(ProductIngredientObject object) =>
@@ -39,7 +45,7 @@ class ProductIngredientModel {
         amount: object.amount,
         quantities: {
           for (var quantity in object.quantities)
-            quantity.id: ProductQuantityModel.fromObject(quantity)
+            quantity.id!: ProductQuantityModel.fromObject(quantity)
         },
       ).._prepareQuantities();
 
@@ -49,16 +55,14 @@ class ProductIngredientModel {
   Future<void> changeIngredient(String newId) async {
     await remove();
 
-    id = newId;
-    ingredient = StockModel.instance.getIngredient(id);
+    setIngredient(StockModel.instance.getIngredient(newId)!);
+    await product.updateIngredient(this);
     print('change ingredient to ${ingredient.name}');
-
-    return Storage.instance.set(Stores.menu, {prefix: toObject().toMap()});
   }
 
-  bool exist(String id) => quantities.containsKey(id);
+  bool exist(String? id) => quantities.containsKey(id);
 
-  ProductQuantityModel getQuantity(String id) =>
+  ProductQuantityModel? getQuantity(String? id) =>
       exist(id) ? quantities[id] : null;
 
   Future<void> remove() async {
@@ -68,10 +72,15 @@ class ProductIngredientModel {
     product.removeIngredient(id);
   }
 
-  void removeQuantity(String id) {
+  void removeQuantity(String? id) {
     quantities.remove(id);
 
     product.updateIngredient(this);
+  }
+
+  void setIngredient(IngredientModel model) {
+    ingredient = model;
+    id = model.id;
   }
 
   ProductIngredientObject toObject() => ProductIngredientObject(
@@ -90,16 +99,16 @@ class ProductIngredientModel {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  void updateQuantity(ProductQuantityModel quantity) {
+  Future<void> updateQuantity(ProductQuantityModel quantity) async {
     if (!exist(quantity.id)) {
       quantities[quantity.id] = quantity;
 
       final updateData = {'${quantity.prefix}': quantity.toObject().toMap()};
 
-      Storage.instance.set(Stores.menu, updateData);
+      await Storage.instance.set(Stores.menu, updateData);
     }
 
-    product.updateIngredient(this);
+    await product.updateIngredient(this);
   }
 
   void _prepareQuantities() {

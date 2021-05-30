@@ -10,13 +10,13 @@ class CurrencyProvider extends ChangeNotifier {
 
   static CurrencyProvider get instance => _instance;
 
-  String _usage;
+  String? _usage;
 
-  List<num> types;
+  late List<num> types;
 
-  bool isInt;
+  late bool isInt;
 
-  int intIndex;
+  late int intIndex;
 
   CurrencyProvider._constructor() {
     // TODO: make it setable
@@ -27,7 +27,7 @@ class CurrencyProvider extends ChangeNotifier {
   // if value = 27 => 30
   // if value = 30 => 50
   // if value = 100 => 500
-  num ceil(num value) {
+  num? ceil(num? value) {
     if (value == null) return null;
 
     if (value != value.ceil()) return value.ceil();
@@ -43,8 +43,8 @@ class CurrencyProvider extends ChangeNotifier {
     return value;
   }
 
-  Future<String> getUsage() async {
-    _usage = await Cache.instance.get<String>(Caches.currency_code);
+  Future<String?> getUsage() async {
+    _usage = await Cache.instance.get<String>(Caches.currency_code) ?? '新台幣';
     return _usage;
   }
 
@@ -57,9 +57,9 @@ class CurrencyProvider extends ChangeNotifier {
     return isInt ? value.round().toString() : value.toString();
   }
 
-  void _setUsage(String value) {
+  void _setUsage(String? value) {
     if (value != null && value != _usage) {
-      types = candidates[value];
+      types = candidates[value]!;
 
       // index when money start using int
       intIndex = 0;

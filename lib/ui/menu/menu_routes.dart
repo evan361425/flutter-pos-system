@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/product/widgets/quantity_search_scaffold.dart';
 import 'package:possystem/ui/splash/not_found_splash.dart';
@@ -25,20 +27,34 @@ class MenuRoutes {
       case catalog:
         return (_) => CatalogScreen();
       case catalogModal:
-        return (_) => CatalogModal(catalog: settings.arguments);
+        return (_) =>
+            CatalogModal(catalog: settings.arguments as CatalogModel?);
       case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
-              value: settings.arguments,
+              value: settings.arguments as ProductModel,
               builder: (context, __) => ProductScreen(),
             );
       case productModal:
-        return (_) => ProductModal(product: settings.arguments);
+        return (_) =>
+            ProductModal(product: settings.arguments as ProductModel?);
       case productIngredient:
-        return (_) => IngredientModal(ingredient: settings.arguments);
+        return (_) {
+          if (settings.arguments is ProductIngredientModel) {
+            final ingredient = settings.arguments as ProductIngredientModel;
+            return IngredientModal(
+              ingredient: ingredient,
+              product: ingredient.product,
+            );
+          } else {
+            return IngredientModal(product: settings.arguments as ProductModel);
+          }
+        };
       case productIngredientSearch:
-        return (_) => IngredientSearchScaffold(text: settings.arguments);
+        return (_) =>
+            IngredientSearchScaffold(text: settings.arguments as String?);
       case productQuantitySearch:
-        return (_) => QuantitySearchScaffold(text: settings.arguments);
+        return (_) =>
+            QuantitySearchScaffold(text: settings.arguments as String?);
       default:
         print(settings);
         return (_) => NotFoundSplash();

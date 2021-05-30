@@ -11,11 +11,11 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
 
 class IngredientScreen extends StatefulWidget {
-  final IngredientModel ingredient;
+  final IngredientModel? ingredient;
 
   final bool isNew;
 
-  IngredientScreen({Key key, this.ingredient})
+  IngredientScreen({Key? key, this.ingredient})
       : isNew = ingredient == null,
         super(key: key);
 
@@ -29,7 +29,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
   final _amountController = TextEditingController();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +53,8 @@ class _IngredientScreenState extends State<IngredientScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _nameController.text = widget.ingredient?.name;
-    _amountController.text =
-        widget.ingredient?.currentAmount?.toString() ?? '0';
+    _nameController.text = widget.ingredient?.name ?? '';
+    _amountController.text = widget.ingredient?.currentAmount.toString() ?? '0';
   }
 
   @override
@@ -117,14 +116,15 @@ class _IngredientScreenState extends State<IngredientScreen> {
   }
 
   List<Widget> _fieldProducts() {
-    final ingredients = MenuModel.instance.getIngredients(widget.ingredient.id);
+    final ingredients =
+        MenuModel.instance.getIngredients(widget.ingredient!.id);
 
     return [
       const Divider(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
         child: Text(
-          '使用 ${widget.ingredient.name} 的產品',
+          '使用 ${widget.ingredient!.name} 的產品',
           style: Theme.of(context).textTheme.caption,
         ),
       ),
@@ -158,7 +158,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
   IngredientObject _parseObject() {
     return IngredientObject(
       name: _nameController.text,
-      currentAmount: num.tryParse(_amountController.text),
+      currentAmount: num.tryParse(_amountController.text) ?? 0,
     );
   }
 
@@ -167,18 +167,18 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
     if (widget.isNew) {
       final ingredient = IngredientModel(
-        name: object.name,
-        currentAmount: object.currentAmount,
+        name: object.name!,
+        currentAmount: object.currentAmount!,
       );
 
       StockModel.instance.updateIngredient(ingredient);
     } else {
-      widget.ingredient.update(object);
+      widget.ingredient!.update(object);
     }
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
 

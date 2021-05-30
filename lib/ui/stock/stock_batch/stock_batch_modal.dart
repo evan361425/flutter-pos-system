@@ -9,9 +9,9 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
 class StockBatchModal extends StatefulWidget {
-  final StockBatchModel batch;
+  final StockBatchModel? batch;
 
-  const StockBatchModal({Key key, this.batch}) : super(key: key);
+  const StockBatchModal({Key? key, this.batch}) : super(key: key);
 
   @override
   _StockBatchModalState createState() => _StockBatchModalState();
@@ -22,10 +22,10 @@ class _StockBatchModalState extends State<StockBatchModal> {
   final TextEditingController _nameController = TextEditingController();
   final updateData = <String, num>{};
   final List<IngredientModel> ingredients =
-      StockModel.instance.ingredients.values.toList();
+      StockModel.instance.ingredients!.values.toList();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
                 child: ListView.builder(
                   itemBuilder: (_, index) =>
                       _fieldIngredient(ingredients[index]),
-                  itemCount: StockModel.instance.ingredients.length,
+                  itemCount: StockModel.instance.ingredients!.length,
                 ),
               ),
             ),
@@ -69,7 +69,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _nameController.text = widget.batch?.name;
+    _nameController.text = widget.batch?.name ?? '';
   }
 
   @override
@@ -80,14 +80,14 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
   Widget _fieldIngredient(IngredientModel ingredient) {
     return TextFormField(
-      onSaved: (String value) {
-        final numValue = num.tryParse(value);
+      onSaved: (String? value) {
+        final numValue = num.tryParse(value!);
         if (numValue != null && numValue != 0) {
           updateData[ingredient.id] = numValue;
         }
       },
       initialValue: widget.batch?.exist(ingredient.id) == true
-          ? widget.batch.getNumOfId(ingredient.id).toString()
+          ? widget.batch!.getNumOfId(ingredient.id).toString()
           : '',
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
@@ -125,12 +125,12 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
   void _updateBatches() {
     updateData.clear();
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
 
     final name = _nameController.text;
 
     if (widget.batch != null) {
-      widget.batch.update(StockBatchObject(name: name, data: updateData));
+      widget.batch!.update(StockBatchObject(name: name, data: updateData));
     } else {
       final model = StockBatchModel(name: name, data: updateData);
 
@@ -139,7 +139,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
 

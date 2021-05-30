@@ -21,7 +21,7 @@ int _hashMonth(DateTime e) => e.month + e.year * 100;
 class AnalysisScreen extends StatelessWidget {
   static final state = GlobalKey<_BodyState>();
 
-  const AnalysisScreen({Key key}) : super(key: key);
+  const AnalysisScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +34,14 @@ class AnalysisScreen extends StatelessWidget {
 }
 
 class _Body extends StatefulWidget {
-  const _Body({Key key}) : super(key: key);
+  const _Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<_Body> {
-  Locale _locale;
+  Locale? _locale;
 
   final LinkedHashMap<DateTime, int> _orderCounts = LinkedHashMap(
     equals: isSameDay,
@@ -49,7 +49,7 @@ class _BodyState extends State<_Body> {
   );
   final List<int> _loadedCounts = <int>[];
 
-  List<OrderObject> _data;
+  List<OrderObject>? _data;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.week;
@@ -108,7 +108,7 @@ class _BodyState extends State<_Body> {
     });
   }
 
-  Widget _badgeBuilder(BuildContext context, DateTime day, List value) {
+  Widget? _badgeBuilder(BuildContext context, DateTime day, List value) {
     if (value.isEmpty) return null;
 
     return Positioned(
@@ -127,13 +127,13 @@ class _BodyState extends State<_Body> {
   }
 
   Widget _body(BuildContext context) {
-    if (_data.isEmpty) {
+    if (_data!.isEmpty) {
       return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.caption);
     }
 
     return ListView.builder(
-      itemBuilder: (context, index) => _orderTile(_data[index]),
-      itemCount: _data.length,
+      itemBuilder: (context, index) => _orderTile(_data![index]),
+      itemCount: _data!.length,
     );
   }
 
@@ -174,7 +174,8 @@ class _BodyState extends State<_Body> {
     setState(() {
       try {
         _orderCounts.addAll(<DateTime, int>{
-          for (final row in result) Util.fromUTC(row['createdAt']): row['count']
+          for (final row in result)
+            Util.fromUTC(row['createdAt'] as int): row['count'] as int
         });
       } catch (e) {
         print(e);
@@ -192,7 +193,7 @@ class _BodyState extends State<_Body> {
 
   Widget _orderTile(OrderObject order) {
     final title = order.products.map<String>((e) {
-      final count = e.count > 1 ? ' * ${e.count}' : '';
+      final count = e.count! > 1 ? ' * ${e.count}' : '';
       return '${e.productName}$count';
     }).join('、');
     final hour = order.createdAt.hour.toString().padLeft(2, '0');
@@ -206,7 +207,7 @@ class _BodyState extends State<_Body> {
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: MetaBlock.withString(context, [
         '總價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
-        '付額：${CurrencyProvider.instance.numToString(order.paid)}',
+        '付額：${CurrencyProvider.instance.numToString(order.paid!)}',
       ]),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => OrderModal(order: order)),
@@ -227,6 +228,6 @@ class _BodyState extends State<_Body> {
         _data =
             result.map<OrderObject>((row) => OrderObject.build(row)).toList();
       });
-    }).catchError((err) => print(err));
+    });
   }
 }

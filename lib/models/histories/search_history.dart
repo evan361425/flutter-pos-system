@@ -7,22 +7,28 @@ final _ToCaches = const <SearchHistoryTypes, Caches>{
 
 class SearchHistory {
   final Caches type;
-  List<String> histories;
+  List<String>? histories;
 
-  SearchHistory(SearchHistoryTypes type) : type = _ToCaches[type];
+  SearchHistory(SearchHistoryTypes type) : type = _ToCaches[type]!;
 
-  Future<void> add(String history) {
-    histories ??= [];
-    histories.remove(history);
-    histories.insert(0, history);
-    if (histories.length > 8) histories.removeLast();
+  Future<void> add(String history) async {
+    // sometimes user enter too fast, need to wait for adding keyword
+    if (histories == null) await get();
 
-    return Cache.instance.set<List>(type, histories);
+    histories!.remove(history);
+    histories!.insert(0, history);
+    if (histories!.length > 8) histories!.removeLast();
+
+    await Cache.instance.set<List>(type, histories!);
   }
 
   Future<Iterable<String>> get() async {
-    histories ??= await Cache.instance.get<List>(type) ?? [];
-    return histories;
+    if (histories == null) {
+      final data = await Cache.instance.get<List>(type) as List<String>?;
+      histories = data ?? [];
+    }
+
+    return histories!;
   }
 }
 

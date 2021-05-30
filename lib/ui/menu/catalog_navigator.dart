@@ -4,7 +4,7 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 class CatalogNavigator extends StatelessWidget {
-  CatalogNavigator({Key key, @required this.catalog}) : super(key: key);
+  CatalogNavigator({Key? key, required this.catalog}) : super(key: key);
 
   final CatalogModel catalog;
   final navigatorKey = GlobalKey<NavigatorState>();
@@ -13,7 +13,7 @@ class CatalogNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        navigatorKey.currentState.pop();
+        navigatorKey.currentState!.pop();
         return false;
       },
       child: MultiProvider(
@@ -45,7 +45,7 @@ class _CatalogRouteObserver extends RouteObserver<PageRoute> {
   final BuildContext context;
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     if (previousRoute == null) {
       Navigator.of(context).pop();
     } else {

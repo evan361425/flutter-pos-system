@@ -15,16 +15,16 @@ class IngredientObject {
     this.updatedAt,
   });
 
-  String id;
-  String name;
-  num currentAmount;
-  num warningAmount;
-  num alertAmount;
-  num lastAmount;
-  num lastAddAmount;
-  DateTime updatedAt;
+  String? id;
+  String? name;
+  num? currentAmount;
+  num? warningAmount;
+  num? alertAmount;
+  num? lastAmount;
+  num? lastAddAmount;
+  DateTime? updatedAt;
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'name': name,
       'currentAmount': currentAmount,
@@ -36,16 +36,16 @@ class IngredientObject {
     };
   }
 
-  Map<String, Object> diff(IngredientModel ingredient) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(IngredientModel ingredient) {
+    final result = <String, Object?>{};
     final prefix = ingredient.prefix;
 
     if (name != null && name != ingredient.name) {
-      ingredient.name = name;
+      ingredient.name = name!;
       result['$prefix.name'] = name;
     }
     if (currentAmount != null && currentAmount != ingredient.currentAmount) {
-      ingredient.currentAmount = currentAmount;
+      ingredient.currentAmount = currentAmount!;
       result['$prefix.currentAmount'] = currentAmount;
     }
     if (warningAmount != null && warningAmount != ingredient.warningAmount) {
@@ -73,16 +73,16 @@ class IngredientObject {
     return result;
   }
 
-  factory IngredientObject.build(Map<String, Object> data) {
+  factory IngredientObject.build(Map<String, Object?> data) {
     return IngredientObject(
-      id: data['id'],
-      name: data['name'],
-      currentAmount: data['currentAmount'],
-      warningAmount: data['warningAmount'],
-      alertAmount: data['alertAmount'],
-      lastAmount: data['lastAmount'],
-      lastAddAmount: data['lastAddAmount'],
-      updatedAt: Util.parseDate(data['updatedTime'], true),
+      id: data['id'] as String?,
+      name: data['name'] as String?,
+      currentAmount: data['currentAmount'] as num?,
+      warningAmount: data['warningAmount'] as num?,
+      alertAmount: data['alertAmount'] as num?,
+      lastAmount: data['lastAmount'] as num?,
+      lastAddAmount: data['lastAddAmount'] as num?,
+      updatedAt: Util.parseDate(data['updatedTime'] as String?, true),
     );
   }
 }
@@ -94,71 +94,71 @@ class QuantityObject {
     this.defaultProportion,
   });
 
-  final String id;
-  final String name;
-  final num defaultProportion;
+  final String? id;
+  final String? name;
+  final num? defaultProportion;
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'name': name,
       'defaultProportion': defaultProportion,
     };
   }
 
-  Map<String, Object> diff(QuantityModel quantity) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(QuantityModel quantity) {
+    final result = <String, Object?>{};
     final prefix = quantity.prefix;
 
     if (name != null && name != quantity.name) {
-      quantity.name = name;
+      quantity.name = name!;
       result['$prefix.name'] = name;
     }
     if (defaultProportion != null &&
         defaultProportion != quantity.defaultProportion) {
-      quantity.defaultProportion = defaultProportion;
+      quantity.defaultProportion = defaultProportion!;
       result['$prefix.defaultProportion'] = defaultProportion;
     }
 
     return result;
   }
 
-  factory QuantityObject.build(Map<String, Object> data) {
+  factory QuantityObject.build(Map<String, Object?> data) {
     return QuantityObject(
-      id: data['id'],
-      name: data['name'],
-      defaultProportion: data['defaultProportion'],
+      id: data['id'] as String?,
+      name: data['name'] as String?,
+      defaultProportion: data['defaultProportion'] as num?,
     );
   }
 }
 
 class StockBatchObject {
   StockBatchObject({
-    this.name,
     this.id,
+    this.name,
     this.data,
   });
 
-  String name;
-  final Map<String, num> data;
-  final String id;
+  String? name;
+  Map<String, num>? data;
+  final String? id;
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'name': name,
       'data': data,
     };
   }
 
-  Map<String, Object> diff(StockBatchModel batch) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(StockBatchModel batch) {
+    final result = <String, Object?>{};
     final prefix = batch.prefix;
 
     if (name != null && name != batch.name) {
-      batch.name = name;
+      batch.name = name!;
       result['$prefix.name'] = name;
     }
     if (data != null) {
-      data.forEach((key, value) {
+      data!.forEach((key, value) {
         if (batch.data[key] != value) {
           batch.data[key] = value;
           result['$prefix.data.$key'] = value;
@@ -169,7 +169,7 @@ class StockBatchObject {
     return result;
   }
 
-  factory StockBatchObject.build(Map<String, Object> data) {
+  factory StockBatchObject.build(Map<String, Object?> data) {
     final batchData = <String, num>{};
     final oriData = data['data'];
 
@@ -180,8 +180,8 @@ class StockBatchObject {
     }
 
     return StockBatchObject(
-      id: data['id'],
-      name: data['name'],
+      id: data['id'] as String,
+      name: data['name'] as String,
       data: batchData,
     );
   }

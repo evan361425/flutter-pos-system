@@ -3,20 +3,20 @@ import 'package:possystem/constants/icons.dart';
 
 class SearchBarInline extends StatelessWidget {
   const SearchBarInline({
-    Key key,
-    @required this.heroTag,
+    Key? key,
+    required this.heroTag,
     this.text,
     this.errorText,
     this.hintText,
     this.helperText,
-    @required this.onTap,
+    required this.onTap,
   }) : super(key: key);
 
   final String heroTag;
-  final String text;
-  final String errorText;
-  final String hintText;
-  final String helperText;
+  final String? text;
+  final String? errorText;
+  final String? hintText;
+  final String? helperText;
   final Future<void> Function(BuildContext) onTap;
 
   @override

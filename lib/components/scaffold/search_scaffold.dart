@@ -6,11 +6,11 @@ import 'package:possystem/constants/icons.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   const SearchScaffold({
-    Key key,
-    @required this.onChanged,
-    @required this.itemBuilder,
-    @required this.emptyBuilder,
-    @required this.searchHistory,
+    Key? key,
+    required this.onChanged,
+    required this.itemBuilder,
+    required this.emptyBuilder,
+    required this.searchHistory,
     this.heroTag,
     this.text = '',
     this.hintText = '',
@@ -21,14 +21,14 @@ class SearchScaffold<T> extends StatefulWidget {
   }) : super(key: key);
 
   final Future<List<T>> Function(String) onChanged;
-  final String heroTag;
+  final String? heroTag;
   final int maxLength;
   final String text;
   final String helperText;
   final String hintText;
   final String labelText;
   final TextCapitalization textCapitalization;
-  final Future<Iterable<String>> Function() searchHistory;
+  final Future<Iterable<String>?> Function() searchHistory;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
 
@@ -45,7 +45,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   List<T> list = [];
 
   void setSearchKeyword(String keyword) {
-    searchBar.currentState.text = keyword;
+    searchBar.currentState!.text = keyword;
   }
 
   void updateView() {
@@ -88,14 +88,14 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   }
 
   Widget _body(BuildContext context) {
-    if (searchBar.currentState.text.isEmpty) {
-      return FutureBuilder<Iterable<String>>(
+    if (searchBar.currentState!.text.isEmpty) {
+      return FutureBuilder<Iterable<String>?>(
         future: widget.searchHistory(),
         builder: (context, snapshot) {
           // while data is loading:
           if (!snapshot.hasData) return CircularLoading();
 
-          return _bodyHistories(context, snapshot.data);
+          return _bodyHistories(context, snapshot.data!);
         },
       );
     } else if (isNotEmpty) {
@@ -110,7 +110,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
         Expanded(child: _resultList()),
       ]);
     } else {
-      return widget.emptyBuilder(context, searchBar.currentState.text);
+      return widget.emptyBuilder(context, searchBar.currentState!.text);
     }
   }
 
@@ -150,7 +150,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
       list.clear();
       isSearching = true;
     });
-    final List<T> newList = await widget.onChanged(text);
+    final newList = await widget.onChanged(text) as List<T>;
     setState(() {
       list.addAll(newList);
       isSearching = false;
@@ -158,6 +158,6 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   }
 
   Future<void> _onRefresh() async {
-    await _onChanged(searchBar.currentState.text);
+    await _onChanged(searchBar.currentState!.text);
   }
 }

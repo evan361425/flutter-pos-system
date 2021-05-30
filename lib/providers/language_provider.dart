@@ -24,18 +24,15 @@ class LanguageProvider extends ChangeNotifier {
 
   static const Locale defaultLocale = Locale('zh', 'TW');
 
-  Locale _locale;
+  late Locale _locale;
 
   LanguageProvider();
 
   Locale get locale => _locale;
 
-  Future<Locale> getLocale() async {
-    _locale ??= _parseLanguage(
-          await Cache.instance.get<String>(Caches.language_code),
-        ) ??
-        LanguageProvider.defaultLocale;
-    return _locale;
+  Future<void> initialize() async {
+    final locale = await Cache.instance.get<String>(Caches.language_code);
+    _locale = _parseLanguage(locale) ?? LanguageProvider.defaultLocale;
   }
 
   Future<void> setLocale(Locale locale) async {
@@ -49,7 +46,9 @@ class LanguageProvider extends ChangeNotifier {
     }
   }
 
-  Locale _parseLanguage(String value) {
+  Locale? _parseLanguage(String? value) {
+    if (value == null) return null;
+
     final codes = value.split('_');
     if (codes.isEmpty) return null;
 
@@ -57,7 +56,7 @@ class LanguageProvider extends ChangeNotifier {
   }
 
   static Locale localResolutionCallback(
-    Locale locale,
+    Locale? locale,
     Iterable<Locale> supportedLocales,
   ) {
     // check if the current device locale is supported or not

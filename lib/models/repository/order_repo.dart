@@ -9,15 +9,15 @@ class OrderRepo {
 
   OrderRepo._constructor();
 
-  Future<num> getStashLength() {
+  Future<num?> getStashLength() {
     return Database.instance.count(Tables.order_stash);
   }
 
-  Future<OrderObject> pop() async {
-    final row = await Database.instance.getLast(
-      Tables.order,
-      columns: ['id', 'encodedProducts', 'createdAt'],
-    );
+  Future<OrderObject?> pop() async {
+    final row = await Database.instance.getLast(Tables.order,
+        columns: ['id', 'encodedProducts', 'createdAt'],
+        where: 'createdAt >= ?',
+        whereArgs: [Util.toUTC(hour: 0)]);
     if (row == null) return null;
     print('order pop ${row['id']}');
 
@@ -48,7 +48,7 @@ class OrderRepo {
     });
   }
 
-  Future<OrderObject> popStash() async {
+  Future<OrderObject?> popStash() async {
     final row = await Database.instance.getLast(
       Tables.order_stash,
       columns: ['id', 'encodedProducts', 'createdAt'],
@@ -73,12 +73,15 @@ class OrderRepo {
     );
 
     final row = result[0];
-    return {'revenue': row['revenue'] ?? 0, 'count': row['count']};
+    return {
+      'revenue': row['revenue'] as num? ?? 0,
+      'count': row['count'] as num? ?? 0,
+    };
 
     // return result.isEmpty ? {'revenue': 0, 'count': 0} : result[0];
   }
 
-  Future<List<Map<String, Object>>> countByDay(DateTime start, DateTime end) {
+  Future<List<Map<String, Object?>>> countByDay(DateTime start, DateTime end) {
     return Database.rawQuery(
       Tables.order,
       columns: ['COUNT(*) count', 'createdAt'],

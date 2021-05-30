@@ -24,27 +24,27 @@ class CatalogModel extends ChangeNotifier {
   final Map<String, ProductModel> products;
 
   CatalogModel({
-    DateTime createdAt,
-    String id,
-    @required this.index,
-    @required this.name,
-    Map<String, ProductModel> products,
+    DateTime? createdAt,
+    String? id,
+    required this.index,
+    required this.name,
+    Map<String, ProductModel>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
         products = products ?? {},
         id = id ?? Util.uuidV4();
 
   factory CatalogModel.fromObject(CatalogObject object) => CatalogModel(
         id: object.id,
-        index: object.index,
+        index: object.index!,
         name: object.name,
         createdAt: object.createdAt,
         products: {
           for (var product in object.products)
-            product.id: ProductModel.fromMap(product)
+            product.id!: ProductModel.fromMap(product)
         },
       ).._preparePorducts();
 
-  String get createdDate => sprintf('%04d-%02d-%02d', [
+  String? get createdDate => sprintf('%04d-%02d-%02d', [
         createdAt.year,
         createdAt.month,
         createdAt.day,
@@ -61,9 +61,9 @@ class CatalogModel extends ChangeNotifier {
   List<ProductModel> get productList =>
       products.values.toList()..sort((a, b) => a.index.compareTo(b.index));
 
-  bool exist(String id) => products.containsKey(id);
+  bool exist(String? id) => products.containsKey(id);
 
-  ProductModel getProduct(String id) => exist(id) ? products[id] : null;
+  ProductModel? getProduct(String? id) => exist(id) ? products[id] : null;
 
   Future<void> remove() async {
     print('remove catalog $name');
@@ -79,7 +79,7 @@ class CatalogModel extends ChangeNotifier {
   }
 
   Future<void> reorderProducts(List<ProductModel> products) {
-    final updateData = <String, Object>{};
+    final updateData = <String, Object?>{};
     var i = 1;
 
     products.forEach((product) {
@@ -109,13 +109,13 @@ class CatalogModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  void updateProduct(ProductModel product) {
+  Future<void> updateProduct(ProductModel product) async {
     if (!exist(product.id)) {
       products[product.id] = product;
 
       final updateData = {product.prefix: product.toObject().toMap()};
 
-      Storage.instance.set(Stores.menu, updateData);
+      await Storage.instance.set(Stores.menu, updateData);
     }
 
     notifyListeners();

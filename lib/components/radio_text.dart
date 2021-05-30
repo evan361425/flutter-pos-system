@@ -3,12 +3,12 @@ import 'package:possystem/constants/constant.dart';
 
 class RadioText extends StatefulWidget {
   RadioText({
-    Key key,
-    @required this.onSelected,
-    @required this.child,
-    @required this.groupId,
-    @required this.value,
-    bool isSelected,
+    Key? key,
+    required this.onSelected,
+    required this.child,
+    required this.groupId,
+    required this.value,
+    bool? isSelected,
   }) : super(key: key) {
     // if not set initial a new one
     if (group == null) {
@@ -16,28 +16,28 @@ class RadioText extends StatefulWidget {
     } else if (isSelected != null) {
       // if specific setting
       // update previous one to unchecked
-      if (isSelected && group.selected != value) group.updateSelect(value);
+      if (isSelected && group!.selected != value) group!.updateSelect(value);
     }
   }
 
   final void Function() onSelected;
   final Widget child;
   final String groupId;
-  final String value;
+  final String? value;
 
-  static final _groups = <String, _Item>{};
+  static final _groups = <String, _Item?>{};
   static void clearSelected(String groupId) {
     _groups[groupId]?.updateSelect(null);
   }
 
   bool get isSelected => group?.checkSelect(value) ?? false;
 
-  _Item get group => _groups[groupId];
-  set group(_Item item) => _groups[groupId] = item;
+  _Item? get group => _groups[groupId];
+  set group(_Item? item) => _groups[groupId] = item;
 
   void dispose() {
-    group.removeElement(value);
-    if (group.isEmpty) _groups.remove(groupId);
+    group!.removeElement(value);
+    if (group!.isEmpty) _groups.remove(groupId);
   }
 
   @override
@@ -82,7 +82,7 @@ class _RadioTextState extends State<RadioText> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.group.addElement(widget.value, setState);
+    widget.group!.addElement(widget.value, setState);
   }
 
   @override
@@ -97,26 +97,26 @@ class _RadioTextState extends State<RadioText> {
 class _Item {
   _Item(this._selected);
 
-  String _selected;
-  final _elements = <String, Function(Function())>{};
+  String? _selected;
+  final _elements = <String?, Function(Function())>{};
 
-  bool checkSelect(String value) => _selected == value;
+  bool checkSelect(String? value) => _selected == value;
 
-  void updateSelect(String value) {
+  void updateSelect(String? value) {
     _selected = value;
     _elements.values.forEach((rebuilder) {
       rebuilder(() {});
     });
   }
 
-  void addElement(String id, Function rebuilder) {
-    _elements[id] = rebuilder;
+  void addElement(String? id, Function rebuilder) {
+    _elements[id] = rebuilder as dynamic Function(dynamic Function());
   }
 
-  void removeElement(String id) {
+  void removeElement(String? id) {
     _elements.remove(id);
   }
 
   bool get isEmpty => _elements.isEmpty;
-  String get selected => _selected;
+  String? get selected => _selected;
 }

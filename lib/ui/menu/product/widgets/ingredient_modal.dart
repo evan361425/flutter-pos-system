@@ -6,6 +6,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
@@ -13,14 +14,16 @@ import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
 
 class IngredientModal extends StatefulWidget {
-  final ProductIngredientModel ingredient;
+  final ProductIngredientModel? ingredient;
+  final ProductModel product;
 
   final bool isNew;
 
   IngredientModal({
-    Key key,
+    Key? key,
     this.ingredient,
-  })  : isNew = ingredient.id == null,
+    required this.product,
+  })  : isNew = ingredient == null,
         super(key: key);
 
   @override
@@ -32,7 +35,7 @@ class _IngredientModalState extends State<IngredientModal> {
   final _amountController = TextEditingController();
 
   bool isSaving = false;
-  String errorMessage;
+  String? errorMessage;
   String ingredientId = '';
   String ingredientName = '';
 
@@ -42,7 +45,7 @@ class _IngredientModalState extends State<IngredientModal> {
       appBar: AppBar(
         title: Text(widget.isNew
             ? '新增成份'
-            : '設定成份「${widget.ingredient.ingredient.name}」'),
+            : '設定成份「${widget.ingredient!.ingredient.name}」'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -68,10 +71,12 @@ class _IngredientModalState extends State<IngredientModal> {
   void initState() {
     super.initState();
 
+    print(widget.product.toObject().toMap());
+
     if (!widget.isNew) {
-      _amountController.text = widget.ingredient.amount?.toString();
-      ingredientId = widget.ingredient.id;
-      ingredientName = widget.ingredient.ingredient.name;
+      _amountController.text = widget.ingredient!.amount.toString();
+      ingredientId = widget.ingredient!.id;
+      ingredientName = widget.ingredient!.ingredient.name;
     }
   }
 
@@ -81,6 +86,7 @@ class _IngredientModalState extends State<IngredientModal> {
         title: Text('刪除'),
         leading: Icon(KIcons.delete, color: kNegativeColor),
         onTap: () async {
+          // pop off sheet
           Navigator.of(context).pop();
           await _handleDelete();
         },
@@ -101,6 +107,7 @@ class _IngredientModalState extends State<IngredientModal> {
             IconButton(
               onPressed: () => showCircularBottomSheet(
                 context,
+                useRootNavigator: false,
                 actions: _actions(context),
               ),
               icon: Icon(KIcons.more),
@@ -129,12 +136,13 @@ class _IngredientModalState extends State<IngredientModal> {
       errorText: errorMessage,
       helperText: '新增成份種類後，可至庫存設定相關資訊',
       onTap: (BuildContext context) async {
-        final ingredient = await Navigator.of(context).pushNamed(
+        final result = await Navigator.of(context).pushNamed(
           MenuRoutes.productIngredientSearch,
           arguments: ingredientName,
         );
 
-        if (ingredient != null && ingredient is IngredientModel) {
+        if (result != null && result is IngredientModel) {
+          final ingredient = result;
           print('User choose ingreidnet: ${ingredient.name}');
           setState(() {
             errorMessage = null;
@@ -165,17 +173,18 @@ class _IngredientModalState extends State<IngredientModal> {
       builder: (BuildContext context) {
         return DeleteDialog(
           content: Text('此動作將無法復原'),
-          onDelete: (_) => widget.ingredient.remove(),
+          onDelete: (_) => widget.ingredient!.remove(),
         );
       },
     );
     if (isDeleted == true) Navigator.of(context).pop();
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
+    print('start validating product ingredient');
     if (!_validate()) return;
 
-    _updateIngredient();
+    await _updateIngredient();
 
     Navigator.of(context).pop();
   }
@@ -187,31 +196,31 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  void _updateIngredient() {
+  Future<void> _updateIngredient() async {
     final object = _parseObject();
+    print('start ${widget.isNew ? 'adding' : 'updating'}: ${object.toMap()}');
 
-    if (widget.isNew) {
-      final ingredient = ProductIngredientModel(
-        ingredient: StockModel.instance.getIngredient(ingredientId),
-        product: widget.ingredient.product,
-        amount: object.amount,
-      );
-
-      ingredient.product.updateIngredient(ingredient);
-    } else {
-      widget.ingredient.update(object);
+    if (!widget.isNew) {
+      await widget.ingredient!.update(object);
     }
+
+    await widget.product.updateIngredient(widget.ingredient ??
+        ProductIngredientModel(
+          ingredient: StockModel.instance.getIngredient(ingredientId),
+          product: widget.product,
+          amount: object.amount,
+        ));
   }
 
   bool _validate() {
-    if (isSaving || !_formKey.currentState.validate()) return false;
+    if (isSaving || !_formKey.currentState!.validate()) return false;
 
     if (ingredientId.isEmpty) {
       setState(() => errorMessage = '必須設定成份種類。');
       return false;
     }
-    if (widget.ingredient.id != ingredientId &&
-        widget.ingredient.product.exist(ingredientId)) {
+    if (widget.ingredient?.id != ingredientId &&
+        widget.product.exist(ingredientId)) {
       setState(() => errorMessage = '成份重複。');
       return false;
     }

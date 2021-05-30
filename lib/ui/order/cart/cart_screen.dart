@@ -7,9 +7,9 @@ import 'cart_metadata.dart';
 import 'cart_product_list.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key key, this.productsKey}) : super(key: key);
+  const CartScreen({Key? key, this.productsKey}) : super(key: key);
 
-  final Key productsKey;
+  final Key? productsKey;
 
   @override
   Widget build(BuildContext context) {

@@ -7,14 +7,14 @@ import 'package:provider/provider.dart';
 import 'cart_product_list_tile.dart';
 
 class CartProductList extends StatefulWidget {
-  const CartProductList({Key key}) : super(key: key);
+  const CartProductList({Key? key}) : super(key: key);
 
   @override
   CartProductListState createState() => CartProductListState();
 }
 
 class CartProductListState extends State<CartProductList> {
-  ScrollController scrollController;
+  ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +29,10 @@ class CartProductListState extends State<CartProductList> {
             CartProductListTile(
               value: product.isSelected,
               selected: product.isSelected,
-              onChanged: (bool checked) => onSelected(checked, product),
+              onChanged: (bool? checked) => _handleSelected(checked, product),
               onTap: () {
                 cart.toggleAll(false);
-                onSelected(true, product);
+                _handleSelected(true, product);
               },
               title: Text(
                 product.product.name,
@@ -48,15 +48,15 @@ class CartProductListState extends State<CartProductList> {
     );
   }
 
-  void onSelected(bool checked, OrderProductModel product) {
-    if (product.toggleSelected(checked)) {
+  void _handleSelected(bool? checked, OrderProductModel product) {
+    if (checked != null && product.toggleSelected(checked)) {
       setState(() {});
     }
   }
 
   Future<void> scrollToBottom() {
-    return scrollController.animateTo(
-      scrollController.position.maxScrollExtent + 80,
+    return scrollController!.animateTo(
+      scrollController!.position.maxScrollExtent + 80,
       duration: Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
@@ -71,11 +71,11 @@ class CartProductListState extends State<CartProductList> {
 
 class _ProductCountAction extends StatefulWidget {
   _ProductCountAction({
-    Key key,
-    @required this.product,
+    Key? key,
+    required this.product,
   }) : super(key: key);
 
-  final OrderProductModel product;
+  final OrderProductModel? product;
 
   @override
   _ProductCountActionState createState() => _ProductCountActionState();
@@ -87,12 +87,12 @@ class _ProductCountActionState extends State<_ProductCountAction> {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
-        Text(widget.product.count.toString()),
+        Text(widget.product!.count.toString()),
         IconButton(
           icon: Icon(Icons.add_circle_outline_sharp),
-          onPressed: () => setState(() => widget.product.increment()),
+          onPressed: () => setState(() => widget.product!.increment()),
         ),
-        Text('${widget.product.price} 元'),
+        Text('${widget.product!.price} 元'),
       ],
     );
   }

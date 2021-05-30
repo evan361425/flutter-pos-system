@@ -9,7 +9,7 @@ import 'package:possystem/providers/currency_provider.dart';
 class OrderModal extends StatelessWidget {
   final OrderObject order;
 
-  const OrderModal({Key key, @required this.order}) : super(key: key);
+  const OrderModal({Key? key, required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,8 @@ class OrderModal extends StatelessWidget {
       children: [
         MetaBlock.withString(context, [
           '售價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
-          '付款：${CurrencyProvider.instance.numToString(order.paid)}',
-        ]),
+          '付款：${CurrencyProvider.instance.numToString(order.paid!)}',
+        ])!,
         Text(createdAt)
       ],
     );
@@ -59,7 +59,7 @@ class OrderModal extends StatelessWidget {
       final quantity = e.quantityName == null ? '' : '（${e.quantityName}）';
       return '${e.name}$quantity';
     });
-    final price = product.singlePrice * product.count;
+    final price = product.singlePrice! * product.count!;
 
     return CardTile(
       title: Text('${product.productName} * ${product.count}'),

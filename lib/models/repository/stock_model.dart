@@ -8,27 +8,28 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class StockModel extends ChangeNotifier {
-  static StockModel instance;
+  static late StockModel instance;
 
-  Map<String, IngredientModel> ingredients;
+  Map<String, IngredientModel>? ingredients;
 
   StockModel() {
     Storage.instance.get(Stores.stock).then((data) {
       ingredients = {};
 
-      if (data != null) {
-        try {
-          data.forEach((key, value) {
-            if (value is Map) {
-              ingredients[key] = IngredientModel.fromObject(
-                IngredientObject.build({'id': key, ...value}),
-              );
-            }
-          });
-        } catch (e, stack) {
-          print(e);
-          print(stack);
-        }
+      try {
+        data.forEach((key, value) {
+          if (value is Map) {
+            ingredients![key] = IngredientModel.fromObject(
+              IngredientObject.build({
+                'id': key,
+                ...value as Map<String, Object?>,
+              }),
+            );
+          }
+        });
+      } catch (e, stack) {
+        print(e);
+        print(stack);
       }
 
       notifyListeners();
@@ -36,22 +37,22 @@ class StockModel extends ChangeNotifier {
     StockModel.instance = this;
   }
 
-  List<IngredientModel> get ingredientList => ingredients.values.toList();
+  List<IngredientModel> get ingredientList => ingredients!.values.toList();
 
-  bool get isEmpty => ingredients.isEmpty;
-  bool get isNotEmpty => ingredients.isNotEmpty;
+  bool get isEmpty => ingredients!.isEmpty;
+  bool get isNotEmpty => ingredients!.isNotEmpty;
   bool get isNotReady => ingredients == null;
   bool get isReady => ingredients != null;
-  int get length => ingredients.length;
+  int get length => ingredients!.length;
 
-  String get updatedDate {
+  String? get updatedDate {
     if (isEmpty) return null;
 
-    DateTime lastest;
-    ingredients.values.forEach((element) {
+    DateTime? lastest;
+    ingredients!.values.forEach((element) {
       if (lastest == null) {
         lastest = element.updatedAt;
-      } else if (element.updatedAt?.isAfter(lastest) == true) {
+      } else if (element.updatedAt?.isAfter(lastest!) == true) {
         lastest = element.updatedAt;
       }
     });
@@ -60,7 +61,7 @@ class StockModel extends ChangeNotifier {
   }
 
   Future<void> applyAmounts(Map<String, num> amounts) {
-    final updateData = <String, Object>{};
+    final updateData = <String, Object?>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
@@ -75,33 +76,24 @@ class StockModel extends ChangeNotifier {
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  bool exist(String id) => ingredients.containsKey(id);
+  bool exist(String id) => ingredients![id] != null;
 
-  IngredientModel getIngredient(String id) =>
-      exist(id) ? ingredients[id] : null;
+  IngredientModel? getIngredient(String id) => ingredients![id];
 
-  /// [reverse] is helpful when reverting order
-  Future<void> order(OrderObject data, {OrderObject oldData}) {
+  /// [oldData] is helpful when reverting order
+  Future<void> order(OrderObject data, {OrderObject? oldData}) {
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
       product.ingredients.forEach((id, ingredient) {
-        if (amounts.containsKey(id)) {
-          amounts[id] -= ingredient.amount;
-        } else {
-          amounts[id] = -ingredient.amount;
-        }
+        amounts[id] = (amounts[id] ?? 0) - ingredient.amount;
       });
     });
 
     // if we need to update order, need to revert stock status
-    oldData?.products?.forEach((product) {
+    oldData?.products.forEach((product) {
       product.ingredients.forEach((id, ingredient) {
-        if (amounts.containsKey(id)) {
-          amounts[id] += ingredient.amount;
-        } else {
-          amounts[id] = ingredient.amount;
-        }
+        amounts[id] = (amounts[id] ?? 0) + ingredient.amount;
       });
     });
 
@@ -109,7 +101,7 @@ class StockModel extends ChangeNotifier {
   }
 
   void removeIngredient(String id) {
-    ingredients.remove(id);
+    ingredients!.remove(id);
 
     notifyListeners();
   }
@@ -119,7 +111,7 @@ class StockModel extends ChangeNotifier {
       return [];
     }
 
-    final similarities = ingredients.entries
+    final similarities = ingredients!.entries
         .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
         .where((e) => e.value > 0)
         .toList();
@@ -130,12 +122,15 @@ class StockModel extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => ingredients[e.key]).toList();
+    return similarities
+        .sublist(0, end)
+        .map((e) => getIngredient(e.key)!)
+        .toList();
   }
 
   void updateIngredient(IngredientModel ingredient) {
     if (!exist(ingredient.id)) {
-      ingredients[ingredient.id] = ingredient;
+      ingredients![ingredient.id] = ingredient;
 
       Storage.instance.add(
         Stores.stock,

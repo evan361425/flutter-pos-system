@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 class SingleTextDialog extends StatefulWidget {
   SingleTextDialog({
-    Key key,
+    Key? key,
     this.validator,
     this.decoration,
     this.initialValue,
     this.keyboardType,
   }) : super(key: key);
 
-  final String Function(String) validator;
-  final InputDecoration decoration;
-  final String initialValue;
-  final TextInputType keyboardType;
+  final String? Function(String?)? validator;
+  final InputDecoration? decoration;
+  final String? initialValue;
+  final TextInputType? keyboardType;
 
   @override
   _SingleTextDialogState createState() => _SingleTextDialogState();
@@ -52,8 +52,8 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
     );
   }
 
-  void onSubmit(String value) {
-    if (form.currentState.validate()) {
+  void onSubmit(String? value) {
+    if (form.currentState!.validate()) {
       Navigator.of(context).pop(value);
     }
   }
@@ -61,6 +61,6 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    textController.text = widget.initialValue;
+    textController.text = widget.initialValue!;
   }
 }

@@ -6,9 +6,9 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 
 class QuantityList extends StatelessWidget {
-  const QuantityList({Key key, this.quantities}) : super(key: key);
+  const QuantityList({Key? key, this.quantities}) : super(key: key);
 
-  final List<QuantityModel> quantities;
+  final List<QuantityModel>? quantities;
 
   @override
   Widget build(BuildContext context) {

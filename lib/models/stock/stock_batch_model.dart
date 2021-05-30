@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
@@ -14,21 +13,21 @@ class StockBatchModel {
   final Map<String, num> data;
 
   StockBatchModel({
-    @required this.name,
+    required this.name,
     id,
-    Map<String, num> data,
+    Map<String, num>? data,
   })  : id = id ?? Util.uuidV4(),
         data = data ?? {};
 
   factory StockBatchModel.fromObject(StockBatchObject object) =>
       StockBatchModel(
         id: object.id,
-        name: object.name,
+        name: object.name!,
         data: object.data,
       );
 
   String get prefix => id;
-  num getNumOfId(String id) => exist(id) ? data[id] : null;
+  num? getNumOfId(String id) => exist(id) ? data[id] : null;
 
   void apply() => StockModel.instance.applyAmounts(data);
 

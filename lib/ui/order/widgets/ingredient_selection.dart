@@ -8,15 +8,15 @@ import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
 class IngredientSelection extends StatefulWidget {
-  const IngredientSelection({Key key}) : super(key: key);
+  const IngredientSelection({Key? key}) : super(key: key);
 
   @override
   _IngredientSelectionState createState() => _IngredientSelectionState();
 }
 
 class _IngredientSelectionState extends State<IngredientSelection> {
-  ProductIngredientModel selectedIngredient;
-  String selectedQuantityId;
+  ProductIngredientModel? selectedIngredient;
+  String? selectedQuantityId;
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +49,11 @@ class _IngredientSelectionState extends State<IngredientSelection> {
         ]),
         SingleRowWrap(children: <Widget>[
           quantityDefaultOption(),
-          for (var quantity in selectedIngredient.quantities.values)
+          for (var quantity in selectedIngredient!.quantities.values)
             RadioText(
               onSelected: () {
                 final ingredient = OrderIngredientModel(
-                  ingredient: selectedIngredient,
+                  ingredient: selectedIngredient!,
                   quantity: quantity,
                 );
                 CartModel.instance.updateSelectedIngredient(ingredient);
@@ -76,7 +76,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
       groupId: 'order.quantities',
       value: CartModel.DEFAULT_QUANTITY_ID,
       isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
-      child: Text('預設值（${selectedIngredient.amount}）'),
+      child: Text('預設值（${selectedIngredient!.amount}）'),
     );
   }
 
@@ -88,7 +88,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
         padding: const EdgeInsets.all(kSpacing2),
         child: Text(
           text,
-          style: textTheme.bodyText1.copyWith(color: textTheme.caption.color),
+          style: textTheme.bodyText1!.copyWith(color: textTheme.caption!.color),
         ),
       );
     }

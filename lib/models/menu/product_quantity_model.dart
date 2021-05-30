@@ -5,14 +5,14 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class ProductQuantityModel {
-  String id;
+  late String id;
 
   /// connect to parent object
-  ProductIngredientModel ingredient;
+  late final ProductIngredientModel ingredient;
 
   /// connect to stock.
   /// When it set, [MenuModel.stockMode] must be true
-  QuantityModel quantity;
+  late QuantityModel quantity;
 
   /// ingredient per product
   num amount;
@@ -24,14 +24,20 @@ class ProductQuantityModel {
   num additionalPrice;
 
   ProductQuantityModel({
-    this.id,
-    this.quantity,
-    this.ingredient,
-    this.amount = 0,
-    this.additionalCost = 0,
-    this.additionalPrice = 0,
+    String? id,
+    QuantityModel? quantity,
+    ProductIngredientModel? ingredient,
+    required this.amount,
+    required this.additionalCost,
+    required this.additionalPrice,
   }) {
-    id ??= quantity?.id;
+    if (id != null) this.id = id;
+
+    if (quantity != null) {
+      this.id = quantity.id;
+      this.quantity = quantity;
+    }
+    if (ingredient != null) this.ingredient = ingredient;
   }
 
   factory ProductQuantityModel.fromObject(ProductQuantityObject object) =>
@@ -44,14 +50,12 @@ class ProductQuantityModel {
 
   String get prefix => '${ingredient.prefix}.quantities.$id';
 
-  void changeQuantity(String newId) async {
+  Future<void> changeQuantity(String newId) async {
     await remove();
 
-    id = newId;
-    quantity = QuantityRepo.instance.getQuantity(id);
+    setQuantity(QuantityRepo.instance.getQuantity(newId)!);
+    await ingredient.updateQuantity(this);
     print('change quantity to ${quantity.name}');
-
-    return Storage.instance.set(Stores.menu, {prefix: toObject().toMap()});
   }
 
   Future<void> remove() async {
@@ -59,6 +63,11 @@ class ProductQuantityModel {
     await Storage.instance.set(Stores.menu, {prefix: null});
 
     ingredient.removeQuantity(id);
+  }
+
+  void setQuantity(QuantityModel model) {
+    quantity = model;
+    id = model.id;
   }
 
   ProductQuantityObject toObject() => ProductQuantityObject(

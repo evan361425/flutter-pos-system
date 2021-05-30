@@ -4,9 +4,9 @@ import 'package:possystem/constants/icons.dart';
 
 abstract class OrderableList<T> extends StatefulWidget {
   OrderableList({
-    Key key,
-    @required this.items,
-    @required this.title,
+    Key? key,
+    required this.items,
+    required this.title,
   }) : super(key: key);
 
   final String title;
@@ -78,10 +78,10 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
 }
 
 class OrderableListItem extends StatelessWidget {
-  OrderableListItem({this.title, this.index, Key key}) : super(key: key);
+  OrderableListItem({this.title, this.index, Key? key}) : super(key: key);
 
-  final String title;
-  final int index;
+  final String? title;
+  final int? index;
 
   Widget _builder(BuildContext context) {
     return Row(
@@ -89,15 +89,15 @@ class OrderableListItem extends StatelessWidget {
       children: [
         Expanded(
           child: ReorderableDelayedDragStartListener(
-            index: index,
+            index: index!,
             child: Padding(
               padding: const EdgeInsets.all(kSpacing3),
-              child: Text(title),
+              child: Text(title!),
             ),
           ),
         ),
         ReorderableDragStartListener(
-          index: index,
+          index: index!,
           child: Padding(
             padding: const EdgeInsets.only(right: kSpacing3),
             child: Center(child: Icon(Icons.reorder_sharp)),

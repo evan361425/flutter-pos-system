@@ -4,7 +4,7 @@ import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
 class OrderActions extends StatelessWidget {
-  const OrderActions({Key key}) : super(key: key);
+  const OrderActions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class OrderActions extends StatelessWidget {
 
   static Future<void> onAction(
     BuildContext context,
-    OrderActionTypes action,
+    OrderActionTypes? action,
   ) async {
     switch (action) {
       case OrderActionTypes.leave_pop:
@@ -71,7 +71,7 @@ class OrderActions extends StatelessWidget {
         if (!await showPopConfirm(context)) return;
 
         if (!await CartModel.instance.stash()) {
-          showSnackbar(context, '暫存檔案的次數超過上限');
+          return showSnackbar(context, '暫存檔案的次數超過上限');
         }
 
         if (!await CartModel.instance.popHistory()) {
@@ -91,6 +91,9 @@ class OrderActions extends StatelessWidget {
         if (!await CartModel.instance.stash()) {
           showSnackbar(context, '暫存檔案的次數超過上限');
         }
+        return;
+      default:
+        return;
     }
   }
 

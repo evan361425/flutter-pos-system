@@ -4,7 +4,7 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 
 class CatalogOrderableList extends OrderableList<CatalogModel> {
-  CatalogOrderableList({Key key, @required List<CatalogModel> items})
+  CatalogOrderableList({Key? key, required List<CatalogModel> items})
       : super(key: key, items: items, title: '排序產品種類');
 
   @override

@@ -7,7 +7,6 @@ import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/localizations.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +35,9 @@ class ProductScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
           MenuRoutes.productIngredient,
-          arguments: ProductIngredientModel(product: product),
+          arguments: product,
         ),
-        tooltip: Local.of(context).t('menu.product.add_integredient'),
+        tooltip: Local.of(context)!.t('menu.product.add_integredient'),
         child: Icon(KIcons.add),
       ),
       body: _body(context, product),

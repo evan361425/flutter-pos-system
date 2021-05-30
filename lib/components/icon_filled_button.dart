@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class IconFilledButton extends StatelessWidget {
   const IconFilledButton({
-    Key key,
-    @required this.onPressed,
-    @required this.child,
+    Key? key,
+    required this.onPressed,
+    required this.child,
   }) : super(key: key);
 
   final Function() onPressed;

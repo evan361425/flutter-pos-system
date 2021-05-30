@@ -22,7 +22,7 @@ class LanguageModal extends StatelessWidget {
           final locale = LanguageProvider.supports[index];
 
           return CardTile(
-            title: Text(LanguageName[locale.toString()]),
+            title: Text(LanguageName[locale.toString()]!),
             trailing: current == locale ? Icon(Icons.check_sharp) : null,
             onTap: () => Navigator.of(context).pop(locale),
           );

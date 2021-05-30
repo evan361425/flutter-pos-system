@@ -24,7 +24,7 @@ class CartModel extends ChangeNotifier {
   Iterable<OrderProductModel> get selectedProducts =>
       products.where((product) => product.isSelected);
 
-  Iterable<OrderProductModel> get selectedSameProduct {
+  Iterable<OrderProductModel?>? get selectedSameProduct {
     final products = selectedProducts;
     if (products.isEmpty) return null;
 
@@ -40,7 +40,7 @@ class CartModel extends ChangeNotifier {
     if (isEmpty) return true;
 
     // disallow before stash, so need minus 1
-    if (await OrderRepo.instance.getStashLength() > 4) return false;
+    if ((await OrderRepo.instance.getStashLength())! > 4) return false;
 
     await OrderRepo.instance.stash(toObject());
 
@@ -56,7 +56,7 @@ class CartModel extends ChangeNotifier {
     return true;
   }
 
-  Future<void> paid(num paid) async {
+  Future<void> paid(num? paid) async {
     final price = totalPrice;
     paid ??= price;
     if (paid < price) throw 'too low';
@@ -94,7 +94,7 @@ class CartModel extends ChangeNotifier {
     clear();
   }
 
-  OrderObject toObject({num paid, OrderObject object}) {
+  OrderObject toObject({num? paid, OrderObject? object}) {
     return OrderObject(
       id: object?.id,
       paid: paid,
@@ -134,19 +134,19 @@ class CartModel extends ChangeNotifier {
 
   /// Get quantity of selected product in specific [ingredient]
   /// If products' ingredient have different quantity, return null
-  String getSelectedQuantityId(ProductIngredientModel ingredient) {
-    final products = selectedSameProduct;
+  String? getSelectedQuantityId(ProductIngredientModel? ingredient) {
+    final products = selectedSameProduct!;
     if (products.isEmpty) return null;
 
-    final quantites = products.map<ProductQuantityModel>((product) {
-      return product.getIngredientOf(ingredient.id)?.quantity;
+    final quantites = products.map<ProductQuantityModel?>((product) {
+      return product!.getIngredientOf(ingredient!.id)?.quantity;
     });
 
     final firstId = quantites.first?.id;
     // All selected product have same quantity
     if (quantites.every((e) => e?.id == firstId)) {
       // if using default, it will be null
-      return firstId == null ? DEFAULT_QUANTITY_ID : quantites.first.id;
+      return firstId == null ? DEFAULT_QUANTITY_ID : quantites.first!.id;
     } else {
       return null;
     }
@@ -157,14 +157,14 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSelectedIngredient(ProductIngredientModel ingredient) {
+  void removeSelectedIngredient(ProductIngredientModel? ingredient) {
     selectedProducts.forEach((e) {
       e.removeIngredient(ingredient);
     });
     notifyListeners();
   }
 
-  void toggleAll([bool checked]) {
+  void toggleAll([bool? checked]) {
     products.forEach((product) => product.toggleSelected(checked));
     notifyListeners();
   }
@@ -174,7 +174,7 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedCount(int count) {
+  void updateSelectedCount(int? count) {
     if (count == null) return;
 
     selectedProducts.forEach((e) {
@@ -183,7 +183,7 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedDiscount(int discount) {
+  void updateSelectedDiscount(int? discount) {
     if (discount == null) return;
 
     selectedProducts.forEach((e) {
@@ -199,7 +199,7 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedPrice(num price) {
+  void updateSelectedPrice(num? price) {
     if (price == null) return;
 
     selectedProducts.forEach((e) {
