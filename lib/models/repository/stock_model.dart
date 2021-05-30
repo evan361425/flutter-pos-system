@@ -10,16 +10,19 @@ import 'package:possystem/services/storage.dart';
 class StockModel extends ChangeNotifier {
   static late StockModel instance;
 
-  Map<String, IngredientModel>? ingredients;
+  late Map<String, IngredientModel> ingredients;
+
+  bool isReady = false;
 
   StockModel() {
     Storage.instance.get(Stores.stock).then((data) {
+      isReady = true;
       ingredients = {};
 
       try {
         data.forEach((key, value) {
           if (value is Map) {
-            ingredients![key] = IngredientModel.fromObject(
+            ingredients[key] = IngredientModel.fromObject(
               IngredientObject.build({
                 'id': key,
                 ...value as Map<String, Object?>,
@@ -37,19 +40,17 @@ class StockModel extends ChangeNotifier {
     StockModel.instance = this;
   }
 
-  List<IngredientModel> get ingredientList => ingredients!.values.toList();
+  List<IngredientModel> get ingredientList => ingredients.values.toList();
 
-  bool get isEmpty => ingredients!.isEmpty;
-  bool get isNotEmpty => ingredients!.isNotEmpty;
-  bool get isNotReady => ingredients == null;
-  bool get isReady => ingredients != null;
-  int get length => ingredients!.length;
+  bool get isEmpty => ingredients.isEmpty;
+  bool get isNotEmpty => ingredients.isNotEmpty;
+  int get length => ingredients.length;
 
   String? get updatedDate {
     if (isEmpty) return null;
 
     DateTime? lastest;
-    ingredients!.values.forEach((element) {
+    ingredients.values.forEach((element) {
       if (lastest == null) {
         lastest = element.updatedAt;
       } else if (element.updatedAt?.isAfter(lastest!) == true) {
@@ -76,9 +77,9 @@ class StockModel extends ChangeNotifier {
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  bool exist(String id) => ingredients![id] != null;
+  bool exist(String id) => ingredients[id] != null;
 
-  IngredientModel? getIngredient(String id) => ingredients![id];
+  IngredientModel? getIngredient(String id) => ingredients[id];
 
   /// [oldData] is helpful when reverting order
   Future<void> order(OrderObject data, {OrderObject? oldData}) {
@@ -101,7 +102,7 @@ class StockModel extends ChangeNotifier {
   }
 
   void removeIngredient(String id) {
-    ingredients!.remove(id);
+    ingredients.remove(id);
 
     notifyListeners();
   }
@@ -111,7 +112,7 @@ class StockModel extends ChangeNotifier {
       return [];
     }
 
-    final similarities = ingredients!.entries
+    final similarities = ingredients.entries
         .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
         .where((e) => e.value > 0)
         .toList();
@@ -128,11 +129,11 @@ class StockModel extends ChangeNotifier {
         .toList();
   }
 
-  void updateIngredient(IngredientModel ingredient) {
+  Future<void> updateIngredient(IngredientModel ingredient) async {
     if (!exist(ingredient.id)) {
-      ingredients![ingredient.id] = ingredient;
+      ingredients[ingredient.id] = ingredient;
 
-      Storage.instance.add(
+      await Storage.instance.add(
         Stores.stock,
         ingredient.id,
         ingredient.toObject().toMap(),

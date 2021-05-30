@@ -3,6 +3,7 @@ import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
@@ -33,7 +34,7 @@ class StockScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     final stock = context.watch<StockModel>();
-    if (stock.isNotReady) return CircularLoading();
+    if (!stock.isReady) return CircularLoading();
     if (stock.isEmpty) {
       return Center(child: EmptyBody('stock.empty'));
     }
@@ -56,7 +57,7 @@ class StockScreen extends StatelessWidget {
   }
 
   Widget _metadata(BuildContext context) {
-    final captionStyle = Theme.of(context).textTheme.caption!;
+    final captionStyle = Theme.of(context).textTheme.muted;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

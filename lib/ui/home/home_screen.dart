@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
@@ -97,7 +98,7 @@ class _LabeledIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(icon, size: 48.0, color: theme.primaryColorDark),
-          Text(label, style: TextStyle(color: theme.textTheme.caption!.color)),
+          Text(label, style: TextStyle(color: theme.textTheme.muted.color)),
         ],
       ),
     );

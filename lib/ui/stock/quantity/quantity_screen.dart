@@ -34,7 +34,7 @@ class QuantityScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     final quantityIndex = context.watch<QuantityRepo>();
-    if (quantityIndex.isNotReady) return CircularLoading();
+    if (!quantityIndex.isReady) return CircularLoading();
     if (quantityIndex.isEmpty) {
       return Center(child: EmptyBody('quantity.empty'));
     }

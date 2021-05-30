@@ -8,16 +8,19 @@ import 'package:possystem/services/storage.dart';
 class QuantityRepo extends ChangeNotifier {
   static late QuantityRepo instance;
 
-  Map<String, QuantityModel>? quantities;
+  late Map<String, QuantityModel> quantities;
+
+  bool isReady = false;
 
   QuantityRepo() {
     Storage.instance.get(Stores.quantities).then((data) {
       quantities = {};
+      isReady = true;
 
       try {
         data.forEach((key, value) {
           if (value is Map) {
-            quantities![key] = QuantityModel.fromObject(
+            quantities[key] = QuantityModel.fromObject(
               QuantityObject.build({
                 'id': key,
                 ...value as Map<String, Object?>,
@@ -35,20 +38,18 @@ class QuantityRepo extends ChangeNotifier {
     QuantityRepo.instance = this;
   }
 
-  bool get isEmpty => quantities!.isEmpty;
-  bool get isNotEmpty => quantities!.isNotEmpty;
-  bool get isNotReady => quantities == null;
-  bool get isReady => quantities != null;
-  int get length => quantities!.length;
+  bool get isEmpty => quantities.isEmpty;
+  bool get isNotEmpty => quantities.isNotEmpty;
+  int get length => quantities.length;
 
-  List<QuantityModel> get quantitiesList => quantities!.values.toList();
+  List<QuantityModel> get quantitiesList => quantities.values.toList();
 
-  bool exist(String id) => quantities!.containsKey(id);
+  bool exist(String id) => quantities.containsKey(id);
 
-  QuantityModel? getQuantity(String id) => quantities![id];
+  QuantityModel? getQuantity(String id) => quantities[id];
 
   void removeQuantity(String id) {
-    quantities!.remove(id);
+    quantities.remove(id);
 
     notifyListeners();
   }
@@ -58,7 +59,7 @@ class QuantityRepo extends ChangeNotifier {
       return [];
     }
 
-    final similarities = quantities!.entries
+    final similarities = quantities.entries
         .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
         .where((e) => e.value > 0)
         .toList();
@@ -69,12 +70,12 @@ class QuantityRepo extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => quantities![e.key]).toList();
+    return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
   }
 
   Future<void> updateQuantity(QuantityModel quantity) async {
     if (!exist(quantity.id)) {
-      quantities![quantity.id] = quantity;
+      quantities[quantity.id] = quantity;
 
       await Storage.instance.add(
         Stores.quantities,

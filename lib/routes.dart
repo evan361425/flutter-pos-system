@@ -68,7 +68,7 @@ class Routes {
     print('setting up stock mode');
     final stock = context.watch<StockModel>();
     final quantities = context.watch<QuantityRepo>();
-    if (menu.isNotReady || stock.isNotReady || quantities.isNotReady) {
+    if (menu.isNotReady || !stock.isReady || !quantities.isReady) {
       return false;
     }
 

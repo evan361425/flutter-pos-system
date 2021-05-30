@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   const SearchScaffold({
@@ -10,7 +10,7 @@ class SearchScaffold<T> extends StatefulWidget {
     required this.onChanged,
     required this.itemBuilder,
     required this.emptyBuilder,
-    required this.searchHistory,
+    required this.initialData,
     this.heroTag,
     this.text = '',
     this.hintText = '',
@@ -28,7 +28,7 @@ class SearchScaffold<T> extends StatefulWidget {
   final String hintText;
   final String labelText;
   final TextCapitalization textCapitalization;
-  final Future<Iterable<String>?> Function() searchHistory;
+  final Future<List<T>> Function() initialData;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
 
@@ -89,13 +89,13 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
 
   Widget _body(BuildContext context) {
     if (searchBar.currentState!.text.isEmpty) {
-      return FutureBuilder<Iterable<String>?>(
-        future: widget.searchHistory(),
+      return FutureBuilder<List<T>>(
+        future: widget.initialData() as Future<List<T>>,
         builder: (context, snapshot) {
           // while data is loading:
           if (!snapshot.hasData) return CircularLoading();
 
-          return _bodyHistories(context, snapshot.data!);
+          return _listBuilder(context, snapshot.data!);
         },
       );
     } else if (isNotEmpty) {
@@ -104,44 +104,22 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             '搜尋到$count個結果',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.muted,
           ),
         ),
-        Expanded(child: _resultList()),
+        Expanded(child: _listBuilder(context, list)),
       ]);
     } else {
       return widget.emptyBuilder(context, searchBar.currentState!.text);
     }
   }
 
-  Column _bodyHistories(BuildContext context, Iterable<String> histories) {
-    return Column(
-      children: [
-        Text('搜尋紀錄', style: Theme.of(context).textTheme.caption),
-        Expanded(
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return CardTile(
-                title: Text(histories.elementAt(index)),
-                onTap: () {
-                  setSearchKeyword(
-                    histories.elementAt(index),
-                  );
-                },
-              );
-            },
-            itemCount: histories.length,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _resultList() {
+  Widget _listBuilder(BuildContext context, List<T> data) {
     return ListView.builder(
-      itemBuilder: (BuildContext context, int index) =>
-          widget.itemBuilder(context, list[index]),
-      itemCount: list.length,
+      itemBuilder: (BuildContext context, int index) {
+        return widget.itemBuilder(context, data[index]);
+      },
+      itemCount: data.length,
     );
   }
 

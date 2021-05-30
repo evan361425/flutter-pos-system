@@ -44,7 +44,7 @@ class IngredientModel extends ChangeNotifier {
       IngredientModel(
         id: object.id,
         name: object.name ?? '',
-        currentAmount: object.currentAmount ?? 0,
+        currentAmount: object.currentAmount,
         warningAmount: object.warningAmount,
         alertAmount: object.alertAmount,
         lastAmount: object.lastAmount,

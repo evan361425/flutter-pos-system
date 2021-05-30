@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/histories/search_history.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 
 class IngredientSearchScaffold extends StatelessWidget {
@@ -11,7 +10,6 @@ class IngredientSearchScaffold extends StatelessWidget {
   static final String tag = 'menu.poduct.ingredient.search';
   final String? text;
   final scaffold = GlobalKey<SearchScaffoldState>();
-  final histories = SearchHistory(SearchHistoryTypes.ingredient);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class IngredientSearchScaffold extends StatelessWidget {
           StockModel.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      searchHistory: () => histories.get(),
+      initialData: () async => StockModel.instance.ingredientList,
       heroTag: IngredientSearchScaffold.tag,
       text: text ?? '',
       hintText: '成份名稱，起司',
@@ -33,7 +31,6 @@ class IngredientSearchScaffold extends StatelessWidget {
     return CardTile(
       title: Text(ingredient.name),
       onTap: () {
-        histories.add(scaffold.currentState!.searchBar.currentState!.text);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );

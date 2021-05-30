@@ -4,6 +4,7 @@ import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
@@ -72,7 +73,7 @@ class MenuScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(kSpacing1),
           child: Text('共 ${menu.length} 項',
-              style: Theme.of(context).textTheme.caption),
+              style: Theme.of(context).textTheme.muted),
         ),
         Expanded(child: _catalogList(menu)),
       ],

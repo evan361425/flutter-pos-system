@@ -3,6 +3,7 @@ import 'package:possystem/components/card_tile.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
@@ -125,7 +126,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
         child: Text(
           '使用 ${widget.ingredient!.name} 的產品',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.muted,
         ),
       ),
       Expanded(
@@ -147,10 +148,10 @@ class _IngredientScreenState extends State<IngredientScreen> {
     ];
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (!_validate()) return;
 
-    _updateIngredient();
+    await _updateIngredient();
 
     Navigator.of(context).pop();
   }
@@ -158,11 +159,11 @@ class _IngredientScreenState extends State<IngredientScreen> {
   IngredientObject _parseObject() {
     return IngredientObject(
       name: _nameController.text,
-      currentAmount: num.tryParse(_amountController.text) ?? 0,
+      currentAmount: num.tryParse(_amountController.text),
     );
   }
 
-  void _updateIngredient() {
+  Future<void> _updateIngredient() async {
     final object = _parseObject();
 
     if (widget.isNew) {
@@ -171,9 +172,9 @@ class _IngredientScreenState extends State<IngredientScreen> {
         currentAmount: object.currentAmount!,
       );
 
-      StockModel.instance.updateIngredient(ingredient);
+      await StockModel.instance.updateIngredient(ingredient);
     } else {
-      widget.ingredient!.update(object);
+      await widget.ingredient!.update(object);
     }
   }
 

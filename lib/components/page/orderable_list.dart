@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 
 abstract class OrderableList<T> extends StatefulWidget {
   OrderableList({
@@ -55,7 +56,7 @@ abstract class OrderableListState<T, U> extends State<OrderableList<T>> {
             padding: const EdgeInsets.all(kSpacing0),
             child: Text(
               '總共 ${widget.items.length} 項',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.muted,
             ),
           ),
           Expanded(

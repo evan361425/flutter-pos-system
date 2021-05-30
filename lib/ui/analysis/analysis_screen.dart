@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/order_repo.dart';
@@ -128,7 +129,7 @@ class _BodyState extends State<_Body> {
 
   Widget _body(BuildContext context) {
     if (_data!.isEmpty) {
-      return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.caption);
+      return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.muted);
     }
 
     return ListView.builder(

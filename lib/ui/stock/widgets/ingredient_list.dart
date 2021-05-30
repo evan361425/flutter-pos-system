@@ -5,6 +5,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helper/custom_styles.dart';
 import 'package:possystem/helper/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
@@ -64,13 +65,13 @@ class IngredientList extends StatelessWidget {
           IconText(
             text: ingredient.currentAmount?.toString() ?? '尚未設定',
             iconName: 'store_sharp',
-            textStyle: theme.textTheme.caption,
+            textStyle: theme.textTheme.muted,
           ),
           MetaBlock(),
           IconText(
             text: ingredient.lastAmount?.toString() ?? '尚未補貨',
             iconName: 'shopping_cart_sharp',
-            textStyle: theme.textTheme.caption,
+            textStyle: theme.textTheme.muted,
           ),
         ],
       ),
