@@ -1,3 +1,4 @@
+import 'package:possystem/services/migrations/v1.dart' as migration_v1;
 import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
 
@@ -39,7 +40,7 @@ class Database {
       databasePath,
       version: 1,
       onCreate: (db, version) {
-        return Future.wait(_SQLS.map((sql) => db.execute(sql)));
+        return Future.wait(migration_v1.up.map((sql) => db.execute(sql)));
       },
     );
   }
@@ -142,26 +143,3 @@ class Database {
     GROUP BY $groupBy''', whereArgs);
   }
 }
-
-const _SQLS = <String>[
-  '''CREATE TABLE `order` (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  paid REAL NOT NULL,
-  totalPrice REAL NOT NULL,
-  totalCount INTEGER NOT NULL,
-  createdAt INTEGER NOT NULL,
-  usedProducts TEXT NOT NULL,
-  usedIngredients TEXT NOT NULL,
-  encodedProducts BLOB NOT NULL
-);
-''',
-  '''CREATE TABLE `order_stash` (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  createdAt INTEGER NOT NULL,
-  encodedProducts BLOB NOT NULL
-);
-''',
-  '''REATE INDEX idx_order_created_at
-ON `order` (createdAt);
-''',
-];

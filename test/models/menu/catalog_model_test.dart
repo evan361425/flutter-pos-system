@@ -9,6 +9,8 @@ void main() {
       expect(catalog.createdAt, isNotNull);
       expect(catalog.products, equals({}));
       expect(catalog.id, isNotNull);
+      expect(catalog.index, equals(0));
+      expect(catalog.name, equals('some-name'));
     });
   });
 }
