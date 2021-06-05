@@ -172,7 +172,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         currentAmount: object.currentAmount!,
       );
 
-      await StockModel.instance.updateIngredient(ingredient);
+      await StockModel.instance.setIngredient(ingredient);
     } else {
       await widget.ingredient!.update(object);
     }

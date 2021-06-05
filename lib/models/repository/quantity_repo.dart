@@ -73,7 +73,7 @@ class QuantityRepo extends ChangeNotifier {
     return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
   }
 
-  Future<void> updateQuantity(QuantityModel quantity) async {
+  Future<void> setQuantity(QuantityModel quantity) async {
     if (!exist(quantity.id)) {
       quantities[quantity.id] = quantity;
 

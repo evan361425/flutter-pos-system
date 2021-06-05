@@ -127,7 +127,7 @@ class _QuantityModalState extends State<QuantityModal> {
       await widget.quantity!.update(object);
     }
 
-    await QuantityRepo.instance.updateQuantity(widget.quantity ??
+    await QuantityRepo.instance.setQuantity(widget.quantity ??
         QuantityModel(
           name: object.name!,
           defaultProportion: object.defaultProportion!,

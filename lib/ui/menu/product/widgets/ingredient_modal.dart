@@ -204,7 +204,7 @@ class _IngredientModalState extends State<IngredientModal> {
       await widget.ingredient!.update(object);
     }
 
-    await widget.product.updateIngredient(widget.ingredient ??
+    await widget.product.setIngredient(widget.ingredient ??
         ProductIngredientModel(
           ingredient: StockModel.instance.getIngredient(ingredientId),
           product: widget.product,

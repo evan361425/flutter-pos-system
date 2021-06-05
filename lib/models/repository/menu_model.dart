@@ -184,12 +184,13 @@ class MenuModel extends ChangeNotifier {
   }
 
   /// add catalog if not exist and notify listeners
-  Future<void> updateCatalog(CatalogModel catalog) async {
+  Future<void> setCatalog(CatalogModel catalog) async {
     if (!exist(catalog.id)) {
       catalogs![catalog.id] = catalog;
 
-      await Storage.instance
-          .add(Stores.menu, catalog.id, catalog.toObject().toMap());
+      final updatedData = catalog.toObject().toMap();
+
+      await Storage.instance.add(Stores.menu, catalog.id, updatedData);
     }
 
     notifyListeners();

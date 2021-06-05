@@ -41,7 +41,7 @@ class QuantitySearchScaffold extends StatelessWidget {
       title: Text('新增成份份量「$text」'),
       onTap: () {
         final quantity = QuantityModel(name: text);
-        QuantityRepo.instance.updateQuantity(quantity);
+        QuantityRepo.instance.setQuantity(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
     );

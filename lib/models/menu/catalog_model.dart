@@ -54,6 +54,8 @@ class CatalogModel extends ChangeNotifier {
   int get newIndex =>
       products.values.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
+  String get prefix => id;
+
   /// sorted by index
   List<ProductModel> get productList =>
       products.values.toList()..sort((a, b) => a.index.compareTo(b.index));
@@ -108,7 +110,7 @@ class CatalogModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  Future<void> updateProduct(ProductModel product) async {
+  Future<void> setProduct(ProductModel product) async {
     if (!exist(product.id)) {
       products[product.id] = product;
 

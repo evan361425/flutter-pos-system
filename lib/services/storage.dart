@@ -11,7 +11,7 @@ enum Stores {
 }
 
 class Storage {
-  static final Storage instance = Storage._constructor();
+  static Storage instance = Storage._constructor();
 
   late Database db;
 

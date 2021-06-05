@@ -54,7 +54,7 @@ class ProductQuantityModel {
     await remove();
 
     setQuantity(QuantityRepo.instance.getQuantity(newId)!);
-    await ingredient.updateQuantity(this);
+    await ingredient.setQuantity(this);
     print('change quantity to ${quantity.name}');
   }
 
@@ -82,7 +82,7 @@ class ProductQuantityModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    ingredient.updateQuantity(this);
+    ingredient.setQuantity(this);
 
     return Storage.instance.set(Stores.menu, updateData);
   }

@@ -1,13 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:possystem/helper/logger.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/services/storage.dart';
+import 'package:possystem/models/objects/menu_object.dart';
 
-import '../../helpers/mock_objects.dart';
+import '../../mocks/mock_objects.dart';
+import '../../mocks/mock_storage.dart' as storage;
+import '../../mocks/mock_menu.dart' as menu;
 import '../../helpers/check_notifier.dart';
 
-@GenerateMocks([Storage])
 void main() {
   group('factory', () {
     test('#construct', () {
@@ -101,6 +103,98 @@ void main() {
   });
 
   group('Methods With Storage', () {
-    test('remove', () {});
+    late CatalogModel catalog;
+    test('#remove', () async {
+      LOG_LEVEL = 2;
+
+      await catalog.remove();
+
+      verify(storage.mock.set(any, argThat(equals({'uuid': null}))));
+      verify(menu.mock.removeCatalog('uuid'));
+    });
+
+    test('#reorderProducts', () async {
+      final products = <ProductModel>[
+        ProductModel(index: 3, name: '3', id: '3', catalog: catalog),
+        ProductModel(index: 1, name: '1', id: '1', catalog: catalog),
+        ProductModel(index: 2, name: '2', id: '2', catalog: catalog),
+        ProductModel(index: 4, name: '4', id: '4', catalog: catalog),
+      ];
+
+      final bool isCalled = await checkNotifierCalled(
+          catalog, () => catalog.reorderProducts(products));
+
+      verify(storage.mock.set(
+        any,
+        argThat(equals({
+          '${products[0].prefix}.index': 1,
+          '${products[1].prefix}.index': 2,
+          '${products[2].prefix}.index': 3,
+        })),
+      ));
+      expect(isCalled, isTrue);
+    });
+
+    group('#update', () {
+      test('should not notify or update if not changed', () async {
+        final object = CatalogObject(name: 'name');
+
+        final bool isCalled =
+            await checkNotifierCalled(catalog, () => catalog.update(object));
+
+        verifyNever(storage.mock.set(any, any));
+        expect(isCalled, isFalse);
+      });
+
+      test('should notify and update', () async {
+        final object = CatalogObject(name: 'new-name');
+
+        final bool isCalled =
+            await checkNotifierCalled(catalog, () => catalog.update(object));
+
+        verify(storage.mock.set(
+          any,
+          argThat(equals({'${catalog.prefix}.name': 'new-name'})),
+        ));
+        expect(isCalled, isTrue);
+      });
+    });
+
+    group('#setProduct', () {
+      test('should not add, but notify', () async {
+        final catalog = CatalogModel.fromObject(mockCatalogObject);
+        final product = ProductModel(
+            index: 1, name: 'name', id: 'product_1', catalog: catalog);
+
+        final bool isCalled = await checkNotifierCalled(
+            catalog, () => catalog.setProduct(product));
+
+        verifyNever(storage.mock.set(any, any));
+        expect(isCalled, isTrue);
+      });
+
+      test('should add and notify', () async {
+        final catalog = CatalogModel.fromObject(mockCatalogObject);
+        final product = ProductModel(
+            index: 1, name: 'name', id: 'product_2', catalog: catalog);
+
+        final bool isCalled = await checkNotifierCalled(
+            catalog, () => catalog.setProduct(product));
+
+        verify(storage.mock.set(any, argThat(isNot(containsValue(null)))));
+        expect(isCalled, isTrue);
+      });
+    });
+
+    setUp(() {
+      catalog = CatalogModel(index: 1, name: 'name', id: 'uuid');
+      storage.before();
+      menu.before();
+    });
+
+    tearDown(() {
+      storage.after();
+      menu.after();
+    });
   });
 }

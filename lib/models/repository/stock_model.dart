@@ -129,7 +129,7 @@ class StockModel extends ChangeNotifier {
         .toList();
   }
 
-  Future<void> updateIngredient(IngredientModel ingredient) async {
+  Future<void> setIngredient(IngredientModel ingredient) async {
     if (!exist(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 

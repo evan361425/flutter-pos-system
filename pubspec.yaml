@@ -48,15 +48,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # integration_test: ^1.0.2+2
-  # help to build launcher icons for each device
-  # flutter_launcher_icons: ^0.8.1
-  # analysis code
+
+  # code style
   pedantic: ^1.11.0
+
   # TODO: build json from yaml for performance
   yaml: ^3.1.0
+
   # mock object
   mockito: ^5.0.9
+  build_runner: ^2.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

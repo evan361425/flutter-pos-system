@@ -102,7 +102,7 @@ class ProductModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  Future<void> updateIngredient(ProductIngredientModel ingredient) async {
+  Future<void> setIngredient(ProductIngredientModel ingredient) async {
     if (!exist(ingredient.id)) {
       ingredients[ingredient.id] = ingredient;
 

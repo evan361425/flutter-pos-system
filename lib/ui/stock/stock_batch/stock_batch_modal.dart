@@ -134,7 +134,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
     } else {
       final model = StockBatchModel(name: name, data: updateData);
 
-      StockBatchRepo.instance.updateBatch(model);
+      StockBatchRepo.instance.setBatch(model);
     }
   }
 

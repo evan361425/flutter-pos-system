@@ -56,7 +56,7 @@ class ProductIngredientModel {
     await remove();
 
     setIngredient(StockModel.instance.getIngredient(newId)!);
-    await product.updateIngredient(this);
+    await product.setIngredient(this);
     print('change ingredient to ${ingredient.name}');
   }
 
@@ -75,7 +75,7 @@ class ProductIngredientModel {
   void removeQuantity(String? id) {
     quantities.remove(id);
 
-    product.updateIngredient(this);
+    product.setIngredient(this);
   }
 
   void setIngredient(IngredientModel model) {
@@ -94,12 +94,12 @@ class ProductIngredientModel {
 
     if (updateData.isEmpty) return Future.value();
 
-    product.updateIngredient(this);
+    product.setIngredient(this);
 
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  Future<void> updateQuantity(ProductQuantityModel quantity) async {
+  Future<void> setQuantity(ProductQuantityModel quantity) async {
     if (!exist(quantity.id)) {
       quantities[quantity.id] = quantity;
 
@@ -108,7 +108,7 @@ class ProductIngredientModel {
       await Storage.instance.set(Stores.menu, updateData);
     }
 
-    await product.updateIngredient(this);
+    await product.setIngredient(this);
   }
 
   void _prepareQuantities() {

@@ -41,7 +41,7 @@ class IngredientSearchScaffold extends StatelessWidget {
       title: Text('新增成份「$text」'),
       onTap: () {
         final ingredient = IngredientModel(name: text);
-        StockModel.instance.updateIngredient(ingredient);
+        StockModel.instance.setIngredient(ingredient);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );

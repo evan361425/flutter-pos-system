@@ -248,7 +248,7 @@ class _QuantityModalState extends State<QuantityModal> {
         additionalCost: object.additionalCost,
       );
 
-      await quantity.ingredient.updateQuantity(quantity);
+      await quantity.ingredient.setQuantity(quantity);
     } else {
       await widget.quantity!.update(object);
     }

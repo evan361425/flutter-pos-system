@@ -30,19 +30,21 @@ class CatalogObject {
 
   Map<String, Object> diff(CatalogModel catalog) {
     final result = <String, Object>{};
+    final prefix = catalog.prefix;
     if (index != null && index != catalog.index) {
       catalog.index = index!;
-      result['$id.index'] = index!;
+      result['$prefix.index'] = index!;
     }
     if (name != catalog.name) {
       catalog.name = name;
-      result['$id.name'] = name;
+      result['$prefix.name'] = name;
     }
     return result;
   }
 
   factory CatalogObject.build(Map<String, Object?> data) {
-    final products = (data['products'] ?? {}) as Map<String, Object?>;
+    final products =
+        (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return CatalogObject(
       id: data['id'] as String?,
@@ -115,7 +117,8 @@ class ProductObject {
   }
 
   factory ProductObject.build(Map<String, Object?> data) {
-    final ingredients = (data['ingredients'] ?? {}) as Map<String, Object?>;
+    final ingredients =
+        (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductObject(
       id: data['id'] as String?,
@@ -175,7 +178,8 @@ class ProductIngredientObject {
   }
 
   factory ProductIngredientObject.build(Map<String, Object?> data) {
-    final quantities = (data['quantities'] ?? {}) as Map<String, Object?>;
+    final quantities =
+        (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductIngredientObject(
       id: data['id'] as String?,

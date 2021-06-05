@@ -48,7 +48,7 @@ class StockBatchRepo extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateBatch(StockBatchModel batch) {
+  void setBatch(StockBatchModel batch) {
     if (!exist(batch.id)) {
       batches![batch.id] = batch;
 
