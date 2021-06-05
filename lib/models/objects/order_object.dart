@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:possystem/helper/util.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';

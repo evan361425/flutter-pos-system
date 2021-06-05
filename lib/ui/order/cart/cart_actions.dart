@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/helper/validator.dart';
+import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
 class CartActions extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:possystem/helper/util.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';

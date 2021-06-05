@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:possystem/helper/logger.dart';
-import 'package:possystem/helper/util.dart';
+import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/services/storage.dart';

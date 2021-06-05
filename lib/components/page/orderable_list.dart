@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helper/custom_styles.dart';
+import 'package:possystem/helpers/custom_styles.dart';
 
 abstract class OrderableList<T> extends StatefulWidget {
   OrderableList({

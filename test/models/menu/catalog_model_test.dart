@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helper/logger.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
@@ -8,7 +8,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart' as storage;
 import '../../mocks/mock_menu.dart' as menu;
-import '../../helpers/check_notifier.dart';
+import '../../test_helpers/check_notifier.dart';
 
 void main() {
   group('factory', () {

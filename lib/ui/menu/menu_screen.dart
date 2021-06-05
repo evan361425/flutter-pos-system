@@ -4,7 +4,7 @@ import 'package:possystem/components/circular_loading.dart';
 import 'package:possystem/components/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helper/custom_styles.dart';
+import 'package:possystem/helpers/custom_styles.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
