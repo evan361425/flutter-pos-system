@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:possystem/helper/logger.dart';
 import 'package:possystem/helper/util.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/services/storage.dart';
-import 'package:sprintf/sprintf.dart';
 
 import 'product_model.dart';
 
@@ -44,34 +43,34 @@ class CatalogModel extends ChangeNotifier {
         },
       ).._preparePorducts();
 
-  String? get createdDate => sprintf('%04d-%02d-%02d', [
-        createdAt.year,
-        createdAt.month,
-        createdAt.day,
-      ]);
+  String? get createdDate => Util.timeToDate(createdAt);
 
   bool get isEmpty => products.isEmpty;
   bool get isNotEmpty => products.isNotEmpty;
   int get length => products.length;
 
+  /// Get highest index of products plus 1
   /// 1-index
-  int get newIndex => products.length + 1;
+  int get newIndex =>
+      products.values.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
   /// sorted by index
   List<ProductModel> get productList =>
       products.values.toList()..sort((a, b) => a.index.compareTo(b.index));
 
-  bool exist(String? id) => products.containsKey(id);
+  bool exist(String id) => products.containsKey(id);
 
-  ProductModel? getProduct(String? id) => exist(id) ? products[id] : null;
+  ProductModel? getProduct(String id) => exist(id) ? products[id] : null;
 
   Future<void> remove() async {
-    print('remove catalog $name');
+    info(name, 'menu.catalog.remove');
     await Storage.instance.set(Stores.menu, {id: null});
 
     MenuModel.instance.removeCatalog(id);
   }
 
+  /// only remove map value and notify listeners
+  /// you should remove product by `product.remove()`
   void removeProduct(String id) {
     products.remove(id);
 

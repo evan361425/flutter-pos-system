@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // strictly equal to: Provider.of<MenuModel>(context)
+    // context.read<T>() === Provider.of<T>(context, listen: false)
     final menu = context.watch<MenuModel>();
 
     return Scaffold(
@@ -40,7 +42,7 @@ class MenuScreen extends StatelessWidget {
         child: Icon(KIcons.add),
       ),
       // When click android go back, it will avoid closing APP
-      body: menu.isReady ? _body(context) : CircularLoading(),
+      body: menu.isReady ? _body(context, menu) : CircularLoading(),
     );
   }
 
@@ -61,19 +63,17 @@ class MenuScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(BuildContext context) {
-    // strictly equal to: Provider.of<MenuModel>(context)
-    // context.read<T>() === Provider.of<T>(context, listen: false)
-    final menu = context.watch<MenuModel>();
-
+  Widget _body(BuildContext context, MenuModel menu) {
     if (menu.isEmpty) return Center(child: EmptyBody('menu.empty'));
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(kSpacing1),
-          child: Text('共 ${menu.length} 項',
-              style: Theme.of(context).textTheme.muted),
+          child: Text(
+            '共 ${menu.length} 項',
+            style: Theme.of(context).textTheme.muted,
+          ),
         ),
         Expanded(child: _catalogList(menu)),
       ],

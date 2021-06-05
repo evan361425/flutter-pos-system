@@ -194,7 +194,7 @@ class _BodyState extends State<_Body> {
 
   Widget _orderTile(OrderObject order) {
     final title = order.products.map<String>((e) {
-      final count = e.count! > 1 ? ' * ${e.count}' : '';
+      final count = e.count > 1 ? ' * ${e.count}' : '';
       return '${e.productName}$count';
     }).join('、');
     final hour = order.createdAt.hour.toString().padLeft(2, '0');

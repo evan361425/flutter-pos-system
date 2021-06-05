@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,29 +26,24 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # core helper
   provider: ^5.0.0
-  # firebase_core: ^1.0.0
-  # firebase_auth: ^1.0.0
-  # cloud_firestore: ^1.0.0
+  firebase_core: ^1.2.1
+  firebase_analytics: "^8.1.1"
 
-  # google_sign_in: ^5.0.0
+  # services
+  sqflite: ^2.0.0+3
+  sembast: ^3.0.3
+  shared_preferences: ^2.0.6
 
-  # flutter_signin_button: ^1.1.0
+  # components
   flutter_slidable: ^0.6.0
   modal_bottom_sheet: ^2.0.0
+  table_calendar: ^3.0.0
 
   # tools
   uuid: ^3.0.4
-  sqflite: ^2.0.0+3
-  sembast: ^3.0.3
-  table_calendar: ^3.0.0
-  # loadmore: ^2.0.0
-  # string_similarity: ^2.0.0
-
-  shared_preferences: ^2.0.6
-  # for l18n
   sprintf: ^6.0.0
-  logger: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +55,8 @@ dev_dependencies:
   pedantic: ^1.11.0
   # TODO: build json from yaml for performance
   yaml: ^3.1.0
+  # mock object
+  mockito: ^5.0.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/my_app.dart';
@@ -40,7 +39,6 @@ void main() {
           ChangeNotifierProvider<StockBatchRepo>(
             create: (_) => StockBatchRepo(),
           ),
-          Provider(create: (_) => Logger()),
         ],
         child: MyApp(),
       ),

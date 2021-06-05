@@ -72,7 +72,7 @@ class OrderObject {
       'totalCount': totalCount,
       'createdAt': Util.toUTC(now: createdAt),
       'usedProducts': Database.join(
-        products.map<String>((e) => e.productName!),
+        products.map<String>((e) => e.productName),
       ),
       'usedIngredients': Database.join(usedIngredients),
       'encodedProducts': jsonEncode(
@@ -103,11 +103,11 @@ class OrderObject {
 }
 
 class OrderProductObject {
-  final num? singlePrice;
-  final int? count;
-  final String? productId;
-  final String? productName;
-  final bool? isDiscount;
+  final num singlePrice;
+  final int count;
+  final String productId;
+  final String productName;
+  final bool isDiscount;
   final Map<String, OrderIngredientObject> ingredients;
 
   OrderProductObject({
@@ -142,11 +142,11 @@ class OrderProductObject {
         (data['ingredients'] ?? Iterable.empty()) as Iterable<dynamic>;
 
     return OrderProductObject(
-      singlePrice: data['singlePrice'] as num?,
-      count: data['count'] as int?,
-      productId: data['productId'] as String?,
-      productName: data['productName'] as String?,
-      isDiscount: data['isDiscount'] as bool?,
+      singlePrice: data['singlePrice'] as num,
+      count: data['count'] as int,
+      productId: data['productId'] as String,
+      productName: data['productName'] as String,
+      isDiscount: data['isDiscount'] as bool,
       ingredients: {
         for (Map<String, dynamic> ingredient in ingredients)
           ingredient['id'] as String: OrderIngredientObject.input(ingredient)

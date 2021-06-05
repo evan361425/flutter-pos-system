@@ -54,7 +54,8 @@ class MenuModel extends ChangeNotifier {
   int get length => catalogs!.length;
 
   /// 1-index
-  int get newIndex => catalogs!.length + 1;
+  int get newIndex =>
+      catalogs!.values.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
   bool exist(String id) => catalogs!.containsKey(id);
 
@@ -74,7 +75,7 @@ class MenuModel extends ChangeNotifier {
     return result;
   }
 
-  ProductModel? getProduct(String? productId) {
+  ProductModel? getProduct(String productId) {
     for (var catalog in catalogs!.values) {
       final product = catalog.getProduct(productId);
       if (product != null) {

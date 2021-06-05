@@ -8,7 +8,10 @@
       "name": "pos-system",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "env": {
+        "LOG_LEVEL": "debug"
+      }
     }
   ]
 }

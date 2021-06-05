@@ -13,6 +13,8 @@ class QuantityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final quantities = context.watch<QuantityRepo>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('份量'),
@@ -28,16 +30,12 @@ class QuantityScreen extends StatelessWidget {
         tooltip: '新增份量',
         child: Icon(KIcons.add),
       ),
-      body: _body(context),
+      body: quantities.isReady ? _body(quantities) : CircularLoading(),
     );
   }
 
-  Widget _body(BuildContext context) {
-    final quantityIndex = context.watch<QuantityRepo>();
-    if (!quantityIndex.isReady) return CircularLoading();
-    if (quantityIndex.isEmpty) {
-      return Center(child: EmptyBody('quantity.empty'));
-    }
+  Widget _body(QuantityRepo quantities) {
+    if (quantities.isEmpty) return Center(child: EmptyBody('quantity.empty'));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: kSpacing2),
@@ -45,7 +43,7 @@ class QuantityScreen extends StatelessWidget {
         child: Column(
           children: [
             // TODO: search bar
-            QuantityList(quantities: quantityIndex.quantitiesList),
+            QuantityList(quantities: quantities.quantitiesList),
           ],
         ),
       ),

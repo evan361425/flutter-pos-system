@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/database.dart';
@@ -12,36 +14,39 @@ import 'package:provider/provider.dart';
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  static final analytics = FirebaseAnalytics();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-        future: _waitPreferences(context),
-        initialData: false,
-        builder: (context, snapshot) {
-          final prepared = snapshot.data!;
-          final theme = context.read<ThemeProvider>();
-          final language = context.read<LanguageProvider>();
-          final useDark =
-              prepared ? theme.darkMode : ThemeProvider.defaultTheme;
+      future: _waitPreferences(context),
+      initialData: false,
+      builder: (context, snapshot) {
+        final prepared = snapshot.data!;
+        final theme = context.read<ThemeProvider>();
+        final language = context.read<LanguageProvider>();
+        final useDark = prepared ? theme.darkMode : ThemeProvider.defaultTheme;
 
-          return MaterialApp(
-            title: 'POS System',
-            routes: Routes.routes,
-            debugShowCheckedModeBanner: false,
-            // === language setting ===
-            locale: prepared ? language.locale : LanguageProvider.defaultLocale,
-            supportedLocales: LanguageProvider.supports,
-            localizationsDelegates: LanguageProvider.delegates,
-            localeResolutionCallback: LanguageProvider.localResolutionCallback,
-            // === theme setting ===
-            theme: AppThemes.lightTheme,
-            darkTheme: AppThemes.darkTheme,
-            themeMode: useDark ? ThemeMode.dark : ThemeMode.light,
-            // === home widget ===
-            home: prepared ? HomeContainer() : LogoSplash(),
-          );
-        });
+        return MaterialApp(
+          title: 'POS System',
+          routes: Routes.routes,
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
+          // === language setting ===
+          locale: prepared ? language.locale : LanguageProvider.defaultLocale,
+          supportedLocales: LanguageProvider.supports,
+          localizationsDelegates: LanguageProvider.delegates,
+          localeResolutionCallback: LanguageProvider.localResolutionCallback,
+          // === theme setting ===
+          theme: AppThemes.lightTheme,
+          darkTheme: AppThemes.darkTheme,
+          themeMode: useDark ? ThemeMode.dark : ThemeMode.light,
+          // === home widget ===
+          home: prepared ? HomeContainer() : LogoSplash(),
+        );
+      },
+    );
   }
 
   Future<bool> _waitPreferences(BuildContext context) async {

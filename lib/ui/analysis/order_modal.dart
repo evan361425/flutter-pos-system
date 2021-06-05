@@ -59,7 +59,7 @@ class OrderModal extends StatelessWidget {
       final quantity = e.quantityName == null ? '' : '（${e.quantityName}）';
       return '${e.name}$quantity';
     });
-    final price = product.singlePrice! * product.count!;
+    final price = product.singlePrice * product.count;
 
     return CardTile(
       title: Text('${product.productName} * ${product.count}'),
