@@ -62,7 +62,7 @@ class OrderObject {
 
     products.forEach(
       (product) => product.ingredients.values.forEach(
-        (ingredient) => usedIngredients.add(ingredient.name!),
+        (ingredient) => usedIngredients.add(ingredient.name),
       ),
     );
 
@@ -156,8 +156,8 @@ class OrderProductObject {
 }
 
 class OrderIngredientObject {
-  final String? name;
-  final String? id;
+  final String name;
+  final String id;
   num? additionalPrice;
   num? additionalCost;
   num amount;
@@ -204,8 +204,8 @@ class OrderIngredientObject {
 
   factory OrderIngredientObject.input(Map<String, dynamic> data) {
     return OrderIngredientObject(
-      name: data['name'] as String?,
-      id: data['id'] as String?,
+      name: data['name'] as String,
+      id: data['id'] as String,
       additionalPrice: data['additionalPrice'] as num?,
       additionalCost: data['additionalCost'] as num?,
       amount: data['amount'] as num? ?? 0,

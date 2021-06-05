@@ -39,7 +39,7 @@ class CatalogModel extends ChangeNotifier {
         createdAt: object.createdAt,
         products: {
           for (var product in object.products)
-            product.id!: ProductModel.fromMap(product)
+            product.id!: ProductModel.fromObject(product)
         },
       ).._preparePorducts();
 

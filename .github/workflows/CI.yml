@@ -28,13 +28,18 @@ jobs:
           flutter-version: "2.0.x"
 
       # Get flutter dependencies.
-      - run: flutter pub get
+      - name: Install dependencies
+        run: |
+          flutter pub get && \
+          flutter pub run build_runner build
 
       # Statically analyze the Dart code for any errors.
-      - run: flutter analyze .
+      - name: Linter
+        run: flutter analyze .
 
       # Run widget tests for our flutter project.
-      - run: flutter test
+      - name: Testing
+        run: flutter test
     # Build apk.
     # - run: flutter build apk
     # Upload generated apk to the artifacts.

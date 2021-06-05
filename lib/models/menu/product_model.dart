@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/services/storage.dart';
@@ -45,7 +46,7 @@ class ProductModel extends ChangeNotifier {
     if (catalog != null) this.catalog = catalog;
   }
 
-  factory ProductModel.fromMap(ProductObject object) => ProductModel(
+  factory ProductModel.fromObject(ProductObject object) => ProductModel(
         id: object.id,
         name: object.name!,
         index: object.index!,
@@ -64,13 +65,13 @@ class ProductModel extends ChangeNotifier {
 
   String get prefix => '${catalog.id}.products.$id';
 
-  bool exist(String? id) => ingredients.containsKey(id);
+  bool exist(String id) => ingredients.containsKey(id);
 
-  ProductIngredientModel? getIngredient(String? id) =>
+  ProductIngredientModel? getIngredient(String id) =>
       exist(id) ? ingredients[id] : null;
 
   Future<void> remove() async {
-    print('remove product $name');
+    info('${catalog.name}.$name', 'menu.product.remove');
     await Storage.instance.set(Stores.menu, {prefix: null});
 
     catalog.removeProduct(id);
