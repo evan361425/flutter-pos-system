@@ -10,11 +10,11 @@ class OrderIngredientModel {
   final ProductIngredientModel ingredient;
   final ProductQuantityModel quantity;
 
-  num? get amount => quantity.amount;
-  num? get price => quantity.additionalPrice;
-  num? get cost => quantity.additionalCost;
+  num get amount => quantity.amount;
+  num get price => quantity.additionalPrice;
+  num get cost => quantity.additionalCost;
 
-  String? get id => ingredient.id;
+  String get id => ingredient.id;
 
   @override
   String toString() =>
@@ -23,8 +23,6 @@ class OrderIngredientModel {
   @override
   bool operator ==(Object other) {
     if (other is OrderIngredientModel) {
-      return other.id == id;
-    } else if (other is ProductIngredientModel) {
       return other.id == id;
     }
     return false;

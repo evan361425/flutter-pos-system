@@ -35,14 +35,14 @@ class OrderProductModel {
     var i = 0;
     for (var oldOne in ingredients) {
       if (oldOne == newOne) {
-        singlePrice -= oldOne.price!;
+        singlePrice -= oldOne.price;
         ingredients.removeAt(i);
         break;
       }
       i++;
     }
 
-    singlePrice += newOne.price!;
+    singlePrice += newOne.price;
     ingredients.add(newOne);
   }
 
@@ -61,7 +61,7 @@ class OrderProductModel {
   void removeIngredient(ProductIngredientModel? ingredient) {
     ingredients.removeWhere((e) {
       if (e.ingredient.id == ingredient!.id) {
-        singlePrice -= e.price!;
+        singlePrice -= e.price;
         return true;
       }
       return false;
@@ -100,9 +100,9 @@ class OrderProductModel {
     // ingredient with special quantity
     ingredients.forEach((ingredient) {
       allIngredients[ingredient.id]!.update(
-        additionalCost: ingredient.cost!,
-        additionalPrice: ingredient.price!,
-        amount: ingredient.amount!,
+        additionalCost: ingredient.cost,
+        additionalPrice: ingredient.price,
+        amount: ingredient.amount,
         quantityId: ingredient.quantity.id,
         quantityName: ingredient.quantity.quantity.name,
       );
