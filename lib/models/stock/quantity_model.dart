@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
@@ -30,10 +31,10 @@ class QuantityModel {
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
   Future<void> remove() async {
-    print('Remove quantity $name');
+    info(toString(), 'stock.quantity.remove');
     await Storage.instance.set(Stores.stock, {prefix: null});
 
-    return QuantityRepo.instance.removeQuantity(prefix);
+    QuantityRepo.instance.removeQuantity(prefix);
   }
 
   QuantityObject toObject() => QuantityObject(
@@ -46,6 +47,8 @@ class QuantityModel {
     final updateData = object.diff(this);
 
     if (updateData.isEmpty) return Future.value();
+
+    info(toString(), 'stock.quantity.update');
 
     return Storage.instance.set(Stores.quantities, updateData);
   }

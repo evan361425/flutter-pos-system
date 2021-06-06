@@ -27,23 +27,24 @@ class StockBatchModel {
       );
 
   String get prefix => id;
-  num? getNumOfId(String id) => exist(id) ? data[id] : null;
 
   void apply() => StockModel.instance.applyAmounts(data);
 
   bool exist(String id) => data.containsKey(id);
 
-  StockBatchObject toObject() => StockBatchObject(
-        id: id,
-        name: name,
-        data: data,
-      );
+  num? getNumOfId(String id) => exist(id) ? data[id] : null;
 
   Future<void> remove() async {
     await Storage.instance.set(Stores.quantities, {prefix: null});
 
     StockBatchRepo.instance.removeBatch(id);
   }
+
+  StockBatchObject toObject() => StockBatchObject(
+        id: id,
+        name: name,
+        data: data,
+      );
 
   Future<void> update(StockBatchObject object) {
     final updateData = object.diff(this);
