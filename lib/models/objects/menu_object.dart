@@ -159,7 +159,7 @@ class ProductIngredientObject {
     };
   }
 
-  Map<String, Object> diff(ProductIngredientModel ingredient) {
+  Future<Map<String, Object>> diff(ProductIngredientModel ingredient) async {
     final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
@@ -169,9 +169,9 @@ class ProductIngredientObject {
     }
     // after all property set
     if (id != null && id != ingredient.id) {
-      ingredient.changeIngredient(id!);
-
-      return {ingredient.prefix: ingredient.toObject().toMap()};
+      await ingredient.changeIngredient(id!);
+      // no need to update
+      return const {};
     }
 
     return result;

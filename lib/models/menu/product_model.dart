@@ -67,11 +67,10 @@ class ProductModel extends ChangeNotifier {
 
   bool exist(String id) => ingredients.containsKey(id);
 
-  ProductIngredientModel? getIngredient(String id) =>
-      exist(id) ? ingredients[id] : null;
+  ProductIngredientModel? getIngredient(String id) => ingredients[id];
 
   Future<void> remove() async {
-    info('${catalog.name}.$name', 'menu.product.remove');
+    info(toString(), 'menu.product.remove');
     await Storage.instance.set(Stores.menu, {prefix: null});
 
     catalog.removeProduct(id);
@@ -79,6 +78,22 @@ class ProductModel extends ChangeNotifier {
 
   void removeIngredient(String? id) {
     ingredients.remove(id);
+
+    notifyListeners();
+  }
+
+  Future<void> setIngredient(ProductIngredientModel ingredient) async {
+    if (!exist(ingredient.id)) {
+      info(ingredient.toString(), 'menu.ingredient.add');
+      ingredients[ingredient.id] = ingredient;
+
+      final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
+
+      await Storage.instance.set(Stores.menu, updateData);
+    }
+
+    // catalog screen will also shows ingredients
+    catalog.notifyListeners();
 
     notifyListeners();
   }
@@ -93,29 +108,18 @@ class ProductModel extends ChangeNotifier {
         ingredients: ingredients.values.map((e) => e.toObject()),
       );
 
+  @override
+  String toString() => '$catalog.$name';
+
   Future<void> update(ProductObject product) {
     final updateData = product.diff(this);
 
     if (updateData.isEmpty) return Future.value();
 
+    info(toString(), 'menu.product.update');
     notifyListeners();
 
     return Storage.instance.set(Stores.menu, updateData);
-  }
-
-  Future<void> setIngredient(ProductIngredientModel ingredient) async {
-    if (!exist(ingredient.id)) {
-      ingredients[ingredient.id] = ingredient;
-
-      final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
-
-      await Storage.instance.set(Stores.menu, updateData);
-    }
-
-    // catalog screen will also shows ingredients
-    catalog.notifyListeners();
-
-    notifyListeners();
   }
 
   void _prepareIngredients() {

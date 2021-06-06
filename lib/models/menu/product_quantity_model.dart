@@ -48,6 +48,8 @@ class ProductQuantityModel {
         additionalPrice: object.additionalPrice,
       );
 
+  String get name => ingredient.name;
+
   String get prefix => '${ingredient.prefix}.quantities.$id';
 
   Future<void> changeQuantity(String newId) async {
@@ -76,6 +78,9 @@ class ProductQuantityModel {
         additionalCost: additionalCost,
         additionalPrice: additionalPrice,
       );
+
+  @override
+  String toString() => '$ingredient.$name';
 
   Future<void> update(ProductQuantityObject quantity) {
     final updateData = quantity.diff(this);

@@ -27,11 +27,16 @@ void main() {
     });
 
     test('#build', () {
-      final product = ProductModel.fromObject(mockCatalogObject.products.first);
+      final object = mockCatalogObject.products.first;
+      final product = ProductModel.fromObject(object);
       final isSame = product.ingredients.values
           .every((e) => identical(e.product, product));
 
       expect(isSame, isTrue);
+      expect(object.id, product.id);
+      expect(object.cost, product.cost);
+      expect(object.index, product.index);
+      expect(object.name, product.name);
     });
 
     test('#toObject', () {
@@ -128,6 +133,7 @@ void main() {
       });
 
       test('should notify and update', () async {
+        LOG_LEVEL = 2;
         final object = ProductObject(name: 'new-name', cost: 2, price: 3);
         final prefix = product.prefix;
 
@@ -162,6 +168,7 @@ void main() {
       });
 
       test('should add and notify', () async {
+        LOG_LEVEL = 2;
         final product =
             ProductModel.fromObject(mockCatalogObject.products.first);
         final ingredient =

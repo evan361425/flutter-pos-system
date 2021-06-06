@@ -15,6 +15,14 @@ POS System
 - User
 - Menu
 
+## Testing
+
+Build `mockito` object
+
+```bash
+$ flutter pub run build_runner build
+```
+
 ## TODO
 
 - [ ] Ingredient Set's name selectable

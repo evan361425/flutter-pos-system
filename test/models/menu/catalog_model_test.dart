@@ -147,6 +147,7 @@ void main() {
       });
 
       test('should notify and update', () async {
+        LOG_LEVEL = 2;
         final object = CatalogObject(name: 'new-name');
 
         final bool isCalled =
@@ -174,6 +175,7 @@ void main() {
       });
 
       test('should add and notify', () async {
+        LOG_LEVEL = 2;
         final catalog = CatalogModel.fromObject(mockCatalogObject);
         final product = ProductModel(
             index: 1, name: 'name', id: 'product_2', catalog: catalog);

@@ -45,7 +45,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
               },
               groupId: INGREDIENT_GROUP,
               value: ingredient.id,
-              child: Text(ingredient.ingredient.name),
+              child: Text(ingredient.name),
             ),
         ]),
         SingleRowWrap(children: <Widget>[
@@ -62,7 +62,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
               groupId: QUANTITY_GROUP,
               value: quantity.id,
               isSelected: quantity.id == selectedQuantityId,
-              child: Text('${quantity.quantity.name}（${quantity.amount}）'),
+              child: Text('${quantity.name}（${quantity.amount}）'),
             ),
         ]),
       ],

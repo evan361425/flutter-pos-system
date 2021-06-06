@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
@@ -26,7 +27,6 @@ class ProductIngredientModel {
     IngredientModel? ingredient,
     ProductModel? product,
     num? amount,
-    num? cost,
     Map<String, ProductQuantityModel>? quantities,
   })  : quantities = quantities ?? {},
         amount = amount ?? 0 {
@@ -49,6 +49,7 @@ class ProductIngredientModel {
         },
       ).._prepareQuantities();
 
+  String get name => ingredient.name;
   String get prefix => '${product.prefix}.ingredients.$id';
 
   /// change stock ingredient
@@ -56,17 +57,16 @@ class ProductIngredientModel {
     await remove();
 
     setIngredient(StockModel.instance.getIngredient(newId)!);
+
     await product.setIngredient(this);
-    print('change ingredient to ${ingredient.name}');
   }
 
   bool exist(String? id) => quantities.containsKey(id);
 
-  ProductQuantityModel? getQuantity(String? id) =>
-      exist(id) ? quantities[id] : null;
+  ProductQuantityModel? getQuantity(String? id) => quantities[id];
 
   Future<void> remove() async {
-    print('remove product ingredient ${ingredient.name}');
+    info(toString(), 'menu.ingredient.remove');
     await Storage.instance.set(Stores.menu, {prefix: null});
 
     product.removeIngredient(id);
@@ -83,24 +83,9 @@ class ProductIngredientModel {
     id = model.id;
   }
 
-  ProductIngredientObject toObject() => ProductIngredientObject(
-        id: id,
-        amount: amount,
-        quantities: quantities.values.map((e) => e.toObject()),
-      );
-
-  Future<void> update(ProductIngredientObject ingredient) {
-    final updateData = ingredient.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    product.setIngredient(this);
-
-    return Storage.instance.set(Stores.menu, updateData);
-  }
-
   Future<void> setQuantity(ProductQuantityModel quantity) async {
     if (!exist(quantity.id)) {
+      info(quantity.toString(), 'menu.quantity.update');
       quantities[quantity.id] = quantity;
 
       final updateData = {'${quantity.prefix}': quantity.toObject().toMap()};
@@ -109,6 +94,26 @@ class ProductIngredientModel {
     }
 
     await product.setIngredient(this);
+  }
+
+  ProductIngredientObject toObject() => ProductIngredientObject(
+        id: id,
+        amount: amount,
+        quantities: quantities.values.map((e) => e.toObject()),
+      );
+
+  @override
+  String toString() => '$product.$name';
+
+  Future<void> update(ProductIngredientObject ingredient) async {
+    final updateData = await ingredient.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    info(toString(), 'menu.ingredient.update');
+    await product.setIngredient(this);
+
+    return Storage.instance.set(Stores.menu, updateData);
   }
 
   void _prepareQuantities() {

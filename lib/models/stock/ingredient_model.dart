@@ -75,6 +75,9 @@ class IngredientModel extends ChangeNotifier {
         lastAmount: lastAmount,
       );
 
+  @override
+  String toString() => name;
+
   Future<void> update(IngredientObject object) {
     final updateData = object.diff(this);
 

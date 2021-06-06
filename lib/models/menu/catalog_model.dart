@@ -62,10 +62,10 @@ class CatalogModel extends ChangeNotifier {
 
   bool exist(String id) => products.containsKey(id);
 
-  ProductModel? getProduct(String id) => exist(id) ? products[id] : null;
+  ProductModel? getProduct(String id) => products[id];
 
   Future<void> remove() async {
-    info(name, 'menu.catalog.remove');
+    info(toString(), 'menu.catalog.remove');
     await Storage.instance.set(Stores.menu, {id: null});
 
     MenuModel.instance.removeCatalog(id);
@@ -92,26 +92,9 @@ class CatalogModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  CatalogObject toObject() => CatalogObject(
-        id: id,
-        index: index,
-        name: name,
-        createdAt: createdAt,
-        products: products.values.map((e) => e.toObject()),
-      );
-
-  Future<void> update(CatalogObject catalog) {
-    final updateData = catalog.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
-  }
-
   Future<void> setProduct(ProductModel product) async {
     if (!exist(product.id)) {
+      info(product.toString(), 'menu.product.add');
       products[product.id] = product;
 
       final updateData = {product.prefix: product.toObject().toMap()};
@@ -120,6 +103,28 @@ class CatalogModel extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  CatalogObject toObject() => CatalogObject(
+        id: id,
+        index: index,
+        name: name,
+        createdAt: createdAt,
+        products: products.values.map((e) => e.toObject()),
+      );
+
+  @override
+  String toString() => name;
+
+  Future<void> update(CatalogObject catalog) {
+    final updateData = catalog.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    info(toString(), 'menu.catalog.update');
+    notifyListeners();
+
+    return Storage.instance.set(Stores.menu, updateData);
   }
 
   void _preparePorducts() {

@@ -104,7 +104,7 @@ class OrderProductModel {
         additionalPrice: ingredient.price,
         amount: ingredient.amount,
         quantityId: ingredient.quantity.id,
-        quantityName: ingredient.quantity.quantity.name,
+        quantityName: ingredient.quantity.name,
       );
     });
 

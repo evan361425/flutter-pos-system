@@ -99,7 +99,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           quantity: quantity,
           ingredient: quantity.ingredient,
         ),
-        title: Text(quantity.quantity.name),
+        title: Text(quantity.name),
         trailing: Text('${quantity.amount}'),
         subtitle: _quantityMetadata(quantity),
       );
@@ -116,7 +116,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return ExpansionPanel(
       canTapOnHeader: true,
       headerBuilder: (_, __) => ListTile(
-        title: Text(ingredient.ingredient.name),
+        title: Text(ingredient.name),
         subtitle: Text('使用量：${ingredient.amount}'),
       ),
       body: Column(

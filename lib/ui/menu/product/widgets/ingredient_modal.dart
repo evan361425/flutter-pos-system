@@ -196,20 +196,19 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Future<void> _updateIngredient() async {
+  Future<void> _updateIngredient() {
     final object = _parseObject();
     print('start ${widget.isNew ? 'adding' : 'updating'}: ${object.toMap()}');
 
     if (!widget.isNew) {
-      await widget.ingredient!.update(object);
+      return widget.ingredient!.update(object);
+    } else {
+      return widget.product.setIngredient(ProductIngredientModel(
+        ingredient: StockModel.instance.getIngredient(ingredientId),
+        product: widget.product,
+        amount: object.amount,
+      ));
     }
-
-    await widget.product.setIngredient(widget.ingredient ??
-        ProductIngredientModel(
-          ingredient: StockModel.instance.getIngredient(ingredientId),
-          product: widget.product,
-          amount: object.amount,
-        ));
   }
 
   bool _validate() {
