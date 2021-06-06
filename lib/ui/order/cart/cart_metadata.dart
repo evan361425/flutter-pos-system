@@ -44,7 +44,10 @@ class _CartMetadataState extends State<CartMetadata> {
 
   @override
   void dispose() {
-    OrderProductModel.removeListener(_listener);
+    OrderProductModel.removeListener(
+      _listener,
+      OrderProductListenerTypes.count,
+    );
     super.dispose();
   }
 }

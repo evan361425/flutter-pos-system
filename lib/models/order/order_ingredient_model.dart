@@ -18,12 +18,4 @@ class OrderIngredientModel {
 
   @override
   String toString() => '${ingredient.name} - ${quantity.name}';
-
-  @override
-  bool operator ==(Object other) {
-    if (other is OrderIngredientModel) {
-      return other.id == id;
-    }
-    return false;
-  }
 }

@@ -1,4 +1,3 @@
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
@@ -28,22 +27,25 @@ class OrderProductModel {
   })  : singlePrice = singlePrice ?? product.price,
         ingredients = ingredients ?? [],
         count = count ?? 1;
+
   Iterable<String> get ingredientNames => ingredients.map((e) => e.toString());
 
   num get price => count * singlePrice;
-  void addIngredient(OrderIngredientModel newOne) {
+
+  void addIngredient(OrderIngredientModel ingredient) {
     var i = 0;
-    for (var oldOne in ingredients) {
-      if (oldOne == newOne) {
-        singlePrice -= oldOne.price;
+    for (var element in ingredients) {
+      if (element.id == ingredient.id) {
+        // remove it to push to end, use element.price for old price
+        singlePrice -= element.price;
         ingredients.removeAt(i);
         break;
       }
       i++;
     }
 
-    singlePrice += newOne.price;
-    ingredients.add(newOne);
+    singlePrice += ingredient.price;
+    ingredients.add(ingredient);
   }
 
   void decrement([int value = 1]) => setCount(-value);
@@ -58,9 +60,9 @@ class OrderProductModel {
 
   void increment([int value = 1]) => setCount(value);
 
-  void removeIngredient(ProductIngredientModel? ingredient) {
+  void removeIngredient(String id) {
     ingredients.removeWhere((e) {
-      if (e.ingredient.id == ingredient!.id) {
+      if (e.id == id) {
         singlePrice -= e.price;
         return true;
       }
@@ -85,20 +87,22 @@ class OrderProductModel {
     return changed;
   }
 
-  // Custom Listeners for performace
-
   OrderProductObject toObject() {
     // including default quantity ingredient
     final allIngredients = <String, OrderIngredientObject>{
-      for (var ingredientEntry in product.ingredients.entries)
-        ingredientEntry.key: OrderIngredientObject(
-          id: ingredientEntry.key,
-          name: ingredientEntry.value.ingredient.name,
-          amount: ingredientEntry.value.amount,
+      for (var ingredient in product.ingredients.values)
+        ingredient.id: OrderIngredientObject(
+          id: ingredient.id,
+          name: ingredient.name,
+          amount: ingredient.amount,
         )
     };
+
+    var originalPrice = product.price;
     // ingredient with special quantity
     ingredients.forEach((ingredient) {
+      originalPrice += ingredient.price;
+
       allIngredients[ingredient.id]!.update(
         additionalCost: ingredient.cost,
         additionalPrice: ingredient.price,
@@ -113,30 +117,30 @@ class OrderProductModel {
       count: count,
       productId: product.id,
       productName: product.name,
-      isDiscount: singlePrice != product.price,
+      originalPrice: originalPrice,
+      isDiscount: singlePrice < originalPrice,
       ingredients: allIngredients,
     );
   }
 
+  // Custom Listeners for performace
   static void addListener(
-    void Function() listener, [
-    OrderProductListenerTypes? type,
-  ]) {
-    if (type != null) return listeners[type]!.add(listener);
-
-    listeners[OrderProductListenerTypes.count]!.add(listener);
-    listeners[OrderProductListenerTypes.selection]!.add(listener);
+    void Function() listener,
+    OrderProductListenerTypes type,
+  ) {
+    listeners[type]!.add(listener);
+    print('listener $type added ${listeners[type]!.length}');
   }
 
-  static void notifyListener([OrderProductListenerTypes? type]) {
-    if (type != null) return listeners[type]!.forEach((lisnter) => lisnter());
-
-    listeners[OrderProductListenerTypes.count]!.forEach((e) => e());
-    listeners[OrderProductListenerTypes.selection]!.forEach((e) => e());
+  static void notifyListener(OrderProductListenerTypes type) {
+    listeners[type]!.forEach((lisnter) => lisnter());
   }
 
-  static void removeListener(void Function() listener) {
-    listeners[OrderProductListenerTypes.count]!.remove(listener);
-    listeners[OrderProductListenerTypes.selection]!.remove(listener);
+  static void removeListener(
+    void Function() listener,
+    OrderProductListenerTypes type,
+  ) {
+    listeners[type]!.remove(listener);
+    print('listener $type removed ${listeners[type]!.length}');
   }
 }

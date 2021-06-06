@@ -104,6 +104,7 @@ class OrderObject {
 
 class OrderProductObject {
   final num singlePrice;
+  final num originalPrice;
   final int count;
   final String productId;
   final String productName;
@@ -112,6 +113,7 @@ class OrderProductObject {
 
   OrderProductObject({
     required this.singlePrice,
+    required this.originalPrice,
     required this.count,
     required this.productId,
     required this.productName,
@@ -122,6 +124,7 @@ class OrderProductObject {
   Map<String, Object?> toMap() {
     return {
       'singlePrice': singlePrice,
+      'originalPrice': originalPrice,
       'count': count,
       'productId': productId,
       'productName': productName,
@@ -143,6 +146,7 @@ class OrderProductObject {
 
     return OrderProductObject(
       singlePrice: data['singlePrice'] as num,
+      originalPrice: data['originalPrice'] as num,
       count: data['count'] as int,
       productId: data['productId'] as String,
       productName: data['productName'] as String,

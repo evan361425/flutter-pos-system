@@ -24,6 +24,7 @@ class CartModel extends ChangeNotifier {
   Iterable<OrderProductModel> get selectedProducts =>
       products.where((product) => product.isSelected);
 
+  /// get selected products if all products are same
   Iterable<OrderProductModel?>? get selectedSameProduct {
     final products = selectedProducts;
     if (products.isEmpty) return null;
@@ -157,9 +158,9 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSelectedIngredient(ProductIngredientModel? ingredient) {
+  void removeSelectedIngredient(String id) {
     selectedProducts.forEach((e) {
-      e.removeIngredient(ingredient);
+      e.removeIngredient(id);
     });
     notifyListeners();
   }

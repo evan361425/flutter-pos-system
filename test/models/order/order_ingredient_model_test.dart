@@ -22,26 +22,6 @@ void main() {
     expect('$ingredient', 'ham - less');
   });
 
-  test('comparison', () {
-    final ingredient = OrderIngredientModel(
-      ingredient: productIngredient,
-      quantity: productQuantity,
-    );
-    final same = OrderIngredientModel(
-      ingredient: ProductIngredientModel(id: 'ing_1'),
-      quantity: productQuantity,
-    );
-    final different = OrderIngredientModel(
-      ingredient: ProductIngredientModel(id: 'ing_2'),
-      quantity: productQuantity,
-    );
-
-    expect(ingredient == same, isTrue);
-    expect(ingredient == different, isFalse);
-    // ignore: unrelated_type_equality_checks
-    expect(ingredient == 'other-object', isFalse);
-  });
-
   setUpAll(() {
     final ingredient = IngredientModel(name: 'ham', id: 'ing_1');
     final quantity = QuantityModel(name: 'less', id: 'qua_1');
