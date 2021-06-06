@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
@@ -48,7 +49,7 @@ class ProductQuantityModel {
         additionalPrice: object.additionalPrice,
       );
 
-  String get name => ingredient.name;
+  String get name => quantity.name;
 
   String get prefix => '${ingredient.prefix}.quantities.$id';
 
@@ -56,12 +57,12 @@ class ProductQuantityModel {
     await remove();
 
     setQuantity(QuantityRepo.instance.getQuantity(newId)!);
+
     await ingredient.setQuantity(this);
-    print('change quantity to ${quantity.name}');
   }
 
   Future<void> remove() async {
-    print('remove product quantity ${quantity.name}');
+    info(toString(), 'menu.quantity.remove');
     await Storage.instance.set(Stores.menu, {prefix: null});
 
     ingredient.removeQuantity(id);
@@ -82,12 +83,13 @@ class ProductQuantityModel {
   @override
   String toString() => '$ingredient.$name';
 
-  Future<void> update(ProductQuantityObject quantity) {
-    final updateData = quantity.diff(this);
+  Future<void> update(ProductQuantityObject quantity) async {
+    final updateData = await quantity.diff(this);
 
     if (updateData.isEmpty) return Future.value();
 
-    ingredient.setQuantity(this);
+    info(toString(), 'menu.quantity.update');
+    await ingredient.setQuantity(this);
 
     return Storage.instance.set(Stores.menu, updateData);
   }

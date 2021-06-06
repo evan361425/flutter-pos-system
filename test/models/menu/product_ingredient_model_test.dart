@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
@@ -50,13 +49,11 @@ void main() {
 
   group('Methods Without Storage', () {
     test('#prefix', () {
-      final catalog = CatalogModel(name: '', index: 1, id: 'cat_1');
-      final product =
-          ProductModel(index: 1, name: '', id: 'pro_1', catalog: catalog);
+      final product = MockProductModel();
       final ingredient = ProductIngredientModel(product: product, id: 'ing_1');
+      when(product.prefix).thenReturn('prefix');
 
-      expect(ingredient.prefix, contains('cat_1'));
-      expect(ingredient.prefix, contains('pro_1'));
+      expect(ingredient.prefix, contains('prefix'));
       expect(ingredient.prefix, contains('ing_1'));
     });
 
@@ -136,15 +133,13 @@ void main() {
 
         await ingredient.update(object);
 
-        // after update, ingredient id will changed
-        final newPrefix = ingredient.prefix;
-
         verifyInOrder([
           storage.mock.set(any, argThat(equals({oldPrefix: null}))),
           product.removeIngredient(argThat(equals('i_id'))),
           product.setIngredient(any),
         ]);
         identical(ingredient.ingredient, newIngredient);
+        expect(ingredient.id, equals('i_id2'));
       });
     });
 

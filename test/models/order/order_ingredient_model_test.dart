@@ -52,6 +52,7 @@ void main() {
       additionalCost: 20,
       additionalPrice: 30,
       quantity: quantity,
+      ingredient: productIngredient,
     );
   });
 }

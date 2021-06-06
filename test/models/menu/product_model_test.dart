@@ -7,6 +7,7 @@ import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 
 import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart' as storage;
@@ -171,8 +172,9 @@ void main() {
         LOG_LEVEL = 2;
         final product =
             ProductModel.fromObject(mockCatalogObject.products.first);
-        final ingredient =
-            ProductIngredientModel(id: 'ingredient_3', product: product);
+        final ingredient = ProductIngredientModel(
+            ingredient: IngredientModel(name: 'hi', id: 'ingredient_3'),
+            product: product);
         product.catalog = catalog;
 
         final bool isCalled = await checkNotifierCalled(
@@ -189,6 +191,7 @@ void main() {
       when(catalog.name).thenReturn('');
       when(catalog.index).thenReturn(1);
       when(catalog.id).thenReturn('c_id');
+      when(catalog.toString()).thenReturn('catalog_string');
       product = ProductModel(
         index: 1,
         name: 'name',

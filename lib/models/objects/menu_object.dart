@@ -216,7 +216,7 @@ class ProductQuantityObject {
     };
   }
 
-  Map<String, Object> diff(ProductQuantityModel quantity) {
+  Future<Map<String, Object>> diff(ProductQuantityModel quantity) async {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
 
@@ -234,9 +234,9 @@ class ProductQuantityObject {
     }
     // after all property set
     if (id != null && id != quantity.id) {
-      quantity.changeQuantity(id!);
-
-      return {quantity.prefix: quantity.toObject().toMap()};
+      await quantity.changeQuantity(id!);
+      // no need to update
+      return const {};
     }
 
     return result;
