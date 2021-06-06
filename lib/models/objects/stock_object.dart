@@ -36,33 +36,33 @@ class IngredientObject {
     };
   }
 
-  Map<String, Object?> diff(IngredientModel ingredient) {
-    final result = <String, Object?>{};
+  Map<String, Object> diff(IngredientModel ingredient) {
+    final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
     if (name != null && name != ingredient.name) {
       ingredient.name = name!;
-      result['$prefix.name'] = name;
+      result['$prefix.name'] = name!;
     }
     if (currentAmount != null && currentAmount != ingredient.currentAmount) {
       ingredient.currentAmount = currentAmount!;
-      result['$prefix.currentAmount'] = currentAmount;
+      result['$prefix.currentAmount'] = currentAmount!;
     }
     if (warningAmount != null && warningAmount != ingredient.warningAmount) {
       ingredient.warningAmount = warningAmount;
-      result['$prefix.warningAmount'] = warningAmount;
+      result['$prefix.warningAmount'] = warningAmount!;
     }
     if (alertAmount != null && alertAmount != ingredient.alertAmount) {
       ingredient.alertAmount = alertAmount;
-      result['$prefix.alertAmount'] = alertAmount;
+      result['$prefix.alertAmount'] = alertAmount!;
     }
     if (lastAmount != null && lastAmount != ingredient.lastAmount) {
       ingredient.lastAmount = lastAmount;
-      result['$prefix.lastAmount'] = lastAmount;
+      result['$prefix.lastAmount'] = lastAmount!;
     }
     if (lastAddAmount != null && lastAddAmount != ingredient.lastAddAmount) {
       ingredient.lastAddAmount = lastAddAmount;
-      result['$prefix.lastAddAmount'] = lastAddAmount;
+      result['$prefix.lastAddAmount'] = lastAddAmount!;
     }
 
     if (result.isNotEmpty) {

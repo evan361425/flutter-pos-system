@@ -30,9 +30,9 @@ class IngredientList extends StatelessWidget {
   Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
     final theme = Theme.of(context);
 
-    void updateAmount(num? amount) {
+    Future<void> updateAmount(num? amount) async {
       if (amount != null) {
-        ingredient.addAmount(amount);
+        await ingredient.addAmount(amount);
       }
     }
 
@@ -43,7 +43,7 @@ class IngredientList extends StatelessWidget {
         title: '增加 ${ingredient.name} 的庫存',
       );
 
-      updateAmount(result);
+      await updateAmount(result);
     }
 
     Future<void> onMinusAmount() async {
@@ -52,7 +52,7 @@ class IngredientList extends StatelessWidget {
         title: '減少 ${ingredient.name} 的庫存',
       );
 
-      updateAmount(result == null ? null : -result);
+      await updateAmount(result == null ? null : -result);
     }
 
     return ListTile(

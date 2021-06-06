@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
@@ -54,15 +55,16 @@ class IngredientModel extends ChangeNotifier {
 
   String get prefix => id;
 
-  void addAmount(num amount) => StockModel.instance.applyAmounts({id: amount});
+  Future<void> addAmount(num amount) =>
+      StockModel.instance.applyAmounts({id: amount});
 
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
   Future<void> remove() async {
-    print('Remove ingredient $name');
+    info(toString(), 'stock.ingredient.remove');
     await Storage.instance.set(Stores.stock, {prefix: null});
 
-    return StockModel.instance.removeIngredient(id);
+    StockModel.instance.removeIngredient(id);
   }
 
   IngredientObject toObject() => IngredientObject(
@@ -73,6 +75,7 @@ class IngredientModel extends ChangeNotifier {
         alertAmount: alertAmount,
         lastAddAmount: lastAddAmount,
         lastAmount: lastAmount,
+        updatedAt: updatedAt,
       );
 
   @override
@@ -83,12 +86,13 @@ class IngredientModel extends ChangeNotifier {
 
     if (updateData.isEmpty) return Future.value();
 
+    info(toString(), 'stock.ingredient.update');
     notifyListeners();
 
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  Map<String, Object?> updateInfo(num amount) {
+  Map<String, Object> updateInfo(num amount) {
     final object = amount > 0
         ? IngredientObject(
             lastAddAmount: amount,
