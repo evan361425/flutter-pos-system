@@ -43,6 +43,9 @@ class QuantityModel {
         defaultProportion: defaultProportion,
       );
 
+  @override
+  String toString() => name;
+
   Future<void> update(QuantityObject object) async {
     final updateData = object.diff(this);
 

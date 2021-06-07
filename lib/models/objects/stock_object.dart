@@ -134,11 +134,11 @@ class QuantityObject {
 class StockBatchObject {
   StockBatchObject({
     this.id,
-    this.name,
+    required this.name,
     this.data,
   });
 
-  String? name;
+  String name;
   Map<String, num>? data;
   final String? id;
 
@@ -149,17 +149,17 @@ class StockBatchObject {
     };
   }
 
-  Map<String, Object?> diff(StockBatchModel batch) {
-    final result = <String, Object?>{};
+  Map<String, Object> diff(StockBatchModel batch) {
+    final result = <String, Object>{};
     final prefix = batch.prefix;
 
-    if (name != null && name != batch.name) {
-      batch.name = name!;
+    if (name != batch.name) {
+      batch.name = name;
       result['$prefix.name'] = name;
     }
     if (data != null) {
       data!.forEach((key, value) {
-        if (batch.data[key] != value) {
+        if (batch.getNumOfId(key) != value) {
           batch.data[key] = value;
           result['$prefix.data.$key'] = value;
         }

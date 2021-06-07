@@ -86,9 +86,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
           updateData[ingredient.id] = numValue;
         }
       },
-      initialValue: widget.batch?.exist(ingredient.id) == true
-          ? widget.batch!.getNumOfId(ingredient.id).toString()
-          : '',
+      initialValue: widget.batch?.getNumOfId(ingredient.id)?.toString() ?? '',
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(

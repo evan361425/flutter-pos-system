@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
@@ -22,7 +23,7 @@ class StockBatchModel {
   factory StockBatchModel.fromObject(StockBatchObject object) =>
       StockBatchModel(
         id: object.id,
-        name: object.name!,
+        name: object.name,
         data: object.data,
       );
 
@@ -30,11 +31,10 @@ class StockBatchModel {
 
   void apply() => StockModel.instance.applyAmounts(data);
 
-  bool exist(String id) => data.containsKey(id);
-
-  num? getNumOfId(String id) => exist(id) ? data[id] : null;
+  num? getNumOfId(String id) => data[id];
 
   Future<void> remove() async {
+    info(toString(), 'stock.batch.remove');
     await Storage.instance.set(Stores.quantities, {prefix: null});
 
     StockBatchRepo.instance.removeBatch(id);
@@ -46,10 +46,15 @@ class StockBatchModel {
         data: data,
       );
 
+  @override
+  String toString() => name;
+
   Future<void> update(StockBatchObject object) {
     final updateData = object.diff(this);
 
     if (updateData.isEmpty) return Future.value();
+
+    info(toString(), 'stock.batch.update');
 
     return Storage.instance.set(Stores.stock_batch, updateData);
   }
