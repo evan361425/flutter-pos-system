@@ -1,12 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
+import '../menu/product_ingredient_model_test.mocks.dart';
+import '../menu/product_quantity_model_test.mocks.dart';
 import 'order_product_model_test.mocks.dart';
 
 MockOrderIngredientModel mockIngredient(String id, int price) {
@@ -17,12 +16,7 @@ MockOrderIngredientModel mockIngredient(String id, int price) {
   return ingredient;
 }
 
-@GenerateMocks([
-  ProductModel,
-  OrderIngredientModel,
-  ProductIngredientModel,
-  ProductQuantityModel
-])
+@GenerateMocks([OrderIngredientModel])
 void main() {
   test('properties', () {
     final product = MockProductModel();

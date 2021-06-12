@@ -21,7 +21,7 @@ class StockModel extends ChangeNotifier
   }
 
   @override
-  String get childCode => 'stock.ingredient.';
+  String get childCode => 'stock.ingredient';
 
   @override
   Stores get storageStore => Stores.stock;
