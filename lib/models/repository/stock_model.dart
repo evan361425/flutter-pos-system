@@ -42,11 +42,14 @@ class StockModel extends ChangeNotifier
   }
 
   Future<void> applyAmounts(Map<String, num> amounts) {
-    final updateData = <String, Object?>{};
+    final updateData = <String, Object>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        updateData.addAll(getChild(id)?.updateInfo(amount) ?? {});
+        final child = getChild(id);
+        if (child != null) {
+          updateData.addAll(child.updateInfo(amount));
+        }
       }
     });
 
@@ -68,7 +71,7 @@ class StockModel extends ChangeNotifier
   }
 
   /// [oldData] is helpful when reverting order
-  Future<void> order(OrderObject data, {OrderObject? oldData}) {
+  Future<void> order(OrderObject data, {OrderObject? oldData}) async {
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
