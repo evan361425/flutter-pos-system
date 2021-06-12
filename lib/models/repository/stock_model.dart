@@ -1,57 +1,36 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/services/storage.dart';
 
-class StockModel extends ChangeNotifier {
+import '../repository.dart';
+
+class StockModel extends ChangeNotifier
+    with
+        Repository<IngredientModel>,
+        InitilizableRepository,
+        SearchableRepository {
   static late StockModel instance;
 
-  late Map<String, IngredientModel> ingredients;
-
-  bool isReady = false;
-
   StockModel() {
-    Storage.instance.get(Stores.stock).then((data) {
-      ingredients = {};
-      isReady = true;
+    initialize();
 
-      data.forEach((key, value) {
-        try {
-          ingredients[key] = IngredientModel.fromObject(
-            IngredientObject.build({
-              'id': key,
-              ...value as Map<String, Object?>,
-            }),
-          );
-        } catch (e) {
-          error(e.toString(), 'stock.parse.error');
-        }
-      });
-
-      notifyListeners();
-    }).onError((e, stack) {
-      error(e.toString(), 'stock.fetch.error');
-      throw e!;
-    });
     StockModel.instance = this;
   }
 
-  List<IngredientModel> get ingredientList => ingredients.values.toList();
+  @override
+  String get childCode => 'stock.ingredient.';
 
-  bool get isEmpty => ingredients.isEmpty;
-  bool get isNotEmpty => ingredients.isNotEmpty;
-  int get length => ingredients.length;
+  @override
+  Stores get storageStore => Stores.stock;
 
   String? get updatedDate {
     if (isEmpty) return null;
 
     DateTime? lastest;
-    ingredients.values.forEach((element) {
+    childs.forEach((element) {
       if (lastest == null) {
         lastest = element.updatedAt;
       } else if (element.updatedAt?.isAfter(lastest!) == true) {
@@ -67,7 +46,7 @@ class StockModel extends ChangeNotifier {
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        updateData.addAll(getIngredient(id)?.updateInfo(amount) ?? {});
+        updateData.addAll(getChild(id)?.updateInfo(amount) ?? {});
       }
     });
 
@@ -78,9 +57,15 @@ class StockModel extends ChangeNotifier {
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  bool exist(String id) => ingredients.containsKey(id);
-
-  IngredientModel? getIngredient(String id) => ingredients[id];
+  @override
+  IngredientModel buildModel(String id, Map<String, Object> value) {
+    return IngredientModel.fromObject(
+      IngredientObject.build({
+        'id': id,
+        ...value,
+      }),
+    );
+  }
 
   /// [oldData] is helpful when reverting order
   Future<void> order(OrderObject data, {OrderObject? oldData}) {
@@ -100,47 +85,5 @@ class StockModel extends ChangeNotifier {
     });
 
     return applyAmounts(amounts);
-  }
-
-  void removeIngredient(String id) {
-    ingredients.remove(id);
-
-    notifyListeners();
-  }
-
-  List<IngredientModel> sortBySimilarity(String text) {
-    if (text.isEmpty) {
-      return [];
-    }
-
-    final similarities = ingredients.entries
-        .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
-        .where((e) => e.value > 0)
-        .toList();
-    similarities.sort((ing1, ing2) {
-      // if ing1 < ing2 return -1 will make ing1 be the first one
-      if (ing1.value == ing2.value) return 0;
-      return ing1.value < ing2.value ? 1 : -1;
-    });
-
-    final end = min(10, similarities.length);
-    return similarities
-        .sublist(0, end)
-        .map((e) => getIngredient(e.key)!)
-        .toList();
-  }
-
-  Future<void> setIngredient(IngredientModel ingredient) async {
-    if (!exist(ingredient.id)) {
-      ingredients[ingredient.id] = ingredient;
-
-      await Storage.instance.add(
-        Stores.stock,
-        ingredient.id,
-        ingredient.toObject().toMap(),
-      );
-    }
-
-    notifyListeners();
   }
 }

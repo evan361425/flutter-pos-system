@@ -38,3 +38,19 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 mixin OrderableModel<T extends ModelObject> on Model<T> {
   late int index;
 }
+
+mixin SearchableModel<T extends ModelObject> on Model<T> {
+  late String name;
+
+  /// get similarity between [name] and [pattern]
+  int getSimilarity(String pattern) {
+    final found = name.split(' ').where((e) => e.startsWith(pattern)).length;
+    var score = found == 0
+        ? name.contains(pattern)
+            ? 1
+            : 0
+        : found * 2;
+
+    return score;
+  }
+}

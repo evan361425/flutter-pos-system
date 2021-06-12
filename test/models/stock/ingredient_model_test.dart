@@ -103,7 +103,7 @@ void main() {
       await ingredient.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(stock.mock.removeIngredient(argThat(equals('id'))));
+      verify(stock.mock.removeChild(argThat(equals('id'))));
     });
 
     group('#update', () {

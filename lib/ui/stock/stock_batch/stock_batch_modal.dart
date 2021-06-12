@@ -21,8 +21,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final updateData = <String, num>{};
-  final List<IngredientModel> ingredients =
-      StockModel.instance.ingredients.values.toList();
+  final List<IngredientModel> ingredients = StockModel.instance.childList;
 
   bool isSaving = false;
   String? errorMessage;
@@ -56,7 +55,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
                 child: ListView.builder(
                   itemBuilder: (_, index) =>
                       _fieldIngredient(ingredients[index]),
-                  itemCount: StockModel.instance.ingredients.length,
+                  itemCount: StockModel.instance.length,
                 ),
               ),
             ),

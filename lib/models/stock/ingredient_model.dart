@@ -1,15 +1,11 @@
 import 'dart:math';
 
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/storage.dart';
 
-class IngredientModel extends Model<IngredientObject> {
-  // ingredient name: cheese, bread, ...
-  String name;
-
+class IngredientModel extends Model<IngredientObject> with SearchableModel {
   // current amount in stock
   num? currentAmount;
 
@@ -28,7 +24,7 @@ class IngredientModel extends Model<IngredientObject> {
   DateTime? updatedAt;
 
   IngredientModel({
-    required this.name,
+    required String name,
     this.currentAmount,
     this.warningAmount,
     this.alertAmount,
@@ -36,7 +32,9 @@ class IngredientModel extends Model<IngredientObject> {
     this.lastAddAmount,
     this.updatedAt,
     String? id,
-  }) : super(id);
+  }) : super(id) {
+    this.name = name;
+  }
 
   factory IngredientModel.fromObject(IngredientObject object) =>
       IngredientModel(
@@ -59,11 +57,9 @@ class IngredientModel extends Model<IngredientObject> {
   Future<void> addAmount(num amount) =>
       StockModel.instance.applyAmounts({id: amount});
 
-  int getSimilarity(String searchText) => Util.similarity(name, searchText);
-
   @override
   void removeFromRepo() {
-    StockModel.instance.removeIngredient(id);
+    StockModel.instance.removeChild(id);
   }
 
   @override

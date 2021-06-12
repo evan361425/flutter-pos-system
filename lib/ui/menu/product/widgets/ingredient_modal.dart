@@ -204,7 +204,7 @@ class _IngredientModalState extends State<IngredientModal> {
       return widget.ingredient!.update(object);
     } else {
       return widget.product.setIngredient(ProductIngredientModel(
-        ingredient: StockModel.instance.getIngredient(ingredientId),
+        ingredient: StockModel.instance.getChild(ingredientId),
         product: widget.product,
         amount: object.amount,
       ));

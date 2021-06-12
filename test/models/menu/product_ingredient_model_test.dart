@@ -129,7 +129,7 @@ void main() {
         final object = ProductIngredientObject(amount: 2, id: 'i_id2');
         final oldPrefix = ingredient.prefix;
         final newIngredient = IngredientModel(name: 'ing', id: 'i_id2');
-        when(stock.mock.getIngredient('i_id2')).thenReturn(newIngredient);
+        when(stock.mock.getChild('i_id2')).thenReturn(newIngredient);
 
         await ingredient.update(object);
 

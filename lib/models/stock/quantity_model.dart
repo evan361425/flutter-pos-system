@@ -4,19 +4,18 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/services/storage.dart';
 
-class QuantityModel extends Model<QuantityObject> {
-  // quantity name: less, more, ...
-  String name;
-
-  // between 0 ~ 1
+class QuantityModel extends Model<QuantityObject> with SearchableModel {
+  /// between 0 ~ 1
   num defaultProportion;
 
   QuantityModel({
     String? id,
-    required this.name,
+    required String name,
     num? defaultProportion,
   })  : defaultProportion = defaultProportion ?? 1,
-        super(id);
+        super(id) {
+    this.name = name;
+  }
 
   factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
         id: object.id,
@@ -29,8 +28,6 @@ class QuantityModel extends Model<QuantityObject> {
 
   @override
   Stores get storageStore => Stores.quantities;
-
-  int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
   @override
   void removeFromRepo() {

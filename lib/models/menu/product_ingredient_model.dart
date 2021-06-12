@@ -56,7 +56,7 @@ class ProductIngredientModel {
   Future<void> changeIngredient(String newId) async {
     await remove();
 
-    setIngredient(StockModel.instance.getIngredient(newId)!);
+    setIngredient(StockModel.instance.getChild(newId)!);
 
     await product.setIngredient(this);
   }

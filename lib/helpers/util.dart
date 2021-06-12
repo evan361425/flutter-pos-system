@@ -8,19 +8,6 @@ class Util {
     return uuid.v4();
   }
 
-  static int similarity(String text, String pattern) {
-    // const patterns = [' ', '.', '-'];
-    // final used = patterns.firstWhere((e) => text.contains(e), orElse: () => '');
-    // starts with [pattern]
-    var score =
-        text.split(' ').where((element) => element.startsWith(pattern)).length *
-            2;
-    // contains
-    score += text.contains(pattern) ? 1 : 0;
-
-    return score;
-  }
-
   static int toUTC({int? hour, DateTime? now}) {
     now ??= getNow(hour: hour);
 

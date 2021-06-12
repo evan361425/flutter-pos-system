@@ -98,3 +98,24 @@ mixin InitilizableRepository<T extends Model> on Repository<T> {
 
   T buildModel(String id, Map<String, Object> value);
 }
+
+mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
+  List<T> sortBySimilarity(String text) {
+    if (text.isEmpty) {
+      return [];
+    }
+
+    final similarities = childMap.entries
+        .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
+        .where((e) => e.value > 0)
+        .toList();
+    similarities.sort((ing1, ing2) {
+      // if ing1 < ing2 return -1 will make ing1 be the first one
+      if (ing1.value == ing2.value) return 0;
+      return ing1.value < ing2.value ? 1 : -1;
+    });
+
+    final end = similarities.length < 10 ? similarities.length : 10;
+    return similarities.sublist(0, end).map((e) => getChild(e.key)!).toList();
+  }
+}

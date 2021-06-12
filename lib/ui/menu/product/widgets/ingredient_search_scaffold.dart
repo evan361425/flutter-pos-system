@@ -19,7 +19,7 @@ class IngredientSearchScaffold extends StatelessWidget {
           StockModel.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: () async => StockModel.instance.ingredientList,
+      initialData: () async => StockModel.instance.childList,
       heroTag: IngredientSearchScaffold.tag,
       text: text ?? '',
       hintText: '成份名稱，起司',
@@ -41,7 +41,7 @@ class IngredientSearchScaffold extends StatelessWidget {
       title: Text('新增成份「$text」'),
       onTap: () {
         final ingredient = IngredientModel(name: text);
-        StockModel.instance.setIngredient(ingredient);
+        StockModel.instance.setChild(ingredient);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );

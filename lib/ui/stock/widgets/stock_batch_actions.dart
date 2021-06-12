@@ -64,7 +64,7 @@ class StockBatchActions extends StatelessWidget {
             Text('將會影響以下的成份：'),
             const SizedBox(height: kSpacing1),
             for (var id in batch.data.keys)
-              Text('- ${StockModel.instance.getIngredient(id)?.name}'),
+              Text('- ${StockModel.instance.getChild(id)?.name}'),
           ],
         ),
       ),

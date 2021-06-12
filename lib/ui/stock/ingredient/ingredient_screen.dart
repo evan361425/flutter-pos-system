@@ -172,7 +172,7 @@ class _IngredientScreenState extends State<IngredientScreen> {
         currentAmount: object.currentAmount!,
       );
 
-      await StockModel.instance.setIngredient(ingredient);
+      await StockModel.instance.setChild(ingredient);
     } else {
       await widget.ingredient!.update(object);
     }
@@ -183,7 +183,8 @@ class _IngredientScreenState extends State<IngredientScreen> {
 
     final name = _nameController.text;
 
-    if (widget.ingredient?.name != name && StockModel.instance.exist(name)) {
+    if (widget.ingredient?.name != name &&
+        StockModel.instance.existChild(name)) {
       setState(() => errorMessage = '成份名稱重複');
       return false;
     }
