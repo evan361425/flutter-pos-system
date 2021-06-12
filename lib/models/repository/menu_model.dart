@@ -129,7 +129,7 @@ class MenuModel extends ChangeNotifier
     if (stockMode) return;
 
     childMap.forEach((catalogId, catalog) {
-      catalog.childMap.forEach((productId, product) {
+      catalog.childs.forEach((product) {
         product.ingredients.forEach((ingredientId, ingredient) {
           ingredient.setIngredient(stock.getIngredient(ingredientId)!);
           ingredient.quantities.forEach((quantityId, quantity) {

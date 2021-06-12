@@ -130,6 +130,7 @@ void main() {
           '${products[0].prefix}.index': 1,
           '${products[1].prefix}.index': 2,
           '${products[2].prefix}.index': 3,
+          '${products[3].prefix}.index': 4,
         })),
       ));
       expect(isCalled, isTrue);

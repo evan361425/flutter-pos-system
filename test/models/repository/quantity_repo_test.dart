@@ -104,6 +104,7 @@ void main() {
       });
 
       test('should add quantitiy', () async {
+        LOG_LEVEL = 2;
         final q_a = MockQuantityModel();
         final q_b = MockQuantityModel();
         final q_map = mockQuantityObject1.toMap();
@@ -111,6 +112,7 @@ void main() {
 
         when(q_b.toObject()).thenReturn(mockQuantityObject1);
         when(q_b.id).thenReturn('b');
+        when(q_b.toString()).thenReturn('name');
         when(storage.mock.add(any, 'b', q_map))
             .thenAnswer((_) => Future.value());
 

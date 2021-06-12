@@ -48,18 +48,18 @@ mixin Repository<T extends Model> on ChangeNotifier {
 }
 
 mixin OrderablRepository<T extends OrderableModel> on Repository<T> {
-  Future<void> reorderChilds(List<T> childs) {
+  Future<void> reorderChilds(List<T> childs) async {
     final updateData = <String, Object>{};
     var i = 1;
 
-    childs.forEach((product) {
-      product.index = i++;
-      updateData.addAll({'${product.prefix}.index': product.index});
+    childs.forEach((child) {
+      child.index = i++;
+      updateData.addAll({'${child.prefix}.index': child.index});
     });
 
-    notifyListeners();
+    await Storage.instance.set(storageStore, updateData);
 
-    return Storage.instance.set(storageStore, updateData);
+    notifyListeners();
   }
 
   /// sorted by index
