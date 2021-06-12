@@ -68,7 +68,7 @@ void main() {
     test('#getter', () {
       final q_a = MockQuantityModel();
       final q_b = MockQuantityModel();
-      repo.childMap = {'a': q_a, 'b': q_b};
+      repo.replaceChilds({'a': q_a, 'b': q_b});
 
       expect(repo.isEmpty, isFalse);
       expect(repo.isNotEmpty, isTrue);
@@ -82,7 +82,7 @@ void main() {
     test('#removeQuantity', () {
       final q_a = MockQuantityModel();
       final q_b = MockQuantityModel();
-      repo.childMap = {'a': q_a, 'b': q_b};
+      repo.replaceChilds({'a': q_a, 'b': q_b});
 
       expect(checkNotifierCalled(repo, () => repo.removeChild('a')), isTrue);
       expect(checkNotifierCalled(repo, () => repo.removeChild('c')), isTrue);
@@ -93,7 +93,7 @@ void main() {
     group('#setQuantity', () {
       test('should not call storage', () async {
         final q_a = MockQuantityModel();
-        repo.childMap = {'a': q_a};
+        repo.replaceChilds({'a': q_a});
         when(q_a.id).thenReturn('a');
         when(storage.mock.add(any, any, any)).thenThrow(Exception());
 
@@ -108,7 +108,7 @@ void main() {
         final q_a = MockQuantityModel();
         final q_b = MockQuantityModel();
         final q_map = mockQuantityObject1.toMap();
-        repo.childMap = {'a': q_a};
+        repo.replaceChilds({'a': q_a});
 
         when(q_b.toObject()).thenReturn(mockQuantityObject1);
         when(q_b.id).thenReturn('b');
@@ -144,13 +144,13 @@ void main() {
         final q3 = createQuantity('id3', 3);
         final q4 = createQuantity('id4', 3);
         final q5 = createQuantity('id5', 4);
-        repo.childMap = {
+        repo.replaceChilds({
           'id1': q1,
           'id2': q2,
           'id3': q3,
           'id4': q4,
           'id5': q5,
-        };
+        });
 
         final result = repo.sortBySimilarity('text');
         expect(result, orderedEquals([q5, q3, q4, q2]));
@@ -160,9 +160,9 @@ void main() {
         final quantities = [
           for (var i = 0; i < 20; i++) createQuantity('id$i', i)
         ];
-        repo.childMap = {
-          for (var quantity in quantities) quantity.id: quantity
-        };
+        repo.replaceChilds(
+          {for (var quantity in quantities) quantity.id: quantity},
+        );
 
         final result = repo.sortBySimilarity('text');
         expect(result.length, equals(10));

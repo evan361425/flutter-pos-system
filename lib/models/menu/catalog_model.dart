@@ -25,7 +25,7 @@ class CatalogModel extends Model<CatalogObject>
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     this.index = index;
-    childMap = products ?? {};
+    replaceChilds(products ?? {});
   }
 
   factory CatalogModel.fromObject(CatalogObject object) => CatalogModel(
@@ -57,7 +57,7 @@ class CatalogModel extends Model<CatalogObject>
   Future<void> setChild(ProductModel child) async {
     if (!existChild(child.id)) {
       info(child.toString(), '$childCode.add');
-      childMap[child.id] = child;
+      addChild(child);
 
       final updateData = {child.prefix: child.toObject().toMap()};
 

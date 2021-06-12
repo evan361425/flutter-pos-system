@@ -16,7 +16,7 @@ void main() {
       final catalog = CatalogModel(index: 0, name: 'name');
 
       expect(catalog.createdDate, isNotNull);
-      expect(catalog.childMap, equals({}));
+      expect(catalog.childs, isEmpty);
       expect(catalog.id, isNotNull);
       expect(catalog.index, equals(0));
       expect(catalog.name, equals('name'));

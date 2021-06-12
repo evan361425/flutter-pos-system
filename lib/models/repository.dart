@@ -4,30 +4,30 @@ import 'package:possystem/models/model.dart';
 import 'package:possystem/services/storage.dart';
 
 mixin Repository<T extends Model> on ChangeNotifier {
-  late Map<String, T> childMap;
+  late Map<String, T> _childs;
 
   String get childCode;
 
-  Iterable<T> get childs => childMap.values;
+  Iterable<T> get childs => _childs.values;
 
-  bool get isEmpty => childMap.isEmpty;
+  bool get isEmpty => _childs.isEmpty;
 
-  bool get isNotEmpty => childMap.isNotEmpty;
+  bool get isNotEmpty => _childs.isNotEmpty;
 
-  int get length => childMap.length;
+  int get length => _childs.length;
 
   Stores get storageStore;
 
   List<T> get childList => childs.toList();
 
-  bool existChild(String id) => childMap.containsKey(id);
+  bool existChild(String id) => _childs.containsKey(id);
 
-  T? getChild(String id) => childMap[id];
+  T? getChild(String id) => _childs[id];
 
   /// only remove map value and notify listeners
   /// you should remove child by `child.remove()`
   void removeChild(String id) {
-    childMap.remove(id);
+    _childs.remove(id);
 
     notifyListeners();
   }
@@ -36,7 +36,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
   Future<void> setChild(T child) async {
     if (!existChild(child.id)) {
       info(child.toString(), '$childCode.add');
-      childMap[child.id] = child;
+      _childs[child.id] = child;
 
       final updateData = child.toObject().toMap();
 
@@ -45,6 +45,9 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
     notifyListeners();
   }
+
+  void replaceChilds(Map<String, T> map) => _childs = map;
+  void addChild(T child) => _childs[child.id] = child;
 }
 
 mixin OrderablRepository<T extends OrderableModel> on Repository<T> {
@@ -78,12 +81,12 @@ mixin InitilizableRepository<T extends Model> on Repository<T> {
 
   Future<void> initialize() {
     return Storage.instance.get(storageStore).then((data) {
-      childMap = {};
+      replaceChilds({});
       isReady = true;
 
       data.forEach((id, value) {
         try {
-          childMap[id] = buildModel(id, value as Map<String, Object>);
+          addChild(buildModel(id, value as Map<String, Object>));
         } catch (e) {
           error(e.toString(), '$childCode.parse.error');
         }
@@ -105,8 +108,8 @@ mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
       return [];
     }
 
-    final similarities = childMap.entries
-        .map((e) => MapEntry(e.key, e.value.getSimilarity(text)))
+    final similarities = childs
+        .map((e) => MapEntry(e.id, e.getSimilarity(text)))
         .where((e) => e.value > 0)
         .toList();
     similarities.sort((ing1, ing2) {
