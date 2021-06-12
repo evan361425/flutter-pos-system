@@ -4,7 +4,7 @@ import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/storage.dart';
 
-class StockBatchModel extends Model {
+class StockBatchModel extends NotifyModel {
   String name;
 
   /// ingredient id => add number

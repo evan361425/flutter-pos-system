@@ -9,7 +9,31 @@ import 'stock_batch_repo_test.mocks.dart';
 
 @GenerateMocks([StockBatchModel])
 void main() {
+  test('#constructor', () {
+    when(storage.mock.get(any)).thenAnswer((e) => Future.value({
+          'id1': {
+            'name': 'batch1',
+            'data': {'ing1': 1, 'ing2': 2},
+          },
+          'id2': {
+            'name': 'batch2',
+          },
+        }));
+    final repo = StockBatchRepo();
+
+    var isCalled = false;
+    repo.addListener(() {
+      expect(repo.getChild('id1')!.data, equals({'ing1': 1, 'ing2': 2}));
+      expect(repo.getChild('id2')!.data, equals({}));
+      expect(repo.isReady, isTrue);
+      isCalled = true;
+    });
+
+    Future.delayed(Duration.zero, () => expect(isCalled, isTrue));
+  });
+
   late StockBatchRepo repo;
+
   test('#hasBatch', () {
     final batch1 = MockStockBatchModel();
     final batch2 = MockStockBatchModel();

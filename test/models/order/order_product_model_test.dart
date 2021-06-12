@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
@@ -137,14 +138,15 @@ void main() {
     when(ingredient3.amount).thenReturn(5);
     when(ingredient3.quantity).thenReturn(quantity);
 
-    final product = MockProductModel();
-    when(product.id).thenReturn('p_id');
-    when(product.name).thenReturn('p_name');
-    when(product.price).thenReturn(10);
-    when(product.ingredients).thenReturn({
-      'id1': ingredient1,
-      'id2': ingredient2,
-    });
+    final product = ProductModel(
+        ingredients: {'id1': ingredient1, 'id2': ingredient2},
+        id: 'p_id',
+        name: 'p_name',
+        price: 10,
+        cost: 5,
+        index: 1);
+    // when(product.getChild('id1')).thenReturn(ingredient1);
+    // when(product.getChild('id2')).thenReturn(ingredient2);
 
     final order = OrderProductModel(product, ingredients: [ingredient3]);
     final object = order.toObject();

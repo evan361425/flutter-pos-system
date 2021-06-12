@@ -36,11 +36,14 @@ mixin Repository<T extends Model> on ChangeNotifier {
   Future<void> setChild(T child) async {
     if (!existChild(child.id)) {
       info(child.toString(), '$childCode.add');
-      _childs[child.id] = child;
 
-      final updateData = child.toObject().toMap();
+      addChild(child);
 
-      await Storage.instance.add(storageStore, child.id, updateData);
+      await Storage.instance.add(
+        storageStore,
+        child.id,
+        child.toObject().toMap(),
+      );
     }
 
     notifyListeners();
@@ -76,7 +79,7 @@ mixin OrderablRepository<T extends OrderableModel> on Repository<T> {
       childs.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 }
 
-mixin InitilizableRepository<T extends Model> on Repository<T> {
+mixin InitilizableRepository<T extends NotifyModel> on Repository<T> {
   bool isReady = false;
 
   Future<void> initialize() {

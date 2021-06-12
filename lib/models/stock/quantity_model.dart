@@ -4,7 +4,7 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/services/storage.dart';
 
-class QuantityModel extends Model<QuantityObject> with SearchableModel {
+class QuantityModel extends NotifyModel<QuantityObject> with SearchableModel {
   /// between 0 ~ 1
   num defaultProportion;
 

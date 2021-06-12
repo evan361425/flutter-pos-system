@@ -84,7 +84,7 @@ void main() {
 
       expect(ingredient.quantities, isEmpty);
       // product must be notified
-      verify(product.setIngredient(ingredient));
+      verify(product.setChild(ingredient));
     });
   });
 
@@ -99,7 +99,7 @@ void main() {
       await ingredient.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(product.removeIngredient(any));
+      verify(product.removeChild(any));
     });
 
     group('#update', () {
@@ -109,12 +109,13 @@ void main() {
         await ingredient.update(object);
 
         verifyNever(storage.mock.set(any, any));
-        verifyNever(product.setIngredient(any));
+        verifyNever(product.setChild(any));
       });
 
       test('update without changing ingredient', () async {
         LOG_LEVEL = 2;
         final object = ProductIngredientObject(amount: 2, id: 'i_id');
+        when(product.setChild(any)).thenAnswer((_) => Future.value());
 
         await ingredient.update(object);
 
@@ -135,8 +136,8 @@ void main() {
 
         verifyInOrder([
           storage.mock.set(any, argThat(equals({oldPrefix: null}))),
-          product.removeIngredient(argThat(equals('i_id'))),
-          product.setIngredient(any),
+          product.removeChild(argThat(equals('i_id'))),
+          product.setChild(any),
         ]);
         identical(ingredient.ingredient, newIngredient);
         expect(ingredient.id, equals('i_id2'));
@@ -155,7 +156,7 @@ void main() {
         await ingredient.setQuantity(quantity);
 
         verifyNever(storage.mock.set(any, any));
-        verify(product.setIngredient(any));
+        verify(product.setChild(any));
       });
 
       test('should add and notify', () async {
@@ -180,13 +181,12 @@ void main() {
             'hola': {'a': 'b'}
           })),
         ));
-        verify(product.setIngredient(any));
+        verify(product.setChild(any));
       });
     });
 
     setUp(() {
       product = MockProductModel();
-      when(product.ingredients).thenReturn({});
       when(product.prefix).thenReturn('c_id.p_id');
       when(product.toString()).thenReturn('cat.pro');
       ingredient = ProductIngredientModel(

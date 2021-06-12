@@ -44,8 +44,8 @@ class MenuModel extends ChangeNotifier
 
     childs.forEach((catalog) {
       catalog.childs.forEach((product) {
-        if (product.getIngredient(ingredientId) != null) {
-          result.add(product.getIngredient(ingredientId)!);
+        if (product.getChild(ingredientId) != null) {
+          result.add(product.getChild(ingredientId)!);
         }
       });
     });
@@ -68,7 +68,7 @@ class MenuModel extends ChangeNotifier
 
     childs.forEach((catalog) {
       catalog.childs.forEach((product) {
-        product.ingredients.values.forEach((ingredient) {
+        product.childs.forEach((ingredient) {
           if (ingredient.getQuantity(quantityId) != null) {
             result.add(ingredient.getQuantity(quantityId));
           }
@@ -95,7 +95,7 @@ class MenuModel extends ChangeNotifier
     };
 
     ingredients.forEach((ingredient) {
-      ingredient.product.removeIngredient(id);
+      ingredient.product.removeChild(id);
     });
 
     notifyListeners();
@@ -130,8 +130,8 @@ class MenuModel extends ChangeNotifier
 
     childs.forEach((catalog) {
       catalog.childs.forEach((product) {
-        product.ingredients.forEach((ingredientId, ingredient) {
-          ingredient.setIngredient(stock.getChild(ingredientId)!);
+        product.childs.forEach((ingredient) {
+          ingredient.setIngredient(stock.getChild(ingredient.id)!);
           ingredient.quantities.forEach((quantityId, quantity) {
             quantity.setQuantity(quantities.getChild(quantityId)!);
           });

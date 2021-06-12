@@ -5,7 +5,8 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/storage.dart';
 
-class IngredientModel extends Model<IngredientObject> with SearchableModel {
+class IngredientModel extends NotifyModel<IngredientObject>
+    with SearchableModel {
   // current amount in stock
   num? currentAmount;
 

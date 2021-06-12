@@ -1,12 +1,14 @@
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
 import 'catalog_model.dart';
 import 'product_ingredient_model.dart';
 
-class ProductModel extends Model<ProductObject> with OrderableModel {
+class ProductModel extends NotifyModel<ProductObject>
+    with OrderableModel, Repository<ProductIngredientModel> {
   /// connect to parent object
   late final CatalogModel catalog;
 
@@ -22,8 +24,6 @@ class ProductModel extends Model<ProductObject> with OrderableModel {
   /// when it has been added to catalog
   final DateTime createdAt;
 
-  final Map<String, ProductIngredientModel> ingredients;
-
   ProductModel({
     required int index,
     required this.name,
@@ -34,8 +34,8 @@ class ProductModel extends Model<ProductObject> with OrderableModel {
     String? id,
     Map<String, ProductIngredientModel>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
-        ingredients = ingredients ?? {},
         super(id) {
+    replaceChilds(ingredients ?? {});
     this.index = index;
     if (catalog != null) this.catalog = catalog;
   }
@@ -53,31 +53,35 @@ class ProductModel extends Model<ProductObject> with OrderableModel {
         },
       ).._prepareIngredients();
 
+  @override
+  String get childCode => 'menu.ingredient';
+
+  @override
+  String get code => 'menu.product';
+
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
-      ingredients.values.where((e) => e.quantities.isNotEmpty);
+      childs.where((e) => e.quantities.isNotEmpty);
 
   @override
   String get prefix => '${catalog.id}.products.$id';
 
-  bool exist(String id) => ingredients.containsKey(id);
+  @override
+  Stores get storageStore => Stores.menu;
 
-  ProductIngredientModel? getIngredient(String id) => ingredients[id];
+  @override
+  void removeFromRepo() => catalog.removeChild(id);
 
-  void removeIngredient(String id) {
-    ingredients.remove(id);
+  @override
+  Future<void> setChild(ProductIngredientModel child) async {
+    if (!existChild(child.id)) {
+      info(child.toString(), '$childCode.add');
 
-    notifyListeners();
-  }
+      addChild(child);
 
-  Future<void> setIngredient(ProductIngredientModel ingredient) async {
-    if (!exist(ingredient.id)) {
-      info(ingredient.toString(), 'menu.ingredient.add');
-      ingredients[ingredient.id] = ingredient;
-
-      final updateData = {ingredient.prefix: ingredient.toObject().toMap()};
-
-      await Storage.instance.set(Stores.menu, updateData);
+      await Storage.instance.set(storageStore, {
+        child.prefix: child.toObject().toMap(),
+      });
     }
 
     // catalog screen will also shows ingredients
@@ -94,24 +98,11 @@ class ProductModel extends Model<ProductObject> with OrderableModel {
         price: price,
         cost: cost,
         createdAt: createdAt,
-        ingredients: ingredients.values.map((e) => e.toObject()),
+        ingredients: childs.map((e) => e.toObject()),
       );
 
   @override
   String toString() => '$catalog.$name';
 
-  void _prepareIngredients() {
-    ingredients.values.forEach((e) {
-      e.product = this;
-    });
-  }
-
-  @override
-  String get code => 'menu.product';
-
-  @override
-  void removeFromRepo() => catalog.removeChild(id);
-
-  @override
-  Stores get storageStore => Stores.menu;
+  void _prepareIngredients() => childs.forEach((e) => e.product = this);
 }

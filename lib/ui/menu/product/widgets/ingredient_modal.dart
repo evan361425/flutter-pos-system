@@ -203,11 +203,13 @@ class _IngredientModalState extends State<IngredientModal> {
     if (!widget.isNew) {
       return widget.ingredient!.update(object);
     } else {
-      return widget.product.setIngredient(ProductIngredientModel(
+      final ingredient = ProductIngredientModel(
         ingredient: StockModel.instance.getChild(ingredientId),
         product: widget.product,
         amount: object.amount,
-      ));
+      );
+
+      return widget.product.setChild(ingredient);
     }
   }
 
@@ -219,7 +221,7 @@ class _IngredientModalState extends State<IngredientModal> {
       return false;
     }
     if (widget.ingredient?.id != ingredientId &&
-        widget.product.exist(ingredientId)) {
+        widget.product.existChild(ingredientId)) {
       setState(() => errorMessage = '成份重複。');
       return false;
     }

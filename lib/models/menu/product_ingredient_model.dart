@@ -1,5 +1,6 @@
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
@@ -7,9 +8,7 @@ import 'package:possystem/services/storage.dart';
 
 import 'product_model.dart';
 
-class ProductIngredientModel {
-  late String id;
-
+class ProductIngredientModel with Model<ProductIngredientObject> {
   /// connect to parent object
   late final ProductModel product;
 
@@ -50,6 +49,8 @@ class ProductIngredientModel {
       ).._prepareQuantities();
 
   String get name => ingredient.name;
+
+  @override
   String get prefix => '${product.prefix}.ingredients.$id';
 
   /// change stock ingredient
@@ -58,24 +59,17 @@ class ProductIngredientModel {
 
     setIngredient(StockModel.instance.getChild(newId)!);
 
-    await product.setIngredient(this);
+    await product.setChild(this);
   }
 
   bool exist(String? id) => quantities.containsKey(id);
 
   ProductQuantityModel? getQuantity(String? id) => quantities[id];
 
-  Future<void> remove() async {
-    info(toString(), 'menu.ingredient.remove');
-    await Storage.instance.set(Stores.menu, {prefix: null});
-
-    product.removeIngredient(id);
-  }
-
   void removeQuantity(String? id) {
     quantities.remove(id);
 
-    product.setIngredient(this);
+    product.setChild(this);
   }
 
   void setIngredient(IngredientModel model) {
@@ -93,9 +87,10 @@ class ProductIngredientModel {
       await Storage.instance.set(Stores.menu, updateData);
     }
 
-    await product.setIngredient(this);
+    await product.setChild(this);
   }
 
+  @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
         amount: amount,
@@ -105,20 +100,32 @@ class ProductIngredientModel {
   @override
   String toString() => '$product.$name';
 
+  @override
   Future<void> update(ProductIngredientObject ingredient) async {
-    final updateData = await ingredient.diff(this);
+    final updateData = ingredient.diff(this);
+
+    if (updateData['id'] != null) return updateData['id'] as Future<void>;
 
     if (updateData.isEmpty) return Future.value();
 
     info(toString(), 'menu.ingredient.update');
-    await product.setIngredient(this);
+    await product.setChild(this);
 
     return Storage.instance.set(Stores.menu, updateData);
   }
+
+  @override
+  String get code => 'menu.ingredient';
+
+  @override
+  Stores get storageStore => Stores.menu;
 
   void _prepareQuantities() {
     quantities.values.forEach((e) {
       e.ingredient = this;
     });
   }
+
+  @override
+  void removeFromRepo() => product.removeChild(id);
 }

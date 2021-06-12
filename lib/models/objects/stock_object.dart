@@ -78,8 +78,8 @@ class IngredientObject extends ModelObject<IngredientModel> {
 
   factory IngredientObject.build(Map<String, Object?> data) {
     return IngredientObject(
-      id: data['id'] as String?,
-      name: data['name'] as String?,
+      id: data['id'] as String,
+      name: data['name'] as String,
       currentAmount: data['currentAmount'] as num?,
       warningAmount: data['warningAmount'] as num?,
       alertAmount: data['alertAmount'] as num?,
@@ -180,7 +180,9 @@ class StockBatchObject extends ModelObject<StockBatchModel> {
 
     if (oriData is Map) {
       oriData.forEach((key, value) {
-        batchData[key] = value;
+        if (value != 0) {
+          batchData[key] = value;
+        }
       });
     }
 

@@ -12,6 +12,30 @@ import 'stock_model_test.mocks.dart';
 @GenerateMocks(
     [IngredientModel, OrderObject, OrderProductObject, OrderIngredientObject])
 void main() {
+  test('#constructor', () {
+    when(storage.mock.get(any)).thenAnswer((e) => Future.value({
+          'id1': {
+            'name': 'ing_1',
+            'currentAmount': 10,
+          },
+          'id2': {
+            'name': 'ing_2',
+            'updatedAt': '2020-01-01 10:10:10',
+          },
+        }));
+    final stock = StockModel();
+
+    var isCalled = false;
+    stock.addListener(() {
+      expect(stock.getChild('id1')!.updatedAt, isNull);
+      expect(stock.getChild('id2')!.name, equals('ing_2'));
+      expect(stock.isReady, isTrue);
+      isCalled = true;
+    });
+
+    Future.delayed(Duration.zero, () => expect(isCalled, isTrue));
+  });
+
   late StockModel stock;
 
   group('#updatedDate', () {

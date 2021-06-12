@@ -45,7 +45,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ingredients = context.watch<ProductModel>().ingredients.values.toList();
+    ingredients = context.watch<ProductModel>().childList;
     showIngredient = List.filled(ingredients.length, false);
   }
 

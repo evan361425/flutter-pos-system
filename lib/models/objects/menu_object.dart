@@ -126,7 +126,7 @@ class ProductObject extends ModelObject<ProductModel> {
       price: data['price'] as num?,
       cost: data['cost'] as num?,
       index: data['index'] as int?,
-      name: data['name'] as String?,
+      name: data['name'] as String,
       createdAt: Util.parseDate(data['createdAt'] as String?),
       ingredients: ingredients.entries
           // sembast can't delete map entry, filter null value
@@ -139,7 +139,7 @@ class ProductObject extends ModelObject<ProductModel> {
   }
 }
 
-class ProductIngredientObject {
+class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
   ProductIngredientObject({
     this.id,
     this.amount,
@@ -150,6 +150,7 @@ class ProductIngredientObject {
   final num? amount;
   final Iterable<ProductQuantityObject> quantities;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'id': id!,
@@ -160,7 +161,8 @@ class ProductIngredientObject {
     };
   }
 
-  Future<Map<String, Object>> diff(ProductIngredientModel ingredient) async {
+  @override
+  Map<String, Object> diff(ProductIngredientModel ingredient) {
     final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
@@ -170,9 +172,7 @@ class ProductIngredientObject {
     }
     // after all property set
     if (id != null && id != ingredient.id) {
-      await ingredient.changeIngredient(id!);
-      // no need to update
-      return const {};
+      return {'id': ingredient.changeIngredient(id!)};
     }
 
     return result;

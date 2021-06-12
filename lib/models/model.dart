@@ -4,10 +4,9 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/services/storage.dart';
 
-abstract class Model<T extends ModelObject> extends ChangeNotifier {
-  final String id;
+mixin Model<T extends ModelObject> {
+  late String id;
 
-  Model(String? id) : id = id ?? Util.uuidV4();
   String get code;
   Stores get storageStore;
   String get prefix => id;
@@ -16,6 +15,26 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
   T toObject();
 
+  Future<void> update(T object);
+
+  Future<void> remove() async {
+    info(toString(), '$code.remove');
+    await Storage.instance.set(storageStore, {prefix: null});
+
+    removeFromRepo();
+  }
+}
+
+abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
+    with Model<T> {
+  @override
+  late final String id;
+
+  NotifyModel(String? id) {
+    this.id = id ?? Util.uuidV4();
+  }
+
+  @override
   Future<void> update(T object) async {
     final updateData = object.diff(this);
 
@@ -26,20 +45,13 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
     return Storage.instance.set(storageStore, updateData);
   }
-
-  Future<void> remove() async {
-    info(toString(), '$code.remove');
-    await Storage.instance.set(storageStore, {prefix: null});
-
-    removeFromRepo();
-  }
 }
 
-mixin OrderableModel<T extends ModelObject> on Model<T> {
+mixin OrderableModel<T extends ModelObject> on NotifyModel<T> {
   late int index;
 }
 
-mixin SearchableModel<T extends ModelObject> on Model<T> {
+mixin SearchableModel<T extends ModelObject> on NotifyModel<T> {
   late String name;
 
   /// get similarity between [name] and [pattern]

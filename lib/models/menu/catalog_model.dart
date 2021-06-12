@@ -8,7 +8,7 @@ import 'package:possystem/services/storage.dart';
 
 import 'product_model.dart';
 
-class CatalogModel extends Model<CatalogObject>
+class CatalogModel extends NotifyModel<CatalogObject>
     with OrderableModel, Repository<ProductModel>, OrderablRepository {
   /// catalog's name
   String name;
@@ -57,11 +57,12 @@ class CatalogModel extends Model<CatalogObject>
   Future<void> setChild(ProductModel child) async {
     if (!existChild(child.id)) {
       info(child.toString(), '$childCode.add');
+
       addChild(child);
 
-      final updateData = {child.prefix: child.toObject().toMap()};
-
-      await Storage.instance.set(storageStore, updateData);
+      await Storage.instance.set(storageStore, {
+        child.prefix: child.toObject().toMap(),
+      });
     }
 
     notifyListeners();
