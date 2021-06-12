@@ -12,7 +12,8 @@ const _LEVEL = String.fromEnvironment('LOG_LEVEL', defaultValue: 'info');
 // allow editing in unit test
 var LOG_LEVEL = _LEVEL_MAP[_LEVEL] ?? 3;
 
-void _log(String message, String code, Map<String, Object>? detail, int level) {
+Future<void> _log(
+    String message, String code, Map<String, Object>? detail, int level) async {
   developer.log(message, name: code);
   // no need send debug event
   if (level == 4) return;
@@ -20,36 +21,36 @@ void _log(String message, String code, Map<String, Object>? detail, int level) {
   detail ??= {};
   detail['message'] = message;
 
-  MyApp.analytics.logEvent(
+  await MyApp.analytics.logEvent(
     name: code,
     parameters: detail,
   );
 }
 
 /// level 4
-void debug(String message, String code, [Map<String, Object>? detail]) {
+void debug(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 3) {
-    _log(message, code, detail, 4);
+    await _log(message, code, detail, 4);
   }
 }
 
 /// level 3
-void info(String message, String code, [Map<String, Object>? detail]) {
+void info(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 2) {
-    _log(message, code, detail, 3);
+    await _log(message, code, detail, 3);
   }
 }
 
 /// level 2
-void warn(String message, String code, [Map<String, Object>? detail]) {
+void warn(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 1) {
-    _log(message, code, detail, 2);
+    await _log(message, code, detail, 2);
   }
 }
 
 /// level 1
-void error(String message, String code, [Map<String, Object>? detail]) {
+void error(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL != 0) {
-    _log(message, code, detail, 1);
+    await _log(message, code, detail, 1);
   }
 }

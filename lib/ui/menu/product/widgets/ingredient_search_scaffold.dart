@@ -13,7 +13,7 @@ class IngredientSearchScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SearchScaffold<IngredientModel?>(
+    return SearchScaffold<IngredientModel>(
       key: scaffold,
       onChanged: (String text) async =>
           StockModel.instance.sortBySimilarity(text),

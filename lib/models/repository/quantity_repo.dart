@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/services/storage.dart';
@@ -17,23 +18,23 @@ class QuantityRepo extends ChangeNotifier {
       quantities = {};
       isReady = true;
 
-      try {
-        data.forEach((key, value) {
-          if (value is Map) {
-            quantities[key] = QuantityModel.fromObject(
-              QuantityObject.build({
-                'id': key,
-                ...value as Map<String, Object?>,
-              }),
-            );
-          }
-        });
-      } catch (e, stack) {
-        print(e);
-        print(stack);
-      }
+      data.forEach((key, value) {
+        try {
+          quantities[key] = QuantityModel.fromObject(
+            QuantityObject.build({
+              'id': key,
+              ...value as Map<String, Object>,
+            }),
+          );
+        } catch (e) {
+          error(e.toString(), 'quantities.parse.error');
+        }
+      });
 
       notifyListeners();
+    }).onError((e, stack) {
+      error(e.toString(), 'quantities.fetch.error');
+      throw Exception('unable to fetch quantities');
     });
     QuantityRepo.instance = this;
   }
@@ -42,7 +43,7 @@ class QuantityRepo extends ChangeNotifier {
   bool get isNotEmpty => quantities.isNotEmpty;
   int get length => quantities.length;
 
-  List<QuantityModel> get quantitiesList => quantities.values.toList();
+  List<QuantityModel> get quantityList => quantities.values.toList();
 
   bool exist(String id) => quantities.containsKey(id);
 
@@ -54,7 +55,7 @@ class QuantityRepo extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<QuantityModel?> sortBySimilarity(String text) {
+  List<QuantityModel> sortBySimilarity(String text) {
     if (text.isEmpty) {
       return [];
     }
@@ -70,7 +71,10 @@ class QuantityRepo extends ChangeNotifier {
     });
 
     final end = min(10, similarities.length);
-    return similarities.sublist(0, end).map((e) => quantities[e.key]).toList();
+    return similarities
+        .sublist(0, end)
+        .map((e) => getQuantity(e.key)!)
+        .toList();
   }
 
   Future<void> setQuantity(QuantityModel quantity) async {

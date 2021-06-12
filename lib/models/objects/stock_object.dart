@@ -98,35 +98,35 @@ class QuantityObject {
   final String? name;
   final num? defaultProportion;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
-      'name': name,
-      'defaultProportion': defaultProportion,
+      'name': name!,
+      'defaultProportion': defaultProportion!,
     };
   }
 
-  Map<String, Object?> diff(QuantityModel quantity) {
-    final result = <String, Object?>{};
+  Map<String, Object> diff(QuantityModel quantity) {
+    final result = <String, Object>{};
     final prefix = quantity.prefix;
 
     if (name != null && name != quantity.name) {
       quantity.name = name!;
-      result['$prefix.name'] = name;
+      result['$prefix.name'] = name!;
     }
     if (defaultProportion != null &&
         defaultProportion != quantity.defaultProportion) {
       quantity.defaultProportion = defaultProportion!;
-      result['$prefix.defaultProportion'] = defaultProportion;
+      result['$prefix.defaultProportion'] = defaultProportion!;
     }
 
     return result;
   }
 
-  factory QuantityObject.build(Map<String, Object?> data) {
+  factory QuantityObject.build(Map<String, Object> data) {
     return QuantityObject(
-      id: data['id'] as String?,
-      name: data['name'] as String?,
-      defaultProportion: data['defaultProportion'] as num?,
+      id: data['id'] as String,
+      name: data['name'] as String,
+      defaultProportion: data['defaultProportion'] as num,
     );
   }
 }
@@ -135,14 +135,14 @@ class StockBatchObject {
   StockBatchObject({
     this.id,
     required this.name,
-    this.data,
+    required this.data,
   });
 
   String name;
-  Map<String, num>? data;
+  Map<String, num> data;
   final String? id;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
       'name': name,
       'data': data,
@@ -157,14 +157,12 @@ class StockBatchObject {
       batch.name = name;
       result['$prefix.name'] = name;
     }
-    if (data != null) {
-      data!.forEach((key, value) {
-        if (batch.getNumOfId(key) != value) {
-          batch.data[key] = value;
-          result['$prefix.data.$key'] = value;
-        }
-      });
-    }
+    data.forEach((key, value) {
+      if (batch.getNumOfId(key) != value) {
+        batch.data[key] = value;
+        result['$prefix.data.$key'] = value;
+      }
+    });
 
     return result;
   }

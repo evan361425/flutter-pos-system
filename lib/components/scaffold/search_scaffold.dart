@@ -88,12 +88,13 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   }
 
   Widget _body(BuildContext context) {
-    if (searchBar.currentState!.text.isEmpty) {
+    if (searchBar.currentState?.text.isEmpty == true) {
       return FutureBuilder<List<T>>(
         future: widget.initialData() as Future<List<T>>,
         builder: (context, snapshot) {
           // while data is loading:
           if (!snapshot.hasData) return CircularLoading();
+          if (snapshot.hasError) return Text('happen error');
 
           return _listBuilder(context, snapshot.data!);
         },

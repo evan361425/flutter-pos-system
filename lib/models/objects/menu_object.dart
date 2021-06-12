@@ -19,9 +19,9 @@ class CatalogObject {
   final DateTime? createdAt;
   final Iterable<ProductObject> products;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
-      'index': index,
+      'index': index!,
       'name': name,
       'createdAt': createdAt.toString(),
       'products': {for (var product in products) product.id: product.toMap()}
@@ -81,12 +81,12 @@ class ProductObject {
   final DateTime? createdAt;
   final Iterable<ProductIngredientObject> ingredients;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
-      'price': price,
-      'cost': cost,
-      'index': index,
-      'name': name,
+      'price': price!,
+      'cost': cost!,
+      'index': index!,
+      'name': name!,
       'createdAt': createdAt.toString(),
       'ingredients': {
         for (var ingredient in ingredients) ingredient.id: ingredient.toMap()
@@ -149,10 +149,10 @@ class ProductIngredientObject {
   final num? amount;
   final Iterable<ProductQuantityObject> quantities;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
-      'id': id,
-      'amount': amount,
+      'id': id!,
+      'amount': amount!,
       'quantities': {
         for (var quantity in quantities) quantity.id: quantity.toMap()
       },
@@ -208,7 +208,7 @@ class ProductQuantityObject {
   final num additionalCost;
   final num additionalPrice;
 
-  Map<String, Object?> toMap() {
+  Map<String, Object> toMap() {
     return {
       'amount': amount,
       'additionalCost': additionalCost,
