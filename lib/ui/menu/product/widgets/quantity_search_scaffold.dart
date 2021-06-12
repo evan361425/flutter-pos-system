@@ -19,7 +19,7 @@ class QuantitySearchScaffold extends StatelessWidget {
           QuantityRepo.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: () async => QuantityRepo.instance.quantityList,
+      initialData: () async => QuantityRepo.instance.childList,
       heroTag: QuantitySearchScaffold.tag,
       text: text ?? '',
       hintText: '成份份量名稱，例如：少量',
@@ -41,7 +41,7 @@ class QuantitySearchScaffold extends StatelessWidget {
       title: Text('新增成份份量「$text」'),
       onTap: () {
         final quantity = QuantityModel(name: text);
-        QuantityRepo.instance.setQuantity(quantity);
+        QuantityRepo.instance.setChild(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
     );

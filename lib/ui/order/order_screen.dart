@@ -51,7 +51,7 @@ class OrderScreen extends StatelessWidget {
   }
 
   Widget _body() {
-    final catalogs = MenuModel.instance.catalogList;
+    final catalogs = MenuModel.instance.childList;
     return WillPopScope(
       onWillPop: () async {
         HomeScreen.orderInfo.currentState?.reset();

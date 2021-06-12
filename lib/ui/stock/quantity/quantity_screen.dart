@@ -43,7 +43,7 @@ class QuantityScreen extends StatelessWidget {
         child: Column(
           children: [
             // TODO: search bar
-            QuantityList(quantities: quantities.quantityList),
+            QuantityList(quantities: quantities.childList),
           ],
         ),
       ),

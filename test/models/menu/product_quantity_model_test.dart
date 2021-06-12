@@ -116,7 +116,7 @@ void main() {
             amount: 2, additionalCost: 3, additionalPrice: 4, id: 'q_id2');
         final newQuantity = QuantityModel(name: 'qua', id: 'q_id2');
         final oldPrefix = quantity.prefix;
-        when(quantities.mock.getQuantity('q_id2')).thenReturn(newQuantity);
+        when(quantities.mock.getChild('q_id2')).thenReturn(newQuantity);
 
         await quantity.update(object);
 

@@ -127,7 +127,7 @@ class _QuantityModalState extends State<QuantityModal> {
       await widget.quantity!.update(object);
     }
 
-    await QuantityRepo.instance.setQuantity(widget.quantity ??
+    await QuantityRepo.instance.setChild(widget.quantity ??
         QuantityModel(
           name: object.name!,
           defaultProportion: object.defaultProportion!,
@@ -138,7 +138,8 @@ class _QuantityModalState extends State<QuantityModal> {
     if (isSaving || !_formKey.currentState!.validate()) return false;
 
     final name = _nameController.text;
-    if (widget.quantity?.name != name && QuantityRepo.instance.exist(name)) {
+    if (widget.quantity?.name != name &&
+        QuantityRepo.instance.existChild(name)) {
       setState(() => errorMessage = '份量名稱重複');
       return false;
     }

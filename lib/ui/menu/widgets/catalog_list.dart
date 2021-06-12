@@ -56,7 +56,7 @@ class CatalogList extends StatelessWidget {
       title: Text(catalog.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(
         context,
-        catalog.productList.map((product) => product.name),
+        catalog.childList.map((product) => product.name),
         '尚未設定產品',
       ),
     );

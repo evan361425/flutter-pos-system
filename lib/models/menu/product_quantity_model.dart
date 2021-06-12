@@ -56,7 +56,7 @@ class ProductQuantityModel {
   Future<void> changeQuantity(String newId) async {
     await remove();
 
-    setQuantity(QuantityRepo.instance.getQuantity(newId)!);
+    setQuantity(QuantityRepo.instance.getChild(newId)!);
 
     await ingredient.setQuantity(this);
   }

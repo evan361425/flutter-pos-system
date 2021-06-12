@@ -28,8 +28,8 @@ void main() {
 
       var isCalled = false;
       void checkCalled() {
-        expect(repo.getQuantity('id_1')?.name, equals('name_1'));
-        expect(repo.getQuantity('id_2')?.name, equals('name_2'));
+        expect(repo.getChild('id_1')?.name, equals('name_1'));
+        expect(repo.getChild('id_2')?.name, equals('name_2'));
         expect(repo.isReady, isTrue);
         isCalled = true;
       }
@@ -55,8 +55,8 @@ void main() {
       final repo = QuantityRepo();
 
       repo.addListener(() {
-        expect(repo.getQuantity('id_2')?.name, equals('name_2'));
-        expect(repo.getQuantity('id_1'), isNull);
+        expect(repo.getChild('id_2')?.name, equals('name_2'));
+        expect(repo.getChild('id_1'), isNull);
         expect(repo.isReady, isTrue);
       });
     });
@@ -68,57 +68,57 @@ void main() {
     test('#getter', () {
       final q_a = MockQuantityModel();
       final q_b = MockQuantityModel();
-      repo.quantities = {'a': q_a, 'b': q_b};
+      repo.childMap = {'a': q_a, 'b': q_b};
 
       expect(repo.isEmpty, isFalse);
       expect(repo.isNotEmpty, isTrue);
       expect(repo.length, equals(2));
-      expect(repo.exist('a'), isTrue);
-      expect(repo.exist('c'), isFalse);
-      expect(repo.getQuantity('b'), q_b);
-      expect(repo.quantityList, equals([q_a, q_b]));
+      expect(repo.existChild('a'), isTrue);
+      expect(repo.existChild('c'), isFalse);
+      expect(repo.getChild('b'), q_b);
+      expect(repo.childList, equals([q_a, q_b]));
     });
 
     test('#removeQuantity', () {
       final q_a = MockQuantityModel();
       final q_b = MockQuantityModel();
-      repo.quantities = {'a': q_a, 'b': q_b};
+      repo.childMap = {'a': q_a, 'b': q_b};
 
-      expect(checkNotifierCalled(repo, () => repo.removeQuantity('a')), isTrue);
-      expect(checkNotifierCalled(repo, () => repo.removeQuantity('c')), isTrue);
+      expect(checkNotifierCalled(repo, () => repo.removeChild('a')), isTrue);
+      expect(checkNotifierCalled(repo, () => repo.removeChild('c')), isTrue);
 
-      expect(repo.exist('a'), isFalse);
+      expect(repo.existChild('a'), isFalse);
     });
 
     group('#setQuantity', () {
       test('should not call storage', () async {
         final q_a = MockQuantityModel();
-        repo.quantities = {'a': q_a};
+        repo.childMap = {'a': q_a};
         when(q_a.id).thenReturn('a');
         when(storage.mock.add(any, any, any)).thenThrow(Exception());
 
-        expect(await checkNotifierCalled(repo, () => repo.setQuantity(q_a)),
-            isTrue);
+        expect(
+            await checkNotifierCalled(repo, () => repo.setChild(q_a)), isTrue);
 
-        expect(repo.exist('a'), isTrue);
+        expect(repo.existChild('a'), isTrue);
       });
 
       test('should add quantitiy', () async {
         final q_a = MockQuantityModel();
         final q_b = MockQuantityModel();
         final q_map = mockQuantityObject1.toMap();
-        repo.quantities = {'a': q_a};
+        repo.childMap = {'a': q_a};
 
         when(q_b.toObject()).thenReturn(mockQuantityObject1);
         when(q_b.id).thenReturn('b');
         when(storage.mock.add(any, 'b', q_map))
             .thenAnswer((_) => Future.value());
 
-        final future = checkNotifierCalled(repo, () => repo.setQuantity(q_b));
+        final future = checkNotifierCalled(repo, () => repo.setChild(q_b));
         expect(await future, isTrue);
 
-        expect(repo.exist('a'), isTrue);
-        expect(repo.exist('b'), isTrue);
+        expect(repo.existChild('a'), isTrue);
+        expect(repo.existChild('b'), isTrue);
       });
     });
 
@@ -142,7 +142,7 @@ void main() {
         final q3 = createQuantity('id3', 3);
         final q4 = createQuantity('id4', 3);
         final q5 = createQuantity('id5', 4);
-        repo.quantities = {
+        repo.childMap = {
           'id1': q1,
           'id2': q2,
           'id3': q3,
@@ -158,7 +158,7 @@ void main() {
         final quantities = [
           for (var i = 0; i < 20; i++) createQuantity('id$i', i)
         ];
-        repo.quantities = {
+        repo.childMap = {
           for (var quantity in quantities) quantity.id: quantity
         };
 

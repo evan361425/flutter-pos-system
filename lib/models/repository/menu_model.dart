@@ -4,68 +4,46 @@ import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
 import 'quantity_repo.dart';
 import 'stock_model.dart';
 
-class MenuModel extends ChangeNotifier {
+class MenuModel extends ChangeNotifier
+    with Repository<CatalogModel>, OrderablRepository, InitilizableRepository {
   static late MenuModel instance;
-
-  Map<String, CatalogModel>? catalogs;
 
   /// wheather ingredient/quantity has connect to stock
   bool stockMode = false;
 
   MenuModel() {
-    print('menu building');
-    Storage.instance.get(Stores.menu).then((data) {
-      catalogs = {};
+    initialize();
 
-      try {
-        data.forEach((key, value) {
-          if (value is Map) {
-            catalogs![key] = CatalogModel.fromObject(
-              CatalogObject.build({
-                'id': key,
-                ...value as Map<String, Object?>,
-              }),
-            );
-          }
-        });
-      } catch (e, stack) {
-        print(e);
-        print(stack);
-      }
-
-      notifyListeners();
-    });
     MenuModel.instance = this;
   }
 
-  /// sorted by index
-  List<CatalogModel> get catalogList =>
-      catalogs!.values.toList()..sort((a, b) => a.index.compareTo(b.index));
+  @override
+  String get childCode => 'menu.catalog';
 
-  bool get isEmpty => catalogs!.isEmpty;
-  bool get isNotEmpty => catalogs!.isNotEmpty;
-  bool get isNotReady => catalogs == null;
-  bool get isReady => catalogs != null;
-  int get length => catalogs!.length;
+  @override
+  Stores get storageStore => Stores.menu;
 
-  /// 1-index
-  int get newIndex =>
-      catalogs!.values.reduce((a, b) => a.index > b.index ? a : b).index + 1;
-
-  bool exist(String id) => catalogs!.containsKey(id);
-
-  CatalogModel? getCatalog(String id) => exist(id) ? catalogs![id] : null;
+  @override
+  CatalogModel buildModel(String id, Map<String, Object> value) {
+    return CatalogModel.fromObject(
+      CatalogObject.build({
+        'id': id,
+        ...value,
+      }),
+    );
+  }
 
   List<ProductIngredientModel> getIngredients(String ingredientId) {
     final result = <ProductIngredientModel>[];
 
-    catalogs!.values.forEach((catalog) {
-      catalog.products.values.forEach((product) {
+    childs.forEach((catalog) {
+      catalog.childs.forEach((product) {
         if (product.getIngredient(ingredientId) != null) {
           result.add(product.getIngredient(ingredientId)!);
         }
@@ -76,8 +54,8 @@ class MenuModel extends ChangeNotifier {
   }
 
   ProductModel? getProduct(String productId) {
-    for (var catalog in catalogs!.values) {
-      final product = catalog.getProduct(productId);
+    for (var catalog in childs) {
+      final product = catalog.getChild(productId);
       if (product != null) {
         return product;
       }
@@ -88,8 +66,8 @@ class MenuModel extends ChangeNotifier {
   List<ProductQuantityModel?> getQuantities(String quantityId) {
     final result = <ProductQuantityModel?>[];
 
-    catalogs!.values.forEach((catalog) {
-      catalog.products.values.forEach((product) {
+    childs.forEach((catalog) {
+      catalog.childs.forEach((product) {
         product.ingredients.values.forEach((ingredient) {
           if (ingredient.getQuantity(quantityId) != null) {
             result.add(ingredient.getQuantity(quantityId));
@@ -102,16 +80,10 @@ class MenuModel extends ChangeNotifier {
   }
 
   bool hasCatalog(String name) =>
-      !catalogs!.values.every((catalog) => catalog.name != name);
+      !childs.every((catalog) => catalog.name != name);
 
-  bool hasProduct(String name) => !catalogs!.values.every((catalog) =>
-      catalog.products.values.every((product) => product.name != name));
-
-  void removeCatalog(String id) {
-    catalogs!.remove(id);
-
-    notifyListeners();
-  }
+  bool hasProduct(String name) => !childs.every(
+      (catalog) => catalog.childs.every((product) => product.name != name));
 
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
@@ -149,19 +121,6 @@ class MenuModel extends ChangeNotifier {
     return Storage.instance.set(Stores.menu, updateData);
   }
 
-  Future<void> reorderCatalogs(List<CatalogModel> catalogs) {
-    final updateData = <String, Object?>{};
-    var i = 1;
-
-    catalogs.forEach((catalog) {
-      updateData.addAll(CatalogObject.build({'index': i++}).diff(catalog));
-    });
-
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
-  }
-
   /// inject to make it easy [context.watch]
   void setUpStock(StockModel stock, QuantityRepo quantities) {
     assert(stock.isReady, 'should ready');
@@ -169,30 +128,17 @@ class MenuModel extends ChangeNotifier {
 
     if (stockMode) return;
 
-    catalogs!.forEach((catalogId, catalog) {
-      catalog.products.forEach((productId, product) {
+    childMap.forEach((catalogId, catalog) {
+      catalog.childMap.forEach((productId, product) {
         product.ingredients.forEach((ingredientId, ingredient) {
           ingredient.setIngredient(stock.getIngredient(ingredientId)!);
           ingredient.quantities.forEach((quantityId, quantity) {
-            quantity.setQuantity(quantities.getQuantity(quantityId)!);
+            quantity.setQuantity(quantities.getChild(quantityId)!);
           });
         });
       });
     });
 
     stockMode = true;
-  }
-
-  /// add catalog if not exist and notify listeners
-  Future<void> setCatalog(CatalogModel catalog) async {
-    if (!exist(catalog.id)) {
-      catalogs![catalog.id] = catalog;
-
-      final updatedData = catalog.toObject().toMap();
-
-      await Storage.instance.add(Stores.menu, catalog.id, updatedData);
-    }
-
-    notifyListeners();
   }
 }

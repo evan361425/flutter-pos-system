@@ -40,7 +40,7 @@ void main() {
       await batch.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(batches.mock.removeBatch(argThat(equals('id'))));
+      verify(batches.mock.removeChild(argThat(equals('id'))));
     });
 
     group('#update', () {

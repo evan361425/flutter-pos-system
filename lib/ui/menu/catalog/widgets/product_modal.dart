@@ -160,7 +160,7 @@ class _ProductModalState extends State<ProductModal> {
         cost: object.cost!,
       );
 
-      await catalog.setProduct(product);
+      await catalog.setChild(product);
       return product;
     } else {
       await widget.product!.update(object);

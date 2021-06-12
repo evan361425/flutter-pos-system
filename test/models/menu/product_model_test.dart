@@ -119,7 +119,7 @@ void main() {
       await product.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(catalog.removeProduct('p_id'));
+      verify(catalog.removeChild('p_id'));
     });
 
     group('#update', () {

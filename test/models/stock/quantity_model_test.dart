@@ -41,7 +41,7 @@ void main() {
       await quantity.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(quantities.mock.removeQuantity(argThat(equals('id'))));
+      verify(quantities.mock.removeChild(argThat(equals('id'))));
     });
 
     group('#update', () {

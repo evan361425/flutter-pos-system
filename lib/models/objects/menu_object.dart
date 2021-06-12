@@ -3,8 +3,9 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/model_object.dart';
 
-class CatalogObject {
+class CatalogObject extends ModelObject<CatalogModel> {
   CatalogObject({
     this.id,
     this.index,
@@ -19,6 +20,7 @@ class CatalogObject {
   final DateTime? createdAt;
   final Iterable<ProductObject> products;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'index': index!,
@@ -28,6 +30,7 @@ class CatalogObject {
     };
   }
 
+  @override
   Map<String, Object> diff(CatalogModel catalog) {
     final result = <String, Object>{};
     final prefix = catalog.prefix;
@@ -62,7 +65,7 @@ class CatalogObject {
   }
 }
 
-class ProductObject {
+class ProductObject extends ModelObject<ProductModel> {
   ProductObject({
     this.id,
     this.price,
@@ -81,6 +84,7 @@ class ProductObject {
   final DateTime? createdAt;
   final Iterable<ProductIngredientObject> ingredients;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'price': price!,
@@ -94,13 +98,10 @@ class ProductObject {
     };
   }
 
+  @override
   Map<String, Object> diff(ProductModel product) {
     final result = <String, Object>{};
     final prefix = product.prefix;
-    if (index != null && index != product.index) {
-      product.index = index!;
-      result['$prefix.index'] = index!;
-    }
     if (price != null && price != product.price) {
       product.price = price!;
       result['$prefix.price'] = price!;

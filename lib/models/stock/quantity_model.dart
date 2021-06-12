@@ -1,12 +1,10 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/services/storage.dart';
 
-class QuantityModel {
-  final String id;
-
+class QuantityModel extends Model<QuantityObject> {
   // quantity name: less, more, ...
   String name;
 
@@ -17,8 +15,8 @@ class QuantityModel {
     String? id,
     required this.name,
     num? defaultProportion,
-  })  : id = id ?? Util.uuidV4(),
-        defaultProportion = defaultProportion ?? 1;
+  })  : defaultProportion = defaultProportion ?? 1,
+        super(id);
 
   factory QuantityModel.fromObject(QuantityObject object) => QuantityModel(
         id: object.id,
@@ -26,17 +24,20 @@ class QuantityModel {
         defaultProportion: object.defaultProportion!,
       );
 
-  String get prefix => id;
+  @override
+  String get code => 'stock.quantity';
+
+  @override
+  Stores get storageStore => Stores.quantities;
 
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
-  Future<void> remove() async {
-    info(toString(), 'stock.quantity.remove');
-    await Storage.instance.set(Stores.stock, {prefix: null});
-
-    QuantityRepo.instance.removeQuantity(prefix);
+  @override
+  void removeFromRepo() {
+    QuantityRepo.instance.removeChild(prefix);
   }
 
+  @override
   QuantityObject toObject() => QuantityObject(
         id: id,
         name: name,
@@ -45,14 +46,4 @@ class QuantityModel {
 
   @override
   String toString() => name;
-
-  Future<void> update(QuantityObject object) async {
-    final updateData = object.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), 'stock.quantity.update');
-
-    return Storage.instance.set(Stores.quantities, updateData);
-  }
 }

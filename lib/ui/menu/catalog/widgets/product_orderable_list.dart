@@ -16,7 +16,7 @@ class _ProductOrderListState extends OrderableListState<ProductModel, int> {
   @override
   Future<void> handleSubmit() {
     final catalog = context.read<CatalogModel>();
-    return catalog.reorderProducts(widget.items);
+    return catalog.reorderChilds(widget.items);
   }
 
   @override

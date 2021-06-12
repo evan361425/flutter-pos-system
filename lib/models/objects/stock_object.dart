@@ -1,9 +1,10 @@
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
-class IngredientObject {
+class IngredientObject extends ModelObject<IngredientModel> {
   IngredientObject({
     this.id,
     this.name,
@@ -24,6 +25,7 @@ class IngredientObject {
   num? lastAddAmount;
   DateTime? updatedAt;
 
+  @override
   Map<String, Object?> toMap() {
     return {
       'name': name,
@@ -36,6 +38,7 @@ class IngredientObject {
     };
   }
 
+  @override
   Map<String, Object> diff(IngredientModel ingredient) {
     final result = <String, Object>{};
     final prefix = ingredient.prefix;
@@ -87,7 +90,7 @@ class IngredientObject {
   }
 }
 
-class QuantityObject {
+class QuantityObject extends ModelObject<QuantityModel> {
   QuantityObject({
     this.id,
     this.name,
@@ -98,6 +101,7 @@ class QuantityObject {
   final String? name;
   final num? defaultProportion;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'name': name!,
@@ -105,6 +109,7 @@ class QuantityObject {
     };
   }
 
+  @override
   Map<String, Object> diff(QuantityModel quantity) {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
@@ -131,7 +136,7 @@ class QuantityObject {
   }
 }
 
-class StockBatchObject {
+class StockBatchObject extends ModelObject<StockBatchModel> {
   StockBatchObject({
     this.id,
     required this.name,
@@ -142,6 +147,7 @@ class StockBatchObject {
   Map<String, num> data;
   final String? id;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'name': name,
@@ -149,6 +155,7 @@ class StockBatchObject {
     };
   }
 
+  @override
   Map<String, Object> diff(StockBatchModel batch) {
     final result = <String, Object>{};
     final prefix = batch.prefix;
@@ -167,7 +174,7 @@ class StockBatchObject {
     return result;
   }
 
-  factory StockBatchObject.build(Map<String, Object?> data) {
+  factory StockBatchObject.build(Map<String, Object> data) {
     final batchData = <String, num>{};
     final oriData = data['data'];
 

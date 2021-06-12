@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
@@ -16,26 +17,26 @@ class StockModel extends ChangeNotifier {
 
   StockModel() {
     Storage.instance.get(Stores.stock).then((data) {
-      isReady = true;
       ingredients = {};
+      isReady = true;
 
-      try {
-        data.forEach((key, value) {
-          if (value is Map) {
-            ingredients[key] = IngredientModel.fromObject(
-              IngredientObject.build({
-                'id': key,
-                ...value as Map<String, Object?>,
-              }),
-            );
-          }
-        });
-      } catch (e, stack) {
-        print(e);
-        print(stack);
-      }
+      data.forEach((key, value) {
+        try {
+          ingredients[key] = IngredientModel.fromObject(
+            IngredientObject.build({
+              'id': key,
+              ...value as Map<String, Object?>,
+            }),
+          );
+        } catch (e) {
+          error(e.toString(), 'stock.parse.error');
+        }
+      });
 
       notifyListeners();
+    }).onError((e, stack) {
+      error(e.toString(), 'stock.fetch.error');
+      throw e!;
     });
     StockModel.instance = this;
   }
@@ -77,7 +78,7 @@ class StockModel extends ChangeNotifier {
     return Storage.instance.set(Stores.stock, updateData);
   }
 
-  bool exist(String id) => ingredients[id] != null;
+  bool exist(String id) => ingredients.containsKey(id);
 
   IngredientModel? getIngredient(String id) => ingredients[id];
 

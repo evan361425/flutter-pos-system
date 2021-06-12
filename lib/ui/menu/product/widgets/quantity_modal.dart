@@ -241,7 +241,7 @@ class _QuantityModalState extends State<QuantityModal> {
 
     if (widget.isNew) {
       final quantity = ProductQuantityModel(
-        quantity: QuantityRepo.instance.getQuantity(object.id!),
+        quantity: QuantityRepo.instance.getChild(object.id!),
         ingredient: widget.ingredient,
         amount: object.amount,
         additionalPrice: object.additionalPrice,

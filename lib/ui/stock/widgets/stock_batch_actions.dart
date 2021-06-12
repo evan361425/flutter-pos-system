@@ -15,7 +15,7 @@ class StockBatchActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = context.watch<StockBatchRepo>();
-    if (repo.isNotReady) return CircularLoading();
+    if (!repo.isReady) return CircularLoading();
 
     return Row(
       children: [
@@ -92,9 +92,9 @@ class _BatchItemSelector extends StatefulWidget {
 class _BatchItemSelectorState extends State<_BatchItemSelector> {
   String? selectedBatchId;
 
-  StockBatchModel? get currentBatch => widget.batchRepo.getBatch(
-        selectedBatchId,
-      );
+  StockBatchModel? get currentBatch => selectedBatchId == null
+      ? null
+      : widget.batchRepo.getChild(selectedBatchId!);
 
   void clear() {
     setState(() => selectedBatchId = null);
@@ -113,7 +113,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
           setState(() => selectedBatchId = newValue);
         }
       },
-      items: <StockBatchModel?>[null, ...widget.batchRepo.batches!.values]
+      items: <StockBatchModel?>[null, ...widget.batchRepo.childs]
           .map<DropdownMenuItem<String>>(
             (StockBatchModel? batch) => DropdownMenuItem<String>(
               value: batch?.id,

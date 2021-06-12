@@ -1,15 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/storage.dart';
 
-class IngredientModel extends ChangeNotifier {
-  final String id;
-
+class IngredientModel extends Model<IngredientObject> {
   // ingredient name: cheese, bread, ...
   String name;
 
@@ -39,7 +36,7 @@ class IngredientModel extends ChangeNotifier {
     this.lastAddAmount,
     this.updatedAt,
     String? id,
-  }) : id = id ?? Util.uuidV4();
+  }) : super(id);
 
   factory IngredientModel.fromObject(IngredientObject object) =>
       IngredientModel(
@@ -53,20 +50,23 @@ class IngredientModel extends ChangeNotifier {
         updatedAt: object.updatedAt,
       );
 
-  String get prefix => id;
+  @override
+  String get code => 'stock.ingredient';
+
+  @override
+  Stores get storageStore => Stores.stock;
 
   Future<void> addAmount(num amount) =>
       StockModel.instance.applyAmounts({id: amount});
 
   int getSimilarity(String searchText) => Util.similarity(name, searchText);
 
-  Future<void> remove() async {
-    info(toString(), 'stock.ingredient.remove');
-    await Storage.instance.set(Stores.stock, {prefix: null});
-
+  @override
+  void removeFromRepo() {
     StockModel.instance.removeIngredient(id);
   }
 
+  @override
   IngredientObject toObject() => IngredientObject(
         id: id,
         name: name,
@@ -80,17 +80,6 @@ class IngredientModel extends ChangeNotifier {
 
   @override
   String toString() => name;
-
-  Future<void> update(IngredientObject object) {
-    final updateData = object.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), 'stock.ingredient.update');
-    notifyListeners();
-
-    return Storage.instance.set(Stores.stock, updateData);
-  }
 
   Map<String, Object> updateInfo(num amount) {
     final object = amount > 0

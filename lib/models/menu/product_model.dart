@@ -1,24 +1,17 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/services/storage.dart';
 
 import 'catalog_model.dart';
 import 'product_ingredient_model.dart';
 
-class ProductModel extends ChangeNotifier {
-  final String id;
-
+class ProductModel extends Model<ProductObject> with OrderableModel {
   /// connect to parent object
   late final CatalogModel catalog;
 
   /// product's name
   String name;
-
-  /// index in catalog
-  int index;
 
   /// help to calculate daily earn
   num cost;
@@ -32,7 +25,7 @@ class ProductModel extends ChangeNotifier {
   final Map<String, ProductIngredientModel> ingredients;
 
   ProductModel({
-    required this.index,
+    required int index,
     required this.name,
     CatalogModel? catalog,
     this.cost = 0,
@@ -42,7 +35,8 @@ class ProductModel extends ChangeNotifier {
     Map<String, ProductIngredientModel>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         ingredients = ingredients ?? {},
-        id = id ?? Util.uuidV4() {
+        super(id) {
+    this.index = index;
     if (catalog != null) this.catalog = catalog;
   }
 
@@ -63,20 +57,14 @@ class ProductModel extends ChangeNotifier {
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
       ingredients.values.where((e) => e.quantities.isNotEmpty);
 
+  @override
   String get prefix => '${catalog.id}.products.$id';
 
   bool exist(String id) => ingredients.containsKey(id);
 
   ProductIngredientModel? getIngredient(String id) => ingredients[id];
 
-  Future<void> remove() async {
-    info(toString(), 'menu.product.remove');
-    await Storage.instance.set(Stores.menu, {prefix: null});
-
-    catalog.removeProduct(id);
-  }
-
-  void removeIngredient(String? id) {
+  void removeIngredient(String id) {
     ingredients.remove(id);
 
     notifyListeners();
@@ -98,6 +86,7 @@ class ProductModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  @override
   ProductObject toObject() => ProductObject(
         id: id,
         name: name,
@@ -111,20 +100,18 @@ class ProductModel extends ChangeNotifier {
   @override
   String toString() => '$catalog.$name';
 
-  Future<void> update(ProductObject product) {
-    final updateData = product.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), 'menu.product.update');
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
-  }
-
   void _prepareIngredients() {
     ingredients.values.forEach((e) {
       e.product = this;
     });
   }
+
+  @override
+  String get code => 'menu.product';
+
+  @override
+  void removeFromRepo() => catalog.removeChild(id);
+
+  @override
+  Stores get storageStore => Stores.menu;
 }
