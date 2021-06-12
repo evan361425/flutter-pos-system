@@ -209,6 +209,7 @@ class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
   final num additionalCost;
   final num additionalPrice;
 
+  @override
   Map<String, Object> toMap() {
     return {
       'amount': amount,
@@ -217,6 +218,7 @@ class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
     };
   }
 
+  @override
   Map<String, Object> diff(ProductQuantityModel quantity) {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
