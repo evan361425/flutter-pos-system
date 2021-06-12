@@ -10,6 +10,7 @@ import '../repository.dart';
 class StockModel extends ChangeNotifier
     with
         Repository<IngredientModel>,
+        NotifyRepository<IngredientModel>,
         InitilizableRepository,
         SearchableRepository {
   static late StockModel instance;

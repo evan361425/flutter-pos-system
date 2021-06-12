@@ -248,7 +248,7 @@ class _QuantityModalState extends State<QuantityModal> {
         additionalCost: object.additionalCost,
       );
 
-      await quantity.ingredient.setQuantity(quantity);
+      await quantity.ingredient.setChild(quantity);
     } else {
       await widget.quantity!.update(object);
     }
@@ -261,7 +261,7 @@ class _QuantityModalState extends State<QuantityModal> {
       return false;
     }
     if (widget.quantity?.id != quantityId &&
-        widget.ingredient.exist(quantityId)) {
+        widget.ingredient.existChild(quantityId)) {
       setState(() => errorMessage = '成份份量重複。');
       return false;
     }

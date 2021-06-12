@@ -7,6 +7,7 @@ import 'package:possystem/services/storage.dart';
 class QuantityRepo extends ChangeNotifier
     with
         Repository<QuantityModel>,
+        NotifyRepository<QuantityModel>,
         InitilizableRepository,
         SearchableRepository {
   static late QuantityRepo instance;

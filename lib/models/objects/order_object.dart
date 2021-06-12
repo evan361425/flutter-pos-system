@@ -41,7 +41,7 @@ class OrderObject {
         ingredients.add(
           OrderIngredientModel(
             ingredient: ingredient,
-            quantity: ingredient.getQuantity(object.quantityId)!,
+            quantity: ingredient.getChild(object.quantityId!)!,
           ),
         );
       }

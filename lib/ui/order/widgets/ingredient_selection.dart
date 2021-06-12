@@ -115,7 +115,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
   Widget _quantitiesRow() {
     return SingleRowWrap(children: <Widget>[
       _quantityDefaultOption(),
-      for (var quantity in selectedIngredient!.quantities.values)
+      for (var quantity in selectedIngredient!.childs)
         RadioText(
           onSelected: () {
             final ingredient = OrderIngredientModel(

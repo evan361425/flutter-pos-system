@@ -5,7 +5,10 @@ import 'package:possystem/models/stock/stock_batch_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class StockBatchRepo extends ChangeNotifier
-    with Repository<StockBatchModel>, InitilizableRepository {
+    with
+        Repository<StockBatchModel>,
+        NotifyRepository<StockBatchModel>,
+        InitilizableRepository {
   static late StockBatchRepo instance;
 
   StockBatchRepo() {

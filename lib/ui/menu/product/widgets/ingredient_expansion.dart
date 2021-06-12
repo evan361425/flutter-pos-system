@@ -93,7 +93,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   }
 
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
-    final body = ingredient.quantities.values.map<Widget>((quantity) {
+    final body = ingredient.childs.map<Widget>((quantity) {
       return ListTile(
         onTap: () => _goToQuantityModel(
           quantity: quantity,

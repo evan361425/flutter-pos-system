@@ -196,7 +196,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
   }
 }
 
-class ProductQuantityObject {
+class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
   ProductQuantityObject({
     this.id,
     required this.amount,
@@ -217,7 +217,7 @@ class ProductQuantityObject {
     };
   }
 
-  Future<Map<String, Object>> diff(ProductQuantityModel quantity) async {
+  Map<String, Object> diff(ProductQuantityModel quantity) {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
 
@@ -235,9 +235,7 @@ class ProductQuantityObject {
     }
     // after all property set
     if (id != null && id != quantity.id) {
-      await quantity.changeQuantity(id!);
-      // no need to update
-      return const {};
+      return {'id': quantity.changeQuantity(id!)};
     }
 
     return result;

@@ -11,7 +11,11 @@ import 'quantity_repo.dart';
 import 'stock_model.dart';
 
 class MenuModel extends ChangeNotifier
-    with Repository<CatalogModel>, OrderablRepository, InitilizableRepository {
+    with
+        Repository<CatalogModel>,
+        NotifyRepository<CatalogModel>,
+        OrderablRepository,
+        InitilizableRepository {
   static late MenuModel instance;
 
   /// wheather ingredient/quantity has connect to stock
@@ -44,8 +48,9 @@ class MenuModel extends ChangeNotifier
 
     childs.forEach((catalog) {
       catalog.childs.forEach((product) {
-        if (product.getChild(ingredientId) != null) {
-          result.add(product.getChild(ingredientId)!);
+        final ingredient = product.getChild(ingredientId);
+        if (ingredient != null) {
+          result.add(ingredient);
         }
       });
     });
@@ -69,8 +74,9 @@ class MenuModel extends ChangeNotifier
     childs.forEach((catalog) {
       catalog.childs.forEach((product) {
         product.childs.forEach((ingredient) {
-          if (ingredient.getQuantity(quantityId) != null) {
-            result.add(ingredient.getQuantity(quantityId));
+          final quantity = ingredient.getChild(quantityId);
+          if (quantity != null) {
+            result.add(quantity);
           }
         });
       });
@@ -113,7 +119,7 @@ class MenuModel extends ChangeNotifier
     };
 
     quantities.forEach((quantity) {
-      quantity!.ingredient.removeQuantity(id);
+      quantity!.ingredient.removeChild(id);
     });
 
     notifyListeners();
@@ -132,8 +138,8 @@ class MenuModel extends ChangeNotifier
       catalog.childs.forEach((product) {
         product.childs.forEach((ingredient) {
           ingredient.setIngredient(stock.getChild(ingredient.id)!);
-          ingredient.quantities.forEach((quantityId, quantity) {
-            quantity.setQuantity(quantities.getChild(quantityId)!);
+          ingredient.childs.forEach((quantity) {
+            quantity.setQuantity(quantities.getChild(quantity.id)!);
           });
         });
       });

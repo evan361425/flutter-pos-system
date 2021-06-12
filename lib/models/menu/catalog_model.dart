@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
@@ -9,7 +8,11 @@ import 'package:possystem/services/storage.dart';
 import 'product_model.dart';
 
 class CatalogModel extends NotifyModel<CatalogObject>
-    with OrderableModel, Repository<ProductModel>, OrderablRepository {
+    with
+        OrderableModel,
+        Repository<ProductModel>,
+        NotifyRepository<ProductModel>,
+        OrderablRepository {
   /// catalog's name
   String name;
 
@@ -54,18 +57,10 @@ class CatalogModel extends NotifyModel<CatalogObject>
   void removeFromRepo() => MenuModel.instance.removeChild(id);
 
   @override
-  Future<void> setChild(ProductModel child) async {
-    if (!existChild(child.id)) {
-      info(child.toString(), '$childCode.add');
-
-      addChild(child);
-
-      await Storage.instance.set(storageStore, {
-        child.prefix: child.toObject().toMap(),
-      });
-    }
-
-    notifyListeners();
+  Future<void> addChildToStorage(ProductModel child) {
+    return Storage.instance.set(storageStore, {
+      child.prefix: child.toObject().toMap(),
+    });
   }
 
   @override

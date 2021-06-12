@@ -19,7 +19,7 @@ void main() {
     test('#construct', () {
       final ingredient = ProductIngredientModel(id: '123');
 
-      expect(ingredient.quantities, equals({}));
+      expect(ingredient.isEmpty, isTrue);
       expect(ingredient.amount, equals(0));
       expect(ingredient.id, equals('123'));
     });
@@ -27,8 +27,8 @@ void main() {
     test('#build', () {
       final object = mockCatalogObject.products.first.ingredients.first;
       final ingredient = ProductIngredientModel.fromObject(object);
-      final isSame = ingredient.quantities.values
-          .every((e) => identical(e.ingredient, ingredient));
+      final isSame =
+          ingredient.childs.every((e) => identical(e.ingredient, ingredient));
 
       expect(isSame, isTrue);
       expect(ingredient.id, equals(object.id));
@@ -62,16 +62,16 @@ void main() {
         'id1': MockProductQuantityModel(),
       });
 
-      expect(ingredient.exist('id1'), isTrue);
-      expect(ingredient.exist('id2'), isFalse);
+      expect(ingredient.existChild('id1'), isTrue);
+      expect(ingredient.existChild('id2'), isFalse);
     });
 
     test('#getQuantity', () {
       final quantity = MockProductQuantityModel();
       final ingredient = ProductIngredientModel(quantities: {'id1': quantity});
 
-      expect(identical(ingredient.getQuantity('id1'), quantity), isTrue);
-      expect(ingredient.getQuantity('id2'), isNull);
+      expect(identical(ingredient.getChild('id1'), quantity), isTrue);
+      expect(ingredient.getChild('id2'), isNull);
     });
 
     test('#removeQuantity', () {
@@ -80,9 +80,9 @@ void main() {
         'id1': MockProductQuantityModel(),
       }, product: product);
 
-      ingredient.removeQuantity('id1');
+      ingredient.removeChild('id1');
 
-      expect(ingredient.quantities, isEmpty);
+      expect(ingredient.childs, isEmpty);
       // product must be notified
       verify(product.setChild(ingredient));
     });
@@ -153,7 +153,7 @@ void main() {
         final quantity = MockProductQuantityModel();
         when(quantity.id).thenReturn('id');
 
-        await ingredient.setQuantity(quantity);
+        await ingredient.setChild(quantity);
 
         verifyNever(storage.mock.set(any, any));
         verify(product.setChild(any));
@@ -173,7 +173,7 @@ void main() {
         when(quantity.toObject()).thenReturn(object);
         when(object.toMap()).thenReturn({'a': 'b'});
 
-        await ingredient.setQuantity(quantity);
+        await ingredient.setChild(quantity);
 
         verify(storage.mock.set(
           any,

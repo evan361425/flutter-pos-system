@@ -13,6 +13,7 @@ import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart' as storage;
 import '../../test_helpers/check_notifier.dart';
 import 'product_model_test.mocks.dart';
+import 'product_quantity_model_test.mocks.dart';
 
 @GenerateMocks([CatalogModel])
 void main() {
@@ -95,13 +96,19 @@ void main() {
     });
 
     test('#removeIngredient', () {
-      final product = ProductModel(name: 'name', index: 100, ingredients: {
-        'id1': ProductIngredientModel(id: 'id1'),
-      });
+      final catalog = MockCatalogModel();
+      final product = ProductModel(
+          name: 'name',
+          index: 100,
+          catalog: catalog,
+          ingredients: {
+            'id1': MockProductIngredientModel(),
+          });
 
       final bool isCalled =
           checkNotifierCalled(product, () => product.removeChild('id1'));
 
+      verify(catalog.notifyListeners());
       expect(isCalled, isTrue);
       expect(product.isEmpty, isTrue);
     });

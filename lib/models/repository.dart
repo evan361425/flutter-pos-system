@@ -3,7 +3,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/services/storage.dart';
 
-mixin Repository<T extends Model> on ChangeNotifier {
+mixin Repository<T extends Model> {
   late Map<String, T> _childs;
 
   String get childCode;
@@ -29,7 +29,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
   void removeChild(String id) {
     _childs.remove(id);
 
-    notifyListeners();
+    notifyChild();
   }
 
   /// add child if not exist and always notify listeners
@@ -39,21 +39,33 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
       addChild(child);
 
-      await Storage.instance.add(
-        storageStore,
-        child.id,
-        child.toObject().toMap(),
-      );
+      await addChildToStorage(child);
     }
 
-    notifyListeners();
+    notifyChild();
+  }
+
+  Future<void> addChildToStorage(T child) {
+    return Storage.instance.add(
+      storageStore,
+      child.id,
+      child.toObject().toMap(),
+    );
   }
 
   void replaceChilds(Map<String, T> map) => _childs = map;
+
   void addChild(T child) => _childs[child.id] = child;
+
+  void notifyChild();
 }
 
-mixin OrderablRepository<T extends OrderableModel> on Repository<T> {
+mixin NotifyRepository<T extends Model> on Repository<T>, ChangeNotifier {
+  @override
+  void notifyChild() => notifyListeners();
+}
+
+mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
   Future<void> reorderChilds(List<T> childs) async {
     final updateData = <String, Object>{};
     var i = 1;
@@ -79,7 +91,7 @@ mixin OrderablRepository<T extends OrderableModel> on Repository<T> {
       childs.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 }
 
-mixin InitilizableRepository<T extends NotifyModel> on Repository<T> {
+mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
   bool isReady = false;
 
   Future<void> initialize() {
@@ -105,7 +117,7 @@ mixin InitilizableRepository<T extends NotifyModel> on Repository<T> {
   T buildModel(String id, Map<String, Object> value);
 }
 
-mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
+mixin SearchableRepository<T extends SearchableModel> on NotifyRepository<T> {
   List<T> sortBySimilarity(String text) {
     if (text.isEmpty) {
       return [];

@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
@@ -8,7 +7,10 @@ import 'catalog_model.dart';
 import 'product_ingredient_model.dart';
 
 class ProductModel extends NotifyModel<ProductObject>
-    with OrderableModel, Repository<ProductIngredientModel> {
+    with
+        OrderableModel,
+        Repository<ProductIngredientModel>,
+        NotifyRepository<ProductIngredientModel> {
   /// connect to parent object
   late final CatalogModel catalog;
 
@@ -36,7 +38,9 @@ class ProductModel extends NotifyModel<ProductObject>
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     replaceChilds(ingredients ?? {});
+
     this.index = index;
+
     if (catalog != null) this.catalog = catalog;
   }
 
@@ -61,7 +65,7 @@ class ProductModel extends NotifyModel<ProductObject>
 
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
-      childs.where((e) => e.quantities.isNotEmpty);
+      childs.where((e) => e.isNotEmpty);
 
   @override
   String get prefix => '${catalog.id}.products.$id';
@@ -73,17 +77,14 @@ class ProductModel extends NotifyModel<ProductObject>
   void removeFromRepo() => catalog.removeChild(id);
 
   @override
-  Future<void> setChild(ProductIngredientModel child) async {
-    if (!existChild(child.id)) {
-      info(child.toString(), '$childCode.add');
+  Future<void> addChildToStorage(ProductIngredientModel child) {
+    return Storage.instance.set(storageStore, {
+      child.prefix: child.toObject().toMap(),
+    });
+  }
 
-      addChild(child);
-
-      await Storage.instance.set(storageStore, {
-        child.prefix: child.toObject().toMap(),
-      });
-    }
-
+  @override
+  void notifyChild() {
     // catalog screen will also shows ingredients
     catalog.notifyListeners();
 
