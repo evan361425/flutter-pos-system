@@ -22,7 +22,7 @@ class StockModel extends ChangeNotifier
   }
 
   @override
-  String get childCode => 'stock.ingredient';
+  String get itemCode => 'stock.ingredient';
 
   @override
   Stores get storageStore => Stores.stock;
@@ -31,7 +31,7 @@ class StockModel extends ChangeNotifier
     if (isEmpty) return null;
 
     DateTime? lastest;
-    childs.forEach((element) {
+    items.forEach((element) {
       if (lastest == null) {
         lastest = element.updatedAt;
       } else if (element.updatedAt?.isAfter(lastest!) == true) {
@@ -47,7 +47,7 @@ class StockModel extends ChangeNotifier
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        final child = getChild(id);
+        final child = getItem(id);
         if (child != null) {
           updateData.addAll(child.updateInfo(amount));
         }

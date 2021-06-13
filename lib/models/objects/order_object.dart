@@ -36,12 +36,12 @@ class OrderObject {
       for (var object in productMap.ingredients.values) {
         if (object.quantityId == null) continue;
 
-        final ingredient = product.getChild(object.id)!;
+        final ingredient = product.getItem(object.id)!;
 
         ingredients.add(
           OrderIngredientModel(
             ingredient: ingredient,
-            quantity: ingredient.getChild(object.quantityId!)!,
+            quantity: ingredient.getItem(object.quantityId!)!,
           ),
         );
       }

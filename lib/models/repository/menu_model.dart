@@ -28,7 +28,7 @@ class MenuModel extends ChangeNotifier
   }
 
   @override
-  String get childCode => 'menu.catalog';
+  String get itemCode => 'menu.catalog';
 
   @override
   Stores get storageStore => Stores.menu;
@@ -46,9 +46,9 @@ class MenuModel extends ChangeNotifier
   List<ProductIngredientModel> getIngredients(String ingredientId) {
     final result = <ProductIngredientModel>[];
 
-    childs.forEach((catalog) {
-      catalog.childs.forEach((product) {
-        final ingredient = product.getChild(ingredientId);
+    items.forEach((catalog) {
+      catalog.items.forEach((product) {
+        final ingredient = product.getItem(ingredientId);
         if (ingredient != null) {
           result.add(ingredient);
         }
@@ -59,8 +59,8 @@ class MenuModel extends ChangeNotifier
   }
 
   ProductModel? getProduct(String productId) {
-    for (var catalog in childs) {
-      final product = catalog.getChild(productId);
+    for (var catalog in items) {
+      final product = catalog.getItem(productId);
       if (product != null) {
         return product;
       }
@@ -71,10 +71,10 @@ class MenuModel extends ChangeNotifier
   List<ProductQuantityModel?> getQuantities(String quantityId) {
     final result = <ProductQuantityModel?>[];
 
-    childs.forEach((catalog) {
-      catalog.childs.forEach((product) {
-        product.childs.forEach((ingredient) {
-          final quantity = ingredient.getChild(quantityId);
+    items.forEach((catalog) {
+      catalog.items.forEach((product) {
+        product.items.forEach((ingredient) {
+          final quantity = ingredient.getItem(quantityId);
           if (quantity != null) {
             result.add(quantity);
           }
@@ -86,10 +86,10 @@ class MenuModel extends ChangeNotifier
   }
 
   bool hasCatalog(String name) =>
-      !childs.every((catalog) => catalog.name != name);
+      !items.every((catalog) => catalog.name != name);
 
-  bool hasProduct(String name) => !childs.every(
-      (catalog) => catalog.childs.every((product) => product.name != name));
+  bool hasProduct(String name) => !items.every(
+      (catalog) => catalog.items.every((product) => product.name != name));
 
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
@@ -101,7 +101,7 @@ class MenuModel extends ChangeNotifier
     };
 
     ingredients.forEach((ingredient) {
-      ingredient.product.removeChild(id);
+      ingredient.product.removeItem(id);
     });
 
     notifyListeners();
@@ -119,7 +119,7 @@ class MenuModel extends ChangeNotifier
     };
 
     quantities.forEach((quantity) {
-      quantity!.ingredient.removeChild(id);
+      quantity!.ingredient.removeItem(id);
     });
 
     notifyListeners();
@@ -134,12 +134,12 @@ class MenuModel extends ChangeNotifier
 
     if (stockMode) return;
 
-    childs.forEach((catalog) {
-      catalog.childs.forEach((product) {
-        product.childs.forEach((ingredient) {
-          ingredient.setIngredient(stock.getChild(ingredient.id)!);
-          ingredient.childs.forEach((quantity) {
-            quantity.setQuantity(quantities.getChild(quantity.id)!);
+    items.forEach((catalog) {
+      catalog.items.forEach((product) {
+        product.items.forEach((ingredient) {
+          ingredient.setIngredient(stock.getItem(ingredient.id)!);
+          ingredient.items.forEach((quantity) {
+            quantity.setQuantity(quantities.getItem(quantity.id)!);
           });
         });
       });

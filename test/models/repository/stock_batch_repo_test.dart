@@ -23,8 +23,8 @@ void main() {
 
     var isCalled = false;
     repo.addListener(() {
-      expect(repo.getChild('id1')!.data, equals({'ing1': 1, 'ing2': 2}));
-      expect(repo.getChild('id2')!.data, equals({}));
+      expect(repo.getItem('id1')!.data, equals({'ing1': 1, 'ing2': 2}));
+      expect(repo.getItem('id2')!.data, equals({}));
       expect(repo.isReady, isTrue);
       isCalled = true;
     });
@@ -39,7 +39,7 @@ void main() {
     final batch2 = MockStockBatchModel();
     when(batch1.name).thenReturn('a');
     when(batch2.name).thenReturn('b');
-    repo.replaceChilds({'a': batch1, 'b': batch2});
+    repo.replaceItems({'a': batch1, 'b': batch2});
 
     expect(repo.hasBatch('a'), isTrue);
     expect(repo.hasBatch('c'), isFalse);

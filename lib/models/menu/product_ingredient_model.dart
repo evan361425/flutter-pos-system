@@ -28,7 +28,7 @@ class ProductIngredientModel
     num? amount,
     Map<String, ProductQuantityModel>? quantities,
   }) : amount = amount ?? 0 {
-    replaceChilds(quantities ?? {});
+    replaceItems(quantities ?? {});
 
     if (id != null) this.id = id;
 
@@ -50,7 +50,7 @@ class ProductIngredientModel
       ).._prepareQuantities();
 
   @override
-  String get childCode => 'menu.quantity';
+  String get itemCode => 'menu.quantity';
 
   @override
   String get code => 'menu.ingredient';
@@ -64,7 +64,7 @@ class ProductIngredientModel
   Stores get storageStore => Stores.menu;
 
   @override
-  Future<void> addChildToStorage(ProductQuantityModel child) {
+  Future<void> addItemToStorage(ProductQuantityModel child) {
     return Storage.instance.set(storageStore, {
       child.prefix: child.toObject().toMap(),
     });
@@ -74,18 +74,18 @@ class ProductIngredientModel
   Future<void> changeIngredient(String newId) async {
     await remove();
 
-    setIngredient(StockModel.instance.getChild(newId)!);
+    setIngredient(StockModel.instance.getItem(newId)!);
 
-    await product.setChild(this);
+    await product.setItem(this);
   }
 
   @override
-  void notifyChild() {
-    product.setChild(this);
+  void notifyItem() {
+    product.setItem(this);
   }
 
   @override
-  void removeFromRepo() => product.removeChild(id);
+  void removeFromRepo() => product.removeItem(id);
 
   void setIngredient(IngredientModel model) {
     ingredient = model;
@@ -96,7 +96,7 @@ class ProductIngredientModel
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
         amount: amount,
-        quantities: childs.map((e) => e.toObject()),
+        quantities: items.map((e) => e.toObject()),
       );
 
   @override
@@ -111,13 +111,13 @@ class ProductIngredientModel
     if (updateData.isEmpty) return Future.value();
 
     info(toString(), '$code.update');
-    await product.setChild(this);
+    await product.setItem(this);
 
     return Storage.instance.set(storageStore, updateData);
   }
 
   void _prepareQuantities() {
-    childs.forEach((e) {
+    items.forEach((e) {
       e.ingredient = this;
     });
   }

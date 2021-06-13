@@ -28,7 +28,7 @@ void main() {
       final object = mockCatalogObject.products.first.ingredients.first;
       final ingredient = ProductIngredientModel.fromObject(object);
       final isSame =
-          ingredient.childs.every((e) => identical(e.ingredient, ingredient));
+          ingredient.items.every((e) => identical(e.ingredient, ingredient));
 
       expect(isSame, isTrue);
       expect(ingredient.id, equals(object.id));
@@ -62,16 +62,16 @@ void main() {
         'id1': MockProductQuantityModel(),
       });
 
-      expect(ingredient.existChild('id1'), isTrue);
-      expect(ingredient.existChild('id2'), isFalse);
+      expect(ingredient.hasItem('id1'), isTrue);
+      expect(ingredient.hasItem('id2'), isFalse);
     });
 
     test('#getQuantity', () {
       final quantity = MockProductQuantityModel();
       final ingredient = ProductIngredientModel(quantities: {'id1': quantity});
 
-      expect(identical(ingredient.getChild('id1'), quantity), isTrue);
-      expect(ingredient.getChild('id2'), isNull);
+      expect(identical(ingredient.getItem('id1'), quantity), isTrue);
+      expect(ingredient.getItem('id2'), isNull);
     });
 
     test('#removeQuantity', () {
@@ -80,11 +80,11 @@ void main() {
         'id1': MockProductQuantityModel(),
       }, product: product);
 
-      ingredient.removeChild('id1');
+      ingredient.removeItem('id1');
 
-      expect(ingredient.childs, isEmpty);
+      expect(ingredient.items, isEmpty);
       // product must be notified
-      verify(product.setChild(ingredient));
+      verify(product.setItem(ingredient));
     });
   });
 
@@ -99,7 +99,7 @@ void main() {
       await ingredient.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(product.removeChild(any));
+      verify(product.removeItem(any));
     });
 
     group('#update', () {
@@ -109,13 +109,13 @@ void main() {
         await ingredient.update(object);
 
         verifyNever(storage.mock.set(any, any));
-        verifyNever(product.setChild(any));
+        verifyNever(product.setItem(any));
       });
 
       test('update without changing ingredient', () async {
         LOG_LEVEL = 2;
         final object = ProductIngredientObject(amount: 2, id: 'i_id');
-        when(product.setChild(any)).thenAnswer((_) => Future.value());
+        when(product.setItem(any)).thenAnswer((_) => Future.value());
 
         await ingredient.update(object);
 
@@ -130,14 +130,14 @@ void main() {
         final object = ProductIngredientObject(amount: 2, id: 'i_id2');
         final oldPrefix = ingredient.prefix;
         final newIngredient = IngredientModel(name: 'ing', id: 'i_id2');
-        when(stock.mock.getChild('i_id2')).thenReturn(newIngredient);
+        when(stock.mock.getItem('i_id2')).thenReturn(newIngredient);
 
         await ingredient.update(object);
 
         verifyInOrder([
           storage.mock.set(any, argThat(equals({oldPrefix: null}))),
-          product.removeChild(argThat(equals('i_id'))),
-          product.setChild(any),
+          product.removeItem(argThat(equals('i_id'))),
+          product.setItem(any),
         ]);
         identical(ingredient.ingredient, newIngredient);
         expect(ingredient.id, equals('i_id2'));
@@ -153,10 +153,10 @@ void main() {
         final quantity = MockProductQuantityModel();
         when(quantity.id).thenReturn('id');
 
-        await ingredient.setChild(quantity);
+        await ingredient.setItem(quantity);
 
         verifyNever(storage.mock.set(any, any));
-        verify(product.setChild(any));
+        verify(product.setItem(any));
       });
 
       test('should add and notify', () async {
@@ -173,7 +173,7 @@ void main() {
         when(quantity.toObject()).thenReturn(object);
         when(object.toMap()).thenReturn({'a': 'b'});
 
-        await ingredient.setChild(quantity);
+        await ingredient.setItem(quantity);
 
         verify(storage.mock.set(
           any,
@@ -181,7 +181,7 @@ void main() {
             'hola': {'a': 'b'}
           })),
         ));
-        verify(product.setChild(any));
+        verify(product.setItem(any));
       });
     });
 

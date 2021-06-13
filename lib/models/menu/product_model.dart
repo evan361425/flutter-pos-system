@@ -37,7 +37,7 @@ class ProductModel extends NotifyModel<ProductObject>
     Map<String, ProductIngredientModel>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
-    replaceChilds(ingredients ?? {});
+    replaceItems(ingredients ?? {});
 
     this.index = index;
 
@@ -58,14 +58,14 @@ class ProductModel extends NotifyModel<ProductObject>
       ).._prepareIngredients();
 
   @override
-  String get childCode => 'menu.ingredient';
+  String get itemCode => 'menu.ingredient';
 
   @override
   String get code => 'menu.product';
 
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredientModel> get ingredientsWithQuantity =>
-      childs.where((e) => e.isNotEmpty);
+      items.where((e) => e.isNotEmpty);
 
   @override
   String get prefix => '${catalog.id}.products.$id';
@@ -74,17 +74,17 @@ class ProductModel extends NotifyModel<ProductObject>
   Stores get storageStore => Stores.menu;
 
   @override
-  void removeFromRepo() => catalog.removeChild(id);
+  void removeFromRepo() => catalog.removeItem(id);
 
   @override
-  Future<void> addChildToStorage(ProductIngredientModel child) {
+  Future<void> addItemToStorage(ProductIngredientModel child) {
     return Storage.instance.set(storageStore, {
       child.prefix: child.toObject().toMap(),
     });
   }
 
   @override
-  void notifyChild() {
+  void notifyItem() {
     // catalog screen will also shows ingredients
     catalog.notifyListeners();
 
@@ -99,11 +99,11 @@ class ProductModel extends NotifyModel<ProductObject>
         price: price,
         cost: cost,
         createdAt: createdAt,
-        ingredients: childs.map((e) => e.toObject()),
+        ingredients: items.map((e) => e.toObject()),
       );
 
   @override
   String toString() => '$catalog.$name';
 
-  void _prepareIngredients() => childs.forEach((e) => e.product = this);
+  void _prepareIngredients() => items.forEach((e) => e.product = this);
 }

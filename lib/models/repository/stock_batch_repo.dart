@@ -18,7 +18,7 @@ class StockBatchRepo extends ChangeNotifier
   }
 
   @override
-  String get childCode => 'stock.batch';
+  String get itemCode => 'stock.batch';
 
   @override
   Stores get storageStore => Stores.stock_batch;
@@ -33,5 +33,5 @@ class StockBatchRepo extends ChangeNotifier
     );
   }
 
-  bool hasBatch(String name) => !childs.every((e) => e.name != name);
+  bool hasBatch(String name) => !items.every((e) => e.name != name);
 }

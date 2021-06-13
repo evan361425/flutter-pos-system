@@ -60,7 +60,7 @@ class IngredientModel extends NotifyModel<IngredientObject>
 
   @override
   void removeFromRepo() {
-    StockModel.instance.removeChild(id);
+    StockModel.instance.removeItem(id);
   }
 
   @override

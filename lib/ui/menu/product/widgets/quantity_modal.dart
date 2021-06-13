@@ -241,14 +241,14 @@ class _QuantityModalState extends State<QuantityModal> {
 
     if (widget.isNew) {
       final quantity = ProductQuantityModel(
-        quantity: QuantityRepo.instance.getChild(object.id!),
+        quantity: QuantityRepo.instance.getItem(object.id!),
         ingredient: widget.ingredient,
         amount: object.amount,
         additionalPrice: object.additionalPrice,
         additionalCost: object.additionalCost,
       );
 
-      await quantity.ingredient.setChild(quantity);
+      await quantity.ingredient.setItem(quantity);
     } else {
       await widget.quantity!.update(object);
     }
@@ -261,7 +261,7 @@ class _QuantityModalState extends State<QuantityModal> {
       return false;
     }
     if (widget.quantity?.id != quantityId &&
-        widget.ingredient.existChild(quantityId)) {
+        widget.ingredient.hasItem(quantityId)) {
       setState(() => errorMessage = '成份份量重複。');
       return false;
     }

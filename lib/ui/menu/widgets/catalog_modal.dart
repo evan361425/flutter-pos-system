@@ -108,7 +108,7 @@ class _CatalogModalState extends State<CatalogModal> {
         index: MenuModel.instance.newIndex,
       );
 
-      await MenuModel.instance.setChild(catalog);
+      await MenuModel.instance.setItem(catalog);
       return catalog;
     } else {
       await widget.catalog!.update(object);

@@ -32,7 +32,7 @@ class ProductSelectionState extends State<ProductSelection> {
           child: Wrap(
             spacing: 4.0,
             children: [
-              for (final product in _catalog?.childList ?? [])
+              for (final product in _catalog?.itemList ?? [])
                 OutlinedButton(
                   onPressed: () => onSelected(product),
                   child: Text(product.name),

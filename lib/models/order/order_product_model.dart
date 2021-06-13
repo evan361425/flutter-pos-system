@@ -90,7 +90,7 @@ class OrderProductModel {
   OrderProductObject toObject() {
     // including default quantity ingredient
     final allIngredients = <String, OrderIngredientObject>{
-      for (var ingredient in product.childs)
+      for (var ingredient in product.items)
         ingredient.id: OrderIngredientObject(
           id: ingredient.id,
           name: ingredient.name,

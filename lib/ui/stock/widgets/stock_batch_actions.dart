@@ -64,7 +64,7 @@ class StockBatchActions extends StatelessWidget {
             Text('將會影響以下的成份：'),
             const SizedBox(height: kSpacing1),
             for (var id in batch.data.keys)
-              Text('- ${StockModel.instance.getChild(id)?.name}'),
+              Text('- ${StockModel.instance.getItem(id)?.name}'),
           ],
         ),
       ),
@@ -94,7 +94,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
 
   StockBatchModel? get currentBatch => selectedBatchId == null
       ? null
-      : widget.batchRepo.getChild(selectedBatchId!);
+      : widget.batchRepo.getItem(selectedBatchId!);
 
   void clear() {
     setState(() => selectedBatchId = null);
@@ -113,7 +113,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
           setState(() => selectedBatchId = newValue);
         }
       },
-      items: <StockBatchModel?>[null, ...widget.batchRepo.childs]
+      items: <StockBatchModel?>[null, ...widget.batchRepo.items]
           .map<DropdownMenuItem<String>>(
             (StockBatchModel? batch) => DropdownMenuItem<String>(
               value: batch?.id,

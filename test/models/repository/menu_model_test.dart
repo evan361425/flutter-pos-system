@@ -23,8 +23,8 @@ void main() {
 
     var isCalled = false;
     menu.addListener(() {
-      expect(menu.getChild('id1')!.getChild('pid1')!.name, equals('product1'));
-      expect(menu.getChild('id2')!.childs, isEmpty);
+      expect(menu.getItem('id1')!.getItem('pid1')!.name, equals('product1'));
+      expect(menu.getItem('id2')!.items, isEmpty);
       expect(menu.isReady, isTrue);
       isCalled = true;
     });

@@ -16,7 +16,7 @@ void main() {
       final catalog = CatalogModel(index: 0, name: 'name');
 
       expect(catalog.createdDate, isNotNull);
-      expect(catalog.childs, isEmpty);
+      expect(catalog.items, isEmpty);
       expect(catalog.id, isNotNull);
       expect(catalog.index, equals(0));
       expect(catalog.name, equals('name'));
@@ -24,8 +24,8 @@ void main() {
 
     test('#build', () {
       final catalog = CatalogModel.fromObject(mockCatalogObject);
-      final isSame = catalog.childs
-          .every((product) => identical(product.catalog, catalog));
+      final isSame =
+          catalog.items.every((product) => identical(product.catalog, catalog));
 
       expect(isSame, isTrue);
     });
@@ -64,7 +64,7 @@ void main() {
         'id2': ProductModel(index: 2, name: '2'),
         'id4': ProductModel(index: 1, name: '4'),
       });
-      final list = catalog.childList;
+      final list = catalog.itemList;
 
       expect(list[0].name, equals('4'));
       expect(list[1].name, equals('2'));
@@ -76,8 +76,8 @@ void main() {
         'id1': ProductModel(index: 1, name: '1'),
       });
 
-      expect(catalog.existChild('id1'), isTrue);
-      expect(catalog.existChild('id2'), isFalse);
+      expect(catalog.hasItem('id1'), isTrue);
+      expect(catalog.hasItem('id2'), isFalse);
     });
 
     test('#getProduct', () {
@@ -85,8 +85,8 @@ void main() {
         'id1': ProductModel(index: 1, name: '1'),
       });
 
-      expect(catalog.getChild('id1')?.name, equals('1'));
-      expect(catalog.getChild('id2'), isNull);
+      expect(catalog.getItem('id1')?.name, equals('1'));
+      expect(catalog.getItem('id2'), isNull);
     });
 
     test('#removeProduct', () {
@@ -95,7 +95,7 @@ void main() {
       });
 
       final bool isCalled =
-          checkNotifierCalled(catalog, () => catalog.removeChild('id1'));
+          checkNotifierCalled(catalog, () => catalog.removeItem('id1'));
 
       expect(isCalled, isTrue);
       expect(catalog.isEmpty, isTrue);
@@ -110,7 +110,7 @@ void main() {
       await catalog.remove();
 
       verify(storage.mock.set(any, argThat(equals({'uuid': null}))));
-      verify(menu.mock.removeChild('uuid'));
+      verify(menu.mock.removeItem('uuid'));
     });
 
     test('#reorderProducts', () async {
@@ -122,7 +122,7 @@ void main() {
       ];
 
       final bool isCalled = await checkNotifierCalled(
-          catalog, () => catalog.reorderChilds(products));
+          catalog, () => catalog.reorderItems(products));
 
       verify(storage.mock.set(
         any,
@@ -169,7 +169,7 @@ void main() {
             index: 1, name: 'name', id: 'product_1', catalog: catalog);
 
         final bool isCalled =
-            await checkNotifierCalled(catalog, () => catalog.setChild(product));
+            await checkNotifierCalled(catalog, () => catalog.setItem(product));
 
         verifyNever(storage.mock.set(any, any));
         expect(isCalled, isTrue);
@@ -182,7 +182,7 @@ void main() {
             index: 1, name: 'name', id: 'product_2', catalog: catalog);
 
         final bool isCalled =
-            await checkNotifierCalled(catalog, () => catalog.setChild(product));
+            await checkNotifierCalled(catalog, () => catalog.setItem(product));
 
         verify(storage.mock.set(any, argThat(isNot(containsValue(null)))));
         expect(isCalled, isTrue);

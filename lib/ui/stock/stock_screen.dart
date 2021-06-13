@@ -50,7 +50,7 @@ class StockScreen extends StatelessWidget {
       ),
       Expanded(
         child: SingleChildScrollView(
-          child: IngredientList(ingredients: stock.childList),
+          child: IngredientList(ingredients: stock.itemList),
         ),
       ),
     ]);

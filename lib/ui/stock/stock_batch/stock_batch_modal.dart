@@ -21,7 +21,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final updateData = <String, num>{};
-  final List<IngredientModel> ingredients = StockModel.instance.childList;
+  final List<IngredientModel> ingredients = StockModel.instance.itemList;
 
   bool isSaving = false;
   String? errorMessage;
@@ -131,7 +131,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
     } else {
       final model = StockBatchModel(name: name, data: updateData);
 
-      StockBatchRepo.instance.setChild(model);
+      StockBatchRepo.instance.setItem(model);
     }
   }
 

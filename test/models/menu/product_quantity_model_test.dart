@@ -78,7 +78,7 @@ void main() {
       await quantity.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(ingredient.removeChild(any));
+      verify(ingredient.removeItem(any));
     });
 
     group('#update', () {
@@ -89,7 +89,7 @@ void main() {
         await quantity.update(object);
 
         verifyNever(storage.mock.set(any, any));
-        verifyNever(ingredient.setChild(any));
+        verifyNever(ingredient.setItem(any));
       });
 
       test('update without changing ingredient', () async {
@@ -116,14 +116,14 @@ void main() {
             amount: 2, additionalCost: 3, additionalPrice: 4, id: 'q_id2');
         final newQuantity = QuantityModel(name: 'qua', id: 'q_id2');
         final oldPrefix = quantity.prefix;
-        when(quantities.mock.getChild('q_id2')).thenReturn(newQuantity);
+        when(quantities.mock.getItem('q_id2')).thenReturn(newQuantity);
 
         await quantity.update(object);
 
         verifyInOrder([
           storage.mock.set(any, argThat(equals({oldPrefix: null}))),
-          ingredient.removeChild(argThat(equals('q_id'))),
-          ingredient.setChild(any),
+          ingredient.removeItem(argThat(equals('q_id'))),
+          ingredient.setItem(any),
         ]);
         identical(quantity.quantity, newQuantity);
       });

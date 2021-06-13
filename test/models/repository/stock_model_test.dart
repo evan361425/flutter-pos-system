@@ -27,8 +27,8 @@ void main() {
 
     var isCalled = false;
     stock.addListener(() {
-      expect(stock.getChild('id1')!.updatedAt, isNull);
-      expect(stock.getChild('id2')!.name, equals('ing_2'));
+      expect(stock.getItem('id1')!.updatedAt, isNull);
+      expect(stock.getItem('id2')!.name, equals('ing_2'));
       expect(stock.isReady, isTrue);
       isCalled = true;
     });
@@ -53,7 +53,7 @@ void main() {
     test('should get null if all ingredient have no updatedAt', () {
       final ing1 = createIngredient(null);
       final ing2 = createIngredient(null);
-      stock.replaceChilds({'a': ing1, 'b': ing2});
+      stock.replaceItems({'a': ing1, 'b': ing2});
 
       expect(stock.updatedDate, isNull);
     });
@@ -64,7 +64,7 @@ void main() {
       final ing3 = createIngredient(DateTime(2021, 6, 3));
       final ing4 = createIngredient(null);
       final ing5 = createIngredient(DateTime(2021, 6, 1));
-      stock.replaceChilds(
+      stock.replaceItems(
         {'a': ing1, 'b': ing2, 'c': ing3, 'd': ing4, 'e': ing5},
       );
 
@@ -82,7 +82,7 @@ void main() {
 
     test('should ignore if amount == 0 or wrong ID', () async {
       final ing1 = createIngredient(1, {'a': 'b'});
-      stock.replaceChilds({'a': ing1});
+      stock.replaceItems({'a': ing1});
 
       final isCalled = await checkNotifierCalled(
           stock, () => stock.applyAmounts({'b': 1, 'a': 0}));
@@ -95,7 +95,7 @@ void main() {
       final ing1 = createIngredient(1, {'a': 'b'});
       final ing2 = createIngredient(2, {'c': 'd'});
       final expected = {'a': 'b', 'c': 'd'};
-      stock.replaceChilds({'1': ing1, '2': ing2});
+      stock.replaceItems({'1': ing1, '2': ing2});
 
       final isCalled = await checkNotifierCalled(
           stock, () => stock.applyAmounts({'1': 1, '2': 2}));
@@ -139,8 +139,8 @@ void main() {
         {'a': 1, 'b': 2},
         {'a': 3},
       ]);
-      stock.addChild(createIngredient(-4, 'a'));
-      stock.addChild(createIngredient(-2, 'b'));
+      stock.addItem(createIngredient(-4, 'a'));
+      stock.addItem(createIngredient(-2, 'b'));
 
       await stock.order(data);
 
@@ -156,8 +156,8 @@ void main() {
         {'a': 7, 'b': 8},
         {'a': 9},
       ]);
-      stock.addChild(createIngredient(12, 'a'));
-      stock.addChild(createIngredient(6, 'b'));
+      stock.addItem(createIngredient(12, 'a'));
+      stock.addItem(createIngredient(6, 'b'));
 
       await stock.order(data, oldData: oldData);
 

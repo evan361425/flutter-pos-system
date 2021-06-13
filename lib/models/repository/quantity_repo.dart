@@ -19,7 +19,7 @@ class QuantityRepo extends ChangeNotifier
   }
 
   @override
-  String get childCode => 'quantities.quantity';
+  String get itemCode => 'quantities.quantity';
 
   @override
   Stores get storageStore => Stores.quantities;

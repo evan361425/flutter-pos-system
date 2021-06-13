@@ -28,7 +28,7 @@ class CatalogModel extends NotifyModel<CatalogObject>
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     this.index = index;
-    replaceChilds(products ?? {});
+    replaceItems(products ?? {});
   }
 
   factory CatalogModel.fromObject(CatalogObject object) => CatalogModel(
@@ -43,7 +43,7 @@ class CatalogModel extends NotifyModel<CatalogObject>
       ).._preparePorducts();
 
   @override
-  String get childCode => 'menu.product';
+  String get itemCode => 'menu.product';
 
   @override
   String get code => 'menu.catalog';
@@ -54,10 +54,10 @@ class CatalogModel extends NotifyModel<CatalogObject>
   Stores get storageStore => Stores.menu;
 
   @override
-  void removeFromRepo() => MenuModel.instance.removeChild(id);
+  void removeFromRepo() => MenuModel.instance.removeItem(id);
 
   @override
-  Future<void> addChildToStorage(ProductModel child) {
+  Future<void> addItemToStorage(ProductModel child) {
     return Storage.instance.set(storageStore, {
       child.prefix: child.toObject().toMap(),
     });
@@ -69,11 +69,11 @@ class CatalogModel extends NotifyModel<CatalogObject>
         index: index,
         name: name,
         createdAt: createdAt,
-        products: childs.map((e) => e.toObject()),
+        products: items.map((e) => e.toObject()),
       );
 
   @override
   String toString() => name;
 
-  void _preparePorducts() => childs.forEach((e) => e.catalog = this);
+  void _preparePorducts() => items.forEach((e) => e.catalog = this);
 }

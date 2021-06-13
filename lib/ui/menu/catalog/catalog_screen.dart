@@ -60,7 +60,7 @@ class CatalogScreen extends StatelessWidget {
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => ProductOrderableList(items: catalog.childList),
+            builder: (_) => ProductOrderableList(items: catalog.itemList),
           ),
         ),
       ),
@@ -83,7 +83,7 @@ class CatalogScreen extends StatelessWidget {
         Routes.setUpStockMode(context)
             ? catalog.isEmpty
                 ? EmptyBody('menu.catalog.empty_body')
-                : ProductList(products: catalog.childList)
+                : ProductList(products: catalog.itemList)
             : CircularLoading(),
       ],
     );

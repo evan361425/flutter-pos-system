@@ -45,7 +45,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ingredients = context.watch<ProductModel>().childList;
+    ingredients = context.watch<ProductModel>().itemList;
     showIngredient = List.filled(ingredients.length, false);
   }
 
@@ -93,7 +93,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   }
 
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
-    final body = ingredient.childs.map<Widget>((quantity) {
+    final body = ingredient.items.map<Widget>((quantity) {
       return ListTile(
         onTap: () => _goToQuantityModel(
           quantity: quantity,

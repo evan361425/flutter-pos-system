@@ -36,7 +36,7 @@ class StockBatchModel extends NotifyModel {
 
   @override
   void removeFromRepo() {
-    StockBatchRepo.instance.removeChild(id);
+    StockBatchRepo.instance.removeItem(id);
   }
 
   @override

@@ -54,7 +54,7 @@ class MenuScreen extends StatelessWidget {
         onTap: () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (BuildContext context) {
-              final items = MenuModel.instance.childList;
+              final items = MenuModel.instance.itemList;
               return CatalogOrderableList(items: items);
             },
           ),
@@ -87,7 +87,7 @@ class MenuScreen extends StatelessWidget {
           // TODO: search bar
           // MenuSearchBar(),
           // get sorted catalogs
-          CatalogList(menu.childList),
+          CatalogList(menu.itemList),
         ],
       ),
     );

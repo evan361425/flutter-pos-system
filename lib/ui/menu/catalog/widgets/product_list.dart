@@ -49,7 +49,7 @@ class ProductList extends StatelessWidget {
       title: Text(product.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(
         context,
-        product.childs.map((e) => e.name),
+        product.items.map((e) => e.name),
         '尚未設定成份',
       ),
     );

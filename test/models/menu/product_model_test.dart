@@ -31,7 +31,7 @@ void main() {
     test('#build', () {
       final object = mockCatalogObject.products.first;
       final product = ProductModel.fromObject(object);
-      final isSame = product.childs.every((e) => identical(e.product, product));
+      final isSame = product.items.every((e) => identical(e.product, product));
 
       expect(isSame, isTrue);
       expect(object.id, product.id);
@@ -82,8 +82,8 @@ void main() {
         'id1': ProductIngredientModel(id: 'id1'),
       });
 
-      expect(product.existChild('id1'), isTrue);
-      expect(product.existChild('id2'), isFalse);
+      expect(product.hasItem('id1'), isTrue);
+      expect(product.hasItem('id2'), isFalse);
     });
 
     test('#getIngredient', () {
@@ -91,8 +91,8 @@ void main() {
         'id1': ProductIngredientModel(id: 'id1'),
       });
 
-      expect(product.getChild('id1')?.id, equals('id1'));
-      expect(product.getChild('id2'), isNull);
+      expect(product.getItem('id1')?.id, equals('id1'));
+      expect(product.getItem('id2'), isNull);
     });
 
     test('#removeIngredient', () {
@@ -106,7 +106,7 @@ void main() {
           });
 
       final bool isCalled =
-          checkNotifierCalled(product, () => product.removeChild('id1'));
+          checkNotifierCalled(product, () => product.removeItem('id1'));
 
       verify(catalog.notifyListeners());
       expect(isCalled, isTrue);
@@ -125,7 +125,7 @@ void main() {
       await product.remove();
 
       verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(catalog.removeChild('p_id'));
+      verify(catalog.removeItem('p_id'));
     });
 
     group('#update', () {
@@ -167,7 +167,7 @@ void main() {
         product.catalog = catalog;
 
         final bool isCalled = await checkNotifierCalled(
-            product, () => product.setChild(ingredient));
+            product, () => product.setItem(ingredient));
 
         verifyNever(storage.mock.set(any, any));
         verify(catalog.notifyListeners());
@@ -184,7 +184,7 @@ void main() {
         product.catalog = catalog;
 
         final bool isCalled = await checkNotifierCalled(
-            product, () => product.setChild(ingredient));
+            product, () => product.setItem(ingredient));
 
         verify(storage.mock.set(any, argThat(isNot(containsValue(null)))));
         verify(catalog.notifyListeners());

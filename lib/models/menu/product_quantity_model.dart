@@ -62,13 +62,13 @@ class ProductQuantityModel with Model<ProductQuantityObject> {
   Future<void> changeQuantity(String newId) async {
     await remove();
 
-    setQuantity(QuantityRepo.instance.getChild(newId)!);
+    setQuantity(QuantityRepo.instance.getItem(newId)!);
 
-    await ingredient.setChild(this);
+    await ingredient.setItem(this);
   }
 
   @override
-  void removeFromRepo() => ingredient.removeChild(id);
+  void removeFromRepo() => ingredient.removeItem(id);
 
   void setQuantity(QuantityModel model) {
     quantity = model;
@@ -95,7 +95,7 @@ class ProductQuantityModel with Model<ProductQuantityObject> {
     if (updateData.isEmpty) return Future.value();
 
     info(toString(), '$code.update');
-    await ingredient.setChild(this);
+    await ingredient.setItem(this);
 
     return Storage.instance.set(storageStore, updateData);
   }
