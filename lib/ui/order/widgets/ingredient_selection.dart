@@ -25,15 +25,22 @@ class _IngredientSelectionState extends State<IngredientSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final product = CartModel.instance.selectedSameProduct?.first?.product;
-    if (product == null) return _emptyWidget(context, '請選擇相同的產品來設定其成份');
+    if (CartModel.instance.isEmpty) {
+      return _emptyWidget(context, '請選擇產品來設定其成份');
+    }
+    if (!CartModel.instance.isSameProducts) {
+      return _emptyWidget(context, '請選擇相同的產品來設定其成份');
+    }
 
+    final product = CartModel.instance.products.first.product;
     final ingredients = product.ingredientsWithQuantity;
-    if (ingredients.isEmpty) return _emptyWidget(context, '該產品無可設定的成份');
+    if (ingredients.isEmpty) {
+      return _emptyWidget(context, '該產品無可設定的成份');
+    }
 
     selectedIngredient ??= ingredients.first;
     selectedQuantityId = CartModel.instance.getSelectedQuantityId(
-      selectedIngredient,
+      selectedIngredient!,
     );
 
     // uncheck all ratio if there has different between quantites

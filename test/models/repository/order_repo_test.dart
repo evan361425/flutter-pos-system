@@ -6,6 +6,7 @@ import '../../mocks/mock_database.dart';
 import 'stock_model_test.mocks.dart';
 
 void main() {
+  final orders = OrderRepo();
   group('getter', () {
     test('#getCountBetween', () async {
       final now = DateTime(2021, 10, 10, 1, 1, 1);
@@ -26,7 +27,7 @@ void main() {
             ],
           ));
 
-      final result = await OrderRepo.instance.getCountBetween(now, now);
+      final result = await orders.getCountBetween(now, now);
 
       expect(result, equals({now.toUtc(): 1, next: 2}));
     });
@@ -39,7 +40,7 @@ void main() {
         whereArgs: anyNamed('whereArgs'),
       )).thenAnswer((_) => Future.value([]));
 
-      final result = await OrderRepo.instance.getMetricBetween();
+      final result = await orders.getMetricBetween();
 
       expect(result, equals({'revenue': 0, 'count': 0}));
     });
@@ -54,8 +55,8 @@ void main() {
             {'revenue': 1, 'count': 2},
           ]));
 
-      final result = await OrderRepo.instance
-          .getMetricBetween(DateTime.now(), DateTime.now());
+      final result =
+          await orders.getMetricBetween(DateTime.now(), DateTime.now());
 
       expect(result, equals({'revenue': 1, 'count': 2}));
     });
@@ -70,8 +71,8 @@ void main() {
         whereArgs: anyNamed('whereArgs'),
       )).thenAnswer((_) => Future.value([]));
 
-      final result = await OrderRepo.instance
-          .getOrderBetween(DateTime.now(), DateTime.now());
+      final result =
+          await orders.getOrderBetween(DateTime.now(), DateTime.now());
 
       expect(result, isEmpty);
     });
@@ -79,7 +80,7 @@ void main() {
     test('#getStashCount in null', () async {
       when(database.count(any)).thenAnswer((_) => Future.value(null));
 
-      final result = await OrderRepo.instance.getStashCount();
+      final result = await orders.getStashCount();
 
       expect(result, equals(0));
     });
@@ -87,7 +88,7 @@ void main() {
     test('#getStashCount', () async {
       when(database.count(any)).thenAnswer((_) => Future.value(3));
 
-      final result = await OrderRepo.instance.getStashCount();
+      final result = await orders.getStashCount();
 
       expect(result, equals(3));
     });
@@ -98,7 +99,7 @@ void main() {
       when(database.getLast(any, columns: anyNamed('columns')))
           .thenAnswer((_) => Future.value(null));
 
-      final result = await OrderRepo.instance.drop();
+      final result = await orders.drop();
 
       expect(result, equals(null));
       verifyNever(database.delete(any, any));
@@ -108,7 +109,7 @@ void main() {
       when(database.getLast(any, columns: anyNamed('columns')))
           .thenAnswer((_) => Future.value({'id': 1}));
 
-      final result = await OrderRepo.instance.drop();
+      final result = await orders.drop();
 
       expect(result?.id, equals(1));
       verify(database.delete(any, argThat(equals(1))));
@@ -123,7 +124,7 @@ void main() {
               whereArgs: anyNamed('whereArgs')))
           .thenAnswer((_) => Future.value(null));
 
-      final result = await OrderRepo.instance.pop();
+      final result = await orders.pop();
 
       expect(result, equals(null));
     });
@@ -135,7 +136,7 @@ void main() {
               whereArgs: anyNamed('whereArgs')))
           .thenAnswer((_) => Future.value({'id': 1}));
 
-      final result = await OrderRepo.instance.pop();
+      final result = await orders.pop();
 
       expect(result?.id, equals(1));
     });
@@ -148,7 +149,7 @@ void main() {
     when(database.push(any, argThat(equals({'a': 'b'}))))
         .thenAnswer((_) => Future.value(1));
 
-    await OrderRepo.instance.push(object);
+    await orders.push(object);
   });
 
   test('#stash', () async {
@@ -159,7 +160,7 @@ void main() {
     when(database.push(any, argThat(equals(map))))
         .thenAnswer((_) => Future.value(1));
 
-    await OrderRepo.instance.stash(object);
+    await orders.stash(object);
   });
 
   test('#update', () async {
@@ -171,7 +172,7 @@ void main() {
     when(database.update(any, argThat(equals(2)), argThat(equals(map))))
         .thenAnswer((_) => Future.value(1));
 
-    await OrderRepo.instance.update(object);
+    await orders.update(object);
   });
 
   setUpAll(() {

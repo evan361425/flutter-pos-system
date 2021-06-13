@@ -1,5 +1,6 @@
 import 'package:mockito/annotations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
@@ -12,6 +13,7 @@ final stock = MockStockModel();
 final menu = MockMenuModel();
 final batches = MockStockBatchRepo();
 final quantities = MockQuantityRepo();
+final orders = MockOrderRepo();
 
 @GenerateMocks([
   Storage,
@@ -19,6 +21,7 @@ final quantities = MockQuantityRepo();
   MenuModel,
   StockBatchRepo,
   QuantityRepo,
+  OrderRepo,
 ])
 void _initialize() {
   Storage.instance = storage;
@@ -26,6 +29,7 @@ void _initialize() {
   MenuModel.instance = menu;
   StockBatchRepo.instance = batches;
   QuantityRepo.instance = quantities;
+  OrderRepo.instance = orders;
   _finished = true;
 }
 

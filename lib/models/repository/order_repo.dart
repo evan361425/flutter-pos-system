@@ -3,11 +3,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 
 class OrderRepo {
-  static final OrderRepo _instance = OrderRepo._constructor();
-
-  static OrderRepo get instance => _instance;
-
-  OrderRepo._constructor();
+  static OrderRepo instance = OrderRepo();
 
   Future<OrderObject?> drop() async {
     final row = await Database.instance.getLast(

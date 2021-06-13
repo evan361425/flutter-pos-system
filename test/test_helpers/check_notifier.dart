@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-dynamic checkNotifierCalled(ChangeNotifier notifier, Function() action) {
+dynamic checkNotifierCalled(
+  ChangeNotifier notifier,
+  Function() action, [
+  Matcher? matcher,
+]) {
   var isFired = false;
   notifier.addListener(() {
     isFired = true;
@@ -8,8 +13,16 @@ dynamic checkNotifierCalled(ChangeNotifier notifier, Function() action) {
 
   final result = action();
   if (result is Future) {
-    return result.then((value) => isFired);
+    return result.then((value) {
+      if (matcher != null) {
+        expect(value, matcher);
+      }
+      return isFired;
+    });
   } else {
+    if (matcher != null) {
+      expect(result, matcher);
+    }
     return isFired;
   }
 }

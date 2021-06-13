@@ -50,7 +50,7 @@ class OrderProductModel {
 
   void decrement([int value = 1]) => setCount(-value);
 
-  OrderIngredientModel? getIngredientOf(String? id) {
+  OrderIngredientModel? getIngredient(String? id) {
     try {
       return ingredients.firstWhere((e) => e.id == id);
     } catch (e) {
