@@ -3,7 +3,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
@@ -11,9 +10,10 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart' as storage;
 import '../../mocks/mock_stock.dart' as stock;
+import '../../mocks/mockito/mock_product_model.dart';
 import 'product_ingredient_model_test.mocks.dart';
 
-@GenerateMocks([ProductModel, ProductQuantityModel, ProductQuantityObject])
+@GenerateMocks([ProductQuantityModel, ProductQuantityObject])
 void main() {
   group('factory', () {
     test('#construct', () {

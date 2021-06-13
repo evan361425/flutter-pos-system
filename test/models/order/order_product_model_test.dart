@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
+import '../../mocks/mockito/mock_product_model.dart';
 import '../menu/product_ingredient_model_test.mocks.dart';
 import '../menu/product_quantity_model_test.mocks.dart';
 import 'order_product_model_test.mocks.dart';

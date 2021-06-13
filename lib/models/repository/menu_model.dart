@@ -3,6 +3,7 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
@@ -68,8 +69,8 @@ class MenuModel extends ChangeNotifier
     return null;
   }
 
-  List<ProductQuantityModel?> getQuantities(String quantityId) {
-    final result = <ProductQuantityModel?>[];
+  List<ProductQuantityModel> getQuantities(String quantityId) {
+    final result = <ProductQuantityModel>[];
 
     items.forEach((catalog) {
       catalog.items.forEach((product) {
@@ -94,33 +95,22 @@ class MenuModel extends ChangeNotifier
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
 
-    if (ingredients.isEmpty) return Future.value();
-
-    final updateData = {
-      for (var ingredient in ingredients) ingredient.prefix: null
-    };
-
-    ingredients.forEach((ingredient) {
-      ingredient.product.removeItem(id);
-    });
-
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
+    return _remove(ingredients.map((e) => e.product), ingredients);
   }
 
   Future<void> removeQuantities(String id) {
     final quantities = getQuantities(id);
 
-    if (quantities.isEmpty) return Future.value();
+    return _remove(quantities.map((e) => e.ingredient), quantities);
+  }
 
-    final updateData = {
-      for (var quantity in quantities) '${quantity!.prefix}': null
-    };
+  Future<void> _remove(Iterable<Repository> repos, List<Model> items) {
+    if (items.isEmpty) return Future.value();
 
-    quantities.forEach((quantity) {
-      quantity!.ingredient.removeItem(id);
-    });
+    final updateData = {for (var item in items) item.prefix: null};
+
+    final id = items.first.id;
+    repos.forEach((repo) => repo.removeItem(id));
 
     notifyListeners();
 

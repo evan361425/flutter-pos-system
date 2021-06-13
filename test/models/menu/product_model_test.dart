@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
@@ -12,10 +11,9 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart' as storage;
 import '../../test_helpers/check_notifier.dart';
-import 'product_model_test.mocks.dart';
+import '../../mocks/mockito/mock_catalog_model.dart';
 import 'product_quantity_model_test.mocks.dart';
 
-@GenerateMocks([CatalogModel])
 void main() {
   group('factory', () {
     test('#construct', () {
