@@ -4,13 +4,13 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
+import '../../mocks/mocks.dart';
 import 'stock_batch_repo_test.mocks.dart';
 
 @GenerateMocks([StockBatchModel])
 void main() {
   test('#constructor', () {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({
+    when(storage.get(any)).thenAnswer((e) => Future.value({
           'id1': {
             'name': 'batch1',
             'data': {'ing1': 1, 'ing2': 2},
@@ -46,15 +46,11 @@ void main() {
   });
 
   setUp(() {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({}));
+    when(storage.get(any)).thenAnswer((e) => Future.value({}));
     repo = StockBatchRepo();
   });
 
   setUpAll(() {
-    storage.before();
-  });
-
-  tearDownAll(() {
-    storage.after();
+    initialize();
   });
 }

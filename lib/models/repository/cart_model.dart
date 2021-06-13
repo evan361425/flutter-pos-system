@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
@@ -41,17 +42,23 @@ class CartModel extends ChangeNotifier {
     if (isEmpty) return true;
 
     // disallow before stash, so need minus 1
-    if ((await OrderRepo.instance.getStashLength())! > 4) return false;
+    final length = await OrderRepo.instance.getStashCount();
+    if (length > 4) return false;
 
-    await OrderRepo.instance.stash(toObject());
+    final data = toObject();
+    info(data.totalCount.toString(), 'cart.order.stash');
 
+    await OrderRepo.instance.stash(data);
     clear();
+
     return true;
   }
 
-  Future<bool> popStash() async {
-    final order = await OrderRepo.instance.popStash();
+  Future<bool> drop() async {
+    final order = await OrderRepo.instance.drop();
     if (order == null) return false;
+
+    info(order.id.toString(), 'cart.order.drop');
 
     updateProductions(order.parseToProduct());
     return true;
@@ -67,12 +74,16 @@ class CartModel extends ChangeNotifier {
       final oldData = await OrderRepo.instance.pop();
       final data = toObject(paid: paid, object: oldData);
 
+      info(data.id.toString(), 'cart.order.update');
+
       // must follow the order, avoid missing data
       await OrderRepo.instance.update(data);
       await StockModel.instance.order(data, oldData: oldData);
       leaveHistoryMode();
     } else {
       final data = toObject(paid: paid);
+
+      info(data.totalCount.toString(), 'cart.order.push');
 
       // must follow the order, avoid missing data
       await OrderRepo.instance.push(data);
@@ -85,8 +96,11 @@ class CartModel extends ChangeNotifier {
     final order = await OrderRepo.instance.pop();
     if (order == null) return false;
 
+    info(order.id.toString(), 'cart.order.pop');
+
     updateProductions(order.parseToProduct());
     isHistoryMode = true;
+
     return true;
   }
 

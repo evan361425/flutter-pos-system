@@ -6,8 +6,7 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_menu.dart' as menu;
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
@@ -109,8 +108,8 @@ void main() {
 
       await catalog.remove();
 
-      verify(storage.mock.set(any, argThat(equals({'uuid': null}))));
-      verify(menu.mock.removeItem('uuid'));
+      verify(storage.set(any, argThat(equals({'uuid': null}))));
+      verify(menu.removeItem('uuid'));
     });
 
     test('#reorderProducts', () async {
@@ -124,7 +123,7 @@ void main() {
       final bool isCalled = await checkNotifierCalled(
           catalog, () => catalog.reorderItems(products));
 
-      verify(storage.mock.set(
+      verify(storage.set(
         any,
         argThat(equals({
           '${products[0].prefix}.index': 1,
@@ -143,7 +142,7 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(catalog, () => catalog.update(object));
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         expect(isCalled, isFalse);
       });
 
@@ -154,7 +153,7 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(catalog, () => catalog.update(object));
 
-        verify(storage.mock.set(
+        verify(storage.set(
           any,
           argThat(equals({'${catalog.prefix}.name': 'new-name'})),
         ));
@@ -171,7 +170,7 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(catalog, () => catalog.setItem(product));
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         expect(isCalled, isTrue);
       });
 
@@ -184,20 +183,17 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(catalog, () => catalog.setItem(product));
 
-        verify(storage.mock.set(any, argThat(isNot(containsValue(null)))));
+        verify(storage.set(any, argThat(isNot(containsValue(null)))));
         expect(isCalled, isTrue);
       });
     });
 
     setUp(() {
       catalog = CatalogModel(index: 1, name: 'name', id: 'uuid');
-      storage.before();
-      menu.before();
     });
+  });
 
-    tearDown(() {
-      storage.after();
-      menu.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

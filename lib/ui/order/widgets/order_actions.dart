@@ -48,7 +48,7 @@ class OrderActions extends StatelessWidget {
       ListTile(
         title: Text('顯示暫存餐點'),
         leading: Icon(Icons.file_upload),
-        onTap: () => Navigator.pop(context, OrderActionTypes.pop_stash),
+        onTap: () => Navigator.pop(context, OrderActionTypes.drop),
       ),
       ListTile(
         title: Text('離開點餐頁面'),
@@ -78,15 +78,11 @@ class OrderActions extends StatelessWidget {
           showSnackbar(context, '找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄');
         }
         return;
-      case OrderActionTypes.pop_stash:
+      case OrderActionTypes.drop:
         if (!await showPopConfirm(context)) return;
 
-        final order = await OrderRepo.instance.popStash();
-        if (order == null) {
-          return showSnackbar(context, '目前沒有暫存的紀錄唷');
-        }
-
-        return CartModel.instance.updateProductions(order.parseToProduct());
+        final success = await CartModel.instance.drop();
+        return showSnackbar(context, success ? '執行成功' : '目前沒有暫存的紀錄唷');
       case OrderActionTypes.stash:
         if (!await CartModel.instance.stash()) {
           showSnackbar(context, '暫存檔案的次數超過上限');
@@ -119,7 +115,7 @@ class OrderActions extends StatelessWidget {
 
 enum OrderActionTypes {
   pop,
-  pop_stash,
+  drop,
   stash,
   leave,
   leave_pop,

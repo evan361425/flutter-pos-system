@@ -5,7 +5,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import 'stock_model_test.mocks.dart';
 
@@ -13,7 +13,7 @@ import 'stock_model_test.mocks.dart';
     [IngredientModel, OrderObject, OrderProductObject, OrderIngredientObject])
 void main() {
   test('#constructor', () {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({
+    when(storage.get(any)).thenAnswer((e) => Future.value({
           'id1': {
             'name': 'ing_1',
             'currentAmount': 10,
@@ -88,7 +88,7 @@ void main() {
           stock, () => stock.applyAmounts({'b': 1, 'a': 0}));
 
       expect(isCalled, isFalse);
-      verifyNever(storage.mock.set(any, any));
+      verifyNever(storage.set(any, any));
     });
 
     test('should update correctly', () async {
@@ -101,7 +101,7 @@ void main() {
           stock, () => stock.applyAmounts({'1': 1, '2': 2}));
 
       expect(isCalled, isTrue);
-      verify(storage.mock.set(any, argThat(equals(expected))));
+      verify(storage.set(any, argThat(equals(expected))));
     });
   });
 
@@ -144,7 +144,7 @@ void main() {
 
       await stock.order(data);
 
-      verify(storage.mock.set(any, argThat(equals({'a': -4, 'b': -2}))));
+      verify(storage.set(any, argThat(equals({'a': -4, 'b': -2}))));
     });
 
     test('should reverse amount', () async {
@@ -161,20 +161,16 @@ void main() {
 
       await stock.order(data, oldData: oldData);
 
-      verify(storage.mock.set(any, argThat(equals({'a': 12, 'b': 6}))));
+      verify(storage.set(any, argThat(equals({'a': 12, 'b': 6}))));
     });
   });
 
   setUp(() {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({}));
+    when(storage.get(any)).thenAnswer((e) => Future.value({}));
     stock = StockModel();
   });
 
   setUpAll(() {
-    storage.before();
-  });
-
-  tearDownAll(() {
-    storage.after();
+    initialize();
   });
 }

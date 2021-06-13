@@ -2,16 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mockito/mock_catalog_model.dart';
 import '../../mocks/mockito/mock_product_ingredient_model.dart';
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import '../menu/product_ingredient_model_test.mocks.dart';
 
 void main() {
   test('#constructor', () {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({
+    when(storage.get(any)).thenAnswer((e) => Future.value({
           'id1': {
             'name': 'catalog1',
             'index': 1,
@@ -172,7 +172,7 @@ void main() {
           menu, () => menu.removeIngredients('igt_2'));
 
       expect(isCalled, isFalse);
-      verifyNever(storage.mock.set(any, any));
+      verifyNever(storage.set(any, any));
     });
 
     test('should fire storage and notify listener', () async {
@@ -185,7 +185,7 @@ void main() {
           menu, () => menu.removeIngredients('igt_1'));
 
       expect(isCalled, isTrue);
-      verify(storage.mock.set(
+      verify(storage.set(
         any,
         argThat(equals({
           'ctg_1-pdt_1-igt_1-prefix': null,
@@ -212,7 +212,7 @@ void main() {
           await checkNotifierCalled(menu, () => menu.removeQuantities('qty_1'));
 
       expect(isCalled, isTrue);
-      verify(storage.mock.set(
+      verify(storage.set(
         any,
         argThat(equals({
           'ctg_1-pdt_1-igt_1-qty_1-prefix': null,
@@ -229,15 +229,11 @@ void main() {
   });
 
   setUp(() {
-    when(storage.mock.get(any)).thenAnswer((e) => Future.value({}));
+    when(storage.get(any)).thenAnswer((e) => Future.value({}));
     menu = MenuModel();
   });
 
   setUpAll(() {
-    storage.before();
-  });
-
-  tearDownAll(() {
-    storage.after();
+    initialize();
   });
 }

@@ -6,7 +6,7 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mock_storage.dart' as storage;
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import 'quantity_repo_test.mocks.dart';
 
@@ -14,7 +14,7 @@ import 'quantity_repo_test.mocks.dart';
 void main() {
   group('#constructor', () {
     test('should success', () {
-      when(storage.mock.get(any)).thenAnswer((invocation) => Future.value({
+      when(storage.get(any)).thenAnswer((invocation) => Future.value({
             'id_1': {
               'name': 'name_1',
               'defaultProportion': 1,
@@ -42,7 +42,7 @@ void main() {
 
     test('should continue if one entry is polluted', () {
       LOG_LEVEL = 0;
-      when(storage.mock.get(any)).thenAnswer((invocation) => Future.value({
+      when(storage.get(any)).thenAnswer((invocation) => Future.value({
             'id_1': {
               'name': 123,
               'defaultProportion': 1,
@@ -95,7 +95,7 @@ void main() {
         final q_a = MockQuantityModel();
         repo.replaceItems({'a': q_a});
         when(q_a.id).thenReturn('a');
-        when(storage.mock.add(any, any, any)).thenThrow(Exception());
+        when(storage.add(any, any, any)).thenThrow(Exception());
 
         expect(
             await checkNotifierCalled(repo, () => repo.setItem(q_a)), isTrue);
@@ -113,8 +113,7 @@ void main() {
         when(q_b.toObject()).thenReturn(mockQuantityObject1);
         when(q_b.id).thenReturn('b');
         when(q_b.toString()).thenReturn('name');
-        when(storage.mock.add(any, 'b', q_map))
-            .thenAnswer((_) => Future.value());
+        when(storage.add(any, 'b', q_map)).thenAnswer((_) => Future.value());
 
         final future = checkNotifierCalled(repo, () => repo.setItem(q_b));
         expect(await future, isTrue);
@@ -170,16 +169,12 @@ void main() {
     });
 
     setUp(() {
-      when(storage.mock.get(any)).thenAnswer((e) => Future.value({}));
+      when(storage.get(any)).thenAnswer((e) => Future.value({}));
       repo = QuantityRepo();
     });
   });
 
   setUpAll(() {
-    storage.before();
-  });
-
-  tearDownAll(() {
-    storage.after();
+    initialize();
   });
 }

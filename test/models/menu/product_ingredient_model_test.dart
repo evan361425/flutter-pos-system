@@ -8,9 +8,8 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_stock.dart' as stock;
 import '../../mocks/mockito/mock_product_model.dart';
+import '../../mocks/mocks.dart';
 import 'product_ingredient_model_test.mocks.dart';
 
 @GenerateMocks([ProductQuantityModel, ProductQuantityObject])
@@ -98,7 +97,7 @@ void main() {
 
       await ingredient.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
+      verify(storage.set(any, argThat(equals(expected))));
       verify(product.removeItem(any));
     });
 
@@ -108,7 +107,7 @@ void main() {
 
         await ingredient.update(object);
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         verifyNever(product.setItem(any));
       });
 
@@ -122,7 +121,7 @@ void main() {
         // after update, ingredient id will changed
         final prefix = ingredient.prefix;
 
-        verify(storage.mock.set(any, argThat(equals({'$prefix.amount': 2}))));
+        verify(storage.set(any, argThat(equals({'$prefix.amount': 2}))));
       });
 
       test('#changeIngredient, #remove, #setIngredient', () async {
@@ -130,12 +129,12 @@ void main() {
         final object = ProductIngredientObject(amount: 2, id: 'i_id2');
         final oldPrefix = ingredient.prefix;
         final newIngredient = IngredientModel(name: 'ing', id: 'i_id2');
-        when(stock.mock.getItem('i_id2')).thenReturn(newIngredient);
+        when(stock.getItem('i_id2')).thenReturn(newIngredient);
 
         await ingredient.update(object);
 
         verifyInOrder([
-          storage.mock.set(any, argThat(equals({oldPrefix: null}))),
+          storage.set(any, argThat(equals({oldPrefix: null}))),
           product.removeItem(argThat(equals('i_id'))),
           product.setItem(any),
         ]);
@@ -155,7 +154,7 @@ void main() {
 
         await ingredient.setItem(quantity);
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         verify(product.setItem(any));
       });
 
@@ -175,7 +174,7 @@ void main() {
 
         await ingredient.setItem(quantity);
 
-        verify(storage.mock.set(
+        verify(storage.set(
           any,
           argThat(equals({
             'hola': {'a': 'b'}
@@ -194,13 +193,10 @@ void main() {
         ingredient: IngredientModel(name: 'ing', id: 'i_id'),
         product: product,
       );
-      storage.before();
-      stock.before();
     });
+  });
 
-    tearDown(() {
-      storage.after();
-      stock.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

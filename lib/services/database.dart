@@ -2,13 +2,6 @@ import 'package:possystem/services/migrations/v1.dart' as migration_v1;
 import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
 
-enum Tables {
-  search_history,
-  // order
-  order,
-  order_stash,
-}
-
 const Map<Tables, String> TableName = {
   Tables.search_history: 'search_history',
   // order
@@ -17,50 +10,31 @@ const Map<Tables, String> TableName = {
 };
 
 class Database {
-  static final Database _instance = Database._constructor();
-
-  static Database get instance => _instance;
+  static Database instance = Database._constructor();
 
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
-
-  static String join(Iterable<String>? data) =>
-      (data?.join(delimiter) ?? '') + delimiter;
-
-  static List<String> split(String? value) =>
-      value?.trim().split(delimiter) ?? [];
 
   late no_sql.Database db;
 
   Database._constructor();
 
-  Future<void> initialize() async {
-    final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
-    db = await openDatabase(
-      databasePath,
-      version: 1,
-      onCreate: (db, version) {
-        return Future.wait(migration_v1.up.map((sql) => db.execute(sql)));
-      },
-    );
+  Future<int?> count(
+    Tables table, {
+    String? where,
+    List<Object>? whereArgs,
+  }) async {
+    final result = await db.query(TableName[table]!, columns: ['COUNT(*)']);
+
+    return Sqflite.firstIntValue(result);
   }
 
-  Future<int> push(Tables table, Map<String, Object?> data) {
-    return db.insert(TableName[table]!, data);
-  }
-
-  Future<int> update(
+  Future<void> delete(
     Tables table,
-    Object? key,
-    Map<String, Object?> data, {
-    keyName = 'id',
+    Object? id, {
+    String keyName = 'id',
   }) {
-    return db.update(
-      TableName[table]!,
-      data,
-      where: '$keyName = ?',
-      whereArgs: [key],
-    );
+    return db.delete(TableName[table]!, where: '$keyName = ?', whereArgs: [id]);
   }
 
   Future<Map<String, Object?>?> getLast(
@@ -85,25 +59,24 @@ class Database {
     }
   }
 
-  Future<void> delete(
-    Tables table,
-    Object? id, {
-    String keyName = 'id',
-  }) {
-    return db.delete(TableName[table]!, where: '$keyName = ?', whereArgs: [id]);
+  Future<void> initialize() async {
+    // final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
+    db = await openDatabase(
+      // databasePath,
+      'abc.sqlite',
+      version: 1,
+      onCreate: (db, version) {
+        print('start create');
+        return Future.wait(migration_v1.up.map((sql) => db.execute(sql)));
+      },
+    );
   }
 
-  Future<int?> count(
-    Tables table, {
-    String? where,
-    List<Object>? whereArgs,
-  }) async {
-    final result = await db.query(TableName[table]!, columns: ['COUNT(*)']);
-
-    return Sqflite.firstIntValue(result);
+  Future<int> push(Tables table, Map<String, Object?> data) {
+    return db.insert(TableName[table]!, data);
   }
 
-  static Future<List<Map<String, Object?>>> query(
+  Future<List<Map<String, Object?>>> query(
     Tables table, {
     String? where,
     List<Object>? whereArgs,
@@ -129,7 +102,7 @@ class Database {
     );
   }
 
-  static Future<List<Map<String, Object?>>> rawQuery(
+  Future<List<Map<String, Object?>>> rawQuery(
     Tables table, {
     String? where,
     List<Object>? whereArgs,
@@ -142,4 +115,31 @@ class Database {
     WHERE $where
     GROUP BY $groupBy''', whereArgs);
   }
+
+  Future<int> update(
+    Tables table,
+    Object? key,
+    Map<String, Object?> data, {
+    keyName = 'id',
+  }) {
+    return db.update(
+      TableName[table]!,
+      data,
+      where: '$keyName = ?',
+      whereArgs: [key],
+    );
+  }
+
+  static String join(Iterable<String>? data) =>
+      (data?.join(delimiter) ?? '') + delimiter;
+
+  static List<String> split(String? value) =>
+      value?.trim().split(delimiter) ?? [];
+}
+
+enum Tables {
+  search_history,
+  // order
+  order,
+  order_stash,
 }

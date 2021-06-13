@@ -4,8 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_quantities.dart' as quantities;
+import '../../mocks/mocks.dart';
 
 void main() {
   test('#fromObject', () {
@@ -40,8 +39,8 @@ void main() {
 
       await quantity.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(quantities.mock.removeItem(argThat(equals('id'))));
+      verify(storage.set(any, argThat(equals(expected))));
+      verify(quantities.removeItem(argThat(equals('id'))));
     });
 
     group('#update', () {
@@ -52,7 +51,7 @@ void main() {
 
         await quantity.update(object);
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
       });
 
       test('update without changing ingredient', () async {
@@ -70,18 +69,12 @@ void main() {
           '$prefix.defaultProportion': 2.0,
         };
 
-        verify(storage.mock.set(any, argThat(equals(expected))));
+        verify(storage.set(any, argThat(equals(expected))));
       });
     });
+  });
 
-    setUp(() {
-      storage.before();
-      quantities.before();
-    });
-
-    tearDown(() {
-      storage.after();
-      quantities.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

@@ -90,9 +90,9 @@ class OrderObject {
 
     return OrderObject(
       createdAt: createdAt,
-      id: data['id'] as int?,
-      paid: data['paid'] as num?,
-      // if fetching without this, it might be null
+      id: data['id'] as int,
+      // if fetching without these, it might be null
+      paid: data['paid'] as num? ?? 0,
       totalPrice: data['totalPrice'] as num? ?? 0,
       totalCount: data['totalCount'] as int? ?? 0,
       productNames: Database.split(data['usedProducts'] as String?),

@@ -8,8 +8,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_quantities.dart' as quantities;
+import '../../mocks/mocks.dart';
 import 'product_quantity_model_test.mocks.dart';
 
 @GenerateMocks([ProductIngredientModel])
@@ -77,7 +76,7 @@ void main() {
 
       await quantity.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
+      verify(storage.set(any, argThat(equals(expected))));
       verify(ingredient.removeItem(any));
     });
 
@@ -88,7 +87,7 @@ void main() {
 
         await quantity.update(object);
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         verifyNever(ingredient.setItem(any));
       });
 
@@ -107,7 +106,7 @@ void main() {
           '$prefix.additionalPrice': 4,
         };
 
-        verify(storage.mock.set(any, argThat(equals(expected))));
+        verify(storage.set(any, argThat(equals(expected))));
       });
 
       test('#changeIngredient, #remove, #setIngredient', () async {
@@ -116,12 +115,12 @@ void main() {
             amount: 2, additionalCost: 3, additionalPrice: 4, id: 'q_id2');
         final newQuantity = QuantityModel(name: 'qua', id: 'q_id2');
         final oldPrefix = quantity.prefix;
-        when(quantities.mock.getItem('q_id2')).thenReturn(newQuantity);
+        when(quantities.getItem('q_id2')).thenReturn(newQuantity);
 
         await quantity.update(object);
 
         verifyInOrder([
-          storage.mock.set(any, argThat(equals({oldPrefix: null}))),
+          storage.set(any, argThat(equals({oldPrefix: null}))),
           ingredient.removeItem(argThat(equals('q_id'))),
           ingredient.setItem(any),
         ]);
@@ -141,14 +140,10 @@ void main() {
       when(ingredient.prefix).thenReturn('i_prefix');
       when(ingredient.toString()).thenReturn('ingredient_string');
       when(ingredient.name).thenReturn('i_name');
-
-      storage.before();
-      quantities.before();
     });
+  });
 
-    tearDown(() {
-      storage.after();
-      quantities.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

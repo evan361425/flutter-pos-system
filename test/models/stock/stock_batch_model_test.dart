@@ -4,8 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_stock_batches.dart' as batches;
+import '../../mocks/mocks.dart';
 
 void main() {
   test('#fromObject', () {
@@ -39,8 +38,8 @@ void main() {
 
       await batch.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(batches.mock.removeItem(argThat(equals('id'))));
+      verify(storage.set(any, argThat(equals(expected))));
+      verify(batches.removeItem(argThat(equals('id'))));
     });
 
     group('#update', () {
@@ -53,7 +52,7 @@ void main() {
 
         await batch.update(object);
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
       });
 
       test('update without changing ingredient', () async {
@@ -74,18 +73,12 @@ void main() {
           '$prefix.data.id3': 4,
         };
 
-        verify(storage.mock.set(any, argThat(equals(expected))));
+        verify(storage.set(any, argThat(equals(expected))));
       });
     });
+  });
 
-    setUp(() {
-      storage.before();
-      batches.before();
-    });
-
-    tearDown(() {
-      storage.after();
-      batches.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

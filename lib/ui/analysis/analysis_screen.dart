@@ -170,18 +170,9 @@ class _BodyState extends State<_Body> {
     final end = DateTime(day.year, day.month + 1);
     final start = DateTime(day.year, day.month);
 
-    final result = await OrderRepo.instance.countByDay(start, end);
+    final result = await OrderRepo.instance.getCountBetween(start, end);
 
-    setState(() {
-      try {
-        _orderCounts.addAll(<DateTime, int>{
-          for (final row in result)
-            Util.fromUTC(row['createdAt'] as int): row['count'] as int
-        });
-      } catch (e) {
-        print(e);
-      }
-    });
+    setState(() => _orderCounts.addAll(result));
   }
 
   Future<void> _handlePageChange(DateTime day) async {
@@ -224,11 +215,8 @@ class _BodyState extends State<_Body> {
 
     setState(() => _data = null);
 
-    OrderRepo.instance.getBetween(start, end).then((result) {
-      setState(() {
-        _data =
-            result.map<OrderObject>((row) => OrderObject.build(row)).toList();
-      });
+    OrderRepo.instance.getOrderBetween(start, end).then((result) {
+      setState(() => _data = result);
     });
   }
 }

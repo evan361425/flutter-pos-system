@@ -4,8 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
-import '../../mocks/mock_storage.dart' as storage;
-import '../../mocks/mock_stock.dart' as stock;
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
@@ -34,11 +33,9 @@ void main() {
   test('#addAmount', () {
     final ingredient = IngredientModel(name: 'name', id: 'id');
 
-    stock.before();
     ingredient.addAmount(123);
-    stock.after();
 
-    verify(stock.mock.applyAmounts({'id': 123}));
+    verify(stock.applyAmounts({'id': 123}));
   });
 
   test('#getSimilarity', () {
@@ -102,8 +99,8 @@ void main() {
 
       await ingredient.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
-      verify(stock.mock.removeItem(argThat(equals('id'))));
+      verify(storage.set(any, argThat(equals(expected))));
+      verify(stock.removeItem(argThat(equals('id'))));
     });
 
     group('#update', () {
@@ -128,7 +125,7 @@ void main() {
             ingredient, () => ingredient.update(object));
 
         expect(isChecked, isFalse);
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
       });
 
       test('update without changing ingredient', () async {
@@ -165,18 +162,12 @@ void main() {
         };
 
         expect(isChecked, isTrue);
-        verify(storage.mock.set(any, argThat(equals(expected))));
+        verify(storage.set(any, argThat(equals(expected))));
       });
     });
+  });
 
-    setUp(() {
-      storage.before();
-      stock.before();
-    });
-
-    tearDown(() {
-      storage.after();
-      stock.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }

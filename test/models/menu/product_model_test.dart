@@ -9,7 +9,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mock_storage.dart' as storage;
+import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import '../../mocks/mockito/mock_catalog_model.dart';
 import 'product_quantity_model_test.mocks.dart';
@@ -122,7 +122,7 @@ void main() {
 
       await product.remove();
 
-      verify(storage.mock.set(any, argThat(equals(expected))));
+      verify(storage.set(any, argThat(equals(expected))));
       verify(catalog.removeItem('p_id'));
     });
 
@@ -133,7 +133,7 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(product, () => product.update(object));
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         expect(isCalled, isFalse);
       });
 
@@ -145,7 +145,7 @@ void main() {
         final bool isCalled =
             await checkNotifierCalled(product, () => product.update(object));
 
-        verify(storage.mock.set(
+        verify(storage.set(
           any,
           argThat(equals({
             '$prefix.name': 'new-name',
@@ -167,7 +167,7 @@ void main() {
         final bool isCalled = await checkNotifierCalled(
             product, () => product.setItem(ingredient));
 
-        verifyNever(storage.mock.set(any, any));
+        verifyNever(storage.set(any, any));
         verify(catalog.notifyListeners());
         expect(isCalled, isTrue);
       });
@@ -184,7 +184,7 @@ void main() {
         final bool isCalled = await checkNotifierCalled(
             product, () => product.setItem(ingredient));
 
-        verify(storage.mock.set(any, argThat(isNot(containsValue(null)))));
+        verify(storage.set(any, argThat(isNot(containsValue(null)))));
         verify(catalog.notifyListeners());
         expect(isCalled, isTrue);
       });
@@ -204,11 +204,10 @@ void main() {
         price: 2,
         catalog: catalog,
       );
-      storage.before();
     });
+  });
 
-    tearDown(() {
-      storage.after();
-    });
+  setUpAll(() {
+    initialize();
   });
 }
