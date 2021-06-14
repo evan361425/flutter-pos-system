@@ -5,7 +5,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/custom_styles.dart';
+import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
