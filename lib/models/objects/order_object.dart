@@ -28,33 +28,30 @@ class OrderObject {
   }) : createdAt = createdAt ?? DateTime.now();
 
   List<OrderProductModel> parseToProduct() {
-    final data = products.map<OrderProductModel?>((productMap) {
-      final product = MenuModel.instance.getProduct(productMap.productId);
-      if (product == null) return null;
+    return products.map<OrderProductModel>((orderProduct) {
+      final product = MenuModel.instance.getProduct(orderProduct.productId)!;
 
       final ingredients = <OrderIngredientModel>[];
-      for (var object in productMap.ingredients.values) {
-        if (object.quantityId == null) continue;
+      for (var orderIngredient in orderProduct.ingredients.values) {
+        if (orderIngredient.quantityId == null) continue;
 
-        final ingredient = product.getItem(object.id)!;
+        final ingredient = product.getItem(orderIngredient.id)!;
 
         ingredients.add(
           OrderIngredientModel(
             ingredient: ingredient,
-            quantity: ingredient.getItem(object.quantityId!)!,
+            quantity: ingredient.getItem(orderIngredient.quantityId!)!,
           ),
         );
       }
 
       return OrderProductModel(
         product,
-        count: productMap.count,
-        singlePrice: productMap.singlePrice,
+        count: orderProduct.count,
+        singlePrice: orderProduct.singlePrice,
         ingredients: ingredients,
       );
-    }).where((product) => product != null);
-
-    return [for (final item in data) item!];
+    }).toList();
   }
 
   Map<String, Object?> toMap() {
@@ -160,8 +157,8 @@ class OrderProductObject {
 }
 
 class OrderIngredientObject {
-  final String name;
   final String id;
+  final String name;
   num? additionalPrice;
   num? additionalCost;
   num amount;
@@ -169,8 +166,8 @@ class OrderIngredientObject {
   String? quantityName;
 
   OrderIngredientObject({
-    required this.name,
     required this.id,
+    required this.name,
     this.additionalPrice,
     this.additionalCost,
     required this.amount,
