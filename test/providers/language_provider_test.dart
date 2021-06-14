@@ -36,7 +36,9 @@ void main() {
 
   group('#setLocale', () {
     test('should ignore if not changed', () async {
+      LOG_LEVEL = 2;
       when(cache.get(any)).thenReturn('zh_TW');
+      when(cache.set(any, 'zh_TW')).thenAnswer((_) => Future.value(true));
       language.initialize();
 
       final action = () => language.setLocale(Locale('zh', 'TW'));

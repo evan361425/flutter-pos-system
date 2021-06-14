@@ -40,26 +40,6 @@ class LanguageProvider extends ChangeNotifier {
     _locale = parsed ?? LanguageProvider.defaultLocale;
   }
 
-  Future<void> setLocale(Locale locale) async {
-    var code = locale.toString();
-
-    if (locale != _locale) {
-      info(code, 'setting.language');
-      await Cache.instance.set<String>(Caches.language_code, code);
-
-      _locale = locale;
-      notifyListeners();
-    }
-  }
-
-  Locale? _parseLanguage(String? value) {
-    if (value == null || value.isEmpty) return null;
-
-    final codes = value.split('_');
-
-    return Locale(codes[0], codes.length == 1 ? null : codes[1]);
-  }
-
   Locale localResolutionCallback(
     Locale? locale,
     Iterable<Locale> supports,
@@ -82,5 +62,24 @@ class LanguageProvider extends ChangeNotifier {
         _parse((e) => e.languageCode == locale.languageCode) ??
         _parse((e) => e.countryCode == locale.countryCode) ??
         defaultLocale;
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    var code = locale.toString();
+    info(code, 'setting.language');
+    await Cache.instance.set<String>(Caches.language_code, code);
+
+    if (locale != _locale) {
+      _locale = locale;
+      notifyListeners();
+    }
+  }
+
+  Locale? _parseLanguage(String? value) {
+    if (value == null || value.isEmpty) return null;
+
+    final codes = value.split('_');
+
+    return Locale(codes[0], codes.length == 1 ? null : codes[1]);
   }
 }
