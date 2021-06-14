@@ -42,7 +42,9 @@ class Validator {
 
   static String? Function(String?) isNumber(String fieldName) {
     return (String? value) {
-      if (num.tryParse(value!) == null) {
+      final number = num.tryParse(value ?? '');
+
+      if (number == null) {
         return '$fieldName 必須是數字';
       } else {
         return null;
@@ -52,7 +54,7 @@ class Validator {
 
   static String? Function(String?) textLimit(String fieldName, int limit) {
     return (String? value) {
-      if (value!.isEmpty) {
+      if (value == null || value.isEmpty) {
         return '$fieldName 不能為空';
       } else if (value.length > limit) {
         return '$fieldName 的長度不能超過 $limit';
