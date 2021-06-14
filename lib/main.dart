@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/my_app.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,9 @@ void main() {
           ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
+          ),
+          ChangeNotifierProvider<CurrencyProvider>(
+            create: (_) => CurrencyProvider(),
           ),
           ChangeNotifierProvider<MenuModel>(
             create: (_) => MenuModel(),

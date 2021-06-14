@@ -7,9 +7,9 @@ class ThemeProvider extends ChangeNotifier {
 
   bool get darkMode => _darkMode;
 
-  Future<void> initialize() async {
+  void initialize() {
     // get from cache, if not found get system setting
-    final value = await Cache.instance.get<bool>(Caches.dark_mode);
+    final value = Cache.instance.get<bool>(Caches.dark_mode);
     _darkMode = value ?? defaultTheme;
   }
 

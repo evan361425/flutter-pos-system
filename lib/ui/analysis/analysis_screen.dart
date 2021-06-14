@@ -82,11 +82,10 @@ class _BodyState extends State<_Body> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    Cache.instance.get<int>(Caches.analyze_calendar_format).then((value) {
-      if (value != null && _calendarFormat.index != value) {
-        setState(() => _calendarFormat = CalendarFormat.values[value]);
-      }
-    });
+    final format = Cache.instance.get<int>(Caches.analyze_calendar_format);
+    if (format != null && _calendarFormat.index != format) {
+      _calendarFormat = CalendarFormat.values[format];
+    }
 
     final language = context.watch<LanguageProvider>();
     _locale = language.locale;

@@ -7,9 +7,12 @@ dynamic checkNotifierCalled(
   Matcher? matcher,
 ]) {
   var isFired = false;
-  notifier.addListener(() {
+  void setter() {
     isFired = true;
-  });
+    notifier.removeListener(setter);
+  }
+
+  notifier.addListener(setter);
 
   final result = action();
   if (result is Future) {

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:possystem/services/cache.dart';
 
 class CurrencyProvider extends ChangeNotifier {
-  static final _instance = CurrencyProvider._constructor();
+  static late CurrencyProvider instance;
+
+  static const defaultCurrency = '新台幣';
 
   static const candidates = {
     '新台幣': [1, 5, 10, 50, 100, 500, 1000],
   };
 
-  static CurrencyProvider get instance => _instance;
-
-  String? _usage;
+  late String _currency;
 
   late List<num> types;
 
@@ -18,15 +18,16 @@ class CurrencyProvider extends ChangeNotifier {
 
   late int intIndex;
 
-  CurrencyProvider._constructor() {
-    // TODO: make it setable
-    _setUsage('新台幣');
+  CurrencyProvider() {
+    instance = this;
   }
 
-  // if value = 24 => 25
-  // if value = 27 => 30
-  // if value = 30 => 50
-  // if value = 100 => 500
+  String get currency => _currency;
+
+  /// if value = 24 => 25
+  /// if value = 27 => 30
+  /// if value = 30 => 50
+  /// if value = 100 => 500
   num? ceil(num? value) {
     if (value == null) return null;
 
@@ -43,38 +44,38 @@ class CurrencyProvider extends ChangeNotifier {
     return value;
   }
 
-  Future<String?> getUsage() async {
-    _usage = await Cache.instance.get<String>(Caches.currency_code) ?? '新台幣';
-    return _usage;
-  }
-
-  Future<void> setUsage(String value) async {
-    await Cache.instance.set<String>(Caches.currency_code, value);
-    _setUsage(value);
+  void initialize() {
+    final currency = Cache.instance.get<String>(Caches.currency_code);
+    _setCurrency(currency ?? defaultCurrency);
   }
 
   String numToString(num value) {
     return isInt ? value.round().toString() : value.toString();
   }
 
-  void _setUsage(String? value) {
-    if (value != null && value != _usage) {
-      types = candidates[value]!;
-
-      // index when money start using int
-      intIndex = 0;
-      for (var type in types) {
-        if (type.toInt() == type) break;
-        intIndex++;
-      }
-
-      // is this currency all int?
-      isInt = intIndex == 0;
-
-      // notify if already created
-      if (_usage != null) notifyListeners();
-
-      _usage = value;
+  Future<void> setUsage(String value) async {
+    await Cache.instance.set<String>(Caches.currency_code, value);
+    if (_setCurrency(value)) {
+      notifyListeners();
     }
+  }
+
+  bool _setCurrency(String? value) {
+    if (value == null || value == _currency) return false;
+    types = candidates[value]!;
+
+    // index when money start using int
+    intIndex = 0;
+    for (var type in types) {
+      if (type.toInt() == type) break;
+      intIndex++;
+    }
+
+    // is this currency all int?
+    isInt = intIndex == 0;
+
+    _currency = value;
+
+    return true;
   }
 }

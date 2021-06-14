@@ -9,48 +9,45 @@ const _Names = <Caches, String>{
 };
 
 class Cache {
-  static final Cache _instance = Cache._constructor();
+  static Cache instance = Cache();
 
-  static Cache get instance => _instance;
+  late final SharedPreferences service;
 
-  final Future<SharedPreferences> _sharedPreference =
-      SharedPreferences.getInstance();
+  Future<void> initialize() async {
+    service = await SharedPreferences.getInstance();
+  }
 
-  Cache._constructor();
-
-  Future<T?> get<T>(Caches cache) async {
-    final sp = await _sharedPreference;
+  T? get<T>(Caches cache) {
     final name = _Names[cache] ?? cache.toString();
 
     if (T == bool) {
-      return sp.getBool(name) as T?;
+      return service.getBool(name) as T?;
     } else if (T == String) {
-      return sp.getString(name) as T?;
+      return service.getString(name) as T?;
     } else if (T == int) {
-      return sp.getInt(name) as T?;
+      return service.getInt(name) as T?;
     } else if (T == double) {
-      return sp.getDouble(name) as T?;
+      return service.getDouble(name) as T?;
     } else if (T == List) {
-      return sp.getStringList(name) as T?;
+      return service.getStringList(name) as T?;
     } else {
       throw Error();
     }
   }
 
-  Future<bool> set<T>(Caches cache, T value) async {
-    final sp = await _sharedPreference;
+  Future<bool> set<T>(Caches cache, T value) {
     final name = _Names[cache] ?? cache.toString();
 
     if (T == bool) {
-      return sp.setBool(name, value as bool);
+      return service.setBool(name, value as bool);
     } else if (T == String) {
-      return sp.setString(name, value as String);
+      return service.setString(name, value as String);
     } else if (T == int) {
-      return sp.setInt(name, value as int);
+      return service.setInt(name, value as int);
     } else if (T == double) {
-      return sp.setDouble(name, value as double);
+      return service.setDouble(name, value as double);
     } else if (T == List) {
-      return sp.setStringList(name, value as List<String>);
+      return service.setStringList(name, value as List<String>);
     } else {
       throw Error();
     }

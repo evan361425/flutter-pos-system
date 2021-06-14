@@ -11,16 +11,18 @@ enum Stores {
 }
 
 class Storage {
-  static Storage instance = Storage._constructor();
+  static Storage instance = Storage();
 
   late Database db;
 
-  Storage._constructor();
+  bool _initialized = false;
 
   Future<void> initialize() async {
-    final path = await getDatabasesPath();
-    final dbPath = join(path, 'pos_system.sembast');
-    db = await databaseFactoryIo.openDatabase(dbPath);
+    if (_initialized) return;
+
+    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
+    db = await databaseFactoryIo.openDatabase(databasePath);
+    _initialized = true;
   }
 
   StoreRef getStore(Stores storeId) {

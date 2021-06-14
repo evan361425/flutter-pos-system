@@ -4,10 +4,12 @@ import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/services/storage.dart';
 
 import 'mocks.mocks.dart';
 
+final cache = MockCache();
 final storage = MockStorage();
 final stock = MockStockModel();
 final menu = MockMenuModel();
@@ -16,6 +18,7 @@ final quantities = MockQuantityRepo();
 final orders = MockOrderRepo();
 
 @GenerateMocks([
+  Cache,
   Storage,
   StockModel,
   MenuModel,
@@ -26,6 +29,7 @@ final orders = MockOrderRepo();
 void _initialize() {
   Storage.instance = storage;
   StockModel.instance = stock;
+  Cache.instance = cache;
   MenuModel.instance = menu;
   StockBatchRepo.instance = batches;
   QuantityRepo.instance = quantities;

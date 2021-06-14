@@ -10,14 +10,14 @@ const Map<Tables, String> TableName = {
 };
 
 class Database {
-  static Database instance = Database._constructor();
+  static Database instance = Database();
 
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
   late no_sql.Database db;
 
-  Database._constructor();
+  bool _initialized = false;
 
   Future<int?> count(
     Tables table, {
@@ -60,16 +60,18 @@ class Database {
   }
 
   Future<void> initialize() async {
-    // final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
+    if (_initialized) return;
+
+    final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
     db = await openDatabase(
-      // databasePath,
-      'abc.sqlite',
+      databasePath,
       version: 1,
       onCreate: (db, version) {
         print('start create');
         return Future.wait(migration_v1.up.map((sql) => db.execute(sql)));
       },
     );
+    _initialized = true;
   }
 
   Future<int> push(Tables table, Map<String, Object?> data) {
