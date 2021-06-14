@@ -34,7 +34,7 @@ class IngredientObject extends ModelObject<IngredientModel> {
       'alertAmount': alertAmount,
       'lastAmount': lastAmount,
       'lastAddAmount': lastAddAmount,
-      'updatedAt': updatedAt.toString(),
+      'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
     };
   }
 
@@ -85,7 +85,9 @@ class IngredientObject extends ModelObject<IngredientModel> {
       alertAmount: data['alertAmount'] as num?,
       lastAmount: data['lastAmount'] as num?,
       lastAddAmount: data['lastAddAmount'] as num?,
-      updatedAt: Util.parseDate(data['updatedTime'] as String?, true),
+      updatedAt: data['updatedTime'] == null
+          ? null
+          : Util.fromUTC(data['updatedTime'] as int),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:sprintf/sprintf.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
-  static final uuid = Uuid();
+  static const uuid = Uuid();
 
   static String uuidV4() {
     return uuid.v4();
@@ -15,7 +15,7 @@ class Util {
   }
 
   static DateTime fromUTC(int utc) {
-    return DateTime.fromMillisecondsSinceEpoch(utc * 1000, isUtc: true);
+    return DateTime.fromMillisecondsSinceEpoch(utc * 1000);
   }
 
   static DateTime getNow({int? hour}) {
@@ -25,14 +25,6 @@ class Util {
     }
 
     return now;
-  }
-
-  static DateTime? parseDate(String? stringValue, [bool returnNull = false]) {
-    try {
-      return DateTime.parse(stringValue!);
-    } catch (e) {
-      return returnNull ? null : DateTime.now();
-    }
   }
 
   static String? timeToDate(DateTime? time) {

@@ -5,14 +5,14 @@ final mockCatalogObject = CatalogObject.build({
   'id': 'catalog_1',
   'name': 'burger',
   'index': 1,
-  'createdAt': '2021-06-05 09:38:12.123',
+  'createdAt': 1623639573,
   'products': {
     'product_1': {
       'name': 'ham burger',
       'index': 1,
       'price': 30,
       'cost': 10,
-      'createdAt': '2021-06-05 09:38:12.123',
+      'createdAt': 1623639573,
       'ingredients': {
         'ingredient_1': {
           'amount': 2,
@@ -59,7 +59,7 @@ final mockIngredientObject1 = IngredientObject.build({
   'alertAmount': 0,
   'lastAmount': 100,
   'lastAddAmount': 100,
-  'updatedTime': '2021-06-05 09:48:55.123',
+  'updatedTime': 1623639573,
 });
 
 final mockIngredientObject2 = IngredientObject.build({
@@ -70,5 +70,5 @@ final mockIngredientObject2 = IngredientObject.build({
   'alertAmount': 0,
   'lastAmount': 30,
   'lastAddAmount': 15,
-  'updatedTime': '2021-06-05 09:47:55.123',
+  'updatedTime': 1623639573,
 });

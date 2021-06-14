@@ -9,11 +9,9 @@ void main() {
   final orders = OrderRepo();
   group('getter', () {
     test('#getCountBetween', () async {
-      final now = DateTime(2021, 10, 10, 1, 1, 1);
-      final nowUTC = now.millisecondsSinceEpoch ~/ 1000;
+      final nowUTC =
+          DateTime(2021, 10, 10, 1, 1, 1).millisecondsSinceEpoch ~/ 1000;
       final nextUTC = nowUTC + 100;
-      final next =
-          DateTime.fromMillisecondsSinceEpoch(nextUTC * 1000, isUtc: true);
       when(database.rawQuery(
         any,
         columns: anyNamed('columns'),
@@ -27,9 +25,15 @@ void main() {
             ],
           ));
 
-      final result = await orders.getCountBetween(now, now);
+      final result =
+          await orders.getCountBetween(DateTime.now(), DateTime.now());
 
-      expect(result, equals({now.toUtc(): 1, next: 2}));
+      expect(
+          result,
+          equals({
+            DateTime.fromMillisecondsSinceEpoch(nowUTC * 1000): 1,
+            DateTime.fromMillisecondsSinceEpoch(nextUTC * 1000): 2
+          }));
     });
 
     test('#getMetricBetween in empty result', () async {

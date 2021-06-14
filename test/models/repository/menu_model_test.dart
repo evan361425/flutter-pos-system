@@ -15,13 +15,21 @@ void main() {
           'id1': {
             'name': 'catalog1',
             'index': 1,
+            'createdAt': 1623639573,
             'products': {
-              'pid1': {'name': 'product1', 'index': 1, 'price': 1, 'cost': 2},
+              'pid1': {
+                'name': 'product1',
+                'index': 1,
+                'price': 1,
+                'cost': 2,
+                'createdAt': 1623639573
+              },
             },
           },
           'id2': {
             'name': 'catalog2',
             'index': 2,
+            'createdAt': 1623639573,
           },
         }));
     final menu = MenuModel();

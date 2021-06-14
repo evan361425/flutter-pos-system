@@ -25,7 +25,7 @@ class CatalogObject extends ModelObject<CatalogModel> {
     return {
       'index': index!,
       'name': name,
-      'createdAt': createdAt.toString(),
+      'createdAt': Util.toUTC(now: createdAt),
       'products': {for (var product in products) product.id: product.toMap()}
     };
   }
@@ -53,7 +53,7 @@ class CatalogObject extends ModelObject<CatalogModel> {
       id: data['id'] as String?,
       index: data['index'] as int?,
       name: data['name'] as String,
-      createdAt: Util.parseDate(data['createdAt'] as String?),
+      createdAt: Util.fromUTC(data['createdAt'] as int),
       products: products.entries
           // sembast can't delete map entry, filter null value
           .where((e) => e.value != null)
@@ -91,7 +91,7 @@ class ProductObject extends ModelObject<ProductModel> {
       'cost': cost!,
       'index': index!,
       'name': name!,
-      'createdAt': createdAt.toString(),
+      'createdAt': Util.toUTC(now: createdAt),
       'ingredients': {
         for (var ingredient in ingredients) ingredient.id: ingredient.toMap()
       }
@@ -127,7 +127,7 @@ class ProductObject extends ModelObject<ProductModel> {
       cost: data['cost'] as num?,
       index: data['index'] as int?,
       name: data['name'] as String,
-      createdAt: Util.parseDate(data['createdAt'] as String?),
+      createdAt: Util.fromUTC(data['createdAt'] as int),
       ingredients: ingredients.entries
           // sembast can't delete map entry, filter null value
           .where((e) => e.value != null)
