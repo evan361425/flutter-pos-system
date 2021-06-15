@@ -1,13 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _Names = <Caches, String>{
-  Caches.currency_code: 'currency_code',
-  Caches.dark_mode: 'is_dark_mode',
-  Caches.language_code: 'language_code',
-  Caches.search_ingredient: 'search_ingredient',
-  Caches.search_quantity: 'search_quantity',
-};
-
 class Cache {
   static Cache instance = Cache();
 
@@ -18,7 +10,7 @@ class Cache {
   }
 
   T? get<T>(Caches cache) {
-    final name = _Names[cache] ?? cache.toString();
+    final name = cache.toString();
 
     if (T == bool) {
       return service.getBool(name) as T?;
@@ -36,7 +28,7 @@ class Cache {
   }
 
   Future<bool> set<T>(Caches cache, T value) {
-    final name = _Names[cache] ?? cache.toString();
+    final name = cache.toString();
 
     if (T == bool) {
       return service.setBool(name, value as bool);

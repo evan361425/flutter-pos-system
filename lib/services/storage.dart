@@ -1,4 +1,3 @@
-import 'package:path/path.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
@@ -13,7 +12,7 @@ enum Stores {
 class Storage {
   static Storage instance = Storage();
 
-  late Database db;
+  late final Database db;
 
   bool _initialized = false;
 
@@ -25,9 +24,11 @@ class Storage {
     _initialized = true;
   }
 
-  StoreRef getStore(Stores storeId) {
-    return stringMapStoreFactory.store(storeId.toString());
-  }
+  /// Get string map Store
+  ///
+  /// variable to make it easy to test
+  static StoreRef getStore(Stores storeId) =>
+      stringMapStoreFactory.store(storeId.toString());
 
   Future<Map<String, Object>> get(Stores storeId) async {
     final list = await getStore(storeId).find(db);
@@ -36,42 +37,9 @@ class Storage {
   }
 
   /// update value
-  ///
-  /// ```dart
-  /// // original data of object where id is some-id
-  /// origin = {
-  ///   'a': 'b',
-  ///   'c': 'd'
-  /// };
-  /// data = {
-  ///   'some-id': {
-  ///     'a': 'e,
-  ///     'f': {
-  ///       'g': 'h'
-  ///     }
-  ///   },
-  ///   'some-id.f.g': 'i,
-  ///   'some-id.j': {
-  ///     'k': 'l'
-  ///   }
-  /// }
-  /// result = {
-  ///   'a': 'e',
-  ///   'c': 'd',
-  ///   'f': {
-  ///     'g': 'i'
-  ///   },
-  ///   'j': {
-  ///     'k': 'l'
-  ///   }
-  /// }
-  /// ```
   Future<void> set(Stores storeId, Map<String, Object?> data) async {
     final refactorized = <String, Map<String, Object?>?>{};
-
-    data.entries.forEach(
-      (item) => _SanitizedValues.parse(item).addTo(refactorized),
-    );
+    data.entries.forEach((item) => sanitize(item, refactorized));
 
     final store = getStore(storeId);
     return db.transaction(
@@ -90,6 +58,47 @@ class Storage {
     Map<String, Object?> data,
   ) {
     return getStore(storeId).record(recordId).put(db, data);
+  }
+
+  /// Parse first part of key as ID
+  ///
+  /// ```dart
+  /// result = <String, Map<String, Object?>?>{};
+  /// data = {
+  ///   'some-id.a': null,
+  ///   'some-id.b.c': {
+  ///     'a': 'b',
+  ///     'c': {
+  ///       'd': 'e'
+  ///     }
+  ///   },
+  ///   'some-id.d.e': 'f',
+  ///   'some-id.g': {
+  ///     'h': null
+  ///   }
+  /// };
+  /// data.entries.forEach((item) => storage.sanitize(item, result));
+  /// result == {
+  ///   'some-id': {
+  ///     'a': null,
+  ///     'b.c': {
+  ///       'a': 'b',
+  ///       'c': {
+  ///         'd': 'e'
+  ///       }
+  ///     },
+  ///     'd.e': 'f',
+  ///     'g': {
+  ///       'h': null
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  void sanitize(
+    MapEntry<String, Object?> item,
+    Map<String, Map<String, Object?>?> result,
+  ) {
+    _SanitizedValues.parse(item).addTo(result);
   }
 }
 
