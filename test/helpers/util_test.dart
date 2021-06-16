@@ -21,11 +21,11 @@ void main() {
   });
 
   test('#fromUTC', () {
-    final date = Util.fromUTC(1623639573);
+    final date = Util.fromUTC(1623639573).toUtc();
     expect(date.year, equals(2021));
     expect(date.month, equals(6));
     expect(date.day, equals(14));
-    expect(date.hour, equals(10));
+    expect(date.hour, equals(2));
     expect(date.minute, equals(59));
     expect(date.second, equals(33));
   });

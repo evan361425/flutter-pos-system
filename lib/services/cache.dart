@@ -7,6 +7,10 @@ class Cache {
 
   Future<void> initialize() async {
     service = await SharedPreferences.getInstance();
+    final version = service.getInt('version');
+    if (version == null) {
+      await service.setInt('version', 1);
+    }
   }
 
   T? get<T>(Caches cache) {

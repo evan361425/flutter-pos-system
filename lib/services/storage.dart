@@ -21,6 +21,7 @@ class Storage {
 
     final databasePath = await getDatabasesPath() + '/pos_system.sembast';
     db = await databaseFactoryIo.openDatabase(databasePath);
+
     _initialized = true;
   }
 
@@ -102,6 +103,67 @@ class Storage {
   }
 }
 
+class UpdatedData {
+  final data = <String, Map<String, Object>?>{};
+
+  void add(_SanitizedValue value) {
+    // null will delete the record
+    if (value.data == null) {
+      data[value.id] = null;
+      return;
+    }
+
+    // if already set to null, ignore all operation
+    if (data.containsKey(value.id) && data[value.id] == null) {
+      return;
+    }
+
+    // initialize
+    if (data[value.id] == null) {
+      data[value.id] = <String, Object>{};
+    }
+  }
+}
+
+class _SanitizedValue {
+  late final String id;
+  late final Map<String, Object>? data;
+
+  _SanitizedValue(String key, Object? value) {
+    final index = key.indexOf('.');
+    final keyIsID = index == -1;
+    id = keyIsID ? key : key.substring(0, index);
+
+    if (keyIsID) {
+      if (value != null) {
+        assert(value is Map, 'when updating root object, value must be map.');
+        data = value as Map<String, Object>;
+      }
+    } else {
+      assert(!(value is Map), 'not allow deep map, try using dot key.');
+      final entry = _parseDotKey(key.substring(index + 1), value);
+      data = {entry.key: entry.value};
+    }
+  }
+
+  MapEntry<String, Object> _parseDotKey(String key, Object? value) {
+    final data = <String, Object>{};
+    late Map<String, Object> last;
+    var current = data;
+
+    key.split('.').forEach((k) {
+      if (current[k] == null) {
+        current[k] = <String, Object>{};
+        last = current;
+        current = current[k] as Map<String, Object>;
+      }
+    });
+
+    last[key.substring(key.lastIndexOf('.') + 1)] = value ?? FieldValue.delete;
+    return data.entries.first;
+  }
+}
+
 class _SanitizedValues {
   final String id;
   final Map<String, Object?>? value;
@@ -140,8 +202,9 @@ class _SanitizedValues {
     );
 
     // set to map value
-    final value =
-        index == -1 ? item.value as Map<String, Object?> : {key: item.value};
+    final value = index == -1
+        ? item.value as Map<String, Object?>
+        : {key: item.value ?? FieldValue.delete};
 
     return _SanitizedValues(id: id, value: value);
   }
