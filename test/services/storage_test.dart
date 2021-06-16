@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:sembast/sembast.dart';
 
 void main() {
   late Storage storage;
@@ -34,8 +35,10 @@ void main() {
             result,
             equals({
               'some-id': {
-                'a': null,
-                'c': {'c': 'd'},
+                'a.b': 'a',
+                'a': FieldValue.delete,
+                'c': {'a': 'b', 'c': 'd'},
+                'c.a': FieldValue.delete
               }
             }));
       },
@@ -61,7 +64,7 @@ void main() {
           result,
           equals({
             'some-id': {
-              'a': null,
+              'a': FieldValue.delete,
               'b.c': {
                 'a': 'b',
                 'c': {'d': 'e'}
