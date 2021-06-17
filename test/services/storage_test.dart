@@ -7,69 +7,62 @@ void main() {
 
   group('#sanitize', () {
     test('sould seperate ID', () {
-      final result = <String, Map<String, Object?>?>{};
-
-      storage.sanitize(MapEntry('id.f.g', 'i'), result);
+      final result = storage.sanitize({'id.f.g': 'i'});
 
       expect(
-          result,
+          result.data,
           equals({
-            'id': {'f.g': 'i'}
+            'id': {
+              'f': {'g': 'i'}
+            }
           }));
     });
 
-    test(
-      'alway use null(delete) first',
-      () {
-        final result = <String, Map<String, Object?>?>{};
-        final data = {
-          'some-id.a.b': 'a',
-          'some-id.a': null,
-          'some-id.c': {'a': 'b', 'c': 'd'},
-          'some-id.c.a': null,
-        };
+    test('alway use null(delete) first', () {
+      final result = storage.sanitize({
+        'some-id.a.b': 'c',
+        'some-id.a': null,
+        'some-id.d': {
+          'e': {'a': 'b'},
+          'g': 'h'
+        },
+        'some-id.d.e': FieldValue.delete,
+      });
 
-        data.entries.forEach((item) => storage.sanitize(item, result));
-
-        expect(
-            result,
-            equals({
-              'some-id': {
-                'a.b': 'a',
-                'a': FieldValue.delete,
-                'c': {'a': 'b', 'c': 'd'},
-                'c.a': FieldValue.delete
-              }
-            }));
-      },
-      skip:
-          'should add this feature to avoid accedently making removment and update in same time',
-    );
+      expect(
+          result.data,
+          equals({
+            'some-id': {
+              'a': FieldValue.delete,
+              'd': {'e': FieldValue.delete, 'g': 'h'},
+            }
+          }));
+    });
 
     test('should sanitize multiple values', () {
-      final result = <String, Map<String, Object?>?>{};
-      final data = {
+      final result = storage.sanitize({
         'some-id.a': null,
         'some-id.b.c': {
           'a': 'b',
           'c': {'d': 'e'}
         },
+        'some-id.b.c.a': 'c',
         'some-id.d.e': 'f',
         'some-id.g': {'h': null}
-      };
-
-      data.entries.forEach((item) => storage.sanitize(item, result));
+      });
 
       expect(
-          result,
+          result.data,
           equals({
             'some-id': {
               'a': FieldValue.delete,
-              'b.c': {
-                'a': 'b',
-                'c': {'d': 'e'}
+              'b': {
+                'c': {
+                  'a': 'c',
+                  'c': {'d': 'e'}
+                }
               },
-              'd.e': 'f',
+              'd': {'e': 'f'},
               'g': {'h': null}
             }
           }));

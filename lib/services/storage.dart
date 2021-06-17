@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
@@ -31,7 +32,7 @@ class Storage {
   static StoreRef getStore(Stores storeId) =>
       stringMapStoreFactory.store(storeId.toString());
 
-  Future<Map<String, Object>> get(Stores storeId) async {
+  Future<Map<String, Object?>> get(Stores storeId) async {
     final list = await getStore(storeId).find(db);
 
     return {for (var item in list) item.key: item.value};
@@ -39,18 +40,15 @@ class Storage {
 
   /// update value
   Future<void> set(Stores storeId, Map<String, Object?> data) async {
-    final refactorized = <String, Map<String, Object?>?>{};
-    data.entries.forEach((item) => sanitize(item, refactorized));
-
+    final sanitizedData = sanitize(data);
     final store = getStore(storeId);
+
     return db.transaction(
-      (txn) => Future.wait([
-        for (var item in refactorized.entries)
-          item.value == null
-              ? store.record(item.key).delete(txn)
-              : store.record(item.key).update(txn, item.value!)
-      ]),
-    );
+        (txn) => Future.wait(sanitizedData.data.entries.map((entry) {
+              return entry.value == null
+                  ? store.record(entry.key).delete(txn)
+                  : store.record(entry.key).update(txn, entry.value);
+            })));
   }
 
   Future<void> add(
@@ -61,50 +59,16 @@ class Storage {
     return getStore(storeId).record(recordId).put(db, data);
   }
 
-  /// Parse first part of key as ID
-  ///
-  /// ```dart
-  /// result = <String, Map<String, Object?>?>{};
-  /// data = {
-  ///   'some-id.a': null,
-  ///   'some-id.b.c': {
-  ///     'a': 'b',
-  ///     'c': {
-  ///       'd': 'e'
-  ///     }
-  ///   },
-  ///   'some-id.d.e': 'f',
-  ///   'some-id.g': {
-  ///     'h': null
-  ///   }
-  /// };
-  /// data.entries.forEach((item) => storage.sanitize(item, result));
-  /// result == {
-  ///   'some-id': {
-  ///     'a': null,
-  ///     'b.c': {
-  ///       'a': 'b',
-  ///       'c': {
-  ///         'd': 'e'
-  ///       }
-  ///     },
-  ///     'd.e': 'f',
-  ///     'g': {
-  ///       'h': null
-  ///     }
-  ///   }
-  /// }
-  /// ```
-  void sanitize(
-    MapEntry<String, Object?> item,
-    Map<String, Map<String, Object?>?> result,
-  ) {
-    _SanitizedValues.parse(item).addTo(result);
+  _SanitizedData sanitize(Map<String, Object?> data) {
+    final sanitizedData = _SanitizedData();
+    data.forEach(
+        (key, value) => sanitizedData.add(_SanitizedValue(key, value)));
+    return sanitizedData;
   }
 }
 
-class UpdatedData {
-  final data = <String, Map<String, Object>?>{};
+class _SanitizedData {
+  final data = <String, Object?>{};
 
   void add(_SanitizedValue value) {
     // null will delete the record
@@ -120,27 +84,59 @@ class UpdatedData {
 
     // initialize
     if (data[value.id] == null) {
-      data[value.id] = <String, Object>{};
+      data[value.id] = value.data;
+      return;
     }
+
+    if (!(data[value.id] is Map)) {
+      return;
+    } else if (!(value.data is Map)) {
+      warn('Ignoring different type setting', 'storage.sanitize');
+      return;
+    }
+
+    // check overlap
+    updateOverlap(data[value.id] as Map, value.data as Map);
+  }
+
+  /// Update [origin] value from [source]
+  ///
+  /// if origin value is [FieldValue.delete] it will ignoring any action
+  void updateOverlap(Map origin, Map source) {
+    source.forEach((key, value) {
+      if (origin.containsKey(key)) {
+        final originValue = origin[key];
+
+        if (value is Map && originValue is Map) {
+          updateOverlap(originValue, value);
+        } else if (value != originValue) {
+          // update to new value only if origin is not trying to delete it
+          if (originValue != FieldValue.delete) {
+            origin[key] = value;
+          }
+        }
+      } else {
+        // insert new value
+        origin[key] = value;
+      }
+    });
   }
 }
 
 class _SanitizedValue {
   late final String id;
-  late final Map<String, Object>? data;
+  late final Object? data;
 
   _SanitizedValue(String key, Object? value) {
     final index = key.indexOf('.');
-    final keyIsID = index == -1;
-    id = keyIsID ? key : key.substring(0, index);
 
-    if (keyIsID) {
-      if (value != null) {
-        assert(value is Map, 'when updating root object, value must be map.');
-        data = value as Map<String, Object>;
-      }
+    // key without "." or postfix "."
+    if (index == -1 || key.length == index + 1) {
+      id = key.substring(0, index == -1 ? null : index);
+      data = value;
     } else {
-      assert(!(value is Map), 'not allow deep map, try using dot key.');
+      id = key.substring(0, index);
+
       final entry = _parseDotKey(key.substring(index + 1), value);
       data = {entry.key: entry.value};
     }
@@ -161,51 +157,5 @@ class _SanitizedValue {
 
     last[key.substring(key.lastIndexOf('.') + 1)] = value ?? FieldValue.delete;
     return data.entries.first;
-  }
-}
-
-class _SanitizedValues {
-  final String id;
-  final Map<String, Object?>? value;
-
-  const _SanitizedValues({required this.id, this.value});
-
-  void addTo(Map<String, Map<String, Object?>?> map) {
-    // use contains key, since value might be null
-    if (map.containsKey(id)) {
-      // null will delete the record
-      if (value == null) {
-        map[id] = null;
-      } else if (map[id] != null) {
-        map[id] = {...map[id]!, ...value!};
-      }
-    } else {
-      map[id] = value;
-    }
-  }
-
-  factory _SanitizedValues.parse(MapEntry<String, Object?> item) {
-    final index = item.key.indexOf('.');
-    final id = index == -1 ? item.key : item.key.substring(0, index);
-    final key = item.key.substring(index + 1);
-
-    // delete root record
-    if (item.value == null && index == -1) {
-      return _SanitizedValues(id: id);
-    }
-
-    // make sure value be map if updating root object
-    // index != -1: update subclass
-    assert(
-      index != -1 || item.value is Map,
-      'when updating root object, value must be map. example: {id: mapValue}',
-    );
-
-    // set to map value
-    final value = index == -1
-        ? item.value as Map<String, Object?>
-        : {key: item.value ?? FieldValue.delete};
-
-    return _SanitizedValues(id: id, value: value);
   }
 }
