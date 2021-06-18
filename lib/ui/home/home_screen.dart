@@ -9,39 +9,52 @@ class HomeScreen extends StatelessWidget {
 
   static final orderInfo = GlobalKey<OrderInfoState>();
 
-  @override
-  Widget build(BuildContext context) {
-    var icons = [
+  static const icons = {
+    '店家設定': [
       _LabeledIcon(
         icon: Icons.collections_sharp,
         label: '菜單',
         route: Routes.menu,
       ),
-      // _LabeledIcon(
-      //   icon: Icons.assignment_ind_sharp,
-      //   label: '客戶資訊',
-      //   route: Routes.customer,
-      // ),
+      _LabeledIcon(
+        icon: Icons.store_sharp,
+        label: '庫存',
+        route: Routes.stock,
+      ),
+      _LabeledIcon(
+        icon: Icons.assignment_ind_sharp,
+        label: '客戶資訊',
+        route: Routes.customer,
+      ),
       _LabeledIcon(
         icon: Icons.exposure_sharp,
         label: '份量',
         route: Routes.stockQuantity,
       ),
-      // _LabeledIcon(
-      //   icon: Icons.attach_money_sharp,
-      //   label: '收銀機',
-      //   route: Routes.cashier,
-      // ),
-      // _LabeledIcon(
-      //   icon: Icons.camera_roll_sharp,
-      //   label: '發票機',
-      //   route: Routes.invoicer,
-      // ),
-      // _LabeledIcon(
-      //   icon: Icons.print_sharp,
-      //   label: '出單機',
-      //   route: Routes.printer,
-      // ),
+      _LabeledIcon(
+        icon: Icons.attach_money_sharp,
+        label: '收銀機',
+        route: Routes.cashier,
+      ),
+    ],
+    '外部連結': [
+      _LabeledIcon(
+        icon: Icons.camera_roll_sharp,
+        label: '發票機',
+        route: Routes.invoicer,
+      ),
+      _LabeledIcon(
+        icon: Icons.print_sharp,
+        label: '出單機',
+        route: Routes.printer,
+      ),
+    ],
+    '其他': [
+      _LabeledIcon(
+        icon: Icons.equalizer_sharp,
+        label: '統計',
+        route: Routes.analysis,
+      ),
       _LabeledIcon(
         icon: Icons.import_export_sharp,
         label: '匯出匯入',
@@ -52,8 +65,11 @@ class HomeScreen extends StatelessWidget {
         label: '設定',
         route: Routes.setting,
       ),
-    ];
+    ],
+  };
 
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -62,15 +78,27 @@ class HomeScreen extends StatelessWidget {
             children: [
               OrderInfo(key: orderInfo),
               const SizedBox(height: kSpacing2),
-              Expanded(
-                child: GridView.extent(
-                  maxCrossAxisExtent: 150.0,
-                  children: icons,
-                ),
-              ),
+              Expanded(child: _iconsWithTitle(context)),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _iconsWithTitle(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return SingleChildScrollView(
+      child: Column(
+        children: icons.entries
+            .map<Widget>((entry) => Column(children: [
+                  Container(
+                      padding: EdgeInsets.only(bottom: kSpacing3),
+                      child: Text(entry.key, style: textTheme.headline3)),
+                  Wrap(children: entry.value)
+                ]))
+            .toList(),
       ),
     );
   }

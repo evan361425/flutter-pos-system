@@ -25,10 +25,8 @@ class AnalysisScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: _Body(key: state),
-      ),
+    return Scaffold(
+      body: _Body(key: state),
     );
   }
 }

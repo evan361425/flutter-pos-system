@@ -9,7 +9,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
-import 'package:possystem/ui/home_container.dart';
+import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/splash/logo_splash.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           darkTheme: AppThemes.darkTheme,
           themeMode: pref.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           // === home widget ===
-          home: prepared ? HomeContainer() : LogoSplash(),
+          home: prepared ? HomeScreen() : LogoSplash(),
         );
       },
     );

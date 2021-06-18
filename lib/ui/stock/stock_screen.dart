@@ -13,21 +13,19 @@ import 'package:provider/provider.dart';
 class StockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).pushNamed(
-            Routes.stockIngredient,
-          ),
-          tooltip: '新增成份',
-          child: Icon(KIcons.add),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamed(
+          Routes.stockIngredient,
         ),
-        body: FutureBuilder<bool>(
-          future: Future.delayed(Duration(milliseconds: 10), () => true),
-          builder: (context, snapshot) {
-            return snapshot.hasData ? _body(context) : CircularLoading();
-          },
-        ),
+        tooltip: '新增成份',
+        child: Icon(KIcons.add),
+      ),
+      body: FutureBuilder<bool>(
+        future: Future.delayed(Duration(milliseconds: 10), () => true),
+        builder: (context, snapshot) {
+          return snapshot.hasData ? _body(context) : CircularLoading();
+        },
       ),
     );
   }
