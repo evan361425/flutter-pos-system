@@ -24,7 +24,7 @@ class StockBatchRepo extends ChangeNotifier
   Stores get storageStore => Stores.stock_batch;
 
   @override
-  StockBatchModel buildModel(String id, Map<String, Object> value) {
+  StockBatchModel buildModel(String id, Map<String, Object?> value) {
     return StockBatchModel.fromObject(
       StockBatchObject.build({
         'id': id,

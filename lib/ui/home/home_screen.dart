@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/storage.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -91,13 +92,16 @@ class HomeScreen extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: icons.entries
-            .map<Widget>((entry) => Column(children: [
-                  Container(
-                      padding: EdgeInsets.only(bottom: kSpacing3),
-                      child: Text(entry.key, style: textTheme.headline3)),
-                  Wrap(children: entry.value)
-                ]))
+            .map<Widget>((entry) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(entry.key, style: textTheme.headline5),
+                    Wrap(spacing: 8.0, children: entry.value),
+                    Divider(),
+                  ],
+                ))
             .toList(),
       ),
     );

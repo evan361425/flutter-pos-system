@@ -98,6 +98,12 @@ class CartModel extends ChangeNotifier {
   }
 
   Future<void> paid(num? paid) async {
+    if (totalCount == 0) {
+      // TODO: delete order if in history mode
+      isHistoryMode ? leaveHistoryMode() : clear();
+      return;
+    }
+
     final price = totalPrice;
     paid ??= price;
     if (paid < price) throw 'too low';

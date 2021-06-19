@@ -5,12 +5,19 @@ class Cache {
 
   late final SharedPreferences service;
 
+  bool _initialized = false;
+
   Future<void> initialize() async {
+    if (_initialized) return;
+
     service = await SharedPreferences.getInstance();
+
     final version = service.getInt('version');
     if (version == null) {
       await service.setInt('version', 1);
     }
+
+    _initialized = true;
   }
 
   T? get<T>(Caches cache) {

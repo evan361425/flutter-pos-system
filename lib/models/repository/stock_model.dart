@@ -62,7 +62,7 @@ class StockModel extends ChangeNotifier
   }
 
   @override
-  IngredientModel buildModel(String id, Map<String, Object> value) {
+  IngredientModel buildModel(String id, Map<String, Object?> value) {
     return IngredientModel.fromObject(
       IngredientObject.build({
         'id': id,

@@ -138,6 +138,7 @@ class _QuantityModalState extends State<QuantityModal> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.attach_money_sharp),
         labelText: '額外成本',
+        helperText: '若份量減少了，成本可以為負數',
         filled: false,
       ),
       validator: Validator.isNumber('額外成本'),

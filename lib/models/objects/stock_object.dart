@@ -129,7 +129,7 @@ class QuantityObject extends ModelObject<QuantityModel> {
     return result;
   }
 
-  factory QuantityObject.build(Map<String, Object> data) {
+  factory QuantityObject.build(Map<String, Object?> data) {
     return QuantityObject(
       id: data['id'] as String,
       name: data['name'] as String,
@@ -176,7 +176,7 @@ class StockBatchObject extends ModelObject<StockBatchModel> {
     return result;
   }
 
-  factory StockBatchObject.build(Map<String, Object> data) {
+  factory StockBatchObject.build(Map<String, Object?> data) {
     final batchData = <String, num>{};
     final oriData = data['data'];
 

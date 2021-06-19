@@ -71,8 +71,6 @@ class _IngredientModalState extends State<IngredientModal> {
   void initState() {
     super.initState();
 
-    print(widget.product.toObject().toMap());
-
     if (!widget.isNew) {
       _amountController.text = widget.ingredient!.amount.toString();
       ingredientId = widget.ingredient!.id;
@@ -181,7 +179,6 @@ class _IngredientModalState extends State<IngredientModal> {
   }
 
   Future<void> _handleSubmit() async {
-    print('start validating product ingredient');
     if (!_validate()) return;
 
     await _updateIngredient();
@@ -198,7 +195,6 @@ class _IngredientModalState extends State<IngredientModal> {
 
   Future<void> _updateIngredient() {
     final object = _parseObject();
-    print('start ${widget.isNew ? 'adding' : 'updating'}: ${object.toMap()}');
 
     if (!widget.isNew) {
       return widget.ingredient!.update(object);

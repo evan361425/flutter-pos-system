@@ -68,7 +68,7 @@ class ProductModel extends NotifyModel<ProductObject>
       items.where((e) => e.isNotEmpty);
 
   @override
-  String get prefix => '${catalog.id}.products.$id';
+  String get prefix => '${catalog.prefix}.products.$id';
 
   @override
   Stores get storageStore => Stores.menu;

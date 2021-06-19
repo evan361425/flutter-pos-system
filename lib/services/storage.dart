@@ -21,6 +21,8 @@ class Storage {
     if (_initialized) return;
 
     final databasePath = await getDatabasesPath() + '/pos_system.sembast';
+
+    // await databaseFactoryIo.deleteDatabase(databasePath);
     db = await databaseFactoryIo.openDatabase(databasePath);
 
     _initialized = true;
@@ -39,7 +41,7 @@ class Storage {
   }
 
   /// update value
-  Future<void> set(Stores storeId, Map<String, Object?> data) async {
+  Future<void> set(Stores storeId, Map<String, Object?> data) {
     final sanitizedData = sanitize(data);
     final store = getStore(storeId);
 
@@ -88,6 +90,7 @@ class _SanitizedData {
       return;
     }
 
+    // only use first setting value
     if (!(data[value.id] is Map)) {
       return;
     } else if (!(value.data is Map)) {
@@ -96,7 +99,8 @@ class _SanitizedData {
     }
 
     // check overlap
-    updateOverlap(data[value.id] as Map, value.data as Map);
+    data[value.id] = {...data[value.id] as Map, ...value.data as Map};
+    ;
   }
 
   /// Update [origin] value from [source]
@@ -136,26 +140,7 @@ class _SanitizedValue {
       data = value;
     } else {
       id = key.substring(0, index);
-
-      final entry = _parseDotKey(key.substring(index + 1), value);
-      data = {entry.key: entry.value};
+      data = {key.substring(index + 1): value};
     }
-  }
-
-  MapEntry<String, Object> _parseDotKey(String key, Object? value) {
-    final data = <String, Object>{};
-    late Map<String, Object> last;
-    var current = data;
-
-    key.split('.').forEach((k) {
-      if (current[k] == null) {
-        current[k] = <String, Object>{};
-        last = current;
-        current = current[k] as Map<String, Object>;
-      }
-    });
-
-    last[key.substring(key.lastIndexOf('.') + 1)] = value ?? FieldValue.delete;
-    return data.entries.first;
   }
 }

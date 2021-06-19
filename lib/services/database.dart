@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/migrations/v1.dart' as migration_v1;
 import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
@@ -67,7 +68,7 @@ class Database {
       databasePath,
       version: 1,
       onCreate: (db, version) {
-        print('start create');
+        info(version.toString(), 'database.create');
         return Future.wait(migration_v1.up.map((sql) => db.execute(sql)));
       },
     );

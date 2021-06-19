@@ -25,7 +25,7 @@ class QuantityRepo extends ChangeNotifier
   Stores get storageStore => Stores.quantities;
 
   @override
-  QuantityModel buildModel(String id, Map<String, Object> value) {
+  QuantityModel buildModel(String id, Map<String, Object?> value) {
     return QuantityModel.fromObject(
       QuantityObject.build({
         'id': id,

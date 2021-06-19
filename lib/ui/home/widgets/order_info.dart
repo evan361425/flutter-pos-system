@@ -60,11 +60,13 @@ class OrderInfoState extends State<OrderInfo> {
     );
   }
 
-  void _queryValue() {
-    OrderRepo.instance.getMetricBetween().then((result) => setState(() {
-          revenue = CurrencyProvider.instance.numToString(result['revenue']!);
-          count = result['count'] as int?;
-        }));
+  void _queryValue() async {
+    final result = await OrderRepo.instance.getMetricBetween();
+
+    setState(() {
+      revenue = CurrencyProvider.instance.numToString(result['revenue']!);
+      count = result['count'] as int?;
+    });
   }
 
   Expanded _column(String title, String? value, TextStyle textStyle) {

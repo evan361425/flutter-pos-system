@@ -129,7 +129,6 @@ class OrderProductModel {
     OrderProductListenerTypes type,
   ) {
     listeners[type]!.add(listener);
-    print('listener $type added ${listeners[type]!.length}');
   }
 
   static void notifyListener(OrderProductListenerTypes type) {
@@ -141,6 +140,5 @@ class OrderProductModel {
     OrderProductListenerTypes type,
   ) {
     listeners[type]!.remove(listener);
-    print('listener $type removed ${listeners[type]!.length}');
   }
 }

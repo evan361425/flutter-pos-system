@@ -22,7 +22,7 @@ Future<void> _log(
   detail['message'] = message;
 
   await MyApp.analytics.logEvent(
-    name: code,
+    name: code.split('.').join('_'),
     parameters: detail,
   );
 }

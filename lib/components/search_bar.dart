@@ -59,7 +59,7 @@ class SearchBarState extends State<SearchBar> {
           widget.onChanged(text);
         },
         textCapitalization: widget.textCapitalization,
-        textInputAction: TextInputAction.search,
+        textInputAction: TextInputAction.done,
         onSubmitted: _onChanged,
         decoration: InputDecoration(
           isDense: true,

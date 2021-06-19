@@ -6,7 +6,7 @@ import 'package:possystem/services/storage.dart';
 mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
   bool isReady = false;
 
-  T buildModel(String id, Map<String, Object> value);
+  T buildModel(String id, Map<String, Object?> value);
 
   Future<void> initialize() {
     return Storage.instance.get(storageStore).then((data) {
@@ -15,9 +15,10 @@ mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
 
       data.forEach((id, value) {
         try {
-          addItem(buildModel(id, value as Map<String, Object>));
-        } catch (e) {
+          addItem(buildModel(id, value as Map<String, Object?>));
+        } catch (e, stack) {
           error(e.toString(), '$itemCode.parse.error');
+          print(stack);
         }
       });
 
@@ -43,7 +44,7 @@ mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
   /// Get highest index of products plus 1
   /// 1-index
   int get newIndex =>
-      items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
+      isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
   Future<void> reorderItems(List<T> items) async {
     final updateData = <String, Object>{};

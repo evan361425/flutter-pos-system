@@ -43,18 +43,15 @@ class CatalogModel extends NotifyModel<CatalogObject>
       ).._preparePorducts();
 
   @override
-  String get itemCode => 'menu.product';
-
-  @override
   String get code => 'menu.catalog';
 
   String? get createdDate => Util.timeToDate(createdAt);
 
   @override
-  Stores get storageStore => Stores.menu;
+  String get itemCode => 'menu.product';
 
   @override
-  void removeFromRepo() => MenuModel.instance.removeItem(id);
+  Stores get storageStore => Stores.menu;
 
   @override
   Future<void> addItemToStorage(ProductModel child) {
@@ -62,6 +59,9 @@ class CatalogModel extends NotifyModel<CatalogObject>
       child.prefix: child.toObject().toMap(),
     });
   }
+
+  @override
+  void removeFromRepo() => MenuModel.instance.removeItem(id);
 
   @override
   CatalogObject toObject() => CatalogObject(

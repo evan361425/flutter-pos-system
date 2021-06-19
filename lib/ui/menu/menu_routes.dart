@@ -56,7 +56,6 @@ class MenuRoutes {
         return (_) =>
             QuantitySearchScaffold(text: settings.arguments as String?);
       default:
-        print(settings);
         return (_) => NotFoundSplash();
     }
   }

@@ -8,7 +8,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/ingredient_selection.dart';
@@ -54,8 +53,7 @@ class OrderScreen extends StatelessWidget {
     final catalogs = MenuModel.instance.itemList;
     return WillPopScope(
       onWillPop: () async {
-        HomeScreen.orderInfo.currentState?.reset();
-        AnalysisScreen.state.currentState?.reset();
+        beforeLeave();
         return true;
       },
       child: Column(
@@ -99,5 +97,9 @@ class OrderScreen extends StatelessWidget {
       context: context,
       builder: (_) => CalculatorDialog(),
     );
+  }
+
+  static void beforeLeave() {
+    HomeScreen.orderInfo.currentState?.reset();
   }
 }

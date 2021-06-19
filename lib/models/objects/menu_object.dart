@@ -50,8 +50,8 @@ class CatalogObject extends ModelObject<CatalogModel> {
         (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return CatalogObject(
-      id: data['id'] as String?,
-      index: data['index'] as int?,
+      id: data['id'] as String,
+      index: data['index'] as int,
       name: data['name'] as String,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       products: products.entries
@@ -122,10 +122,10 @@ class ProductObject extends ModelObject<ProductModel> {
         (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductObject(
-      id: data['id'] as String?,
-      price: data['price'] as num?,
-      cost: data['cost'] as num?,
-      index: data['index'] as int?,
+      id: data['id'] as String,
+      price: data['price'] as num,
+      cost: data['cost'] as num,
+      index: data['index'] as int,
       name: data['name'] as String,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       ingredients: ingredients.entries
@@ -183,8 +183,8 @@ class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
         (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductIngredientObject(
-      id: data['id'] as String?,
-      amount: data['amount'] as num?,
+      id: data['id'] as String,
+      amount: data['amount'] as num,
       quantities: quantities.entries
           // sembast can't delete map entry, filter null value
           .where((e) => e.value != null)
@@ -245,7 +245,7 @@ class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
 
   factory ProductQuantityObject.build(Map<String, Object?> data) {
     return ProductQuantityObject(
-      id: data['id'] as String?,
+      id: data['id'] as String,
       amount: data['amount'] as num,
       additionalCost: data['additionalCost'] as num,
       additionalPrice: data['additionalPrice'] as num,

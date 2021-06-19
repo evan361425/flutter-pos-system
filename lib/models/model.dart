@@ -56,8 +56,11 @@ mixin SearchableModel<T extends ModelObject> on NotifyModel<T> {
 
   /// get similarity between [name] and [pattern]
   int getSimilarity(String pattern) {
+    final name = this.name.toLowerCase();
+    pattern = pattern.toLowerCase();
+
     final found = name.split(' ').where((e) => e.startsWith(pattern)).length;
-    var score = found == 0
+    final score = found == 0
         ? name.contains(pattern)
             ? 1
             : 0

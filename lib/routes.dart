@@ -79,12 +79,12 @@ class Routes {
     final menu = context.watch<MenuModel>();
     if (menu.stockMode) return true;
 
-    print('setting up stock mode');
     final stock = context.watch<StockModel>();
     final quantities = context.watch<QuantityRepo>();
     if (!menu.isReady || !stock.isReady || !quantities.isReady) {
       return false;
     }
+    print('setting up stock mode');
 
     menu.setUpStock(stock, quantities);
     return true;

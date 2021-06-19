@@ -35,7 +35,7 @@ class MenuModel extends ChangeNotifier
   Stores get storageStore => Stores.menu;
 
   @override
-  CatalogModel buildModel(String id, Map<String, Object> value) {
+  CatalogModel buildModel(String id, Map<String, Object?> value) {
     return CatalogModel.fromObject(
       CatalogObject.build({
         'id': id,

@@ -47,13 +47,11 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         try {
           await CartModel.instance.paid(num.tryParse(paid));
           Navigator.of(context).pop();
-        } catch (e, stack) {
+        } catch (e) {
           isUpdating = false;
           if (e == 'too low') {
             setState(() => errorMessage = '糟糕，付額小於總價唷');
           } else {
-            print(e);
-            print(stack);
             setState(() => errorMessage = e.toString());
           }
         }
