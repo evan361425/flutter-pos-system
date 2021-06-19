@@ -16,9 +16,9 @@ mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
       data.forEach((id, value) {
         try {
           addItem(buildModel(id, value as Map<String, Object?>));
-        } catch (e, stack) {
+        } catch (e) {
           error(e.toString(), '$itemCode.parse.error');
-          print(stack);
+          // print(stack);
         }
       });
 

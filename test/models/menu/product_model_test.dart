@@ -192,6 +192,7 @@ void main() {
 
     setUp(() {
       catalog = MockCatalogModel();
+      when(catalog.prefix).thenReturn('');
       when(catalog.name).thenReturn('');
       when(catalog.index).thenReturn(1);
       when(catalog.id).thenReturn('c_id');

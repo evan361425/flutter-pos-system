@@ -140,7 +140,7 @@ class _SanitizedValue {
       data = value;
     } else {
       id = key.substring(0, index);
-      data = {key.substring(index + 1): value};
+      data = {key.substring(index + 1): value ?? FieldValue.delete};
     }
   }
 }

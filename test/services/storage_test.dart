@@ -12,29 +12,22 @@ void main() {
       expect(
           result.data,
           equals({
-            'id': {
-              'f': {'g': 'i'}
-            }
+            'id': {'f.g': 'i'}
           }));
     });
 
-    test('alway use null(delete) first', () {
+    test('alway get field delete in null', () {
       final result = storage.sanitize({
         'some-id.a.b': 'c',
         'some-id.a': null,
-        'some-id.d': {
-          'e': {'a': 'b'},
-          'g': 'h'
-        },
-        'some-id.d.e': FieldValue.delete,
       });
 
       expect(
           result.data,
           equals({
             'some-id': {
+              'a.b': 'c',
               'a': FieldValue.delete,
-              'd': {'e': FieldValue.delete, 'g': 'h'},
             }
           }));
     });
@@ -42,12 +35,7 @@ void main() {
     test('should sanitize multiple values', () {
       final result = storage.sanitize({
         'some-id.a': null,
-        'some-id.b.c': {
-          'a': 'b',
-          'c': {'d': 'e'}
-        },
         'some-id.b.c.a': 'c',
-        'some-id.d.e': 'f',
         'some-id.g': {'h': null}
       });
 
@@ -56,13 +44,7 @@ void main() {
           equals({
             'some-id': {
               'a': FieldValue.delete,
-              'b': {
-                'c': {
-                  'a': 'c',
-                  'c': {'d': 'e'}
-                }
-              },
-              'd': {'e': 'f'},
+              'b.c.a': 'c',
               'g': {'h': null}
             }
           }));

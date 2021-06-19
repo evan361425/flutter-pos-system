@@ -167,13 +167,13 @@ void main() {
 
   group('#paid', () {
     test('should throw error if paid is not enough', () async {
-      createProducts(['id_1', 'id_2'], price: 2);
+      createProducts(['id_1', 'id_2'], price: 2, count: 2);
       expect(() => cart.paid(3), throwsA(equals('too low')));
     });
 
     test('should add order successfully', () async {
       LOG_LEVEL = 2;
-      createProducts(['id_1', 'id_2'], price: 2).forEach((e) {
+      createProducts(['id_1', 'id_2'], price: 2, count: 2).forEach((e) {
         when(e.toObject()).thenReturn(MockOrderProductObject());
       });
 
@@ -187,7 +187,7 @@ void main() {
     test('should add order in history mode', () async {
       LOG_LEVEL = 2;
       cart.isHistoryMode = true;
-      createProducts(['id_1', 'id_2'], price: 2).forEach((e) {
+      createProducts(['id_1', 'id_2'], price: 2, count: 2).forEach((e) {
         when(e.toObject()).thenReturn(MockOrderProductObject());
       });
       final object = MockOrderObject();
