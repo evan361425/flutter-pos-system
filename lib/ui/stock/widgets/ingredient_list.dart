@@ -1,30 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/components/icon_filled_button.dart';
 import 'package:possystem/components/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
 
 class IngredientList extends StatelessWidget {
-  const IngredientList({Key? key, required this.ingredients}) : super(key: key);
-
   final List<IngredientModel> ingredients;
+
+  const IngredientList({Key? key, required this.ingredients}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<IngredientModel>(
       items: ingredients,
-      onDelete: _onDelete,
-      onTap: _onTap,
-      warningContext: _warningContextBuild,
+      handleDelete: _handleDelete,
+      handleTap: _handleTap,
+      warningContextBuilder: _warningContextBuilder,
       tileBuilder: _tileBuilder,
     );
+  }
+
+  Future<void> _handleDelete(BuildContext context, IngredientModel ingredient) {
+    return MenuModel.instance.removeIngredients(ingredient.id);
+  }
+
+  void _handleTap(BuildContext context, IngredientModel ingredient) {
+    Navigator.of(context).pushNamed(
+      Routes.stockIngredient,
+      arguments: ingredient,
+    );
+  }
+
+  Future<num?> _showTextDialog(
+    BuildContext context, {
+    String? defaultValue,
+    required String title,
+  }) async {
+    final controller = TextEditingController(text: defaultValue);
+    final formKey = GlobalKey<FormState>();
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        final action = (String value) {
+          if (formKey.currentState!.validate()) {
+            Navigator.of(context).pop<String>(value);
+          }
+        };
+
+        return AlertDialog(
+          title: Text(title),
+          content: Form(
+            key: formKey,
+            child: TextFormField(
+              controller: controller,
+              autofocus: true,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.number,
+              validator: Validator.positiveNumber(''),
+              onFieldSubmitted: action,
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () => action(controller.text),
+              child: Text('儲存'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result == null ? null : num.tryParse(result);
   }
 
   Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
@@ -91,15 +145,7 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Future<void> _onDelete(
-    BuildContext context,
-    IngredientModel ingredient,
-  ) async {
-    await ingredient.remove();
-    return MenuModel.instance.removeIngredients(ingredient.id);
-  }
-
-  Widget _warningContextBuild(
+  Widget _warningContextBuilder(
       BuildContext context, IngredientModel ingredient) {
     final count = MenuModel.instance.getIngredients(ingredient.id).length;
     final countText = count == 0
@@ -124,56 +170,6 @@ class IngredientList extends StatelessWidget {
         ],
         style: Theme.of(context).textTheme.bodyText1,
       ),
-    );
-  }
-
-  Future<num?> _showTextDialog(
-    BuildContext context, {
-    String? defaultValue,
-    required String title,
-  }) async {
-    final controller = TextEditingController(text: defaultValue);
-    final formKey = GlobalKey<FormState>();
-
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        final action = (String value) {
-          if (formKey.currentState!.validate()) {
-            Navigator.of(context).pop<String>(value);
-          }
-        };
-
-        return AlertDialog(
-          title: Text(title),
-          content: Form(
-            key: formKey,
-            child: TextFormField(
-              controller: controller,
-              autofocus: true,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.number,
-              validator: Validator.positiveNumber(''),
-              onFieldSubmitted: action,
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () => action(controller.text),
-              child: Text('儲存'),
-            ),
-          ],
-        );
-      },
-    );
-
-    return result == null ? null : num.tryParse(result);
-  }
-
-  void _onTap(BuildContext context, IngredientModel ingredient) {
-    Navigator.of(context).pushNamed(
-      Routes.stockIngredient,
-      arguments: ingredient,
     );
   }
 }

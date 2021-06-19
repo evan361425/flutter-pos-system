@@ -1,43 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 
 class ProductList extends StatelessWidget {
+  final List<ProductModel> products;
+
   const ProductList({
     required this.products,
   });
-
-  final List<ProductModel> products;
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<ProductModel>(
       items: products,
-      onDelete: _onDelete,
+      actionBuilder: _actionBuilder,
       tileBuilder: _tileBuilder,
-      warningContext: _warningContextBuild,
-      onTap: _onTap,
+      warningContextBuilder: _warningContextBuilder,
+      handleTap: _handleTap,
     );
   }
 
-  Future<void> _onDelete(BuildContext context, ProductModel product) {
-    return product.remove();
+  Iterable<Widget> _actionBuilder(BuildContext context, ProductModel product) {
+    return [
+      ListTile(
+        title: Text('變更名稱'),
+        leading: Icon(Icons.text_fields_sharp),
+        onTap: () => Navigator.of(context).pushReplacementNamed(
+          MenuRoutes.productModal,
+          arguments: product,
+        ),
+      ),
+      ListTile(
+        title: Text('排序產品'),
+        leading: Icon(Icons.reorder_sharp),
+        onTap: () => Navigator.of(context).pushReplacementNamed(
+            MenuRoutes.catalogReorder,
+            arguments: product.catalog),
+      ),
+    ];
   }
 
-  Widget _warningContextBuild(BuildContext context, ProductModel product) {
-    return RichText(
-      text: TextSpan(
-        text: '確定要刪除 ',
-        children: [
-          TextSpan(text: product.name, style: TextStyle(color: kNegativeColor)),
-          TextSpan(text: ' 嗎？\n\n'),
-          TextSpan(text: '此動作將無法復原！'),
-        ],
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
+  void _handleTap(BuildContext context, ProductModel product) {
+    Navigator.of(context).pushNamed(
+      MenuRoutes.product,
+      arguments: product,
     );
   }
 
@@ -55,10 +64,17 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  void _onTap(BuildContext context, ProductModel product) {
-    Navigator.of(context).pushNamed(
-      MenuRoutes.product,
-      arguments: product,
+  Widget _warningContextBuilder(BuildContext context, ProductModel product) {
+    return RichText(
+      text: TextSpan(
+        text: '確定要刪除 ',
+        children: [
+          TextSpan(text: product.name, style: TextStyle(color: kNegativeColor)),
+          TextSpan(text: ' 嗎？\n\n'),
+          TextSpan(text: '此動作將無法復原！'),
+        ],
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
     );
   }
 }

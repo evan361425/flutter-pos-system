@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/storage.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,11 +21,11 @@ class HomeScreen extends StatelessWidget {
         label: '庫存',
         route: Routes.stock,
       ),
-      _LabeledIcon(
-        icon: Icons.assignment_ind_sharp,
-        label: '客戶資訊',
-        route: Routes.customer,
-      ),
+      // _LabeledIcon(
+      //   icon: Icons.assignment_ind_sharp,
+      //   label: '客戶資訊',
+      //   route: Routes.customer,
+      // ),
       _LabeledIcon(
         icon: Icons.exposure_sharp,
         label: '份量',
@@ -38,29 +37,29 @@ class HomeScreen extends StatelessWidget {
         route: Routes.cashier,
       ),
     ],
-    '外部連結': [
-      _LabeledIcon(
-        icon: Icons.camera_roll_sharp,
-        label: '發票機',
-        route: Routes.invoicer,
-      ),
-      _LabeledIcon(
-        icon: Icons.print_sharp,
-        label: '出單機',
-        route: Routes.printer,
-      ),
-    ],
+    // '外部連結': [
+    //   _LabeledIcon(
+    //     icon: Icons.camera_roll_sharp,
+    //     label: '發票機',
+    //     route: Routes.invoicer,
+    //   ),
+    //   _LabeledIcon(
+    //     icon: Icons.print_sharp,
+    //     label: '出單機',
+    //     route: Routes.printer,
+    //   ),
+    // ],
     '其他': [
       _LabeledIcon(
         icon: Icons.equalizer_sharp,
         label: '統計',
         route: Routes.analysis,
       ),
-      _LabeledIcon(
-        icon: Icons.import_export_sharp,
-        label: '匯出匯入',
-        route: Routes.transfer,
-      ),
+      // _LabeledIcon(
+      //   icon: Icons.import_export_sharp,
+      //   label: '匯出匯入',
+      //   route: Routes.transfer,
+      // ),
       _LabeledIcon(
         icon: Icons.settings_sharp,
         label: '設定',

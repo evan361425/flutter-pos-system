@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 import 'package:provider/provider.dart';
 
 import 'models/menu/catalog_model.dart';
@@ -39,6 +40,7 @@ class Routes {
 
   // sub-route
   static const String menuCatalog = 'menu/catalog';
+  static const String menuReorder = 'menu/reorder';
   static const String stockBatchModal = 'stock/batch/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
@@ -63,6 +65,8 @@ class Routes {
     // menu
     menuCatalog: (context) =>
         CatalogNavigator(catalog: arg<CatalogModel>(context)),
+    menuReorder: (context) =>
+        CatalogOrderableList(items: MenuModel.instance.itemList),
     // stock
     stockIngredient: (context) =>
         IngredientScreen(ingredient: arg<IngredientModel?>(context)),

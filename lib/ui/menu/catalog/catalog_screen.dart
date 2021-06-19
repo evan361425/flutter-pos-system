@@ -58,11 +58,9 @@ class CatalogScreen extends StatelessWidget {
       ListTile(
         title: Text('排序產品'),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => ProductOrderableList(items: catalog.itemList),
-          ),
-        ),
+        onTap: () => Navigator.of(context).pushReplacementNamed(
+            MenuRoutes.catalogReorder,
+            arguments: catalog),
       ),
     ];
   }

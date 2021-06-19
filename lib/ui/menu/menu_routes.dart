@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'catalog/catalog_screen.dart';
 import 'catalog/widgets/product_modal.dart';
+import 'catalog/widgets/product_orderable_list.dart';
 import 'product/product_screen.dart';
 import 'product/widgets/ingredient_modal.dart';
 import 'product/widgets/ingredient_search_scaffold.dart';
@@ -16,6 +17,7 @@ import 'widgets/catalog_modal.dart';
 class MenuRoutes {
   static const String catalog = 'catalog/screen';
   static const String catalogModal = 'catalog/modal';
+  static const String catalogReorder = 'catalog/reorder';
   static const String product = 'product';
   static const String productModal = 'product/modal';
   static const String productIngredient = 'product/ingredient';
@@ -29,6 +31,9 @@ class MenuRoutes {
       case catalogModal:
         return (_) =>
             CatalogModal(catalog: settings.arguments as CatalogModel?);
+      case catalogReorder:
+        return (_) => ProductOrderableList(
+            items: (settings.arguments as CatalogModel).itemList);
       case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
               value: settings.arguments as ProductModel,

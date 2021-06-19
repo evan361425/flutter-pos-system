@@ -6,24 +6,30 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 
 class QuantityList extends StatelessWidget {
-  const QuantityList({Key? key, this.quantities}) : super(key: key);
-
   final List<QuantityModel>? quantities;
+
+  const QuantityList({Key? key, this.quantities}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<QuantityModel>(
       items: quantities,
-      onDelete: _onDelete,
+      handleDelete: _handleDelete,
+      handleTap: _handleTap,
       tileBuilder: _tileBuilder,
-      warningContext: _warningContext,
-      onTap: _onTap,
+      warningContextBuilder: _warningContextBuilder,
     );
   }
 
-  Future<void> _onDelete(BuildContext context, QuantityModel quantity) async {
-    await quantity.remove();
+  Future<void> _handleDelete(BuildContext context, QuantityModel quantity) {
     return MenuModel.instance.removeQuantities(quantity.id);
+  }
+
+  void _handleTap(BuildContext context, QuantityModel quantity) {
+    Navigator.of(context).pushNamed(
+      Routes.stockQuantityModal,
+      arguments: quantity,
+    );
   }
 
   Widget _tileBuilder(BuildContext context, QuantityModel quantity) {
@@ -33,7 +39,7 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Widget _warningContext(BuildContext context, QuantityModel quantity) {
+  Widget _warningContextBuilder(BuildContext context, QuantityModel quantity) {
     final count = MenuModel.instance.getQuantities(quantity.id).length;
     final countText = count == 0
         ? TextSpan()
@@ -57,13 +63,6 @@ class QuantityList extends StatelessWidget {
         ],
         style: Theme.of(context).textTheme.bodyText1,
       ),
-    );
-  }
-
-  void _onTap(BuildContext context, QuantityModel quantity) {
-    Navigator.of(context).pushNamed(
-      Routes.stockQuantityModal,
-      arguments: quantity,
     );
   }
 }

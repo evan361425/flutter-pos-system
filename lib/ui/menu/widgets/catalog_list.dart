@@ -1,31 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 
 class CatalogList extends StatelessWidget {
-  const CatalogList(this.catalogs);
-
   final List<CatalogModel> catalogs;
+
+  const CatalogList(this.catalogs);
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<CatalogModel>(
       items: catalogs,
-      onDelete: _onDelete,
       tileBuilder: _tileBuilder,
-      warningContext: _warningContextBuild,
-      onTap: _onTap,
+      warningContextBuilder: _warningContextBuilder,
+      handleTap: _handleTap,
+      actionBuilder: _actionBuilder,
     );
   }
 
-  Future<void> _onDelete(BuildContext context, CatalogModel catalog) {
-    return catalog.remove();
+  Iterable<Widget> _actionBuilder(BuildContext context, _) {
+    return [
+      ListTile(
+        title: Text('排序產品種類'),
+        leading: Icon(Icons.reorder_sharp),
+        onTap: () =>
+            Navigator.of(context).pushReplacementNamed(Routes.menuReorder),
+      ),
+    ];
   }
 
-  Widget _warningContextBuild(BuildContext context, CatalogModel catalog) {
+  void _handleTap(BuildContext context, CatalogModel catalog) {
+    Navigator.of(context).pushNamed(
+      Routes.menuCatalog,
+      arguments: catalog,
+    );
+  }
+
+  Widget _tileBuilder(BuildContext context, CatalogModel catalog) {
+    return ListTile(
+      leading: CircleAvatar(
+        child: Text(catalog.name.characters.first.toUpperCase()),
+      ),
+      title: Text(catalog.name, style: Theme.of(context).textTheme.headline6),
+      subtitle: MetaBlock.withString(
+        context,
+        catalog.itemList.map((product) => product.name),
+        '尚未設定產品',
+      ),
+    );
+  }
+
+  Widget _warningContextBuilder(BuildContext context, CatalogModel catalog) {
     final productCount = catalog.isEmpty
         ? TextSpan()
         : TextSpan(children: [
@@ -45,27 +75,6 @@ class CatalogList extends StatelessWidget {
         ],
         style: Theme.of(context).textTheme.bodyText1,
       ),
-    );
-  }
-
-  Widget _tileBuilder(BuildContext context, CatalogModel catalog) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(catalog.name.characters.first.toUpperCase()),
-      ),
-      title: Text(catalog.name, style: Theme.of(context).textTheme.headline6),
-      subtitle: MetaBlock.withString(
-        context,
-        catalog.itemList.map((product) => product.name),
-        '尚未設定產品',
-      ),
-    );
-  }
-
-  void _onTap(BuildContext context, CatalogModel catalog) {
-    Navigator.of(context).pushNamed(
-      Routes.menuCatalog,
-      arguments: catalog,
     );
   }
 }

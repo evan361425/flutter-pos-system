@@ -73,9 +73,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   void initState() {
     super.initState();
 
-    widget
-        .searchCountInMonth(_selectedDay)
-        .then((counts) => setState(() => _loadedCounts.addAll(counts)));
+    widget.searchCountInMonth(_selectedDay).then((counts) {
+      _loadedMonths.add(_hashMonth(_selectedDay));
+      setState(() => _loadedCounts.addAll(counts));
+    });
   }
 
   Widget? _badgeBuilder(BuildContext context, DateTime day, List<Null> value) {
@@ -99,6 +100,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   void _handleDaySelected(DateTime day) {
     setState(() {
       _selectedDay = day;
+      _focusedDay = day;
       _calendarFormat = CalendarFormat.week;
 
       widget.handleDaySelected(day);

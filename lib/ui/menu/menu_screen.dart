@@ -7,9 +7,9 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
-import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -51,14 +51,8 @@ class MenuScreen extends StatelessWidget {
       ListTile(
         title: Text('排序產品種類'),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              final items = MenuModel.instance.itemList;
-              return CatalogOrderableList(items: items);
-            },
-          ),
-        ),
+        onTap: () =>
+            Navigator.of(context).pushReplacementNamed(Routes.menuReorder),
       ),
     ];
   }

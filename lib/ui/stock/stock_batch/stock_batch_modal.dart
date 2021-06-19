@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -28,6 +29,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -47,7 +49,11 @@ class _StockBatchModalState extends State<StockBatchModal> {
           children: [
             Padding(
               padding: const EdgeInsets.all(kSpacing3),
-              child: _fieldName(),
+              child: _fieldName(textTheme),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: kSpacing1),
+              child: Text('點選以設定不同成分欲設定的量', style: textTheme.muted),
             ),
             Expanded(
               child: Padding(
@@ -95,7 +101,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
     );
   }
 
-  Widget _fieldName() {
+  Widget _fieldName(TextTheme textTheme) {
     return TextFormField(
       controller: _nameController,
       textInputAction: TextInputAction.done,
@@ -105,7 +111,7 @@ class _StockBatchModalState extends State<StockBatchModal> {
         errorText: errorMessage,
         filled: false,
       ),
-      style: Theme.of(context).textTheme.headline6,
+      style: textTheme.headline6,
       autofocus: widget.batch == null,
       maxLength: 30,
       validator: Validator.textLimit('批量名稱', 30),
