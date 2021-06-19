@@ -24,15 +24,12 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
   @override
   Widget build(BuildContext context) {
+    final length = ingredients.length;
     return Container(
       child: ExpansionPanelList(
-        children: ingredients
-            .asMap()
-            .map((index, ingredient) {
-              return MapEntry(index, _panelBuilder(index, ingredient));
-            })
-            .values
-            .toList(),
+        children: [
+          for (var i = 0; i < length; i++) _panelBuilder(i, ingredients[i])
+        ],
         expansionCallback: (int index, bool status) {
           setState(() {
             showIngredient[index] = !showIngredient[index];

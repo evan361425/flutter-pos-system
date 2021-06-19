@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
+import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -30,41 +31,70 @@ class IngredientModal extends StatefulWidget {
   _IngredientModalState createState() => _IngredientModalState();
 }
 
-class _IngredientModalState extends State<IngredientModal> {
-  final _formKey = GlobalKey<FormState>();
+class _IngredientModalState extends State<IngredientModal>
+    with ItemModal<IngredientModal> {
   final _amountController = TextEditingController();
 
-  bool isSaving = false;
-  String? errorMessage;
   String ingredientId = '';
   String ingredientName = '';
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.isNew
-            ? '新增成份'
-            : '設定成份「${widget.ingredient!.ingredient.name}」'),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
-        actions: _appBarTrailings(),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(kSpacing3),
-          child: _form(context),
-        ),
-      ),
-    );
-  }
+  List<Widget> get actions => widget.isNew
+      ? const []
+      : [
+          IconButton(
+            onPressed: () => showCircularBottomSheet(
+              context,
+              useRootNavigator: false,
+              actions: [
+                ListTile(
+                  title: Text('刪除'),
+                  leading: Icon(KIcons.delete, color: kNegativeColor),
+                  onTap: () async {
+                    // pop off sheet
+                    Navigator.of(context).pop();
+                    await _handleDelete();
+                  },
+                ),
+              ],
+            ),
+            icon: Icon(KIcons.more),
+          ),
+        ];
+
+  @override
+  Widget? get title =>
+      Text(widget.isNew ? '新增成份' : '設定成份「${widget.ingredient!.name}」');
 
   @override
   void dispose() {
     _amountController.dispose();
     super.dispose();
+  }
+
+  @override
+  List<Widget> formFields() {
+    return [
+      SearchBarInline(
+        heroTag: IngredientSearchScaffold.tag,
+        text: ingredientName,
+        hintText: '成份名稱，起司',
+        errorText: errorMessage,
+        helperText: '新增成份種類後，可至庫存設定相關資訊',
+        onTap: _selectIngredient,
+      ),
+      TextFormField(
+        controller: _amountController,
+        textInputAction: TextInputAction.done,
+        onFieldSubmitted: (_) => handleSubmit(),
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: '成份預設用量',
+          filled: false,
+        ),
+        validator: Validator.positiveNumber('成份預設用量'),
+      ),
+    ];
   }
 
   @override
@@ -78,91 +108,34 @@ class _IngredientModalState extends State<IngredientModal> {
     }
   }
 
-  Iterable<Widget> _actions(BuildContext context) {
-    return [
-      ListTile(
-        title: Text('刪除'),
-        leading: Icon(KIcons.delete, color: kNegativeColor),
-        onTap: () async {
-          // pop off sheet
-          Navigator.of(context).pop();
-          await _handleDelete();
-        },
-      ),
-    ];
+  @override
+  Future<void> updateItem() async {
+    final object = _parseObject();
+
+    if (!widget.isNew) {
+      await widget.ingredient!.update(object);
+    } else {
+      final ingredient = ProductIngredientModel(
+        ingredient: StockModel.instance.getItem(ingredientId),
+        product: widget.product,
+        amount: object.amount,
+      );
+
+      await widget.product.setItem(ingredient);
+    }
+
+    Navigator.of(context).pop();
   }
 
-  List<Widget> _appBarTrailings() {
-    final submit = TextButton(
-      onPressed: () => _handleSubmit(),
-      child: Text('儲存'),
-    );
-
-    return widget.isNew
-        ? [submit]
-        : [
-            submit,
-            IconButton(
-              onPressed: () => showCircularBottomSheet(
-                context,
-                useRootNavigator: false,
-                actions: _actions(context),
-              ),
-              icon: Icon(KIcons.more),
-            )
-          ];
-  }
-
-  Widget _fieldAmount(BuildContext context) {
-    return TextFormField(
-      controller: _amountController,
-      textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: '成份預設用量',
-        filled: false,
-      ),
-      validator: Validator.positiveNumber('成份預設用量'),
-    );
-  }
-
-  Widget _fieldIngredient(BuildContext context) {
-    return SearchBarInline(
-      heroTag: IngredientSearchScaffold.tag,
-      text: ingredientName,
-      hintText: '成份名稱，起司',
-      errorText: errorMessage,
-      helperText: '新增成份種類後，可至庫存設定相關資訊',
-      onTap: (BuildContext context) async {
-        final result = await Navigator.of(context).pushNamed(
-          MenuRoutes.productIngredientSearch,
-          arguments: ingredientName,
-        );
-
-        if (result != null && result is IngredientModel) {
-          final ingredient = result;
-          print('User choose ingreidnet: ${ingredient.name}');
-          setState(() {
-            errorMessage = null;
-            ingredientId = ingredient.id;
-            ingredientName = ingredient.name;
-          });
-        }
-      },
-    );
-  }
-
-  Form _form(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          _fieldIngredient(context),
-          const SizedBox(height: kSpacing2),
-          _fieldAmount(context),
-        ],
-      ),
-    );
+  @override
+  String? validate() {
+    if (ingredientId.isEmpty) {
+      return '必須設定成份種類。';
+    }
+    if (widget.ingredient?.id != ingredientId &&
+        widget.product.hasItem(ingredientId)) {
+      return '成份重複。';
+    }
   }
 
   Future<void> _handleDelete() async {
@@ -175,15 +148,8 @@ class _IngredientModalState extends State<IngredientModal> {
         );
       },
     );
+
     if (isDeleted == true) Navigator.of(context).pop();
-  }
-
-  Future<void> _handleSubmit() async {
-    if (!_validate()) return;
-
-    await _updateIngredient();
-
-    Navigator.of(context).pop();
   }
 
   ProductIngredientObject _parseObject() {
@@ -193,40 +159,20 @@ class _IngredientModalState extends State<IngredientModal> {
     );
   }
 
-  Future<void> _updateIngredient() {
-    final object = _parseObject();
+  Future<void> _selectIngredient(BuildContext context) async {
+    final result = await Navigator.of(context).pushNamed(
+      MenuRoutes.productIngredientSearch,
+      arguments: ingredientName,
+    );
 
-    if (!widget.isNew) {
-      return widget.ingredient!.update(object);
-    } else {
-      final ingredient = ProductIngredientModel(
-        ingredient: StockModel.instance.getItem(ingredientId),
-        product: widget.product,
-        amount: object.amount,
-      );
+    if (result != null && result is IngredientModel) {
+      final ingredient = result;
 
-      return widget.product.setItem(ingredient);
+      setState(() {
+        errorMessage = null;
+        ingredientId = ingredient.id;
+        ingredientName = ingredient.name;
+      });
     }
-  }
-
-  bool _validate() {
-    if (isSaving || !_formKey.currentState!.validate()) return false;
-
-    if (ingredientId.isEmpty) {
-      setState(() => errorMessage = '必須設定成份種類。');
-      return false;
-    }
-    if (widget.ingredient?.id != ingredientId &&
-        widget.product.hasItem(ingredientId)) {
-      setState(() => errorMessage = '成份重複。');
-      return false;
-    }
-
-    setState(() {
-      isSaving = true;
-      errorMessage = null;
-    });
-
-    return true;
   }
 }

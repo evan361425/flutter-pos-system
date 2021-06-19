@@ -10,7 +10,6 @@ import 'package:possystem/localizations.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_orderable_list.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 

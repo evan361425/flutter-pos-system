@@ -3,9 +3,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 
 class CatalogList extends StatelessWidget {
   final List<CatalogModel> catalogs;

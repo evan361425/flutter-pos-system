@@ -31,11 +31,11 @@ class HomeScreen extends StatelessWidget {
         label: '份量',
         route: Routes.stockQuantity,
       ),
-      _LabeledIcon(
-        icon: Icons.attach_money_sharp,
-        label: '收銀機',
-        route: Routes.cashier,
-      ),
+      // _LabeledIcon(
+      //   icon: Icons.attach_money_sharp,
+      //   label: '收銀機',
+      //   route: Routes.cashier,
+      // ),
     ],
     // '外部連結': [
     //   _LabeledIcon(
