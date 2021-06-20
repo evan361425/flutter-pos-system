@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/card_tile.dart';
-import 'package:possystem/components/circular_loading.dart';
+import 'package:possystem/components/style/card_tile.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';

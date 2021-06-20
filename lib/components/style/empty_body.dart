@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class EmptyBody extends StatelessWidget {
   final String text;
+
   EmptyBody(this.text);
 
   @override

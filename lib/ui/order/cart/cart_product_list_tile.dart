@@ -15,7 +15,7 @@ class CartProductListTile extends StatelessWidget {
 
   final bool value;
   final ValueChanged<bool?> onChanged;
-  final void Function()? onTap;
+  final VoidCallback? onTap;
   final Widget? title;
   final Widget? subtitle;
   final Widget? trailing;

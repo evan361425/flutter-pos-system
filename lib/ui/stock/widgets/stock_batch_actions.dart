@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';

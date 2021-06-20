@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SingleRowWrap extends StatelessWidget {
+  final List<Widget> children;
+
   const SingleRowWrap({
     Key? key,
     required this.children,
   }) : super(key: key);
-
-  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

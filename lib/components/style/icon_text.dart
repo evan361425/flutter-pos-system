@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class IconText extends StatelessWidget {
+  final String text;
+  final String iconName;
+  final TextStyle? textStyle;
+
   const IconText({
     Key? key,
     required this.text,
@@ -8,13 +12,9 @@ class IconText extends StatelessWidget {
     this.textStyle,
   }) : super(key: key);
 
-  final String text;
-  final String iconName;
-  final TextStyle? textStyle;
-
   @override
   Widget build(BuildContext context) {
-    final style = textStyle ?? Theme.of(context).textTheme.bodyText1!;
+    final style = textStyle ?? Theme.of(context).textTheme.bodyText1;
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -22,7 +22,7 @@ class IconText extends StatelessWidget {
         children: [
           TextSpan(
             text: iconName,
-            style: style.copyWith(fontFamily: 'MaterialIcons'),
+            style: style?.copyWith(fontFamily: 'MaterialIcons'),
           ),
           TextSpan(
             text: ' $text',

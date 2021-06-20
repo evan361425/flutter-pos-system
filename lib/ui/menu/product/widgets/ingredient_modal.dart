@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/search_bar_inline.dart';
+import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';

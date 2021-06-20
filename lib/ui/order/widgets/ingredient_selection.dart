@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
-import 'package:possystem/components/single_row_warp.dart';
+import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';

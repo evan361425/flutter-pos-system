@@ -30,4 +30,9 @@ void main() {
 
     expect(find.byIcon(Icons.cancel_sharp), findsNothing);
   });
+
+  test('should failed if missing actions and builder', () {
+    expect(() => showCircularBottomSheet(MockBuildContext()),
+        throwsAssertionError);
+  });
 }

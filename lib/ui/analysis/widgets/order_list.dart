@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';

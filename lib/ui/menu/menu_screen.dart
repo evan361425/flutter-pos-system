@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/circular_loading.dart';
-import 'package:possystem/components/empty_body.dart';
+import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/localizations.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';

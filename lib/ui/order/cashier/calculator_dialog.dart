@@ -168,7 +168,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     );
   }
 
-  Widget numberWidget(String text, [void Function()? onPressed]) {
+  Widget numberWidget(String text, [VoidCallback? onPressed]) {
     return Expanded(
       child: AspectRatio(
         aspectRatio: 1,

@@ -3,6 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:possystem/constants/icons.dart';
 
 class SearchBar extends StatefulWidget {
+  final int maxLength;
+  final String? heroTag;
+  final String? text;
+  final String helperText;
+  final String hintText;
+  final String labelText;
+  final bool hideCounter;
+  final TextCapitalization textCapitalization;
+  final void Function(String) onChanged;
+
   SearchBar({
     Key? key,
     required this.onChanged,
@@ -16,16 +26,6 @@ class SearchBar extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
   }) : super(key: key);
 
-  final int maxLength;
-  final String? heroTag;
-  final String? text;
-  final String helperText;
-  final String hintText;
-  final String labelText;
-  final bool hideCounter;
-  final TextCapitalization textCapitalization;
-  final void Function(String) onChanged;
-
   @override
   SearchBarState createState() => SearchBarState();
 }
@@ -33,14 +33,14 @@ class SearchBar extends StatefulWidget {
 class SearchBarState extends State<SearchBar> {
   final controller = TextEditingController();
 
+  late bool isEmpty;
+
+  String get text => controller.text;
+
   set text(String text) {
     controller.text = text;
     _onChanged(text);
   }
-
-  String get text => controller.text;
-
-  late bool isEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +81,6 @@ class SearchBarState extends State<SearchBar> {
     );
   }
 
-  void _onChanged(String text) {
-    text = text.trim();
-    if (text.isEmpty) {
-      setState(() => isEmpty = true);
-    } else if (isEmpty) {
-      setState(() => isEmpty = false);
-    }
-    widget.onChanged(text);
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -102,5 +92,15 @@ class SearchBarState extends State<SearchBar> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  void _onChanged(String text) {
+    text = text.trim();
+    if (text.isEmpty) {
+      setState(() => isEmpty = true);
+    } else if (isEmpty) {
+      setState(() => isEmpty = false);
+    }
+    widget.onChanged(text);
   }
 }

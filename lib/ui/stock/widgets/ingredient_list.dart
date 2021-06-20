@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/custom_styles.dart';
-import 'package:possystem/components/icon_filled_button.dart';
-import 'package:possystem/components/icon_text.dart';
+import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/icon_filled_button.dart';
+import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/page/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
@@ -134,11 +134,11 @@ class IngredientList extends StatelessWidget {
         children: <Widget>[
           IconFilledButton(
             onPressed: onAddAmount,
-            child: Icon(KIcons.add),
+            icon: KIcons.add,
           ),
           IconFilledButton(
             onPressed: onMinusAmount,
-            child: Icon(KIcons.remove),
+            icon: KIcons.remove,
           ),
         ],
       ),

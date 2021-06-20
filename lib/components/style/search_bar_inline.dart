@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 
 class SearchBarInline extends StatelessWidget {
+  final String heroTag;
+  final String? text;
+  final String? errorText;
+  final String? hintText;
+  final String? helperText;
+  final Future<void> Function(BuildContext) onTap;
+
   const SearchBarInline({
     Key? key,
     required this.heroTag,
@@ -12,16 +19,10 @@ class SearchBarInline extends StatelessWidget {
     required this.onTap,
   }) : super(key: key);
 
-  final String heroTag;
-  final String? text;
-  final String? errorText;
-  final String? hintText;
-  final String? helperText;
-  final Future<void> Function(BuildContext) onTap;
-
   @override
   Widget build(BuildContext context) {
     final textController = TextEditingController(text: text);
+
     return Hero(
       tag: heroTag,
       // transitionOnUserGestures: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/card_tile.dart';
+import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';

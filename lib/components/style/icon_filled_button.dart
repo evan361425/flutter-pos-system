@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class IconFilledButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  final IconData icon;
+
   const IconFilledButton({
     Key? key,
     required this.onPressed,
-    required this.child,
+    required this.icon,
   }) : super(key: key);
-
-  final Function() onPressed;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class IconFilledButton extends StatelessWidget {
         ),
       ),
       onPressed: onPressed,
-      child: child,
+      child: Icon(icon),
     );
   }
 }

@@ -2,6 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:possystem/constants/constant.dart';
 
+Future<T?> showCircularBottomSheet<T>(
+  BuildContext context, {
+  List<Widget>? actions,
+  bool? useRootNavigator,
+  WidgetBuilder? builder,
+}) {
+  assert(actions != null || builder != null);
+
+  return showMaterialModalBottomSheet<T>(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(20),
+      ),
+    ),
+    clipBehavior: Clip.antiAliasWithSaveLayer,
+    useRootNavigator: useRootNavigator ?? true,
+    builder: builder ?? ((_) => BottomSheetActions(actions: actions!)),
+  );
+}
+
 class BottomSheetActions extends StatelessWidget {
   final List<Widget> actions;
 
@@ -21,13 +42,6 @@ class BottomSheetActions extends StatelessWidget {
     );
   }
 
-  Widget _title(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kSpacing0),
-      child: Center(child: Text('執行動作')),
-    );
-  }
-
   Widget _cancelAction(BuildContext context) {
     return ListTile(
       title: Text('取消'),
@@ -35,25 +49,11 @@ class BottomSheetActions extends StatelessWidget {
       onTap: () => Navigator.of(context).pop(),
     );
   }
-}
 
-Future<T?> showCircularBottomSheet<T>(
-  BuildContext context, {
-  List<Widget>? actions,
-  bool? useRootNavigator,
-  Widget Function(BuildContext)? builder,
-}) {
-  assert(actions != null || builder != null);
-
-  return showMaterialModalBottomSheet<T>(
-    context: context,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20),
-      ),
-    ),
-    clipBehavior: Clip.antiAliasWithSaveLayer,
-    useRootNavigator: useRootNavigator ?? true,
-    builder: builder ?? ((_) => BottomSheetActions(actions: actions!)),
-  );
+  Widget _title(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(kSpacing0),
+      child: Center(child: Text('執行動作')),
+    );
+  }
 }

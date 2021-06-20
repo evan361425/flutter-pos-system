@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/circular_loading.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   const SearchScaffold({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/custom_styles.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 
 class MetaBlock extends StatelessWidget {
   @override

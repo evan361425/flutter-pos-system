@@ -20,7 +20,7 @@ class RadioText extends StatefulWidget {
     }
   }
 
-  final void Function() onSelected;
+  final VoidCallback onSelected;
   final Widget child;
   final String groupId;
   final String? value;

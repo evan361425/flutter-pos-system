@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/circular_loading.dart';
-import 'package:possystem/components/empty_body.dart';
+import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title.dart';
 import 'package:possystem/constants/constant.dart';

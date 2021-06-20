@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CardTile extends StatelessWidget {
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
   const CardTile({
     Key? key,
     this.title,
@@ -8,11 +13,6 @@ class CardTile extends StatelessWidget {
     this.onTap,
     this.trailing,
   }) : super(key: key);
-
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget? trailing;
-  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
