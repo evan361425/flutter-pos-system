@@ -3,7 +3,7 @@ import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/page/slidable_item_list.dart';
+import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';

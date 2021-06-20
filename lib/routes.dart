@@ -67,8 +67,7 @@ class Routes {
     // menu
     menuCatalog: (context) =>
         CatalogNavigator(catalog: arg<CatalogModel>(context)),
-    menuReorder: (context) =>
-        CatalogOrderableList(items: MenuModel.instance.itemList),
+    menuReorder: (context) => CatalogOrderableList(),
     // stock
     stockIngredient: (context) =>
         IngredientScreen(ingredient: arg<IngredientModel?>(context)),

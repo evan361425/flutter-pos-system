@@ -32,8 +32,8 @@ class MenuRoutes {
         return (_) =>
             CatalogModal(catalog: settings.arguments as CatalogModel?);
       case catalogReorder:
-        return (_) => ProductOrderableList(
-            items: (settings.arguments as CatalogModel).itemList);
+        return (_) =>
+            ProductOrderableList(catalog: settings.arguments as CatalogModel);
       case product:
         return (_) => ChangeNotifierProvider<ProductModel>.value(
               value: settings.arguments as ProductModel,

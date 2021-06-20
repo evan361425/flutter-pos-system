@@ -49,6 +49,7 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
 
 mixin OrderableModel<T extends ModelObject> on NotifyModel<T> {
   late int index;
+  late String name;
 }
 
 mixin SearchableModel<T extends ModelObject> on NotifyModel<T> {

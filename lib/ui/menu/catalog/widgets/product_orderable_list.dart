@@ -1,34 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/page/orderable_list.dart';
+import 'package:possystem/components/scaffold/reorderable_scaffold.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:provider/provider.dart';
 
-class ProductOrderableList extends OrderableList<ProductModel> {
-  ProductOrderableList({Key? key, required List<ProductModel> items})
-      : super(key: key, items: items, title: '排序產品');
+class ProductOrderableList extends StatelessWidget {
+  const ProductOrderableList({Key? key, required this.catalog})
+      : super(key: key);
 
-  @override
-  _ProductOrderListState createState() => _ProductOrderListState();
-}
-
-class _ProductOrderListState extends OrderableListState<ProductModel, int> {
-  @override
-  Future<void> handleSubmit() {
-    final catalog = context.read<CatalogModel>();
-    return catalog.reorderItems(widget.items);
-  }
+  final CatalogModel catalog;
 
   @override
-  Widget itemBuilder(BuildContext context, int index) {
-    final item = widget.items[index];
-    return OrderableListItem(
-      key: ValueKey(item.index),
-      index: index,
-      title: item.name,
+  Widget build(BuildContext context) {
+    print('build reorder');
+    return ReorderableScaffold(
+      items: catalog.itemList,
+      title: '排序產品',
+      handleSubmit: (List<ProductModel> items) => catalog.reorderItems(items),
     );
   }
-
-  @override
-  int get itemCount => widget.items.length;
 }
