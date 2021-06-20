@@ -48,7 +48,7 @@ class CatalogList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
-        '尚未設定產品',
+        emptyText: '尚未設定產品',
       ),
     );
   }

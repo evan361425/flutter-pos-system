@@ -16,23 +16,25 @@ class MetaBlock extends StatelessWidget {
 
   static Widget? withString(
     BuildContext context,
-    Iterable<String> data, [
+    Iterable<String> data, {
     String? emptyText,
-    TextStyle? style,
-  ]) {
+  }) {
     if (data.isNotEmpty) {
-      final children = <InlineSpan>[];
-      data.forEach((value) {
-        children.add(TextSpan(text: value));
-        children.add(MetaBlock.span());
-      });
+      final children = data
+          .expand((value) => [
+                TextSpan(text: value),
+                MetaBlock.span(),
+              ])
+          .toList();
       // remove last block
       children.removeLast();
+
       return RichText(
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
           children: children,
-          style: style ?? Theme.of(context).textTheme.bodyText1,
+          // disable parent text style
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       );
     } else if (emptyText != null) {
