@@ -3,7 +3,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:possystem/constants/constant.dart';
 
 class BottomSheetActions extends StatelessWidget {
-  final List<Widget>? actions;
+  final List<Widget> actions;
+
   const BottomSheetActions({Key? key, required this.actions}) : super(key: key);
 
   @override
@@ -13,7 +14,7 @@ class BottomSheetActions extends StatelessWidget {
         top: false,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           _title(context),
-          ...actions!,
+          ...actions,
           _cancelAction(context),
         ]),
       ),
@@ -38,10 +39,12 @@ class BottomSheetActions extends StatelessWidget {
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
-  Iterable<Widget>? actions,
+  List<Widget>? actions,
   bool? useRootNavigator,
   Widget Function(BuildContext)? builder,
 }) {
+  assert(actions != null || builder != null);
+
   return showMaterialModalBottomSheet<T>(
     context: context,
     shape: RoundedRectangleBorder(
@@ -51,6 +54,6 @@ Future<T?> showCircularBottomSheet<T>(
     ),
     clipBehavior: Clip.antiAliasWithSaveLayer,
     useRootNavigator: useRootNavigator ?? true,
-    builder: builder ?? ((_) => BottomSheetActions(actions: actions as List<Widget>?)),
+    builder: builder ?? ((_) => BottomSheetActions(actions: actions!)),
   );
 }

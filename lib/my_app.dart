@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         final pref = prepared
             ? _Preferences(
                 language: language.locale,
-                isDarkMode: theme.darkMode,
+                mode: theme.mode,
                 currency: currency.currency)
             : _Preferences();
 
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
           // === theme setting ===
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          themeMode: pref.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          themeMode: pref.mode,
           // === home widget ===
           home: prepared ? HomeScreen() : LogoSplash(),
         );
@@ -79,12 +79,12 @@ class MyApp extends StatelessWidget {
 class _Preferences {
   Locale language;
 
-  bool isDarkMode;
+  ThemeMode mode;
 
   String currency;
 
-  _Preferences({Locale? language, bool? isDarkMode, String? currency})
+  _Preferences({Locale? language, ThemeMode? mode, String? currency})
       : language = language ?? LanguageProvider.defaultLocale,
-        isDarkMode = isDarkMode ?? ThemeProvider.defaultTheme,
+        mode = mode ?? ThemeMode.system,
         currency = currency ?? CurrencyProvider.defaultCurrency;
 }

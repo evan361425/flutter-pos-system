@@ -1,9 +1,7 @@
 theme:
-  title: 暗黑模式
-  subtitle: 換個皮囊
+  title: 調色盤
 language:
   title: 語言
-  subtitle: Set Your Language
 logout:
   title: "登出😱"
   subtitle: 不會清除您的菜單和點單資料

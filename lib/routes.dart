@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
+import 'package:possystem/ui/setting/widgets/theme_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'models/menu/catalog_model.dart';
@@ -45,6 +46,7 @@ class Routes {
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
   static const String stockQuantityModal = 'stock/quantity/modal';
+  static const String settingTheme = 'setting/theme';
   static const String settingLanguage = 'setting/language';
 
   static T arg<T>(BuildContext context) =>
@@ -77,6 +79,7 @@ class Routes {
         StockBatchModal(batch: arg<StockBatchModel?>(context)),
     // setting
     settingLanguage: (_) => LanguageModal(),
+    settingTheme: (_) => ThemeModal(),
   };
 
   static bool setUpStockMode(BuildContext context) {

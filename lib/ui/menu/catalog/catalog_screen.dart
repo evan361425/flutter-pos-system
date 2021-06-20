@@ -44,7 +44,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actions(BuildContext context, CatalogModel catalog) {
+  List<Widget> _actions(BuildContext context, CatalogModel catalog) {
     return [
       ListTile(
         title: Text('變更名稱'),

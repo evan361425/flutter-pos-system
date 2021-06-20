@@ -61,15 +61,15 @@ class Storage {
     return getStore(storeId).record(recordId).put(db, data);
   }
 
-  _SanitizedData sanitize(Map<String, Object?> data) {
-    final sanitizedData = _SanitizedData();
+  SanitizedData sanitize(Map<String, Object?> data) {
+    final sanitizedData = SanitizedData();
     data.forEach(
         (key, value) => sanitizedData.add(_SanitizedValue(key, value)));
     return sanitizedData;
   }
 }
 
-class _SanitizedData {
+class SanitizedData {
   final data = <String, Object?>{};
 
   void add(_SanitizedValue value) {

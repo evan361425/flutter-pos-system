@@ -44,7 +44,7 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actions(BuildContext context, ProductModel product) {
+  List<Widget> _actions(BuildContext context, ProductModel product) {
     return [
       ListTile(
         title: Text('變更產品'),

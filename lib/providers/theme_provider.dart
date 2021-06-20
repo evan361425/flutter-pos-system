@@ -7,22 +7,22 @@ class ThemeProvider extends ChangeNotifier {
   static bool get defaultTheme =>
       SchedulerBinding.instance?.window.platformBrightness == Brightness.dark;
 
-  late bool _darkMode;
+  late ThemeMode _mode;
 
-  bool get darkMode => _darkMode;
+  ThemeMode get mode => _mode;
 
   void initialize() {
     // get from cache, if not found get system setting
-    final value = Cache.instance.get<bool>(Caches.dark_mode);
-    _darkMode = value ?? defaultTheme;
+    final value = Cache.instance.get<int>(Caches.dark_mode);
+    _mode = ThemeMode.values[value ?? ThemeMode.system.index];
   }
 
-  Future<void> setDarkMode(bool value) async {
+  Future<void> setMode(ThemeMode value) async {
     info(value.toString(), 'setting.theme');
-    await Cache.instance.set(Caches.dark_mode, value);
+    await Cache.instance.set<int>(Caches.dark_mode, value.index);
 
-    if (_darkMode != value) {
-      _darkMode = value;
+    if (_mode != value) {
+      _mode = value;
       notifyListeners();
     }
   }

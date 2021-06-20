@@ -46,7 +46,7 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actions(BuildContext context) {
+  List<Widget> _actions(BuildContext context) {
     return <Widget>[
       ListTile(
         title: Text('排序產品種類'),
