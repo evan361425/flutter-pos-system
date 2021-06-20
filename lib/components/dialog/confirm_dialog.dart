@@ -14,16 +14,10 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: SingleChildScrollView(
-        child: content,
-      ),
+      content: SingleChildScrollView(child: content),
       actions: <Widget>[
-        ElevatedButton(
+        TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).highlightColor,
-            onPrimary: Colors.white,
-          ),
           child: Text('取消'),
         ),
         ElevatedButton(

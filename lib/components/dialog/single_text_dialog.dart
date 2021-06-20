@@ -59,8 +59,8 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    textController.text = widget.initialValue!;
+  void initState() {
+    super.initState();
+    textController.text = widget.initialValue ?? '';
   }
 }

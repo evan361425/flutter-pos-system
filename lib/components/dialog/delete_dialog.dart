@@ -15,20 +15,22 @@ class DeleteDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('確認刪除通知'),
-      content: SingleChildScrollView(
-        child: content,
-      ),
+      content: SingleChildScrollView(child: content),
       actions: <Widget>[
         TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('取消'),
+        ),
+        ElevatedButton(
           onPressed: () async {
             await onDelete(context);
             Navigator.of(context).pop(true);
           },
-          child: Text('刪除', style: TextStyle(color: kNegativeColor)),
-        ),
-        ElevatedButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('取消'),
+          style: ElevatedButton.styleFrom(
+            primary: kNegativeColor,
+            onPrimary: Colors.white,
+          ),
+          child: Text('刪除'),
         ),
       ],
     );
