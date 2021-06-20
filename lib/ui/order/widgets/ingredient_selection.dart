@@ -39,12 +39,8 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     }
 
     selectedIngredient ??= ingredients.first;
-    selectedQuantityId = CartModel.instance.getSelectedQuantityId(
-      selectedIngredient!,
-    );
-
-    // uncheck all ratio if there has different between quantites
-    if (selectedQuantityId == null) RadioText.clearSelected(QUANTITY_GROUP);
+    selectedQuantityId =
+        CartModel.instance.getSelectedQuantityId(selectedIngredient!);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,14 +71,13 @@ class _IngredientSelectionState extends State<IngredientSelection> {
 
   Widget _emptyWidget(BuildContext context, String ingredientMessage) {
     final textTheme = Theme.of(context).textTheme;
+    final style = textTheme.bodyText1!.copyWith(color: textTheme.muted.color);
+
     Widget mockRadioText(String text) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         padding: const EdgeInsets.all(kSpacing2),
-        child: Text(
-          text,
-          style: textTheme.bodyText1!.copyWith(color: textTheme.muted.color),
-        ),
+        child: Text(text, style: style),
       );
     }
 
@@ -91,12 +86,8 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SingleRowWrap(
-          children: <Widget>[mockRadioText(ingredientMessage)],
-        ),
-        SingleRowWrap(
-          children: <Widget>[mockRadioText('請選擇成份來設定份量')],
-        ),
+        SingleRowWrap(children: <Widget>[mockRadioText(ingredientMessage)]),
+        SingleRowWrap(children: <Widget>[mockRadioText('請選擇成份來設定份量')]),
       ],
     );
   }
@@ -115,9 +106,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     ]);
   }
 
-  void _listener() {
-    setState(() {});
-  }
+  void _listener() => setState(() {});
 
   Widget _quantitiesRow() {
     return SingleRowWrap(children: <Widget>[
@@ -144,7 +133,7 @@ class _IngredientSelectionState extends State<IngredientSelection> {
       onSelected: () {
         CartModel.instance.removeSelectedIngredient(selectedIngredient!.id);
       },
-      groupId: 'order.quantities',
+      groupId: QUANTITY_GROUP,
       value: CartModel.DEFAULT_QUANTITY_ID,
       isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
       child: Text('預設值（${selectedIngredient!.amount}）'),

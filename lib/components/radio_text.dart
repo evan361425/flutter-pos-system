@@ -1,54 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 
+typedef DeepFunction = void Function(void Function());
+
 class RadioText extends StatefulWidget {
-  RadioText({
-    Key? key,
-    required this.onSelected,
-    required this.child,
-    required this.groupId,
-    required this.value,
-    bool? isSelected,
-  }) : super(key: key) {
-    // if not set initial a new one
-    if (group == null) {
-      group = _Item(isSelected == null || isSelected ? value : null);
-    } else if (isSelected != null) {
-      // if specific setting
-      // update previous one to unchecked
-      if (isSelected && group!.selected != value) group!.updateSelect(value);
-    }
-  }
+  static final _groups = <String, _Item>{};
 
   final VoidCallback onSelected;
   final Widget child;
   final String groupId;
-  final String? value;
+  final String value;
 
-  static final _groups = <String, _Item?>{};
-  static void clearSelected(String groupId) {
-    _groups[groupId]?.updateSelect(null);
+  RadioText({
+    Key? key,
+    required this.groupId,
+    required this.onSelected,
+    required this.value,
+    required this.child,
+    bool? isSelected,
+  }) : super(key: key) {
+    // if not set, initialize a new one
+    if (_groups[groupId] == null) {
+      _groups[groupId] = _Item(isSelected == false ? null : value);
+    } else if (isSelected == true && !group.isSelect(value)) {
+      // if specific setting, update previous one to unchecked
+      group.select(value);
+    }
   }
+  _Item get group => _groups[groupId]!;
 
-  bool get isSelected => group?.checkSelect(value) ?? false;
-
-  _Item? get group => _groups[groupId];
-  set group(_Item? item) => _groups[groupId] = item;
-
-  void dispose() {
-    group!.removeElement(value);
-    if (group!.isEmpty) _groups.remove(groupId);
-  }
+  bool get isSelected => group.isSelect(value);
 
   @override
   _RadioTextState createState() => _RadioTextState();
+
+  void dispose() {
+    group.removeElement(value);
+
+    if (group.isEmpty) {
+      _groups.remove(groupId);
+    }
+  }
+
+  void select() {
+    group.select(value);
+    onSelected();
+  }
+
+  static void clearSelected(String groupId) {
+    _groups[groupId]?.select(null);
+  }
+}
+
+class _Item {
+  String? _selected;
+
+  final _elements = <String, DeepFunction>{};
+
+  _Item(this._selected);
+
+  bool get isEmpty => _elements.isEmpty;
+
+  void addElement(String id, DeepFunction rebuilder) {
+    _elements[id] = rebuilder;
+  }
+
+  bool isSelect(String value) => _selected == value;
+
+  void removeElement(String id) => _elements.remove(id);
+
+  void select(String? value) {
+    _selected = value;
+    _elements.values.forEach((rebuilder) {
+      rebuilder(() {});
+    });
+  }
 }
 
 class _RadioTextState extends State<RadioText> {
+  static final BORDER_COLOR = Colors.grey.withAlpha(100);
+
   @override
   Widget build(BuildContext context) {
-    final defaultColor =
-        widget.isSelected ? Theme.of(context).primaryColor : Colors.transparent;
+    final primaryColor = Theme.of(context).primaryColor;
+    final defaultColor = widget.isSelected ? primaryColor : Colors.transparent;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -64,11 +99,8 @@ class _RadioTextState extends State<RadioText> {
         borderRadius: const BorderRadius.all(Radius.circular(2.0)),
       ),
       child: InkWell(
-        onTap: () {
-          select();
-          widget.onSelected();
-        },
-        splashColor: Theme.of(context).primaryColor,
+        onTap: () => widget.select(),
+        splashColor: primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(kSpacing1),
           child: widget.child,
@@ -77,12 +109,10 @@ class _RadioTextState extends State<RadioText> {
     );
   }
 
-  void select() => widget.group?.updateSelect(widget.value);
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.group!.addElement(widget.value, setState);
+    widget.group.addElement(widget.value, setState);
   }
 
   @override
@@ -90,33 +120,4 @@ class _RadioTextState extends State<RadioText> {
     widget.dispose();
     super.dispose();
   }
-
-  static final BORDER_COLOR = Colors.grey.withAlpha(100);
-}
-
-class _Item {
-  _Item(this._selected);
-
-  String? _selected;
-  final _elements = <String?, Function(Function())>{};
-
-  bool checkSelect(String? value) => _selected == value;
-
-  void updateSelect(String? value) {
-    _selected = value;
-    _elements.values.forEach((rebuilder) {
-      rebuilder(() {});
-    });
-  }
-
-  void addElement(String? id, Function rebuilder) {
-    _elements[id] = rebuilder as dynamic Function(dynamic Function());
-  }
-
-  void removeElement(String? id) {
-    _elements.remove(id);
-  }
-
-  bool get isEmpty => _elements.isEmpty;
-  String? get selected => _selected;
 }
