@@ -1,27 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/search_bar.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
-  const SearchScaffold({
-    Key? key,
-    required this.onChanged,
-    required this.itemBuilder,
-    required this.emptyBuilder,
-    required this.initialData,
-    this.heroTag,
-    this.text = '',
-    this.hintText = '',
-    this.labelText = '',
-    this.helperText = '',
-    this.maxLength = 30,
-    this.textCapitalization = TextCapitalization.none,
-  }) : super(key: key);
-
   final Future<List<T>> Function(String) onChanged;
-  final String? heroTag;
+
+  final String heroTag;
   final int maxLength;
   final String text;
   final String helperText;
@@ -31,6 +17,20 @@ class SearchScaffold<T> extends StatefulWidget {
   final Future<List<T>> Function() initialData;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
+  const SearchScaffold({
+    Key? key,
+    required this.onChanged,
+    required this.itemBuilder,
+    required this.emptyBuilder,
+    required this.initialData,
+    required this.heroTag,
+    this.text = '',
+    this.hintText = '',
+    this.labelText = '',
+    this.helperText = '',
+    this.maxLength = 30,
+    this.textCapitalization = TextCapitalization.none,
+  }) : super(key: key);
 
   @override
   SearchScaffoldState<T> createState() => SearchScaffoldState<T>();
@@ -39,18 +39,12 @@ class SearchScaffold<T> extends StatefulWidget {
 class SearchScaffoldState<T> extends State<SearchScaffold> {
   final GlobalKey<SearchBarState> searchBar = GlobalKey<SearchBarState>();
 
+  final List<T> list = [];
+
   bool isSearching = true;
-  bool get isNotEmpty => list.isNotEmpty;
+
   int get count => list.length;
-  List<T> list = [];
-
-  void setSearchKeyword(String keyword) {
-    searchBar.currentState!.text = keyword;
-  }
-
-  void updateView() {
-    setState(() {});
-  }
+  bool get isNotEmpty => list.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -79,10 +73,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
         ),
       ),
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: isSearching ? CircularLoading() : _body(context),
-        ),
+        child: isSearching ? CircularLoading() : _body(context),
       ),
     );
   }
@@ -134,9 +125,5 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
       list.addAll(newList);
       isSearching = false;
     });
-  }
-
-  Future<void> _onRefresh() async {
-    await _onChanged(searchBar.currentState!.text);
   }
 }

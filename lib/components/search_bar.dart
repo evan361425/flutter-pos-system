@@ -4,8 +4,8 @@ import 'package:possystem/constants/icons.dart';
 
 class SearchBar extends StatefulWidget {
   final int maxLength;
-  final String? heroTag;
-  final String? text;
+  final String heroTag;
+  final String text;
   final String helperText;
   final String hintText;
   final String labelText;
@@ -17,7 +17,7 @@ class SearchBar extends StatefulWidget {
     Key? key,
     required this.onChanged,
     this.text = '',
-    this.heroTag,
+    required this.heroTag,
     this.hintText = '',
     this.labelText = '',
     this.helperText = '',
@@ -45,19 +45,12 @@ class SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: widget.heroTag!,
+      tag: widget.heroTag,
       child: TextField(
         controller: controller,
         maxLength: widget.maxLength,
         autofocus: true,
-        onChanged: (String text) {
-          if (text.isEmpty) {
-            setState(() => isEmpty = true);
-          } else if (isEmpty) {
-            setState(() => isEmpty = false);
-          }
-          widget.onChanged(text);
-        },
+        onChanged: _onChanged,
         textCapitalization: widget.textCapitalization,
         textInputAction: TextInputAction.done,
         onSubmitted: _onChanged,
@@ -84,8 +77,8 @@ class SearchBarState extends State<SearchBar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    controller.text = widget.text!;
-    isEmpty = widget.text!.isEmpty;
+    controller.text = widget.text;
+    isEmpty = widget.text.isEmpty;
   }
 
   @override
