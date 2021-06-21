@@ -15,7 +15,7 @@ class QuantitySearchScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return SearchScaffold<QuantityModel>(
       key: scaffold,
-      onChanged: (String text) async =>
+      handleChanged: (String text) async =>
           QuantityRepo.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
