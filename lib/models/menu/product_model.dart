@@ -15,6 +15,7 @@ class ProductModel extends NotifyModel<ProductObject>
   late final CatalogModel catalog;
 
   /// product's name
+  @override
   String name;
 
   /// help to calculate daily earn

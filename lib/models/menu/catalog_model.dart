@@ -14,6 +14,7 @@ class CatalogModel extends NotifyModel<CatalogObject>
         NotifyRepository<ProductModel>,
         OrderablRepository {
   /// catalog's name
+  @override
   String name;
 
   /// when it has been added to menu
