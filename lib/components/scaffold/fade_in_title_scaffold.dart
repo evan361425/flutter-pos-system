@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 class FadeInTitleScaffold extends StatefulWidget {
+  final Widget? leading;
+  final Widget? trailing;
+  final String title;
+  final Widget body;
+  final Widget? floatingActionButton;
+
   FadeInTitleScaffold({
     Key? key,
     this.leading,
     this.trailing,
-    this.title,
-    this.body,
+    required this.title,
+    required this.body,
     this.floatingActionButton,
   }) : super(key: key);
-
-  final Widget? leading;
-  final Widget? trailing;
-  final String? title;
-  final Widget? body;
-  final Widget? floatingActionButton;
 
   @override
   _FadeInTitleScaffoldState createState() => _FadeInTitleScaffoldState();
@@ -22,6 +22,30 @@ class FadeInTitleScaffold extends StatefulWidget {
 
 class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
   double _opacity = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: widget.leading,
+        actions: widget.trailing == null ? null : <Widget>[widget.trailing!],
+        title: AnimatedOpacity(
+          duration: Duration(seconds: 0),
+          opacity: _opacity,
+          child: Text(widget.title),
+        ),
+      ),
+      floatingActionButton: widget.floatingActionButton,
+      body: SafeArea(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _scrollListener,
+          child: SingleChildScrollView(
+            child: widget.body,
+          ),
+        ),
+      ),
+    );
+  }
 
   bool _scrollListener(ScrollNotification scrollInfo) {
     if (scrollInfo.metrics.axis == Axis.vertical) {
@@ -35,29 +59,5 @@ class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
     }
     // continue bubbleing
     return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: widget.leading,
-        actions: widget.trailing == null ? null : <Widget>[widget.trailing!],
-        title: AnimatedOpacity(
-          duration: Duration(seconds: 0),
-          opacity: _opacity,
-          child: Text(widget.title!),
-        ),
-      ),
-      floatingActionButton: widget.floatingActionButton,
-      body: SafeArea(
-        child: NotificationListener<ScrollNotification>(
-          onNotification: _scrollListener,
-          child: SingleChildScrollView(
-            child: widget.body,
-          ),
-        ),
-      ),
-    );
   }
 }
