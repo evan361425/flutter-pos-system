@@ -11,6 +11,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:provider/provider.dart';
 
 class IngredientList extends StatelessWidget {
   final List<IngredientModel> ingredients;
@@ -20,18 +21,15 @@ class IngredientList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (ingredients.isEmpty) return EmptyBody('stock.ingredient.empty_body');
+    final menu = context.read<MenuModel>();
 
     return SlidableItemList<IngredientModel>(
       items: ingredients,
-      handleDelete: _handleDelete,
+      handleDelete: (_, ingredient) => menu.removeIngredients(ingredient.id),
       handleTap: _handleTap,
       warningContextBuilder: _warningContextBuilder,
       tileBuilder: _tileBuilder,
     );
-  }
-
-  Future<void> _handleDelete(BuildContext context, IngredientModel ingredient) {
-    return MenuModel.instance.removeIngredients(ingredient.id);
   }
 
   void _handleTap(BuildContext context, IngredientModel ingredient) {
