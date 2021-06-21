@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 
 class QuantityList extends StatelessWidget {
-  final List<QuantityModel>? quantities;
+  final List<QuantityModel> quantities;
 
-  const QuantityList({Key? key, this.quantities}) : super(key: key);
+  const QuantityList({Key? key, required this.quantities}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (quantities.isEmpty) return EmptyBody('stock.quantity.empty_body');
+
     return SlidableItemList<QuantityModel>(
       items: quantities,
       handleDelete: _handleDelete,

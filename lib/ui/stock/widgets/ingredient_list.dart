@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -18,6 +19,8 @@ class IngredientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (ingredients.isEmpty) return EmptyBody('stock.ingredient.empty_body');
+
     return SlidableItemList<IngredientModel>(
       items: ingredients,
       handleDelete: _handleDelete,

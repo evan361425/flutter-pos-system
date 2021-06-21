@@ -8,7 +8,7 @@ import 'package:possystem/models/model.dart';
 
 // use inherit objects to make your life better
 class SlidableItemList<T extends Model> extends StatefulWidget {
-  final List<T>? items;
+  final List<T> items;
 
   final Future<void> Function(BuildContext, T)? handleDelete;
   final Widget Function(BuildContext, T) tileBuilder;
@@ -36,8 +36,9 @@ class _SlidableItemListState<T extends Model>
 
   @override
   Widget build(BuildContext context) {
+    // if (widget.items.)
     return Column(
-      children: [for (var item in widget.items!) _itemBuilder(item)],
+      children: [for (var item in widget.items) _itemBuilder(item)],
     );
   }
 
