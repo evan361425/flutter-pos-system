@@ -17,7 +17,7 @@ class SettingScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Local.of(context)!.t('setting')),
+        title: Text(Translator.t('setting')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -26,7 +26,7 @@ class SettingScreen extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           CardTile(
-            title: Text(Local.of(context)!.t('setting.theme.title')),
+            title: Text(Translator.t('setting.theme.title')),
             subtitle: Text(ThemeModal.ThemeName[theme.mode]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
             onTap: () async {
@@ -39,7 +39,7 @@ class SettingScreen extends StatelessWidget {
             },
           ),
           CardTile(
-            title: Text(Local.of(context)!.t('setting.language.title')),
+            title: Text(Translator.t('setting.language.title')),
             subtitle:
                 Text(LanguageModal.LanguageName[language.locale.toString()]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),

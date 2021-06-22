@@ -1,8 +1,4 @@
-import 'package:possystem/localizations.dart';
-
 class Validator {
-  static Local? tranlator;
-
   static String? Function(String?) positiveNumber(
     String fieldName, {
     num? maximum,

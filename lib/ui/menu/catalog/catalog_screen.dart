@@ -37,7 +37,7 @@ class CatalogScreen extends StatelessWidget {
         onPressed: () => Navigator.of(context).pushNamed(
           MenuRoutes.productModal,
         ),
-        tooltip: Local.of(context)!.t('menu.catalog.add_product'),
+        tooltip: Translator.t('menu.catalog.add_product'),
         child: Icon(KIcons.add),
       ),
       body: _body(catalog, context),

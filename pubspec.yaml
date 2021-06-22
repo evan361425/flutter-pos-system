@@ -74,5 +74,5 @@ flutter:
 
   assets:
     - assets/
-    - lang/zh-TW/
-    - lang/en-US/
+    - lang/zh_TW/app.g.json
+    - lang/en_US/app.g.json

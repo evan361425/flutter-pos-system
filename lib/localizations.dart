@@ -1,92 +1,55 @@
-import 'dart:async';
-import 'package:possystem/providers/language_provider.dart';
-import 'package:sprintf/sprintf.dart';
-import 'package:yaml/yaml.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sprintf/sprintf.dart';
 
-class Local {
-  final Locale locale;
+class Translator {
+  static final Translator instance = Translator._constructor();
 
-  Local(this.locale);
+  static const LocalizationsDelegate<Translator> delegate =
+      _LocalizationsDelegate();
 
-  // Helper method to keep the code in the widgets concise
-  // Localizations are accessed using an InheritedWidget "of" syntax
-  static Local? of(BuildContext context) {
-    return Localizations.of<Local>(context, Local);
-  }
+  Map<String, String> _data = {};
 
   //This is the static member for allowing simple access to the delegate
   // from the MaterialApp
-  static const LocalizationsDelegate<Local> delegate =
-      _AppLocalizationsDelegate();
+  Translator._constructor();
 
-  static const List<String> files = ['app', 'setting', 'auth', 'menu'];
-
-  final Map<String, String> _localizedStrings = {};
-
-  Future<bool> load() async {
-    var countryCode =
-        locale.countryCode == null ? '' : '-${locale.countryCode}';
-    var folder = 'lang/${locale.languageCode}$countryCode';
-    // Load the language YAML file from the "lang" folder
-    for (var filename in files) {
-      var raw = await rootBundle.loadString('$folder/$filename.yaml');
-      var prefix = filename == 'app' ? '' : '$filename.';
-      _dynamicLoadMap(prefix, loadYaml(raw));
-    }
-
-    return true;
+  Future<void> load(Locale locale) async {
+    final fileName = 'lang/$locale/app.g.json';
+    final contents = await rootBundle.loadString(fileName);
+    final Map<String, dynamic> data = jsonDecode(contents);
+    _data = data.cast<String, String>();
   }
 
-  String t(String key) {
-    return translate(key);
+  String translate(String key, [List<dynamic>? args]) {
+    final value = _data[key] ?? key;
+    return args == null ? value : sprintf(value, args);
   }
 
-  String? tf(String key, List<dynamic> data) {
-    return translatef(key, data);
-  }
-
-  // This method will be called from every widgets which needs a localized text
-  String translate(String key) {
-    return _localizedStrings[key] ?? key;
-  }
-
-  String? translatef(String key, List<dynamic> data) {
-    return sprintf(translate(key), data);
-  }
-
-  void _dynamicLoadMap(String prefix, YamlMap data) {
-    data.forEach((key, value) {
-      if (value is YamlMap) {
-        _dynamicLoadMap('$prefix$key.', value);
-      } else {
-        _localizedStrings[prefix + key] = value.toString();
-      }
-    });
+  static String t(String key, [List<dynamic>? args]) {
+    return instance.translate(key, args);
   }
 }
 
 // LocalizationsDelegate is a factory for a set of localized resources
 // In this case, the localized strings will be gotten in an AppLocalizations object
-class _AppLocalizationsDelegate extends LocalizationsDelegate<Local> {
-  const _AppLocalizationsDelegate();
+class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
+  const _LocalizationsDelegate();
 
   @override
   bool isSupported(Locale locale) {
-    return LanguageProvider.supports
-        .map((Locale each) => each.languageCode)
-        .contains(locale.languageCode);
+    return true;
+  }
+
+  // already set in [LanguageProvider.localResolutionCallback]
+  @override
+  Future<Translator> load(Locale locale) async {
+    await Translator.instance.load(locale);
+    return Translator.instance;
   }
 
   @override
-  Future<Local> load(Locale locale) async {
-    // AppLocalizations class is where the YAML loading actually runs
-    var localizations = Local(locale);
-    await localizations.load();
-    return localizations;
-  }
-
-  @override
-  bool shouldReload(_AppLocalizationsDelegate old) => false;
+  bool shouldReload(_LocalizationsDelegate old) => false;
 }

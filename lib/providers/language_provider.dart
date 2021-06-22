@@ -14,13 +14,12 @@ class LanguageProvider extends ChangeNotifier {
   // List of all supported locales
   static const delegates = [
     // A class which loads the translations from YAML files
-    Local.delegate,
+    Translator.delegate,
     // Built-in localization of basic text for Material widgets
     // (means those default Material widget such as alert dialog icon text)
     GlobalMaterialLocalizations.delegate,
     // Built-in localization for text direction LTR/RTL
     GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
   ];
 
   static const Locale defaultLocale = Locale('zh', 'TW');
