@@ -1,0 +1,30 @@
+targets:
+  $default:
+    builders:
+      possystem|languageBuilder:
+        enabled: true
+      possystem|languageSaver:
+        enabled: true
+    sources:
+      - lang/**
+      - test/**
+      - lib/**
+
+builders:
+  languageBuilder:
+    import: "package:possystem/builder/language_builder.dart"
+    builder_factories: ["buildLanguage"]
+    build_extensions: { ".yaml": [".json"] }
+    build_to: cache
+    runs_before: [possystem|languageSaver]
+    defaults:
+      generate_for:
+        - lang/**
+  languageSaver:
+    import: "package:possystem/builder/language_saver.dart"
+    builder_factories: ["buildSaver"]
+    build_extensions: { ".yaml": [".g.json"] }
+    build_to: source
+    defaults:
+      generate_for:
+        - lang/**/app.yaml

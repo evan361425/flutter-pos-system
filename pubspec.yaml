@@ -5,6 +5,10 @@ description: POS system by Flutter
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
+author: Shueh Chou Lu <evanlu361425@gmail.com>
+
+homepage: https://github.com/evan361425/flutter-pos-system
+
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -53,8 +57,9 @@ dev_dependencies:
   # code style
   pedantic: ^1.11.0
 
-  # TODO: build json from yaml for performance
+  # build language json file from yaml
   yaml: ^3.1.0
+  build: ^2.0.2
 
   # mock object
   mockito: ^5.0.9
@@ -71,8 +76,3 @@ flutter:
     - assets/
     - lang/zh-TW/
     - lang/en-US/
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: assets/logo.png
