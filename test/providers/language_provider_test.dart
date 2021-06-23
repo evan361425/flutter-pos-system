@@ -58,12 +58,14 @@ void main() {
     });
   });
 
-  group('#localResolutionCallback', () {
+  group('#localeListResolutionCallback', () {
     test('should get default locale', () {
-      final result1 = language.localResolutionCallback(null, []);
+      final result1 = language.localeListResolutionCallback(null, []);
       expect(result1, equals(LanguageProvider.defaultLocale));
 
-      final result2 = language.localResolutionCallback(Locale('zh'), [
+      final result2 = language.localeListResolutionCallback([
+        Locale('zh'),
+      ], [
         Locale('en', 'US'),
         Locale('en', 'CA'),
       ]);
@@ -72,26 +74,44 @@ void main() {
 
     test('should get support locale', () {
       expect(
-          language.localResolutionCallback(Locale('ab', 'CD'), [
+          language.localeListResolutionCallback([
+            Locale('ab', 'CD'),
+          ], [
             Locale('zh', 'TW'),
             Locale('AB', 'CD'),
           ]),
           equals(Locale('AB', 'CD')));
       expect(
-          language.localResolutionCallback(Locale('ab', 'CD'), [
+          language.localeListResolutionCallback([
+            Locale('ab', 'CD'),
+          ], [
             Locale('zh', 'TW'),
             Locale('AB', 'CD'),
             Locale('ab', 'cd'),
           ]),
           equals(Locale('ab', 'cd')));
       expect(
-          language.localResolutionCallback(Locale('ab', 'CD'), [
+          language.localeListResolutionCallback([
+            Locale('ab', 'CD'),
+          ], [
             Locale('zh', 'TW'),
             Locale('ab', 'cd'),
             Locale('AB', 'cd'),
             Locale('ab', 'CD'),
           ]),
           equals(Locale('ab', 'CD')));
+    });
+
+    test('should always use first locale', () {
+      expect(
+          language.localeListResolutionCallback([
+            Locale('ab', 'CD'),
+            Locale('zh', 'TW'),
+          ], [
+            Locale('zh', 'TW'),
+            Locale('AB', 'CD'),
+          ]),
+          equals(Locale('AB', 'CD')));
     });
   });
 

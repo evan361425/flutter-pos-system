@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/localizations.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/services/cache.dart';
 
 class LanguageProvider extends ChangeNotifier {
@@ -39,11 +39,11 @@ class LanguageProvider extends ChangeNotifier {
     _locale = parsed ?? LanguageProvider.defaultLocale;
   }
 
-  Locale localResolutionCallback(
-    Locale? locale,
+  Locale localeListResolutionCallback(
+    List<Locale>? locales,
     Iterable<Locale> supports,
   ) {
-    if (locale == null) return defaultLocale;
+    if (locales == null) return defaultLocale;
 
     Locale? _parse(bool Function(Locale) test) {
       try {
@@ -57,10 +57,17 @@ class LanguageProvider extends ChangeNotifier {
     }
 
     // check if the current device locale is supported or not
-    return _parse((e) => e == locale) ??
-        _parse((e) => e.languageCode == locale.languageCode) ??
-        _parse((e) => e.countryCode == locale.countryCode) ??
-        defaultLocale;
+    for (final locale in locales) {
+      final allowed = _parse((e) => e == locale) ??
+          _parse((e) => e.languageCode == locale.languageCode) ??
+          _parse((e) => e.countryCode == locale.countryCode);
+
+      if (allowed != null) {
+        return allowed;
+      }
+    }
+
+    return defaultLocale;
   }
 
   Future<void> setLocale(Locale locale) async {

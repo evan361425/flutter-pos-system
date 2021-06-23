@@ -6,7 +6,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/localizations.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';

@@ -5,7 +5,7 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/localizations.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
