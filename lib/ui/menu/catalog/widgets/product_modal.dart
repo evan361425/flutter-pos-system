@@ -5,14 +5,19 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/routes.dart';
 
 class ProductModal extends StatefulWidget {
   final ProductModel? product;
+  final CatalogModel catalog;
+  final bool isNew;
 
-  ProductModal({Key? key, required this.product}) : super(key: key);
-  bool get isNew => product == null;
+  ProductModal({
+    Key? key,
+    this.product,
+    required this.catalog,
+  })  : isNew = product == null,
+        super(key: key);
 
   @override
   _ProductModalState createState() => _ProductModalState();
@@ -76,16 +81,15 @@ class _ProductModalState extends State<ProductModal>
     final object = _parseObject();
 
     if (widget.isNew) {
-      final catalog = context.read<CatalogModel>();
       final product = ProductModel(
-        catalog: catalog,
-        index: catalog.newIndex,
+        catalog: widget.catalog,
+        index: widget.catalog.newIndex,
         name: object.name!,
         price: object.price!,
         cost: object.cost!,
       );
 
-      await catalog.setItem(product);
+      await widget.catalog.setItem(product);
       return product;
     } else {
       await widget.product!.update(object);
@@ -110,7 +114,7 @@ class _ProductModalState extends State<ProductModal>
     // go to product screen
     widget.isNew
         ? Navigator.of(context).popAndPushNamed(
-            MenuRoutes.product,
+            Routes.menuProduct,
             arguments: product,
           )
         : Navigator.of(context).pop();

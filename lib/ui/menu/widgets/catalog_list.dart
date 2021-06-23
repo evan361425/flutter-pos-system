@@ -26,8 +26,8 @@ class CatalogList extends StatelessWidget {
       ListTile(
         title: Text('排序產品種類'),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () =>
-            Navigator.of(context).pushReplacementNamed(Routes.menuReorder),
+        onTap: () => Navigator.of(context)
+            .pushReplacementNamed(Routes.menuCatalogReorder),
       ),
     ];
   }

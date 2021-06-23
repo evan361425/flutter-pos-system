@@ -6,10 +6,8 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
-
-import 'quantity_modal.dart';
 
 class IngredientExpansion extends StatefulWidget {
   IngredientExpansion({Key? key}) : super(key: key);
@@ -55,12 +53,10 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             // color: Theme.of(context).secondaryHeaderColor,
             icon: Icon(Icons.settings_sharp),
             label: Text('設定成份資料'),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                MenuRoutes.productIngredient,
-                arguments: ingredient,
-              );
-            },
+            onPressed: () => Navigator.of(context).pushNamed(
+              Routes.menuIngredient,
+              arguments: ingredient,
+            ),
           ),
         ),
       ),
@@ -70,31 +66,22 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           child: ElevatedButton.icon(
             icon: Icon(KIcons.add),
             label: Text('新增特殊份量'),
-            onPressed: () => _goToQuantityModel(ingredient: ingredient),
+            onPressed: () => Navigator.of(context).pushNamed(
+              Routes.menuQuantity,
+              arguments: ingredient,
+            ),
           ),
         ),
       ),
     ]);
   }
 
-  void _goToQuantityModel({
-    ProductQuantityModel? quantity,
-    required ProductIngredientModel ingredient,
-  }) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            QuantityModal(quantity: quantity, ingredient: ingredient),
-      ),
-    );
-  }
-
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
     final body = ingredient.items.map<Widget>((quantity) {
       return ListTile(
-        onTap: () => _goToQuantityModel(
-          quantity: quantity,
-          ingredient: quantity.ingredient,
+        onTap: () => Navigator.of(context).pushNamed(
+          Routes.menuQuantity,
+          arguments: quantity,
         ),
         title: Text(quantity.name),
         trailing: Text('${quantity.amount}'),

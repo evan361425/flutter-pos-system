@@ -3,7 +3,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 
 class ProductList extends StatelessWidget {
   final List<ProductModel> products;
@@ -29,7 +29,7 @@ class ProductList extends StatelessWidget {
         title: Text('變更名稱'),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-          MenuRoutes.productModal,
+          Routes.menuProductModal,
           arguments: product,
         ),
       ),
@@ -37,7 +37,7 @@ class ProductList extends StatelessWidget {
         title: Text('排序產品'),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.catalogReorder,
+            Routes.menuCatalogReorder,
             arguments: product.catalog),
       ),
     ];
@@ -45,7 +45,7 @@ class ProductList extends StatelessWidget {
 
   void _handleTap(BuildContext context, ProductModel product) {
     Navigator.of(context).pushNamed(
-      MenuRoutes.product,
+      Routes.menuProduct,
       arguments: product,
     );
   }

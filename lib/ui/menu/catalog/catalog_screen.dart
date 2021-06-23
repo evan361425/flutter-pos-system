@@ -10,14 +10,12 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final catalog = context.watch<CatalogModel>();
-    // Logger().d('${catalog.isReady ? 'Edit' : 'Create'} catalog');
 
     return FadeInTitleScaffold(
       leading: IconButton(
@@ -35,7 +33,8 @@ class CatalogScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
-          MenuRoutes.productModal,
+          Routes.menuProductModal,
+          arguments: catalog,
         ),
         tooltip: Translator.t('menu.catalog.add_product'),
         child: Icon(KIcons.add),
@@ -50,7 +49,7 @@ class CatalogScreen extends StatelessWidget {
         title: Text('變更名稱'),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-          MenuRoutes.catalogModal,
+          Routes.menuCatalogModal,
           arguments: catalog,
         ),
       ),
@@ -58,7 +57,7 @@ class CatalogScreen extends StatelessWidget {
         title: Text('排序產品'),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-            MenuRoutes.catalogReorder,
+            Routes.menuCatalogReorder,
             arguments: catalog),
       ),
     ];

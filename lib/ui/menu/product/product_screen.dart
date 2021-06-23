@@ -6,9 +6,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
@@ -34,7 +34,7 @@ class ProductScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
-          MenuRoutes.productIngredient,
+          Routes.menuIngredient,
           arguments: product,
         ),
         tooltip: Translator.t('menu.product.add_integredient'),
@@ -50,7 +50,7 @@ class ProductScreen extends StatelessWidget {
         title: Text('變更產品'),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-          MenuRoutes.productModal,
+          Routes.menuProductModal,
           arguments: product,
         ),
       ),

@@ -4,8 +4,8 @@ import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
-class QuantitySearchScaffold extends StatelessWidget {
-  QuantitySearchScaffold({Key? key, this.text}) : super(key: key);
+class ProductQuantitySearch extends StatelessWidget {
+  ProductQuantitySearch({Key? key, this.text}) : super(key: key);
 
   static final String tag = 'menu.poduct.quantity.search';
   final String? text;
@@ -20,7 +20,7 @@ class QuantitySearchScaffold extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialData: () async => QuantityRepo.instance.itemList,
-      heroTag: QuantitySearchScaffold.tag,
+      heroTag: ProductQuantitySearch.tag,
       text: text ?? '',
       hintText: '成份份量名稱，例如：少量',
       textCapitalization: TextCapitalization.words,

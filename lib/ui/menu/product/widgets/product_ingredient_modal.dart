@@ -11,16 +11,16 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_search_scaffold.dart';
+import 'package:possystem/routes.dart';
+import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
 
-class IngredientModal extends StatefulWidget {
+class ProductIngredientModal extends StatefulWidget {
   final ProductIngredientModel? ingredient;
   final ProductModel product;
 
   final bool isNew;
 
-  IngredientModal({
+  ProductIngredientModal({
     Key? key,
     this.ingredient,
     required this.product,
@@ -28,11 +28,11 @@ class IngredientModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _IngredientModalState createState() => _IngredientModalState();
+  _ProductIngredientModalState createState() => _ProductIngredientModalState();
 }
 
-class _IngredientModalState extends State<IngredientModal>
-    with ItemModal<IngredientModal> {
+class _ProductIngredientModalState extends State<ProductIngredientModal>
+    with ItemModal<ProductIngredientModal> {
   final _amountController = TextEditingController();
 
   String ingredientId = '';
@@ -76,7 +76,7 @@ class _IngredientModalState extends State<IngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        heroTag: IngredientSearchScaffold.tag,
+        heroTag: ProductIngredientSearch.tag,
         text: ingredientName,
         hintText: '成份名稱，起司',
         errorText: errorMessage,
@@ -161,7 +161,7 @@ class _IngredientModalState extends State<IngredientModal>
 
   Future<void> _selectIngredient(BuildContext context) async {
     final result = await Navigator.of(context).pushNamed(
-      MenuRoutes.productIngredientSearch,
+      Routes.menuIngredientSearch,
       arguments: ingredientName,
     );
 

@@ -11,16 +11,16 @@ import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/ui/menu/menu_routes.dart';
+import 'package:possystem/routes.dart';
 
-import 'quantity_search_scaffold.dart';
+import 'product_quantity_search.dart';
 
-class QuantityModal extends StatefulWidget {
+class ProductQuantityModal extends StatefulWidget {
   final ProductQuantityModel? quantity;
   final ProductIngredientModel ingredient;
 
   final bool isNew;
-  QuantityModal({
+  ProductQuantityModal({
     Key? key,
     this.quantity,
     required this.ingredient,
@@ -28,11 +28,11 @@ class QuantityModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _QuantityModalState createState() => _QuantityModalState();
+  _ProductQuantityModalState createState() => _ProductQuantityModalState();
 }
 
-class _QuantityModalState extends State<QuantityModal>
-    with ItemModal<QuantityModal> {
+class _ProductQuantityModalState extends State<ProductQuantityModal>
+    with ItemModal<ProductQuantityModal> {
   final _amountController = TextEditingController();
   final _priceController = TextEditingController();
   final _costController = TextEditingController();
@@ -80,7 +80,7 @@ class _QuantityModalState extends State<QuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        heroTag: QuantitySearchScaffold.tag,
+        heroTag: ProductQuantitySearch.tag,
         text: quantityName,
         hintText: '成份份量名稱，例如：少量',
         errorText: errorMessage,
@@ -193,7 +193,7 @@ class _QuantityModalState extends State<QuantityModal>
 
   Future<void> _selectQuantity(BuildContext context) async {
     final quantity = await Navigator.of(context).pushNamed(
-      MenuRoutes.productQuantitySearch,
+      Routes.menuQuantitySearch,
       arguments: quantityName,
     );
 

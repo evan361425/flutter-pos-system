@@ -4,8 +4,8 @@ import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 
-class IngredientSearchScaffold extends StatelessWidget {
-  IngredientSearchScaffold({Key? key, this.text}) : super(key: key);
+class ProductIngredientSearch extends StatelessWidget {
+  ProductIngredientSearch({Key? key, this.text}) : super(key: key);
 
   static final String tag = 'menu.poduct.ingredient.search';
   final String? text;
@@ -20,7 +20,7 @@ class IngredientSearchScaffold extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialData: () async => StockModel.instance.itemList,
-      heroTag: IngredientSearchScaffold.tag,
+      heroTag: ProductIngredientSearch.tag,
       text: text ?? '',
       hintText: '成份名稱，起司',
       textCapitalization: TextCapitalization.words,
