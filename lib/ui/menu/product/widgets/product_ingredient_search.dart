@@ -7,7 +7,6 @@ import 'package:possystem/models/repository/stock_model.dart';
 class ProductIngredientSearch extends StatelessWidget {
   ProductIngredientSearch({Key? key, this.text}) : super(key: key);
 
-  static final String tag = 'menu.poduct.ingredient.search';
   final String? text;
   final scaffold = GlobalKey<SearchScaffoldState>();
 
@@ -20,7 +19,6 @@ class ProductIngredientSearch extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialData: () async => StockModel.instance.itemList,
-      heroTag: ProductIngredientSearch.tag,
       text: text ?? '',
       hintText: '成份名稱，起司',
       textCapitalization: TextCapitalization.words,

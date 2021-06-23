@@ -4,7 +4,6 @@ import 'package:possystem/constants/icons.dart';
 
 class SearchBar extends StatefulWidget {
   final int maxLength;
-  final String heroTag;
   final String text;
   final String helperText;
   final String hintText;
@@ -17,7 +16,6 @@ class SearchBar extends StatefulWidget {
     Key? key,
     required this.onChanged,
     this.text = '',
-    required this.heroTag,
     this.hintText = '',
     this.labelText = '',
     this.helperText = '',
@@ -44,33 +42,30 @@ class SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: widget.heroTag,
-      child: TextField(
-        controller: controller,
-        maxLength: widget.maxLength,
-        autofocus: true,
-        onChanged: _onChanged,
-        textCapitalization: widget.textCapitalization,
-        textInputAction: TextInputAction.done,
-        onSubmitted: _onChanged,
-        decoration: InputDecoration(
-          isDense: true,
-          suffix: isEmpty
-              ? null
-              : IconButton(
-                  onPressed: () {
-                    controller.clear();
-                    _onChanged('');
-                  },
-                  icon: Icon(KIcons.clear),
-                ),
-          hintText: widget.hintText,
-          counterText: '',
-        ),
-        // padding: EdgeInsets.zero,
-        // placeholder: widget.hintText,
+    return TextField(
+      controller: controller,
+      maxLength: widget.maxLength,
+      autofocus: true,
+      onChanged: _onChanged,
+      textCapitalization: widget.textCapitalization,
+      textInputAction: TextInputAction.done,
+      onSubmitted: _onChanged,
+      decoration: InputDecoration(
+        isDense: true,
+        suffix: isEmpty
+            ? null
+            : IconButton(
+                onPressed: () {
+                  controller.clear();
+                  _onChanged('');
+                },
+                icon: Icon(KIcons.clear),
+              ),
+        hintText: widget.hintText,
+        counterText: '',
       ),
+      // padding: EdgeInsets.zero,
+      // placeholder: widget.hintText,
     );
   }
 

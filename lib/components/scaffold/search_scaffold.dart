@@ -7,8 +7,6 @@ import 'package:possystem/helpers/logger.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   final Future<List<T>> Function(String) handleChanged;
-
-  final String heroTag;
   final int maxLength;
   final String text;
   final String helperText;
@@ -18,13 +16,13 @@ class SearchScaffold<T> extends StatefulWidget {
   final Future<List<T>> Function() initialData;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
+
   const SearchScaffold({
     Key? key,
     required this.handleChanged,
     required this.itemBuilder,
     required this.emptyBuilder,
     required this.initialData,
-    required this.heroTag,
     this.text = '',
     this.hintText = '',
     this.labelText = '',
@@ -57,7 +55,6 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
         ),
         title: SearchBar(
           key: searchBar,
-          heroTag: widget.heroTag,
           onChanged: (text) {
             setState(() {
               list.clear();
@@ -74,9 +71,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           hideCounter: true,
         ),
       ),
-      body: SafeArea(
-        child: isSearching ? CircularLoading() : _body(context),
-      ),
+      body: isSearching ? CircularLoading() : _body(context),
     );
   }
 

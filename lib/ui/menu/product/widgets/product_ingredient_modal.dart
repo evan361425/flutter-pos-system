@@ -12,7 +12,6 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
 
 class ProductIngredientModal extends StatefulWidget {
   final ProductIngredientModel? ingredient;
@@ -76,7 +75,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        heroTag: ProductIngredientSearch.tag,
         text: ingredientName,
         hintText: '成份名稱，起司',
         errorText: errorMessage,

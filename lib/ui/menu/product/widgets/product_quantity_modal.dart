@@ -13,8 +13,6 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 
-import 'product_quantity_search.dart';
-
 class ProductQuantityModal extends StatefulWidget {
   final ProductQuantityModel? quantity;
   final ProductIngredientModel ingredient;
@@ -80,7 +78,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        heroTag: ProductQuantitySearch.tag,
         text: quantityName,
         hintText: '成份份量名稱，例如：少量',
         errorText: errorMessage,

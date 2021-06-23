@@ -20,7 +20,6 @@ class ProductQuantitySearch extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialData: () async => QuantityRepo.instance.itemList,
-      heroTag: ProductQuantitySearch.tag,
       text: text ?? '',
       hintText: '成份份量名稱，例如：少量',
       textCapitalization: TextCapitalization.words,

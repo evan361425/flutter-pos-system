@@ -14,8 +14,7 @@ void main() {
             handleChanged: (text) => generator(),
             itemBuilder: itemBuilder,
             emptyBuilder: (_, text) => Text(text),
-            initialData: generator,
-            heroTag: 'hi'));
+            initialData: generator));
     await tester.pumpWidget(widget);
 
     expect(find.byType(CircularLoading), findsOneWidget);

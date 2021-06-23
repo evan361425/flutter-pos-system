@@ -6,8 +6,7 @@ import 'package:possystem/constants/icons.dart';
 void main() {
   testWidgets('should show cancel in texting', (WidgetTester tester) async {
     late String currentText;
-    final searchBar =
-        SearchBar(onChanged: (text) => currentText = text, heroTag: 'hi');
+    final searchBar = SearchBar(onChanged: (text) => currentText = text);
 
     await tester.pumpWidget(Material(child: MaterialApp(home: searchBar)));
     await tester.enterText(find.byType(TextField), 'hello world');
