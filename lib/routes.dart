@@ -31,7 +31,7 @@ import 'ui/order/order_screen.dart';
 import 'ui/printer/printer_screen.dart';
 import 'ui/setting/setting_screen.dart';
 import 'ui/setting/widgets/language_modal.dart';
-import 'ui/stock/ingredient/ingredient_screen.dart';
+import 'ui/stock/widgets/ingredient_modal.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
 import 'ui/stock/quantity/widgets/quantity_modal.dart';
 import 'ui/stock/stock_batch/stock_batch_modal.dart';
@@ -130,7 +130,7 @@ class Routes {
         ProductQuantitySearch(text: arg<String?>(context)),
     // stock
     stockIngredient: (context) =>
-        IngredientScreen(ingredient: arg<IngredientModel?>(context)),
+        IngredientModal(ingredient: arg<IngredientModel?>(context)),
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) =>
         QuantityModal(quantity: arg<QuantityModel?>(context)),
