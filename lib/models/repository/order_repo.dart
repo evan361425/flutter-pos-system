@@ -63,8 +63,9 @@ class OrderRepo {
 
   Future<List<OrderObject>> getOrderBetween(
     DateTime start,
-    DateTime end,
-  ) async {
+    DateTime end, [
+    int offset = 0,
+  ]) async {
     final rows = await Database.instance.query(
       Tables.order,
       where: 'createdAt BETWEEN ? AND ?',
@@ -74,6 +75,7 @@ class OrderRepo {
       ],
       orderBy: 'createdAt desc',
       limit: 10,
+      offset: offset,
     );
 
     return rows.map((row) => OrderObject.build(row)).toList();

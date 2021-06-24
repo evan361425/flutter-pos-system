@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:loadmore/loadmore.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 import 'order_modal.dart';
 
 class OrderList extends StatefulWidget {
-  OrderList({Key? key}) : super(key: key);
+  OrderList({Key? key, required this.handleLoad}) : super(key: key);
+
+  final Future<List<OrderObject>> Function(Map<String, Object>, int) handleLoad;
 
   @override
   OrderListState createState() => OrderListState();
 }
 
 class OrderListState extends State<OrderList> {
-  late List<OrderObject> _data;
-  late OrderListStatus _status = OrderListStatus.concealing;
+  final List<OrderObject> _data = [];
+  late Map<String, Object> _params;
+  num totalPrice = 0;
+  OrderListStatus _status = OrderListStatus.concealing;
+  bool isFinish = false;
 
   set status(OrderListStatus status) => setState(() => _status = status);
 
@@ -31,19 +38,61 @@ class OrderListState extends State<OrderList> {
       return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.muted);
     }
 
-    return ListView.builder(
-      itemBuilder: (context, index) => _orderTile(_data[index]),
-      itemCount: _data.length,
+    final revenue = CurrencyProvider.instance.numToString(totalPrice);
+
+    return Column(
+      children: [
+        Center(
+          child: Text('總收入：$revenue', style: Theme.of(context).textTheme.muted),
+        ),
+        Expanded(
+          child: LoadMore(
+              onLoadMore: _handleLoad,
+              isFinish: isFinish,
+              textBuilder: (status) {
+                switch (status) {
+                  case LoadMoreStatus.idle:
+                    return 'Loading...';
+                  case LoadMoreStatus.loading:
+                    return '...';
+                  case LoadMoreStatus.fail:
+                    return 'failed';
+                  case LoadMoreStatus.nomore:
+                    return 'finish';
+                }
+              },
+              child: ListView.builder(
+                itemBuilder: (context, index) => _orderTile(_data[index]),
+                itemCount: _data.length,
+              )),
+        ),
+      ],
     );
   }
 
-  Future<void> load(Future<List<OrderObject>> loader) {
+  void reset(Map<String, Object> params, num totalPrice) {
+    this.totalPrice = totalPrice;
+    _params = params;
+    _data.clear();
     status = OrderListStatus.loading;
+    _handleLoad();
+  }
 
-    return loader.then((data) => setState(() {
-          _status = OrderListStatus.revealing;
-          _data = data;
-        }));
+  Future<bool> _handleLoad() async {
+    try {
+      final data = await widget.handleLoad(_params, _data.length);
+      _data.addAll(data);
+
+      setState(() {
+        _status = OrderListStatus.revealing;
+        isFinish = data.isEmpty;
+      });
+
+      return true;
+    } catch (e) {
+      error(e.toString(), 'analysis.load.error');
+      return false;
+    }
   }
 
   void hide() => status = OrderListStatus.concealing;
