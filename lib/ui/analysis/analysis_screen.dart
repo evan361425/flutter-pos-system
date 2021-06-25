@@ -36,10 +36,11 @@ class AnalysisScreen extends StatelessWidget {
     final end = DateTime(day.year, day.month, day.day + 1);
     final start = DateTime(day.year, day.month, day.day);
 
-    OrderRepo.instance.getMetricBetween(start, end).then((value) {
+    OrderRepo.instance.getMetricBetween(start, end).then((result) {
       orderListState.currentState!.reset(
         {'start': start, 'end': end},
-        value['revenue'] as num,
+        totalPrice: result['totalPrice'] as num,
+        totalCount: result['count'] as int,
       );
     });
   }

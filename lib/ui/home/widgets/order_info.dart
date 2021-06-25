@@ -64,7 +64,7 @@ class OrderInfoState extends State<OrderInfo> {
     final result = await OrderRepo.instance.getMetricBetween();
 
     setState(() {
-      revenue = CurrencyProvider.instance.numToString(result['revenue']!);
+      revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);
       count = result['count'] as int?;
     });
   }

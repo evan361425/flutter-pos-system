@@ -46,7 +46,7 @@ void main() {
 
       final result = await orders.getMetricBetween();
 
-      expect(result, equals({'revenue': 0, 'count': 0}));
+      expect(result, equals({'totalPrice': 0, 'count': 0}));
     });
 
     test('#getMetricBetween', () async {
@@ -62,7 +62,7 @@ void main() {
       final result =
           await orders.getMetricBetween(DateTime.now(), DateTime.now());
 
-      expect(result, equals({'revenue': 1, 'count': 2}));
+      expect(result, equals({'totalPrice': 1, 'count': 2}));
     });
 
     test('#getOrderBetween', () async {

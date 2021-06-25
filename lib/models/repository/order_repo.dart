@@ -49,14 +49,14 @@ class OrderRepo {
     final finish = end == null ? 9999999999 : Util.toUTC(now: end);
 
     final result = await Database.instance.query(Tables.order,
-        columns: ['COUNT(*) count', 'SUM(totalPrice) revenue'],
+        columns: ['COUNT(*) count', 'SUM(totalPrice) totalPrice'],
         where: 'createdAt BETWEEN ? AND ?',
         whereArgs: [begin, finish]);
 
     final row = result.isEmpty ? <String, Object?>{} : result[0];
 
     return {
-      'revenue': row['revenue'] as num? ?? 0,
+      'totalPrice': row['totalPrice'] as num? ?? 0,
       'count': row['count'] as num? ?? 0,
     };
   }

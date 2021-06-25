@@ -17,6 +17,7 @@ class MetaBlock extends StatelessWidget {
   static Widget? withString(
     BuildContext context,
     Iterable<String> data, {
+    TextStyle? textStyle,
     String? emptyText,
   }) {
     if (data.isNotEmpty) {
@@ -34,7 +35,7 @@ class MetaBlock extends StatelessWidget {
         text: TextSpan(
           children: children,
           // disable parent text style
-          style: Theme.of(context).textTheme.bodyText1,
+          style: textStyle ?? Theme.of(context).textTheme.bodyText1,
         ),
       );
     } else if (emptyText != null) {

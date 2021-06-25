@@ -27,6 +27,7 @@ class OrderListState extends State<OrderList> {
   bool? _isLoading;
 
   num totalPrice = 0;
+  int totalCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +39,15 @@ class OrderListState extends State<OrderList> {
       return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.muted);
     }
 
-    final revenue = CurrencyProvider.instance.numToString(totalPrice);
+    final totalPrice = CurrencyProvider.instance.numToString(this.totalPrice);
 
     return Column(
       children: [
         Center(
-          child: Text('總收入：$revenue', style: Theme.of(context).textTheme.muted),
+          child: MetaBlock.withString(
+            context,
+            ['總收入：$totalPrice', '總單數：$totalCount'],
+          ),
         ),
         Expanded(
           child: SmartRefresher(
@@ -51,23 +55,7 @@ class OrderListState extends State<OrderList> {
               enablePullUp: true,
               enablePullDown: false,
               onLoading: () => _handleLoad(),
-              footer: CustomFooter(
-                height: 30,
-                onClick: () => setState(() {
-                  _data.clear();
-                  _isLoading = true;
-                }),
-                builder: (BuildContext context, LoadStatus? mode) {
-                  if (mode == LoadStatus.loading) {
-                    return CircularLoading();
-                  } else if (mode == LoadStatus.failed) {
-                    Center(child: Text('糟糕！發生錯誤了'));
-                  } else if (mode == LoadStatus.canLoading) {
-                    return Center(child: Text('放開以讀取更多'));
-                  }
-                  return Container();
-                },
-              ),
+              footer: _footerBuilder(),
               child: ListView.builder(
                 itemBuilder: (context, index) => _itemBuilder(_data[index]),
                 itemCount: _data.length,
@@ -77,14 +65,37 @@ class OrderListState extends State<OrderList> {
     );
   }
 
-  void reset(Map<String, Object> params, num totalPrice) {
-    this.totalPrice = totalPrice;
-    setState(() {
-      _params = params;
-      _data.clear();
-      _isLoading = true;
-    });
-    _handleLoad();
+  void reset(
+    Map<String, Object> params, {
+    required num totalPrice,
+    required int totalCount,
+  }) =>
+      setState(() {
+        this.totalPrice = totalPrice;
+        this.totalCount = totalCount;
+        _params = params;
+        _data.clear();
+        _isLoading = true;
+        _handleLoad();
+      });
+
+  CustomFooter _footerBuilder() {
+    return CustomFooter(
+      height: 30,
+      onClick: () => setState(() {
+        _data.clear();
+        _isLoading = true;
+        _handleLoad();
+      }),
+      builder: (BuildContext context, LoadStatus? mode) {
+        if (mode == LoadStatus.loading || mode == LoadStatus.canLoading) {
+          return CircularLoading();
+        } else if (mode == LoadStatus.failed) {
+          Center(child: Text('糟糕！發生錯誤了'));
+        }
+        return Container();
+      },
+    );
   }
 
   Future<void> _handleLoad() async {

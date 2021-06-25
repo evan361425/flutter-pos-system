@@ -48,6 +48,13 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       startingDayOfWeek: StartingDayOfWeek.monday,
       rangeSelectionMode: RangeSelectionMode.disabled,
       locale: _locale.toString(),
+      // header
+      headerStyle: HeaderStyle(formatButtonShowsNext: false),
+      availableCalendarFormats: {
+        CalendarFormat.month: '月',
+        CalendarFormat.twoWeeks: '雙週',
+        CalendarFormat.week: '單週',
+      },
       // no need holiday/weekend days
       holidayPredicate: (day) => false,
       weekendDays: const [],
@@ -82,6 +89,8 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   Widget? _badgeBuilder(BuildContext context, DateTime day, List<Null> value) {
     if (value.isEmpty) return null;
 
+    final length = value.length;
+
     return Positioned(
       right: 0,
       bottom: 0,
@@ -91,7 +100,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
         color: Colors.cyan,
         child: Padding(
           padding: const EdgeInsets.all(6.0),
-          child: Text(value.length.toString()),
+          child: Text(
+            length > 99 ? '99+' : length.toString(),
+            style: const TextStyle(fontSize: 12.0),
+          ),
         ),
       ),
     );
