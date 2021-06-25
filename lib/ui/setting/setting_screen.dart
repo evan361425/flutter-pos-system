@@ -43,14 +43,8 @@ class SettingScreen extends StatelessWidget {
             subtitle:
                 Text(LanguageModal.LanguageName[language.locale.toString()]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () async {
-              final selected =
-                  await Navigator.of(context).pushNamed(Routes.settingLanguage);
-
-              if (selected != null && selected != language.locale) {
-                await language.setLocale(selected as Locale);
-              }
-            },
+            onTap: () =>
+                Navigator.of(context).pushNamed(Routes.settingLanguage),
           ),
         ],
       ),

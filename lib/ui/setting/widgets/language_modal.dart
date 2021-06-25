@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class LanguageModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final current = context.read<LanguageProvider>().locale;
+    final language = context.watch<LanguageProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -23,8 +23,13 @@ class LanguageModal extends StatelessWidget {
 
           return CardTile(
             title: Text(LanguageName[locale.toString()]!),
-            trailing: current == locale ? Icon(Icons.check_sharp) : null,
-            onTap: () => Navigator.of(context).pop(locale),
+            trailing:
+                language.locale == locale ? Icon(Icons.check_sharp) : null,
+            onTap: () async {
+              if (locale != language.locale) {
+                await language.setLocale(locale);
+              }
+            },
           );
         },
         itemCount: LanguageProvider.supports.length,

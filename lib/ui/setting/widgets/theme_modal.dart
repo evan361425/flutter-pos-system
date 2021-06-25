@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class ThemeModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final current = context.read<ThemeProvider>().mode;
+    final theme = context.watch<ThemeProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -19,12 +19,16 @@ class ThemeModal extends StatelessWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          final theme = ThemeList[index];
+          final mode = ThemeList[index];
 
           return CardTile(
-            title: Text(ThemeName[theme]!),
-            trailing: current == theme ? Icon(Icons.check_sharp) : null,
-            onTap: () => Navigator.of(context).pop(theme),
+            title: Text(ThemeName[mode]!),
+            trailing: mode == theme.mode ? Icon(Icons.check_sharp) : null,
+            onTap: () async {
+              if (mode != theme.mode) {
+                await theme.setMode(mode);
+              }
+            },
           );
         },
         itemCount: ThemeList.length,
