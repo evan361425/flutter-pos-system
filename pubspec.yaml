@@ -39,6 +39,7 @@ dependencies:
   sqflite: ^2.0.0+3
   sembast: ^3.0.3
   shared_preferences: ^2.0.6
+  upgrader: ^3.3.1
 
   # components
   flutter_slidable: ^0.6.0
