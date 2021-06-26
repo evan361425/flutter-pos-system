@@ -4,8 +4,8 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
 
-class ProductSelection extends StatefulWidget {
-  const ProductSelection({
+class OrderProductList extends StatefulWidget {
+  const OrderProductList({
     Key? key,
     required this.catalog,
     required this.productsKey,
@@ -15,10 +15,10 @@ class ProductSelection extends StatefulWidget {
   final GlobalKey<CartProductListState> productsKey;
 
   @override
-  ProductSelectionState createState() => ProductSelectionState();
+  OrderProductListState createState() => OrderProductListState();
 }
 
-class ProductSelectionState extends State<ProductSelection> {
+class OrderProductListState extends State<OrderProductList> {
   CatalogModel? _catalog;
 
   set catalog(CatalogModel catalog) => setState(() => _catalog = catalog);

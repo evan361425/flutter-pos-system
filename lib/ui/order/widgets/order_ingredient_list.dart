@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
-import 'package:possystem/constants/constant.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
-class IngredientSelection extends StatefulWidget {
-  const IngredientSelection({Key? key}) : super(key: key);
+class OrderIngredientList extends StatefulWidget {
+  final bool isPortrait;
+
+  const OrderIngredientList({
+    Key? key,
+    required this.isPortrait,
+  }) : super(key: key);
 
   @override
-  _IngredientSelectionState createState() => _IngredientSelectionState();
+  _OrderIngredientListState createState() => _OrderIngredientListState();
 }
 
-class _IngredientSelectionState extends State<IngredientSelection> {
+class _OrderIngredientListState extends State<OrderIngredientList> {
   static const QUANTITY_GROUP = 'order.quantities';
   static const INGREDIENT_GROUP = 'order.ingredients';
 
@@ -42,13 +45,10 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     selectedQuantityId =
         CartModel.instance.getSelectedQuantityId(selectedIngredient!);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _ingredientsRow(ingredients),
-        _quantitiesRow(),
-      ],
-    );
+    return _build([
+      _ingredientsRow(ingredients),
+      _quantitiesRow(),
+    ]);
   }
 
   @override
@@ -69,27 +69,24 @@ class _IngredientSelectionState extends State<IngredientSelection> {
     );
   }
 
-  Widget _emptyWidget(BuildContext context, String ingredientMessage) {
-    final textTheme = Theme.of(context).textTheme;
-    final style = textTheme.bodyText1!.copyWith(color: textTheme.muted.color);
-
-    Widget mockRadioText(String text) {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.all(kSpacing2),
-        child: Text(text, style: style),
-      );
-    }
-
-    selectedIngredient = null;
-
+  Widget _build(List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SingleRowWrap(children: <Widget>[mockRadioText(ingredientMessage)]),
-        SingleRowWrap(children: <Widget>[mockRadioText('請選擇成份來設定份量')]),
-      ],
+      children: children,
     );
+  }
+
+  Widget _emptyWidget(BuildContext context, String ingredientMessage) {
+    selectedIngredient = null;
+
+    return _build([
+      SingleRowWrap(
+        children: <Widget>[RadioText.empty(ingredientMessage)],
+      ),
+      SingleRowWrap(
+        children: <Widget>[RadioText.empty('請選擇成份來設定份量')],
+      ),
+    ]);
   }
 
   Widget _ingredientsRow(Iterable<ProductIngredientModel> ingredients) {
@@ -109,9 +106,11 @@ class _IngredientSelectionState extends State<IngredientSelection> {
   void _listener() => setState(() {});
 
   Widget _quantitiesRow() {
+    RadioText.clearSelected(QUANTITY_GROUP);
+
     return SingleRowWrap(children: <Widget>[
       _quantityDefaultOption(),
-      for (var quantity in selectedIngredient!.items)
+      for (final quantity in selectedIngredient!.items)
         RadioText(
           onSelected: () {
             final ingredient = OrderIngredientModel(

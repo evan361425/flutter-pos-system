@@ -20,16 +20,44 @@ class AnalysisScreen extends StatelessWidget {
           icon: Icon(KIcons.back),
         ),
       ),
-      body: Column(children: [
-        CalendarWrapper(
-          handleDaySelected: _handleDaySelected,
-          searchCountInMonth: _searchCountInMonth,
+      body: OrientationBuilder(
+          builder: (_, orientation) => orientation == Orientation.portrait
+              ? _buildPortrait()
+              : _buildLandscape()),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: CalendarWrapper(
+            isPortrait: false,
+            handleDaySelected: _handleDaySelected,
+            searchCountInMonth: _searchCountInMonth,
+          ),
         ),
         Expanded(
-          child: OrderList(key: orderListState, handleLoad: _handleLoad),
+          child: Center(
+            child: OrderList(key: orderListState, handleLoad: _handleLoad),
+          ),
         ),
-      ]),
+      ],
     );
+  }
+
+  Widget _buildPortrait() {
+    return Column(children: [
+      CalendarWrapper(
+        isPortrait: true,
+        handleDaySelected: _handleDaySelected,
+        searchCountInMonth: _searchCountInMonth,
+      ),
+      Expanded(
+        child: OrderList(key: orderListState, handleLoad: _handleLoad),
+      ),
+    ]);
   }
 
   void _handleDaySelected(DateTime day) {

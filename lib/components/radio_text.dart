@@ -4,7 +4,7 @@ import 'package:possystem/constants/constant.dart';
 typedef DeepFunction = void Function(void Function());
 
 class RadioText extends StatefulWidget {
-  static final _groups = <String, _Item>{};
+  static final _groups = <String, _Group>{};
 
   final VoidCallback onSelected;
   final Widget child;
@@ -21,13 +21,21 @@ class RadioText extends StatefulWidget {
   }) : super(key: key) {
     // if not set, initialize a new one
     if (_groups[groupId] == null) {
-      _groups[groupId] = _Item(isSelected == false ? null : value);
+      _groups[groupId] = _Group(isSelected == false ? null : value);
     } else if (isSelected == true && !group.isSelect(value)) {
       // if specific setting, update previous one to unchecked
       group.select(value);
     }
   }
-  _Item get group => _groups[groupId]!;
+
+  static Widget empty([String? text]) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+      child: Text(text ?? ''),
+    );
+  }
+
+  _Group get group => _groups[groupId]!;
 
   bool get isSelected => group.isSelect(value);
 
@@ -35,7 +43,7 @@ class RadioText extends StatefulWidget {
   _RadioTextState createState() => _RadioTextState();
 
   void dispose() {
-    group.removeElement(value);
+    group.removeItem(value);
 
     if (group.isEmpty) {
       _groups.remove(groupId);
@@ -52,26 +60,26 @@ class RadioText extends StatefulWidget {
   }
 }
 
-class _Item {
+class _Group {
   String? _selected;
 
-  final _elements = <String, DeepFunction>{};
+  final _items = <String, DeepFunction>{};
 
-  _Item(this._selected);
+  _Group(this._selected);
 
-  bool get isEmpty => _elements.isEmpty;
+  bool get isEmpty => _items.isEmpty;
 
-  void addElement(String id, DeepFunction rebuilder) {
-    _elements[id] = rebuilder;
+  void addItem(String id, DeepFunction rebuilder) {
+    _items[id] = rebuilder;
   }
 
   bool isSelect(String value) => _selected == value;
 
-  void removeElement(String id) => _elements.remove(id);
+  void removeItem(String id) => _items.remove(id);
 
   void select(String? value) {
     _selected = value;
-    _elements.values.forEach((rebuilder) {
+    _items.values.forEach((rebuilder) {
       rebuilder(() {});
     });
   }
@@ -112,7 +120,7 @@ class _RadioTextState extends State<RadioText> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.group.addElement(widget.value, setState);
+    widget.group.addItem(widget.value, setState);
   }
 
   @override

@@ -12,11 +12,13 @@ class CalendarWrapper extends StatefulWidget {
   final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
 
   final void Function(DateTime month) handleDaySelected;
+  final bool isPortrait;
 
   CalendarWrapper({
     Key? key,
     required this.searchCountInMonth,
     required this.handleDaySelected,
+    required this.isPortrait,
   }) : super(key: key);
 
   @override
@@ -45,15 +47,16 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       lastDay: DateTime.now(),
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
+      shouldFillViewport: widget.isPortrait ? false : true,
       startingDayOfWeek: StartingDayOfWeek.monday,
       rangeSelectionMode: RangeSelectionMode.disabled,
       locale: _locale.toString(),
       // header
-      headerStyle: HeaderStyle(formatButtonShowsNext: false),
-      availableCalendarFormats: {
-        CalendarFormat.month: '月',
-        CalendarFormat.twoWeeks: '雙週',
-        CalendarFormat.week: '單週',
+      headerStyle: HeaderStyle(formatButtonVisible: false),
+      availableCalendarFormats: const {
+        CalendarFormat.month: '',
+        CalendarFormat.twoWeeks: '',
+        CalendarFormat.week: '',
       },
       // no need holiday/weekend days
       holidayPredicate: (day) => false,
@@ -113,7 +116,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     setState(() {
       _selectedDay = day;
       _focusedDay = day;
-      _calendarFormat = CalendarFormat.week;
+
+      if (widget.isPortrait) {
+        _calendarFormat = CalendarFormat.week;
+      }
 
       widget.handleDaySelected(day);
     });
