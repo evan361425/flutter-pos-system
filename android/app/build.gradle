@@ -64,6 +64,12 @@ android {
       signingConfig signingConfigs.release
     }
 
+    staging {
+      minifyEnabled true
+      applicationIdSuffix ".staging"
+      signingConfig signingConfigs.release
+    }
+
     debug {
       applicationIdSuffix ".debug"
       debuggable true

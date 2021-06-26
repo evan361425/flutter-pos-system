@@ -47,6 +47,7 @@ app.*.map.json
 
 # Sensitive data
 google-services.json
+services.*.tar
 
 # mocks
 *.mocks.dart

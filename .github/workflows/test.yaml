@@ -30,7 +30,7 @@ jobs:
       # Get flutter dependencies.
       - name: Install dependencies
         run: |
-          flutter pub get && \
+          flutter pub get
           flutter pub run build_runner build
 
       # Statically analyze the Dart code for any errors.

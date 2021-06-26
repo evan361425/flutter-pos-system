@@ -74,6 +74,11 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> _initialization(BuildContext context) async {
+    if (kDebugMode) {
+      await analytics.setAnalyticsCollectionEnabled(false);
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
+
     await Database.instance.initialize();
     await Storage.instance.initialize();
     await Cache.instance.initialize();
