@@ -56,7 +56,7 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
       )).thenAnswer((_) => Future.value([
-            {'revenue': 1, 'count': 2},
+            {'totalPrice': 1, 'count': 2},
           ]));
 
       final result =
@@ -71,6 +71,7 @@ void main() {
         orderBy: anyNamed('orderBy'),
         // limit for latency
         limit: 10,
+        offset: 0,
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
       )).thenAnswer((_) => Future.value([]));

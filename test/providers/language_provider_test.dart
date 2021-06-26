@@ -63,6 +63,7 @@ void main() {
       final result1 = language.localeListResolutionCallback(null, []);
       expect(result1, equals(LanguageProvider.defaultLocale));
 
+      language = LanguageProvider();
       final result2 = language.localeListResolutionCallback([
         Locale('zh'),
       ], [
@@ -70,6 +71,20 @@ void main() {
         Locale('en', 'CA'),
       ]);
       expect(result2, equals(LanguageProvider.defaultLocale));
+    });
+
+    test('should ignore if already setting up', () {
+      final result1 = language.localeListResolutionCallback(
+        [Locale('en', 'US')],
+        [Locale('en', 'US')],
+      );
+      expect(result1, equals(Locale('en', 'US')));
+
+      final result2 = language.localeListResolutionCallback(
+        [Locale('zh', 'TW')],
+        [Locale('zh', 'TW')],
+      );
+      expect(result2, equals(Locale('en', 'US')));
     });
 
     test('should get support locale', () {
@@ -81,6 +96,8 @@ void main() {
             Locale('AB', 'CD'),
           ]),
           equals(Locale('AB', 'CD')));
+
+      language = LanguageProvider();
       expect(
           language.localeListResolutionCallback([
             Locale('ab', 'CD'),
@@ -90,6 +107,8 @@ void main() {
             Locale('ab', 'cd'),
           ]),
           equals(Locale('ab', 'cd')));
+
+      language = LanguageProvider();
       expect(
           language.localeListResolutionCallback([
             Locale('ab', 'CD'),
