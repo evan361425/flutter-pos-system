@@ -89,7 +89,8 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           // while data is loading:
           if (!snapshot.hasData) return CircularLoading();
           if (snapshot.hasError) {
-            error(snapshot.error.toString(), 'search.error');
+            error(
+                snapshot.error.toString(), 'search.error', snapshot.stackTrace);
             return Text('happen error');
           }
 

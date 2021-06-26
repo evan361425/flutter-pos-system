@@ -16,16 +16,14 @@ mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
       data.forEach((id, value) {
         try {
           addItem(buildModel(id, value as Map<String, Object?>));
-        } catch (e) {
-          error(e.toString(), '$itemCode.parse.error');
-          // print(stack);
+        } catch (e, stack) {
+          error(e.toString(), '$itemCode.parse.error', stack);
         }
       });
 
       notifyListeners();
     }).onError((e, stack) {
-      error(e.toString(), '$itemCode.fetch.error');
-      throw e!;
+      error(e.toString(), '$itemCode.fetch.error', stack);
     });
   }
 }

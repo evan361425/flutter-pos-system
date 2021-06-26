@@ -1,5 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/providers/currency_provider.dart';
@@ -27,7 +30,10 @@ class MyApp extends StatelessWidget {
       future: _initialization(context),
       initialData: false,
       builder: (context, snapshot) {
-        final prepared = snapshot.data!;
+        if (snapshot.hasError) {
+          print(snapshot.error);
+        }
+        final prepared = snapshot.data ?? false;
         final theme = context.watch<ThemeProvider>();
         final language = context.watch<LanguageProvider>();
         final currency = context.watch<CurrencyProvider>();

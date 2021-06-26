@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:possystem/my_app.dart';
 
 const _LEVEL_MAP = {
@@ -49,8 +50,13 @@ void warn(String message, String code, [Map<String, Object>? detail]) async {
 }
 
 /// level 1
-void error(String message, String code, [Map<String, Object>? detail]) async {
+Future<void> error(String message, String code, [StackTrace? stack]) async {
   if (LOG_LEVEL != 0) {
-    await _log(message, code, detail, 1);
+    await _log(message, code, null, 1);
+    await FirebaseCrashlytics.instance.recordError(
+      error,
+      stack,
+      reason: '$code - $message',
+    );
   }
 }

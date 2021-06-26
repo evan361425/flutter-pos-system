@@ -4,7 +4,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:possystem/ui/home/widgets/upgrade_alert.dart';
 
 class HomeScreen extends StatelessWidget {
   static final orderInfo = GlobalKey<OrderInfoState>();
@@ -70,32 +70,22 @@ class HomeScreen extends StatelessWidget {
 
   const HomeScreen({Key? key}) : super(key: key);
 
-  static const appcastURL =
-      'https://github.com/evan361425/flutter-pos-system/blob/master/appcast.xml';
-
   @override
   Widget build(BuildContext context) {
-    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
     return SafeArea(
       child: Scaffold(
         body: UpgradeAlert(
-          appcastConfig: cfg,
-          debugAlwaysUpgrade: true,
-          child: _body(context),
+          child: Padding(
+            padding: const EdgeInsets.all(kSpacing3),
+            child: Column(
+              children: [
+                OrderInfo(key: orderInfo),
+                const SizedBox(height: kSpacing2),
+                Expanded(child: _iconsWithTitle(context)),
+              ],
+            ),
+          ),
         ),
-      ),
-    );
-  }
-
-  Padding _body(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kSpacing3),
-      child: Column(
-        children: [
-          OrderInfo(key: orderInfo),
-          const SizedBox(height: kSpacing2),
-          Expanded(child: _iconsWithTitle(context)),
-        ],
       ),
     );
   }
