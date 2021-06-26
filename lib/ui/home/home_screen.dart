@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,12 +14,12 @@ class HomeScreen extends StatelessWidget {
     '店家設定': [
       _LabeledIcon(
         icon: Icons.collections_sharp,
-        label: '菜單',
+        label: 'menu',
         route: Routes.menu,
       ),
       _LabeledIcon(
         icon: Icons.store_sharp,
-        label: '庫存',
+        label: 'stock',
         route: Routes.stock,
       ),
       // _LabeledIcon(
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
       // ),
       _LabeledIcon(
         icon: Icons.exposure_sharp,
-        label: '份量',
+        label: 'quantities',
         route: Routes.stockQuantity,
       ),
       // _LabeledIcon(
@@ -52,7 +53,7 @@ class HomeScreen extends StatelessWidget {
     '其他': [
       _LabeledIcon(
         icon: Icons.equalizer_sharp,
-        label: '統計',
+        label: 'analysis',
         route: Routes.analysis,
       ),
       // _LabeledIcon(
@@ -62,7 +63,7 @@ class HomeScreen extends StatelessWidget {
       // ),
       _LabeledIcon(
         icon: Icons.settings_sharp,
-        label: '設定',
+        label: 'setting',
         route: Routes.setting,
       ),
     ],
@@ -129,7 +130,7 @@ class _LabeledIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(icon, size: 48.0, color: theme.primaryColorDark),
-          Text(label, style: TextStyle(color: theme.textTheme.muted.color)),
+          Text(tt(label), style: TextStyle(color: theme.textTheme.muted.color)),
         ],
       ),
     );

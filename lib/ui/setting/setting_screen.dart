@@ -9,15 +9,20 @@ import 'package:possystem/ui/setting/widgets/language_modal.dart';
 import 'package:possystem/ui/setting/widgets/theme_modal.dart';
 import 'package:provider/provider.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
+  @override
+  _SettingScreenState createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
-    final language = context.watch<LanguageProvider>();
+    final theme = context.read<ThemeProvider>();
+    final language = context.read<LanguageProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Translator.t('setting')),
+        title: Text(tt('setting')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -26,25 +31,24 @@ class SettingScreen extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           CardTile(
-            title: Text(Translator.t('setting.theme.title')),
-            subtitle: Text(ThemeModal.ThemeName[theme.mode]!),
+            title: Text(tt('setting.theme.title')),
+            subtitle:
+                Text(tt('setting.theme.${ThemeModal.ThemeCode[theme.mode]}')),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () async {
-              final selected =
-                  await Navigator.of(context).pushNamed(Routes.settingTheme);
-
-              if (selected != null && selected != theme.mode) {
-                await theme.setMode(selected as ThemeMode);
-              }
-            },
+            onTap: () => Navigator.of(context).pushNamed(Routes.settingTheme),
           ),
           CardTile(
-            title: Text(Translator.t('setting.language.title')),
+            title: Text(tt('setting.language.title')),
             subtitle:
                 Text(LanguageModal.LanguageName[language.locale.toString()]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () =>
-                Navigator.of(context).pushNamed(Routes.settingLanguage),
+            onTap: () => Navigator.of(context)
+                .pushNamed(Routes.settingLanguage)
+                .then((isChanged) {
+              if (isChanged == true) {
+                setState(() {});
+              }
+            }),
           ),
         ],
       ),

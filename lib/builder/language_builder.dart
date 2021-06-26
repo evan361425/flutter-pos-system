@@ -13,12 +13,10 @@ class LanguageBuilder implements Builder {
     '.yaml': ['.json']
   };
 
-  Map<String, String> current = {};
-
   @override
   Future<void> build(BuildStep buildStep) async {
     final inputId = buildStep.inputId;
-    current.clear();
+    final current = <String, String>{};
 
     final language = parseLanguage(inputId.path);
     final filename = inputId.pathSegments.last.split('.').first;
@@ -26,15 +24,19 @@ class LanguageBuilder implements Builder {
 
     final contents = await buildStep.readAsString(inputId);
     final yaml = loadYaml(contents);
-    _loadYamlRecursivly(prefix, yaml);
+    _loadYamlRecursivly(prefix, yaml, current);
 
-    result[language] = current;
+    result[language] = {...(result[language] ?? {}), ...current};
   }
 
-  void _loadYamlRecursivly(String prefix, YamlMap data) {
+  void _loadYamlRecursivly(
+    String prefix,
+    YamlMap data,
+    Map<String, String> current,
+  ) {
     data.forEach((key, value) {
       if (value is YamlMap) {
-        _loadYamlRecursivly('$prefix$key.', value);
+        _loadYamlRecursivly('$prefix$key.', value, current);
       } else {
         current[prefix + key] = value.toString();
       }

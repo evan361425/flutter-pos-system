@@ -5,6 +5,8 @@ targets:
         enabled: true
       possystem|languageSaver:
         enabled: true
+      mockito|mockBuilder:
+        enabled: true
     sources:
       - lang/**
       - test/**

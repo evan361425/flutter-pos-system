@@ -33,6 +33,10 @@ class Translator {
   }
 }
 
+String tt(String key, [List<dynamic>? args]) {
+  return Translator.instance.translate(key, args);
+}
+
 // LocalizationsDelegate is a factory for a set of localized resources
 // In this case, the localized strings will be gotten in an AppLocalizations object
 class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {

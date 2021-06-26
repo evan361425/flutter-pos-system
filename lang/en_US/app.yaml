@@ -9,9 +9,8 @@ success: 成功
 failed: 失敗
 
 # Backend List
-menu: 菜單
-setting: 設定
-spreadsheet: 表單
-analysis: 統計分析
-stock: 庫存
-customer: 客人資訊
+menu: Menu
+setting: Setting
+analysis: Analysis
+stock: Stock
+quantities: Quantity

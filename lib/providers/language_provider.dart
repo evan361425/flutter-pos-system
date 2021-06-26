@@ -24,18 +24,14 @@ class LanguageProvider extends ChangeNotifier {
 
   static const Locale defaultLocale = Locale('zh', 'TW');
 
-  late Locale _locale;
+  Locale? _locale;
 
-  /// check if user set their prefer locale
-  bool _isCustom = false;
-
-  Locale get locale => _locale;
+  Locale get locale => _locale!;
 
   void initialize() {
     final locale = Cache.instance.get<String>(Caches.language_code);
     final parsed = _parseLanguage(locale);
 
-    _isCustom = parsed != null;
     _locale = parsed ?? LanguageProvider.defaultLocale;
   }
 
@@ -44,11 +40,12 @@ class LanguageProvider extends ChangeNotifier {
     Iterable<Locale> supports,
   ) {
     if (locales == null) return defaultLocale;
+    if (_locale != null) return _locale!;
 
     Locale? _parse(bool Function(Locale) test) {
       try {
         final supported = supports.firstWhere(test);
-        if (!_isCustom) _locale = supported;
+        _locale = supported;
 
         return supported;
       } catch (e) {

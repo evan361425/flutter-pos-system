@@ -1,9 +1,7 @@
 theme:
   title: 調色盤
+  system: 跟隨系統
+  light: 日光模式
+  dark: 暗色模式
 language:
   title: 語言
-logout:
-  title: "登出😱"
-  subtitle: 不會清除您的菜單和點單資料
-  button: 登出
-  alert: 登出確認通知
