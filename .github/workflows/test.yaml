@@ -1,11 +1,11 @@
-name: test
+name: release
 
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
@@ -23,11 +23,9 @@ jobs:
           java-version: "12.x"
 
       # Setup the flutter environment.
-      - name: Clone Flutter repository with master channel
-        uses: subosito/flutter-action@v1.5.0
+      - uses: subosito/flutter-action@v1
         with:
-          channel: master
-      - run: flutter doctor -v
+          channel: "stable"
 
       # Get flutter dependencies.
       - name: Install dependencies

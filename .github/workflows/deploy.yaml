@@ -1,4 +1,5 @@
 name: Deploy to Play Store
+
 on:
   workflow_dispatch:
     # Enable manual run
@@ -7,23 +8,46 @@ on:
         description: "Fastlane lane to use (beta OR promote_to_production OR production)"
         required: true
         default: "beta"
-  # push:
-  #   # Sequence of patterns matched against refs/tags
-  #   tags:
-  #     - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
+  check-version:
+    name: Check pubspec.yaml version with tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Load pubspec version
+        id: pubspec
+        uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        with:
+          file: pubspec.yaml
+          version: version
+
+      - name: Extract tag name
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF#refs/*/v} | sed -e 's/-rc[0-9]*$//g')" >> $GITHUB_ENV
+
+      - name: Extract version name
+        run: echo "PUBSPEC_VERSION=$(echo '${{steps.pubspec.outputs.version}}' | sed -e 's/+[0-9]*$//g')" >> $GITHUB_ENV
+
+      - name: Check with tag
+        if: ${{ env.RELEASE_VERSION != env.PUBSPEC_VERSION }}
+        run: exit 1
+
   fastlane-deploy:
     runs-on: ubuntu-18.04
+    needs: check-version
     steps:
       # Set up Flutter.
-      - name: Clone Flutter repository with master channel
-        uses: subosito/flutter-action@v1.5.0
+      - uses: subosito/flutter-action@v1
         with:
-          channel: master
-      - run: flutter doctor -v
+          channel: "stable"
 
-      # Checkout code and get packages.
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 

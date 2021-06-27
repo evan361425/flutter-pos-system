@@ -21,20 +21,29 @@ if (flutterVersionName == null) {
   flutterVersionName = '1.0'
 }
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
   compileSdkVersion 30
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
 
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
@@ -64,20 +73,29 @@ android {
       minifyEnabled true
       signingConfig signingConfigs.release
     }
+
+    debug {
+      // applicationIdSuffix ".debug"
+      debuggable true
+    }
   }
 
-  flavorDimensions "flavor-type"
+  flavorDimensions "mode"
 
   productFlavors {
+    prod {
+      dimension "mode"
+    }
+
     dev {
-      dimension "flavor-type"
+      dimension "mode"
       applicationIdSuffix ".dev"
       versionNameSuffix "-dev"
     }
-
-    prod {
-      dimension "flavor-type"
-    }
+  }
+  lintOptions {
+    disable 'InvalidPackage'
+    checkReleaseBuilds false
   }
 }
 
