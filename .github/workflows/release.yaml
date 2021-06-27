@@ -56,7 +56,7 @@ jobs:
           prerelease: false
 
   configure-firebase:
-    name: Configure Firebase
+    name: Create Android build
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -64,28 +64,25 @@ jobs:
         include:
           - target: development
             secret_env: FIREBASE_SECRET_DEV
-            folder_prefix: dev
+            flavor: dev
+            asset_postfix: _dev
           - target: production
             secret_env: FIREBASE_SECRET_RELEASE
-            folder_prefix: prod
+            flavor: prod
+            asset_postfix:
     needs: draft-release
     steps:
       - name: Configure Firebase
         run: |
           gpg --quiet --batch --yes --decrypt --passphrase=$FIREBASE_SECRET \
-            --output ${{ matrix.folder_prefix }}/services.tar \
-            ${{ matrix.folder_prefix }}/services.tar.gpg
-          tar xvf ${{ matrix.folder_prefix }}/services.tar
+            --output ${{ matrix.flavor }}/services.tar \
+            ${{ matrix.flavor }}/services.tar.gpg
+          tar xvf ${{ matrix.flavor }}/services.tar
         env:
           FIREBASE_SECRET: ${{ secrets[matrix.secret_env] }}
         working-directory: android/app/src
 
-  create-build:
-    name: Create Android build
-    runs-on: ubuntu-20.04
-    needs: configure-firebase
-    steps:
-      # Setup Java environment in order to build the Android app.
+        # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v1
         with:
           java-version: "12.x"
@@ -123,10 +120,10 @@ jobs:
         working-directory: android
 
       # Build the application.
-      - run: flutter build -v apk --release
+      - run: flutter build -v apk --release --flavor ${{ matrix.flavor }}
 
       - name: Rename build for Android
-        run: mv app-release.apk $GITHUB_WORKSPACE/pos_system.apk
+        run: mv app-release.apk $GITHUB_WORKSPACE/pos_system_${{ matrix.flavor }}.apk
         working-directory: build/app/outputs/flutter-apk
 
       # Upload the build.
@@ -137,6 +134,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft-release.outputs.upload_url }}
-          asset_path: ./pos_system.apk
-          asset_name: pos_system.apk
+          asset_path: ./pos_system_${{ matrix.flavor }}.apk
+          asset_name: pos_system${{ matrix.asset_postfix }}.apk
           asset_content_type: application/vnd.android.package-archive
