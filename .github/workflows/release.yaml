@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Get flavor
         id: flavor
-        uses: actions/github-script@0.2.0
+        uses: actions/github-script@4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -81,9 +81,9 @@ jobs:
       - name: Configure Firebase
         run: |
           gpg --quiet --batch --yes --decrypt --passphrase=$FIREBASE_SECRET \
-            --output ${{ matrix.flavor.outputs.result }}/services.tar \
-            ${{ matrix.flavor.outputs.result }}/services.tar.gpg
-          tar xvf ${{ matrix.flavor.outputs.result }}/services.tar
+            --output "${{ matrix.flavor.outputs.result }}/services.tar" \
+            "${{ matrix.flavor.outputs.result }}/services.tar.gpg"
+          tar xvf "${{ matrix.flavor.outputs.result }}/services.tar'
         env:
           FIREBASE_SECRET: ${{ matrix.flavor.outputs.result == 'dev' && secrets.FIREBASE_SECRET_DEV || secrets.FIREBASE_SECRET_RELEASE }}
         working-directory: android/app/src
