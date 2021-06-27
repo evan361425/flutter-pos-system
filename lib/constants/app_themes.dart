@@ -4,7 +4,7 @@ import 'package:possystem/constants/constant.dart';
 /// Want to build your own theme?
 /// https://github.com/rxlabz/panache
 class AppThemes {
-  static final TextTheme _lightTextTheme = TextTheme(
+  static const TextTheme _lightTextTheme = TextTheme(
     headline1: TextStyle(color: Color(0xdd000000), fontSize: 40),
     headline2: TextStyle(color: Color(0xdd000000), fontSize: 36),
     headline3: TextStyle(color: Color(0xdd000000), fontSize: 32),
@@ -19,7 +19,7 @@ class AppThemes {
     overline: TextStyle(color: Color(0xff000000)),
   );
 
-  static final TextTheme _darkTextTheme = TextTheme(
+  static const TextTheme _darkTextTheme = TextTheme(
     headline1: TextStyle(color: Color(0xb3ffffff), fontSize: 40),
     headline2: TextStyle(color: Color(0xb3ffffff), fontSize: 36),
     headline3: TextStyle(color: Color(0xb3ffffff), fontSize: 32),

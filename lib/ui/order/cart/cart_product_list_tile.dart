@@ -32,7 +32,7 @@ class CartProductListTile extends StatelessWidget {
 
     return MergeSemantics(
       child: ListTileTheme.merge(
-        selectedColor: theme.accentColor,
+        selectedColor: theme.textTheme.bodyText1!.color,
         child: ListTile(
           leading: leading,
           title: title,
