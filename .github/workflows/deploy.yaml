@@ -23,8 +23,8 @@ jobs:
           channel: master
       - run: flutter doctor -v
 
-      # Checkout gallery code and get packages.
-      - name: Checkout gallery code
+      # Checkout code and get packages.
+      - name: Checkout code
         uses: actions/checkout@v2
 
       # Get flutter dependencies.
