@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:possystem/my_app.dart';
 
@@ -28,31 +29,41 @@ Future<void> _log(
   );
 }
 
-/// level 4
+/// DEBUG mode logging
+///
+/// LEVEL: 4
 void debug(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 3) {
     await _log(message, code, detail, 4);
   }
 }
 
-/// level 3
+/// INFO mode logging
+///
+/// LEVEL: 3
 void info(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 2) {
     await _log(message, code, detail, 3);
   }
 }
 
-/// level 2
+/// WARN mode logging
+///
+/// LEVEL: 2
 void warn(String message, String code, [Map<String, Object>? detail]) async {
   if (LOG_LEVEL > 1) {
     await _log(message, code, detail, 2);
   }
 }
 
-/// level 1
+/// ERROR mode logging
+///
+/// LEVEL: 1
+///
+/// It will send to crashlytic not analytic
 Future<void> error(String message, String code, [StackTrace? stack]) async {
   if (LOG_LEVEL != 0) {
-    await _log(message, code, null, 1);
+    developer.log(message, name: code);
     await FirebaseCrashlytics.instance.recordError(
       error,
       stack,

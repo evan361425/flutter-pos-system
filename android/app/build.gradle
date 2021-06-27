@@ -30,6 +30,7 @@ if (keystorePropertiesFile.exists()) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -63,16 +64,19 @@ android {
       minifyEnabled true
       signingConfig signingConfigs.release
     }
+  }
 
-    staging {
-      minifyEnabled true
-      applicationIdSuffix ".staging"
-      signingConfig signingConfigs.release
+  flavorDimensions "flavor-type"
+
+  productFlavors {
+    dev {
+      dimension "flavor-type"
+      applicationIdSuffix ".dev"
+      versionNameSuffix "-dev"
     }
 
-    debug {
-      applicationIdSuffix ".debug"
-      debuggable true
+    prod {
+      dimension "flavor-type"
     }
   }
 }

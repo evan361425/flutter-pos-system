@@ -55,10 +55,35 @@ jobs:
           draft: true
           prerelease: false
 
+  configure-firebase:
+    name: Configure Firebase
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        target: [development, production]
+        include:
+          - target: development
+            secret_env: FIREBASE_SECRET_DEV
+            folder_prefix: dev
+          - target: production
+            secret_env: FIREBASE_SECRET_RELEASE
+            folder_prefix: prod
+    needs: draft-release
+    steps:
+      - name: Configure Firebase
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase=$FIREBASE_SECRET \
+            --output ${{ matrix.folder_prefix }}/services.tar \
+            ${{ matrix.folder_prefix }}/services.tar.gpg
+          tar xvf ${{ matrix.folder_prefix }}/services.tar
+        env:
+          FIREBASE_SECRET: ${{ secrets[matrix.secret_env] }}
+        working-directory: android/app/src
+
   create-build:
     name: Create Android build
     runs-on: ubuntu-20.04
-    needs: draft-release
+    needs: configure-firebase
     steps:
       # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v1
@@ -66,9 +91,11 @@ jobs:
           java-version: "12.x"
 
       # Setup the flutter environment.
-      - uses: subosito/flutter-action@v1
+      - name: Clone Flutter repository with master channel
+        uses: subosito/flutter-action@v1.5.0
         with:
-          flutter-version: "2.2.x"
+          channel: master
+      - run: flutter doctor -v
 
       # Checkout code.
       - name: Checkout code
@@ -80,15 +107,6 @@ jobs:
           flutter create .
           flutter pub get
           flutter pub run build_runner build
-
-      - name: Configure Firebase
-        run: |
-          gpg --quiet --batch --yes --decrypt --passphrase=$FIREBASE_SECRET \
-            --output staging/services.tar staging/services.tar.gpg
-          tar xvf staging/services.tar
-        env:
-          FIREBASE_SECRET: ${{ secrets.FIREBASE_SECRET_DEBUG }}
-        working-directory: android/app/src
 
       - name: Configure Play Store
         run: |

@@ -11,7 +11,8 @@
       "program": "lib/main.dart",
       "env": {
         "LOG_LEVEL": "debug"
-      }
+      },
+      "args": ["--flavor", "dev"]
     }
   ]
 }
