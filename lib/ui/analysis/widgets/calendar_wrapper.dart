@@ -99,7 +99,6 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       bottom: 0,
       child: Material(
         shape: CircleBorder(side: BorderSide.none),
-        // TODO: add to themes
         color: Colors.cyan,
         child: Padding(
           padding: const EdgeInsets.all(6.0),

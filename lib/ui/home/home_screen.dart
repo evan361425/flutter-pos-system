@@ -72,9 +72,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: UpgradeAlert(
+    return Scaffold(
+      body: SafeArea(
+        child: UpgradeAlert(
           child: Padding(
             padding: const EdgeInsets.all(kSpacing3),
             child: Column(
