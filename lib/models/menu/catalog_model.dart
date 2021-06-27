@@ -62,6 +62,12 @@ class CatalogModel extends NotifyModel<CatalogObject>
   }
 
   @override
+  void notifyItem() {
+    notifyListeners();
+    MenuModel.instance.notifyItem();
+  }
+
+  @override
   void removeFromRepo() => MenuModel.instance.removeItem(id);
 
   @override

@@ -21,33 +21,18 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Submit a new beta build to Google Play"
+  desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
-    sh "flutter build appbundle -v"
-    upload_to_play_store(
-      track: 'beta',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
-      json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-      )
+    gradle(task: "clean assembleRelease")
+    crashlytics
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
   end
 
-  desc "Promote beta track to prod"
-  lane :promote_to_production do
-    upload_to_play_store(
-      track: 'beta',
-      track_promote_to: 'production',
-      skip_upload_changelogs: true,
-      json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-      )
-  end
-
-  desc "Submit a new production build to Google Play"
-  lane :production do
-    sh "flutter build appbundle -v"
-    upload_to_play_store(
-      track: 'production',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
-      json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-    )
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
   end
 end
