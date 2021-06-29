@@ -17,7 +17,6 @@ jobs:
   # No need check tag, since we will trigger this by manual
   fastlane-deploy:
     runs-on: ubuntu-18.04
-    needs: check-version
     steps:
       - name: Get flavor
         id: flavor
