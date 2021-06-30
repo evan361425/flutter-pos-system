@@ -83,7 +83,7 @@ class ProductScreen extends StatelessWidget {
           message: '售價',
           child: IconText(
             text: product.price.toString(),
-            iconName: 'loyalty_sharp',
+            icon: Icons.loyalty_sharp,
           ),
         ),
         MetaBlock(),
@@ -91,7 +91,7 @@ class ProductScreen extends StatelessWidget {
           message: '成本',
           child: IconText(
             text: product.cost.toString(),
-            iconName: 'attach_money_sharp',
+            icon: Icons.attach_money_sharp,
           ),
         ),
       ],

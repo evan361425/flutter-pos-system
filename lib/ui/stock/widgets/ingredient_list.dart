@@ -119,13 +119,13 @@ class IngredientList extends StatelessWidget {
         children: <Widget>[
           IconText(
             text: ingredient.currentAmount?.toString() ?? '尚未設定',
-            iconName: 'store_sharp',
+            icon: Icons.store_sharp,
             textStyle: theme.textTheme.muted,
           ),
           MetaBlock(),
           IconText(
             text: ingredient.lastAmount?.toString() ?? '尚未補貨',
-            iconName: 'shopping_cart_sharp',
+            icon: Icons.shopping_cart_sharp,
             textStyle: theme.textTheme.muted,
           ),
         ],

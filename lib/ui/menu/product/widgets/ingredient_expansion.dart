@@ -117,7 +117,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           message: '額外售價',
           child: IconText(
             text: quantity.additionalPrice.toString(),
-            iconName: 'loyalty_sharp',
+            icon: Icons.loyalty_sharp,
           ),
         ),
         MetaBlock(),
@@ -125,7 +125,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           message: '額外成本',
           child: IconText(
             text: quantity.additionalCost.toString(),
-            iconName: 'attach_money_sharp',
+            icon: Icons.attach_money_sharp,
           ),
         ),
       ],
