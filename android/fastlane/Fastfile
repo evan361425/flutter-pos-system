@@ -16,19 +16,38 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
+  desc "Test locally"
   lane :test do
-    gradle(task: "test")
+    sh "flutter build appbundle -v --flavor dev"
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab',
+      skip_upload_screenshots: true,
+      validate_only: true,
+      json_key: "fastlane-keys.json",
+    )
+  end
+
+  desc "Submit a new Internal Build to Play Store"
+  lane :internal do
+    sh "flutter build appbundle -v --flavor dev"
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab',
+      skip_upload_screenshots: true,
+      json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
+    )
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
-    sh "flutter build appbundle -v --flavor dev"
+    sh "flutter build appbundle -v --flavor prod"
     upload_to_play_store(
       track: 'beta',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
+      skip_upload_screenshots: true,
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-      )
+    )
   end
 
   desc "Promote beta track to prod"
@@ -38,7 +57,7 @@ platform :android do
       track_promote_to: 'production',
       skip_upload_changelogs: true,
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-      )
+    )
   end
 
   desc "Submit a new production build to Google Play"
@@ -46,7 +65,7 @@ platform :android do
     sh "flutter build appbundle -v --flavor prod"
     upload_to_play_store(
       track: 'production',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
     )
   end

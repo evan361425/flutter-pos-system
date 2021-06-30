@@ -25,10 +25,12 @@ jobs:
           version: version
 
       - name: Extract tag name
-        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF#refs/*/v} | sed -e 's/-rc[0-9]*$//g')" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(echo ${${GITHUB_REF#refs/*/v}%-*})" >> $GITHUB_ENV
 
       - name: Extract version name
-        run: echo "PUBSPEC_VERSION=$(echo '${{steps.pubspec.outputs.version}}' | sed -e 's/+[0-9]*$//g')" >> $GITHUB_ENV
+        run: |
+          export PUBSPEC_VERSION=${{steps.pubspec.outputs.version}}
+          echo "PUBSPEC_VERSION=$(echo ${PUBSPEC_VERSION%+*})" >> $GITHUB_ENV
 
       - name: Check with tag
         if: ${{ env.RELEASE_VERSION != env.PUBSPEC_VERSION }}
