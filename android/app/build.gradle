@@ -75,7 +75,7 @@ android {
     }
 
     debug {
-      // applicationIdSuffix ".debug"
+      applicationIdSuffix ".debug"
       debuggable true
     }
   }
