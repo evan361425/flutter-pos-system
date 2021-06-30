@@ -5,9 +5,9 @@ on:
     # Enable manual run
     inputs:
       lane:
-        description: "Fastlane lane to use (beta OR promote_to_production OR production)"
+        description: "Fastlane lane to use (internal, beta, promote_to_production, production)"
         required: true
-        default: "beta"
+        default: "internal"
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -71,7 +71,7 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
 
-      # Build and deploy with Fastlane (by default, to beta track) 🚀.
+      # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
       - run: bundle exec fastlane ${{ github.event.inputs.lane || 'internal' }}
         env:
