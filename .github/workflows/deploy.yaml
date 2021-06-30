@@ -5,43 +5,31 @@ on:
     # Enable manual run
     inputs:
       lane:
-        description: "Fastlane lane to use (beta OR promote_to_production OR production)"
+        description: "Fastlane lane to use (internal, beta, promote_to_production, production)"
         required: true
-        default: "beta"
+        default: "internal"
   push:
     # Sequence of patterns matched against refs/tags
     tags:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  check-version:
-    name: Check pubspec.yaml version with tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Load pubspec version
-        id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v0.1.0
-        with:
-          file: pubspec.yaml
-          version: version
-
-      - name: Extract tag name
-        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF#refs/*/v} | sed -e 's/-rc[0-9]*$//g')" >> $GITHUB_ENV
-
-      - name: Extract version name
-        run: echo "PUBSPEC_VERSION=$(echo '${{steps.pubspec.outputs.version}}' | sed -e 's/+[0-9]*$//g')" >> $GITHUB_ENV
-
-      - name: Check with tag
-        if: ${{ env.RELEASE_VERSION != env.PUBSPEC_VERSION }}
-        run: exit 1
-
+  # No need check tag, since we will trigger this by manual
   fastlane-deploy:
     runs-on: ubuntu-18.04
-    needs: check-version
     steps:
+      - name: Extract lane
+        id: lane
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const input = ${{ github.event.inputs.lane }};
+            const ref = context.payload.ref || '';
+            const version = ref.replace(/\/refs\/tags\/v/, '');
+
+            return version ? version.includes('-rc') ? 'internal' : 'beta' : input;
+
       # Set up Flutter.
       - uses: subosito/flutter-action@v1
         with:
@@ -52,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
 
       # Get flutter dependencies.
-      - name: Install dependencies
+      - name: Build dependencies
         run: |
           flutter pub get
           flutter pub run build_runner build
@@ -64,6 +52,22 @@ jobs:
           ruby-version: "2.6"
           bundler-cache: true
           working-directory: android
+
+      - name: Export Flavor
+        run: |
+          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
+            echo "FLAVOR=dev" >> $GITHUB_ENV
+          else
+            echo "FLAVOR=prod" >> $GITHUB_ENV
+          fi
+
+      - name: Configure Firebase
+        run: |
+          mkdir -p ${{ env.FLAVOR }}
+          echo "$GOOGLE_SERVICES" > ${{ env.FLAVOR }}/google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ env.FLAVOR == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
+        working-directory: android/app/src
 
       - name: Configure Keystore
         run: |
@@ -79,9 +83,9 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
 
-      # Build and deploy with Fastlane (by default, to beta track) 🚀.
+      # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
-      - run: bundle exec fastlane ${{ github.event.inputs.lane || 'beta' }}
+      - run: bundle exec fastlane ${{ steps.lane.outputs.result }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
         working-directory: android

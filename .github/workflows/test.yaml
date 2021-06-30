@@ -1,4 +1,4 @@
-name: release
+name: Tests
 
 # Controls when the action will run.
 on:
@@ -12,7 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  code-checking:
+    name: Check code format and testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
