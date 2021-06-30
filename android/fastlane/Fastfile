@@ -19,6 +19,7 @@ platform :android do
   desc "Test locally"
   lane :test do
     sh "flutter build appbundle -v --flavor dev"
+
     upload_to_play_store(
       track: 'internal',
       aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab',
@@ -31,9 +32,12 @@ platform :android do
   desc "Submit a new Internal Build to Play Store"
   lane :internal do
     sh "flutter build appbundle -v --flavor dev"
+
+    changelog_from_git_commits
+
     upload_to_play_store(
       track: 'internal',
-      rollout: 1,
+      rollout: '1',
       aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab',
       skip_upload_screenshots: true,
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
@@ -43,6 +47,7 @@ platform :android do
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     sh "flutter build appbundle -v --flavor prod"
+
     upload_to_play_store(
       track: 'beta',
       aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
