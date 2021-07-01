@@ -33,6 +33,8 @@ if (keystorePropertiesFile.exists()) {
   keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def buildNumber = System.getenv("BUILD_NUMBER") ?: "0"
+
 android {
   compileSdkVersion 30
 
@@ -89,7 +91,7 @@ android {
 
     dev {
       dimension "mode"
-      versionNameSuffix "-dev"
+      versionNameSuffix "-dev+" + buildNumber
     }
   }
   lintOptions {

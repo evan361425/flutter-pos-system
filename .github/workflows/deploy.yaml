@@ -8,15 +8,22 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production, production)"
         required: true
         default: "internal"
+      number:
+        description: "Build number default 1"
+        required: false
+        default: "1"
   push:
     # Sequence of patterns matched against refs/tags
     tags:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  # No need check tag, since we will trigger this by manual
-  fastlane-deploy:
+  var:
     runs-on: ubuntu-18.04
+    outputs:
+      lane: ${{ steps.lane.outputs.result }}
+      number: ${{ steps.number.outputs.result }}
+      flavor: ${{ steps.flavor.outputs.flavor }}
     steps:
       - name: Extract lane
         id: lane
@@ -24,26 +31,43 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const input = ${{ github.event.inputs.lane }};
             const ref = context.payload.ref || '';
-            const version = ref.replace(/\/refs\/tags\/v/, '');
 
-            return version ? version.includes('-rc') ? 'internal' : 'beta' : input;
+            return ref.startsWith('refs/tags/')
+              ? ref.includes('-rc') ? 'internal' : 'beta'
+              : '${{ github.event.inputs.lane }}';
 
-      # Set up Flutter.
-      - uses: subosito/flutter-action@v1
+      - name: Extract build number
+        id: number
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const ref = context.payload.ref || '';
+
+            return ref.startsWith('refs/tags/') && ref.includes('-rc')
+              ? ref.substr(ref.indexOf('-rc') + 3)
+              : '${{ github.event.inputs.number }}';
+
+      - name: Extract Flavor
+        id: flavor
+        run: |
+          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
+            echo "::set-output name=flavor::dev"
+          else
+            echo "::set-output name=flavor::prod"
+          fi
+  fastlane-deploy:
+    runs-on: ubuntu-18.04
+    needs: var
+    steps:
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
         with:
           channel: "stable"
 
-      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # Get flutter dependencies.
-      - name: Build dependencies
-        run: |
-          flutter pub get
-          flutter pub run build_runner build
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
@@ -53,20 +77,18 @@ jobs:
           bundler-cache: true
           working-directory: android
 
-      - name: Export Flavor
+      # Get flutter dependencies.
+      - name: Build dependencies
         run: |
-          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
-            echo "FLAVOR=dev" >> $GITHUB_ENV
-          else
-            echo "FLAVOR=prod" >> $GITHUB_ENV
-          fi
+          flutter pub get
+          flutter pub run build_runner build
 
       - name: Configure Firebase
         run: |
-          mkdir -p ${{ env.FLAVOR }}
-          echo "$GOOGLE_SERVICES" > ${{ env.FLAVOR }}/google-services.json
+          mkdir -p ${{ needs.var.outputs.lane }}
+          echo "$GOOGLE_SERVICES" > ${{ needs.var.outputs.lane }}/google-services.json
         env:
-          GOOGLE_SERVICES: ${{ env.FLAVOR == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
+          GOOGLE_SERVICES: ${{ needs.var.outputs.lane == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
         working-directory: android/app/src
 
       - name: Configure Keystore
@@ -85,7 +107,9 @@ jobs:
 
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
-      - run: bundle exec fastlane ${{ steps.lane.outputs.result }}
+      - name: Fastlane building
+        run: bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
+          BUILD_NUMBER: ${{needs.var.outputs.number}}
         working-directory: android
