@@ -18,9 +18,12 @@ on:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  # No need check tag, since we will trigger this by manual
-  fastlane-deploy:
+  var:
     runs-on: ubuntu-18.04
+    outputs:
+      lane: ${{ steps.lane.outputs.result }}
+      number: ${{ steps.number.outputs.result }}
+      flavor: ${{ steps.flavor.outputs.flavor }}
     steps:
       - name: Extract lane
         id: lane
@@ -30,21 +33,34 @@ jobs:
           script: |
             const ref = context.payload.ref || '';
 
-            return ref.includes('/tags/')
+            return ref.startsWith('refs/tags/')
               ? ref.includes('-rc') ? 'internal' : 'beta'
               : '${{ github.event.inputs.lane }}';
 
       - name: Extract build number
-        run: echo "TAG_BUILD_NUMBER=$(echo ${GITHUB_REF#*-rc})" >> $GITHUB_ENV
+        id: number
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const ref = context.payload.ref || '';
+
+            return ref.startsWith('refs/tags/') && ref.includes('-rc')
+              ? ref.substr(ref.indexOf('-rc') + 3)
+              : '${{ github.event.inputs.number }}';
 
       - name: Extract Flavor
+        id: flavor
         run: |
           if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
-            echo "FLAVOR=dev" >> $GITHUB_ENV
+            echo "::set-output name=flavor::dev"
           else
-            echo "FLAVOR=prod" >> $GITHUB_ENV
+            echo "::set-output name=flavor::prod"
           fi
-
+  fastlane-deploy:
+    runs-on: ubuntu-18.04
+    needs: var
+    steps:
       # Set up Flutter.
       - uses: subosito/flutter-action@v1
         with:
@@ -70,10 +86,10 @@ jobs:
 
       - name: Configure Firebase
         run: |
-          mkdir -p ${{ env.FLAVOR }}
-          echo "$GOOGLE_SERVICES" > ${{ env.FLAVOR }}/google-services.json
+          mkdir -p ${{ needs.var.outputs.lane }}
+          echo "$GOOGLE_SERVICES" > ${{ needs.var.outputs.lane }}/google-services.json
         env:
-          GOOGLE_SERVICES: ${{ env.FLAVOR == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
+          GOOGLE_SERVICES: ${{ needs.var.outputs.lane == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
         working-directory: android/app/src
 
       - name: Configure Keystore
@@ -93,8 +109,8 @@ jobs:
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
       - name: Fastlane building
-        run: bundle exec fastlane ${{ steps.lane.outputs.result }}
+        run: bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
-          BUILD_NUMBER: ${{ env.TAG_BUILD_NUMBER || github.event.inputs.number }}
+          BUILD_NUMBER: ${{needs.var.outputs.number}}
         working-directory: android
