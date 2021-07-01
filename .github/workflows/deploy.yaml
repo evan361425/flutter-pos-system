@@ -28,11 +28,12 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const input = ${{ github.event.inputs.lane }};
             const ref = context.payload.ref || '';
             const version = ref.replace(/\/refs\/tags\/v/, '');
 
-            return version ? version.includes('-rc') ? 'internal' : 'beta' : input;
+            return version
+              ? version.includes('-rc') ? 'internal' : 'beta'
+              : '${{ github.event.inputs.lane }}';
 
       - name: Extract build number
         run: echo "TAG_BUILD_NUMBER=$(echo ${GITHUB_REF#*-rc})" >> $GITHUB_ENV
