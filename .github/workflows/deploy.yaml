@@ -61,20 +61,13 @@ jobs:
     runs-on: ubuntu-18.04
     needs: var
     steps:
-      # Set up Flutter.
-      - uses: subosito/flutter-action@v1
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
         with:
           channel: "stable"
 
-      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # Get flutter dependencies.
-      - name: Build dependencies
-        run: |
-          flutter pub get
-          flutter pub run build_runner build
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
@@ -83,6 +76,12 @@ jobs:
           ruby-version: "2.6"
           bundler-cache: true
           working-directory: android
+
+      # Get flutter dependencies.
+      - name: Build dependencies
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
 
       - name: Configure Firebase
         run: |

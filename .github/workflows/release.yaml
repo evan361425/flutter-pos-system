@@ -25,7 +25,7 @@ jobs:
           version: version
 
       - name: Extract tag name
-        run: echo "RELEASE_VERSION=$(echo ${${GITHUB_REF#refs/*/v}%-*})" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(echo ${${GITHUB_REF#refs/tags/v}%-*})" >> $GITHUB_ENV
 
       - name: Extract version name
         run: |
@@ -44,7 +44,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Extract tag name
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Build Changelog
         id: build_changelog
@@ -85,7 +85,8 @@ jobs:
           java-version: "12.x"
 
       # Setup the flutter environment.
-      - uses: subosito/flutter-action@v1
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
         with:
           channel: "stable"
 
