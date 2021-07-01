@@ -29,14 +29,21 @@ jobs:
           result-encoding: string
           script: |
             const ref = context.payload.ref || '';
-            const version = ref.replace(/\/refs\/tags\/v/, '');
 
-            return version
-              ? version.includes('-rc') ? 'internal' : 'beta'
+            return ref.includes('/tags/')
+              ? ref.includes('-rc') ? 'internal' : 'beta'
               : '${{ github.event.inputs.lane }}';
 
       - name: Extract build number
         run: echo "TAG_BUILD_NUMBER=$(echo ${GITHUB_REF#*-rc})" >> $GITHUB_ENV
+
+      - name: Extract Flavor
+        run: |
+          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
+            echo "FLAVOR=dev" >> $GITHUB_ENV
+          else
+            echo "FLAVOR=prod" >> $GITHUB_ENV
+          fi
 
       # Set up Flutter.
       - uses: subosito/flutter-action@v1
@@ -60,14 +67,6 @@ jobs:
           ruby-version: "2.6"
           bundler-cache: true
           working-directory: android
-
-      - name: Export Flavor
-        run: |
-          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
-            echo "FLAVOR=dev" >> $GITHUB_ENV
-          else
-            echo "FLAVOR=prod" >> $GITHUB_ENV
-          fi
 
       - name: Configure Firebase
         run: |
@@ -93,7 +92,8 @@ jobs:
 
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
-      - run: bundle exec fastlane ${{ steps.lane.outputs.result }}
+      - name: Fastlane building
+        run: bundle exec fastlane ${{ steps.lane.outputs.result }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
           BUILD_NUMBER: ${{ env.TAG_BUILD_NUMBER || github.event.inputs.number }}
