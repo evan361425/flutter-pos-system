@@ -9,9 +9,9 @@ on:
         required: true
         default: "internal"
       number:
-        description: "Build number default 0"
+        description: "Build number default 1"
         required: false
-        default: "0"
+        default: "1"
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -33,6 +33,9 @@ jobs:
             const version = ref.replace(/\/refs\/tags\/v/, '');
 
             return version ? version.includes('-rc') ? 'internal' : 'beta' : input;
+
+      - name: Extract build number
+        run: echo "TAG_BUILD_NUMBER=$(echo ${GITHUB_REF#*-rc})" >> $GITHUB_ENV
 
       # Set up Flutter.
       - uses: subosito/flutter-action@v1
@@ -92,5 +95,5 @@ jobs:
       - run: bundle exec fastlane ${{ steps.lane.outputs.result }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
-          BUILD_NUMBER: ${{ steps.number.outputs.result }}
+          BUILD_NUMBER: ${{ env.TAG_BUILD_NUMBER || github.event.inputs.number }}
         working-directory: android
