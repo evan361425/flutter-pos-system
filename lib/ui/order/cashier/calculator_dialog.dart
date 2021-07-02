@@ -12,53 +12,26 @@ class CalculatorDialog extends StatefulWidget {
   _CalculatorDialogState createState() => _CalculatorDialogState();
 }
 
+enum _ButtonTypes {
+  back,
+  clear,
+  ceil,
+  done,
+}
+
 class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
+  final repayController = TextEditingController();
+  final totalPrice = CartModel.instance.totalPrice;
+
   String? errorMessage;
-  bool isUpdating = false;
+  bool _isUpdating = false;
 
   String get paid => paidController.text;
 
-  Future<void> handlePressed(_ButtonTypes type) async {
-    if (isUpdating) return;
-
-    switch (type) {
-      case _ButtonTypes.back:
-        if (paid.isEmpty) return;
-        updatePaid(paid.substring(0, paid.length - 1));
-        return;
-      case _ButtonTypes.clear:
-        updatePaid('');
-        return;
-      case _ButtonTypes.ceil:
-        final price =
-            paid.isEmpty ? CartModel.instance.totalPrice : num.tryParse(paid);
-        final ceilPrice = CurrencyProvider.instance.ceil(price);
-        updatePaid(ceilPrice?.toString() ?? '');
-        return;
-      case _ButtonTypes.done:
-        isUpdating = true;
-
-        if (!await showHistoryConfirm(context)) {
-          isUpdating = false;
-          return;
-        }
-
-        try {
-          await CartModel.instance.paid(num.tryParse(paid));
-          Navigator.of(context).pop();
-        } catch (e) {
-          isUpdating = false;
-          if (e == 'too low') {
-            setState(() => errorMessage = '糟糕，付額小於總價唷');
-          } else {
-            setState(() => errorMessage = e.toString());
-          }
-        }
-        return;
-      default:
-        return;
-    }
+  num get repaid {
+    final paid = int.tryParse(paidController.text);
+    return paid == null ? 0 : paid - totalPrice;
   }
 
   @override
@@ -76,9 +49,23 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
               moneyWidget(
                 '總價',
                 Text(
-                  CartModel.instance.totalPrice.toString(),
+                  totalPrice.toString(),
                   textAlign: TextAlign.right,
                   style: headline4,
+                ),
+              ),
+              moneyWidget(
+                '找額',
+                TextField(
+                  readOnly: true,
+                  style: headline4,
+                  controller: repayController,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    hintText: '0',
+                  ),
                 ),
               ),
               moneyWidget(
@@ -91,7 +78,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
-                    hintText: CartModel.instance.totalPrice.toString(),
+                    hintText: totalPrice.toString(),
                     errorText: errorMessage,
                   ),
                 ),
@@ -124,7 +111,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 iconWidget(Icons.merge_type_rounded, _ButtonTypes.ceil),
               ]),
               Row(children: [
-                iconWidget(Icons.select_all_rounded, _ButtonTypes.select),
+                Spacer(),
                 numberWidget('0'),
                 CurrencyProvider.instance.isInt
                     ? Spacer()
@@ -142,18 +129,50 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     );
   }
 
-  Widget moneyWidget(String title, Widget child) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: kSpacing2),
-          child: Text(title),
-        ),
-        Expanded(
-          child: child,
-        ),
-      ],
-    );
+  @override
+  void dispose() {
+    repayController.dispose();
+    paidController.dispose();
+    super.dispose();
+  }
+
+  Future<void> handlePressed(_ButtonTypes type) async {
+    if (_isUpdating) return;
+
+    switch (type) {
+      case _ButtonTypes.back:
+        if (paid.isEmpty) return;
+        updatePaid(paid.substring(0, paid.length - 1));
+        return;
+      case _ButtonTypes.clear:
+        updatePaid('');
+        return;
+      case _ButtonTypes.ceil:
+        final price = paid.isEmpty ? totalPrice : num.tryParse(paid);
+        final ceilPrice = CurrencyProvider.instance.ceil(price);
+        updatePaid(ceilPrice?.toString() ?? '');
+        return;
+      case _ButtonTypes.done:
+        if (!await showHistoryConfirm(context)) {
+          return;
+        }
+
+        _isUpdating = true;
+        try {
+          await CartModel.instance.paid(num.tryParse(paid));
+          Navigator.of(context).pop();
+        } catch (e) {
+          _isUpdating = false;
+          if (e == 'too low') {
+            setState(() => errorMessage = '糟糕，付額小於總價唷');
+          } else {
+            setState(() => errorMessage = e.toString());
+          }
+        }
+        return;
+      default:
+        return;
+    }
   }
 
   Widget iconWidget(IconData icon, _ButtonTypes type) {
@@ -168,14 +187,37 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    paidController.addListener(() {
+      repayController.text =
+          repaid <= 0 ? '' : CurrencyProvider.instance.numToString(repaid);
+    });
+  }
+
+  Widget moneyWidget(String title, Widget child) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: kSpacing2),
+          child: Text(title),
+        ),
+        Expanded(
+          child: child,
+        ),
+      ],
+    );
+  }
+
   Widget numberWidget(String text, [VoidCallback? onPressed]) {
     return Expanded(
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
           onPressed: () {
-            if (isUpdating) return;
-            onPressed == null ? onPressed!() : updatePaid(paid + text);
+            if (_isUpdating) return;
+            onPressed == null ? updatePaid(paid + text) : onPressed();
           },
           child: Text(text),
         ),
@@ -200,12 +242,4 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
 
     return result ?? false;
   }
-}
-
-enum _ButtonTypes {
-  back,
-  clear,
-  ceil,
-  done,
-  select,
 }
