@@ -38,7 +38,7 @@ class MenuScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => CatalogModal())),
-        tooltip: Translator.t('menu.add_catalog'),
+        tooltip: tt('menu.add_catalog'),
         child: Icon(KIcons.add),
       ),
       // When click android go back, it will avoid closing APP

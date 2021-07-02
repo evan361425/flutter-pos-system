@@ -5,6 +5,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/app_themes.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
@@ -31,26 +32,25 @@ class MyApp extends StatelessWidget {
       initialData: false,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          print(snapshot.error);
+          error('${snapshot.error}', 'initialize', snapshot.stackTrace);
         }
         final prepared = snapshot.data ?? false;
         final theme = context.watch<ThemeProvider>();
         final language = context.watch<LanguageProvider>();
         final currency = context.watch<CurrencyProvider>();
 
-        if (prepared && !initilized) {
+        if (!prepared) {
+          return MaterialApp(
+            title: 'POS System',
+            debugShowCheckedModeBanner: false,
+            home: LogoSplash(),
+          );
+        } else if (!initilized) {
           theme.initialize();
           language.initialize();
           currency.initialize();
           initilized = true;
         }
-
-        final pref = prepared
-            ? _Preferences(
-                language: language.locale,
-                mode: theme.mode,
-                currency: currency.currency)
-            : _Preferences();
 
         return MaterialApp(
           title: 'POS System',
@@ -58,16 +58,16 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
           // === language setting ===
-          locale: pref.language,
+          locale: language.locale,
           supportedLocales: LanguageProvider.supports,
           localizationsDelegates: LanguageProvider.delegates,
           localeListResolutionCallback: language.localeListResolutionCallback,
           // === theme setting ===
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          themeMode: pref.mode,
+          themeMode: theme.mode,
           // === home widget ===
-          home: prepared ? HomeScreen() : LogoSplash(),
+          home: HomeScreen(),
         );
       },
     );
@@ -85,17 +85,4 @@ class MyApp extends StatelessWidget {
 
     return true;
   }
-}
-
-class _Preferences {
-  Locale language;
-
-  ThemeMode mode;
-
-  String currency;
-
-  _Preferences({Locale? language, ThemeMode? mode, String? currency})
-      : language = language ?? LanguageProvider.defaultLocale,
-        mode = mode ?? ThemeMode.system,
-        currency = currency ?? CurrencyProvider.defaultCurrency;
 }

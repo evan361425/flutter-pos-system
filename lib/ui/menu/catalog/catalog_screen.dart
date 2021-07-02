@@ -36,7 +36,7 @@ class CatalogScreen extends StatelessWidget {
           Routes.menuProductModal,
           arguments: catalog,
         ),
-        tooltip: Translator.t('menu.catalog.add_product'),
+        tooltip: tt('menu.catalog.add_product'),
         child: Icon(KIcons.add),
       ),
       body: _body(catalog, context),
