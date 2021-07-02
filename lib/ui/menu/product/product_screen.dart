@@ -37,7 +37,7 @@ class ProductScreen extends StatelessWidget {
           Routes.menuIngredient,
           arguments: product,
         ),
-        tooltip: Translator.t('menu.product.add_integredient'),
+        tooltip: tt('menu.product.add_integredient'),
         child: Icon(KIcons.add),
       ),
       body: _body(context, product),

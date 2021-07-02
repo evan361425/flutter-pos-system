@@ -1,4 +1,3 @@
-import 'package:sprintf/sprintf.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -29,10 +28,6 @@ class Util {
 
   static String? timeToDate(DateTime? time) {
     if (time == null) return null;
-    return sprintf('%04d-%02d-%02d', [
-      time.year,
-      time.month,
-      time.day,
-    ]);
+    return '${time.year}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')}';
   }
 }

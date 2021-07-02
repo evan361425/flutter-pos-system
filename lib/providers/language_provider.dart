@@ -12,9 +12,9 @@ class LanguageProvider extends ChangeNotifier {
   ];
 
   // List of all supported locales
-  static const delegates = [
+  static const delegates = <LocalizationsDelegate<dynamic>>[
     // A class which loads the translations from YAML files
-    Translator.delegate,
+    _LocalizationsDelegate(),
     // Built-in localization of basic text for Material widgets
     // (means those default Material widget such as alert dialog icon text)
     GlobalMaterialLocalizations.delegate,
@@ -22,7 +22,7 @@ class LanguageProvider extends ChangeNotifier {
     GlobalWidgetsLocalizations.delegate,
   ];
 
-  static const Locale defaultLocale = Locale('zh', 'TW');
+  static const Locale defaultLocale = Locale('en', 'US');
 
   Locale? _locale;
 
@@ -84,5 +84,26 @@ class LanguageProvider extends ChangeNotifier {
     final codes = value.split('_');
 
     return Locale(codes[0], codes.length == 1 ? null : codes[1]);
+  }
+}
+
+// LocalizationsDelegate is a factory for a set of localized resources
+// In this case, the localized strings will be gotten in an AppLocalizations object
+class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
+  const _LocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) {
+    return true;
+  }
+
+  @override
+  bool shouldReload(_LocalizationsDelegate old) => false;
+
+  // already set in [LanguageProvider.localResolutionCallback]
+  @override
+  Future<Translator> load(Locale locale) async {
+    await Translator.instance.load(locale);
+    return Translator.instance;
   }
 }
