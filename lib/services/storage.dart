@@ -13,7 +13,7 @@ enum Stores {
 class Storage {
   static Storage instance = Storage();
 
-  late final Database db;
+  late Database db;
 
   bool _initialized = false;
 

@@ -39,13 +39,7 @@ class MyApp extends StatelessWidget {
         final language = context.watch<LanguageProvider>();
         final currency = context.watch<CurrencyProvider>();
 
-        if (!prepared) {
-          return MaterialApp(
-            title: 'POS System',
-            debugShowCheckedModeBanner: false,
-            home: LogoSplash(),
-          );
-        } else if (!initilized) {
+        if (prepared && !initilized) {
           theme.initialize();
           language.initialize();
           currency.initialize();
@@ -58,16 +52,16 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
           // === language setting ===
-          locale: language.locale,
+          locale: language.isReady ? language.locale : null,
           supportedLocales: LanguageProvider.supports,
           localizationsDelegates: LanguageProvider.delegates,
           localeListResolutionCallback: language.localeListResolutionCallback,
           // === theme setting ===
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          themeMode: theme.mode,
+          themeMode: theme.isReady ? theme.mode : null,
           // === home widget ===
-          home: HomeScreen(),
+          home: prepared ? HomeScreen() : LogoSplash(),
         );
       },
     );

@@ -57,6 +57,9 @@ dev_dependencies:
   # code style
   pedantic: ^1.11.0
 
+  # tools
+  flutter_native_splash: ^1.2.0
+
   # build language json file from yaml
   yaml: ^3.1.0
   build: ^2.0.2
@@ -76,3 +79,8 @@ flutter:
     - assets/
     - lang/zh_TW/app.g.json
     - lang/en_US/app.g.json
+
+flutter_native_splash:
+  color: "#000000"
+  fullscreen: true
+  image: assets/logo.png
