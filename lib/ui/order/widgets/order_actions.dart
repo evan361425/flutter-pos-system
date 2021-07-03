@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/ui/order/order_screen.dart';
 
 class OrderActions extends StatelessWidget {
   const OrderActions({Key? key}) : super(key: key);
@@ -66,7 +65,6 @@ class OrderActions extends StatelessWidget {
       case OrderActionTypes.leave_pop:
         return CartModel.instance.leaveHistoryMode();
       case OrderActionTypes.leave:
-        OrderScreen.beforeLeave();
         return Navigator.of(context).pop();
       case OrderActionTypes.pop:
         if (!await showPopConfirm(context)) return;

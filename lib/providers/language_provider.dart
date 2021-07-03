@@ -55,8 +55,6 @@ class LanguageProvider extends ChangeNotifier {
       }
     }
 
-    print(locales);
-
     // check if the current device locale is supported or not
     for (final locale in locales) {
       final allowed = _parse((e) => e == locale) ??
@@ -107,7 +105,6 @@ class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
   // already set in [LanguageProvider.localResolutionCallback]
   @override
   Future<Translator> load(Locale locale) async {
-    print(locale);
     await Translator.instance.load(locale);
     return Translator.instance;
   }

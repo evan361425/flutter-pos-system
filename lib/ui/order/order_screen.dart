@@ -9,7 +9,6 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
@@ -52,17 +51,11 @@ class OrderScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     final catalogs = MenuModel.instance.itemList;
-    return WillPopScope(
-      onWillPop: () async {
-        beforeLeave();
-        return true;
-      },
-      child: OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) =>
-            orientation == Orientation.portrait
-                ? _bodyPortrait(catalogs)
-                : _bodyLandscape(catalogs),
-      ),
+    return OrientationBuilder(
+      builder: (BuildContext context, Orientation orientation) =>
+          orientation == Orientation.portrait
+              ? _bodyPortrait(catalogs)
+              : _bodyLandscape(catalogs),
     );
   }
 
@@ -146,9 +139,5 @@ class OrderScreen extends StatelessWidget {
       context: context,
       builder: (_) => CalculatorDialog(),
     );
-  }
-
-  static void beforeLeave() {
-    HomeScreen.orderInfo.currentState?.reset();
   }
 }

@@ -46,6 +46,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   table_calendar: ^3.0.0
   pull_to_refresh: ^2.0.0
+  tutorial_coach_mark: ^1.0.3
 
   # tools
   uuid: ^3.0.4

@@ -7,6 +7,8 @@ import 'package:possystem/routes.dart';
 class OrderInfo extends StatefulWidget {
   const OrderInfo({Key? key}) : super(key: key);
 
+  static GlobalKey orderButton = GlobalKey();
+
   @override
   OrderInfoState createState() => OrderInfoState();
 }
@@ -48,6 +50,7 @@ class OrderInfoState extends State<OrderInfo> {
         Positioned(
           bottom: 0,
           child: ElevatedButton(
+            key: OrderInfo.orderButton,
             onPressed: () => Navigator.of(context).pushNamed(Routes.order),
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),

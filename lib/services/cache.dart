@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Cache {
   static Cache instance = Cache();
 
-  late final SharedPreferences service;
+  late SharedPreferences service;
 
   bool _initialized = false;
 
@@ -55,6 +55,15 @@ class Cache {
       throw Error();
     }
   }
+
+  bool needTutorial(String key) {
+    final isRead = service.getBool('_tutorial.$key');
+
+    if (isRead != null) return false;
+
+    service.setBool('_tutorial.$key', true);
+    return true;
+  }
 }
 
 enum Caches {
@@ -63,6 +72,4 @@ enum Caches {
   currency_code,
   search_ingredient,
   search_quantity,
-  // application
-  analyze_calendar_format,
 }
