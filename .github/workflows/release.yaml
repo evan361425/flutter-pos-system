@@ -25,15 +25,22 @@ jobs:
           version: version
 
       - name: Extract tag name
-        run: echo "RELEASE_VERSION=$(echo ${${GITHUB_REF#refs/tags/v}%-*})" >> $GITHUB_ENV
+        id: tag
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const version = context.payload.ref.replace(/\/?refs\/tags\/v/, '');
+
+            return version.substr(0, version.indexOf('-'));
 
       - name: Extract version name
         run: |
           export PUBSPEC_VERSION=${{steps.pubspec.outputs.version}}
           echo "PUBSPEC_VERSION=$(echo ${PUBSPEC_VERSION%+*})" >> $GITHUB_ENV
 
-      - name: Check with tag
-        if: ${{ env.RELEASE_VERSION != env.PUBSPEC_VERSION }}
+      - name: Check version
+        if: ${{ steps.tag.outputs.result != env.PUBSPEC_VERSION }}
         run: exit 1
 
   draft-release:
@@ -46,9 +53,14 @@ jobs:
       - name: Extract tag name
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Build Changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v1
+        with:
+          configuration: "release.config.json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -85,10 +85,10 @@ jobs:
 
       - name: Configure Firebase
         run: |
-          mkdir -p ${{ needs.var.outputs.lane }}
-          echo "$GOOGLE_SERVICES" > ${{ needs.var.outputs.lane }}/google-services.json
+          mkdir -p ${{ needs.var.outputs.flavor }}
+          echo "$GOOGLE_SERVICES" > ${{ needs.var.outputs.flavor }}/google-services.json
         env:
-          GOOGLE_SERVICES: ${{ needs.var.outputs.lane == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
+          GOOGLE_SERVICES: ${{ needs.var.outputs.flavor == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
         working-directory: android/app/src
 
       - name: Configure Keystore
