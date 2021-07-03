@@ -85,8 +85,9 @@ class AnalysisScreen extends StatelessWidget {
   }
 
   Future<Map<DateTime, int>> _searchCountInMonth(DateTime day) {
-    final end = DateTime(day.year, day.month + 1);
-    final start = DateTime(day.year, day.month);
+    // add/sub 7 days for first/last few days on next/last month
+    final end = DateTime(day.year, day.month + 1).add(Duration(days: 7));
+    final start = DateTime(day.year, day.month).subtract(Duration(days: 7));
 
     return OrderRepo.instance.getCountBetween(start, end);
   }

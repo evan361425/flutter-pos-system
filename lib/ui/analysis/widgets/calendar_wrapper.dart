@@ -52,11 +52,11 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       rangeSelectionMode: RangeSelectionMode.disabled,
       locale: _locale.toString(),
       // header
-      headerStyle: HeaderStyle(formatButtonVisible: false),
+      headerStyle: HeaderStyle(formatButtonShowsNext: false),
       availableCalendarFormats: const {
-        CalendarFormat.month: '',
-        CalendarFormat.twoWeeks: '',
-        CalendarFormat.week: '',
+        CalendarFormat.month: '單月',
+        CalendarFormat.twoWeeks: '雙週',
+        CalendarFormat.week: '單週',
       },
       // no need holiday/weekend days
       holidayPredicate: (day) => false,
@@ -66,6 +66,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, null),
       calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder),
       onPageChanged: _handlePageChange,
+      onFormatChanged: (format) => setState(() => _calendarFormat = format),
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
           _handleDaySelected(selectedDay),
     );
@@ -125,6 +126,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   Future<void> _handlePageChange(DateTime day) async {
+    print(day);
     // make calander page stay in current page
     _focusedDay = day;
 
