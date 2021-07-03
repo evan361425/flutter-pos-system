@@ -20,7 +20,9 @@ import 'package:provider/provider.dart';
 class MyApp extends StatelessWidget {
   static final analytics = FirebaseAnalytics();
 
-  static bool initilized = false;
+  static final routeObserver = RouteObserver<ModalRoute<void>>();
+
+  static bool _initialized = false;
 
   const MyApp({Key? key}) : super(key: key);
 
@@ -39,18 +41,21 @@ class MyApp extends StatelessWidget {
         final language = context.watch<LanguageProvider>();
         final currency = context.watch<CurrencyProvider>();
 
-        if (prepared && !initilized) {
+        if (prepared && !_initialized) {
           theme.initialize();
           language.initialize();
           currency.initialize();
-          initilized = true;
+          _initialized = true;
         }
 
         return MaterialApp(
           title: 'POS System',
           routes: Routes.routes,
           debugShowCheckedModeBanner: false,
-          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: analytics),
+            routeObserver,
+          ],
           // === language setting ===
           locale: language.isReady ? language.locale : null,
           supportedLocales: LanguageProvider.supports,
