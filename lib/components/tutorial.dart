@@ -3,6 +3,13 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 abstract class Tutorial {
   Function(TargetFocus)? onClick;
+
+  final _clickedRecord = <String, bool>{};
+
+  late final TutorialCoachMark _tutorialMark;
+
+  final bool hideSkip;
+
   Tutorial(
     BuildContext context,
     List<GlobalKey> targets, {
@@ -17,33 +24,24 @@ abstract class Tutorial {
       colorShadow: color, // DEFAULT Colors.black
       opacityShadow: 0.8,
       hideSkip: hideSkip,
-      onClickTarget: (target) {
-        if (_isFirstClicked(target)) {
-          onClick != null ? onClick!(target) : next();
-        }
-      },
+      onClickTarget: handleClickTarget,
     );
   }
 
-  final _clickedRecord = <String, bool>{};
-
-  bool _isFirstClicked(TargetFocus target) {
-    if (_clickedRecord.containsKey(target.identify)) return false;
-
-    _clickedRecord[target.identify] = true;
-    return true;
-  }
-
-  void show() => _tutorialMark.show();
+  List<TargetFocus> createTargets(
+      BuildContext context, List<GlobalKey> targets);
 
   void finish() => _tutorialMark.finish();
 
   void next() => _tutorialMark.next();
 
-  late final TutorialCoachMark _tutorialMark;
+  void show() => _tutorialMark.show();
 
-  final bool hideSkip;
-
-  List<TargetFocus> createTargets(
-      BuildContext context, List<GlobalKey> targets);
+  /// should fire once every target
+  void handleClickTarget(target) {
+    if (!_clickedRecord.containsKey(target.identify)) {
+      _clickedRecord[target.identify] = true;
+      onClick != null ? onClick!(target) : next();
+    }
+  }
 }

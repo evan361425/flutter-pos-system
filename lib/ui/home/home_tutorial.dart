@@ -6,6 +6,8 @@ import 'package:possystem/ui/home/widgets/order_info.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class HomeTutorial extends Tutorial {
+  final List<Widget> child;
+
   HomeTutorial(
     BuildContext context,
     List<GlobalKey> targets, {
@@ -13,27 +15,6 @@ class HomeTutorial extends Tutorial {
     Function(TargetFocus)? onClick,
     required this.child,
   }) : super(context, targets, hideSkip: hideSkip, onClick: onClick);
-
-  final List<Widget> child;
-
-  factory HomeTutorial.menu(BuildContext context) {
-    final menu = HomeScreen.icons['home.types.store']![0];
-    return HomeTutorial(context, [menu.key as GlobalKey],
-        onClick: (_) => Navigator.of(context).pushNamed(menu.route),
-        child: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '歡迎使用 POS 系統！',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-              Text('在開始點餐前，我們先來建立菜單吧！'),
-            ],
-          ),
-        ]);
-  }
 
   factory HomeTutorial.icons(BuildContext context) {
     final stock = HomeScreen.icons['home.types.store']![1];
@@ -54,6 +35,25 @@ class HomeTutorial extends Tutorial {
         ),
       ],
     );
+  }
+
+  factory HomeTutorial.menu(BuildContext context) {
+    final menu = HomeScreen.icons['home.types.store']![0];
+    return HomeTutorial(context, [menu.key as GlobalKey],
+        onClick: (_) => Navigator.of(context).pushNamed(menu.route),
+        child: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '歡迎使用 POS 系統！',
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              Text('在開始點餐前，我們先來建立菜單吧！'),
+            ],
+          ),
+        ]);
   }
 
   @override
