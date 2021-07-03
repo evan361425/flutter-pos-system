@@ -1,0 +1,9 @@
+menu: Menu
+setting: Setting
+analysis: Analysis
+stock: Stock
+quantities: Quantity
+
+types:
+  other: Other
+  store: Store

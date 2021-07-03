@@ -1,8 +1,7 @@
+add_catalog: Add New Catalog
+
 catalog:
-  title:
-    add: 新增種類
-    edit: 編輯種類
-  error:
-    name: 名稱不能重複且不能為空
-  ph: # placeholder
-    name: 種類名稱
+  add_product: Add New Product
+
+product:
+  add_ingredient: Add New Ingredient

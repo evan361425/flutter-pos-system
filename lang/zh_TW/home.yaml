@@ -1,0 +1,8 @@
+menu: 菜單
+setting: 設定
+analysis: 統計分析
+stock: 庫存
+quantities: 份量
+types:
+  other: 其他
+  store: 店家設定

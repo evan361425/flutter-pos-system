@@ -7,10 +7,3 @@ cancel: 取消
 confirm: 確認
 success: 成功
 failed: 失敗
-
-# Backend List
-menu: 菜單
-setting: 設定
-analysis: 統計分析
-stock: 庫存
-quantities: 份量
