@@ -7,9 +7,11 @@ class ThemeProvider extends ChangeNotifier {
   static bool get defaultTheme =>
       SchedulerBinding.instance?.window.platformBrightness == Brightness.dark;
 
-  late ThemeMode _mode;
+  ThemeMode? _mode;
 
-  ThemeMode get mode => _mode;
+  bool get isReady => _mode != null;
+
+  ThemeMode get mode => _mode!;
 
   void initialize() {
     // get from cache, if not found get system setting

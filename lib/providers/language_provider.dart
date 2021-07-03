@@ -28,6 +28,8 @@ class LanguageProvider extends ChangeNotifier {
 
   Locale get locale => _locale!;
 
+  bool get isReady => _locale != null;
+
   void initialize() {
     final locale = Cache.instance.get<String>(Caches.language_code);
     final parsed = _parseLanguage(locale);
@@ -52,6 +54,8 @@ class LanguageProvider extends ChangeNotifier {
         return null;
       }
     }
+
+    print(locales);
 
     // check if the current device locale is supported or not
     for (final locale in locales) {
@@ -103,6 +107,7 @@ class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
   // already set in [LanguageProvider.localResolutionCallback]
   @override
   Future<Translator> load(Locale locale) async {
+    print(locale);
     await Translator.instance.load(locale);
     return Translator.instance;
   }
