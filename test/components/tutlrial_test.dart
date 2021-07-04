@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+
+import '../mocks/mock_widgets.dart';
 
 void main() {
   test('should not fire onClick twice', () {
     final target = TargetFocus(identify: 'id', keyTarget: GlobalKey());
     var count = 0;
     final tutorial = TestTutorial(
-      _MockBuildContext(),
+      MockBuildContext(),
       (_) => count++,
     );
 
@@ -27,5 +28,3 @@ class TestTutorial extends Tutorial {
   @override
   List<TargetFocus> createTargets(_, __) => [];
 }
-
-class _MockBuildContext extends Mock implements BuildContext {}

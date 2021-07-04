@@ -9,8 +9,7 @@ import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import 'stock_model_test.mocks.dart';
 
-@GenerateMocks(
-    [IngredientModel, OrderObject, OrderProductObject, OrderIngredientObject])
+@GenerateMocks([IngredientModel, OrderProductObject, OrderIngredientObject])
 void main() {
   test('#constructor', () {
     when(storage.get(any)).thenAnswer((e) => Future.value({

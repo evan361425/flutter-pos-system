@@ -6,7 +6,7 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/tutlrial_test.dart';
+import '../../mocks/mock_widgets.dart';
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mockito/mock_catalog_model.dart';
 import '../../mocks/mockito/mock_product_ingredient_model.dart';
@@ -246,7 +246,7 @@ void main() {
   group('#setUpStockMode', () {
     test('should not do anything if already set', () {
       menu.stockMode = true;
-      expect(menu.setUpStockMode(_MockBuildContext()), isTrue);
+      expect(menu.setUpStockMode(MockBuildContext()), isTrue);
     });
 
     testWidgets('should return false if stock not ready', (tester) async {
@@ -287,16 +287,12 @@ void main() {
           'i-id1': ['q-id1', 'q-id2'],
         },
       });
-      final catalog2 = createCatalog('id-2', {
-        'p-id2': {
-          'i-id1': ['q-id1', 'q-id2'],
-        },
-      });
 
       when(stock.isReady).thenReturn(true);
       when(quantities.isReady).thenReturn(true);
       when(stock.getItem(any)).thenReturn(MockIngredientModel());
       when(quantities.getItem(any)).thenReturn(MockQuantityModel());
+      menu.replaceItems({'id-1': catalog1});
 
       await tester.pumpWidget(MultiProvider(
         providers: [
@@ -332,5 +328,3 @@ void main() {
     initialize();
   });
 }
-
-class _MockBuildContext extends Mock implements BuildContext {}

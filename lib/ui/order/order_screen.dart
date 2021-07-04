@@ -8,7 +8,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
