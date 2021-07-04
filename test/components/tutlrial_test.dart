@@ -9,7 +9,7 @@ void main() {
     final target = TargetFocus(identify: 'id', keyTarget: GlobalKey());
     var count = 0;
     final tutorial = TestTutorial(
-      MockBuildContext(),
+      _MockBuildContext(),
       (_) => count++,
     );
 
@@ -28,4 +28,4 @@ class TestTutorial extends Tutorial {
   List<TargetFocus> createTargets(_, __) => [];
 }
 
-class MockBuildContext extends Mock implements BuildContext {}
+class _MockBuildContext extends Mock implements BuildContext {}

@@ -102,7 +102,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     if (!widget.isNew) {
       _amountController.text = widget.ingredient!.amount.toString();
       ingredientId = widget.ingredient!.id;
-      ingredientName = widget.ingredient!.ingredient.name;
+      ingredientName = widget.ingredient!.name;
     }
   }
 

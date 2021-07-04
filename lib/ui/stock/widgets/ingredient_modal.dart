@@ -33,7 +33,7 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   Widget body() {
-    final isReady = Routes.setUpStockMode(context);
+    final isReady = MenuModel.instance.setUpStockMode(context);
     final ingredients = !isReady || widget.isNew
         ? const <ProductIngredientModel>[]
         : MenuModel.instance.getIngredients(widget.ingredient!.id);

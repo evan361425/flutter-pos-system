@@ -45,7 +45,9 @@ class OrderScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Routes.setUpStockMode(context) ? _body(context) : CircularLoading(),
+      body: MenuModel.instance.setUpStockMode(context)
+          ? _body(context)
+          : CircularLoading(),
     );
   }
 

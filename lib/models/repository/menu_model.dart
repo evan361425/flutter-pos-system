@@ -7,6 +7,7 @@ import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:provider/provider.dart';
 
 import 'quantity_repo.dart';
 import 'stock_model.dart';
@@ -19,7 +20,6 @@ class MenuModel extends ChangeNotifier
         InitilizableRepository {
   static late MenuModel instance;
 
-  /// wheather ingredient/quantity has connect to stock
   bool stockMode = false;
 
   MenuModel() {
@@ -104,25 +104,17 @@ class MenuModel extends ChangeNotifier
     return _remove(quantities.map((e) => e.ingredient), quantities);
   }
 
-  Future<void> _remove(Iterable<Repository> repos, List<Model> items) {
-    if (items.isEmpty) return Future.value();
-
-    final updateData = {for (var item in items) item.prefix: null};
-
-    final id = items.first.id;
-    repos.forEach((repo) => repo.removeItem(id));
-
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
-  }
-
+  /// wheather ingredient/quantity has connect to stock
+  ///
   /// inject to make it easy [context.watch]
-  void setUpStock(StockModel stock, QuantityRepo quantities) {
-    assert(stock.isReady, 'should ready');
-    assert(quantities.isReady, 'should ready');
+  bool setUpStockMode(BuildContext context) {
+    if (stockMode) return true;
 
-    if (stockMode) return;
+    final stock = context.watch<StockModel>();
+    final quantities = context.watch<QuantityRepo>();
+    if (!stock.isReady || !quantities.isReady) {
+      return false;
+    }
 
     items.forEach((catalog) {
       catalog.items.forEach((product) {
@@ -136,5 +128,19 @@ class MenuModel extends ChangeNotifier
     });
 
     stockMode = true;
+    return true;
+  }
+
+  Future<void> _remove(Iterable<Repository> repos, List<Model> items) {
+    if (items.isEmpty) return Future.value();
+
+    final updateData = {for (var item in items) item.prefix: null};
+
+    final id = items.first.id;
+    repos.forEach((repo) => repo.removeItem(id));
+
+    notifyListeners();
+
+    return Storage.instance.set(Stores.menu, updateData);
   }
 }

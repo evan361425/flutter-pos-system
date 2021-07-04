@@ -6,6 +6,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
@@ -76,7 +77,7 @@ class CatalogScreen extends StatelessWidget {
             ],
           ),
         ),
-        Routes.setUpStockMode(context)
+        MenuModel.instance.setUpStockMode(context)
             ? catalog.isEmpty
                 ? EmptyBody('menu.catalog.empty_body')
                 : ProductList(products: catalog.itemList)

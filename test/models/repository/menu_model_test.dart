@@ -1,13 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/models/repository/stock_model.dart';
+import 'package:provider/provider.dart';
 
+import '../../components/tutlrial_test.dart';
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mockito/mock_catalog_model.dart';
 import '../../mocks/mockito/mock_product_ingredient_model.dart';
 import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import '../menu/product_ingredient_model_test.mocks.dart';
+import 'quantity_repo_test.mocks.dart';
+import 'stock_model_test.mocks.dart';
 
 void main() {
   test('#constructor', () {
@@ -236,6 +243,86 @@ void main() {
     });
   });
 
+  group('#setUpStockMode', () {
+    test('should not do anything if already set', () {
+      menu.stockMode = true;
+      expect(menu.setUpStockMode(_MockBuildContext()), isTrue);
+    });
+
+    testWidgets('should return false if stock not ready', (tester) async {
+      when(stock.isReady).thenReturn(false);
+      when(quantities.isReady).thenReturn(true);
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isFalse);
+          return Container();
+        },
+      ));
+    });
+
+    testWidgets('should return false if quantities not ready', (tester) async {
+      when(stock.isReady).thenReturn(true);
+      when(quantities.isReady).thenReturn(false);
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isFalse);
+          return Container();
+        },
+      ));
+    });
+
+    testWidgets('should set up correctly', (tester) async {
+      final catalog1 = createCatalog('id-1', {
+        'p-id1': {
+          'i-id1': ['q-id1', 'q-id2'],
+        },
+      });
+      final catalog2 = createCatalog('id-2', {
+        'p-id2': {
+          'i-id1': ['q-id1', 'q-id2'],
+        },
+      });
+
+      when(stock.isReady).thenReturn(true);
+      when(quantities.isReady).thenReturn(true);
+      when(stock.getItem(any)).thenReturn(MockIngredientModel());
+      when(quantities.getItem(any)).thenReturn(MockQuantityModel());
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isTrue);
+          return Container();
+        },
+      ));
+
+      catalog1.items.forEach((product) {
+        product.items.forEach((ingredient) {
+          verify((ingredient as MockProductIngredientModel).setIngredient(any))
+              .called(1);
+          ingredient.items.forEach((quantity) {
+            verify((quantity as MockProductQuantityModel).setQuantity(any))
+                .called(1);
+          });
+        });
+      });
+    });
+  });
+
   setUp(() {
     when(storage.get(any)).thenAnswer((e) => Future.value({}));
     menu = MenuModel();
@@ -245,3 +332,5 @@ void main() {
     initialize();
   });
 }
+
+class _MockBuildContext extends Mock implements BuildContext {}
