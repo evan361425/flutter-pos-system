@@ -17,7 +17,6 @@ class Translator {
     final contents = await rootBundle.loadString(fileName);
     final Map<String, dynamic> data = jsonDecode(contents);
     _data = data.cast<String, String>();
-    print(_data);
   }
 
   String translate(String key, Map<String, String> kvargs) {
