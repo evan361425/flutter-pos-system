@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             .map<Widget>((entry) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(entry.key, style: textTheme.headline5),
+                    Text(tt(entry.key), style: textTheme.headline5),
                     Wrap(spacing: 8.0, children: entry.value),
                     Divider(),
                   ],
@@ -178,7 +178,10 @@ class _LabeledIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(icon, size: 48.0, color: theme.primaryColorDark),
-          Text(tt(label), style: TextStyle(color: theme.textTheme.muted.color)),
+          Text(
+            tt('home.$label'),
+            style: TextStyle(color: theme.textTheme.muted.color),
+          ),
         ],
       ),
     );

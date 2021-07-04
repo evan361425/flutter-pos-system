@@ -57,7 +57,7 @@ class CatalogScreen extends StatelessWidget {
         title: Text('排序產品'),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
-            Routes.menuCatalogReorder,
+            Routes.menuProductReorder,
             arguments: catalog),
       ),
     ];

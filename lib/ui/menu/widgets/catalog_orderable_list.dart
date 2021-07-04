@@ -8,8 +8,6 @@ class CatalogOrderableList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('build reorder');
-
     return ReorderableScaffold(
       items: MenuModel.instance.itemList,
       title: '排序產品種類',
