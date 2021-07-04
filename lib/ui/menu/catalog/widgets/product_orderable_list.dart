@@ -11,7 +11,6 @@ class ProductOrderableList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('build reorder');
     return ReorderableScaffold(
       items: catalog.itemList,
       title: '排序產品',
