@@ -4,9 +4,8 @@ import 'package:mockito/mockito.dart';
 class MockBuildContext extends Mock implements BuildContext {}
 
 Widget bindWithNavigator(Widget widget) {
-  return Directionality(
-    textDirection: TextDirection.ltr,
-    child: Navigator(
+  return MaterialApp(
+    home: Navigator(
       onPopPage: (route, result) => route.didPop(result),
       pages: [
         MaterialPage(child: Container()),

@@ -35,7 +35,8 @@ class _QuantityModalState extends State<QuantityModal>
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: '份量名稱，多量',
+          labelText: '份量名稱',
+          hintText: '多量、少量',
           errorText: errorMessage,
           filled: false,
         ),
@@ -80,6 +81,7 @@ class _QuantityModalState extends State<QuantityModal>
       await widget.quantity!.update(object);
     }
 
+    // quantity is not notifier, need set item to fire listener
     await QuantityRepo.instance.setItem(widget.quantity ??
         QuantityModel(
           name: object.name!,

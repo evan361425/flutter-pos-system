@@ -24,9 +24,8 @@ class QuantityScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed(
-          Routes.stockQuantityModal,
-        ),
+        onPressed: () =>
+            Navigator.of(context).pushNamed(Routes.stockQuantityModal),
         tooltip: '新增份量',
         child: Icon(KIcons.add),
       ),
