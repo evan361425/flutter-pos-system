@@ -6,24 +6,27 @@ import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
 
 import '../../../../mocks/mock_widgets.dart';
 import '../../../../mocks/mocks.dart';
-import '../../../../models/repository/quantity_repo_test.mocks.dart';
 
 void main() {
   testWidgets('should setItem if updating', (tester) async {
-    final quantity = MockQuantityModel();
-    when(quantity.name).thenReturn('name');
-    when(quantity.id).thenReturn('id');
-    when(quantity.defaultProportion).thenReturn(1);
-    when(quantity.update(any)).thenAnswer((_) => Future.value());
+    final quantity = QuantityModel(name: 'name', id: 'id');
 
     when(quantities.setItem(quantity)).thenAnswer((_) => Future.value());
+    when(quantities.hasItem('name-new')).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(QuantityModal(
       quantity: quantity,
     )));
 
+    await tester.enterText(find.byType(TextFormField).first, 'name-new');
+    await tester.enterText(find.byType(TextFormField).last, '3');
+
     await tester.tap(find.byType(TextButton));
-    verify(quantities.setItem(any)).called(1);
+
+    verify(storage.set(any, argThat(predicate<Map<String, Object>>((map) {
+      return map['id.name'] == 'name-new' && map['id.defaultProportion'] == 3;
+    })))).called(1);
+    verify(quantities.setItem(any));
   });
 
   testWidgets('should add new item', (tester) async {

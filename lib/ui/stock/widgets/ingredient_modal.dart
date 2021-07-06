@@ -116,16 +116,15 @@ class _IngredientModalState extends State<IngredientModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (widget.isNew) {
-      final ingredient = IngredientModel(
-        name: object.name!,
-        currentAmount: object.currentAmount!,
-      );
-
-      await StockModel.instance.setItem(ingredient);
-    } else {
+    if (!widget.isNew) {
       await widget.ingredient!.update(object);
     }
+
+    await StockModel.instance.setItem(widget.ingredient ??
+        IngredientModel(
+          name: object.name!,
+          currentAmount: object.currentAmount!,
+        ));
 
     Navigator.of(context).pop();
   }

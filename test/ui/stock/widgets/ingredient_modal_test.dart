@@ -14,7 +14,7 @@ import '../../../models/repository/stock_model_test.mocks.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final ingredient = MockIngredientModel();
+    final ingredient = IngredientModel(name: 'name', id: 'id');
     final catalog = MockCatalogModel();
     final product = MockProductModel();
     final productIngredient = MockProductIngredientModel();
@@ -24,17 +24,29 @@ void main() {
     when(product.catalog).thenReturn(catalog);
     when(product.name).thenReturn('p-name');
     when(catalog.name).thenReturn('c-name');
-    when(ingredient.name).thenReturn('name');
-    when(ingredient.id).thenReturn('id');
-    when(ingredient.currentAmount).thenReturn(1);
-    when(ingredient.update(any)).thenAnswer((_) => Future.value());
+    when(stock.setItem(any)).thenAnswer((_) => Future.value());
+    when(stock.hasItem('name-new')).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(IngredientModal(
       ingredient: ingredient,
     )));
 
+    await tester.enterText(find.byType(TextFormField).first, 'name-new');
+
+    // should not do anything if not setting currentStock
     await tester.tap(find.byType(TextButton));
-    verify(ingredient.update(any)).called(1);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).last, '30');
+    await tester.tap(find.byType(TextButton));
+
+    verify(storage.set(
+        any,
+        argThat(predicate<Map<String, Object>>((map) =>
+            map['id.name'] == 'name-new' &&
+            map['id.currentAmount'] == 30 &&
+            map['id.updatedAt'] != null)))).called(1);
+    verify(stock.setItem(any));
   });
 
   testWidgets('should loading if stock mode not ready', (tester) async {
