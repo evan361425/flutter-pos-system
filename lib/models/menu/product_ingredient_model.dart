@@ -55,6 +55,7 @@ class ProductIngredientModel
   @override
   String get code => 'menu.ingredient';
 
+  @override
   String get name => ingredient.name;
 
   @override

@@ -7,6 +7,8 @@ import 'package:possystem/services/storage.dart';
 mixin Model<T extends ModelObject> {
   late String id;
 
+  late String name;
+
   String get code;
   Stores get storageStore;
   String get prefix => id;
@@ -49,12 +51,9 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
 
 mixin OrderableModel<T extends ModelObject> on NotifyModel<T> {
   late int index;
-  late String name;
 }
 
 mixin SearchableModel<T extends ModelObject> on NotifyModel<T> {
-  late String name;
-
   /// get similarity between [name] and [pattern]
   int getSimilarity(String pattern) {
     final name = this.name.toLowerCase();

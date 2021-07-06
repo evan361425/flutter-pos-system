@@ -133,7 +133,7 @@ class _IngredientModalState extends State<IngredientModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.ingredient?.name != name && StockModel.instance.hasItem(name)) {
+    if (widget.ingredient?.name != name && StockModel.instance.hasName(name)) {
       return '成份名稱重複';
     }
   }

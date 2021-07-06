@@ -86,7 +86,7 @@ class Routes {
           builder: (_, __) => CatalogScreen(),
         ),
     menuCatalogModal: (context) =>
-        CatalogModal(catalog: arg<CatalogModel>(context)),
+        CatalogModal(catalog: arg<CatalogModel?>(context)),
     menuCatalogReorder: (context) => CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
           value: arg<ProductModel>(context),

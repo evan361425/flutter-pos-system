@@ -90,7 +90,7 @@ class _CatalogModalState extends State<CatalogModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.catalog?.name != name && MenuModel.instance.hasCatalog(name)) {
+    if (widget.catalog?.name != name && MenuModel.instance.hasName(name)) {
       return '種類名稱重複';
     }
   }

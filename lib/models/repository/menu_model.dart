@@ -86,9 +86,6 @@ class MenuModel extends ChangeNotifier
     return result;
   }
 
-  bool hasCatalog(String name) =>
-      !items.every((catalog) => catalog.name != name);
-
   bool hasProduct(String name) => !items.every(
       (catalog) => catalog.items.every((product) => product.name != name));
 

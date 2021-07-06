@@ -161,9 +161,9 @@ void main() {
       createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
       createCatalog('ctg_2', {});
 
-      expect(menu.hasCatalog('ctg_1-name'), isTrue);
-      expect(menu.hasCatalog('ctg_2'), isFalse);
-      expect(menu.hasCatalog('ctg_3-name'), isFalse);
+      expect(menu.hasName('ctg_1-name'), isTrue);
+      expect(menu.hasName('ctg_2'), isFalse);
+      expect(menu.hasName('ctg_3-name'), isFalse);
     });
 
     test('#hasProduct', () {

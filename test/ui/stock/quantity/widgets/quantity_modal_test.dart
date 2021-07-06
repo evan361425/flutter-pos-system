@@ -12,7 +12,7 @@ void main() {
     final quantity = QuantityModel(name: 'name', id: 'id');
 
     when(quantities.setItem(quantity)).thenAnswer((_) => Future.value());
-    when(quantities.hasItem('name-new')).thenReturn(false);
+    when(quantities.hasName('name-new')).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(QuantityModal(
       quantity: quantity,
@@ -31,7 +31,7 @@ void main() {
 
   testWidgets('should add new item', (tester) async {
     when(quantities.setItem(any)).thenAnswer((_) => Future.value());
-    when(quantities.hasItem(any)).thenReturn(false);
+    when(quantities.hasName(any)).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(QuantityModal()));
 

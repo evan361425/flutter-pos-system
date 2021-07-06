@@ -25,7 +25,7 @@ void main() {
     when(product.name).thenReturn('p-name');
     when(catalog.name).thenReturn('c-name');
     when(stock.setItem(any)).thenAnswer((_) => Future.value());
-    when(stock.hasItem('name-new')).thenReturn(false);
+    when(stock.hasName('name-new')).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(IngredientModal(
       ingredient: ingredient,
@@ -66,7 +66,7 @@ void main() {
   testWidgets('should add new item', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(true);
     when(stock.setItem(any)).thenAnswer((_) => Future.value());
-    when(stock.hasItem(any)).thenReturn(false);
+    when(stock.hasName(any)).thenReturn(false);
 
     await tester.pumpWidget(bindWithNavigator(IngredientModal()));
 

@@ -51,6 +51,7 @@ class ProductQuantityModel with Model<ProductQuantityObject> {
   @override
   String get code => 'menu.quantity';
 
+  @override
   String get name => quantity.name;
 
   @override

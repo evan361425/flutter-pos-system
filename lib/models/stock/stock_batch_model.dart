@@ -5,17 +5,17 @@ import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/storage.dart';
 
 class StockBatchModel extends NotifyModel {
-  String name;
-
   /// ingredient id => add number
   final Map<String, num> data;
 
   StockBatchModel({
-    required this.name,
+    required String name,
     String? id,
     Map<String, num>? data,
   })  : data = data ?? {},
-        super(id);
+        super(id) {
+    this.name = name;
+  }
 
   factory StockBatchModel.fromObject(StockBatchObject object) =>
       StockBatchModel(

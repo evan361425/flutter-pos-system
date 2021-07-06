@@ -95,7 +95,7 @@ class _QuantityModalState extends State<QuantityModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.quantity?.name != name && QuantityRepo.instance.hasItem(name)) {
+    if (widget.quantity?.name != name && QuantityRepo.instance.hasName(name)) {
       return '份量名稱重複';
     }
   }

@@ -88,6 +88,10 @@ class MockStockModel extends _i1.Mock implements _i11.StockModel {
       (super.noSuchMethod(Invocation.method(#hasItem, [id]), returnValue: false)
           as bool);
   @override
+  bool hasName(String? id) =>
+      (super.noSuchMethod(Invocation.method(#hasName, [id]), returnValue: false)
+          as bool);
+  @override
   _i10.Future<void> initialize() =>
       (super.noSuchMethod(Invocation.method(#initialize, []),
           returnValue: Future<void>.value(),

@@ -65,6 +65,7 @@ void main() {
 class MockModel with Model<MockObject> {
   MockModel(this.name);
 
+  @override
   final String name;
 
   @override

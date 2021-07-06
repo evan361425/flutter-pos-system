@@ -9,7 +9,6 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
-import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -36,8 +35,8 @@ class MenuScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CatalogModal())),
+        onPressed: () =>
+            Navigator.of(context).pushNamed(Routes.menuCatalogModal),
         tooltip: tt('menu.add_catalog'),
         child: Icon(KIcons.add),
       ),
@@ -58,7 +57,7 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context, MenuModel menu) {
-    if (menu.isEmpty) return Center(child: EmptyBody('menu.empty'));
+    if (menu.isEmpty) return Center(child: EmptyBody(tt('menu.empty')));
 
     return Column(
       children: [
