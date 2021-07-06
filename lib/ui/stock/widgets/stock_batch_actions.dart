@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
@@ -78,12 +78,12 @@ class StockBatchActions extends StatelessWidget {
 }
 
 class _BatchItemSelector extends StatefulWidget {
+  final StockBatchRepo batchRepo;
+
   const _BatchItemSelector({
     Key? key,
     required this.batchRepo,
   }) : super(key: key);
-
-  final StockBatchRepo batchRepo;
 
   @override
   _BatchItemSelectorState createState() => _BatchItemSelectorState();
@@ -95,10 +95,6 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
   StockBatchModel? get currentBatch => selectedBatchId == null
       ? null
       : widget.batchRepo.getItem(selectedBatchId!);
-
-  void clear() {
-    setState(() => selectedBatchId = null);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,5 +118,9 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
           )
           .toList(),
     );
+  }
+
+  void clear() {
+    setState(() => selectedBatchId = null);
   }
 }

@@ -22,9 +22,8 @@ class StockScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed(
-          Routes.stockIngredient,
-        ),
+        onPressed: () =>
+            Navigator.of(context).pushNamed(Routes.stockIngredient),
         tooltip: '新增成份',
         child: Icon(KIcons.add),
       ),
@@ -62,7 +61,7 @@ class StockScreen extends StatelessWidget {
   }
 
   Widget _metadata(BuildContext context) {
-    final captionStyle = Theme.of(context).textTheme.muted;
+    final mutedStyle = Theme.of(context).textTheme.muted;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -73,23 +72,23 @@ class StockScreen extends StatelessWidget {
             children: [
               Icon(
                 Icons.store_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
+                size: mutedStyle.fontSize,
+                color: mutedStyle.color,
               ),
               Text(
                 '現在庫存的數量',
-                style: captionStyle,
+                style: mutedStyle,
                 overflow: TextOverflow.ellipsis,
               ),
               MetaBlock(),
               Icon(
                 Icons.shopping_cart_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
+                size: mutedStyle.fontSize,
+                color: mutedStyle.color,
               ),
               Text(
                 '上次補貨後的數量',
-                style: captionStyle,
+                style: mutedStyle,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -101,14 +100,14 @@ class StockScreen extends StatelessWidget {
             message: '上次修改時間',
             child: Icon(
               Icons.access_time,
-              size: captionStyle.fontSize,
-              color: captionStyle.color,
+              size: mutedStyle.fontSize,
+              color: mutedStyle.color,
             ),
           ),
         ),
         Text(
           StockModel.instance.updatedDate ?? '尚未開始設定',
-          style: captionStyle,
+          style: mutedStyle,
         ),
       ],
     );
