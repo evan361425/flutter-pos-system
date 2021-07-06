@@ -165,15 +165,6 @@ void main() {
       expect(menu.hasName('ctg_2'), isFalse);
       expect(menu.hasName('ctg_3-name'), isFalse);
     });
-
-    test('#hasProduct', () {
-      createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
-      createCatalog('ctg_2', {});
-
-      expect(menu.hasProduct('pdt_1-name'), isTrue);
-      expect(menu.hasProduct('pdt_2'), isFalse);
-      expect(menu.hasProduct('pdt_3-name'), isFalse);
-    });
   });
 
   group('remover', () {

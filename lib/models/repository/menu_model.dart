@@ -86,9 +86,6 @@ class MenuModel extends ChangeNotifier
     return result;
   }
 
-  bool hasProduct(String name) => !items.every(
-      (catalog) => catalog.items.every((product) => product.name != name));
-
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
 

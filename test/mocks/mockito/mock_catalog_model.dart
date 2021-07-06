@@ -122,6 +122,10 @@ class MockCatalogModel extends _i1.Mock implements _i3.CatalogModel {
       (super.noSuchMethod(Invocation.method(#hasItem, [id]), returnValue: false)
           as bool);
   @override
+  bool hasName(String? name) => (super
+          .noSuchMethod(Invocation.method(#hasName, [name]), returnValue: false)
+      as bool);
+  @override
   void notifyItem() => super.noSuchMethod(Invocation.method(#notifyItem, []),
       returnValueForMissingStub: null);
   @override

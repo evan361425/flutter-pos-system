@@ -65,6 +65,8 @@ class CatalogScreen extends StatelessWidget {
   }
 
   Widget _body(CatalogModel catalog, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: <Widget>[
         Padding(
@@ -72,8 +74,8 @@ class CatalogScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              _catalogName(catalog, context),
-              _catalogMetadata(catalog, context),
+              Text(catalog.name, style: textTheme.headline4),
+              _catalogMetadata(catalog, textTheme),
             ],
           ),
         ),
@@ -86,7 +88,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
+  Widget _catalogMetadata(CatalogModel catalog, TextTheme textTheme) {
     return RichText(
       text: TextSpan(
         text: '產品數量：',
@@ -98,15 +100,8 @@ class CatalogScreen extends StatelessWidget {
           MetaBlock.span(),
           TextSpan(text: catalog.createdDate),
         ],
-        style: Theme.of(context).textTheme.bodyText1,
+        style: textTheme.bodyText1,
       ),
-    );
-  }
-
-  Widget _catalogName(CatalogModel catalog, BuildContext context) {
-    return Text(
-      catalog.name,
-      style: Theme.of(context).textTheme.headline4,
     );
   }
 }
