@@ -67,7 +67,11 @@ class IngredientList extends StatelessWidget {
           ),
           actions: <Widget>[
             ElevatedButton(
-              onPressed: () => action(controller.text),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop<String>(controller.text);
+                }
+              },
               child: Text('儲存'),
             ),
           ],
