@@ -4,13 +4,13 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class IngredientExpansion extends StatefulWidget {
-  IngredientExpansion({Key? key}) : super(key: key);
+  IngredientExpansion({Key? key, required this.ingredients}) : super(key: key);
+
+  final List<ProductIngredientModel> ingredients;
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
@@ -18,28 +18,27 @@ class IngredientExpansion extends StatefulWidget {
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
   late List<bool> showIngredient;
-  late List<ProductIngredientModel> ingredients;
 
   @override
   Widget build(BuildContext context) {
-    final length = ingredients.length;
+    final length = widget.ingredients.length;
     return Container(
       child: ExpansionPanelList(
         expansionCallback: (int index, bool status) {
           setState(() => showIngredient[index] = !status);
         },
         children: [
-          for (var i = 0; i < length; i++) _panelBuilder(i, ingredients[i])
+          for (var i = 0; i < length; i++)
+            _panelBuilder(i, widget.ingredients[i])
         ],
       ),
     );
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    ingredients = context.watch<ProductModel>().itemList;
-    showIngredient = List.filled(ingredients.length, false);
+  void initState() {
+    super.initState();
+    showIngredient = List.filled(widget.ingredients.length, false);
   }
 
   Widget _addButtons(ProductIngredientModel ingredient) {

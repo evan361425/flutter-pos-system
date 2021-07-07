@@ -47,16 +47,15 @@ void main() {
     product.items.forEach((ingredient) => ingredient.product = product);
     var argument;
 
-    await tester.pumpWidget(MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: product)],
-      child: MaterialApp(
-        routes: {
-          Routes.menuIngredient: (context) {
-            argument = ModalRoute.of(context)!.settings.arguments;
-            return Container();
-          },
+    await tester.pumpWidget(MaterialApp(
+      routes: {
+        Routes.menuIngredient: (context) {
+          argument = ModalRoute.of(context)!.settings.arguments;
+          return Container();
         },
-        home: SingleChildScrollView(child: IngredientExpansion()),
+      },
+      home: SingleChildScrollView(
+        child: IngredientExpansion(ingredients: product.itemList),
       ),
     ));
 
@@ -83,16 +82,15 @@ void main() {
     product.items.forEach((ingredient) => ingredient.product = product);
     var argument;
 
-    await tester.pumpWidget(MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: product)],
-      child: MaterialApp(
-        routes: {
-          Routes.menuQuantity: (context) {
-            argument = ModalRoute.of(context)!.settings.arguments;
-            return Container();
-          },
+    await tester.pumpWidget(MaterialApp(
+      routes: {
+        Routes.menuQuantity: (context) {
+          argument = ModalRoute.of(context)!.settings.arguments;
+          return Container();
         },
-        home: SingleChildScrollView(child: IngredientExpansion()),
+      },
+      home: SingleChildScrollView(
+        child: IngredientExpansion(ingredients: product.itemList),
       ),
     ));
 
@@ -119,16 +117,15 @@ void main() {
     product.items.forEach((ingredient) => ingredient.product = product);
     var argument;
 
-    await tester.pumpWidget(MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: product)],
-      child: MaterialApp(
-        routes: {
-          Routes.menuQuantity: (context) {
-            argument = ModalRoute.of(context)!.settings.arguments;
-            return Container();
-          },
+    await tester.pumpWidget(MaterialApp(
+      routes: {
+        Routes.menuQuantity: (context) {
+          argument = ModalRoute.of(context)!.settings.arguments;
+          return Container();
         },
-        home: SingleChildScrollView(child: IngredientExpansion()),
+      },
+      home: SingleChildScrollView(
+        child: IngredientExpansion(ingredients: product.itemList),
       ),
     ));
 
@@ -160,10 +157,12 @@ void main() {
       return find.text(text).evaluate().first.renderObject!.debugNeedsPaint;
     }
 
-    await tester.pumpWidget(MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: product)],
-      child: MaterialApp(
-        home: SingleChildScrollView(child: IngredientExpansion(key: expansion)),
+    await tester.pumpWidget(MaterialApp(
+      home: SingleChildScrollView(
+        child: IngredientExpansion(
+          key: expansion,
+          ingredients: product.itemList,
+        ),
       ),
     ));
 
@@ -194,7 +193,7 @@ void main() {
     expect(oldHeight, greaterThan(newHeight));
   });
 
-  testWidgets('when product changed all should close', (tester) async {
+  testWidgets('when product changed should keep open', (tester) async {
     final catalog = CatalogModel(index: 1, name: 'c-name');
     final ingredient1 = createIngredient('ing-1', 10, {'qua-1': 10});
     final ingredient2 = createIngredient('ing-2', 10, {'qua-2': 10});
@@ -213,12 +212,18 @@ void main() {
 
     await tester.pumpWidget(MultiProvider(
       providers: [ChangeNotifierProvider.value(value: product)],
-      child: MaterialApp(
-        home: SingleChildScrollView(child: IngredientExpansion(key: expansion)),
-      ),
+      builder: (context, _) {
+        final p = context.watch<ProductModel>();
+        return MaterialApp(
+          home: SingleChildScrollView(
+            child: IngredientExpansion(
+              key: expansion,
+              ingredients: p.itemList,
+            ),
+          ),
+        );
+      },
     ));
-
-    final oldHeight = find.byKey(expansion).evaluate().first.size!.height;
 
     // open first panel
     await tester.tap(find.text('ing-1'));
@@ -231,11 +236,15 @@ void main() {
     expect(needPaint('qua-1'), isFalse);
     expect(needPaint('qua-2'), isFalse);
 
+    final oldHeight = find.byKey(expansion).evaluate().first.size!.height;
+
     // notify change
+    product.getItem('ing-1')!.getItem('qua-1')!.quantity.name = 'qua-new';
     product.notifyItem();
     await tester.pumpAndSettle();
 
     final newHeight = find.byKey(expansion).evaluate().first.size!.height;
+    expect(find.text('qua-new'), findsOneWidget);
     expect(oldHeight, equals(newHeight));
   });
 }
