@@ -44,7 +44,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
           IconButton(
             onPressed: () => showCircularBottomSheet(
               context,
-              useRootNavigator: false,
               actions: [
                 ListTile(
                   title: Text('刪除'),
@@ -163,7 +162,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       arguments: ingredientName,
     );
 
-    if (result != null && result is IngredientModel) {
+    if (result is IngredientModel) {
       final ingredient = result;
 
       setState(() {

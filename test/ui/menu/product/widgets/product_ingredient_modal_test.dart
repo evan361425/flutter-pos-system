@@ -1,75 +1,145 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
+import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/menu/product_ingredient_model.dart';
+import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
+import 'package:possystem/ui/menu/product/widgets/product_ingredient_modal.dart';
 
-import '../../../../mocks/mock_widgets.dart';
-import '../../../../mocks/mockito/mock_catalog_model.dart';
+import '../../../../mocks/mockito/mock_product_model.dart';
 import '../../../../mocks/mocks.dart';
+import '../../../../models/repository/stock_model_test.mocks.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final catalog = MockCatalogModel();
-    final product =
-        ProductModel(index: 1, name: 'name', id: 'id', catalog: catalog);
-
-    when(catalog.toString()).thenReturn('mock-c');
-    when(catalog.prefix).thenReturn('c-id');
-    when(catalog.hasName('name-new')).thenReturn(false);
-
-    await tester.pumpWidget(bindWithNavigator(ProductModal(
-      catalog: catalog,
+    final oldIngredient = IngredientModel(name: 'ing-1', id: 'ing-1');
+    final newIngredient = IngredientModel(name: 'ing-2', id: 'ing-2');
+    final product = MockProductModel();
+    when(product.prefix).thenReturn('p-id');
+    when(product.hasItem('ing-2')).thenReturn(false);
+    when(product.setItem(any)).thenAnswer((_) => Future.value());
+    when(product.toString()).thenReturn('product');
+    when(stock.getItem('ing-2')).thenReturn(newIngredient);
+    when(storage.set(any, any)).thenAnswer((_) => Future.value());
+    final productIngredient = ProductIngredientModel(
       product: product,
-    )));
-
-    await tester.enterText(find.byType(TextFormField).first, 'name-new');
-    await tester.enterText(find.byType(TextFormField).at(1), '1');
-    await tester.enterText(find.byType(TextFormField).at(2), '2');
-
-    await tester.tap(find.byType(TextButton));
-
-    verify(storage.set(any, argThat(predicate<Map<String, Object>>((map) {
-      return map['c-id.products.id.price'] == 1 &&
-          map['c-id.products.id.cost'] == 2 &&
-          map['c-id.products.id.name'] == 'name-new';
-    })))).called(1);
-  });
-
-  testWidgets('should add new item', (tester) async {
-    final catalog = MockCatalogModel();
-    when(catalog.setItem(any)).thenAnswer((_) => Future.value());
-    when(catalog.hasName('name')).thenReturn(false);
-    when(catalog.toString()).thenReturn('mock-c');
-    when(catalog.newIndex).thenReturn(1);
-
-    var navigateCount = 0;
+      ingredient: oldIngredient,
+    );
+    LOG_LEVEL = 0;
 
     await tester.pumpWidget(MaterialApp(
       routes: {
-        Routes.menuProduct: (context) {
-          final product =
-              ModalRoute.of(context)!.settings.arguments as ProductModel;
-          expect(product.name, equals('name'));
-          expect(product.index, equals(1));
-          expect(product.price, equals(1));
-          expect(product.cost, equals(2));
-          return Text((navigateCount++).toString());
+        Routes.menuIngredientSearch: (_) {
+          return FutureBuilder<bool>(
+            future: Future.delayed(Duration(milliseconds: 10), () => true),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Navigator.of(context).pop(newIngredient);
+              }
+              return Container();
+            },
+          );
         }
       },
-      home: ProductModal(catalog: catalog),
+      home: ProductIngredientModal(
+        ingredient: productIngredient,
+        product: product,
+      ),
     ));
 
-    await tester.enterText(find.byType(TextFormField).first, 'name');
-    await tester.enterText(find.byType(TextFormField).at(1), '1');
-    await tester.enterText(find.byType(TextFormField).at(2), '2');
+    await tester.enterText(find.byType(TextFormField).first, '1');
+
+    // search ingredient
+    await tester.tap(find.byType(SearchBarInline));
+    await tester.pumpAndSettle();
+    await tester.pump(Duration(milliseconds: 15));
 
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    verify(catalog.setItem(any)).called(1);
-    expect(navigateCount, equals(1));
+    verify(product.removeItem('ing-1'));
+    verify(storage.set(any, argThat(equals({'p-id.ingredients.ing-1': null}))));
+    verify(product.setItem(argThat(predicate<ProductIngredientModel>((model) {
+      return model.id == 'ing-2';
+    }))));
+  });
+
+  testWidgets('should add new item', (tester) async {
+    final product = MockProductModel();
+    final ingredient = MockIngredientModel();
+    when(product.prefix).thenReturn('p-id');
+    when(product.hasItem('ing-1')).thenReturn(false);
+    when(product.setItem(any)).thenAnswer((_) => Future.value());
+    when(product.toString()).thenReturn('product');
+    when(stock.getItem('ing-1')).thenReturn(ingredient);
+    when(ingredient.name).thenReturn('ing-name');
+    when(ingredient.id).thenReturn('ing-1');
+
+    await tester.pumpWidget(MaterialApp(
+      routes: {
+        Routes.menuIngredientSearch: (_) {
+          return FutureBuilder<bool>(
+            future: Future.delayed(Duration(milliseconds: 10), () => true),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Navigator.of(context).pop(ingredient);
+              }
+              return Container();
+            },
+          );
+        }
+      },
+      home: ProductIngredientModal(
+        product: product,
+      ),
+    ));
+
+    await tester.enterText(find.byType(TextFormField).first, '1');
+
+    // search ingredient
+    await tester.tap(find.byType(SearchBarInline));
+    await tester.pumpAndSettle();
+    await tester.pump(Duration(milliseconds: 15));
+
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    verify(product.setItem(argThat(predicate<ProductIngredientModel>((model) {
+      return identical(model.product, product) &&
+          model.amount == 1 &&
+          identical(ingredient, model.ingredient);
+    })))).called(1);
+  });
+
+  testWidgets('should pop delete warning', (tester) async {
+    final ingredient = IngredientModel(name: 'ing-1', id: 'ing-1');
+    final product = MockProductModel();
+    final productIngredient = ProductIngredientModel(
+      product: product,
+      ingredient: ingredient,
+    );
+    LOG_LEVEL = 0;
+
+    await tester.pumpWidget(MaterialApp(
+      home: ProductIngredientModal(
+        ingredient: productIngredient,
+        product: product,
+      ),
+    ));
+
+    // more
+    await tester.tap(find.byIcon(KIcons.more));
+    await tester.pumpAndSettle();
+
+    // delete
+    await tester.tap(find.byIcon(KIcons.delete));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DeleteDialog), findsOneWidget);
   });
 
   setUpAll(() {
