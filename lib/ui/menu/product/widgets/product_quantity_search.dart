@@ -38,9 +38,9 @@ class ProductQuantitySearch extends StatelessWidget {
   Widget _emptyBuilder(BuildContext context, String text) {
     return CardTile(
       title: Text('新增成份份量「$text」'),
-      onTap: () {
+      onTap: () async {
         final quantity = QuantityModel(name: text);
-        QuantityRepo.instance.setItem(quantity);
+        await QuantityRepo.instance.setItem(quantity);
         Navigator.of(context).pop<QuantityModel>(quantity);
       },
     );
