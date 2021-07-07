@@ -25,14 +25,12 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     final length = ingredients.length;
     return Container(
       child: ExpansionPanelList(
+        expansionCallback: (int index, bool status) {
+          setState(() => showIngredient[index] = !status);
+        },
         children: [
           for (var i = 0; i < length; i++) _panelBuilder(i, ingredients[i])
         ],
-        expansionCallback: (int index, bool status) {
-          setState(() {
-            showIngredient[index] = !showIngredient[index];
-          });
-        },
       ),
     );
   }
@@ -101,9 +99,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         title: Text(ingredient.name),
         subtitle: Text('使用量：${ingredient.amount}'),
       ),
-      body: Column(
-        children: body,
-      ),
+      body: Column(children: body),
       isExpanded: showIngredient[index],
     );
   }

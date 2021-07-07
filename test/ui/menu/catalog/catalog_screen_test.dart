@@ -45,7 +45,6 @@ void main() {
           ChangeNotifierProvider<CatalogModel>.value(value: catalog),
         ],
         child: MaterialApp(
-            home: MaterialApp(
           routes: {
             Routes.menuCatalogModal: (context) {
               argument = ModalRoute.of(context)!.settings.arguments;
@@ -53,7 +52,7 @@ void main() {
             },
           },
           home: CatalogScreen(),
-        ))));
+        )));
 
     // tap tile
     await tester.tap(find.byIcon(KIcons.more));
@@ -75,7 +74,6 @@ void main() {
           ChangeNotifierProvider<CatalogModel>.value(value: catalog),
         ],
         child: MaterialApp(
-            home: MaterialApp(
           routes: {
             Routes.menuProductReorder: (context) {
               argument = ModalRoute.of(context)!.settings.arguments;
@@ -83,7 +81,7 @@ void main() {
             },
           },
           home: CatalogScreen(),
-        ))));
+        )));
 
     // tap tile
     await tester.tap(find.byIcon(KIcons.more));

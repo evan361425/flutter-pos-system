@@ -116,7 +116,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       final ingredient = ProductIngredientModel(
         ingredient: StockModel.instance.getItem(ingredientId),
         product: widget.product,
-        amount: object.amount,
+        amount: object.amount!,
       );
 
       await widget.product.setItem(ingredient);

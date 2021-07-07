@@ -28,7 +28,6 @@ class CatalogScreen extends StatelessWidget {
         onPressed: () => showCircularBottomSheet(
           context,
           actions: _actions(context, catalog),
-          useRootNavigator: false,
         ),
         icon: Icon(KIcons.more),
       ),
@@ -47,7 +46,7 @@ class CatalogScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context, CatalogModel catalog) {
     return [
       ListTile(
-        title: Text('變更名稱'),
+        title: Text('調整種類'),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
           Routes.menuCatalogModal,
