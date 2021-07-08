@@ -29,10 +29,17 @@ class RadioText extends StatefulWidget {
   }
 
   static Widget empty([String? text]) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
-      child: Text(text ?? ''),
-    );
+    if (text == null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        child: const Text(''),
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        child: Text(text),
+      );
+    }
   }
 
   _Group get group => _groups[groupId]!;

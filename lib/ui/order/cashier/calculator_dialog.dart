@@ -20,19 +20,17 @@ enum _ButtonTypes {
 }
 
 class _CalculatorDialogState extends State<CalculatorDialog> {
-  final paidController = TextEditingController();
-  final repayController = TextEditingController();
+  static final paidController = TextEditingController();
+  static final changeController = TextEditingController(text: '0');
   final totalPrice = CartModel.instance.totalPrice;
 
   String? errorMessage;
   bool _isUpdating = false;
 
-  String get paid => paidController.text;
+  num? get paid => num.tryParse(paidController.text);
 
-  num get repaid {
-    final paid = int.tryParse(paidController.text);
-    return paid == null ? 0 : paid - totalPrice;
-  }
+  /// money pay to customer when paid is more then price
+  num get change => paid == null ? 0 : paid! - totalPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +57,11 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 TextField(
                   readOnly: true,
                   style: headline4,
-                  controller: repayController,
+                  controller: changeController,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
-                    hintText: '0',
                   ),
                 ),
               ),
@@ -116,8 +113,9 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 CurrencyProvider.instance.isInt
                     ? Spacer()
                     : numberWidget('.', () {
-                        if (int.tryParse(paid) != null) {
-                          updatePaid(paid + '.');
+                        if (paidController.text.isNotEmpty &&
+                            !paidController.text.contains('.')) {
+                          updatePaid(paidController.text + '.');
                         }
                       }),
                 iconWidget(Icons.done_rounded, _ButtonTypes.done),
@@ -131,7 +129,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
 
   @override
   void dispose() {
-    repayController.dispose();
+    changeController.dispose();
     paidController.dispose();
     super.dispose();
   }
@@ -139,27 +137,28 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   Future<void> handlePressed(_ButtonTypes type) async {
     if (_isUpdating) return;
 
+    final paidText = paidController.text;
+
     switch (type) {
       case _ButtonTypes.back:
-        if (paid.isEmpty) return;
-        updatePaid(paid.substring(0, paid.length - 1));
+        if (paidText.isEmpty) return;
+        updatePaid(paidText.substring(0, paidText.length - 1));
         return;
       case _ButtonTypes.clear:
         updatePaid('');
         return;
       case _ButtonTypes.ceil:
-        final price = paid.isEmpty ? totalPrice : num.tryParse(paid);
-        final ceilPrice = CurrencyProvider.instance.ceil(price);
+        final ceilPrice = CurrencyProvider.instance.ceil(paid ?? totalPrice);
         updatePaid(ceilPrice?.toString() ?? '');
         return;
       case _ButtonTypes.done:
-        if (!await showHistoryConfirm(context)) {
+        if (!await confirmChangeHistory(context)) {
           return;
         }
 
         _isUpdating = true;
         try {
-          await CartModel.instance.paid(num.tryParse(paid));
+          await CartModel.instance.paid(paid);
           Navigator.of(context).pop();
         } catch (e) {
           _isUpdating = false;
@@ -180,7 +179,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
       child: AspectRatio(
         aspectRatio: 1,
         child: OutlinedButton(
-          onPressed: () async => await handlePressed(type),
+          onPressed: () => handlePressed(type),
           child: Icon(icon),
         ),
       ),
@@ -191,8 +190,8 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   void initState() {
     super.initState();
     paidController.addListener(() {
-      repayController.text =
-          repaid <= 0 ? '' : CurrencyProvider.instance.numToString(repaid);
+      changeController.text =
+          change <= 0 ? '0' : CurrencyProvider.instance.numToString(change);
     });
   }
 
@@ -217,7 +216,9 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         child: OutlinedButton(
           onPressed: () {
             if (_isUpdating) return;
-            onPressed == null ? updatePaid(paid + text) : onPressed();
+            onPressed == null
+                ? updatePaid(paidController.text + text)
+                : onPressed();
           },
           child: Text(text),
         ),
@@ -232,7 +233,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
     }
   }
 
-  static Future<bool> showHistoryConfirm(BuildContext context) async {
+  static Future<bool> confirmChangeHistory(BuildContext context) async {
     if (!CartModel.instance.isHistoryMode) return true;
 
     final result = await showDialog(

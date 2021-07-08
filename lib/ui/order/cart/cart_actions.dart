@@ -69,13 +69,11 @@ class _DialogItem {
   _DialogItem({
     required this.validator,
     required this.decoration,
-    required this.isInt,
     required this.action,
   });
 
   final String? Function(String?) validator;
   final InputDecoration decoration;
-  final bool isInt;
   final void Function(String) action;
 
   static _DialogItem? fromEnum(_DialogItems? type) {
@@ -89,7 +87,6 @@ class _DialogItem {
             helperMaxLines: 4,
             suffix: Text('折'),
           ),
-          isInt: true,
           action: (result) =>
               CartModel.instance.updateSelectedDiscount(int.tryParse(result)),
         );
@@ -100,9 +97,8 @@ class _DialogItem {
             hintText: '每項產品的價錢',
             suffix: Text('元'),
           ),
-          isInt: false,
           action: (result) =>
-              CartModel.instance.updateSelectedPrice(int.tryParse(result)),
+              CartModel.instance.updateSelectedPrice(num.tryParse(result)),
         );
       case _DialogItems.count:
         return _DialogItem(
@@ -112,7 +108,6 @@ class _DialogItem {
             helperMaxLines: 4,
             suffix: Text('個'),
           ),
-          isInt: true,
           action: (result) =>
               CartModel.instance.updateSelectedCount(int.tryParse(result)),
         );

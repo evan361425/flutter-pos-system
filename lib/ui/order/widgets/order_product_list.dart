@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/ui/order/cart/cart_product_list.dart';
 
 class OrderProductList extends StatefulWidget {
   const OrderProductList({
     Key? key,
-    required this.catalog,
-    required this.productsKey,
+    this.catalog,
+    required this.handleSelected,
   }) : super(key: key);
 
   final CatalogModel? catalog;
-  final GlobalKey<CartProductListState> productsKey;
+  final void Function(ProductModel) handleSelected;
 
   @override
   OrderProductListState createState() => OrderProductListState();
 }
 
 class OrderProductListState extends State<OrderProductList> {
-  CatalogModel? _catalog;
+  late List<ProductModel> _products;
 
-  set catalog(CatalogModel catalog) => setState(() => _catalog = catalog);
+  void updateProducts(CatalogModel catalog) =>
+      setState(() => _products = catalog.itemList);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +32,9 @@ class OrderProductListState extends State<OrderProductList> {
           child: Wrap(
             spacing: 4.0,
             children: [
-              for (final product in _catalog?.itemList ?? [])
+              for (final product in _products)
                 OutlinedButton(
-                  onPressed: () => onSelected(product),
+                  onPressed: () => _handleSelected(product),
                   child: Text(product.name),
                 ),
             ],
@@ -44,15 +44,16 @@ class OrderProductListState extends State<OrderProductList> {
     );
   }
 
-  void onSelected(ProductModel product) {
-    CartModel.instance.toggleAll(false);
-    CartModel.instance.add(product).toggleSelected(true);
-    widget.productsKey.currentState!.scrollToBottom();
+  void _handleSelected(ProductModel product) {
+    CartModel.instance
+      ..toggleAll(false)
+      ..add(product);
+    widget.handleSelected(product);
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _catalog = widget.catalog;
+  void initState() {
+    _products = widget.catalog?.itemList ?? const [];
+    super.initState();
   }
 }

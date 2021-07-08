@@ -45,7 +45,7 @@ class CartModel extends ChangeNotifier {
   }
 
   OrderProductModel add(ProductModel product) {
-    final orderProduct = OrderProductModel(product);
+    final orderProduct = OrderProductModel(product, isSelected: true);
 
     products.add(orderProduct);
     notifyListeners();

@@ -14,7 +14,7 @@ class OrderProductModel {
   };
 
   ProductModel product;
-  bool isSelected = false;
+  bool isSelected;
   num singlePrice;
   int count;
   final List<OrderIngredientModel> ingredients;
@@ -23,6 +23,7 @@ class OrderProductModel {
     this.product, {
     int? count,
     num? singlePrice,
+    this.isSelected = false,
     List<OrderIngredientModel>? ingredients,
   })  : singlePrice = singlePrice ?? product.price,
         ingredients = ingredients ?? [],
@@ -75,6 +76,8 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
+  /// if [checked] is defferent with current state
+  /// return false else true
   bool toggleSelected([bool? checked]) {
     checked ??= !isSelected;
     final changed = isSelected != checked;

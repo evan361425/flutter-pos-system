@@ -28,7 +28,7 @@ class OrderActions extends StatelessWidget {
         ListTile(
           title: Text('退出改單模式'),
           leading: Icon(Icons.assignment_return_sharp),
-          onTap: () => Navigator.pop(context, OrderActionTypes.leave_pop),
+          onTap: () => Navigator.pop(context, OrderActionTypes.leave_history),
         ),
       ];
     }
@@ -37,7 +37,7 @@ class OrderActions extends StatelessWidget {
       ListTile(
         title: Text('顯示最後一次點餐'),
         leading: Icon(Icons.history_sharp),
-        onTap: () => Navigator.pop(context, OrderActionTypes.pop),
+        onTap: () => Navigator.pop(context, OrderActionTypes.show_last),
       ),
       ListTile(
         title: Text('暫存本次點餐'),
@@ -45,9 +45,9 @@ class OrderActions extends StatelessWidget {
         onTap: () => Navigator.pop(context, OrderActionTypes.stash),
       ),
       ListTile(
-        title: Text('顯示暫存餐點'),
+        title: Text('拉出暫存餐點'),
         leading: Icon(Icons.file_upload),
-        onTap: () => Navigator.pop(context, OrderActionTypes.drop),
+        onTap: () => Navigator.pop(context, OrderActionTypes.drop_stash),
       ),
       ListTile(
         title: Text('離開點餐頁面'),
@@ -62,29 +62,32 @@ class OrderActions extends StatelessWidget {
     OrderActionTypes? action,
   ) async {
     switch (action) {
-      case OrderActionTypes.leave_pop:
+      case OrderActionTypes.leave_history:
         return CartModel.instance.leaveHistoryMode();
       case OrderActionTypes.leave:
         return Navigator.of(context).pop();
-      case OrderActionTypes.pop:
-        if (!await showPopConfirm(context)) return;
+      case OrderActionTypes.show_last:
+        if (!await _confirmStashCurrent(context)) return;
 
         if (!await CartModel.instance.stash()) {
-          return showSnackbar(context, '暫存檔案的次數超過上限');
+          return _showSnackbar(context, '暫存檔案的次數超過上限');
         }
 
-        if (!await CartModel.instance.popHistory()) {
-          showSnackbar(context, '找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄');
-        }
+        final success = await CartModel.instance.popHistory();
+        _showSnackbar(context, success ? '執行成功' : '找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄');
         return;
-      case OrderActionTypes.drop:
-        if (!await showPopConfirm(context)) return;
+      case OrderActionTypes.drop_stash:
+        if (!await _confirmStashCurrent(context)) return;
+
+        if (!await CartModel.instance.stash()) {
+          return _showSnackbar(context, '暫存檔案的次數超過上限');
+        }
 
         final success = await CartModel.instance.drop();
-        return showSnackbar(context, success ? '執行成功' : '目前沒有暫存的紀錄唷');
+        return _showSnackbar(context, success ? '執行成功' : '目前沒有暫存的紀錄唷');
       case OrderActionTypes.stash:
         if (!await CartModel.instance.stash()) {
-          showSnackbar(context, '暫存檔案的次數超過上限');
+          _showSnackbar(context, '暫存檔案的次數超過上限');
         }
         return;
       default:
@@ -92,7 +95,7 @@ class OrderActions extends StatelessWidget {
     }
   }
 
-  static Future<bool> showPopConfirm(BuildContext context) async {
+  static Future<bool> _confirmStashCurrent(BuildContext context) async {
     if (CartModel.instance.isEmpty) return true;
 
     final result = await showDialog(
@@ -103,7 +106,7 @@ class OrderActions extends StatelessWidget {
     return result ?? false;
   }
 
-  static void showSnackbar(BuildContext context, String message) {
+  static void _showSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -113,9 +116,9 @@ class OrderActions extends StatelessWidget {
 }
 
 enum OrderActionTypes {
-  pop,
-  drop,
+  show_last,
+  drop_stash,
   stash,
   leave,
-  leave_pop,
+  leave_history,
 }

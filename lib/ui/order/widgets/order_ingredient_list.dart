@@ -19,8 +19,8 @@ class OrderIngredientList extends StatefulWidget {
 }
 
 class _OrderIngredientListState extends State<OrderIngredientList> {
-  static const QUANTITY_GROUP = 'order.quantities';
-  static const INGREDIENT_GROUP = 'order.ingredients';
+  static const _QUANTITY_RADIO_KEY = 'order.quantities';
+  static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
 
   ProductIngredientModel? selectedIngredient;
 
@@ -29,23 +29,23 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   @override
   Widget build(BuildContext context) {
     if (CartModel.instance.isEmpty) {
-      return _emptyWidget(context, '請選擇產品來設定其成份');
+      return _emptyRows(context, '請選擇產品來設定其成份');
     }
     if (!CartModel.instance.isSameProducts) {
-      return _emptyWidget(context, '請選擇相同的產品來設定其成份');
+      return _emptyRows(context, '請選擇相同的產品來設定其成份');
     }
 
     final product = CartModel.instance.products.first.product;
     final ingredients = product.ingredientsWithQuantity;
     if (ingredients.isEmpty) {
-      return _emptyWidget(context, '該產品無可設定的成份');
+      return _emptyRows(context, '該產品無可設定份量的成份');
     }
 
     selectedIngredient ??= ingredients.first;
     selectedQuantityId =
         CartModel.instance.getSelectedQuantityId(selectedIngredient!);
 
-    return _build([
+    return _rowWrapper([
       _ingredientsRow(ingredients),
       _quantitiesRow(),
     ]);
@@ -69,17 +69,10 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     );
   }
 
-  Widget _build(List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
-    );
-  }
-
-  Widget _emptyWidget(BuildContext context, String ingredientMessage) {
+  Widget _emptyRows(BuildContext context, String ingredientMessage) {
     selectedIngredient = null;
 
-    return _build([
+    return _rowWrapper([
       SingleRowWrap(
         children: <Widget>[RadioText.empty(ingredientMessage)],
       ),
@@ -96,7 +89,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
           onSelected: () {
             setState(() => selectedIngredient = ingredient);
           },
-          groupId: INGREDIENT_GROUP,
+          groupId: _INGREDIENT_RADIO_KEY,
           value: ingredient.id,
           child: Text(ingredient.name),
         ),
@@ -106,7 +99,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   void _listener() => setState(() {});
 
   Widget _quantitiesRow() {
-    RadioText.clearSelected(QUANTITY_GROUP);
+    RadioText.clearSelected(_QUANTITY_RADIO_KEY);
 
     return SingleRowWrap(children: <Widget>[
       _quantityDefaultOption(),
@@ -119,7 +112,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
             );
             CartModel.instance.updateSelectedIngredient(ingredient);
           },
-          groupId: QUANTITY_GROUP,
+          groupId: _QUANTITY_RADIO_KEY,
           value: quantity.id,
           isSelected: quantity.id == selectedQuantityId,
           child: Text('${quantity.name}（${quantity.amount}）'),
@@ -132,10 +125,17 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       onSelected: () {
         CartModel.instance.removeSelectedIngredient(selectedIngredient!.id);
       },
-      groupId: QUANTITY_GROUP,
+      groupId: _QUANTITY_RADIO_KEY,
       value: CartModel.DEFAULT_QUANTITY_ID,
       isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
       child: Text('預設值（${selectedIngredient!.amount}）'),
+    );
+  }
+
+  Widget _rowWrapper(List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
     );
   }
 }
