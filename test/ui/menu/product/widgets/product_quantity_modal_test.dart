@@ -5,19 +5,14 @@ import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/product/widgets/product_ingredient_modal.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_modal.dart';
 
 import '../../../../mocks/mockito/mock_product_ingredient_model.dart';
-import '../../../../mocks/mockito/mock_product_model.dart';
 import '../../../../mocks/mocks.dart';
 import '../../../../models/repository/quantity_repo_test.mocks.dart';
-import '../../../../models/repository/stock_model_test.mocks.dart';
 
 void main() {
   testWidgets('should update', (tester) async {

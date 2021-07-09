@@ -2,27 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
-class OrderActions extends StatelessWidget {
-  const OrderActions({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ..._actions(context),
-          ListTile(
-            title: Text('取消'),
-            leading: Icon(Icons.cancel_sharp),
-            onTap: () => Navigator.of(context).pop(),
-          ),
-        ]),
-      ),
-    );
-  }
-
-  Iterable<Widget> _actions(BuildContext context) {
+class OrderActions {
+  static List<Widget> actions(BuildContext context) {
     if (CartModel.instance.isHistoryMode) {
       return [
         ListTile(

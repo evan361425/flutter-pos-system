@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
 
 import '../../../../mocks/mock_widgets.dart';
