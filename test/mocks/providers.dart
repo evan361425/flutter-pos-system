@@ -16,6 +16,7 @@ final currency = MockCurrencyProvider();
 ])
 void _initialize() {
   CurrencyProvider.instance = currency;
+  LanguageProvider.instance = language;
   _finished = true;
 }
 
