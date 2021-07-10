@@ -10,17 +10,13 @@ import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 
 class CartModel extends ChangeNotifier {
-  static final CartModel _instance = CartModel._constructor();
+  static CartModel instance = CartModel();
 
   static const DEFAULT_QUANTITY_ID = '';
-
-  static CartModel get instance => _instance;
 
   List<OrderProductModel> products = [];
 
   bool isHistoryMode = false;
-
-  CartModel._constructor();
 
   bool get isEmpty => products.isEmpty;
 
@@ -45,7 +41,7 @@ class CartModel extends ChangeNotifier {
   }
 
   OrderProductModel add(ProductModel product) {
-    final orderProduct = OrderProductModel(product);
+    final orderProduct = OrderProductModel(product, isSelected: true);
 
     products.add(orderProduct);
     notifyListeners();

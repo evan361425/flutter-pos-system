@@ -96,13 +96,13 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
 
   @override
   void didPush() {
-    showTutorialIfNeed(context);
+    _showTutorialIfNeed(context);
     orderInfo.currentState?.reset();
   }
 
   @override
   void didPopNext() {
-    showTutorialIfNeed(context);
+    _showTutorialIfNeed(context);
     orderInfo.currentState?.reset();
   }
 
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  void showTutorialIfNeed(BuildContext context) {
+  void _showTutorialIfNeed(BuildContext context) {
     tutorial?.finish();
     if (Cache.instance.needTutorial('home.menu')) {
       tutorial = HomeTutorial.menu(context)..show();

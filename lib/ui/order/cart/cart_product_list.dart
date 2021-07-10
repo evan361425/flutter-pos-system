@@ -4,8 +4,6 @@ import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:provider/provider.dart';
 
-import 'cart_product_list_tile.dart';
-
 class CartProductList extends StatefulWidget {
   const CartProductList({Key? key}) : super(key: key);
 
@@ -26,7 +24,7 @@ class CartProductListState extends State<CartProductList> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var product in cart.products)
-            CartProductListTile(
+            _CartProductListTile(
               value: product.isSelected,
               selected: product.isSelected,
               onChanged: (bool? checked) => _handleSelected(checked, product),
@@ -48,10 +46,10 @@ class CartProductListState extends State<CartProductList> {
     );
   }
 
-  void _handleSelected(bool? checked, OrderProductModel product) {
-    if (checked != null && product.toggleSelected(checked)) {
-      setState(() {});
-    }
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
   }
 
   Future<void> scrollToBottom() {
@@ -62,20 +60,66 @@ class CartProductListState extends State<CartProductList> {
     );
   }
 
+  void _handleSelected(bool? checked, OrderProductModel product) {
+    if (checked != null && product.toggleSelected(checked)) {
+      setState(() {});
+    }
+  }
+}
+
+class _CartProductListTile extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+  final VoidCallback onTap;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final bool selected;
+
+  const _CartProductListTile({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    this.title,
+    this.subtitle,
+    this.trailing,
+    this.selected = false,
+    required this.onTap,
+  }) : super(key: key);
+
   @override
-  void initState() {
-    super.initState();
-    scrollController = ScrollController();
+  Widget build(BuildContext context) {
+    final Widget leading = Checkbox(
+      value: value,
+      onChanged: onChanged,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+    final theme = Theme.of(context);
+
+    return MergeSemantics(
+      child: ListTileTheme.merge(
+        selectedColor: theme.textTheme.bodyText1!.color,
+        child: ListTile(
+          leading: leading,
+          title: title,
+          subtitle: subtitle,
+          trailing: trailing,
+          onTap: onTap,
+          selected: selected,
+          selectedTileColor: theme.primaryColorLight,
+        ),
+      ),
+    );
   }
 }
 
 class _ProductCountAction extends StatefulWidget {
+  final OrderProductModel product;
+
   _ProductCountAction({
     Key? key,
     required this.product,
   }) : super(key: key);
-
-  final OrderProductModel? product;
 
   @override
   _ProductCountActionState createState() => _ProductCountActionState();
@@ -87,12 +131,12 @@ class _ProductCountActionState extends State<_ProductCountAction> {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
-        Text(widget.product!.count.toString()),
+        Text(widget.product.count.toString()),
         IconButton(
           icon: Icon(Icons.add_circle_outline_sharp),
-          onPressed: () => setState(() => widget.product!.increment()),
+          onPressed: () => setState(() => widget.product.increment()),
         ),
-        Text('${widget.product!.price} 元'),
+        Text('${widget.product.price} 元'),
       ],
     );
   }

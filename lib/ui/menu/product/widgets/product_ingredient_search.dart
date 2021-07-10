@@ -20,7 +20,7 @@ class ProductIngredientSearch extends StatelessWidget {
       emptyBuilder: _emptyBuilder,
       initialData: () async => StockModel.instance.itemList,
       text: text ?? '',
-      hintText: '成份名稱，起司',
+      hintText: '成份名稱',
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -37,9 +37,9 @@ class ProductIngredientSearch extends StatelessWidget {
   Widget _emptyBuilder(BuildContext context, String text) {
     return CardTile(
       title: Text('新增成份「$text」'),
-      onTap: () {
+      onTap: () async {
         final ingredient = IngredientModel(name: text);
-        StockModel.instance.setItem(ingredient);
+        await StockModel.instance.setItem(ingredient);
         Navigator.of(context).pop<IngredientModel>(ingredient);
       },
     );

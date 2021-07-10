@@ -7,10 +7,10 @@ class RadioText extends StatefulWidget {
   static final _groups = <String, _Group>{};
 
   final VoidCallback onSelected;
+
   final Widget child;
   final String groupId;
   final String value;
-
   RadioText({
     Key? key,
     required this.groupId,
@@ -26,13 +26,6 @@ class RadioText extends StatefulWidget {
       // if specific setting, update previous one to unchecked
       group.select(value);
     }
-  }
-
-  static Widget empty([String? text]) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
-      child: Text(text ?? ''),
-    );
   }
 
   _Group get group => _groups[groupId]!;
@@ -55,8 +48,24 @@ class RadioText extends StatefulWidget {
     onSelected();
   }
 
+  static void clearAll() => _groups.clear();
+
   static void clearSelected(String groupId) {
     _groups[groupId]?.select(null);
+  }
+
+  static Widget empty([String? text]) {
+    if (text == null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        child: const Text(''),
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        child: Text(text),
+      );
+    }
   }
 }
 

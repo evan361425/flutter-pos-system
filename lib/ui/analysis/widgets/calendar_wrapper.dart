@@ -12,13 +12,18 @@ class CalendarWrapper extends StatefulWidget {
   final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
 
   final void Function(DateTime month) handleDaySelected;
+
   final bool isPortrait;
+
+  /// default: DateTime.now()
+  final DateTime? initialDate;
 
   CalendarWrapper({
     Key? key,
     required this.searchCountInMonth,
     required this.handleDaySelected,
     required this.isPortrait,
+    this.initialDate,
   }) : super(key: key);
 
   @override
@@ -37,8 +42,9 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
+  late DateTime _selectedDay;
+
+  late DateTime _focusedDay;
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +82,14 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final language = context.watch<LanguageProvider>();
-    _locale = language.locale;
+    _locale = context.watch<LanguageProvider>().locale;
   }
 
   @override
   void initState() {
     super.initState();
+
+    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
 
     widget.searchCountInMonth(_selectedDay).then((counts) {
       _loadedMonths.add(_hashMonth(_selectedDay));
@@ -126,7 +133,6 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   Future<void> _handlePageChange(DateTime day) async {
-    print(day);
     // make calander page stay in current page
     _focusedDay = day;
 

@@ -4,7 +4,6 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
 
 class ProductModal extends StatefulWidget {
@@ -124,7 +123,7 @@ class _ProductModalState extends State<ProductModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.product?.name != name && MenuModel.instance.hasProduct(name)) {
+    if (widget.product?.name != name && widget.catalog.hasName(name)) {
       return '產品名稱重複';
     }
   }

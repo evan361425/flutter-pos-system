@@ -5,25 +5,17 @@ import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 
 class OrderInfo extends StatefulWidget {
-  const OrderInfo({Key? key}) : super(key: key);
-
   static GlobalKey orderButton = GlobalKey();
+
+  const OrderInfo({Key? key}) : super(key: key);
 
   @override
   OrderInfoState createState() => OrderInfoState();
 }
 
 class OrderInfoState extends State<OrderInfo> {
-  int? count;
+  String? count;
   String? revenue;
-
-  void reset() {
-    setState(() {
-      count = null;
-      revenue = null;
-      _queryValue();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +32,9 @@ class OrderInfoState extends State<OrderInfo> {
             padding: const EdgeInsets.all(kSpacing1),
             child: Row(
               children: <Widget>[
-                _column('今日單量', count?.toString(), textStyle),
+                _column('今日單量', count, textStyle),
                 const SizedBox(width: 64.0),
-                _column('今日營收', revenue?.toString(), textStyle),
+                _column('今日營收', revenue, textStyle),
               ],
             ),
           ),
@@ -63,12 +55,17 @@ class OrderInfoState extends State<OrderInfo> {
     );
   }
 
-  void _queryValue() async {
-    final result = await OrderRepo.instance.getMetricBetween();
+  @override
+  void initState() {
+    super.initState();
+    _queryValue();
+  }
 
+  void reset() {
     setState(() {
-      revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);
-      count = result['count'] as int?;
+      count = null;
+      revenue = null;
+      _queryValue();
     });
   }
 
@@ -87,9 +84,12 @@ class OrderInfoState extends State<OrderInfo> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _queryValue();
+  void _queryValue() async {
+    final result = await OrderRepo.instance.getMetricBetween();
+
+    setState(() {
+      revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);
+      count = (result['count'] as int?)?.toString();
+    });
   }
 }

@@ -90,6 +90,8 @@ mixin Repository<T extends Model> {
 
   bool hasItem(String id) => _items.containsKey(id);
 
+  bool hasName(String name) => !items.every((item) => item.name != name);
+
   void notifyItem();
 
   /// only remove map value and notify listeners

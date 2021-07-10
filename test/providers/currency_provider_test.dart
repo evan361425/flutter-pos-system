@@ -69,10 +69,6 @@ void main() {
   });
 
   group('#ceil', () {
-    test('should return null', () {
-      expect(currency.ceil(null), isNull);
-    });
-
     test('should return int if is float', () {
       expect(currency.ceil(12.2), equals(13));
       expect(currency.ceil(-12.2), equals(0));

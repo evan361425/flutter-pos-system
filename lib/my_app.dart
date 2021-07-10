@@ -24,7 +24,9 @@ class MyApp extends StatelessWidget {
 
   static bool _initialized = false;
 
-  const MyApp({Key? key}) : super(key: key);
+  final bool isDebug;
+
+  const MyApp({Key? key, this.isDebug = kDebugMode}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -73,7 +75,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> _initialization(BuildContext context) async {
-    if (kDebugMode) {
+    if (isDebug) {
       await analytics.setAnalyticsCollectionEnabled(false);
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
     }

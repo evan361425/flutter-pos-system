@@ -33,7 +33,7 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   Widget body() {
-    final isReady = Routes.setUpStockMode(context);
+    final isReady = MenuModel.instance.setUpStockMode(context);
     final ingredients = !isReady || widget.isNew
         ? const <ProductIngredientModel>[]
         : MenuModel.instance.getIngredients(widget.ingredient!.id);
@@ -116,16 +116,15 @@ class _IngredientModalState extends State<IngredientModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (widget.isNew) {
-      final ingredient = IngredientModel(
-        name: object.name!,
-        currentAmount: object.currentAmount!,
-      );
-
-      await StockModel.instance.setItem(ingredient);
-    } else {
+    if (!widget.isNew) {
       await widget.ingredient!.update(object);
     }
+
+    await StockModel.instance.setItem(widget.ingredient ??
+        IngredientModel(
+          name: object.name!,
+          currentAmount: object.currentAmount!,
+        ));
 
     Navigator.of(context).pop();
   }
@@ -134,7 +133,7 @@ class _IngredientModalState extends State<IngredientModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.ingredient?.name != name && StockModel.instance.hasItem(name)) {
+    if (widget.ingredient?.name != name && StockModel.instance.hasName(name)) {
       return '成份名稱重複';
     }
   }

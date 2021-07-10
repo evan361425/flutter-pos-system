@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -11,7 +10,6 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class IngredientList extends StatelessWidget {
   final List<IngredientModel> ingredients;
@@ -20,12 +18,10 @@ class IngredientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ingredients.isEmpty) return EmptyBody('stock.ingredient.empty_body');
-    final menu = context.read<MenuModel>();
-
     return SlidableItemList<IngredientModel>(
       items: ingredients,
-      handleDelete: (_, ingredient) => menu.removeIngredients(ingredient.id),
+      handleDelete: (_, ingredient) =>
+          MenuModel.instance.removeIngredients(ingredient.id),
       handleTap: _handleTap,
       warningContextBuilder: _warningContextBuilder,
       tileBuilder: _tileBuilder,
@@ -71,7 +67,11 @@ class IngredientList extends StatelessWidget {
           ),
           actions: <Widget>[
             ElevatedButton(
-              onPressed: () => action(controller.text),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop<String>(controller.text);
+                }
+              },
               child: Text('儲存'),
             ),
           ],

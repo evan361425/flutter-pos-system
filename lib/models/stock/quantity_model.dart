@@ -10,9 +10,8 @@ class QuantityModel extends NotifyModel<QuantityObject> with SearchableModel {
   QuantityModel({
     String? id,
     required String name,
-    num? defaultProportion,
-  })  : defaultProportion = defaultProportion ?? 1,
-        super(id) {
+    this.defaultProportion = 1,
+  }) : super(id) {
     this.name = name;
   }
 

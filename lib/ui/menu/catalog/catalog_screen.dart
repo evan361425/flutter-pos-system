@@ -6,6 +6,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
@@ -27,7 +28,6 @@ class CatalogScreen extends StatelessWidget {
         onPressed: () => showCircularBottomSheet(
           context,
           actions: _actions(context, catalog),
-          useRootNavigator: false,
         ),
         icon: Icon(KIcons.more),
       ),
@@ -46,7 +46,7 @@ class CatalogScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context, CatalogModel catalog) {
     return [
       ListTile(
-        title: Text('變更名稱'),
+        title: Text('調整種類'),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
           Routes.menuCatalogModal,
@@ -64,6 +64,8 @@ class CatalogScreen extends StatelessWidget {
   }
 
   Widget _body(CatalogModel catalog, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: <Widget>[
         Padding(
@@ -71,12 +73,12 @@ class CatalogScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              _catalogName(catalog, context),
-              _catalogMetadata(catalog, context),
+              Text(catalog.name, style: textTheme.headline4),
+              _catalogMetadata(catalog, textTheme),
             ],
           ),
         ),
-        Routes.setUpStockMode(context)
+        MenuModel.instance.setUpStockMode(context)
             ? catalog.isEmpty
                 ? EmptyBody('menu.catalog.empty_body')
                 : ProductList(products: catalog.itemList)
@@ -85,7 +87,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _catalogMetadata(CatalogModel catalog, BuildContext context) {
+  Widget _catalogMetadata(CatalogModel catalog, TextTheme textTheme) {
     return RichText(
       text: TextSpan(
         text: '產品數量：',
@@ -97,15 +99,8 @@ class CatalogScreen extends StatelessWidget {
           MetaBlock.span(),
           TextSpan(text: catalog.createdDate),
         ],
-        style: Theme.of(context).textTheme.bodyText1,
+        style: textTheme.bodyText1,
       ),
-    );
-  }
-
-  Widget _catalogName(CatalogModel catalog, BuildContext context) {
-    return Text(
-      catalog.name,
-      style: Theme.of(context).textTheme.headline4,
     );
   }
 }

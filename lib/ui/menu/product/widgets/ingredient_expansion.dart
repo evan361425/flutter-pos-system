@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class IngredientExpansion extends StatefulWidget {
-  IngredientExpansion({Key? key}) : super(key: key);
+  IngredientExpansion({Key? key, required this.ingredients}) : super(key: key);
+
+  final List<ProductIngredientModel> ingredients;
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
@@ -18,30 +20,30 @@ class IngredientExpansion extends StatefulWidget {
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
   late List<bool> showIngredient;
-  late List<ProductIngredientModel> ingredients;
 
   @override
   Widget build(BuildContext context) {
-    final length = ingredients.length;
+    final length = widget.ingredients.length;
+    if (length != showIngredient.length) {
+      showIngredient = List.filled(length, false);
+    }
     return Container(
       child: ExpansionPanelList(
-        children: [
-          for (var i = 0; i < length; i++) _panelBuilder(i, ingredients[i])
-        ],
         expansionCallback: (int index, bool status) {
-          setState(() {
-            showIngredient[index] = !showIngredient[index];
-          });
+          setState(() => showIngredient[index] = !status);
         },
+        children: [
+          for (var i = 0; i < length; i++)
+            _panelBuilder(i, widget.ingredients[i])
+        ],
       ),
     );
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    ingredients = context.watch<ProductModel>().itemList;
-    showIngredient = List.filled(ingredients.length, false);
+  void initState() {
+    super.initState();
+    showIngredient = List.filled(widget.ingredients.length, false);
   }
 
   Widget _addButtons(ProductIngredientModel ingredient) {
@@ -97,14 +99,29 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
     return ExpansionPanel(
       canTapOnHeader: true,
-      headerBuilder: (_, __) => ListTile(
-        title: Text(ingredient.name),
-        subtitle: Text('使用量：${ingredient.amount}'),
-      ),
-      body: Column(
-        children: body,
+      headerBuilder: (_, __) => GestureDetector(
+        onLongPress: () async {
+          final result = await showCircularBottomSheet(
+            context,
+            actions: _actions(),
+          );
+
+          if (result == 'delete') {
+            await showDialog(
+              context: context,
+              builder: (_) => DeleteDialog(
+                  content: Text('此動作將無法復原'),
+                  onDelete: (_) => ingredient.remove()),
+            );
+          }
+        },
+        child: ListTile(
+          title: Text(ingredient.name),
+          subtitle: Text('使用量：${ingredient.amount}'),
+        ),
       ),
       isExpanded: showIngredient[index],
+      body: Column(children: body),
     );
   }
 
@@ -151,5 +168,15 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         ],
       ),
     );
+  }
+
+  List<Widget> _actions() {
+    return [
+      ListTile(
+        title: Text('刪除'),
+        leading: Icon(KIcons.delete, color: kNegativeColor),
+        onTap: () => Navigator.of(context).pop('delete'),
+      )
+    ];
   }
 }

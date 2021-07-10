@@ -25,9 +25,9 @@ class ProductIngredientModel
     String? id,
     IngredientModel? ingredient,
     ProductModel? product,
-    num? amount,
+    this.amount = 0,
     Map<String, ProductQuantityModel>? quantities,
-  }) : amount = amount ?? 0 {
+  }) {
     replaceItems(quantities ?? {});
 
     if (id != null) this.id = id;
@@ -42,7 +42,7 @@ class ProductIngredientModel
   factory ProductIngredientModel.fromObject(ProductIngredientObject object) =>
       ProductIngredientModel(
         id: object.id,
-        amount: object.amount,
+        amount: object.amount!,
         quantities: {
           for (var quantity in object.quantities)
             quantity.id!: ProductQuantityModel.fromObject(quantity)
@@ -55,6 +55,7 @@ class ProductIngredientModel
   @override
   String get code => 'menu.ingredient';
 
+  @override
   String get name => ingredient.name;
 
   @override

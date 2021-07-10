@@ -14,19 +14,19 @@ class OrderProductModel {
   };
 
   ProductModel product;
-  bool isSelected = false;
+  bool isSelected;
   num singlePrice;
   int count;
   final List<OrderIngredientModel> ingredients;
 
   OrderProductModel(
     this.product, {
-    int? count,
+    this.count = 1,
     num? singlePrice,
+    this.isSelected = false,
     List<OrderIngredientModel>? ingredients,
   })  : singlePrice = singlePrice ?? product.price,
-        ingredients = ingredients ?? [],
-        count = count ?? 1;
+        ingredients = ingredients ?? [];
 
   Iterable<String> get ingredientNames => ingredients.map((e) => e.toString());
 
@@ -75,6 +75,8 @@ class OrderProductModel {
     notifyListener(OrderProductListenerTypes.count);
   }
 
+  /// if [checked] is defferent with current state
+  /// return false else true
   bool toggleSelected([bool? checked]) {
     checked ??= !isSelected;
     final changed = isSelected != checked;

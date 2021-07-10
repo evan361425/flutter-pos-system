@@ -28,7 +28,6 @@ class ProductScreen extends StatelessWidget {
         onPressed: () => showCircularBottomSheet(
           context,
           actions: _actions(context, product),
-          useRootNavigator: false,
         ),
         icon: Icon(KIcons.more),
       ),
@@ -47,17 +46,17 @@ class ProductScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context, ProductModel product) {
     return [
       ListTile(
-        title: Text('變更產品'),
+        title: Text('調整產品'),
         leading: Icon(Icons.text_fields_sharp),
-        onTap: () => Navigator.of(context).pushReplacementNamed(
-          Routes.menuProductModal,
-          arguments: product,
-        ),
+        onTap: () => Navigator.of(context)
+            .pushReplacementNamed(Routes.menuProductModal, arguments: product),
       ),
     ];
   }
 
   Widget _body(BuildContext context, ProductModel product) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: [
         Padding(
@@ -65,17 +64,19 @@ class ProductScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _productName(product, context),
-              _productMetadata(product, context),
+              Text(product.name, style: textTheme.headline4),
+              _productMetadata(product),
             ],
           ),
         ),
-        product.isEmpty ? EmptyBody('趕緊按右下角的按鈕新增成份吧！') : IngredientExpansion(),
+        product.isEmpty
+            ? EmptyBody('趕緊按右下角的按鈕新增成份吧！')
+            : IngredientExpansion(ingredients: product.itemList),
       ],
     );
   }
 
-  Widget _productMetadata(ProductModel product, BuildContext context) {
+  Widget _productMetadata(ProductModel product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -95,13 +96,6 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _productName(ProductModel product, BuildContext context) {
-    return Text(
-      product.name,
-      style: Theme.of(context).textTheme.headline4,
     );
   }
 }

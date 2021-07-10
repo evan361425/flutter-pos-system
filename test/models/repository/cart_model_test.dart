@@ -5,6 +5,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
+import '../../mocks/mockito/mock_order_object.dart';
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';

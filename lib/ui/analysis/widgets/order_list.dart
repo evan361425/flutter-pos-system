@@ -88,12 +88,17 @@ class OrderListState extends State<OrderList> {
         _handleLoad();
       }),
       builder: (BuildContext context, LoadStatus? mode) {
-        if (mode == LoadStatus.loading || mode == LoadStatus.canLoading) {
-          return CircularLoading();
-        } else if (mode == LoadStatus.failed) {
-          Center(child: Text('糟糕！發生錯誤了'));
+        switch (mode) {
+          case LoadStatus.canLoading:
+          case LoadStatus.loading:
+            return CircularLoading();
+          case LoadStatus.failed:
+            return Center(child: Text('糟糕！發生錯誤了'));
+          case LoadStatus.noMore:
+            return Center(child: Text('讀取完畢'));
+          default:
+            return Container();
         }
-        return Container();
       },
     );
   }

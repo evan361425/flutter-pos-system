@@ -1,13 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/models/repository/stock_model.dart';
+import 'package:provider/provider.dart';
 
+import '../../mocks/mock_widgets.dart';
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mockito/mock_catalog_model.dart';
 import '../../mocks/mockito/mock_product_ingredient_model.dart';
 import '../../mocks/mocks.dart';
 import '../../test_helpers/check_notifier.dart';
 import '../menu/product_ingredient_model_test.mocks.dart';
+import 'quantity_repo_test.mocks.dart';
+import 'stock_model_test.mocks.dart';
 
 void main() {
   test('#constructor', () {
@@ -154,18 +161,9 @@ void main() {
       createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
       createCatalog('ctg_2', {});
 
-      expect(menu.hasCatalog('ctg_1-name'), isTrue);
-      expect(menu.hasCatalog('ctg_2'), isFalse);
-      expect(menu.hasCatalog('ctg_3-name'), isFalse);
-    });
-
-    test('#hasProduct', () {
-      createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
-      createCatalog('ctg_2', {});
-
-      expect(menu.hasProduct('pdt_1-name'), isTrue);
-      expect(menu.hasProduct('pdt_2'), isFalse);
-      expect(menu.hasProduct('pdt_3-name'), isFalse);
+      expect(menu.hasName('ctg_1-name'), isTrue);
+      expect(menu.hasName('ctg_2'), isFalse);
+      expect(menu.hasName('ctg_3-name'), isFalse);
     });
   });
 
@@ -233,6 +231,82 @@ void main() {
           menu.getIngredients('igt_2').first as MockProductIngredientModel;
       verify(igt1.removeItem(argThat(equals('qty_1'))));
       verify(igt2.removeItem(argThat(equals('qty_1'))));
+    });
+  });
+
+  group('#setUpStockMode', () {
+    test('should not do anything if already set', () {
+      menu.stockMode = true;
+      expect(menu.setUpStockMode(MockBuildContext()), isTrue);
+    });
+
+    testWidgets('should return false if stock not ready', (tester) async {
+      when(stock.isReady).thenReturn(false);
+      when(quantities.isReady).thenReturn(true);
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isFalse);
+          return Container();
+        },
+      ));
+    });
+
+    testWidgets('should return false if quantities not ready', (tester) async {
+      when(stock.isReady).thenReturn(true);
+      when(quantities.isReady).thenReturn(false);
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isFalse);
+          return Container();
+        },
+      ));
+    });
+
+    testWidgets('should set up correctly', (tester) async {
+      final catalog1 = createCatalog('id-1', {
+        'p-id1': {
+          'i-id1': ['q-id1', 'q-id2'],
+        },
+      });
+
+      when(stock.isReady).thenReturn(true);
+      when(quantities.isReady).thenReturn(true);
+      when(stock.getItem(any)).thenReturn(MockIngredientModel());
+      when(quantities.getItem(any)).thenReturn(MockQuantityModel());
+      menu.replaceItems({'id-1': catalog1});
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<StockModel>(create: (_) => stock),
+          ChangeNotifierProvider<QuantityRepo>(create: (_) => quantities),
+        ],
+        builder: (context, _) {
+          final result = menu.setUpStockMode(context);
+          expect(result, isTrue);
+          return Container();
+        },
+      ));
+
+      catalog1.items.forEach((product) {
+        product.items.forEach((ingredient) {
+          verify((ingredient as MockProductIngredientModel).setIngredient(any))
+              .called(1);
+          ingredient.items.forEach((quantity) {
+            verify((quantity as MockProductQuantityModel).setQuantity(any))
+                .called(1);
+          });
+        });
+      });
     });
   });
 

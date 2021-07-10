@@ -15,6 +15,7 @@ class CartMetadata extends StatefulWidget {
 class _CartMetadataState extends State<CartMetadata> {
   @override
   Widget build(BuildContext context) {
+    // listen change quantity, delete product
     final cart = context.watch<CartModel>();
 
     return SingleChildScrollView(
@@ -36,6 +37,7 @@ class _CartMetadataState extends State<CartMetadata> {
   @override
   void initState() {
     super.initState();
+    // listen count changing
     OrderProductModel.addListener(
       _listener,
       OrderProductListenerTypes.count,

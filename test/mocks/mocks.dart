@@ -7,6 +7,8 @@ import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/services/storage.dart';
 
+import 'mockito/mocK_stock_batch_repo.dart';
+import 'mockito/mock_stock_modal.dart';
 import 'mocks.mocks.dart';
 
 final cache = MockCache();
@@ -20,9 +22,7 @@ final orders = MockOrderRepo();
 @GenerateMocks([
   Cache,
   Storage,
-  StockModel,
   MenuModel,
-  StockBatchRepo,
   QuantityRepo,
   OrderRepo,
 ])

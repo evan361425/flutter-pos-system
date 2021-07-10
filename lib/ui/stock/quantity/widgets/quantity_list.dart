@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
 
 class QuantityList extends StatelessWidget {
   final List<QuantityModel> quantities;
@@ -14,12 +12,10 @@ class QuantityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (quantities.isEmpty) return EmptyBody('stock.quantity.empty_body');
-    final menu = context.read<MenuModel>();
-
     return SlidableItemList<QuantityModel>(
       items: quantities,
-      handleDelete: (_, quantity) => menu.removeQuantities(quantity.id),
+      handleDelete: (_, quantity) =>
+          MenuModel.instance.removeQuantities(quantity.id),
       handleTap: _handleTap,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,

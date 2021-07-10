@@ -127,7 +127,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
     if (!widget.isNew) {
       quantityId = widget.quantity!.id;
-      quantityName = widget.quantity!.quantity.name;
+      quantityName = widget.quantity!.name;
       _amountController.text = widget.quantity!.amount.toString();
       _priceController.text = widget.quantity!.additionalPrice.toString();
       _costController.text = widget.quantity!.additionalCost.toString();

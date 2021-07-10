@@ -5,7 +5,7 @@ import 'package:possystem/constants/constant.dart';
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
   List<Widget>? actions,
-  bool? useRootNavigator,
+  bool useRootNavigator = true,
   WidgetBuilder? builder,
 }) {
   assert(actions != null || builder != null);
@@ -18,8 +18,8 @@ Future<T?> showCircularBottomSheet<T>(
       ),
     ),
     clipBehavior: Clip.antiAliasWithSaveLayer,
-    useRootNavigator: useRootNavigator ?? true,
-    builder: builder ?? ((_) => BottomSheetActions(actions: actions!)),
+    useRootNavigator: useRootNavigator,
+    builder: builder ?? (_) => BottomSheetActions(actions: actions!),
   );
 }
 

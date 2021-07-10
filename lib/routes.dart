@@ -8,9 +8,6 @@ import 'models/menu/catalog_model.dart';
 import 'models/menu/product_ingredient_model.dart';
 import 'models/menu/product_model.dart';
 import 'models/menu/product_quantity_model.dart';
-import 'models/repository/menu_model.dart';
-import 'models/repository/quantity_repo.dart';
-import 'models/repository/stock_model.dart';
 import 'models/stock/ingredient_model.dart';
 import 'models/stock/quantity_model.dart';
 import 'models/stock/stock_batch_model.dart';
@@ -89,7 +86,7 @@ class Routes {
           builder: (_, __) => CatalogScreen(),
         ),
     menuCatalogModal: (context) =>
-        CatalogModal(catalog: arg<CatalogModel>(context)),
+        CatalogModal(catalog: arg<CatalogModel?>(context)),
     menuCatalogReorder: (context) => CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
           value: arg<ProductModel>(context),
@@ -140,19 +137,4 @@ class Routes {
     settingLanguage: (_) => LanguageModal(),
     settingTheme: (_) => ThemeModal(),
   };
-
-  static bool setUpStockMode(BuildContext context) {
-    final menu = context.watch<MenuModel>();
-    if (menu.stockMode) return true;
-
-    final stock = context.watch<StockModel>();
-    final quantities = context.watch<QuantityRepo>();
-    if (!menu.isReady || !stock.isReady || !quantities.isReady) {
-      return false;
-    }
-    print('setting up stock mode');
-
-    menu.setUpStock(stock, quantities);
-    return true;
-  }
 }

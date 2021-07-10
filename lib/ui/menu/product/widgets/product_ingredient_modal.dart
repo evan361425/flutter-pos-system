@@ -44,7 +44,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
           IconButton(
             onPressed: () => showCircularBottomSheet(
               context,
-              useRootNavigator: false,
               actions: [
                 ListTile(
                   title: Text('刪除'),
@@ -102,7 +101,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     if (!widget.isNew) {
       _amountController.text = widget.ingredient!.amount.toString();
       ingredientId = widget.ingredient!.id;
-      ingredientName = widget.ingredient!.ingredient.name;
+      ingredientName = widget.ingredient!.name;
     }
   }
 
@@ -116,7 +115,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       final ingredient = ProductIngredientModel(
         ingredient: StockModel.instance.getItem(ingredientId),
         product: widget.product,
-        amount: object.amount,
+        amount: object.amount!,
       );
 
       await widget.product.setItem(ingredient);
@@ -163,7 +162,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       arguments: ingredientName,
     );
 
-    if (result != null && result is IngredientModel) {
+    if (result is IngredientModel) {
       final ingredient = result;
 
       setState(() {

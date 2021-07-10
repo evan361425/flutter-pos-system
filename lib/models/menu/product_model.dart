@@ -28,7 +28,7 @@ class ProductModel extends NotifyModel<ProductObject>
   final DateTime createdAt;
 
   ProductModel({
-    required int index,
+    int index = 1,
     required this.name,
     CatalogModel? catalog,
     this.cost = 0,
