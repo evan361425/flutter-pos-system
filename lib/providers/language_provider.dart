@@ -5,7 +5,7 @@ import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
 class LanguageProvider extends ChangeNotifier {
-  static late LanguageProvider _instance;
+  static late LanguageProvider instance;
 
   static const supports = [
     Locale('zh', 'TW'),
@@ -29,7 +29,7 @@ class LanguageProvider extends ChangeNotifier {
   Locale? _locale;
 
   LanguageProvider() {
-    _instance = this;
+    instance = this;
   }
 
   bool get isReady => _locale != null;
@@ -94,7 +94,7 @@ class LanguageProvider extends ChangeNotifier {
     return Locale(codes[0], codes.length == 1 ? null : codes[1]);
   }
 
-  void _translatorFilesChanged() {
+  void translatorFilesChanged() {
     notifyListeners();
   }
 }
@@ -112,7 +112,7 @@ class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
   @override
   Future<Translator> load(Locale locale) async {
     await Translator.instance.load(locale);
-    LanguageProvider._instance._translatorFilesChanged();
+    LanguageProvider.instance.translatorFilesChanged();
     return Translator.instance;
   }
 
