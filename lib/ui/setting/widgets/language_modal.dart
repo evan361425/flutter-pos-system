@@ -15,12 +15,6 @@ class LanguageModal extends StatefulWidget {
 }
 
 class _LanguageModalState extends State<LanguageModal> {
-  /// Reload setting_screen when changed
-  ///
-  /// When user set up language, it need times to load new language data
-  /// so immediatly refresh won't change the language is setting_screen
-  var isChanged = false;
-
   @override
   Widget build(BuildContext context) {
     final language = context.read<LanguageProvider>();
@@ -29,7 +23,7 @@ class _LanguageModalState extends State<LanguageModal> {
       appBar: AppBar(
         title: Text('語言'),
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(isChanged),
+          onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
         ),
       ),
@@ -44,7 +38,6 @@ class _LanguageModalState extends State<LanguageModal> {
             onTap: () async {
               if (locale != language.locale) {
                 await language.setLocale(locale);
-                isChanged = true;
               }
             },
           );

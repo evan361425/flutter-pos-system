@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
 
 class LanguageProvider extends ChangeNotifier {
-  // shared pref object
+  static late LanguageProvider _instance;
+
   static const supports = [
     Locale('zh', 'TW'),
     Locale('en', 'US'),
   ];
 
-  // List of all supported locales
+  /// shared pref object
   static const delegates = <LocalizationsDelegate<dynamic>>[
     // A class which loads the translations from YAML files
     _LocalizationsDelegate(),
@@ -22,13 +23,18 @@ class LanguageProvider extends ChangeNotifier {
     GlobalWidgetsLocalizations.delegate,
   ];
 
+  /// List of all supported locales
   static const Locale defaultLocale = Locale('en', 'US');
 
   Locale? _locale;
 
-  Locale get locale => _locale!;
+  LanguageProvider() {
+    _instance = this;
+  }
 
   bool get isReady => _locale != null;
+
+  Locale get locale => _locale!;
 
   void initialize() {
     final locale = Cache.instance.get<String>(Caches.language_code);
@@ -87,6 +93,10 @@ class LanguageProvider extends ChangeNotifier {
 
     return Locale(codes[0], codes.length == 1 ? null : codes[1]);
   }
+
+  void _translatorFilesChanged() {
+    notifyListeners();
+  }
 }
 
 // LocalizationsDelegate is a factory for a set of localized resources
@@ -100,12 +110,13 @@ class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
   }
 
   @override
-  bool shouldReload(_LocalizationsDelegate old) => false;
+  Future<Translator> load(Locale locale) async {
+    await Translator.instance.load(locale);
+    LanguageProvider._instance._translatorFilesChanged();
+    return Translator.instance;
+  }
 
   // already set in [LanguageProvider.localResolutionCallback]
   @override
-  Future<Translator> load(Locale locale) async {
-    await Translator.instance.load(locale);
-    return Translator.instance;
-  }
+  bool shouldReload(_LocalizationsDelegate old) => false;
 }
