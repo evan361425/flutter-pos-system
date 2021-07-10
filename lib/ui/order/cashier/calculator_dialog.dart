@@ -20,8 +20,8 @@ enum _ButtonTypes {
 }
 
 class _CalculatorDialogState extends State<CalculatorDialog> {
-  static final paidController = TextEditingController();
-  static final changeController = TextEditingController(text: '0');
+  final paidController = TextEditingController();
+  final changeController = TextEditingController(text: '0');
   final totalPrice = CartModel.instance.totalPrice;
 
   String? errorMessage;

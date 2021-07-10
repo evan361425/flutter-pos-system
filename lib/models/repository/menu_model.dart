@@ -18,7 +18,7 @@ class MenuModel extends ChangeNotifier
         NotifyRepository<CatalogModel>,
         OrderablRepository,
         InitilizableRepository {
-  static late MenuModel instance;
+  static MenuModel instance = MenuModel();
 
   bool stockMode = false;
 
