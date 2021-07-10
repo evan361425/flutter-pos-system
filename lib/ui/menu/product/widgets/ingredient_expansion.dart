@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/constant.dart';
@@ -22,6 +24,9 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   @override
   Widget build(BuildContext context) {
     final length = widget.ingredients.length;
+    if (length != showIngredient.length) {
+      showIngredient = List.filled(length, false);
+    }
     return Container(
       child: ExpansionPanelList(
         expansionCallback: (int index, bool status) {
@@ -94,12 +99,29 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
 
     return ExpansionPanel(
       canTapOnHeader: true,
-      headerBuilder: (_, __) => ListTile(
-        title: Text(ingredient.name),
-        subtitle: Text('使用量：${ingredient.amount}'),
+      headerBuilder: (_, __) => GestureDetector(
+        onLongPress: () async {
+          final result = await showCircularBottomSheet(
+            context,
+            actions: _actions(),
+          );
+
+          if (result == 'delete') {
+            await showDialog(
+              context: context,
+              builder: (_) => DeleteDialog(
+                  content: Text('此動作將無法復原'),
+                  onDelete: (_) => ingredient.remove()),
+            );
+          }
+        },
+        child: ListTile(
+          title: Text(ingredient.name),
+          subtitle: Text('使用量：${ingredient.amount}'),
+        ),
       ),
-      body: Column(children: body),
       isExpanded: showIngredient[index],
+      body: Column(children: body),
     );
   }
 
@@ -146,5 +168,15 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         ],
       ),
     );
+  }
+
+  List<Widget> _actions() {
+    return [
+      ListTile(
+        title: Text('刪除'),
+        leading: Icon(KIcons.delete, color: kNegativeColor),
+        onTap: () => Navigator.of(context).pop('delete'),
+      )
+    ];
   }
 }

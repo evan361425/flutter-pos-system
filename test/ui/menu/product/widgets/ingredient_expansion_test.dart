@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
@@ -34,6 +35,33 @@ void main() {
 
     return productIngredient;
   }
+
+  testWidgets('should show delete confirm', (tester) async {
+    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final ingredient = createIngredient('ing-1', 10, {'qua-1': 10});
+    final product = ProductModel(
+      index: 1,
+      name: 'name',
+      ingredients: {'ing-1': ingredient},
+      catalog: catalog,
+    );
+    ingredient.product = product;
+
+    await tester.pumpWidget(MaterialApp(
+      home: SingleChildScrollView(
+          child: IngredientExpansion(ingredients: product.itemList)),
+    ));
+
+    // open panel
+    await tester.longPress(find.text('ing-1'));
+    await tester.pumpAndSettle();
+
+    // tap tile
+    await tester.tap(find.byIcon(KIcons.delete));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DeleteDialog), findsOneWidget);
+  });
 
   testWidgets('should navigate to ingredient', (tester) async {
     final catalog = CatalogModel(index: 1, name: 'c-name');
@@ -246,5 +274,49 @@ void main() {
     final newHeight = find.byKey(expansion).evaluate().first.size!.height;
     expect(find.text('qua-new'), findsOneWidget);
     expect(oldHeight, equals(newHeight));
+  });
+
+  testWidgets('when add ingredient should close all', (tester) async {
+    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final ingredient1 = createIngredient('ing-1', 10, {'qua-1': 10});
+    final ingredient2 = createIngredient('ing-2', 10, {'qua-2': 10});
+    final product = ProductModel(
+      index: 1,
+      name: 'name',
+      ingredients: {'ing-1': ingredient1},
+      catalog: catalog,
+    );
+    final expansion = Key('expansion');
+    ingredient1.product = product;
+    ingredient2.product = product;
+
+    await tester.pumpWidget(MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: product)],
+      builder: (context, _) {
+        final p = context.watch<ProductModel>();
+        return MaterialApp(
+          home: SingleChildScrollView(
+            child: IngredientExpansion(
+              key: expansion,
+              ingredients: p.itemList,
+            ),
+          ),
+        );
+      },
+    ));
+
+    final oldHeight = find.byKey(expansion).evaluate().first.size!.height;
+
+    // open panel
+    await tester.tap(find.text('ing-1'));
+    await tester.pumpAndSettle();
+
+    // notify change
+    product.replaceItems({'ing-1': ingredient1, 'ing-2': ingredient2});
+    product.notifyItem();
+    await tester.pumpAndSettle();
+
+    final newHeight = find.byKey(expansion).evaluate().first.size!.height;
+    expect(oldHeight * 2, closeTo(newHeight, 5));
   });
 }

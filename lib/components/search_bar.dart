@@ -54,12 +54,12 @@ class SearchBarState extends State<SearchBar> {
         isDense: true,
         suffix: isEmpty
             ? null
-            : IconButton(
-                onPressed: () {
+            : GestureDetector(
+                onTap: () {
                   controller.clear();
                   _onChanged('');
                 },
-                icon: Icon(KIcons.clear),
+                child: Icon(KIcons.clear, size: 16.0),
               ),
         hintText: widget.hintText,
         counterText: '',
