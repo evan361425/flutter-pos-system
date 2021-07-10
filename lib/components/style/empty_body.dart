@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/translator.dart';
 
 class EmptyBody extends StatelessWidget {
   final String text;
@@ -13,7 +14,7 @@ class EmptyBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('哎呀！這裡還是空的', style: Theme.of(context).textTheme.headline4),
+          Text(tt('empty_body'), style: Theme.of(context).textTheme.headline4),
           Text(text),
         ],
       ),

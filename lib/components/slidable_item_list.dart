@@ -5,6 +5,7 @@ import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
+import 'package:possystem/translator.dart';
 
 // use inherit objects to make your life better
 class SlidableItemList<T extends Model> extends StatefulWidget {
@@ -80,7 +81,7 @@ class _SlidableItemListState<T extends Model>
         secondaryActions: <Widget>[
           IconSlideAction(
             color: kNegativeColor,
-            caption: '刪除',
+            caption: tt('delete'),
             icon: KIcons.delete,
             onTap: () => _showDeleteDialog(item),
           ),
@@ -109,7 +110,7 @@ class _SlidableItemListState<T extends Model>
       actions: <Widget>[
         ...custom,
         ListTile(
-          title: Text('刪除'),
+          title: Text(tt('delete')),
           leading: Icon(KIcons.delete, color: kNegativeColor),
           onTap: () async {
             // pop off sheet

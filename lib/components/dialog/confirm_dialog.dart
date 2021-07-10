@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/translator.dart';
 
 class ConfirmDialog extends StatelessWidget {
   const ConfirmDialog({
@@ -18,11 +19,11 @@ class ConfirmDialog extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('取消'),
+          child: Text(tt('cancel')),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text('確認'),
+          child: Text(tt('confirm')),
         ),
       ],
     );

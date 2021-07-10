@@ -1,9 +1,14 @@
-# this page should not use Map, avoid misunderstanding
-app: POS 系統
-welcome: "您好😎，%s"
-# diagram
-alert_title: 再想一下！
+# button
+delete: 刪除
 cancel: 取消
 confirm: 確認
-success: 成功
-failed: 失敗
+save: 儲存
+
+unknown_error: 發生未知錯誤
+
+total_count: "總共 {count} 項"
+search_count: "搜尋到 {count} 個結果"
+delete_title: 確認刪除通知
+# bottom sheet action title
+action_title: 執行動作
+empty_body: 哎呀！這裡還是空的

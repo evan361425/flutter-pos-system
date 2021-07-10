@@ -18,21 +18,5 @@ class IconText extends StatelessWidget {
       Icon(icon, color: textStyle?.color, size: textStyle?.fontSize ?? 14),
       Text(' $text', style: textStyle),
     ]);
-    // final style = textStyle ?? Theme.of(context).textTheme.bodyText1;
-    // return RichText(
-    //   textAlign: TextAlign.center,
-    //   text: TextSpan(
-    //     style: style,
-    //     children: [
-    //       TextSpan(
-    //         text: icon,
-    //         style: style?.copyWith(fontFamily: 'MaterialIcons'),
-    //       ),
-    //       TextSpan(
-    //         text: ' $text',
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:possystem/translator.dart';
+
 class Validator {
   static String? Function(String?) positiveNumber(
     String fieldName, {
@@ -7,11 +9,12 @@ class Validator {
       final number = num.tryParse(value ?? '');
 
       if (number == null) {
-        return '$fieldName 必須是數字';
+        return tt('validator.number.type', {'field': fieldName});
       } else if (number < 0) {
-        return '$fieldName 不能為負數';
+        return tt('validator.number.positive', {'field': fieldName});
       } else if (maximum != null && maximum < number) {
-        return '$fieldName 不能大於 $maximum';
+        return tt('validator.number.maximum',
+            {'field': fieldName, 'maximum': maximum});
       }
 
       return null;
@@ -25,11 +28,12 @@ class Validator {
     return (String? value) {
       final number = int.tryParse(value ?? '');
       if (number == null) {
-        return '$fieldName 必須是整數';
+        return tt('validator.integer.type', {'field': fieldName});
       } else if (number < 0) {
-        return '$fieldName 不能為負數';
+        return tt('validator.number.positive', {'field': fieldName});
       } else if (maximum != null && maximum < number) {
-        return '$fieldName 不能大於 $maximum';
+        return tt('validator.number.maximum',
+            {'field': fieldName, 'maximum': maximum});
       } else {
         return null;
       }
@@ -41,7 +45,7 @@ class Validator {
       final number = num.tryParse(value ?? '');
 
       if (number == null) {
-        return '$fieldName 必須是數字';
+        return tt('validator.number.type', {'field': fieldName});
       } else {
         return null;
       }
@@ -51,9 +55,10 @@ class Validator {
   static String? Function(String?) textLimit(String fieldName, int limit) {
     return (String? value) {
       if (value == null || value.isEmpty) {
-        return '$fieldName 不能為空';
+        return tt('validator.string.type', {'field': fieldName});
       } else if (value.length > limit) {
-        return '$fieldName 的長度不能超過 $limit';
+        return tt(
+            'validator.string.maximum', {'field': fieldName, 'maximum': limit});
       }
 
       return null;

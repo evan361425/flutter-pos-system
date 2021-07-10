@@ -4,6 +4,7 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/translator.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
   final Future<List<T>> Function(String) handleChanged;
@@ -91,7 +92,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           if (snapshot.hasError) {
             error(
                 snapshot.error.toString(), 'search.error', snapshot.stackTrace);
-            return Text('happen error');
+            return Text(tt('unknown_error'));
           }
 
           return _listBuilder(context, snapshot.data!);
@@ -102,7 +103,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            '搜尋到$count個結果',
+            tt('search_count', {'count': count}),
             style: Theme.of(context).textTheme.muted,
           ),
         ),
