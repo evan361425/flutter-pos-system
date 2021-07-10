@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
@@ -109,5 +110,9 @@ void main() {
 
   setUpAll(() {
     initializeCart();
+  });
+
+  tearDown(() {
+    RadioText.clearAll();
   });
 }
