@@ -7,12 +7,7 @@ import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
 class OrderIngredientList extends StatefulWidget {
-  final bool isPortrait;
-
-  const OrderIngredientList({
-    Key? key,
-    required this.isPortrait,
-  }) : super(key: key);
+  const OrderIngredientList({Key? key}) : super(key: key);
 
   @override
   _OrderIngredientListState createState() => _OrderIngredientListState();

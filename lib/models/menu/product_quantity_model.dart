@@ -27,9 +27,9 @@ class ProductQuantityModel with Model<ProductQuantityObject> {
     String? id,
     QuantityModel? quantity,
     ProductIngredientModel? ingredient,
-    required this.amount,
-    required this.additionalCost,
-    required this.additionalPrice,
+    this.amount = 0,
+    this.additionalCost = 0,
+    this.additionalPrice = 0,
   }) {
     if (id != null) this.id = id;
 

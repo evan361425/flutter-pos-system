@@ -21,13 +21,12 @@ class OrderProductModel {
 
   OrderProductModel(
     this.product, {
-    int? count,
+    this.count = 1,
     num? singlePrice,
     this.isSelected = false,
     List<OrderIngredientModel>? ingredients,
   })  : singlePrice = singlePrice ?? product.price,
-        ingredients = ingredients ?? [],
-        count = count ?? 1;
+        ingredients = ingredients ?? [];
 
   Iterable<String> get ingredientNames => ingredients.map((e) => e.toString());
 

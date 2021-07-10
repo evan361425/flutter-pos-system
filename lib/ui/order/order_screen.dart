@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
@@ -45,7 +44,7 @@ class OrderScreen extends StatelessWidget {
       ),
       body: MenuModel.instance.setUpStockMode(context)
           ? _body(context)
-          : CircularLoading(),
+          : Container(),
     );
   }
 
@@ -69,7 +68,7 @@ class OrderScreen extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(child: _cart()),
-                OrderIngredientList(isPortrait: false),
+                OrderIngredientList(),
               ],
             ),
           ),
@@ -94,7 +93,7 @@ class OrderScreen extends StatelessWidget {
         _catalogsRow(catalogs),
         Expanded(child: _productRow(catalogs)),
         Expanded(flex: 3, child: _cart()),
-        OrderIngredientList(isPortrait: true),
+        OrderIngredientList(),
       ],
     );
   }
@@ -126,7 +125,7 @@ class OrderScreen extends StatelessWidget {
   Widget _productRow(List<CatalogModel> catalogs) {
     return OrderProductList(
       key: _orderProductList,
-      catalog: catalogs.isEmpty ? null : catalogs.first,
+      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
       handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
     );
   }

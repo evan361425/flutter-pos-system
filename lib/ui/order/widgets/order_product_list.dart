@@ -6,11 +6,11 @@ import 'package:possystem/models/repository/cart_model.dart';
 class OrderProductList extends StatefulWidget {
   const OrderProductList({
     Key? key,
-    this.catalog,
+    required this.products,
     required this.handleSelected,
   }) : super(key: key);
 
-  final CatalogModel? catalog;
+  final List<ProductModel> products;
   final void Function(ProductModel) handleSelected;
 
   @override
@@ -53,7 +53,7 @@ class OrderProductListState extends State<OrderProductList> {
 
   @override
   void initState() {
-    _products = widget.catalog?.itemList ?? const [];
+    _products = widget.products;
     super.initState();
   }
 }
