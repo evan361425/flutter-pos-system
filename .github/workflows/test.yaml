@@ -43,4 +43,4 @@ jobs:
 
       # Run widget tests for our flutter project.
       - name: Testing
-        run: flutter test
+        run: flutter test --no-pub --no-test-assets
