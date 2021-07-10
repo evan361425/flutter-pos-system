@@ -149,7 +149,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         return;
       case _ButtonTypes.ceil:
         final ceilPrice = CurrencyProvider.instance.ceil(paid ?? totalPrice);
-        updatePaid(ceilPrice?.toString() ?? '');
+        updatePaid(CurrencyProvider.instance.numToString(ceilPrice));
         return;
       case _ButtonTypes.done:
         if (!await confirmChangeHistory(context)) {

@@ -42,9 +42,7 @@ class CurrencyProvider extends ChangeNotifier {
   /// ceil(30) == 50
   /// ceil(60) == 100
   /// ```
-  num? ceil(num? value) {
-    if (value == null) return null;
-
+  num ceil(num value) {
     if (value < 0) return 0;
 
     // if it is double ceil to int first

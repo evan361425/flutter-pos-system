@@ -67,10 +67,8 @@ class OrderActions {
         final success = await CartModel.instance.drop();
         return _showSnackbar(context, success ? '執行成功' : '目前沒有暫存的紀錄唷');
       case OrderActionTypes.stash:
-        if (!await CartModel.instance.stash()) {
-          _showSnackbar(context, '暫存檔案的次數超過上限');
-        }
-        return;
+        final success = await CartModel.instance.stash();
+        return _showSnackbar(context, success ? '執行成功' : '暫存檔案的次數超過上限');
       default:
         return;
     }
