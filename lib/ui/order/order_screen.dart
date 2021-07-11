@@ -39,7 +39,7 @@ class OrderScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => _handleOrder(context),
-            child: Text(tt('order.order')),
+            child: Text(tt('order.action.order')),
           ),
         ],
       ),

@@ -105,6 +105,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           prefixIcon: Icon(Icons.loyalty_sharp),
           labelText: tt('menu.quantity.label.additional_price'),
           helperText: tt('menu.quantity.helper.additional_price'),
+          helperMaxLines: 10,
           filled: false,
         ),
         validator: Validator.isNumber(
@@ -120,6 +121,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           prefixIcon: Icon(Icons.attach_money_sharp),
           labelText: tt('menu.quantity.label.additional_cost'),
           helperText: tt('menu.quantity.helper.additional_cost'),
+          helperMaxLines: 10,
           filled: false,
         ),
         validator: Validator.isNumber(

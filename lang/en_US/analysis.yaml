@@ -10,3 +10,6 @@ allLoaded: All Loaded
 
 price: Price：{price}
 paid: Paid：{paid}
+
+total_price: Revenue：{price}
+total_order: Orders：{count}

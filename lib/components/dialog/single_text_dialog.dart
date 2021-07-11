@@ -42,7 +42,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => onSubmit(null),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(tt('cancel')),
         ),
         ElevatedButton(

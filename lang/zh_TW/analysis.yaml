@@ -10,3 +10,6 @@ allLoaded: 讀取完畢
 
 price: 售價：{price}
 paid: 付額：{paid}
+
+total_price: 總營收：{price}
+total_order: 總單數：{count}

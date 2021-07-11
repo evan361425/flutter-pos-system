@@ -54,8 +54,8 @@ class OrderListState extends State<OrderList> {
           child: MetaBlock.withString(
             context,
             [
-              tt('home.total_price', {'price': totalPrice}),
-              tt('home.total_order', {'count': totalCount}),
+              tt('analysis.total_price', {'price': totalPrice}),
+              tt('analysis.total_order', {'count': totalCount}),
             ],
           ),
         ),
@@ -139,8 +139,8 @@ class OrderListState extends State<OrderList> {
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: MetaBlock.withString(context, [
-        tt('price', {'analysis.price': CurrencyProvider.n2s(order.totalPrice)}),
-        tt('paid', {'analysis.paid': CurrencyProvider.n2s(order.paid!)}),
+        tt('analysis.price', {'price': CurrencyProvider.n2s(order.totalPrice)}),
+        tt('analysis.paid', {'paid': CurrencyProvider.n2s(order.paid!)}),
       ]),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => OrderModal(order: order)),

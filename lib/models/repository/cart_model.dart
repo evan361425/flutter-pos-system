@@ -8,6 +8,7 @@ import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/providers/currency_provider.dart';
 
 class CartModel extends ChangeNotifier {
   static CartModel instance = CartModel();
@@ -64,7 +65,7 @@ class CartModel extends ChangeNotifier {
     final order = await OrderRepo.instance.drop();
     if (order == null) return false;
 
-    info(order.id.toString(), 'cart.order.drop');
+    info(order.id.toString(), 'order.cart.drop');
     replaceProducts(order.parseToProduct());
 
     return true;
@@ -109,7 +110,7 @@ class CartModel extends ChangeNotifier {
       final oldData = await OrderRepo.instance.pop();
       final data = toObject(paid: paid, object: oldData);
 
-      info(data.id.toString(), 'cart.order.update');
+      info(data.id.toString(), 'order.cart.update');
       await OrderRepo.instance.update(data);
       await StockModel.instance.order(data, oldData: oldData);
 
@@ -117,7 +118,7 @@ class CartModel extends ChangeNotifier {
     } else {
       final data = toObject(paid: paid);
 
-      info(data.totalCount.toString(), 'cart.order.push');
+      info(data.totalCount.toString(), 'order.cart.push');
       await OrderRepo.instance.push(data);
       await StockModel.instance.order(data);
 
@@ -129,7 +130,7 @@ class CartModel extends ChangeNotifier {
     final order = await OrderRepo.instance.pop();
     if (order == null) return false;
 
-    info(order.id.toString(), 'cart.order.pop');
+    info(order.id.toString(), 'order.cart.pop');
     replaceProducts(order.parseToProduct());
 
     isHistoryMode = true;
@@ -157,7 +158,7 @@ class CartModel extends ChangeNotifier {
     if (length > 4) return false;
 
     final data = toObject();
-    info(data.totalCount.toString(), 'cart.order.stash');
+    info(data.totalCount.toString(), 'order.cart.stash');
     await OrderRepo.instance.stash(data);
 
     clear();
@@ -196,7 +197,10 @@ class CartModel extends ChangeNotifier {
   void updateSelectedDiscount(int? discount) {
     if (discount == null) return;
 
-    selected.forEach((e) => e.singlePrice = e.product.price * discount / 100);
+    selected.forEach((e) {
+      final price = e.product.price * discount / 100;
+      e.singlePrice = CurrencyProvider.instance.isInt ? price.round() : price;
+    });
     notifyListeners();
   }
 

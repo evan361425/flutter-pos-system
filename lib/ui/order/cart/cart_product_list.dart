@@ -137,7 +137,7 @@ class _ProductCountActionState extends State<_ProductCountAction> {
           icon: Icon(Icons.add_circle_outline_sharp),
           onPressed: () => setState(() => widget.product.increment()),
         ),
-        Text(tt('cart.list.price', {'price': widget.product.price})),
+        Text(tt('order.list.price', {'price': widget.product.price})),
       ],
     );
   }

@@ -91,6 +91,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         decoration: InputDecoration(
           labelText: tt('menu.ingredient.label.amount'),
           helperText: tt('menu.ingredient.helper.amount'),
+          helperMaxLines: 10,
           filled: false,
         ),
         validator: Validator.positiveNumber(tt('menu.ingredient.label.amount')),
