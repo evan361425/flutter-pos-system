@@ -18,12 +18,12 @@ void main() {
       ], child: ThemeModal()),
     ));
 
-    await tester.tap(find.text('setting.theme.dark'));
+    await tester.tap(find.text('dark'));
     await tester.pumpAndSettle();
 
     verifyNever(theme.setMode(any));
 
-    await tester.tap(find.text('setting.theme.light'));
+    await tester.tap(find.text('light'));
     await tester.pumpAndSettle();
 
     verify(theme.setMode(any));

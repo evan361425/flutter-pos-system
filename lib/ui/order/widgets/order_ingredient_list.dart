@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/translator.dart';
 
 class OrderIngredientList extends StatefulWidget {
   const OrderIngredientList({Key? key}) : super(key: key);
@@ -24,16 +25,16 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   @override
   Widget build(BuildContext context) {
     if (CartModel.instance.isEmpty) {
-      return _emptyRows(context, '請選擇產品來設定其成份');
+      return _emptyRows(context, tt('order.list.cart_empty'));
     }
     if (!CartModel.instance.isSameProducts) {
-      return _emptyRows(context, '請選擇相同的產品來設定其成份');
+      return _emptyRows(context, tt('order.list.not_same_product'));
     }
 
     final product = CartModel.instance.products.first.product;
     final ingredients = product.ingredientsWithQuantity;
     if (ingredients.isEmpty) {
-      return _emptyRows(context, '該產品無可設定份量的成份');
+      return _emptyRows(context, tt('order.list.no_quantity'));
     }
 
     selectedIngredient ??= ingredients.first;
@@ -72,7 +73,9 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
         children: <Widget>[RadioText.empty(ingredientMessage)],
       ),
       SingleRowWrap(
-        children: <Widget>[RadioText.empty('請選擇成份來設定份量')],
+        children: <Widget>[
+          RadioText.empty(tt('order.list.wait_select_ingredient')),
+        ],
       ),
     ]);
   }
@@ -123,7 +126,10 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       groupId: _QUANTITY_RADIO_KEY,
       value: CartModel.DEFAULT_QUANTITY_ID,
       isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
-      child: Text('預設值（${selectedIngredient!.amount}）'),
+      child: Text(tt(
+        'order.list.default_quantity',
+        {'amount': selectedIngredient!.amount},
+      )),
     );
   }
 

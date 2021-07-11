@@ -5,6 +5,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/translator.dart';
 
 class OrderModal extends StatelessWidget {
   final OrderObject order;
@@ -46,8 +47,9 @@ class OrderModal extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         MetaBlock.withString(context, [
-          '售價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
-          '付款：${CurrencyProvider.instance.numToString(order.paid!)}',
+          tt('analysis.price',
+              {'price': CurrencyProvider.n2s(order.totalPrice)}),
+          tt('analysis.paid', {'paid': CurrencyProvider.n2s(order.paid!)}),
         ])!,
         Text(createdAt)
       ],

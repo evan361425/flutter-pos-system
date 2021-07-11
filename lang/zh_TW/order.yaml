@@ -1,0 +1,57 @@
+total_price: "總價： {price}"
+total_count: "總數： {count}"
+
+action:
+  order: 點餐
+  leave_history: 退出改單模式
+  show_last: 顯示最後一次點餐
+  stash: 暫存本次點餐
+  drop_stash: 拉出暫存餐點
+  leave: 離開點餐頁面
+  confirm:
+    stash: 要暫存本次點餐並顯示舊的單嗎？
+  error:
+    stash_limit: 暫存檔案的次數超過上限
+    last_empty: 找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄
+    stash_empty: 目前沒有暫存的紀錄唷
+
+cart:
+  select_all: 全選
+  toggle_all: 反選
+  action_hint: 使所選物
+  discount: 打折
+  price: 變價
+  count: 變更數量
+  free: 招待
+  delete: 刪除
+  name:
+    discount: 折扣
+    price: 價錢
+    count: 數量
+  hint:
+    discount: 每項產品的折扣，0~100
+    price: 每項產品的價錢
+    count: 產品數量
+  helper:
+    discount: 這裡的數字代表「折」，即，85 代表 85 折。若需要準確的價錢請用「變價」
+  suffix:
+    discount: 折
+    price: 元
+    count: 個
+
+list:
+  price: "{price} 元"
+  cart_empty: 請選擇產品來設定其成份
+  not_same_product: 請選擇相同的產品來設定其成份
+  no_quantity: 該產品無可設定份量的成份
+  wait_select_ingredient: 請選擇成份來設定份量
+  default_quantity: 預設值（{amount}）
+
+cashier:
+  price: 售價
+  change: 找額
+  paid: 付額
+  error:
+    low_paid: 糟糕，付額小於總價唷
+  confirm:
+    leave_history: 確定要要變更上次的點餐紀錄嗎？

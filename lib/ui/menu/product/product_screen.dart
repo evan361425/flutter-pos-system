@@ -36,7 +36,7 @@ class ProductScreen extends StatelessWidget {
           Routes.menuIngredient,
           arguments: product,
         ),
-        tooltip: tt('menu.product.add_integredient'),
+        tooltip: tt('menu.integredient.add'),
         child: Icon(KIcons.add),
       ),
       body: _body(context, product),
@@ -46,7 +46,7 @@ class ProductScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context, ProductModel product) {
     return [
       ListTile(
-        title: Text('調整產品'),
+        title: Text(tt('menu.product.edit')),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context)
             .pushReplacementNamed(Routes.menuProductModal, arguments: product),
@@ -70,7 +70,7 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
         product.isEmpty
-            ? EmptyBody('趕緊按右下角的按鈕新增成份吧！')
+            ? EmptyBody(tt('menu.product.empty'))
             : IngredientExpansion(ingredients: product.itemList),
       ],
     );
@@ -81,7 +81,7 @@ class ProductScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Tooltip(
-          message: '售價',
+          message: tt('menu.product.label.price'),
           child: IconText(
             text: product.price.toString(),
             icon: Icons.loyalty_sharp,
@@ -89,7 +89,7 @@ class ProductScreen extends StatelessWidget {
         ),
         MetaBlock(),
         Tooltip(
-          message: '成本',
+          message: tt('menu.product.label.cost'),
           child: IconText(
             text: product.cost.toString(),
             icon: Icons.attach_money_sharp,

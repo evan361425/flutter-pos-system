@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartProductList extends StatefulWidget {
@@ -136,7 +137,7 @@ class _ProductCountActionState extends State<_ProductCountAction> {
           icon: Icon(Icons.add_circle_outline_sharp),
           onPressed: () => setState(() => widget.product.increment()),
         ),
-        Text('${widget.product.price} 元'),
+        Text(tt('cart.list.price', {'price': widget.product.price})),
       ],
     );
   }

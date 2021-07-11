@@ -6,6 +6,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
 import 'package:possystem/ui/stock/widgets/stock_batch_actions.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class StockScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('庫存'),
+        title: Text(tt('home.stock')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -24,7 +25,7 @@ class StockScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.stockIngredient),
-        tooltip: '新增成份',
+        tooltip: tt('stock.ingredient.add'),
         child: Icon(KIcons.add),
       ),
       body: FutureBuilder<bool>(
@@ -40,7 +41,7 @@ class StockScreen extends StatelessWidget {
     final stock = context.watch<StockModel>();
     if (!stock.isReady) return CircularLoading();
     if (stock.isEmpty) {
-      return Center(child: EmptyBody('stock.empty'));
+      return Center(child: EmptyBody('stock.ingredient.empty'));
     }
 
     return Column(children: [
@@ -76,7 +77,7 @@ class StockScreen extends StatelessWidget {
                 color: mutedStyle.color,
               ),
               Text(
-                '現在庫存的數量',
+                tt('stock.ingredient.current_amount'),
                 style: mutedStyle,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -87,7 +88,7 @@ class StockScreen extends StatelessWidget {
                 color: mutedStyle.color,
               ),
               Text(
-                '上次補貨後的數量',
+                tt('stock.ingredient.last_amount'),
                 style: mutedStyle,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -97,7 +98,7 @@ class StockScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 4.0),
           child: Tooltip(
-            message: '上次修改時間',
+            message: tt('stock.ingredient.updated_at'),
             child: Icon(
               Icons.access_time,
               size: mutedStyle.fontSize,
@@ -106,7 +107,7 @@ class StockScreen extends StatelessWidget {
           ),
         ),
         Text(
-          StockModel.instance.updatedDate ?? '尚未開始設定',
+          StockModel.instance.updatedDate ?? tt('stock.ingredient.un_add'),
           style: mutedStyle,
         ),
       ],

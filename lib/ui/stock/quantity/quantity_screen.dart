@@ -5,6 +5,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_list.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,7 @@ class QuantityScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('份量'),
+        title: Text(tt('home.quantities')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
@@ -26,7 +27,7 @@ class QuantityScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.stockQuantityModal),
-        tooltip: '新增份量',
+        tooltip: tt('stock.quantity.add'),
         child: Icon(KIcons.add),
       ),
       body: quantities.isReady ? _body(quantities) : CircularLoading(),
@@ -34,7 +35,9 @@ class QuantityScreen extends StatelessWidget {
   }
 
   Widget _body(QuantityRepo quantities) {
-    if (quantities.isEmpty) return Center(child: EmptyBody('quantity.empty'));
+    if (quantities.isEmpty) {
+      return Center(child: EmptyBody('stock.quantity.empty'));
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: kSpacing2),

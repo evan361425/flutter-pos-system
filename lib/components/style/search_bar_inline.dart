@@ -4,6 +4,7 @@ import 'package:possystem/constants/icons.dart';
 class SearchBarInline extends StatelessWidget {
   final String? text;
   final String? errorText;
+  final String? labelText;
   final String? hintText;
   final String? helperText;
   final Future<void> Function(BuildContext) onTap;
@@ -12,6 +13,7 @@ class SearchBarInline extends StatelessWidget {
     Key? key,
     this.text,
     this.errorText,
+    this.labelText,
     this.hintText,
     this.helperText,
     required this.onTap,
@@ -27,6 +29,7 @@ class SearchBarInline extends StatelessWidget {
       onTap: () => onTap(context),
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
+        labelText: labelText,
         hintText: hintText,
         helperText: helperText,
         errorText: errorText,

@@ -20,7 +20,13 @@ class Translator {
   }
 
   String translate(String key, Map<String, Object> kvargs) {
-    var string = data[key] ?? key;
+    if (data[key] == null) {
+      key = key.split('.').last;
+      kvargs.forEach((k, v) => key += '-$v');
+      return key;
+    }
+
+    var string = data[key]!;
 
     kvargs.forEach((key, value) {
       string = string.replaceAll('{$key}', value.toString());

@@ -17,14 +17,14 @@ void main() {
       child: MaterialApp(home: CartMetadata()),
     ));
 
-    expect(find.text('總數： 0'), findsOneWidget);
-    expect(find.text('總價： 0'), findsOneWidget);
+    expect(find.text('total_count-0'), findsOneWidget);
+    expect(find.text('total_count-0'), findsOneWidget);
 
     CartModel.instance.add(ProductModel(index: 1, name: 'name', price: 1));
     await tester.pump();
 
-    expect(find.text('總數： 1'), findsOneWidget);
-    expect(find.text('總價： 1'), findsOneWidget);
+    expect(find.text('total_count-1'), findsOneWidget);
+    expect(find.text('total_count-1'), findsOneWidget);
 
     CartModel.instance = cart;
   });

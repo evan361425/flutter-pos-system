@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/providers/language_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -59,10 +60,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       locale: _locale.toString(),
       // header
       headerStyle: HeaderStyle(formatButtonShowsNext: false),
-      availableCalendarFormats: const {
-        CalendarFormat.month: '單月',
-        CalendarFormat.twoWeeks: '雙週',
-        CalendarFormat.week: '單週',
+      availableCalendarFormats: {
+        CalendarFormat.month: tt('analysis.calendar.month'),
+        CalendarFormat.twoWeeks: tt('analysis.calendar.twoWeeks'),
+        CalendarFormat.week: tt('analysis.calendar.week'),
       },
       // no need holiday/weekend days
       holidayPredicate: (day) => false,

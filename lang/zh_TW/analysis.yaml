@@ -1,0 +1,12 @@
+title: 統計分析
+calendar:
+  month: 單月
+  twoWeeks: 雙週
+  week: 單週
+
+unset: 點擊日期來查看紀錄
+empty: 本日無點餐紀錄
+allLoaded: 讀取完畢
+
+price: 售價：{price}
+paid: 付額：{paid}

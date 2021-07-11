@@ -36,7 +36,7 @@ class CatalogScreen extends StatelessWidget {
           Routes.menuProductModal,
           arguments: catalog,
         ),
-        tooltip: tt('menu.catalog.add_product'),
+        tooltip: tt('menu.product.add'),
         child: Icon(KIcons.add),
       ),
       body: _body(catalog, context),
@@ -46,7 +46,7 @@ class CatalogScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context, CatalogModel catalog) {
     return [
       ListTile(
-        title: Text('調整種類'),
+        title: Text(tt('menu.catalog.edit')),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
           Routes.menuCatalogModal,
@@ -54,7 +54,7 @@ class CatalogScreen extends StatelessWidget {
         ),
       ),
       ListTile(
-        title: Text('排序產品'),
+        title: Text(tt('menu.product.order')),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
             Routes.menuProductReorder,
@@ -80,7 +80,7 @@ class CatalogScreen extends StatelessWidget {
         ),
         MenuModel.instance.setUpStockMode(context)
             ? catalog.isEmpty
-                ? EmptyBody('menu.catalog.empty_body')
+                ? EmptyBody('menu.catalog.empty')
                 : ProductList(products: catalog.itemList)
             : CircularLoading(),
       ],
@@ -90,7 +90,7 @@ class CatalogScreen extends StatelessWidget {
   Widget _catalogMetadata(CatalogModel catalog, TextTheme textTheme) {
     return RichText(
       text: TextSpan(
-        text: '產品數量：',
+        text: tt('menu.product.count'),
         children: [
           TextSpan(
             text: catalog.length.toString(),

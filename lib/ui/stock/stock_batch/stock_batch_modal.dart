@@ -8,6 +8,7 @@ import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
+import 'package:possystem/translator.dart';
 
 class StockBatchModal extends StatefulWidget {
   final StockBatchModel? batch;
@@ -35,7 +36,7 @@ class _StockBatchModalState extends State<StockBatchModal>
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: kSpacing1),
-        child: Text('點選以設定不同成分欲設定的量', style: textTheme.muted),
+        child: Text(tt('stock.batch.tutorial'), style: textTheme.muted),
       ),
       Expanded(
         child: Padding(
@@ -78,7 +79,7 @@ class _StockBatchModalState extends State<StockBatchModal>
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: ingredient.name,
-        hintText: '設定增加／減少的量',
+        hintText: tt('stock.batch.hint.amount'),
       ),
     );
   }
@@ -89,14 +90,15 @@ class _StockBatchModalState extends State<StockBatchModal>
       textInputAction: TextInputAction.done,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        labelText: '批量名稱，Costco 採購',
+        labelText: tt('stock.batch.label.name'),
+        hintText: tt('stock.batch.hint.name'),
         errorText: errorMessage,
         filled: false,
       ),
       style: textTheme.headline6,
       autofocus: widget.batch == null,
       maxLength: 30,
-      validator: Validator.textLimit('批量名稱', 30),
+      validator: Validator.textLimit(tt('stock.batch.label.name'), 30),
     );
   }
 
@@ -127,7 +129,7 @@ class _StockBatchModalState extends State<StockBatchModal>
     final name = _nameController.text;
 
     if (widget.batch?.name != name && StockBatchRepo.instance.hasBatch(name)) {
-      return '批量名稱重複';
+      return tt('stock.batch.error.name');
     }
   }
 }

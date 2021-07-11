@@ -32,8 +32,10 @@ class Validator {
       } else if (number < 0) {
         return tt('validator.number.positive', {'field': fieldName});
       } else if (maximum != null && maximum < number) {
-        return tt('validator.number.maximum',
-            {'field': fieldName, 'maximum': maximum});
+        return tt(
+          'validator.number.maximum',
+          {'field': fieldName, 'maximum': maximum},
+        );
       } else {
         return null;
       }
@@ -58,7 +60,9 @@ class Validator {
         return tt('validator.string.type', {'field': fieldName});
       } else if (value.length > limit) {
         return tt(
-            'validator.string.maximum', {'field': fieldName, 'maximum': limit});
+          'validator.string.maximum',
+          {'field': fieldName, 'maximum': limit},
+        );
       }
 
       return null;

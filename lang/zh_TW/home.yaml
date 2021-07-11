@@ -6,3 +6,11 @@ quantities: 份量
 types:
   other: 其他
   store: 店家設定
+tutorial:
+  welcome: "歡迎使用 POS 系統！"
+  menu: "在開始點餐前，我們先來建立菜單吧！"
+  stock: "庫存系統可以幫助計算現有庫存\n並同時設定成份相關資訊"
+  analysis: "統計分析可以幫助我們點餐後查看點餐的紀錄"
+  order: "現在我們就可以準備點餐囉！"
+total_price: 總營收：{price}
+total_order: 總單數：{count}

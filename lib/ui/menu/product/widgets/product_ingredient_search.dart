@@ -3,6 +3,7 @@ import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/translator.dart';
 
 class ProductIngredientSearch extends StatelessWidget {
   ProductIngredientSearch({Key? key, this.text}) : super(key: key);
@@ -20,7 +21,7 @@ class ProductIngredientSearch extends StatelessWidget {
       emptyBuilder: _emptyBuilder,
       initialData: () async => StockModel.instance.itemList,
       text: text ?? '',
-      hintText: '成份名稱',
+      hintText: tt('menu.ingredient.label.name'),
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -36,7 +37,7 @@ class ProductIngredientSearch extends StatelessWidget {
 
   Widget _emptyBuilder(BuildContext context, String text) {
     return CardTile(
-      title: Text('新增成份「$text」'),
+      title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
       onTap: () async {
         final ingredient = IngredientModel(name: text);
         await StockModel.instance.setItem(ingredient);

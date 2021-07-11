@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/order_repo.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
 import 'package:possystem/ui/analysis/widgets/order_list.dart';
 
@@ -14,7 +15,7 @@ class AnalysisScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('統計'),
+        title: Text(tt('analysis.title')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),

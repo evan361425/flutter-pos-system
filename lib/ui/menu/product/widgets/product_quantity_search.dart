@@ -3,6 +3,7 @@ import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/translator.dart';
 
 class ProductQuantitySearch extends StatelessWidget {
   ProductQuantitySearch({Key? key, this.text}) : super(key: key);
@@ -21,7 +22,7 @@ class ProductQuantitySearch extends StatelessWidget {
       emptyBuilder: _emptyBuilder,
       initialData: () async => QuantityRepo.instance.itemList,
       text: text ?? '',
-      hintText: '成份份量名稱，例如：少量',
+      hintText: tt('menu.quantity.label.name'),
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -37,7 +38,7 @@ class ProductQuantitySearch extends StatelessWidget {
 
   Widget _emptyBuilder(BuildContext context, String text) {
     return CardTile(
-      title: Text('新增成份份量「$text」'),
+      title: Text(tt('menu.quantity.add_quantity', {'name': text})),
       onTap: () async {
         final quantity = QuantityModel(name: text);
         await QuantityRepo.instance.setItem(quantity);

@@ -19,7 +19,7 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
-    expect(find.text('請選擇產品來設定其成份'), findsOneWidget);
+    expect(find.text('cart_empty'), findsOneWidget);
   });
 
   testWidgets('show empty when no same selected products', (tester) async {
@@ -28,7 +28,7 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
-    expect(find.text('請選擇相同的產品來設定其成份'), findsOneWidget);
+    expect(find.text('not_same_product'), findsOneWidget);
   });
 
   testWidgets('show empty when no able ingredients', (tester) async {
@@ -39,7 +39,7 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
-    expect(find.text('該產品無可設定份量的成份'), findsOneWidget);
+    expect(find.text('no_quantity'), findsOneWidget);
   });
 
   ProductIngredientModel createIngredient(

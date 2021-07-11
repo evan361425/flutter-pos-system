@@ -10,6 +10,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class IngredientList extends StatelessWidget {
   final List<IngredientModel> ingredients;
@@ -72,7 +73,7 @@ class IngredientList extends StatelessWidget {
                   Navigator.of(context).pop<String>(controller.text);
                 }
               },
-              child: Text('儲存'),
+              child: Text(tt('save')),
             ),
           ],
         );
@@ -95,7 +96,7 @@ class IngredientList extends StatelessWidget {
       final result = await _showTextDialog(
         context,
         defaultValue: ingredient.lastAddAmount?.toString(),
-        title: '增加 ${ingredient.name} 的庫存',
+        title: tt('stock.add_amount', {'name': ingredient.name}),
       );
 
       await updateAmount(result);
@@ -104,7 +105,7 @@ class IngredientList extends StatelessWidget {
     Future<void> onMinusAmount() async {
       final result = await _showTextDialog(
         context,
-        title: '減少 ${ingredient.name} 的庫存',
+        title: tt('stock.minus_amount', {'name': ingredient.name}),
       );
 
       await updateAmount(result == null ? null : -result);
@@ -118,13 +119,15 @@ class IngredientList extends StatelessWidget {
       subtitle: Row(
         children: <Widget>[
           IconText(
-            text: ingredient.currentAmount?.toString() ?? '尚未設定',
+            text: ingredient.currentAmount?.toString() ??
+                tt('stock.ingredient.unset'),
             icon: Icons.store_sharp,
             textStyle: theme.textTheme.muted,
           ),
           MetaBlock(),
           IconText(
-            text: ingredient.lastAmount?.toString() ?? '尚未補貨',
+            text: ingredient.lastAmount?.toString() ??
+                tt('stock.ingredient.un_add'),
             icon: Icons.shopping_cart_sharp,
             textStyle: theme.textTheme.muted,
           ),
@@ -149,28 +152,14 @@ class IngredientList extends StatelessWidget {
   Widget _warningContextBuilder(
       BuildContext context, IngredientModel ingredient) {
     final count = MenuModel.instance.getIngredients(ingredient.id).length;
-    final countText = count == 0
-        ? TextSpan()
-        : TextSpan(children: [
-            TextSpan(text: '將會一同刪除掉 '),
-            TextSpan(text: count.toString()),
-            TextSpan(text: ' 個產品的成分\n\n'),
-          ]);
 
-    return RichText(
-      text: TextSpan(
-        text: '確定要刪除 ',
-        children: [
-          TextSpan(
-            text: ingredient.name,
-            style: TextStyle(color: kNegativeColor),
-          ),
-          TextSpan(text: ' 嗎？\n\n'),
-          countText,
-          TextSpan(text: '此動作將無法復原！'),
-        ],
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-    );
+    if (count == 0) {
+      return Text(tt('delete_confirm', {'name': ingredient.name}));
+    }
+
+    return Text(tt(
+      'stock.ingredient.delete_confirm',
+      {'name': ingredient.name, 'count': count},
+    ));
   }
 }

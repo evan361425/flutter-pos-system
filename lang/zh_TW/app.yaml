@@ -4,11 +4,15 @@ cancel: 取消
 confirm: 確認
 save: 儲存
 
+# status
+success: 執行成功
 unknown_error: 發生未知錯誤
 
+# component
 total_count: "總共 {count} 項"
 search_count: "搜尋到 {count} 個結果"
 delete_title: 確認刪除通知
+delete_confirm: "確定要刪除 {name} 嗎？\n\n此動作將無法復原！"
 # bottom sheet action title
 action_title: 執行動作
 empty_body: 哎呀！這裡還是空的
