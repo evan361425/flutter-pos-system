@@ -3,7 +3,14 @@ setting: Setting
 analysis: Analysis
 stock: Stock
 quantities: Quantity
-
 types:
   other: Other
   store: Store
+tutorial:
+  welcome: "Welcome to POS System！"
+  menu: "Let's start make some menu！"
+  stock: "Stock System help calculate your ingredient amount after ordering"
+  analysis: "Analysis System allow you to check the order record"
+  order: "Now we are ready to ordering！"
+total_price: Revenue：{price}
+total_order: Orders：{count}
