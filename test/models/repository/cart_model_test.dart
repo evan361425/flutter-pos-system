@@ -8,6 +8,7 @@ import 'package:possystem/models/repository/cart_model.dart';
 import '../../mocks/mockito/mock_order_object.dart';
 import '../../mocks/mockito/mock_product_model.dart';
 import '../../mocks/mocks.dart';
+import '../../mocks/providers.dart';
 import '../../test_helpers/check_notifier.dart';
 import '../menu/product_ingredient_model_test.mocks.dart';
 import '../menu/product_quantity_model_test.mocks.dart';
@@ -273,6 +274,7 @@ void main() {
   });
 
   test('should not failed in several actions', () {
+    when(currency.isInt).thenReturn(true);
     createProducts(['id_1']);
     cart.products.forEach((element) {
       when(element.toggleSelected(any)).thenReturn(false);
@@ -311,5 +313,6 @@ void main() {
 
   setUpAll(() {
     initialize();
+    initializeProviders();
   });
 }
