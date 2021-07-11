@@ -1,9 +1,18 @@
-# this page should not use Map, avoid misunderstanding
-app: POS 系統
-welcome: "您好😎，%s"
-# diagram
-alert_title: 再想一下！
-cancel: 取消
-confirm: 確認
-success: 成功
-failed: 失敗
+# button
+delete: Delete
+cancel: Cancel
+confirm: Confirm
+save: Save
+
+# status
+success: Operator success
+unknown_error: Unknown Error
+
+# component
+total_count: "{count} items"
+search_count: "Found {count} result"
+delete_title: Confirm deletion
+delete_confirm: "Do you really want to delete {name}？\n\nIt is unrecoverable！"
+# bottom sheet action title
+action_title: Actions
+empty_body: Empty items!

@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class CatalogModal extends StatefulWidget {
   final CatalogModel? catalog;
@@ -45,13 +46,14 @@ class _CatalogModalState extends State<CatalogModal>
         textCapitalization: TextCapitalization.words,
         autofocus: true,
         decoration: InputDecoration(
-          labelText: '種類名稱，漢堡',
+          labelText: tt('menu.catalog.label.name'),
+          hintText: tt('menu.catalog.hint.name'),
           errorText: errorMessage,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
-        validator: Validator.textLimit('種類名稱', 30),
+        validator: Validator.textLimit(tt('menu.catalog.label.name'), 30),
       )
     ];
   }
@@ -91,7 +93,7 @@ class _CatalogModalState extends State<CatalogModal>
     final name = _nameController.text;
 
     if (widget.catalog?.name != name && MenuModel.instance.hasName(name)) {
-      return '種類名稱重複';
+      return tt('menu.catalog.error.name');
     }
   }
 }

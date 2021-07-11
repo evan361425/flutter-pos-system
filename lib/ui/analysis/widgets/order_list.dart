@@ -6,6 +6,7 @@ import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'order_modal.dart';
@@ -34,9 +35,15 @@ class OrderListState extends State<OrderList> {
     if (_isLoading == true) {
       return CircularLoading();
     } else if (_isLoading == null) {
-      return Text('點擊日期來查看紀錄', style: Theme.of(context).textTheme.muted);
+      return Text(
+        tt('analysis.unset'),
+        style: Theme.of(context).textTheme.muted,
+      );
     } else if (_data.isEmpty) {
-      return Text('本日無點餐紀錄', style: Theme.of(context).textTheme.muted);
+      return Text(
+        tt('analysis.empty'),
+        style: Theme.of(context).textTheme.muted,
+      );
     }
 
     final totalPrice = CurrencyProvider.instance.numToString(this.totalPrice);
@@ -46,7 +53,10 @@ class OrderListState extends State<OrderList> {
         Center(
           child: MetaBlock.withString(
             context,
-            ['總收入：$totalPrice', '總單數：$totalCount'],
+            [
+              tt('analysis.total_price', {'price': totalPrice}),
+              tt('analysis.total_order', {'count': totalCount}),
+            ],
           ),
         ),
         Expanded(
@@ -93,9 +103,9 @@ class OrderListState extends State<OrderList> {
           case LoadStatus.loading:
             return CircularLoading();
           case LoadStatus.failed:
-            return Center(child: Text('糟糕！發生錯誤了'));
+            return Center(child: Text(tt('unknown_error')));
           case LoadStatus.noMore:
-            return Center(child: Text('讀取完畢'));
+            return Center(child: Text(tt('analysis.allLoaded')));
           default:
             return Container();
         }
@@ -129,8 +139,8 @@ class OrderListState extends State<OrderList> {
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: MetaBlock.withString(context, [
-        '總價：${CurrencyProvider.instance.numToString(order.totalPrice)}',
-        '付額：${CurrencyProvider.instance.numToString(order.paid!)}',
+        tt('analysis.price', {'price': CurrencyProvider.n2s(order.totalPrice)}),
+        tt('analysis.paid', {'paid': CurrencyProvider.n2s(order.paid!)}),
       ]),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => OrderModal(order: order)),

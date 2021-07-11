@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
-import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class IngredientExpansion extends StatefulWidget {
-  IngredientExpansion({Key? key, required this.ingredients}) : super(key: key);
-
   final List<ProductIngredientModel> ingredients;
+
+  IngredientExpansion({Key? key, required this.ingredients}) : super(key: key);
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
@@ -46,6 +47,16 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     showIngredient = List.filled(widget.ingredients.length, false);
   }
 
+  List<Widget> _actions() {
+    return [
+      ListTile(
+        title: Text(tt('delete')),
+        leading: Icon(KIcons.delete, color: kNegativeColor),
+        onTap: () => Navigator.of(context).pop('delete'),
+      )
+    ];
+  }
+
   Widget _addButtons(ProductIngredientModel ingredient) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
@@ -54,7 +65,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           child: ElevatedButton.icon(
             // color: Theme.of(context).secondaryHeaderColor,
             icon: Icon(Icons.settings_sharp),
-            label: Text('設定成份資料'),
+            label: Text(tt('menu.ingredient.edit')),
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.menuIngredient,
               arguments: ingredient,
@@ -65,7 +76,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         Expanded(
           child: ElevatedButton.icon(
             icon: Icon(KIcons.add),
-            label: Text('新增特殊份量'),
+            label: Text(tt('menu.quantity.add')),
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.menuQuantity,
               arguments: ingredient,
@@ -76,6 +87,15 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
+  Future<void> _deleteConfirm(ProductIngredientModel ingredient) {
+    return showDialog(
+        context: context,
+        builder: (_) => DeleteDialog(
+              content: Text(tt('delete_confirm', {'name': ingredient.name})),
+              onDelete: (_) => ingredient.remove(),
+            ));
+  }
+
   ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
     final body = ingredient.items.map<Widget>((quantity) {
       return ListTile(
@@ -84,7 +104,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           arguments: quantity,
         ),
         title: Text(quantity.name),
-        trailing: Text('${quantity.amount}'),
+        trailing: Text(quantity.amount.toString()),
         subtitle: _quantityMetadata(quantity),
       );
     }).toList();
@@ -107,17 +127,13 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           );
 
           if (result == 'delete') {
-            await showDialog(
-              context: context,
-              builder: (_) => DeleteDialog(
-                  content: Text('此動作將無法復原'),
-                  onDelete: (_) => ingredient.remove()),
-            );
+            await _deleteConfirm(ingredient);
           }
         },
         child: ListTile(
           title: Text(ingredient.name),
-          subtitle: Text('使用量：${ingredient.amount}'),
+          subtitle:
+              Text(tt('menu.ingredient.amount', {'amount': ingredient.amount})),
         ),
       ),
       isExpanded: showIngredient[index],
@@ -131,7 +147,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Tooltip(
-          message: '額外售價',
+          message: tt('menu.quantity.label.additional_price'),
           child: IconText(
             text: quantity.additionalPrice.toString(),
             icon: Icons.loyalty_sharp,
@@ -139,7 +155,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
         ),
         MetaBlock(),
         Tooltip(
-          message: '額外成本',
+          message: tt('menu.quantity.label.additional_cost'),
           child: IconText(
             text: quantity.additionalCost.toString(),
             icon: Icons.attach_money_sharp,
@@ -159,24 +175,14 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('額外售價'),
+              Text(tt('menu.quantity.label.additional_price')),
               MetaBlock(),
-              Text('額外成本'),
+              Text(tt('menu.quantity.label.additional_cost')),
             ],
           ),
-          Text('使用量'),
+          Text(tt('menu.quantity.label.amount')),
         ],
       ),
     );
-  }
-
-  List<Widget> _actions() {
-    return [
-      ListTile(
-        title: Text('刪除'),
-        leading: Icon(KIcons.delete, color: kNegativeColor),
-        onTap: () => Navigator.of(context).pop('delete'),
-      )
-    ];
   }
 }

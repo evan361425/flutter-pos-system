@@ -3,6 +3,7 @@ import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
+import 'package:possystem/translator.dart';
 
 class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
   final String? title;
@@ -32,7 +33,7 @@ class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
                 await handleSubmit(items);
                 Navigator.of(context).pop();
               },
-              child: Text('儲存')),
+              child: Text(tt('save'))),
         ],
         title: title == null ? null : Text(title!),
       ),
@@ -43,7 +44,7 @@ class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(kSpacing0),
             child: Text(
-              '總共 ${items.length} 項',
+              tt('total_count', {'count': items.length}),
               style: Theme.of(context).textTheme.muted,
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:possystem/models/repository/stock_batch_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class StockBatchActions extends StatelessWidget {
@@ -36,7 +37,7 @@ class StockBatchActions extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8.0),
           child: ElevatedButton.icon(
             icon: Icon(Icons.add_circle_outline_sharp),
-            label: Text('批量增加'),
+            label: Text(tt('stock.batch.apply')),
             style: ElevatedButton.styleFrom(
               primary: Theme.of(context).primaryColorLight,
             ),
@@ -57,11 +58,11 @@ class StockBatchActions extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => ConfirmDialog(
-        title: '是否要套用 ${batch.name} ？',
+        title: tt('stock.batch.confirm.title'),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('將會影響以下的成份：'),
+            Text(tt('stock.batch.confirm.content')),
             const SizedBox(height: kSpacing1),
             for (var id in batch.data.keys)
               Text('- ${StockModel.instance.getItem(id)?.name}'),
@@ -100,7 +101,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       value: selectedBatchId,
-      hint: Text('選擇批量種類'),
+      hint: Text(tt('stock.batch.select_hint')),
       isExpanded: true,
       onChanged: (String? newValue) {
         if (newValue == null) {
@@ -113,7 +114,7 @@ class _BatchItemSelectorState extends State<_BatchItemSelector> {
           .map<DropdownMenuItem<String>>(
             (StockBatchModel? batch) => DropdownMenuItem<String>(
               value: batch?.id,
-              child: Text(batch?.name ?? '增加新種類'),
+              child: Text(batch?.name ?? tt('stock.batch.add')),
             ),
           )
           .toList(),

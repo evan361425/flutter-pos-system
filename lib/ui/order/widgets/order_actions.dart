@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/translator.dart';
 
 class OrderActions {
   static List<Widget> actions(BuildContext context) {
     if (CartModel.instance.isHistoryMode) {
       return [
         ListTile(
-          title: Text('退出改單模式'),
+          title: Text(tt('order.action.leave_history')),
           leading: Icon(Icons.assignment_return_sharp),
           onTap: () => Navigator.pop(context, OrderActionTypes.leave_history),
         ),
@@ -16,22 +17,22 @@ class OrderActions {
 
     return [
       ListTile(
-        title: Text('顯示最後一次點餐'),
+        title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
         onTap: () => Navigator.pop(context, OrderActionTypes.show_last),
       ),
       ListTile(
-        title: Text('暫存本次點餐'),
+        title: Text(tt('order.action.stash')),
         leading: Icon(Icons.file_download),
         onTap: () => Navigator.pop(context, OrderActionTypes.stash),
       ),
       ListTile(
-        title: Text('拉出暫存餐點'),
+        title: Text(tt('order.action.drop_stash')),
         leading: Icon(Icons.file_upload),
         onTap: () => Navigator.pop(context, OrderActionTypes.drop_stash),
       ),
       ListTile(
-        title: Text('離開點餐頁面'),
+        title: Text(tt('order.action.leave')),
         leading: Icon(Icons.logout),
         onTap: () => Navigator.pop(context, OrderActionTypes.leave),
       ),
@@ -51,24 +52,27 @@ class OrderActions {
         if (!await _confirmStashCurrent(context)) return;
 
         if (!await CartModel.instance.stash()) {
-          return _showSnackbar(context, '暫存檔案的次數超過上限');
+          return _showSnackbar(context, tt('order.action.error.stash_limit'));
         }
 
         final success = await CartModel.instance.popHistory();
-        _showSnackbar(context, success ? '執行成功' : '找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄');
+        _showSnackbar(context,
+            success ? tt('success') : tt('order.action.error.last_empty'));
         return;
       case OrderActionTypes.drop_stash:
         if (!await _confirmStashCurrent(context)) return;
 
         if (!await CartModel.instance.stash()) {
-          return _showSnackbar(context, '暫存檔案的次數超過上限');
+          return _showSnackbar(context, tt('order.action.error.stash_limit'));
         }
 
         final success = await CartModel.instance.drop();
-        return _showSnackbar(context, success ? '執行成功' : '目前沒有暫存的紀錄唷');
+        return _showSnackbar(context,
+            success ? tt('success') : tt('order.action.error.stash_empty'));
       case OrderActionTypes.stash:
         final success = await CartModel.instance.stash();
-        return _showSnackbar(context, success ? '執行成功' : '暫存檔案的次數超過上限');
+        return _showSnackbar(context,
+            success ? tt('success') : tt('order.action.error.stash_limit'));
       default:
         return;
     }
@@ -79,7 +83,7 @@ class OrderActions {
 
     final result = await showDialog(
       context: context,
-      builder: (_) => ConfirmDialog(title: '要暫存本次點餐並顯示舊的單嗎？'),
+      builder: (_) => ConfirmDialog(title: tt('order.action.confirm.stash')),
     );
 
     return result ?? false;

@@ -1,7 +1,73 @@
-add_catalog: Add New Catalog
-
 catalog:
-  add_product: Add New Product
+  title: Catalog List
+  add: Add Catalog
+  edit: Edit Catalog
+  order: Reorder Catalogs
+  delete_confirm: "Do you really want to delete {name}？\n\nIt will also delete {count} product(s)\n\nIt is unrecoverable！"
+  empty: Press bottom on right-bottom to add product！
+  label:
+    name: Name
+  hint:
+    name: Burger
+  error:
+    name: Name cannot repeated
 
 product:
-  add_ingredient: Add New Ingredient
+  add: Add Product
+  edit: Edit Product
+  order: Reorder Products
+  unset: Unset
+  empty: Press bottom on right-bottom to add ingredient
+  count: NO. Product：
+  label:
+    name: Name
+    price: Price
+    cost: Cost
+  hint:
+    name: Cheese Burger
+    price: "Money show for customer，50"
+    cost: "用來算出利潤，30"
+  error:
+    name: 產品名稱重複
+
+ingredient:
+  add: 新增成份
+  add_title: 新增成份
+  edit: 調整成份
+  edit_title: 調整成份「{name}」
+  unset: 尚未設定成份
+  amount: "使用量：{amount}"
+  # 當搜尋不到成分時，需要新增成分
+  add_ingredient: 新增成份「{name}」
+  label:
+    name: 成份名稱
+    amount: 使用量
+  hint:
+    name: 起司
+  helper:
+    name: 新增成份種類後，可至 庫存 設定相關資訊。
+    amount: 預設的使用量，若餐點可以調整該成分的使用量，請於 份量 中設定。
+  error:
+    name_empty: 必須設定成份種類。
+    name_repeat: 成份重複。
+
+quantity:
+  add: 新增特殊份量
+  add_title: 新增特殊份量
+  edit_title: 調整份量「{name}」
+  # 當搜尋不到份量時，需要新增份量
+  add_quantity: 新增成份份量「{name}」
+  label:
+    name: 成份份量名稱
+    amount: 額外使用量
+    additional_price: 額外售價
+    additional_cost: 額外成本
+  hint:
+    name: 少量、多量
+  helper:
+    name: 新增成份份量後，可至 份量 設定相關資訊。
+    additional_price: 設為 0 則代表加量（減量）不加價
+    additional_cost: 額外成本可以為負數，如 少量 會減少成分的使用，相對成本降低
+  error:
+    name_empty: 必須設定成份份量。
+    name_repeat: 成份份量重複。

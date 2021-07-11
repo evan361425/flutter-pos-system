@@ -12,6 +12,7 @@ import 'package:possystem/models/repository/menu_model.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class IngredientModal extends StatefulWidget {
   final IngredientModel? ingredient;
@@ -52,7 +53,13 @@ class _IngredientModalState extends State<IngredientModal>
                       padding: const EdgeInsets.only(bottom: kSpacing2),
                       child: Center(
                         child: Text(
-                          '共有${length - 2}個產品使用${widget.ingredient!.name}',
+                          tt(
+                            'stock.ingredient.total_count',
+                            {
+                              'count': length - 2,
+                              'name': widget.ingredient!.name,
+                            },
+                          ),
                           style: Theme.of(context).textTheme.muted,
                         ),
                       ),
@@ -84,24 +91,27 @@ class _IngredientModalState extends State<IngredientModal>
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            labelText: '成份名稱，起司',
+            labelText: tt('stock.ingredient.label.name'),
+            hintText: tt('stock.ingredient.hint.name'),
             errorText: errorMessage,
             filled: false,
           ),
           autofocus: widget.ingredient == null,
           maxLength: 30,
-          validator: Validator.textLimit('成份名稱', 30),
+          validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
         ),
         TextFormField(
           controller: _amountController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            labelText: '庫存',
+            labelText: tt('stock.ingredient.label.amount'),
+            helperText: tt('stock.ingredient.helper.amount'),
             errorText: errorMessage,
             filled: false,
           ),
-          validator: Validator.positiveNumber('庫存'),
+          validator:
+              Validator.positiveNumber(tt('stock.ingredient.label.amount')),
         ),
       ];
 
@@ -134,7 +144,7 @@ class _IngredientModalState extends State<IngredientModal>
     final name = _nameController.text;
 
     if (widget.ingredient?.name != name && StockModel.instance.hasName(name)) {
-      return '成份名稱重複';
+      return tt('stock.ingredient.error.name_repeat');
     }
   }
 

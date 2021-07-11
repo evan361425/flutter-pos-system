@@ -5,6 +5,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
@@ -38,7 +39,7 @@ class OrderScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => _handleOrder(context),
-            child: Text('點餐'),
+            child: Text(tt('order.action.order')),
           ),
         ],
       ),

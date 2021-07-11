@@ -19,17 +19,23 @@ class Translator {
     data = loaded.cast<String, String>();
   }
 
-  String translate(String key, Map<String, String> kvargs) {
-    var string = data[key] ?? key;
+  String translate(String key, Map<String, Object> kvargs) {
+    if (data[key] == null) {
+      key = key.split('.').last;
+      kvargs.forEach((k, v) => key += '-$v');
+      return key;
+    }
+
+    var string = data[key]!;
 
     kvargs.forEach((key, value) {
-      string = string.replaceAll('{$key}', value);
+      string = string.replaceAll('{$key}', value.toString());
     });
 
     return string;
   }
 }
 
-String tt(String key, [Map<String, String>? kvargs]) {
+String tt(String key, [Map<String, Object>? kvargs]) {
   return Translator.instance.translate(key, kvargs ?? {});
 }

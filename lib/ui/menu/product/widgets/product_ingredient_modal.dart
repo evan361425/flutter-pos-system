@@ -12,6 +12,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class ProductIngredientModal extends StatefulWidget {
   final ProductIngredientModel? ingredient;
@@ -42,27 +43,28 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       ? const []
       : [
           IconButton(
-            onPressed: () => showCircularBottomSheet(
-              context,
-              actions: [
-                ListTile(
-                  title: Text('刪除'),
-                  leading: Icon(KIcons.delete, color: kNegativeColor),
-                  onTap: () async {
-                    // pop off sheet
-                    Navigator.of(context).pop();
-                    await _handleDelete();
-                  },
-                ),
-              ],
-            ),
+            onPressed: () async {
+              final result = await showCircularBottomSheet<String>(
+                context,
+                actions: [
+                  ListTile(
+                    title: Text(tt('delete')),
+                    leading: Icon(KIcons.delete, color: kNegativeColor),
+                    onTap: () => Navigator.of(context).pop('delete'),
+                  ),
+                ],
+              );
+
+              await _actionHandlers(result);
+            },
             icon: Icon(KIcons.more),
           ),
         ];
 
   @override
-  Widget? get title =>
-      Text(widget.isNew ? '新增成份' : '設定成份「${widget.ingredient!.name}」');
+  Widget? get title => Text(tt(
+      widget.isNew ? 'menu.ingredient.add_title' : 'menu.ingredient.edit_title',
+      {'name': widget.ingredient?.name ?? ''}));
 
   @override
   void dispose() {
@@ -75,9 +77,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     return [
       SearchBarInline(
         text: ingredientName,
-        hintText: '成份名稱，起司',
+        labelText: tt('menu.ingredient.label.name'),
+        hintText: tt('menu.ingredient.hint.name'),
         errorText: errorMessage,
-        helperText: '新增成份種類後，可至庫存設定相關資訊',
+        helperText: tt('menu.ingredient.helper.name'),
         onTap: _selectIngredient,
       ),
       TextFormField(
@@ -86,10 +89,12 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         onFieldSubmitted: (_) => handleSubmit(),
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: '成份預設用量',
+          labelText: tt('menu.ingredient.label.amount'),
+          helperText: tt('menu.ingredient.helper.amount'),
+          helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.positiveNumber('成份預設用量'),
+        validator: Validator.positiveNumber(tt('menu.ingredient.label.amount')),
       ),
     ];
   }
@@ -127,11 +132,20 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   @override
   String? validate() {
     if (ingredientId.isEmpty) {
-      return '必須設定成份種類。';
+      return tt('menu.ingredient.error.name_empty');
     }
     if (widget.ingredient?.id != ingredientId &&
         widget.product.hasItem(ingredientId)) {
-      return '成份重複。';
+      return tt('menu.ingredient.error.name_repeat');
+    }
+  }
+
+  Future<void> _actionHandlers(String? selected) {
+    switch (selected) {
+      case 'delete':
+        return _handleDelete();
+      default:
+        return Future.value();
     }
   }
 
@@ -140,7 +154,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog(
-          content: Text('此動作將無法復原'),
+          content:
+              Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
           onDelete: (_) => widget.ingredient!.remove(),
         );
       },

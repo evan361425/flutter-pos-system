@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class ProductList extends StatelessWidget {
   final List<ProductModel> products;
@@ -26,7 +26,7 @@ class ProductList extends StatelessWidget {
   Iterable<Widget> _actionBuilder(BuildContext context, ProductModel product) {
     return [
       ListTile(
-        title: Text('變更名稱'),
+        title: Text(tt('menu.product.edit')),
         leading: Icon(Icons.text_fields_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
           Routes.menuProductModal,
@@ -34,7 +34,7 @@ class ProductList extends StatelessWidget {
         ),
       ),
       ListTile(
-        title: Text('排序產品'),
+        title: Text(tt('menu.product.order')),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context).pushReplacementNamed(
             Routes.menuProductReorder,
@@ -59,22 +59,12 @@ class ProductList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),
-        emptyText: '尚未設定成份',
+        emptyText: tt('menu.ingredient.unset'),
       ),
     );
   }
 
   Widget _warningContextBuilder(BuildContext context, ProductModel product) {
-    return RichText(
-      text: TextSpan(
-        text: '確定要刪除 ',
-        children: [
-          TextSpan(text: product.name, style: TextStyle(color: kNegativeColor)),
-          TextSpan(text: ' 嗎？\n\n'),
-          TextSpan(text: '此動作將無法復原！'),
-        ],
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-    );
+    return Text(tt('delete_confirm', {'name': product.name}));
   }
 }

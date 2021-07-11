@@ -20,7 +20,7 @@ void main() {
       ], child: SettingScreen()),
     ));
 
-    expect(find.text('setting.theme.dark'), findsOneWidget);
+    expect(find.text('dark'), findsOneWidget);
     expect(find.text('繁體中文'), findsOneWidget);
   });
 

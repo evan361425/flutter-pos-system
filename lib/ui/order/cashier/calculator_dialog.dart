@@ -4,6 +4,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/translator.dart';
 
 class CalculatorDialog extends StatefulWidget {
   const CalculatorDialog({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               moneyWidget(
-                '總價',
+                tt('order.cashier.price'),
                 Text(
                   totalPrice.toString(),
                   textAlign: TextAlign.right,
@@ -53,7 +54,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 ),
               ),
               moneyWidget(
-                '找額',
+                tt('order.cashier.change'),
                 TextField(
                   readOnly: true,
                   style: headline4,
@@ -66,7 +67,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
                 ),
               ),
               moneyWidget(
-                '付額',
+                tt('order.cashier.paid'),
                 TextField(
                   readOnly: true,
                   style: headline4,
@@ -163,7 +164,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         } catch (e) {
           _isUpdating = false;
           if (e == 'too low') {
-            setState(() => errorMessage = '糟糕，付額小於總價唷');
+            setState(() => errorMessage = tt('order.cashier.error.low_paid'));
           } else {
             setState(() => errorMessage = e.toString());
           }
@@ -238,7 +239,9 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
 
     final result = await showDialog(
       context: context,
-      builder: (_) => ConfirmDialog(title: '確定要要變更上次的點餐紀錄嗎？'),
+      builder: (_) => ConfirmDialog(
+        title: tt('order.cashier.confirm.leave_history'),
+      ),
     );
 
     return result ?? false;

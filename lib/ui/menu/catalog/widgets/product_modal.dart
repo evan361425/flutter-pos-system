@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class ProductModal extends StatefulWidget {
   final ProductModel? product;
@@ -45,33 +46,36 @@ class _ProductModalState extends State<ProductModal>
         textCapitalization: TextCapitalization.words,
         autofocus: true,
         decoration: InputDecoration(
-          labelText: '產品名稱，起司漢堡',
+          labelText: tt('menu.product.label.name'),
+          hintText: tt('menu.product.hint.name'),
           errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit('產品名稱', 30),
+        validator: Validator.textLimit(tt('menu.product.label.name'), 30),
       ),
       TextFormField(
         controller: _priceController,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: '產品價格，給客人看的價錢',
+          labelText: tt('menu.product.label.price'),
+          hintText: tt('menu.product.hint.price'),
           filled: false,
         ),
-        validator: Validator.positiveNumber('產品價格'),
+        validator: Validator.positiveNumber(tt('menu.product.label.price')),
       ),
       TextFormField(
         controller: _costController,
         textInputAction: TextInputAction.done,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: '產品成本，幫助你算出利潤',
+          labelText: tt('menu.product.label.cost'),
+          hintText: tt('menu.product.hint.cost'),
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
-        validator: Validator.positiveNumber('產品成本'),
+        validator: Validator.positiveNumber(tt('menu.product.label.cost')),
       ),
     ];
   }
@@ -124,7 +128,7 @@ class _ProductModalState extends State<ProductModal>
     final name = _nameController.text;
 
     if (widget.product?.name != name && widget.catalog.hasName(name)) {
-      return '產品名稱重複';
+      return tt('menu.product.error.name');
     }
   }
 

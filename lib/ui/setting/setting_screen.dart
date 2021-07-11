@@ -22,7 +22,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tt('setting')),
+        title: Text(tt('home.setting')),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),

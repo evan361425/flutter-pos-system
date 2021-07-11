@@ -3,7 +3,20 @@ setting: Setting
 analysis: Analysis
 stock: Stock
 quantities: Quantity
-
+order: Order
 types:
   other: Other
   store: Store
+tutorial:
+  welcome: "Welcome to POS System！"
+  menu: "Let's start make some menu！"
+  stock: "Stock System help calculate your ingredient amount after ordering"
+  analysis: "Analysis System allow you to check the order record"
+  order: "Now we are ready to ordering！"
+upgrader:
+  title: 有新版本囉
+  body: 版本 {{currentAppStoreVersion}} 已經釋出拉，快來試試看新版本吧！
+  ignore: 先不要
+  confirm: 立即前往
+today_price: Today Revenue
+today_order: Today Count

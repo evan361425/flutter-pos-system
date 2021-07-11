@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<_DialogItems>(
-        hint: Text('使所選物'),
+        hint: Text(tt('order.cart.action_hint')),
         onChanged: (option) async => showInputDialog(
           context,
           _DialogItem.fromEnum(option),
@@ -16,25 +17,25 @@ class CartActions extends StatelessWidget {
         items: <DropdownMenuItem<_DialogItems>>[
           DropdownMenuItem(
             value: _DialogItems.discount,
-            child: Text('打折'),
+            child: Text(tt('order.cart.discount')),
           ),
           DropdownMenuItem(
             value: _DialogItems.price,
-            child: Text('變價'),
+            child: Text(tt('order.cart.price')),
           ),
           DropdownMenuItem(
             value: _DialogItems.count,
-            child: Text('變更數量'),
+            child: Text(tt('order.cart.count')),
           ),
           DropdownMenuItem(
             value: _DialogItems.free,
             onTap: () => CartModel.instance.updateSelectedPrice(0),
-            child: Text('招待'),
+            child: Text(tt('order.cart.free')),
           ),
           DropdownMenuItem(
             value: _DialogItems.delete,
             onTap: () => CartModel.instance.removeSelected(),
-            child: Text('刪除'),
+            child: Text(tt('order.cart.delete')),
           ),
         ],
       ),
@@ -80,33 +81,35 @@ class _DialogItem {
     switch (type) {
       case _DialogItems.discount:
         return _DialogItem(
-          validator: Validator.positiveInt('折扣', maximum: 100),
+          validator: Validator.positiveInt(tt('order.cart.name.discount'),
+              maximum: 100),
           decoration: InputDecoration(
-            hintText: '每項產品的折扣',
-            helperText: '這裡的數字代表「折」，即，85 代表 85 折。若需要準確的價錢請用「變價」',
+            hintText: tt('order.cart.hint.discount'),
+            helperText: tt('order.cart.helper.discount'),
             helperMaxLines: 4,
-            suffix: Text('折'),
+            suffix: Text(tt('order.cart.suffix.discount')),
           ),
           action: (result) =>
               CartModel.instance.updateSelectedDiscount(int.tryParse(result)),
         );
       case _DialogItems.price:
         return _DialogItem(
-          validator: Validator.positiveNumber('變價'),
+          validator: Validator.positiveNumber(tt('order.cart.name.price')),
           decoration: InputDecoration(
-            hintText: '每項產品的價錢',
-            suffix: Text('元'),
+            hintText: tt('order.cart.hint.price'),
+            suffix: Text(tt('order.cart.suffix.price')),
           ),
           action: (result) =>
               CartModel.instance.updateSelectedPrice(num.tryParse(result)),
         );
       case _DialogItems.count:
         return _DialogItem(
-          validator: Validator.positiveInt('數量', maximum: 10000),
+          validator: Validator.positiveInt(tt('order.cart.name.count'),
+              maximum: 10000),
           decoration: InputDecoration(
-            hintText: '產品數量',
+            hintText: tt('order.cart.hint.count'),
             helperMaxLines: 4,
-            suffix: Text('個'),
+            suffix: Text(tt('order.cart.suffix.count')),
           ),
           action: (result) =>
               CartModel.instance.updateSelectedCount(int.tryParse(result)),

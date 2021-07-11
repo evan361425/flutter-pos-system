@@ -20,7 +20,7 @@ class MenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('種類列表'),
+        title: Text(tt('menu.catalog.title')),
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(KIcons.back)),
@@ -37,7 +37,7 @@ class MenuScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.menuCatalogModal),
-        tooltip: tt('menu.add_catalog'),
+        tooltip: tt('menu.catalog.add'),
         child: Icon(KIcons.add),
       ),
       // When click android go back, it will avoid closing APP
@@ -48,7 +48,7 @@ class MenuScreen extends StatelessWidget {
   List<Widget> _actions(BuildContext context) {
     return <Widget>[
       ListTile(
-        title: Text('排序產品種類'),
+        title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context)
             .pushReplacementNamed(Routes.menuCatalogReorder),
@@ -57,14 +57,16 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context, MenuModel menu) {
-    if (menu.isEmpty) return Center(child: EmptyBody(tt('menu.empty')));
+    if (menu.isEmpty) {
+      return Center(child: EmptyBody(tt('menu.catalog.empty')));
+    }
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(kSpacing1),
           child: Text(
-            '共 ${menu.length} 項',
+            tt('total_count', {'count': menu.length}),
             style: Theme.of(context).textTheme.muted,
           ),
         ),

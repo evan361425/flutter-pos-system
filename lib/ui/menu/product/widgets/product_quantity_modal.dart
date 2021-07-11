@@ -12,6 +12,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class ProductQuantityModal extends StatefulWidget {
   final ProductQuantityModel? quantity;
@@ -43,28 +44,29 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       ? const []
       : [
           IconButton(
-            onPressed: () => showCircularBottomSheet(
-              context,
-              useRootNavigator: false,
-              actions: [
-                ListTile(
-                  title: Text('刪除'),
-                  leading: Icon(KIcons.delete, color: kNegativeColor),
-                  onTap: () async {
-                    // pop off sheet
-                    Navigator.of(context).pop();
-                    await _handleDelete();
-                  },
-                ),
-              ],
-            ),
+            onPressed: () async {
+              final result = await showCircularBottomSheet(
+                context,
+                useRootNavigator: false,
+                actions: [
+                  ListTile(
+                    title: Text(tt('delete')),
+                    leading: Icon(KIcons.delete, color: kNegativeColor),
+                    onTap: () => Navigator.of(context).pop('delete'),
+                  ),
+                ],
+              );
+
+              await _actionHandlers(result);
+            },
             icon: Icon(KIcons.more),
           ),
         ];
 
   @override
-  Widget? get title =>
-      Text(widget.isNew ? '新增成份份量' : '設定成份份量「${widget.quantity!.name}」');
+  Widget? get title => Text(tt(
+      widget.isNew ? 'menu.quantity.add_title' : 'menu.quantity.edit_title',
+      {'name': widget.quantity?.name ?? ''}));
 
   @override
   void dispose() {
@@ -79,9 +81,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     return [
       SearchBarInline(
         text: quantityName,
-        hintText: '成份份量名稱，例如：少量',
+        labelText: tt('menu.quantity.label.name'),
+        hintText: tt('menu.quantity.hint.name'),
         errorText: errorMessage,
-        helperText: '新增成份份量後，可至庫存設定相關資訊',
+        helperText: tt('menu.quantity.helper.name'),
         onTap: _selectQuantity,
       ),
       TextFormField(
@@ -89,10 +92,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: '成分份量',
+          labelText: tt('menu.quantity.label.amount'),
           filled: false,
         ),
-        validator: Validator.positiveNumber('成分份量'),
+        validator: Validator.positiveNumber(tt('menu.quantity.label.amount')),
       ),
       TextFormField(
         controller: _priceController,
@@ -100,10 +103,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.loyalty_sharp),
-          labelText: '額外售價',
+          labelText: tt('menu.quantity.label.additional_price'),
+          helperText: tt('menu.quantity.helper.additional_price'),
+          helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber('額外售價'),
+        validator: Validator.isNumber(
+          tt('menu.quantity.label.additional_price'),
+        ),
       ),
       TextFormField(
         controller: _costController,
@@ -112,11 +119,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.attach_money_sharp),
-          labelText: '額外成本',
-          helperText: '若份量減少了，成本可以為負數',
+          labelText: tt('menu.quantity.label.additional_cost'),
+          helperText: tt('menu.quantity.helper.additional_cost'),
+          helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber('額外成本'),
+        validator: Validator.isNumber(
+          tt('menu.quantity.label.additional_cost'),
+        ),
       )
     ];
   }
@@ -158,11 +168,20 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   @override
   String? validate() {
     if (quantityId.isEmpty) {
-      return '必須設定成份份量名稱。';
+      return tt('menu.quantity.error.name_empty');
     }
     if (widget.quantity?.id != quantityId &&
         widget.ingredient.hasItem(quantityId)) {
-      return '成份份量重複。';
+      return tt('menu.quantity.error.name_repeat');
+    }
+  }
+
+  Future<void> _actionHandlers(String? selected) {
+    switch (selected) {
+      case 'delete':
+        return _handleDelete();
+      default:
+        return Future.value();
     }
   }
 
@@ -171,7 +190,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       context: context,
       builder: (BuildContext context) {
         return DeleteDialog(
-          content: Text('此動作將無法復原'),
+          content: Text(tt('delete_confirm', {'name': widget.quantity!.name})),
           onDelete: (_) => widget.quantity!.remove(),
         );
       },

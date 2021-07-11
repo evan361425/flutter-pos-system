@@ -99,4 +99,7 @@ class CurrencyProvider extends ChangeNotifier {
 
     return true;
   }
+
+  /// Alias of [instance.numToString(value)]
+  static String n2s(num value) => instance.numToString(value);
 }

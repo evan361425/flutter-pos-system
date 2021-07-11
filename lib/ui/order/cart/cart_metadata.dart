@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartMetadata extends StatefulWidget {
@@ -22,9 +23,9 @@ class _CartMetadataState extends State<CartMetadata> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          Text('總數： ${cart.totalCount}'),
+          Text(tt('order.total_count', {'count': cart.totalCount})),
           SizedBox(width: 4.0),
-          Text('總價： ${cart.totalPrice}'),
+          Text(tt('order.total_price', {'price': cart.totalPrice})),
         ],
       ),
     );

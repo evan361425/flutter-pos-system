@@ -3,6 +3,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class OrderInfo extends StatefulWidget {
   static GlobalKey orderButton = GlobalKey();
@@ -32,9 +33,9 @@ class OrderInfoState extends State<OrderInfo> {
             padding: const EdgeInsets.all(kSpacing1),
             child: Row(
               children: <Widget>[
-                _column('今日單量', count, textStyle),
+                _column(tt('home.today_order'), count, textStyle),
                 const SizedBox(width: 64.0),
-                _column('今日營收', revenue, textStyle),
+                _column(tt('home.today_price'), revenue, textStyle),
               ],
             ),
           ),
@@ -48,7 +49,7 @@ class OrderInfoState extends State<OrderInfo> {
               shape: CircleBorder(),
               padding: const EdgeInsets.all(kSpacing3),
             ),
-            child: Text('點餐', style: theme.textTheme.headline4),
+            child: Text(tt('home.order'), style: theme.textTheme.headline4),
           ),
         ),
       ],

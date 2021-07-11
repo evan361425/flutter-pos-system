@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/translator.dart';
 
 class SingleTextDialog extends StatefulWidget {
   SingleTextDialog({
@@ -41,12 +42,12 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => onSubmit(null),
-          child: Text('取消'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(tt('cancel')),
         ),
         ElevatedButton(
           onPressed: () => onSubmit(textController.text),
-          child: Text('確認'),
+          child: Text(tt('confirm')),
         ),
       ],
     );

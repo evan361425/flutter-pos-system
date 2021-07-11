@@ -4,6 +4,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/translator.dart';
 
 class QuantityModal extends StatefulWidget {
   final QuantityModel? quantity;
@@ -35,15 +36,15 @@ class _QuantityModalState extends State<QuantityModal>
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: '份量名稱',
-          hintText: '多量、少量',
+          labelText: tt('stock.quantity.label.name'),
+          hintText: tt('stock.quantity.hint.name'),
           errorText: errorMessage,
           filled: false,
         ),
         style: Theme.of(context).textTheme.headline6,
         autofocus: widget.quantity == null,
         maxLength: 30,
-        validator: Validator.textLimit('份量名稱', 30),
+        validator: Validator.textLimit(tt('stock.quantity.label.name'), 30),
       ),
       TextFormField(
         controller: _proportionController,
@@ -51,15 +52,16 @@ class _QuantityModalState extends State<QuantityModal>
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
-          labelText: '預設比例',
+          labelText: tt('stock.quantity.label.proportion'),
           errorText: errorMessage,
-          helperText:
-              '當產品成份使用此份量時，預設替該成份增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成份「起司」，且每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。',
+          helperText: tt('stock.quantity.helper.proportion'),
           helperMaxLines: 100,
           filled: false,
         ),
         // NOTE: do we need maximum?
-        validator: Validator.positiveNumber('庫存', maximum: 10),
+        validator: Validator.positiveNumber(
+            tt('stock.quantity.label.proportion'),
+            maximum: 100),
       )
     ];
   }
@@ -96,7 +98,7 @@ class _QuantityModalState extends State<QuantityModal>
     final name = _nameController.text;
 
     if (widget.quantity?.name != name && QuantityRepo.instance.hasName(name)) {
-      return '份量名稱重複';
+      return tt('stock.quantity.error.name');
     }
   }
 

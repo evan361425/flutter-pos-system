@@ -12,7 +12,7 @@ void main() {
     await tester.tap(find.byType(DropdownButtonHideUnderline));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('打折').last);
+    await tester.tap(find.text('discount').last);
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField), '30');
@@ -31,7 +31,7 @@ void main() {
     await tester.tap(find.byType(DropdownButtonHideUnderline));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('變價').last);
+    await tester.tap(find.text('price').last);
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField), '30.5');
@@ -50,7 +50,7 @@ void main() {
     await tester.tap(find.byType(DropdownButtonHideUnderline));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('變更數量').last);
+    await tester.tap(find.text('count').last);
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField), '30');
@@ -69,7 +69,7 @@ void main() {
     await tester.tap(find.byType(DropdownButtonHideUnderline));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('招待').last);
+    await tester.tap(find.text('free').last);
     await tester.pumpAndSettle();
 
     verify(cart.updateSelectedPrice(0));
@@ -81,7 +81,7 @@ void main() {
     await tester.tap(find.byType(DropdownButtonHideUnderline));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('刪除').last);
+    await tester.tap(find.text('delete').last);
     await tester.pumpAndSettle();
 
     verify(cart.removeSelected());

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class CatalogList extends StatelessWidget {
   final List<CatalogModel> catalogs;
@@ -24,7 +24,7 @@ class CatalogList extends StatelessWidget {
   Iterable<Widget> _actionBuilder(BuildContext context, _) {
     return [
       ListTile(
-        title: Text('排序產品種類'),
+        title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),
         onTap: () => Navigator.of(context)
             .pushReplacementNamed(Routes.menuCatalogReorder),
@@ -48,31 +48,19 @@ class CatalogList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
-        emptyText: '尚未設定產品',
+        emptyText: tt('menu.product.unset'),
       ),
     );
   }
 
   Widget _warningContextBuilder(BuildContext context, CatalogModel catalog) {
-    final productCount = catalog.isEmpty
-        ? TextSpan()
-        : TextSpan(children: [
-            TextSpan(text: '將會一同刪除掉 '),
-            TextSpan(text: catalog.length.toString()),
-            TextSpan(text: ' 個產品\n\n'),
-          ]);
+    if (catalog.isEmpty) {
+      return Text(tt('delete_confirm', {'name': catalog.name}));
+    }
 
-    return RichText(
-      text: TextSpan(
-        text: '確定要刪除 ',
-        children: [
-          TextSpan(text: catalog.name, style: TextStyle(color: kNegativeColor)),
-          TextSpan(text: ' 嗎？\n\n'),
-          productCount,
-          TextSpan(text: '此動作將無法復原！'),
-        ],
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-    );
+    return Text(tt(
+      'menu.catalog.delete_confirm',
+      {'name': catalog.name, 'count': catalog.length},
+    ));
   }
 }
