@@ -31,8 +31,9 @@ jobs:
           result-encoding: string
           script: |
             const version = context.payload.ref.replace(/\/?refs\/tags\/v/, '');
+            const index = version.indexOf('-');
 
-            return version.substr(0, version.indexOf('-'));
+            return version.substr(0, index == -1 ? undefined : index);
 
       - name: Extract version name
         run: |
