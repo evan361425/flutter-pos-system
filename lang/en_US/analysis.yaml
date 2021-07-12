@@ -1,0 +1,15 @@
+title: Analysis
+calendar:
+  month: Month
+  twoWeeks: 2 weeks
+  week: Week
+
+unset: Select date to check record
+empty: Empty record
+allLoaded: All Loaded
+
+price: Price：{price}
+paid: Paid：{paid}
+
+total_price: Revenue：{price}
+total_order: Orders：{count}

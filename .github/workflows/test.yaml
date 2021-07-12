@@ -1,0 +1,46 @@
+name: Tests
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches:
+      - master
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  code-checking:
+    name: Check code format and testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Setup Java environment in order to build the Android app.
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+
+      # Setup the flutter environment.
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+
+      # Get flutter dependencies.
+      - name: Install dependencies
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
+
+      # Statically analyze the Dart code for any errors.
+      - name: Linter
+        run: flutter analyze .
+
+      - name: Format
+        run: flutter format --set-exit-if-changed --dry-run .
+
+      # Run widget tests for our flutter project.
+      - name: Testing
+        run: flutter test --no-pub --no-test-assets
