@@ -8,6 +8,8 @@
 
 ## 圖示
 
+![Preview](https://user-images.githubusercontent.com/14554683/125382306-08785400-e3c8-11eb-8246-efd35007d0f7.png)
+
 ## 下載
 
 Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
