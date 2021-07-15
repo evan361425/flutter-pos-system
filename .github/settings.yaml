@@ -1,0 +1,20 @@
+# Repository settings set via https://github.com/probot/settings
+
+repository:
+  has_issues: true
+  has_wiki: false
+  has_projects: true
+  has_downloads: true
+
+labels:
+  - name: help wanted
+    oldname: help-wanted
+    color: 0e8a16
+  - name: more-information-needed
+    color: d93f0b
+  - name: bug
+    color: b60205
+  - name: enhancement
+    color: 1d76db
+  - name: good first issue
+    color: 5319e7
