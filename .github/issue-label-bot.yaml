@@ -1,0 +1,5 @@
+# follow by https://github.com/apps/issue-label-bot
+label-alias:
+  bug: "bug"
+  feature_request: "enhancement"
+  question: "question"
