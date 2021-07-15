@@ -4,9 +4,11 @@
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/gradle-netflixoss-project-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![version](https://img.shields.io/github/v/tag/evan361425/flutter-pos-system)](https://github.com/evan361425/flutter-pos-system/releases/latest)
 
-開源的應用程式，希望使用者共同建立一個屬於大家的 POS 系統（點餐系統）。
+開源的 Flutter 應用程式，希望和使用者一起建立一個好用的 POS 系統（點餐系統）。
 
 ## 圖示
+
+![Preview](https://user-images.githubusercontent.com/14554683/125382306-08785400-e3c8-11eb-8246-efd35007d0f7.png)
 
 ## 下載
 
