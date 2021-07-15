@@ -19,13 +19,17 @@
 # in the templates via {{ site.myvariable }}.
 
 title: POS 系統
+lang: zh-TW
 email: evanlu361425@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  讓使用者設計自己的點餐系統
+  開源的 Flutter 應用程式
+  希望和使用者一起建立一個好用的 POS 系統（點餐系統）
 domain: evan361425.github.io # if you want to force HTTPS, specify the domain without the http at the start, e.g. example.com
 url: "https://evan361425.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 baseurl: "/flutter-pos-system" # the subpath of your site, e.g. /blog
 github_username: evan361425
+owner_name: 呂學洲
+google_analytics: [G-3D6N25J5ZM]
 
 # Build settings
 theme: jekyll-theme-cayman
@@ -50,3 +54,6 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+
+sass:
+  sass_dir: _sass
