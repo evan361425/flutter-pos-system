@@ -1,5 +1,5 @@
 list:
   - title: 貢獻
-    url: /contribute.html
+    url: /docs/contribute.html
   - title: 程式架構
-    url: /structure.html
+    url: /docs/structure.html

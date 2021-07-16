@@ -17,7 +17,10 @@ title: POS 系統
 - Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
 - iOS 要再等等，已排程準備。
 
+## 貢獻
+
+想要幫助 POS 系統更完善？我們很樂意你的幫忙！POS 系統是一個開源的專案，並且透過大家一點一點的幫助建構出來的。查看[相關文件](docs/contribute)暸解如何讓 POS 系統更好！
+
 ## 深入瞭解
 
-- 如果大家想改善這個應用程式，可以看如何[貢獻](contribute)
-- 如果大家想了解這個應用程式的內部架構，可以看[架構](structure)
+為了加速你暸解本系統的概略架構，我們也提供了一些簡單的[說明文件](docs/structure)，希望可以讓你更快融入本專案，對於 Flutter 初學者來說，亦是一個不錯的開始！
