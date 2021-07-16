@@ -31,6 +31,8 @@
 - 當你添加新的功能時，也請記得補上相關的文件。
 - 當你想要找某些資訊時，卻沒辦法在第一個尋找的地方找到，那我們就應該在那個地方補上這類文件資訊。
 
+在進行[程式異動](#怎麼提出程式碼上的異動)時要注意，在執行 `git checkout -b my-branch-name` 之前，應將主分支先切到 `gh-pages`，請執行 `git checkout gh-pages` 後在執行上述指令。並且，當你完成程式異動時，請記得在合併時同樣選擇 `gh-pages` 作為要求合併的分支。
+
 ## 如何回報程式害蟲
 
 哇哩咧，被你找到 bug 了！請先看看你找到的害蟲是否[已經被回報了]({{ site.github.repository_url }}/labels/bug)。如果還沒有類似的害蟲，請[提交相關的 issue]({{ site.github.repository_url }}/issues/new?assignees=&labels=&template=bug_report.md&title=)。
