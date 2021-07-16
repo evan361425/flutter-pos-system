@@ -8,20 +8,27 @@
 
 ## 圖示
 
-![Preview](https://user-images.githubusercontent.com/14554683/125382306-08785400-e3c8-11eb-8246-efd35007d0f7.png)
+![Introduction](https://evan361425.github.com/flutter-pos-system/assets/images/index-introduction.png)
+
+本 POS 系統的特色。
+
+- 完全允許離線使用
+- 統計點單紀錄
+- 庫存系統幫助你紀錄現有成份庫存
+- 本系統不會遠端紀錄個資，只會存在你的手機裡，所以可以安心使用。
 
 ## 下載
 
-Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
+- Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
+- iOS 要再等等，已排程準備。
 
-iOS 要再等等，已排程準備。
+## 貢獻
 
-## 我可以做什麼
+想要幫助 POS 系統更完善？我們很樂意你的幫忙！POS 系統是一個開源的專案，並且透過大家一點一點的幫助建構出來的。查看[相關文件](https://evan361425.github.com/flutter-pos-system/docs/contribute)暸解如何讓 POS 系統更好！
 
-- 若你想撰寫相關程式，[請看](https://evan361425.github.io/flutter-pos-system/developer)
-- 若你想提出些新的功能，[請看](https://evan361425.github.io/flutter-pos-system/enhancement)
-- 若你想改善應用程式外觀，[請看](https://evan361425.github.io/flutter-pos-system/design)
-- 若你發現程式上有任何問題，[請看](https://evan361425.github.io/flutter-pos-system/bugs)
+## 深入瞭解
+
+為了加速你暸解本系統的概略架構，我們也提供了一些簡單的[說明文件](https://evan361425.github.com/flutter-pos-system/docs/structure)，希望可以讓你更快融入本專案，對於 Flutter 初學者來說，亦是一個不錯的開始！
 
 ## License
 

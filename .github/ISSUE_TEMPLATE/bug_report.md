@@ -1,10 +1,9 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+name: 害蟲回報
+about: 提交報告來協助我們提升品質
+title: ""
+labels: "bug"
+assignees: ""
 ---
 
 **簡述問題**
@@ -12,6 +11,7 @@ assignees: ''
 
 **重現**
 若要重現這問題，步驟是什麼
+
 1. 先到 ... 頁面
 2. 點擊 ....
 3. 往下滑到 ....
@@ -24,9 +24,10 @@ assignees: ''
 若可以的話，請提供截圖。
 
 **你用什麼手機：**
- - 機型: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - 版本 [e.g. 22]
+
+- 機型: [e.g. iPhone6]
+- OS: [e.g. iOS8.1]
+- 版本 [e.g. 22]
 
 **補充說明**
 任何想要補充的。
