@@ -40,32 +40,54 @@
 
 再次感謝你提出想法幫助本產品更好，開始[建立相關的 issue]({{ site.github.repository_url }}/issues/new?assignees=&labels=&template=feature_report.md&title=) 吧！
 
-## 你的第一個貢獻
+## 第一次嘗試貢獻
 
-We'd love for you to contribute to the project. Unsure where to begin contributing to the Cayman theme? You can start by looking through these "good first issue" and "help wanted" issues:
+我們很開心你願意貢獻本專案。若你不確定如何開始做任何幫忙，建議你可以看看關於[good first issue]({{ site.github.repository_url }}/issues?q=is%3Aissue+label%3A%22good+first+issue%22)，來看看什麼是好的 issue。除此之外[help wanted]({{ site.github.repository_url }}/issues?q=is%3Aissue+label%3A%22help+wanted%22)也是一個對於不知如何幫忙的人下手的好地方。
 
-Good first issues - issues which should only require a few lines of code and a test or two
-Help wanted issues - issues which may be a bit more involved, but are specifically seeking community contributions
-p.s. Feel free to ask for help; everyone is a beginner at first 😺
+- Good first issues - 應該只會包含少數幾行程式碼的修正和一組單元測試。
+- Help wanted issues - 可能會需要一些能力和經驗，但卻是一個特別需要大家幫忙的地方。
 
-## 怎麼提出改善
+> 歡迎你透過 issue 或信箱提出任何問題，大家都是從初學者開始的唷 😺
 
-Here's a few general guidelines for proposing changes:
+## 怎麼提出程式碼上的異動
 
-If you are making visual changes, include a screenshot of what the affected element looks like, both before and after.
-Follow the Jekyll style guide.
-If you are changing any user-facing functionality, please be sure to update the documentation
-Each pull request should implement one feature or bug fix. If you want to add or fix more than one thing, submit more than one pull request
-Do not commit changes to files that are irrelevant to your feature or bug fix
-Don't bump the version number in your pull request (it will be bumped prior to release)
-Write a good commit message
-At a high level, the process for proposing changes is:
+如要提出程式碼上的異動這裡有幾個建議方針去執行。
 
-Fork and clone the project
-Configure and install the dependencies: script/bootstrap
-Make sure the tests pass on your machine: script/cibuild
-Create a new branch: git checkout -b my-branch-name
-Make your change, add tests, and make sure the tests still pass
-Push to your fork and submit a pull request
-Pat your self on the back and wait for your pull request to be reviewed and merged
-Interesting in submitting your first Pull Request? It's easy! You can learn how from this free series How to Contribute to an Open Source Project on GitHub
+- 若你是製作外觀上的改變，請提供截圖說明改善前後的差異。
+- 遵循 Flutter 程式碼[指南](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)。
+- 若你是改動使用者會接觸到的功能，請記得更新相關的文件。
+- 每個 PR 應該執行一個功能或處理一個害蟲。若你有多個功能或害蟲，請提交多個 PR。
+- 不要改變和你要做的事情沒關的檔案。
+- [撰寫好的 commit 訊息](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)。
+
+以下是執行程式碼改動的順序。
+
+- [Fork]({{ site.github.repository_url }}/fork) 並且複製本專案。
+- 安裝必要檔案：`flutter pub get`。
+- 安裝輔助工具：`flutter run build_runner build`。
+- 確保你本地端可以正確執行：`flutter test`。
+- 建立新的分支：`git checkout -b my-branch-name`
+- 改動你要改的地方，並建立測試。
+- 推到你 fork 的專案後提交 PR：`git push -u origin my-branch-name`
+- 你可以休息一下了 😆，會有人來處理你的 PR 並把他合併進主要分支。
+
+等不及想試試看提交你的第一個 PR 了嗎？你可以閱讀 GitHub 官方文件關於[如何貢獻 Open Source](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)。
+
+## 如何準備本地端環境
+
+套件安裝：`flutter pub get`。
+工具安裝：`flutter run build_runner build`。
+
+## 如何進行測試
+
+`flutter test`。
+
+## Code of conduct
+
+This project is governed by the Contributor Covenant Code of Conduct. By participating, you are expected to uphold this code.
+
+## Additional Resources
+
+Contributing to Open Source on GitHub
+Using Pull Requests
+GitHub Help
