@@ -8,9 +8,11 @@ class SingleTextDialog extends StatefulWidget {
     this.decoration,
     this.initialValue,
     this.keyboardType,
+    this.title,
   }) : super(key: key);
 
   final String? Function(String?)? validator;
+  final Widget? title;
   final InputDecoration? decoration;
   final String? initialValue;
   final TextInputType? keyboardType;
@@ -26,6 +28,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: widget.title,
       content: SingleChildScrollView(
         child: Form(
           key: form,
@@ -37,6 +40,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
             keyboardType: widget.keyboardType,
             validator: widget.validator,
             decoration: widget.decoration,
+            textInputAction: TextInputAction.done,
           ),
         ),
       ),

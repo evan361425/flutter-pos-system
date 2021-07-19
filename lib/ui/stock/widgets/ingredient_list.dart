@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
@@ -41,43 +42,13 @@ class IngredientList extends StatelessWidget {
     String? defaultValue,
     required String title,
   }) async {
-    final controller = TextEditingController(text: defaultValue);
-    final formKey = GlobalKey<FormState>();
-
     final result = await showDialog<String>(
       context: context,
-      builder: (BuildContext context) {
-        final action = (String value) {
-          if (formKey.currentState!.validate()) {
-            Navigator.of(context).pop<String>(value);
-          }
-        };
-
-        return AlertDialog(
-          title: Text(title),
-          content: Form(
-            key: formKey,
-            child: TextFormField(
-              controller: controller,
-              autofocus: true,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.number,
-              validator: Validator.positiveNumber(''),
-              onFieldSubmitted: action,
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  Navigator.of(context).pop<String>(controller.text);
-                }
-              },
-              child: Text(tt('save')),
-            ),
-          ],
-        );
-      },
+      builder: (BuildContext context) => SingleTextDialog(
+        title: Text(title),
+        validator: Validator.positiveNumber(''),
+        keyboardType: TextInputType.number,
+      ),
     );
 
     return result == null ? null : num.tryParse(result);

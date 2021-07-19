@@ -41,7 +41,9 @@ class StockScreen extends StatelessWidget {
     final stock = context.watch<StockModel>();
     if (!stock.isReady) return CircularLoading();
     if (stock.isEmpty) {
-      return Center(child: EmptyBody('stock.ingredient.empty'));
+      return Center(
+        child: EmptyBody(body: Text(tt('stock.ingredient.empty'))),
+      );
     }
 
     return Column(children: [

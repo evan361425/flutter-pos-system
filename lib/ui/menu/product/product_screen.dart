@@ -70,7 +70,7 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
         product.isEmpty
-            ? EmptyBody(tt('menu.product.empty'))
+            ? EmptyBody(body: Text(tt('menu.product.empty')))
             : IngredientExpansion(ingredients: product.itemList),
       ],
     );
