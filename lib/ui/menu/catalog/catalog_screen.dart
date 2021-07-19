@@ -80,7 +80,7 @@ class CatalogScreen extends StatelessWidget {
         ),
         MenuModel.instance.setUpStockMode(context)
             ? catalog.isEmpty
-                ? EmptyBody('menu.catalog.empty')
+                ? EmptyBody(body: Text(tt('menu.catalog.empty')))
                 : ProductList(products: catalog.itemList)
             : CircularLoading(),
       ],

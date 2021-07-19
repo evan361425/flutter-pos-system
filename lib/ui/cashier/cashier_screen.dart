@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/translator.dart';
+import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
+import 'package:possystem/ui/cashier/widgets/cashier_unit_list.dart';
+import 'package:provider/provider.dart';
 
 class CashierScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final actions = Row(children: [
+      Expanded(
+        child: ElevatedButton(
+          onPressed: () {},
+          child: Text('結餘'),
+        ),
+      ),
+      SizedBox(width: kSpacing1),
+      Expanded(
+        child: ElevatedButton(
+          onPressed: () => handleChanging(context),
+          child: Text('換錢'),
+        ),
+      ),
+    ]);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('收銀機'),
@@ -11,21 +33,34 @@ class CashierScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(KIcons.back),
         ),
+        actions: [TextButton(onPressed: () {}, child: Text('設為預設'))],
       ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/working_on_it.png'),
-            Text(
-              '正在加緊趕工中！',
-              style: Theme.of(context).textTheme.headline4,
-              textAlign: TextAlign.center,
+      body: Padding(
+        padding: const EdgeInsets.all(kSpacing3),
+        child: Column(children: [
+          actions,
+          Divider(),
+          Expanded(
+            child: ChangeNotifierProvider.value(
+              value: Cashier.instance,
+              child: CashierUnitList(),
             ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
+  }
+
+  void handleChanging(BuildContext context) async {
+    final success = await showDialog<bool>(
+      context: context,
+      builder: (_) => ChangerDialog(),
+    );
+
+    if (success == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tt('success'))),
+      );
+    }
   }
 }

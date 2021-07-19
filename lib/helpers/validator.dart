@@ -1,15 +1,18 @@
 import 'package:possystem/translator.dart';
 
 class Validator {
-  static String? Function(String?) positiveNumber(
+  static String? Function(Object?) positiveNumber(
     String fieldName, {
     num? maximum,
+    bool allowNull = false,
   }) {
-    return (String? value) {
-      final number = num.tryParse(value ?? '');
+    return (Object? value) {
+      final number = num.tryParse('$value');
 
       if (number == null) {
-        return tt('validator.number.type', {'field': fieldName});
+        if (!allowNull) {
+          return tt('validator.number.type', {'field': fieldName});
+        }
       } else if (number < 0) {
         return tt('validator.number.positive', {'field': fieldName});
       } else if (maximum != null && maximum < number) {
@@ -23,18 +26,27 @@ class Validator {
 
   static String? Function(String?) positiveInt(
     String fieldName, {
-    num? maximum,
+    int? maximum,
+    int? minimum,
+    bool allowNull = false,
   }) {
     return (String? value) {
       final number = int.tryParse(value ?? '');
       if (number == null) {
-        return tt('validator.integer.type', {'field': fieldName});
+        if (!allowNull) {
+          return tt('validator.integer.type', {'field': fieldName});
+        }
       } else if (number < 0) {
         return tt('validator.number.positive', {'field': fieldName});
       } else if (maximum != null && maximum < number) {
         return tt(
           'validator.number.maximum',
           {'field': fieldName, 'maximum': maximum},
+        );
+      } else if (minimum != null && minimum > number) {
+        return tt(
+          'validator.number.minimum',
+          {'field': fieldName, 'minimum': minimum},
         );
       } else {
         return null;

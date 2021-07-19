@@ -8,6 +8,7 @@ enum Stores {
   stock,
   stock_batch,
   quantities,
+  cashier,
 }
 
 class Storage {
@@ -34,7 +35,14 @@ class Storage {
   static StoreRef getStore(Stores storeId) =>
       stringMapStoreFactory.store(storeId.toString());
 
-  Future<Map<String, Object?>> get(Stores storeId) async {
+  Future<Map<String, Object?>> get(Stores storeId, [String? record]) async {
+    if (record != null) {
+      final data = await getStore(storeId).record(record).get(db);
+      if (data == null) return {};
+
+      return data as Map<String, Object?>;
+    }
+
     final list = await getStore(storeId).find(db);
 
     return {for (var item in list) item.key: item.value};
@@ -53,6 +61,7 @@ class Storage {
             })));
   }
 
+  /// add data into record
   Future<void> add(
     Stores storeId,
     String recordId,

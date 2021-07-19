@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:possystem/translator.dart';
 
 class EmptyBody extends StatelessWidget {
-  final String text;
+  final Widget body;
 
-  EmptyBody(this.text);
+  final String? title;
+
+  EmptyBody({required this.body, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +16,11 @@ class EmptyBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(tt('empty_body'), style: Theme.of(context).textTheme.headline4),
-          Text(text),
+          Text(
+            title ?? tt('empty_body'),
+            style: Theme.of(context).textTheme.headline4,
+          ),
+          body,
         ],
       ),
     );
