@@ -3,7 +3,7 @@
   padding: 2rem 1rem;
   width: 100%;
   height: auto;
-  position: relative;
+  position: fixed;
   overflow: auto;
   float: none;
   background-color: white;
@@ -47,5 +47,13 @@
     @include large {
       float: none;
     }
+  }
+}
+
+.sidebar-sizedbox {
+  padding: 3rem 0;
+
+  @include large {
+    padding: 0;
   }
 }
