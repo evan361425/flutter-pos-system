@@ -58,7 +58,7 @@ class MenuScreen extends StatelessWidget {
 
   Widget _body(BuildContext context, MenuModel menu) {
     if (menu.isEmpty) {
-      return Center(child: EmptyBody(tt('menu.catalog.empty')));
+      return Center(child: EmptyBody(body: Text(tt('menu.catalog.empty'))));
     }
 
     return Column(

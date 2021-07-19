@@ -36,7 +36,7 @@ class QuantityScreen extends StatelessWidget {
 
   Widget _body(QuantityRepo quantities) {
     if (quantities.isEmpty) {
-      return Center(child: EmptyBody('stock.quantity.empty'));
+      return Center(child: EmptyBody(body: Text(tt('stock.quantity.empty'))));
     }
 
     return Padding(
