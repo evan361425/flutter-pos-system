@@ -8,7 +8,12 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 class ChangerDialogCustom extends StatefulWidget {
-  const ChangerDialogCustom({Key? key}) : super(key: key);
+  final void Function() handleFavoriteAdded;
+
+  const ChangerDialogCustom({
+    Key? key,
+    required this.handleFavoriteAdded,
+  }) : super(key: key);
 
   @override
   ChangerDialogCustomState createState() => ChangerDialogCustomState();
@@ -25,11 +30,9 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
   @override
   Widget build(BuildContext context) {
     final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      Expanded(
-        child: ElevatedButton(
-          onPressed: handleFavorite,
-          child: Text('新增常用'),
-        ),
+      ElevatedButton(
+        onPressed: handleFavorite,
+        child: Text('新增常用'),
       ),
     ]);
     final sourceEntry = wrapInRow(
@@ -176,7 +179,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
             CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
-    Navigator.of(context).pop(true);
+    widget.handleFavoriteAdded();
   }
 
   void handleUnitChanged(num? value) {
@@ -227,7 +230,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       }
 
       setState(() {
-        var msg = '$sourceCount 個 $sourceUnit 元沒辦法換';
+        var msg = '$count 個 $sourceUnit 元沒辦法換';
         targets.forEach((target) {
           if (!target.isEmpty) {
             msg += '\n- ${target.count} 個 ${target.unit} 元';

@@ -15,10 +15,13 @@ class _ChangerDialogState extends State<ChangerDialog>
     with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerDialogCustomState>();
+  final favoriteState = GlobalKey<ChangerDialogFavoriteState>();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // tab widgets
     final tabBar = TabBar(
       controller: controller,
       indicatorColor: theme.primaryColor,
@@ -31,10 +34,18 @@ class _ChangerDialogState extends State<ChangerDialog>
     );
     final tabBarView = TabBarView(controller: controller, children: [
       ChangerDialogFavorite(
+        key: favoriteState,
         handleAdd: () => controller.animateTo(1),
       ),
-      ChangerDialogCustom(key: customState),
+      ChangerDialogCustom(
+        key: customState,
+        handleFavoriteAdded: () {
+          controller.animateTo(0);
+          favoriteState.currentState?.reset();
+        },
+      ),
     ]);
+
     // copy from [AlertDialog]
     final actions = Container(
       alignment: AlignmentDirectional.centerEnd,
@@ -84,7 +95,7 @@ class _ChangerDialogState extends State<ChangerDialog>
   void handleApply() async {
     final isValid = controller.index == 1
         ? await customState.currentState?.handleApply()
-        : false;
+        : await favoriteState.currentState?.handleApply();
 
     if (isValid == true) {
       Navigator.of(context).pop(true);
