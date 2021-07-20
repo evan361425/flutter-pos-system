@@ -19,6 +19,7 @@ class MetaBlock extends StatelessWidget {
     Iterable<String> data, {
     TextStyle? textStyle,
     String? emptyText,
+    TextOverflow textOverflow = TextOverflow.ellipsis,
   }) {
     if (data.isNotEmpty) {
       final children = data
@@ -31,7 +32,7 @@ class MetaBlock extends StatelessWidget {
       children.removeLast();
 
       return RichText(
-        overflow: TextOverflow.ellipsis,
+        overflow: textOverflow,
         text: TextSpan(
           children: children,
           // disable parent text style

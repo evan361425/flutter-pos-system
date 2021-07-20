@@ -7,9 +7,13 @@ class Cashier extends ChangeNotifier {
 
   final List<CashierUnitObject> _units = [];
 
-  final List<CashierChangeBatchObject> favorites = [];
+  final List<CashierChangeBatchObject> _favorites = [];
 
   late String _recordName;
+
+  int get favoriteLength => _favorites.length;
+
+  bool get hasFavorites => _favorites.isNotEmpty;
 
   int get length => _units.length;
 
@@ -17,81 +21,16 @@ class Cashier extends ChangeNotifier {
     update({index: count});
   }
 
-  CashierUnitObject at(int index) {
-    return _units[index];
-  }
-
-  int indexOf(num unit) {
-    return _units.indexWhere((element) => element.unit == unit);
-  }
-
   Future<void> addFavorite(CashierChangeBatchObject item) async {
-    favorites.add(item);
+    _favorites.add(item);
 
     await Storage.instance.set(Stores.cashier, {
-      '$_recordName.favorites': favorites.map((e) => e.toMap()).toList(),
+      '$_recordName.favorites': _favorites.map((e) => e.toMap()).toList(),
     });
   }
 
-  void minus(int index, int count) {
-    update({index: -count});
-  }
-
-  /// Update chashier by [deltas]
-  ///
-  /// [deltas] key is index of units
-  Future<void> update(Map<int, int> deltas) async {
-    var isUpdated = false;
-    deltas.forEach((index, value) {
-      _units[index].count += value;
-      if (_units[index].count < 0) {
-        _units[index].count = 0;
-      }
-      isUpdated = isUpdated || value != 0;
-    });
-
-    if (isUpdated) {
-      await Storage.instance.set(Stores.cashier, {
-        '$_recordName.units': _units.map((e) => e.toMap()).toList(),
-      });
-
-      notifyListeners();
-    }
-  }
-
-  /// Check specific unit by [index] has valid [count] to minus
-  bool validate(int index, int count) {
-    return _units[index].count >= count;
-  }
-
-  /// When currency changed, it must be changed
-  Future<void> reset(String name, List<num> units) async {
-    _recordName = name;
-    final record = await Storage.instance.get(Stores.cashier, name);
-
-    if (record.isEmpty || record['units'] == null) {
-      _units
-        ..clear()
-        ..addAll(
-            [for (var unit in units) CashierUnitObject(unit: unit, count: 0)]);
-
-      await Storage.instance.add(Stores.cashier, name, {
-        'units': _units.map((e) => e.toMap()).toList(),
-      });
-    } else {
-      _units
-        ..clear()
-        ..addAll([
-          for (var map in record['units'] as Iterable)
-            CashierUnitObject.fromMap(map.cast<String, num>())
-        ]);
-      favorites
-        ..clear()
-        ..addAll([
-          for (var map in record['favorites'] as Iterable)
-            CashierChangeBatchObject.fromMap(map.cast<String, Map<num, int>>())
-        ]);
-    }
+  CashierUnitObject at(int index) {
+    return _units[index];
   }
 
   /// Get change from [count] and [unit]
@@ -153,5 +92,94 @@ class Cashier extends ChangeNotifier {
     }
 
     return [];
+  }
+
+  CashierChangeBatchObject favoriteAt(int index) {
+    return _favorites[index];
+  }
+
+  int indexOf(num unit) {
+    return _units.indexWhere((element) => element.unit == unit);
+  }
+
+  void minus(int index, int count) {
+    update({index: -count});
+  }
+
+  /// When currency changed, it must be changed
+  Future<void> reset(String name, List<num> units) async {
+    _recordName = name;
+    final record = await Storage.instance.get(Stores.cashier, name);
+
+    await setUnits(name: name, units: record['units'], defaultUnits: units);
+    await setFavorite(name: name, favorites: record['favorites']);
+  }
+
+  Future<void> setFavorite({required String name, Object? favorites}) async {
+    try {
+      _favorites
+        ..clear()
+        ..addAll([
+          for (var map in (favorites ?? []) as Iterable)
+            CashierChangeBatchObject.fromMap(map)
+        ]);
+    } catch (e) {
+      print(e);
+      _favorites.clear();
+    }
+  }
+
+  Future<void> setUnits({
+    required String name,
+    Object? units,
+    required List<num> defaultUnits,
+  }) async {
+    try {
+      if (units == null) throw Error();
+      _units
+        ..clear()
+        ..addAll([
+          for (var unit in units as Iterable)
+            CashierUnitObject.fromMap(unit.cast<String, num>())
+        ]);
+    } catch (e) {
+      print(e);
+      _units
+        ..clear()
+        ..addAll([
+          for (var unit in defaultUnits) CashierUnitObject(unit: unit, count: 0)
+        ]);
+
+      await Storage.instance.add(Stores.cashier, name, {
+        'units': _units.map((e) => e.toMap()).toList(),
+      });
+    }
+  }
+
+  /// Update chashier by [deltas]
+  ///
+  /// [deltas] key is index of units
+  Future<void> update(Map<int, int> deltas) async {
+    var isUpdated = false;
+    deltas.forEach((index, value) {
+      _units[index].count += value;
+      if (_units[index].count < 0) {
+        _units[index].count = 0;
+      }
+      isUpdated = isUpdated || value != 0;
+    });
+
+    if (isUpdated) {
+      await Storage.instance.set(Stores.cashier, {
+        '$_recordName.units': _units.map((e) => e.toMap()).toList(),
+      });
+
+      notifyListeners();
+    }
+  }
+
+  /// Check specific unit by [index] has valid [count] to minus
+  bool validate(int index, int count) {
+    return _units[index].count >= count;
   }
 }

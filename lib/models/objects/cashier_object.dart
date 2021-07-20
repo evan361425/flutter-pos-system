@@ -6,8 +6,11 @@ class CashierUnitObject {
   CashierUnitObject({required this.unit, required this.count});
 
   factory CashierUnitObject.fromMap(Map<String, num> map) {
+    final unit = map['unit'];
+    assert(unit != null && unit != 0);
+
     return CashierUnitObject(
-      unit: map['unit'] ?? 0,
+      unit: unit!,
       count: map['count']?.toInt() ?? 0,
     );
   }
@@ -24,29 +27,42 @@ class CashierChangeBatchObject {
 
   CashierChangeBatchObject({required this.source, required this.targets});
 
-  Map<String, Map<num, int>> toMap() {
+  Map<String, Map<String, int>> toMap() {
     return {
-      'source': {source.unit!: source.count!},
-      'targets': {for (var target in targets) target.unit!: target.count!},
+      'source': {source.unit.toString(): source.count!},
+      'targets': {
+        for (var target in targets) target.unit.toString(): target.count!
+      },
     };
   }
 
-  factory CashierChangeBatchObject.fromMap(Map<String, Map<num, int>> map) {
-    final source = map['source']?.entries.first;
-    final targets = map['targets']?.entries ?? <MapEntry<num, int>>[];
+  /// Build [CashierChangeBatchObject] by map.
+  ///
+  /// Throws an [AssertionError] if missing source and targets.
+  /// Throws a [FormatException] if key cannot parse to num.
+  factory CashierChangeBatchObject.fromMap(Map<String, Object?> map) {
+    assert(map['source'] is Map && map['targets'] is Map);
+    final source = (map['source'] as Map).entries.first;
+    final targets = (map['targets'] as Map).entries;
 
     return CashierChangeBatchObject(
         source: CashierChangeEntryObject(
-          count: source?.value,
-          unit: source?.key,
+          count: source.value,
+          unit: num.parse(source.key),
         ),
         targets: [
           for (var target in targets)
             CashierChangeEntryObject(
               count: target.value,
-              unit: target.key,
+              unit: num.parse(target.key),
             )
         ]);
+  }
+
+  @override
+  String toString() {
+    final t = targets.map((e) => '${e.unit} (${e.count})').join(', ');
+    return '${source.unit} (${source.count}) => [$t]';
   }
 }
 
