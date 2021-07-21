@@ -39,7 +39,7 @@ class CashierUnitList extends StatelessWidget {
           ),
         );
       },
-      itemCount: Cashier.instance.length,
+      itemCount: Cashier.instance.unitLength,
     );
   }
 
