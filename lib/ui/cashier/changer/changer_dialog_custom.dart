@@ -1,3 +1,4 @@
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
@@ -21,11 +22,19 @@ class ChangerDialogCustom extends StatefulWidget {
 
 class ChangerDialogCustomState extends State<ChangerDialogCustom> {
   final formKey = GlobalKey<FormState>();
+
+  /// Money to changed
   List<CashierChangeEntryObject> targets = [CashierChangeEntryObject()];
+
+  /// Count of source unit
   late TextEditingController sourceCount;
+
+  /// First target count controller
+  ///
+  /// It will be changed by programmatically
   late TextEditingController targetController;
+
   num? sourceUnit;
-  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +94,6 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
                     )),
         )
     ];
-    final error = errorMessage == null
-        ? Container()
-        : Text(
-            errorMessage!,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1
-                ?.copyWith(color: kNegativeColor),
-          );
 
     return SingleChildScrollView(
       child: Form(
@@ -106,7 +106,6 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
             Text('從收銀機中拿出'),
             sourceEntry,
             const TextDivider(label: '換'),
-            error,
             ...targetEntries,
             // add bottom
             const SizedBox(height: kSpacing1),
@@ -157,7 +156,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       });
       return true;
     } else {
-      setState(() => errorMessage = '$sourceUnit 不夠用');
+      await context.showToast('$sourceUnit 元不夠換');
       return false;
     }
   }
@@ -225,19 +224,16 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       });
 
       if (total == 0) {
-        setState(() => errorMessage = null);
         return true;
       }
 
-      setState(() {
-        var msg = '$count 個 $sourceUnit 元沒辦法換';
-        targets.forEach((target) {
-          if (!target.isEmpty) {
-            msg += '\n- ${target.count} 個 ${target.unit} 元';
-          }
-        });
-        errorMessage = msg;
+      var msg = '$count 個 $sourceUnit 元沒辦法換';
+      targets.forEach((target) {
+        if (!target.isEmpty) {
+          msg += '\n- ${target.count} 個 ${target.unit} 元';
+        }
       });
+      context.showToast(msg);
     }
 
     return false;

@@ -1,3 +1,4 @@
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -22,6 +23,8 @@ class ChangerDialogFavorite extends StatefulWidget {
 class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
   static int? selectedFavorite;
 
+  String? errorMessage;
+
   @override
   Widget build(BuildContext context) {
     if (!Cashier.instance.hasFavorites) {
@@ -36,10 +39,10 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
 
         final radioTileList = RadioListTile<int>(
           value: i,
-          title: Text('用 ${batch.source.count} 個 ${batch.source.unit} 換'),
+          title: Text('用 ${batch.source.count} 個 ${batch.source.unit} 元換'),
           subtitle: MetaBlock.withString(
             context,
-            batch.targets.map<String>((e) => '${e.count} 個 ${e.unit}'),
+            batch.targets.map<String>((e) => '${e.count} 個 ${e.unit} 元'),
             textOverflow: TextOverflow.visible,
           ),
           groupValue: selectedFavorite,
@@ -92,7 +95,19 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
   }
 
   Future<bool> handleApply() async {
-    return false;
+    if (selectedFavorite == null) {
+      await context.showToast('請選擇要套用的組合');
+      return false;
+    }
+
+    final item = Cashier.instance.favoriteAt(selectedFavorite!);
+    final isValid = await Cashier.instance.applyFavorite(item);
+
+    if (!isValid) {
+      await context.showToast('${item.source.unit} 元不夠換');
+    }
+
+    return isValid;
   }
 
   void showActions(int index) async {
