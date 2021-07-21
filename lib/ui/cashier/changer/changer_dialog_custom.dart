@@ -109,7 +109,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
             ...targetEntries,
             // add bottom
             const SizedBox(height: kSpacing1),
-            ElevatedButton(
+            OutlinedButton(
               onPressed: () => setState(() {
                 targets.add(CashierChangeEntryObject());
               }),

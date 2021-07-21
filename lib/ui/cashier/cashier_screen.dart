@@ -11,10 +11,13 @@ import 'package:provider/provider.dart';
 class CashierScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final actions = Row(children: [
       Expanded(
         child: ElevatedButton(
           onPressed: () {},
+          style: ElevatedButton.styleFrom(primary: theme.primaryColorLight),
           child: Text('結餘'),
         ),
       ),

@@ -5,23 +5,42 @@ class IconFilledButton extends StatelessWidget {
 
   final IconData icon;
 
+  final IconFilledButtonType type;
+
   const IconFilledButton({
     Key? key,
     required this.onPressed,
     required this.icon,
+    this.type = IconFilledButtonType.outlined,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity(
-          horizontal: VisualDensity.minimumDensity,
-          vertical: VisualDensity.standard.vertical,
-        ),
+    final style = ButtonStyle(
+      visualDensity: VisualDensity(
+        horizontal: VisualDensity.minimumDensity,
+        vertical: VisualDensity.standard.vertical,
       ),
-      onPressed: onPressed,
-      child: Icon(icon),
     );
+
+    switch (type) {
+      case IconFilledButtonType.elevated:
+        return ElevatedButton(
+          style: style,
+          onPressed: onPressed,
+          child: Icon(icon),
+        );
+      case IconFilledButtonType.outlined:
+        return OutlinedButton(
+          style: style,
+          onPressed: onPressed,
+          child: Icon(icon),
+        );
+    }
   }
+}
+
+enum IconFilledButtonType {
+  elevated,
+  outlined,
 }

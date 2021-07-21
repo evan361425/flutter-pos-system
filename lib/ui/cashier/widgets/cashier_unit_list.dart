@@ -28,10 +28,12 @@ class CashierUnitList extends StatelessWidget {
               IconFilledButton(
                 onPressed: () => handleAdd(context, i),
                 icon: KIcons.add,
+                type: IconFilledButtonType.outlined,
               ),
               IconFilledButton(
                 onPressed: () => handleMinus(context, i),
                 icon: KIcons.remove,
+                type: IconFilledButtonType.outlined,
               ),
             ],
           ),

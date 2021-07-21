@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -24,9 +25,21 @@ class Cashier extends ChangeNotifier {
   Future<void> addFavorite(CashierChangeBatchObject item) async {
     _favorites.add(item);
 
-    await Storage.instance.set(Stores.cashier, {
-      '$_recordName.favorites': _favorites.map((e) => e.toMap()).toList(),
+    await updateFavoriteStorage();
+  }
+
+  Future<bool> applyFavorite(CashierChangeBatchObject item) async {
+    final sourceIndex = indexOf(item.source.unit!);
+    if (!validate(sourceIndex, item.source.count!)) {
+      return false;
+    }
+
+    await update({
+      sourceIndex: -item.source.count!,
+      for (var target in item.targets) indexOf(target.unit!): target.count!
     });
+
+    return true;
   }
 
   CashierUnitObject at(int index) {
@@ -94,6 +107,19 @@ class Cashier extends ChangeNotifier {
     return [];
   }
 
+  Future<void> deleteFavorite(int index) async {
+    try {
+      _favorites.removeAt(index);
+
+      await updateFavoriteStorage();
+    } catch (e) {
+      await error(
+        'total: $length, index: $index',
+        'cashier.favorite.not_found',
+      );
+    }
+  }
+
   CashierChangeBatchObject favoriteAt(int index) {
     return _favorites[index];
   }
@@ -113,20 +139,6 @@ class Cashier extends ChangeNotifier {
 
     await setUnits(name: name, units: record['units'], defaultUnits: units);
     await setFavorite(name: name, favorites: record['favorites']);
-  }
-
-  Future<bool> applyFavorite(CashierChangeBatchObject item) async {
-    final sourceIndex = indexOf(item.source.unit!);
-    if (!validate(sourceIndex, item.source.count!)) {
-      return false;
-    }
-
-    await update({
-      sourceIndex: -item.source.count!,
-      for (var target in item.targets) indexOf(target.unit!): target.count!
-    });
-
-    return true;
   }
 
   Future<void> setFavorite({required String name, Object? favorites}) async {
@@ -190,6 +202,12 @@ class Cashier extends ChangeNotifier {
 
       notifyListeners();
     }
+  }
+
+  Future<void> updateFavoriteStorage() {
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.favorites': _favorites.map((e) => e.toMap()).toList(),
+    });
   }
 
   /// Check specific unit by [index] has valid [count] to minus
