@@ -115,6 +115,20 @@ class Cashier extends ChangeNotifier {
     await setFavorite(name: name, favorites: record['favorites']);
   }
 
+  Future<bool> applyFavorite(CashierChangeBatchObject item) async {
+    final sourceIndex = indexOf(item.source.unit!);
+    if (!validate(sourceIndex, item.source.count!)) {
+      return false;
+    }
+
+    await update({
+      sourceIndex: -item.source.count!,
+      for (var target in item.targets) indexOf(target.unit!): target.count!
+    });
+
+    return true;
+  }
+
   Future<void> setFavorite({required String name, Object? favorites}) async {
     try {
       _favorites

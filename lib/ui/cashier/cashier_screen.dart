@@ -1,3 +1,4 @@
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -58,9 +59,7 @@ class CashierScreen extends StatelessWidget {
     );
 
     if (success == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tt('success'))),
-      );
+      await context.showSuccessBar(content: Text(tt('success')));
     }
   }
 }
