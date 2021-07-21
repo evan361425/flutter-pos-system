@@ -106,7 +106,7 @@ class MenuModel extends ChangeNotifier
 
     final stock = context.watch<StockModel>();
     final quantities = context.watch<QuantityRepo>();
-    if (!stock.isReady || !quantities.isReady) {
+    if (!isReady || !stock.isReady || !quantities.isReady) {
       return false;
     }
 

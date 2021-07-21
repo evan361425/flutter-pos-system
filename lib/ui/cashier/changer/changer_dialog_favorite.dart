@@ -90,8 +90,10 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
     setState(() {});
   }
 
-  void handleDeletion(int index) {
-    print('delete $index');
+  void handleDeletion(int index) async {
+    await Cashier.instance.deleteFavorite(index);
+
+    setState(() => selectedFavorite = null);
   }
 
   Future<bool> handleApply() async {
