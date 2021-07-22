@@ -6,11 +6,11 @@ import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/services/storage.dart';
 
 class Cashier extends ChangeNotifier {
-  static const FAVORITES = 'favorites';
+  static const _FAVORITES = 'favorites';
 
-  static const CURRENT = 'current';
+  static const _CURRENT = 'current';
 
-  static const DEFAULT = 'default';
+  static const _DEFAULT = 'default';
 
   static Cashier instance = Cashier();
 
@@ -44,10 +44,41 @@ class Cashier extends ChangeNotifier {
     update({index: count});
   }
 
-  Future<void> addFavorite(CashierChangeBatchObject item) async {
+  Future<void> addFavorite(CashierChangeBatchObject item) {
     _favorites.add(item);
 
-    await updateFavoriteStorage();
+    return updateFavoriteStorage();
+  }
+
+  Future<void> paid(num price, {num? oldPrice}) {
+    print(price);
+    final deltas = getUpdateDataFromPrice(price);
+    print(deltas);
+    if (oldPrice != null) {
+      getUpdateDataFromPrice(oldPrice).forEach((key, value) {
+        deltas[key] = deltas.containsKey(key) ? deltas[key]! - value : -value;
+      });
+    }
+
+    return update(deltas);
+  }
+
+  Map<int, int> getUpdateDataFromPrice(num price) {
+    final result = <int, int>{};
+
+    var index = unitLength - 1;
+    for (var item in _current.reversed) {
+      if (item.unit <= price) {
+        final count = (price / item.unit).floor();
+        result[index] = -count;
+
+        price -= item.unit * count;
+        if (price == 0) break;
+      }
+      index--;
+    }
+
+    return result;
   }
 
   Future<bool> applyFavorite(CashierChangeBatchObject item) async {
@@ -121,20 +152,33 @@ class Cashier extends ChangeNotifier {
 
       return result;
     } else if (count > 1) {
-      final result = <CashierChangeEntryObject>[];
-      var total = count * unit;
+      final total = count * unit;
+      var i = unitLength - 1;
 
-      for (var i = unitLength - 1; i > index; i--) {
-        final unitObject = _current[i];
+      if (i == index && i > 0) {
+        final unit = _current[i - 1].unit;
+
+        return [
+          CashierChangeEntryObject(
+            unit: unit,
+            count: (total / unit).floor(),
+          ),
+        ];
+      }
+
+      final result = <CashierChangeEntryObject>[];
+
+      for (i; i > index; i--) {
+        final item = _current[i];
         // if not enough to change this unit
-        if (total < unitObject.unit) {
+        if (total < item.unit) {
           continue;
         }
 
-        final unitCount = (total / unitObject.unit).floor();
+        final unitCount = (total / item.unit).floor();
 
         result.add(CashierChangeEntryObject(
-          unit: unitObject.unit,
+          unit: item.unit,
           count: unitCount,
         ));
 
@@ -174,11 +218,11 @@ class Cashier extends ChangeNotifier {
     _recordName = name;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 
-    await setCurrent(record[CURRENT], units);
-    await setFavorite(record[FAVORITES]);
+    await setCurrent(record[_CURRENT], units);
+    await setFavorite(record[_FAVORITES]);
 
-    if (record[DEFAULT] != null) {
-      await setDefault(record: record[DEFAULT]);
+    if (record[_DEFAULT] != null) {
+      await setDefault(record: record[_DEFAULT]);
     }
   }
 
@@ -254,13 +298,14 @@ class Cashier extends ChangeNotifier {
     }
   }
 
-  Future<void> surplus() {
+  Future<void> surplus() async {
     final length = min(_current.length, _default.length);
     for (var i = 0; i < length; i++) {
       _current[i].count = _default[i].count;
     }
 
-    return updateCurrentStorage();
+    await updateCurrentStorage();
+    notifyListeners();
   }
 
   /// Update chashier by [deltas]
@@ -283,20 +328,20 @@ class Cashier extends ChangeNotifier {
   }
 
   Future<void> updateCurrentStorage() {
-    return Storage.instance.add(Stores.cashier, _recordName, {
-      CURRENT: _current.map((e) => e.toMap()).toList(),
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_CURRENT': _current.map((e) => e.toMap()).toList(),
     });
   }
 
   Future<void> updateDefaultStorage() {
-    return Storage.instance.add(Stores.cashier, _recordName, {
-      DEFAULT: _default.map((e) => e.toMap()).toList(),
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_DEFAULT': _default.map((e) => e.toMap()).toList(),
     });
   }
 
   Future<void> updateFavoriteStorage() {
-    return Storage.instance.add(Stores.cashier, _recordName, {
-      FAVORITES: _favorites.map((e) => e.toMap()).toList(),
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_FAVORITES': _favorites.map((e) => e.toMap()).toList(),
     });
   }
 

@@ -6,6 +6,7 @@ import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
+import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:possystem/providers/currency_provider.dart';
@@ -113,6 +114,8 @@ class CartModel extends ChangeNotifier {
       info(data.id.toString(), 'order.cart.update');
       await OrderRepo.instance.update(data);
       await StockModel.instance.order(data, oldData: oldData);
+      await Cashier.instance
+          .paid(data.totalPrice, oldPrice: oldData?.totalPrice);
 
       leaveHistoryMode();
     } else {
@@ -121,6 +124,7 @@ class CartModel extends ChangeNotifier {
       info(data.totalCount.toString(), 'order.cart.push');
       await OrderRepo.instance.push(data);
       await StockModel.instance.order(data);
+      await Cashier.instance.paid(data.totalPrice);
 
       clear();
     }
