@@ -1,9 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/services/storage.dart';
 
 class Cashier extends ChangeNotifier {
+  static const FAVORITES = 'favorites';
+
+  static const CURRENT = 'current';
+
+  static const DEFAULT = 'default';
+
   static Cashier instance = Cashier();
 
   /// Cashier current status
@@ -18,9 +26,15 @@ class Cashier extends ChangeNotifier {
   /// Cashier current using currency name
   late String _recordName;
 
-  int get favoriteLength => _favorites.length;
+  num get currentTotal => _current.fold(0, (value, e) => value + e.total);
 
-  bool get hasFavorites => _favorites.isNotEmpty;
+  bool get defaultNotSet => _default.isEmpty;
+
+  num get defaultTotal => _default.fold(0, (value, e) => value + e.total);
+
+  bool get favoriteIsEmpty => _favorites.isEmpty;
+
+  int get favoriteLength => _favorites.length;
 
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
@@ -133,6 +147,18 @@ class Cashier extends ChangeNotifier {
     return [];
   }
 
+  /// Current and default difference
+  Iterable<List<CashierUnitObject>> getDifference() sync* {
+    final iterators = [
+      _current,
+      _default,
+    ].map((e) => e.iterator).toList(growable: false);
+
+    while (iterators.every((e) => e.moveNext())) {
+      yield iterators.map((e) => e.current).toList(growable: false);
+    }
+  }
+
   /// Get index of specific [unit]
   int indexOf(num unit) {
     return _current.indexWhere((element) => element.unit == unit);
@@ -148,9 +174,12 @@ class Cashier extends ChangeNotifier {
     _recordName = name;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 
-    await setCurrent(record['current'], units);
-    await setFavorite(record['favorites']);
-    await setDefault(record['default']);
+    await setCurrent(record[CURRENT], units);
+    await setFavorite(record[FAVORITES]);
+
+    if (record[DEFAULT] != null) {
+      await setDefault(record: record[DEFAULT]);
+    }
   }
 
   Future<void> setCurrent(Object? record, List<num> currency) async {
@@ -175,37 +204,40 @@ class Cashier extends ChangeNotifier {
         ]);
 
       // reset to empty
-      await Storage.instance.add(Stores.cashier, _recordName, {
-        'current': _current.map((e) => e.toMap()).toList(),
-      });
+      await updateCurrentStorage();
     }
   }
 
   /// Set default data
   ///
-  /// If [record] is null, set from [current]
-  Future<void> setDefault([Object? record]) async {
-    try {
-      assert(record != null);
+  /// If [record] is null, [useCurrent] must be true
+  Future<void> setDefault({
+    Object? record,
+    bool useCurrent = false,
+  }) async {
+    assert(record != null || useCurrent);
 
+    if (useCurrent) {
       _default
         ..clear()
         ..addAll([
-          for (var unit in record as Iterable)
-            CashierUnitObject.fromMap(unit.cast<String, num>())
+          for (var item in _current)
+            CashierUnitObject(unit: item.unit, count: item.count)
         ]);
-    } catch (e, stack) {
-      if (e is! AssertionError) {
+    } else {
+      try {
+        _default
+          ..clear()
+          ..addAll([
+            for (var item in record as Iterable)
+              CashierUnitObject.fromMap(item.cast<String, num>())
+          ]);
+      } catch (e, stack) {
         await error(e.toString(), 'cashier.fetch.unit.error', stack);
       }
-      _default
-        ..clear()
-        ..addAll(_current);
     }
 
-    await Storage.instance.add(Stores.cashier, _recordName, {
-      'default': _default.map((e) => e.toMap()).toList(),
-    });
+    await updateDefaultStorage();
   }
 
   Future<void> setFavorite(Object? record) async {
@@ -222,6 +254,15 @@ class Cashier extends ChangeNotifier {
     }
   }
 
+  Future<void> surplus() {
+    final length = min(_current.length, _default.length);
+    for (var i = 0; i < length; i++) {
+      _current[i].count = _default[i].count;
+    }
+
+    return updateCurrentStorage();
+  }
+
   /// Update chashier by [deltas]
   ///
   /// [deltas] key is index of units
@@ -236,17 +277,26 @@ class Cashier extends ChangeNotifier {
     });
 
     if (isUpdated) {
-      await Storage.instance.set(Stores.cashier, {
-        '$_recordName.current': _current.map((e) => e.toMap()).toList(),
-      });
-
+      await updateCurrentStorage();
       notifyListeners();
     }
   }
 
+  Future<void> updateCurrentStorage() {
+    return Storage.instance.add(Stores.cashier, _recordName, {
+      CURRENT: _current.map((e) => e.toMap()).toList(),
+    });
+  }
+
+  Future<void> updateDefaultStorage() {
+    return Storage.instance.add(Stores.cashier, _recordName, {
+      DEFAULT: _default.map((e) => e.toMap()).toList(),
+    });
+  }
+
   Future<void> updateFavoriteStorage() {
-    return Storage.instance.set(Stores.cashier, {
-      '$_recordName.favorites': _favorites.map((e) => e.toMap()).toList(),
+    return Storage.instance.add(Stores.cashier, _recordName, {
+      FAVORITES: _favorites.map((e) => e.toMap()).toList(),
     });
   }
 

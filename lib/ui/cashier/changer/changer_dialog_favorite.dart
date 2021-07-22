@@ -27,7 +27,7 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
 
   @override
   Widget build(BuildContext context) {
-    if (!Cashier.instance.hasFavorites) {
+    if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
         body: OutlinedButton(onPressed: widget.handleAdd, child: Text('立即設定')),
       );
