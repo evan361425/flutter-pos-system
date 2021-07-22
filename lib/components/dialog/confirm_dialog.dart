@@ -15,7 +15,7 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: SingleChildScrollView(child: content),
+      content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
