@@ -18,7 +18,7 @@ import 'stock_model_test.mocks.dart';
 
 @GenerateMocks([OrderProductModel])
 void main() {
-  final cart = CartModel.instance;
+  final cart = CartModel();
 
   Iterable<MockOrderProductModel> createProducts(
     List<String> ids, {
@@ -196,6 +196,7 @@ void main() {
       when(orders.pop()).thenAnswer((_) => Future.value(object));
       when(object.id).thenReturn(1);
       when(object.createdAt).thenReturn(DateTime.now());
+      when(object.totalPrice).thenReturn(100);
 
       final isCalled = await checkNotifierCalled(cart, () => cart.paid(5));
 

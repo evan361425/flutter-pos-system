@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 
-import '../../../mocks/mock_cart.dart';
+import '../../../mocks/mocks.dart';
 import '../../../mocks/mock_widgets.dart';
 import '../../../mocks/providers.dart';
 
@@ -157,7 +157,7 @@ void main() {
   });
 
   setUpAll(() {
-    initializeCart();
+    initialize();
     initializeProviders();
   });
 }
