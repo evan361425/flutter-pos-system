@@ -11,7 +11,7 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 
-import '../../../mocks/mock_cart.dart';
+import '../../../mocks/mocks.dart';
 
 void main() {
   testWidgets('show empty when no products', (tester) async {
@@ -109,7 +109,7 @@ void main() {
   });
 
   setUpAll(() {
-    initializeCart();
+    initialize();
   });
 
   tearDown(() {

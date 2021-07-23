@@ -6,6 +6,7 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
@@ -38,7 +39,7 @@ void main() {
     expect(find.byType(CalculatorDialog), findsOneWidget);
   });
 
-  testWidgets('should buildable in landscape mode', (tester) async {
+  testWidgets('should build success in landscape mode', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.itemList).thenReturn([]);
 
@@ -128,5 +129,10 @@ void main() {
   setUpAll(() {
     initialize();
     initializeProviders();
+    CartModel.instance = CartModel();
+  });
+
+  tearDownAll(() {
+    CartModel.instance = cart;
   });
 }
