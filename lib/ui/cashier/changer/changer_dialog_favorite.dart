@@ -1,9 +1,9 @@
-import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/toast.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/translator.dart';
@@ -86,8 +86,20 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
     ]);
   }
 
-  void reset() {
-    setState(() {});
+  Future<bool> handleApply() async {
+    if (selectedFavorite == null) {
+      await Toast.show('請選擇要套用的組合');
+      return false;
+    }
+
+    final item = Cashier.instance.favoriteAt(selectedFavorite!);
+    final isValid = await Cashier.instance.applyFavorite(item);
+
+    if (!isValid) {
+      await Toast.show('${item.source.unit} 元不夠換');
+    }
+
+    return isValid;
   }
 
   void handleDeletion(int index) async {
@@ -96,20 +108,8 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
     setState(() => selectedFavorite = null);
   }
 
-  Future<bool> handleApply() async {
-    if (selectedFavorite == null) {
-      await context.showToast('請選擇要套用的組合');
-      return false;
-    }
-
-    final item = Cashier.instance.favoriteAt(selectedFavorite!);
-    final isValid = await Cashier.instance.applyFavorite(item);
-
-    if (!isValid) {
-      await context.showToast('${item.source.unit} 元不夠換');
-    }
-
-    return isValid;
+  void reset() {
+    setState(() {});
   }
 
   void showActions(int index) async {

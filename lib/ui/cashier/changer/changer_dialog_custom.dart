@@ -1,6 +1,6 @@
-import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/components/style/toast.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -44,7 +44,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
         child: Text('新增常用'),
       ),
     ]);
-    final sourceEntry = wrapInRow(
+    final sourceEntry = _wrapInRow(
       TextFormField(
         controller: sourceCount,
         keyboardType: TextInputType.number,
@@ -53,11 +53,12 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
         validator: Validator.positiveInt('數量', minimum: 1),
       ),
       DropdownButtonFormField<num>(
+        key: Key('changer.source'),
         value: sourceUnit,
         hint: Text('幣值'),
         validator: Validator.positiveNumber('幣值'),
         onChanged: handleUnitChanged,
-        items: unitDropdownMenuItems(),
+        items: _unitDropdownMenuItems(),
         autovalidateMode: AutovalidateMode.onUserInteraction,
       ),
     );
@@ -65,7 +66,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       for (var entry in targets.asMap().entries)
         Padding(
           padding: const EdgeInsets.only(top: kSpacing1),
-          child: wrapInRow(
+          child: _wrapInRow(
               TextFormField(
                 controller: entry.key == 0 ? targetController : null,
                 initialValue:
@@ -77,11 +78,12 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
                     entry.value.count = int.tryParse(value ?? ''),
               ),
               DropdownButtonFormField<num>(
+                key: Key('changer.target.${entry.key}'),
                 value: entry.value.unit,
                 hint: Text('幣值'),
                 onChanged: (value) => setState(() => entry.value.unit = value),
                 onSaved: (value) => entry.value.unit = value,
-                items: ChangerDialogCustomState.unitDropdownMenuItems(),
+                items: ChangerDialogCustomState._unitDropdownMenuItems(),
               ),
               entry.key == 0
                   ? null
@@ -121,18 +123,6 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
     );
   }
 
-  void changeSource(int? count) {
-    if (count == null || sourceUnit == null) {
-      return;
-    }
-
-    setState(() {
-      final result = Cashier.instance.findPossibleChange(count, sourceUnit!);
-      targets = [result ?? CashierChangeEntryObject()];
-      targetController.text = targets.first.count?.toString() ?? '';
-    });
-  }
-
   @override
   void dispose() {
     sourceCount.dispose();
@@ -150,19 +140,19 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       await Cashier.instance.update({
         index: -count,
         ...{
-          for (var target in mergedTargets().entries)
+          for (var target in _mergedTargets().entries)
             Cashier.instance.indexOf(target.key): target.value
         },
       });
       return true;
     } else {
-      await context.showToast('$sourceUnit 元不夠換');
+      await Toast.show('$sourceUnit 元不夠換');
       return false;
     }
   }
 
   void handleCountChanged(String value) {
-    changeSource(int.tryParse(value));
+    _changeSource(int.tryParse(value));
   }
 
   void handleFavorite() async {
@@ -174,7 +164,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
           unit: sourceUnit!,
         ),
         targets: [
-          for (var target in mergedTargets().entries)
+          for (var target in _mergedTargets().entries)
             CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
@@ -185,7 +175,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
     setState(() {
       sourceUnit = value;
 
-      changeSource(int.tryParse(sourceCount.text));
+      _changeSource(int.tryParse(sourceCount.text));
     });
   }
 
@@ -194,20 +184,6 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
     super.initState();
     sourceCount = TextEditingController(text: '1');
     targetController = TextEditingController();
-  }
-
-  Map<num, int> mergedTargets() {
-    final deltas = <num, int>{};
-
-    targets.forEach((target) {
-      if (!target.isEmpty) {
-        deltas[target.unit!] = deltas[target.unit!] == null
-            ? target.count!
-            : deltas[target.unit!]! + target.count!;
-      }
-    });
-
-    return deltas;
   }
 
   bool validate() {
@@ -233,13 +209,39 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
       });
-      context.showToast(msg);
+      Toast.show(msg);
     }
 
     return false;
   }
 
-  Widget wrapInRow(Widget a, Widget b, [Widget? c]) {
+  void _changeSource(int? count) {
+    if (count == null || sourceUnit == null) {
+      return;
+    }
+
+    setState(() {
+      final result = Cashier.instance.findPossibleChange(count, sourceUnit!);
+      targets = [result ?? CashierChangeEntryObject()];
+      targetController.text = targets.first.count?.toString() ?? '';
+    });
+  }
+
+  Map<num, int> _mergedTargets() {
+    final deltas = <num, int>{};
+
+    targets.forEach((target) {
+      if (!target.isEmpty) {
+        deltas[target.unit!] = deltas[target.unit!] == null
+            ? target.count!
+            : deltas[target.unit!]! + target.count!;
+      }
+    });
+
+    return deltas;
+  }
+
+  Widget _wrapInRow(Widget a, Widget b, [Widget? c]) {
     return Row(children: [
       Expanded(child: a),
       const SizedBox(width: kSpacing1),
@@ -248,7 +250,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
     ]);
   }
 
-  static List<DropdownMenuItem<num>> unitDropdownMenuItems() {
+  static List<DropdownMenuItem<num>> _unitDropdownMenuItems() {
     return CurrencyProvider.instance.unitList.map((unit) {
       return DropdownMenuItem(value: unit, child: Text(unit.toString()));
     }).toList();
