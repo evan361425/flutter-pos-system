@@ -60,14 +60,14 @@ class CashierUnitList extends StatelessWidget {
   void handleAdd(BuildContext context, int index) async {
     final count = await getCount(context, '欲新增的數量');
     if (count != null) {
-      Cashier.instance.add(index, count);
+      await Cashier.instance.add(index, count);
     }
   }
 
   void handleMinus(BuildContext context, int index) async {
     final count = await getCount(context, '欲減少的數量');
     if (count != null) {
-      Cashier.instance.minus(index, count);
+      await Cashier.instance.minus(index, count);
     }
   }
 }

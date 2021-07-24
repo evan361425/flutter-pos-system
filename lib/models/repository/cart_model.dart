@@ -114,8 +114,7 @@ class CartModel extends ChangeNotifier {
       info(data.id.toString(), 'order.cart.update');
       await OrderRepo.instance.update(data);
       await StockModel.instance.order(data, oldData: oldData);
-      await Cashier.instance
-          .paid(data.totalPrice, oldPrice: oldData?.totalPrice);
+      await Cashier.instance.paid(paid, data.totalPrice, oldData?.totalPrice);
 
       leaveHistoryMode();
     } else {
@@ -124,7 +123,7 @@ class CartModel extends ChangeNotifier {
       info(data.totalCount.toString(), 'order.cart.push');
       await OrderRepo.instance.push(data);
       await StockModel.instance.order(data);
-      await Cashier.instance.paid(data.totalPrice);
+      await Cashier.instance.paid(paid, data.totalPrice);
 
       clear();
     }

@@ -5,35 +5,20 @@ class CashierChangeBatchObject {
 
   CashierChangeBatchObject({required this.source, required this.targets});
 
-  /// Build [CashierChangeBatchObject] by map.
-  ///
-  /// Throws an [AssertionError] if missing source and targets.
-  /// Throws a [FormatException] if key cannot parse to num.
   factory CashierChangeBatchObject.fromMap(Map<String, Object?> map) {
-    assert(map['source'] is Map && map['targets'] is Map);
-    final source = (map['source'] as Map).entries.first;
-    final targets = (map['targets'] as Map).entries;
-
     return CashierChangeBatchObject(
-        source: CashierChangeEntryObject(
-          count: source.value,
-          unit: num.parse(source.key),
-        ),
+        source:
+            CashierChangeEntryObject.fromMap(map['source'] as Map<String, num>),
         targets: [
-          for (var target in targets)
-            CashierChangeEntryObject(
-              count: target.value,
-              unit: num.parse(target.key),
-            )
+          for (var target in map['targets'] as Iterable)
+            CashierChangeEntryObject.fromMap(target as Map<String, num>)
         ]);
   }
 
-  Map<String, Map<String, int>> toMap() {
+  Map<String, Object> toMap() {
     return {
-      'source': {source.unit.toString(): source.count!},
-      'targets': {
-        for (var target in targets) target.unit.toString(): target.count!
-      },
+      'source': source.toMap(),
+      'targets': [for (var target in targets) target.toMap()],
     };
   }
 
@@ -51,10 +36,24 @@ class CashierChangeEntryObject {
 
   CashierChangeEntryObject({this.unit, this.count});
 
+  factory CashierChangeEntryObject.fromMap(Map<String, num> map) {
+    return CashierChangeEntryObject(
+      count: map['count']?.toInt() ?? 0,
+      unit: map['unit'],
+    );
+  }
+
   bool get isEmpty => unit == null || count == null;
 
   num get total {
     return isEmpty ? 0 : unit! * count!;
+  }
+
+  Map<String, num> toMap() {
+    return {
+      'unit': unit!,
+      'count': count!,
+    };
   }
 }
 
