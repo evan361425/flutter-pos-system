@@ -1,6 +1,6 @@
-import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -69,13 +69,13 @@ class CashierScreen extends StatelessWidget {
     );
 
     if (success == true) {
-      await context.showSuccessBar(content: Text(tt('success')));
+      showSuccessSnackbar(context, tt('success'));
     }
   }
 
   void handleSurplus(BuildContext context) async {
     if (Cashier.instance.defaultNotSet) {
-      return context.showInfoBar(content: Text('尚未設定，請點選右上角「設為預設」'));
+      return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
     }
 
     final success = await showDialog<bool>(
@@ -88,7 +88,7 @@ class CashierScreen extends StatelessWidget {
     if (success == true) {
       await Cashier.instance.surplus();
 
-      await context.showSuccessBar(content: Text(tt('success')));
+      showSuccessSnackbar(context, tt('success'));
     }
   }
 
@@ -108,6 +108,6 @@ class CashierScreen extends StatelessWidget {
 
     await Cashier.instance.setDefault(useCurrent: true);
 
-    await context.showSuccessBar(content: Text(tt('success')));
+    showSuccessSnackbar(context, tt('success'));
   }
 }

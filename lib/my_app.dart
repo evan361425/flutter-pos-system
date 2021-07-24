@@ -1,8 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flash/flash.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/app_themes.dart';
@@ -59,18 +57,6 @@ class MyApp extends StatelessWidget {
             FirebaseAnalyticsObserver(analytics: analytics),
             routeObserver,
           ],
-          builder: (context, child) {
-            // Wrap with flash, followed by
-            // https://pub.dev/packages/flash/example
-            final navigatorKey = child!.key as GlobalKey<NavigatorState>;
-            return FlashTheme(
-              flashBarTheme: Theme.of(context).brightness == Brightness.dark
-                  ? const FlashBarThemeData.dark()
-                  : const FlashBarThemeData.light(),
-              flashDialogTheme: const FlashDialogThemeData(),
-              child: Toast(navigatorKey: navigatorKey, child: child),
-            );
-          },
           // === language setting ===
           locale: language.isReady ? language.locale : null,
           supportedLocales: LanguageProvider.supports,

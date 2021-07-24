@@ -12,11 +12,11 @@ class CashierUnitList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<Cashier>();
+    final cashier = context.watch<Cashier>();
 
     return ListView.builder(
       itemBuilder: (_, i) {
-        final unit = Cashier.instance.at(i);
+        final unit = cashier.at(i);
 
         return ListTile(
           onTap: () {},
@@ -39,11 +39,25 @@ class CashierUnitList extends StatelessWidget {
           ),
         );
       },
-      itemCount: Cashier.instance.unitLength,
+      itemCount: cashier.unitLength,
     );
   }
 
-  Future<int?> getCount(BuildContext context, String title) async {
+  void handleAdd(BuildContext context, int index) async {
+    final count = await waitForInput(context, '欲新增的數量');
+    if (count != null) {
+      await Cashier.instance.add(index, count);
+    }
+  }
+
+  void handleMinus(BuildContext context, int index) async {
+    final count = await waitForInput(context, '欲減少的數量');
+    if (count != null) {
+      await Cashier.instance.minus(index, count);
+    }
+  }
+
+  Future<int?> waitForInput(BuildContext context, String title) async {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => SingleTextDialog(
@@ -55,19 +69,5 @@ class CashierUnitList extends StatelessWidget {
     );
 
     return result == null ? null : int.tryParse(result);
-  }
-
-  void handleAdd(BuildContext context, int index) async {
-    final count = await getCount(context, '欲新增的數量');
-    if (count != null) {
-      await Cashier.instance.add(index, count);
-    }
-  }
-
-  void handleMinus(BuildContext context, int index) async {
-    final count = await getCount(context, '欲減少的數量');
-    if (count != null) {
-      await Cashier.instance.minus(index, count);
-    }
   }
 }
