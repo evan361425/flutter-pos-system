@@ -184,6 +184,7 @@ void main() {
       expect(isCalled, isTrue);
       expect(cart.isEmpty, isTrue);
       verify(stock.order(any));
+      verify(cashier.paid(4, 4));
     });
 
     test('should add order in history mode', () async {
@@ -204,6 +205,7 @@ void main() {
       expect(cart.isEmpty, isTrue);
       expect(cart.isHistoryMode, isFalse);
       verify(stock.order(any, oldData: object));
+      verify(cashier.paid(5, 4, 100));
     });
   });
 
