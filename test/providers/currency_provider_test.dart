@@ -57,6 +57,7 @@ void main() {
       final action = () => currency.setCurrency('USD');
 
       expect(await checkNotifierCalled(currency, action), isTrue);
+      verify(cashier.reset('USD', any));
     });
   });
 

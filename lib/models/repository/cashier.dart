@@ -156,7 +156,9 @@ class Cashier extends ChangeNotifier {
   /// Minus [count] money of unit at [index] to cashier
   Future<void> minus(int index, int count) => update({index: -count});
 
-  Future<void> paid(num paid, num price, [num? oldPrice]) {
+  Future<void> paid(num paid, num price, [num? oldPrice]) async {
+    if (oldPrice == null && paid == price) return;
+
     final deltas = <int, int>{};
     _getUpdateDataFromPrice(deltas, paid, true);
     _getUpdateDataFromPrice(deltas, paid - price + (oldPrice ?? 0), false);
