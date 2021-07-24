@@ -24,7 +24,7 @@ class Cashier extends ChangeNotifier {
   final List<CashierChangeBatchObject> _favorites = [];
 
   /// Cashier current using currency name
-  late String _recordName;
+  String _recordName = '';
 
   num get currentTotal => _current.fold(0, (value, e) => value + e.total);
 
@@ -39,46 +39,13 @@ class Cashier extends ChangeNotifier {
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
 
-  /// Add [count] money from unit [index] to cashier
-  void add(int index, int count) {
-    update({index: count});
-  }
+  /// Add [count] money of unit at [index] to cashier
+  Future<void> add(int index, int count) => update({index: count});
 
   Future<void> addFavorite(CashierChangeBatchObject item) {
     _favorites.add(item);
 
-    return updateFavoriteStorage();
-  }
-
-  Future<void> paid(num price, {num? oldPrice}) {
-    print(price);
-    final deltas = getUpdateDataFromPrice(price);
-    print(deltas);
-    if (oldPrice != null) {
-      getUpdateDataFromPrice(oldPrice).forEach((key, value) {
-        deltas[key] = deltas.containsKey(key) ? deltas[key]! - value : -value;
-      });
-    }
-
-    return update(deltas);
-  }
-
-  Map<int, int> getUpdateDataFromPrice(num price) {
-    final result = <int, int>{};
-
-    var index = unitLength - 1;
-    for (var item in _current.reversed) {
-      if (item.unit <= price) {
-        final count = (price / item.unit).floor();
-        result[index] = -count;
-
-        price -= item.unit * count;
-        if (price == 0) break;
-      }
-      index--;
-    }
-
-    return result;
+    return _updateFavoriteStorage();
   }
 
   Future<bool> applyFavorite(CashierChangeBatchObject item) async {
@@ -96,15 +63,13 @@ class Cashier extends ChangeNotifier {
   }
 
   /// Get current unit from [index]
-  CashierUnitObject at(int index) {
-    return _current[index];
-  }
+  CashierUnitObject at(int index) => _current[index];
 
   Future<void> deleteFavorite(int index) async {
     try {
       _favorites.removeAt(index);
 
-      await updateFavoriteStorage();
+      await _updateFavoriteStorage();
     } catch (e) {
       await error(
         'total: $unitLength, index: $index',
@@ -123,72 +88,52 @@ class Cashier extends ChangeNotifier {
   /// else change larger unit
   ///
   /// ```dart
-  /// final units = [10, 100, 500, 1000]
-  /// change(10, 100); // [2-500];
+  /// final units = [10, 100, 500]
   /// change(1, 100); // [10-10];
+  /// change(1, 10); // null;
+  /// change(6, 100); // [1-500];
+  /// change(4, 100); // [40-10];
+  /// change(9, 10); // null;
   /// ```
-  List<CashierChangeEntryObject> findPossibleChange(int count, num unit) {
+  CashierChangeEntryObject? findPossibleChange(int count, num unit) {
     final index = indexOf(unit);
-    if (index == -1) {
-      return [];
+    if (index == -1 || count < 1) {
+      return null;
     }
+
+    final total = count * unit;
 
     if (count == 1) {
-      final result = <CashierChangeEntryObject>[];
-      for (var i = index - 1; i >= 0; i--) {
-        final unitObject = _current[i];
-        final unitCount = (unit / unitObject.unit).floor();
-        unit -= unitCount * unitObject.unit;
+      if (index > 0) {
+        final unit = at(index - 1).unit;
 
-        result.add(CashierChangeEntryObject(
-          unit: unitObject.unit,
-          count: unitCount,
-        ));
-
-        if (unit == 0) {
-          break;
-        }
+        return CashierChangeEntryObject(
+          unit: unit,
+          count: (total / unit).floor(),
+        );
       }
+    } else {
+      for (var i = unitLength - 1; i > index; i--) {
+        final unit = at(i).unit;
 
-      return result;
-    } else if (count > 1) {
-      final total = count * unit;
-      var i = unitLength - 1;
-
-      if (i == index && i > 0) {
-        final unit = _current[i - 1].unit;
-
-        return [
-          CashierChangeEntryObject(
+        // if not enough to change this unit
+        if (total >= unit) {
+          return CashierChangeEntryObject(
             unit: unit,
             count: (total / unit).floor(),
-          ),
-        ];
-      }
-
-      final result = <CashierChangeEntryObject>[];
-
-      for (i; i > index; i--) {
-        final item = _current[i];
-        // if not enough to change this unit
-        if (total < item.unit) {
-          continue;
+          );
         }
-
-        final unitCount = (total / item.unit).floor();
-
-        result.add(CashierChangeEntryObject(
-          unit: item.unit,
-          count: unitCount,
-        ));
-
-        break;
       }
 
-      return result;
-    }
+      if (index > 0) {
+        final unit = at(index - 1).unit;
 
-    return [];
+        return CashierChangeEntryObject(
+          unit: unit,
+          count: (total / unit).floor(),
+        );
+      }
+    }
   }
 
   /// Current and default difference
@@ -208,9 +153,15 @@ class Cashier extends ChangeNotifier {
     return _current.indexWhere((element) => element.unit == unit);
   }
 
-  /// Minus [count] money from unit [index] to cashier
-  void minus(int index, int count) {
-    update({index: -count});
+  /// Minus [count] money of unit at [index] to cashier
+  Future<void> minus(int index, int count) => update({index: -count});
+
+  Future<void> paid(num paid, num price, [num? oldPrice]) {
+    final deltas = <int, int>{};
+    _getUpdateDataFromPrice(deltas, paid, true);
+    _getUpdateDataFromPrice(deltas, paid - price + (oldPrice ?? 0), false);
+
+    return update(deltas);
   }
 
   /// When [Currency] changed, it must be fired
@@ -222,7 +173,7 @@ class Cashier extends ChangeNotifier {
     await setFavorite(record[_FAVORITES]);
 
     if (record[_DEFAULT] != null) {
-      await setDefault(record: record[_DEFAULT]);
+      await setDefault(record: record[_DEFAULT]!);
     }
   }
 
@@ -248,18 +199,15 @@ class Cashier extends ChangeNotifier {
         ]);
 
       // reset to empty
-      await updateCurrentStorage();
+      await _updateCurrentStorage();
     }
   }
 
   /// Set default data
   ///
   /// If [record] is null, [useCurrent] must be true
-  Future<void> setDefault({
-    Object? record,
-    bool useCurrent = false,
-  }) async {
-    assert(record != null || useCurrent);
+  Future<void> setDefault({Object record = '', bool useCurrent = false}) async {
+    assert(record != '' || useCurrent);
 
     if (useCurrent) {
       _default
@@ -268,6 +216,8 @@ class Cashier extends ChangeNotifier {
           for (var item in _current)
             CashierUnitObject(unit: item.unit, count: item.count)
         ]);
+
+      await _updateDefaultStorage();
     } else {
       try {
         _default
@@ -280,8 +230,6 @@ class Cashier extends ChangeNotifier {
         await error(e.toString(), 'cashier.fetch.unit.error', stack);
       }
     }
-
-    await updateDefaultStorage();
   }
 
   Future<void> setFavorite(Object? record) async {
@@ -294,7 +242,6 @@ class Cashier extends ChangeNotifier {
         ]);
     } catch (e, stack) {
       await error(e.toString(), 'cashier.fetch.favorite.error', stack);
-      _favorites.clear();
     }
   }
 
@@ -304,8 +251,7 @@ class Cashier extends ChangeNotifier {
       _current[i].count = _default[i].count;
     }
 
-    await updateCurrentStorage();
-    notifyListeners();
+    await _updateCurrentStorage();
   }
 
   /// Update chashier by [deltas]
@@ -322,31 +268,50 @@ class Cashier extends ChangeNotifier {
     });
 
     if (isUpdated) {
-      await updateCurrentStorage();
-      notifyListeners();
+      await _updateCurrentStorage();
     }
-  }
-
-  Future<void> updateCurrentStorage() {
-    return Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_CURRENT': _current.map((e) => e.toMap()).toList(),
-    });
-  }
-
-  Future<void> updateDefaultStorage() {
-    return Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_DEFAULT': _default.map((e) => e.toMap()).toList(),
-    });
-  }
-
-  Future<void> updateFavoriteStorage() {
-    return Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_FAVORITES': _favorites.map((e) => e.toMap()).toList(),
-    });
   }
 
   /// Check specific unit by [index] has valid [count] to minus
   bool validate(int index, int count) {
     return _current[index].count >= count;
+  }
+
+  void _getUpdateDataFromPrice(
+    Map<int, int> deltas,
+    num price,
+    bool isPositive,
+  ) {
+    var index = unitLength - 1;
+    for (var item in _current.reversed) {
+      if (item.unit <= price) {
+        final count = (price / item.unit).floor();
+        deltas[index] = (deltas[index] ?? 0) + (isPositive ? count : -count);
+
+        price -= item.unit * count;
+        if (price == 0) break;
+      }
+      index--;
+    }
+  }
+
+  Future<void> _updateCurrentStorage() async {
+    await Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_CURRENT': _current.map((e) => e.toMap()).toList(),
+    });
+
+    notifyListeners();
+  }
+
+  Future<void> _updateDefaultStorage() {
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_DEFAULT': _default.map((e) => e.toMap()).toList(),
+    });
+  }
+
+  Future<void> _updateFavoriteStorage() {
+    return Storage.instance.set(Stores.cashier, {
+      '$_recordName.$_FAVORITES': _favorites.map((e) => e.toMap()).toList(),
+    });
   }
 }

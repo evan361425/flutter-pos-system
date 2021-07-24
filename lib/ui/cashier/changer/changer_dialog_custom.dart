@@ -128,7 +128,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
 
     setState(() {
       final result = Cashier.instance.findPossibleChange(count, sourceUnit!);
-      targets = result.isEmpty ? [CashierChangeEntryObject()] : result;
+      targets = [result ?? CashierChangeEntryObject()];
       targetController.text = targets.first.count?.toString() ?? '';
     });
   }
