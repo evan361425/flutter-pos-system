@@ -83,7 +83,6 @@ void main() {
     when(cashier.favoriteIsEmpty).thenReturn(false);
     when(cashier.favoriteLength).thenReturn(1);
     when(cashier.favoriteAt(0)).thenReturn(item);
-    Toast.startDebug();
 
     final dialog = GlobalKey<ChangerDialogFavoriteState>();
 
@@ -94,6 +93,8 @@ void main() {
     ));
 
     final result = await dialog.currentState?.handleApply();
+    // wait for toast
+    await tester.pump(Duration(seconds: 2, milliseconds: 500));
 
     expect(result, isFalse);
   });

@@ -7,11 +7,11 @@ class CashierChangeBatchObject {
 
   factory CashierChangeBatchObject.fromMap(Map<String, Object?> map) {
     return CashierChangeBatchObject(
-        source:
-            CashierChangeEntryObject.fromMap(map['source'] as Map<String, num>),
+        source: CashierChangeEntryObject.fromMap(
+            map['source'] as Map<String, Object?>),
         targets: [
           for (var target in map['targets'] as Iterable)
-            CashierChangeEntryObject.fromMap(target as Map<String, num>)
+            CashierChangeEntryObject.fromMap(target as Map<String, Object?>)
         ]);
   }
 
@@ -36,10 +36,10 @@ class CashierChangeEntryObject {
 
   CashierChangeEntryObject({this.unit, this.count});
 
-  factory CashierChangeEntryObject.fromMap(Map<String, num> map) {
+  factory CashierChangeEntryObject.fromMap(Map<String, Object?> map) {
     return CashierChangeEntryObject(
-      count: map['count']?.toInt() ?? 0,
-      unit: map['unit'],
+      count: map['count'] as int,
+      unit: map['unit'] as num,
     );
   }
 

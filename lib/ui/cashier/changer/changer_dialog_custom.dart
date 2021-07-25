@@ -146,7 +146,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
       });
       return true;
     } else {
-      await Toast.show('$sourceUnit 元不夠換');
+      Toast.show(context, '$sourceUnit 元不夠換');
       return false;
     }
   }
@@ -209,7 +209,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
       });
-      Toast.show(msg);
+      Toast.show(context, msg);
     }
 
     return false;
