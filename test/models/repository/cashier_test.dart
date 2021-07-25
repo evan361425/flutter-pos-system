@@ -4,7 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_storage.dart';
 
 void main() {
   test('#setCurrent', () async {
@@ -310,6 +310,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeStorage();
   });
 }

@@ -10,9 +10,9 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_modal.dart';
 
-import '../../../../mocks/mockito/mock_product_ingredient_model.dart';
-import '../../../../mocks/mocks.dart';
-import '../../../../models/repository/quantity_repo_test.mocks.dart';
+import '../../../../mocks/mock_models.mocks.dart';
+import '../../../../mocks/mock_repos.dart';
+import '../../../../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
@@ -23,7 +23,6 @@ void main() {
     when(ingredient.amount).thenReturn(1);
     when(ingredient.hasItem('qua-2')).thenReturn(false);
     when(ingredient.setItem(any)).thenAnswer((_) => Future.value());
-    when(ingredient.toString()).thenReturn('ingredient');
     when(quantities.getItem('qua-2')).thenReturn(newQuantity);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
     final quantity = ProductQuantityModel(
@@ -84,7 +83,6 @@ void main() {
     when(ingredient.amount).thenReturn(1);
     when(ingredient.hasItem('qua-1')).thenReturn(false);
     when(ingredient.setItem(any)).thenAnswer((_) => Future.value());
-    when(ingredient.toString()).thenReturn('ingredient');
     when(quantities.getItem('qua-1')).thenReturn(quantity);
     when(quantity.name).thenReturn('qua-1');
     when(quantity.id).thenReturn('qua-1');
@@ -157,6 +155,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

@@ -10,8 +10,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mocks.dart';
-import '../../models/repository/stock_model_test.mocks.dart';
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show loading if not ready', (tester) async {
@@ -76,6 +76,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

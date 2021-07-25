@@ -4,8 +4,8 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 
-import '../../../mocks/mocks.dart';
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_repos.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should get true after pop', (tester) async {
@@ -43,6 +43,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

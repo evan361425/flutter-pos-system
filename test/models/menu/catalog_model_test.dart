@@ -6,7 +6,8 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
@@ -194,6 +195,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

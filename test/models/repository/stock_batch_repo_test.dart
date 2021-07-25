@@ -1,13 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/stock_batch_repo.dart';
-import 'package:possystem/models/stock/stock_batch_model.dart';
 
-import '../../mocks/mocks.dart';
-import 'stock_batch_repo_test.mocks.dart';
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_storage.dart';
 
-@GenerateMocks([StockBatchModel])
 void main() {
   test('#constructor', () {
     when(storage.get(any)).thenAnswer((e) => Future.value({
@@ -51,6 +48,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeStorage();
   });
 }

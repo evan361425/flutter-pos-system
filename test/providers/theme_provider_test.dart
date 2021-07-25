@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/providers/theme_provider.dart';
 
-import '../mocks/mocks.dart';
+import '../mocks/mock_cache.dart';
 import '../test_helpers/check_notifier.dart';
 
 void main() {
@@ -56,6 +56,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeCache();
   });
 }

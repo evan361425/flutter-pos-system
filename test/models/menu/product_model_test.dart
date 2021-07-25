@@ -8,11 +8,10 @@ import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
+import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
-import '../../mocks/mockito/mock_catalog_model.dart';
-import 'product_quantity_model_test.mocks.dart';
 
 void main() {
   group('factory', () {
@@ -196,7 +195,6 @@ void main() {
       when(catalog.name).thenReturn('');
       when(catalog.index).thenReturn(1);
       when(catalog.id).thenReturn('c_id');
-      when(catalog.toString()).thenReturn('catalog_string');
       product = ProductModel(
         index: 1,
         name: 'name',
@@ -209,6 +207,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeStorage();
   });
 }

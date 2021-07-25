@@ -12,8 +12,8 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
-import '../../mocks/mocks.dart';
-import '../../mocks/providers.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should show actions', (tester) async {
@@ -127,7 +127,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
     initializeProviders();
     CartModel.instance = CartModel();
   });

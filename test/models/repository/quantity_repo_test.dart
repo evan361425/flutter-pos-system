@@ -1,16 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
 
+import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
-import 'quantity_repo_test.mocks.dart';
 
-@GenerateMocks([QuantityModel])
 void main() {
   group('#constructor', () {
     test('should success', () {
@@ -112,7 +109,6 @@ void main() {
 
         when(q_b.toObject()).thenReturn(mockQuantityObject1);
         when(q_b.id).thenReturn('b');
-        when(q_b.toString()).thenReturn('name');
         when(storage.add(any, 'b', q_map)).thenAnswer((_) => Future.value());
 
         final future = checkNotifierCalled(repo, () => repo.setItem(q_b));
@@ -128,7 +124,6 @@ void main() {
         final quantity = MockQuantityModel();
         when(quantity.getSimilarity(any)).thenReturn(similarity);
         when(quantity.id).thenReturn(id);
-        when(quantity.toString()).thenReturn(id);
 
         return quantity;
       }
@@ -175,6 +170,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeStorage();
   });
 }

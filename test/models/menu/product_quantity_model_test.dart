@@ -1,17 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
 import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 
+import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mocks.dart';
-import 'product_quantity_model_test.mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_storage.dart';
 
-@GenerateMocks([ProductIngredientModel])
 void main() {
   group('factory', () {
     test('#construct', () {
@@ -138,12 +136,12 @@ void main() {
           quantity: QuantityModel(name: 'qua', id: 'q_id'));
 
       when(ingredient.prefix).thenReturn('i_prefix');
-      when(ingredient.toString()).thenReturn('ingredient_string');
       when(ingredient.name).thenReturn('i_name');
     });
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

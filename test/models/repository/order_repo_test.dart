@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/order_repo.dart';
 
 import '../../mocks/mock_database.dart';
-import '../../mocks/mockito/mock_order_object.dart';
+import '../../mocks/mock_models.mocks.dart';
 
 void main() {
   final orders = OrderRepo();

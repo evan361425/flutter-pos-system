@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
 
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show changer', (tester) async {
@@ -76,6 +76,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

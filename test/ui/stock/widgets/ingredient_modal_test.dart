@@ -5,12 +5,10 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
 
+import '../../../mocks/mock_models.mocks.dart';
+import '../../../mocks/mock_storage.dart';
 import '../../../mocks/mock_widgets.dart';
-import '../../../mocks/mockito/mock_catalog_model.dart';
-import '../../../mocks/mockito/mock_product_ingredient_model.dart';
-import '../../../mocks/mockito/mock_product_model.dart';
-import '../../../mocks/mocks.dart';
-import '../../../models/repository/stock_model_test.mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
@@ -80,6 +78,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

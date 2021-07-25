@@ -3,7 +3,7 @@ import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 
-import 'providers.mocks.dart';
+import 'mock_providers.mocks.dart';
 
 final theme = MockThemeProvider();
 final language = MockLanguageProvider();

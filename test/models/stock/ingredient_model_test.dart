@@ -4,7 +4,8 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
@@ -168,6 +169,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

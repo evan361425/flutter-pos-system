@@ -4,7 +4,8 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/stock_batch_model.dart';
 
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_storage.dart';
 
 void main() {
   test('#fromObject', () {
@@ -79,6 +80,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

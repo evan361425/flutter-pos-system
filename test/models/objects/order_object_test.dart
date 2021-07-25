@@ -2,11 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/order_object.dart';
 
-import '../../mocks/mockito/mock_product_model.dart';
-import '../../mocks/mocks.dart';
-import '../menu/product_ingredient_model_test.mocks.dart';
-import '../menu/product_quantity_model_test.mocks.dart';
-import '../repository/stock_model_test.mocks.dart';
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_repos.dart';
 
 void main() {
   test('#parseToProduct', () {
@@ -109,5 +106,5 @@ void main() {
     expect(map, equals(newMap));
   });
 
-  setUpAll(() => initialize());
+  setUpAll(() => initializeRepos());
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/toast.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/ui/cashier/changer/changer_dialog_custom.dart';
 
-import '../../../mocks/mocks.dart';
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_repos.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('change unit only and handle favorite', (tester) async {
@@ -111,7 +110,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
     initializeProviders();
   });
 }

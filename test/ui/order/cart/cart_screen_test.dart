@@ -7,7 +7,7 @@ import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/ui/order/cart/cart_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('select all', (tester) async {
@@ -40,6 +40,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

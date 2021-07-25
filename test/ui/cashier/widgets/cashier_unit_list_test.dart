@@ -6,7 +6,8 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_unit_list.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
+import '../../../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should add successfully', (tester) async {
@@ -60,6 +61,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

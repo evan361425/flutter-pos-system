@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/toast.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/ui/cashier/changer/changer_dialog_favorite.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should addable if empty', (tester) async {
@@ -100,6 +99,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

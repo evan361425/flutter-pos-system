@@ -6,7 +6,7 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should navigate', (tester) async {
@@ -67,6 +67,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

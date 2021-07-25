@@ -10,9 +10,9 @@ import 'package:possystem/models/stock/ingredient_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_modal.dart';
 
-import '../../../../mocks/mockito/mock_product_model.dart';
-import '../../../../mocks/mocks.dart';
-import '../../../../models/repository/stock_model_test.mocks.dart';
+import '../../../../mocks/mock_models.mocks.dart';
+import '../../../../mocks/mock_repos.dart';
+import '../../../../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
@@ -22,7 +22,6 @@ void main() {
     when(product.prefix).thenReturn('p-id');
     when(product.hasItem('ing-2')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
-    when(product.toString()).thenReturn('product');
     when(stock.getItem('ing-2')).thenReturn(newIngredient);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
     final productIngredient = ProductIngredientModel(
@@ -74,7 +73,6 @@ void main() {
     when(product.prefix).thenReturn('p-id');
     when(product.hasItem('ing-1')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
-    when(product.toString()).thenReturn('product');
     when(stock.getItem('ing-1')).thenReturn(ingredient);
     when(ingredient.name).thenReturn('ing-name');
     when(ingredient.id).thenReturn('ing-1');
@@ -143,6 +141,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

@@ -6,7 +6,7 @@ import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/providers.dart';
+import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should show selected preference', (tester) async {

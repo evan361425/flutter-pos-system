@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 
 import '../../../mocks/mock_widgets.dart';
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   test('should leave history', () async {
@@ -142,6 +142,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

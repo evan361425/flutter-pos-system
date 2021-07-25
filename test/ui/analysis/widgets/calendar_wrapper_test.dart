@@ -6,7 +6,7 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   Widget wrapCalendar(CalendarWrapper calendar) {

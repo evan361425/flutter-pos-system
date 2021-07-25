@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show sign', (tester) async {
