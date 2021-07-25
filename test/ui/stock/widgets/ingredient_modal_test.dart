@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
 
 import '../../../mocks/mock_models.mocks.dart';
@@ -12,10 +12,10 @@ import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final ingredient = IngredientModel(name: 'name', id: 'id');
-    final catalog = MockCatalogModel();
-    final product = MockProductModel();
-    final productIngredient = MockProductIngredientModel();
+    final ingredient = Ingredient(name: 'name', id: 'id');
+    final catalog = MockCatalog();
+    final product = MockProduct();
+    final productIngredient = MockProductIngredient();
     when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.getIngredients(any)).thenReturn([productIngredient]);
     when(productIngredient.product).thenReturn(product);
@@ -48,7 +48,7 @@ void main() {
   });
 
   testWidgets('should loading if stock mode not ready', (tester) async {
-    final ingredient = MockIngredientModel();
+    final ingredient = MockIngredient();
     when(menu.setUpStockMode(any)).thenReturn(false);
     when(ingredient.name).thenReturn('name');
     when(ingredient.id).thenReturn('id');
@@ -72,7 +72,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).last, '2');
 
     await tester.tap(find.byType(TextButton));
-    verify(stock.setItem(argThat(predicate<IngredientModel>((object) {
+    verify(stock.setItem(argThat(predicate<Ingredient>((object) {
       return object.name == 'name' && object.currentAmount == 2;
     })))).called(1);
   });

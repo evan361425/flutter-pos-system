@@ -6,9 +6,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final catalog = context.watch<CatalogModel>();
+    final catalog = context.watch<Catalog>();
 
     return FadeInTitleScaffold(
       leading: IconButton(
@@ -43,7 +43,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _actions(BuildContext context, CatalogModel catalog) {
+  List<Widget> _actions(BuildContext context, Catalog catalog) {
     return [
       ListTile(
         title: Text(tt('menu.catalog.edit')),
@@ -63,7 +63,7 @@ class CatalogScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(CatalogModel catalog, BuildContext context) {
+  Widget _body(Catalog catalog, BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -78,7 +78,7 @@ class CatalogScreen extends StatelessWidget {
             ],
           ),
         ),
-        MenuModel.instance.setUpStockMode(context)
+        Menu.instance.setUpStockMode(context)
             ? catalog.isEmpty
                 ? EmptyBody(body: Text(tt('menu.catalog.empty')))
                 : ProductList(products: catalog.itemList)
@@ -87,7 +87,7 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  Widget _catalogMetadata(CatalogModel catalog, TextTheme textTheme) {
+  Widget _catalogMetadata(Catalog catalog, TextTheme textTheme) {
     return RichText(
       text: TextSpan(
         text: tt('menu.product.count'),

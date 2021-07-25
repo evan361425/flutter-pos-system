@@ -1,39 +1,39 @@
 import 'package:mockito/annotations.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/repository/order_repo.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/repository/stock_batch_repo.dart';
-import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/stock.dart';
 
 import 'mock_repos.mocks.dart';
 
-final batches = MockStockBatchRepo();
-final cart = MockCartModel();
+final replenisher = MockReplenisher();
+final cart = MockCart();
 final cashier = MockCashier();
-final menu = MockMenuModel();
-final orders = MockOrderRepo();
-final quantities = MockQuantityRepo();
-final stock = MockStockModel();
+final menu = MockMenu();
+final seller = MockSeller();
+final quantities = MockQuantities();
+final stock = MockStock();
 
 @GenerateMocks([
-  CartModel,
+  Cart,
   Cashier,
-  MenuModel,
-  OrderRepo,
-  QuantityRepo,
-  StockBatchRepo,
-  StockModel,
+  Menu,
+  Seller,
+  Quantities,
+  Replenisher,
+  Stock,
 ])
 void _initialize() {
-  CartModel.instance = cart;
+  Cart.instance = cart;
   Cashier.instance = cashier;
-  MenuModel.instance = menu;
-  OrderRepo.instance = orders;
-  QuantityRepo.instance = quantities;
-  StockBatchRepo.instance = batches;
-  StockModel.instance = stock;
+  Menu.instance = menu;
+  Seller.instance = seller;
+  Quantities.instance = quantities;
+  Replenisher.instance = replenisher;
+  Stock.instance = stock;
   _finished = true;
 }
 

@@ -11,7 +11,7 @@ void main() {
   testWidgets('should build correct number icons', (tester) async {
     when(cache.needTutorial(any)).thenReturn(false);
     when(currency.numToString(any)).thenReturn('');
-    when(orders.getMetricBetween(any, any))
+    when(seller.getMetricBetween(any, any))
         .thenAnswer((_) => Future.value({'totalPrice': 0}));
 
     var count = 0;

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 
 void main() {
   testWidgets('should navigate to prodcut', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
-    final product = ProductModel(index: 1, name: 'name', catalog: catalog);
+    final catalog = Catalog(index: 1, name: 'c-name');
+    final product = Product(index: 1, name: 'name', catalog: catalog);
     var argument;
 
     await tester.pumpWidget(MaterialApp(
@@ -29,8 +29,8 @@ void main() {
   });
 
   testWidgets('should navigate to reorder', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
-    final product = ProductModel(index: 1, name: 'name', catalog: catalog);
+    final catalog = Catalog(index: 1, name: 'c-name');
+    final product = Product(index: 1, name: 'name', catalog: catalog);
     var count = 0;
 
     await tester.pumpWidget(MaterialApp(
@@ -54,8 +54,8 @@ void main() {
   });
 
   testWidgets('should navigate to modal', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
-    final product = ProductModel(index: 1, name: 'name', catalog: catalog);
+    final catalog = Catalog(index: 1, name: 'c-name');
+    final product = Product(index: 1, name: 'name', catalog: catalog);
     var count = 0;
 
     await tester.pumpWidget(MaterialApp(

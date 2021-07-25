@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class CatalogModal extends StatefulWidget {
-  final CatalogModel? catalog;
+  final Catalog? catalog;
 
   final bool isNew;
   CatalogModal({Key? key, this.catalog})
@@ -58,16 +58,16 @@ class _CatalogModalState extends State<CatalogModal>
     ];
   }
 
-  Future<CatalogModel> getCatalog() async {
+  Future<Catalog> getCatalog() async {
     final object = CatalogObject(name: _nameController.text);
 
     if (widget.isNew) {
-      final catalog = CatalogModel(
+      final catalog = Catalog(
         name: object.name,
-        index: MenuModel.instance.newIndex,
+        index: Menu.instance.newIndex,
       );
 
-      await MenuModel.instance.setItem(catalog);
+      await Menu.instance.setItem(catalog);
       return catalog;
     } else {
       await widget.catalog!.update(object);
@@ -92,7 +92,7 @@ class _CatalogModalState extends State<CatalogModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.catalog?.name != name && MenuModel.instance.hasName(name)) {
+    if (widget.catalog?.name != name && Menu.instance.hasName(name)) {
       return tt('menu.catalog.error.name');
     }
   }

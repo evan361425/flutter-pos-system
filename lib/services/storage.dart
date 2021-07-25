@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 enum Stores {
   menu,
   stock,
-  stock_batch,
+  replenisher,
   quantities,
   cashier,
 }

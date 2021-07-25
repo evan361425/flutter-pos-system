@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/product_screen.dart';
 import 'package:provider/provider.dart';
@@ -14,23 +14,23 @@ import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show empty body if empty', (tester) async {
-    final product = ProductModel(index: 1, name: 'name');
+    final product = Product(index: 1, name: 'name');
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<ProductModel>.value(value: product),
+      ChangeNotifierProvider<Product>.value(value: product),
     ], child: MaterialApp(home: ProductScreen())));
 
     expect(find.byType(EmptyBody), findsOneWidget);
   });
 
   testWidgets('should navigate to modal', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'name');
-    final product = ProductModel(index: 1, name: 'name', catalog: catalog);
+    final catalog = Catalog(index: 1, name: 'name');
+    final product = Product(index: 1, name: 'name', catalog: catalog);
     var argument;
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<ProductModel>.value(value: product),
+          ChangeNotifierProvider<Product>.value(value: product),
         ],
         child: MaterialApp(
           routes: {
@@ -53,9 +53,9 @@ void main() {
   });
 
   testWidgets('should addable', (tester) async {
-    final ingredient = MockProductIngredientModel();
-    final catalog = CatalogModel(index: 1, name: 'name');
-    final product = ProductModel(
+    final ingredient = MockProductIngredient();
+    final catalog = Catalog(index: 1, name: 'name');
+    final product = Product(
       index: 1,
       name: 'name',
       id: 'id',
@@ -71,7 +71,7 @@ void main() {
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<ProductModel>.value(value: product),
+          ChangeNotifierProvider<Product>.value(value: product),
         ],
         child: MaterialApp(
           routes: {

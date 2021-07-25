@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class _CartMetadataState extends State<CartMetadata> {
   @override
   Widget build(BuildContext context) {
     // listen change quantity, delete product
-    final cart = context.watch<CartModel>();
+    final cart = context.watch<Cart>();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -39,7 +39,7 @@ class _CartMetadataState extends State<CartMetadata> {
   void initState() {
     super.initState();
     // listen count changing
-    OrderProductModel.addListener(
+    OrderProduct.addListener(
       _listener,
       OrderProductListenerTypes.count,
     );
@@ -47,7 +47,7 @@ class _CartMetadataState extends State<CartMetadata> {
 
   @override
   void dispose() {
-    OrderProductModel.removeListener(
+    OrderProduct.removeListener(
       _listener,
       OrderProductListenerTypes.count,
     );

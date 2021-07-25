@@ -21,7 +21,7 @@ ingredient:
   error:
     name_repeat: 成份名稱重複
 
-batch:
+replenisher:
   add: 增加批量種類
   apply: 批量增加
   select_hint: 選擇批量種類

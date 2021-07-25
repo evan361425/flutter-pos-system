@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/ui/order/widgets/order_product_list.dart';
 
 import '../../../mocks/mock_models.mocks.dart';
@@ -17,7 +17,7 @@ void main() {
     final emptyHeight =
         find.byType(SingleChildScrollView).evaluate().first.size!.height;
 
-    final product = ProductModel(index: 1, name: 'name');
+    final product = Product(index: 1, name: 'name');
     await tester.pumpWidget(MaterialApp(
       home: OrderProductList(products: [product], handleSelected: (_) {}),
     ));
@@ -28,11 +28,11 @@ void main() {
   });
 
   testWidgets('should get selected product', (tester) async {
-    final product = ProductModel(index: 1, name: 'name');
+    final product = Product(index: 1, name: 'name');
     final key = GlobalKey<OrderProductListState>();
-    when(cart.add(product)).thenReturn(MockOrderProductModel());
+    when(cart.add(product)).thenReturn(MockOrderProduct());
 
-    ProductModel? selected;
+    Product? selected;
 
     await tester.pumpWidget(MaterialApp(
       home: OrderProductList(
@@ -43,7 +43,7 @@ void main() {
     ));
 
     key.currentState?.updateProducts(
-        CatalogModel(index: 1, name: 'cat', products: {'id': product}));
+        Catalog(index: 1, name: 'cat', products: {'id': product}));
     await tester.pump();
 
     await tester.tap(find.text('name'));

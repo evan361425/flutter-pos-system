@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/ingredient_expansion.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  ProductIngredientModel createIngredient(String name, int amount,
+  ProductIngredient createIngredient(String name, int amount,
       [Map<String, int>? quantityData]) {
-    final quantities = <String, ProductQuantityModel>{};
+    final quantities = <String, ProductQuantity>{};
     if (quantityData != null) {
       quantityData.forEach((key, value) {
-        final quantity = QuantityModel(name: key, id: key);
-        final productQuantity = ProductQuantityModel(
+        final quantity = Quantity(name: key, id: key);
+        final productQuantity = ProductQuantity(
             amount: value,
             additionalCost: value,
             additionalPrice: value,
@@ -27,9 +27,9 @@ void main() {
         quantities[key] = productQuantity;
       });
     }
-    final ingredient = IngredientModel(name: name, id: name);
+    final ingredient = Ingredient(name: name, id: name);
     final productIngredient =
-        ProductIngredientModel(ingredient: ingredient, quantities: quantities);
+        ProductIngredient(ingredient: ingredient, quantities: quantities);
     quantities.values
         .forEach((quantity) => quantity.ingredient = productIngredient);
 
@@ -37,9 +37,9 @@ void main() {
   }
 
   testWidgets('should show delete confirm', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient = createIngredient('ing-1', 10, {'qua-1': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient},
@@ -64,9 +64,9 @@ void main() {
   });
 
   testWidgets('should navigate to ingredient', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient = createIngredient('ing-1', 10, {'qua-1': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient},
@@ -99,9 +99,9 @@ void main() {
   });
 
   testWidgets('should navigate to edit quantity', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient = createIngredient('ing-1', 10, {'qua-1': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient},
@@ -134,9 +134,9 @@ void main() {
   });
 
   testWidgets('should navigate to add quantity', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient = createIngredient('ing-1', 10, {'qua-1': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient},
@@ -169,10 +169,10 @@ void main() {
   });
 
   testWidgets('show/hide correctly', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient1 = createIngredient('ing-1', 10, {'qua-1': 10});
     final ingredient2 = createIngredient('ing-2', 10, {'qua-2': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient1, 'ing-2': ingredient2},
@@ -222,10 +222,10 @@ void main() {
   });
 
   testWidgets('when product changed should keep open', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient1 = createIngredient('ing-1', 10, {'qua-1': 10});
     final ingredient2 = createIngredient('ing-2', 10, {'qua-2': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient1, 'ing-2': ingredient2},
@@ -241,7 +241,7 @@ void main() {
     await tester.pumpWidget(MultiProvider(
       providers: [ChangeNotifierProvider.value(value: product)],
       builder: (context, _) {
-        final p = context.watch<ProductModel>();
+        final p = context.watch<Product>();
         return MaterialApp(
           home: SingleChildScrollView(
             child: IngredientExpansion(
@@ -277,10 +277,10 @@ void main() {
   });
 
   testWidgets('when add ingredient should close all', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'c-name');
+    final catalog = Catalog(index: 1, name: 'c-name');
     final ingredient1 = createIngredient('ing-1', 10, {'qua-1': 10});
     final ingredient2 = createIngredient('ing-2', 10, {'qua-2': 10});
-    final product = ProductModel(
+    final product = Product(
       index: 1,
       name: 'name',
       ingredients: {'ing-1': ingredient1},
@@ -293,7 +293,7 @@ void main() {
     await tester.pumpWidget(MultiProvider(
       providers: [ChangeNotifierProvider.value(value: product)],
       builder: (context, _) {
-        final p = context.watch<ProductModel>();
+        final p = context.watch<Product>();
         return MaterialApp(
           home: SingleChildScrollView(
             child: IngredientExpansion(

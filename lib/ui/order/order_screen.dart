@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
@@ -24,6 +24,8 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final menu = context.watch<Menu>();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -44,14 +46,12 @@ class OrderScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: MenuModel.instance.setUpStockMode(context)
-          ? _body(context)
-          : Container(),
+      body: menu.setUpStockMode(context) ? _body(context) : Container(),
     );
   }
 
   Widget _body(BuildContext context) {
-    final catalogs = MenuModel.instance.itemList;
+    final catalogs = Menu.instance.itemList;
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) =>
           orientation == Orientation.portrait
@@ -60,7 +60,7 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _bodyLandscape(List<CatalogModel> catalogs) {
+  Widget _bodyLandscape(List<Catalog> catalogs) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -88,7 +88,7 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _bodyPortrait(List<CatalogModel> catalogs) {
+  Widget _bodyPortrait(List<Catalog> catalogs) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -103,13 +103,13 @@ class OrderScreen extends StatelessWidget {
   Card _cart() {
     return Card(
       child: ChangeNotifierProvider.value(
-        value: CartModel.instance,
+        value: Cart.instance,
         builder: (_, __) => CartScreen(productsKey: _cartProductList),
       ),
     );
   }
 
-  Widget _catalogsRow(List<CatalogModel> catalogs) {
+  Widget _catalogsRow(List<Catalog> catalogs) {
     return OrderCatalogList(
       catalogs: catalogs,
       handleSelected: (catalog) =>
@@ -124,7 +124,7 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _productRow(List<CatalogModel> catalogs) {
+  Widget _productRow(List<Catalog> catalogs) {
     return OrderProductList(
       key: _orderProductList,
       products: catalogs.isEmpty ? const [] : catalogs.first.itemList,

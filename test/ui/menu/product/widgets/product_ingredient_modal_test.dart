@@ -5,8 +5,8 @@ import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_modal.dart';
 
@@ -16,15 +16,15 @@ import '../../../../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final oldIngredient = IngredientModel(name: 'ing-1', id: 'ing-1');
-    final newIngredient = IngredientModel(name: 'ing-2', id: 'ing-2');
-    final product = MockProductModel();
+    final oldIngredient = Ingredient(name: 'ing-1', id: 'ing-1');
+    final newIngredient = Ingredient(name: 'ing-2', id: 'ing-2');
+    final product = MockProduct();
     when(product.prefix).thenReturn('p-id');
     when(product.hasItem('ing-2')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
     when(stock.getItem('ing-2')).thenReturn(newIngredient);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
-    final productIngredient = ProductIngredientModel(
+    final productIngredient = ProductIngredient(
       product: product,
       ingredient: oldIngredient,
     );
@@ -62,14 +62,14 @@ void main() {
 
     verify(product.removeItem('ing-1'));
     verify(storage.set(any, argThat(equals({'p-id.ingredients.ing-1': null}))));
-    verify(product.setItem(argThat(predicate<ProductIngredientModel>((model) {
+    verify(product.setItem(argThat(predicate<ProductIngredient>((model) {
       return model.id == 'ing-2';
     }))));
   });
 
   testWidgets('should add new item', (tester) async {
-    final product = MockProductModel();
-    final ingredient = MockIngredientModel();
+    final product = MockProduct();
+    final ingredient = MockIngredient();
     when(product.prefix).thenReturn('p-id');
     when(product.hasItem('ing-1')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
@@ -106,7 +106,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    verify(product.setItem(argThat(predicate<ProductIngredientModel>((model) {
+    verify(product.setItem(argThat(predicate<ProductIngredient>((model) {
       return identical(model.product, product) &&
           model.amount == 1 &&
           identical(ingredient, model.ingredient);
@@ -114,9 +114,9 @@ void main() {
   });
 
   testWidgets('should pop delete warning', (tester) async {
-    final ingredient = IngredientModel(name: 'ing-1', id: 'ing-1');
-    final product = MockProductModel();
-    final productIngredient = ProductIngredientModel(
+    final ingredient = Ingredient(name: 'ing-1', id: 'ing-1');
+    final product = MockProduct();
+    final productIngredient = ProductIngredient(
       product: product,
       ingredient: ingredient,
     );

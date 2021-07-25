@@ -8,7 +8,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_expansion.dart';
@@ -16,7 +16,7 @@ import 'widgets/ingredient_expansion.dart';
 class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = context.watch<ProductModel>();
+    final product = context.watch<Product>();
 
     return FadeInTitleScaffold(
       leading: IconButton(
@@ -43,7 +43,7 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _actions(BuildContext context, ProductModel product) {
+  List<Widget> _actions(BuildContext context, Product product) {
     return [
       ListTile(
         title: Text(tt('menu.product.edit')),
@@ -54,7 +54,7 @@ class ProductScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(BuildContext context, ProductModel product) {
+  Widget _body(BuildContext context, Product product) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -76,7 +76,7 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _productMetadata(ProductModel product) {
+  Widget _productMetadata(Product product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[

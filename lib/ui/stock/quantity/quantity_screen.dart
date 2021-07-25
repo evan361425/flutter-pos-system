@@ -3,7 +3,7 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_list.dart';
@@ -14,7 +14,7 @@ class QuantityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quantities = context.watch<QuantityRepo>();
+    final quantities = context.watch<Quantities>();
 
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +34,7 @@ class QuantityScreen extends StatelessWidget {
     );
   }
 
-  Widget _body(QuantityRepo quantities) {
+  Widget _body(Quantities quantities) {
     if (quantities.isEmpty) {
       return Center(child: EmptyBody(body: Text(tt('stock.quantity.empty'))));
     }
@@ -44,7 +44,6 @@ class QuantityScreen extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // TODO: search bar
             QuantityList(quantities: quantities.itemList),
           ],
         ),

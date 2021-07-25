@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/radio_text.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/order/order_ingredient_model.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 
 import '../../../mocks/mock_repos.dart';
@@ -32,24 +32,22 @@ void main() {
   });
 
   testWidgets('show empty when no able ingredients', (tester) async {
-    final product = ProductModel(index: 1, name: 'name', price: 20);
+    final product = Product(index: 1, name: 'name', price: 20);
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProductModel(product)]);
+    when(cart.products).thenReturn([OrderProduct(product)]);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
     expect(find.text('no_quantity'), findsOneWidget);
   });
 
-  ProductIngredientModel createIngredient(
-      String name, List<String> quantityNames) {
-    final ingredient = IngredientModel(name: name, id: name);
-    final proIngredient = ProductIngredientModel(ingredient: ingredient);
-    final quantities = quantityNames.map<ProductQuantityModel>((e) {
-      final quantity = QuantityModel(name: e, id: e);
-      return ProductQuantityModel(
-          quantity: quantity, ingredient: proIngredient);
+  ProductIngredient createIngredient(String name, List<String> quantityNames) {
+    final ingredient = Ingredient(name: name, id: name);
+    final proIngredient = ProductIngredient(ingredient: ingredient);
+    final quantities = quantityNames.map<ProductQuantity>((e) {
+      final quantity = Quantity(name: e, id: e);
+      return ProductQuantity(quantity: quantity, ingredient: proIngredient);
     });
 
     proIngredient
@@ -59,7 +57,7 @@ void main() {
   }
 
   testWidgets('show quantity in selected ingredient', (tester) async {
-    final product = ProductModel(index: 1, name: 'pro', id: 'pro');
+    final product = Product(index: 1, name: 'pro', id: 'pro');
     final ingredients = [
       createIngredient('ing-1', ['qua-1']),
       createIngredient('ing-2', ['qua-2']),
@@ -70,7 +68,7 @@ void main() {
     product.replaceItems({for (var ing in ingredients) ing.id: ing});
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProductModel(product)]);
+    when(cart.products).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
     when(cart.getSelectedQuantityId(ingredients[1])).thenReturn('qua-2');
 
@@ -85,7 +83,7 @@ void main() {
   });
 
   testWidgets('should update selected quantity', (tester) async {
-    final product = ProductModel(index: 1, name: 'pro', id: 'pro');
+    final product = Product(index: 1, name: 'pro', id: 'pro');
     final ingredients = [
       createIngredient('ing-1', ['qua-1'])
     ].map((e) {
@@ -95,7 +93,7 @@ void main() {
     product.replaceItems({for (var ing in ingredients) ing.id: ing});
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProductModel(product)]);
+    when(cart.products).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
@@ -103,9 +101,8 @@ void main() {
     await tester.tap(find.text('qua-1（0）'));
     await tester.pump();
 
-    verify(cart.updateSelectedIngredient(argThat(
-        predicate<OrderIngredientModel>(
-            (ing) => identical(ing.ingredient, ingredients[0])))));
+    verify(cart.updateSelectedIngredient(argThat(predicate<OrderIngredient>(
+        (ing) => identical(ing.ingredient, ingredients[0])))));
   });
 
   setUpAll(() {

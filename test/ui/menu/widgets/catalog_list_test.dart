@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 
 void main() {
   testWidgets('should navigate to modal', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
     await tester.pumpWidget(MaterialApp(
@@ -27,7 +27,7 @@ void main() {
   });
 
   testWidgets('should navigate to reorder', (tester) async {
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
     var count = 0;
 
     await tester.pumpWidget(MaterialApp(

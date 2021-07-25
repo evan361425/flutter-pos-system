@@ -4,11 +4,11 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
-import 'package:possystem/ui/stock/widgets/stock_batch_actions.dart';
+import 'package:possystem/ui/stock/widgets/replenishment_actions.dart';
 import 'package:provider/provider.dart';
 
 class StockScreen extends StatelessWidget {
@@ -38,7 +38,7 @@ class StockScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
-    final stock = context.watch<StockModel>();
+    final stock = context.watch<Stock>();
     if (!stock.isReady) return CircularLoading();
     if (stock.isEmpty) {
       return Center(
@@ -49,7 +49,7 @@ class StockScreen extends StatelessWidget {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: StockBatchActions(),
+        child: ReplenishmentActions(),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -109,7 +109,7 @@ class StockScreen extends StatelessWidget {
           ),
         ),
         Text(
-          StockModel.instance.updatedDate ?? tt('stock.ingredient.un_add'),
+          Stock.instance.updatedDate ?? tt('stock.ingredient.un_add'),
           style: mutedStyle,
         ),
       ],

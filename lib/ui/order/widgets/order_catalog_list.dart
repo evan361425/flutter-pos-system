@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 
 class OrderCatalogList extends StatelessWidget {
-  final List<CatalogModel> catalogs;
+  final List<Catalog> catalogs;
 
-  final void Function(CatalogModel) handleSelected;
+  final void Function(Catalog) handleSelected;
 
   static const _RADIO_Key = 'order.catalogs';
 

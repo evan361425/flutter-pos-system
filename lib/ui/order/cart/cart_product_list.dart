@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class CartProductListState extends State<CartProductList> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<CartModel>();
+    final cart = context.watch<Cart>();
 
     return SingleChildScrollView(
       controller: scrollController,
@@ -61,7 +61,7 @@ class CartProductListState extends State<CartProductList> {
     );
   }
 
-  void _handleSelected(bool? checked, OrderProductModel product) {
+  void _handleSelected(bool? checked, OrderProduct product) {
     if (checked != null && product.toggleSelected(checked)) {
       setState(() {});
     }
@@ -115,7 +115,7 @@ class _CartProductListTile extends StatelessWidget {
 }
 
 class _ProductCountAction extends StatefulWidget {
-  final OrderProductModel product;
+  final OrderProduct product;
 
   _ProductCountAction({
     Key? key,

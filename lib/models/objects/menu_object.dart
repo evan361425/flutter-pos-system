@@ -1,11 +1,11 @@
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model_object.dart';
 
-class CatalogObject extends ModelObject<CatalogModel> {
+class CatalogObject extends ModelObject<Catalog> {
   CatalogObject({
     this.id,
     this.index,
@@ -31,7 +31,7 @@ class CatalogObject extends ModelObject<CatalogModel> {
   }
 
   @override
-  Map<String, Object> diff(CatalogModel catalog) {
+  Map<String, Object> diff(Catalog catalog) {
     final result = <String, Object>{};
     final prefix = catalog.prefix;
     if (index != null && index != catalog.index) {
@@ -65,7 +65,7 @@ class CatalogObject extends ModelObject<CatalogModel> {
   }
 }
 
-class ProductObject extends ModelObject<ProductModel> {
+class ProductObject extends ModelObject<Product> {
   ProductObject({
     this.id,
     this.price,
@@ -99,7 +99,7 @@ class ProductObject extends ModelObject<ProductModel> {
   }
 
   @override
-  Map<String, Object> diff(ProductModel product) {
+  Map<String, Object> diff(Product product) {
     final result = <String, Object>{};
     final prefix = product.prefix;
     if (price != null && price != product.price) {
@@ -139,7 +139,7 @@ class ProductObject extends ModelObject<ProductModel> {
   }
 }
 
-class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
+class ProductIngredientObject extends ModelObject<ProductIngredient> {
   ProductIngredientObject({
     this.id,
     this.amount,
@@ -162,7 +162,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
   }
 
   @override
-  Map<String, Object> diff(ProductIngredientModel ingredient) {
+  Map<String, Object> diff(ProductIngredient ingredient) {
     final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
@@ -196,7 +196,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredientModel> {
   }
 }
 
-class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
+class ProductQuantityObject extends ModelObject<ProductQuantity> {
   ProductQuantityObject({
     this.id,
     required this.amount,
@@ -219,7 +219,7 @@ class ProductQuantityObject extends ModelObject<ProductQuantityModel> {
   }
 
   @override
-  Map<String, Object> diff(ProductQuantityModel quantity) {
+  Map<String, Object> diff(ProductQuantity quantity) {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
 

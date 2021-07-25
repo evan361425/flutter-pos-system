@@ -6,7 +6,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // strictly equal to: Provider.of<MenuModel>(context)
     // context.read<T>() === Provider.of<T>(context, listen: false)
-    final menu = context.watch<MenuModel>();
+    final menu = context.watch<Menu>();
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +56,7 @@ class MenuScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(BuildContext context, MenuModel menu) {
+  Widget _body(BuildContext context, Menu menu) {
     if (menu.isEmpty) {
       return Center(child: EmptyBody(body: Text(tt('menu.catalog.empty'))));
     }
@@ -75,12 +75,10 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView _catalogList(MenuModel menu) {
+  SingleChildScrollView _catalogList(Menu menu) {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          // TODO: search bar
-          // MenuSearchBar(),
           // get sorted catalogs
           CatalogList(menu.itemList),
         ],

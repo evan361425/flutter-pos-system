@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
 
 import '../../../../mocks/mock_widgets.dart';
@@ -22,7 +22,7 @@ void main() {
     await tester.tap(find.byType(CardTile));
     await tester.pumpAndSettle();
 
-    verify(stock.setItem(argThat(predicate<IngredientModel>((model) {
+    verify(stock.setItem(argThat(predicate<Ingredient>((model) {
       return model.name == 'some-ing';
     }))));
   });

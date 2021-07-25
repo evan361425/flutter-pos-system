@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  OrderProductModel createProduct(String name,
-      [String? ingName, String? quaName]) {
-    final product = ProductModel(id: name, name: name);
+  OrderProduct createProduct(String name, [String? ingName, String? quaName]) {
+    final product = Product(id: name, name: name);
 
     final ingredient = ingName == null
         ? null
-        : ProductIngredientModel(
-            ingredient: IngredientModel(name: ingName, id: ingName),
+        : ProductIngredient(
+            ingredient: Ingredient(name: ingName, id: ingName),
             product: product);
     final quantity = quaName == null
         ? null
-        : ProductQuantityModel(
-            quantity: QuantityModel(name: quaName, id: quaName),
+        : ProductQuantity(
+            quantity: Quantity(name: quaName, id: quaName),
             ingredient: ingredient);
     if (quantity != null) {
       ingredient?.replaceItems({quaName!: quantity});
@@ -32,11 +31,11 @@ void main() {
       product.replaceItems({ingName!: ingredient});
     }
 
-    return OrderProductModel(product);
+    return OrderProduct(product);
   }
 
   testWidgets('select target when tap tile', (tester) async {
-    final cart = CartModel();
+    final cart = Cart();
     final product1 = createProduct('pro-1');
     final product2 = createProduct('pro-2', 'ing-1', 'qua-1');
     product1.isSelected = true;
@@ -59,7 +58,7 @@ void main() {
   });
 
   testWidgets('toggle target when tap checkbox', (tester) async {
-    final cart = CartModel();
+    final cart = Cart();
     final product1 = createProduct('pro-1');
     final product2 = createProduct('pro-2');
     product1.isSelected = true;
@@ -82,7 +81,7 @@ void main() {
   });
 
   testWidgets('change money and count when add', (tester) async {
-    final cart = CartModel();
+    final cart = Cart();
     final product = createProduct('pro-1');
 
     product.singlePrice = 20;

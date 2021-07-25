@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
@@ -29,12 +29,12 @@ class CartActions extends StatelessWidget {
           ),
           DropdownMenuItem(
             value: _DialogItems.free,
-            onTap: () => CartModel.instance.updateSelectedPrice(0),
+            onTap: () => Cart.instance.updateSelectedPrice(0),
             child: Text(tt('order.cart.free')),
           ),
           DropdownMenuItem(
             value: _DialogItems.delete,
-            onTap: () => CartModel.instance.removeSelected(),
+            onTap: () => Cart.instance.removeSelected(),
             child: Text(tt('order.cart.delete')),
           ),
         ],
@@ -92,7 +92,7 @@ class _DialogItem {
             suffix: Text(tt('order.cart.suffix.discount')),
           ),
           action: (result) {
-            CartModel.instance.updateSelectedDiscount(int.tryParse(result));
+            Cart.instance.updateSelectedDiscount(int.tryParse(result));
           },
         );
       case _DialogItems.price:
@@ -103,7 +103,7 @@ class _DialogItem {
             suffix: Text(tt('order.cart.suffix.price')),
           ),
           action: (result) {
-            CartModel.instance.updateSelectedPrice(num.tryParse(result));
+            Cart.instance.updateSelectedPrice(num.tryParse(result));
           },
         );
       case _DialogItems.count:
@@ -119,7 +119,7 @@ class _DialogItem {
             suffix: Text(tt('order.cart.suffix.count')),
           ),
           action: (result) {
-            CartModel.instance.updateSelectedCount(int.tryParse(result));
+            Cart.instance.updateSelectedCount(int.tryParse(result));
           },
         );
       default:

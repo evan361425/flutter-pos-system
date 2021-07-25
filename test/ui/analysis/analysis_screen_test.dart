@@ -12,7 +12,7 @@ import '../../mocks/mock_providers.dart';
 void main() {
   testWidgets('should load count once in start', (tester) async {
     final now = DateTime.now();
-    when(orders.getCountBetween(
+    when(seller.getCountBetween(
       argThat(predicate<DateTime>((arg) => arg.isBefore(now))),
       argThat(predicate<DateTime>((arg) => arg.isAfter(now))),
     )).thenAnswer((_) => Future.value({}));

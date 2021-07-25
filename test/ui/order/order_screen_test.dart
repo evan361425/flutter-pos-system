@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/order_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_providers.dart';
@@ -19,7 +21,12 @@ void main() {
   testWidgets('should show actions', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(false);
 
-    await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+    await tester.pumpWidget(MaterialApp(
+      home: ChangeNotifierProvider<Menu>.value(
+        value: menu,
+        child: OrderScreen(),
+      ),
+    ));
 
     await tester.tap(find.byIcon(KIcons.more));
     await tester.pumpAndSettle();
@@ -31,7 +38,12 @@ void main() {
     when(menu.setUpStockMode(any)).thenReturn(false);
     when(currency.isInt).thenReturn(true);
 
-    await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+    await tester.pumpWidget(MaterialApp(
+      home: ChangeNotifierProvider<Menu>.value(
+        value: menu,
+        child: OrderScreen(),
+      ),
+    ));
 
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
@@ -51,31 +63,36 @@ void main() {
     // resets the screen to its orinal size after the test end
     addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
-    await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+    await tester.pumpWidget(MaterialApp(
+      home: ChangeNotifierProvider<Menu>.value(
+        value: menu,
+        child: OrderScreen(),
+      ),
+    ));
   });
 
   testWidgets('should update products when select catalog', (tester) async {
-    final ingredient = IngredientModel(name: 'ing-1', id: 'ing-1');
-    final quantity = QuantityModel(name: 'qua-1', id: 'qua-1');
-    final proQuantity = ProductQuantityModel(quantity: quantity);
-    final proIngredient = ProductIngredientModel(
+    final ingredient = Ingredient(name: 'ing-1', id: 'ing-1');
+    final quantity = Quantity(name: 'qua-1', id: 'qua-1');
+    final proQuantity = ProductQuantity(quantity: quantity);
+    final proIngredient = ProductIngredient(
       ingredient: ingredient,
       quantities: {'qua-1': proQuantity},
     );
-    final product1 = ProductModel(
+    final product1 = Product(
       index: 1,
       name: 'pro-1',
       id: 'pro-1',
       ingredients: {'ing-1': proIngredient},
     );
-    final product2 = ProductModel(index: 1, name: 'pro-2', id: 'pro-2');
-    final catalog1 = CatalogModel(
+    final product2 = Product(index: 1, name: 'pro-2', id: 'pro-2');
+    final catalog1 = Catalog(
       index: 1,
       name: 'cat-1',
       id: 'cat-1',
       products: {'pro-1': product1},
     );
-    final catalog2 = CatalogModel(
+    final catalog2 = Catalog(
       index: 1,
       name: 'cat-2',
       id: 'cat-2',
@@ -84,7 +101,12 @@ void main() {
     when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.itemList).thenReturn([catalog1, catalog2]);
 
-    await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+    await tester.pumpWidget(MaterialApp(
+      home: ChangeNotifierProvider<Menu>.value(
+        value: menu,
+        child: OrderScreen(),
+      ),
+    ));
 
     expect(find.text('pro-1'), findsOneWidget);
 
@@ -96,8 +118,8 @@ void main() {
   });
 
   testWidgets('should scroll to bottom when select product', (tester) async {
-    final product = ProductModel(index: 1, name: 'pro-1', id: 'pro-1');
-    final catalog = CatalogModel(
+    final product = Product(index: 1, name: 'pro-1', id: 'pro-1');
+    final catalog = Catalog(
       index: 1,
       name: 'cat-1',
       id: 'cat-1',
@@ -106,7 +128,12 @@ void main() {
     when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.itemList).thenReturn([catalog]);
 
-    await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+    await tester.pumpWidget(MaterialApp(
+      home: ChangeNotifierProvider<Menu>.value(
+        value: menu,
+        child: OrderScreen(),
+      ),
+    ));
 
     await tester.tap(find.byType(OutlinedButton));
     await tester.tap(find.byType(OutlinedButton));
@@ -129,10 +156,10 @@ void main() {
   setUpAll(() {
     initializeRepos();
     initializeProviders();
-    CartModel.instance = CartModel();
+    Cart.instance = Cart();
   });
 
   tearDownAll(() {
-    CartModel.instance = cart;
+    Cart.instance = cart;
   });
 }

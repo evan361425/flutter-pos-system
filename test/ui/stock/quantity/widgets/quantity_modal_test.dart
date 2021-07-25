@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
 
 import '../../../../mocks/mock_storage.dart';
@@ -10,7 +10,7 @@ import '../../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should setItem if updating', (tester) async {
-    final quantity = QuantityModel(name: 'name', id: 'id');
+    final quantity = Quantity(name: 'name', id: 'id');
 
     when(quantities.setItem(quantity)).thenAnswer((_) => Future.value());
     when(quantities.hasName('name-new')).thenReturn(false);
@@ -40,7 +40,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).last, '2');
 
     await tester.tap(find.byType(TextButton));
-    verify(quantities.setItem(argThat(predicate<QuantityModel>((object) {
+    verify(quantities.setItem(argThat(predicate<Quantity>((object) {
       return object.name == 'name' && object.defaultProportion == 2;
     })))).called(1);
   });

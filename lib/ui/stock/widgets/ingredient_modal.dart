@@ -5,17 +5,17 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/repository/stock_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class IngredientModal extends StatefulWidget {
-  final IngredientModel? ingredient;
+  final Ingredient? ingredient;
 
   final bool isNew;
 
@@ -34,10 +34,10 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   Widget body() {
-    final isReady = MenuModel.instance.setUpStockMode(context);
+    final isReady = Menu.instance.setUpStockMode(context);
     final ingredients = !isReady || widget.isNew
-        ? const <ProductIngredientModel>[]
-        : MenuModel.instance.getIngredients(widget.ingredient!.id);
+        ? const <ProductIngredient>[]
+        : Menu.instance.getIngredients(widget.ingredient!.id);
     // 1 for body, 2 for divider and text
     final length = ingredients.length + 1 + (isReady && widget.isNew ? 0 : 1);
 
@@ -130,8 +130,8 @@ class _IngredientModalState extends State<IngredientModal>
       await widget.ingredient!.update(object);
     }
 
-    await StockModel.instance.setItem(widget.ingredient ??
-        IngredientModel(
+    await Stock.instance.setItem(widget.ingredient ??
+        Ingredient(
           name: object.name!,
           currentAmount: object.currentAmount!,
         ));
@@ -143,12 +143,12 @@ class _IngredientModalState extends State<IngredientModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.ingredient?.name != name && StockModel.instance.hasName(name)) {
+    if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
       return tt('stock.ingredient.error.name_repeat');
     }
   }
 
-  void _handleTap(ProductModel product) {
+  void _handleTap(Product product) {
     Navigator.of(context).pushNamed(
       Routes.menuProduct,
       arguments: product,

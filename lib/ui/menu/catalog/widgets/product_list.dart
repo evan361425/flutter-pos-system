@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ProductList extends StatelessWidget {
-  final List<ProductModel> products;
+  final List<Product> products;
 
   const ProductList({
     required this.products,
@@ -14,7 +14,7 @@ class ProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<ProductModel>(
+    return SlidableItemList<Product>(
       items: products,
       actionBuilder: _actionBuilder,
       tileBuilder: _tileBuilder,
@@ -23,7 +23,7 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actionBuilder(BuildContext context, ProductModel product) {
+  Iterable<Widget> _actionBuilder(BuildContext context, Product product) {
     return [
       ListTile(
         title: Text(tt('menu.product.edit')),
@@ -43,14 +43,14 @@ class ProductList extends StatelessWidget {
     ];
   }
 
-  void _handleTap(BuildContext context, ProductModel product) {
+  void _handleTap(BuildContext context, Product product) {
     Navigator.of(context).pushNamed(
       Routes.menuProduct,
       arguments: product,
     );
   }
 
-  Widget _tileBuilder(BuildContext context, ProductModel product) {
+  Widget _tileBuilder(BuildContext context, Product product) {
     return ListTile(
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),
@@ -64,7 +64,7 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Widget _warningContextBuilder(BuildContext context, ProductModel product) {
+  Widget _warningContextBuilder(BuildContext context, Product product) {
     return Text(tt('delete_confirm', {'name': product.name}));
   }
 }

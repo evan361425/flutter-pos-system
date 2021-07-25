@@ -14,7 +14,7 @@ void main() {
       Map<String, String?> ingredients,
     ) {
       final orderProduct = MockOrderProductObject();
-      final product = MockProductModel();
+      final product = MockProduct();
       final orderIngredients = <String, MockOrderIngredientObject>{};
 
       when(orderProduct.productId).thenReturn(id);
@@ -25,8 +25,8 @@ void main() {
 
       ingredients.forEach((ingredientId, quantityId) {
         final orderIngredient = MockOrderIngredientObject();
-        final ingredient = MockProductIngredientModel();
-        final quantity = MockProductQuantityModel();
+        final ingredient = MockProductIngredient();
+        final quantity = MockProductQuantity();
 
         when(orderIngredient.id).thenReturn(ingredientId);
         when(orderIngredient.quantityId).thenReturn(quantityId);

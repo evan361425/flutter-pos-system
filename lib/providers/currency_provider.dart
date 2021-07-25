@@ -32,8 +32,6 @@ class CurrencyProvider extends ChangeNotifier {
 
   /// Ceiling [value] to currency least value
   ///
-  /// TODO: make double ceiling to float point
-  ///
   /// ```dart
   /// // types = [5, 10 ,50];
   /// ceil(3) == 5

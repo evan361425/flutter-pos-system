@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
 class QuantityModal extends StatefulWidget {
-  final QuantityModel? quantity;
+  final Quantity? quantity;
 
   const QuantityModal({Key? key, this.quantity}) : super(key: key);
 
@@ -84,8 +84,8 @@ class _QuantityModalState extends State<QuantityModal>
     }
 
     // quantity is not notifier, need set item to fire listener
-    await QuantityRepo.instance.setItem(widget.quantity ??
-        QuantityModel(
+    await Quantities.instance.setItem(widget.quantity ??
+        Quantity(
           name: object.name!,
           defaultProportion: object.defaultProportion!,
         ));
@@ -97,7 +97,7 @@ class _QuantityModalState extends State<QuantityModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.quantity?.name != name && QuantityRepo.instance.hasName(name)) {
+    if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
       return tt('stock.quantity.error.name');
     }
   }

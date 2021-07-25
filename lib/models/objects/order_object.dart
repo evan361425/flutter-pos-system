@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/order/order_ingredient_model.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/menu_model.dart';
+import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/database.dart';
 
 class OrderObject {
@@ -27,25 +27,25 @@ class OrderObject {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  List<OrderProductModel> parseToProduct() {
-    return products.map<OrderProductModel>((orderProduct) {
-      final product = MenuModel.instance.getProduct(orderProduct.productId)!;
+  List<OrderProduct> parseToProduct() {
+    return products.map<OrderProduct>((orderProduct) {
+      final product = Menu.instance.getProduct(orderProduct.productId)!;
 
-      final ingredients = <OrderIngredientModel>[];
+      final ingredients = <OrderIngredient>[];
       for (var orderIngredient in orderProduct.ingredients.values) {
         if (orderIngredient.quantityId == null) continue;
 
         final ingredient = product.getItem(orderIngredient.id)!;
 
         ingredients.add(
-          OrderIngredientModel(
+          OrderIngredient(
             ingredient: ingredient,
             quantity: ingredient.getItem(orderIngredient.quantityId!)!,
           ),
         );
       }
 
-      return OrderProductModel(
+      return OrderProduct(
         product,
         count: orderProduct.count,
         singlePrice: orderProduct.singlePrice,

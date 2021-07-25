@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 
@@ -11,9 +11,8 @@ import '../../../../mocks/mock_widgets.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final catalog = MockCatalogModel();
-    final product =
-        ProductModel(index: 1, name: 'name', id: 'id', catalog: catalog);
+    final catalog = MockCatalog();
+    final product = Product(index: 1, name: 'name', id: 'id', catalog: catalog);
 
     when(catalog.prefix).thenReturn('c-id');
     when(catalog.hasName('name-new')).thenReturn(false);
@@ -37,7 +36,7 @@ void main() {
   });
 
   testWidgets('should add new item', (tester) async {
-    final catalog = MockCatalogModel();
+    final catalog = MockCatalog();
     when(catalog.setItem(any)).thenAnswer((_) => Future.value());
     when(catalog.hasName('name')).thenReturn(false);
     when(catalog.newIndex).thenReturn(1);
@@ -47,8 +46,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       routes: {
         Routes.menuProduct: (context) {
-          final product =
-              ModalRoute.of(context)!.settings.arguments as ProductModel;
+          final product = ModalRoute.of(context)!.settings.arguments as Product;
           expect(product.name, equals('name'));
           expect(product.index, equals(1));
           expect(product.price, equals(1));

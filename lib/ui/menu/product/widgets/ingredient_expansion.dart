@@ -5,13 +5,13 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class IngredientExpansion extends StatefulWidget {
-  final List<ProductIngredientModel> ingredients;
+  final List<ProductIngredient> ingredients;
 
   IngredientExpansion({Key? key, required this.ingredients}) : super(key: key);
 
@@ -57,7 +57,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     ];
   }
 
-  Widget _addButtons(ProductIngredientModel ingredient) {
+  Widget _addButtons(ProductIngredient ingredient) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
       child: Row(children: [
@@ -87,7 +87,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Future<void> _deleteConfirm(ProductIngredientModel ingredient) {
+  Future<void> _deleteConfirm(ProductIngredient ingredient) {
     return showDialog(
         context: context,
         builder: (_) => DeleteDialog(
@@ -96,7 +96,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
             ));
   }
 
-  ExpansionPanel _panelBuilder(int index, ProductIngredientModel ingredient) {
+  ExpansionPanel _panelBuilder(int index, ProductIngredient ingredient) {
     final body = ingredient.items.map<Widget>((quantity) {
       return ListTile(
         onTap: () => Navigator.of(context).pushNamed(
@@ -141,7 +141,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Widget _quantityMetadata(ProductQuantityModel quantity) {
+  Widget _quantityMetadata(ProductQuantity quantity) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,

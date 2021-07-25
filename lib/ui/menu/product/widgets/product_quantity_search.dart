@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/scaffold/search_scaffold.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
 class ProductQuantitySearch extends StatelessWidget {
@@ -14,13 +14,13 @@ class ProductQuantitySearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SearchScaffold<QuantityModel>(
+    return SearchScaffold<Quantity>(
       key: scaffold,
       handleChanged: (String text) async =>
-          QuantityRepo.instance.sortBySimilarity(text),
+          Quantities.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: () async => QuantityRepo.instance.itemList,
+      initialData: () async => Quantities.instance.itemList,
       text: text ?? '',
       hintText: tt('menu.quantity.label.name'),
       textCapitalization: TextCapitalization.words,
@@ -31,7 +31,7 @@ class ProductQuantitySearch extends StatelessWidget {
     return CardTile(
       title: Text(ingredient.name),
       onTap: () {
-        Navigator.of(context).pop<QuantityModel>(ingredient);
+        Navigator.of(context).pop<Quantity>(ingredient);
       },
     );
   }
@@ -40,9 +40,9 @@ class ProductQuantitySearch extends StatelessWidget {
     return CardTile(
       title: Text(tt('menu.quantity.add_quantity', {'name': text})),
       onTap: () async {
-        final quantity = QuantityModel(name: text);
-        await QuantityRepo.instance.setItem(quantity);
-        Navigator.of(context).pop<QuantityModel>(quantity);
+        final quantity = Quantity(name: text);
+        await Quantities.instance.setItem(quantity);
+        Navigator.of(context).pop<Quantity>(quantity);
       },
     );
   }

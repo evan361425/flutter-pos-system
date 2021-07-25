@@ -27,8 +27,8 @@ void main() {
 
   group('#menuProductModal', () {
     testWidgets('should create non-new product modal', (tester) async {
-      final catalog = MockCatalogModel();
-      final product = MockProductModel();
+      final catalog = MockCatalog();
+      final product = MockProduct();
       when(product.catalog).thenReturn(catalog);
       when(product.name).thenReturn('');
       when(product.price).thenReturn(0);
@@ -43,7 +43,7 @@ void main() {
     });
 
     testWidgets('should create new product modal', (tester) async {
-      final catalog = MockCatalogModel();
+      final catalog = MockCatalog();
 
       await tester.pumpWidget(
         createAppWithRoute(Routes.menuProductModal, catalog),
@@ -56,8 +56,8 @@ void main() {
 
   group('#menuIngredient', () {
     testWidgets('should create non-new ingredient modal', (tester) async {
-      final ingredient = MockProductIngredientModel();
-      final product = MockProductModel();
+      final ingredient = MockProductIngredient();
+      final product = MockProduct();
       when(ingredient.product).thenReturn(product);
       when(ingredient.id).thenReturn('');
       when(ingredient.name).thenReturn('');
@@ -72,7 +72,7 @@ void main() {
     });
 
     testWidgets('should create new ingredient modal', (tester) async {
-      final product = MockProductModel();
+      final product = MockProduct();
 
       await tester.pumpWidget(
         createAppWithRoute(Routes.menuIngredient, product),
@@ -85,8 +85,8 @@ void main() {
 
   group('#menuQuantity', () {
     testWidgets('should create non-new product modal', (tester) async {
-      final ingredient = MockProductIngredientModel();
-      final quantity = MockProductQuantityModel();
+      final ingredient = MockProductIngredient();
+      final quantity = MockProductQuantity();
       when(quantity.ingredient).thenReturn(ingredient);
       when(quantity.name).thenReturn('');
       when(quantity.id).thenReturn('');
@@ -103,7 +103,7 @@ void main() {
     });
 
     testWidgets('should create new product modal', (tester) async {
-      final ingredient = MockProductIngredientModel();
+      final ingredient = MockProductIngredient();
 
       await tester.pumpWidget(
         createAppWithRoute(Routes.menuQuantity, ingredient),

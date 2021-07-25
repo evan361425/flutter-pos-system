@@ -4,8 +4,8 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/stock_batch_repo.dart';
-import 'package:possystem/models/repository/stock_model.dart';
+import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,7 @@ void main() {
     when(stock.isReady).thenReturn(false);
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<StockModel>.value(value: stock),
+      ChangeNotifierProvider<Stock>.value(value: stock),
     ], child: MaterialApp(home: StockScreen())));
     // wait for delay
     await tester.pump(Duration(milliseconds: 15));
@@ -31,7 +31,7 @@ void main() {
     when(stock.isEmpty).thenReturn(true);
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<StockModel>.value(value: stock),
+      ChangeNotifierProvider<Stock>.value(value: stock),
     ], child: MaterialApp(home: StockScreen())));
     // wait for delay
     await tester.pump(Duration(milliseconds: 15));
@@ -40,7 +40,7 @@ void main() {
   });
 
   testWidgets('should addable', (tester) async {
-    final ingredient = MockIngredientModel();
+    final ingredient = MockIngredient();
     when(ingredient.id).thenReturn('id');
     when(ingredient.name).thenReturn('name');
     when(ingredient.lastAmount).thenReturn(0);
@@ -50,14 +50,14 @@ void main() {
     when(stock.isEmpty).thenReturn(false);
     when(stock.updatedDate).thenReturn('hi');
     when(stock.itemList).thenReturn([ingredient]);
-    when(batches.isReady).thenReturn(false);
+    when(replenisher.isReady).thenReturn(false);
 
     var navigateCount = 0;
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<StockModel>.value(value: stock),
-          ChangeNotifierProvider<StockBatchRepo>.value(value: batches),
+          ChangeNotifierProvider<Stock>.value(value: stock),
+          ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
         child: MaterialApp(
           routes: {

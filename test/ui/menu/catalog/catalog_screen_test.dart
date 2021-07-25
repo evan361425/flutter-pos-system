@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +15,10 @@ import '../../../mocks/mock_repos.dart';
 void main() {
   testWidgets('should show loading if setting stock mode', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(false);
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<CatalogModel>.value(value: catalog),
+      ChangeNotifierProvider<Catalog>.value(value: catalog),
     ], child: MaterialApp(home: CatalogScreen())));
 
     expect(find.byType(CircularLoading), findsOneWidget);
@@ -26,10 +26,10 @@ void main() {
 
   testWidgets('should show empty body if empty', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(true);
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<CatalogModel>.value(value: catalog),
+      ChangeNotifierProvider<Catalog>.value(value: catalog),
     ], child: MaterialApp(home: CatalogScreen())));
 
     expect(find.byType(EmptyBody), findsOneWidget);
@@ -37,12 +37,12 @@ void main() {
 
   testWidgets('should navigate to modal', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(true);
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<CatalogModel>.value(value: catalog),
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
         ],
         child: MaterialApp(
           routes: {
@@ -66,12 +66,12 @@ void main() {
 
   testWidgets('should navigate to reorder', (tester) async {
     when(menu.setUpStockMode(any)).thenReturn(true);
-    final catalog = CatalogModel(index: 1, name: 'name');
+    final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<CatalogModel>.value(value: catalog),
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
         ],
         child: MaterialApp(
           routes: {
@@ -94,8 +94,8 @@ void main() {
   });
 
   testWidgets('should addable', (tester) async {
-    final product = MockProductModel();
-    final catalog = CatalogModel(
+    final product = MockProduct();
+    final catalog = Catalog(
       index: 1,
       name: 'c-name',
       id: 'c-id',
@@ -109,7 +109,7 @@ void main() {
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<CatalogModel>.value(value: catalog),
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
         ],
         child: MaterialApp(
           routes: {

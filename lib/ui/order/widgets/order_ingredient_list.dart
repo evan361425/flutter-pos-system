@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/order/order_ingredient_model.dart';
-import 'package:possystem/models/order/order_product_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class OrderIngredientList extends StatefulWidget {
@@ -18,20 +18,20 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   static const _QUANTITY_RADIO_KEY = 'order.quantities';
   static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
 
-  ProductIngredientModel? selectedIngredient;
+  ProductIngredient? selectedIngredient;
 
   String? selectedQuantityId;
 
   @override
   Widget build(BuildContext context) {
-    if (CartModel.instance.isEmpty) {
+    if (Cart.instance.isEmpty) {
       return _emptyRows(context, tt('order.list.cart_empty'));
     }
-    if (!CartModel.instance.isSameProducts) {
+    if (!Cart.instance.isSameProducts) {
       return _emptyRows(context, tt('order.list.not_same_product'));
     }
 
-    final product = CartModel.instance.products.first.product;
+    final product = Cart.instance.products.first.product;
     final ingredients = product.ingredientsWithQuantity;
     if (ingredients.isEmpty) {
       return _emptyRows(context, tt('order.list.no_quantity'));
@@ -39,7 +39,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
 
     selectedIngredient ??= ingredients.first;
     selectedQuantityId =
-        CartModel.instance.getSelectedQuantityId(selectedIngredient!);
+        Cart.instance.getSelectedQuantityId(selectedIngredient!);
 
     return _rowWrapper([
       _ingredientsRow(ingredients),
@@ -49,7 +49,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
 
   @override
   void dispose() {
-    OrderProductModel.removeListener(
+    OrderProduct.removeListener(
       _listener,
       OrderProductListenerTypes.selection,
     );
@@ -59,7 +59,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   @override
   void initState() {
     super.initState();
-    OrderProductModel.addListener(
+    OrderProduct.addListener(
       _listener,
       OrderProductListenerTypes.selection,
     );
@@ -80,7 +80,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     ]);
   }
 
-  Widget _ingredientsRow(Iterable<ProductIngredientModel> ingredients) {
+  Widget _ingredientsRow(Iterable<ProductIngredient> ingredients) {
     return SingleRowWrap(children: <Widget>[
       for (var ingredient in ingredients)
         RadioText(
@@ -104,11 +104,11 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       for (final quantity in selectedIngredient!.items)
         RadioText(
           onSelected: () {
-            final ingredient = OrderIngredientModel(
+            final ingredient = OrderIngredient(
               ingredient: selectedIngredient!,
               quantity: quantity,
             );
-            CartModel.instance.updateSelectedIngredient(ingredient);
+            Cart.instance.updateSelectedIngredient(ingredient);
           },
           groupId: _QUANTITY_RADIO_KEY,
           value: quantity.id,
@@ -121,11 +121,11 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   Widget _quantityDefaultOption() {
     return RadioText(
       onSelected: () {
-        CartModel.instance.removeSelectedIngredient(selectedIngredient!.id);
+        Cart.instance.removeSelectedIngredient(selectedIngredient!.id);
       },
       groupId: _QUANTITY_RADIO_KEY,
-      value: CartModel.DEFAULT_QUANTITY_ID,
-      isSelected: selectedQuantityId == CartModel.DEFAULT_QUANTITY_ID,
+      value: Cart.DEFAULT_QUANTITY_ID,
+      isSelected: selectedQuantityId == Cart.DEFAULT_QUANTITY_ID,
       child: Text(tt(
         'order.list.default_quantity',
         {'amount': selectedIngredient!.amount},

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/repository/order_repo.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -86,7 +86,7 @@ class OrderInfoState extends State<OrderInfo> {
   }
 
   void _queryValue() async {
-    final result = await OrderRepo.instance.getMetricBetween();
+    final result = await Seller.instance.getMetricBetween();
 
     setState(() {
       revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);

@@ -12,7 +12,7 @@ void main() {
     final count = 5;
     var loadCount = 0;
     final orderInfo = GlobalKey<OrderInfoState>();
-    when(orders.getMetricBetween()).thenAnswer((_) {
+    when(seller.getMetricBetween()).thenAnswer((_) {
       return Future.value({
         'totalPrice': totalPrice,
         'count': count + loadCount++,

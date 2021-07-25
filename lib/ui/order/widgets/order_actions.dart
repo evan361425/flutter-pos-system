@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 
 class OrderActions {
   static List<Widget> actions(BuildContext context) {
-    if (CartModel.instance.isHistoryMode) {
+    if (Cart.instance.isHistoryMode) {
       return [
         ListTile(
           title: Text(tt('order.action.leave_history')),
@@ -52,32 +52,32 @@ class OrderActions {
   ) async {
     switch (action) {
       case OrderActionTypes.leave_history:
-        return CartModel.instance.leaveHistoryMode();
+        return Cart.instance.leaveHistoryMode();
       case OrderActionTypes.leave:
         return Navigator.of(context).pop();
       case OrderActionTypes.show_last:
         if (!await _confirmStashCurrent(context)) return;
 
-        if (!await CartModel.instance.stash()) {
+        if (!await Cart.instance.stash()) {
           return _showSnackbar(context, tt('order.action.error.stash_limit'));
         }
 
-        final success = await CartModel.instance.popHistory();
+        final success = await Cart.instance.popHistory();
         _showSnackbar(context,
             success ? tt('success') : tt('order.action.error.last_empty'));
         return;
       case OrderActionTypes.drop_stash:
         if (!await _confirmStashCurrent(context)) return;
 
-        if (!await CartModel.instance.stash()) {
+        if (!await Cart.instance.stash()) {
           return _showSnackbar(context, tt('order.action.error.stash_limit'));
         }
 
-        final success = await CartModel.instance.drop();
+        final success = await Cart.instance.drop();
         return _showSnackbar(context,
             success ? tt('success') : tt('order.action.error.stash_empty'));
       case OrderActionTypes.stash:
-        final success = await CartModel.instance.stash();
+        final success = await Cart.instance.stash();
         return _showSnackbar(context,
             success ? tt('success') : tt('order.action.error.stash_limit'));
       case OrderActionTypes.changer:
@@ -96,7 +96,7 @@ class OrderActions {
   }
 
   static Future<bool> _confirmStashCurrent(BuildContext context) async {
-    if (CartModel.instance.isEmpty) return true;
+    if (Cart.instance.isEmpty) return true;
 
     final result = await showDialog(
       context: context,

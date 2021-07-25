@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/quantity/quantity_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,7 @@ void main() {
     when(quantities.isReady).thenReturn(false);
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<QuantityRepo>.value(value: quantities),
+      ChangeNotifierProvider<Quantities>.value(value: quantities),
     ], child: MaterialApp(home: QuantityScreen())));
 
     expect(find.byType(CircularLoading), findsOneWidget);
@@ -29,14 +29,14 @@ void main() {
     when(quantities.isEmpty).thenReturn(true);
 
     await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<QuantityRepo>.value(value: quantities),
+      ChangeNotifierProvider<Quantities>.value(value: quantities),
     ], child: MaterialApp(home: QuantityScreen())));
 
     expect(find.byType(EmptyBody), findsOneWidget);
   });
 
   testWidgets('should addable', (tester) async {
-    final quantity = MockQuantityModel();
+    final quantity = MockQuantity();
     when(quantity.id).thenReturn('id');
     when(quantity.name).thenReturn('name');
     when(quantity.defaultProportion).thenReturn(0);
@@ -48,7 +48,7 @@ void main() {
 
     await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider<QuantityRepo>.value(value: quantities),
+          ChangeNotifierProvider<Quantities>.value(value: quantities),
         ],
         child: MaterialApp(
           routes: {

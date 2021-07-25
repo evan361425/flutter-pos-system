@@ -1,10 +1,10 @@
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
-import 'package:possystem/models/stock/stock_batch_model.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/models/stock/replenishment.dart';
 
-class IngredientObject extends ModelObject<IngredientModel> {
+class IngredientObject extends ModelObject<Ingredient> {
   IngredientObject({
     this.id,
     this.name,
@@ -39,7 +39,7 @@ class IngredientObject extends ModelObject<IngredientModel> {
   }
 
   @override
-  Map<String, Object> diff(IngredientModel ingredient) {
+  Map<String, Object> diff(Ingredient ingredient) {
     final result = <String, Object>{};
     final prefix = ingredient.prefix;
 
@@ -92,7 +92,7 @@ class IngredientObject extends ModelObject<IngredientModel> {
   }
 }
 
-class QuantityObject extends ModelObject<QuantityModel> {
+class QuantityObject extends ModelObject<Quantity> {
   QuantityObject({
     this.id,
     this.name,
@@ -112,7 +112,7 @@ class QuantityObject extends ModelObject<QuantityModel> {
   }
 
   @override
-  Map<String, Object> diff(QuantityModel quantity) {
+  Map<String, Object> diff(Quantity quantity) {
     final result = <String, Object>{};
     final prefix = quantity.prefix;
 
@@ -138,8 +138,8 @@ class QuantityObject extends ModelObject<QuantityModel> {
   }
 }
 
-class StockBatchObject extends ModelObject<StockBatchModel> {
-  StockBatchObject({
+class ReplenishmentObject extends ModelObject<Replenishment> {
+  ReplenishmentObject({
     this.id,
     required this.name,
     required this.data,
@@ -158,17 +158,17 @@ class StockBatchObject extends ModelObject<StockBatchModel> {
   }
 
   @override
-  Map<String, Object> diff(StockBatchModel batch) {
+  Map<String, Object> diff(Replenishment replenishment) {
     final result = <String, Object>{};
-    final prefix = batch.prefix;
+    final prefix = replenishment.prefix;
 
-    if (name != batch.name) {
-      batch.name = name;
+    if (name != replenishment.name) {
+      replenishment.name = name;
       result['$prefix.name'] = name;
     }
     data.forEach((key, value) {
-      if (batch.getNumOfId(key) != value) {
-        batch.data[key] = value;
+      if (replenishment.getNumOfId(key) != value) {
+        replenishment.data[key] = value;
         result['$prefix.data.$key'] = value;
       }
     });
@@ -176,22 +176,22 @@ class StockBatchObject extends ModelObject<StockBatchModel> {
     return result;
   }
 
-  factory StockBatchObject.build(Map<String, Object?> data) {
-    final batchData = <String, num>{};
+  factory ReplenishmentObject.build(Map<String, Object?> data) {
+    final replenishmentData = <String, num>{};
     final oriData = data['data'];
 
     if (oriData is Map) {
       oriData.forEach((key, value) {
         if (value != 0) {
-          batchData[key] = value;
+          replenishmentData[key] = value;
         }
       });
     }
 
-    return StockBatchObject(
+    return ReplenishmentObject(
       id: data['id'] as String,
       name: data['name'] as String,
-      data: batchData,
+      data: replenishmentData,
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/translator.dart';
 
@@ -23,7 +23,7 @@ enum _ButtonTypes {
 class _CalculatorDialogState extends State<CalculatorDialog> {
   final paidController = TextEditingController();
   final changeController = TextEditingController(text: '0');
-  final totalPrice = CartModel.instance.totalPrice;
+  final totalPrice = Cart.instance.totalPrice;
 
   String? errorMessage;
   bool _isUpdating = false;
@@ -159,7 +159,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
 
         _isUpdating = true;
         try {
-          await CartModel.instance.paid(paid);
+          await Cart.instance.paid(paid);
           Navigator.of(context).pop();
         } catch (e) {
           _isUpdating = false;
@@ -235,7 +235,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   }
 
   static Future<bool> confirmChangeHistory(BuildContext context) async {
-    if (!CartModel.instance.isHistoryMode) return true;
+    if (!Cart.instance.isHistoryMode) return true;
 
     final result = await showDialog(
       context: context,

@@ -6,17 +6,17 @@ import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository/stock_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientModal extends StatefulWidget {
-  final ProductIngredientModel? ingredient;
-  final ProductModel product;
+  final ProductIngredient? ingredient;
+  final Product product;
 
   final bool isNew;
 
@@ -117,8 +117,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     if (!widget.isNew) {
       await widget.ingredient!.update(object);
     } else {
-      final ingredient = ProductIngredientModel(
-        ingredient: StockModel.instance.getItem(ingredientId),
+      final ingredient = ProductIngredient(
+        ingredient: Stock.instance.getItem(ingredientId),
         product: widget.product,
         amount: object.amount!,
       );
@@ -177,7 +177,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       arguments: ingredientName,
     );
 
-    if (result is IngredientModel) {
+    if (result is Ingredient) {
       final ingredient = result;
 
       setState(() {

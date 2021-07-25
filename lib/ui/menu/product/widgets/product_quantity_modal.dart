@@ -6,17 +6,17 @@ import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ProductQuantityModal extends StatefulWidget {
-  final ProductQuantityModel? quantity;
-  final ProductIngredientModel ingredient;
+  final ProductQuantity? quantity;
+  final ProductIngredient ingredient;
 
   final bool isNew;
   ProductQuantityModal({
@@ -149,8 +149,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     final object = _parseObject();
 
     if (widget.isNew) {
-      final quantity = ProductQuantityModel(
-        quantity: QuantityRepo.instance.getItem(object.id!),
+      final quantity = ProductQuantity(
+        quantity: Quantities.instance.getItem(object.id!),
         ingredient: widget.ingredient,
         amount: object.amount,
         additionalPrice: object.additionalPrice,
@@ -213,7 +213,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       arguments: quantityName,
     );
 
-    if (quantity != null && quantity is QuantityModel) {
+    if (quantity != null && quantity is Quantity) {
       setState(() {
         errorMessage = null;
         quantityId = quantity.id;

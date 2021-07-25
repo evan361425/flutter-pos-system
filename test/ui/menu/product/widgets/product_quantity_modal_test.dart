@@ -5,8 +5,8 @@ import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_modal.dart';
 
@@ -16,16 +16,16 @@ import '../../../../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
-    final oldQuantity = QuantityModel(name: 'qua-1', id: 'qua-1');
-    final newQuantity = QuantityModel(name: 'qua-2', id: 'qua-2');
-    final ingredient = MockProductIngredientModel();
+    final oldQuantity = Quantity(name: 'qua-1', id: 'qua-1');
+    final newQuantity = Quantity(name: 'qua-2', id: 'qua-2');
+    final ingredient = MockProductIngredient();
     when(ingredient.prefix).thenReturn('i-id');
     when(ingredient.amount).thenReturn(1);
     when(ingredient.hasItem('qua-2')).thenReturn(false);
     when(ingredient.setItem(any)).thenAnswer((_) => Future.value());
     when(quantities.getItem('qua-2')).thenReturn(newQuantity);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
-    final quantity = ProductQuantityModel(
+    final quantity = ProductQuantity(
         amount: 1,
         additionalCost: 1,
         additionalPrice: 1,
@@ -68,7 +68,7 @@ void main() {
 
     verify(ingredient.removeItem('qua-1'));
     verify(storage.set(any, argThat(equals({'i-id.quantities.qua-1': null}))));
-    verify(ingredient.setItem(argThat(predicate<ProductQuantityModel?>((model) {
+    verify(ingredient.setItem(argThat(predicate<ProductQuantity?>((model) {
       return model?.id == 'qua-2' &&
           model?.additionalCost == 2 &&
           model?.additionalPrice == 2 &&
@@ -77,8 +77,8 @@ void main() {
   });
 
   testWidgets('should add new item', (tester) async {
-    final ingredient = MockProductIngredientModel();
-    final quantity = MockQuantityModel();
+    final ingredient = MockProductIngredient();
+    final quantity = MockQuantity();
     when(ingredient.prefix).thenReturn('i-id');
     when(ingredient.amount).thenReturn(1);
     when(ingredient.hasItem('qua-1')).thenReturn(false);
@@ -117,7 +117,7 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    verify(ingredient.setItem(argThat(predicate<ProductQuantityModel>((model) {
+    verify(ingredient.setItem(argThat(predicate<ProductQuantity>((model) {
       return identical(model.ingredient, ingredient) &&
           model.amount == 1 &&
           model.additionalCost == 1 &&
@@ -126,9 +126,9 @@ void main() {
   });
 
   testWidgets('should pop delete warning', (tester) async {
-    final quantity = QuantityModel(name: 'qua-1', id: 'qua-1');
-    final ingredient = MockProductIngredientModel();
-    final productQuantity = ProductQuantityModel(
+    final quantity = Quantity(name: 'qua-1', id: 'qua-1');
+    final ingredient = MockProductIngredient();
+    final productQuantity = ProductQuantity(
       amount: 1,
       additionalCost: 1,
       additionalPrice: 1,

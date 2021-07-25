@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
-import 'package:possystem/models/repository/cart_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/repository/cart.dart';
 
 class OrderProductList extends StatefulWidget {
   const OrderProductList({
@@ -10,17 +10,17 @@ class OrderProductList extends StatefulWidget {
     required this.handleSelected,
   }) : super(key: key);
 
-  final List<ProductModel> products;
-  final void Function(ProductModel) handleSelected;
+  final List<Product> products;
+  final void Function(Product) handleSelected;
 
   @override
   OrderProductListState createState() => OrderProductListState();
 }
 
 class OrderProductListState extends State<OrderProductList> {
-  late List<ProductModel> _products;
+  late List<Product> _products;
 
-  void updateProducts(CatalogModel catalog) =>
+  void updateProducts(Catalog catalog) =>
       setState(() => _products = catalog.itemList);
 
   @override
@@ -44,8 +44,8 @@ class OrderProductListState extends State<OrderProductList> {
     );
   }
 
-  void _handleSelected(ProductModel product) {
-    CartModel.instance
+  void _handleSelected(Product product) {
+    Cart.instance
       ..toggleAll(false)
       ..add(product);
     widget.handleSelected(product);

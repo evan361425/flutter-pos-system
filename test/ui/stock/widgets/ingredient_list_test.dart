@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
 
@@ -10,7 +10,7 @@ import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should navigate', (tester) async {
-    final ingredient = IngredientModel(name: 'name', id: 'id');
+    final ingredient = Ingredient(name: 'name', id: 'id');
     var argument;
 
     await tester.pumpWidget(MaterialApp(
@@ -31,7 +31,7 @@ void main() {
   });
 
   testWidgets('should add ingredient', (tester) async {
-    final ingredient = IngredientModel(name: 'name', id: 'id');
+    final ingredient = Ingredient(name: 'name', id: 'id');
     when(stock.applyAmounts({'id': 20})).thenAnswer((_) => Future.value());
 
     await tester.pumpWidget(
@@ -49,7 +49,7 @@ void main() {
   });
 
   testWidgets('should minus ingredient', (tester) async {
-    final ingredient = IngredientModel(name: 'name', id: 'id');
+    final ingredient = Ingredient(name: 'name', id: 'id');
     when(stock.applyAmounts({'id': -20})).thenAnswer((_) => Future.value());
 
     await tester.pumpWidget(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_list.dart';
 
 void main() {
   testWidgets('should navigate to modal', (tester) async {
-    final quantity = QuantityModel(name: 'name');
+    final quantity = Quantity(name: 'name');
     var argument;
 
     await tester.pumpWidget(MaterialApp(

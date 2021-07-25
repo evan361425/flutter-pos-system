@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/models/stock/quantity_model.dart';
+import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
 
 import '../../../../mocks/mock_widgets.dart';
@@ -22,7 +22,7 @@ void main() {
     await tester.tap(find.byType(CardTile));
     await tester.pumpAndSettle();
 
-    verify(quantities.setItem(argThat(predicate<QuantityModel>((model) {
+    verify(quantities.setItem(argThat(predicate<Quantity>((model) {
       return model.name == 'some-qua';
     }))));
   });

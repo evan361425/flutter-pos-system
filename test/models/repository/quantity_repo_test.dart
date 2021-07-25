@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/repository/quantity_repo.dart';
+import 'package:possystem/models/repository/quantities.dart';
 
 import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_objects.dart';
@@ -21,7 +21,7 @@ void main() {
               'defaultProportion': 2,
             }
           }));
-      final repo = QuantityRepo();
+      final repo = Quantities();
 
       var isCalled = false;
       void checkCalled() {
@@ -32,7 +32,7 @@ void main() {
       }
 
       repo.addListener(checkCalled);
-      expect(identical(QuantityRepo.instance, repo), isTrue);
+      expect(identical(Quantities.instance, repo), isTrue);
       expect(repo.isReady, isFalse);
       Future.delayed(Duration.zero, () => expect(isCalled, isTrue));
     });
@@ -49,7 +49,7 @@ void main() {
               'defaultProportion': 2,
             }
           }));
-      final repo = QuantityRepo();
+      final repo = Quantities();
 
       repo.addListener(() {
         expect(repo.getItem('id_2')?.name, equals('name_2'));
@@ -60,11 +60,11 @@ void main() {
   });
 
   group('Methods', () {
-    late QuantityRepo repo;
+    late Quantities repo;
 
     test('#getter', () {
-      final q_a = MockQuantityModel();
-      final q_b = MockQuantityModel();
+      final q_a = MockQuantity();
+      final q_b = MockQuantity();
       repo.replaceItems({'a': q_a, 'b': q_b});
 
       expect(repo.isEmpty, isFalse);
@@ -77,8 +77,8 @@ void main() {
     });
 
     test('#removeQuantity', () {
-      final q_a = MockQuantityModel();
-      final q_b = MockQuantityModel();
+      final q_a = MockQuantity();
+      final q_b = MockQuantity();
       repo.replaceItems({'a': q_a, 'b': q_b});
 
       expect(checkNotifierCalled(repo, () => repo.removeItem('a')), isTrue);
@@ -89,7 +89,7 @@ void main() {
 
     group('#setQuantity', () {
       test('should not call storage', () async {
-        final q_a = MockQuantityModel();
+        final q_a = MockQuantity();
         repo.replaceItems({'a': q_a});
         when(q_a.id).thenReturn('a');
         when(storage.add(any, any, any)).thenThrow(Exception());
@@ -102,8 +102,8 @@ void main() {
 
       test('should add quantitiy', () async {
         LOG_LEVEL = 2;
-        final q_a = MockQuantityModel();
-        final q_b = MockQuantityModel();
+        final q_a = MockQuantity();
+        final q_b = MockQuantity();
         final q_map = mockQuantityObject1.toMap();
         repo.replaceItems({'a': q_a});
 
@@ -120,8 +120,8 @@ void main() {
     });
 
     group('#sortBySimilarity', () {
-      MockQuantityModel createQuantity(String id, int similarity) {
-        final quantity = MockQuantityModel();
+      MockQuantity createQuantity(String id, int similarity) {
+        final quantity = MockQuantity();
         when(quantity.getSimilarity(any)).thenReturn(similarity);
         when(quantity.id).thenReturn(id);
 
@@ -165,7 +165,7 @@ void main() {
 
     setUp(() {
       when(storage.get(any)).thenAnswer((e) => Future.value({}));
-      repo = QuantityRepo();
+      repo = Quantities();
     });
   });
 

@@ -4,13 +4,13 @@ import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 import 'package:possystem/ui/setting/widgets/theme_modal.dart';
 import 'package:provider/provider.dart';
 
-import 'models/menu/catalog_model.dart';
-import 'models/menu/product_ingredient_model.dart';
-import 'models/menu/product_model.dart';
-import 'models/menu/product_quantity_model.dart';
-import 'models/stock/ingredient_model.dart';
-import 'models/stock/quantity_model.dart';
-import 'models/stock/stock_batch_model.dart';
+import 'models/menu/catalog.dart';
+import 'models/menu/product_ingredient.dart';
+import 'models/menu/product.dart';
+import 'models/menu/product_quantity.dart';
+import 'models/stock/ingredient.dart';
+import 'models/stock/quantity.dart';
+import 'models/stock/replenishment.dart';
 import 'ui/analysis/analysis_screen.dart';
 import 'ui/cashier/cashier_screen.dart';
 import 'ui/customer/customer_screen.dart';
@@ -31,7 +31,7 @@ import 'ui/setting/widgets/language_modal.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
 import 'ui/stock/quantity/widgets/quantity_modal.dart';
-import 'ui/stock/stock_batch/stock_batch_modal.dart';
+import 'ui/stock/replenishment/replenishment_modal.dart';
 import 'ui/stock/stock_screen.dart';
 import 'ui/transfer/transfer_screen.dart';
 
@@ -58,7 +58,7 @@ class Routes {
   static const String menuQuantity = 'menu/quantity';
   static const String menuIngredientSearch = 'menu/ingredient/search';
   static const String menuQuantitySearch = 'menu/quantity/search';
-  static const String stockBatchModal = 'stock/batch/modal';
+  static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
   static const String stockQuantityModal = 'stock/quantity/modal';
@@ -82,57 +82,57 @@ class Routes {
     // sub-route
     // menu
     menuCatalog: (context) => ChangeNotifierProvider.value(
-          value: arg<CatalogModel>(context),
+          value: arg<Catalog>(context),
           builder: (_, __) => CatalogScreen(),
         ),
     menuCatalogModal: (context) =>
-        CatalogModal(catalog: arg<CatalogModel?>(context)),
+        CatalogModal(catalog: arg<Catalog?>(context)),
     menuCatalogReorder: (context) => CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
-          value: arg<ProductModel>(context),
+          value: arg<Product>(context),
           builder: (_, __) => ProductScreen(),
         ),
     menuProductModal: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is ProductModel
+      return arg is Product
           ? ProductModal(
               product: arg,
               catalog: arg.catalog,
             )
-          : ProductModal(catalog: arg as CatalogModel);
+          : ProductModal(catalog: arg as Catalog);
     },
     menuProductReorder: (context) =>
-        ProductOrderableList(catalog: arg<CatalogModel>(context)),
+        ProductOrderableList(catalog: arg<Catalog>(context)),
     menuIngredient: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is ProductIngredientModel
+      return arg is ProductIngredient
           ? ProductIngredientModal(
               ingredient: arg,
               product: arg.product,
             )
-          : ProductIngredientModal(product: arg as ProductModel);
+          : ProductIngredientModal(product: arg as Product);
     },
     menuIngredientSearch: (context) =>
         ProductIngredientSearch(text: arg<String?>(context)),
     menuQuantity: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is ProductQuantityModel
+      return arg is ProductQuantity
           ? ProductQuantityModal(
               quantity: arg,
               ingredient: arg.ingredient,
             )
-          : ProductQuantityModal(ingredient: arg as ProductIngredientModel);
+          : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
     menuQuantitySearch: (context) =>
         ProductQuantitySearch(text: arg<String?>(context)),
     // stock
     stockIngredient: (context) =>
-        IngredientModal(ingredient: arg<IngredientModel?>(context)),
+        IngredientModal(ingredient: arg<Ingredient?>(context)),
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) =>
-        QuantityModal(quantity: arg<QuantityModel?>(context)),
-    stockBatchModal: (context) =>
-        StockBatchModal(batch: arg<StockBatchModel?>(context)),
+        QuantityModal(quantity: arg<Quantity?>(context)),
+    stockReplenishmentModal: (context) =>
+        ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
     // setting
     settingLanguage: (_) => LanguageModal(),
     settingTheme: (_) => ThemeModal(),

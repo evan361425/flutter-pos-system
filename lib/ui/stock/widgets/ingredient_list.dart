@@ -8,29 +8,29 @@ import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/repository/menu_model.dart';
-import 'package:possystem/models/stock/ingredient_model.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class IngredientList extends StatelessWidget {
-  final List<IngredientModel> ingredients;
+  final List<Ingredient> ingredients;
 
   const IngredientList({Key? key, required this.ingredients}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<IngredientModel>(
+    return SlidableItemList<Ingredient>(
       items: ingredients,
       handleDelete: (_, ingredient) =>
-          MenuModel.instance.removeIngredients(ingredient.id),
+          Menu.instance.removeIngredients(ingredient.id),
       handleTap: _handleTap,
       warningContextBuilder: _warningContextBuilder,
       tileBuilder: _tileBuilder,
     );
   }
 
-  void _handleTap(BuildContext context, IngredientModel ingredient) {
+  void _handleTap(BuildContext context, Ingredient ingredient) {
     Navigator.of(context).pushNamed(
       Routes.stockIngredient,
       arguments: ingredient,
@@ -54,7 +54,7 @@ class IngredientList extends StatelessWidget {
     return result == null ? null : num.tryParse(result);
   }
 
-  Widget _tileBuilder(BuildContext context, IngredientModel ingredient) {
+  Widget _tileBuilder(BuildContext context, Ingredient ingredient) {
     final theme = Theme.of(context);
 
     Future<void> updateAmount(num? amount) async {
@@ -120,9 +120,8 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Widget _warningContextBuilder(
-      BuildContext context, IngredientModel ingredient) {
-    final count = MenuModel.instance.getIngredients(ingredient.id).length;
+  Widget _warningContextBuilder(BuildContext context, Ingredient ingredient) {
+    final count = Menu.instance.getIngredients(ingredient.id).length;
 
     if (count == 0) {
       return Text(tt('delete_confirm', {'name': ingredient.name}));

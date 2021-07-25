@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
-import 'package:possystem/models/menu/product_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ProductModal extends StatefulWidget {
-  final ProductModel? product;
-  final CatalogModel catalog;
+  final Product? product;
+  final Catalog catalog;
   final bool isNew;
 
   ProductModal({
@@ -80,11 +80,11 @@ class _ProductModalState extends State<ProductModal>
     ];
   }
 
-  Future<ProductModel> getProduct() async {
+  Future<Product> getProduct() async {
     final object = _parseObject();
 
     if (widget.isNew) {
-      final product = ProductModel(
+      final product = Product(
         catalog: widget.catalog,
         index: widget.catalog.newIndex,
         name: object.name!,

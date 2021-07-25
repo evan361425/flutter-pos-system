@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/menu/catalog_model.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/ui/order/widgets/order_catalog_list.dart';
 
 void main() {
@@ -12,7 +12,7 @@ void main() {
     final emptyHeight =
         find.byType(SingleChildScrollView).evaluate().first.size!.height;
 
-    final catalog = CatalogModel(index: 1, name: 'name', id: 'id');
+    final catalog = Catalog(index: 1, name: 'name', id: 'id');
     await tester.pumpWidget(MaterialApp(
       home: OrderCatalogList(catalogs: [catalog], handleSelected: (_) {}),
     ));
@@ -23,10 +23,10 @@ void main() {
   });
 
   testWidgets('should get selected catalog', (tester) async {
-    final catalog1 = CatalogModel(index: 1, name: 'name1', id: 'id1');
-    final catalog2 = CatalogModel(index: 1, name: 'name2', id: 'id2');
+    final catalog1 = Catalog(index: 1, name: 'name1', id: 'id1');
+    final catalog2 = Catalog(index: 1, name: 'name2', id: 'id2');
 
-    CatalogModel? selected;
+    Catalog? selected;
     await tester.pumpWidget(MaterialApp(
       home: OrderCatalogList(
           catalogs: [catalog1, catalog2],

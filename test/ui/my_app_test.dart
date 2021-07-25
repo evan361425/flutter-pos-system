@@ -22,7 +22,7 @@ void main() {
     ], child: MyApp(isDebug: false));
     when(database.initialize())
         .thenAnswer((_) => Future.delayed(Duration(milliseconds: 30)));
-    when(orders.getMetricBetween(any, any))
+    when(seller.getMetricBetween(any, any))
         .thenAnswer((_) => Future.value({'totalPrice': 0}));
     when(storage.initialize()).thenAnswer((_) => Future.value());
     when(cache.initialize()).thenAnswer((_) => Future.value());
