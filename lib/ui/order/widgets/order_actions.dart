@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -6,42 +7,44 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 
 class OrderActions {
-  static List<Widget> actions(BuildContext context) {
+  static List<BottomSheetAction> actions() {
     if (Cart.instance.isHistoryMode) {
       return [
-        ListTile(
+        BottomSheetAction(
           title: Text(tt('order.action.leave_history')),
           leading: Icon(Icons.assignment_return_sharp),
-          onTap: () => Navigator.pop(context, OrderActionTypes.leave_history),
+          onTap: (context) {
+            Navigator.pop(context, OrderActionTypes.leave_history);
+          },
         ),
       ];
     }
 
     return [
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
-        onTap: () => Navigator.pop(context, OrderActionTypes.show_last),
+        onTap: (context) => Navigator.pop(context, OrderActionTypes.show_last),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text('換錢'),
         leading: Icon(Icons.change_circle_outlined),
-        onTap: () => Navigator.pop(context, OrderActionTypes.changer),
+        onTap: (context) => Navigator.pop(context, OrderActionTypes.changer),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('order.action.stash')),
         leading: Icon(Icons.file_download),
-        onTap: () => Navigator.pop(context, OrderActionTypes.stash),
+        onTap: (context) => Navigator.pop(context, OrderActionTypes.stash),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('order.action.drop_stash')),
         leading: Icon(Icons.file_upload),
-        onTap: () => Navigator.pop(context, OrderActionTypes.drop_stash),
+        onTap: (context) => Navigator.pop(context, OrderActionTypes.drop_stash),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('order.action.leave')),
         leading: Icon(Icons.logout),
-        onTap: () => Navigator.pop(context, OrderActionTypes.leave),
+        onTap: (context) => Navigator.pop(context, OrderActionTypes.leave),
       ),
     ];
   }

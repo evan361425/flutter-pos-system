@@ -16,7 +16,7 @@ class SlidableItemList<T extends Model> extends StatefulWidget {
   final Widget Function(BuildContext, T) tileBuilder;
   final Widget Function(BuildContext, T) warningContextBuilder;
   final void Function(BuildContext, T) handleTap;
-  final Iterable<Widget> Function(BuildContext, T)? actionBuilder;
+  final Iterable<BottomSheetAction> Function(T)? actionBuilder;
 
   const SlidableItemList({
     Key? key,
@@ -101,26 +101,26 @@ class _SlidableItemListState<T extends Model>
     );
   }
 
-  void _handleLongPress(T item) {
+  void _handleLongPress(T item) async {
     final custom = widget.actionBuilder == null
-        ? const <Widget>[]
-        : widget.actionBuilder!(context, item);
+        ? const <BottomSheetAction>[]
+        : widget.actionBuilder!(item);
 
-    showCircularBottomSheet(
+    final result = await showCircularBottomSheet<bool>(
       context,
       useRootNavigator: false,
-      actions: <Widget>[
+      actions: <BottomSheetAction>[
         ...custom,
-        ListTile(
+        BottomSheetAction(
           title: Text(tt('delete')),
           leading: Icon(KIcons.delete, color: kNegativeColor),
-          onTap: () async {
-            // pop off sheet
-            Navigator.of(context).pop();
-            await _showDeleteDialog(item);
-          },
+          onTap: (context) => Navigator.of(context).pop(false),
         ),
       ],
     );
+
+    if (result == false) {
+      await _showDeleteDialog(item);
+    }
   }
 }

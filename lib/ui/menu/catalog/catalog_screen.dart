@@ -27,7 +27,7 @@ class CatalogScreen extends StatelessWidget {
       trailing: IconButton(
         onPressed: () => showCircularBottomSheet(
           context,
-          actions: _actions(context, catalog),
+          actions: _actions(catalog),
         ),
         icon: Icon(KIcons.more),
       ),
@@ -43,20 +43,20 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _actions(BuildContext context, Catalog catalog) {
-    return [
-      ListTile(
+  List<BottomSheetAction> _actions(Catalog catalog) {
+    return <BottomSheetAction>[
+      BottomSheetAction(
         title: Text(tt('menu.catalog.edit')),
         leading: Icon(Icons.text_fields_sharp),
-        onTap: () => Navigator.of(context).pushReplacementNamed(
+        onTap: (context) => Navigator.of(context).pushReplacementNamed(
           Routes.menuCatalogModal,
           arguments: catalog,
         ),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('menu.product.order')),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context).pushReplacementNamed(
+        onTap: (context) => Navigator.of(context).pushReplacementNamed(
             Routes.menuProductReorder,
             arguments: catalog),
       ),

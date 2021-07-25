@@ -46,11 +46,11 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
             onPressed: () async {
               final result = await showCircularBottomSheet<String>(
                 context,
-                actions: [
-                  ListTile(
+                actions: <BottomSheetAction>[
+                  BottomSheetAction(
                     title: Text(tt('delete')),
                     leading: Icon(KIcons.delete, color: kNegativeColor),
-                    onTap: () => Navigator.of(context).pop('delete'),
+                    onTap: (context) => Navigator.of(context).pop('delete'),
                   ),
                 ],
               );

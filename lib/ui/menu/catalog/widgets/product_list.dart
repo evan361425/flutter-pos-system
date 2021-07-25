@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -23,20 +24,20 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actionBuilder(BuildContext context, Product product) {
+  Iterable<BottomSheetAction> _actionBuilder(Product product) {
     return [
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('menu.product.edit')),
-        leading: Icon(Icons.text_fields_sharp),
-        onTap: () => Navigator.of(context).pushReplacementNamed(
+        leading: const Icon(Icons.text_fields_sharp),
+        onTap: (context) => Navigator.of(context).pushReplacementNamed(
           Routes.menuProductModal,
           arguments: product,
         ),
       ),
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('menu.product.order')),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context).pushReplacementNamed(
+        leading: const Icon(Icons.reorder_sharp),
+        onTap: (context) => Navigator.of(context).pushReplacementNamed(
             Routes.menuProductReorder,
             arguments: product.catalog),
       ),

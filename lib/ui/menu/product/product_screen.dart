@@ -27,7 +27,7 @@ class ProductScreen extends StatelessWidget {
       trailing: IconButton(
         onPressed: () => showCircularBottomSheet(
           context,
-          actions: _actions(context, product),
+          actions: _actions(product),
         ),
         icon: Icon(KIcons.more),
       ),
@@ -43,13 +43,17 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _actions(BuildContext context, Product product) {
+  List<BottomSheetAction> _actions(Product product) {
     return [
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('menu.product.edit')),
         leading: Icon(Icons.text_fields_sharp),
-        onTap: () => Navigator.of(context)
-            .pushReplacementNamed(Routes.menuProductModal, arguments: product),
+        onTap: (context) {
+          Navigator.of(context).pushReplacementNamed(
+            Routes.menuProductModal,
+            arguments: product,
+          );
+        },
       ),
     ];
   }
