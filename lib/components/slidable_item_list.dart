@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
@@ -55,6 +56,7 @@ class _SlidableItemListState<T extends Model>
             if (widget.handleDelete != null) {
               await widget.handleDelete!(context, item);
             }
+            showSuccessSnackbar(context, tt('success'));
           },
         );
       },

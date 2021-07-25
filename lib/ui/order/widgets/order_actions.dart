@@ -59,27 +59,36 @@ class OrderActions {
         if (!await _confirmStashCurrent(context)) return;
 
         if (!await Cart.instance.stash()) {
-          return _showSnackbar(context, tt('order.action.error.stash_limit'));
+          return showInfoSnackbar(
+            context,
+            tt('order.action.error.stash_limit'),
+          );
         }
 
         final success = await Cart.instance.popHistory();
-        _showSnackbar(context,
-            success ? tt('success') : tt('order.action.error.last_empty'));
+        success
+            ? showSuccessSnackbar(context, tt('success'))
+            : showInfoSnackbar(context, tt('order.action.error.last_empty'));
         return;
       case OrderActionTypes.drop_stash:
         if (!await _confirmStashCurrent(context)) return;
 
         if (!await Cart.instance.stash()) {
-          return _showSnackbar(context, tt('order.action.error.stash_limit'));
+          return showInfoSnackbar(
+            context,
+            tt('order.action.error.stash_limit'),
+          );
         }
 
         final success = await Cart.instance.drop();
-        return _showSnackbar(context,
-            success ? tt('success') : tt('order.action.error.stash_empty'));
+        return success
+            ? showSuccessSnackbar(context, tt('success'))
+            : showInfoSnackbar(context, tt('order.action.error.stash_empty'));
       case OrderActionTypes.stash:
         final success = await Cart.instance.stash();
-        return _showSnackbar(context,
-            success ? tt('success') : tt('order.action.error.stash_limit'));
+        return success
+            ? showSuccessSnackbar(context, tt('success'))
+            : showInfoSnackbar(context, tt('order.action.error.stash_limit'));
       case OrderActionTypes.changer:
         final success = await showDialog<bool>(
           context: context,
@@ -104,14 +113,6 @@ class OrderActions {
     );
 
     return result ?? false;
-  }
-
-  static void _showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
   }
 }
 
