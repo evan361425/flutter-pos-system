@@ -47,12 +47,12 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     showIngredient = List.filled(widget.ingredients.length, false);
   }
 
-  List<Widget> _actions() {
-    return [
-      ListTile(
+  List<BottomSheetAction> _actions() {
+    return <BottomSheetAction>[
+      BottomSheetAction(
         title: Text(tt('delete')),
         leading: Icon(KIcons.delete, color: kNegativeColor),
-        onTap: () => Navigator.of(context).pop('delete'),
+        onTap: (context) => Navigator.of(context).pop('delete'),
       )
     ];
   }
@@ -121,7 +121,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       canTapOnHeader: true,
       headerBuilder: (_, __) => GestureDetector(
         onLongPress: () async {
-          final result = await showCircularBottomSheet(
+          final result = await showCircularBottomSheet<String>(
             context,
             actions: _actions(),
           );

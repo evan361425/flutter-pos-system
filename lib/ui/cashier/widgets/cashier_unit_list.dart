@@ -19,7 +19,6 @@ class CashierUnitList extends StatelessWidget {
         final unit = cashier.at(i);
 
         return ListTile(
-          onTap: () {},
           title: Text('幣值： ${unit.unit}'),
           subtitle: Text('數量： ${unit.count}'),
           trailing: Wrap(

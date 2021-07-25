@@ -34,7 +34,7 @@ class OrderScreen extends StatelessWidget {
           onPressed: () async {
             final result = await showCircularBottomSheet<OrderActionTypes>(
               context,
-              actions: OrderActions.actions(context),
+              actions: OrderActions.actions(),
             );
             await OrderActions.onAction(context, result);
           },

@@ -114,10 +114,10 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
 
   void showActions(int index) async {
     final result = await showCircularBottomSheet(context, actions: [
-      ListTile(
+      BottomSheetAction(
         title: Text(tt('delete')),
         leading: Icon(KIcons.delete),
-        onTap: () => Navigator.of(context).pop(true),
+        onTap: (context) => Navigator.of(context).pop(true),
       )
     ]);
 

@@ -5,11 +5,13 @@ import 'package:possystem/translator.dart';
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
-  List<Widget>? actions,
+  List<BottomSheetAction>? actions,
   bool useRootNavigator = true,
   WidgetBuilder? builder,
 }) {
   assert(actions != null || builder != null);
+
+  Feedback.forLongPress(context);
 
   return showMaterialModalBottomSheet<T>(
     context: context,
@@ -25,7 +27,7 @@ Future<T?> showCircularBottomSheet<T>(
 }
 
 class BottomSheetActions extends StatelessWidget {
-  final List<Widget> actions;
+  final List<BottomSheetAction> actions;
 
   const BottomSheetActions({Key? key, required this.actions}) : super(key: key);
 
@@ -36,7 +38,7 @@ class BottomSheetActions extends StatelessWidget {
         top: false,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           _title(context),
-          ...actions,
+          ...[for (final action in actions) action.toWidget(context)],
           _cancelAction(context),
         ]),
       ),
@@ -55,6 +57,29 @@ class BottomSheetActions extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(kSpacing0),
       child: Center(child: Text(tt('action_title'))),
+    );
+  }
+}
+
+class BottomSheetAction {
+  final Widget title;
+
+  final Widget leading;
+
+  final void Function(BuildContext) onTap;
+
+  const BottomSheetAction({
+    required this.title,
+    required this.leading,
+    required this.onTap,
+  });
+
+  Widget toWidget(BuildContext context) {
+    return ListTile(
+      enableFeedback: true,
+      leading: leading,
+      title: title,
+      onTap: () => onTap(context),
     );
   }
 }

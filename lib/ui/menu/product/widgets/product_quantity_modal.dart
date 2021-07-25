@@ -48,11 +48,11 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
               final result = await showCircularBottomSheet(
                 context,
                 useRootNavigator: false,
-                actions: [
-                  ListTile(
+                actions: <BottomSheetAction>[
+                  BottomSheetAction(
                     title: Text(tt('delete')),
                     leading: Icon(KIcons.delete, color: kNegativeColor),
-                    onTap: () => Navigator.of(context).pop('delete'),
+                    onTap: (context) => Navigator.of(context).pop('delete'),
                   ),
                 ],
               );

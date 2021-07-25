@@ -28,7 +28,7 @@ class MenuScreen extends StatelessWidget {
           IconButton(
             onPressed: () => showCircularBottomSheet(
               context,
-              actions: _actions(context),
+              actions: _actions(),
             ),
             icon: Icon(KIcons.more),
           ),
@@ -45,13 +45,14 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _actions(BuildContext context) {
-    return <Widget>[
-      ListTile(
+  List<BottomSheetAction> _actions() {
+    return <BottomSheetAction>[
+      BottomSheetAction(
         title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context)
-            .pushReplacementNamed(Routes.menuCatalogReorder),
+        onTap: (context) {
+          Navigator.of(context).pushReplacementNamed(Routes.menuCatalogReorder);
+        },
       ),
     ];
   }

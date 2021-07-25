@@ -11,7 +11,7 @@ void main() {
   test('should leave history', () async {
     when(cart.isHistoryMode).thenReturn(true);
 
-    expect(OrderActions.actions(MockBuildContext()).length, equals(1));
+    expect(OrderActions.actions().length, equals(1));
     await OrderActions.onAction(
         MockBuildContext(), OrderActionTypes.leave_history);
 

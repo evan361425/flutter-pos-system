@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -21,13 +22,14 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _actionBuilder(BuildContext context, _) {
-    return [
-      ListTile(
+  Iterable<BottomSheetAction> _actionBuilder(_) {
+    return <BottomSheetAction>[
+      BottomSheetAction(
         title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),
-        onTap: () => Navigator.of(context)
-            .pushReplacementNamed(Routes.menuCatalogReorder),
+        onTap: (context) {
+          Navigator.of(context).pushReplacementNamed(Routes.menuCatalogReorder);
+        },
       ),
     ];
   }
