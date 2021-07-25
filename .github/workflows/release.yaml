@@ -42,7 +42,9 @@ jobs:
 
       - name: Check version
         if: ${{ steps.tag.outputs.result != env.PUBSPEC_VERSION }}
-        run: exit 1
+        run: |
+          echo '${{ steps.tag.outputs.result }} is not equal to ${{ env.PUBSPEC_VERSION }}''
+          exit 1
 
   draft-release:
     name: Draft Github release
