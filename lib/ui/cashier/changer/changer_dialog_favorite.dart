@@ -88,7 +88,7 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
 
   Future<bool> handleApply() async {
     if (selectedFavorite == null) {
-      await Toast.show('請選擇要套用的組合');
+      Toast.show(context, '請選擇要套用的組合');
       return false;
     }
 
@@ -96,7 +96,7 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
     final isValid = await Cashier.instance.applyFavorite(item);
 
     if (!isValid) {
-      await Toast.show('${item.source.unit} 元不夠換');
+      Toast.show(context, '${item.source.unit} 元不夠換');
     }
 
     return isValid;

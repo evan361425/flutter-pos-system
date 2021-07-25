@@ -51,7 +51,6 @@ void main() {
         .thenReturn(CashierChangeEntryObject(unit: 5, count: 2));
     when(cashier.findPossibleChange(5, 10))
         .thenReturn(CashierChangeEntryObject(unit: 5, count: 10));
-    Toast.startDebug();
     final dialog = GlobalKey<ChangerDialogCustomState>();
 
     await tester.pumpWidget(MaterialApp(
@@ -104,6 +103,8 @@ void main() {
     when(cashier.indexOf(5)).thenReturn(1);
     when(cashier.indexOf(1)).thenReturn(0);
     final shouldTrue = await dialog.currentState?.handleApply();
+    // wait for toast
+    await tester.pump(Duration(seconds: 2, milliseconds: 500));
 
     expect(shouldTrue, isTrue);
     verify(cashier.update(argThat(equals({2: -5, 1: 9, 0: 5}))));
