@@ -9,9 +9,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mockito/mock_catalog_model.dart';
-import '../../mocks/mockito/mock_product_model.dart';
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show loading if not ready', (tester) async {
@@ -68,6 +67,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

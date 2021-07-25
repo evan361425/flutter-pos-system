@@ -9,9 +9,9 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/quantity/quantity_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/mocks.dart';
-import '../../../mocks/providers.dart';
-import '../../../models/repository/quantity_repo_test.mocks.dart';
+import '../../../mocks/mock_models.mocks.dart';
+import '../../../mocks/mock_repos.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should show loading when not ready', (tester) async {
@@ -66,7 +66,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
     initializeProviders();
   });
 }

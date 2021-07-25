@@ -4,9 +4,9 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 import '../../../mocks/mock_widgets.dart';
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('use total price if not set', (tester) async {
@@ -157,7 +157,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
     initializeProviders();
   });
 }

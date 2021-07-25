@@ -1,29 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/models/order/order_ingredient_model.dart';
 import 'package:possystem/models/order/order_product_model.dart';
 
-import '../../mocks/mockito/mock_product_model.dart';
-import '../menu/product_ingredient_model_test.mocks.dart';
-import '../menu/product_quantity_model_test.mocks.dart';
-import 'order_product_model_test.mocks.dart';
+import '../../mocks/mock_models.mocks.dart';
 
 MockOrderIngredientModel mockIngredient(String id, int price) {
   final ingredient = MockOrderIngredientModel();
   when(ingredient.id).thenReturn(id);
   when(ingredient.price).thenReturn(price);
-  when(ingredient.toString()).thenReturn('');
   return ingredient;
 }
 
-@GenerateMocks([OrderIngredientModel])
 void main() {
   test('properties', () {
     final product = MockProductModel();
-    final ingredient1 = MockOrderIngredientModel();
-    final ingredient2 = MockOrderIngredientModel();
+    final pIng1 = MockProductIngredientModel();
+    final pIng2 = MockProductIngredientModel();
+    final pQua = MockProductQuantityModel();
+    final ingredient1 = OrderIngredientModel(ingredient: pIng1, quantity: pQua);
+    final ingredient2 = OrderIngredientModel(ingredient: pIng2, quantity: pQua);
     final order = OrderProductModel(
       product,
       count: 3,
@@ -31,10 +28,11 @@ void main() {
       ingredients: [ingredient1, ingredient2],
     );
 
-    when(ingredient1.toString()).thenReturn('ing1');
-    when(ingredient2.toString()).thenReturn('ing2');
+    when(pIng1.name).thenReturn('ing1');
+    when(pIng2.name).thenReturn('ing2');
+    when(pQua.name).thenReturn('qua');
 
-    expect(order.ingredientNames.join(','), equals('ing1,ing2'));
+    expect(order.ingredientNames.join(','), equals('ing1 - qua,ing2 - qua'));
     expect(order.price, equals(15));
   });
 

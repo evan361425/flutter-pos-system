@@ -6,8 +6,8 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/ui/analysis/widgets/order_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../../mocks/mockito/mock_order_object.dart';
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_models.mocks.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should not load when initialize', (tester) async {

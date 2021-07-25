@@ -6,7 +6,7 @@ import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
 
 import '../../../../mocks/mock_widgets.dart';
-import '../../../../mocks/mocks.dart';
+import '../../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should add new item', (tester) async {
@@ -28,6 +28,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

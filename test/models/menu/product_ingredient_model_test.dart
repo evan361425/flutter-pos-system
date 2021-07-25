@@ -1,18 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_ingredient_model.dart';
-import 'package:possystem/models/menu/product_quantity_model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient_model.dart';
 
+import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_objects.dart';
-import '../../mocks/mockito/mock_product_model.dart';
-import '../../mocks/mocks.dart';
-import 'product_ingredient_model_test.mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_storage.dart';
 
-@GenerateMocks([ProductQuantityModel, ProductQuantityObject])
 void main() {
   group('factory', () {
     test('#construct', () {
@@ -168,7 +165,6 @@ void main() {
         final object = MockProductQuantityObject();
         when(quantity.id).thenReturn('id2');
         when(quantity.prefix).thenReturn('hola');
-        when(quantity.toString()).thenReturn('hola');
         when(quantity.toObject()).thenReturn(object);
         when(object.toMap()).thenReturn({'a': 'b'});
 
@@ -187,7 +183,6 @@ void main() {
     setUp(() {
       product = MockProductModel();
       when(product.prefix).thenReturn('c_id.p_id');
-      when(product.toString()).thenReturn('cat.pro');
       ingredient = ProductIngredientModel(
         amount: 1,
         ingredient: IngredientModel(name: 'ing', id: 'i_id'),
@@ -197,6 +192,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

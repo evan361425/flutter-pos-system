@@ -5,8 +5,9 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
 
+import '../../../mocks/mock_storage.dart';
 import '../../../mocks/mock_widgets.dart';
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
@@ -59,6 +60,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

@@ -5,7 +5,7 @@ import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/ui/setting/widgets/theme_modal.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('only change theme if need', (tester) async {

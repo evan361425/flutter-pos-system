@@ -6,7 +6,7 @@ import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/ui/order/cart/cart_metadata.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should listen cart', (tester) async {

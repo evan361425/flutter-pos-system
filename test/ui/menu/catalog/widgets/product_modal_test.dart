@@ -5,9 +5,9 @@ import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 
+import '../../../../mocks/mock_models.mocks.dart';
+import '../../../../mocks/mock_storage.dart';
 import '../../../../mocks/mock_widgets.dart';
-import '../../../../mocks/mockito/mock_catalog_model.dart';
-import '../../../../mocks/mocks.dart';
 
 void main() {
   testWidgets('should update', (tester) async {
@@ -15,7 +15,6 @@ void main() {
     final product =
         ProductModel(index: 1, name: 'name', id: 'id', catalog: catalog);
 
-    when(catalog.toString()).thenReturn('mock-c');
     when(catalog.prefix).thenReturn('c-id');
     when(catalog.hasName('name-new')).thenReturn(false);
 
@@ -41,7 +40,6 @@ void main() {
     final catalog = MockCatalogModel();
     when(catalog.setItem(any)).thenAnswer((_) => Future.value());
     when(catalog.hasName('name')).thenReturn(false);
-    when(catalog.toString()).thenReturn('mock-c');
     when(catalog.newIndex).thenReturn(1);
 
     var navigateCount = 0;
@@ -73,6 +71,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeStorage();
   });
 }

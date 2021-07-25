@@ -7,9 +7,11 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../mocks/mock_cache.dart';
 import '../mocks/mock_database.dart';
-import '../mocks/mocks.dart';
-import '../mocks/providers.dart';
+import '../mocks/mock_repos.dart';
+import '../mocks/mock_providers.dart';
+import '../mocks/mock_storage.dart';
 
 void main() {
   testWidgets('should nout initialized before prepared', (tester) async {
@@ -43,8 +45,10 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeCache();
     initializeDatabase();
     initializeProviders();
+    initializeStorage();
   });
 }

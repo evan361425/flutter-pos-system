@@ -6,8 +6,8 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mocks.dart';
-import '../../mocks/providers.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should load count once in start', (tester) async {
@@ -36,6 +36,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

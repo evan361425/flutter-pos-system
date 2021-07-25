@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/ui/order/cart/cart_actions.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('discount', (tester) async {
@@ -88,6 +88,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

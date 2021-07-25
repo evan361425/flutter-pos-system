@@ -5,8 +5,8 @@ import 'package:possystem/models/menu/catalog_model.dart';
 import 'package:possystem/models/menu/product_model.dart';
 import 'package:possystem/ui/order/widgets/order_product_list.dart';
 
-import '../../../mocks/mocks.dart';
-import '../../../models/repository/cart_model_test.mocks.dart';
+import '../../../mocks/mock_models.mocks.dart';
+import '../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should have same height even empty', (tester) async {
@@ -54,6 +54,6 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
   });
 }

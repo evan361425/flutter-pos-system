@@ -1,22 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/order/order_product_model.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 
-import '../../mocks/mockito/mock_order_object.dart';
-import '../../mocks/mockito/mock_product_model.dart';
-import '../../mocks/mocks.dart';
-import '../../mocks/providers.dart';
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_providers.dart';
 import '../../test_helpers/check_notifier.dart';
-import '../menu/product_ingredient_model_test.mocks.dart';
-import '../menu/product_quantity_model_test.mocks.dart';
-import '../order/order_product_model_test.mocks.dart';
-import 'cart_model_test.mocks.dart';
-import 'stock_model_test.mocks.dart';
 
-@GenerateMocks([OrderProductModel])
 void main() {
   final cart = CartModel();
 
@@ -315,7 +306,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
     initializeProviders();
   });
 }

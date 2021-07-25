@@ -4,8 +4,9 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/stock/quantity_model.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
 
+import '../../../../mocks/mock_storage.dart';
 import '../../../../mocks/mock_widgets.dart';
-import '../../../../mocks/mocks.dart';
+import '../../../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should setItem if updating', (tester) async {
@@ -45,6 +46,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

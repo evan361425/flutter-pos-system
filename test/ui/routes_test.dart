@@ -6,10 +6,7 @@ import 'package:possystem/ui/menu/catalog/widgets/product_modal.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_modal.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_modal.dart';
 
-import '../mocks/mockito/mock_catalog_model.dart';
-import '../mocks/mockito/mock_product_ingredient_model.dart';
-import '../mocks/mockito/mock_product_model.dart';
-import '../models/menu/product_ingredient_model_test.mocks.dart';
+import '../mocks/mock_models.mocks.dart';
 
 void main() {
   late Widget newWidget;

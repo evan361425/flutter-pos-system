@@ -6,15 +6,11 @@ import 'package:possystem/models/repository/quantity_repo.dart';
 import 'package:possystem/models/repository/stock_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_storage.dart';
 import '../../mocks/mock_widgets.dart';
-import '../../mocks/mockito/mock_product_model.dart';
-import '../../mocks/mockito/mock_catalog_model.dart';
-import '../../mocks/mockito/mock_product_ingredient_model.dart';
-import '../../mocks/mocks.dart';
+import '../../mocks/mock_repos.dart';
 import '../../test_helpers/check_notifier.dart';
-import '../menu/product_ingredient_model_test.mocks.dart';
-import 'quantity_repo_test.mocks.dart';
-import 'stock_model_test.mocks.dart';
 
 void main() {
   test('#constructor', () {
@@ -316,6 +312,7 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeStorage();
   });
 }

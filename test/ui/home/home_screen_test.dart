@@ -3,8 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 
-import '../../mocks/mocks.dart';
-import '../../mocks/providers.dart';
+import '../../mocks/mock_cache.dart';
+import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should build correct number icons', (tester) async {
@@ -22,7 +23,8 @@ void main() {
   });
 
   setUpAll(() {
-    initialize();
+    initializeRepos();
+    initializeCache();
     initializeProviders();
   });
 }

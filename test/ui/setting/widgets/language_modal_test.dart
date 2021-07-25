@@ -5,7 +5,7 @@ import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/ui/setting/widgets/language_modal.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/providers.dart';
+import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('only change language if need', (tester) async {
