@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -117,11 +118,15 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  void _handleOrder(BuildContext context) {
-    showDialog<void>(
+  void _handleOrder(BuildContext context) async {
+    final result = await showDialog<bool>(
       context: context,
       builder: (_) => CalculatorDialog(),
     );
+
+    if (result == true) {
+      showSuccessSnackbar(context, tt('success'));
+    }
   }
 
   Widget _productRow(List<Catalog> catalogs) {

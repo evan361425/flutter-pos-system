@@ -160,7 +160,7 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
         _isUpdating = true;
         try {
           await Cart.instance.paid(paid);
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         } catch (e) {
           _isUpdating = false;
           if (e == 'too low') {
