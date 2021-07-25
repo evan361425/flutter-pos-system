@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-class LogoSplash extends StatelessWidget {
-  const LogoSplash({Key? key}) : super(key: key);
+class WelcomeSplash extends StatelessWidget {
+  const WelcomeSplash({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Material(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', width: 128, height: 128),
-          ],
+          children: [Text('歡迎😆', style: TextStyle(fontSize: 32.0))],
         ),
       ),
     );

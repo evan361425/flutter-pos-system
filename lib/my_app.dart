@@ -13,7 +13,7 @@ import 'package:possystem/services/cache.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/ui/home/home_screen.dart';
-import 'package:possystem/ui/splash/logo_splash.dart';
+import 'package:possystem/ui/splash/welcome_splash.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,7 +21,9 @@ class MyApp extends StatelessWidget {
 
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  static bool _initialized = false;
+  static bool _isLoadedSettings = false;
+
+  static bool _isRegistedServices = false;
 
   final bool isDebug;
 
@@ -30,50 +32,53 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: _initialization(context),
-      initialData: false,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          error('${snapshot.error}', 'initialize', snapshot.stackTrace);
-        }
-        final prepared = snapshot.data ?? false;
-        final theme = context.watch<ThemeProvider>();
-        final language = context.watch<LanguageProvider>();
-        final currency = context.watch<CurrencyProvider>();
+    final theme = context.watch<ThemeProvider>();
+    final language = context.watch<LanguageProvider>();
+    final currency = context.watch<CurrencyProvider>();
 
-        if (prepared && !_initialized) {
-          theme.initialize();
-          language.initialize();
-          currency.initialize();
-          _initialized = true;
-        }
+    if (_isRegistedServices && !_isLoadedSettings) {
+      theme.initialize();
+      language.initialize();
+      currency.initialize();
+      _isLoadedSettings = true;
+    }
 
-        return MaterialApp(
-          title: 'POS System',
-          routes: Routes.routes,
-          debugShowCheckedModeBanner: false,
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: analytics),
-            routeObserver,
-          ],
-          // === language setting ===
-          locale: language.isReady ? language.locale : null,
-          supportedLocales: LanguageProvider.supports,
-          localizationsDelegates: LanguageProvider.delegates,
-          localeListResolutionCallback: language.localeListResolutionCallback,
-          // === theme setting ===
-          theme: AppThemes.lightTheme,
-          darkTheme: AppThemes.darkTheme,
-          themeMode: theme.isReady ? theme.mode : null,
-          // === home widget ===
-          home: prepared ? HomeScreen() : LogoSplash(),
-        );
-      },
+    return MaterialApp(
+      title: 'POS System',
+      routes: Routes.routes,
+      debugShowCheckedModeBanner: false,
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+        routeObserver,
+      ],
+      // === language setting ===
+      locale: language.isReady ? language.locale : null,
+      supportedLocales: LanguageProvider.supports,
+      localizationsDelegates: LanguageProvider.delegates,
+      localeListResolutionCallback: language.localeListResolutionCallback,
+      // === theme setting ===
+      theme: AppThemes.lightTheme,
+      darkTheme: AppThemes.darkTheme,
+      themeMode: theme.isReady ? theme.mode : null,
+      // === home widget ===
+      home: FutureBuilder<bool>(
+        future: _registerServices(context),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            error('${snapshot.error}', 'initialize', snapshot.stackTrace);
+          }
+
+          return _isRegistedServices ? HomeScreen() : WelcomeSplash();
+        },
+      ),
     );
   }
 
-  Future<bool> _initialization(BuildContext context) async {
+  Future<bool> _registerServices(BuildContext context) async {
+    if (_isRegistedServices) {
+      return true;
+    }
+
     if (isDebug) {
       await analytics.setAnalyticsCollectionEnabled(false);
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
@@ -82,6 +87,11 @@ class MyApp extends StatelessWidget {
     await Database.instance.initialize();
     await Storage.instance.initialize();
     await Cache.instance.initialize();
+
+    _isRegistedServices = true;
+
+    // rebuild app
+    LanguageProvider.instance.translatorFilesChanged();
 
     return true;
   }

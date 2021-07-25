@@ -16,23 +16,25 @@ import '../mocks/mock_storage.dart';
 void main() {
   testWidgets('should nout initialized before prepared', (tester) async {
     final app = MultiProvider(providers: [
-      ChangeNotifierProvider<ThemeProvider>(create: (_) => theme),
-      ChangeNotifierProvider<LanguageProvider>(create: (_) => language),
-      ChangeNotifierProvider<CurrencyProvider>(create: (_) => currency),
+      ChangeNotifierProvider<ThemeProvider>.value(value: theme),
+      ChangeNotifierProvider<LanguageProvider>.value(
+          value: LanguageProvider.instance),
+      ChangeNotifierProvider<CurrencyProvider>.value(value: currency),
     ], child: MyApp(isDebug: false));
+
     when(database.initialize())
         .thenAnswer((_) => Future.delayed(Duration(milliseconds: 30)));
-    when(seller.getMetricBetween(any, any))
-        .thenAnswer((_) => Future.value({'totalPrice': 0}));
     when(storage.initialize()).thenAnswer((_) => Future.value());
     when(cache.initialize()).thenAnswer((_) => Future.value());
+    when(cache.get(any)).thenReturn(null);
     when(cache.needTutorial(any)).thenReturn(false);
 
     when(currency.numToString(any)).thenReturn('');
-    when(language.isReady).thenReturn(false);
     when(theme.isReady).thenReturn(false);
-    when(language.localeListResolutionCallback(any, any))
-        .thenReturn(Locale('zh', 'TW'));
+
+    // home page order info
+    when(seller.getMetricBetween(any, any))
+        .thenAnswer((_) => Future.value({'totalPrice': 0}));
 
     await tester.pumpWidget(app);
     await tester.pump();
@@ -50,5 +52,13 @@ void main() {
     initializeDatabase();
     initializeProviders();
     initializeStorage();
+  });
+
+  setUp(() {
+    LanguageProvider.instance = LanguageProvider();
+  });
+
+  tearDown(() {
+    LanguageProvider.instance = language;
   });
 }

@@ -78,7 +78,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/
     - lang/zh_TW/app.g.json
     - lang/en_US/app.g.json
 
