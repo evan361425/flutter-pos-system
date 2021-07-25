@@ -81,16 +81,19 @@ class _DialogItem {
     switch (type) {
       case _DialogItems.discount:
         return _DialogItem(
-          validator: Validator.positiveInt(tt('order.cart.name.discount'),
-              maximum: 100),
+          validator: Validator.positiveInt(
+            tt('order.cart.name.discount'),
+            maximum: 100,
+          ),
           decoration: InputDecoration(
             hintText: tt('order.cart.hint.discount'),
             helperText: tt('order.cart.helper.discount'),
             helperMaxLines: 4,
             suffix: Text(tt('order.cart.suffix.discount')),
           ),
-          action: (result) =>
-              CartModel.instance.updateSelectedDiscount(int.tryParse(result)),
+          action: (result) {
+            CartModel.instance.updateSelectedDiscount(int.tryParse(result));
+          },
         );
       case _DialogItems.price:
         return _DialogItem(
@@ -99,20 +102,25 @@ class _DialogItem {
             hintText: tt('order.cart.hint.price'),
             suffix: Text(tt('order.cart.suffix.price')),
           ),
-          action: (result) =>
-              CartModel.instance.updateSelectedPrice(num.tryParse(result)),
+          action: (result) {
+            CartModel.instance.updateSelectedPrice(num.tryParse(result));
+          },
         );
       case _DialogItems.count:
         return _DialogItem(
-          validator: Validator.positiveInt(tt('order.cart.name.count'),
-              maximum: 10000),
+          validator: Validator.positiveInt(
+            tt('order.cart.name.count'),
+            maximum: 10000,
+            minimum: 1,
+          ),
           decoration: InputDecoration(
             hintText: tt('order.cart.hint.count'),
             helperMaxLines: 4,
             suffix: Text(tt('order.cart.suffix.count')),
           ),
-          action: (result) =>
-              CartModel.instance.updateSelectedCount(int.tryParse(result)),
+          action: (result) {
+            CartModel.instance.updateSelectedCount(int.tryParse(result));
+          },
         );
       default:
         return null;
