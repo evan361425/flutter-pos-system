@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart_model.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 
 class OrderActions {
   static List<Widget> actions(BuildContext context) {
@@ -20,6 +22,11 @@ class OrderActions {
         title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
         onTap: () => Navigator.pop(context, OrderActionTypes.show_last),
+      ),
+      ListTile(
+        title: Text('換錢'),
+        leading: Icon(Icons.change_circle_outlined),
+        onTap: () => Navigator.pop(context, OrderActionTypes.changer),
       ),
       ListTile(
         title: Text(tt('order.action.stash')),
@@ -73,6 +80,16 @@ class OrderActions {
         final success = await CartModel.instance.stash();
         return _showSnackbar(context,
             success ? tt('success') : tt('order.action.error.stash_limit'));
+      case OrderActionTypes.changer:
+        final success = await showDialog<bool>(
+          context: context,
+          builder: (_) => ChangerDialog(),
+        );
+
+        if (success == true) {
+          showSuccessSnackbar(context, tt('success'));
+        }
+        return;
       default:
         return;
     }
@@ -100,8 +117,9 @@ class OrderActions {
 
 enum OrderActionTypes {
   show_last,
-  drop_stash,
+  changer,
   stash,
+  drop_stash,
   leave,
   leave_history,
 }

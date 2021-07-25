@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 
+import '../../../mocks/mock_providers.dart';
 import '../../../mocks/mock_widgets.dart';
 import '../../../mocks/mock_repos.dart';
 
@@ -79,6 +80,31 @@ void main() {
     verifyNever(cart.popHistory());
   });
 
+  testWidgets('show changer', (tester) async {
+    when(currency.unitList).thenReturn([]);
+    when(cashier.favoriteIsEmpty).thenReturn(true);
+
+    await tester.pumpWidget(MaterialApp(home: Scaffold(
+      body: Builder(builder: (context) {
+        return TextButton(
+          onPressed: () => OrderActions.onAction(
+            context,
+            OrderActionTypes.changer,
+          ),
+          child: Text('hi'),
+        );
+      }),
+    )));
+
+    await tester.tap(find.text('hi'));
+    await tester.pumpAndSettle();
+
+    // leave changer
+    await tester.tap(find.text('cancel'));
+
+    expect(find.text('hi'), findsOneWidget);
+  });
+
   testWidgets('drop without ordering', (tester) async {
     when(cart.isEmpty).thenReturn(true);
     when(cart.stash()).thenAnswer((_) => Future.value(true));
@@ -143,5 +169,6 @@ void main() {
 
   setUpAll(() {
     initializeRepos();
+    initializeProviders();
   });
 }
