@@ -27,35 +27,33 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: AlertDialog(
-        title: widget.title,
-        content: SingleChildScrollView(
-          child: Form(
-            key: form,
-            child: TextFormField(
-              controller: textController,
-              autofocus: true,
-              onSaved: onSubmit,
-              onFieldSubmitted: onSubmit,
-              keyboardType: widget.keyboardType,
-              validator: widget.validator,
-              decoration: widget.decoration,
-              textInputAction: TextInputAction.done,
-            ),
+    return AlertDialog(
+      title: widget.title,
+      content: SingleChildScrollView(
+        child: Form(
+          key: form,
+          child: TextFormField(
+            controller: textController,
+            autofocus: true,
+            onSaved: onSubmit,
+            onFieldSubmitted: onSubmit,
+            keyboardType: widget.keyboardType,
+            validator: widget.validator,
+            decoration: widget.decoration,
+            textInputAction: TextInputAction.done,
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(tt('cancel')),
-          ),
-          ElevatedButton(
-            onPressed: () => onSubmit(textController.text),
-            child: Text(tt('confirm')),
-          ),
-        ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(tt('cancel')),
+        ),
+        ElevatedButton(
+          onPressed: () => onSubmit(textController.text),
+          child: Text(tt('confirm')),
+        ),
+      ],
     );
   }
 
