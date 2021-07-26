@@ -49,7 +49,7 @@ void main() {
 
     await tester.enterText(find.byType(TextFormField).first, 'name');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(menu.setItem(argThat(predicate<Catalog>((model) {

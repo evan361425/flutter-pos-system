@@ -51,7 +51,7 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return <BottomSheetAction>[
       BottomSheetAction(
         title: Text(tt('delete')),
-        leading: Icon(KIcons.delete, color: kNegativeColor),
+        leading: Icon(KIcons.delete, color: Theme.of(context).errorColor),
         onTap: (context) => Navigator.of(context).pop('delete'),
       )
     ];
@@ -63,7 +63,6 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
       child: Row(children: [
         Expanded(
           child: ElevatedButton.icon(
-            // color: Theme.of(context).secondaryHeaderColor,
             icon: Icon(Icons.settings_sharp),
             label: Text(tt('menu.ingredient.edit')),
             onPressed: () => Navigator.of(context).pushNamed(

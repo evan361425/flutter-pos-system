@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
@@ -37,7 +38,10 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         ),
         title: title,
         actions: [
-          TextButton(onPressed: () => handleSubmit(), child: Text(tt('save'))),
+          AppbarTextButton(
+            onPressed: () => handleSubmit(),
+            child: Text(tt('save')),
+          ),
           ...actions,
         ],
       ),

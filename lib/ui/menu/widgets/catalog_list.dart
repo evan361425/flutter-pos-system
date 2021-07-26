@@ -22,8 +22,16 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Iterable<BottomSheetAction> _actionBuilder(_) {
+  Iterable<BottomSheetAction> _actionBuilder(catalog) {
     return <BottomSheetAction>[
+      BottomSheetAction(
+        title: Text(tt('menu.catalog.edit')),
+        leading: Icon(Icons.text_fields_sharp),
+        onTap: (context) => Navigator.of(context).pushReplacementNamed(
+          Routes.menuCatalogModal,
+          arguments: catalog,
+        ),
+      ),
       BottomSheetAction(
         title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),

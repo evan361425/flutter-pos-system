@@ -45,7 +45,7 @@ void main() {
       ),
     ));
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.byKey(Key('order.action.order')));
     await tester.pumpAndSettle();
 
     expect(find.byType(CalculatorDialog), findsOneWidget);

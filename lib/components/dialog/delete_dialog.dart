@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 
 class DeleteDialog extends StatelessWidget {
@@ -14,6 +13,8 @@ class DeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AlertDialog(
       title: Text(tt('delete_title')),
       content: SingleChildScrollView(child: content),
@@ -28,7 +29,7 @@ class DeleteDialog extends StatelessWidget {
             Navigator.of(context).pop(true);
           },
           style: ElevatedButton.styleFrom(
-            primary: kNegativeColor,
+            primary: theme.errorColor,
             onPrimary: Colors.white,
           ),
           child: Text(tt('delete')),

@@ -3,7 +3,6 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -49,7 +48,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
                 actions: <BottomSheetAction>[
                   BottomSheetAction(
                     title: Text(tt('delete')),
-                    leading: Icon(KIcons.delete, color: kNegativeColor),
+                    leading: Icon(
+                      KIcons.delete,
+                      color: Theme.of(context).errorColor,
+                    ),
                     onTap: (context) => Navigator.of(context).pop('delete'),
                   ),
                 ],

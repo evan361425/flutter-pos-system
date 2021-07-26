@@ -26,7 +26,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), '1');
     await tester.enterText(find.byType(TextFormField).at(2), '2');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
 
     verify(storage.set(any, argThat(predicate<Map<String, Object>>((map) {
       return map['c-id.products.id.price'] == 1 &&
@@ -61,7 +61,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), '1');
     await tester.enterText(find.byType(TextFormField).at(2), '2');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(catalog.setItem(any)).called(1);

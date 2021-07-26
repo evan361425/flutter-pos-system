@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -28,7 +29,7 @@ class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
           icon: Icon(KIcons.back),
         ),
         actions: [
-          TextButton(
+          AppbarTextButton(
               onPressed: () async {
                 await handleSubmit(items);
                 Navigator.of(context).pop();

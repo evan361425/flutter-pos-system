@@ -21,8 +21,6 @@ class OrderInfoState extends State<OrderInfo> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textStyle =
-        theme.textTheme.headline3!.copyWith(color: theme.primaryColor);
 
     return Stack(
       alignment: Alignment.center,
@@ -33,9 +31,9 @@ class OrderInfoState extends State<OrderInfo> {
             padding: const EdgeInsets.all(kSpacing1),
             child: Row(
               children: <Widget>[
-                _column(tt('home.today_order'), count, textStyle),
+                _column(tt('home.today_order'), count, theme),
                 const SizedBox(width: 64.0),
-                _column(tt('home.today_price'), revenue, textStyle),
+                _column(tt('home.today_price'), revenue, theme),
               ],
             ),
           ),
@@ -49,7 +47,7 @@ class OrderInfoState extends State<OrderInfo> {
               shape: CircleBorder(),
               padding: const EdgeInsets.all(kSpacing3),
             ),
-            child: Text(tt('home.order'), style: theme.textTheme.headline4),
+            child: Text(tt('home.order'), style: TextStyle(fontSize: 32.0)),
           ),
         ),
       ],
@@ -70,7 +68,7 @@ class OrderInfoState extends State<OrderInfo> {
     });
   }
 
-  Expanded _column(String title, String? value, TextStyle textStyle) {
+  Expanded _column(String title, String? value, ThemeData theme) {
     return Expanded(
       child: Column(
         children: <Widget>[
@@ -78,7 +76,7 @@ class OrderInfoState extends State<OrderInfo> {
           Text(
             value ?? '...',
             textAlign: TextAlign.center,
-            style: textStyle,
+            style: theme.textTheme.headline3,
           ),
         ],
       ),

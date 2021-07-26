@@ -57,7 +57,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(product.removeItem('ing-1'));
@@ -103,7 +103,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(product.setItem(argThat(predicate<ProductIngredient>((model) {
