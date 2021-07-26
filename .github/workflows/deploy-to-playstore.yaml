@@ -12,10 +12,11 @@ on:
         description: "Build number default 1"
         required: false
         default: "1"
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_run:
+    workflows:
+      - Draft Github Release
+    types:
+      - completed
 
 jobs:
   var:
@@ -60,6 +61,7 @@ jobs:
   fastlane-deploy:
     runs-on: ubuntu-18.04
     needs: var
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
