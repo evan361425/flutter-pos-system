@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
-import 'package:possystem/ui/cashier/changer/changer_dialog_favorite.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
 
 import '../../../mocks/mock_repos.dart';
 
@@ -14,7 +14,7 @@ void main() {
     var isTapped = false;
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: ChangerDialogFavorite(handleAdd: () => isTapped = true),
+        child: ChangerModalFavorite(handleAdd: () => isTapped = true),
       ),
     ));
 
@@ -36,7 +36,7 @@ void main() {
     when(cashier.favoriteAt(0)).thenReturn(item);
 
     await tester.pumpWidget(MaterialApp(
-      home: Material(child: ChangerDialogFavorite(handleAdd: () {})),
+      home: Material(child: ChangerModalFavorite(handleAdd: () {})),
     ));
 
     await tester.tap(find.byIcon(Icons.more_vert_sharp));
@@ -60,7 +60,7 @@ void main() {
     when(cashier.favoriteAt(0)).thenReturn(item);
 
     await tester.pumpWidget(MaterialApp(
-      home: Material(child: ChangerDialogFavorite(handleAdd: () {})),
+      home: Material(child: ChangerModalFavorite(handleAdd: () {})),
     ));
 
     await tester.longPress(find.text('用 1 個 5 元換'));
@@ -83,11 +83,11 @@ void main() {
     when(cashier.favoriteLength).thenReturn(1);
     when(cashier.favoriteAt(0)).thenReturn(item);
 
-    final dialog = GlobalKey<ChangerDialogFavoriteState>();
+    final dialog = GlobalKey<ChangerModalFavoriteState>();
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: ChangerDialogFavorite(handleAdd: () {}, key: dialog),
+        child: ChangerModalFavorite(handleAdd: () {}, key: dialog),
       ),
     ));
 

@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
+
+class ChangerModal extends StatefulWidget {
+  ChangerModal({Key? key}) : super(key: key);
+
+  @override
+  _ChangerModalState createState() => _ChangerModalState();
+}
+
+class _ChangerModalState extends State<ChangerModal>
+    with TickerProviderStateMixin {
+  late TabController controller;
+  final customState = GlobalKey<ChangerModalCustomState>();
+  final favoriteState = GlobalKey<ChangerModalFavoriteState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // tab widgets
+    final tabBar = TabBar(
+      controller: controller,
+      indicatorColor: theme.primaryColor,
+      labelColor: theme.primaryColor,
+      unselectedLabelColor: theme.hintColor,
+      tabs: [
+        Tab(text: '常用'),
+        Tab(text: '手動'),
+      ],
+    );
+    final tabBarView = TabBarView(controller: controller, children: [
+      ChangerModalFavorite(
+        key: favoriteState,
+        handleAdd: () => controller.animateTo(1),
+      ),
+      ChangerModalCustom(
+        key: customState,
+        handleFavoriteAdded: () {
+          controller.animateTo(0);
+          favoriteState.currentState?.reset();
+        },
+      ),
+    ]);
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(KIcons.back),
+        ),
+        title: Text('換錢'),
+        actions: [
+          TextButton(onPressed: handleApply, child: Text('套用')),
+        ],
+      ),
+      body: DefaultTabController(
+        length: tabBar.tabs.length,
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          tabBar,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(kSpacing2),
+              child: tabBarView,
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void handleApply() async {
+    final isValid = controller.index == 1
+        ? await customState.currentState?.handleApply()
+        : await favoriteState.currentState?.handleApply();
+
+    if (isValid == true) {
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  @override
+  void initState() {
+    controller = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+}

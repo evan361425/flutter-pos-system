@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 
 import '../../mocks/mock_repos.dart';
 
@@ -10,12 +12,14 @@ void main() {
   testWidgets('should show changer', (tester) async {
     Cashier.instance = Cashier();
 
-    await tester.pumpWidget(MaterialApp(home: CashierScreen()));
+    await tester.pumpWidget(MaterialApp(routes: {
+      Routes.cashierChanger: (_) => ChangerModal(),
+    }, home: CashierScreen()));
 
     await tester.tap(find.text('換錢'));
     await tester.pumpAndSettle();
 
-    expect(find.text('cancel'), findsOneWidget);
+    expect(find.text('套用'), findsOneWidget);
 
     Cashier.instance = cashier;
   });

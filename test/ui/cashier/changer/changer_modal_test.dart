@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
-import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 
 import '../../../mocks/mock_repos.dart';
 import '../../../mocks/mock_providers.dart';
@@ -24,10 +24,9 @@ void main() {
     await tester.pumpWidget(MaterialApp(
         home: Builder(
             builder: (context) => TextButton(
-                onPressed: () => showDialog<bool>(
-                      context: context,
-                      builder: (_) => ChangerDialog(),
-                    ).then((value) => expect(value, isTrue)),
+                onPressed: () => Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => ChangerModal()))
+                    .then((value) => expect(value, isTrue)),
                 child: Text('hi')))));
 
     await tester.tap(find.text('hi'));

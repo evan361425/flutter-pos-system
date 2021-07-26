@@ -4,8 +4,8 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_unit_list.dart';
 import 'package:provider/provider.dart';
@@ -63,10 +63,8 @@ class CashierScreen extends StatelessWidget {
   }
 
   void handleChanging(BuildContext context) async {
-    final success = await showDialog<bool>(
-      context: context,
-      builder: (_) => ChangerDialog(),
-    );
+    final success =
+        await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
     if (success == true) {
       showSuccessSnackbar(context, tt('success'));

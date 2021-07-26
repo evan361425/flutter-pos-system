@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
-import 'package:possystem/ui/cashier/changer/changer_dialog_custom.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
 
 import '../../../mocks/mock_repos.dart';
 import '../../../mocks/mock_providers.dart';
@@ -17,7 +17,7 @@ void main() {
     var added = false;
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: ChangerDialogCustom(
+        child: ChangerModalCustom(
           handleFavoriteAdded: () => added = true,
         ),
       ),
@@ -50,11 +50,11 @@ void main() {
         .thenReturn(CashierChangeEntryObject(unit: 5, count: 2));
     when(cashier.findPossibleChange(5, 10))
         .thenReturn(CashierChangeEntryObject(unit: 5, count: 10));
-    final dialog = GlobalKey<ChangerDialogCustomState>();
+    final dialog = GlobalKey<ChangerModalCustomState>();
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: ChangerDialogCustom(key: dialog, handleFavoriteAdded: () {}),
+        child: ChangerModalCustom(key: dialog, handleFavoriteAdded: () {}),
       ),
     ));
 

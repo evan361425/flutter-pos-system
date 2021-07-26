@@ -3,8 +3,8 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/cashier/changer/changer_dialog.dart';
 
 class OrderActions {
   static List<BottomSheetAction> actions() {
@@ -93,10 +93,8 @@ class OrderActions {
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.stash_limit'));
       case OrderActionTypes.changer:
-        final success = await showDialog<bool>(
-          context: context,
-          builder: (_) => ChangerDialog(),
-        );
+        final success =
+            await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
         if (success == true) {
           showSuccessSnackbar(context, tt('success'));

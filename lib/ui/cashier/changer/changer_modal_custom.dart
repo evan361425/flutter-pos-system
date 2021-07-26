@@ -8,19 +8,19 @@ import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
-class ChangerDialogCustom extends StatefulWidget {
+class ChangerModalCustom extends StatefulWidget {
   final void Function() handleFavoriteAdded;
 
-  const ChangerDialogCustom({
+  const ChangerModalCustom({
     Key? key,
     required this.handleFavoriteAdded,
   }) : super(key: key);
 
   @override
-  ChangerDialogCustomState createState() => ChangerDialogCustomState();
+  ChangerModalCustomState createState() => ChangerModalCustomState();
 }
 
-class ChangerDialogCustomState extends State<ChangerDialogCustom> {
+class ChangerModalCustomState extends State<ChangerModalCustom> {
   final formKey = GlobalKey<FormState>();
 
   /// Money to changed
@@ -83,7 +83,7 @@ class ChangerDialogCustomState extends State<ChangerDialogCustom> {
                 hint: Text('幣值'),
                 onChanged: (value) => setState(() => entry.value.unit = value),
                 onSaved: (value) => entry.value.unit = value,
-                items: ChangerDialogCustomState._unitDropdownMenuItems(),
+                items: ChangerModalCustomState._unitDropdownMenuItems(),
               ),
               entry.key == 0
                   ? null

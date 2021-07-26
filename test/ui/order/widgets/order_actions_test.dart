@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/constants/icons.dart';
+import 'package:possystem/routes.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 
 import '../../../mocks/mock_providers.dart';
@@ -84,23 +87,28 @@ void main() {
     when(currency.unitList).thenReturn([]);
     when(cashier.favoriteIsEmpty).thenReturn(true);
 
-    await tester.pumpWidget(MaterialApp(home: Scaffold(
-      body: Builder(builder: (context) {
-        return TextButton(
-          onPressed: () => OrderActions.onAction(
-            context,
-            OrderActionTypes.changer,
-          ),
-          child: Text('hi'),
-        );
-      }),
-    )));
+    await tester.pumpWidget(MaterialApp(
+        routes: {
+          Routes.cashierChanger: (_) => ChangerModal(),
+        },
+        home: Scaffold(
+          body: Builder(builder: (context) {
+            return TextButton(
+              onPressed: () => OrderActions.onAction(
+                context,
+                OrderActionTypes.changer,
+              ),
+              child: Text('hi'),
+            );
+          }),
+        )));
 
     await tester.tap(find.text('hi'));
     await tester.pumpAndSettle();
 
     // leave changer
-    await tester.tap(find.text('cancel'));
+    await tester.tap(find.byIcon(KIcons.back));
+    await tester.pumpAndSettle();
 
     expect(find.text('hi'), findsOneWidget);
   });

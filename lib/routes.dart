@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
 import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 import 'package:possystem/ui/setting/widgets/theme_modal.dart';
@@ -48,6 +49,7 @@ class Routes {
   static const String transfer = 'transfer';
 
   // sub-route
+  static const String cashierChanger = 'cashier/changer';
   static const String menuCatalog = 'menu/catalog';
   static const String menuCatalogModal = 'menu/catalog/modal';
   static const String menuCatalogReorder = 'menu/catalog/reorder';
@@ -80,6 +82,8 @@ class Routes {
     stock: (_) => StockScreen(),
     transfer: (_) => TransferScreen(),
     // sub-route
+    // cashier
+    cashierChanger: (context) => ChangerModal(),
     // menu
     menuCatalog: (context) => ChangeNotifierProvider.value(
           value: arg<Catalog>(context),

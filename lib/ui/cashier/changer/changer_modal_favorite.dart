@@ -8,19 +8,19 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/translator.dart';
 
-class ChangerDialogFavorite extends StatefulWidget {
+class ChangerModalFavorite extends StatefulWidget {
   final void Function() handleAdd;
 
-  const ChangerDialogFavorite({
+  const ChangerModalFavorite({
     Key? key,
     required this.handleAdd,
   }) : super(key: key);
 
   @override
-  ChangerDialogFavoriteState createState() => ChangerDialogFavoriteState();
+  ChangerModalFavoriteState createState() => ChangerModalFavoriteState();
 }
 
-class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
+class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
   static int? selectedFavorite;
 
   String? errorMessage;
@@ -51,13 +51,21 @@ class ChangerDialogFavoriteState extends State<ChangerDialogFavorite> {
           }),
         );
 
-        final moreButton = PopupMenuButton(
+        final moreButton = PopupMenuButton<String>(
           icon: Icon(Icons.more_vert_sharp),
-          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-            PopupMenuItem(
+          onSelected: (value) {
+            switch (value) {
+              case 'delete':
+                return handleDeletion(i);
+              default:
+                return;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            PopupMenuItem<String>(
+              value: 'delete',
               child: ListTile(
                 leading: Icon(KIcons.delete),
-                onTap: () => handleDeletion(i),
                 title: Text(tt('delete')),
               ),
             ),
