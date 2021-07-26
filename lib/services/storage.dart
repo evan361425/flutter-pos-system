@@ -29,6 +29,12 @@ class Storage {
     _initialized = true;
   }
 
+  Future<void> deleteAll() async {
+    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
+
+    await databaseFactoryIo.deleteDatabase(databasePath);
+  }
+
   /// Get string map Store
   ///
   /// variable to make it easy to test

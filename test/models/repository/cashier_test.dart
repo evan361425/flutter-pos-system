@@ -23,7 +23,15 @@ void main() {
     await cashier.setCurrent(null, [1, 2, 3]);
 
     expect(cashier.unitLength, equals(3));
-    verify(storage.set(any, any));
+    verify(storage.add(any, any, {
+      'default': [],
+      'favorites': [],
+      'current': [
+        {'unit': 1, 'count': 0},
+        {'unit': 2, 'count': 0},
+        {'unit': 3, 'count': 0},
+      ],
+    }));
   });
 
   test('#setDefault', () async {

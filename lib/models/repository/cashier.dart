@@ -201,7 +201,7 @@ class Cashier extends ChangeNotifier {
         ]);
 
       // reset to empty
-      await _updateCurrentStorage();
+      await _registerStorage();
     }
   }
 
@@ -295,6 +295,14 @@ class Cashier extends ChangeNotifier {
       }
       index--;
     }
+  }
+
+  Future<void> _registerStorage() {
+    return Storage.instance.add(Stores.cashier, _recordName, {
+      _CURRENT: _current.map((e) => e.toMap()).toList(),
+      _DEFAULT: [],
+      _FAVORITES: [],
+    });
   }
 
   Future<void> _updateCurrentStorage() async {
