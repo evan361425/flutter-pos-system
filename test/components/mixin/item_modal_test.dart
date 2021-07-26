@@ -16,11 +16,11 @@ void main() {
     await tester.pumpWidget(widget);
 
     // start save
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pump(Duration(milliseconds: 10));
 
     // save twice
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pump(Duration(seconds: 1));
 
     expect(updateCounter, equals(1));
@@ -39,7 +39,7 @@ void main() {
     await tester.pumpWidget(widget);
 
     // start save
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     expect(updateCounter, equals(0));

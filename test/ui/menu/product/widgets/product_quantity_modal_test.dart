@@ -63,7 +63,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), '2');
     await tester.enterText(find.byType(TextFormField).at(2), '2');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(ingredient.removeItem('qua-1'));
@@ -114,7 +114,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), '1');
     await tester.enterText(find.byType(TextFormField).at(2), '1');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(ingredient.setItem(argThat(predicate<ProductQuantity>((model) {

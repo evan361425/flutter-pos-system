@@ -177,7 +177,7 @@ class _LabeledIcon extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(icon, size: 48.0, color: theme.primaryColorDark),
+          Icon(icon, size: 48.0),
           Text(
             tt('home.$label'),
             style: TextStyle(color: theme.textTheme.muted.color),

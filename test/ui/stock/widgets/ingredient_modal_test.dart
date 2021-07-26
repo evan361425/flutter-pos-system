@@ -32,11 +32,11 @@ void main() {
     await tester.enterText(find.byType(TextFormField).first, 'name-new');
 
     // should not do anything if not setting currentStock
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField).last, '30');
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
 
     verify(storage.set(
         any,
@@ -71,7 +71,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).first, 'name');
     await tester.enterText(find.byType(TextFormField).last, '2');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     verify(stock.setItem(argThat(predicate<Ingredient>((object) {
       return object.name == 'name' && object.currentAmount == 2;
     })))).called(1);

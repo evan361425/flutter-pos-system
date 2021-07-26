@@ -3,7 +3,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
@@ -38,9 +37,10 @@ class _SlidableItemListState<T extends Model>
 
   @override
   Widget build(BuildContext context) {
-    // if (widget.items.)
+    final theme = Theme.of(context);
+
     return Column(
-      children: [for (var item in widget.items) _itemBuilder(item)],
+      children: [for (var item in widget.items) _itemBuilder(item, theme)],
     );
   }
 
@@ -73,7 +73,7 @@ class _SlidableItemListState<T extends Model>
     }
   }
 
-  Widget _itemBuilder(T item) {
+  Widget _itemBuilder(T item, ThemeData theme) {
     return Card(
       shape: RoundedRectangleBorder(),
       margin: EdgeInsets.all(0),
@@ -82,7 +82,7 @@ class _SlidableItemListState<T extends Model>
         actionPane: SlidableDrawerActionPane(),
         secondaryActions: <Widget>[
           IconSlideAction(
-            color: kNegativeColor,
+            color: theme.errorColor,
             caption: tt('delete'),
             icon: KIcons.delete,
             onTap: () => _showDeleteDialog(item),
@@ -94,14 +94,14 @@ class _SlidableItemListState<T extends Model>
               widget.handleTap(context, item);
             }
           },
-          onLongPress: () => _handleLongPress(item),
+          onLongPress: () => _handleLongPress(item, theme),
           child: widget.tileBuilder(context, item),
         ),
       ),
     );
   }
 
-  void _handleLongPress(T item) async {
+  void _handleLongPress(T item, ThemeData theme) async {
     final custom = widget.actionBuilder == null
         ? const <BottomSheetAction>[]
         : widget.actionBuilder!(item);
@@ -113,7 +113,7 @@ class _SlidableItemListState<T extends Model>
         ...custom,
         BottomSheetAction(
           title: Text(tt('delete')),
-          leading: Icon(KIcons.delete, color: kNegativeColor),
+          leading: Icon(KIcons.delete, color: theme.errorColor),
           onTap: (context) => Navigator.of(context).pop(false),
         ),
       ],

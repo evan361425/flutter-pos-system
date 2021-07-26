@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -40,7 +41,7 @@ class CashierScreen extends StatelessWidget {
           icon: Icon(KIcons.back),
         ),
         actions: [
-          TextButton(
+          AppbarTextButton(
             onPressed: () => handleSetDefault(context),
             child: Text('設為預設'),
           )

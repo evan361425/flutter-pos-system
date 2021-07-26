@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -41,7 +42,8 @@ class OrderScreen extends StatelessWidget {
           icon: Icon(KIcons.more),
         ),
         actions: [
-          TextButton(
+          AppbarTextButton(
+            key: Key('order.action.order'),
             onPressed: () => _handleOrder(context),
             child: Text(tt('order.action.order')),
           ),

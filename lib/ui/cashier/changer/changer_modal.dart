@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
@@ -55,7 +56,7 @@ class _ChangerModalState extends State<ChangerModal>
         ),
         title: Text('換錢'),
         actions: [
-          TextButton(onPressed: handleApply, child: Text('套用')),
+          AppbarTextButton(onPressed: handleApply, child: Text('套用')),
         ],
       ),
       body: DefaultTabController(

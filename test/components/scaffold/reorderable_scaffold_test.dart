@@ -36,7 +36,7 @@ void main() {
         find.byIcon(Icons.reorder_sharp).at(2), const Offset(0.0, -500.0));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     expect(

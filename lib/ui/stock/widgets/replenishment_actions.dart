@@ -22,12 +22,12 @@ class ReplenishmentActions extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
-          child: TextButton(
+          child: IconButton(
             onPressed: () => Navigator.of(context).pushNamed(
               Routes.stockReplenishmentModal,
               arguments: selector.currentState!.current,
             ),
-            child: Icon(KIcons.edit),
+            icon: Icon(KIcons.edit),
           ),
         ),
         Expanded(
@@ -38,9 +38,6 @@ class ReplenishmentActions extends StatelessWidget {
           child: ElevatedButton.icon(
             icon: Icon(Icons.add_circle_outline_sharp),
             label: Text(tt('stock.replenisher.apply')),
-            style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).primaryColorLight,
-            ),
             onPressed: () {
               final item = selector.currentState!.current;
               if (item != null) handleApply(context, item);

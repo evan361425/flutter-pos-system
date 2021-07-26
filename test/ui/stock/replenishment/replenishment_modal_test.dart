@@ -36,7 +36,7 @@ void main() {
 
     await tester.enterText(find.byType(TextFormField).first, 'name-new');
     await tester.enterText(find.byType(TextFormField).last, '3');
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
 
     verify(storage.set(
         any,
@@ -59,7 +59,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), '1');
     await tester.enterText(find.byType(TextFormField).last, '2');
 
-    await tester.tap(find.byType(TextButton));
+    await tester.tap(find.text('save'));
 
     verify(replenisher.setItem(argThat(predicate<Replenishment>((model) {
       return model.name == 'name' &&

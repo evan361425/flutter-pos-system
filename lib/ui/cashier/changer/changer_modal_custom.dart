@@ -38,12 +38,15 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       ElevatedButton(
         onPressed: handleFavorite,
         child: Text('新增常用'),
       ),
     ]);
+
     final sourceEntry = _wrapInRow(
       TextFormField(
         controller: sourceCount,
@@ -91,7 +94,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                       onPressed: () => setState(() {
                         targets.removeAt(entry.key);
                       }),
-                      color: kNegativeColor,
+                      color: theme.errorColor,
                       icon: Icon(Icons.remove_circle_sharp),
                     )),
         )
