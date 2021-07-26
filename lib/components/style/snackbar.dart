@@ -3,7 +3,7 @@ import 'package:possystem/constants/constant.dart';
 
 SnackBar createSnackBar(String message, {required Icon icon}) {
   return SnackBar(
-    margin: const EdgeInsets.all(kSpacing2),
+    margin: const EdgeInsets.fromLTRB(kSpacing2, 0, kSpacing2, kSpacing4),
     behavior: SnackBarBehavior.floating,
     content: Row(children: [
       icon,
