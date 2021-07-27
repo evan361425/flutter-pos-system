@@ -31,7 +31,7 @@ class HomeTutorial extends Tutorial {
       ],
       child: [
         Text(tt('home.tutorial.stock')),
-        Text(tt('home.tutorial.anaylsis')),
+        Text(tt('home.tutorial.analysis')),
         Text(tt('home.tutorial.order'), style: textTheme.headline4),
       ],
     );

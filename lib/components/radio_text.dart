@@ -95,12 +95,11 @@ class _Group {
 }
 
 class _RadioTextState extends State<RadioText> {
-  static final BORDER_COLOR = Colors.grey.withAlpha(100);
-
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
     final defaultColor = widget.isSelected ? primaryColor : Colors.transparent;
+    final borderColor = primaryColor.withAlpha(128);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -111,7 +110,7 @@ class _RadioTextState extends State<RadioText> {
         ],
         border: Border.all(
           width: 1.0,
-          color: widget.isSelected ? defaultColor : BORDER_COLOR,
+          color: widget.isSelected ? defaultColor : borderColor,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(2.0)),
       ),

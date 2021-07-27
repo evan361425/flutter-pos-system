@@ -149,7 +149,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
       });
       return true;
     } else {
-      Toast.show(context, '$sourceUnit 元不夠換');
+      showToast(context, '$sourceUnit 元不夠換');
       return false;
     }
   }
@@ -212,7 +212,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
       });
-      Toast.show(context, msg);
+      showToast(context, msg);
     }
 
     return false;
@@ -245,10 +245,10 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   }
 
   Widget _wrapInRow(Widget a, Widget b, [Widget? c]) {
-    return Row(children: [
-      Expanded(child: a),
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      Flexible(flex: 1, child: a),
       const SizedBox(width: kSpacing1),
-      Expanded(child: b),
+      Flexible(flex: 1, child: b),
       if (c != null) c,
     ]);
   }

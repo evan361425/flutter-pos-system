@@ -96,7 +96,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
 
   Future<bool> handleApply() async {
     if (selectedFavorite == null) {
-      Toast.show(context, '請選擇要套用的組合');
+      showToast(context, '請選擇要套用的組合');
       return false;
     }
 
@@ -104,7 +104,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
     final isValid = await Cashier.instance.applyFavorite(item);
 
     if (!isValid) {
-      Toast.show(context, '${item.source.unit} 元不夠換');
+      showToast(context, '${item.source.unit} 元不夠換');
     }
 
     return isValid;
