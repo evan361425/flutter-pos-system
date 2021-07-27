@@ -8,6 +8,7 @@ class SearchBarInline extends StatelessWidget {
   final String? hintText;
   final String? helperText;
   final Future<void> Function(BuildContext) onTap;
+  static final textController = TextEditingController();
 
   const SearchBarInline({
     Key? key,
@@ -21,21 +22,25 @@ class SearchBarInline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textController = TextEditingController(text: text);
+    textController.text = text ?? '';
+    final textTheme = Theme.of(context).textTheme.subtitle1;
 
     return TextField(
       readOnly: true,
+      enableInteractiveSelection: false,
       controller: textController,
       onTap: () => onTap(context),
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         labelText: labelText,
         hintText: hintText,
         helperText: helperText,
         errorText: errorText,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
-        prefixIcon: Icon(KIcons.search),
+        labelStyle: textTheme,
+        prefixIcon: Icon(KIcons.search, color: textTheme?.color),
       ),
     );
   }

@@ -21,7 +21,7 @@ abstract class Tutorial {
     _tutorialMark = TutorialCoachMark(
       context,
       targets: createTargets(context, targets),
-      colorShadow: color, // DEFAULT Colors.black
+      colorShadow: color,
       opacityShadow: 0.8,
       hideSkip: hideSkip,
       onClickTarget: handleClickTarget,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 
 class SearchBar extends StatefulWidget {
@@ -9,6 +10,7 @@ class SearchBar extends StatefulWidget {
   final String hintText;
   final String labelText;
   final bool hideCounter;
+  final Color? cursorColor;
   final TextCapitalization textCapitalization;
   final void Function(String) onChanged;
 
@@ -22,6 +24,7 @@ class SearchBar extends StatefulWidget {
     this.maxLength = 30,
     this.hideCounter = false,
     this.textCapitalization = TextCapitalization.none,
+    this.cursorColor,
   }) : super(key: key);
 
   @override
@@ -42,6 +45,21 @@ class SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final focusedBorder = widget.cursorColor == null
+        ? null
+        : UnderlineInputBorder(
+            borderSide: BorderSide(color: widget.cursorColor!));
+
+    final suffix = isEmpty
+        ? null
+        : GestureDetector(
+            onTap: () {
+              controller.clear();
+              _onChanged('');
+            },
+            child: Icon(KIcons.clear, size: 16.0),
+          );
+
     return TextField(
       controller: controller,
       maxLength: widget.maxLength,
@@ -50,22 +68,15 @@ class SearchBarState extends State<SearchBar> {
       textCapitalization: widget.textCapitalization,
       textInputAction: TextInputAction.done,
       onSubmitted: _onChanged,
+      cursorColor: widget.cursorColor,
       decoration: InputDecoration(
         isDense: true,
-        suffix: isEmpty
-            ? null
-            : GestureDetector(
-                onTap: () {
-                  controller.clear();
-                  _onChanged('');
-                },
-                child: Icon(KIcons.clear, size: 16.0),
-              ),
+        focusedBorder: focusedBorder,
+        suffix: suffix,
         hintText: widget.hintText,
         counterText: '',
+        contentPadding: const EdgeInsets.symmetric(horizontal: kSpacing1),
       ),
-      // padding: EdgeInsets.zero,
-      // placeholder: widget.hintText,
     );
   }
 

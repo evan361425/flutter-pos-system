@@ -48,6 +48,8 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -70,6 +72,9 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           maxLength: widget.maxLength,
           textCapitalization: widget.textCapitalization,
           hideCounter: true,
+          cursorColor: colorScheme.brightness == Brightness.dark
+              ? colorScheme.onSurface
+              : colorScheme.onPrimary,
         ),
       ),
       body: isSearching ? CircularLoading() : _body(context),

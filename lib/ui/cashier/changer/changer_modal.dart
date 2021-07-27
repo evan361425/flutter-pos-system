@@ -25,8 +25,7 @@ class _ChangerModalState extends State<ChangerModal>
     // tab widgets
     final tabBar = TabBar(
       controller: controller,
-      indicatorColor: theme.primaryColor,
-      labelColor: theme.primaryColor,
+      labelColor: theme.indicatorColor,
       unselectedLabelColor: theme.hintColor,
       tabs: [
         Tab(text: '常用'),
