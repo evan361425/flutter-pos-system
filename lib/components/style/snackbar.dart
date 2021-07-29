@@ -7,7 +7,7 @@ SnackBar createSnackBar(
   duration = const Duration(milliseconds: 600),
 }) {
   return SnackBar(
-    margin: const EdgeInsets.fromLTRB(kSpacing2, 0, kSpacing2, kSpacing4),
+    margin: const EdgeInsets.all(kSpacing2),
     behavior: SnackBarBehavior.floating,
     duration: duration,
     content: Row(children: [

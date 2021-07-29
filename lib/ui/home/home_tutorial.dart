@@ -4,73 +4,61 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-class HomeTutorial extends Tutorial {
-  final List<Widget> child;
+enum TutorialName { go_menu, introduce_features }
 
-  HomeTutorial(
+class HomeTutorial {
+  static const STEPS = {
+    TutorialName.go_menu: ['menu'],
+    TutorialName.introduce_features: ['stock', 'cashier', 'analysis', 'order'],
+  };
+
+  static Tutorial steps(
     BuildContext context,
-    List<GlobalKey> targets, {
-    bool hideSkip = true,
-    Function(TargetFocus)? onClick,
-    required this.child,
-  }) : super(context, targets, hideSkip: hideSkip, onClick: onClick);
+    TutorialName name,
+    List<String> steps,
+  ) {
+    assert(steps.isNotEmpty);
+    final storeIcons = HomeScreen.icons['home.types.store']!;
+    final otherIcons = HomeScreen.icons['home.types.other']!;
 
-  factory HomeTutorial.icons(BuildContext context) {
-    final stock = HomeScreen.icons['home.types.store']![1];
-    final analysis = HomeScreen.icons['home.types.other']![0];
-    final textTheme = Theme.of(context).textTheme;
+    switch (name) {
+      case TutorialName.go_menu:
+        final menu = storeIcons['menu']!;
 
-    return HomeTutorial(
-      context,
-      [
-        stock.key as GlobalKey,
-        analysis.key as GlobalKey,
-        OrderInfo.orderButton
-      ],
-      child: [
-        Text(tt('home.tutorial.stock')),
-        Text(tt('home.tutorial.analysis')),
-        Text(tt('home.tutorial.order'), style: textTheme.headline4),
-      ],
-    );
-  }
-
-  factory HomeTutorial.menu(BuildContext context) {
-    final menu = HomeScreen.icons['home.types.store']![0];
-    final textTheme = Theme.of(context).textTheme;
-
-    return HomeTutorial(context, [menu.key as GlobalKey],
-        onClick: (_) => Navigator.of(context).pushNamed(menu.route),
-        child: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(tt('home.tutorial.welcome'), style: textTheme.headline4),
-              Text(tt('home.tutorial.menu')),
+        return Tutorial(
+            context,
+            [
+              TutorialStep(
+                  key: menu.key as GlobalKey,
+                  title: tt('home.tutorial.welcome'),
+                  content: tt('home.tutorial.menu')),
             ],
-          ),
-        ]);
-  }
+            onClick: (_) => Navigator.of(context).pushNamed(menu.route));
+      case TutorialName.introduce_features:
+        final hasOrder = steps.contains('order');
+        final infoSteps = steps.where((e) => e != 'order');
 
-  @override
-  List<TargetFocus> createTargets(
-      BuildContext context, List<GlobalKey> targets) {
-    var count = 0;
-    return targets.map<TargetFocus>((target) {
-      return TargetFocus(
-        identify: 'home.$count',
-        keyTarget: target,
-        enableOverlayTab: onClick == null,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            child: Container(child: child[count++]),
-          )
-        ],
-      );
-    }).toList();
+        return Tutorial(
+          context,
+          [
+            ...infoSteps.map<TutorialStep>((e) {
+              final key = storeIcons.containsKey(e)
+                  ? storeIcons[e]!.key as GlobalKey
+                  : otherIcons[e]!.key as GlobalKey;
+              return TutorialStep(
+                  key: key,
+                  title: tt('home.$e'),
+                  content: tt('home.tutorial.$e'));
+            }),
+            if (hasOrder)
+              TutorialStep(
+                  key: OrderInfo.orderButton,
+                  content: '',
+                  title: tt('home.tutorial.order'))
+          ],
+          hideSkip: false,
+        );
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-abstract class Tutorial {
+class Tutorial {
   Function(TargetFocus)? onClick;
 
   final _clickedRecord = <String, bool>{};
@@ -12,30 +12,50 @@ abstract class Tutorial {
 
   Tutorial(
     BuildContext context,
-    List<GlobalKey> targets, {
+    List<TutorialStep> steps, {
     this.hideSkip = true,
     this.onClick,
   }) {
-    final color = Theme.of(context).primaryColor;
+    final style = TextStyle(color: Colors.white);
+
+    var count = 0;
+
+    final targets = steps.map((step) {
+      return TargetFocus(
+        identify: '_tutorial.${count++}',
+        keyTarget: step.key,
+        enableOverlayTab: onClick == null,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (step.title != null)
+                    Text(
+                      step.title!,
+                      style: style.copyWith(fontSize: 24),
+                    ),
+                  Text(step.content, style: style),
+                ],
+              ),
+            ),
+          )
+        ],
+      );
+    }).toList();
 
     _tutorialMark = TutorialCoachMark(
       context,
-      targets: createTargets(context, targets),
-      colorShadow: color,
-      opacityShadow: 0.8,
+      targets: targets,
       hideSkip: hideSkip,
       onClickTarget: handleClickTarget,
     );
   }
 
-  List<TargetFocus> createTargets(
-      BuildContext context, List<GlobalKey> targets);
-
   void finish() => _tutorialMark.finish();
-
-  void next() => _tutorialMark.next();
-
-  void show() => _tutorialMark.show();
 
   /// should fire once every target
   void handleClickTarget(target) {
@@ -44,4 +64,22 @@ abstract class Tutorial {
       onClick != null ? onClick!(target) : next();
     }
   }
+
+  void next() => _tutorialMark.next();
+
+  void show() => _tutorialMark.show();
+}
+
+class TutorialStep {
+  final GlobalKey key;
+
+  final String? title;
+
+  final String content;
+
+  const TutorialStep({
+    required this.key,
+    this.title,
+    required this.content,
+  });
 }

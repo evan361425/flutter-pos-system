@@ -45,7 +45,7 @@ class OrderInfoState extends State<OrderInfo> {
             onPressed: () => Navigator.of(context).pushNamed(Routes.order),
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
-              padding: const EdgeInsets.all(kSpacing3),
+              padding: const EdgeInsets.all(kSpacing5),
             ),
             child: Text(tt('home.order'), style: TextStyle(fontSize: 32.0)),
           ),

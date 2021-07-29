@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
@@ -11,14 +12,14 @@ import 'package:possystem/ui/home/widgets/upgrade_alert.dart';
 
 class HomeScreen extends StatefulWidget {
   static final icons = {
-    'home.types.store': [
-      _LabeledIcon(
+    'home.types.store': {
+      'menu': _LabeledIcon(
         key: GlobalKey(),
         icon: Icons.collections_sharp,
         label: 'menu',
         route: Routes.menu,
       ),
-      _LabeledIcon(
+      'stock': _LabeledIcon(
         key: GlobalKey(),
         icon: Icons.store_sharp,
         label: 'stock',
@@ -29,17 +30,18 @@ class HomeScreen extends StatefulWidget {
       //   label: '客戶資訊',
       //   route: Routes.customer,
       // ),
-      _LabeledIcon(
+      'quantities': _LabeledIcon(
         icon: Icons.exposure_sharp,
         label: 'quantities',
         route: Routes.stockQuantity,
       ),
-      _LabeledIcon(
+      'cashier': _LabeledIcon(
+        key: GlobalKey(),
         icon: Icons.attach_money_sharp,
-        label: '收銀機',
+        label: 'cashier',
         route: Routes.cashier,
       ),
-    ],
+    },
     // '外部連結': [
     //   _LabeledIcon(
     //     icon: Icons.camera_roll_sharp,
@@ -52,8 +54,8 @@ class HomeScreen extends StatefulWidget {
     //     route: Routes.printer,
     //   ),
     // ],
-    'home.types.other': [
-      _LabeledIcon(
+    'home.types.other': {
+      'analysis': _LabeledIcon(
         key: GlobalKey(),
         icon: Icons.equalizer_sharp,
         label: 'analysis',
@@ -64,12 +66,12 @@ class HomeScreen extends StatefulWidget {
       //   label: '匯出匯入',
       //   route: Routes.transfer,
       // ),
-      _LabeledIcon(
+      'setting': _LabeledIcon(
         icon: Icons.settings_sharp,
         label: 'setting',
         route: Routes.setting,
       ),
-    ],
+    },
   };
 
   const HomeScreen({Key? key}) : super(key: key);
@@ -81,7 +83,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with RouteAware {
   static final orderInfo = GlobalKey<OrderInfoState>();
 
-  static HomeTutorial? tutorial;
+  static Tutorial? tutorial;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -96,18 +99,30 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
 
   @override
   void didPush() {
-    _showTutorialIfNeed(context);
+    showTutorialIfNeed(context);
     orderInfo.currentState?.reset();
   }
 
   @override
   void didPopNext() {
-    _showTutorialIfNeed(context);
+    showTutorialIfNeed(context);
     orderInfo.currentState?.reset();
   }
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final icons = HomeScreen.icons.entries
+        .map<Widget>((entry) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tt(entry.key), style: textTheme.headline5),
+                Wrap(spacing: 8.0, children: entry.value.values.toList()),
+                Divider(),
+              ],
+            ))
+        .toList();
+
     return Scaffold(
       body: SafeArea(
         child: UpgradeAlert(
@@ -117,7 +132,14 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
               children: [
                 OrderInfo(key: orderInfo),
                 const SizedBox(height: kSpacing2),
-                Expanded(child: _iconsWithTitle(context)),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: icons,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -126,34 +148,30 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  Widget _iconsWithTitle(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: HomeScreen.icons.entries
-            .map<Widget>((entry) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(tt(entry.key), style: textTheme.headline5),
-                    Wrap(spacing: 8.0, children: entry.value),
-                    Divider(),
-                  ],
-                ))
-            .toList(),
-      ),
-    );
-  }
-
-  void _showTutorialIfNeed(BuildContext context) {
+  void showTutorialIfNeed(BuildContext context) {
+    // reset tutorial for hot reload
     tutorial?.finish();
-    if (Cache.instance.needTutorial('home.menu')) {
-      tutorial = HomeTutorial.menu(context)..show();
-    } else if (Cache.instance.needTutorial('home.icons')) {
-      tutorial = HomeTutorial.icons(context)..show();
+
+    ;
+
+    for (final name in TutorialName.values) {
+      final steps = Cache.instance.needTutorial(
+        'home.$name',
+        HomeTutorial.STEPS[name]!,
+      );
+
+      if (steps.isNotEmpty) {
+        // wait a while for initialize
+        Future.delayed(
+          Duration(milliseconds: 100),
+          () => tutorial = HomeTutorial.steps(context, name, steps)..show(),
+        );
+        break;
+      }
     }
   }
+
+  void getShowableTutorial() {}
 }
 
 class _LabeledIcon extends StatelessWidget {

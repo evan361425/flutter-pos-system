@@ -56,13 +56,15 @@ class Cache {
     }
   }
 
-  bool needTutorial(String key) {
-    final isRead = service.getBool('_tutorial.$key');
+  List<String> needTutorial(String key, List<String> shouldProcess) {
+    final data = service.getString('_tutorial.v2.$key');
+    service.setString('_tutorial.v2.$key', shouldProcess.join(','));
 
-    if (isRead != null) return false;
+    if (data == null) return shouldProcess;
 
-    service.setBool('_tutorial.$key', true);
-    return true;
+    final alreadyProcessed = data.split(',');
+
+    return shouldProcess.where((e) => !alreadyProcessed.contains(e)).toList();
   }
 }
 
