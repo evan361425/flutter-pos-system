@@ -18,6 +18,34 @@ class CatalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final catalog = context.watch<Catalog>();
 
+    final textTheme = Theme.of(context).textTheme;
+
+    final navigateNewProduct = () => Navigator.of(context).pushNamed(
+          Routes.menuProductModal,
+          arguments: catalog,
+        );
+
+    final metadata = RichText(
+      text: TextSpan(
+        text: tt('menu.product.count'),
+        children: [
+          TextSpan(
+            text: catalog.length.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          MetaBlock.span(),
+          TextSpan(text: catalog.createdDate),
+        ],
+        style: textTheme.bodyText1,
+      ),
+    );
+
+    final body = Menu.instance.setUpStockMode(context)
+        ? catalog.isEmpty
+            ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)
+            : ProductList(products: catalog.itemList)
+        : CircularLoading();
+
     return FadeInTitleScaffold(
       leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
@@ -32,14 +60,25 @@ class CatalogScreen extends StatelessWidget {
         icon: Icon(KIcons.more),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed(
-          Routes.menuProductModal,
-          arguments: catalog,
-        ),
+        onPressed: navigateNewProduct,
         tooltip: tt('menu.product.add'),
         child: Icon(KIcons.add),
       ),
-      body: _body(catalog, context),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(kSpacing3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(catalog.name, style: textTheme.headline4),
+                metadata,
+              ],
+            ),
+          ),
+          body,
+        ],
+      ),
     );
   }
 
@@ -61,46 +100,5 @@ class CatalogScreen extends StatelessWidget {
             arguments: catalog),
       ),
     ];
-  }
-
-  Widget _body(Catalog catalog, BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(kSpacing3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(catalog.name, style: textTheme.headline4),
-              _catalogMetadata(catalog, textTheme),
-            ],
-          ),
-        ),
-        Menu.instance.setUpStockMode(context)
-            ? catalog.isEmpty
-                ? EmptyBody(body: Text(tt('menu.catalog.empty')))
-                : ProductList(products: catalog.itemList)
-            : CircularLoading(),
-      ],
-    );
-  }
-
-  Widget _catalogMetadata(Catalog catalog, TextTheme textTheme) {
-    return RichText(
-      text: TextSpan(
-        text: tt('menu.product.count'),
-        children: [
-          TextSpan(
-            text: catalog.length.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          MetaBlock.span(),
-          TextSpan(text: catalog.createdDate),
-        ],
-        style: textTheme.bodyText1,
-      ),
-    );
   }
 }

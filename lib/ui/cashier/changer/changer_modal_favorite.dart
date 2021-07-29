@@ -28,9 +28,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
   @override
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
-      return EmptyBody(
-        body: OutlinedButton(onPressed: widget.handleAdd, child: Text('立即設定')),
-      );
+      return EmptyBody(onPressed: widget.handleAdd);
     }
 
     final listView = ListView.builder(

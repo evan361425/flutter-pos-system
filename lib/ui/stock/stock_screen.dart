@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/circular_loading.dart';
-import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -14,6 +14,10 @@ import 'package:provider/provider.dart';
 class StockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final stock = context.watch<Stock>();
+
+    final navigateNewIngredient =
+        () => Navigator.of(context).pushNamed(Routes.stockIngredient);
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.stock')),
@@ -23,50 +27,23 @@ class StockScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(Routes.stockIngredient),
+        onPressed: navigateNewIngredient,
         tooltip: tt('stock.ingredient.add'),
         child: Icon(KIcons.add),
       ),
-      body: FutureBuilder<bool>(
-        future: Future.delayed(Duration(milliseconds: 10), () => true),
-        builder: (context, snapshot) {
-          return snapshot.hasData ? _body(context) : CircularLoading();
-        },
-      ),
+      // this page need to draw lots of data, wait a will to make sure page shown
+      body: stock.isReady
+          ? stock.isEmpty
+              ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
+              : _body(context, stock)
+          : CircularLoading(),
     );
   }
 
-  Widget _body(BuildContext context) {
-    final stock = context.watch<Stock>();
-    if (!stock.isReady) return CircularLoading();
-    if (stock.isEmpty) {
-      return Center(
-        child: EmptyBody(body: Text(tt('stock.ingredient.empty'))),
-      );
-    }
-
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ReplenishmentActions(),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: _metadata(context),
-      ),
-      Expanded(
-        child: SingleChildScrollView(
-          child: IngredientList(ingredients: stock.itemList),
-        ),
-      ),
-    ]);
-  }
-
-  Widget _metadata(BuildContext context) {
+  Widget _body(BuildContext context, Stock stock) {
     final mutedStyle = Theme.of(context).textTheme.muted;
 
-    return Row(
+    final metadata = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Flexible(
@@ -114,5 +91,21 @@ class StockScreen extends StatelessWidget {
         ),
       ],
     );
+
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ReplenishmentActions(),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: metadata,
+      ),
+      Expanded(
+        child: SingleChildScrollView(
+          child: IngredientList(ingredients: stock.itemList),
+        ),
+      ),
+    ]);
   }
 }
