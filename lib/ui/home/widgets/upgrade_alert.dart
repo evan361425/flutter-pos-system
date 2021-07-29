@@ -3,9 +3,9 @@ import 'package:possystem/translator.dart';
 import 'package:upgrader/upgrader.dart' as upgrader;
 
 class UpgradeAlert extends StatelessWidget {
-  const UpgradeAlert({required this.child});
-
   final Widget child;
+
+  const UpgradeAlert({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,6 @@ class UpgradeAlert extends StatelessWidget {
             'https://raw.githubusercontent.com/evan361425/flutter-pos-system/master/appcast.xml',
         supportedOS: const ['android'],
       ),
-      showLater: false,
       showReleaseNotes: false,
       durationToAlertAgain: const Duration(days: 1),
       messages: _CustomUpgraderMessages(),
@@ -38,8 +37,10 @@ class _CustomUpgraderMessages extends upgrader.UpgraderMessages {
         return tt('home.upgrader.ignore');
       case upgrader.UpgraderMessage.buttonTitleUpdate:
         return tt('home.upgrader.confirm');
+      case upgrader.UpgraderMessage.buttonTitleLater:
+        return tt('home.upgrader.later');
       default:
+        return '';
     }
-    return '';
   }
 }

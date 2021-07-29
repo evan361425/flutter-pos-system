@@ -9,7 +9,7 @@ import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should build correct number icons', (tester) async {
-    when(cache.needTutorial(any)).thenReturn(false);
+    when(cache.needTutorial(any, any)).thenReturn([]);
     when(currency.numToString(any)).thenReturn('');
     when(seller.getMetricBetween(any, any))
         .thenAnswer((_) => Future.value({'totalPrice': 0}));
