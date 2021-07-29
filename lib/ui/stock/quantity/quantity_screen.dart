@@ -16,6 +16,24 @@ class QuantityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final quantities = context.watch<Quantities>();
 
+    final navigateNewQuantity =
+        () => Navigator.of(context).pushNamed(Routes.stockQuantityModal);
+
+    final body = quantities.isReady
+        ? quantities.isEmpty
+            ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
+            : Padding(
+                padding: const EdgeInsets.symmetric(vertical: kSpacing2),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      QuantityList(quantities: quantities.itemList),
+                    ],
+                  ),
+                ),
+              )
+        : CircularLoading();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.quantities')),
@@ -25,29 +43,11 @@ class QuantityScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(Routes.stockQuantityModal),
+        onPressed: navigateNewQuantity,
         tooltip: tt('stock.quantity.add'),
         child: Icon(KIcons.add),
       ),
-      body: quantities.isReady ? _body(quantities) : CircularLoading(),
-    );
-  }
-
-  Widget _body(Quantities quantities) {
-    if (quantities.isEmpty) {
-      return Center(child: EmptyBody(body: Text(tt('stock.quantity.empty'))));
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kSpacing2),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            QuantityList(quantities: quantities.itemList),
-          ],
-        ),
-      ),
+      body: body,
     );
   }
 }

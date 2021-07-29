@@ -18,70 +18,14 @@ class ProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = context.watch<Product>();
 
-    return FadeInTitleScaffold(
-      leading: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(KIcons.back),
-      ),
-      title: product.name,
-      trailing: IconButton(
-        onPressed: () => showCircularBottomSheet(
-          context,
-          actions: _actions(product),
-        ),
-        icon: Icon(KIcons.more),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed(
-          Routes.menuIngredient,
-          arguments: product,
-        ),
-        tooltip: tt('menu.integredient.add'),
-        child: Icon(KIcons.add),
-      ),
-      body: _body(context, product),
-    );
-  }
-
-  List<BottomSheetAction> _actions(Product product) {
-    return [
-      BottomSheetAction(
-        title: Text(tt('menu.product.edit')),
-        leading: Icon(Icons.text_fields_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(
-            Routes.menuProductModal,
-            arguments: product,
-          );
-        },
-      ),
-    ];
-  }
-
-  Widget _body(BuildContext context, Product product) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(kSpacing3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(product.name, style: textTheme.headline4),
-              _productMetadata(product),
-            ],
-          ),
-        ),
-        product.isEmpty
-            ? EmptyBody(body: Text(tt('menu.product.empty')))
-            : IngredientExpansion(ingredients: product.itemList),
-      ],
-    );
-  }
+    final navigateNewIngredient = () => Navigator.of(context).pushNamed(
+          Routes.menuIngredient,
+          arguments: product,
+        );
 
-  Widget _productMetadata(Product product) {
-    return Row(
+    final metadata = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Tooltip(
@@ -101,5 +45,59 @@ class ProductScreen extends StatelessWidget {
         ),
       ],
     );
+
+    final body = product.isEmpty
+        ? EmptyBody(title: '可以設定產品的成份囉！', onPressed: navigateNewIngredient)
+        : IngredientExpansion(ingredients: product.itemList);
+
+    return FadeInTitleScaffold(
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: Icon(KIcons.back),
+      ),
+      title: product.name,
+      trailing: IconButton(
+        onPressed: () => showCircularBottomSheet(
+          context,
+          actions: _actions(product),
+        ),
+        icon: Icon(KIcons.more),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: navigateNewIngredient,
+        tooltip: tt('menu.integredient.add'),
+        child: Icon(KIcons.add),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(kSpacing3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(product.name, style: textTheme.headline4),
+                metadata,
+              ],
+            ),
+          ),
+          body,
+        ],
+      ),
+    );
+  }
+
+  List<BottomSheetAction> _actions(Product product) {
+    return [
+      BottomSheetAction(
+        title: Text(tt('menu.product.edit')),
+        leading: Icon(Icons.text_fields_sharp),
+        onTap: (context) {
+          Navigator.of(context).pushReplacementNamed(
+            Routes.menuProductModal,
+            arguments: product,
+          );
+        },
+      ),
+    ];
   }
 }

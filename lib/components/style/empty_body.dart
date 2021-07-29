@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:possystem/translator.dart';
 
 class EmptyBody extends StatelessWidget {
-  final Widget body;
+  final VoidCallback onPressed;
 
   final String? title;
 
-  EmptyBody({required this.body, this.title});
+  EmptyBody({this.title, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class EmptyBody extends StatelessWidget {
             title ?? tt('empty_body'),
             style: Theme.of(context).textTheme.headline4,
           ),
-          body,
+          OutlinedButton(onPressed: onPressed, child: Text('立即設定')),
         ],
       ),
     );

@@ -18,6 +18,15 @@ class MenuScreen extends StatelessWidget {
     // context.read<T>() === Provider.of<T>(context, listen: false)
     final menu = context.watch<Menu>();
 
+    final navigateNewCatalog =
+        () => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
+
+    final body = menu.isReady
+        ? menu.isEmpty
+            ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
+            : _body(context, menu)
+        : CircularLoading();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('menu.catalog.title')),
@@ -35,13 +44,11 @@ class MenuScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(Routes.menuCatalogModal),
+        onPressed: navigateNewCatalog,
         tooltip: tt('menu.catalog.add'),
         child: Icon(KIcons.add),
       ),
-      // When click android go back, it will avoid closing APP
-      body: menu.isReady ? _body(context, menu) : CircularLoading(),
+      body: body,
     );
   }
 
@@ -58,10 +65,6 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context, Menu menu) {
-    if (menu.isEmpty) {
-      return Center(child: EmptyBody(body: Text(tt('menu.catalog.empty'))));
-    }
-
     return Column(
       children: [
         Padding(
@@ -71,19 +74,17 @@ class MenuScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.muted,
           ),
         ),
-        Expanded(child: _catalogList(menu)),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                // get sorted catalogs
+                CatalogList(menu.itemList),
+              ],
+            ),
+          ),
+        ),
       ],
-    );
-  }
-
-  SingleChildScrollView _catalogList(Menu menu) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          // get sorted catalogs
-          CatalogList(menu.itemList),
-        ],
-      ),
     );
   }
 }
