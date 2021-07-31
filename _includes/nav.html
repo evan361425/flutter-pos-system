@@ -12,6 +12,19 @@
 
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <div class="nav-link">
+          <div class="mode-toggle noselect" role="button" tabindex="-1" id="theme-toggle">
+            <div class="toggle-switch" id="theme-toggle-switch"></div>
+            <input
+              type="checkbox"
+              class="toggle-screenreader-only"
+              aria-label="Switch between dark and light mode"
+              checked=""
+            />
+          </div>
+        </div>
+      </li>
       {%- for link in site.navbar-links -%}
         {%- if link[1].first %}
           <li class="nav-item dropdown">
@@ -30,22 +43,17 @@
           </li>
         {%- endif -%}
       {%- endfor -%}
-      {% if site.post_search %}
-        <li class="nav-item">
-          <a class="nav-link" id="nav-search-link" href="#" title="Search">
-            <span id="nav-search-icon" class="fa fa-search"></span>
-            <span id="nav-search-text">Search</span>
-          </a>
-        </li>
-      {%- endif -%}
     </ul>
   </div>
 
-  {% if site.navbar-extra %}
-    {% for file in site.navbar-extra %}
-      {% include {{ file }} %}
-    {% endfor %}
-  {% endif %}
+  {% if site.post_search %}
+    <li class="nav-item">
+      <a class="nav-link" id="nav-search-link" href="#" title="Search">
+        <span id="nav-search-icon" class="fa fa-search"></span>
+        <span id="nav-search-text">Search</span>
+      </a>
+    </li>
+  {%- endif -%}
 
   {% if site.avatar and page.show-avatar != false %}
     <div class="avatar-container">

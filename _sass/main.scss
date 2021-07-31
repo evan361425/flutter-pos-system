@@ -1,0 +1,130 @@
+@import "_variables";
+@import "_dark_theme";
+
+body {
+  color: $gray-40;
+  background: $gray-70;
+  transition: color $animate ease-in-out, background-color $animate ease-in-out;
+
+  blockquote {
+    margin: 2em 1em 2em 0;
+    padding-left: 1em;
+    padding-right: 1em;
+    font-style: italic;
+    border-left: 0.25em solid $gray-40;
+
+    cite {
+      &:before {
+        content: "\2014";
+        padding-right: 5px;
+      }
+    }
+  }
+
+  p > code,
+  a > code,
+  li > code,
+  figcaption > code,
+  td > code {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    font-size: 0.8em;
+    border-radius: 4px;
+
+    &:before,
+    &:after {
+      letter-spacing: -0.2em;
+      content: "\00a0"; /* non-breaking space*/
+    }
+  }
+}
+body.dark {
+  color: $text-color;
+  background: $background-color;
+
+  a {
+    color: $link-color;
+    &:hover,
+    &:focus {
+      color: $link-color-hover;
+    }
+    &:visited {
+      color: $link-color-visited;
+    }
+  }
+
+  blockquote {
+    color: $gray-60;
+    border-left: 0.25em solid $primary-color;
+  }
+
+  p > code,
+  a > code,
+  li > code,
+  figcaption > code,
+  td > code {
+    background: $code-background-color;
+    color: $code-color;
+  }
+
+  pre {
+    color: $gray-65;
+  }
+
+  .highlight {
+    & > pre {
+      background-image: linear-gradient(
+        rgba(240, 246, 252, 0.03),
+        rgba(240, 246, 252, 0.03) 1.5em,
+        rgba(240, 246, 252, 0.02) 1.5em,
+        rgba(240, 246, 252, 0.02) 3em
+      );
+      border: 1px solid $highlight-border;
+    }
+
+    & pre.lineno {
+      color: $gray-70;
+      border-radius: 0;
+      border-right: 2px solid #444;
+    }
+  }
+
+  table {
+    tr {
+      background-color: $table-row-background-color;
+      border-top: 1px solid $table-border-color;
+      td,
+      th {
+        border: 1px solid $table-border-color;
+      }
+    }
+    tr:nth-child(2n) {
+      background-color: $table-row2-background-color;
+    }
+  }
+
+  .navbar {
+    background-color: $nav-background-color;
+    border-bottom: 1px solid $background-color;
+    .navbar-nav .nav-link {
+      color: $text-color;
+    }
+  }
+
+  footer {
+    background-color: $background-color;
+    border-top: 1px $gray-40 solid;
+
+    .footer-links a {
+      color: $gray-20;
+
+      &:hover,
+      &:focus {
+        color: $gray-30;
+      }
+      &:visited {
+        color: $gray-20;
+      }
+    }
+  }
+}
