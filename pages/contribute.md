@@ -1,5 +1,4 @@
 ---
-layout: page
 title: 幫助 POS 系統
 ---
 

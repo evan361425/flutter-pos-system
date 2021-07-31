@@ -1,5 +1,4 @@
 ---
-layout: page
 title: 架構
 ---
 

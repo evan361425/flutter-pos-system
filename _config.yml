@@ -63,6 +63,8 @@ social-network-links:
 # If you don't want to show an RSS link, remove the following line.
 # rss-description: This website is a virtual proof that I'm awesome
 
+# post_search: true
+
 # --- Colours / background image --- #
 
 # Personalize the colours in your website. Colour values can be any valid CSS colour
@@ -163,13 +165,3 @@ exclude:
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
-# url: "https://evan361425.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-
-# baseurl: "/flutter-pos-system" # the subpath of your site, e.g. /blog
-
-# github_username: evan361425
-
-# owner_name: 呂學洲
-
-# sass:
-#   sass_dir: _sass
