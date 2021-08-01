@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:possystem/translator.dart';
 
 class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({
-    Key? key,
-    required this.content,
-    required this.onDelete,
-  }) : super(key: key);
-
   final Widget content;
-  final Future<void> Function(BuildContext) onDelete;
+
+  const DeleteDialog({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +19,7 @@ class DeleteDialog extends StatelessWidget {
           child: Text(tt('cancel')),
         ),
         ElevatedButton(
-          onPressed: () async {
-            await onDelete(context);
-            Navigator.of(context).pop(true);
-          },
+          onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
             primary: theme.errorColor,
             onPrimary: Colors.white,

@@ -46,7 +46,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
             onPressed: () async {
               final result = await showCircularBottomSheet(
                 context,
-                useRootNavigator: false,
                 actions: <BottomSheetAction>[
                   BottomSheetAction(
                     title: Text(tt('delete')),
@@ -188,16 +187,16 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   }
 
   Future<void> _handleDelete() async {
-    final isDeleted = await showDialog<bool>(
+    final isConfirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return DeleteDialog(
-          content: Text(tt('delete_confirm', {'name': widget.quantity!.name})),
-          onDelete: (_) => widget.quantity!.remove(),
-        );
-      },
+      builder: (_) => DeleteDialog(
+        content: Text(tt('delete_confirm', {'name': widget.quantity!.name})),
+      ),
     );
-    if (isDeleted == true) Navigator.of(context).pop();
+    if (isConfirmed == true) {
+      await widget.quantity!.remove();
+      Navigator.of(context).pop();
+    }
   }
 
   ProductQuantityObject _parseObject() {

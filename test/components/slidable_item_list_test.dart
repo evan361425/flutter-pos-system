@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/services/storage.dart';
-import 'package:possystem/models/model_object.dart';
 
 void main() {
   testWidgets('should not handle tap when sliding', (tester) async {
     var tapCount = 0;
     final widget = MaterialApp(
-      home: SlidableItemList<MockModel>(
-        items: [MockModel('1'), MockModel('2')],
-        tileBuilder: (_, item) => Text(item.name),
+      home: SlidableItemList<String>(
+        items: ['1', '2'],
+        tileBuilder: (_, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),
         handleTap: (_, __) => Future.value(tapCount++),
+        handleDelete: (_, __) => Future.value(),
       ),
     );
 
@@ -41,12 +38,14 @@ void main() {
   });
 
   testWidgets('should show alert when delete', (tester) async {
+    var deletionFired = false;
     await tester.pumpWidget(MaterialApp(
-      home: SlidableItemList<MockModel>(
-        items: [MockModel('1'), MockModel('2')],
-        tileBuilder: (_, item) => Text(item.name),
+      home: SlidableItemList<String>(
+        items: ['1', '2'],
+        tileBuilder: (_, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),
         handleTap: (_, __) => Future.value(),
+        handleDelete: (_, __) async => deletionFired = true,
       ),
     ));
 
@@ -58,36 +57,9 @@ void main() {
     await tester.tap(find.byIcon(KIcons.delete));
     await tester.pumpAndSettle();
 
-    expect(find.byType(DeleteDialog), findsOneWidget);
+    await tester.tap(find.text('delete'));
+    await tester.pumpAndSettle();
+
+    expect(deletionFired, isTrue);
   });
-}
-
-class MockModel with Model<MockObject> {
-  MockModel(this.name);
-
-  @override
-  final String name;
-
-  @override
-  String get code => '123';
-
-  @override
-  void removeFromRepo() => null;
-
-  @override
-  Stores get storageStore => Stores.menu;
-
-  @override
-  MockObject toObject() => MockObject();
-
-  @override
-  Future<void> update(ModelObject object) => Future.value();
-}
-
-class MockObject with ModelObject<MockModel> {
-  @override
-  Map<String, Object> diff(MockModel model) => {};
-
-  @override
-  Map<String, Object?> toMap() => {};
 }

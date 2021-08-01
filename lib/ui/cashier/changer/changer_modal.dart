@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
@@ -62,12 +61,7 @@ class _ChangerModalState extends State<ChangerModal>
         length: tabBar.tabs.length,
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           tabBar,
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(kSpacing2),
-              child: tabBarView,
-            ),
-          ),
+          Expanded(child: tabBarView),
         ]),
       ),
     );

@@ -4,35 +4,33 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
 // use inherit objects to make your life better
-class SlidableItemList<T extends Model> extends StatefulWidget {
-  final List<T> items;
+class SlidableItemList<T> extends StatefulWidget {
+  final Iterable<T> items;
 
-  final Future<void> Function(BuildContext, T)? handleDelete;
+  final Future<void> Function(BuildContext, T) handleDelete;
   final Widget Function(BuildContext, T) tileBuilder;
-  final Widget Function(BuildContext, T) warningContextBuilder;
-  final void Function(BuildContext, T) handleTap;
+  final Widget Function(BuildContext, T)? warningContextBuilder;
+  final void Function(BuildContext, T)? handleTap;
   final Iterable<BottomSheetAction> Function(T)? actionBuilder;
 
   const SlidableItemList({
     Key? key,
     required this.items,
     required this.tileBuilder,
-    required this.warningContextBuilder,
-    this.handleDelete,
-    required this.handleTap,
+    this.warningContextBuilder,
+    required this.handleDelete,
+    this.handleTap,
     this.actionBuilder,
   }) : super(key: key);
 
   @override
-  _SlidableItemListState<T> createState() => _SlidableItemListState<T>();
+  SlidableItemListState<T> createState() => SlidableItemListState<T>();
 }
 
-class _SlidableItemListState<T extends Model>
-    extends State<SlidableItemList<T>> {
+class SlidableItemListState<T> extends State<SlidableItemList<T>> {
   final _slidableController = SlidableController();
 
   @override
@@ -44,23 +42,23 @@ class _SlidableItemListState<T extends Model>
     );
   }
 
-  Future<void> _showDeleteDialog(T item) {
-    return showDialog<void>(
-      context: context,
-      useRootNavigator: false,
-      builder: (BuildContext context) {
-        return DeleteDialog(
-          content: widget.warningContextBuilder(context, item),
-          onDelete: (BuildContext context) async {
-            await item.remove();
-            if (widget.handleDelete != null) {
-              await widget.handleDelete!(context, item);
-            }
-            showSuccessSnackbar(context, tt('success'));
-          },
-        );
-      },
-    );
+  Future<void> _handleDelete(T item) async {
+    if (widget.warningContextBuilder != null) {
+      final isConfirmed = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) => DeleteDialog(
+          content: widget.warningContextBuilder!(context, item),
+        ),
+      );
+
+      if (isConfirmed != true) {
+        return;
+      }
+    }
+
+    await widget.handleDelete(context, item);
+
+    showSuccessSnackbar(context, tt('success'));
   }
 
   /// If there is any action panel opening, close it
@@ -76,7 +74,7 @@ class _SlidableItemListState<T extends Model>
   Widget _itemBuilder(T item, ThemeData theme) {
     return Card(
       shape: RoundedRectangleBorder(),
-      margin: EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
       child: Slidable(
         controller: _slidableController,
         actionPane: SlidableDrawerActionPane(),
@@ -85,30 +83,30 @@ class _SlidableItemListState<T extends Model>
             color: theme.errorColor,
             caption: tt('delete'),
             icon: KIcons.delete,
-            onTap: () => _showDeleteDialog(item),
+            onTap: () => _handleDelete(item),
           ),
         ],
         child: GestureDetector(
           onTap: () {
-            if (_checkPanelStatus()) {
-              widget.handleTap(context, item);
+            if (_checkPanelStatus() && widget.handleTap != null) {
+              widget.handleTap!(context, item);
             }
           },
-          onLongPress: () => _handleLongPress(item, theme),
+          onLongPress: () => showActions(item),
           child: widget.tileBuilder(context, item),
         ),
       ),
     );
   }
 
-  void _handleLongPress(T item, ThemeData theme) async {
+  Future<void> showActions(T item) async {
+    final theme = Theme.of(context);
     final custom = widget.actionBuilder == null
         ? const <BottomSheetAction>[]
         : widget.actionBuilder!(item);
 
     final result = await showCircularBottomSheet<bool>(
       context,
-      useRootNavigator: false,
       actions: <BottomSheetAction>[
         ...custom,
         BottomSheetAction(
@@ -120,7 +118,7 @@ class _SlidableItemListState<T extends Model>
     );
 
     if (result == false) {
-      await _showDeleteDialog(item);
+      await _handleDelete(item);
     }
   }
 }
