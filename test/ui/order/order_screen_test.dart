@@ -14,6 +14,7 @@ import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_providers.dart';
 
@@ -49,26 +50,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(CalculatorDialog), findsOneWidget);
-  });
-
-  testWidgets('should build success in landscape mode', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(true);
-    when(menu.itemList).thenReturn([]);
-
-    const WIDTH = 1800.0;
-    const HEIGHT = 1000.0;
-
-    tester.binding.window.physicalSizeTestValue = Size(WIDTH, HEIGHT);
-
-    // resets the screen to its orinal size after the test end
-    addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
-
-    await tester.pumpWidget(MaterialApp(
-      home: ChangeNotifierProvider<Menu>.value(
-        value: menu,
-        child: OrderScreen(),
-      ),
-    ));
   });
 
   testWidgets('should update products when select catalog', (tester) async {
@@ -153,7 +134,12 @@ void main() {
     expect(scroll.controller?.position.maxScrollExtent, isNonZero);
   });
 
+  setUp(() {
+    when(cache.get(any)).thenReturn(false);
+  });
+
   setUpAll(() {
+    initializeCache();
     initializeRepos();
     initializeProviders();
     Cart.instance = Cart();

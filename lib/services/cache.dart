@@ -74,4 +74,5 @@ enum Caches {
   currency_code,
   search_ingredient,
   search_quantity,
+  feature_awake_provider,
 }
