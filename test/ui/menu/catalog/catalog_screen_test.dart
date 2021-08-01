@@ -55,7 +55,7 @@ void main() {
         )));
 
     // tap tile
-    await tester.tap(find.byIcon(KIcons.more));
+    await tester.tap(find.byIcon(KIcons.edit));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.text_fields_sharp));
@@ -84,7 +84,7 @@ void main() {
         )));
 
     // tap tile
-    await tester.tap(find.byIcon(KIcons.more));
+    await tester.tap(find.byIcon(KIcons.edit));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.reorder_sharp));

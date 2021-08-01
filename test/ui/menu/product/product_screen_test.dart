@@ -43,10 +43,7 @@ void main() {
         )));
 
     // tap tile
-    await tester.tap(find.byIcon(KIcons.more));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byIcon(Icons.text_fields_sharp));
+    await tester.tap(find.byIcon(KIcons.edit));
     await tester.pumpAndSettle();
 
     expect(identical(product, argument), isTrue);

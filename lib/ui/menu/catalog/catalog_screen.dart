@@ -4,6 +4,8 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
+import 'package:possystem/components/style/item_editable_info.dart';
+import 'package:possystem/components/style/nav_home_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -52,33 +54,26 @@ class CatalogScreen extends StatelessWidget {
         icon: Icon(KIcons.back),
       ),
       title: catalog.name,
-      trailing: IconButton(
-        onPressed: () => showCircularBottomSheet(
-          context,
-          actions: _actions(catalog),
-        ),
-        icon: Icon(KIcons.more),
-      ),
+      trailing: NavHomeButton(),
       floatingActionButton: FloatingActionButton(
         onPressed: navigateNewProduct,
         tooltip: tt('menu.product.add'),
         child: Icon(KIcons.add),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(kSpacing3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text(catalog.name, style: textTheme.headline4),
-                metadata,
-              ],
+      body: Column(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(kSpacing3),
+          child: ItemEditableInfo(
+            item: catalog,
+            metadata: metadata,
+            onEdit: () => showCircularBottomSheet(
+              context,
+              actions: _actions(catalog),
             ),
           ),
-          body,
-        ],
-      ),
+        ),
+        body,
+      ]),
     );
   }
 
