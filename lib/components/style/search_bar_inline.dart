@@ -24,6 +24,11 @@ class SearchBarInline extends StatelessWidget {
   Widget build(BuildContext context) {
     textController.text = text ?? '';
     final textTheme = Theme.of(context).textTheme.subtitle1;
+    final border = textTheme?.color == null
+        ? null
+        : UnderlineInputBorder(
+            borderSide: BorderSide(color: textTheme!.color!),
+          );
 
     return TextField(
       readOnly: true,
@@ -37,8 +42,7 @@ class SearchBarInline extends StatelessWidget {
         hintText: hintText,
         helperText: helperText,
         errorText: errorText,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
+        focusedBorder: border,
         labelStyle: textTheme,
         prefixIcon: Icon(KIcons.search, color: textTheme?.color),
       ),

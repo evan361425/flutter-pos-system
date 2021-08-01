@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
+import 'package:possystem/components/style/item_editable_info.dart';
+import 'package:possystem/components/style/nav_home_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/routes.dart';
@@ -17,8 +18,6 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = context.watch<Product>();
-
-    final textTheme = Theme.of(context).textTheme;
 
     final navigateNewIngredient = () => Navigator.of(context).pushNamed(
           Routes.menuIngredient,
@@ -56,13 +55,7 @@ class ProductScreen extends StatelessWidget {
         icon: Icon(KIcons.back),
       ),
       title: product.name,
-      trailing: IconButton(
-        onPressed: () => showCircularBottomSheet(
-          context,
-          actions: _actions(product),
-        ),
-        icon: Icon(KIcons.more),
-      ),
+      trailing: NavHomeButton(),
       floatingActionButton: FloatingActionButton(
         onPressed: navigateNewIngredient,
         tooltip: tt('menu.integredient.add'),
@@ -72,32 +65,18 @@ class ProductScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(kSpacing3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(product.name, style: textTheme.headline4),
-                metadata,
-              ],
+            child: ItemEditableInfo(
+              item: product,
+              metadata: metadata,
+              onEdit: () => Navigator.of(context).pushNamed(
+                Routes.menuProductModal,
+                arguments: product,
+              ),
             ),
           ),
           body,
         ],
       ),
     );
-  }
-
-  List<BottomSheetAction> _actions(Product product) {
-    return [
-      BottomSheetAction(
-        title: Text(tt('menu.product.edit')),
-        leading: Icon(Icons.text_fields_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(
-            Routes.menuProductModal,
-            arguments: product,
-          );
-        },
-      ),
-    ];
   }
 }
