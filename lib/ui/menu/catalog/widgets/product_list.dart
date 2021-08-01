@@ -21,6 +21,7 @@ class ProductList extends StatelessWidget {
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
       handleTap: _handleTap,
+      handleDelete: (_, item) => item.remove(),
     );
   }
 

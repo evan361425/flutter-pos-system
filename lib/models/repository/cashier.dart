@@ -78,8 +78,11 @@ class Cashier extends ChangeNotifier {
     }
   }
 
-  CashierChangeBatchObject favoriteAt(int index) {
-    return _favorites[index];
+  Iterable<FavoriteItem> favoriteItems() sync* {
+    var index = 0;
+    for (final item in _favorites) {
+      yield FavoriteItem(item: item, index: index++);
+    }
   }
 
   /// Find Possible change from [count] and [unit]

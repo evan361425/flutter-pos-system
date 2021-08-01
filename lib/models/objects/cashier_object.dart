@@ -80,3 +80,20 @@ class CashierUnitObject {
     return {'unit': unit, 'count': count};
   }
 }
+
+class FavoriteItem {
+  final CashierChangeBatchObject item;
+
+  final int index;
+
+  const FavoriteItem({required this.item, required this.index});
+
+  CashierChangeEntryObject get source => item.source;
+
+  List<CashierChangeEntryObject> get targets => item.targets;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FavoriteItem && other.index == index;
+  }
+}

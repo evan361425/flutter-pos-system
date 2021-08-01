@@ -86,13 +86,16 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Future<void> _deleteConfirm(ProductIngredient ingredient) {
-    return showDialog(
+  Future<void> _deleteConfirm(ProductIngredient ingredient) async {
+    final isConfirmed = await showDialog(
         context: context,
         builder: (_) => DeleteDialog(
               content: Text(tt('delete_confirm', {'name': ingredient.name})),
-              onDelete: (_) => ingredient.remove(),
             ));
+
+    if (isConfirmed == true) {
+      await ingredient.remove();
+    }
   }
 
   ExpansionPanel _panelBuilder(int index, ProductIngredient ingredient) {

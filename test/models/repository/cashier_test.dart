@@ -186,7 +186,7 @@ void main() {
       },
     ]);
 
-    final item = cashier.favoriteAt(0);
+    final item = cashier.favoriteItems().first.item;
     final shouldValid = await cashier.applyFavorite(item);
 
     expect(shouldValid, isTrue);

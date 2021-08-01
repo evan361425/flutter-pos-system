@@ -22,8 +22,10 @@ class IngredientList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableItemList<Ingredient>(
       items: ingredients,
-      handleDelete: (_, ingredient) =>
-          Menu.instance.removeIngredients(ingredient.id),
+      handleDelete: (_, ingredient) async {
+        await ingredient.remove();
+        return Menu.instance.removeIngredients(ingredient.id);
+      },
       handleTap: _handleTap,
       warningContextBuilder: _warningContextBuilder,
       tileBuilder: _tileBuilder,

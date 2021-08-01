@@ -152,18 +152,17 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   }
 
   Future<void> _handleDelete() async {
-    final isDeleted = await showDialog<bool>(
+    final isConfirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return DeleteDialog(
-          content:
-              Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
-          onDelete: (_) => widget.ingredient!.remove(),
-        );
-      },
+      builder: (_) => DeleteDialog(
+        content: Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
+      ),
     );
 
-    if (isDeleted == true) Navigator.of(context).pop();
+    if (isConfirmed == true) {
+      await widget.ingredient!.remove();
+      Navigator.of(context).pop();
+    }
   }
 
   ProductIngredientObject _parseObject() {

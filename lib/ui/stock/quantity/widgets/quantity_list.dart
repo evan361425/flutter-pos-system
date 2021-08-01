@@ -14,8 +14,10 @@ class QuantityList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableItemList<Quantity>(
       items: quantities,
-      handleDelete: (_, quantity) =>
-          Menu.instance.removeQuantities(quantity.id),
+      handleDelete: (_, quantity) async {
+        await quantity.remove();
+        return Menu.instance.removeQuantities(quantity.id);
+      },
       handleTap: _handleTap,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,

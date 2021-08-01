@@ -9,17 +9,19 @@ import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should get true after pop', (tester) async {
-    final item = CashierChangeBatchObject.fromMap({
-      'source': {'unit': 5, 'count': 1},
-      'targets': [
-        {'unit': 1, 'count': 5},
-      ],
-    });
     when(currency.unitList).thenReturn([]);
     when(cashier.favoriteIsEmpty).thenReturn(false);
-    when(cashier.favoriteLength).thenReturn(1);
-    when(cashier.favoriteAt(0)).thenReturn(item);
-    when(cashier.applyFavorite(item)).thenAnswer((_) => Future.value(true));
+    when(cashier.favoriteItems()).thenReturn([
+      FavoriteItem(
+          item: CashierChangeBatchObject.fromMap({
+            'source': {'unit': 5, 'count': 1},
+            'targets': [
+              {'unit': 1, 'count': 5},
+            ],
+          }),
+          index: 0),
+    ]);
+    when(cashier.applyFavorite(any)).thenAnswer((_) => Future.value(true));
 
     await tester.pumpWidget(MaterialApp(
         home: Builder(
@@ -38,7 +40,7 @@ void main() {
     await tester.tap(find.text('套用'));
     await tester.pumpAndSettle();
 
-    expect(find.text('cancel'), findsNothing);
+    expect(find.text('hi'), findsOneWidget);
   });
 
   setUpAll(() {

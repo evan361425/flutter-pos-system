@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/components/style/toast.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -101,26 +101,28 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
     ];
 
     return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            actions,
-            Divider(),
-            Text('從收銀機中拿出'),
-            sourceEntry,
-            const TextDivider(label: '換'),
-            ...targetEntries,
-            // add bottom
-            const SizedBox(height: kSpacing1),
-            OutlinedButton(
-              onPressed: () => setState(() {
-                targets.add(CashierChangeEntryObject());
-              }),
-              child: Icon(KIcons.add),
-            )
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(kSpacing2),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              actions,
+              const TextDivider(label: '從收銀機中拿出'),
+              sourceEntry,
+              const TextDivider(label: '換'),
+              ...targetEntries,
+              // add bottom
+              const SizedBox(height: kSpacing1),
+              OutlinedButton(
+                onPressed: () => setState(() {
+                  targets.add(CashierChangeEntryObject());
+                }),
+                child: Icon(KIcons.add),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -149,7 +151,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
       });
       return true;
     } else {
-      showToast(context, '$sourceUnit 元不夠換');
+      showInfoSnackbar(context, '$sourceUnit 元不夠換');
       return false;
     }
   }
@@ -212,7 +214,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
       });
-      showToast(context, msg);
+      showInfoSnackbar(context, msg);
     }
 
     return false;

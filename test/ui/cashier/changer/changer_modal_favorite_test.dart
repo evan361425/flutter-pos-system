@@ -25,15 +25,7 @@ void main() {
   });
 
   testWidgets('delete from more', (tester) async {
-    final item = CashierChangeBatchObject.fromMap({
-      'source': {'unit': 5, 'count': 1},
-      'targets': [
-        {'unit': 1, 'count': 5},
-      ],
-    });
     when(cashier.favoriteIsEmpty).thenReturn(false);
-    when(cashier.favoriteLength).thenReturn(1);
-    when(cashier.favoriteAt(0)).thenReturn(item);
 
     await tester.pumpWidget(MaterialApp(
       home: Material(child: ChangerModalFavorite(handleAdd: () {})),
@@ -48,40 +40,8 @@ void main() {
     verify(cashier.deleteFavorite(0));
   });
 
-  testWidgets('delete from long press', (tester) async {
-    final item = CashierChangeBatchObject.fromMap({
-      'source': {'unit': 5, 'count': 1},
-      'targets': [
-        {'unit': 1, 'count': 5},
-      ],
-    });
-    when(cashier.favoriteIsEmpty).thenReturn(false);
-    when(cashier.favoriteLength).thenReturn(1);
-    when(cashier.favoriteAt(0)).thenReturn(item);
-
-    await tester.pumpWidget(MaterialApp(
-      home: Material(child: ChangerModalFavorite(handleAdd: () {})),
-    ));
-
-    await tester.longPress(find.text('用 1 個 5 元換'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byIcon(KIcons.delete));
-    await tester.pumpAndSettle();
-
-    verify(cashier.deleteFavorite(0));
-  });
-
   testWidgets('should not valid if not select', (tester) async {
-    final item = CashierChangeBatchObject.fromMap({
-      'source': {'unit': 5, 'count': 1},
-      'targets': [
-        {'unit': 1, 'count': 5},
-      ],
-    });
     when(cashier.favoriteIsEmpty).thenReturn(false);
-    when(cashier.favoriteLength).thenReturn(1);
-    when(cashier.favoriteAt(0)).thenReturn(item);
 
     final dialog = GlobalKey<ChangerModalFavoriteState>();
 
@@ -92,10 +52,23 @@ void main() {
     ));
 
     final result = await dialog.currentState?.handleApply();
-    // wait for toast
-    await tester.pump(Duration(seconds: 2, milliseconds: 500));
+    await tester.pumpAndSettle();
 
     expect(result, isFalse);
+  });
+
+  setUp(() {
+    when(cashier.favoriteItems()).thenReturn([
+      FavoriteItem(
+        item: CashierChangeBatchObject.fromMap({
+          'source': {'unit': 5, 'count': 1},
+          'targets': [
+            {'unit': 1, 'count': 5},
+          ],
+        }),
+        index: 0,
+      )
+    ]);
   });
 
   setUpAll(() {
