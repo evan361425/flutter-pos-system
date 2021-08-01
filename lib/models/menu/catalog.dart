@@ -23,7 +23,7 @@ class Catalog extends NotifyModel<CatalogObject>
   Catalog({
     DateTime? createdAt,
     String? id,
-    required int index,
+    int index = 0,
     required this.name,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),

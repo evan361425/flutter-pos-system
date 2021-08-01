@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -13,19 +12,7 @@ import '../../../mocks/mock_models.mocks.dart';
 import '../../../mocks/mock_repos.dart';
 
 void main() {
-  testWidgets('should show loading if setting stock mode', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(false);
-    final catalog = Catalog(index: 1, name: 'name');
-
-    await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<Catalog>.value(value: catalog),
-    ], child: MaterialApp(home: CatalogScreen())));
-
-    expect(find.byType(CircularLoading), findsOneWidget);
-  });
-
   testWidgets('should show empty body if empty', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(true);
     final catalog = Catalog(index: 1, name: 'name');
 
     await tester.pumpWidget(MultiProvider(providers: [
@@ -36,7 +23,6 @@ void main() {
   });
 
   testWidgets('should navigate to modal', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(true);
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
@@ -65,7 +51,6 @@ void main() {
   });
 
   testWidgets('should navigate to reorder', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(true);
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
@@ -101,7 +86,6 @@ void main() {
       id: 'c-id',
       products: {'id': product},
     );
-    when(menu.setUpStockMode(any)).thenReturn(true);
     when(product.name).thenReturn('name');
     when(product.items).thenReturn([]);
 
