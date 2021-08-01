@@ -8,8 +8,9 @@ import 'product_ingredient.dart';
 
 class Product extends NotifyModel<ProductObject>
     with
-        OrderableModel,
+        OrderableModel<ProductObject>,
         Repository<ProductIngredient>,
+        SearchableModel<ProductObject>,
         NotifyRepository<ProductIngredient> {
   /// connect to parent object
   late final Catalog catalog;
@@ -59,14 +60,14 @@ class Product extends NotifyModel<ProductObject>
       ).._prepareIngredients();
 
   @override
-  String get itemCode => 'menu.ingredient';
-
-  @override
   String get code => 'menu.product';
 
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredient> get ingredientsWithQuantity =>
       items.where((e) => e.isNotEmpty);
+
+  @override
+  String get itemCode => 'menu.ingredient';
 
   @override
   String get prefix => '${catalog.prefix}.products.$id';
@@ -75,13 +76,22 @@ class Product extends NotifyModel<ProductObject>
   Stores get storageStore => Stores.menu;
 
   @override
-  void removeFromRepo() => catalog.removeItem(id);
-
-  @override
   Future<void> addItemToStorage(ProductIngredient child) {
     return Storage.instance.set(storageStore, {
       child.prefix: child.toObject().toMap(),
     });
+  }
+
+  int getItemsSimilarity(String pattern) {
+    var maxScore = 0;
+    for (final ingredient in items) {
+      maxScore = ingredient.getSimilarity(pattern);
+      for (final quantity in ingredient.items) {
+        final qScore = quantity.getSimilarity(pattern);
+        maxScore = maxScore < qScore ? qScore : maxScore;
+      }
+    }
+    return maxScore;
   }
 
   @override
@@ -91,6 +101,9 @@ class Product extends NotifyModel<ProductObject>
 
     notifyListeners();
   }
+
+  @override
+  void removeFromRepo() => catalog.removeItem(id);
 
   @override
   ProductObject toObject() => ProductObject(

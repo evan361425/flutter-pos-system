@@ -9,7 +9,6 @@ class SearchBar extends StatefulWidget {
   final String helperText;
   final String hintText;
   final String labelText;
-  final bool hideCounter;
   final Color? cursorColor;
   final TextCapitalization textCapitalization;
   final void Function(String) onChanged;
@@ -22,7 +21,6 @@ class SearchBar extends StatefulWidget {
     this.labelText = '',
     this.helperText = '',
     this.maxLength = 30,
-    this.hideCounter = false,
     this.textCapitalization = TextCapitalization.none,
     this.cursorColor,
   }) : super(key: key);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/components/style/custom_styles.dart';
@@ -14,8 +15,7 @@ import 'package:provider/provider.dart';
 class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // strictly equal to: Provider.of<MenuModel>(context)
-    // context.read<T>() === Provider.of<T>(context, listen: false)
+    // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
 
     final navigateNewCatalog =
@@ -65,21 +65,33 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context, Menu menu) {
+    final searchBar = Padding(
+      padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
+      child: SearchBarInline(
+        hintText: '搜尋產品、成份、份量',
+        onTap: (context) => Navigator.of(context).pushNamed(Routes.menuSearch),
+      ),
+    );
+
+    final catalogCount = Padding(
+      padding: const EdgeInsets.all(kSpacing1),
+      child: Text(
+        tt('total_count', {'count': menu.length}),
+        style: Theme.of(context).textTheme.muted,
+      ),
+    );
+    // get sorted catalogs
+    final catalogList = CatalogList(menu.itemList);
+
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(kSpacing1),
-          child: Text(
-            tt('total_count', {'count': menu.length}),
-            style: Theme.of(context).textTheme.muted,
-          ),
-        ),
+        searchBar,
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                // get sorted catalogs
-                CatalogList(menu.itemList),
+                catalogCount,
+                catalogList,
               ],
             ),
           ),

@@ -85,10 +85,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   }
 
   Widget _body() {
-    final menu = context.watch<Menu>();
-    if (!menu.setUpStockMode(context)) {
-      return Container();
-    }
+    final menu = context.read<Menu>();
 
     // get in order
     final catalogs = menu.itemList;

@@ -3,18 +3,17 @@ import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
-  final Future<List<T>> Function(String) handleChanged;
+  final Future<Iterable<T>> Function(String) handleChanged;
   final int maxLength;
   final String text;
   final String helperText;
   final String hintText;
   final String labelText;
   final TextCapitalization textCapitalization;
-  final Future<List<T>> Function() initialData;
+  final List<T> initialData;
   final Widget Function(BuildContext, T item) itemBuilder;
   final Widget Function(BuildContext, String text) emptyBuilder;
 
@@ -36,14 +35,15 @@ class SearchScaffold<T> extends StatefulWidget {
   SearchScaffoldState<T> createState() => SearchScaffoldState<T>();
 }
 
-class SearchScaffoldState<T> extends State<SearchScaffold> {
+class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
   final GlobalKey<SearchBarState> searchBar = GlobalKey<SearchBarState>();
 
   final List<T> list = [];
 
-  bool isSearching = true;
+  bool isSearching = false;
 
   int get count => list.length;
+
   bool get isNotEmpty => list.isNotEmpty;
 
   @override
@@ -71,7 +71,6 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
           helperText: widget.helperText,
           maxLength: widget.maxLength,
           textCapitalization: widget.textCapitalization,
-          hideCounter: true,
           cursorColor: colorScheme.brightness == Brightness.dark
               ? colorScheme.onSurface
               : colorScheme.onPrimary,
@@ -88,21 +87,9 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   }
 
   Widget _body(BuildContext context) {
-    if (searchBar.currentState?.text.isEmpty == true) {
-      return FutureBuilder<List<T>>(
-        future: widget.initialData() as Future<List<T>>,
-        builder: (context, snapshot) {
-          // while data is loading:
-          if (!snapshot.hasData) return CircularLoading();
-          if (snapshot.hasError) {
-            error(
-                snapshot.error.toString(), 'search.error', snapshot.stackTrace);
-            return Text(tt('unknown_error'));
-          }
-
-          return _listBuilder(context, snapshot.data!);
-        },
-      );
+    // null or true
+    if (searchBar.currentState?.text.isEmpty != false) {
+      return _listBuilder(context, widget.initialData);
     } else if (isNotEmpty) {
       return Column(children: [
         Padding(
@@ -120,7 +107,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold> {
   }
 
   Future<void> _handleChanged(String text) async {
-    final newList = await widget.handleChanged(text) as List<T>;
+    final newList = await widget.handleChanged(text);
 
     setState(() {
       list.addAll(newList);

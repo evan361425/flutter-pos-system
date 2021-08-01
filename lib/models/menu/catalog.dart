@@ -9,10 +9,10 @@ import 'product.dart';
 
 class Catalog extends NotifyModel<CatalogObject>
     with
-        OrderableModel,
+        OrderableModel<CatalogObject>,
         Repository<Product>,
         NotifyRepository<Product>,
-        OrderablRepository {
+        OrderablRepository<Product> {
   /// catalog's name
   @override
   String name;
@@ -83,4 +83,16 @@ class Catalog extends NotifyModel<CatalogObject>
   String toString() => name;
 
   void _preparePorducts() => items.forEach((e) => e.catalog = this);
+
+  Iterable<MapEntry<Product, double>> getItemsSimilarity(String pattern) sync* {
+    for (final product in items) {
+      final score = product.getSimilarity(pattern);
+      yield MapEntry(
+        product,
+        score > 0
+            ? score * 1.5
+            : product.getItemsSimilarity(pattern).toDouble(),
+      );
+    }
+  }
 }
