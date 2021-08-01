@@ -12,6 +12,10 @@ class LanguageModal extends StatefulWidget {
     'zh_TW': '繁體中文',
     'en_US': 'English',
   };
+
+  static String getLanguageName(Locale locale) {
+    return LanguageName[locale.toString()] ?? 'unknown';
+  }
 }
 
 class _LanguageModalState extends State<LanguageModal> {
