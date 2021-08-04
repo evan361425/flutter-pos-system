@@ -19,7 +19,7 @@ title: 幫助 POS 系統
 
 ## 你需要任何幫助嗎？
 
-若你有任何不知道怎麼處理的事情並未涵蓋進本文章，歡迎[來信](mailto:{{ site.email }})。或者你也可以直接[開一個 issue]({{ site.github.repository_url }}/issues/new) 來詢問，也許大家也有和你一樣的問題，我們一起來解決吧 😬。
+若你有任何不知道怎麼處理的事情並未涵蓋進本文章，歡迎[來信](mailto:{{ site.social-network-links.email }})。或者你也可以直接[開一個 issue]({{ site.github.repository_url }}/issues/new) 來詢問，也許大家也有和你一樣的問題，我們一起來解決吧 😬。
 
 ## 改善文件
 
@@ -56,7 +56,7 @@ title: 幫助 POS 系統
 
 我們非常歡迎提出新功能，但是思考一下是否該功能和 POS 系統是有關係的，你可以提出想法大家一起來討論看看本功能實作的價值。請提出足夠的細節和可行性，並且說明一下該功能試圖解決的問題。
 
-再次感謝你提出想法幫助本產品更好，開始[建立相關的 issue]({{ site.github.repository_url }}/issues/new?assignees=&labels=&template=feature_report.md&title=) 吧！
+再次感謝你提出想法幫助本產品更好，開始[建立相關的 issue]({{ site.github.repository_url }}/issues/new?assignees=&labels=&template=feature_request.md&title=) 吧！
 
 ## 調整使用者介面
 
