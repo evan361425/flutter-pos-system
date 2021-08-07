@@ -1,15 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/models/repository/stock.dart';
-import 'package:provider/provider.dart';
 
 import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_storage.dart';
-import '../../mocks/mock_widgets.dart';
-import '../../mocks/mock_repos.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
@@ -153,13 +147,47 @@ void main() {
   });
 
   group('checker', () {
-    test('#hasCatalog', () {
+    test('#hasName', () {
       createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
       createCatalog('ctg_2', {});
 
       expect(menu.hasName('ctg_1-name'), isTrue);
       expect(menu.hasName('ctg_2'), isFalse);
       expect(menu.hasName('ctg_3-name'), isFalse);
+    });
+  });
+
+  group('#searchProducts', () {
+    test('without search text', () {
+      createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
+      createCatalog('ctg_2', {'pdt_3': {}});
+
+      final list1 = menu.searchProducts().toList();
+      expect(list1.length, equals(3));
+      expect(list1.map((e) => e.id), equals(['pdt_1', 'pdt_2', 'pdt_3']));
+
+      final list2 = menu.searchProducts(limit: 2, text: '').toList();
+      expect(list2.length, equals(2));
+      expect(list2.map((e) => e.id), equals(['pdt_1', 'pdt_2']));
+    });
+
+    test('with search text', () {
+      final cat1 = createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
+      final cat2 = createCatalog('ctg_2', {'pdt_3': {}, 'pdt_4': {}});
+      var score = 0.0;
+      when(cat1.getItemsSimilarity('text'))
+          .thenReturn(cat1.items.map((e) => MapEntry(e, score++)));
+      when(cat2.getItemsSimilarity('text'))
+          .thenReturn(cat2.items.map((e) => MapEntry(e, score++)));
+
+      // zero will be ignore
+      final list1 = menu.searchProducts(text: 'text').toList();
+      expect(list1.length, equals(3));
+      expect(list1.map((e) => e.id), equals(['pdt_4', 'pdt_3', 'pdt_2']));
+
+      final list2 = menu.searchProducts(text: 'text', limit: 2).toList();
+      expect(list2.length, equals(2));
+      expect(list2.map((e) => e.id), equals(['pdt_4', 'pdt_3']));
     });
   });
 
@@ -228,89 +256,12 @@ void main() {
     });
   });
 
-  group('#setUpStockMode', () {
-    test('should not do anything if already set', () {
-      menu.stockMode = true;
-      expect(menu.setUpStockMode(MockBuildContext()), isTrue);
-    });
-
-    testWidgets('should return false if stock not ready', (tester) async {
-      when(stock.isReady).thenReturn(false);
-      when(quantities.isReady).thenReturn(true);
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>(create: (_) => stock),
-          ChangeNotifierProvider<Quantities>(create: (_) => quantities),
-        ],
-        builder: (context, _) {
-          final result = menu.setUpStockMode(context);
-          expect(result, isFalse);
-          return Container();
-        },
-      ));
-    });
-
-    testWidgets('should return false if quantities not ready', (tester) async {
-      when(stock.isReady).thenReturn(true);
-      when(quantities.isReady).thenReturn(false);
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>(create: (_) => stock),
-          ChangeNotifierProvider<Quantities>(create: (_) => quantities),
-        ],
-        builder: (context, _) {
-          final result = menu.setUpStockMode(context);
-          expect(result, isFalse);
-          return Container();
-        },
-      ));
-    });
-
-    testWidgets('should set up correctly', (tester) async {
-      final catalog1 = createCatalog('id-1', {
-        'p-id1': {
-          'i-id1': ['q-id1', 'q-id2'],
-        },
-      });
-
-      when(stock.isReady).thenReturn(true);
-      when(quantities.isReady).thenReturn(true);
-      when(stock.getItem(any)).thenReturn(MockIngredient());
-      when(quantities.getItem(any)).thenReturn(MockQuantity());
-      menu.replaceItems({'id-1': catalog1});
-
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>(create: (_) => stock),
-          ChangeNotifierProvider<Quantities>(create: (_) => quantities),
-        ],
-        builder: (context, _) {
-          final result = menu.setUpStockMode(context);
-          expect(result, isTrue);
-          return Container();
-        },
-      ));
-
-      catalog1.items.forEach((product) {
-        product.items.forEach((ingredient) {
-          verify((ingredient as MockProductIngredient).setIngredient(any))
-              .called(1);
-          ingredient.items.forEach((quantity) {
-            verify((quantity as MockProductQuantity).setQuantity(any))
-                .called(1);
-          });
-        });
-      });
-    });
-  });
-
   setUp(() {
     when(storage.get(any)).thenAnswer((e) => Future.value({}));
     menu = Menu();
   });
 
   setUpAll(() {
-    initializeRepos();
     initializeStorage();
   });
 }

@@ -1,26 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
-import 'package:provider/provider.dart';
-
-import 'quantities.dart';
-import 'stock.dart';
 
 class Menu extends ChangeNotifier
     with
         Repository<Catalog>,
         NotifyRepository<Catalog>,
-        OrderablRepository,
-        InitilizableRepository {
+        OrderablRepository<Catalog>,
+        InitilizableRepository<Catalog> {
   static Menu instance = Menu();
-
-  bool stockMode = false;
 
   Menu() {
     initialize();
@@ -86,6 +80,23 @@ class Menu extends ChangeNotifier
     return result;
   }
 
+  /// Get desc similarity value of products
+  List<MapEntry<Product, double>> getSortedSimilarities(String pattern) {
+    return getProductSimilarities(pattern)
+        .where((entry) => entry.value > 0)
+        .toList()
+          ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
+  }
+
+  Iterable<MapEntry<Product, double>> getProductSimilarities(
+      String pattern) sync* {
+    for (final catalog in items) {
+      for (final entry in catalog.getItemsSimilarity(pattern)) {
+        yield entry;
+      }
+    }
+  }
+
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
 
@@ -98,31 +109,22 @@ class Menu extends ChangeNotifier
     return _remove(quantities.map((e) => e.ingredient), quantities);
   }
 
-  /// wheather ingredient/quantity has connect to stock
-  ///
-  /// inject to make it easy [context.watch]
-  bool setUpStockMode(BuildContext context) {
-    if (stockMode) return true;
-
-    final stock = context.watch<Stock>();
-    final quantities = context.watch<Quantities>();
-    if (!isReady || !stock.isReady || !quantities.isReady) {
-      return false;
+  Iterable<Product> searchProducts({int limit = 10, String? text}) sync* {
+    var count = 0;
+    if (text == null || text.isEmpty) {
+      for (final catalog in items) {
+        for (final product in catalog.items) {
+          if (++count > limit) return;
+          yield product;
+        }
+      }
+      return;
+    } else {
+      for (final entry in getSortedSimilarities(text)) {
+        if (++count > limit) return;
+        yield entry.key;
+      }
     }
-
-    items.forEach((catalog) {
-      catalog.items.forEach((product) {
-        product.items.forEach((ingredient) {
-          ingredient.setIngredient(stock.getItem(ingredient.id)!);
-          ingredient.items.forEach((quantity) {
-            quantity.setQuantity(quantities.getItem(quantity.id)!);
-          });
-        });
-      });
-    });
-
-    stockMode = true;
-    return true;
   }
 
   Future<void> _remove(Iterable<Repository> repos, List<Model> items) {

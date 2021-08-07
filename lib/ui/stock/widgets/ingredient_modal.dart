@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -34,12 +33,11 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   Widget body() {
-    final isReady = Menu.instance.setUpStockMode(context);
-    final ingredients = !isReady || widget.isNew
+    final ingredients = widget.isNew
         ? const <ProductIngredient>[]
         : Menu.instance.getIngredients(widget.ingredient!.id);
     // 1 for body, 2 for divider and text
-    final length = ingredients.length + 1 + (isReady && widget.isNew ? 0 : 1);
+    final length = ingredients.length + 1 + (widget.isNew ? 0 : 1);
 
     return ListView.builder(
         itemCount: length,
@@ -48,23 +46,21 @@ class _IngredientModalState extends State<IngredientModal>
             case 0:
               return super.body();
             case 1:
-              return isReady
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: kSpacing2),
-                      child: Center(
-                        child: Text(
-                          tt(
-                            'stock.ingredient.total_count',
-                            {
-                              'count': length - 2,
-                              'name': widget.ingredient!.name,
-                            },
-                          ),
-                          style: Theme.of(context).textTheme.muted,
-                        ),
-                      ),
-                    )
-                  : CircularLoading();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: kSpacing2),
+                child: Center(
+                  child: Text(
+                    tt(
+                      'stock.ingredient.total_count',
+                      {
+                        'count': length - 2,
+                        'name': widget.ingredient!.name,
+                      },
+                    ),
+                    style: Theme.of(context).textTheme.muted,
+                  ),
+                ),
+              );
             default:
               final product = ingredients[index - 2].product;
               return CardTile(

@@ -20,8 +20,7 @@ import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should show actions', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(false);
-
+    when(menu.itemList).thenReturn([]);
     await tester.pumpWidget(MaterialApp(
       home: ChangeNotifierProvider<Menu>.value(
         value: menu,
@@ -36,7 +35,7 @@ void main() {
   });
 
   testWidgets('should show dialog when order', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(false);
+    when(menu.itemList).thenReturn([]);
     when(currency.isInt).thenReturn(true);
 
     await tester.pumpWidget(MaterialApp(
@@ -79,7 +78,6 @@ void main() {
       id: 'cat-2',
       products: {'pro-2': product2},
     );
-    when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.itemList).thenReturn([catalog1, catalog2]);
 
     await tester.pumpWidget(MaterialApp(
@@ -106,7 +104,6 @@ void main() {
       id: 'cat-1',
       products: {'pro-1': product},
     );
-    when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.itemList).thenReturn([catalog]);
 
     await tester.pumpWidget(MaterialApp(

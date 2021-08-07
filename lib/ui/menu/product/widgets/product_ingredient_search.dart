@@ -6,27 +6,24 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientSearch extends StatelessWidget {
-  ProductIngredientSearch({Key? key, this.text}) : super(key: key);
-
   final String? text;
-  final scaffold = GlobalKey<SearchScaffoldState>();
+
+  const ProductIngredientSearch({Key? key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SearchScaffold<Ingredient>(
-      key: scaffold,
-      handleChanged: (String text) async =>
-          Stock.instance.sortBySimilarity(text),
+      handleChanged: (text) async => Stock.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: () async => Stock.instance.itemList,
+      initialData: Stock.instance.itemList,
       text: text ?? '',
       hintText: tt('menu.ingredient.label.name'),
       textCapitalization: TextCapitalization.words,
     );
   }
 
-  Widget _itemBuilder(BuildContext context, dynamic ingredient) {
+  Widget _itemBuilder(BuildContext context, Ingredient ingredient) {
     return CardTile(
       title: Text(ingredient.name),
       onTap: () {

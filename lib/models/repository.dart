@@ -118,8 +118,8 @@ mixin Repository<T extends Model> {
   }
 }
 
-mixin SearchableRepository<T extends SearchableModel> on NotifyRepository<T> {
-  List<T> sortBySimilarity(String text) {
+mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
+  List<T> sortBySimilarity(String text, {int limit = 10}) {
     if (text.isEmpty) {
       return [];
     }
@@ -134,7 +134,7 @@ mixin SearchableRepository<T extends SearchableModel> on NotifyRepository<T> {
       return ing1.value < ing2.value ? 1 : -1;
     });
 
-    final end = similarities.length < 10 ? similarities.length : 10;
+    final end = similarities.length < limit ? similarities.length : limit;
     return similarities.sublist(0, end).map((e) => getItem(e.key)!).toList();
   }
 }

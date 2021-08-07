@@ -49,22 +49,24 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
   }
 }
 
-mixin OrderableModel<T extends ModelObject> on NotifyModel<T> {
+mixin OrderableModel<T extends ModelObject> on Model<T> {
   late int index;
 }
 
-mixin SearchableModel<T extends ModelObject> on NotifyModel<T> {
+mixin SearchableModel<T extends ModelObject> on Model<T> {
   /// get similarity between [name] and [pattern]
   int getSimilarity(String pattern) {
     final name = this.name.toLowerCase();
     pattern = pattern.toLowerCase();
 
-    final found = name.split(' ').where((e) => e.startsWith(pattern)).length;
-    final score = found == 0
-        ? name.contains(pattern)
-            ? 1
-            : 0
-        : found * 2;
+    final score = name.split(' ').fold<int>(0, (value, e) {
+      final addition = e.startsWith(pattern)
+          ? 2
+          : e.contains(pattern)
+              ? 1
+              : 0;
+      return value + addition;
+    });
 
     return score;
   }

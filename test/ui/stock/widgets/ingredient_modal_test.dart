@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
 
@@ -16,7 +15,6 @@ void main() {
     final catalog = MockCatalog();
     final product = MockProduct();
     final productIngredient = MockProductIngredient();
-    when(menu.setUpStockMode(any)).thenReturn(true);
     when(menu.getIngredients(any)).thenReturn([productIngredient]);
     when(productIngredient.product).thenReturn(product);
     when(product.catalog).thenReturn(catalog);
@@ -46,23 +44,7 @@ void main() {
             map['id.updatedAt'] != null)))).called(1);
     verify(stock.setItem(any));
   });
-
-  testWidgets('should loading if stock mode not ready', (tester) async {
-    final ingredient = MockIngredient();
-    when(menu.setUpStockMode(any)).thenReturn(false);
-    when(ingredient.name).thenReturn('name');
-    when(ingredient.id).thenReturn('id');
-    when(ingredient.currentAmount).thenReturn(1);
-
-    await tester.pumpWidget(bindWithNavigator(IngredientModal(
-      ingredient: ingredient,
-    )));
-
-    expect(find.byType(CircularLoading), findsOneWidget);
-  });
-
   testWidgets('should add new item', (tester) async {
-    when(menu.setUpStockMode(any)).thenReturn(true);
     when(stock.setItem(any)).thenAnswer((_) => Future.value());
     when(stock.hasName(any)).thenReturn(false);
 

@@ -6,7 +6,8 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/services/storage.dart';
 
-class ProductQuantity with Model<ProductQuantityObject> {
+class ProductQuantity
+    with Model<ProductQuantityObject>, SearchableModel<ProductQuantityObject> {
   /// connect to parent object
   late final ProductIngredient ingredient;
 

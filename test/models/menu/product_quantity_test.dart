@@ -6,7 +6,6 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/quantity.dart';
 
 import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_storage.dart';
 
@@ -22,20 +21,26 @@ void main() {
       expect(quantity.additionalPrice, equals(3));
     });
 
-    test('#build', () {
-      final object =
-          mockCatalogObject.products.first.ingredients.first.quantities.first;
-      final quantity = ProductQuantity.fromObject(object);
+    ProductQuantityObject createObject() {
+      return ProductQuantityObject.build({
+        'id': 'qua-1',
+        'amount': 3,
+        'additionalPrice': 5,
+        'additionalCost': 2,
+      });
+    }
 
-      expect(quantity.id, equals(object.id));
-      expect(quantity.amount, equals(object.amount));
-      expect(quantity.additionalCost, equals(object.additionalCost));
-      expect(quantity.additionalPrice, equals(object.additionalPrice));
+    test('#fromObject', () {
+      final quantity = ProductQuantity.fromObject(createObject());
+
+      expect(quantity.id, equals('qua-1'));
+      expect(quantity.amount, equals(3));
+      expect(quantity.additionalCost, equals(2));
+      expect(quantity.additionalPrice, equals(5));
     });
 
     test('#toObject', () {
-      final origin =
-          mockCatalogObject.products.first.ingredients.first.quantities.first;
+      final origin = createObject();
       final quantity = ProductQuantity.fromObject(origin);
       final object = quantity.toObject();
 

@@ -6,32 +6,28 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
 class ProductQuantitySearch extends StatelessWidget {
-  ProductQuantitySearch({Key? key, this.text}) : super(key: key);
-
-  static final String tag = 'menu.poduct.quantity.search';
   final String? text;
-  final scaffold = GlobalKey<SearchScaffoldState>();
+
+  const ProductQuantitySearch({Key? key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SearchScaffold<Quantity>(
-      key: scaffold,
-      handleChanged: (String text) async =>
-          Quantities.instance.sortBySimilarity(text),
+      handleChanged: (text) async => Quantities.instance.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: () async => Quantities.instance.itemList,
+      initialData: Quantities.instance.itemList,
       text: text ?? '',
       hintText: tt('menu.quantity.label.name'),
       textCapitalization: TextCapitalization.words,
     );
   }
 
-  Widget _itemBuilder(BuildContext context, dynamic ingredient) {
+  Widget _itemBuilder(BuildContext context, Quantity quantity) {
     return CardTile(
-      title: Text(ingredient.name),
+      title: Text(quantity.name),
       onTap: () {
-        Navigator.of(context).pop<Quantity>(ingredient);
+        Navigator.of(context).pop<Quantity>(quantity);
       },
     );
   }

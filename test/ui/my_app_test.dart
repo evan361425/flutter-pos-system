@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
@@ -19,8 +22,12 @@ void main() {
       ChangeNotifierProvider<LanguageProvider>.value(
           value: LanguageProvider.instance),
       ChangeNotifierProvider<CurrencyProvider>.value(value: currency),
+      ChangeNotifierProvider<Menu>.value(value: menu),
+      ChangeNotifierProvider<Stock>.value(value: stock),
+      ChangeNotifierProvider<Quantities>.value(value: quantities),
     ], child: MyApp(isDebug: false));
 
+    when(menu.isReady).thenReturn(false);
     when(database.initialize())
         .thenAnswer((_) => Future.delayed(Duration(milliseconds: 30)));
     when(storage.initialize()).thenAnswer((_) => Future.value());

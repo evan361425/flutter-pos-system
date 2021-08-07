@@ -9,11 +9,26 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 
 import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
+  Product createProduct([
+    String name = 'product',
+    List<String> ingredients = const ['i1'],
+  ]) {
+    return Product(
+      id: name,
+      name: name,
+      ingredients: {
+        for (var ingredient in ingredients)
+          ingredient: ProductIngredient(
+            ingredient: Ingredient(name: ingredient, id: ingredient),
+          )
+      },
+    );
+  }
+
   group('factory', () {
     test('#construct', () {
       final product = Product(index: 0, name: 'name');
@@ -25,23 +40,37 @@ void main() {
       expect(product.name, equals('name'));
     });
 
-    test('#build', () {
-      final object = mockCatalogObject.products.first;
-      final product = Product.fromObject(object);
+    test('#fromObject', () {
+      final product = Product.fromObject(ProductObject.build(<String, Object?>{
+        'id': 'product_1',
+        'name': 'hame burger',
+        'index': 1,
+        'createdAt': 1623639573,
+        'price': 1,
+        'cost': 1,
+        'ingredients': <String, Object?>{
+          'ingredient_1': <String, Object?>{
+            'id': 'ingredient_1',
+            'amount': 1,
+            'quantities': <String, Object?>{}
+          },
+          'ingredient_2': null,
+        }
+      }));
       final isSame = product.items.every((e) => identical(e.product, product));
 
       expect(isSame, isTrue);
-      expect(object.id, product.id);
-      expect(object.cost, product.cost);
-      expect(object.index, product.index);
-      expect(object.name, product.name);
+      expect('product_1', equals(product.id));
+      expect('hame burger', equals(product.name));
+      expect(1, equals(product.cost));
+      expect(1, equals(product.price));
+      expect(1, equals(product.index));
     });
 
     test('#toObject', () {
-      final product = Product.fromObject(mockCatalogObject.products.first);
+      final product = createProduct();
       final object = product.toObject();
 
-      expect(identical(object, mockCatalogObject.products.first), isFalse);
       expect(object.name, equals(product.name));
       expect(object.index, equals(product.index));
       expect(object.id, equals(product.id));
@@ -67,44 +96,31 @@ void main() {
 
     test('#prefix', () {
       final catalog = Catalog(name: '', index: 1, id: 'cat_1');
-      final product =
-          Product(index: 1, name: '', id: 'pro_1', catalog: catalog);
+      final product = Product(name: '', id: 'pro_1', catalog: catalog);
 
       expect(product.prefix, contains('cat_1'));
       expect(product.prefix, contains('pro_1'));
     });
 
-    test('#exist', () {
-      final product = Product(name: 'name', index: 100, ingredients: {
-        'id1': ProductIngredient(id: 'id1'),
-      });
+    test('#getItemsSimilarity', () {
+      final ing1 = MockProductIngredient();
+      final ing2 = MockProductIngredient();
+      final product = Product(
+        name: 'pro',
+        ingredients: {'ing1': ing1, 'ing2': ing2},
+      );
 
-      expect(product.hasItem('id1'), isTrue);
-      expect(product.hasItem('id2'), isFalse);
-    });
+      when(ing1.getSimilarity(any)).thenReturn(1);
+      when(ing2.getSimilarity(any)).thenReturn(3);
+      when(ing1.items).thenReturn([]);
+      when(ing2.items).thenReturn([]);
+      expect(product.getItemsSimilarity('pattern'), equals(3));
 
-    test('#getIngredient', () {
-      final product = Product(name: 'name', index: 100, ingredients: {
-        'id1': ProductIngredient(id: 'id1'),
-      });
+      final qua1 = MockProductQuantity();
+      when(ing1.items).thenReturn(<ProductQuantity>[qua1]);
+      when(qua1.getSimilarity(any)).thenReturn(5);
 
-      expect(product.getItem('id1')?.id, equals('id1'));
-      expect(product.getItem('id2'), isNull);
-    });
-
-    test('#removeIngredient', () {
-      final catalog = MockCatalog();
-      final product =
-          Product(name: 'name', index: 100, catalog: catalog, ingredients: {
-        'id1': MockProductIngredient(),
-      });
-
-      final bool isCalled =
-          checkNotifierCalled(product, () => product.removeItem('id1'));
-
-      verify(catalog.notifyListeners());
-      expect(isCalled, isTrue);
-      expect(product.isEmpty, isTrue);
+      expect(product.getItemsSimilarity('pattern'), equals(5));
     });
   });
 
@@ -153,9 +169,9 @@ void main() {
       });
     });
 
-    group('#setIngredient', () {
+    group('#setItem', () {
       test('should not add, but notify', () async {
-        final product = Product.fromObject(mockCatalogObject.products.first);
+        final product = createProduct('p', ['ingredient_1']);
         final ingredient = ProductIngredient(id: 'ingredient_1');
         product.catalog = catalog;
 
@@ -169,9 +185,9 @@ void main() {
 
       test('should add and notify', () async {
         LOG_LEVEL = 2;
-        final product = Product.fromObject(mockCatalogObject.products.first);
+        final product = createProduct('p', ['ingredient_1']);
         final ingredient = ProductIngredient(
-            ingredient: Ingredient(name: 'hi', id: 'ingredient_3'),
+            ingredient: Ingredient(name: 'hi', id: 'ingredient_2'),
             product: product);
         product.catalog = catalog;
 

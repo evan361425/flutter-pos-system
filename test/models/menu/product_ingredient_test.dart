@@ -6,7 +6,6 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 
 import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_storage.dart';
 
@@ -20,19 +19,33 @@ void main() {
       expect(ingredient.id, equals('123'));
     });
 
-    test('#build', () {
-      final object = mockCatalogObject.products.first.ingredients.first;
-      final ingredient = ProductIngredient.fromObject(object);
+    ProductIngredientObject createObject() {
+      return ProductIngredientObject.build(<String, Object?>{
+        'id': 'ing-1',
+        'amount': 2,
+        'quantities': <String, Object?>{
+          'quantity_1': <String, Object?>{
+            'amount': 3,
+            'additionalPrice': 5,
+            'additionalCost': 2,
+          },
+          'quantity_2': null,
+        },
+      });
+    }
+
+    test('#fromObject', () {
+      final ingredient = ProductIngredient.fromObject(createObject());
       final isSame =
           ingredient.items.every((e) => identical(e.ingredient, ingredient));
 
       expect(isSame, isTrue);
-      expect(ingredient.id, equals(object.id));
-      expect(ingredient.amount, equals(object.amount));
+      expect(ingredient.id, equals('ing-1'));
+      expect(ingredient.amount, equals(2));
     });
 
     test('#toObject', () {
-      final origin = mockCatalogObject.products.first.ingredients.first;
+      final origin = createObject();
       final ingredient = ProductIngredient.fromObject(origin);
       final object = ingredient.toObject();
 
@@ -53,24 +66,7 @@ void main() {
       expect(ingredient.prefix, contains('ing_1'));
     });
 
-    test('#exist', () {
-      final ingredient = ProductIngredient(quantities: {
-        'id1': MockProductQuantity(),
-      });
-
-      expect(ingredient.hasItem('id1'), isTrue);
-      expect(ingredient.hasItem('id2'), isFalse);
-    });
-
-    test('#getQuantity', () {
-      final quantity = MockProductQuantity();
-      final ingredient = ProductIngredient(quantities: {'id1': quantity});
-
-      expect(identical(ingredient.getItem('id1'), quantity), isTrue);
-      expect(ingredient.getItem('id2'), isNull);
-    });
-
-    test('#removeQuantity', () {
+    test('#removeItem', () {
       final product = MockProduct();
       final ingredient = ProductIngredient(quantities: {
         'id1': MockProductQuantity(),
@@ -140,7 +136,7 @@ void main() {
       });
     });
 
-    group('#setQuantity', () {
+    group('#setItem', () {
       test('should not add, but notify', () async {
         final ingredient = ProductIngredient(
           quantities: {'id': MockProductQuantity()},

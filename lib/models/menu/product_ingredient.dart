@@ -10,7 +10,10 @@ import '../repository.dart';
 import 'product.dart';
 
 class ProductIngredient
-    with Model<ProductIngredientObject>, Repository<ProductQuantity> {
+    with
+        Model<ProductIngredientObject>,
+        SearchableModel<ProductIngredientObject>,
+        Repository<ProductQuantity> {
   /// connect to parent object
   late final Product product;
 
@@ -50,10 +53,10 @@ class ProductIngredient
       ).._prepareQuantities();
 
   @override
-  String get itemCode => 'menu.quantity';
+  String get code => 'menu.ingredient';
 
   @override
-  String get code => 'menu.ingredient';
+  String get itemCode => 'menu.quantity';
 
   @override
   String get name => ingredient.name;
