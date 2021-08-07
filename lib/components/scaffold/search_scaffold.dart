@@ -83,7 +83,9 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
   @override
   void initState() {
     super.initState();
-    _handleChanged(widget.text);
+    if (widget.text.isNotEmpty) {
+      _handleChanged(widget.text);
+    }
   }
 
   Widget _body(BuildContext context) {

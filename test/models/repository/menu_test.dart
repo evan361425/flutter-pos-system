@@ -166,7 +166,7 @@ void main() {
       expect(list1.length, equals(3));
       expect(list1.map((e) => e.id), equals(['pdt_1', 'pdt_2', 'pdt_3']));
 
-      final list2 = menu.searchProducts(limit: 2).toList();
+      final list2 = menu.searchProducts(limit: 2, text: '').toList();
       expect(list2.length, equals(2));
       expect(list2.map((e) => e.id), equals(['pdt_1', 'pdt_2']));
     });

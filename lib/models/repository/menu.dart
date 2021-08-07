@@ -111,7 +111,7 @@ class Menu extends ChangeNotifier
 
   Iterable<Product> searchProducts({int limit = 10, String? text}) sync* {
     var count = 0;
-    if (text == null) {
+    if (text == null || text.isEmpty) {
       for (final catalog in items) {
         for (final product in catalog.items) {
           if (++count > limit) return;
@@ -119,7 +119,7 @@ class Menu extends ChangeNotifier
         }
       }
       return;
-    } else if (text.isNotEmpty) {
+    } else {
       for (final entry in getSortedSimilarities(text)) {
         if (++count > limit) return;
         yield entry.key;
