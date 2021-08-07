@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
@@ -85,10 +87,9 @@ class Product extends NotifyModel<ProductObject>
   int getItemsSimilarity(String pattern) {
     var maxScore = 0;
     for (final ingredient in items) {
-      maxScore = ingredient.getSimilarity(pattern);
+      maxScore = max(ingredient.getSimilarity(pattern), maxScore);
       for (final quantity in ingredient.items) {
-        final qScore = quantity.getSimilarity(pattern);
-        maxScore = maxScore < qScore ? qScore : maxScore;
+        maxScore = max(quantity.getSimilarity(pattern), maxScore);
       }
     }
     return maxScore;

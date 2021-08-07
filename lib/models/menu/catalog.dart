@@ -61,6 +61,21 @@ class Catalog extends NotifyModel<CatalogObject>
     });
   }
 
+  /// Get similarity from product
+  ///
+  /// Use product's score, if possible, instead of ingredient/quantity's score
+  Iterable<MapEntry<Product, double>> getItemsSimilarity(String pattern) sync* {
+    for (final product in items) {
+      final score = product.getSimilarity(pattern);
+      yield MapEntry(
+        product,
+        score > 0
+            ? score * 1.5
+            : product.getItemsSimilarity(pattern).toDouble(),
+      );
+    }
+  }
+
   @override
   void notifyItem() {
     notifyListeners();
@@ -83,16 +98,4 @@ class Catalog extends NotifyModel<CatalogObject>
   String toString() => name;
 
   void _preparePorducts() => items.forEach((e) => e.catalog = this);
-
-  Iterable<MapEntry<Product, double>> getItemsSimilarity(String pattern) sync* {
-    for (final product in items) {
-      final score = product.getSimilarity(pattern);
-      yield MapEntry(
-        product,
-        score > 0
-            ? score * 1.5
-            : product.getItemsSimilarity(pattern).toDouble(),
-      );
-    }
-  }
 }

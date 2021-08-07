@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 
+import '../../mocks/mock_models.mocks.dart';
 import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
@@ -109,15 +110,31 @@ void main() {
     });
 
     test('#removeItem', () {
-      final catalog = Catalog(name: 'name', index: 100, products: {
-        'id1': Product(index: 1, name: '1'),
-      });
+      final catalog = Catalog(name: '', products: {'1': Product(name: '')});
 
       final bool isCalled =
           checkNotifierCalled(catalog, () => catalog.removeItem('id1'));
 
       expect(isCalled, isTrue);
       expect(catalog.isEmpty, isTrue);
+    });
+
+    test('#getItemsSimilarity', () {
+      final p1 = MockProduct();
+      final p2 = MockProduct();
+      final catalog = Catalog(name: '', products: {'1': p1, '2': p2});
+
+      // use product value and no consider ingredient
+      when(p1.getSimilarity(any)).thenReturn(2);
+      when(p2.getSimilarity(any)).thenReturn(0);
+      when(p2.getItemsSimilarity(any)).thenReturn(2);
+      final scores =
+          catalog.getItemsSimilarity('pattern').map((e) => e.value).toList();
+
+      expect(scores[0] > scores[1], isTrue);
+      expect(scores[0], isNonZero);
+      expect(scores[1], isNonZero);
+      verifyNever(p1.getItemsSimilarity(any));
     });
   });
 

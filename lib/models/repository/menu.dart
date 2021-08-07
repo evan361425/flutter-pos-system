@@ -80,22 +80,21 @@ class Menu extends ChangeNotifier
     return result;
   }
 
-  List<MapEntry<Product, double>> getSortedSimlarity(String pattern) {
-    final similarities = <MapEntry<Product, double>>[];
-    items.forEach((catalog) {
-      catalog.getItemsSimilarity(pattern).forEach((entry) {
-        if (entry.value > 0) {
-          similarities.add(entry);
-        }
-      });
-    });
-    similarities.sort((ing1, ing2) {
-      // if ing1 < ing2 return -1 will make ing1 be the first one
-      if (ing1.value == ing2.value) return 0;
-      return ing1.value < ing2.value ? 1 : -1;
-    });
+  /// Get desc similarity value of products
+  List<MapEntry<Product, double>> getSortedSimilarities(String pattern) {
+    return getProductSimilarities(pattern)
+        .where((entry) => entry.value > 0)
+        .toList()
+          ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
+  }
 
-    return similarities;
+  Iterable<MapEntry<Product, double>> getProductSimilarities(
+      String pattern) sync* {
+    for (final catalog in items) {
+      for (final entry in catalog.getItemsSimilarity(pattern)) {
+        yield entry;
+      }
+    }
   }
 
   Future<void> removeIngredients(String id) {
@@ -121,7 +120,7 @@ class Menu extends ChangeNotifier
       }
       return;
     } else if (text.isNotEmpty) {
-      for (final entry in getSortedSimlarity(text)) {
+      for (final entry in getSortedSimilarities(text)) {
         if (++count > limit) return;
         yield entry.key;
       }

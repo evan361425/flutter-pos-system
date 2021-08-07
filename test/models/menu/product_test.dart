@@ -96,11 +96,31 @@ void main() {
 
     test('#prefix', () {
       final catalog = Catalog(name: '', index: 1, id: 'cat_1');
-      final product =
-          Product(index: 1, name: '', id: 'pro_1', catalog: catalog);
+      final product = Product(name: '', id: 'pro_1', catalog: catalog);
 
       expect(product.prefix, contains('cat_1'));
       expect(product.prefix, contains('pro_1'));
+    });
+
+    test('#getItemsSimilarity', () {
+      final ing1 = MockProductIngredient();
+      final ing2 = MockProductIngredient();
+      final product = Product(
+        name: 'pro',
+        ingredients: {'ing1': ing1, 'ing2': ing2},
+      );
+
+      when(ing1.getSimilarity(any)).thenReturn(1);
+      when(ing2.getSimilarity(any)).thenReturn(3);
+      when(ing1.items).thenReturn([]);
+      when(ing2.items).thenReturn([]);
+      expect(product.getItemsSimilarity('pattern'), equals(3));
+
+      final qua1 = MockProductQuantity();
+      when(ing1.items).thenReturn(<ProductQuantity>[qua1]);
+      when(qua1.getSimilarity(any)).thenReturn(5);
+
+      expect(product.getItemsSimilarity('pattern'), equals(5));
     });
   });
 

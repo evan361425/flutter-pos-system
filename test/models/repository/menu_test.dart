@@ -147,13 +147,45 @@ void main() {
   });
 
   group('checker', () {
-    test('#hasCatalog', () {
+    test('#hasName', () {
       createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
       createCatalog('ctg_2', {});
 
       expect(menu.hasName('ctg_1-name'), isTrue);
       expect(menu.hasName('ctg_2'), isFalse);
       expect(menu.hasName('ctg_3-name'), isFalse);
+    });
+  });
+
+  group('search', () {
+    test('#searchProducts without search text', () {
+      createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
+      createCatalog('ctg_2', {'pdt_3': {}});
+
+      final list1 = menu.searchProducts().toList();
+      expect(list1.length, equals(3));
+      expect(list1.map((e) => e.id), equals(['pdt_1', 'pdt_2', 'pdt_3']));
+
+      final list2 = menu.searchProducts(limit: 2).toList();
+      expect(list2.length, equals(2));
+    });
+
+    test('#searchProducts', () {
+      final cat1 = createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
+      final cat2 = createCatalog('ctg_2', {'pdt_3': {}, 'pdt_4': {}});
+      var score = 0.0;
+      when(cat1.getItemsSimilarity('text'))
+          .thenReturn(cat1.items.map((e) => MapEntry(e, score++)));
+      when(cat2.getItemsSimilarity('text'))
+          .thenReturn(cat2.items.map((e) => MapEntry(e, score++)));
+
+      // zero will be ignore
+      final list1 = menu.searchProducts(text: 'text').toList();
+      expect(list1.length, equals(3));
+      expect(list1.map((e) => e.id), equals(['pdt_4', 'pdt_3', 'pdt_2']));
+
+      final list2 = menu.searchProducts(limit: 2).toList();
+      expect(list2.length, equals(2));
     });
   });
 
