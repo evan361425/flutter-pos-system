@@ -8,6 +8,8 @@ import 'package:possystem/ui/home/widgets/order_info.dart';
 enum TutorialName { go_menu, introduce_features }
 
 class HomeTutorial {
+  static const VERSION = 1;
+
   static const STEPS = {
     TutorialName.go_menu: ['menu'],
     TutorialName.introduce_features: ['stock', 'cashier', 'analysis', 'order'],

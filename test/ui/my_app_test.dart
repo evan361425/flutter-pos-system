@@ -33,7 +33,7 @@ void main() {
     when(storage.initialize()).thenAnswer((_) => Future.value());
     when(cache.initialize()).thenAnswer((_) => Future.value());
     when(cache.get(any)).thenReturn(null);
-    when(cache.needTutorial(any, any)).thenReturn([]);
+    when(cache.neededTutorial(any, any)).thenReturn([]);
 
     when(currency.numToString(any)).thenReturn('');
     when(theme.isReady).thenReturn(false);

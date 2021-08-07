@@ -9,7 +9,8 @@ import '../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should build correct number icons', (tester) async {
-    when(cache.needTutorial(any, any)).thenReturn([]);
+    when(cache.shouldCheckTutorial(any, any)).thenReturn(true);
+    when(cache.neededTutorial(any, any)).thenReturn([]);
     when(currency.numToString(any)).thenReturn('');
     when(seller.getMetricBetween(any, any))
         .thenAnswer((_) => Future.value({'totalPrice': 0}));
@@ -20,6 +21,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: HomeScreen()));
 
     expect(find.byType(TextButton).evaluate().length, equals(count));
+    verify(cache.setTutorialVersion(any, any));
   });
 
   setUpAll(() {

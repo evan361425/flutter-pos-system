@@ -152,10 +152,13 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     // reset tutorial for hot reload
     tutorial?.finish();
 
-    ;
+    // only check tutorial if not all done
+    if (!Cache.instance.shouldCheckTutorial('home', HomeTutorial.VERSION)) {
+      return;
+    }
 
     for (final name in TutorialName.values) {
-      final steps = Cache.instance.needTutorial(
+      final steps = Cache.instance.neededTutorial(
         'home.$name',
         HomeTutorial.STEPS[name]!,
       );
@@ -169,6 +172,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
         break;
       }
     }
+
+    Cache.instance.setTutorialVersion('home', HomeTutorial.VERSION);
   }
 
   void getShowableTutorial() {}
