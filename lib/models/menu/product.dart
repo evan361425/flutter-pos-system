@@ -30,14 +30,18 @@ class Product extends NotifyModel<ProductObject>
   /// when it has been added to catalog
   final DateTime createdAt;
 
+  /// when it has beed search
+  DateTime? searchedAt;
+
   Product({
-    int index = 1,
+    String? id,
     required this.name,
-    Catalog? catalog,
+    int index = 1,
     this.cost = 0,
     this.price = 0,
     DateTime? createdAt,
-    String? id,
+    this.searchedAt,
+    Catalog? catalog,
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
@@ -55,6 +59,7 @@ class Product extends NotifyModel<ProductObject>
         price: object.price!,
         cost: object.cost!,
         createdAt: object.createdAt,
+        searchedAt: object.searchedAt,
         ingredients: {
           for (var ingredient in object.ingredients)
             ingredient.id!: ProductIngredient.fromObject(ingredient)
@@ -105,6 +110,10 @@ class Product extends NotifyModel<ProductObject>
 
   @override
   void removeFromRepo() => catalog.removeItem(id);
+
+  Future<void> searched() {
+    return update(ProductObject(searchedAt: DateTime.now()), event: 'search');
+  }
 
   @override
   ProductObject toObject() => ProductObject(

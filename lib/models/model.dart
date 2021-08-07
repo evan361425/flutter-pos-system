@@ -10,14 +10,8 @@ mixin Model<T extends ModelObject> {
   late String name;
 
   String get code;
-  Stores get storageStore;
   String get prefix => id;
-
-  void removeFromRepo();
-
-  T toObject();
-
-  Future<void> update(T object);
+  Stores get storageStore;
 
   Future<void> remove() async {
     info(toString(), '$code.remove');
@@ -25,6 +19,12 @@ mixin Model<T extends ModelObject> {
 
     removeFromRepo();
   }
+
+  void removeFromRepo();
+
+  T toObject();
+
+  Future<void> update(T object);
 }
 
 abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
@@ -37,12 +37,12 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
   }
 
   @override
-  Future<void> update(T object) async {
+  Future<void> update(T object, {String event = 'update'}) async {
     final updateData = object.diff(this);
 
     if (updateData.isEmpty) return Future.value();
 
-    info(toString(), '$code.update');
+    info(toString(), '$code.$event');
     notifyListeners();
 
     return Storage.instance.set(storageStore, updateData);

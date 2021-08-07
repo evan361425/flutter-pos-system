@@ -68,20 +68,22 @@ class CatalogObject extends ModelObject<Catalog> {
 class ProductObject extends ModelObject<Product> {
   ProductObject({
     this.id,
+    this.name,
+    this.index,
     this.price,
     this.cost,
-    this.index,
-    this.name,
     this.createdAt,
+    this.searchedAt,
     Iterable<ProductIngredientObject>? ingredients,
   }) : ingredients = ingredients ?? Iterable.empty();
 
   final String? id;
+  final String? name;
+  final int? index;
   final num? price;
   final num? cost;
-  final int? index;
-  final String? name;
   final DateTime? createdAt;
+  final DateTime? searchedAt;
   final Iterable<ProductIngredientObject> ingredients;
 
   @override
@@ -92,6 +94,7 @@ class ProductObject extends ModelObject<Product> {
       'index': index!,
       'name': name!,
       'createdAt': Util.toUTC(now: createdAt),
+      if (searchedAt != null) 'searchedAt': Util.toUTC(now: searchedAt),
       'ingredients': {
         for (var ingredient in ingredients) ingredient.id: ingredient.toMap()
       }
@@ -114,20 +117,26 @@ class ProductObject extends ModelObject<Product> {
       product.name = name!;
       result['$prefix.name'] = name!;
     }
+    if (searchedAt != null && searchedAt != product.searchedAt) {
+      product.searchedAt = searchedAt;
+      result['$prefix.searchedAt'] = Util.toUTC(now: searchedAt);
+    }
     return result;
   }
 
   factory ProductObject.build(Map<String, Object?> data) {
     final ingredients =
         (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final searchedAt = data['searchedAt'] as int?;
 
     return ProductObject(
       id: data['id'] as String,
+      name: data['name'] as String,
+      index: data['index'] as int,
       price: data['price'] as num,
       cost: data['cost'] as num,
-      index: data['index'] as int,
-      name: data['name'] as String,
       createdAt: Util.fromUTC(data['createdAt'] as int),
+      searchedAt: searchedAt == null ? null : Util.fromUTC(searchedAt),
       ingredients: ingredients.entries
           // sembast can't delete map entry, filter null value
           .where((e) => e.value != null)

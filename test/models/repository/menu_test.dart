@@ -159,16 +159,34 @@ void main() {
 
   group('#searchProducts', () {
     test('without search text', () {
-      createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
-      createCatalog('ctg_2', {'pdt_3': {}});
+      final cat1 = createCatalog('ctg_1', {'pdt_1': {}, 'pdt_2': {}});
+      final cat2 = createCatalog('ctg_2', {'pdt_3': {}, 'pdt_4': {}});
+      final searched = [
+        null,
+        null,
+        DateTime(2020, 1, 25),
+        DateTime(2020, 1, 23),
+      ].iterator;
+      [cat1.items, cat2.items].expand((e) => e).forEach((product) {
+        searched.moveNext();
+        when(product.searchedAt).thenReturn(searched.current);
+      });
+      when(cat1.index).thenReturn(1);
+      when(cat1.itemList).thenReturn(cat1.items.toList());
+      when(cat2.index).thenReturn(2);
+      when(cat2.itemList).thenReturn(cat2.items.toList());
 
       final list1 = menu.searchProducts().toList();
-      expect(list1.length, equals(3));
-      expect(list1.map((e) => e.id), equals(['pdt_1', 'pdt_2', 'pdt_3']));
+      expect(list1.length, equals(4));
+      // searched product first, then index smallest first
+      expect(
+        list1.map((e) => e.id),
+        equals(['pdt_3', 'pdt_4', 'pdt_1', 'pdt_2']),
+      );
 
       final list2 = menu.searchProducts(limit: 2, text: '').toList();
       expect(list2.length, equals(2));
-      expect(list2.map((e) => e.id), equals(['pdt_1', 'pdt_2']));
+      expect(list2.map((e) => e.id), equals(['pdt_3', 'pdt_4']));
     });
 
     test('with search text', () {
