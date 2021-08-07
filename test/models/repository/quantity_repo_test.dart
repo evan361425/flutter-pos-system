@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantities.dart';
 
 import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_objects.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
@@ -76,7 +76,7 @@ void main() {
       expect(repo.itemList, equals([q_a, q_b]));
     });
 
-    test('#removeQuantity', () {
+    test('#removeItem', () {
       final q_a = MockQuantity();
       final q_b = MockQuantity();
       repo.replaceItems({'a': q_a, 'b': q_b});
@@ -87,7 +87,7 @@ void main() {
       expect(repo.hasItem('a'), isFalse);
     });
 
-    group('#setQuantity', () {
+    group('#setItem', () {
       test('should not call storage', () async {
         final q_a = MockQuantity();
         repo.replaceItems({'a': q_a});
@@ -104,12 +104,17 @@ void main() {
         LOG_LEVEL = 2;
         final q_a = MockQuantity();
         final q_b = MockQuantity();
-        final q_map = mockQuantityObject1.toMap();
+        final object = QuantityObject(
+          id: 'quantity_1',
+          name: 'more',
+          defaultProportion: 1.5,
+        );
+        final map = object.toMap();
         repo.replaceItems({'a': q_a});
 
-        when(q_b.toObject()).thenReturn(mockQuantityObject1);
+        when(q_b.toObject()).thenReturn(object);
         when(q_b.id).thenReturn('b');
-        when(storage.add(any, 'b', q_map)).thenAnswer((_) => Future.value());
+        when(storage.add(any, 'b', map)).thenAnswer((_) => Future.value());
 
         final future = checkNotifierCalled(repo, () => repo.setItem(q_b));
         expect(await future, isTrue);
@@ -119,7 +124,7 @@ void main() {
       });
     });
 
-    group('#sortBySimilarity', () {
+    group('#getSimilarity', () {
       MockQuantity createQuantity(String id, int similarity) {
         final quantity = MockQuantity();
         when(quantity.getSimilarity(any)).thenReturn(similarity);
