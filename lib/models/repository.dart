@@ -55,7 +55,7 @@ mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
 
     await Storage.instance.set(storageStore, updateData);
 
-    notifyListeners();
+    notifyItem();
   }
 }
 

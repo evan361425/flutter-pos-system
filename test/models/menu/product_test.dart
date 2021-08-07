@@ -200,6 +200,21 @@ void main() {
       });
     });
 
+    test('#searched', () {
+      LOG_LEVEL = 2;
+      final catalog = Catalog(name: 'cat', id: 'cat');
+      final product = createProduct('pro');
+      product.catalog = catalog;
+
+      product.searched();
+
+      verify(storage.set(
+        any,
+        argThat(predicate<Map<String, Object?>>(
+            (map) => map['cat.products.pro.searchedAt'] != null)),
+      ));
+    });
+
     setUp(() {
       catalog = MockCatalog();
       when(catalog.prefix).thenReturn('');
