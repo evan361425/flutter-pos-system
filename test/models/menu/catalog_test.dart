@@ -110,7 +110,7 @@ void main() {
     });
 
     test('#removeItem', () {
-      final catalog = Catalog(name: '', products: {'1': Product(name: '')});
+      final catalog = Catalog(name: '', products: {'id1': Product(name: '')});
 
       final bool isCalled =
           checkNotifierCalled(catalog, () => catalog.removeItem('id1'));
