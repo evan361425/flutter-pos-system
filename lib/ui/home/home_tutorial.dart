@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
@@ -29,14 +30,16 @@ class HomeTutorial {
         final menu = storeIcons['menu']!;
 
         return Tutorial(
-            context,
-            [
-              TutorialStep(
-                  key: menu.key as GlobalKey,
-                  title: tt('home.tutorial.welcome'),
-                  content: tt('home.tutorial.menu')),
-            ],
-            onClick: (_) => Navigator.of(context).pushNamed(menu.route));
+          context,
+          [
+            TutorialStep(
+                key: menu.key as GlobalKey,
+                title: tt('home.tutorial.welcome'),
+                content: tt('home.tutorial.menu')),
+          ],
+          onClick: (_) =>
+              Navigator.of(context).pushNamed(Routes.menuCatalogModal),
+        );
       case TutorialName.introduce_features:
         final hasOrder = steps.contains('order');
         final infoSteps = steps.where((e) => e != 'order');
