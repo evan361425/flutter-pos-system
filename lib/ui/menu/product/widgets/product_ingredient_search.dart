@@ -4,6 +4,7 @@ import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
 
 class ProductIngredientSearch extends StatelessWidget {
   final String? text;
@@ -26,6 +27,14 @@ class ProductIngredientSearch extends StatelessWidget {
   Widget _itemBuilder(BuildContext context, Ingredient ingredient) {
     return CardTile(
       title: Text(ingredient.name),
+      trailing: IconButton(
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => IngredientModal(
+                  ingredient: ingredient,
+                  editable: false,
+                ))),
+        icon: Icon(Icons.open_in_new_sharp),
+      ),
       onTap: () {
         Navigator.of(context).pop<Ingredient>(ingredient);
       },

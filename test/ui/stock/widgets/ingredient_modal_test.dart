@@ -33,6 +33,9 @@ void main() {
     await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
+    // should not fired when validation failed
+    verifyNever(stock.hasName('name-new'));
+
     await tester.enterText(find.byType(TextFormField).last, '30');
     await tester.tap(find.text('save'));
 

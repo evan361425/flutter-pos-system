@@ -18,7 +18,9 @@ class IngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  IngredientModal({Key? key, this.ingredient})
+  final bool editable;
+
+  IngredientModal({Key? key, this.ingredient, this.editable = true})
       : isNew = ingredient == null,
         super(key: key);
 
@@ -28,8 +30,8 @@ class IngredientModal extends StatefulWidget {
 
 class _IngredientModalState extends State<IngredientModal>
     with ItemModal<IngredientModal> {
-  final _nameController = TextEditingController();
-  final _amountController = TextEditingController();
+  TextEditingController? _nameController;
+  TextEditingController? _amountController;
 
   @override
   Widget body() {
@@ -67,7 +69,7 @@ class _IngredientModalState extends State<IngredientModal>
                 title: Text(
                   '${product.catalog.name} - ${product.name}',
                 ),
-                onTap: () => _handleTap(product),
+                onTap: editable ? () => _handleTap(product) : null,
               );
           }
         });
@@ -75,8 +77,8 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _amountController.dispose();
+    _nameController?.dispose();
+    _amountController?.dispose();
     super.dispose();
   }
 
@@ -84,6 +86,7 @@ class _IngredientModalState extends State<IngredientModal>
   List<Widget> formFields() => <Widget>[
         TextFormField(
           controller: _nameController,
+          readOnly: !editable,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
@@ -98,6 +101,7 @@ class _IngredientModalState extends State<IngredientModal>
         ),
         TextFormField(
           controller: _amountController,
+          readOnly: !editable,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
@@ -114,8 +118,12 @@ class _IngredientModalState extends State<IngredientModal>
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.ingredient?.name ?? '';
-    _amountController.text = widget.ingredient?.currentAmount?.toString() ?? '';
+    _nameController = TextEditingController(text: widget.ingredient?.name);
+
+    final amount = widget.ingredient?.currentAmount?.toString() ?? '';
+    _amountController = TextEditingController(text: amount);
+
+    editable = widget.editable;
   }
 
   @override
@@ -137,7 +145,7 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   String? validate() {
-    final name = _nameController.text;
+    final name = _nameController!.text;
 
     if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
       return tt('stock.ingredient.error.name_repeat');
@@ -153,8 +161,8 @@ class _IngredientModalState extends State<IngredientModal>
 
   IngredientObject _parseObject() {
     return IngredientObject(
-      name: _nameController.text,
-      currentAmount: num.tryParse(_amountController.text),
+      name: _nameController!.text,
+      currentAmount: num.tryParse(_amountController!.text),
     );
   }
 }

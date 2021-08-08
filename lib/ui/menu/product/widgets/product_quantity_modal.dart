@@ -31,9 +31,9 @@ class ProductQuantityModal extends StatefulWidget {
 
 class _ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
-  final _amountController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _costController = TextEditingController();
+  late TextEditingController _amountController;
+  late TextEditingController _priceController;
+  late TextEditingController _costController;
 
   String quantityName = '';
   String quantityId = '';
@@ -136,12 +136,15 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   void initState() {
     super.initState();
 
-    if (!widget.isNew) {
-      quantityId = widget.quantity!.id;
-      quantityName = widget.quantity!.name;
-      _amountController.text = widget.quantity!.amount.toString();
-      _priceController.text = widget.quantity!.additionalPrice.toString();
-      _costController.text = widget.quantity!.additionalCost.toString();
+    final q = widget.quantity;
+    _amountController = TextEditingController(text: q?.amount.toString());
+    _priceController =
+        TextEditingController(text: q?.additionalPrice.toString());
+    _costController = TextEditingController(text: q?.additionalCost.toString());
+
+    if (q != null) {
+      quantityId = q.id;
+      quantityName = q.name;
     }
   }
 

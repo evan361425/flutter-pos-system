@@ -9,7 +9,10 @@ import 'package:possystem/translator.dart';
 class QuantityModal extends StatefulWidget {
   final Quantity? quantity;
 
-  const QuantityModal({Key? key, this.quantity}) : super(key: key);
+  final bool editable;
+
+  const QuantityModal({Key? key, this.quantity, this.editable = true})
+      : super(key: key);
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -17,13 +20,13 @@ class QuantityModal extends StatefulWidget {
 
 class _QuantityModalState extends State<QuantityModal>
     with ItemModal<QuantityModal> {
-  final _nameController = TextEditingController();
-  final _proportionController = TextEditingController();
+  TextEditingController? _nameController;
+  TextEditingController? _proportionController;
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _proportionController.dispose();
+    _nameController?.dispose();
+    _proportionController?.dispose();
 
     super.dispose();
   }
@@ -33,6 +36,7 @@ class _QuantityModalState extends State<QuantityModal>
     return [
       TextFormField(
         controller: _nameController,
+        readOnly: !editable,
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -48,6 +52,7 @@ class _QuantityModalState extends State<QuantityModal>
       ),
       TextFormField(
         controller: _proportionController,
+        readOnly: !editable,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
@@ -70,9 +75,12 @@ class _QuantityModalState extends State<QuantityModal>
   void initState() {
     super.initState();
 
-    _nameController.text = widget.quantity?.name ?? '';
-    _proportionController.text =
-        widget.quantity?.defaultProportion.toString() ?? '1';
+    _nameController = TextEditingController(text: widget.quantity?.name);
+
+    final pp = widget.quantity?.defaultProportion.toString() ?? '1';
+    _proportionController = TextEditingController(text: pp);
+
+    editable = widget.editable;
   }
 
   @override
@@ -95,7 +103,7 @@ class _QuantityModalState extends State<QuantityModal>
 
   @override
   String? validate() {
-    final name = _nameController.text;
+    final name = _nameController!.text;
 
     if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
       return tt('stock.quantity.error.name');
@@ -104,8 +112,8 @@ class _QuantityModalState extends State<QuantityModal>
 
   QuantityObject _parseObject() {
     return QuantityObject(
-      name: _nameController.text,
-      defaultProportion: num.parse(_proportionController.text),
+      name: _nameController!.text,
+      defaultProportion: num.parse(_proportionController!.text),
     );
   }
 }

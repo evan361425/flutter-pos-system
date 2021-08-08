@@ -30,7 +30,7 @@ class SearchBar extends StatefulWidget {
 }
 
 class SearchBarState extends State<SearchBar> {
-  final controller = TextEditingController();
+  late TextEditingController controller;
 
   late bool isEmpty;
 
@@ -82,6 +82,13 @@ class SearchBarState extends State<SearchBar> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     controller.text = widget.text;
+    isEmpty = widget.text.isEmpty;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.text);
     isEmpty = widget.text.isEmpty;
   }
 

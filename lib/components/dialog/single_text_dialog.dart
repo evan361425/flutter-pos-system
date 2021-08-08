@@ -22,7 +22,7 @@ class SingleTextDialog extends StatefulWidget {
 }
 
 class _SingleTextDialogState extends State<SingleTextDialog> {
-  final textController = TextEditingController();
+  late TextEditingController textController;
   final form = GlobalKey<FormState>();
 
   @override
@@ -66,6 +66,6 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
   @override
   void initState() {
     super.initState();
-    textController.text = widget.initialValue ?? '';
+    textController = TextEditingController(text: widget.initialValue);
   }
 }
