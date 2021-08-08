@@ -52,7 +52,7 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, Product product) {
+  Widget _tileBuilder(BuildContext context, int index, Product product) {
     return ListTile(
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),

@@ -11,7 +11,7 @@ class SlidableItemList<T> extends StatefulWidget {
   final Iterable<T> items;
 
   final Future<void> Function(BuildContext, T) handleDelete;
-  final Widget Function(BuildContext, T) tileBuilder;
+  final Widget Function(BuildContext, int, T) tileBuilder;
   final Widget Function(BuildContext, T)? warningContextBuilder;
   final void Function(BuildContext, T)? handleTap;
   final Iterable<BottomSheetAction> Function(T)? actionBuilder;
@@ -36,9 +36,17 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var count = 0;
 
     return Column(
-      children: [for (var item in widget.items) _itemBuilder(item, theme)],
+      children: [
+        for (var item in widget.items)
+          _itemBuilder(
+            item,
+            theme: theme,
+            index: count++,
+          )
+      ],
     );
   }
 
@@ -71,7 +79,7 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
     }
   }
 
-  Widget _itemBuilder(T item, ThemeData theme) {
+  Widget _itemBuilder(T item, {required ThemeData theme, required int index}) {
     return Card(
       shape: RoundedRectangleBorder(),
       margin: const EdgeInsets.all(0),
@@ -93,7 +101,7 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
             }
           },
           onLongPress: () => showActions(item),
-          child: widget.tileBuilder(context, item),
+          child: widget.tileBuilder(context, index, item),
         ),
       ),
     );

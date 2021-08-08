@@ -56,7 +56,7 @@ class IngredientList extends StatelessWidget {
     return result == null ? null : num.tryParse(result);
   }
 
-  Widget _tileBuilder(BuildContext context, Ingredient ingredient) {
+  Widget _tileBuilder(BuildContext context, int index, Ingredient ingredient) {
     final theme = Theme.of(context);
 
     Future<void> updateAmount(num? amount) async {

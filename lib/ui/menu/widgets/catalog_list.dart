@@ -9,7 +9,9 @@ import 'package:possystem/translator.dart';
 class CatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  const CatalogList(this.catalogs);
+  final Key? firstKey;
+
+  const CatalogList(this.catalogs, {this.firstKey});
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +52,9 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, Catalog catalog) {
+  Widget _tileBuilder(BuildContext context, int index, Catalog catalog) {
     return ListTile(
+      key: index == 0 ? firstKey : null,
       leading: CircleAvatar(
         child: Text(catalog.name.characters.first.toUpperCase()),
       ),

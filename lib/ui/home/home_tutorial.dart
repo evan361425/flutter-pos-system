@@ -9,8 +9,6 @@ import 'package:possystem/ui/home/widgets/order_info.dart';
 enum TutorialName { go_menu, introduce_features }
 
 class HomeTutorial {
-  static const VERSION = 1;
-
   static const STEPS = {
     TutorialName.go_menu: ['menu'],
     TutorialName.introduce_features: ['stock', 'cashier', 'analysis', 'order'],
@@ -33,12 +31,16 @@ class HomeTutorial {
           context,
           [
             TutorialStep(
-                key: menu.key as GlobalKey,
-                title: tt('home.tutorial.welcome'),
-                content: tt('home.tutorial.menu')),
+              key: menu.key as GlobalKey,
+              title: tt('home.tutorial.welcome'),
+              content: tt('home.tutorial.menu'),
+              onTap: () {
+                Navigator.of(context).pushNamed(Routes.menu);
+                Navigator.of(context).pushNamed(Routes.menuCatalogModal);
+              },
+            ),
           ],
-          onClick: (_) =>
-              Navigator.of(context).pushNamed(Routes.menuCatalogModal),
+          showSkip: false,
         );
       case TutorialName.introduce_features:
         final hasOrder = steps.contains('order');
@@ -62,7 +64,6 @@ class HomeTutorial {
                   content: '',
                   title: tt('home.tutorial.order'))
           ],
-          hideSkip: false,
         );
     }
   }
