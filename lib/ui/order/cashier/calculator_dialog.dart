@@ -21,8 +21,8 @@ enum _ButtonTypes {
 }
 
 class _CalculatorDialogState extends State<CalculatorDialog> {
-  final paidController = TextEditingController();
-  final changeController = TextEditingController(text: '0');
+  late TextEditingController paidController;
+  late TextEditingController changeController;
   final totalPrice = Cart.instance.totalPrice;
 
   String? errorMessage;
@@ -190,6 +190,9 @@ class _CalculatorDialogState extends State<CalculatorDialog> {
   @override
   void initState() {
     super.initState();
+    paidController = TextEditingController();
+    changeController = TextEditingController(text: '0');
+
     paidController.addListener(() {
       changeController.text =
           change <= 0 ? '0' : CurrencyProvider.instance.numToString(change);

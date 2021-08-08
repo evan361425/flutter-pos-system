@@ -4,6 +4,7 @@ import 'package:possystem/components/scaffold/search_scaffold.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
 
 class ProductQuantitySearch extends StatelessWidget {
   final String? text;
@@ -26,6 +27,14 @@ class ProductQuantitySearch extends StatelessWidget {
   Widget _itemBuilder(BuildContext context, Quantity quantity) {
     return CardTile(
       title: Text(quantity.name),
+      trailing: IconButton(
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => QuantityModal(
+                  quantity: quantity,
+                  editable: false,
+                ))),
+        icon: Icon(Icons.open_in_new_sharp),
+      ),
       onTap: () {
         Navigator.of(context).pop<Quantity>(quantity);
       },

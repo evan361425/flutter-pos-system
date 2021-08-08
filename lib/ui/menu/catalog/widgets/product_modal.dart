@@ -25,9 +25,9 @@ class ProductModal extends StatefulWidget {
 
 class _ProductModalState extends State<ProductModal>
     with ItemModal<ProductModal> {
-  final _nameController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _costController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _priceController;
+  late TextEditingController _costController;
 
   @override
   void dispose() {
@@ -103,11 +103,11 @@ class _ProductModalState extends State<ProductModal>
   @override
   void initState() {
     super.initState();
-    if (!widget.isNew) {
-      _nameController.text = widget.product!.name;
-      _priceController.text = widget.product!.price.toString();
-      _costController.text = widget.product!.cost.toString();
-    }
+
+    final p = widget.product;
+    _nameController = TextEditingController(text: p?.name);
+    _priceController = TextEditingController(text: p?.price.toString());
+    _costController = TextEditingController(text: p?.cost.toString());
   }
 
   @override

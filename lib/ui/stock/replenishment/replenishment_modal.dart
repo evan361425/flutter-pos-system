@@ -24,7 +24,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;
 
-  final TextEditingController _nameController = TextEditingController();
+  late TextEditingController _nameController;
 
   @override
   Widget body() {
@@ -56,7 +56,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   void initState() {
     super.initState();
 
-    _nameController.text = widget.replenishment?.name ?? '';
+    _nameController = TextEditingController(text: widget.replenishment?.name);
   }
 
   @override

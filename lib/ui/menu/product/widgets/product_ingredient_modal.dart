@@ -32,7 +32,7 @@ class ProductIngredientModal extends StatefulWidget {
 
 class _ProductIngredientModalState extends State<ProductIngredientModal>
     with ItemModal<ProductIngredientModal> {
-  final _amountController = TextEditingController();
+  late TextEditingController _amountController;
 
   String ingredientId = '';
   String ingredientName = '';
@@ -105,10 +105,12 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   void initState() {
     super.initState();
 
-    if (!widget.isNew) {
-      _amountController.text = widget.ingredient!.amount.toString();
-      ingredientId = widget.ingredient!.id;
-      ingredientName = widget.ingredient!.name;
+    final i = widget.ingredient;
+
+    _amountController = TextEditingController(text: i?.amount.toString());
+    if (i != null) {
+      ingredientId = i.id;
+      ingredientName = i.name;
     }
   }
 

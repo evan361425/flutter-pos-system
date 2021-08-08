@@ -21,7 +21,7 @@ class CatalogModal extends StatefulWidget {
 
 class _CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
-  final _nameController = TextEditingController();
+  late TextEditingController _nameController;
 
   @override
   void dispose() {
@@ -32,9 +32,8 @@ class _CatalogModalState extends State<CatalogModal>
   @override
   void initState() {
     super.initState();
-    if (!widget.isNew) {
-      _nameController.text = widget.catalog!.name;
-    }
+
+    _nameController = TextEditingController(text: widget.catalog?.name);
   }
 
   @override

@@ -8,6 +8,10 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   final formKey = GlobalKey<FormState>();
 
   bool isSaving = false;
+
+  /// if the form editable
+  bool editable = true;
+
   String? errorMessage;
 
   List<Widget> get actions => const <Widget>[];
@@ -38,10 +42,11 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         ),
         title: title,
         actions: [
-          AppbarTextButton(
-            onPressed: () => handleSubmit(),
-            child: Text(tt('save')),
-          ),
+          if (editable)
+            AppbarTextButton(
+              onPressed: () => handleSubmit(),
+              child: Text(tt('save')),
+            ),
           ...actions,
         ],
       ),
