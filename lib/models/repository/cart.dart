@@ -142,6 +142,8 @@ class Cart extends ChangeNotifier {
 
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
+    // notify when remove selected item
+    OrderProduct.notifyListener(OrderProductListenerTypes.selection);
     notifyListeners();
   }
 
@@ -169,6 +171,10 @@ class Cart extends ChangeNotifier {
   }
 
   void toggleAll([bool? checked]) {
+    // if empty, it will ignore to notify ingredient selector, call it manually
+    if (products.isEmpty) {
+      OrderProduct.notifyListener(OrderProductListenerTypes.selection);
+    }
     products.forEach((product) => product.toggleSelected(checked));
     notifyListeners();
   }

@@ -48,6 +48,7 @@ class OrderProductListState extends State<OrderProductList> {
     Cart.instance
       ..toggleAll(false)
       ..add(product);
+    // scroll to bottom
     widget.handleSelected(product);
   }
 

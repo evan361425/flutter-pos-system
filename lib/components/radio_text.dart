@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 
-typedef DeepFunction = void Function(void Function());
-
 class RadioText extends StatefulWidget {
   static final _groups = <String, _Group>{};
 
@@ -25,6 +23,8 @@ class RadioText extends StatefulWidget {
     } else if (isSelected == true && !group.isSelect(value)) {
       // if specific setting, update previous one to unchecked
       group.select(value);
+    } else if (isSelected == false && group.isSelect(value)) {
+      group.unselect();
     }
   }
 
@@ -72,13 +72,13 @@ class RadioText extends StatefulWidget {
 class _Group {
   String? _selected;
 
-  final _items = <String, DeepFunction>{};
+  final _items = <String, void Function()>{};
 
   _Group(this._selected);
 
   bool get isEmpty => _items.isEmpty;
 
-  void addItem(String id, DeepFunction rebuilder) {
+  void addItem(String id, void Function() rebuilder) {
     _items[id] = rebuilder;
   }
 
@@ -88,9 +88,11 @@ class _Group {
 
   void select(String? value) {
     _selected = value;
-    _items.values.forEach((rebuilder) {
-      rebuilder(() {});
-    });
+    _items.values.forEach((rebuilder) => rebuilder());
+  }
+
+  void unselect() {
+    _selected = null;
   }
 }
 
@@ -126,9 +128,13 @@ class _RadioTextState extends State<RadioText> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    widget.group.addItem(widget.value, setState);
+  void initState() {
+    widget.group.addItem(widget.value, () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+    super.initState();
   }
 
   @override

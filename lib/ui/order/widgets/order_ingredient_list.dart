@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
-import 'package:possystem/models/order/order_ingredient.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/order/widgets/order_quantity_list.dart';
 
 class OrderIngredientList extends StatefulWidget {
   const OrderIngredientList({Key? key}) : super(key: key);
@@ -15,12 +15,9 @@ class OrderIngredientList extends StatefulWidget {
 }
 
 class _OrderIngredientListState extends State<OrderIngredientList> {
-  static const _QUANTITY_RADIO_KEY = 'order.quantities';
   static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
 
-  ProductIngredient? selectedIngredient;
-
-  String? selectedQuantityId;
+  final quantityList = GlobalKey<OrderQuantityListState>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +28,40 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       return _emptyRows(context, tt('order.list.not_same_product'));
     }
 
-    final product = Cart.instance.products.first.product;
+    final product = Cart.instance.selected.first.product;
     final ingredients = product.ingredientsWithQuantity;
     if (ingredients.isEmpty) {
       return _emptyRows(context, tt('order.list.no_quantity'));
     }
 
-    selectedIngredient ??= ingredients.first;
-    selectedQuantityId =
-        Cart.instance.getSelectedQuantityId(selectedIngredient!);
+    final selected = ingredients.first;
+    final quantityId = Cart.instance.getSelectedQuantityId(selected);
+    quantityList.currentState?.update(
+      ingredient: selected,
+      selected: quantityId,
+    );
 
     return _rowWrapper([
-      _ingredientsRow(ingredients),
-      _quantitiesRow(),
+      SingleRowWrap(children: <Widget>[
+        for (final ingredient in ingredients)
+          RadioText(
+            onSelected: () {
+              quantityList.currentState?.update(
+                ingredient: ingredient,
+                selected: Cart.instance.getSelectedQuantityId(ingredient),
+              );
+            },
+            groupId: _INGREDIENT_RADIO_KEY,
+            isSelected: selected.id == ingredient.id,
+            value: ingredient.id,
+            child: Text(ingredient.name),
+          ),
+      ]),
+      OrderQuantityList(
+        key: quantityList,
+        ingredient: selected,
+        selected: quantityId,
+      ),
     ]);
   }
 
@@ -56,6 +74,10 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     super.dispose();
   }
 
+  String? getSelectedQuantityId(ProductIngredient ingredient) {
+    return Cart.instance.getSelectedQuantityId(ingredient);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,8 +88,6 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
   }
 
   Widget _emptyRows(BuildContext context, String ingredientMessage) {
-    selectedIngredient = null;
-
     return _rowWrapper([
       SingleRowWrap(
         children: <Widget>[RadioText.empty(ingredientMessage)],
@@ -80,58 +100,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     ]);
   }
 
-  Widget _ingredientsRow(Iterable<ProductIngredient> ingredients) {
-    return SingleRowWrap(children: <Widget>[
-      for (var ingredient in ingredients)
-        RadioText(
-          onSelected: () {
-            setState(() => selectedIngredient = ingredient);
-          },
-          groupId: _INGREDIENT_RADIO_KEY,
-          value: ingredient.id,
-          child: Text(ingredient.name),
-        ),
-    ]);
-  }
-
   void _listener() => setState(() {});
-
-  Widget _quantitiesRow() {
-    RadioText.clearSelected(_QUANTITY_RADIO_KEY);
-
-    return SingleRowWrap(children: <Widget>[
-      _quantityDefaultOption(),
-      for (final quantity in selectedIngredient!.items)
-        RadioText(
-          onSelected: () {
-            final ingredient = OrderIngredient(
-              ingredient: selectedIngredient!,
-              quantity: quantity,
-            );
-            Cart.instance.updateSelectedIngredient(ingredient);
-          },
-          groupId: _QUANTITY_RADIO_KEY,
-          value: quantity.id,
-          isSelected: quantity.id == selectedQuantityId,
-          child: Text('${quantity.name}（${quantity.amount}）'),
-        ),
-    ]);
-  }
-
-  Widget _quantityDefaultOption() {
-    return RadioText(
-      onSelected: () {
-        Cart.instance.removeSelectedIngredient(selectedIngredient!.id);
-      },
-      groupId: _QUANTITY_RADIO_KEY,
-      value: Cart.DEFAULT_QUANTITY_ID,
-      isSelected: selectedQuantityId == Cart.DEFAULT_QUANTITY_ID,
-      child: Text(tt(
-        'order.list.default_quantity',
-        {'amount': selectedIngredient!.amount},
-      )),
-    );
-  }
 
   Widget _rowWrapper(List<Widget> children) {
     return Column(

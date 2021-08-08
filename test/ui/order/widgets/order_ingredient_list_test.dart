@@ -36,7 +36,6 @@ void main() {
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
     when(cart.selected).thenReturn([OrderProduct(product)]);
-    when(cart.products).thenReturn([OrderProduct(product)]);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
@@ -70,7 +69,6 @@ void main() {
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
     when(cart.selected).thenReturn([OrderProduct(product)]);
-    when(cart.products).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
     when(cart.getSelectedQuantityId(ingredients[1])).thenReturn('qua-2');
 
@@ -96,7 +94,6 @@ void main() {
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
     when(cart.selected).thenReturn([OrderProduct(product)]);
-    when(cart.products).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));

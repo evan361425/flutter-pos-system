@@ -70,5 +70,16 @@ void main() {
     ));
 
     expect(radios[selected].isSelected, isTrue);
+
+    // should select none
+    RadioText(
+      groupId: 'some-id',
+      onSelected: () {},
+      value: '2',
+      isSelected: false,
+      child: Text('hi'),
+    );
+
+    expect(radios[selected].isSelected, isFalse);
   });
 }
