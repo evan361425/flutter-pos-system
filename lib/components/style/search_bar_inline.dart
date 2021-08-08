@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 
-class SearchBarInline extends StatefulWidget {
+class SearchBarInline extends StatelessWidget {
   final String? text;
   final String? errorText;
   final String? labelText;
   final String? hintText;
   final String? helperText;
   final void Function(BuildContext) onTap;
+  final TextEditingController textController;
 
-  const SearchBarInline({
+  SearchBarInline({
     Key? key,
     this.text,
     this.errorText,
@@ -17,14 +18,8 @@ class SearchBarInline extends StatefulWidget {
     this.hintText,
     this.helperText,
     required this.onTap,
-  }) : super(key: key);
-
-  @override
-  _SearchBarInlineState createState() => _SearchBarInlineState();
-}
-
-class _SearchBarInlineState extends State<SearchBarInline> {
-  late TextEditingController textController;
+  })  : textController = TextEditingController(text: text),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,32 +34,20 @@ class _SearchBarInlineState extends State<SearchBarInline> {
       readOnly: true,
       enableInteractiveSelection: false,
       controller: textController,
-      onTap: () => widget.onTap(context),
+      onTap: () => onTap(context),
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
         border: border,
         isDense: true,
-        labelText: widget.labelText,
-        hintText: widget.hintText,
-        helperText: widget.helperText,
-        errorText: widget.errorText,
+        labelText: labelText,
+        hintText: hintText,
+        helperText: helperText,
+        errorText: errorText,
         focusedBorder: border,
         labelStyle: textTheme,
         prefixIcon: Icon(KIcons.search, color: textTheme?.color),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    textController = TextEditingController(text: widget.text);
-    super.initState();
   }
 }

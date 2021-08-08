@@ -35,7 +35,7 @@ void main() {
     final product = Product(index: 1, name: 'name', price: 20);
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProduct(product)]);
+    when(cart.selected).thenReturn([OrderProduct(product)]);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));
 
@@ -68,7 +68,7 @@ void main() {
     product.replaceItems({for (var ing in ingredients) ing.id: ing});
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProduct(product)]);
+    when(cart.selected).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
     when(cart.getSelectedQuantityId(ingredients[1])).thenReturn('qua-2');
 
@@ -93,7 +93,7 @@ void main() {
     product.replaceItems({for (var ing in ingredients) ing.id: ing});
     when(cart.isEmpty).thenReturn(false);
     when(cart.isSameProducts).thenReturn(true);
-    when(cart.products).thenReturn([OrderProduct(product)]);
+    when(cart.selected).thenReturn([OrderProduct(product)]);
     when(cart.getSelectedQuantityId(ingredients[0])).thenReturn(null);
 
     await tester.pumpWidget(MaterialApp(home: OrderIngredientList()));

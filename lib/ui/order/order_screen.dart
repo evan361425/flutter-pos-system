@@ -88,7 +88,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
     final menu = context.read<Menu>();
 
     // get in order
-    final catalogs = menu.itemList;
+    final catalogs = menu.itemList.where((e) => e.isNotEmpty).toList();
 
     final menuCatalogRow = OrderCatalogList(
       catalogs: catalogs,

@@ -63,7 +63,7 @@ class _ProductModalState extends State<ProductModal>
           hintText: tt('menu.product.hint.price'),
           filled: false,
         ),
-        validator: Validator.positiveNumber(tt('menu.product.label.price')),
+        validator: Validator.isNumber(tt('menu.product.label.price')),
       ),
       TextFormField(
         controller: _costController,
