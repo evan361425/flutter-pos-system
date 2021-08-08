@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
@@ -80,34 +79,15 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with RouteAware {
+class _HomeScreenState extends State<HomeScreen>
+    with RouteAware, TutorialAware<HomeScreen> {
   static final orderInfo = GlobalKey<OrderInfoState>();
 
-  static Tutorial? tutorial;
+  @override
+  final String tutorialName = 'home';
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    MyApp.routeObserver.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void dispose() {
-    MyApp.routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPush() {
-    showTutorialIfNeed(context);
-    orderInfo.currentState?.reset();
-  }
-
-  @override
-  void didPopNext() {
-    showTutorialIfNeed(context);
-    orderInfo.currentState?.reset();
-  }
+  final int tutorialVersion = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -148,30 +128,33 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  void showTutorialIfNeed(BuildContext context) {
-    // reset tutorial for hot reload
-    tutorial?.finish();
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    orderInfo.currentState?.reset();
+  }
 
-    ;
+  @override
+  void didPush() {
+    super.didPush();
+    orderInfo.currentState?.reset();
+  }
 
+  @override
+  bool showTutorialIfNeed() {
     for (final name in TutorialName.values) {
-      final steps = Cache.instance.needTutorial(
+      final steps = Cache.instance.neededTutorial(
         'home.$name',
         HomeTutorial.STEPS[name]!,
       );
 
       if (steps.isNotEmpty) {
-        // wait a while for initialize
-        Future.delayed(
-          Duration(milliseconds: 100),
-          () => tutorial = HomeTutorial.steps(context, name, steps)..show(),
-        );
-        break;
+        showTutorial(() => HomeTutorial.steps(context, name, steps));
+        return false;
       }
     }
+    return true;
   }
-
-  void getShowableTutorial() {}
 }
 
 class _LabeledIcon extends StatelessWidget {

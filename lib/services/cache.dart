@@ -56,7 +56,7 @@ class Cache {
     }
   }
 
-  List<String> needTutorial(String key, List<String> shouldProcess) {
+  List<String> neededTutorial(String key, List<String> shouldProcess) {
     final data = service.getString('_tutorial.v2.$key');
     service.setString('_tutorial.v2.$key', shouldProcess.join(','));
 
@@ -66,13 +66,19 @@ class Cache {
 
     return shouldProcess.where((e) => !alreadyProcessed.contains(e)).toList();
   }
+
+  bool shouldCheckTutorial(String key, int version) {
+    return service.getInt('_tutorial.$key') != version;
+  }
+
+  void setTutorialVersion(String key, int version) {
+    service.setInt('_tutorial.$key', version);
+  }
 }
 
 enum Caches {
   dark_mode,
   language_code,
   currency_code,
-  search_ingredient,
-  search_quantity,
   feature_awake_provider,
 }

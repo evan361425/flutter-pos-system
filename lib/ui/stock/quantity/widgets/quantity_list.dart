@@ -31,7 +31,7 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, Quantity quantity) {
+  Widget _tileBuilder(BuildContext context, int index, Quantity quantity) {
     return ListTile(
       title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
       subtitle: Text(tt(

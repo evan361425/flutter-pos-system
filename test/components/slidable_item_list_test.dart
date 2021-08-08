@@ -9,7 +9,7 @@ void main() {
     final widget = MaterialApp(
       home: SlidableItemList<String>(
         items: ['1', '2'],
-        tileBuilder: (_, item) => Text(item),
+        tileBuilder: (_, int index, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),
         handleTap: (_, __) => Future.value(tapCount++),
         handleDelete: (_, __) => Future.value(),
@@ -42,7 +42,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: SlidableItemList<String>(
         items: ['1', '2'],
-        tileBuilder: (_, item) => Text(item),
+        tileBuilder: (_, int index, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),
         handleTap: (_, __) => Future.value(),
         handleDelete: (_, __) async => deletionFired = true,

@@ -9,34 +9,41 @@ import 'cache_test.mocks.dart';
 
 @GenerateMocks([SharedPreferences])
 void main() {
-  group('#needTutorial', () {
+  late MockSharedPreferences service;
+  group('#neededTutorial', () {
     test('should return all if non set', () {
-      final service = MockSharedPreferences();
-      Cache.instance.service = service;
       when(service.getString(any)).thenReturn(null);
       when(service.setString(any, any)).thenAnswer((_) => Future.value(true));
 
       final steps = ['s1', 's2', 's3'];
 
-      expect(Cache.instance.needTutorial('key', steps), equals(steps));
+      expect(Cache.instance.neededTutorial('key', steps), equals(steps));
       verify(service.setString(any, steps.join(',')));
     });
 
     test('should return non record steps', () {
-      final service = MockSharedPreferences();
-      Cache.instance.service = service;
       when(service.getString(any)).thenReturn('s2');
       when(service.setString(any, any)).thenAnswer((_) => Future.value(true));
 
       final steps = ['s1', 's2', 's3'];
 
-      expect(Cache.instance.needTutorial('key', steps), equals(['s1', 's3']));
+      expect(Cache.instance.neededTutorial('key', steps), equals(['s1', 's3']));
       verify(service.setString(any, steps.join(',')));
     });
   });
 
+  test('#shouldCheckTutorial', () {
+    when(service.getInt(any)).thenReturn(1);
+
+    final result = Cache.instance.shouldCheckTutorial('key', 1);
+
+    expect(result, isFalse);
+  });
+
   setUp(() {
+    service = MockSharedPreferences();
     Cache.instance = Cache();
+    Cache.instance.service = service;
   });
 
   tearDown(() {

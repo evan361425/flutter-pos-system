@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
+import 'package:possystem/ui/menu/menu_tutorial.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
+  @override
+  _MenuScreenState createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen>
+    with RouteAware, TutorialAware<MenuScreen> {
+  final floatingButtonKey = GlobalKey();
+
+  final firstCatalogKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
-
-    final navigateNewCatalog =
-        () => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
-
-    final body = menu.isReady
-        ? menu.isEmpty
-            ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
-            : _body(context, menu)
-        : CircularLoading();
 
     return Scaffold(
       appBar: AppBar(
@@ -44,12 +47,36 @@ class MenuScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: floatingButtonKey,
         onPressed: navigateNewCatalog,
         tooltip: tt('menu.catalog.add'),
         child: Icon(KIcons.add),
       ),
-      body: body,
+      body: menu.isEmpty
+          ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
+          : _body(menu),
     );
+  }
+
+  void navigateNewCatalog() {
+    Navigator.of(context).pushNamed(Routes.menuCatalogModal);
+  }
+
+  @override
+  bool showTutorialIfNeed() {
+    if (Menu.instance.isEmpty) return false;
+    final steps =
+        Cache.instance.neededTutorial('menu.basic', MenuTutorial.STEPS);
+
+    if (steps.isNotEmpty) {
+      showTutorial(() => MenuTutorial.build(
+            context,
+            steps,
+            firstCatalog: firstCatalogKey,
+            addButton: floatingButtonKey,
+          ));
+    }
+    return steps.isEmpty;
   }
 
   List<BottomSheetAction> _actions() {
@@ -64,7 +91,7 @@ class MenuScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(BuildContext context, Menu menu) {
+  Widget _body(Menu menu) {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
@@ -81,7 +108,7 @@ class MenuScreen extends StatelessWidget {
       ),
     );
     // get sorted catalogs
-    final catalogList = CatalogList(menu.itemList);
+    final catalogList = CatalogList(menu.itemList, firstKey: firstCatalogKey);
 
     return Column(
       children: [
