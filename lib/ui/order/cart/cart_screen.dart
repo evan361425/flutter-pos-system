@@ -17,34 +17,33 @@ class CartScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: Row(children: [
             Expanded(
               child: ElevatedButton(
                 onPressed: () => Cart.instance.toggleAll(true),
                 child: Text(tt('order.cart.select_all')),
               ),
             ),
-            SizedBox(width: 4),
+            SizedBox(width: 4.0),
             Expanded(
               child: ElevatedButton(
                 onPressed: () => Cart.instance.toggleAll(),
                 child: Text(tt('order.cart.toggle_all')),
               ),
             ),
-          ],
+          ]),
         ),
         Expanded(child: CartProductList(key: productsKey)),
-        Row(
-          children: [
+        Container(
+          color: Theme.of(context).cardColor,
+          child: Row(children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
-              child: CartActions(),
-            ),
-            Expanded(
-              child: CartMetadata(),
-            ),
-          ],
+                padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+                child: CartActions()),
+            Expanded(child: CartMetadata()),
+          ]),
         ),
       ],
     );

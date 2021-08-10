@@ -6,9 +6,7 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartMetadata extends StatefulWidget {
-  final bool isVertical;
-
-  const CartMetadata({Key? key, this.isVertical = false}) : super(key: key);
+  const CartMetadata({Key? key}) : super(key: key);
 
   @override
   _CartMetadataState createState() => _CartMetadataState();
@@ -19,13 +17,6 @@ class _CartMetadataState extends State<CartMetadata> {
   Widget build(BuildContext context) {
     // listen change quantity, delete product
     final cart = context.watch<Cart>();
-
-    if (widget.isVertical) {
-      return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        Text(tt('order.total_count', {'count': cart.totalCount})),
-        Text(tt('order.total_price', {'price': cart.totalPrice})),
-      ]);
-    }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

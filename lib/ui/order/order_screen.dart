@@ -8,13 +8,12 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cart/cart_metadata.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
+import 'package:possystem/ui/order/widgets/order_by_sliding_panel.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 import 'package:possystem/ui/order/widgets/order_product_list.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_list.dart';
@@ -56,13 +55,6 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
       ),
     );
     final menuIngredientRow = OrderIngredientList();
-    final collapsed = ChangeNotifierProvider.value(
-      value: Cart.instance,
-      builder: (_, __) => CartMetadata(isVertical: true),
-    );
-
-    final theme = Theme.of(context);
-    final textColor = theme.textTheme.bodyText1?.color ?? theme.primaryColor;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -85,46 +77,11 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
           ),
         ],
       ),
-      body: SlidingUpPanel(
-        backdropEnabled: true,
-        color: Colors.transparent,
-        minHeight: 64.0,
-        panel: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GestureDetector(
-                onTap: () => debugPrint('hi'), child: Container(height: 64.0)),
-            Expanded(child: orderingProductRow),
-            menuIngredientRow,
-          ],
-        ),
-        boxShadow: [],
-        collapsed: Column(children: [
-          Center(
-            child: Container(
-              height: 8.0,
-              width: 32.0,
-              decoration: BoxDecoration(
-                color: textColor.withAlpha(196),
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: textColor),
-                borderRadius: BorderRadius.all(Radius.circular(16.0)),
-              ),
-              child: collapsed,
-            ),
-          ),
-        ]),
-        body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          menuCatalogRow,
-          Expanded(child: menuProductRow),
-        ]),
+      body: OrderBySlidingPanel(
+        row1: menuCatalogRow,
+        row2: menuProductRow,
+        row3: orderingProductRow,
+        row4: menuIngredientRow,
       ),
     );
   }
