@@ -52,6 +52,7 @@ class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
     );
 
     final collapsed = GestureDetector(
+      key: Key('order.sliding_panel.opener'),
       // toggle the panel
       onTap: () => panelController.open(),
       child: Container(
