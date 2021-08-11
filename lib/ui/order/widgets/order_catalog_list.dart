@@ -28,7 +28,7 @@ class OrderCatalogList extends StatelessWidget {
           onSelected: () => handleSelected(catalog),
           groupId: _RADIO_Key,
           value: catalog.id,
-          child: Text(catalog.name),
+          text: catalog.name,
         ),
     ]);
   }

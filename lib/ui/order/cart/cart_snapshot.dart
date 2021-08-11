@@ -38,6 +38,7 @@ class _CartSnapshotState extends State<CartSnapshot> {
 
     return Row(children: <Widget>[
       Expanded(child: products),
+      const SizedBox(width: 4.0),
       Text(tt('order.total_price', {'price': cart.totalPrice})),
     ]);
   }

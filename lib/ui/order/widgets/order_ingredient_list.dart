@@ -54,7 +54,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
             groupId: _INGREDIENT_RADIO_KEY,
             isSelected: selected.id == ingredient.id,
             value: ingredient.id,
-            child: Text(ingredient.name),
+            text: ingredient.name,
           ),
       ]),
       OrderQuantityList(

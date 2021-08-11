@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 
 class SingleRowWrap extends StatelessWidget {
   final List<Widget> children;
@@ -14,9 +15,9 @@ class SingleRowWrap extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
           child: Wrap(
-            spacing: 4.0,
+            spacing: kSpacing1,
             children: children,
           ),
         ),

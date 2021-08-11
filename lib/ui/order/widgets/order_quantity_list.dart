@@ -37,10 +37,10 @@ class OrderQuantityListState extends State<OrderQuantityList> {
         groupId: _QUANTITY_RADIO_KEY,
         value: Cart.DEFAULT_QUANTITY_ID,
         isSelected: Cart.DEFAULT_QUANTITY_ID == selected,
-        child: Text(tt(
+        text: tt(
           'order.list.default_quantity',
           {'amount': ingredient.amount},
-        )),
+        ),
       ),
       for (final quantity in ingredient.items)
         RadioText(
@@ -53,7 +53,7 @@ class OrderQuantityListState extends State<OrderQuantityList> {
           groupId: _QUANTITY_RADIO_KEY,
           value: quantity.id,
           isSelected: quantity.id == selected,
-          child: Text('${quantity.name}（${quantity.amount}）'),
+          text: '${quantity.name}（${quantity.amount}）',
         ),
     ]);
   }
