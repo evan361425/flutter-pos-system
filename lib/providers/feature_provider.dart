@@ -17,10 +17,16 @@ class FeatureProvider {
     return Cache.instance.set<bool>(Caches.feature_awake_provider, value);
   }
 
-  int get outlookOrder => Cache.instance.get<int>(Caches.outlook_order) ?? 0;
+  OutlookOrder get outlookOrder =>
+      OutlookOrder.values[Cache.instance.get<int>(Caches.outlook_order) ?? 0];
 
   Future<void> setOutlookOrder(int index) {
     info(index.toString(), 'setting.outlook.order');
     return Cache.instance.set(Caches.outlook_order, index);
   }
+}
+
+enum OutlookOrder {
+  sliding_panel,
+  classic,
 }

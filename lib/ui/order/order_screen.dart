@@ -10,6 +10,7 @@ import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
+import 'package:possystem/ui/order/widgets/order_by_orientation.dart';
 import 'package:possystem/ui/order/widgets/order_by_sliding_panel.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 import 'package:possystem/ui/order/widgets/order_product_list.dart';
@@ -77,12 +78,19 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
           ),
         ],
       ),
-      body: OrderBySlidingPanel(
-        row1: menuCatalogRow,
-        row2: menuProductRow,
-        row3: orderingProductRow,
-        row4: menuIngredientRow,
-      ),
+      body: FeatureProvider.instance.outlookOrder == OutlookOrder.sliding_panel
+          ? OrderBySlidingPanel(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: orderingProductRow,
+              row4: menuIngredientRow,
+            )
+          : OrderByOrientation(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: orderingProductRow,
+              row4: menuIngredientRow,
+            ),
     );
   }
 

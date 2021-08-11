@@ -10,10 +10,10 @@ import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-const _OUTLOOK_ORDER = [
-  '酷炫面板',
-  '經典模式',
-];
+const _OUTLOOK_ORDER = {
+  OutlookOrder.sliding_panel: '酷炫面板',
+  OutlookOrder.classic: '經典模式',
+};
 
 const _THEME_CODE = <ThemeMode, String>{
   ThemeMode.system: 'system',
@@ -98,13 +98,14 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           CardTile(
             title: Text('點餐的外觀'),
-            subtitle: Text(_OUTLOOK_ORDER[outlookOrder]),
+            subtitle: Text(_OUTLOOK_ORDER[outlookOrder]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => FeatureProvider.instance.setOutlookOrder(index),
               title: '點餐的外觀',
-              items: _OUTLOOK_ORDER,
-              selected: outlookOrder,
+              items:
+                  OutlookOrder.values.map((e) => _OUTLOOK_ORDER[e]!).toList(),
+              selected: outlookOrder.index,
             ),
           ),
           _GroupTitle(title: '操作'),
