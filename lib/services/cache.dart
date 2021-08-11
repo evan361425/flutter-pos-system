@@ -80,5 +80,6 @@ enum Caches {
   dark_mode,
   language_code,
   currency_code,
+  outlook_order,
   feature_awake_provider,
 }
