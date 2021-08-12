@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
 class SingleTextDialog extends StatefulWidget {
@@ -45,10 +46,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(tt('cancel')),
-        ),
+        PopButton(title: tt('cancel')),
         ElevatedButton(
           onPressed: () => onSubmit(textController.text),
           child: Text(tt('confirm')),

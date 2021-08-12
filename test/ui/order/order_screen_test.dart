@@ -33,6 +33,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.cancel_sharp), findsOneWidget);
+
+    await tester.tapAt(Offset(0, 0));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('should show dialog when order', (tester) async {
@@ -50,9 +53,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(CalculatorDialog), findsOneWidget);
+
+    await tester.tapAt(Offset(0, 0));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('should update products when select catalog', (tester) async {
+    when(cache.get(Caches.feature_awake_provider)).thenReturn(true);
     final ingredient = Ingredient(name: 'ing-1', id: 'ing-1');
     final quantity = Quantity(name: 'qua-1', id: 'qua-1');
     final proQuantity = ProductQuantity(quantity: quantity);

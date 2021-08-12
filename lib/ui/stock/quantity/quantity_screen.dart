@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -37,10 +38,7 @@ class QuantityScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.quantities')),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: navigateNewQuantity,

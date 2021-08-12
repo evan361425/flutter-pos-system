@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/radio_text.dart';
 
 void main() {
-  testWidgets('should work like radio', (WidgetTester tester) async {
+  testWidgets('should work like radio and unselect all', (tester) async {
     var selected = 0;
     final radios = [
       for (var i = 0; i < 5; i++)
@@ -29,6 +29,9 @@ void main() {
     expect(radios[0].isSelected, isFalse);
     expect(radios[1].isSelected, isTrue);
     expect(selected, equals(1));
+
+    RadioText.clearSelected('some-id');
+    expect(radios.any((radio) => radio.isSelected), isFalse);
   });
 
   testWidgets('should not selected all', (WidgetTester tester) async {

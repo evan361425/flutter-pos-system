@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/translator.dart';
@@ -16,9 +16,7 @@ class OrderModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(KIcons.back)),
+        leading: PopButton(),
       ),
       body: Column(
         children: [

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
@@ -22,6 +23,41 @@ void main() {
     ], child: MaterialApp(home: MenuScreen())));
 
     expect(find.byType(EmptyBody), findsOneWidget);
+  });
+
+  testWidgets('should navigate correctly', (tester) async {
+    when(menu.isEmpty).thenReturn(false);
+    when(menu.length).thenReturn(1);
+    when(menu.itemList).thenReturn([Catalog(name: 'hi there')]);
+    when(cache.shouldCheckTutorial(any, any)).thenReturn(false);
+    var navCount = 0;
+    final poper = (BuildContext context) => TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text((++navCount).toString()),
+        );
+
+    await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Menu>.value(value: menu),
+        ],
+        child: MaterialApp(routes: {
+          Routes.menuCatalogReorder: poper,
+          Routes.menuSearch: poper,
+        }, home: MenuScreen())));
+
+    await tester.tap(find.byIcon(KIcons.more));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.reorder_sharp));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('1'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(Key('menu.search')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('2'), findsOneWidget);
   });
 
   testWidgets('should addable', (tester) async {

@@ -24,12 +24,6 @@ class IconFilledButton extends StatelessWidget {
     );
 
     switch (type) {
-      case IconFilledButtonType.elevated:
-        return ElevatedButton(
-          style: style,
-          onPressed: onPressed,
-          child: Icon(icon),
-        );
       case IconFilledButtonType.outlined:
         return OutlinedButton(
           style: style,
@@ -41,6 +35,5 @@ class IconFilledButton extends StatelessWidget {
 }
 
 enum IconFilledButtonType {
-  elevated,
   outlined,
 }

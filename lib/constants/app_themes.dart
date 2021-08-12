@@ -6,7 +6,4 @@ class AppThemes {
   static final ThemeData lightTheme = ThemeData();
 
   static final ThemeData darkTheme = ThemeData.dark();
-
-  // Avoid someone build the instance
-  AppThemes._();
 }

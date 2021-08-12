@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/feature_switch.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
@@ -66,15 +66,13 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.setting')),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
       ),
       body: ListView(
         children: <Widget>[
           _GroupTitle(title: '外觀', isFirst: true),
           CardTile(
+            key: Key('setting.theme'),
             title: Text(tt('setting.theme.title')),
             subtitle: Text(tt('setting.theme.${_THEME_CODE[theme.mode]}')),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
@@ -86,6 +84,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
           CardTile(
+            key: Key('setting.language'),
             title: Text(tt('setting.language.title')),
             subtitle: Text(LanguageProvider.supportNames[selectedLanguage]),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
@@ -97,6 +96,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
           CardTile(
+            key: Key('setting.outlook_order'),
             title: Text('點餐的外觀'),
             subtitle: Text(_OUTLOOK_ORDER[outlookOrder]!),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
@@ -112,7 +112,7 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             title: Text('點餐時不關閉螢幕'),
             trailing: FeatureSwitch(
-              key: Key('setting.feature.awate_ordering'),
+              key: Key('setting.feature.awake_ordering'),
               value: FeatureProvider.instance.awakeOrdering,
               onChanged: (value) =>
                   FeatureProvider.instance.setAwakeOrdering(value),

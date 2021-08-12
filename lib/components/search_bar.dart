@@ -36,11 +36,6 @@ class SearchBarState extends State<SearchBar> {
 
   String get text => controller.text;
 
-  set text(String text) {
-    controller.text = text;
-    _onChanged(text);
-  }
-
   @override
   Widget build(BuildContext context) {
     final focusedBorder = widget.cursorColor == null

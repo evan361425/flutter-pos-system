@@ -3,6 +3,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
@@ -21,10 +22,7 @@ class StockScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.stock')),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: navigateNewIngredient,

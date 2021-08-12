@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/pop_button.dart';
 
 class CustomerScreen extends StatelessWidget {
   @override
@@ -7,10 +7,7 @@ class CustomerScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('顧客資訊'),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
       ),
       body: Container(
         child: Column(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -33,10 +33,7 @@ class CashierScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('收銀機'),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
         actions: [
           AppbarTextButton(
             onPressed: () => handleSetDefault(context),

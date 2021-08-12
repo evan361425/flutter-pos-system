@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
 
@@ -48,10 +48,7 @@ class _ChangerModalState extends State<ChangerModal>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
         title: Text('換錢'),
         actions: [
           AppbarTextButton(onPressed: handleApply, child: Text('套用')),

@@ -7,6 +7,7 @@ void main() {
   testWidgets('should show spinner', (WidgetTester tester) async {
     final widget = MaterialApp(
       home: SearchScaffold<String>(
+        text: 'abc',
         handleChanged: (text) =>
             Future.delayed(Duration(milliseconds: 11)).then((_) => ['b']),
         itemBuilder: (_, i) => Text(i),

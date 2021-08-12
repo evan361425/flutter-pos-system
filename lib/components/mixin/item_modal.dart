@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
@@ -36,10 +36,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
         title: title,
         actions: [
           if (editable)

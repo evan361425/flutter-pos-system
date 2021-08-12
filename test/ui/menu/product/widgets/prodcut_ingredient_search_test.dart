@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
 
@@ -25,6 +26,38 @@ void main() {
     verify(stock.setItem(argThat(predicate<Ingredient>((model) {
       return model.name == 'some-ing';
     }))));
+  });
+
+  testWidgets('should selectable', (tester) async {
+    final ingredient = Ingredient(name: 'name', id: 'id');
+    when(stock.itemList).thenReturn([ingredient]);
+    when(menu.getIngredients('id')).thenReturn([]);
+
+    Ingredient? argument;
+
+    await tester.pumpWidget(MaterialApp(
+      home: Navigator(
+        onPopPage: (route, result) {
+          argument = result;
+          return route.didPop(result);
+        },
+        pages: [
+          MaterialPage(child: Container()),
+          MaterialPage(child: ProductIngredientSearch()),
+        ],
+      ),
+    ));
+
+    await tester.tap(find.byIcon(Icons.open_in_new_sharp));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(KIcons.back));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('name').first);
+    await tester.pumpAndSettle();
+
+    expect(identical(argument, ingredient), isTrue);
   });
 
   setUpAll(() {

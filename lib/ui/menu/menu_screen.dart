@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
@@ -33,9 +34,7 @@ class _MenuScreenState extends State<MenuScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('menu.catalog.title')),
-        leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(KIcons.back)),
+        leading: PopButton(),
         actions: [
           IconButton(
             onPressed: () => showCircularBottomSheet(
@@ -95,6 +94,7 @@ class _MenuScreenState extends State<MenuScreen>
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
+        key: Key('menu.search'),
         hintText: '搜尋產品、成份、份量',
         onTap: (context) => Navigator.of(context).pushNamed(Routes.menuSearch),
       ),

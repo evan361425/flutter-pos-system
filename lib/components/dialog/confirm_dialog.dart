@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
 class ConfirmDialog extends StatelessWidget {
@@ -17,10 +18,7 @@ class ConfirmDialog extends StatelessWidget {
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(tt('cancel')),
-        ),
+        PopButton(title: tt('cancel')),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(tt('confirm')),

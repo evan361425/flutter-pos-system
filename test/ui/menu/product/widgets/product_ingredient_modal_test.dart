@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -121,6 +120,8 @@ void main() {
       ingredient: ingredient,
     );
     LOG_LEVEL = 0;
+    when(storage.set(any, any)).thenAnswer((_) => Future.value());
+    when(product.prefix).thenReturn('prefix');
 
     await tester.pumpWidget(MaterialApp(
       home: ProductIngredientModal(
@@ -136,8 +137,10 @@ void main() {
     // delete
     await tester.tap(find.byIcon(KIcons.delete));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('delete'));
+    await tester.pumpAndSettle();
 
-    expect(find.byType(DeleteDialog), findsOneWidget);
+    verify(storage.set(any, any));
   });
 
   setUpAll(() {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
@@ -16,10 +16,7 @@ class AnalysisScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('analysis.title')),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
       ),
       body: OrientationBuilder(
           builder: (_, orientation) => orientation == Orientation.portrait

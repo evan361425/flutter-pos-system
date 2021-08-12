@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
 class SearchScaffold<T> extends StatefulWidget {
@@ -52,10 +52,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(KIcons.back),
-        ),
+        leading: PopButton(),
         title: SearchBar(
           key: searchBar,
           onChanged: (text) {

@@ -24,6 +24,15 @@ void main() {
 
     // now text some value
 
+    // empty result
+    when(menu.searchProducts(
+      limit: anyNamed('limit'),
+      text: argThat(equals('empty'), named: 'text'),
+    )).thenReturn([]);
+    await tester.enterText(find.byType(TextField), 'empty');
+    await tester.pump();
+
+    // finds result
     final product = MockProduct();
     when(menu.searchProducts(
       limit: anyNamed('limit'),
