@@ -51,3 +51,5 @@ services.*.tar
 
 # mocks
 *.mocks.dart
+
+coverage/html

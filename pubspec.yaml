@@ -44,6 +44,7 @@ dependencies:
   # components
   flutter_slidable: ^0.6.0
   modal_bottom_sheet: ^2.0.0
+  sliding_up_panel: ^2.0.0+1
   table_calendar: ^3.0.0
   pull_to_refresh: ^2.0.0
   tutorial_coach_mark: ^1.0.3

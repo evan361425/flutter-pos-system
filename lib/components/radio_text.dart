@@ -6,15 +6,18 @@ class RadioText extends StatefulWidget {
 
   final VoidCallback onSelected;
 
-  final Widget child;
+  final String text;
+
   final String groupId;
+
   final String value;
+
   RadioText({
     Key? key,
     required this.groupId,
     required this.onSelected,
     required this.value,
-    required this.child,
+    required this.text,
     bool? isSelected,
   }) : super(key: key) {
     // if not set, initialize a new one
@@ -105,6 +108,7 @@ class _RadioTextState extends State<RadioText> {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
+      constraints: BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
         color: defaultColor,
         boxShadow: <BoxShadow>[
@@ -121,7 +125,7 @@ class _RadioTextState extends State<RadioText> {
         splashColor: primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(kSpacing1),
-          child: widget.child,
+          child: Text(widget.text, textAlign: TextAlign.center),
         ),
       ),
     );

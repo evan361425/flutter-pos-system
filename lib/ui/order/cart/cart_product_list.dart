@@ -20,6 +20,7 @@ class CartProductListState extends State<CartProductList> {
     final cart = context.watch<Cart>();
 
     return SingleChildScrollView(
+      key: Key('order.cart.product_list'),
       controller: scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

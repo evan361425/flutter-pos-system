@@ -10,6 +10,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
@@ -123,16 +124,20 @@ void main() {
     await tester.tap(find.text('pro-1'));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(Key('order.sliding_panel.opener')));
+    await tester.pumpAndSettle();
+
     final widget = tester.firstWidget(find.byType(ListTile).last) as ListTile;
-    final scroll = tester.firstWidget(find.byType(SingleChildScrollView))
-        as SingleChildScrollView;
+    final scrollFinder = find.byKey(Key('order.cart.product_list'));
+    final scroll = tester.firstWidget(scrollFinder) as SingleChildScrollView;
 
     expect(widget.selected, isTrue);
     expect(scroll.controller?.position.maxScrollExtent, isNonZero);
   });
 
   setUp(() {
-    when(cache.get(any)).thenReturn(false);
+    when(cache.get(Caches.feature_awake_provider)).thenReturn(false);
+    when(cache.get(Caches.outlook_order)).thenReturn(0);
   });
 
   setUpAll(() {

@@ -11,7 +11,7 @@ void main() {
           groupId: 'some-id',
           onSelected: () => selected = i,
           value: i.toString(),
-          child: Text(i.toString()),
+          text: i.toString(),
         )
     ];
 
@@ -39,7 +39,7 @@ void main() {
           onSelected: () {},
           value: i.toString(),
           isSelected: false,
-          child: Text(i.toString()),
+          text: i.toString(),
         )
     ];
 
@@ -60,7 +60,7 @@ void main() {
           onSelected: () {},
           value: i.toString(),
           isSelected: selected == i,
-          child: Text(i.toString()),
+          text: i.toString(),
         )
     ];
 
@@ -77,7 +77,7 @@ void main() {
       onSelected: () {},
       value: '2',
       isSelected: false,
-      child: Text('hi'),
+      text: 'hi',
     );
 
     expect(radios[selected].isSelected, isFalse);

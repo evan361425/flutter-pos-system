@@ -3,7 +3,6 @@ import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 import 'package:possystem/ui/menu/menu_search.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
 import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
-import 'package:possystem/ui/setting/widgets/theme_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'models/menu/catalog.dart';
@@ -29,7 +28,6 @@ import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/order/order_screen.dart';
 import 'ui/printer/printer_screen.dart';
 import 'ui/setting/setting_screen.dart';
-import 'ui/setting/widgets/language_modal.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
 import 'ui/stock/quantity/widgets/quantity_modal.dart';
@@ -66,8 +64,6 @@ class Routes {
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
   static const String stockQuantityModal = 'stock/quantity/modal';
-  static const String settingTheme = 'setting/theme';
-  static const String settingLanguage = 'setting/language';
 
   static T arg<T>(BuildContext context) =>
       ModalRoute.of(context)!.settings.arguments as T;
@@ -140,8 +136,5 @@ class Routes {
         QuantityModal(quantity: arg<Quantity?>(context)),
     stockReplenishmentModal: (context) =>
         ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
-    // setting
-    settingLanguage: (_) => LanguageModal(),
-    settingTheme: (_) => ThemeModal(),
   };
 }

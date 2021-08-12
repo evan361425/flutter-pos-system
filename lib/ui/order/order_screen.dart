@@ -11,6 +11,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 import 'package:possystem/ui/order/widgets/order_by_orientation.dart';
+import 'package:possystem/ui/order/widgets/order_by_sliding_panel.dart';
 import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
 import 'package:possystem/ui/order/widgets/order_product_list.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,29 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
+    final menu = context.read<Menu>();
+
+    // get in order
+    final catalogs = menu.itemList.where((e) => e.isNotEmpty).toList();
+
+    final menuCatalogRow = OrderCatalogList(
+      catalogs: catalogs,
+      handleSelected: (catalog) =>
+          _orderProductList.currentState?.updateProducts(catalog),
+    );
+    final menuProductRow = OrderProductList(
+      key: _orderProductList,
+      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
+      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+    );
+    final orderingProductRow = Card(
+      child: ChangeNotifierProvider.value(
+        value: Cart.instance,
+        builder: (_, __) => CartScreen(productsKey: _cartProductList),
+      ),
+    );
+    final menuIngredientRow = OrderIngredientList();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -54,7 +78,19 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
           ),
         ],
       ),
-      body: _body(),
+      body: FeatureProvider.instance.outlookOrder == OutlookOrder.sliding_panel
+          ? OrderBySlidingPanel(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: orderingProductRow,
+              row4: menuIngredientRow,
+            )
+          : OrderByOrientation(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: orderingProductRow,
+              row4: menuIngredientRow,
+            ),
     );
   }
 
@@ -82,38 +118,6 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   void dispose() {
     MyApp.routeObserver.unsubscribe(this);
     super.dispose();
-  }
-
-  Widget _body() {
-    final menu = context.read<Menu>();
-
-    // get in order
-    final catalogs = menu.itemList.where((e) => e.isNotEmpty).toList();
-
-    final menuCatalogRow = OrderCatalogList(
-      catalogs: catalogs,
-      handleSelected: (catalog) =>
-          _orderProductList.currentState?.updateProducts(catalog),
-    );
-    final menuProductRow = OrderProductList(
-      key: _orderProductList,
-      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
-    );
-    final orderingProductRow = Card(
-      child: ChangeNotifierProvider.value(
-        value: Cart.instance,
-        builder: (_, __) => CartScreen(productsKey: _cartProductList),
-      ),
-    );
-    final menuIngredientRow = OrderIngredientList();
-
-    return OrderByOrientation(
-      row1: menuCatalogRow,
-      row2: menuProductRow,
-      row3: orderingProductRow,
-      row4: menuIngredientRow,
-    );
   }
 
   void _handleOrder() async {

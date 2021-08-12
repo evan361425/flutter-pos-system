@@ -12,6 +12,11 @@ class LanguageProvider extends ChangeNotifier {
     Locale('en', 'US'),
   ];
 
+  static const supportNames = [
+    '繁體中文',
+    'English',
+  ];
+
   /// shared pref object
   static const delegates = <LocalizationsDelegate<dynamic>>[
     // A class which loads the translations from YAML files
