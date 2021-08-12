@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_orderable_list.dart';
 import 'package:possystem/ui/menu/widgets/catalog_orderable_list.dart';
 
 import '../../../mocks/mock_repos.dart';

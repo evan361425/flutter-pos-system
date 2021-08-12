@@ -14,8 +14,6 @@ import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
 import 'ui/analysis/analysis_screen.dart';
 import 'ui/cashier/cashier_screen.dart';
-import 'ui/customer/customer_screen.dart';
-import 'ui/invoicer/invoicer_screen.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
@@ -26,14 +24,12 @@ import 'ui/menu/product/widgets/product_ingredient_search.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/order/order_screen.dart';
-import 'ui/printer/printer_screen.dart';
 import 'ui/setting/setting_screen.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
 import 'ui/stock/quantity/widgets/quantity_modal.dart';
 import 'ui/stock/replenishment/replenishment_modal.dart';
 import 'ui/stock/stock_screen.dart';
-import 'ui/transfer/transfer_screen.dart';
 
 class Routes {
   static const String analysis = 'analysis';
@@ -71,14 +67,10 @@ class Routes {
   static final routes = <String, WidgetBuilder>{
     analysis: (_) => AnalysisScreen(),
     cashier: (_) => CashierScreen(),
-    customer: (_) => CustomerScreen(),
-    invoicer: (_) => InvoicerScreen(),
     menu: (_) => MenuScreen(),
     order: (_) => OrderScreen(),
-    printer: (_) => PrinterScreen(),
     setting: (_) => SettingScreen(),
     stock: (_) => StockScreen(),
-    transfer: (_) => TransferScreen(),
     // sub-route
     // cashier
     cashierChanger: (context) => ChangerModal(),
