@@ -42,6 +42,7 @@ void main() {
     when(cashier.unitLength).thenReturn(0);
     when(cashier.currentTotal).thenReturn(10);
     when(cashier.defaultTotal).thenReturn(10);
+    when(cashier.surplus()).thenAnswer((_) => Future.value());
     when(cashier.getDifference()).thenReturn(Iterable.empty());
 
     await tester.pumpWidget(MaterialApp(home: CashierScreen()));
@@ -50,6 +51,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('cancel'), findsOneWidget);
+
+    await tester.tap(find.text('confirm'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('關閉'));
   });
 
   testWidgets('should set default directly', (tester) async {

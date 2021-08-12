@@ -11,8 +11,10 @@ class MetaBlock extends StatelessWidget {
   }
 
   static TextSpan span() {
-    return const TextSpan(text: ' • ');
+    return const TextSpan(text: string);
   }
+
+  static const string = ' • ';
 
   static Widget? withString(
     BuildContext context,

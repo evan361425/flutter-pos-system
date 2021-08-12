@@ -25,6 +25,30 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
+  void handleDaySelected(DateTime day) {
+    final end = DateTime(day.year, day.month, day.day + 1);
+    final start = DateTime(day.year, day.month, day.day);
+
+    Seller.instance.getMetricBetween(start, end).then((result) {
+      orderListState.currentState?.reset(
+        {'start': start, 'end': end},
+        totalPrice: result['totalPrice'] as num,
+        totalCount: result['count'] as int,
+      );
+    });
+  }
+
+  Future<List<OrderObject>> handleLoad(
+    Map<String, Object> params,
+    int offset,
+  ) {
+    return Seller.instance.getOrderBetween(
+      params['start'] as DateTime,
+      params['end'] as DateTime,
+      offset,
+    );
+  }
+
   Widget _buildLandscape() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,13 +56,13 @@ class AnalysisScreen extends StatelessWidget {
         Expanded(
           child: CalendarWrapper(
             isPortrait: false,
-            handleDaySelected: _handleDaySelected,
+            handleDaySelected: handleDaySelected,
             searchCountInMonth: _searchCountInMonth,
           ),
         ),
         Expanded(
           child: Center(
-            child: OrderList(key: orderListState, handleLoad: _handleLoad),
+            child: OrderList(key: orderListState, handleLoad: handleLoad),
           ),
         ),
       ],
@@ -49,37 +73,13 @@ class AnalysisScreen extends StatelessWidget {
     return Column(children: [
       CalendarWrapper(
         isPortrait: true,
-        handleDaySelected: _handleDaySelected,
+        handleDaySelected: handleDaySelected,
         searchCountInMonth: _searchCountInMonth,
       ),
       Expanded(
-        child: OrderList(key: orderListState, handleLoad: _handleLoad),
+        child: OrderList(key: orderListState, handleLoad: handleLoad),
       ),
     ]);
-  }
-
-  void _handleDaySelected(DateTime day) {
-    final end = DateTime(day.year, day.month, day.day + 1);
-    final start = DateTime(day.year, day.month, day.day);
-
-    Seller.instance.getMetricBetween(start, end).then((result) {
-      orderListState.currentState!.reset(
-        {'start': start, 'end': end},
-        totalPrice: result['totalPrice'] as num,
-        totalCount: result['count'] as int,
-      );
-    });
-  }
-
-  Future<List<OrderObject>> _handleLoad(
-    Map<String, Object> params,
-    int offset,
-  ) {
-    return Seller.instance.getOrderBetween(
-      params['start'] as DateTime,
-      params['end'] as DateTime,
-      offset,
-    );
   }
 
   Future<Map<DateTime, int>> _searchCountInMonth(DateTime day) {

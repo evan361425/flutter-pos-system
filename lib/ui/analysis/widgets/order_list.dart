@@ -92,11 +92,6 @@ class OrderListState extends State<OrderList> {
   CustomFooter _footerBuilder() {
     return CustomFooter(
       height: 30,
-      onClick: () => setState(() {
-        _data.clear();
-        _isLoading = true;
-        _handleLoad();
-      }),
       builder: (BuildContext context, LoadStatus? mode) {
         switch (mode) {
           case LoadStatus.canLoading:
@@ -128,7 +123,7 @@ class OrderListState extends State<OrderList> {
     final title = order.products.map<String>((e) {
       final count = e.count > 1 ? ' * ${e.count}' : '';
       return '${e.productName}$count';
-    }).join('、');
+    }).join(MetaBlock.string);
     final hour = order.createdAt.hour.toString().padLeft(2, '0');
     final minute = order.createdAt.minute.toString().padLeft(2, '0');
 

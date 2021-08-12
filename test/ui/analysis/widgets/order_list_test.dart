@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/ui/analysis/widgets/order_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -95,5 +97,53 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(loadCount, equals(3));
+  });
+
+  testWidgets('should navigate to modal', (tester) async {
+    final order = MockOrderObject();
+    final pro1 = OrderProductObject(
+        singlePrice: 1,
+        originalPrice: 2,
+        count: 3,
+        productId: 'pro1',
+        productName: 'pro1',
+        isDiscount: true,
+        ingredients: {});
+    final pro2 = OrderProductObject(
+        singlePrice: 1,
+        originalPrice: 1,
+        count: 1,
+        productId: 'pro2',
+        productName: 'pro2',
+        isDiscount: false,
+        ingredients: {});
+    when(order.createdAt).thenReturn(DateTime.now());
+    when(order.totalPrice).thenReturn(4);
+    when(order.paid).thenReturn(5);
+    when(order.products).thenReturn([pro1, pro2]);
+
+    final orderListState = GlobalKey<OrderListState>();
+    when(currency.numToString(any)).thenReturn('');
+
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: OrderList(
+            key: orderListState,
+            handleLoad: (_, __) => Future.value(<OrderObject>[order])),
+      ),
+    ));
+
+    orderListState.currentState?.reset({}, totalPrice: 0, totalCount: 0);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(['pro1 * 3', 'pro2'].join(MetaBlock.string)));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(KIcons.back));
+    await tester.pumpAndSettle();
+  });
+
+  setUpAll(() {
+    initializeProviders();
   });
 }
