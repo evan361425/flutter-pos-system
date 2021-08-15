@@ -29,6 +29,8 @@ class Tip extends StatefulWidget {
   /// Defaults to 0 milliseconds (tip are shown immediately).
   final Duration waitDuration;
 
+  final VoidCallback? onClosed;
+
   const Tip({
     Key? key,
     this.title,
@@ -36,6 +38,7 @@ class Tip extends StatefulWidget {
     this.disabled = false,
     this.preferBelow = true,
     this.waitDuration = Duration.zero,
+    this.onClosed,
     required this.child,
   }) : super(key: key);
 
@@ -85,6 +88,9 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
       return;
     }
     _controller.reverse();
+    if (widget.onClosed != null) {
+      widget.onClosed!();
+    }
   }
 
   @override
@@ -198,13 +204,29 @@ class _TiplOverlay extends StatelessWidget {
       shape: TipShapeBorder(arrowArc: 0.1, target: target),
     );
 
+    final closer = Container(
+      margin: const EdgeInsets.only(top: kSpacing0),
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+      decoration: BoxDecoration(
+        color: theme.buttonColor,
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Text(
+        '我知道了',
+        style: textStyle.copyWith(
+          color: theme.buttonTheme.colorScheme!.onSurface,
+        ),
+      ),
+    );
+
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null)
-          Text(title!, style: textStyle.copyWith(fontSize: 24)),
+          Text(title!, style: textStyle.copyWith(fontSize: 22)),
         Text(message),
+        closer,
       ],
     );
 

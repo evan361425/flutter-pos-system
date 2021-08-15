@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tutorial_tip.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
@@ -53,30 +54,37 @@ class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       ),
     );
 
-    final collapsed = IgnorePointer(
-      ignoring: isOpen,
-      child: GestureDetector(
-        key: Key('order.sliding_panel.opener'),
-        // toggle the panel
-        onTap: () => panelController.open(),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
-          ),
-          child: Column(children: [
-            Center(child: dragger),
-            Expanded(
-              child: ChangeNotifierProvider.value(
-                value: Cart.instance,
-                builder: (_, __) => Padding(
-                  padding: const EdgeInsets.all(kSpacing0),
-                  child: CartSnapshot(),
+    final collapsed = TutorialTip(
+      label: 'order.panel',
+      title: '新版點餐設計',
+      message: '為了讓點選產品可以更方便，\n'
+          '我們把點餐後的產品設定至於此面板，點選或滑動以查看。\n'
+          '如果需要一次顯示所有訊息的排版，可以至「設定」>「點餐的外觀」設定。',
+      child: IgnorePointer(
+        ignoring: isOpen,
+        child: GestureDetector(
+          key: Key('order.sliding_panel.opener'),
+          // toggle the panel
+          onTap: () => panelController.open(),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+            ),
+            child: Column(children: [
+              Center(child: dragger),
+              Expanded(
+                child: ChangeNotifierProvider.value(
+                  value: Cart.instance,
+                  builder: (_, __) => Padding(
+                    padding: const EdgeInsets.all(kSpacing0),
+                    child: CartSnapshot(),
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ]),
+          ),
         ),
       ),
     );

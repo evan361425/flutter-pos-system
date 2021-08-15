@@ -56,15 +56,27 @@ class Cache {
     }
   }
 
-  List<String> neededTutorial(String key, List<String> shouldProcess) {
-    final data = service.getString('_tutorial.v2.$key');
-    service.setString('_tutorial.v2.$key', shouldProcess.join(','));
+  bool neededTip(String key, int version) {
+    if (version == 0) return false;
 
-    if (data == null) return shouldProcess;
+    final result = service.getInt('_tip.$key') ?? 0;
+
+    return result != version;
+  }
+
+  Future<bool> tipRead(String key, int version) {
+    return service.setInt('_tip.$key', version);
+  }
+
+  List<String> neededTutorial(String key, List<String> process) {
+    final data = service.getString('_tutorial.v2.$key');
+    service.setString('_tutorial.v2.$key', process.join(','));
+
+    if (data == null) return process;
 
     final alreadyProcessed = data.split(',');
 
-    return shouldProcess.where((e) => !alreadyProcessed.contains(e)).toList();
+    return process.where((e) => !alreadyProcessed.contains(e)).toList();
   }
 
   bool shouldCheckTutorial(String key, int version) {

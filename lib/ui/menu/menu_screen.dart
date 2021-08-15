@@ -4,14 +4,12 @@ import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/components/tutorial_tip.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/menu_tutorial.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
 
@@ -20,12 +18,7 @@ class MenuScreen extends StatefulWidget {
   _MenuScreenState createState() => _MenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen>
-    with RouteAware, TutorialAware<MenuScreen> {
-  final floatingButtonKey = GlobalKey();
-
-  final firstCatalogKey = GlobalKey();
-
+class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     // context.watch<T>() === Provider.of<T>(context, listen: true)
@@ -46,10 +39,17 @@ class _MenuScreenState extends State<MenuScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        key: floatingButtonKey,
         onPressed: navigateNewCatalog,
         tooltip: tt('menu.catalog.add'),
-        child: Icon(KIcons.add),
+        child: TutorialTip(
+          title: '產品種類',
+          message: '我們會把相似「產品」放在「產品種類」中，到時候點餐會比較方便。例如：\n'
+              '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
+              '「塑膠袋」、「環保杯」整合進「其他」\n'
+              '若需要新增產品種類，可以點此按鈕。',
+          label: 'menu.catalog',
+          child: Icon(KIcons.add),
+        ),
       ),
       body: menu.isEmpty
           ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
@@ -59,23 +59,6 @@ class _MenuScreenState extends State<MenuScreen>
 
   void navigateNewCatalog() {
     Navigator.of(context).pushNamed(Routes.menuCatalogModal);
-  }
-
-  @override
-  bool showTutorialIfNeed() {
-    if (Menu.instance.isEmpty) return false;
-    final steps =
-        Cache.instance.neededTutorial('menu.basic', MenuTutorial.STEPS);
-
-    if (steps.isNotEmpty) {
-      showTutorial(() => MenuTutorial.build(
-            context,
-            steps,
-            firstCatalog: firstCatalogKey,
-            addButton: floatingButtonKey,
-          ));
-    }
-    return steps.isEmpty;
   }
 
   List<BottomSheetAction> _actions() {
@@ -108,7 +91,7 @@ class _MenuScreenState extends State<MenuScreen>
       ),
     );
     // get sorted catalogs
-    final catalogList = CatalogList(menu.itemList, firstKey: firstCatalogKey);
+    final catalogList = CatalogList(menu.itemList);
 
     return Column(
       children: [

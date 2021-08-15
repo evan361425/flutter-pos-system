@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/tutorial_tip.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -9,9 +10,7 @@ import 'package:possystem/translator.dart';
 class CatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  final Key? firstKey;
-
-  const CatalogList(this.catalogs, {this.firstKey});
+  const CatalogList(this.catalogs);
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +52,7 @@ class CatalogList extends StatelessWidget {
   }
 
   Widget _tileBuilder(BuildContext context, int index, Catalog catalog) {
-    return ListTile(
-      key: index == 0 ? firstKey : null,
+    final child = ListTile(
       leading: CircleAvatar(
         child: Text(catalog.name.characters.first.toUpperCase()),
       ),
@@ -65,6 +63,15 @@ class CatalogList extends StatelessWidget {
         emptyText: tt('menu.product.unset'),
       ),
     );
+    if (index == 0) {
+      return TutorialTip(
+        message: '「長按」- 重新排序或編輯 產品種類\n「滑動」- 刪除 產品種類',
+        label: 'menu.cagtalog.item',
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   Widget _warningContextBuilder(BuildContext context, Catalog catalog) {
