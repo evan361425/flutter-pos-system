@@ -26,6 +26,8 @@ class OrderBySlidingPanel extends StatefulWidget {
 class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
   late PanelController panelController;
 
+  bool isOpen = false;
+
   @override
   void initState() {
     panelController = PanelController();
@@ -51,28 +53,31 @@ class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       ),
     );
 
-    final collapsed = GestureDetector(
-      key: Key('order.sliding_panel.opener'),
-      // toggle the panel
-      onTap: () => panelController.open(),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
-        ),
-        child: Column(children: [
-          Center(child: dragger),
-          Expanded(
-            child: ChangeNotifierProvider.value(
-              value: Cart.instance,
-              builder: (_, __) => Padding(
-                padding: const EdgeInsets.all(kSpacing0),
-                child: CartSnapshot(),
+    final collapsed = IgnorePointer(
+      ignoring: isOpen,
+      child: GestureDetector(
+        key: Key('order.sliding_panel.opener'),
+        // toggle the panel
+        onTap: () => panelController.open(),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+          ),
+          child: Column(children: [
+            Center(child: dragger),
+            Expanded(
+              child: ChangeNotifierProvider.value(
+                value: Cart.instance,
+                builder: (_, __) => Padding(
+                  padding: const EdgeInsets.all(kSpacing0),
+                  child: CartSnapshot(),
+                ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
 
@@ -82,6 +87,8 @@ class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       maxHeight: panelHeight,
       backdropEnabled: true,
       color: Colors.transparent,
+      onPanelClosed: () => setState(() => isOpen = false),
+      onPanelOpened: () => setState(() => isOpen = true),
       // drag to show
       panel: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
