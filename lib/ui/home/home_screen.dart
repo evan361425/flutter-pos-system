@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/custom_styles.dart';
-import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/components/tip.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/home/home_tutorial.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 import 'package:possystem/ui/home/widgets/upgrade_alert.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final icons = {
+  static const order = _LabeledIcon(label: 'order', tipVersion: 1);
+  static const icons = {
     'home.types.store': {
       'menu': _LabeledIcon(
-        key: GlobalKey(),
         icon: Icons.collections_sharp,
         label: 'menu',
         route: Routes.menu,
+        tipVersion: 1,
       ),
       'stock': _LabeledIcon(
-        key: GlobalKey(),
         icon: Icons.store_sharp,
         label: 'stock',
         route: Routes.stock,
+        tipVersion: 1,
       ),
       // _LabeledIcon(
       //   icon: Icons.assignment_ind_sharp,
@@ -35,10 +34,10 @@ class HomeScreen extends StatefulWidget {
         route: Routes.stockQuantity,
       ),
       'cashier': _LabeledIcon(
-        key: GlobalKey(),
         icon: Icons.attach_money_sharp,
         label: 'cashier',
         route: Routes.cashier,
+        tipVersion: 1,
       ),
     },
     // '外部連結': [
@@ -55,10 +54,10 @@ class HomeScreen extends StatefulWidget {
     // ],
     'home.types.other': {
       'analysis': _LabeledIcon(
-        key: GlobalKey(),
         icon: Icons.equalizer_sharp,
         label: 'analysis',
         route: Routes.analysis,
+        tipVersion: 1,
       ),
       // _LabeledIcon(
       //   icon: Icons.import_export_sharp,
@@ -79,29 +78,50 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with RouteAware, TutorialAware<HomeScreen> {
-  static final orderInfo = GlobalKey<OrderInfoState>();
-
-  @override
-  final String tutorialName = 'home';
-
-  @override
-  final int tutorialVersion = 1;
+class _HomeScreenState extends State<HomeScreen> {
+  bool oneTipIsEnabled = false;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final icons = HomeScreen.icons.entries
-        .map<Widget>((entry) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(tt(entry.key), style: textTheme.headline5),
-                Wrap(spacing: 8.0, children: entry.value.values.toList()),
-                Divider(),
-              ],
-            ))
-        .toList();
+    final theme = Theme.of(context);
+    final enabledLabel = _getEnabledLabel();
+
+    final icons = <Widget>[
+      for (var entry in HomeScreen.icons.entries)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tt(entry.key), style: theme.textTheme.headline5),
+            Wrap(spacing: 8.0, children: [
+              for (var item in entry.value.values)
+                Tip(
+                  title: tt('home.${item.label}'),
+                  message: tt('home.tutorial.${item.label}'),
+                  disabled: item.label != enabledLabel,
+                  onClosed: () {
+                    item.tipRead();
+                    // there is no tip enabled, now we can research
+                    setState(() => oneTipIsEnabled = false);
+                  },
+                  child: item.toButton(context),
+                )
+            ]),
+            Divider(),
+          ],
+        )
+    ];
+
+    final orderInfo = enabledLabel == null && HomeScreen.order.tipEnabled
+        ? Tip(
+            title: tt('home.order'),
+            message: tt('home.tutorial.order'),
+            onClosed: () {
+              HomeScreen.order.tipRead();
+              setState(() => oneTipIsEnabled = false);
+            },
+            child: OrderInfo(),
+          )
+        : OrderInfo();
 
     return Scaffold(
       body: SafeArea(
@@ -110,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
             padding: const EdgeInsets.all(kSpacing3),
             child: Column(
               children: [
-                OrderInfo(key: orderInfo),
+                orderInfo,
                 const SizedBox(height: kSpacing2),
                 Expanded(
                   child: SingleChildScrollView(
@@ -128,61 +148,47 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  @override
-  void didPopNext() {
-    super.didPopNext();
-    orderInfo.currentState?.reset();
-  }
-
-  @override
-  void didPush() {
-    super.didPush();
-    orderInfo.currentState?.reset();
-  }
-
-  @override
-  bool showTutorialIfNeed() {
-    for (final name in TutorialName.values) {
-      final steps = Cache.instance.neededTutorial(
-        'home.$name',
-        HomeTutorial.STEPS[name]!,
-      );
-
-      if (steps.isNotEmpty) {
-        showTutorial(() => HomeTutorial.steps(context, name, steps));
-        return false;
+  String? _getEnabledLabel() {
+    for (final group in HomeScreen.icons.values) {
+      for (final item in group.values) {
+        if (item.tipEnabled) {
+          oneTipIsEnabled = true;
+          return item.label;
+        }
       }
     }
-    return true;
+    return null;
   }
 }
 
-class _LabeledIcon extends StatelessWidget {
-  final IconData icon;
+class _LabeledIcon {
+  final IconData? icon;
   final String label;
-  final String route;
+  final String? route;
+  final int tipVersion;
 
   const _LabeledIcon({
-    GlobalKey? key,
-    required this.icon,
+    this.icon,
     required this.label,
-    required this.route,
-  }) : super(key: key);
+    this.route,
+    this.tipVersion = 0,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  bool get tipEnabled => Cache.instance.neededTip('home.$label', tipVersion);
+
+  Future<bool> tipRead() {
+    return Cache.instance.tipRead('home.$label', tipVersion);
+  }
+
+  Widget toButton(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.of(context).pushNamed(route),
+      onPressed: () => Navigator.of(context).pushNamed(route!),
       style: TextButton.styleFrom(shape: CircleBorder()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(icon, size: 48.0),
-          Text(
-            tt('home.$label'),
-            style: TextStyle(color: theme.textTheme.muted.color),
-          ),
+          Text(tt('home.$label')),
         ],
       ),
     );

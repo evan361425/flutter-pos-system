@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 
+import '../../../mocks/mock_cache.dart';
+
 void main() {
   testWidgets('should navigate to modal', (tester) async {
+    when(cache.neededTip(any, any)).thenReturn(true);
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
@@ -27,6 +31,7 @@ void main() {
   });
 
   testWidgets('should navigate correctly', (tester) async {
+    when(cache.neededTip(any, any)).thenReturn(false);
     final catalog = Catalog(index: 1, name: 'name');
     var navCount = 0;
     final poper = (BuildContext context) => TextButton(
@@ -60,5 +65,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('2'), findsOneWidget);
+  });
+
+  setUpAll(() {
+    initializeCache();
   });
 }
