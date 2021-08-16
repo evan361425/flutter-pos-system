@@ -48,4 +48,15 @@ jobs:
 
       # Run widget tests for our flutter project.
       - name: Testing
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: flutter test --no-pub --no-test-assets
+
+      - name: Testing with Coverage
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: flutter test --coverage --no-pub --no-test-assets
+
+      - name: Coverage to codecov
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        uses: codecov/codecov-action@v2
+        with:
+          file: coverage/lcov.info
