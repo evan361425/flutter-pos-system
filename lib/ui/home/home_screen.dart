@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         )
     ];
 
-    final orderInfo = enabledLabel == null && !HomeScreen.order.tipDisabled
+    final orderInfo = enabledLabel == null && HomeScreen.order.tipEnabled
         ? Tip(
             title: tt('home.order'),
             message: tt('home.tutorial.order'),
@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _getEnabledLabel() {
     for (final group in HomeScreen.icons.values) {
       for (final item in group.values) {
-        if (!item.tipDisabled) {
+        if (item.tipEnabled) {
           oneTipIsEnabled = true;
           return item.label;
         }
@@ -174,7 +174,7 @@ class _LabeledIcon {
     this.tipVersion = 0,
   });
 
-  bool get tipDisabled => !Cache.instance.neededTip('home.$label', tipVersion);
+  bool get tipEnabled => Cache.instance.neededTip('home.$label', tipVersion);
 
   Future<bool> tipRead() {
     return Cache.instance.tipRead('home.$label', tipVersion);

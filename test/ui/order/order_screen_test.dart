@@ -22,6 +22,8 @@ import '../../mocks/mock_providers.dart';
 void main() {
   testWidgets('should show actions', (tester) async {
     when(menu.itemList).thenReturn([]);
+    // use OrderByOrientation
+    when(cache.get(Caches.outlook_order)).thenReturn(1);
     await tester.pumpWidget(MaterialApp(
       home: ChangeNotifierProvider<Menu>.value(
         value: menu,
@@ -34,7 +36,7 @@ void main() {
 
     expect(find.byIcon(Icons.cancel_sharp), findsOneWidget);
 
-    await tester.tapAt(Offset(0, 0));
+    await tester.tap(find.byIcon(Icons.logout));
     await tester.pumpAndSettle();
   });
 
@@ -145,6 +147,7 @@ void main() {
   setUp(() {
     when(cache.get(Caches.feature_awake_provider)).thenReturn(false);
     when(cache.get(Caches.outlook_order)).thenReturn(0);
+    when(cache.neededTip(any, any)).thenReturn(false);
   });
 
   setUpAll(() {

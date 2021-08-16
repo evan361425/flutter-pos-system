@@ -31,8 +31,6 @@ class Cache {
       return service.getInt(name) as T?;
     } else if (T == double) {
       return service.getDouble(name) as T?;
-    } else if (T == List) {
-      return service.getStringList(name) as T?;
     } else {
       throw Error();
     }
@@ -49,8 +47,6 @@ class Cache {
       return service.setInt(name, value as int);
     } else if (T == double) {
       return service.setDouble(name, value as double);
-    } else if (T == List) {
-      return service.setStringList(name, value as List<String>);
     } else {
       throw Error();
     }
@@ -66,25 +62,6 @@ class Cache {
 
   Future<bool> tipRead(String key, int version) {
     return service.setInt('_tip.$key', version);
-  }
-
-  List<String> neededTutorial(String key, List<String> process) {
-    final data = service.getString('_tutorial.v2.$key');
-    service.setString('_tutorial.v2.$key', process.join(','));
-
-    if (data == null) return process;
-
-    final alreadyProcessed = data.split(',');
-
-    return process.where((e) => !alreadyProcessed.contains(e)).toList();
-  }
-
-  bool shouldCheckTutorial(String key, int version) {
-    return service.getInt('_tutorial.$key') != version;
-  }
-
-  void setTutorialVersion(String key, int version) {
-    service.setInt('_tutorial.$key', version);
   }
 }
 
