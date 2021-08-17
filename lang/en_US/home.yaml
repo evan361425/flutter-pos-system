@@ -9,8 +9,7 @@ types:
   other: Other
   store: Store
 tutorial:
-  welcome: "Welcome to POS System！"
-  menu: "Let's start make some menu！"
+  menu: "Menu help us manage products."
   stock: "Stock System help calculate your ingredient amount after ordering"
   cashier: "Cashier helps us surplus daily orders, it will calculate the cash we have after ordering."
   analysis: "Analysis System allow you to check the order record"
