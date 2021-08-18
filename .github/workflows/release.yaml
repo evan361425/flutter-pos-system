@@ -46,10 +46,11 @@ jobs:
           echo '${{ steps.tag.outputs.result }} is not equal to ${{ env.PUBSPEC_VERSION }}''
           exit 1
 
-  draft-release:
-    name: Draft Github release
+  rc-release:
+    name: Create RC release
     runs-on: ubuntu-20.04
     needs: check-version
+    if: ${{ startsWith(github.ref, 'refs/tags/') && contains(github.ref, '-rc') }}
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
@@ -72,18 +73,47 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: POS System ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          # draft: true
-          prerelease: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  prod-release:
+    name: Create release
+    runs-on: ubuntu-20.04
+    needs: check-version
+    if: ${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-rc') }}
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Extract tag name
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Get Changelog from rc1
+        id: build_changelog
+        run: |
+          BODY=$(curl \
+            -H 'Accept: application/vnd.github.v3+json' \
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/$RELEASE_VERSION-rc1 \
+            | jq '.body')
+          echo "::set-output name=changelog::$BODY"
+
+      - name: Draft release with changelog
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-asset:
     name: Create Android build
     runs-on: ubuntu-20.04
-    needs: draft-release
-    if: ${{ startsWith(github.ref, 'refs/tags/') && contains(github.ref, '-rc') }}
+    needs: prod-release
     steps:
       - name: Get flavor
         id: flavor
@@ -146,13 +176,13 @@ jobs:
             $GITHUB_WORKSPACE/pos_system.apk
 
       # Upload the build.
-      - name: Add packaged build to release draft
+      - name: Add packaged build to release
         id: upload_release_asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.draft-release.outputs.upload_url }}
+          upload_url: ${{ needs.prod-release.outputs.upload_url }}
           asset_path: ./pos_system.apk
           asset_name: pos_system.${{ steps.flavor.outputs.result }}.apk
           asset_content_type: application/vnd.android.package-archive
