@@ -3,6 +3,10 @@ name: Draft Github Release
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Draft a release in specific tag. Must exist, will not create."
+        required: false
 
   push:
     # Sequence of patterns matched against refs/tags
@@ -15,9 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
+        # TODO: halt job https://github.com/actions/runner/issues/662
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/checkout@v2
 
       - name: Load pubspec version
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         id: pubspec
         uses: CumulusDS/get-yaml-paths-action@v0.1.0
         with:
@@ -25,6 +32,7 @@ jobs:
           version: version
 
       - name: Extract tag name
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         id: tag
         uses: actions/github-script@v4
         with:
@@ -36,12 +44,13 @@ jobs:
             return version.substr(0, index == -1 ? undefined : index);
 
       - name: Extract version name
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           export PUBSPEC_VERSION=${{steps.pubspec.outputs.version}}
           echo "PUBSPEC_VERSION=$(echo ${PUBSPEC_VERSION%+*})" >> $GITHUB_ENV
 
       - name: Check version
-        if: ${{ steps.tag.outputs.result != env.PUBSPEC_VERSION }}
+        if: ${{ github.event_name != 'workflow_dispatch' && steps.tag.outputs.result != env.PUBSPEC_VERSION }}
         run: |
           echo '${{ steps.tag.outputs.result }} is not equal to ${{ env.PUBSPEC_VERSION }}''
           exit 1
@@ -50,12 +59,16 @@ jobs:
     name: Create RC release
     runs-on: ubuntu-20.04
     needs: check-version
-    if: ${{ startsWith(github.ref, 'refs/tags/') && contains(github.ref, '-rc') }}
+    if: ${{ (startsWith(github.ref, 'refs/tags/') && contains(github.ref, '-rc')) || contains(github.event.inputs.tag, '-rc') }}
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - name: Extract tag name
+      - name: Extract version from tag
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Extract version from input
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "RELEASE_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -83,12 +96,16 @@ jobs:
     name: Create release
     runs-on: ubuntu-20.04
     needs: check-version
-    if: ${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-rc') }}
+    if: ${{ (startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-rc')) || (github.event.inputs.tag && !contains(github.event.inputs.tag, '-rc')) }}
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - name: Extract tag name
+      - name: Extract version from tag
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Extract version from input
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "RELEASE_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
 
       - name: Get Changelog from rc1
         id: build_changelog
@@ -96,7 +113,10 @@ jobs:
           BODY=$(curl \
             -H 'Accept: application/vnd.github.v3+json' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/$RELEASE_VERSION-rc1 \
-            | jq '.body')
+            | jq -r '.body')
+          BODY="${BODY//'%'/'%25'}"
+          BODY="${BODY//$'\n'/'%0A'}"
+          BODY="${BODY//$'\r'/'%0D'}"
           echo "::set-output name=changelog::$BODY"
 
       - name: Draft release with changelog
@@ -114,6 +134,7 @@ jobs:
     name: Create Android build
     runs-on: ubuntu-20.04
     needs: prod-release
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
       - name: Get flavor
         id: flavor
