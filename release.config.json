@@ -1,11 +1,11 @@
 {
   "categories": [
     {
-      "title": "## 🚀 Features",
+      "title": "## 🚀 功能",
       "labels": ["enhancement"]
     },
     {
-      "title": "## 🐛 Fixes",
+      "title": "## 🐛 修正",
       "labels": ["bug"]
     }
   ],
