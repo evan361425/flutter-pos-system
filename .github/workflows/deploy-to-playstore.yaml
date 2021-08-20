@@ -8,23 +8,24 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production, production)"
         required: true
         default: "internal"
-      number:
-        description: "Build number default 1"
-        required: false
-        default: "1"
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  release:
+    types:
+      - published
+      # - released - for release published
+      # - prereleased - for pre-release published
 
 jobs:
   var:
-    runs-on: ubuntu-18.04
+    name: Extracting variables
+    runs-on: ubuntu-latest
     outputs:
       lane: ${{ steps.lane.outputs.result }}
-      number: ${{ steps.number.outputs.result }}
+      dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.flavor }}
     steps:
+      - name: Echo your ref
+        run: echo ${{ github.ref }}
+
       - name: Extract lane
         id: lane
         uses: actions/github-script@v4
@@ -33,21 +34,19 @@ jobs:
           script: |
             const ref = context.payload.ref || '';
 
-            return ref.startsWith('refs/tags/')
-              ? ref.includes('-rc') ? 'internal' : 'beta'
-              : '${{ github.event.inputs.lane }}';
+            return context.eventName === 'workflow_dispatch'
+              ? '${{ github.event.inputs.lane }}'
+              : ref.includes('-rc') ? 'internal' : 'beta';
 
       - name: Extract build number
-        id: number
+        id: dev_build_number
         uses: actions/github-script@v4
         with:
           result-encoding: string
           script: |
             const ref = context.payload.ref || '';
 
-            return ref.startsWith('refs/tags/') && ref.includes('-rc')
-              ? ref.substr(ref.indexOf('-rc') + 3)
-              : '${{ github.event.inputs.number }}';
+            return ref.includes('-rc') ? ref.substr(ref.indexOf('-rc') + 3) : '1';
 
       - name: Extract Flavor
         id: flavor
@@ -57,9 +56,36 @@ jobs:
           else
             echo "::set-output name=flavor::prod"
           fi
+
+  version_code:
+    name: Get pubspec version(build) code
+    runs-on: ubuntu-latest
+    outputs:
+      version_code: ${{ steps.version_code.outputs.version_code }}
+    steps:
+      - name: Checkout code
+        if: ${{ steps.flavor.outputs.flavor == "promote_to_production" }}
+        uses: actions/checkout@v2
+
+      - name: Load pubspec version
+        id: pubspec
+        if: ${{ steps.flavor.outputs.flavor == "promote_to_production" }}
+        uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        with:
+          file: pubspec.yaml
+          version: version
+
+      - name: Extract build code
+        id: version_code
+        run: |
+          VERSION_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
+          echo "::set-output name=version_code::$VERSION_CODE"
+
   fastlane-deploy:
     runs-on: ubuntu-18.04
-    needs: var
+    needs:
+      - var
+      - version_code
     steps:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
@@ -111,6 +137,6 @@ jobs:
         run: bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
-          BUILD_NUMBER: ${{needs.var.outputs.number}}
-          VERSION_CODE: ${{ github.event.inputs.number }}
+          BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
+          VERSION_CODE: ${{ needs.version_code.outputs.version_code }}
         working-directory: android
