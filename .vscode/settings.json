@@ -1,14 +1,15 @@
 {
-    "cSpell.words": [
-        "crashlytics",
-        "firestore",
-        "loadmore",
-        "mockito",
-        "possystem",
-        "reorderable",
-        "sembast",
-        "signin",
-        "sqflite",
-        "upgrader"
-    ]
+  "cSpell.words": [
+    "crashlytics",
+    "firestore",
+    "loadmore",
+    "mockito",
+    "possystem",
+    "pubspec",
+    "reorderable",
+    "sembast",
+    "signin",
+    "sqflite",
+    "upgrader"
+  ]
 }
