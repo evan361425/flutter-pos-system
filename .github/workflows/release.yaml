@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Draft a release in specific tag. Must exist, will not create."
+        description: "Draft a release in specific tag. Use current commit, will not create tag."
         required: false
 
   push:
@@ -13,27 +13,41 @@ on:
     tags:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
+# Workflows:
+# 1. Two condition, 'tag' event or 'workflow_dispatch' event
+#    Both will check existence of changelog in the same build code
+#      1. 'tag' - should be same with pubspec.yaml
+#      2. 'workflow_dispatch' - no need to add tag
+# 2.
+
 jobs:
+  # Two condition, 'tag' event or 'workflow_dispatch' event
+  # Both will check existence of changelog in the same build code
+  #   1. 'tag' - should be same with pubspec.yaml
+  #   2. 'workflow_dispatch' - no need to do
+  # Outputs:
+  #   1. `build_code` - pubspec.yaml build code.
+  #   2. `tag` - tag name. No mater which event is, it should exist.
   check-version:
     name: Check pubspec.yaml version with tag
     runs-on: ubuntu-latest
+    outputs:
+      build_code: ${{ steps.pubspec_version.outputs.code }}
+      tag: ${{ steps.tag.outputs.result }}
     steps:
       - name: Checkout code
-        # TODO: halt job https://github.com/actions/runner/issues/662
-        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/checkout@v2
 
       - name: Load pubspec version
-        if: ${{ github.event_name != 'workflow_dispatch' }}
         id: pubspec
         uses: CumulusDS/get-yaml-paths-action@v0.1.0
         with:
           file: pubspec.yaml
           version: version
 
-      - name: Extract tag name
+      - name: Extract tag version name
         if: ${{ github.event_name != 'workflow_dispatch' }}
-        id: tag
+        id: tag_version
         uses: actions/github-script@v4
         with:
           result-encoding: string
@@ -43,33 +57,41 @@ jobs:
 
             return version.substr(0, index == -1 ? undefined : index);
 
-      - name: Extract version name
-        if: ${{ github.event_name != 'workflow_dispatch' }}
+      - name: Extract tag name
+        id: tag
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            return context.eventName === 'workflow_dispatch'
+              ? '${{ github.event.inputs.tag }}'
+              : context.payload.ref.replace(/\/?refs\/tags\//, '');
+
+      - name: Extract pubspec version and code
+        id: pubspec_version
         run: |
-          export PUBSPEC_VERSION=${{steps.pubspec.outputs.version}}
-          echo "PUBSPEC_VERSION=$(echo ${PUBSPEC_VERSION%+*})" >> $GITHUB_ENV
+          PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+"")
+          PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+"")
+          echo "::set-output name=version::$PUBSPEC_VERSION"
+          echo "::set-output name=code::$PUBSPEC_BUILD_CODE"
 
       - name: Check version
-        if: ${{ github.event_name != 'workflow_dispatch' && steps.tag.outputs.result != env.PUBSPEC_VERSION }}
+        if: ${{ github.event_name != 'workflow_dispatch' && steps.tag_version.outputs.result != steps.pubspec_version.outputs.version }}
         run: |
-          echo '${{ steps.tag.outputs.result }} is not equal to ${{ env.PUBSPEC_VERSION }}''
+          echo '${{ steps.tag_version.outputs.result }} is not equal to ${{ steps.pubspec_version.outputs.version }}''
           exit 1
 
+      - name: Check code, should not exist same code changelog
+        run: test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1"
+
+  # If pushing tag with '-rc' (release candidate), it should be fired.
+  # End of workflows in RC mode.
   rc-release:
     name: Create RC release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: check-version
-    if: ${{ (startsWith(github.ref, 'refs/tags/') && contains(github.ref, '-rc')) || contains(github.event.inputs.tag, '-rc') }}
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    if: ${{ contains(needs.check-version.outputs.tag, '-rc') }}
     steps:
-      - name: Extract version from tag
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - name: Extract version from input
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo "RELEASE_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -82,37 +104,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Draft release with changelog
-        id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ needs.check-version.outputs.tag }}
+          release_name: ${{ needs.check-version.outputs.tag }}
           body: ${{ steps.build_changelog.outputs.changelog }}
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # If pushing released tag (vX.X.X), it should be fired.
+  # Should build some artifacts, see below.
   prod-release:
     name: Create release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: check-version
-    if: ${{ (startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-rc')) || (github.event.inputs.tag && !contains(github.event.inputs.tag, '-rc')) }}
+    if: ${{ !contains(needs.check-version.outputs.tag, '-rc') }}
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      changelog: ${{ steps.build_changelog.outputs.changelog }}
     steps:
-      - name: Extract version from tag
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - name: Extract version from input
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo "RELEASE_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
-
+      # escape special characters
+      # https://github.com/actions/toolkit/issues/403
       - name: Get Changelog from rc1
         id: build_changelog
         run: |
           BODY=$(curl \
             -H 'Accept: application/vnd.github.v3+json' \
-            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/$RELEASE_VERSION-rc1 \
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }}-rc1 \
             | jq -r '.body')
           BODY="${BODY//'%'/'%25'}"
           BODY="${BODY//$'\n'/'%0A'}"
@@ -123,28 +142,52 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ needs.check-version.outputs.tag }}
+          release_name: ${{ needs.check-version.outputs.tag }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Push changelog to GitHub
+  add-changelog:
+    name: Add changelog to Fastlane
+    runs-on: ubuntu-latest
+    needs:
+      - prod-release
+      - check-version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create changelog file for Fastlane
+        working-directory: android/fastlane/metadata/android/zh-TW/changelogs
+        run: |
+          echo "${{ needs.prod-release.outputs.changelog }}" > ${{ needs.check-version.outputs.build_code }}.txt
+
+      - name: Push to GitHub
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
+          git push
+
+  # Build APK to release, only work if you using tag.
+  # End of workflows in PROD mode.
   create-asset:
     name: Create Android build
-    runs-on: ubuntu-20.04
-    needs: prod-release
+    runs-on: ubuntu-latest
+    needs:
+      - prod-release
+      - check-version
     if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
       - name: Get flavor
         id: flavor
-        uses: actions/github-script@v4
+        uses: haya14busa/action-cond@v1
         with:
-          result-encoding: string
-          script: |
-            const version = context.payload.ref.replace(/\/refs\/tags\/v/, '');
-
-            return version.includes('-rc') ? 'dev' : 'prod';
+          cond: ${{ contains(needs.check-version.outputs.tag, '-rc') }}
+          if_true: dev
+          if_false: prod
 
         # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v1
@@ -169,10 +212,10 @@ jobs:
 
       - name: Configure Firebase
         run: |
-          mkdir -p ${{ steps.flavor.outputs.result }}
-          echo "$GOOGLE_SERVICES" > ${{ steps.flavor.outputs.result }}/google-services.json
+          mkdir -p ${{ steps.flavor.outputs.value }}
+          echo "$GOOGLE_SERVICES" > ${{ steps.flavor.outputs.value }}/google-services.json
         env:
-          GOOGLE_SERVICES: ${{ steps.flavor.outputs.result == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
+          GOOGLE_SERVICES: ${{ steps.flavor.outputs.value == 'dev' && secrets.GOOGLE_SERVICES_DEV || secrets.GOOGLE_SERVICES_PROD }}
         working-directory: android/app/src
 
       - name: Configure Play Store
@@ -192,8 +235,8 @@ jobs:
       # Build the application.
       - name: Start building
         run: |
-          flutter build -v apk --release --flavor ${{ steps.flavor.outputs.result }}
-          mv build/app/outputs/flutter-apk/app-${{ steps.flavor.outputs.result }}-release.apk \
+          flutter build -v apk --release --flavor ${{ steps.flavor.outputs.value }}
+          mv build/app/outputs/flutter-apk/app-${{ steps.flavor.outputs.value }}-release.apk \
             $GITHUB_WORKSPACE/pos_system.apk
 
       # Upload the build.
@@ -205,5 +248,5 @@ jobs:
         with:
           upload_url: ${{ needs.prod-release.outputs.upload_url }}
           asset_path: ./pos_system.apk
-          asset_name: pos_system.${{ steps.flavor.outputs.result }}.apk
+          asset_name: pos_system.${{ steps.flavor.outputs.value }}.apk
           asset_content_type: application/vnd.android.package-archive

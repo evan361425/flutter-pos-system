@@ -5,23 +5,32 @@ on:
     # Enable manual run
     inputs:
       lane:
-        description: "Fastlane lane to use (internal, beta, promote_to_production, production)"
+        description: "Fastlane lane to use (internal, beta, promote_to_production)"
         required: true
         default: "internal"
   release:
     types:
+      # for both 'release' and 'pre-release' published
       - published
-      # - released - for release published
-      # - prereleased - for pre-release published
+      # for 'release' published
+      # - released
+      # for 'pre-release' published
+      # - prereleased
 
 jobs:
+  # Extract some useful variable
+  # 1. lane - Same as 'workflow_dispatch' inputs, auto generate from tag name
+  # 2. dev_build_number - extract number of RC
+  # 3. flavor - 'dev'(internal) or 'prod'(beta)
+  # 4. build_code - pubspec.yaml build code.
   var:
     name: Extracting variables
     runs-on: ubuntu-latest
     outputs:
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
-      flavor: ${{ steps.flavor.outputs.flavor }}
+      flavor: ${{ steps.flavor.outputs.value }}
+      build_code: ${{ steps.build_code.outputs.value }}
     steps:
       - name: Echo your ref
         run: echo ${{ github.ref }}
@@ -50,42 +59,31 @@ jobs:
 
       - name: Extract Flavor
         id: flavor
-        run: |
-          if [ "${{ steps.lane.outputs.result }}" == "internal" ]; then
-            echo "::set-output name=flavor::dev"
-          else
-            echo "::set-output name=flavor::prod"
-          fi
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ steps.lane.outputs.result == "internal" }}
+          if_true: dev
+          if_false: prod
 
-  version_code:
-    name: Get pubspec version(build) code
-    runs-on: ubuntu-latest
-    outputs:
-      version_code: ${{ steps.version_code.outputs.version_code }}
-    steps:
       - name: Checkout code
-        if: ${{ steps.flavor.outputs.flavor == "promote_to_production" }}
         uses: actions/checkout@v2
 
       - name: Load pubspec version
         id: pubspec
-        if: ${{ steps.flavor.outputs.flavor == "promote_to_production" }}
         uses: CumulusDS/get-yaml-paths-action@v0.1.0
         with:
           file: pubspec.yaml
           version: version
 
       - name: Extract build code
-        id: version_code
+        id: build_code
         run: |
-          VERSION_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "::set-output name=version_code::$VERSION_CODE"
+          BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
+          echo "::set-output name=value::$BUILD_CODE"
 
   fastlane-deploy:
     runs-on: ubuntu-18.04
-    needs:
-      - var
-      - version_code
+    needs: var
     steps:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
@@ -138,5 +136,5 @@ jobs:
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
           BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
-          VERSION_CODE: ${{ needs.version_code.outputs.version_code }}
+          VERSION_CODE: ${{ needs.var.outputs.build_code }}
         working-directory: android
