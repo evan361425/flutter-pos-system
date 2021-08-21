@@ -10,8 +10,6 @@ on:
       - "**.md"
       - "android/fastlane/**"
   pull_request:
-    branches-ignore:
-      - ci/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,6 +18,7 @@ jobs:
   code-checking:
     name: Check code format and testing
     runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.head_ref , 'refs/heads/ci/') }}
     steps:
       - uses: actions/checkout@v2
 
@@ -48,15 +47,15 @@ jobs:
 
       # Run widget tests for our flutter project.
       - name: Testing
-        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        if: github.event_name == 'pull_request'
         run: flutter test --no-pub --no-test-assets
 
       - name: Testing with Coverage
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: github.event_name != 'pull_request'
         run: flutter test --coverage --no-pub --no-test-assets
 
       - name: Coverage to codecov
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: github.event_name != 'pull_request'
         uses: codecov/codecov-action@v2
         with:
           file: coverage/lcov.info
