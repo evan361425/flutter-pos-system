@@ -6,13 +6,11 @@ void showSnackBar(
   String message, {
   required Icon icon,
 }) {
+  // If want to add a "close" button, should consider taking root context, which is hard to handle.
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    margin: const EdgeInsets.all(kSpacing2),
-    behavior: SnackBarBehavior.floating,
-    action: SnackBarAction(
-      label: '關閉',
-      onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-    ),
+    // make floating button below
+    // behavior: SnackBarBehavior.floating,
+    // should not use icon, https://material.io/components/snackbars#anatomy
     content: Row(children: [
       icon,
       const SizedBox(width: kSpacing0),
