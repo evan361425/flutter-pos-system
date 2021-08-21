@@ -4,6 +4,7 @@
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/gradle-netflixoss-project-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![version](https://img.shields.io/github/v/tag/evan361425/flutter-pos-system)](https://github.com/evan361425/flutter-pos-system/releases/latest)
 [![codecov](https://codecov.io/gh/evan361425/flutter-pos-system/branch/master/graph/badge.svg?token=KCMZRMU47V)](https://codecov.io/gh/evan361425/flutter-pos-system)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a3713a1200f340e78f7209f4a55be993)](https://www.codacy.com/gh/evan361425/flutter-pos-system/dashboard?utm_source=github.com&utm_medium=referral&utm_content=evan361425/flutter-pos-system&utm_campaign=Badge_Grade)
 
 開源的 Flutter 應用程式，希望和使用者一起建立一個好用的 POS 系統（點餐系統）。
 
