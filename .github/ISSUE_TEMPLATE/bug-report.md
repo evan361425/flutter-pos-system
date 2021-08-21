@@ -25,9 +25,9 @@ assignees: ""
 
 **你用什麼手機：**
 
-- 機型: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- 版本 [e.g. 22]
+- 機型: e.g. iPhone6
+- OS: e.g. iOS8.1
+- 版本 e.g. 22
 
 **補充說明**
 任何想要補充的。
