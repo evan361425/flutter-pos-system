@@ -18,8 +18,6 @@ on:
 #    Both will check existence of changelog in the same build code
 #      1. 'tag' - should be same with pubspec.yaml
 #      2. 'workflow_dispatch' - no need to add tag
-# 2.
-
 jobs:
   # Two condition, 'tag' event or 'workflow_dispatch' event
   # Both will check existence of changelog in the same build code
@@ -112,7 +110,7 @@ jobs:
           body: ${{ steps.build_changelog.outputs.changelog }}
           prerelease: true
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_TO_TRIGGER_WORKFLOW }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # If pushing released tag (vX.X.X), it should be fired.
   # Should build some artifacts, see below.
@@ -147,7 +145,7 @@ jobs:
           release_name: ${{ needs.check-version.outputs.tag }}
           body: ${{ steps.build_changelog.outputs.changelog }}
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_TO_TRIGGER_WORKFLOW }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Push changelog to GitHub
   add-changelog:

@@ -8,14 +8,9 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
         required: true
         default: "internal"
-  release:
-    types:
-      # for both 'release' and 'pre-release' published
-      - published
-      # for 'release' published
-      # - released
-      # for 'pre-release' published
-      # - prereleased
+  push:
+    tags:
+      - "v*"
 
 jobs:
   # Extract some useful variable
@@ -47,21 +42,11 @@ jobs:
               ? '${{ github.event.inputs.lane }}'
               : ref.includes('-rc') ? 'internal' : 'beta';
 
-      - name: Extract build number
-        id: dev_build_number
-        uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            const ref = context.payload.ref || '';
-
-            return ref.includes('-rc') ? ref.substr(ref.indexOf('-rc') + 3) : '1';
-
       - name: Extract Flavor
         id: flavor
         uses: haya14busa/action-cond@v1
         with:
-          cond: ${{ steps.lane.outputs.result == "internal" }}
+          cond: ${{ steps.lane.outputs.result == 'internal' }}
           if_true: dev
           if_false: prod
 
@@ -80,6 +65,17 @@ jobs:
         run: |
           BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
           echo "::set-output name=value::$BUILD_CODE"
+
+      - name: Extract build number
+        id: dev_build_number
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const ref = context.payload.ref || '';
+            if (ref.includes('-rc')) return ref.substr(ref.indexOf('-rc') + 3);
+
+            return ''.concat(${{ steps.build_code.outputs.value }} % 100);
 
   fastlane-deploy:
     runs-on: ubuntu-18.04
