@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +13,20 @@ import '../../../mocks/mock_models.mocks.dart';
 import '../../../mocks/mock_repos.dart';
 
 void main() {
+  Widget bindWithProvider(Catalog catalog, Widget child) {
+    return MultiProvider(providers: [
+      ChangeNotifierProvider<Catalog>.value(value: catalog),
+      ChangeNotifierProvider<Stock>.value(value: stock),
+    ], child: child);
+  }
+
   testWidgets('should show empty body if empty', (tester) async {
     final catalog = Catalog(index: 1, name: 'name');
 
-    await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<Catalog>.value(value: catalog),
-    ], child: MaterialApp(home: CatalogScreen())));
+    await tester.pumpWidget(bindWithProvider(
+      catalog,
+      MaterialApp(home: CatalogScreen()),
+    ));
 
     expect(find.byType(EmptyBody), findsOneWidget);
   });
@@ -26,11 +35,9 @@ void main() {
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
-    await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ],
-        child: MaterialApp(
+    await tester.pumpWidget(bindWithProvider(
+        catalog,
+        MaterialApp(
           routes: {
             Routes.menuCatalogModal: (context) {
               argument = ModalRoute.of(context)!.settings.arguments;
@@ -54,11 +61,9 @@ void main() {
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
-    await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ],
-        child: MaterialApp(
+    await tester.pumpWidget(bindWithProvider(
+        catalog,
+        MaterialApp(
           routes: {
             Routes.menuProductReorder: (context) {
               argument = ModalRoute.of(context)!.settings.arguments;
@@ -91,11 +96,9 @@ void main() {
 
     var navigateCount = 0;
 
-    await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ],
-        child: MaterialApp(
+    await tester.pumpWidget(bindWithProvider(
+        catalog,
+        MaterialApp(
           routes: {
             Routes.menuProductModal: (_) => Text((navigateCount++).toString()),
           },

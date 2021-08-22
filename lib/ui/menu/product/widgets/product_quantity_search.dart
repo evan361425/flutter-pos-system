@@ -5,6 +5,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductQuantitySearch extends StatelessWidget {
   final String? text;
@@ -13,11 +14,13 @@ class ProductQuantitySearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final quantities = context.watch<Quantities>();
+
     return SearchScaffold<Quantity>(
-      handleChanged: (text) async => Quantities.instance.sortBySimilarity(text),
+      handleChanged: (text) async => quantities.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: Quantities.instance.itemList,
+      initialData: quantities.itemList,
       text: text ?? '',
       hintText: tt('menu.quantity.label.name'),
       textCapitalization: TextCapitalization.words,
@@ -29,10 +32,7 @@ class ProductQuantitySearch extends StatelessWidget {
       title: Text(quantity.name),
       trailing: IconButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => QuantityModal(
-                  quantity: quantity,
-                  editable: false,
-                ))),
+            builder: (_) => QuantityModal(quantity: quantity))),
         icon: Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {

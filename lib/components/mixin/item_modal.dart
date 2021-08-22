@@ -9,9 +9,6 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   bool isSaving = false;
 
-  /// if the form editable
-  bool editable = true;
-
   String? errorMessage;
 
   List<Widget> get actions => const <Widget>[];
@@ -39,11 +36,10 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         leading: PopButton(),
         title: title,
         actions: [
-          if (editable)
-            AppbarTextButton(
-              onPressed: () => handleSubmit(),
-              child: Text(tt('save')),
-            ),
+          AppbarTextButton(
+            onPressed: () => handleSubmit(),
+            child: Text(tt('save')),
+          ),
           ...actions,
         ],
       ),

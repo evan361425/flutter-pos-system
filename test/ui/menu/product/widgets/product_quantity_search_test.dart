@@ -3,19 +3,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../mocks/mock_widgets.dart';
 import '../../../../mocks/mock_repos.dart';
 
 void main() {
+  Widget bindWithProvider(Widget widget) {
+    return ChangeNotifierProvider<Quantities>.value(
+      value: quantities,
+      child: widget,
+    );
+  }
+
   testWidgets('should add new item', (tester) async {
     when(quantities.itemList).thenReturn([]);
     when(quantities.sortBySimilarity(any)).thenReturn([]);
     when(quantities.setItem(any)).thenAnswer((_) => Future.value());
 
-    await tester.pumpWidget(bindWithNavigator(ProductQuantitySearch()));
+    await tester.pumpWidget(
+      bindWithProvider(bindWithNavigator(ProductQuantitySearch())),
+    );
 
     await tester.enterText(find.byType(TextField), 'some-qua');
     await tester.pumpAndSettle();
@@ -34,7 +45,7 @@ void main() {
 
     Quantity? argument;
 
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(bindWithProvider(MaterialApp(
       home: Navigator(
         onPopPage: (route, result) {
           argument = result;
@@ -45,7 +56,7 @@ void main() {
           MaterialPage(child: ProductQuantitySearch()),
         ],
       ),
-    ));
+    )));
 
     await tester.tap(find.byIcon(Icons.open_in_new_sharp));
     await tester.pumpAndSettle();

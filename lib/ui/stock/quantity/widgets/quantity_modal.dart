@@ -9,10 +9,7 @@ import 'package:possystem/translator.dart';
 class QuantityModal extends StatefulWidget {
   final Quantity? quantity;
 
-  final bool editable;
-
-  const QuantityModal({Key? key, this.quantity, this.editable = true})
-      : super(key: key);
+  const QuantityModal({Key? key, this.quantity}) : super(key: key);
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -36,7 +33,6 @@ class _QuantityModalState extends State<QuantityModal>
     return [
       TextFormField(
         controller: _nameController,
-        readOnly: !editable,
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -52,7 +48,6 @@ class _QuantityModalState extends State<QuantityModal>
       ),
       TextFormField(
         controller: _proportionController,
-        readOnly: !editable,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
@@ -79,8 +74,6 @@ class _QuantityModalState extends State<QuantityModal>
 
     final pp = widget.quantity?.defaultProportion.toString() ?? '1';
     _proportionController = TextEditingController(text: pp);
-
-    editable = widget.editable;
   }
 
   @override
