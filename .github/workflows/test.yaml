@@ -9,6 +9,8 @@ on:
     paths-ignore:
       - "**.md"
       - "android/fastlane/**"
+      - "pubspec.yaml"
+      - ".github/**"
   pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
