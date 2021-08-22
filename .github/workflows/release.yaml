@@ -167,7 +167,8 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
+          git add --all
+          git commit -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
           git push
 
   # Build APK to release, only work if you using tag.
