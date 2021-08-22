@@ -82,7 +82,8 @@ jobs:
           exit 1
 
       - name: Check code, should not exist same code changelog
-        run: test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1"
+        working-directory: android/fastlane/metadata/android/zh-TW/changelogs
+        run: test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1
 
   # If pushing tag with '-rc' (release candidate), it should be fired.
   # End of workflows in RC mode.
