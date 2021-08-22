@@ -54,7 +54,6 @@ void main() {
 
     await tester.tap(find.text('confirm'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('關閉'));
   });
 
   testWidgets('should set default directly', (tester) async {
