@@ -55,13 +55,13 @@ class Cache {
   bool neededTip(String key, int version) {
     if (version == 0) return false;
 
-    final result = service.getInt('_tip.v2.$key') ?? 0;
+    final result = service.getInt('_tip.$key') ?? 0;
 
     return result != version;
   }
 
   Future<bool> tipRead(String key, int version) {
-    return service.setInt('_tip.v2.$key', version);
+    return service.setInt('_tip.$key', version);
   }
 }
 

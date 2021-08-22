@@ -83,7 +83,7 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
       _removeEntry();
       return;
     }
-    _controller.reverse();
+    _controller.reverse().then((value) => _removeEntry());
     if (widget.onClosed != null) {
       widget.onClosed!();
     }

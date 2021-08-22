@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/tip.dart';
 import 'package:possystem/services/cache.dart';
 
-class TipTutorial extends StatelessWidget {
+class TipTutorial extends StatefulWidget {
   final Widget child;
 
   final String label;
@@ -24,14 +24,32 @@ class TipTutorial extends StatelessWidget {
     this.disabled = false,
   });
 
+  bool get isDisabled => disabled || !Cache.instance.neededTip(label, version);
+
+  @override
+  _TipTutorialState createState() => _TipTutorialState();
+}
+
+class _TipTutorialState extends State<TipTutorial> {
+  late bool isDisbaled;
+
+  @override
+  void initState() {
+    super.initState();
+    isDisbaled = widget.isDisabled;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Tip(
-      title: title,
-      message: message,
-      disabled: disabled || !Cache.instance.neededTip(label, version),
-      onClosed: () => Cache.instance.tipRead(label, version),
-      child: child,
+      title: widget.title,
+      message: widget.message,
+      disabled: isDisbaled,
+      onClosed: () {
+        Cache.instance.tipRead(widget.label, widget.version);
+        setState(() => isDisbaled = true);
+      },
+      child: widget.child,
     );
   }
 }

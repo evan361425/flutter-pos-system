@@ -16,6 +16,7 @@ import '../../mocks/mock_repos.dart';
 void main() {
   testWidgets('should show empty body if empty', (tester) async {
     when(menu.isEmpty).thenReturn(true);
+    when(menu.isNotEmpty).thenReturn(false);
     when(cache.neededTip(any, any)).thenReturn(true);
 
     await tester.pumpWidget(MultiProvider(providers: [
@@ -27,6 +28,7 @@ void main() {
 
   testWidgets('should navigate correctly', (tester) async {
     when(menu.isEmpty).thenReturn(false);
+    when(menu.isNotEmpty).thenReturn(true);
     when(menu.length).thenReturn(1);
     when(menu.itemList).thenReturn([Catalog(name: 'hi there')]);
     when(cache.neededTip(any, any)).thenReturn(false);
@@ -69,6 +71,7 @@ void main() {
     when(catalog.name).thenReturn('name');
     when(catalog.itemList).thenReturn([product]);
     when(menu.isEmpty).thenReturn(false);
+    when(menu.isNotEmpty).thenReturn(true);
     when(menu.length).thenReturn(1);
     when(menu.itemList).thenReturn([catalog]);
 
