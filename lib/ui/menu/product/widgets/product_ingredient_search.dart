@@ -5,6 +5,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductIngredientSearch extends StatelessWidget {
   final String? text;
@@ -13,11 +14,13 @@ class ProductIngredientSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stock = context.watch<Stock>();
+
     return SearchScaffold<Ingredient>(
-      handleChanged: (text) async => Stock.instance.sortBySimilarity(text),
+      handleChanged: (text) async => stock.sortBySimilarity(text),
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
-      initialData: Stock.instance.itemList,
+      initialData: stock.itemList,
       text: text ?? '',
       hintText: tt('menu.ingredient.label.name'),
       textCapitalization: TextCapitalization.words,

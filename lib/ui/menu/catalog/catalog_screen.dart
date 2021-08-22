@@ -7,6 +7,7 @@ import 'package:possystem/components/style/item_editable_info.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
@@ -17,6 +18,8 @@ class CatalogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final catalog = context.watch<Catalog>();
+    // if change ingredient in product_ingredient_search
+    context.watch<Stock>();
 
     final textTheme = Theme.of(context).textTheme;
 

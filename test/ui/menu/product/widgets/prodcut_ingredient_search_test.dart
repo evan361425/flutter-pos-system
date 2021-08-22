@@ -3,19 +3,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/ui/menu/product/widgets/product_ingredient_search.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../mocks/mock_widgets.dart';
 import '../../../../mocks/mock_repos.dart';
 
 void main() {
+  Widget bindWithProvider(Widget widget) {
+    return ChangeNotifierProvider<Stock>.value(
+      value: stock,
+      child: widget,
+    );
+  }
+
   testWidgets('should add new item', (tester) async {
     when(stock.itemList).thenReturn([]);
     when(stock.sortBySimilarity(any)).thenReturn([]);
     when(stock.setItem(any)).thenAnswer((_) => Future.value());
 
-    await tester.pumpWidget(bindWithNavigator(ProductIngredientSearch()));
+    await tester.pumpWidget(bindWithProvider(bindWithNavigator(
+      ProductIngredientSearch(),
+    )));
 
     await tester.enterText(find.byType(TextField), 'some-ing');
     await tester.pumpAndSettle();
@@ -35,7 +46,7 @@ void main() {
 
     Ingredient? argument;
 
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(bindWithProvider(MaterialApp(
       home: Navigator(
         onPopPage: (route, result) {
           argument = result;
@@ -46,7 +57,7 @@ void main() {
           MaterialPage(child: ProductIngredientSearch()),
         ],
       ),
-    ));
+    )));
 
     await tester.tap(find.byIcon(Icons.open_in_new_sharp));
     await tester.pumpAndSettle();

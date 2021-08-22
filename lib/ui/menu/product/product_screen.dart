@@ -7,6 +7,8 @@ import 'package:possystem/components/style/item_editable_info.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -18,6 +20,10 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = context.watch<Product>();
+    // if change ingredient in product_ingredient_search
+    context.watch<Stock>();
+    // if change quantity in product_quantity_search
+    context.watch<Quantities>();
 
     final navigateNewIngredient = () => Navigator.of(context).pushNamed(
           Routes.menuIngredient,

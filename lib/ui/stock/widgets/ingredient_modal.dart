@@ -69,7 +69,7 @@ class _IngredientModalState extends State<IngredientModal>
                 title: Text(
                   '${product.catalog.name} - ${product.name}',
                 ),
-                onTap: editable ? () => _handleTap(product) : null,
+                onTap: widget.editable ? () => _handleTap(product) : null,
               );
           }
         });
@@ -86,7 +86,6 @@ class _IngredientModalState extends State<IngredientModal>
   List<Widget> formFields() => <Widget>[
         TextFormField(
           controller: _nameController,
-          readOnly: !editable,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
@@ -101,7 +100,6 @@ class _IngredientModalState extends State<IngredientModal>
         ),
         TextFormField(
           controller: _amountController,
-          readOnly: !editable,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
@@ -122,8 +120,6 @@ class _IngredientModalState extends State<IngredientModal>
 
     final amount = widget.ingredient?.currentAmount?.toString() ?? '';
     _amountController = TextEditingController(text: amount);
-
-    editable = widget.editable;
   }
 
   @override

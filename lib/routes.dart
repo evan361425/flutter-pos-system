@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 import 'package:possystem/ui/menu/menu_search.dart';
 import 'package:possystem/ui/menu/product/widgets/product_quantity_search.dart';
@@ -107,8 +109,12 @@ class Routes {
             )
           : ProductIngredientModal(product: arg as Product);
     },
-    menuIngredientSearch: (context) =>
-        ProductIngredientSearch(text: arg<String?>(context)),
+    menuIngredientSearch: (context) => ChangeNotifierProvider.value(
+          value: Stock.instance,
+          builder: (_, __) => ProductIngredientSearch(
+            text: arg<String?>(context),
+          ),
+        ),
     menuQuantity: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductQuantity
@@ -118,8 +124,12 @@ class Routes {
             )
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
-    menuQuantitySearch: (context) =>
-        ProductQuantitySearch(text: arg<String?>(context)),
+    menuQuantitySearch: (context) => ChangeNotifierProvider.value(
+          value: Quantities.instance,
+          builder: (_, __) => ProductQuantitySearch(
+            text: arg<String?>(context),
+          ),
+        ),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
