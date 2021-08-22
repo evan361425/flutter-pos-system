@@ -83,7 +83,7 @@ jobs:
 
       - name: Check code, should not exist same code changelog
         working-directory: android/fastlane/metadata/android/zh-TW/changelogs
-        run: test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1
+        run: '(test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1) || exit 0'
 
   # If pushing tag with '-rc' (release candidate), it should be fired.
   # End of workflows in RC mode.
@@ -112,7 +112,7 @@ jobs:
           body: ${{ steps.build_changelog.outputs.changelog }}
           prerelease: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_TO_TRIGGER_WORKFLOW }}
 
   # If pushing released tag (vX.X.X), it should be fired.
   # Should build some artifacts, see below.
@@ -147,7 +147,7 @@ jobs:
           release_name: ${{ needs.check-version.outputs.tag }}
           body: ${{ steps.build_changelog.outputs.changelog }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_TO_TRIGGER_WORKFLOW }}
 
   # Push changelog to GitHub
   add-changelog:
