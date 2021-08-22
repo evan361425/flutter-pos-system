@@ -13,12 +13,15 @@ class TutorialTip extends StatelessWidget {
 
   final int version;
 
+  final bool disabled;
+
   const TutorialTip({
     required this.label,
     this.version = 1,
     required this.message,
     this.title,
     required this.child,
+    this.disabled = false,
   });
 
   @override
@@ -26,7 +29,7 @@ class TutorialTip extends StatelessWidget {
     return Tip(
       title: title,
       message: message,
-      disabled: !Cache.instance.neededTip(label, version),
+      disabled: disabled || !Cache.instance.neededTip(label, version),
       onClosed: () => Cache.instance.tipRead(label, version),
       child: child,
     );

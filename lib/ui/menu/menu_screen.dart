@@ -48,6 +48,7 @@ class _MenuScreenState extends State<MenuScreen> {
               '「塑膠袋」、「環保杯」整合進「其他」\n'
               '若需要新增產品種類，可以點此按鈕。',
           label: 'menu.catalog',
+          disabled: Menu.instance.isEmpty,
           child: Icon(KIcons.add),
         ),
       ),
