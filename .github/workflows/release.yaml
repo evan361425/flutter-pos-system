@@ -70,8 +70,8 @@ jobs:
       - name: Extract pubspec version and code
         id: pubspec_version
         run: |
-          PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+"")
-          PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+"")
+          PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+")
+          PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
           echo "::set-output name=version::$PUBSPEC_VERSION"
           echo "::set-output name=code::$PUBSPEC_BUILD_CODE"
 
