@@ -1,10 +1,7 @@
 /// Copy from tooltip
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:possystem/components/style/custom_shapes.dart';
 import 'package:possystem/constants/constant.dart';
 
@@ -49,6 +46,7 @@ class Tip extends StatefulWidget {
 class TipState extends State<Tip> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   OverlayEntry? _entry;
+  OverlayEntry? _backdrop;
   Timer? _showTimer;
 
   @override
@@ -73,8 +71,6 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    GestureBinding.instance!.pointerRouter
-        .removeGlobalRoute(_handlePointerEvent);
     if (_entry != null) {
       _removeEntry();
     }
@@ -101,35 +97,14 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
       reverseDuration: Duration(milliseconds: 75),
       vsync: this,
     )..addStatusListener(_handleStatusChanged);
-    // Listen to global pointer events so that we can hide a top immediately
-    // if some other control is clicked on.
-    GestureBinding.instance!.pointerRouter.addGlobalRoute(_handlePointerEvent);
   }
 
-  void _handlePointerEvent(PointerEvent event) {
-    if (_entry == null) {
-      return;
-    }
-    if (event is PointerUpEvent || event is PointerCancelEvent) {
-      hide();
-    }
-  }
-
-  /// Shows the tip if it is not already visible.
-  ///
-  /// Returns `false` when the tip was already visible or if the context has
-  /// become null.
-  bool show() {
+  /// Shows the tip
+  void show() {
     _showTimer?.cancel();
     _showTimer = null;
-    if (_entry != null) {
-      // Stop trying to hide, if we were.
-      _controller.forward();
-      return false; // Already visible.
-    }
     _createNewEntry();
     _controller.forward();
-    return true;
   }
 
   void _createNewEntry() {
@@ -141,9 +116,16 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
       ancestor: overlayState.context.findRenderObject(),
     );
 
+    // insert backdrop first
     // We create this widget outside of the overlay entry's builder to prevent
     // updated values from happening to leak into the overlay when the overlay
     // rebuilds.
+    final Widget backdropOverlay = SizedBox.expand(
+      child: GestureDetector(onTap: hide),
+    );
+    _backdrop = OverlayEntry(builder: (_) => backdropOverlay);
+    overlayState.insert(_backdrop!);
+
     final Widget overlay = Directionality(
       textDirection: Directionality.of(context),
       child: _TiplOverlay(
@@ -155,6 +137,7 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
         ),
         target: target,
         preferBelow: widget.preferBelow,
+        hideTip: hide,
       ),
     );
     _entry = OverlayEntry(builder: (BuildContext context) => overlay);
@@ -172,6 +155,8 @@ class TipState extends State<Tip> with SingleTickerProviderStateMixin {
     _showTimer = null;
     _entry?.remove();
     _entry = null;
+    _backdrop?.remove();
+    _backdrop = null;
   }
 }
 
@@ -181,6 +166,7 @@ class _TiplOverlay extends StatelessWidget {
   final Animation<double> animation;
   final Offset target;
   final bool preferBelow;
+  final VoidCallback hideTip;
 
   const _TiplOverlay({
     Key? key,
@@ -189,6 +175,7 @@ class _TiplOverlay extends StatelessWidget {
     required this.animation,
     required this.target,
     required this.preferBelow,
+    required this.hideTip,
   }) : super(key: key);
 
   @override
@@ -204,17 +191,20 @@ class _TiplOverlay extends StatelessWidget {
       shape: TipShapeBorder(arrowArc: 0.1, target: target),
     );
 
-    final closer = Container(
-      margin: const EdgeInsets.only(top: kSpacing0),
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-      decoration: BoxDecoration(
-        color: theme.buttonColor,
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Text(
-        '我知道了',
-        style: textStyle.copyWith(
-          color: theme.buttonTheme.colorScheme!.onSurface,
+    final closer = GestureDetector(
+      onTap: hideTip,
+      child: Container(
+        margin: const EdgeInsets.only(top: kSpacing0),
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+        decoration: BoxDecoration(
+          color: theme.buttonColor,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        child: Text(
+          '我知道了',
+          style: textStyle.copyWith(
+            color: theme.buttonTheme.colorScheme!.onSurface,
+          ),
         ),
       ),
     );

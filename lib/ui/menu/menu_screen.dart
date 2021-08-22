@@ -4,7 +4,7 @@ import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/components/tutorial_tip.dart';
+import 'package:possystem/components/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -41,13 +41,14 @@ class _MenuScreenState extends State<MenuScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: navigateNewCatalog,
         tooltip: tt('menu.catalog.add'),
-        child: TutorialTip(
+        child: TipTutorial(
           title: '產品種類',
           message: '我們會把相似「產品」放在「產品種類」中，到時候點餐會比較方便。例如：\n'
               '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
               '「塑膠袋」、「環保杯」整合進「其他」\n'
               '若需要新增產品種類，可以點此按鈕。',
           label: 'menu.catalog',
+          disabled: Menu.instance.isEmpty,
           child: Icon(KIcons.add),
         ),
       ),
