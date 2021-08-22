@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/tutorial_tip.dart';
+import 'package:possystem/components/tip_tutorial.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -64,7 +64,7 @@ class CatalogList extends StatelessWidget {
       ),
     );
     if (index == 0) {
-      return TutorialTip(
+      return TipTutorial(
         message: '「長按」- 重新排序或編輯 產品種類\n「滑動」- 刪除 產品種類',
         label: 'menu.cagtalog.item',
         child: child,

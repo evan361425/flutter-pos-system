@@ -8,6 +8,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/home/widgets/order_info.dart';
 import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
 import 'package:possystem/ui/order/widgets/order_actions.dart';
 import 'package:possystem/ui/order/widgets/order_by_orientation.dart';
@@ -103,6 +104,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   @override
   void didPop() {
     Wakelock.disable();
+    OrderInfo.resetMetadata();
     super.didPop();
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/tip.dart';
 import 'package:possystem/services/cache.dart';
 
-class TutorialTip extends StatelessWidget {
+class TipTutorial extends StatelessWidget {
   final Widget child;
 
   final String label;
@@ -15,7 +15,7 @@ class TutorialTip extends StatelessWidget {
 
   final bool disabled;
 
-  const TutorialTip({
+  const TipTutorial({
     required this.label,
     this.version = 1,
     required this.message,

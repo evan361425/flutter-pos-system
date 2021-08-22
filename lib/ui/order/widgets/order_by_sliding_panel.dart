@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tutorial_tip.dart';
+import 'package:possystem/components/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
@@ -54,7 +54,7 @@ class _OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       ),
     );
 
-    final collapsed = TutorialTip(
+    final collapsed = TipTutorial(
       label: 'order.panel',
       title: '新版點餐設計',
       message: '為了讓點選產品可以更方便，\n'

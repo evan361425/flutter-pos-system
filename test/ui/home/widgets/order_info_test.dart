@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 
+import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_repos.dart';
 import '../../../mocks/mock_providers.dart';
 
@@ -11,7 +12,6 @@ void main() {
     final totalPrice = 50;
     final count = 5;
     var loadCount = 0;
-    final orderInfo = GlobalKey<OrderInfoState>();
     when(seller.getMetricBetween()).thenAnswer((_) {
       return Future.value({
         'totalPrice': totalPrice,
@@ -19,13 +19,14 @@ void main() {
       });
     });
     when(currency.numToString(any)).thenReturn(totalPrice.toString());
+    when(cache.neededTip(any, any)).thenReturn(false);
 
-    await tester.pumpWidget(MaterialApp(home: OrderInfo(key: orderInfo)));
+    await tester.pumpWidget(MaterialApp(home: OrderInfo()));
     await tester.pump();
 
     expect(find.text('5'), findsOneWidget);
 
-    orderInfo.currentState?.reset();
+    OrderInfo.resetMetadata();
 
     await tester.pumpAndSettle();
 
@@ -36,5 +37,6 @@ void main() {
   setUpAll(() {
     initializeRepos();
     initializeProviders();
+    initializeCache();
   });
 }
