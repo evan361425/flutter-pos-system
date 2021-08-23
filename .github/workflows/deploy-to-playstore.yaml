@@ -8,9 +8,10 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
         required: true
         default: "internal"
-  push:
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: ["Draft Github Release"]
+    branches: [master]
+    types: [completed]
 
 jobs:
   # Extract some useful variable
@@ -21,14 +22,18 @@ jobs:
   var:
     name: Extracting variables
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.value }}
       build_code: ${{ steps.build_code.outputs.value }}
     steps:
-      - name: Echo your ref
-        run: echo ${{ github.ref }}
+      - name: Get latest tag
+        id: tag
+        run: |
+          TAG=curl -s "https://api.github.com/repos/evan361425/flutter-pos-system/tags" | jq -r '.[0].name'
+          echo "::set-output name=value::$TAG"
 
       - name: Extract lane
         id: lane
@@ -36,11 +41,9 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const ref = context.payload.ref || '';
-
             return context.eventName === 'workflow_dispatch'
               ? '${{ github.event.inputs.lane }}'
-              : ref.includes('-rc') ? 'internal' : 'beta';
+              : '${{ steps.tag.outputs.value }}'.includes('-rc') ? 'internal' : 'beta';
 
       - name: Extract Flavor
         id: flavor
@@ -72,10 +75,10 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const ref = context.payload.ref || '';
-            if (ref.includes('-rc')) return ref.substr(ref.indexOf('-rc') + 3);
-
-            return ''.concat(${{ steps.build_code.outputs.value }} % 100);
+            const ref = '${{ steps.tag.outputs.value }}';
+            return ref.includes('-rc')
+              ? ref.substr(ref.indexOf('-rc') + 3)
+              : ''.concat(${{ steps.build_code.outputs.value }} % 100);
 
   fastlane-deploy:
     runs-on: ubuntu-18.04
