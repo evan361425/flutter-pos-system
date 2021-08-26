@@ -16,7 +16,6 @@ class Cache {
     if (version == null) {
       await service.setInt('version', 1);
     }
-    await service.clear();
 
     _initialized = true;
   }

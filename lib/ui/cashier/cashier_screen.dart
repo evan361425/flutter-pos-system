@@ -10,15 +10,23 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_unit_list.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 class CashierScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = Row(children: [
       Expanded(
-        child: ElevatedButton(
-          onPressed: () => handleSurplus(context),
-          child: Text('結餘'),
+        child: OrderedTip(
+          groupId: 'cashier',
+          id: 'surplus',
+          version: 1,
+          order: 1,
+          message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
+          child: ElevatedButton(
+            onPressed: () => handleSurplus(context),
+            child: Text('結餘'),
+          ),
         ),
       ),
       SizedBox(width: kSpacing1),
@@ -35,9 +43,16 @@ class CashierScreen extends StatelessWidget {
         title: Text('收銀機'),
         leading: PopButton(),
         actions: [
-          AppbarTextButton(
-            onPressed: () => handleSetDefault(context),
-            child: Text('設為預設'),
+          OrderedTip(
+            groupId: 'cashier',
+            id: 'setDefault',
+            version: 1,
+            order: 2,
+            message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
+            child: AppbarTextButton(
+              onPressed: () => handleSetDefault(context),
+              child: Text('設為預設'),
+            ),
           )
         ],
       ),

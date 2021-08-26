@@ -22,20 +22,20 @@ ingredient:
     name_repeat: 成份名稱重複
 
 replenisher:
-  add: 增加批量種類
-  apply: 批量增加
-  select_hint: 選擇批量種類
+  add: 增加種類
+  apply: 補貨
+  select_hint: 選擇採購種類
   confirm:
     title: "是否要套用 {name} ？"
     content: 將會影響以下的成份：
   tutorial: 點選以設定不同成分欲設定的量
   label:
-    name: 批量名稱
+    name: 採購名稱
   hint:
     name: Costco 採購
     amount: 設定增加／減少的量
   error:
-    name: 批量名稱重複
+    name: 名稱重複
 
 quantity:
   add: 新增份量

@@ -11,6 +11,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_actions.dart';
 import 'package:provider/provider.dart';
 
+import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_repos.dart';
 
 void main() {
@@ -92,7 +93,12 @@ void main() {
     expect(find.text('- ing-name'), findsOneWidget);
   });
 
+  setUp(() {
+    when(cache.getRaw(any)).thenReturn(1);
+  });
+
   setUpAll(() {
     initializeRepos();
+    initializeCache();
   });
 }

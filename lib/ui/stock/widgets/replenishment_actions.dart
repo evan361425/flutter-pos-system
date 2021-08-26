@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/replenisher.dart';
@@ -35,13 +36,17 @@ class ReplenishmentActions extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: ElevatedButton.icon(
-            icon: Icon(Icons.add_circle_outline_sharp),
-            label: Text(tt('stock.replenisher.apply')),
-            onPressed: () {
-              final item = selector.currentState!.current;
-              if (item != null) handleApply(context, item);
-            },
+          child: TipTutorial(
+            label: 'replenishment.apply',
+            message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.add_circle_outline_sharp),
+              label: Text(tt('stock.replenisher.apply')),
+              onPressed: () {
+                final item = selector.currentState!.current;
+                if (item != null) handleApply(context, item);
+              },
+            ),
           ),
         ),
       ],

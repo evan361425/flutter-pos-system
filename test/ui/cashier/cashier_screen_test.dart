@@ -6,6 +6,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_repos.dart';
 
 void main() {
@@ -83,7 +84,12 @@ void main() {
     verify(cashier.setDefault(useCurrent: true));
   });
 
+  setUp(() {
+    when(cache.getRaw(any)).thenReturn(1);
+  });
+
   setUpAll(() {
     initializeRepos();
+    initializeCache();
   });
 }
