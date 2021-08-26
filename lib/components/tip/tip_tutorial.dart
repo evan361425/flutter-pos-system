@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tip.dart';
-import 'package:possystem/services/cache.dart';
+import 'package:simple_tip/simple_tip.dart';
+
+import 'cache_state_manager.dart';
 
 class TipTutorial extends StatefulWidget {
   final Widget child;
@@ -24,7 +25,8 @@ class TipTutorial extends StatefulWidget {
     this.disabled = false,
   });
 
-  bool get isDisabled => disabled || !Cache.instance.neededTip(label, version);
+  bool get isDisabled =>
+      disabled || !CacheStateManager.instance.shouldShowRaw(label, version);
 
   @override
   _TipTutorialState createState() => _TipTutorialState();
@@ -41,12 +43,13 @@ class _TipTutorialState extends State<TipTutorial> {
 
   @override
   Widget build(BuildContext context) {
-    return Tip(
+    return SimpleTip(
       title: widget.title,
       message: widget.message,
-      disabled: isDisbaled,
-      onClosed: () {
-        Cache.instance.tipRead(widget.label, widget.version);
+      isDisabled: isDisbaled,
+      onClosed: () async {
+        await CacheStateManager.instance
+            .tipReadRaw(widget.label, widget.version);
         setState(() => isDisbaled = true);
       },
       child: widget.child,

@@ -42,25 +42,15 @@ void main() {
     Cache.instance.set<double>(Caches.currency_code, 1.0);
   });
 
-  group('#neededTip', () {
-    test('should return false if version is zero', () {
-      expect(Cache.instance.neededTip('key', 0), isFalse);
-      verifyNever(service.getInt(any));
-    });
-
-    test('should work correctly', () {
-      when(service.getInt(any)).thenReturn(null);
-      expect(Cache.instance.neededTip('key', 1), isTrue);
-
-      when(service.getInt(any)).thenReturn(1);
-      expect(Cache.instance.neededTip('key', 1), isFalse);
-    });
-  });
-
-  test('#tipRead', () {
-    when(service.setInt(any, 1)).thenAnswer((_) => Future.value(true));
-    Cache.instance.tipRead('key', 1);
-    verify(service.setInt(any, 1));
+  test('throw to get/set unsupport type', () {
+    expect(
+      () => Cache.instance.get<List>(Caches.currency_code),
+      throwsArgumentError,
+    );
+    expect(
+      () => Cache.instance.set<List>(Caches.currency_code, []),
+      throwsArgumentError,
+    );
   });
 
   setUp(() {

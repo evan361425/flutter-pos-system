@@ -17,7 +17,7 @@ void main() {
   testWidgets('should show empty body if empty', (tester) async {
     when(menu.isEmpty).thenReturn(true);
     when(menu.isNotEmpty).thenReturn(false);
-    when(cache.neededTip(any, any)).thenReturn(true);
+    when(cache.getRaw(any)).thenReturn(0);
 
     await tester.pumpWidget(MultiProvider(providers: [
       ChangeNotifierProvider<Menu>.value(value: menu),
@@ -31,7 +31,7 @@ void main() {
     when(menu.isNotEmpty).thenReturn(true);
     when(menu.length).thenReturn(1);
     when(menu.itemList).thenReturn([Catalog(name: 'hi there')]);
-    when(cache.neededTip(any, any)).thenReturn(false);
+    when(cache.getRaw(any)).thenReturn(1);
     var navCount = 0;
     final poper = (BuildContext context) => TextButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -65,7 +65,7 @@ void main() {
   testWidgets('should addable', (tester) async {
     final catalog = MockCatalog();
     final product = MockProduct();
-    when(cache.neededTip(any, any)).thenReturn(false);
+    when(cache.getRaw(any)).thenReturn(1);
     when(product.name).thenReturn('p-name');
     when(catalog.id).thenReturn('id');
     when(catalog.name).thenReturn('name');

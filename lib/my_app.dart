@@ -3,6 +3,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tip/cache_state_manager.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/providers/currency_provider.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
     await Database.instance.initialize();
     await Storage.instance.initialize();
     await Cache.instance.initialize();
+    CacheStateManager.initialize();
 
     _isRegistedServices = true;
 

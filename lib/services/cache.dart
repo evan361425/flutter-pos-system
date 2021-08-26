@@ -16,13 +16,19 @@ class Cache {
     if (version == null) {
       await service.setInt('version', 1);
     }
+    await service.clear();
 
     _initialized = true;
   }
 
-  T? get<T>(Caches cache) {
-    final name = cache.toString();
+  T? get<T>(Caches cache) => getRaw<T>(cache.toString());
 
+  Future<bool> set<T>(Caches cache, T value) => setRaw<T>(
+        cache.toString(),
+        value,
+      );
+
+  T? getRaw<T>(String name) {
     if (T == bool) {
       return service.getBool(name) as T?;
     } else if (T == String) {
@@ -32,13 +38,11 @@ class Cache {
     } else if (T == double) {
       return service.getDouble(name) as T?;
     } else {
-      throw Error();
+      throw ArgumentError();
     }
   }
 
-  Future<bool> set<T>(Caches cache, T value) {
-    final name = cache.toString();
-
+  Future<bool> setRaw<T>(String name, T value) {
     if (T == bool) {
       return service.setBool(name, value as bool);
     } else if (T == String) {
@@ -48,20 +52,8 @@ class Cache {
     } else if (T == double) {
       return service.setDouble(name, value as double);
     } else {
-      throw Error();
+      throw ArgumentError();
     }
-  }
-
-  bool neededTip(String key, int version) {
-    if (version == 0) return false;
-
-    final result = service.getInt('_tip.$key') ?? 0;
-
-    return result != version;
-  }
-
-  Future<bool> tipRead(String key, int version) {
-    return service.setInt('_tip.$key', version);
   }
 }
 
