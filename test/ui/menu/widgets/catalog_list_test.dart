@@ -9,7 +9,8 @@ import '../../../mocks/mock_cache.dart';
 
 void main() {
   testWidgets('should navigate to modal', (tester) async {
-    when(cache.neededTip(any, any)).thenReturn(true);
+    when(cache.getRaw(any)).thenReturn(0);
+    when(cache.setRaw(any, any)).thenAnswer((_) => Future.value(true));
     final catalog = Catalog(index: 1, name: 'name');
     var argument;
 
@@ -22,6 +23,13 @@ void main() {
       },
       home: CatalogList([catalog]),
     ));
+    // show tip
+    await tester.pumpAndSettle();
+
+    // close tip
+    await tester.tapAt(Offset.zero);
+    await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
     // tap tile
     await tester.tap(find.text('name'));
@@ -31,7 +39,7 @@ void main() {
   });
 
   testWidgets('should navigate correctly', (tester) async {
-    when(cache.neededTip(any, any)).thenReturn(false);
+    when(cache.getRaw(any)).thenReturn(1);
     final catalog = Catalog(index: 1, name: 'name');
     var navCount = 0;
     final poper = (BuildContext context) => TextButton(

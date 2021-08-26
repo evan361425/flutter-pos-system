@@ -19,7 +19,7 @@ void main() {
       });
     });
     when(currency.numToString(any)).thenReturn(totalPrice.toString());
-    when(cache.neededTip(any, any)).thenReturn(false);
+    when(cache.getRaw(any)).thenReturn(1);
 
     await tester.pumpWidget(MaterialApp(home: OrderInfo()));
     await tester.pump();

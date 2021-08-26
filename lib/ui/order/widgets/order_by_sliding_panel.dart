@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tip_tutorial.dart';
+import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tip_radio.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 import 'package:possystem/ui/home/widgets/upgrade_alert.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 class HomeScreen extends StatelessWidget {
   static const icons = {
@@ -64,15 +64,17 @@ class HomeScreen extends StatelessWidget {
             Text(tt(entry.key), style: theme.textTheme.headline5),
             Wrap(spacing: 8.0, children: [
               for (var item in entry.value.values)
-                TipRadio(
-                  groupId: 'home',
-                  title: tt('home.${item.label}'),
-                  message: tt('home.tutorial.${item.label}'),
-                  id: item.label,
-                  version: item.tipVersion,
-                  order: count++,
-                  child: item.toButton(context),
-                )
+                item.tipVersion == 0
+                    ? item.toButton(context)
+                    : OrderedTip(
+                        groupId: 'home',
+                        title: tt('home.${item.label}'),
+                        message: tt('home.tutorial.${item.label}'),
+                        id: item.label,
+                        version: item.tipVersion,
+                        order: count++,
+                        child: item.toButton(context),
+                      )
             ]),
             Divider(),
           ],

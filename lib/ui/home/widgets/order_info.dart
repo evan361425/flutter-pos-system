@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tip_radio.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 class OrderInfo extends StatelessWidget {
   const OrderInfo({Key? key}) : super(key: key);
@@ -27,15 +27,15 @@ class OrderInfo extends StatelessWidget {
             child: _OrderMetadata(key: _metadata),
           ),
         ),
-        TipRadio(
-          groupId: 'home',
-          title: tt('home.order'),
-          message: tt('home.tutorial.order'),
-          id: 'order',
-          version: 1,
-          order: 99,
-          child: Positioned(
-            bottom: 0,
+        Positioned(
+          bottom: 0,
+          child: OrderedTip(
+            groupId: 'home',
+            title: tt('home.order'),
+            message: tt('home.tutorial.order'),
+            id: 'order',
+            version: 1,
+            order: 99,
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pushNamed(Routes.order),
               style: ElevatedButton.styleFrom(

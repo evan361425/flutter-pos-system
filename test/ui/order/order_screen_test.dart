@@ -147,7 +147,7 @@ void main() {
   setUp(() {
     when(cache.get(Caches.feature_awake_provider)).thenReturn(false);
     when(cache.get(Caches.outlook_order)).thenReturn(0);
-    when(cache.neededTip(any, any)).thenReturn(false);
+    when(cache.getRaw(any)).thenReturn(1);
   });
 
   setUpAll(() {
