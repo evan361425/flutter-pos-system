@@ -64,13 +64,13 @@ class BottomSheetActions extends StatelessWidget {
 class BottomSheetAction {
   final Widget title;
 
-  final Widget leading;
+  final Widget? leading;
 
   final void Function(BuildContext) onTap;
 
   const BottomSheetAction({
     required this.title,
-    required this.leading,
+    this.leading,
     required this.onTap,
   });
 

@@ -8,9 +8,9 @@ import 'cart_metadata.dart';
 import 'cart_product_list.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key? key, this.productsKey}) : super(key: key);
-
   final Key? productsKey;
+
+  const CartScreen({Key? key, this.productsKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +39,8 @@ class CartScreen extends StatelessWidget {
         Container(
           color: Theme.of(context).cardColor,
           child: Row(children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
-                child: CartActions()),
+            CartActions(),
+            const SizedBox(width: kSpacing3),
             Expanded(child: CartMetadata()),
           ]),
         ),

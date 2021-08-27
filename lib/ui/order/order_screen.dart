@@ -9,18 +9,18 @@ import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
-import 'package:possystem/ui/order/cashier/calculator_dialog.dart';
-import 'package:possystem/ui/order/widgets/order_actions.dart';
-import 'package:possystem/ui/order/widgets/order_by_orientation.dart';
-import 'package:possystem/ui/order/widgets/order_by_sliding_panel.dart';
-import 'package:possystem/ui/order/widgets/order_ingredient_list.dart';
-import 'package:possystem/ui/order/widgets/order_product_list.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_list.dart';
 import 'cart/cart_screen.dart';
+import 'cashier/calculator_dialog.dart';
+import 'widgets/order_actions.dart';
+import 'widgets/order_by_orientation.dart';
+import 'widgets/order_by_sliding_panel.dart';
 import 'widgets/order_catalog_list.dart';
+import 'widgets/order_ingredient_list.dart';
+import 'widgets/order_product_list.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
