@@ -1,86 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
+  static final List<BottomSheetAction> actions = <BottomSheetAction>[
+    BottomSheetAction(
+      leading: Icon(Icons.loyalty_sharp),
+      onTap: (context) => Navigator.of(context).pop(_ActionTypes.discount),
+      title: Text(tt('order.cart.discount')),
+    ),
+    BottomSheetAction(
+      leading: Icon(Icons.attach_money_sharp),
+      onTap: (context) => Navigator.of(context).pop(_ActionTypes.price),
+      title: Text(tt('order.cart.price')),
+    ),
+    BottomSheetAction(
+      leading: Icon(Icons.exposure_sharp),
+      onTap: (context) => Navigator.of(context).pop(_ActionTypes.count),
+      title: Text(tt('order.cart.count')),
+    ),
+    BottomSheetAction(
+      leading: Icon(Icons.free_breakfast_sharp),
+      onTap: (context) => Navigator.of(context).pop(_ActionTypes.free),
+      title: Text(tt('order.cart.free')),
+    ),
+    BottomSheetAction(
+      leading: Icon(Icons.delete_sharp),
+      onTap: (context) => Navigator.of(context).pop(_ActionTypes.delete),
+      title: Text(tt('order.cart.delete')),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<_DialogItems>(
-        hint: Text(tt('order.cart.action_hint')),
-        onChanged: (option) async => showInputDialog(
-          context,
-          _DialogItem.fromEnum(option),
-        ),
-        items: <DropdownMenuItem<_DialogItems>>[
-          DropdownMenuItem(
-            value: _DialogItems.discount,
-            child: Text(tt('order.cart.discount')),
-          ),
-          DropdownMenuItem(
-            value: _DialogItems.price,
-            child: Text(tt('order.cart.price')),
-          ),
-          DropdownMenuItem(
-            value: _DialogItems.count,
-            child: Text(tt('order.cart.count')),
-          ),
-          DropdownMenuItem(
-            value: _DialogItems.free,
-            onTap: () => Cart.instance.updateSelectedPrice(0),
-            child: Text(tt('order.cart.free')),
-          ),
-          DropdownMenuItem(
-            value: _DialogItems.delete,
-            onTap: () => Cart.instance.removeSelected(),
-            child: Text(tt('order.cart.delete')),
-          ),
-        ],
-      ),
+    return ElevatedButton(
+      onPressed: () => showActions(context),
+      child: Text(tt('order.cart.action_hint')),
     );
   }
 
-  Future<void> showInputDialog(BuildContext context, _DialogItem? item) async {
-    if (item == null) return;
-
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => SingleTextDialog(
-        validator: item.validator,
-        decoration: item.decoration,
-        keyboardType: TextInputType.number,
-      ),
-    );
-
-    item.action(result ?? '');
-  }
-}
-
-enum _DialogItems {
-  discount,
-  price,
-  count,
-  free,
-  delete,
-}
-
-class _DialogItem {
-  _DialogItem({
-    required this.validator,
-    required this.decoration,
-    required this.action,
-  });
-
-  final String? Function(String?) validator;
-  final InputDecoration decoration;
-  final void Function(String) action;
-
-  static _DialogItem? fromEnum(_DialogItems? type) {
+  static void actionHandler(BuildContext context, _ActionTypes type) async {
+    _DialogItem item;
     switch (type) {
-      case _DialogItems.discount:
-        return _DialogItem(
+      case _ActionTypes.discount:
+        item = _DialogItem(
           validator: Validator.positiveInt(
             tt('order.cart.name.discount'),
             maximum: 100,
@@ -95,8 +61,9 @@ class _DialogItem {
             Cart.instance.updateSelectedDiscount(int.tryParse(result));
           },
         );
-      case _DialogItems.price:
-        return _DialogItem(
+        break;
+      case _ActionTypes.price:
+        item = _DialogItem(
           validator: Validator.positiveNumber(tt('order.cart.name.price')),
           decoration: InputDecoration(
             hintText: tt('order.cart.hint.price'),
@@ -106,8 +73,9 @@ class _DialogItem {
             Cart.instance.updateSelectedPrice(num.tryParse(result));
           },
         );
-      case _DialogItems.count:
-        return _DialogItem(
+        break;
+      case _ActionTypes.count:
+        item = _DialogItem(
           validator: Validator.positiveInt(
             tt('order.cart.name.count'),
             maximum: 10000,
@@ -122,8 +90,53 @@ class _DialogItem {
             Cart.instance.updateSelectedCount(int.tryParse(result));
           },
         );
-      default:
-        return null;
+        break;
+      case _ActionTypes.delete:
+        return Cart.instance.removeSelected();
+      case _ActionTypes.free:
+        return Cart.instance.updateSelectedPrice(0);
+    }
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => SingleTextDialog(
+        validator: item.validator,
+        decoration: item.decoration,
+        keyboardType: TextInputType.number,
+      ),
+    );
+
+    item.action(result ?? '');
+  }
+
+  static void showActions(BuildContext context) async {
+    final type = await showCircularBottomSheet<_ActionTypes>(
+      context,
+      actions: actions,
+    );
+
+    if (type != null) {
+      actionHandler(context, type);
     }
   }
+}
+
+enum _ActionTypes {
+  discount,
+  price,
+  count,
+  free,
+  delete,
+}
+
+class _DialogItem {
+  final String? Function(String?) validator;
+
+  final InputDecoration decoration;
+  final void Function(String) action;
+  _DialogItem({
+    required this.validator,
+    required this.decoration,
+    required this.action,
+  });
 }

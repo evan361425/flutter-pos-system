@@ -3,6 +3,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/order/cart/cart_actions.dart';
 import 'package:provider/provider.dart';
 
 class CartProductList extends StatefulWidget {
@@ -107,6 +108,12 @@ class _CartProductListTile extends StatelessWidget {
           subtitle: subtitle,
           trailing: trailing,
           onTap: onTap,
+          onLongPress: () {
+            // select product
+            onTap();
+            // and do action
+            CartActions.showActions(context);
+          },
           selected: selected,
           selectedTileColor: theme.primaryColorLight,
         ),
