@@ -19,7 +19,7 @@ void main() {
       child: MaterialApp(home: Material(child: CartScreen())),
     ));
 
-    await tester.tap(find.byType(ElevatedButton).first);
+    await tester.tap(find.byKey(Key('order.cart.select_all')));
 
     verify(cart.toggleAll(true));
   });
@@ -34,7 +34,7 @@ void main() {
       child: MaterialApp(home: Material(child: CartScreen())),
     ));
 
-    await tester.tap(find.byType(ElevatedButton).last);
+    await tester.tap(find.byKey(Key('order.cart.toggle_all')));
 
     verify(cart.toggleAll(null));
   });

@@ -22,6 +22,7 @@ class CartScreen extends StatelessWidget {
           child: Row(children: [
             Expanded(
               child: ElevatedButton(
+                key: Key('order.cart.select_all'),
                 onPressed: () => Cart.instance.toggleAll(true),
                 child: Text(tt('order.cart.select_all')),
               ),
@@ -29,6 +30,7 @@ class CartScreen extends StatelessWidget {
             SizedBox(width: 4.0),
             Expanded(
               child: ElevatedButton(
+                key: Key('order.cart.toggle_all'),
                 onPressed: () => Cart.instance.toggleAll(),
                 child: Text(tt('order.cart.toggle_all')),
               ),
@@ -38,6 +40,7 @@ class CartScreen extends StatelessWidget {
         Expanded(child: CartProductList(key: productsKey)),
         Container(
           color: Theme.of(context).cardColor,
+          padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
           child: Row(children: [
             CartActions(),
             const SizedBox(width: kSpacing3),
