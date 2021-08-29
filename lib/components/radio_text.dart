@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/constant.dart';
 
 class RadioText extends StatefulWidget {
   static final _groups = <String, _Group>{};
 
-  final VoidCallback onSelected;
+  final void Function(bool isSelected) onSelected;
 
   final String text;
 
@@ -12,12 +11,18 @@ class RadioText extends StatefulWidget {
 
   final String value;
 
+  final bool isTogglable;
+
+  final EdgeInsets margin;
+
   RadioText({
     Key? key,
     required this.groupId,
     required this.onSelected,
     required this.value,
     required this.text,
+    this.isTogglable = false,
+    this.margin = const EdgeInsets.symmetric(vertical: 4),
     bool? isSelected,
   }) : super(key: key) {
     // if not set, initialize a new one
@@ -47,8 +52,9 @@ class RadioText extends StatefulWidget {
   }
 
   void select() {
-    group.select(value);
-    onSelected();
+    if (group.select(value, isTogglable: isTogglable)) {
+      onSelected(isSelected);
+    }
   }
 
   static void clearAll() => _groups.clear();
@@ -60,12 +66,12 @@ class RadioText extends StatefulWidget {
   static Widget empty([String? text]) {
     if (text == null) {
       return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: const Text(''),
       );
     } else {
       return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4.0 + kSpacing1),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Text(text),
       );
     }
@@ -89,46 +95,72 @@ class _Group {
 
   void removeItem(String id) => _items.remove(id);
 
-  void select(String? value) {
+  bool select(String? value, {bool isTogglable = false}) {
+    if (_selected == value) {
+      if (isTogglable) {
+        _rebuildNeededRadio(value);
+        _selected = null;
+        return true;
+      }
+      return false;
+    }
+
+    _rebuildNeededRadio(value);
     _selected = value;
-    _items.values.forEach((rebuilder) => rebuilder());
+    return true;
   }
 
   void unselect() {
     _selected = null;
+  }
+
+  void _rebuildNeededRadio(String? newSelected) {
+    final oldCb = _items[_selected];
+    if (oldCb != null) oldCb();
+
+    final newCb = _items[newSelected];
+    if (newCb != null) newCb();
   }
 }
 
 class _RadioTextState extends State<RadioText> {
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-    final defaultColor = widget.isSelected ? primaryColor : Colors.transparent;
-    final borderColor = primaryColor.withAlpha(128);
+    final theme = Theme.of(context);
+    final color = theme.primaryColor;
+    final textColor = theme.colorScheme.brightness == Brightness.dark
+        ? theme.colorScheme.onSurface
+        : theme.colorScheme.onPrimary;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      margin: widget.margin,
       constraints: BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
-        color: defaultColor,
-        boxShadow: <BoxShadow>[
-          BoxShadow(color: defaultColor, blurRadius: 2.0),
-        ],
+        color: widget.isSelected ? color : null,
         border: Border.all(
-          width: 1.0,
-          color: widget.isSelected ? defaultColor : borderColor,
+          color: widget.isSelected ? color : Color(0xDD000000),
         ),
-        borderRadius: const BorderRadius.all(Radius.circular(2.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(4.0)),
       ),
       child: InkWell(
         onTap: () => widget.select(),
-        splashColor: primaryColor,
+        splashColor: color,
         child: Padding(
-          padding: const EdgeInsets.all(kSpacing1),
-          child: Text(widget.text, textAlign: TextAlign.center),
+          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+          child: Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: widget.isSelected ? TextStyle(color: textColor) : null,
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,11 +171,5 @@ class _RadioTextState extends State<RadioText> {
       }
     });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    widget.dispose();
-    super.dispose();
   }
 }

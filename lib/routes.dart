@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
+import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -49,9 +50,10 @@ class Routes {
 
   // sub-route
   static const String cashierChanger = 'cashier/changer';
-  static const String customerSetting = 'customer/setting';
   static const String customerModal = 'customer/modal';
   static const String customerReorder = 'customer/reorder';
+  static const String customerSetting = 'customer/setting';
+  static const String customerSettingReorder = 'customer/setting/reorder';
   static const String menuSearch = 'menu/search';
   static const String menuCatalog = 'menu/catalog';
   static const String menuCatalogModal = 'menu/catalog/modal';
@@ -80,11 +82,13 @@ class Routes {
     // cashier
     cashierChanger: (context) => ChangerModal(),
     // customer
-    customerSetting: (context) =>
-        CustomerSettingScreen(setting: arg<CustomerSetting>(context)),
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
     customerReorder: (context) => CustomerOrderableList(),
+    customerSetting: (context) =>
+        CustomerSettingScreen(setting: arg<CustomerSetting>(context)),
+    customerSettingReorder: (context) =>
+        CustomerSettingOrderableList(setting: arg<CustomerSetting>(context)),
     // menu
     menuSearch: (_) => MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(

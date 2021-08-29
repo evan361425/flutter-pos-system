@@ -33,7 +33,8 @@ class OrderQuantityListState extends State<OrderQuantityList> {
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
       RadioText(
-        onSelected: () => Cart.instance.removeSelectedIngredient(ingredient.id),
+        onSelected: (_) =>
+            Cart.instance.removeSelectedIngredient(ingredient.id),
         groupId: _QUANTITY_RADIO_KEY,
         value: Cart.DEFAULT_QUANTITY_ID,
         isSelected: Cart.DEFAULT_QUANTITY_ID == selected,
@@ -44,7 +45,7 @@ class OrderQuantityListState extends State<OrderQuantityList> {
       ),
       for (final quantity in ingredient.items)
         RadioText(
-          onSelected: () {
+          onSelected: (_) {
             Cart.instance.updateSelectedIngredient(OrderIngredient(
               ingredient: ingredient,
               quantity: quantity,

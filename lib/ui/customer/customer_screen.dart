@@ -5,6 +5,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/customers.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/customer/widgets/customer_setting_card.dart';
 import 'package:provider/provider.dart';
 
 class CustomerScreen extends StatelessWidget {
@@ -58,7 +59,7 @@ class CustomerScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           for (final setting in customers.itemList)
-            Card(child: Text(setting.name))
+            CustomerSettingCard(setting: setting)
         ],
       ),
     );

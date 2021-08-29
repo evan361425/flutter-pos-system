@@ -6,28 +6,39 @@ class OutlinedText extends StatelessWidget {
 
   final String? badge;
 
-  const OutlinedText(this.text, {Key? key, this.badge}) : super(key: key);
+  final bool colored;
+
+  const OutlinedText(
+    this.text, {
+    Key? key,
+    this.badge,
+    this.colored = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.primaryColor;
+    final textColor = theme.colorScheme.brightness == Brightness.dark
+        ? theme.colorScheme.onSurface
+        : theme.colorScheme.onPrimary;
     final base = Container(
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       padding: const EdgeInsets.fromLTRB(kSpacing1, 4.0, kSpacing1, 4.0),
       constraints: BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
-        border: Border.all(),
+        color: colored ? color : null,
+        border: Border.all(color: colored ? color : Color(0xDD000000)),
         borderRadius: BorderRadius.circular(4.0),
       ),
-      child: Text(text, textAlign: TextAlign.center),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: colored ? textColor : null),
+      ),
     );
 
     if (badge != null) {
-      final theme = Theme.of(context);
-      final color = theme.primaryColor;
-      final textColor = theme.colorScheme.brightness == Brightness.dark
-          ? theme.colorScheme.onSurface
-          : theme.colorScheme.onPrimary;
-
       return Stack(alignment: Alignment.center, children: [
         base,
         Positioned(

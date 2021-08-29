@@ -25,7 +25,7 @@ class OrderCatalogList extends StatelessWidget {
     return SingleRowWrap(children: <Widget>[
       for (final catalog in catalogs)
         RadioText(
-          onSelected: () => handleSelected(catalog),
+          onSelected: (_) => handleSelected(catalog),
           groupId: _RADIO_Key,
           value: catalog.id,
           text: catalog.name,

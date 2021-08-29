@@ -3,10 +3,9 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
-class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
+class ReorderableScaffold<T> extends StatelessWidget {
   final String? title;
 
   final List<T> items;

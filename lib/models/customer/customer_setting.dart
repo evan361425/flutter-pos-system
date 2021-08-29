@@ -8,15 +8,15 @@ import '../model.dart';
 
 class CustomerSetting
     with Model<CustomerSettingObject>, OrderableModel<CustomerSettingObject> {
-  String? description;
+  CustomerSettingOptionMode mode;
 
-  late final List<CustomerSettingOption> options;
+  late List<CustomerSettingOption> options;
 
   CustomerSetting({
     String? id,
     required String name,
-    this.description,
     int index = 0,
+    this.mode = CustomerSettingOptionMode.statOnly,
     List<CustomerSettingOption>? options,
   }) {
     this.id = id ?? Util.uuidV4();
@@ -28,8 +28,8 @@ class CustomerSetting
   factory CustomerSetting.fromObject(CustomerSettingObject object) {
     return CustomerSetting(
         name: object.name!,
-        description: object.description,
         index: object.index!,
+        mode: object.mode!,
         options: object.options);
   }
 
@@ -39,16 +39,25 @@ class CustomerSetting
   @override
   Stores get storageStore => Stores.customers;
 
+  CustomerSettingOption? get defaultOption {
+    try {
+      return options.firstWhere((option) => option.isDefault);
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   void removeFromRepo() => Customers.instance.removeItem(id);
 
   @override
   CustomerSettingObject toObject() => CustomerSettingObject(
-      id: id,
-      name: name,
-      description: description,
-      index: index,
-      options: options);
+        id: id,
+        name: name,
+        index: index,
+        mode: mode,
+        options: options,
+      );
 
   @override
   String toString() => name;
