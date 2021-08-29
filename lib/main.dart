@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/my_app.dart';
-import 'package:possystem/providers/currency_provider.dart';
-import 'package:possystem/providers/language_provider.dart';
-import 'package:possystem/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'models/repository/customers.dart';
+import 'models/repository/menu.dart';
+import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/stock.dart';
+import 'my_app.dart';
+import 'providers/currency_provider.dart';
+import 'providers/language_provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() async {
   // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
@@ -50,6 +51,9 @@ void main() async {
           ),
           ChangeNotifierProvider<Replenisher>(
             create: (_) => Replenisher(),
+          ),
+          ChangeNotifierProvider<Customers>(
+            create: (_) => Customers(),
           ),
         ],
         child: MyApp(),

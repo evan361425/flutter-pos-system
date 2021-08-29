@@ -9,6 +9,7 @@ enum Stores {
   replenisher,
   quantities,
   cashier,
+  customers,
 }
 
 class Storage {

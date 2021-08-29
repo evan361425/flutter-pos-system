@@ -13,16 +13,14 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
 
-class MenuScreen extends StatefulWidget {
-  @override
-  _MenuScreenState createState() => _MenuScreenState();
-}
-
-class _MenuScreenState extends State<MenuScreen> {
+class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
+
+    final goAddCatalog =
+        () => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +37,7 @@ class _MenuScreenState extends State<MenuScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: navigateNewCatalog,
+        onPressed: goAddCatalog,
         tooltip: tt('menu.catalog.add'),
         child: TipTutorial(
           title: '產品種類',
@@ -48,18 +46,14 @@ class _MenuScreenState extends State<MenuScreen> {
               '「塑膠袋」、「環保杯」整合進「其他」\n'
               '若需要新增產品種類，可以點此按鈕。',
           label: 'menu.catalog',
-          disabled: Menu.instance.isNotEmpty,
+          disabled: menu.isNotEmpty,
           child: Icon(KIcons.add),
         ),
       ),
       body: menu.isEmpty
-          ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
-          : _body(menu),
+          ? Center(child: EmptyBody(onPressed: goAddCatalog))
+          : _body(context, menu),
     );
-  }
-
-  void navigateNewCatalog() {
-    Navigator.of(context).pushNamed(Routes.menuCatalogModal);
   }
 
   List<BottomSheetAction> _actions() {
@@ -74,7 +68,7 @@ class _MenuScreenState extends State<MenuScreen> {
     ];
   }
 
-  Widget _body(Menu menu) {
+  Widget _body(BuildContext context, Menu menu) {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(

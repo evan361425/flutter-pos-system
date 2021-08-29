@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/customers.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/ui/splash/welcome_splash.dart';
 import 'package:provider/provider.dart';
+
+import 'splash/welcome_splash.dart';
 
 class ModelIntializer extends StatelessWidget {
   static bool _isReady = false;
@@ -23,7 +25,11 @@ class ModelIntializer extends StatelessWidget {
     final menu = context.watch<Menu>();
     final stock = context.watch<Stock>();
     final quantities = context.watch<Quantities>();
-    if (!menu.isReady || !stock.isReady || !quantities.isReady) {
+    final customers = context.watch<Customers>();
+    if (!menu.isReady ||
+        !stock.isReady ||
+        !quantities.isReady ||
+        !customers.isReady) {
       return false;
     }
 

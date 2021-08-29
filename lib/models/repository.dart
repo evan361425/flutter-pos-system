@@ -3,7 +3,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/services/storage.dart';
 
-mixin InitilizableRepository<T extends NotifyModel> on NotifyRepository<T> {
+mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
   bool isReady = false;
 
   T buildModel(String id, Map<String, Object?> value);
