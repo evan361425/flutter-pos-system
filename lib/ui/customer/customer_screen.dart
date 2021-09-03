@@ -24,10 +24,7 @@ class CustomerScreen extends StatelessWidget {
           leading: PopButton(),
           actions: [
             IconButton(
-              onPressed: () => showCircularBottomSheet(
-                context,
-                actions: _actions(),
-              ),
+              onPressed: () => _showActions(context),
               icon: Icon(KIcons.more),
             ),
           ],
@@ -42,18 +39,6 @@ class CustomerScreen extends StatelessWidget {
             : _body(settings));
   }
 
-  List<BottomSheetAction> _actions() {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text('排序'),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(Routes.customerReorder);
-        },
-      ),
-    ];
-  }
-
   Widget _body(CustomerSettings settings) {
     return SingleChildScrollView(
       child: Column(
@@ -63,5 +48,15 @@ class CustomerScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showActions(BuildContext context) async {
+    await showCircularBottomSheet(context, actions: [
+      BottomSheetAction(
+        title: Text('排序'),
+        leading: Icon(Icons.reorder_sharp),
+        navigateRoute: Routes.customerReorder,
+      ),
+    ]);
   }
 }

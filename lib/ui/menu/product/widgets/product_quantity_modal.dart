@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
@@ -30,6 +29,10 @@ class ProductQuantityModal extends StatefulWidget {
   _ProductQuantityModalState createState() => _ProductQuantityModalState();
 }
 
+enum _Actions {
+  delete,
+}
+
 class _ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
@@ -44,23 +47,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       ? const []
       : [
           IconButton(
-            onPressed: () async {
-              final result = await showCircularBottomSheet(
-                context,
-                actions: <BottomSheetAction>[
-                  BottomSheetAction(
-                    title: Text(tt('delete')),
-                    leading: Icon(
-                      KIcons.delete,
-                      color: Theme.of(context).errorColor,
-                    ),
-                    onTap: (context) => Navigator.of(context).pop('delete'),
-                  ),
-                ],
-              );
-
-              await _actionHandlers(result);
-            },
+            onPressed: () => BottomSheetActions.withDelete<_Actions>(
+              context,
+              deleteValue: _Actions.delete,
+              warningContent:
+                  Text(tt('delete_confirm', {'name': widget.quantity!.name})),
+              popAfterDeleted: true,
+              deleteCallback: widget.quantity!.remove,
+            ),
             icon: Icon(KIcons.more),
           ),
         ];
@@ -178,28 +172,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     if (widget.quantity?.id != quantityId &&
         widget.ingredient.hasItem(quantityId)) {
       return tt('menu.quantity.error.name_repeat');
-    }
-  }
-
-  Future<void> _actionHandlers(String? selected) {
-    switch (selected) {
-      case 'delete':
-        return _handleDelete();
-      default:
-        return Future.value();
-    }
-  }
-
-  Future<void> _handleDelete() async {
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => DeleteDialog(
-        content: Text(tt('delete_confirm', {'name': widget.quantity!.name})),
-      ),
-    );
-    if (isConfirmed == true) {
-      await widget.quantity!.remove();
-      Navigator.of(context).pop();
     }
   }
 

@@ -14,32 +14,30 @@ class CatalogList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Catalog>(
+    return SlidableItemList<Catalog, _Action>(
       items: catalogs,
+      deleteValue: _Action.delete,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
-      handleTap: _handleTap,
       actionBuilder: _actionBuilder,
+      handleTap: _handleTap,
       handleDelete: (_, item) => item.remove(),
     );
   }
 
-  Iterable<BottomSheetAction> _actionBuilder(catalog) {
-    return <BottomSheetAction>[
+  Iterable<BottomSheetAction<_Action>> _actionBuilder(catalog) {
+    return <BottomSheetAction<_Action>>[
       BottomSheetAction(
         title: Text(tt('menu.catalog.edit')),
         leading: Icon(Icons.text_fields_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-          Routes.menuCatalogModal,
-          arguments: catalog,
-        ),
+        navigateArgument: catalog,
+        navigateRoute: Routes.menuCatalogModal,
       ),
       BottomSheetAction(
         title: Text(tt('menu.catalog.order')),
         leading: Icon(Icons.reorder_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(Routes.menuCatalogReorder);
-        },
+        navigateArgument: catalog,
+        navigateRoute: Routes.menuCatalogReorder,
       ),
     ];
   }
@@ -84,4 +82,8 @@ class CatalogList extends StatelessWidget {
       {'name': catalog.name, 'count': catalog.length},
     ));
   }
+}
+
+enum _Action {
+  delete,
 }

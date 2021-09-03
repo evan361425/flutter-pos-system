@@ -33,8 +33,9 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
       return EmptyBody(onPressed: widget.handleAdd);
     }
 
-    final listView = SlidableItemList<FavoriteItem>(
+    final listView = SlidableItemList<FavoriteItem, _Action>(
       key: slidableItemList,
+      deleteValue: _Action.delete,
       handleDelete: (_, item) => handleDeletion(item.index),
       tileBuilder: (_, __, item) => RadioListTile<FavoriteItem>(
         value: item,
@@ -91,4 +92,8 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
   void reset() {
     setState(() {});
   }
+}
+
+enum _Action {
+  delete,
 }

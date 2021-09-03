@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
@@ -17,6 +16,10 @@ class IngredientExpansion extends StatefulWidget {
 
   @override
   _IngredientExpansionState createState() => _IngredientExpansionState();
+}
+
+enum _Actions {
+  delete,
 }
 
 class _IngredientExpansionState extends State<IngredientExpansion> {
@@ -45,16 +48,6 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
   void initState() {
     super.initState();
     showIngredient = List.filled(widget.ingredients.length, false);
-  }
-
-  List<BottomSheetAction> _actions() {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text(tt('delete')),
-        leading: Icon(KIcons.delete, color: Theme.of(context).errorColor),
-        onTap: (context) => Navigator.of(context).pop('delete'),
-      )
-    ];
   }
 
   Widget _addButtons(ProductIngredient ingredient) {
@@ -86,18 +79,6 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     );
   }
 
-  Future<void> _deleteConfirm(ProductIngredient ingredient) async {
-    final isConfirmed = await showDialog(
-        context: context,
-        builder: (_) => DeleteDialog(
-              content: Text(tt('delete_confirm', {'name': ingredient.name})),
-            ));
-
-    if (isConfirmed == true) {
-      await ingredient.remove();
-    }
-  }
-
   ExpansionPanel _panelBuilder(int index, ProductIngredient ingredient) {
     final body = ingredient.items.map<Widget>((quantity) {
       return ListTile(
@@ -122,16 +103,12 @@ class _IngredientExpansionState extends State<IngredientExpansion> {
     return ExpansionPanel(
       canTapOnHeader: true,
       headerBuilder: (_, __) => GestureDetector(
-        onLongPress: () async {
-          final result = await showCircularBottomSheet<String>(
-            context,
-            actions: _actions(),
-          );
-
-          if (result == 'delete') {
-            await _deleteConfirm(ingredient);
-          }
-        },
+        onLongPress: () => BottomSheetActions.withDelete<_Actions>(
+          context,
+          deleteValue: _Actions.delete,
+          warningContent: Text(tt('delete_confirm', {'name': ingredient.name})),
+          deleteCallback: ingredient.remove,
+        ),
         child: ListTile(
           title: Text(ingredient.name),
           subtitle:

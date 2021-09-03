@@ -7,15 +7,13 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class OrderActions {
-  static List<BottomSheetAction> actions() {
+  static List<BottomSheetAction<OrderActionTypes>> actions() {
     if (Cart.instance.isHistoryMode) {
       return [
         BottomSheetAction(
           title: Text(tt('order.action.leave_history')),
           leading: Icon(Icons.assignment_return_sharp),
-          onTap: (context) {
-            Navigator.pop(context, OrderActionTypes.leave_history);
-          },
+          returnValue: OrderActionTypes.leave_history,
         ),
       ];
     }
@@ -24,27 +22,27 @@ class OrderActions {
       BottomSheetAction(
         title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
-        onTap: (context) => Navigator.pop(context, OrderActionTypes.show_last),
+        returnValue: OrderActionTypes.show_last,
       ),
       BottomSheetAction(
         title: Text('換錢'),
         leading: Icon(Icons.change_circle_outlined),
-        onTap: (context) => Navigator.pop(context, OrderActionTypes.changer),
+        returnValue: OrderActionTypes.changer,
       ),
       BottomSheetAction(
         title: Text(tt('order.action.stash')),
         leading: Icon(Icons.file_download),
-        onTap: (context) => Navigator.pop(context, OrderActionTypes.stash),
+        returnValue: OrderActionTypes.stash,
       ),
       BottomSheetAction(
         title: Text(tt('order.action.drop_stash')),
         leading: Icon(Icons.file_upload),
-        onTap: (context) => Navigator.pop(context, OrderActionTypes.drop_stash),
+        returnValue: OrderActionTypes.drop_stash,
       ),
       BottomSheetAction(
         title: Text(tt('order.action.leave')),
         leading: Icon(Icons.logout),
-        onTap: (context) => Navigator.pop(context, OrderActionTypes.leave),
+        returnValue: OrderActionTypes.leave,
       ),
     ];
   }

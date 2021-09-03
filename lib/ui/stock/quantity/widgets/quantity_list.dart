@@ -12,16 +12,19 @@ class QuantityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Quantity>(
+    return SlidableItemList<Quantity, _Action>(
       items: quantities,
-      handleDelete: (_, quantity) async {
-        await quantity.remove();
-        return Menu.instance.removeQuantities(quantity.id);
-      },
-      handleTap: _handleTap,
+      deleteValue: _Action.delete,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
+      handleDelete: _handleDelete,
+      handleTap: _handleTap,
     );
+  }
+
+  Future<void> _handleDelete(_, quantity) async {
+    await quantity.remove();
+    return Menu.instance.removeQuantities(quantity.id);
   }
 
   void _handleTap(BuildContext context, Quantity quantity) {
@@ -53,4 +56,8 @@ class QuantityList extends StatelessWidget {
       {'name': quantity.name, 'count': count},
     ));
   }
+}
+
+enum _Action {
+  delete,
 }

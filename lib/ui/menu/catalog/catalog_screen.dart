@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/item_editable_info.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 import 'package:provider/provider.dart';
 
@@ -62,10 +62,7 @@ class CatalogScreen extends StatelessWidget {
           child: ItemEditableInfo(
             item: catalog,
             metadata: metadata,
-            onEdit: () => showCircularBottomSheet(
-              context,
-              actions: _actions(catalog),
-            ),
+            onEdit: () => _showActions(context, catalog),
           ),
         ),
         body,
@@ -73,23 +70,29 @@ class CatalogScreen extends StatelessWidget {
     );
   }
 
-  List<BottomSheetAction> _actions(Catalog catalog) {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text(tt('menu.catalog.edit')),
-        leading: Icon(Icons.text_fields_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-          Routes.menuCatalogModal,
-          arguments: catalog,
+  void _showActions(BuildContext context, Catalog catalog) async {
+    await BottomSheetActions.withDelete(
+      context,
+      deleteCallback: () => catalog.remove(),
+      deleteValue: _Action.delete,
+      actions: <BottomSheetAction<_Action>>[
+        BottomSheetAction(
+          title: Text(tt('menu.catalog.edit')),
+          leading: Icon(Icons.text_fields_sharp),
+          navigateArgument: catalog,
+          navigateRoute: Routes.menuCatalogModal,
         ),
-      ),
-      BottomSheetAction(
-        title: Text(tt('menu.product.order')),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-            Routes.menuProductReorder,
-            arguments: catalog),
-      ),
-    ];
+        BottomSheetAction(
+          title: Text(tt('menu.product.order')),
+          leading: Icon(Icons.reorder_sharp),
+          navigateArgument: catalog,
+          navigateRoute: Routes.menuProductReorder,
+        ),
+      ],
+    );
   }
+}
+
+enum _Action {
+  delete,
 }

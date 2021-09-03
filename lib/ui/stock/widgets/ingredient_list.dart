@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
+import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
-import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -20,16 +20,19 @@ class IngredientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Ingredient>(
+    return SlidableItemList<Ingredient, _Action>(
       items: ingredients,
-      handleDelete: (_, ingredient) async {
-        await ingredient.remove();
-        return Menu.instance.removeIngredients(ingredient.id);
-      },
-      handleTap: _handleTap,
-      warningContextBuilder: _warningContextBuilder,
+      deleteValue: _Action.delete,
       tileBuilder: _tileBuilder,
+      warningContextBuilder: _warningContextBuilder,
+      handleDelete: _handleDelete,
+      handleTap: _handleTap,
     );
+  }
+
+  Future<void> _handleDelete(_, ingredient) async {
+    await ingredient.remove();
+    return Menu.instance.removeIngredients(ingredient.id);
   }
 
   void _handleTap(BuildContext context, Ingredient ingredient) {
@@ -134,4 +137,8 @@ class IngredientList extends StatelessWidget {
       {'name': ingredient.name, 'count': count},
     ));
   }
+}
+
+enum _Action {
+  delete,
 }

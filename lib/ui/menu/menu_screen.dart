@@ -28,10 +28,7 @@ class MenuScreen extends StatelessWidget {
         leading: PopButton(),
         actions: [
           IconButton(
-            onPressed: () => showCircularBottomSheet(
-              context,
-              actions: _actions(),
-            ),
+            onPressed: () => _showActions(context),
             icon: Icon(KIcons.more),
           ),
         ],
@@ -54,18 +51,6 @@ class MenuScreen extends StatelessWidget {
           ? Center(child: EmptyBody(onPressed: goAddCatalog))
           : _body(context, menu),
     );
-  }
-
-  List<BottomSheetAction> _actions() {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text(tt('menu.catalog.order')),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(Routes.menuCatalogReorder);
-        },
-      ),
-    ];
   }
 
   Widget _body(BuildContext context, Menu menu) {
@@ -100,6 +85,19 @@ class MenuScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  void _showActions(BuildContext context) {
+    showCircularBottomSheet(
+      context,
+      actions: <BottomSheetAction<void>>[
+        BottomSheetAction(
+          title: Text(tt('menu.catalog.order')),
+          leading: Icon(Icons.reorder_sharp),
+          navigateArgument: Routes.menuCatalogReorder,
         ),
       ],
     );

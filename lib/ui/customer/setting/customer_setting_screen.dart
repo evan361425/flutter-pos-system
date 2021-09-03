@@ -37,10 +37,7 @@ class CustomerSettingScreen extends StatelessWidget {
           leading: PopButton(),
           actions: [
             IconButton(
-              onPressed: () => showCircularBottomSheet(
-                context,
-                actions: _actions(setting),
-              ),
+              onPressed: () => _showActions(context, setting),
               icon: Icon(KIcons.more),
             ),
           ],
@@ -66,24 +63,32 @@ class CustomerSettingScreen extends StatelessWidget {
         ]));
   }
 
-  List<BottomSheetAction> _actions(CustomerSetting setting) {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text('編輯資訊'),
-        leading: Icon(Icons.text_fields_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-          Routes.customerModal,
-          arguments: setting,
+  void _showActions(BuildContext context, CustomerSetting setting) async {
+    await BottomSheetActions.withDelete<_Action>(
+      context,
+      deleteValue: _Action.delete,
+      warningContent: Text('你確定要刪除「${setting.name}」嗎\n此動作並不會影響使用此設定的點單。'),
+      deleteCallback: setting.remove,
+      actions: [
+        BottomSheetAction<_Action>(
+          title: Text('編輯資訊'),
+          leading: Icon(Icons.text_fields_sharp),
+          navigateRoute: Routes.customerModal,
+          navigateArgument: setting,
         ),
-      ),
-      BottomSheetAction(
-        title: Text('排序'),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: (context) {
-          Navigator.of(context)
-              .pushReplacementNamed(Routes.customerSettingReorder);
-        },
-      ),
-    ];
+        BottomSheetAction<_Action>(
+          title: Text('排序'),
+          leading: Icon(Icons.reorder_sharp),
+          navigateRoute: Routes.customerSettingReorder,
+          navigateArgument: setting,
+        ),
+      ],
+    );
   }
+}
+
+enum _Action {
+  edit,
+  delete,
+  reorder,
 }

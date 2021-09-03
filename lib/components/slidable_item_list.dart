@@ -2,35 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
 // use inherit objects to make your life better
-class SlidableItemList<T> extends StatefulWidget {
+class SlidableItemList<T, Action> extends StatefulWidget {
   final Iterable<T> items;
 
+  /// Show bottom actions of deletions
+  final Action? deleteValue;
   final Future<void> Function(BuildContext, T) handleDelete;
   final Widget Function(BuildContext, int, T) tileBuilder;
   final Widget Function(BuildContext, T)? warningContextBuilder;
   final void Function(BuildContext, T)? handleTap;
-  final Iterable<BottomSheetAction> Function(T)? actionBuilder;
+  final Iterable<BottomSheetAction<Action>> Function(T)? actionBuilder;
+  final void Function(Action? action)? handleAction;
 
   const SlidableItemList({
     Key? key,
     required this.items,
+    this.deleteValue,
     required this.tileBuilder,
     this.warningContextBuilder,
+    this.actionBuilder,
+    this.handleAction,
     required this.handleDelete,
     this.handleTap,
-    this.actionBuilder,
   }) : super(key: key);
 
   @override
-  SlidableItemListState<T> createState() => SlidableItemListState<T>();
+  SlidableItemListState<T, Action> createState() =>
+      SlidableItemListState<T, Action>();
 }
 
-class SlidableItemListState<T> extends State<SlidableItemList<T>> {
+class SlidableItemListState<T, Action>
+    extends State<SlidableItemList<T, Action>> {
   final _slidableController = SlidableController();
 
   @override
@@ -50,23 +56,33 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
     );
   }
 
-  Future<void> _handleDelete(T item) async {
-    if (widget.warningContextBuilder != null) {
-      final isConfirmed = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) => DeleteDialog(
-          content: widget.warningContextBuilder!(context, item),
-        ),
-      );
+  Future<void> showActions(T item) async {
+    final customActions = widget.actionBuilder == null
+        ? const <BottomSheetAction<Action>>[]
+        : widget.actionBuilder!(item).toList();
 
-      if (isConfirmed != true) {
-        return;
+    if (widget.deleteValue == null) {
+      // no need to do things if no action given
+      if (customActions.isNotEmpty) {
+        final result = await showCircularBottomSheet<Action>(
+          context,
+          actions: customActions,
+        );
+
+        if (widget.handleAction != null) {
+          widget.handleAction!(result);
+        }
       }
+      return;
     }
 
-    await widget.handleDelete(context, item);
-
-    showSuccessSnackbar(context, tt('success'));
+    await BottomSheetActions.withDelete<Action>(
+      context,
+      actions: customActions.toList(),
+      deleteValue: widget.deleteValue!,
+      warningContent: widget.warningContextBuilder!(context, item),
+      deleteCallback: () => widget.handleDelete(context, item),
+    );
   }
 
   /// If there is any action panel opening, close it
@@ -91,7 +107,13 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
             color: theme.errorColor,
             caption: tt('delete'),
             icon: KIcons.delete,
-            onTap: () => _handleDelete(item),
+            onTap: () => DeleteDialog.show(
+              context,
+              deleteCallback: () => widget.handleDelete(context, item),
+              warningContent: widget.warningContextBuilder == null
+                  ? null
+                  : widget.warningContextBuilder!(context, item),
+            ),
           ),
         ],
         child: GestureDetector(
@@ -105,28 +127,5 @@ class SlidableItemListState<T> extends State<SlidableItemList<T>> {
         ),
       ),
     );
-  }
-
-  Future<void> showActions(T item) async {
-    final theme = Theme.of(context);
-    final custom = widget.actionBuilder == null
-        ? const <BottomSheetAction>[]
-        : widget.actionBuilder!(item);
-
-    final result = await showCircularBottomSheet<bool>(
-      context,
-      actions: <BottomSheetAction>[
-        ...custom,
-        BottomSheetAction(
-          title: Text(tt('delete')),
-          leading: Icon(KIcons.delete, color: theme.errorColor),
-          onTap: (context) => Navigator.of(context).pop(false),
-        ),
-      ],
-    );
-
-    if (result == false) {
-      await _handleDelete(item);
-    }
   }
 }
