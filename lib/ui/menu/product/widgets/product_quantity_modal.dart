@@ -18,7 +18,8 @@ class ProductQuantityModal extends StatefulWidget {
   final ProductIngredient ingredient;
 
   final bool isNew;
-  ProductQuantityModal({
+
+  const ProductQuantityModal({
     Key? key,
     this.quantity,
     required this.ingredient,

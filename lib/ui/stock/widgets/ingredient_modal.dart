@@ -20,7 +20,7 @@ class IngredientModal extends StatefulWidget {
 
   final bool editable;
 
-  IngredientModal({Key? key, this.ingredient, this.editable = true})
+  const IngredientModal({Key? key, this.ingredient, this.editable = true})
       : isNew = ingredient == null,
         super(key: key);
 

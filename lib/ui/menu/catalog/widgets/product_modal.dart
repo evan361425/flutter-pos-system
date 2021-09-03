@@ -12,7 +12,7 @@ class ProductModal extends StatefulWidget {
   final Catalog catalog;
   final bool isNew;
 
-  ProductModal({
+  const ProductModal({
     Key? key,
     this.product,
     required this.catalog,

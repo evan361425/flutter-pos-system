@@ -11,7 +11,8 @@ class CatalogModal extends StatefulWidget {
   final Catalog? catalog;
 
   final bool isNew;
-  CatalogModal({Key? key, this.catalog})
+
+  const CatalogModal({Key? key, this.catalog})
       : isNew = catalog == null,
         super(key: key);
 

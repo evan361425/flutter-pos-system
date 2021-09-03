@@ -12,7 +12,7 @@ class CustomerModal extends StatefulWidget {
 
   final bool isNew;
 
-  CustomerModal({Key? key, this.setting})
+  const CustomerModal({Key? key, this.setting})
       : isNew = setting == null,
         super(key: key);
 
