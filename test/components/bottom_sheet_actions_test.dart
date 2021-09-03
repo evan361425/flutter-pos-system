@@ -5,7 +5,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import '../mocks/mock_widgets.dart';
 
 void main() {
-  Widget createWidget(List<BottomSheetAction> actions) {
+  Widget createWidget(List<BottomSheetAction<void>> actions) {
     return MediaQuery(
       data: MediaQueryData(padding: EdgeInsets.all(20.0)),
       child: Directionality(
@@ -16,11 +16,11 @@ void main() {
   }
 
   testWidgets('should set up actions', (WidgetTester tester) async {
-    final actions = <BottomSheetAction>[
+    final actions = <BottomSheetAction<void>>[
       BottomSheetAction(
         title: Text('hi'),
         leading: Text('there'),
-        onTap: (_) {},
+        navigateRoute: '',
       )
     ];
     await tester.pumpWidget(createWidget(actions));
