@@ -52,8 +52,8 @@ void main() async {
           ChangeNotifierProvider<Replenisher>(
             create: (_) => Replenisher(),
           ),
-          ChangeNotifierProvider<Customers>(
-            create: (_) => Customers(),
+          ChangeNotifierProvider<CustomerSettings>(
+            create: (_) => CustomerSettings(),
           ),
         ],
         child: MyApp(),

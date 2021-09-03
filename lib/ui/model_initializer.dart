@@ -25,11 +25,11 @@ class ModelIntializer extends StatelessWidget {
     final menu = context.watch<Menu>();
     final stock = context.watch<Stock>();
     final quantities = context.watch<Quantities>();
-    final customers = context.watch<Customers>();
+    final settings = context.watch<CustomerSettings>();
     if (!menu.isReady ||
         !stock.isReady ||
         !quantities.isReady ||
-        !customers.isReady) {
+        !settings.isReady) {
       return false;
     }
 

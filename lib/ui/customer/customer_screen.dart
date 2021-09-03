@@ -13,7 +13,7 @@ class CustomerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customers = context.watch<Customers>();
+    final settings = context.watch<CustomerSettings>();
 
     final goAddSetting =
         () => Navigator.of(context).pushNamed(Routes.customerModal);
@@ -37,9 +37,9 @@ class CustomerScreen extends StatelessWidget {
           tooltip: '新增顧客設定',
           child: Icon(KIcons.add),
         ),
-        body: customers.isEmpty
+        body: settings.isEmpty
             ? Center(child: EmptyBody(onPressed: goAddSetting))
-            : _body(customers));
+            : _body(settings));
   }
 
   List<BottomSheetAction> _actions() {
@@ -54,11 +54,11 @@ class CustomerScreen extends StatelessWidget {
     ];
   }
 
-  Widget _body(Customers customers) {
+  Widget _body(CustomerSettings settings) {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          for (final setting in customers.itemList)
+          for (final setting in settings.itemList)
             CustomerSettingCard(setting: setting)
         ],
       ),

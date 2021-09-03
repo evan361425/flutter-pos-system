@@ -79,11 +79,11 @@ class _CustomerModalState extends State<CustomerModal>
       final setting = CustomerSetting(
         name: object.name!,
         mode: object.mode!,
-        index: Customers.instance.newIndex,
+        index: CustomerSettings.instance.newIndex,
         options: [],
       );
 
-      await Customers.instance.setItem(setting);
+      await CustomerSettings.instance.setItem(setting);
       return setting;
     } else {
       await widget.setting!.update(object);
@@ -108,7 +108,8 @@ class _CustomerModalState extends State<CustomerModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.setting?.name != name && Customers.instance.hasName(name)) {
+    if (widget.setting?.name != name &&
+        CustomerSettings.instance.hasName(name)) {
       return '名稱不能重複';
     }
   }

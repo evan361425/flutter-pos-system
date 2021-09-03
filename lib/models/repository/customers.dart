@@ -5,18 +5,18 @@ import 'package:possystem/services/storage.dart';
 
 import '../repository.dart';
 
-class Customers extends ChangeNotifier
+class CustomerSettings extends ChangeNotifier
     with
         Repository<CustomerSetting>,
         NotifyRepository<CustomerSetting>,
         OrderablRepository<CustomerSetting>,
         InitilizableRepository<CustomerSetting> {
-  static Customers instance = Customers();
+  static CustomerSettings instance = CustomerSettings();
 
-  Customers() {
+  CustomerSettings() {
     initialize();
 
-    Customers.instance = this;
+    CustomerSettings.instance = this;
   }
 
   @override

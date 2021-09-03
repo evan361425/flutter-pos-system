@@ -9,10 +9,10 @@ class CustomerOrderableList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReorderableScaffold(
-      items: Customers.instance.itemList,
+      items: CustomerSettings.instance.itemList,
       title: '重新排序',
       handleSubmit: (List<CustomerSetting> items) =>
-          Customers.instance.reorderItems(items),
+          CustomerSettings.instance.reorderItems(items),
     );
   }
 }

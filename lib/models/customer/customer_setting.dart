@@ -48,7 +48,7 @@ class CustomerSetting
   }
 
   @override
-  void removeFromRepo() => Customers.instance.removeItem(id);
+  void removeFromRepo() => CustomerSettings.instance.removeItem(id);
 
   @override
   CustomerSettingObject toObject() => CustomerSettingObject(
