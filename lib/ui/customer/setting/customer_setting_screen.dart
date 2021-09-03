@@ -5,7 +5,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/ui/customer/widgets/customer_modal_modes.dart';
+import 'package:possystem/models/objects/customer_object.dart';
 
 import '../../../routes.dart';
 
@@ -24,7 +24,7 @@ class CustomerSettingScreen extends StatelessWidget {
         Tooltip(
           message: '顧客設定種類',
           child: IconText(
-            text: CustomerModalModesState.titles[setting.mode]!,
+            text: customerSettingOptionModeString[setting.mode]!,
             icon: Icons.settings_sharp,
           ),
         ),

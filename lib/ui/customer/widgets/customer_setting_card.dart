@@ -5,12 +5,6 @@ import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 
 class CustomerSettingCard extends StatelessWidget {
-  static const modeName = {
-    CustomerSettingOptionMode.statOnly: '一般',
-    CustomerSettingOptionMode.changePrice: '變價',
-    CustomerSettingOptionMode.changeDiscount: '折扣',
-  };
-
   final CustomerSetting setting;
 
   const CustomerSettingCard({
@@ -20,7 +14,7 @@ class CustomerSettingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mode = modeName[setting.mode];
+    final mode = customerSettingOptionModeString[setting.mode];
     final defaultName = setting.defaultOption?.name ?? '無';
 
     return Card(

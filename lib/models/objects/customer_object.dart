@@ -131,3 +131,9 @@ enum CustomerSettingOptionMode {
   changePrice,
   changeDiscount,
 }
+
+const customerSettingOptionModeString = {
+  CustomerSettingOptionMode.statOnly: '一般',
+  CustomerSettingOptionMode.changePrice: '變價',
+  CustomerSettingOptionMode.changeDiscount: '折扣',
+};

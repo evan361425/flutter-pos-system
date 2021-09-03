@@ -16,12 +16,6 @@ class CustomerModalModes extends StatefulWidget {
 
 class CustomerModalModesState extends State<CustomerModalModes>
     with TickerProviderStateMixin {
-  static const titles = <CustomerSettingOptionMode, String>{
-    CustomerSettingOptionMode.statOnly: '一般',
-    CustomerSettingOptionMode.changePrice: '變價',
-    CustomerSettingOptionMode.changeDiscount: '折扣',
-  };
-
   static const descriptions = <CustomerSettingOptionMode, String>{
     CustomerSettingOptionMode.statOnly: '一般的設定，選取時並不會影響點單價格。',
     CustomerSettingOptionMode.changePrice:
@@ -44,7 +38,7 @@ class CustomerModalModesState extends State<CustomerModalModes>
               isSelected: selectedMode == mode,
               onSelected: (_) => setState(() => selectedMode = mode),
               value: mode.toString(),
-              text: titles[mode]!,
+              text: customerSettingOptionModeString[mode]!,
             ),
           )
       ]),
