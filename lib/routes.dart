@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
+import 'package:possystem/ui/customer/setting/widgets/customer_setting_option_modal.dart';
 import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +55,7 @@ class Routes {
   static const String customerModal = 'customer/modal';
   static const String customerReorder = 'customer/reorder';
   static const String customerSetting = 'customer/setting';
+  static const String customerSettingOption = 'customer/setting/option';
   static const String customerSettingReorder = 'customer/setting/reorder';
   static const String menuSearch = 'menu/search';
   static const String menuCatalog = 'menu/catalog';
@@ -85,8 +88,19 @@ class Routes {
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
     customerReorder: (context) => CustomerOrderableList(),
-    customerSetting: (context) =>
-        CustomerSettingScreen(setting: arg<CustomerSetting>(context)),
+    customerSetting: (context) => ChangeNotifierProvider.value(
+          value: arg<CustomerSetting>(context),
+          builder: (_, __) => CustomerSettingScreen(),
+        ),
+    customerSettingOption: (context) {
+      final arg = ModalRoute.of(context)!.settings.arguments;
+      return arg is CustomerSettingOption
+          ? CustomerSettingOptionModal(
+              option: arg,
+              setting: arg.setting!,
+            )
+          : CustomerSettingOptionModal(setting: arg as CustomerSetting);
+    },
     customerSettingReorder: (context) =>
         CustomerSettingOrderableList(setting: arg<CustomerSetting>(context)),
     // menu

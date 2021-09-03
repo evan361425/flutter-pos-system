@@ -1,41 +1,47 @@
+import 'package:possystem/models/customer/customer_setting_option.dart';
+
 import '../customer/customer_setting.dart';
 import '../model_object.dart';
 
 class CustomerSettingObject extends ModelObject<CustomerSetting> {
   final String? id;
 
-  String? name;
+  final String? name;
 
-  int? index;
+  final int? index;
 
-  CustomerSettingOptionMode? mode;
+  final CustomerSettingOptionMode? mode;
 
-  List<CustomerSettingOption>? options;
+  final Iterable<CustomerSettingOptionObject> options;
 
   CustomerSettingObject({
     this.id,
     this.name,
     this.index,
     this.mode,
-    this.options,
+    this.options = const Iterable.empty(),
   });
 
   factory CustomerSettingObject.build(Map<String, Object?> data) {
-    final options = (data['options'] ?? []) as Iterable;
+    final options =
+        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return CustomerSettingObject(
       id: data['id'] as String,
       name: data['name'] as String,
       index: data['index'] as int,
       mode: CustomerSettingOptionMode.values[data['mode'] as int],
-      options:
-          options.map((option) => CustomerSettingOption.build(option)).toList(),
+      options: options.entries.map<CustomerSettingOptionObject>(
+          (e) => CustomerSettingOptionObject.build({
+                'id': e.key,
+                ...e.value as Map<String, Object?>,
+              })),
     );
   }
 
   @override
-  Map<String, Object> diff(CustomerSetting setting) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(CustomerSetting setting) {
+    final result = <String, Object?>{};
     final prefix = setting.prefix;
     if (name != null && name != setting.name) {
       setting.name = name!;
@@ -48,82 +54,96 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
     if (mode != null && mode != setting.mode) {
       setting.mode = mode!;
       result['$prefix.mode'] = mode!.index;
-      final newModeVaule = setting.mode == CustomerSettingOptionMode.statOnly
-          ? null
-          : setting.mode == CustomerSettingOptionMode.changeDiscount
-              ? 100
-              : 0;
-      result['$prefix.options'] =
-          setting.options.map((e) => e.modeValue = newModeVaule).toList();
-    }
-    if (options != null && optionsIsChanged(setting.options)) {
-      setting.options = options!;
-      result['$prefix.options'] = options!.map((e) => e.toMap()).toList();
+
+      final newModeVaule = _getModeValueByMode();
+      for (final item in setting.items) {
+        item.modeValue = newModeVaule;
+        result['${item.prefix}.modeValue'] = newModeVaule;
+      }
     }
     return result;
-  }
-
-  bool optionsIsChanged(List<CustomerSettingOption> others) {
-    final length = options!.length;
-    if (length != others.length) return true;
-
-    for (var i = 0; i < length; i++) {
-      if (options![i] != others[i]) return true;
-    }
-
-    return false;
   }
 
   @override
   Map<String, Object> toMap() {
     return {
-      'id': id!,
       'name': name!,
       'index': index!,
       'mode': mode!.index,
-      'options': options!.map((e) => e.toMap()).toList(),
+      'options': {for (var option in options) option.id: option.toMap()},
     };
+  }
+
+  int? _getModeValueByMode() {
+    return mode == CustomerSettingOptionMode.statOnly
+        ? null
+        : mode == CustomerSettingOptionMode.changeDiscount
+            ? 100
+            : 0;
   }
 }
 
-class CustomerSettingOption {
-  String name;
+class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
+  final String? id;
 
-  bool isDefault;
+  final String? name;
 
-  num? modeValue;
+  final int? index;
 
-  CustomerSettingOption({
-    required this.name,
-    this.isDefault = false,
+  final bool? isDefault;
+
+  final num? modeValue;
+
+  const CustomerSettingOptionObject({
+    this.id,
+    this.name,
+    this.index,
+    this.isDefault,
     this.modeValue,
   });
 
-  factory CustomerSettingOption.build(Map<String, Object?> data) {
-    return CustomerSettingOption(
+  factory CustomerSettingOptionObject.build(Map<String, Object?> data) {
+    return CustomerSettingOptionObject(
+      id: data['id'] as String,
       name: data['name'] as String,
+      index: data['index'] as int,
       isDefault: data['isDefault'] as bool,
       modeValue: data['modeValue'] as num?,
     );
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is CustomerSettingOption &&
-      other.name == name &&
-      other.isDefault == isDefault &&
-      other.modeValue == modeValue;
-
   Map<String, Object?> toMap() {
     return {
       'name': name,
+      'index': index,
       'isDefault': isDefault,
       'modeValue': modeValue,
     };
   }
 
   @override
-  String toString() => name;
+  Map<String, Object> diff(CustomerSettingOption option) {
+    final result = <String, Object>{};
+    final prefix = option.prefix;
+    if (name != null && name != option.name) {
+      option.name = name!;
+      result['$prefix.name'] = name!;
+    }
+    if (index != null && index != option.index) {
+      option.index = index!;
+      result['$prefix.index'] = index!;
+    }
+    if (isDefault != null && isDefault != option.isDefault) {
+      option.isDefault = isDefault!;
+      result['$prefix.isDefault'] = isDefault!;
+    }
+    if (modeValue != option.modeValue) {
+      option.modeValue = modeValue;
+      result['$prefix.modeValue'] = modeValue!;
+    }
+    return result;
+  }
 }
 
 enum CustomerSettingOptionMode {

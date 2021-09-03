@@ -80,7 +80,6 @@ class _CustomerModalState extends State<CustomerModal>
         name: object.name!,
         mode: object.mode!,
         index: CustomerSettings.instance.newIndex,
-        options: [],
       );
 
       await CustomerSettings.instance.setItem(setting);

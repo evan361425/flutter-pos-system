@@ -24,7 +24,15 @@ mixin Model<T extends ModelObject> {
 
   T toObject();
 
-  Future<void> update(T object);
+  Future<void> update(T object) {
+    final updateData = object.diff(this);
+
+    if (updateData.isEmpty) return Future.value();
+
+    info(toString(), '$code.update');
+
+    return Storage.instance.set(storageStore, updateData);
+  }
 }
 
 abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier

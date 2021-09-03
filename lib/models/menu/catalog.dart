@@ -13,21 +13,18 @@ class Catalog extends NotifyModel<CatalogObject>
         Repository<Product>,
         NotifyRepository<Product>,
         OrderablRepository<Product> {
-  /// catalog's name
-  @override
-  String name;
-
   /// when it has been added to menu
   final DateTime createdAt;
 
   Catalog({
-    DateTime? createdAt,
     String? id,
+    String name = 'catalog',
     int index = 0,
-    required this.name,
+    DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
+    this.name = name;
     this.index = index;
     replaceItems(products ?? {});
   }

@@ -50,7 +50,7 @@ void main() {
   });
 }
 
-class MockObject with ModelObject<MockModel> {
+class MockObject extends ModelObject<MockModel> {
   @override
   Map<String, Object> diff(model) => {};
 

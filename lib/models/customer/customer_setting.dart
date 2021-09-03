@@ -1,50 +1,72 @@
-import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/models/repository/customers.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
+import '../objects/customer_object.dart';
+import '../repository.dart';
+import '../repository/customers.dart';
+import 'customer_setting_option.dart';
 
-class CustomerSetting
-    with Model<CustomerSettingObject>, OrderableModel<CustomerSettingObject> {
+class CustomerSetting extends NotifyModel<CustomerSettingObject>
+    with
+        OrderableModel<CustomerSettingObject>,
+        Repository<CustomerSettingOption>,
+        NotifyRepository<CustomerSettingOption>,
+        OrderablRepository<CustomerSettingOption> {
   CustomerSettingOptionMode mode;
-
-  late List<CustomerSettingOption> options;
 
   CustomerSetting({
     String? id,
-    required String name,
+    String name = 'customer setting',
     int index = 0,
     this.mode = CustomerSettingOptionMode.statOnly,
-    List<CustomerSettingOption>? options,
-  }) {
-    this.id = id ?? Util.uuidV4();
+    Map<String, CustomerSettingOption>? options,
+  }) : super(id) {
     this.name = name;
     this.index = index;
-    this.options = options ?? <CustomerSettingOption>[];
+    replaceItems(options ?? <String, CustomerSettingOption>{});
   }
 
   factory CustomerSetting.fromObject(CustomerSettingObject object) {
     return CustomerSetting(
+        id: object.id,
         name: object.name!,
         index: object.index!,
         mode: object.mode!,
-        options: object.options);
+        options: {
+          for (var option in object.options)
+            option.id!: CustomerSettingOption.fromObject(option)
+        })
+      .._prepareOptions();
   }
 
   @override
   String get code => 'customers.setting';
 
-  @override
-  Stores get storageStore => Stores.customers;
-
   CustomerSettingOption? get defaultOption {
     try {
-      return options.firstWhere((option) => option.isDefault);
+      return items.firstWhere((option) => option.isDefault);
     } catch (e) {
       return null;
     }
+  }
+
+  @override
+  String get itemCode => 'customers.setting.option';
+
+  @override
+  Stores get storageStore => Stores.customers;
+
+  @override
+  Future<void> addItemToStorage(CustomerSettingOption option) {
+    return Storage.instance.set(storageStore, {
+      option.prefix: option.toObject().toMap(),
+    });
+  }
+
+  @override
+  void notifyItem() {
+    notifyListeners();
+    CustomerSettings.instance.notifyItem();
   }
 
   @override
@@ -56,20 +78,11 @@ class CustomerSetting
         name: name,
         index: index,
         mode: mode,
-        options: options,
+        options: items.map((e) => e.toObject()),
       );
 
   @override
   String toString() => name;
 
-  @override
-  Future<void> update(CustomerSettingObject object) async {
-    final updateData = object.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), '$code.update');
-
-    return Storage.instance.set(storageStore, updateData);
-  }
+  void _prepareOptions() => items.forEach((e) => e.setting = this);
 }
