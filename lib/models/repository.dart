@@ -6,13 +6,15 @@ import 'package:possystem/services/storage.dart';
 mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
   bool isReady = false;
 
+  bool versionChanged = false;
+
   /// Only use for logging
   final String repositoryName = 'repository';
 
   T buildModel(String id, Map<String, Object?> value);
 
   Future<void> initialize() {
-    return Storage.instance.get(storageStore).then((data) {
+    return Storage.instance.get(storageStore).then((data) async {
       replaceItems({});
       isReady = true;
 
@@ -23,6 +25,11 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
           error(e.toString(), '$repositoryName.parse.error', stack);
         }
       });
+
+      if (versionChanged) {
+        print('version changed: $_items');
+        // await Storage.instance.setAll(storageStore, _items);
+      }
 
       notifyListeners();
     }).onError((e, stack) {

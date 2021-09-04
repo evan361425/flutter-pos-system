@@ -14,7 +14,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/ingredient_expansion.dart';
+import 'widgets/ingredient_expansion_tile.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -53,7 +53,10 @@ class ProductScreen extends StatelessWidget {
 
     final body = product.isEmpty
         ? EmptyBody(title: '可以設定產品的成份囉！', onPressed: navigateNewIngredient)
-        : IngredientExpansion(ingredients: product.itemList);
+        : Column(children: [
+            for (final ingredient in product.itemList)
+              IngredientExpansionTile(ingredient: ingredient),
+          ]);
 
     return FadeInTitleScaffold(
       leading: PopButton(),

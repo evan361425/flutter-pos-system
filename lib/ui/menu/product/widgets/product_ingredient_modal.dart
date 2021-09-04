@@ -103,7 +103,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
 
     _amountController = TextEditingController(text: i?.amount.toString());
     if (i != null) {
-      ingredientId = i.id;
+      ingredientId = i.ingredient.id;
       ingredientName = i.name;
     }
   }
@@ -132,15 +132,15 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     if (ingredientId.isEmpty) {
       return tt('menu.ingredient.error.name_empty');
     }
-    if (widget.ingredient?.id != ingredientId &&
-        widget.product.hasItem(ingredientId)) {
+    if (widget.ingredient?.ingredient.id != ingredientId &&
+        widget.product.hasIngredient(ingredientId)) {
       return tt('menu.ingredient.error.name_repeat');
     }
   }
 
   ProductIngredientObject _parseObject() {
     return ProductIngredientObject(
-      id: ingredientId,
+      ingredientId: ingredientId,
       amount: num.tryParse(_amountController.text),
     );
   }

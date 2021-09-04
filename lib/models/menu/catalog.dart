@@ -35,16 +35,18 @@ class Catalog extends NotifyModel<CatalogObject>
     replaceItems(products ?? {});
   }
 
-  factory Catalog.fromObject(CatalogObject object) => Catalog(
-        id: object.id,
-        index: object.index!,
-        name: object.name,
-        createdAt: object.createdAt,
-        products: {
-          for (var product in object.products)
-            product.id!: Product.fromObject(product)
-        },
-      ).._preparePorducts();
+  factory Catalog.fromObject(CatalogObject object) {
+    return Catalog(
+      id: object.id,
+      index: object.index!,
+      name: object.name,
+      createdAt: object.createdAt,
+      products: {
+        for (var product in object.products)
+          product.id!: Product.fromObject(product)
+      },
+    ).._preparePorducts();
+  }
 
   String? get createdDate => Util.timeToDate(createdAt);
 
@@ -85,7 +87,7 @@ class Catalog extends NotifyModel<CatalogObject>
         index: index,
         name: name,
         createdAt: createdAt,
-        products: items.map((e) => e.toObject()),
+        products: items.map((e) => e.toObject()).toList(),
       );
 
   void _preparePorducts() => items.forEach((e) => e.catalog = this);

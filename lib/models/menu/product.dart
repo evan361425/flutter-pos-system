@@ -5,6 +5,7 @@ import 'package:possystem/services/storage.dart';
 import '../model.dart';
 import '../objects/menu_object.dart';
 import '../repository.dart';
+import '../repository/menu.dart';
 import 'catalog.dart';
 import 'product_ingredient.dart';
 
@@ -55,19 +56,28 @@ class Product extends NotifyModel<ProductObject>
     if (catalog != null) this.catalog = catalog;
   }
 
-  factory Product.fromObject(ProductObject object) => Product(
-        id: object.id,
-        name: object.name!,
-        index: object.index!,
-        price: object.price!,
-        cost: object.cost!,
-        createdAt: object.createdAt,
-        searchedAt: object.searchedAt,
-        ingredients: {
-          for (var ingredient in object.ingredients)
-            ingredient.id!: ProductIngredient.fromObject(ingredient)
-        },
-      ).._prepareIngredients();
+  factory Product.fromObject(ProductObject object) {
+    final ingredients = object.ingredients.map(
+      (e) => ProductIngredient.fromObject(e),
+    );
+
+    if (!object.ingredients.every((object) => object.isLatest)) {
+      Menu.instance.versionChanged = true;
+    }
+
+    return Product(
+      id: object.id,
+      name: object.name!,
+      index: object.index!,
+      price: object.price!,
+      cost: object.cost!,
+      createdAt: object.createdAt,
+      searchedAt: object.searchedAt,
+      ingredients: {
+        for (var ingredient in ingredients) ingredient.id: ingredient
+      },
+    ).._prepareIngredients();
+  }
 
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredient> get ingredientsWithQuantity =>
@@ -94,6 +104,10 @@ class Product extends NotifyModel<ProductObject>
     return maxScore;
   }
 
+  bool hasIngredient(String id) {
+    return items.any((item) => item.ingredient.id == id);
+  }
+
   @override
   void notifyItem() {
     // catalog screen will also shows ingredients
@@ -117,7 +131,7 @@ class Product extends NotifyModel<ProductObject>
         price: price,
         cost: cost,
         createdAt: createdAt,
-        ingredients: items.map((e) => e.toObject()),
+        ingredients: items.map((e) => e.toObject()).toList(),
       );
 
   void _prepareIngredients() => items.forEach((e) => e.product = this);

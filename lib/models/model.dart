@@ -5,7 +5,7 @@ import 'package:possystem/models/model_object.dart';
 import 'package:possystem/services/storage.dart';
 
 mixin Model<T extends ModelObject> {
-  late String id;
+  late final String id;
 
   late String name;
 
@@ -14,6 +14,10 @@ mixin Model<T extends ModelObject> {
   final Stores storageStore = Stores.menu;
 
   String get prefix => id;
+
+  String generateId() => Util.uuidV4();
+
+  void handleUpdated() {}
 
   Future<void> remove() async {
     info(toString(), '$logCode.remove');
@@ -30,33 +34,28 @@ mixin Model<T extends ModelObject> {
   String toString() => name;
 
   /// Return `true` if updated any field
-  Future<bool> update(T object, {String event = 'update'}) async {
+  Future<void> update(T object, {String event = 'update'}) async {
     final updateData = object.diff(this);
 
-    if (updateData.isEmpty) return false;
+    if (updateData.isEmpty) return;
 
     info(toString(), '$logCode.$event');
 
     await Storage.instance.set(storageStore, updateData);
 
-    return true;
+    handleUpdated();
   }
 }
 
 abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
     with Model<T> {
+  NotifyModel(String? id) {
+    this.id = id ?? generateId();
+  }
+
   @override
-  late final String id;
-
-  NotifyModel(String? id) : id = id ?? Util.uuidV4();
-
-  @override
-  Future<bool> update(T object, {String event = 'update'}) async {
-    final isUpdated = await super.update(object, event: event);
-
-    if (isUpdated) notifyListeners();
-
-    return isUpdated;
+  void handleUpdated() {
+    notifyListeners();
   }
 }
 

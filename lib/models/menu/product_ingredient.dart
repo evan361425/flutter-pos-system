@@ -1,10 +1,9 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
 import '../objects/menu_object.dart';
 import '../repository.dart';
-import '../repository/stock.dart';
+import '../repository/menu.dart';
 import '../stock/ingredient.dart';
 import 'product.dart';
 import 'product_quantity.dart';
@@ -20,6 +19,9 @@ class ProductIngredient
   /// Connect to stock.
   late Ingredient ingredient;
 
+  /// Only use for set up [ingredient]
+  final String storageIngredientId;
+
   /// Amount of ingredient per product
   num amount;
 
@@ -33,27 +35,36 @@ class ProductIngredient
     String? id,
     Ingredient? ingredient,
     Product? product,
+    this.storageIngredientId = '',
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) {
-    replaceItems(quantities ?? {});
+    this.id = id ?? generateId();
 
-    if (id != null) this.id = id;
+    replaceItems(quantities ?? {});
 
     if (product != null) this.product = product;
 
-    if (ingredient != null) setIngredient(ingredient);
+    if (ingredient != null) this.ingredient = ingredient;
   }
 
-  factory ProductIngredient.fromObject(ProductIngredientObject object) =>
-      ProductIngredient(
-        id: object.id,
-        amount: object.amount!,
-        quantities: {
-          for (var quantity in object.quantities)
-            quantity.id!: ProductQuantity.fromObject(quantity)
-        },
-      ).._prepareQuantities();
+  /// [ingredient] set by [ModelInitializer]
+  factory ProductIngredient.fromObject(ProductIngredientObject object) {
+    final quantities = object.quantities.map(
+      (e) => ProductQuantity.fromObject(e),
+    );
+
+    if (!object.quantities.every((object) => object.isLatest)) {
+      Menu.instance.versionChanged = true;
+    }
+
+    return ProductIngredient(
+      id: object.id,
+      storageIngredientId: object.ingredientId!,
+      amount: object.amount!,
+      quantities: {for (var quantity in quantities) quantity.id: quantity},
+    ).._prepareQuantities();
+  }
 
   @override
   String get name => ingredient.name;
@@ -68,13 +79,8 @@ class ProductIngredient
     });
   }
 
-  /// change stock ingredient
-  Future<void> changeIngredient(String newId) async {
-    await remove();
-
-    setIngredient(Stock.instance.getItem(newId)!);
-
-    await product.setItem(this);
+  bool hasQuantity(String id) {
+    return items.any((item) => item.quantity.id == id);
   }
 
   @override
@@ -85,39 +91,13 @@ class ProductIngredient
   @override
   void removeFromRepo() => product.removeItem(id);
 
-  void setIngredient(Ingredient model) {
-    ingredient = model;
-    id = model.id;
-  }
-
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
+        ingredientId: ingredient.id,
         amount: amount,
-        quantities: items.map((e) => e.toObject()),
+        quantities: items.map((e) => e.toObject()).toList(),
       );
-
-  @override
-  Future<bool> update(
-    ProductIngredientObject ingredient, {
-    String event = 'update',
-  }) async {
-    final updateData = ingredient.diff(this);
-
-    if (updateData['id'] != null) {
-      await (updateData['id'] as Future<void>);
-      return true;
-    }
-
-    if (updateData.isEmpty) return false;
-
-    info(toString(), '$logCode.$event');
-    await product.setItem(this);
-
-    await Storage.instance.set(storageStore, updateData);
-
-    return true;
-  }
 
   void _prepareQuantities() {
     items.forEach((e) {

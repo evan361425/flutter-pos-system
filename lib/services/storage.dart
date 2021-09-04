@@ -24,7 +24,6 @@ class Storage {
 
     final databasePath = await getDatabasesPath() + '/pos_system.sembast';
 
-    // await databaseFactoryIo.deleteDatabase(databasePath);
     db = await databaseFactoryIo.openDatabase(databasePath);
 
     _initialized = true;
@@ -66,6 +65,14 @@ class Storage {
                   ? store.record(entry.key).delete(txn)
                   : store.record(entry.key).update(txn, entry.value);
             })));
+  }
+
+  Future<void> setAll(Stores storeId, Map<String, Object?> data) {
+    final store = getStore(storeId);
+
+    return db.transaction((txn) => Future.wait(data.entries.map(
+          (e) => store.record(e.key).put(txn, e.value, merge: true),
+        )));
   }
 
   /// add data into record

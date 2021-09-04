@@ -138,7 +138,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     _costController = TextEditingController(text: q?.additionalCost.toString());
 
     if (q != null) {
-      quantityId = q.id;
+      quantityId = q.quantity.id;
       quantityName = q.name;
     }
   }
@@ -149,11 +149,11 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
     if (widget.isNew) {
       final quantity = ProductQuantity(
-        quantity: Quantities.instance.getItem(object.id!),
+        quantity: Quantities.instance.getItem(quantityId),
         ingredient: widget.ingredient,
-        amount: object.amount,
-        additionalPrice: object.additionalPrice,
-        additionalCost: object.additionalCost,
+        amount: object.amount!,
+        additionalPrice: object.additionalPrice!,
+        additionalCost: object.additionalCost!,
       );
 
       await quantity.ingredient.setItem(quantity);
@@ -169,15 +169,15 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     if (quantityId.isEmpty) {
       return tt('menu.quantity.error.name_empty');
     }
-    if (widget.quantity?.id != quantityId &&
-        widget.ingredient.hasItem(quantityId)) {
+    if (widget.quantity?.quantity.id != quantityId &&
+        widget.ingredient.hasQuantity(quantityId)) {
       return tt('menu.quantity.error.name_repeat');
     }
   }
 
   ProductQuantityObject _parseObject() {
     return ProductQuantityObject(
-      id: quantityId,
+      quantityId: quantityId,
       amount: num.parse(_amountController.text),
       additionalPrice: num.parse(_priceController.text),
       additionalCost: num.parse(_costController.text),
