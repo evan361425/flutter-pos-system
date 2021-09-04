@@ -97,7 +97,7 @@ class MenuScreen extends StatelessWidget {
         BottomSheetAction(
           title: Text(tt('menu.catalog.order')),
           leading: Icon(Icons.reorder_sharp),
-          navigateArgument: Routes.menuCatalogReorder,
+          navigateRoute: Routes.menuCatalogReorder,
         ),
       ],
     );

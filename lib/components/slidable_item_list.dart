@@ -58,7 +58,7 @@ class SlidableItemListState<T, Action>
 
   Future<void> showActions(T item) async {
     final customActions = widget.actionBuilder == null
-        ? const <BottomSheetAction<Action>>[]
+        ? const <BottomSheetAction>[]
         : widget.actionBuilder!(item).toList();
 
     if (widget.deleteValue == null) {
@@ -80,7 +80,9 @@ class SlidableItemListState<T, Action>
       context,
       actions: customActions.toList(),
       deleteValue: widget.deleteValue!,
-      warningContent: widget.warningContextBuilder!(context, item),
+      warningContent: widget.warningContextBuilder == null
+          ? null
+          : widget.warningContextBuilder!(context, item),
       deleteCallback: () => widget.handleDelete(context, item),
     );
   }

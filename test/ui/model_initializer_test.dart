@@ -5,6 +5,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/repository/customers.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -29,6 +30,7 @@ void main() {
     when(quantities.getItem(any)).thenReturn(qua);
     when(menu.items).thenReturn([cat1, cat2]);
 
+    when(customerSettings.isReady).thenReturn(false);
     when(menu.isReady).thenReturn(false);
     when(stock.isReady).thenReturn(false);
     when(quantities.isReady).thenReturn(false);
@@ -36,6 +38,8 @@ void main() {
 
     await tester.pumpWidget(MultiProvider(
       providers: [
+        ChangeNotifierProvider<CustomerSettings>(
+            create: (_) => customerSettings),
         ChangeNotifierProvider<Quantities>(create: (_) => quantities),
         ChangeNotifierProvider<Menu>(create: (_) => menu),
         ChangeNotifierProvider<Stock>(create: (_) => stock),
@@ -49,14 +53,15 @@ void main() {
 
     expect(find.text('hi'), findsNothing);
 
-    // only menu is ready
+    // stock, quantities not ready
+    when(customerSettings.isReady).thenReturn(true);
     when(menu.isReady).thenReturn(true);
     notifier.go();
     await tester.pumpAndSettle();
 
     expect(find.text('hi'), findsNothing);
 
-    // menu and stock are ready
+    // only quantities not ready
     when(stock.isReady).thenReturn(true);
     notifier.go();
     await tester.pumpAndSettle();
