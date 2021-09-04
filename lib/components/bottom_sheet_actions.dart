@@ -5,7 +5,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
 import 'dialog/delete_dialog.dart';
-import 'style/snackbar.dart';
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {

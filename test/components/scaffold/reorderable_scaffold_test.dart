@@ -68,9 +68,6 @@ class MockModel extends NotifyModel<MockObject> with OrderableModel {
   final String name;
 
   @override
-  String get code => 'hi';
-
-  @override
   void removeFromRepo() {}
 
   @override

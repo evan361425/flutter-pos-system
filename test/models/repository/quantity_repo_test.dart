@@ -114,6 +114,7 @@ void main() {
 
         when(q_b.toObject()).thenReturn(object);
         when(q_b.id).thenReturn('b');
+        when(q_b.logCode).thenReturn('');
         when(storage.add(any, 'b', map)).thenAnswer((_) => Future.value());
 
         final future = checkNotifierCalled(repo, () => repo.setItem(q_b));

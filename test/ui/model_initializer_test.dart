@@ -5,7 +5,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/repository/customers.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';

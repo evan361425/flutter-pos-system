@@ -9,11 +9,18 @@ class CustomerSettingOption
     with
         Model<CustomerSettingOptionObject>,
         OrderableModel<CustomerSettingOptionObject> {
+  /// Connect to parent model
+  late CustomerSetting setting;
+
   bool isDefault;
 
   num? modeValue;
 
-  CustomerSetting? setting;
+  @override
+  final String logCode = 'customers.setting.option';
+
+  @override
+  final Stores storageStore = Stores.customers;
 
   CustomerSettingOption({
     String? id,
@@ -21,11 +28,13 @@ class CustomerSettingOption
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-    this.setting,
+    CustomerSetting? setting,
   }) {
     this.id = id ?? Util.uuidV4();
     this.name = name;
     this.index = index;
+
+    if (setting != null) this.setting = setting;
   }
 
   factory CustomerSettingOption.fromObject(CustomerSettingOptionObject object) {
@@ -39,19 +48,10 @@ class CustomerSettingOption
   }
 
   @override
-  String toString() => name;
+  String get prefix => '${setting.prefix}.options.$id';
 
   @override
-  String get code => 'customers.setting.option';
-
-  @override
-  String get prefix => '${setting!.prefix}.options.$id';
-
-  @override
-  void removeFromRepo() => setting!.removeItem(id);
-
-  @override
-  Stores get storageStore => Stores.customers;
+  void removeFromRepo() => setting.removeItem(id);
 
   @override
   CustomerSettingOptionObject toObject() => CustomerSettingOptionObject(

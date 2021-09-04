@@ -1,10 +1,10 @@
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository.dart';
-import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/storage.dart';
 
+import '../model.dart';
+import '../objects/menu_object.dart';
+import '../repository.dart';
+import '../repository/menu.dart';
 import 'product.dart';
 
 class Catalog extends NotifyModel<CatalogObject>
@@ -13,8 +13,14 @@ class Catalog extends NotifyModel<CatalogObject>
         Repository<Product>,
         NotifyRepository<Product>,
         OrderablRepository<Product> {
-  /// when it has been added to menu
+  /// The time of added to menu
   final DateTime createdAt;
+
+  @override
+  final String logCode = 'menu.catalog';
+
+  @override
+  final Stores storageStore = Stores.menu;
 
   Catalog({
     String? id,
@@ -40,16 +46,7 @@ class Catalog extends NotifyModel<CatalogObject>
         },
       ).._preparePorducts();
 
-  @override
-  String get code => 'menu.catalog';
-
   String? get createdDate => Util.timeToDate(createdAt);
-
-  @override
-  String get itemCode => 'menu.product';
-
-  @override
-  Stores get storageStore => Stores.menu;
 
   @override
   Future<void> addItemToStorage(Product child) {
@@ -90,9 +87,6 @@ class Catalog extends NotifyModel<CatalogObject>
         createdAt: createdAt,
         products: items.map((e) => e.toObject()),
       );
-
-  @override
-  String toString() => name;
 
   void _preparePorducts() => items.forEach((e) => e.catalog = this);
 }

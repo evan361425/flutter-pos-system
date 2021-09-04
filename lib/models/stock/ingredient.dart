@@ -23,8 +23,14 @@ class Ingredient extends NotifyModel<IngredientObject> with SearchableModel {
 
   DateTime? updatedAt;
 
+  @override
+  final String logCode = 'stock.ingredient';
+
+  @override
+  final Stores storageStore = Stores.stock;
+
   Ingredient({
-    required String name,
+    String name = 'ingredient',
     this.currentAmount,
     this.warningAmount,
     this.alertAmount,
@@ -47,14 +53,23 @@ class Ingredient extends NotifyModel<IngredientObject> with SearchableModel {
         updatedAt: object.updatedAt,
       );
 
-  @override
-  String get code => 'stock.ingredient';
-
-  @override
-  Stores get storageStore => Stores.stock;
-
   Future<void> addAmount(num amount) =>
       Stock.instance.applyAmounts({id: amount});
+
+  /// Add/minus [amount] of ingredient and return update data
+  Map<String, Object> getUpdateData(num amount) {
+    final object = amount > 0
+        ? IngredientObject(
+            lastAddAmount: amount,
+            currentAmount: (currentAmount ?? 0) + amount,
+            lastAmount: (currentAmount ?? 0) + amount,
+          )
+        : IngredientObject(
+            currentAmount: max((currentAmount ?? 0) + amount, 0),
+          );
+
+    return object.diff(this);
+  }
 
   @override
   void removeFromRepo() {
@@ -75,18 +90,4 @@ class Ingredient extends NotifyModel<IngredientObject> with SearchableModel {
 
   @override
   String toString() => name;
-
-  Map<String, Object> updateInfo(num amount) {
-    final object = amount > 0
-        ? IngredientObject(
-            lastAddAmount: amount,
-            currentAmount: (currentAmount ?? 0) + amount,
-            lastAmount: (currentAmount ?? 0) + amount,
-          )
-        : IngredientObject(
-            currentAmount: max((currentAmount ?? 0) + amount, 0),
-          );
-
-    return object.diff(this);
-  }
 }

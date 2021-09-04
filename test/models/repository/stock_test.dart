@@ -72,7 +72,7 @@ void main() {
   group('#applyAmounts', () {
     Ingredient createIngredient(num amount, Map<String, Object> info) {
       final ingredient = MockIngredient();
-      when(ingredient.updateInfo(amount)).thenReturn(info);
+      when(ingredient.getUpdateData(amount)).thenReturn(info);
 
       return ingredient;
     }
@@ -124,7 +124,7 @@ void main() {
 
     Ingredient createIngredient(num amount, String id) {
       final ingredient = MockIngredient();
-      when(ingredient.updateInfo(amount)).thenReturn({id: amount});
+      when(ingredient.getUpdateData(amount)).thenReturn({id: amount});
       when(ingredient.id).thenReturn(id);
 
       return ingredient;

@@ -16,17 +16,17 @@ class Menu extends ChangeNotifier
         InitilizableRepository<Catalog> {
   static Menu instance = Menu();
 
+  @override
+  final Stores storageStore = Stores.menu;
+
+  @override
+  final String repositoryName = 'menu';
+
   Menu() {
     initialize();
 
     Menu.instance = this;
   }
-
-  @override
-  String get itemCode => 'menu.catalog';
-
-  @override
-  Stores get storageStore => Stores.menu;
 
   @override
   Catalog buildModel(String id, Map<String, Object?> value) {

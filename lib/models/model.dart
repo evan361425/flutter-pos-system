@@ -9,12 +9,14 @@ mixin Model<T extends ModelObject> {
 
   late String name;
 
-  String get code;
+  final String logCode = 'model';
+
+  final Stores storageStore = Stores.menu;
+
   String get prefix => id;
-  Stores get storageStore;
 
   Future<void> remove() async {
-    info(toString(), '$code.remove');
+    info(toString(), '$logCode.remove');
     await Storage.instance.set(storageStore, {prefix: null});
 
     removeFromRepo();
@@ -24,14 +26,20 @@ mixin Model<T extends ModelObject> {
 
   T toObject();
 
-  Future<void> update(T object) {
+  @override
+  String toString() => name;
+
+  /// Return `true` if updated any field
+  Future<bool> update(T object, {String event = 'update'}) async {
     final updateData = object.diff(this);
 
-    if (updateData.isEmpty) return Future.value();
+    if (updateData.isEmpty) return false;
 
-    info(toString(), '$code.update');
+    info(toString(), '$logCode.$event');
 
-    return Storage.instance.set(storageStore, updateData);
+    await Storage.instance.set(storageStore, updateData);
+
+    return true;
   }
 }
 
@@ -40,20 +48,15 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
   @override
   late final String id;
 
-  NotifyModel(String? id) {
-    this.id = id ?? Util.uuidV4();
-  }
+  NotifyModel(String? id) : id = id ?? Util.uuidV4();
 
   @override
-  Future<void> update(T object, {String event = 'update'}) async {
-    final updateData = object.diff(this);
+  Future<bool> update(T object, {String event = 'update'}) async {
+    final isUpdated = await super.update(object, event: event);
 
-    if (updateData.isEmpty) return Future.value();
+    if (isUpdated) notifyListeners();
 
-    info(toString(), '$code.$event');
-    notifyListeners();
-
-    return Storage.instance.set(storageStore, updateData);
+    return isUpdated;
   }
 }
 

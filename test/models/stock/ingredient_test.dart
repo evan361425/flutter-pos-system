@@ -51,7 +51,7 @@ void main() {
     test('positive update without default', () {
       final ingredient = Ingredient(name: 'name', id: 'id');
       final prefix = ingredient.prefix;
-      final result = ingredient.updateInfo(10);
+      final result = ingredient.getUpdateData(10);
 
       expect(result['$prefix.lastAddAmount'], equals(10));
       expect(result['$prefix.currentAmount'], equals(10));
@@ -66,7 +66,7 @@ void main() {
           currentAmount: 2,
           lastAmount: 3);
       final prefix = ingredient.prefix;
-      final result = ingredient.updateInfo(10);
+      final result = ingredient.getUpdateData(10);
 
       expect(result['$prefix.lastAddAmount'], equals(10));
       expect(result['$prefix.currentAmount'], equals(12));
@@ -77,16 +77,16 @@ void main() {
       final ingredient1 = Ingredient(name: 'name', id: 'id');
       final ingredient2 = Ingredient(name: 'name', id: 'id', currentAmount: 3);
       var prefix = ingredient1.prefix;
-      var result = ingredient1.updateInfo(-2);
+      var result = ingredient1.getUpdateData(-2);
 
       expect(result['$prefix.lastAddAmount'], isNull);
       expect(result['$prefix.currentAmount'], equals(0));
       expect(result['$prefix.lastAmount'], isNull);
 
-      result = ingredient2.updateInfo(-2);
+      result = ingredient2.getUpdateData(-2);
       expect(result['$prefix.currentAmount'], equals(1));
 
-      result = ingredient2.updateInfo(-2);
+      result = ingredient2.getUpdateData(-2);
       expect(result['$prefix.currentAmount'], equals(0));
     });
   });

@@ -97,7 +97,7 @@ class Routes {
       return arg is CustomerSettingOption
           ? CustomerSettingOptionModal(
               option: arg,
-              setting: arg.setting!,
+              setting: arg.setting,
             )
           : CustomerSettingOptionModal(setting: arg as CustomerSetting);
     },

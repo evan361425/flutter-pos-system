@@ -161,6 +161,7 @@ void main() {
         final object = MockProductQuantityObject();
         when(quantity.id).thenReturn('id2');
         when(quantity.prefix).thenReturn('hola');
+        when(quantity.logCode).thenReturn('');
         when(quantity.toObject()).thenReturn(object);
         when(object.toMap()).thenReturn({'a': 'b'});
 

@@ -6,6 +6,9 @@ import 'package:possystem/services/storage.dart';
 mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
   bool isReady = false;
 
+  /// Only use for logging
+  final String repositoryName = 'repository';
+
   T buildModel(String id, Map<String, Object?> value);
 
   Future<void> initialize() {
@@ -17,13 +20,13 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
         try {
           addItem(buildModel(id, value as Map<String, Object?>));
         } catch (e, stack) {
-          error(e.toString(), '$itemCode.parse.error', stack);
+          error(e.toString(), '$repositoryName.parse.error', stack);
         }
       });
 
       notifyListeners();
     }).onError((e, stack) {
-      error(e.toString(), '$itemCode.fetch.error', stack);
+      error(e.toString(), '$repositoryName.fetch.error', stack);
     });
   }
 }
@@ -62,19 +65,17 @@ mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
 mixin Repository<T extends Model> {
   late Map<String, T> _items;
 
+  final Stores storageStore = Stores.menu;
+
   bool get isEmpty => _items.isEmpty;
 
   bool get isNotEmpty => _items.isNotEmpty;
-
-  String get itemCode;
 
   List<T> get itemList => items.toList();
 
   Iterable<T> get items => _items.values;
 
   int get length => _items.length;
-
-  Stores get storageStore;
 
   void addItem(T item) => _items[item.id] = item;
 
@@ -107,7 +108,7 @@ mixin Repository<T extends Model> {
   /// add item if not exist and always notify listeners
   Future<void> setItem(T item) async {
     if (!hasItem(item.id)) {
-      info(item.toString(), '$itemCode.add');
+      info(item.toString(), '${item.logCode}.add');
 
       addItem(item);
 

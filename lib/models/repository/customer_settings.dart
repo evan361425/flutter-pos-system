@@ -13,17 +13,17 @@ class CustomerSettings extends ChangeNotifier
         InitilizableRepository<CustomerSetting> {
   static CustomerSettings instance = CustomerSettings();
 
+  @override
+  final Stores storageStore = Stores.customers;
+
+  @override
+  final String repositoryName = 'customerSettings';
+
   CustomerSettings() {
     initialize();
 
     CustomerSettings.instance = this;
   }
-
-  @override
-  String get itemCode => 'customers.setting';
-
-  @override
-  Stores get storageStore => Stores.customers;
 
   @override
   CustomerSetting buildModel(String id, Map<String, Object?> value) {

@@ -8,14 +8,13 @@ import 'package:possystem/services/storage.dart';
 
 class ProductQuantity
     with Model<ProductQuantityObject>, SearchableModel<ProductQuantityObject> {
-  /// connect to parent object
+  /// Connect to parent object
   late final ProductIngredient ingredient;
 
-  /// connect to stock.
-  /// When it set, [MenuModel.stockMode] must be true
+  /// Connect to stock.
   late Quantity quantity;
 
-  /// ingredient per product
+  /// Amount of ingredient per product
   num amount;
 
   /// finalCost = product.cost + additionalCost
@@ -23,6 +22,12 @@ class ProductQuantity
 
   /// finalPrice = product.price + additionPrice
   num additionalPrice;
+
+  @override
+  final String logCode = 'menu.quantity';
+
+  @override
+  final Stores storageStore = Stores.menu;
 
   ProductQuantity({
     String? id,
@@ -34,11 +39,9 @@ class ProductQuantity
   }) {
     if (id != null) this.id = id;
 
-    if (quantity != null) {
-      this.id = quantity.id;
-      this.quantity = quantity;
-    }
     if (ingredient != null) this.ingredient = ingredient;
+
+    if (quantity != null) setQuantity(quantity);
   }
 
   factory ProductQuantity.fromObject(ProductQuantityObject object) =>
@@ -50,16 +53,10 @@ class ProductQuantity
       );
 
   @override
-  String get code => 'menu.quantity';
-
-  @override
   String get name => quantity.name;
 
   @override
   String get prefix => '${ingredient.prefix}.quantities.$id';
-
-  @override
-  Stores get storageStore => Stores.menu;
 
   Future<void> changeQuantity(String newId) async {
     await remove();
@@ -86,19 +83,24 @@ class ProductQuantity
       );
 
   @override
-  String toString() => '$ingredient.$name';
-
-  @override
-  Future<void> update(ProductQuantityObject quantity) async {
+  Future<bool> update(
+    ProductQuantityObject quantity, {
+    String event = 'update',
+  }) async {
     final updateData = quantity.diff(this);
 
-    if (updateData['id'] != null) return updateData['id'] as Future<void>;
+    if (updateData['id'] != null) {
+      await (updateData['id'] as Future<void>);
+      return true;
+    }
 
-    if (updateData.isEmpty) return Future.value();
+    if (updateData.isEmpty) return false;
 
-    info(toString(), '$code.update');
+    info(toString(), '$logCode.$event');
     await ingredient.setItem(this);
 
-    return Storage.instance.set(storageStore, updateData);
+    await Storage.instance.set(storageStore, updateData);
+
+    return true;
   }
 }

@@ -3,7 +3,7 @@ import 'package:possystem/services/storage.dart';
 import '../model.dart';
 import '../objects/customer_object.dart';
 import '../repository.dart';
-import '../repository/customers.dart';
+import '../repository/customer_settings.dart';
 import 'customer_setting_option.dart';
 
 class CustomerSetting extends NotifyModel<CustomerSettingObject>
@@ -13,6 +13,12 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
         NotifyRepository<CustomerSettingOption>,
         OrderablRepository<CustomerSettingOption> {
   CustomerSettingOptionMode mode;
+
+  @override
+  final String logCode = 'customers.setting';
+
+  @override
+  final Stores storageStore = Stores.customers;
 
   CustomerSetting({
     String? id,
@@ -39,9 +45,6 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
       .._prepareOptions();
   }
 
-  @override
-  String get code => 'customers.setting';
-
   CustomerSettingOption? get defaultOption {
     try {
       return items.firstWhere((option) => option.isDefault);
@@ -49,12 +52,6 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
       return null;
     }
   }
-
-  @override
-  String get itemCode => 'customers.setting.option';
-
-  @override
-  Stores get storageStore => Stores.customers;
 
   @override
   Future<void> addItemToStorage(CustomerSettingOption option) {
@@ -80,9 +77,6 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
-
-  @override
-  String toString() => name;
 
   void _prepareOptions() => items.forEach((e) => e.setting = this);
 }

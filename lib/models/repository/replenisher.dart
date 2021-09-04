@@ -11,17 +11,17 @@ class Replenisher extends ChangeNotifier
         InitilizableRepository {
   static late Replenisher instance;
 
+  @override
+  final String repositoryName = 'Replenisher';
+
+  @override
+  final Stores storageStore = Stores.replenisher;
+
   Replenisher() {
     initialize();
 
     Replenisher.instance = this;
   }
-
-  @override
-  String get itemCode => 'stock.batch';
-
-  @override
-  Stores get storageStore => Stores.replenisher;
 
   @override
   Replenishment buildModel(String id, Map<String, Object?> value) {

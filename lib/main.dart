@@ -5,7 +5,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'models/repository/customers.dart';
+import 'models/repository/customer_settings.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';

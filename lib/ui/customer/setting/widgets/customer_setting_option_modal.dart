@@ -4,7 +4,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/models/repository/customers.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 
 class CustomerSettingOptionModal extends StatefulWidget {
   final CustomerSetting setting;

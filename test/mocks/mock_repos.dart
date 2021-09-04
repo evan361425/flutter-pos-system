@@ -1,7 +1,7 @@
 import 'package:mockito/annotations.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customers.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/quantities.dart';

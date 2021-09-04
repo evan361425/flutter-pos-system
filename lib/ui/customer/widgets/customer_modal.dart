@@ -3,7 +3,7 @@ import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/models/repository/customers.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/customer/widgets/customer_modal_modes.dart';
 

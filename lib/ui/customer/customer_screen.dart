@@ -3,7 +3,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/repository/customers.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/customer/widgets/customer_setting_card.dart';
 import 'package:provider/provider.dart';

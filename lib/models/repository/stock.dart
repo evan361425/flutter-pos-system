@@ -15,17 +15,17 @@ class Stock extends ChangeNotifier
         SearchableRepository {
   static late Stock instance;
 
+  @override
+  final String repositoryName = 'stock';
+
+  @override
+  final Stores storageStore = Stores.stock;
+
   Stock() {
     initialize();
 
     Stock.instance = this;
   }
-
-  @override
-  String get itemCode => 'stock.ingredient';
-
-  @override
-  Stores get storageStore => Stores.stock;
 
   String? get updatedDate {
     if (isEmpty) return null;
@@ -49,7 +49,7 @@ class Stock extends ChangeNotifier
       if (amount != 0) {
         final child = getItem(id);
         if (child != null) {
-          updateData.addAll(child.updateInfo(amount));
+          updateData.addAll(child.getUpdateData(amount));
         }
       }
     });

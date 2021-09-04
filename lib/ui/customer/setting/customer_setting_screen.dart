@@ -88,7 +88,5 @@ class CustomerSettingScreen extends StatelessWidget {
 }
 
 enum _Action {
-  edit,
   delete,
-  reorder,
 }
