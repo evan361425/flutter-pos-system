@@ -80,6 +80,10 @@ class Menu extends ChangeNotifier
     return result;
   }
 
+  bool hasProductByName(String name) {
+    return items.any((catalog) => catalog.hasName(name));
+  }
+
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
 
