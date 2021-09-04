@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/meta_block.dart';
@@ -74,10 +75,7 @@ class ProductScreen extends StatelessWidget {
             child: ItemEditableInfo(
               item: product,
               metadata: metadata,
-              onEdit: () => Navigator.of(context).pushNamed(
-                Routes.menuProductModal,
-                arguments: product,
-              ),
+              onEdit: () => _showActions(context, product),
             ),
           ),
           body,
@@ -85,4 +83,26 @@ class ProductScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _showActions(BuildContext context, Product product) async {
+    await BottomSheetActions.withDelete(
+      context,
+      deleteCallback: product.remove,
+      deleteValue: _Action.delete,
+      popAfterDeleted: true,
+      warningContent: Text(tt('delete_confirm', {'name': product.name})),
+      actions: <BottomSheetAction<_Action>>[
+        BottomSheetAction(
+          title: Text(tt('menu.product.edit')),
+          leading: Icon(Icons.text_fields_sharp),
+          navigateArgument: product,
+          navigateRoute: Routes.menuProductModal,
+        ),
+      ],
+    );
+  }
+}
+
+enum _Action {
+  delete,
 }

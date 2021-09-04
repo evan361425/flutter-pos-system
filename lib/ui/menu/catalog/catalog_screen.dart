@@ -73,8 +73,10 @@ class CatalogScreen extends StatelessWidget {
   void _showActions(BuildContext context, Catalog catalog) async {
     await BottomSheetActions.withDelete(
       context,
-      deleteCallback: () => catalog.remove(),
+      deleteCallback: catalog.remove,
       deleteValue: _Action.delete,
+      popAfterDeleted: true,
+      warningContent: Text(tt('delete_confirm', {'name': catalog.name})),
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
           title: Text(tt('menu.catalog.edit')),

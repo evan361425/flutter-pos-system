@@ -89,6 +89,11 @@ class ProductIngredient
   }
 
   @override
+  void handleUpdated() {
+    notifyItem();
+  }
+
+  @override
   void removeFromRepo() => product.removeItem(id);
 
   @override

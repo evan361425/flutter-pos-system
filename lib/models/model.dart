@@ -53,9 +53,11 @@ abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
     this.id = id ?? generateId();
   }
 
+  void notifyItem() => notifyListeners();
+
   @override
   void handleUpdated() {
-    notifyListeners();
+    notifyItem();
   }
 }
 

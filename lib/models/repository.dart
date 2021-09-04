@@ -39,6 +39,7 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
 }
 
 mixin NotifyRepository<T extends Model> on Repository<T>, ChangeNotifier {
+  /// Repository is not always [ChangeNotifier], like `ProductIngredient`
   @override
   void notifyItem() => notifyListeners();
 }
