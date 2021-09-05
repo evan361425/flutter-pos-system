@@ -51,7 +51,6 @@ void main() {
             'createdAt': 1623639573,
             'ingredients': <String, Object?>{}
           },
-          'product_2': null,
         }
       }));
       final isSame =
@@ -73,52 +72,6 @@ void main() {
   });
 
   group('Methods Without Storage', () {
-    test('#newIndex', () {
-      final catalog = Catalog(name: 'name', index: 100, products: {
-        'id1': Product(index: 1, name: '1'),
-        'id2': Product(index: 2, name: '2'),
-        // id3 is been deleted
-        'id4': Product(index: 4, name: '4'),
-      });
-
-      expect(catalog.isEmpty, isFalse);
-      expect(catalog.isNotEmpty, isTrue);
-      expect(catalog.length, 3);
-      expect(catalog.newIndex, 5);
-    });
-
-    test('#itemList', () {
-      final catalog = Catalog(name: 'name', index: 100, products: {
-        'id1': Product(index: 4, name: '1'),
-        'id2': Product(index: 2, name: '2'),
-        'id4': Product(index: 1, name: '4'),
-      });
-      final list = catalog.itemList;
-
-      expect(list[0].name, equals('4'));
-      expect(list[1].name, equals('2'));
-      expect(list[2].name, equals('1'));
-    });
-
-    test('#getItem', () {
-      final catalog = Catalog(name: 'name', index: 100, products: {
-        'id1': Product(index: 1, name: '1'),
-      });
-
-      expect(catalog.getItem('id1')?.name, equals('1'));
-      expect(catalog.getItem('id2'), isNull);
-    });
-
-    test('#removeItem', () {
-      final catalog = Catalog(name: '', products: {'id1': Product(name: '')});
-
-      final bool isCalled =
-          checkNotifierCalled(catalog, () => catalog.removeItem('id1'));
-
-      expect(isCalled, isTrue);
-      expect(catalog.isEmpty, isTrue);
-    });
-
     test('#getItemsSimilarity', () {
       final p1 = MockProduct();
       final p2 = MockProduct();

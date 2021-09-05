@@ -54,15 +54,19 @@ class Validator {
     };
   }
 
-  static String? Function(String?) isNumber(String fieldName) {
+  static String? Function(String?) isNumber(
+    String fieldName, {
+    bool allowNull = false,
+  }) {
     return (String? value) {
       final number = num.tryParse(value ?? '');
 
       if (number == null) {
-        return tt('validator.number.type', {'field': fieldName});
-      } else {
-        return null;
+        if (!allowNull) {
+          return tt('validator.number.type', {'field': fieldName});
+        }
       }
+      return null;
     };
   }
 

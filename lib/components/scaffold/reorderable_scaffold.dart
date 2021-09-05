@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
-class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
+class ReorderableScaffold<T> extends StatelessWidget {
   final String? title;
 
   final List<T> items;
@@ -41,10 +40,7 @@ class ReorderableScaffold<T extends OrderableModel> extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(kSpacing0),
-            child: Text(
-              tt('total_count', {'count': items.length}),
-              style: Theme.of(context).textTheme.muted,
-            ),
+            child: HintText(tt('total_count', {'count': items.length})),
           ),
           Expanded(
             child: _OrderableList(items: items),

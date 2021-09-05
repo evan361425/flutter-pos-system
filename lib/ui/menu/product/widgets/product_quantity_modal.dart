@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
@@ -18,7 +17,8 @@ class ProductQuantityModal extends StatefulWidget {
   final ProductIngredient ingredient;
 
   final bool isNew;
-  ProductQuantityModal({
+
+  const ProductQuantityModal({
     Key? key,
     this.quantity,
     required this.ingredient,
@@ -27,6 +27,10 @@ class ProductQuantityModal extends StatefulWidget {
 
   @override
   _ProductQuantityModalState createState() => _ProductQuantityModalState();
+}
+
+enum _Actions {
+  delete,
 }
 
 class _ProductQuantityModalState extends State<ProductQuantityModal>
@@ -43,23 +47,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       ? const []
       : [
           IconButton(
-            onPressed: () async {
-              final result = await showCircularBottomSheet(
-                context,
-                actions: <BottomSheetAction>[
-                  BottomSheetAction(
-                    title: Text(tt('delete')),
-                    leading: Icon(
-                      KIcons.delete,
-                      color: Theme.of(context).errorColor,
-                    ),
-                    onTap: (context) => Navigator.of(context).pop('delete'),
-                  ),
-                ],
-              );
-
-              await _actionHandlers(result);
-            },
+            onPressed: () => BottomSheetActions.withDelete<_Actions>(
+              context,
+              deleteValue: _Actions.delete,
+              warningContent:
+                  Text(tt('delete_confirm', {'name': widget.quantity!.name})),
+              popAfterDeleted: true,
+              deleteCallback: widget.quantity!.remove,
+            ),
             icon: Icon(KIcons.more),
           ),
         ];
@@ -81,6 +76,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
+        key: Key('menu.quantity.search'),
         text: quantityName,
         labelText: tt('menu.quantity.label.name'),
         hintText: tt('menu.quantity.hint.name'),
@@ -143,7 +139,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     _costController = TextEditingController(text: q?.additionalCost.toString());
 
     if (q != null) {
-      quantityId = q.id;
+      quantityId = q.quantity.id;
       quantityName = q.name;
     }
   }
@@ -154,11 +150,11 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
     if (widget.isNew) {
       final quantity = ProductQuantity(
-        quantity: Quantities.instance.getItem(object.id!),
+        quantity: Quantities.instance.getItem(quantityId),
         ingredient: widget.ingredient,
-        amount: object.amount,
-        additionalPrice: object.additionalPrice,
-        additionalCost: object.additionalCost,
+        amount: object.amount!,
+        additionalPrice: object.additionalPrice!,
+        additionalCost: object.additionalCost!,
       );
 
       await quantity.ingredient.setItem(quantity);
@@ -174,37 +170,15 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     if (quantityId.isEmpty) {
       return tt('menu.quantity.error.name_empty');
     }
-    if (widget.quantity?.id != quantityId &&
-        widget.ingredient.hasItem(quantityId)) {
+    if (widget.quantity?.quantity.id != quantityId &&
+        widget.ingredient.hasQuantity(quantityId)) {
       return tt('menu.quantity.error.name_repeat');
-    }
-  }
-
-  Future<void> _actionHandlers(String? selected) {
-    switch (selected) {
-      case 'delete':
-        return _handleDelete();
-      default:
-        return Future.value();
-    }
-  }
-
-  Future<void> _handleDelete() async {
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => DeleteDialog(
-        content: Text(tt('delete_confirm', {'name': widget.quantity!.name})),
-      ),
-    );
-    if (isConfirmed == true) {
-      await widget.quantity!.remove();
-      Navigator.of(context).pop();
     }
   }
 
   ProductQuantityObject _parseObject() {
     return ProductQuantityObject(
-      id: quantityId,
+      quantityId: quantityId,
       amount: num.parse(_amountController.text),
       additionalPrice: num.parse(_priceController.text),
       additionalCost: num.parse(_costController.text),

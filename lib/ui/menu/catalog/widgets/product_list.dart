@@ -15,8 +15,9 @@ class ProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Product>(
+    return SlidableItemList<Product, _Action>(
       items: products,
+      deleteValue: _Action.delete,
       actionBuilder: _actionBuilder,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
@@ -25,22 +26,19 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  Iterable<BottomSheetAction> _actionBuilder(Product product) {
-    return [
+  Iterable<BottomSheetAction<_Action>> _actionBuilder(Product product) {
+    return <BottomSheetAction<_Action>>[
       BottomSheetAction(
         title: Text(tt('menu.product.edit')),
         leading: const Icon(Icons.text_fields_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-          Routes.menuProductModal,
-          arguments: product,
-        ),
+        navigateRoute: Routes.menuProductModal,
+        navigateArgument: product,
       ),
       BottomSheetAction(
         title: Text(tt('menu.product.order')),
         leading: const Icon(Icons.reorder_sharp),
-        onTap: (context) => Navigator.of(context).pushReplacementNamed(
-            Routes.menuProductReorder,
-            arguments: product.catalog),
+        navigateRoute: Routes.menuProductReorder,
+        navigateArgument: product.catalog,
       ),
     ];
   }
@@ -69,4 +67,8 @@ class ProductList extends StatelessWidget {
   Widget _warningContextBuilder(BuildContext context, Product product) {
     return Text(tt('delete_confirm', {'name': product.name}));
   }
+}
+
+enum _Action {
+  delete,
 }

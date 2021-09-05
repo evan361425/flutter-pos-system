@@ -50,7 +50,7 @@ void main() {
   });
 }
 
-class MockObject with ModelObject<MockModel> {
+class MockObject extends ModelObject<MockModel> {
   @override
   Map<String, Object> diff(model) => {};
 
@@ -66,9 +66,6 @@ class MockModel extends NotifyModel<MockObject> with OrderableModel {
 
   @override
   final String name;
-
-  @override
-  String get code => 'hi';
 
   @override
   void removeFromRepo() {}

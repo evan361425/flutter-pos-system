@@ -9,7 +9,7 @@ void main() {
       for (var i = 0; i < 5; i++)
         RadioText(
           groupId: 'some-id',
-          onSelected: () => selected = i,
+          onSelected: (_) => selected = i,
           value: i.toString(),
           text: i.toString(),
         )
@@ -39,7 +39,7 @@ void main() {
       for (var i = 0; i < 5; i++)
         RadioText(
           groupId: 'some-id',
-          onSelected: () {},
+          onSelected: (_) {},
           value: i.toString(),
           isSelected: false,
           text: i.toString(),
@@ -60,7 +60,7 @@ void main() {
       for (var i = 0; i < 5; i++)
         RadioText(
           groupId: 'some-id',
-          onSelected: () {},
+          onSelected: (_) {},
           value: i.toString(),
           isSelected: selected == i,
           text: i.toString(),
@@ -77,7 +77,7 @@ void main() {
     // should select none
     RadioText(
       groupId: 'some-id',
-      onSelected: () {},
+      onSelected: (_) {},
       value: '2',
       isSelected: false,
       text: 'hi',

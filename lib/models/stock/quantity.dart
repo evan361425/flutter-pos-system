@@ -7,9 +7,15 @@ class Quantity extends NotifyModel<QuantityObject> with SearchableModel {
   /// between 0 ~ 1
   num defaultProportion;
 
+  @override
+  final String logCode = 'stock.quantity';
+
+  @override
+  final Stores storageStore = Stores.quantities;
+
   Quantity({
     String? id,
-    required String name,
+    String name = 'quantity',
     this.defaultProportion = 1,
   }) : super(id) {
     this.name = name;
@@ -22,12 +28,6 @@ class Quantity extends NotifyModel<QuantityObject> with SearchableModel {
       );
 
   @override
-  String get code => 'stock.quantity';
-
-  @override
-  Stores get storageStore => Stores.quantities;
-
-  @override
   void removeFromRepo() {
     Quantities.instance.removeItem(prefix);
   }
@@ -38,7 +38,4 @@ class Quantity extends NotifyModel<QuantityObject> with SearchableModel {
         name: name,
         defaultProportion: defaultProportion,
       );
-
-  @override
-  String toString() => name;
 }

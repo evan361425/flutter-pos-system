@@ -5,7 +5,7 @@ import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
 
 class ChangerModal extends StatefulWidget {
-  ChangerModal({Key? key}) : super(key: key);
+  const ChangerModal({Key? key}) : super(key: key);
 
   @override
   _ChangerModalState createState() => _ChangerModalState();

@@ -21,17 +21,14 @@ void main() {
       expect(quantity.additionalPrice, equals(3));
     });
 
-    ProductQuantityObject createObject() {
-      return ProductQuantityObject.build({
+    test('#fromObject', () {
+      final quantity = ProductQuantity.fromObject(ProductQuantityObject.build({
         'id': 'qua-1',
+        'quantityId': 'q-1',
         'amount': 3,
         'additionalPrice': 5,
         'additionalCost': 2,
-      });
-    }
-
-    test('#fromObject', () {
-      final quantity = ProductQuantity.fromObject(createObject());
+      }));
 
       expect(quantity.id, equals('qua-1'));
       expect(quantity.amount, equals(3));
@@ -40,32 +37,22 @@ void main() {
     });
 
     test('#toObject', () {
-      final origin = createObject();
-      final quantity = ProductQuantity.fromObject(origin);
+      final qua = MockQuantity();
+      when(qua.id).thenReturn('q-1');
+      final quantity = ProductQuantity(
+        id: 'qua-1',
+        quantity: qua,
+        amount: 3,
+        additionalPrice: 5,
+        additionalCost: 2,
+      );
       final object = quantity.toObject();
 
-      expect(identical(object, origin), isFalse);
       expect(quantity.id, equals(object.id));
+      expect(qua.id, equals(object.quantityId));
       expect(quantity.amount, equals(object.amount));
       expect(quantity.additionalCost, equals(object.additionalCost));
       expect(quantity.additionalPrice, equals(object.additionalPrice));
-    });
-  });
-
-  group('Methods Without Storage', () {
-    test('#prefix', () {
-      final ingredient = MockProductIngredient();
-      final quantity = ProductQuantity(
-          amount: 1,
-          additionalCost: 2,
-          additionalPrice: 3,
-          id: '123',
-          ingredient: ingredient);
-      when(ingredient.prefix).thenReturn('prefix');
-      // when(ingredient.ingredient).thenReturn();
-
-      expect(quantity.prefix, contains('prefix'));
-      expect(quantity.prefix, contains('123'));
     });
   });
 
@@ -94,40 +81,31 @@ void main() {
         verifyNever(ingredient.setItem(any));
       });
 
-      test('update without changing ingredient', () async {
-        LOG_LEVEL = 2;
+      test('update correctly', () async {
+        final qua = MockQuantity();
         final object = ProductQuantityObject(
-            amount: 2, additionalCost: 3, additionalPrice: 4);
+            quantityId: 'q-1',
+            amount: 2,
+            additionalCost: 3,
+            additionalPrice: 4);
+        when(qua.id).thenReturn('q-1');
+        when(quantities.getItem('q-1')).thenReturn(qua);
+        // for logging
+        LOG_LEVEL = 2;
+        when(qua.name).thenReturn('q-1');
 
         await quantity.update(object);
 
-        // after update, ingredient id will changed
+        expect(identical(quantity.quantity, qua), isTrue);
+
         final prefix = quantity.prefix;
         final expected = {
+          '$prefix.quantityId': 'q-1',
           '$prefix.amount': 2,
           '$prefix.additionalCost': 3,
           '$prefix.additionalPrice': 4,
         };
-
         verify(storage.set(any, argThat(equals(expected))));
-      });
-
-      test('#changeIngredient, #remove, #setIngredient', () async {
-        LOG_LEVEL = 2;
-        final object = ProductQuantityObject(
-            amount: 2, additionalCost: 3, additionalPrice: 4, id: 'q_id2');
-        final newQuantity = Quantity(name: 'qua', id: 'q_id2');
-        final oldPrefix = quantity.prefix;
-        when(quantities.getItem('q_id2')).thenReturn(newQuantity);
-
-        await quantity.update(object);
-
-        verifyInOrder([
-          storage.set(any, argThat(equals({oldPrefix: null}))),
-          ingredient.removeItem(argThat(equals('q_id'))),
-          ingredient.setItem(any),
-        ]);
-        identical(quantity.quantity, newQuantity);
       });
     });
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -19,7 +18,7 @@ void main() {
     final newIngredient = Ingredient(name: 'ing-2', id: 'ing-2');
     final product = MockProduct();
     when(product.prefix).thenReturn('p-id');
-    when(product.hasItem('ing-2')).thenReturn(false);
+    when(product.hasIngredient('ing-2')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
     when(stock.getItem('ing-2')).thenReturn(newIngredient);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
@@ -49,28 +48,30 @@ void main() {
       ),
     ));
 
-    await tester.enterText(find.byType(TextFormField).first, '1');
-
     // search ingredient
-    await tester.tap(find.byType(SearchBarInline));
+    await tester.tap(find.byKey(Key('menu.ingredient.search')));
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
+
+    await tester.enterText(find.byType(TextFormField).first, '1');
 
     await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
-    verify(product.removeItem('ing-1'));
-    verify(storage.set(any, argThat(equals({'p-id.ingredients.ing-1': null}))));
-    verify(product.setItem(argThat(predicate<ProductIngredient>((model) {
-      return model.id == 'ing-2';
-    }))));
+    final prefix = productIngredient.prefix;
+    verify(storage.set(
+        any,
+        argThat(equals({
+          '$prefix.ingredientId': 'ing-2',
+          '$prefix.amount': 1,
+        }))));
   });
 
   testWidgets('should add new item', (tester) async {
     final product = MockProduct();
     final ingredient = MockIngredient();
     when(product.prefix).thenReturn('p-id');
-    when(product.hasItem('ing-1')).thenReturn(false);
+    when(product.hasIngredient('ing-1')).thenReturn(false);
     when(product.setItem(any)).thenAnswer((_) => Future.value());
     when(stock.getItem('ing-1')).thenReturn(ingredient);
     when(ingredient.name).thenReturn('ing-name');
@@ -95,20 +96,20 @@ void main() {
       ),
     ));
 
-    await tester.enterText(find.byType(TextFormField).first, '1');
-
     // search ingredient
-    await tester.tap(find.byType(SearchBarInline));
+    await tester.tap(find.byKey(Key('menu.ingredient.search')));
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
+
+    await tester.enterText(find.byType(TextFormField).first, '1');
 
     await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
     verify(product.setItem(argThat(predicate<ProductIngredient>((model) {
       return identical(model.product, product) &&
-          model.amount == 1 &&
-          identical(ingredient, model.ingredient);
+          identical(ingredient, model.ingredient) &&
+          model.amount == 1;
     })))).called(1);
   });
 

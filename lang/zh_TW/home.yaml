@@ -5,6 +5,7 @@ stock: 庫存
 quantities: 份量
 order: 點餐
 cashier: 收銀機
+customer: 顧客設定
 types:
   other: 其他
   store: 店家設定
@@ -13,6 +14,7 @@ tutorial:
   stock: "庫存系統可以幫助計算現有庫存\n並同時設定成份相關資訊。"
   cashier: "收銀機可以幫助我們結餘當日的訂單，並且在點單後計算現在現金應有的數量。"
   analysis: "統計分析可以幫助我們點餐後查看點餐的紀錄。"
+  customer: "顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\n20-30歲、外帶、上班族。"
   order: "設定好之後，我們馬上就可以開始點餐囉。"
 upgrader:
   title: 有新版本囉

@@ -5,6 +5,7 @@ stock: Stock
 quantities: Quantity
 order: Order
 cashier: Cashier
+customer: 顧客設定
 types:
   other: Other
   store: Store
@@ -13,6 +14,7 @@ tutorial:
   stock: "Stock System help calculate your ingredient amount after ordering"
   cashier: "Cashier helps us surplus daily orders, it will calculate the cash we have after ordering."
   analysis: "Analysis System allow you to check the order record"
+  customer: "顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\n20-30歲、外帶、上班族。"
   order: "Now we are ready to ordering！"
 upgrader:
   title: New version released!

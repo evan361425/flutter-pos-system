@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/components/tip/tip_tutorial.dart';
@@ -13,16 +13,14 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
 
-class MenuScreen extends StatefulWidget {
-  @override
-  _MenuScreenState createState() => _MenuScreenState();
-}
-
-class _MenuScreenState extends State<MenuScreen> {
+class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
+
+    final goAddCatalog =
+        () => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,16 +28,13 @@ class _MenuScreenState extends State<MenuScreen> {
         leading: PopButton(),
         actions: [
           IconButton(
-            onPressed: () => showCircularBottomSheet(
-              context,
-              actions: _actions(),
-            ),
+            onPressed: () => _showActions(context),
             icon: Icon(KIcons.more),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: navigateNewCatalog,
+        onPressed: goAddCatalog,
         tooltip: tt('menu.catalog.add'),
         child: TipTutorial(
           title: '產品種類',
@@ -48,33 +43,37 @@ class _MenuScreenState extends State<MenuScreen> {
               '「塑膠袋」、「環保杯」整合進「其他」\n'
               '若需要新增產品種類，可以點此按鈕。',
           label: 'menu.catalog',
-          disabled: Menu.instance.isNotEmpty,
+          disabled: menu.isNotEmpty,
           child: Icon(KIcons.add),
         ),
       ),
       body: menu.isEmpty
-          ? Center(child: EmptyBody(onPressed: navigateNewCatalog))
-          : _body(menu),
+          ? Center(child: EmptyBody(onPressed: goAddCatalog))
+          : _MenuBody(menu),
     );
   }
 
-  void navigateNewCatalog() {
-    Navigator.of(context).pushNamed(Routes.menuCatalogModal);
+  void _showActions(BuildContext context) {
+    showCircularBottomSheet(
+      context,
+      actions: <BottomSheetAction<void>>[
+        BottomSheetAction(
+          title: Text(tt('menu.catalog.order')),
+          leading: Icon(Icons.reorder_sharp),
+          navigateRoute: Routes.menuCatalogReorder,
+        ),
+      ],
+    );
   }
+}
 
-  List<BottomSheetAction> _actions() {
-    return <BottomSheetAction>[
-      BottomSheetAction(
-        title: Text(tt('menu.catalog.order')),
-        leading: Icon(Icons.reorder_sharp),
-        onTap: (context) {
-          Navigator.of(context).pushReplacementNamed(Routes.menuCatalogReorder);
-        },
-      ),
-    ];
-  }
+class _MenuBody extends StatelessWidget {
+  final Menu menu;
 
-  Widget _body(Menu menu) {
+  const _MenuBody(this.menu);
+
+  @override
+  Widget build(BuildContext context) {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
@@ -86,10 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
     final catalogCount = Padding(
       padding: const EdgeInsets.all(kSpacing1),
-      child: Text(
-        tt('total_count', {'count': menu.length}),
-        style: Theme.of(context).textTheme.muted,
-      ),
+      child: HintText(tt('total_count', {'count': menu.length})),
     );
     // get sorted catalogs
     final catalogList = CatalogList(menu.itemList);

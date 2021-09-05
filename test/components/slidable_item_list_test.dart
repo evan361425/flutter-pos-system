@@ -7,7 +7,7 @@ void main() {
   testWidgets('should not handle tap when sliding', (tester) async {
     var tapCount = 0;
     final widget = MaterialApp(
-      home: SlidableItemList<String>(
+      home: SlidableItemList<String, void>(
         items: ['1', '2'],
         tileBuilder: (_, int index, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),
@@ -40,7 +40,7 @@ void main() {
   testWidgets('should show alert when delete', (tester) async {
     var deletionFired = false;
     await tester.pumpWidget(MaterialApp(
-      home: SlidableItemList<String>(
+      home: SlidableItemList<String, void>(
         items: ['1', '2'],
         tileBuilder: (_, int index, item) => Text(item),
         warningContextBuilder: (_, __) => Text('hi'),

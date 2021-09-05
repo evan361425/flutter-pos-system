@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
+import '../model.dart';
+import '../objects/menu_object.dart';
+import '../repository.dart';
+import '../repository/menu.dart';
 import 'catalog.dart';
 import 'product_ingredient.dart';
 
@@ -14,28 +15,30 @@ class Product extends NotifyModel<ProductObject>
         Repository<ProductIngredient>,
         SearchableModel<ProductObject>,
         NotifyRepository<ProductIngredient> {
-  /// connect to parent object
+  /// Connect to parent object
   late final Catalog catalog;
 
-  /// product's name
-  @override
-  String name;
-
-  /// help to calculate daily earn
+  /// Help to calculate daily earn
   num cost;
 
-  /// money show to customer/order
+  /// Money show to customer/order
   num price;
 
-  /// when it has been added to catalog
+  /// The time added to catalog
   final DateTime createdAt;
 
-  /// when it has beed search
+  /// The time it has been selected in searching
   DateTime? searchedAt;
+
+  @override
+  final String logCode = 'menu.product';
+
+  @override
+  final Stores storageStore = Stores.menu;
 
   Product({
     String? id,
-    required this.name,
+    String name = 'product',
     int index = 1,
     this.cost = 0,
     this.price = 0,
@@ -45,42 +48,43 @@ class Product extends NotifyModel<ProductObject>
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
-    replaceItems(ingredients ?? {});
-
+    this.name = name;
     this.index = index;
+
+    replaceItems(ingredients ?? {});
 
     if (catalog != null) this.catalog = catalog;
   }
 
-  factory Product.fromObject(ProductObject object) => Product(
-        id: object.id,
-        name: object.name!,
-        index: object.index!,
-        price: object.price!,
-        cost: object.cost!,
-        createdAt: object.createdAt,
-        searchedAt: object.searchedAt,
-        ingredients: {
-          for (var ingredient in object.ingredients)
-            ingredient.id!: ProductIngredient.fromObject(ingredient)
-        },
-      ).._prepareIngredients();
+  factory Product.fromObject(ProductObject object) {
+    final ingredients = object.ingredients.map(
+      (e) => ProductIngredient.fromObject(e),
+    );
 
-  @override
-  String get code => 'menu.product';
+    if (!object.ingredients.every((object) => object.isLatest)) {
+      Menu.instance.versionChanged = true;
+    }
+
+    return Product(
+      id: object.id,
+      name: object.name!,
+      index: object.index!,
+      price: object.price!,
+      cost: object.cost!,
+      createdAt: object.createdAt,
+      searchedAt: object.searchedAt,
+      ingredients: {
+        for (var ingredient in ingredients) ingredient.id: ingredient
+      },
+    ).._prepareIngredients();
+  }
 
   /// help to decide wheather showing ingredient panel in cart
   Iterable<ProductIngredient> get ingredientsWithQuantity =>
       items.where((e) => e.isNotEmpty);
 
   @override
-  String get itemCode => 'menu.ingredient';
-
-  @override
   String get prefix => '${catalog.prefix}.products.$id';
-
-  @override
-  Stores get storageStore => Stores.menu;
 
   @override
   Future<void> addItemToStorage(ProductIngredient child) {
@@ -98,6 +102,10 @@ class Product extends NotifyModel<ProductObject>
       }
     }
     return maxScore;
+  }
+
+  bool hasIngredient(String id) {
+    return items.any((item) => item.ingredient.id == id);
   }
 
   @override
@@ -123,11 +131,8 @@ class Product extends NotifyModel<ProductObject>
         price: price,
         cost: cost,
         createdAt: createdAt,
-        ingredients: items.map((e) => e.toObject()),
+        ingredients: items.map((e) => e.toObject()).toList(),
       );
-
-  @override
-  String toString() => '$catalog.$name';
 
   void _prepareIngredients() => items.forEach((e) => e.product = this);
 }

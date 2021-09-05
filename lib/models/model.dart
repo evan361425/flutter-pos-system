@@ -5,16 +5,22 @@ import 'package:possystem/models/model_object.dart';
 import 'package:possystem/services/storage.dart';
 
 mixin Model<T extends ModelObject> {
-  late String id;
+  late final String id;
 
   late String name;
 
-  String get code;
+  final String logCode = 'model';
+
+  final Stores storageStore = Stores.menu;
+
   String get prefix => id;
-  Stores get storageStore;
+
+  String generateId() => Util.uuidV4();
+
+  void handleUpdated() {}
 
   Future<void> remove() async {
-    info(toString(), '$code.remove');
+    info(toString(), '$logCode.remove');
     await Storage.instance.set(storageStore, {prefix: null});
 
     removeFromRepo();
@@ -24,28 +30,34 @@ mixin Model<T extends ModelObject> {
 
   T toObject();
 
-  Future<void> update(T object);
+  @override
+  String toString() => name;
+
+  /// Return `true` if updated any field
+  Future<void> update(T object, {String event = 'update'}) async {
+    final updateData = object.diff(this);
+
+    if (updateData.isEmpty) return;
+
+    info(toString(), '$logCode.$event');
+
+    await Storage.instance.set(storageStore, updateData);
+
+    handleUpdated();
+  }
 }
 
 abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
     with Model<T> {
-  @override
-  late final String id;
-
   NotifyModel(String? id) {
-    this.id = id ?? Util.uuidV4();
+    this.id = id ?? generateId();
   }
 
+  void notifyItem() => notifyListeners();
+
   @override
-  Future<void> update(T object, {String event = 'update'}) async {
-    final updateData = object.diff(this);
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), '$code.$event');
-    notifyListeners();
-
-    return Storage.instance.set(storageStore, updateData);
+  void handleUpdated() {
+    notifyItem();
   }
 }
 

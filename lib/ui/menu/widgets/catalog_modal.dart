@@ -11,7 +11,8 @@ class CatalogModal extends StatefulWidget {
   final Catalog? catalog;
 
   final bool isNew;
-  CatalogModal({Key? key, this.catalog})
+
+  const CatalogModal({Key? key, this.catalog})
       : isNew = catalog == null,
         super(key: key);
 
@@ -43,7 +44,7 @@ class _CatalogModalState extends State<CatalogModal>
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
-        autofocus: true,
+        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: tt('menu.catalog.label.name'),
           hintText: tt('menu.catalog.hint.name'),

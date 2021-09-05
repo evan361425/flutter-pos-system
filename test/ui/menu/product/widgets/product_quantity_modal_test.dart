@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -20,11 +19,12 @@ void main() {
     final ingredient = MockProductIngredient();
     when(ingredient.prefix).thenReturn('i-id');
     when(ingredient.amount).thenReturn(1);
-    when(ingredient.hasItem('qua-2')).thenReturn(false);
+    when(ingredient.hasQuantity('qua-2')).thenReturn(false);
     when(ingredient.setItem(any)).thenAnswer((_) => Future.value());
     when(quantities.getItem('qua-2')).thenReturn(newQuantity);
     when(storage.set(any, any)).thenAnswer((_) => Future.value());
     final quantity = ProductQuantity(
+        id: 'qua',
         amount: 1,
         additionalCost: 1,
         additionalPrice: 1,
@@ -34,6 +34,7 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
       routes: {
+        // mock search
         Routes.menuQuantitySearch: (_) {
           return FutureBuilder<bool>(
             future: Future.delayed(Duration(milliseconds: 10), () => true),
@@ -53,26 +54,28 @@ void main() {
     ));
 
     // search quantity
-    await tester.tap(find.byType(SearchBarInline));
+    await tester.tap(find.byKey(Key('menu.quantity.search')));
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
 
     // must after search, since it will change amount
-    await tester.enterText(find.byType(TextFormField).first, '2');
+    // edit quantity properties
+    await tester.enterText(find.byType(TextFormField).at(0), '2');
     await tester.enterText(find.byType(TextFormField).at(1), '2');
     await tester.enterText(find.byType(TextFormField).at(2), '2');
 
     await tester.tap(find.text('save'));
     await tester.pumpAndSettle();
 
-    verify(ingredient.removeItem('qua-1'));
-    verify(storage.set(any, argThat(equals({'i-id.quantities.qua-1': null}))));
-    verify(ingredient.setItem(argThat(predicate<ProductQuantity?>((model) {
-      return model?.id == 'qua-2' &&
-          model?.additionalCost == 2 &&
-          model?.additionalPrice == 2 &&
-          model?.amount == 2;
-    }))));
+    final prefix = quantity.prefix;
+    verify(storage.set(
+        any,
+        argThat(equals({
+          '$prefix.quantityId': 'qua-2',
+          '$prefix.amount': 2,
+          '$prefix.additionalCost': 2,
+          '$prefix.additionalPrice': 2
+        }))));
   });
 
   testWidgets('should add new item', (tester) async {
@@ -80,7 +83,7 @@ void main() {
     final quantity = MockQuantity();
     when(ingredient.prefix).thenReturn('i-id');
     when(ingredient.amount).thenReturn(1);
-    when(ingredient.hasItem('qua-1')).thenReturn(false);
+    when(ingredient.hasQuantity('qua-1')).thenReturn(false);
     when(ingredient.setItem(any)).thenAnswer((_) => Future.value());
     when(quantities.getItem('qua-1')).thenReturn(quantity);
     when(quantity.name).thenReturn('qua-1');
@@ -104,12 +107,12 @@ void main() {
       home: ProductQuantityModal(ingredient: ingredient),
     ));
 
-    // search ingredient
-    await tester.tap(find.byType(SearchBarInline));
+    // search quantity
+    await tester.tap(find.byKey(Key('menu.quantity.search')));
     await tester.pumpAndSettle();
     await tester.pump(Duration(milliseconds: 15));
 
-    await tester.enterText(find.byType(TextFormField).first, '1');
+    await tester.enterText(find.byType(TextFormField).at(0), '1');
     await tester.enterText(find.byType(TextFormField).at(1), '1');
     await tester.enterText(find.byType(TextFormField).at(2), '1');
 
@@ -118,6 +121,7 @@ void main() {
 
     verify(ingredient.setItem(argThat(predicate<ProductQuantity>((model) {
       return identical(model.ingredient, ingredient) &&
+          identical(model.quantity, quantity) &&
           model.amount == 1 &&
           model.additionalCost == 1 &&
           model.additionalPrice == 1;

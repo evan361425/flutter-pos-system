@@ -4,6 +4,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
@@ -12,7 +13,7 @@ class ProductModal extends StatefulWidget {
   final Catalog catalog;
   final bool isNew;
 
-  ProductModal({
+  const ProductModal({
     Key? key,
     this.product,
     required this.catalog,
@@ -44,7 +45,7 @@ class _ProductModalState extends State<ProductModal>
         controller: _nameController,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
-        autofocus: true,
+        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: tt('menu.product.label.name'),
           hintText: tt('menu.product.hint.name'),
@@ -127,7 +128,7 @@ class _ProductModalState extends State<ProductModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.product?.name != name && widget.catalog.hasName(name)) {
+    if (widget.product?.name != name && Menu.instance.hasProductByName(name)) {
       return tt('menu.product.error.name');
     }
   }

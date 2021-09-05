@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/search_bar.dart';
 import 'package:possystem/components/style/circular_loading.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
@@ -93,10 +93,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
       return Column(children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            tt('search_count', {'count': count}),
-            style: Theme.of(context).textTheme.muted,
-          ),
+          child: HintText(tt('search_count', {'count': count})),
         ),
         Expanded(child: _listBuilder(context, list)),
       ]);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
@@ -13,7 +13,11 @@ import 'package:possystem/translator.dart';
 class ReplenishmentModal extends StatefulWidget {
   final Replenishment? replenishment;
 
-  const ReplenishmentModal({Key? key, this.replenishment}) : super(key: key);
+  final bool isNew;
+
+  const ReplenishmentModal({Key? key, this.replenishment})
+      : isNew = replenishment == null,
+        super(key: key);
 
   @override
   _ReplenishmentModalState createState() => _ReplenishmentModalState();
@@ -36,7 +40,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: kSpacing1),
-        child: Text(tt('stock.replenisher.tutorial'), style: textTheme.muted),
+        child: HintText(tt('stock.replenisher.tutorial')),
       ),
       Expanded(
         child: Padding(
@@ -97,7 +101,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         filled: false,
       ),
       style: textTheme.headline6,
-      autofocus: widget.replenishment == null,
+      autofocus: widget.isNew,
       maxLength: 30,
       validator: Validator.textLimit(tt('stock.replenisher.label.name'), 30),
     );
@@ -114,12 +118,12 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (widget.replenishment != null) {
-      await widget.replenishment!.update(object);
-    } else {
+    if (widget.isNew) {
       final model = Replenishment(name: object.name, data: object.data);
 
       await Replenisher.instance.setItem(model);
+    } else {
+      await widget.replenishment!.update(object);
     }
 
     Navigator.of(context).pop();

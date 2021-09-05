@@ -49,12 +49,11 @@ void main() {
         'price': 1,
         'cost': 1,
         'ingredients': <String, Object?>{
-          'ingredient_1': <String, Object?>{
-            'id': 'ingredient_1',
+          'ingredient': <String, Object?>{
+            'ingredientId': 'ingredient-1',
             'amount': 1,
             'quantities': <String, Object?>{}
           },
-          'ingredient_2': null,
         }
       }));
       final isSame = product.items.every((e) => identical(e.product, product));
@@ -92,14 +91,6 @@ void main() {
       });
 
       expect(product.ingredientsWithQuantity.first.id, equals('ing_2'));
-    });
-
-    test('#prefix', () {
-      final catalog = Catalog(name: '', index: 1, id: 'cat_1');
-      final product = Product(name: '', id: 'pro_1', catalog: catalog);
-
-      expect(product.prefix, contains('cat_1'));
-      expect(product.prefix, contains('pro_1'));
     });
 
     test('#getItemsSimilarity', () {

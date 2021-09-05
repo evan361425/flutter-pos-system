@@ -45,7 +45,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       SingleRowWrap(children: <Widget>[
         for (final ingredient in ingredients)
           RadioText(
-            onSelected: () {
+            onSelected: (_) {
               quantityList.currentState?.update(
                 ingredient: ingredient,
                 selected: Cart.instance.getSelectedQuantityId(ingredient),

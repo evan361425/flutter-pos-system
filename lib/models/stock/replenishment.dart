@@ -8,9 +8,15 @@ class Replenishment extends NotifyModel {
   /// ingredient id => add number
   final Map<String, num> data;
 
+  @override
+  final String logCode = 'stock.batch';
+
+  @override
+  final Stores storageStore = Stores.replenisher;
+
   Replenishment({
-    required String name,
     String? id,
+    String name = 'replenishment',
     Map<String, num>? data,
   })  : data = data ?? {},
         super(id) {
@@ -22,12 +28,6 @@ class Replenishment extends NotifyModel {
         name: object.name,
         data: object.data,
       );
-
-  @override
-  String get code => 'stock.batch';
-
-  @override
-  Stores get storageStore => Stores.replenisher;
 
   void apply() => Stock.instance.applyAmounts(data);
 
@@ -44,7 +44,4 @@ class Replenishment extends NotifyModel {
         name: name,
         data: data,
       );
-
-  @override
-  String toString() => name;
 }

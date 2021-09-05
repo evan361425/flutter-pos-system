@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -20,7 +20,7 @@ class IngredientModal extends StatefulWidget {
 
   final bool editable;
 
-  IngredientModal({Key? key, this.ingredient, this.editable = true})
+  const IngredientModal({Key? key, this.ingredient, this.editable = true})
       : isNew = ingredient == null,
         super(key: key);
 
@@ -51,16 +51,13 @@ class _IngredientModalState extends State<IngredientModal>
               return Padding(
                 padding: const EdgeInsets.only(bottom: kSpacing2),
                 child: Center(
-                  child: Text(
-                    tt(
-                      'stock.ingredient.total_count',
-                      {
-                        'count': length - 2,
-                        'name': widget.ingredient!.name,
-                      },
-                    ),
-                    style: Theme.of(context).textTheme.muted,
-                  ),
+                  child: HintText(tt(
+                    'stock.ingredient.total_count',
+                    {
+                      'count': length - 2,
+                      'name': widget.ingredient!.name,
+                    },
+                  )),
                 ),
               );
             default:
@@ -94,7 +91,7 @@ class _IngredientModalState extends State<IngredientModal>
             errorText: errorMessage,
             filled: false,
           ),
-          autofocus: widget.ingredient == null,
+          autofocus: widget.isNew,
           maxLength: 30,
           validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
         ),

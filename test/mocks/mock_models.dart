@@ -1,4 +1,6 @@
 import 'package:mockito/annotations.dart';
+import 'package:possystem/models/customer/customer_setting.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -13,6 +15,8 @@ import 'package:possystem/models/stock/replenishment.dart';
 
 @GenerateMocks([
   Catalog,
+  CustomerSetting,
+  CustomerSettingOption,
   Ingredient,
   OrderIngredient,
   OrderIngredientObject,

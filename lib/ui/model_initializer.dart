@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/ui/splash/welcome_splash.dart';
 import 'package:provider/provider.dart';
+
+import 'splash/welcome_splash.dart';
 
 class ModelIntializer extends StatelessWidget {
   static bool _isReady = false;
@@ -23,16 +25,25 @@ class ModelIntializer extends StatelessWidget {
     final menu = context.watch<Menu>();
     final stock = context.watch<Stock>();
     final quantities = context.watch<Quantities>();
-    if (!menu.isReady || !stock.isReady || !quantities.isReady) {
+    final settings = context.watch<CustomerSettings>();
+    if (!menu.isReady ||
+        !stock.isReady ||
+        !quantities.isReady ||
+        !settings.isReady) {
       return false;
     }
 
     menu.items.forEach((catalog) {
       catalog.items.forEach((product) {
         product.items.forEach((ingredient) {
-          ingredient.setIngredient(stock.getItem(ingredient.id)!);
+          // Although it should always be searchable, still make null handler
+          // to avoid not found one and kill all others
+          final ing = stock.getItem(ingredient.storageIngredientId);
+          if (ing != null) ingredient.ingredient = ing;
+
           ingredient.items.forEach((quantity) {
-            quantity.setQuantity(quantities.getItem(quantity.id)!);
+            final qua = quantities.getItem(quantity.storageQuantityId)!;
+            if (ing != null) quantity.quantity = qua;
           });
         });
       });

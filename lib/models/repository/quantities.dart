@@ -12,17 +12,17 @@ class Quantities extends ChangeNotifier
         SearchableRepository {
   static late Quantities instance;
 
+  @override
+  final String repositoryName = 'Quantities';
+
+  @override
+  final Stores storageStore = Stores.quantities;
+
   Quantities() {
     initialize();
 
     Quantities.instance = this;
   }
-
-  @override
-  String get itemCode => 'quantities.quantity';
-
-  @override
-  Stores get storageStore => Stores.quantities;
 
   @override
   Quantity buildModel(String id, Map<String, Object?> value) {

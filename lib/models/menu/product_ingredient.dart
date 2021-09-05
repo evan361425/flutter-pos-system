@@ -1,62 +1,70 @@
-import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/services/storage.dart';
 
+import '../model.dart';
+import '../objects/menu_object.dart';
 import '../repository.dart';
+import '../repository/menu.dart';
+import '../stock/ingredient.dart';
 import 'product.dart';
+import 'product_quantity.dart';
 
 class ProductIngredient
     with
         Model<ProductIngredientObject>,
         SearchableModel<ProductIngredientObject>,
         Repository<ProductQuantity> {
-  /// connect to parent object
+  /// Connect to parent object
   late final Product product;
 
-  /// connect to stock.
-  /// When it set, [MenuModel.stockMode] must be true
+  /// Connect to stock.
   late Ingredient ingredient;
 
-  /// ingredient per product
+  /// Only use for set up [ingredient]
+  final String storageIngredientId;
+
+  /// Amount of ingredient per product
   num amount;
+
+  @override
+  final String logCode = 'menu.ingredient';
+
+  @override
+  final Stores storageStore = Stores.menu;
 
   ProductIngredient({
     String? id,
     Ingredient? ingredient,
     Product? product,
+    this.storageIngredientId = '',
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) {
+    this.id = id ?? generateId();
+
     replaceItems(quantities ?? {});
 
-    if (id != null) this.id = id;
-
-    if (ingredient != null) {
-      this.id = ingredient.id;
-      this.ingredient = ingredient;
-    }
     if (product != null) this.product = product;
+
+    if (ingredient != null) this.ingredient = ingredient;
   }
 
-  factory ProductIngredient.fromObject(ProductIngredientObject object) =>
-      ProductIngredient(
-        id: object.id,
-        amount: object.amount!,
-        quantities: {
-          for (var quantity in object.quantities)
-            quantity.id!: ProductQuantity.fromObject(quantity)
-        },
-      ).._prepareQuantities();
+  /// [ingredient] set by [ModelInitializer]
+  factory ProductIngredient.fromObject(ProductIngredientObject object) {
+    final quantities = object.quantities.map(
+      (e) => ProductQuantity.fromObject(e),
+    );
 
-  @override
-  String get code => 'menu.ingredient';
+    if (!object.quantities.every((object) => object.isLatest)) {
+      Menu.instance.versionChanged = true;
+    }
 
-  @override
-  String get itemCode => 'menu.quantity';
+    return ProductIngredient(
+      id: object.id,
+      storageIngredientId: object.ingredientId!,
+      amount: object.amount!,
+      quantities: {for (var quantity in quantities) quantity.id: quantity},
+    ).._prepareQuantities();
+  }
 
   @override
   String get name => ingredient.name;
@@ -65,22 +73,14 @@ class ProductIngredient
   String get prefix => '${product.prefix}.ingredients.$id';
 
   @override
-  Stores get storageStore => Stores.menu;
-
-  @override
   Future<void> addItemToStorage(ProductQuantity child) {
     return Storage.instance.set(storageStore, {
       child.prefix: child.toObject().toMap(),
     });
   }
 
-  /// change stock ingredient
-  Future<void> changeIngredient(String newId) async {
-    await remove();
-
-    setIngredient(Stock.instance.getItem(newId)!);
-
-    await product.setItem(this);
+  bool hasQuantity(String id) {
+    return items.any((item) => item.quantity.id == id);
   }
 
   @override
@@ -89,36 +89,20 @@ class ProductIngredient
   }
 
   @override
-  void removeFromRepo() => product.removeItem(id);
-
-  void setIngredient(Ingredient model) {
-    ingredient = model;
-    id = model.id;
+  void handleUpdated() {
+    notifyItem();
   }
+
+  @override
+  void removeFromRepo() => product.removeItem(id);
 
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
+        ingredientId: ingredient.id,
         amount: amount,
-        quantities: items.map((e) => e.toObject()),
+        quantities: items.map((e) => e.toObject()).toList(),
       );
-
-  @override
-  String toString() => '$product.$name';
-
-  @override
-  Future<void> update(ProductIngredientObject ingredient) async {
-    final updateData = ingredient.diff(this);
-
-    if (updateData['id'] != null) return updateData['id'] as Future<void>;
-
-    if (updateData.isEmpty) return Future.value();
-
-    info(toString(), '$code.update');
-    await product.setItem(this);
-
-    return Storage.instance.set(storageStore, updateData);
-  }
 
   void _prepareQuantities() {
     items.forEach((e) {

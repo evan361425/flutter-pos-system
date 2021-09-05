@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
@@ -35,15 +35,9 @@ class OrderListState extends State<OrderList> {
     if (_isLoading == true) {
       return CircularLoading();
     } else if (_isLoading == null) {
-      return Text(
-        tt('analysis.unset'),
-        style: Theme.of(context).textTheme.muted,
-      );
+      return HintText(tt('analysis.unset'));
     } else if (_data.isEmpty) {
-      return Text(
-        tt('analysis.empty'),
-        style: Theme.of(context).textTheme.muted,
-      );
+      return HintText(tt('analysis.empty'));
     }
 
     final totalPrice = CurrencyProvider.instance.numToString(this.totalPrice);

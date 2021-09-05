@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/home/widgets/order_info.dart';
-import 'package:possystem/ui/home/widgets/upgrade_alert.dart';
 import 'package:simple_tip/simple_tip.dart';
+
+import 'widgets/order_info.dart';
+import 'widgets/upgrade_alert.dart';
 
 class HomeScreen extends StatelessWidget {
   static const icons = {
@@ -30,6 +31,12 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.attach_money_sharp,
         label: 'cashier',
         route: Routes.cashier,
+        tipVersion: 1,
+      ),
+      'customer': _LabeledIcon(
+        icon: Icons.assignment_ind_sharp,
+        label: 'customer',
+        route: Routes.customer,
         tipVersion: 1,
       ),
     },

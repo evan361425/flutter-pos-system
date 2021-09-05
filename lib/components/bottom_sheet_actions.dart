@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
+
+import 'dialog/delete_dialog.dart';
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
@@ -24,6 +27,40 @@ Future<T?> showCircularBottomSheet<T>(
     useRootNavigator: useRootNavigator,
     builder: builder ?? (_) => BottomSheetActions(actions: actions!),
   );
+}
+
+class BottomSheetAction<T> {
+  final Widget title;
+
+  final Widget? leading;
+
+  final T? returnValue;
+
+  final String? navigateRoute;
+
+  final dynamic navigateArgument;
+
+  const BottomSheetAction({
+    required this.title,
+    this.leading,
+    this.returnValue,
+    this.navigateRoute,
+    this.navigateArgument,
+  }) : assert(returnValue != null || navigateRoute != null);
+
+  Widget toWidget(BuildContext context) {
+    return ListTile(
+      enableFeedback: true,
+      leading: leading,
+      title: title,
+      onTap: () => navigateRoute == null
+          ? Navigator.of(context).pop(returnValue)
+          : Navigator.of(context).pushReplacementNamed(
+              navigateRoute!,
+              arguments: navigateArgument,
+            ),
+    );
+  }
 }
 
 class BottomSheetActions extends StatelessWidget {
@@ -59,27 +96,45 @@ class BottomSheetActions extends StatelessWidget {
       child: Center(child: Text(tt('action_title'))),
     );
   }
-}
 
-class BottomSheetAction {
-  final Widget title;
+  /// Add action with deletion
+  ///
+  /// [actions] - Custom actions
+  /// [deleteValue] - Action type
+  /// [warningContent] - Content of warning in [DeleteDialog], `null` to disable confirm
+  /// [deleteCallback] - Callback after confirmed
+  /// [popAfterDeleted] - Wheather `Navigator.of(context).pop` after deleted
+  static Future<T?> withDelete<T>(
+    BuildContext context, {
+    List<BottomSheetAction> actions = const [],
+    required T deleteValue,
+    Widget? warningContent,
+    required Future<void> Function() deleteCallback,
+    bool popAfterDeleted = false,
+  }) async {
+    final result = await showCircularBottomSheet<T>(context, actions: [
+      ...actions,
+      BottomSheetAction(
+        title: Text(tt('delete')),
+        leading: Icon(
+          KIcons.delete,
+          color: Theme.of(context).errorColor,
+        ),
+        returnValue: deleteValue,
+      ),
+    ]);
 
-  final Widget? leading;
+    if (result == deleteValue) {
+      await DeleteDialog.show(
+        context,
+        deleteCallback: deleteCallback,
+        warningContent: warningContent,
+        popAfterDeleted: popAfterDeleted,
+      );
 
-  final void Function(BuildContext) onTap;
+      return null;
+    }
 
-  const BottomSheetAction({
-    required this.title,
-    this.leading,
-    required this.onTap,
-  });
-
-  Widget toWidget(BuildContext context) {
-    return ListTile(
-      enableFeedback: true,
-      leading: leading,
-      title: title,
-      onTap: () => onTap(context),
-    );
+    return result;
   }
 }

@@ -1,10 +1,10 @@
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/repository.dart';
-import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/storage.dart';
 
+import '../model.dart';
+import '../objects/menu_object.dart';
+import '../repository.dart';
+import '../repository/menu.dart';
 import 'product.dart';
 
 class Catalog extends NotifyModel<CatalogObject>
@@ -13,46 +13,42 @@ class Catalog extends NotifyModel<CatalogObject>
         Repository<Product>,
         NotifyRepository<Product>,
         OrderablRepository<Product> {
-  /// catalog's name
-  @override
-  String name;
-
-  /// when it has been added to menu
+  /// The time of added to menu
   final DateTime createdAt;
 
+  @override
+  final String logCode = 'menu.catalog';
+
+  @override
+  final Stores storageStore = Stores.menu;
+
   Catalog({
-    DateTime? createdAt,
     String? id,
+    String name = 'catalog',
     int index = 0,
-    required this.name,
+    DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
+    this.name = name;
     this.index = index;
     replaceItems(products ?? {});
   }
 
-  factory Catalog.fromObject(CatalogObject object) => Catalog(
-        id: object.id,
-        index: object.index!,
-        name: object.name,
-        createdAt: object.createdAt,
-        products: {
-          for (var product in object.products)
-            product.id!: Product.fromObject(product)
-        },
-      ).._preparePorducts();
-
-  @override
-  String get code => 'menu.catalog';
+  factory Catalog.fromObject(CatalogObject object) {
+    return Catalog(
+      id: object.id,
+      index: object.index!,
+      name: object.name,
+      createdAt: object.createdAt,
+      products: {
+        for (var product in object.products)
+          product.id!: Product.fromObject(product)
+      },
+    ).._preparePorducts();
+  }
 
   String? get createdDate => Util.timeToDate(createdAt);
-
-  @override
-  String get itemCode => 'menu.product';
-
-  @override
-  Stores get storageStore => Stores.menu;
 
   @override
   Future<void> addItemToStorage(Product child) {
@@ -91,11 +87,8 @@ class Catalog extends NotifyModel<CatalogObject>
         index: index,
         name: name,
         createdAt: createdAt,
-        products: items.map((e) => e.toObject()),
+        products: items.map((e) => e.toObject()).toList(),
       );
-
-  @override
-  String toString() => name;
 
   void _preparePorducts() => items.forEach((e) => e.catalog = this);
 }

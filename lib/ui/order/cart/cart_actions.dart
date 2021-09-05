@@ -6,31 +6,32 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
-  static final List<BottomSheetAction> actions = <BottomSheetAction>[
+  static final List<BottomSheetAction> actions =
+      <BottomSheetAction<_ActionTypes>>[
     BottomSheetAction(
       leading: Icon(Icons.loyalty_sharp),
-      onTap: (context) => Navigator.of(context).pop(_ActionTypes.discount),
       title: Text(tt('order.cart.discount')),
+      returnValue: _ActionTypes.discount,
     ),
     BottomSheetAction(
       leading: Icon(Icons.attach_money_sharp),
-      onTap: (context) => Navigator.of(context).pop(_ActionTypes.price),
       title: Text(tt('order.cart.price')),
+      returnValue: _ActionTypes.price,
     ),
     BottomSheetAction(
       leading: Icon(Icons.exposure_sharp),
-      onTap: (context) => Navigator.of(context).pop(_ActionTypes.count),
       title: Text(tt('order.cart.count')),
+      returnValue: _ActionTypes.count,
     ),
     BottomSheetAction(
       leading: Icon(Icons.free_breakfast_sharp),
-      onTap: (context) => Navigator.of(context).pop(_ActionTypes.free),
       title: Text(tt('order.cart.free')),
+      returnValue: _ActionTypes.free,
     ),
     BottomSheetAction(
       leading: Icon(Icons.delete_sharp),
-      onTap: (context) => Navigator.of(context).pop(_ActionTypes.delete),
       title: Text(tt('order.cart.delete')),
+      returnValue: _ActionTypes.delete,
     ),
   ];
 

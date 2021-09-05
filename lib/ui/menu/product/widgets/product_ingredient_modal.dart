@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -30,6 +29,10 @@ class ProductIngredientModal extends StatefulWidget {
   _ProductIngredientModalState createState() => _ProductIngredientModalState();
 }
 
+enum _Actions {
+  delete,
+}
+
 class _ProductIngredientModalState extends State<ProductIngredientModal>
     with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
@@ -42,23 +45,14 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       ? const []
       : [
           IconButton(
-            onPressed: () async {
-              final result = await showCircularBottomSheet<String>(
-                context,
-                actions: <BottomSheetAction>[
-                  BottomSheetAction(
-                    title: Text(tt('delete')),
-                    leading: Icon(
-                      KIcons.delete,
-                      color: Theme.of(context).errorColor,
-                    ),
-                    onTap: (context) => Navigator.of(context).pop('delete'),
-                  ),
-                ],
-              );
-
-              await _actionHandlers(result);
-            },
+            onPressed: () => BottomSheetActions.withDelete<_Actions>(
+              context,
+              deleteValue: _Actions.delete,
+              warningContent:
+                  Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
+              popAfterDeleted: true,
+              deleteCallback: widget.ingredient!.remove,
+            ),
             icon: Icon(KIcons.more),
           ),
         ];
@@ -78,6 +72,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
+        key: Key('menu.ingredient.search'),
         text: ingredientName,
         labelText: tt('menu.ingredient.label.name'),
         hintText: tt('menu.ingredient.hint.name'),
@@ -109,7 +104,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
 
     _amountController = TextEditingController(text: i?.amount.toString());
     if (i != null) {
-      ingredientId = i.id;
+      ingredientId = i.ingredient.id;
       ingredientName = i.name;
     }
   }
@@ -138,38 +133,15 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     if (ingredientId.isEmpty) {
       return tt('menu.ingredient.error.name_empty');
     }
-    if (widget.ingredient?.id != ingredientId &&
-        widget.product.hasItem(ingredientId)) {
+    if (widget.ingredient?.ingredient.id != ingredientId &&
+        widget.product.hasIngredient(ingredientId)) {
       return tt('menu.ingredient.error.name_repeat');
-    }
-  }
-
-  Future<void> _actionHandlers(String? selected) {
-    switch (selected) {
-      case 'delete':
-        return _handleDelete();
-      default:
-        return Future.value();
-    }
-  }
-
-  Future<void> _handleDelete() async {
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => DeleteDialog(
-        content: Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
-      ),
-    );
-
-    if (isConfirmed == true) {
-      await widget.ingredient!.remove();
-      Navigator.of(context).pop();
     }
   }
 
   ProductIngredientObject _parseObject() {
     return ProductIngredientObject(
-      id: ingredientId,
+      ingredientId: ingredientId,
       amount: num.tryParse(_amountController.text),
     );
   }
