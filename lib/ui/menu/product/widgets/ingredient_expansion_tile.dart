@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/icon_text.dart';
+import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_expansion_actions.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_quantity_metadata.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_quantity_tile.dart';
 
 class IngredientExpansionTile extends StatelessWidget {
   final ProductIngredient ingredient;
@@ -30,11 +33,11 @@ class IngredientExpansionTile extends StatelessWidget {
         tt('menu.ingredient.amount', {'amount': ingredient.amount}),
       ),
       children: [
-        if (ingredient.isNotEmpty) IngredientQuantityMetadata(),
+        if (ingredient.isNotEmpty) _IngredientQuantityMetadata(),
         ...ingredient.items.map<Widget>(
-          (quantity) => IngredientQuantityTile(quantity: quantity),
+          (quantity) => _IngredientQuantityTile(quantity),
         ),
-        IngredientExpansionActions(ingredient: ingredient),
+        _IngredientExpansionActions(ingredient),
       ],
     );
   }
@@ -42,4 +45,109 @@ class IngredientExpansionTile extends StatelessWidget {
 
 enum _Actions {
   delete,
+}
+
+class _IngredientExpansionActions extends StatelessWidget {
+  final ProductIngredient ingredient;
+
+  const _IngredientExpansionActions(this.ingredient);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+      child: Row(children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            icon: Icon(Icons.settings_sharp),
+            label: Text(tt('menu.ingredient.edit')),
+            onPressed: () => Navigator.of(context).pushNamed(
+              Routes.menuIngredient,
+              arguments: ingredient,
+            ),
+          ),
+        ),
+        const SizedBox(width: kSpacing2),
+        Expanded(
+          child: ElevatedButton.icon(
+            icon: Icon(KIcons.add),
+            label: Text(tt('menu.quantity.add')),
+            onPressed: () => Navigator.of(context).pushNamed(
+              Routes.menuQuantity,
+              arguments: ingredient,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class _IngredientQuantityMetadata extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(tt('menu.quantity.label.additional_price')),
+              MetaBlock(),
+              Text(tt('menu.quantity.label.additional_cost')),
+            ],
+          ),
+          Text(tt('menu.quantity.label.amount')),
+        ],
+      ),
+    );
+  }
+}
+
+class _IngredientQuantityTile extends StatelessWidget {
+  final ProductQuantity quantity;
+
+  const _IngredientQuantityTile(this.quantity);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () => Navigator.of(context).pushNamed(
+        Routes.menuQuantity,
+        arguments: quantity,
+      ),
+      title: Text(quantity.name),
+      trailing: Text(quantity.amount.toString()),
+      onLongPress: () => BottomSheetActions.withDelete<_Actions>(
+        context,
+        deleteValue: _Actions.delete,
+        warningContent: Text(tt('delete_confirm', {'name': quantity.name})),
+        deleteCallback: quantity.remove,
+      ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Tooltip(
+            message: tt('menu.quantity.label.additional_price'),
+            child: IconText(
+              text: quantity.additionalPrice.toString(),
+              icon: Icons.loyalty_sharp,
+            ),
+          ),
+          MetaBlock(),
+          Tooltip(
+            message: tt('menu.quantity.label.additional_cost'),
+            child: IconText(
+              text: quantity.additionalCost.toString(),
+              icon: Icons.attach_money_sharp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

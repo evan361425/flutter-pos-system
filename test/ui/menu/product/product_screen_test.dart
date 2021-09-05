@@ -51,8 +51,11 @@ void main() {
           home: ProductScreen(),
         )));
 
-    // tap tile
+    // show actions
     await tester.tap(find.byIcon(KIcons.edit));
+    await tester.pumpAndSettle();
+    // go edit
+    await tester.tap(find.byIcon(Icons.text_fields_sharp));
     await tester.pumpAndSettle();
 
     expect(identical(product, argument), isTrue);
@@ -69,6 +72,7 @@ void main() {
       ingredients: {'ing-1': ingredient},
     );
 
+    when(ingredient.isNotEmpty).thenReturn(false);
     when(ingredient.items).thenReturn([]);
     when(ingredient.name).thenReturn('ing-name');
     when(ingredient.amount).thenReturn(1);

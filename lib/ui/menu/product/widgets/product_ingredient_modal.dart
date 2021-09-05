@@ -72,6 +72,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
+        key: Key('menu.ingredient.search'),
         text: ingredientName,
         labelText: tt('menu.ingredient.label.name'),
         hintText: tt('menu.ingredient.hint.name'),

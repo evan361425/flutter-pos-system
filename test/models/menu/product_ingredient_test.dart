@@ -19,64 +19,43 @@ void main() {
       expect(ingredient.id, equals('123'));
     });
 
-    ProductIngredientObject createObject() {
-      return ProductIngredientObject.build(<String, Object?>{
+    test('#fromObject', () {
+      final ingredient = ProductIngredient.fromObject(
+          ProductIngredientObject.build(<String, Object?>{
         'id': 'ing-1',
+        'ingredientId': 'ing-1',
         'amount': 2,
         'quantities': <String, Object?>{
           'quantity_1': <String, Object?>{
             'amount': 3,
+            'quantityId': 'qua-1',
             'additionalPrice': 5,
             'additionalCost': 2,
           },
-          'quantity_2': null,
         },
-      });
-    }
-
-    test('#fromObject', () {
-      final ingredient = ProductIngredient.fromObject(createObject());
+      }));
       final isSame =
           ingredient.items.every((e) => identical(e.ingredient, ingredient));
 
       expect(isSame, isTrue);
       expect(ingredient.id, equals('ing-1'));
       expect(ingredient.amount, equals(2));
+      expect(ingredient.length, equals(1));
+      expect(ingredient.items.first.id, equals('quantity_1'));
     });
 
     test('#toObject', () {
-      final origin = createObject();
-      final ingredient = ProductIngredient.fromObject(origin);
+      final ing = MockIngredient();
+      final ingredient = ProductIngredient(id: 'ing-1', ingredient: ing);
+      ingredient.ingredient = ing;
+      when(ing.id).thenReturn('i-1');
+      // when(ing.name).thenReturn('i-1');
+
       final object = ingredient.toObject();
 
-      expect(identical(object, origin), isFalse);
       expect(object.id, equals(ingredient.id));
+      expect(object.ingredientId, equals(ing.id));
       expect(object.amount, equals(ingredient.amount));
-      expect(object.quantities, isNotEmpty);
-    });
-  });
-
-  group('Methods Without Storage', () {
-    test('#prefix', () {
-      final product = MockProduct();
-      final ingredient = ProductIngredient(product: product, id: 'ing_1');
-      when(product.prefix).thenReturn('prefix');
-
-      expect(ingredient.prefix, contains('prefix'));
-      expect(ingredient.prefix, contains('ing_1'));
-    });
-
-    test('#removeItem', () {
-      final product = MockProduct();
-      final ingredient = ProductIngredient(quantities: {
-        'id1': MockProductQuantity(),
-      }, product: product);
-
-      ingredient.removeItem('id1');
-
-      expect(ingredient.items, isEmpty);
-      // product must be notified
-      verify(product.setItem(ingredient));
     });
   });
 
@@ -96,7 +75,7 @@ void main() {
 
     group('#update', () {
       test('should not notify or update if not changed', () async {
-        final object = ProductIngredientObject(amount: 1, id: 'i_id');
+        final object = ProductIngredientObject(amount: 1, ingredientId: 'i-1');
 
         await ingredient.update(object);
 
@@ -104,35 +83,27 @@ void main() {
         verifyNever(product.setItem(any));
       });
 
-      test('update without changing ingredient', () async {
+      test('update correctly', () async {
+        final ing = MockIngredient();
+        final object = ProductIngredientObject(amount: 2, ingredientId: 'i-2');
+        when(ing.id).thenReturn('i-2');
+        when(stock.getItem('i-2')).thenReturn(ing);
+        // for logging
         LOG_LEVEL = 2;
-        final object = ProductIngredientObject(amount: 2, id: 'i_id');
-        when(product.setItem(any)).thenAnswer((_) => Future.value());
+        when(ing.name).thenReturn('ing-2');
 
         await ingredient.update(object);
 
         // after update, ingredient id will changed
+        expect(identical(ingredient.ingredient, ing), isTrue);
+
         final prefix = ingredient.prefix;
-
-        verify(storage.set(any, argThat(equals({'$prefix.amount': 2}))));
-      });
-
-      test('#changeIngredient, #remove, #setIngredient', () async {
-        LOG_LEVEL = 2;
-        final object = ProductIngredientObject(amount: 2, id: 'i_id2');
-        final oldPrefix = ingredient.prefix;
-        final newIngredient = Ingredient(name: 'ing', id: 'i_id2');
-        when(stock.getItem('i_id2')).thenReturn(newIngredient);
-
-        await ingredient.update(object);
-
-        verifyInOrder([
-          storage.set(any, argThat(equals({oldPrefix: null}))),
-          product.removeItem(argThat(equals('i_id'))),
-          product.setItem(any),
-        ]);
-        identical(ingredient.ingredient, newIngredient);
-        expect(ingredient.id, equals('i_id2'));
+        verify(storage.set(
+            any,
+            argThat(equals({
+              '$prefix.amount': 2,
+              '$prefix.ingredientId': 'i-2',
+            }))));
       });
     });
 
@@ -181,8 +152,9 @@ void main() {
       product = MockProduct();
       when(product.prefix).thenReturn('c_id.p_id');
       ingredient = ProductIngredient(
+        id: 'ing-1',
         amount: 1,
-        ingredient: Ingredient(name: 'ing', id: 'i_id'),
+        ingredient: Ingredient(name: 'ing-1', id: 'i-1'),
         product: product,
       );
     });

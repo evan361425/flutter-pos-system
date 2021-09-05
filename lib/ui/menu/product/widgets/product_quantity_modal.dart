@@ -76,6 +76,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
+        key: Key('menu.quantity.search'),
         text: quantityName,
         labelText: tt('menu.quantity.label.name'),
         hintText: tt('menu.quantity.hint.name'),
