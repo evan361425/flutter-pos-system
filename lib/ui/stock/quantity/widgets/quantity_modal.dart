@@ -9,7 +9,11 @@ import 'package:possystem/translator.dart';
 class QuantityModal extends StatefulWidget {
   final Quantity? quantity;
 
-  const QuantityModal({Key? key, this.quantity}) : super(key: key);
+  final bool isNew;
+
+  const QuantityModal({Key? key, this.quantity})
+      : isNew = quantity == null,
+        super(key: key);
 
   @override
   _QuantityModalState createState() => _QuantityModalState();
@@ -42,7 +46,7 @@ class _QuantityModalState extends State<QuantityModal>
           filled: false,
         ),
         style: Theme.of(context).textTheme.headline6,
-        autofocus: widget.quantity == null,
+        autofocus: widget.isNew,
         maxLength: 30,
         validator: Validator.textLimit(tt('stock.quantity.label.name'), 30),
       ),
@@ -80,7 +84,7 @@ class _QuantityModalState extends State<QuantityModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (widget.quantity != null) {
+    if (!widget.isNew) {
       await widget.quantity!.update(object);
     }
 

@@ -94,7 +94,7 @@ class _IngredientModalState extends State<IngredientModal>
             errorText: errorMessage,
             filled: false,
           ),
-          autofocus: widget.ingredient == null,
+          autofocus: widget.isNew,
           maxLength: 30,
           validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
         ),

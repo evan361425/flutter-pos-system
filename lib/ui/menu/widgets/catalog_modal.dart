@@ -44,7 +44,7 @@ class _CatalogModalState extends State<CatalogModal>
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
-        autofocus: true,
+        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: tt('menu.catalog.label.name'),
           hintText: tt('menu.catalog.hint.name'),

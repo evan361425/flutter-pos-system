@@ -45,7 +45,7 @@ class _ProductModalState extends State<ProductModal>
         controller: _nameController,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
-        autofocus: true,
+        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: tt('menu.product.label.name'),
           hintText: tt('menu.product.hint.name'),

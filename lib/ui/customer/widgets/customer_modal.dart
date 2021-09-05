@@ -47,7 +47,7 @@ class _CustomerModalState extends State<CustomerModal>
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
-        autofocus: true,
+        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: '顧客設定名稱',
           hintText: '年齡',
