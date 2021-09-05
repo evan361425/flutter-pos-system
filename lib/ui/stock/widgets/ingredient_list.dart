@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
@@ -23,7 +22,7 @@ class IngredientList extends StatelessWidget {
     return SlidableItemList<Ingredient, _Action>(
       items: ingredients,
       deleteValue: _Action.delete,
-      tileBuilder: _tileBuilder,
+      tileBuilder: (_, __, ingredient) => _IngredientTile(ingredient),
       warningContextBuilder: _warningContextBuilder,
       handleDelete: _handleDelete,
       handleTap: _handleTap,
@@ -39,6 +38,83 @@ class IngredientList extends StatelessWidget {
     Navigator.of(context).pushNamed(
       Routes.stockIngredient,
       arguments: ingredient,
+    );
+  }
+
+  Widget _warningContextBuilder(BuildContext context, Ingredient ingredient) {
+    final count = Menu.instance.getIngredients(ingredient.id).length;
+
+    if (count == 0) {
+      return Text(tt('delete_confirm', {'name': ingredient.name}));
+    }
+
+    return Text(tt(
+      'stock.ingredient.delete_confirm',
+      {'name': ingredient.name, 'count': count},
+    ));
+  }
+}
+
+enum _Action {
+  delete,
+}
+
+class _IngredientTile extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const _IngredientTile(this.ingredient);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListTile(
+      title: Text(ingredient.name, style: theme.textTheme.headline6),
+      subtitle: Row(
+        children: <Widget>[
+          IconText(
+            text: ingredient.currentAmount?.toString() ??
+                tt('stock.ingredient.unset'),
+            icon: Icons.store_sharp,
+            isHint: true,
+          ),
+          MetaBlock(),
+          IconText(
+            text: ingredient.lastAmount?.toString() ??
+                tt('stock.ingredient.un_add'),
+            icon: Icons.shopping_cart_sharp,
+            isHint: true,
+          ),
+        ],
+      ),
+      trailing: Wrap(
+        spacing: kSpacing1,
+        children: <Widget>[
+          IconFilledButton(
+            onPressed: () async {
+              final result = await _showTextDialog(
+                context,
+                defaultValue: ingredient.lastAddAmount?.toString(),
+                title: tt('stock.add_amount', {'name': ingredient.name}),
+              );
+
+              await _updateAmount(result);
+            },
+            icon: KIcons.add,
+          ),
+          IconFilledButton(
+            onPressed: () async {
+              final result = await _showTextDialog(
+                context,
+                title: tt('stock.minus_amount', {'name': ingredient.name}),
+              );
+
+              await _updateAmount(result == null ? null : -result);
+            },
+            icon: KIcons.remove,
+          ),
+        ],
+      ),
     );
   }
 
@@ -59,86 +135,9 @@ class IngredientList extends StatelessWidget {
     return result == null ? null : num.tryParse(result);
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Ingredient ingredient) {
-    final theme = Theme.of(context);
-
-    Future<void> updateAmount(num? amount) async {
-      if (amount != null) {
-        await ingredient.addAmount(amount);
-      }
+  Future<void> _updateAmount(num? amount) async {
+    if (amount != null) {
+      await ingredient.addAmount(amount);
     }
-
-    Future<void> onAddAmount() async {
-      final result = await _showTextDialog(
-        context,
-        defaultValue: ingredient.lastAddAmount?.toString(),
-        title: tt('stock.add_amount', {'name': ingredient.name}),
-      );
-
-      await updateAmount(result);
-    }
-
-    Future<void> onMinusAmount() async {
-      final result = await _showTextDialog(
-        context,
-        title: tt('stock.minus_amount', {'name': ingredient.name}),
-      );
-
-      await updateAmount(result == null ? null : -result);
-    }
-
-    return ListTile(
-      title: Text(
-        ingredient.name,
-        style: theme.textTheme.headline6,
-      ),
-      subtitle: Row(
-        children: <Widget>[
-          IconText(
-            text: ingredient.currentAmount?.toString() ??
-                tt('stock.ingredient.unset'),
-            icon: Icons.store_sharp,
-            textStyle: theme.textTheme.muted,
-          ),
-          MetaBlock(),
-          IconText(
-            text: ingredient.lastAmount?.toString() ??
-                tt('stock.ingredient.un_add'),
-            icon: Icons.shopping_cart_sharp,
-            textStyle: theme.textTheme.muted,
-          ),
-        ],
-      ),
-      trailing: Wrap(
-        spacing: kSpacing1,
-        children: <Widget>[
-          IconFilledButton(
-            onPressed: onAddAmount,
-            icon: KIcons.add,
-          ),
-          IconFilledButton(
-            onPressed: onMinusAmount,
-            icon: KIcons.remove,
-          ),
-        ],
-      ),
-    );
   }
-
-  Widget _warningContextBuilder(BuildContext context, Ingredient ingredient) {
-    final count = Menu.instance.getIngredients(ingredient.id).length;
-
-    if (count == 0) {
-      return Text(tt('delete_confirm', {'name': ingredient.name}));
-    }
-
-    return Text(tt(
-      'stock.ingredient.delete_confirm',
-      {'name': ingredient.name, 'count': count},
-    ));
-  }
-}
-
-enum _Action {
-  delete,
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 
 class MetaBlock extends StatelessWidget {
   @override
@@ -42,12 +42,7 @@ class MetaBlock extends StatelessWidget {
         ),
       );
     } else if (emptyText != null) {
-      return RichText(
-        text: TextSpan(
-          text: emptyText,
-          style: Theme.of(context).textTheme.muted,
-        ),
-      );
+      return RichText(text: HintText.inSpan(context, emptyText));
     } else {
       return null;
     }

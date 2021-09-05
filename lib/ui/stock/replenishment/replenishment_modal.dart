@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
@@ -40,7 +40,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: kSpacing1),
-        child: Text(tt('stock.replenisher.tutorial'), style: textTheme.muted),
+        child: HintText(tt('stock.replenisher.tutorial')),
       ),
       Expanded(
         child: Padding(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/components/tip/tip_tutorial.dart';
@@ -49,11 +49,31 @@ class MenuScreen extends StatelessWidget {
       ),
       body: menu.isEmpty
           ? Center(child: EmptyBody(onPressed: goAddCatalog))
-          : _body(context, menu),
+          : _MenuBody(menu),
     );
   }
 
-  Widget _body(BuildContext context, Menu menu) {
+  void _showActions(BuildContext context) {
+    showCircularBottomSheet(
+      context,
+      actions: <BottomSheetAction<void>>[
+        BottomSheetAction(
+          title: Text(tt('menu.catalog.order')),
+          leading: Icon(Icons.reorder_sharp),
+          navigateRoute: Routes.menuCatalogReorder,
+        ),
+      ],
+    );
+  }
+}
+
+class _MenuBody extends StatelessWidget {
+  final Menu menu;
+
+  const _MenuBody(this.menu);
+
+  @override
+  Widget build(BuildContext context) {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
@@ -65,10 +85,7 @@ class MenuScreen extends StatelessWidget {
 
     final catalogCount = Padding(
       padding: const EdgeInsets.all(kSpacing1),
-      child: Text(
-        tt('total_count', {'count': menu.length}),
-        style: Theme.of(context).textTheme.muted,
-      ),
+      child: HintText(tt('total_count', {'count': menu.length})),
     );
     // get sorted catalogs
     final catalogList = CatalogList(menu.itemList);
@@ -85,19 +102,6 @@ class MenuScreen extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ],
-    );
-  }
-
-  void _showActions(BuildContext context) {
-    showCircularBottomSheet(
-      context,
-      actions: <BottomSheetAction<void>>[
-        BottomSheetAction(
-          title: Text(tt('menu.catalog.order')),
-          leading: Icon(Icons.reorder_sharp),
-          navigateRoute: Routes.menuCatalogReorder,
         ),
       ],
     );

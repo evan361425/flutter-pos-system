@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -51,16 +51,13 @@ class _IngredientModalState extends State<IngredientModal>
               return Padding(
                 padding: const EdgeInsets.only(bottom: kSpacing2),
                 child: Center(
-                  child: Text(
-                    tt(
-                      'stock.ingredient.total_count',
-                      {
-                        'count': length - 2,
-                        'name': widget.ingredient!.name,
-                      },
-                    ),
-                    style: Theme.of(context).textTheme.muted,
-                  ),
+                  child: HintText(tt(
+                    'stock.ingredient.total_count',
+                    {
+                      'count': length - 2,
+                      'name': widget.ingredient!.name,
+                    },
+                  )),
                 ),
               );
             default:

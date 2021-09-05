@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/custom_styles.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
@@ -59,10 +59,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(kSpacing1),
-        child: Text(
-          '選完後請點選「套用」來使用該組合',
-          style: Theme.of(context).textTheme.muted,
-        ),
+        child: HintText('選完後請點選「套用」來使用該組合'),
       ),
       Expanded(child: listView),
     ]);

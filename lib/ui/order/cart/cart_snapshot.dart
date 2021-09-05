@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/custom_styles.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -20,9 +20,7 @@ class _CartSnapshotState extends State<CartSnapshot> {
     final cart = context.watch<Cart>();
 
     if (cart.isEmpty) {
-      return Center(
-        child: Text('尚未點餐', style: Theme.of(context).textTheme.muted),
-      );
+      return Center(child: HintText('尚未點餐'));
     }
 
     final products = SingleChildScrollView(
