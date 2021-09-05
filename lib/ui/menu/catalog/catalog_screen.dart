@@ -21,31 +21,10 @@ class CatalogScreen extends StatelessWidget {
     // if change ingredient in product_ingredient_search
     context.watch<Stock>();
 
-    final textTheme = Theme.of(context).textTheme;
-
     final navigateNewProduct = () => Navigator.of(context).pushNamed(
           Routes.menuProductModal,
           arguments: catalog,
         );
-
-    final metadata = RichText(
-      text: TextSpan(
-        text: tt('menu.product.count'),
-        children: [
-          TextSpan(
-            text: catalog.length.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          MetaBlock.span(),
-          TextSpan(text: catalog.createdDate),
-        ],
-        style: textTheme.bodyText1,
-      ),
-    );
-
-    final body = catalog.isEmpty
-        ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)
-        : ProductList(products: catalog.itemList);
 
     return FadeInTitleScaffold(
       leading: PopButton(),
@@ -61,11 +40,13 @@ class CatalogScreen extends StatelessWidget {
           padding: const EdgeInsets.all(kSpacing3),
           child: ItemEditableInfo(
             item: catalog,
-            metadata: metadata,
+            metadata: _CatalogMetadata(catalog),
             onEdit: () => _showActions(context, catalog),
           ),
         ),
-        body,
+        catalog.isEmpty
+            ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)
+            : ProductList(products: catalog.itemList),
       ]),
     );
   }
@@ -91,6 +72,30 @@ class CatalogScreen extends StatelessWidget {
           navigateRoute: Routes.menuProductReorder,
         ),
       ],
+    );
+  }
+}
+
+class _CatalogMetadata extends StatelessWidget {
+  final Catalog catalog;
+
+  const _CatalogMetadata(this.catalog);
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodyText1,
+        text: tt('menu.product.count'),
+        children: [
+          TextSpan(
+            text: catalog.length.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          MetaBlock.span(),
+          TextSpan(text: catalog.createdDate),
+        ],
+      ),
     );
   }
 }
