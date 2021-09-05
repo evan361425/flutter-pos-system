@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
@@ -27,46 +26,28 @@ class CustomerSettingCard extends StatelessWidget {
           childrenPadding: const EdgeInsets.all(kSpacing2),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Wrap(spacing: kSpacing1, children: [
+            Wrap(children: [
               for (final item in setting.items)
-                OutlinedText(
-                  item.name,
-                  colored: item.isDefault,
+                Container(
+                  margin: const EdgeInsets.only(bottom: 4.0),
+                  child: OutlinedText(
+                    item.name,
+                    colored: item.isDefault,
+                  ),
                 )
             ]),
             Row(children: [
-              Spacer(),
-              _actionButton(context),
-              SizedBox(width: kSpacing1),
-              _navigateSettingButton(context),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                  Routes.customerSetting,
+                  arguments: setting,
+                ),
+                child: Text('查看細節'),
+              ),
             ]),
           ],
         ),
       ]),
     );
   }
-
-  Widget _actionButton(BuildContext context) {
-    return OutlinedButton(
-      onPressed: () => BottomSheetActions.withDelete<_Actions>(context,
-          deleteValue: _Actions.delete,
-          warningContent: Text('你確定要刪除「${setting.name}」\n此動作並不會影響使用此設定的點單。'),
-          deleteCallback: setting.remove),
-      child: Text('操作'),
-    );
-  }
-
-  Widget _navigateSettingButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pushNamed(
-        Routes.customerSetting,
-        arguments: setting,
-      ),
-      child: Text('查看細節'),
-    );
-  }
-}
-
-enum _Actions {
-  delete,
 }

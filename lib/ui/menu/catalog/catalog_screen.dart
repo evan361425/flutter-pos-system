@@ -5,7 +5,6 @@ import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/item_editable_info.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -36,13 +35,10 @@ class CatalogScreen extends StatelessWidget {
         child: Icon(KIcons.add),
       ),
       body: Column(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(kSpacing3),
-          child: ItemEditableInfo(
-            item: catalog,
-            metadata: _CatalogMetadata(catalog),
-            onEdit: () => _showActions(context, catalog),
-          ),
+        ItemEditableInfo(
+          item: catalog,
+          metadata: _CatalogMetadata(catalog),
+          onEdit: () => _showActions(context, catalog),
         ),
         catalog.isEmpty
             ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)

@@ -53,11 +53,24 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
     }
   }
 
+  bool get shouldHaveModeValue => mode != CustomerSettingOptionMode.statOnly;
+
   @override
   Future<void> addItemToStorage(CustomerSettingOption option) {
     return Storage.instance.set(storageStore, {
       option.prefix: option.toObject().toMap(),
     });
+  }
+
+  Future<void> clearDefault() async {
+    final option = defaultOption;
+    if (option == null) return;
+
+    // `modeValue` must be set, avoid setting it to null
+    await option.update(CustomerSettingOptionObject(
+      isDefault: false,
+      modeValue: option.modeValue,
+    ));
   }
 
   @override

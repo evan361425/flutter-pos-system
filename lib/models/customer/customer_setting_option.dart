@@ -51,6 +51,11 @@ class CustomerSettingOption
   String get prefix => '${setting.prefix}.options.$id';
 
   @override
+  void handleUpdated() {
+    setting.notifyItem();
+  }
+
+  @override
   void removeFromRepo() => setting.removeItem(id);
 
   @override

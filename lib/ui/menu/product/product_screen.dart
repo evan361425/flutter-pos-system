@@ -6,7 +6,6 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/components/style/item_editable_info.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -49,13 +48,10 @@ class ProductScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(kSpacing3),
-            child: ItemEditableInfo(
-              item: product,
-              metadata: _ProductMetadata(product),
-              onEdit: () => _showActions(context, product),
-            ),
+          ItemEditableInfo(
+            item: product,
+            metadata: _ProductMetadata(product),
+            onEdit: () => _showActions(context, product),
           ),
           body,
         ],

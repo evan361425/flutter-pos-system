@@ -55,10 +55,9 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       setting.mode = mode!;
       result['$prefix.mode'] = mode!.index;
 
-      final newModeVaule = _getModeValueByMode();
       for (final item in setting.items) {
-        item.modeValue = newModeVaule;
-        result['${item.prefix}.modeValue'] = newModeVaule;
+        item.modeValue = null;
+        result['${item.prefix}.modeValue'] = null;
       }
     }
     return result;
@@ -72,14 +71,6 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       'mode': mode!.index,
       'options': {for (var option in options) option.id: option.toMap()},
     };
-  }
-
-  int? _getModeValueByMode() {
-    return mode == CustomerSettingOptionMode.statOnly
-        ? null
-        : mode == CustomerSettingOptionMode.changeDiscount
-            ? 100
-            : 0;
   }
 }
 
@@ -123,8 +114,8 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   }
 
   @override
-  Map<String, Object> diff(CustomerSettingOption option) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(CustomerSettingOption option) {
+    final result = <String, Object?>{};
     final prefix = option.prefix;
     if (name != null && name != option.name) {
       option.name = name!;
@@ -140,7 +131,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
     }
     if (modeValue != option.modeValue) {
       option.modeValue = modeValue;
-      result['$prefix.modeValue'] = modeValue!;
+      result['$prefix.modeValue'] = modeValue;
     }
     return result;
   }

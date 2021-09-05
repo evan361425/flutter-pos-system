@@ -47,11 +47,9 @@ class SlidableItemListState<T, Action>
     return Column(
       children: [
         for (var item in widget.items)
-          _itemBuilder(
-            item,
-            theme: theme,
-            index: count++,
-          )
+          Container(
+              margin: const EdgeInsets.all(2.0),
+              child: _itemBuilder(item, theme: theme, index: count++))
       ],
     );
   }
