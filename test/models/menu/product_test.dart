@@ -9,6 +9,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 
 import '../../mocks/mock_models.mocks.dart';
+import '../../mocks/mock_repos.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
@@ -41,6 +42,7 @@ void main() {
     });
 
     test('#fromObject', () {
+      LOG_LEVEL = 2;
       final product = Product.fromObject(ProductObject.build(<String, Object?>{
         'id': 'product_1',
         'name': 'hame burger',
@@ -49,8 +51,13 @@ void main() {
         'price': 1,
         'cost': 1,
         'ingredients': <String, Object?>{
-          'ingredient': <String, Object?>{
+          'ingredient-1': <String, Object?>{
             'ingredientId': 'ingredient-1',
+            'amount': 1,
+            'quantities': <String, Object?>{}
+          },
+          // version 1
+          'ingredient-2': <String, Object?>{
             'amount': 1,
             'quantities': <String, Object?>{}
           },
@@ -224,6 +231,7 @@ void main() {
   });
 
   setUpAll(() {
+    initializeRepos();
     initializeStorage();
   });
 }

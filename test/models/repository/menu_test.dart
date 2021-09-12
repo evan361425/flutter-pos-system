@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/menu.dart';
 
 import '../../mocks/mock_models.mocks.dart';
@@ -7,7 +8,8 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/check_notifier.dart';
 
 void main() {
-  test('#constructor', () {
+  test('#constructor', () async {
+    LOG_LEVEL = 2;
     when(storage.get(any)).thenAnswer((e) => Future.value({
           'id1': {
             'name': 'catalog1',
@@ -19,7 +21,20 @@ void main() {
                 'index': 1,
                 'price': 1,
                 'cost': 2,
-                'createdAt': 1623639573
+                'createdAt': 1623639573,
+                // version 1 ingredient
+                'ingredients': {
+                  'ingredient-1': <String, Object?>{
+                    'amount': 1,
+                    'quantities': <String, Object?>{
+                      'quantity-1': {
+                        'amount': 1,
+                        'additionalCost': 1,
+                        'additionalPrice': 1
+                      }
+                    }
+                  },
+                },
               },
             },
           },
@@ -31,15 +46,14 @@ void main() {
         }));
     final menu = Menu();
 
-    var isCalled = false;
-    menu.addListener(() {
-      expect(menu.getItem('id1')!.getItem('pid1')!.name, equals('product1'));
-      expect(menu.getItem('id2')!.items, isEmpty);
-      expect(menu.isReady, isTrue);
-      isCalled = true;
-    });
+    final isCalled = await checkNotifierCalled(
+        menu, () => Future.delayed(Duration(milliseconds: 10)));
 
-    Future.delayed(Duration.zero, () => expect(isCalled, isTrue));
+    expect(menu.getItem('id1')!.getItem('pid1')!.name, equals('product1'));
+    expect(menu.getItem('id2')!.items, isEmpty);
+    expect(menu.isReady, isTrue);
+    expect(menu.versionChanged, isTrue);
+    expect(isCalled, isTrue);
   });
 
   late Menu menu;

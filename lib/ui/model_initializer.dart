@@ -38,12 +38,12 @@ class ModelIntializer extends StatelessWidget {
         product.items.forEach((ingredient) {
           // Although it should always be searchable, still make null handler
           // to avoid not found one and kill all others
-          final ing = stock.getItem(ingredient.storageIngredientId);
+          final ing = stock.getItem(ingredient.storageIngredientId!);
           if (ing != null) ingredient.ingredient = ing;
 
           ingredient.items.forEach((quantity) {
-            final qua = quantities.getItem(quantity.storageQuantityId)!;
-            if (ing != null) quantity.quantity = qua;
+            final qua = quantities.getItem(quantity.storageQuantityId!);
+            if (qua != null) quantity.quantity = qua;
           });
         });
       });

@@ -22,7 +22,7 @@ class ProductQuantity
   num additionalPrice;
 
   /// Only use for set up [quantity]
-  final String storageQuantityId;
+  final String? storageQuantityId;
 
   @override
   final String logCode = 'menu.quantity';
@@ -34,7 +34,7 @@ class ProductQuantity
     String? id,
     Quantity? quantity,
     ProductIngredient? ingredient,
-    this.storageQuantityId = '',
+    this.storageQuantityId,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
@@ -73,7 +73,7 @@ class ProductQuantity
   @override
   ProductQuantityObject toObject() => ProductQuantityObject(
         id: id,
-        quantityId: quantity.id,
+        quantityId: storageQuantityId ?? quantity.id,
         amount: amount,
         additionalCost: additionalCost,
         additionalPrice: additionalPrice,
