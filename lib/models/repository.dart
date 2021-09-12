@@ -27,12 +27,16 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
       });
 
       if (versionChanged) {
-        print('version changed: $_items');
-        // await Storage.instance.setAll(storageStore, _items);
+        info(_items.toString(), '$repositoryName.upgrade');
+        await Storage.instance.setAll(storageStore, {
+          for (final item in _items.values)
+            item.prefix: item.toObject().toMap(),
+        });
       }
 
       notifyListeners();
     }).onError((e, stack) {
+      print(stack);
       error(e.toString(), '$repositoryName.fetch.error', stack);
     });
   }

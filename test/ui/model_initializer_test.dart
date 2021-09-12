@@ -20,8 +20,9 @@ void main() {
   testWidgets('should return false if not ready', (tester) async {
     final qua = Quantity(name: 'q-1', id: 'q-1');
     final ing = Ingredient(name: 'i-1', id: 'i-1');
-    final pQua = ProductQuantity(id: 'q-1');
-    final pIng = ProductIngredient(id: 'i-1', quantities: {'q-1': pQua});
+    final pQua = ProductQuantity(id: 'q-1', storageQuantityId: 'q-1');
+    final pIng = ProductIngredient(
+        id: 'i-1', storageIngredientId: 'i-1', quantities: {'q-1': pQua});
     final pro1 = Product(id: 'p-1', name: 'p-1', ingredients: {'i-1': pIng});
     final pro2 = Product(id: 'p-1', name: 'p-1', ingredients: {'i-1': pIng});
     final cat1 = Catalog(id: 'c-1', name: 'c-1', products: {'p-1': pro1});

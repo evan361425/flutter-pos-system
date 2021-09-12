@@ -20,7 +20,7 @@ class ProductIngredient
   late Ingredient ingredient;
 
   /// Only use for set up [ingredient]
-  final String storageIngredientId;
+  final String? storageIngredientId;
 
   /// Amount of ingredient per product
   num amount;
@@ -35,7 +35,7 @@ class ProductIngredient
     String? id,
     Ingredient? ingredient,
     Product? product,
-    this.storageIngredientId = '',
+    this.storageIngredientId,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) {
@@ -99,7 +99,7 @@ class ProductIngredient
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
-        ingredientId: ingredient.id,
+        ingredientId: storageIngredientId ?? ingredient.id,
         amount: amount,
         quantities: items.map((e) => e.toObject()).toList(),
       );

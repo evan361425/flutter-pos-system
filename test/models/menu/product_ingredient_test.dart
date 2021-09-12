@@ -20,6 +20,7 @@ void main() {
     });
 
     test('#fromObject', () {
+      LOG_LEVEL = 2;
       final ingredient = ProductIngredient.fromObject(
           ProductIngredientObject.build(<String, Object?>{
         'id': 'ing-1',
@@ -32,6 +33,12 @@ void main() {
             'additionalPrice': 5,
             'additionalCost': 2,
           },
+          // version 1
+          'quantity_2': <String, Object?>{
+            'amount': 3,
+            'additionalPrice': 5,
+            'additionalCost': 2,
+          },
         },
       }));
       final isSame =
@@ -40,7 +47,7 @@ void main() {
       expect(isSame, isTrue);
       expect(ingredient.id, equals('ing-1'));
       expect(ingredient.amount, equals(2));
-      expect(ingredient.length, equals(1));
+      expect(ingredient.length, equals(2));
       expect(ingredient.items.first.id, equals('quantity_1'));
     });
 
