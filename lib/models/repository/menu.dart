@@ -126,8 +126,7 @@ class Menu extends ChangeNotifier
         .expand((catalog) =>
             catalog.items.where((product) => product.searchedAt != null))
         .toList()
-          ..sort(
-              (item1, item2) => item2.searchedAt!.compareTo(item1.searchedAt!));
+      ..sort((item1, item2) => item2.searchedAt!.compareTo(item1.searchedAt!));
 
     // products have not been searched
     yield* itemList.expand((catalog) =>
@@ -139,7 +138,7 @@ class Menu extends ChangeNotifier
     final sorted = _getProductSimilarities(pattern)
         .where((entry) => entry.value > 0)
         .toList()
-          ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
+      ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
 
     return sorted.map<Product>((e) => e.key);
   }
