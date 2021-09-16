@@ -161,8 +161,10 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
 
   @override
   Widget build(BuildContext context) {
-    final panel = Padding(
+    final theme = Theme.of(context);
+    final panel = Container(
       padding: const EdgeInsets.fromLTRB(kSpacing0, 80, kSpacing0, kSpacing0),
+      color: theme.scaffoldBackgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -209,12 +211,17 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
       body: SlidingUpPanel(
         body: OrderFinalList(),
         panel: panel,
-        collapsed: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        color: Colors.transparent,
+        collapsed: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+          ),
+          child: Row(children: [
             Expanded(child: Placeholder()),
             Text('找額'),
-          ],
+          ]),
         ),
       ),
     );
