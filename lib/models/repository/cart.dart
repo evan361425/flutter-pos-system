@@ -18,6 +18,8 @@ class Cart extends ChangeNotifier {
 
   List<OrderProduct> products = [];
 
+  Map<String, String> customerSettings = {};
+
   bool isHistoryMode = false;
 
   bool get isEmpty => products.isEmpty;

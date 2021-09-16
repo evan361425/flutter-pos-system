@@ -4,9 +4,11 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/feature_provider.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/order_info.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +16,6 @@ import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_list.dart';
 import 'cart/cart_screen.dart';
-import 'cashier/calculator_dialog.dart';
 import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
 import 'widgets/order_by_sliding_panel.dart';
@@ -75,7 +76,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
           AppbarTextButton(
             key: Key('order.action.order'),
             onPressed: () => _handleOrder(),
-            child: Text(tt('order.action.order')),
+            child: Text('結帳'),
           ),
         ],
       ),
@@ -123,10 +124,10 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   }
 
   void _handleOrder() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (_) => CalculatorDialog(),
-    );
+    final route = CustomerSettings.instance.hasSelectableSetting
+        ? Routes.orderCustomer
+        : Routes.orderCalculator;
+    final result = await Navigator.of(context).pushNamed(route);
 
     if (result == true) {
       showSuccessSnackbar(context, tt('success'));

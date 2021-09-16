@@ -28,31 +28,31 @@ class RadioText extends StatefulWidget {
     // if not set, initialize a new one
     if (_groups[groupId] == null) {
       _groups[groupId] = _Group(isSelected == false ? null : value);
-    } else if (isSelected == true && !group.isSelect(value)) {
+    } else if (isSelected == true && !group!.isSelect(value)) {
       // if specific setting, update previous one to unchecked
-      group.select(value);
-    } else if (isSelected == false && group.isSelect(value)) {
-      group.unselect();
+      group!.select(value);
+    } else if (isSelected == false && group!.isSelect(value)) {
+      group!.unselect();
     }
   }
 
-  _Group get group => _groups[groupId]!;
+  _Group? get group => _groups[groupId];
 
-  bool get isSelected => group.isSelect(value);
+  bool get isSelected => group!.isSelect(value);
 
   @override
   _RadioTextState createState() => _RadioTextState();
 
   void dispose() {
-    group.removeItem(value);
+    group?.removeItem(value);
 
-    if (group.isEmpty) {
+    if (group?.isEmpty == true) {
       _groups.remove(groupId);
     }
   }
 
   void select() {
-    if (group.select(value, isTogglable: isTogglable)) {
+    if (group!.select(value, isTogglable: isTogglable)) {
       onSelected(isSelected);
     }
   }
@@ -165,7 +165,7 @@ class _RadioTextState extends State<RadioText> {
 
   @override
   void initState() {
-    widget.group.addItem(widget.value, () {
+    widget.group!.addItem(widget.value, () {
       if (mounted) {
         setState(() {});
       }

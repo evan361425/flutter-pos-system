@@ -25,6 +25,11 @@ class CustomerSettings extends ChangeNotifier
     CustomerSettings.instance = this;
   }
 
+  bool get hasSelectableSetting => items.any((item) => item.isNotEmpty);
+
+  List<CustomerSetting> get selectableItemList =>
+      itemList.where((item) => item.isNotEmpty).toList();
+
   @override
   CustomerSetting buildModel(String id, Map<String, Object?> value) {
     return CustomerSetting.fromObject(

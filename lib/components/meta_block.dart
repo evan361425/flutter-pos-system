@@ -16,6 +16,9 @@ class MetaBlock extends StatelessWidget {
 
   static const string = ' • ';
 
+  /// Divide strings with [MetaBlock]
+  ///
+  /// return null if [emptyText] is not provided and [data] is empty
   static Widget? withString(
     BuildContext context,
     Iterable<String> data, {

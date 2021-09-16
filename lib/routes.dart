@@ -3,6 +3,8 @@ import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
 import 'package:possystem/ui/customer/setting/widgets/customer_setting_option_modal.dart';
 import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
+import 'package:possystem/ui/order/cashier/order_calculator_modal.dart';
+import 'package:possystem/ui/order/cashier/order_customer_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -68,6 +70,8 @@ class Routes {
   static const String menuQuantity = 'menu/quantity';
   static const String menuIngredientSearch = 'menu/ingredient/search';
   static const String menuQuantitySearch = 'menu/quantity/search';
+  static const String orderCustomer = 'order/customer';
+  static const String orderCalculator = 'order/calculator';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
@@ -157,6 +161,9 @@ class Routes {
             text: arg<String?>(context),
           ),
         ),
+    // order
+    orderCustomer: (_) => OrderCustomerModal(),
+    orderCalculator: (_) => OrderCalculatorModal(),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
