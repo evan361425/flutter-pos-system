@@ -55,6 +55,7 @@ class Cart extends ChangeNotifier {
 
   void clear() {
     products.clear();
+    customerSettings.clear();
     notifyListeners();
   }
 
