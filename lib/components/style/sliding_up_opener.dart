@@ -69,6 +69,7 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
 
   @override
   Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(Radius.circular(8.0));
     final theme = Theme.of(context);
 
     final dragger = Container(
@@ -92,7 +93,7 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+            borderRadius: borderRadius,
           ),
           child: Column(children: [
             Center(child: dragger),
@@ -107,6 +108,7 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
       minHeight: widget.minHeight,
       maxHeight: widget.maxHeight,
       backdropEnabled: widget.backdropEnabled,
+      borderRadius: borderRadius,
       color: Colors.transparent,
       onPanelClosed: () => setState(() => isOpen = false),
       onPanelOpened: () => setState(() => isOpen = true),

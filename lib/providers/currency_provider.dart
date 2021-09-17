@@ -32,17 +32,15 @@ class CurrencyProvider extends ChangeNotifier {
 
   /// Ceiling [value] to currency least value
   ///
-  /// ```dart
-  /// // types = [5, 10 ,50];
-  /// ceil(3) == 5
-  /// ceil(6) == 10
-  /// ceil(11) == 15
-  /// ceil(25) == 30
-  /// ceil(30) == 50
-  /// ceil(60) == 100
-  /// ```
+  /// 1~4 => 5
+  /// 5~9 => 10
+  /// 10 => 50
+  /// 11~14 => 15
+  /// 15~19 => 20
+  /// 50 => 100
+  /// 110 => 150
   num ceil(num value) {
-    if (value < 0) return 0;
+    assert(value >= 0);
 
     // if it is double ceil to int first
     if (value != value.ceil()) return value.ceil();

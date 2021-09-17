@@ -37,16 +37,7 @@ class _CartSnapshotState extends State<CartSnapshot> {
     return Row(children: <Widget>[
       Expanded(child: products),
       const SizedBox(width: 16.0),
-      Container(
-        padding: const EdgeInsets.all(4.0),
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.all(
-            Radius.circular(4.0),
-          ),
-        ),
-        child: Text(cart.totalPrice.toString()),
-      ),
+      OutlinedText(cart.totalPrice.toString()),
     ]);
   }
 
