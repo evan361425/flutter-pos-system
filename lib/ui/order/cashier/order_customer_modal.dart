@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
@@ -21,7 +22,10 @@ class OrderCustomerModal extends StatelessWidget {
         leading: PopButton(),
         title: Text('顧客設定'),
         actions: [
-          TextButton(onPressed: navigateToCalculator, child: Text('下一步')),
+          AppbarTextButton(
+            onPressed: navigateToCalculator,
+            child: Text('下一步'),
+          ),
         ],
       ),
       body: Padding(

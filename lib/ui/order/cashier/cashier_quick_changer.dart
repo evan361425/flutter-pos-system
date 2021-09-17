@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
-import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 class CashierQuickChanger extends StatefulWidget {
   final num totalPrice;
 
+  final void Function(num) onPaidChanged;
+
   CashierQuickChanger({
     Key? key,
     required this.totalPrice,
+    required this.onPaidChanged,
   }) : super(key: key);
 
   @override
@@ -39,8 +41,11 @@ class CashierQuickChangerState extends State<CashierQuickChanger> {
 
     return Row(children: <Widget>[
       Expanded(child: paidOptions),
-      const SizedBox(width: 16.0),
-      OutlinedText(changeValue.toString()),
+      const SizedBox(width: 8.0),
+      Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text('找錢：$changeValue'),
+      ),
     ]);
   }
 
@@ -49,7 +54,14 @@ class CashierQuickChangerState extends State<CashierQuickChanger> {
     super.initState();
     selected = widget.totalPrice;
     options.add(widget.totalPrice);
-    options.add(CurrencyProvider.instance.ceil(widget.totalPrice));
+
+    var value = widget.totalPrice;
+    var ceiledValue = CurrencyProvider.instance.ceil(value);
+    while (ceiledValue != value) {
+      options.add(ceiledValue);
+      value = ceiledValue;
+      ceiledValue = CurrencyProvider.instance.ceil(ceiledValue);
+    }
   }
 
   void paidChanged(num? value) {
@@ -62,27 +74,24 @@ class CashierQuickChangerState extends State<CashierQuickChanger> {
   }
 
   Widget radioBuilder(num value) {
-    return RadioText(
-      groupId: 'cashier.quick_changer',
-      onSelected: (bool isSelected) => _updatePaid(value),
-      isSelected: selected == value,
-      text: value.toString(),
-      value: value.toString(),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: RadioText(
+        groupId: 'cashier.quick_changer',
+        onSelected: (bool isSelected) => _updatePaid(value),
+        isSelected: selected == value,
+        text: value.toString(),
+        value: value.toString(),
+      ),
     );
   }
 
   void _updatePaid(num value) {
     if (selected != value) {
-      final last = options[options.length - 1];
-      // if select last value, add ceil value on options
-      if (last == value) {
-        final ceiledValue = CurrencyProvider.instance.ceil(value);
-        // avoid unlimit adding ceil value
-        if (ceiledValue != last) options.add(ceiledValue);
-      }
       setState(() {
         selected = value;
         changeValue = value - widget.totalPrice;
+        widget.onPaidChanged(selected);
       });
     }
   }

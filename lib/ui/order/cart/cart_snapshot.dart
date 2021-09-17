@@ -3,7 +3,6 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartSnapshot extends StatefulWidget {
@@ -36,8 +35,14 @@ class _CartSnapshotState extends State<CartSnapshot> {
 
     return Row(children: <Widget>[
       Expanded(child: products),
-      const SizedBox(width: 16.0),
-      OutlinedText(cart.totalPrice.toString()),
+      const SizedBox(width: 4.0),
+      Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text(
+          cart.totalPrice.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
     ]);
   }
 

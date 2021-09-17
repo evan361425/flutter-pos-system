@@ -27,6 +27,7 @@ class OrderProductListState extends State<OrderProductList> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 4.0),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(kSpacing1),

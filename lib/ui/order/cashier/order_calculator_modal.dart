@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/cashier_calculator.dart';
 import 'package:possystem/ui/order/cashier/cashier_quick_changer.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'order_final_list.dart';
 
@@ -19,32 +20,39 @@ class OrderCalculatorModal extends StatefulWidget {
 
 class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
   final changer = GlobalKey<CashierQuickChangerState>();
+  final calculator = GlobalKey<CashierCalculatorState>();
 
   @override
   Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.vertical(top: Radius.circular(8.0));
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
     final totalPrice = Cart.instance.totalPrice;
+    // 64*4 + 32 (padding)
+    final panelMargin = (mediaQuery.size.width - 256 - 16 - 16) / 2;
 
     final panel = Container(
-      padding: const EdgeInsets.all(8.0),
-      color: theme.scaffoldBackgroundColor,
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+      margin: EdgeInsets.fromLTRB(panelMargin, 0, panelMargin, 16.0),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.all(Radius.circular(18.0)),
+      ),
       child: CashierCalculator(
-        onTextChanged: handleCalculatorChanged,
+        key: calculator,
+        onTextChanged: (value) =>
+            changer.currentState?.paidChanged(num.tryParse(value)),
         onSubmit: handleSubmit,
+        totalPrice: totalPrice,
       ),
     );
 
-    final collapsed = Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: borderRadius,
-      ),
-      child: CashierQuickChanger(
-        key: changer,
-        totalPrice: totalPrice,
-      ),
+    final body = OrderFinalList();
+
+    final collapsed = CashierQuickChanger(
+      key: changer,
+      totalPrice: totalPrice,
+      onPaidChanged: (value) =>
+          calculator.currentState?.text = value.toString(),
     );
 
     return Scaffold(
@@ -52,16 +60,15 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
         leading: PopButton(),
         title: Text('計算機'),
         actions: [
-          TextButton(onPressed: handleSubmit, child: Text('結帳')),
+          AppbarTextButton(onPressed: handleSubmit, child: Text('結帳')),
         ],
       ),
-      body: SlidingUpPanel(
-        color: Colors.transparent,
-        backdropEnabled: true,
-        // 4 rows * 32 + 16 (padding)
-        maxHeight: 144,
-        borderRadius: borderRadius,
-        body: OrderFinalList(),
+      body: SlidingUpOpener(
+        // 4 rows * 64 + 24 (insets) + 64 (collapse)
+        maxHeight: 408,
+        minHeight: 84,
+        renderPanelSheet: false,
+        body: body,
         panel: panel,
         collapsed: collapsed,
       ),
@@ -80,10 +87,6 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
     );
 
     return result ?? false;
-  }
-
-  void handleCalculatorChanged(String value) {
-    changer.currentState?.paidChanged(num.tryParse(value));
   }
 
   void handleSubmit() async {

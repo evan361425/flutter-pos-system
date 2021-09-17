@@ -15,6 +15,12 @@ class SlidingUpOpener extends StatefulWidget {
   /// the panel slides open.
   final bool backdropEnabled;
 
+  final bool clickToOpen;
+
+  final bool renderPanelSheet;
+
+  final double borderRadius;
+
   /// The default state of the panel.
   ///
   /// Either [PanelState.OPEN] or [PanelState.CLOSED].
@@ -54,7 +60,10 @@ class SlidingUpOpener extends StatefulWidget {
     this.openerKey = 'sliding_up_opener',
     this.minHeight = 100.0,
     this.maxHeight = 500.0,
+    this.borderRadius = 16.0,
     this.backdropEnabled = true,
+    this.clickToOpen = true,
+    this.renderPanelSheet = true,
     this.defaultPanelState = PanelState.CLOSED,
   }) : super(key: key);
 
@@ -67,9 +76,7 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
 
   late PanelController controller;
 
-  @override
-  Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(Radius.circular(8.0));
+  Widget buildCollapsed() {
     final theme = Theme.of(context);
 
     final dragger = Container(
@@ -82,25 +89,53 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
       ),
     );
 
-    // Avoid overwrite tap event when open the panel
-    final collapsed = IgnorePointer(
-      ignoring: isOpen,
-      child: GestureDetector(
-        key: Key(widget.openerKey),
-        // toggle the panel
-        onTap: () => controller.open(),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: borderRadius,
-          ),
-          child: Column(children: [
-            Center(child: dragger),
-            Expanded(child: widget.collapsed),
-          ]),
+    final shadow = widget.renderPanelSheet
+        ? null
+        : const <BoxShadow>[
+            BoxShadow(
+              blurRadius: 8.0,
+              color: Color.fromRGBO(0, 0, 0, 0.5),
+            )
+          ];
+    final margin = widget.renderPanelSheet
+        ? const EdgeInsets.symmetric(horizontal: 4.0)
+        : const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 0);
+
+    Widget collapsed = Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(widget.borderRadius),
         ),
+        boxShadow: shadow,
       ),
+      child: Column(children: [
+        Center(child: dragger),
+        Expanded(child: widget.collapsed),
+      ]),
+    );
+
+    if (widget.clickToOpen) {
+      collapsed = IgnorePointer(
+        ignoring: isOpen,
+        child: GestureDetector(
+          key: Key(widget.openerKey),
+          // toggle the panel
+          onTap: () => controller.open(),
+          child: collapsed,
+        ),
+      );
+    }
+
+    return collapsed;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final panel = Container(
+      margin: const EdgeInsets.only(top: 4.0),
+      child: widget.panel,
     );
 
     return SlidingUpPanel(
@@ -108,14 +143,20 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
       minHeight: widget.minHeight,
       maxHeight: widget.maxHeight,
       backdropEnabled: widget.backdropEnabled,
-      borderRadius: borderRadius,
+      renderPanelSheet: widget.renderPanelSheet,
+      borderRadius: BorderRadius.circular(widget.borderRadius),
       color: Colors.transparent,
-      onPanelClosed: () => setState(() => isOpen = false),
-      onPanelOpened: () => setState(() => isOpen = true),
+      onPanelClosed:
+          widget.clickToOpen ? () => setState(() => isOpen = false) : null,
+      onPanelOpened:
+          widget.clickToOpen ? () => setState(() => isOpen = true) : null,
       defaultPanelState: widget.defaultPanelState,
-      panel: widget.panel,
-      collapsed: collapsed,
-      body: widget.body,
+      panel: panel,
+      collapsed: buildCollapsed(),
+      body: Column(children: [
+        Expanded(child: widget.body),
+        SizedBox(height: widget.minHeight + 80),
+      ]),
     );
   }
 
