@@ -3,14 +3,14 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
-class CashierCalculator extends StatefulWidget {
+class OrderCashierCalculator extends StatefulWidget {
   final void Function(String) onTextChanged;
 
   final VoidCallback onSubmit;
 
   final num totalPrice;
 
-  const CashierCalculator({
+  const OrderCashierCalculator({
     Key? key,
     required this.onTextChanged,
     required this.onSubmit,
@@ -18,10 +18,10 @@ class CashierCalculator extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CashierCalculator> createState() => CashierCalculatorState();
+  State<OrderCashierCalculator> createState() => OrderCashierCalculatorState();
 }
 
-class CashierCalculatorState extends State<CashierCalculator> {
+class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   final paidState = GlobalKey<_SingleFieldState>();
   final changeState = GlobalKey<_SingleFieldState>();
 

@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
-class CashierQuickChanger extends StatefulWidget {
+class OrderCashierSnapshot extends StatefulWidget {
   final num totalPrice;
 
   final void Function(num) onPaidChanged;
 
-  CashierQuickChanger({
+  OrderCashierSnapshot({
     Key? key,
     required this.totalPrice,
     required this.onPaidChanged,
   }) : super(key: key);
 
   @override
-  CashierQuickChangerState createState() => CashierQuickChangerState();
+  OrderCashierSnapshotState createState() => OrderCashierSnapshotState();
 }
 
-class CashierQuickChangerState extends State<CashierQuickChanger> {
+class OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
   final options = <num>[];
 
   late num selected;

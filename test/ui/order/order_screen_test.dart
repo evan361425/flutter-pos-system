@@ -11,7 +11,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/services/cache.dart';
-import 'package:possystem/ui/order/cashier/order_calculator_modal.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_modal.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +54,7 @@ void main() {
     await tester.tap(find.byKey(Key('order.action.order')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(OrderCalculatorModal), findsOneWidget);
+    expect(find.byType(OrderCashierModal), findsOneWidget);
 
     await tester.tapAt(Offset(0, 0));
     await tester.pumpAndSettle();

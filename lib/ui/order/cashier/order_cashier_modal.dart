@@ -6,21 +6,21 @@ import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/cashier_calculator.dart';
-import 'package:possystem/ui/order/cashier/cashier_quick_changer.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
 
 import 'order_final_list.dart';
 
-class OrderCalculatorModal extends StatefulWidget {
-  const OrderCalculatorModal({Key? key}) : super(key: key);
+class OrderCashierModal extends StatefulWidget {
+  const OrderCashierModal({Key? key}) : super(key: key);
 
   @override
-  _OrderCalculatorModalState createState() => _OrderCalculatorModalState();
+  _OrderCashierModalState createState() => _OrderCashierModalState();
 }
 
-class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
-  final changer = GlobalKey<CashierQuickChangerState>();
-  final calculator = GlobalKey<CashierCalculatorState>();
+class _OrderCashierModalState extends State<OrderCashierModal> {
+  final snapshot = GlobalKey<OrderCashierSnapshotState>();
+  final calculator = GlobalKey<OrderCashierCalculatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +37,10 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(18.0)),
       ),
-      child: CashierCalculator(
+      child: OrderCashierCalculator(
         key: calculator,
         onTextChanged: (value) =>
-            changer.currentState?.paidChanged(num.tryParse(value)),
+            snapshot.currentState?.paidChanged(num.tryParse(value)),
         onSubmit: handleSubmit,
         totalPrice: totalPrice,
       ),
@@ -48,8 +48,8 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
 
     final body = OrderFinalList();
 
-    final collapsed = CashierQuickChanger(
-      key: changer,
+    final collapsed = OrderCashierSnapshot(
+      key: snapshot,
       totalPrice: totalPrice,
       onPaidChanged: (value) =>
           calculator.currentState?.text = value.toString(),
@@ -95,7 +95,7 @@ class _OrderCalculatorModalState extends State<OrderCalculatorModal> {
     }
 
     try {
-      await Cart.instance.paid(changer.currentState?.selected);
+      await Cart.instance.paid(snapshot.currentState?.selected);
       // send success message
       Navigator.of(context).pop(true);
     } catch (e) {

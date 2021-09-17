@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/ui/order/cashier/order_calculator_modal.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_modal.dart';
 
 import '../../../mocks/mock_repos.dart';
 import '../../../mocks/mock_widgets.dart';
@@ -14,7 +14,7 @@ void main() {
     when(cart.isHistoryMode).thenReturn(false);
     when(currency.isInt).thenReturn(true);
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.byIcon(Icons.done_rounded));
 
@@ -27,7 +27,7 @@ void main() {
     when(currency.isInt).thenReturn(true);
     when(currency.numToString(1)).thenReturn('1');
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.text('1').last);
     await tester.tap(find.text('2').last);
@@ -50,7 +50,7 @@ void main() {
     when(cart.isHistoryMode).thenReturn(false);
     when(currency.isInt).thenReturn(true);
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.text('1').last);
     await tester.tap(find.text('2').last);
@@ -66,7 +66,7 @@ void main() {
     when(cart.isHistoryMode).thenReturn(false);
     when(currency.isInt).thenReturn(true);
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.text('1').last);
     await tester.tap(find.text('2').last);
@@ -86,7 +86,7 @@ void main() {
     when(currency.numToString(20)).thenReturn('20');
     when(currency.numToString(50)).thenReturn('50');
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.byIcon(Icons.merge_type_rounded).last);
 
@@ -102,7 +102,7 @@ void main() {
     when(cart.paid(null))
         .thenAnswer((_) => Future.delayed(Duration(milliseconds: 10)));
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.byIcon(Icons.done_rounded));
     await tester.pump(Duration(milliseconds: 5));
@@ -117,7 +117,7 @@ void main() {
     when(cart.isHistoryMode).thenReturn(true);
     when(currency.isInt).thenReturn(true);
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.byIcon(Icons.done_rounded));
     await tester.pumpAndSettle();
@@ -139,7 +139,7 @@ void main() {
               throw 'too low';
             }));
 
-    await tester.pumpWidget(bindWithNavigator(OrderCalculatorModal()));
+    await tester.pumpWidget(bindWithNavigator(OrderCashierModal()));
 
     await tester.tap(find.text('3').last);
     await tester.tap(find.byIcon(Icons.done_rounded));

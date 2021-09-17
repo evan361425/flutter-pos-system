@@ -3,7 +3,7 @@ import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
 import 'package:possystem/ui/customer/setting/widgets/customer_setting_option_modal.dart';
 import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
-import 'package:possystem/ui/order/cashier/order_calculator_modal.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_modal.dart';
 import 'package:possystem/ui/order/cashier/order_customer_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -163,7 +163,7 @@ class Routes {
         ),
     // order
     orderCustomer: (_) => OrderCustomerModal(),
-    orderCalculator: (_) => OrderCalculatorModal(),
+    orderCalculator: (_) => OrderCashierModal(),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
