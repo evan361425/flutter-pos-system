@@ -5,20 +5,28 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class OrderBySlidingPanel extends StatelessWidget {
+class OrderBySlidingPanel extends StatefulWidget {
   final Widget row1;
   final Widget row2;
   final Widget row3;
   final Widget row4;
 
-  OrderBySlidingPanel({
+  const OrderBySlidingPanel({
     Key? key,
     required this.row1,
     required this.row2,
     required this.row3,
     required this.row4,
   }) : super(key: key);
+
+  @override
+  State<OrderBySlidingPanel> createState() => OrderBySlidingPanelState();
+}
+
+class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
+  final opener = GlobalKey<SlidingUpOpenerState>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +51,24 @@ class OrderBySlidingPanel extends StatelessWidget {
     );
 
     return SlidingUpOpener(
+      key: opener,
       minHeight: snapshotHeight,
       maxHeight: panelHeight,
       collapsed: collapsed,
       panel: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [Expanded(child: row3), row4],
+        children: [Expanded(child: widget.row3), widget.row4],
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        row1,
-        Expanded(child: row2),
+        widget.row1,
+        Expanded(child: widget.row2),
       ]),
     );
+  }
+
+  void reset() {
+    setState(() {
+      opener.currentState?.close();
+    });
   }
 }

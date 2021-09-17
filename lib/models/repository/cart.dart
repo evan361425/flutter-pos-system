@@ -128,6 +128,8 @@ class Cart extends ChangeNotifier {
 
       clear();
     }
+
+    OrderProduct.notifyListener();
   }
 
   Future<bool> popHistory() async {

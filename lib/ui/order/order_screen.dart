@@ -33,6 +33,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> with RouteAware {
   final _orderProductList = GlobalKey<OrderProductListState>();
   final _cartProductList = GlobalKey<CartProductListState>();
+  final _slidingPanel = GlobalKey<OrderBySlidingPanelState>();
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +83,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
       ),
       body: FeatureProvider.instance.outlookOrder == OutlookOrder.sliding_panel
           ? OrderBySlidingPanel(
+              key: _slidingPanel,
               row1: menuCatalogRow,
               row2: menuProductRow,
               row3: orderingProductRow,
@@ -107,6 +109,12 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
     Wakelock.disable();
     OrderInfo.resetMetadata();
     super.didPop();
+  }
+
+  @override
+  void didPopNext() {
+    _slidingPanel.currentState?.reset();
+    super.didPopNext();
   }
 
   @override

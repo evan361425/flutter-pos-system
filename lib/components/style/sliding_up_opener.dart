@@ -68,13 +68,42 @@ class SlidingUpOpener extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SlidingUpOpenerState createState() => _SlidingUpOpenerState();
+  SlidingUpOpenerState createState() => SlidingUpOpenerState();
 }
 
-class _SlidingUpOpenerState extends State<SlidingUpOpener> {
+class SlidingUpOpenerState extends State<SlidingUpOpener> {
   late bool isOpen;
 
   late PanelController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final panel = Container(
+      margin: const EdgeInsets.only(top: 4.0),
+      child: widget.panel,
+    );
+
+    return SlidingUpPanel(
+      controller: controller,
+      minHeight: widget.minHeight,
+      maxHeight: widget.maxHeight,
+      backdropEnabled: widget.backdropEnabled,
+      renderPanelSheet: widget.renderPanelSheet,
+      borderRadius: BorderRadius.circular(widget.borderRadius),
+      color: Colors.transparent,
+      onPanelClosed:
+          widget.clickToOpen ? () => setState(() => isOpen = false) : null,
+      onPanelOpened:
+          widget.clickToOpen ? () => setState(() => isOpen = true) : null,
+      defaultPanelState: widget.defaultPanelState,
+      panel: panel,
+      collapsed: buildCollapsed(),
+      body: Column(children: [
+        Expanded(child: widget.body),
+        SizedBox(height: widget.minHeight + 80),
+      ]),
+    );
+  }
 
   Widget buildCollapsed() {
     final theme = Theme.of(context);
@@ -131,34 +160,7 @@ class _SlidingUpOpenerState extends State<SlidingUpOpener> {
     return collapsed;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final panel = Container(
-      margin: const EdgeInsets.only(top: 4.0),
-      child: widget.panel,
-    );
-
-    return SlidingUpPanel(
-      controller: controller,
-      minHeight: widget.minHeight,
-      maxHeight: widget.maxHeight,
-      backdropEnabled: widget.backdropEnabled,
-      renderPanelSheet: widget.renderPanelSheet,
-      borderRadius: BorderRadius.circular(widget.borderRadius),
-      color: Colors.transparent,
-      onPanelClosed:
-          widget.clickToOpen ? () => setState(() => isOpen = false) : null,
-      onPanelOpened:
-          widget.clickToOpen ? () => setState(() => isOpen = true) : null,
-      defaultPanelState: widget.defaultPanelState,
-      panel: panel,
-      collapsed: buildCollapsed(),
-      body: Column(children: [
-        Expanded(child: widget.body),
-        SizedBox(height: widget.minHeight + 80),
-      ]),
-    );
-  }
+  void close() => controller.close();
 
   @override
   void initState() {

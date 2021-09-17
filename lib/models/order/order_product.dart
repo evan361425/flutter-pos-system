@@ -133,8 +133,12 @@ class OrderProduct {
     listeners[type]!.add(listener);
   }
 
-  static void notifyListener(OrderProductListenerTypes type) {
-    listeners[type]!.forEach((lisnter) => lisnter());
+  static void notifyListener([OrderProductListenerTypes? type]) {
+    if (type == null) {
+      listeners.values.forEach((e) => e.forEach((lisnter) => lisnter()));
+    } else {
+      listeners[type]!.forEach((lisnter) => lisnter());
+    }
   }
 
   static void removeListener(
