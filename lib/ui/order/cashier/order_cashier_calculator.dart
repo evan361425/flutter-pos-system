@@ -193,7 +193,7 @@ class _SingleFieldState extends State<_SingleField> {
     ]);
   }
 
-  setText(String? value) {
+  void setText(String? value) {
     setState(() => text = value);
   }
 }

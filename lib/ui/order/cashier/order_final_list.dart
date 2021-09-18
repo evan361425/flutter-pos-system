@@ -31,7 +31,7 @@ class OrderFinalList extends StatelessWidget {
                 trailing: Text(product.count.toString()),
                 subtitle: MetaBlock.withString(
                   context,
-                  product.ingredientNames,
+                  product.quantitiedIngredientNames,
                   textOverflow: TextOverflow.clip,
                 ),
               )

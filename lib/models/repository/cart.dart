@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_ingredient.dart';
 import 'package:possystem/models/order/order_product.dart';
-import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/providers/currency_provider.dart';
+
+import 'cart_ingredients.dart';
+import 'cashier.dart';
+import 'seller.dart';
+import 'stock.dart';
 
 class Cart extends ChangeNotifier {
   static Cart instance = Cart();
-
-  static const DEFAULT_QUANTITY_ID = '';
 
   List<OrderProduct> products = [];
 
@@ -29,8 +26,8 @@ class Cart extends ChangeNotifier {
     final selected = this.selected;
     if (selected.isEmpty) return false;
 
-    final firstId = selected.first.product.id;
-    return selected.every((e) => e.product.id == firstId);
+    final firstId = selected.first.id;
+    return selected.every((e) => e.id == firstId);
   }
 
   Iterable<OrderProduct> get selected =>
@@ -49,6 +46,9 @@ class Cart extends ChangeNotifier {
 
     products.add(orderProduct);
     notifyListeners();
+    // If unselect all products and add new product
+    // this can help notify ingredients
+    CartIngredients.instance.notifyListeners();
 
     return orderProduct;
   }
@@ -62,6 +62,7 @@ class Cart extends ChangeNotifier {
   @override
   void dispose() {
     products.clear();
+    customerSettings.clear();
     super.dispose();
   }
 
@@ -73,24 +74,6 @@ class Cart extends ChangeNotifier {
     replaceProducts(order.parseToProduct());
 
     return true;
-  }
-
-  /// Get quantity of selected product in specific [ingredient]
-  /// If products' ingredient have different quantity, return null
-  String? getSelectedQuantityId(ProductIngredient ingredient) {
-    if (!isSameProducts) return null;
-
-    final quantites = selected.map<ProductQuantity?>(
-        (product) => product.getIngredient(ingredient.id)?.quantity);
-
-    final firstId = quantites.first?.id;
-    // All selected product have same quantity
-    if (quantites.every((e) => e?.id == firstId)) {
-      // if using default, it will be null
-      return firstId ?? DEFAULT_QUANTITY_ID;
-    } else {
-      return null;
-    }
   }
 
   void leaveHistoryMode() {
@@ -129,8 +112,6 @@ class Cart extends ChangeNotifier {
 
       clear();
     }
-
-    OrderProduct.notifyListener();
   }
 
   Future<bool> popHistory() async {
@@ -147,13 +128,11 @@ class Cart extends ChangeNotifier {
 
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
-    // notify when remove selected item
-    OrderProduct.notifyListener(OrderProductListenerTypes.selection);
     notifyListeners();
   }
 
-  void removeSelectedIngredient(String id) {
-    selected.forEach((e) => e.removeIngredient(id));
+  void replaceProducts(List<OrderProduct> products) {
+    this.products = products;
     notifyListeners();
   }
 
@@ -175,13 +154,12 @@ class Cart extends ChangeNotifier {
     return true;
   }
 
-  void toggleAll([bool? checked]) {
-    // if empty, it will ignore to notify ingredient selector, call it manually
-    if (products.isEmpty) {
-      OrderProduct.notifyListener(OrderProductListenerTypes.selection);
-    }
-    products.forEach((product) => product.toggleSelected(checked));
-    notifyListeners();
+  void toggleAll(bool? checked, {String? except}) {
+    // except only acceptable when specify checked
+    assert(checked != null || except == null);
+
+    products.forEach((product) =>
+        product.toggleSelected(product.id == except ? !checked! : checked));
   }
 
   OrderObject toObject({num? paid, OrderObject? object}) {
@@ -193,11 +171,6 @@ class Cart extends ChangeNotifier {
       totalCount: totalCount,
       products: products.map<OrderProductObject>((e) => e.toObject()),
     );
-  }
-
-  void replaceProducts(List<OrderProduct> products) {
-    this.products = products;
-    notifyListeners();
   }
 
   void updateSelectedCount(int? count) {
@@ -214,11 +187,6 @@ class Cart extends ChangeNotifier {
       final price = e.product.price * discount / 100;
       e.singlePrice = CurrencyProvider.instance.isInt ? price.round() : price;
     });
-    notifyListeners();
-  }
-
-  void updateSelectedIngredient(OrderIngredient ingredient) {
-    selected.forEach((e) => e.addIngredient(ingredient));
     notifyListeners();
   }
 

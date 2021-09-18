@@ -15,7 +15,7 @@ void main() {
     when(cart.isHistoryMode).thenReturn(true);
 
     expect(OrderActions.actions().length, equals(1));
-    await OrderActions.onAction(
+    await OrderActions.execAction(
         MockBuildContext(), OrderActionTypes.leave_history);
 
     verify(cart.leaveHistoryMode());
@@ -28,7 +28,7 @@ void main() {
 
     await tester.pumpWidget(Container(child: Builder(builder: (context) {
       return FutureBuilder(
-        future: OrderActions.onAction(context, OrderActionTypes.show_last),
+        future: OrderActions.execAction(context, OrderActionTypes.show_last),
         builder: (_, __) => Container(),
       );
     })));
@@ -44,7 +44,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Scaffold(
       body: Builder(builder: (context) {
         return TextButton(
-          onPressed: () => OrderActions.onAction(
+          onPressed: () => OrderActions.execAction(
             context,
             OrderActionTypes.show_last,
           ),
@@ -67,7 +67,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Scaffold(
       body: Builder(builder: (context) {
         return TextButton(
-          onPressed: () => OrderActions.onAction(
+          onPressed: () => OrderActions.execAction(
             context,
             OrderActionTypes.show_last,
           ),
@@ -94,7 +94,7 @@ void main() {
         home: Scaffold(
           body: Builder(builder: (context) {
             return TextButton(
-              onPressed: () => OrderActions.onAction(
+              onPressed: () => OrderActions.execAction(
                 context,
                 OrderActionTypes.changer,
               ),
@@ -120,7 +120,7 @@ void main() {
 
     await tester.pumpWidget(Container(child: Builder(builder: (context) {
       return FutureBuilder(
-        future: OrderActions.onAction(context, OrderActionTypes.drop_stash),
+        future: OrderActions.execAction(context, OrderActionTypes.drop_stash),
         builder: (_, __) => Container(),
       );
     })));
@@ -136,7 +136,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Scaffold(
       body: Builder(builder: (context) {
         return TextButton(
-          onPressed: () => OrderActions.onAction(
+          onPressed: () => OrderActions.execAction(
             context,
             OrderActionTypes.drop_stash,
           ),
@@ -159,7 +159,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Scaffold(
       body: Builder(builder: (context) {
         return TextButton(
-          onPressed: () => OrderActions.onAction(
+          onPressed: () => OrderActions.execAction(
             context,
             OrderActionTypes.drop_stash,
           ),

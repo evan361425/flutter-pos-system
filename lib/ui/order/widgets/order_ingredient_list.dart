@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
-import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/widgets/order_quantity_list.dart';
+import 'package:provider/provider.dart';
 
 class OrderIngredientList extends StatefulWidget {
   const OrderIngredientList({Key? key}) : super(key: key);
@@ -17,25 +17,29 @@ class OrderIngredientList extends StatefulWidget {
 class _OrderIngredientListState extends State<OrderIngredientList> {
   static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
 
-  final quantityList = GlobalKey<OrderQuantityListState>();
+  final quantityList = GlobalKey<_OrderQuantityListState>();
 
   @override
   Widget build(BuildContext context) {
-    if (Cart.instance.isEmpty) {
+    final cart = context.watch<Cart>();
+    final ingredients = context.watch<CartIngredients>();
+
+    if (cart.isEmpty) {
       return _emptyRows(context, tt('order.list.cart_empty'));
     }
-    if (!Cart.instance.isSameProducts) {
+
+    if (!cart.isSameProducts) {
       return _emptyRows(context, tt('order.list.not_same_product'));
     }
 
-    final product = Cart.instance.selected.first.product;
-    final ingredients = product.ingredientsWithQuantity;
+    ingredients.setIngredients(cart.selected.first.product);
     if (ingredients.isEmpty) {
       return _emptyRows(context, tt('order.list.no_quantity'));
     }
 
-    final selected = ingredients.first;
-    final quantityId = Cart.instance.getSelectedQuantityId(selected);
+    final selected = ingredients.ingredients.first;
+    final quantityId = ingredients.getSelectedQuantityId(selected.id);
+    // Update if Cart or CartIngredients changed but already initialized
     quantityList.currentState?.update(
       ingredient: selected,
       selected: quantityId,
@@ -43,12 +47,12 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
 
     return _rowWrapper([
       SingleRowWrap(children: <Widget>[
-        for (final ingredient in ingredients)
+        for (final ingredient in ingredients.ingredients)
           RadioText(
             onSelected: (_) {
               quantityList.currentState?.update(
                 ingredient: ingredient,
-                selected: Cart.instance.getSelectedQuantityId(ingredient),
+                selected: ingredients.getSelectedQuantityId(ingredient.id),
               );
             },
             groupId: _INGREDIENT_RADIO_KEY,
@@ -57,34 +61,12 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
             text: ingredient.name,
           ),
       ]),
-      OrderQuantityList(
+      _OrderQuantityList(
         key: quantityList,
         ingredient: selected,
         selected: quantityId,
       ),
     ]);
-  }
-
-  @override
-  void dispose() {
-    OrderProduct.removeListener(
-      _listener,
-      OrderProductListenerTypes.selection,
-    );
-    super.dispose();
-  }
-
-  String? getSelectedQuantityId(ProductIngredient ingredient) {
-    return Cart.instance.getSelectedQuantityId(ingredient);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    OrderProduct.addListener(
-      _listener,
-      OrderProductListenerTypes.selection,
-    );
   }
 
   Widget _emptyRows(BuildContext context, String ingredientMessage) {
@@ -100,12 +82,76 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     ]);
   }
 
-  void _listener() => setState(() {});
-
   Widget _rowWrapper(List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: children,
     );
+  }
+}
+
+class _OrderQuantityList extends StatefulWidget {
+  final ProductIngredient ingredient;
+
+  final String? selected;
+
+  const _OrderQuantityList({
+    Key? key,
+    required this.ingredient,
+    required this.selected,
+  }) : super(key: key);
+
+  @override
+  State<_OrderQuantityList> createState() => _OrderQuantityListState();
+}
+
+class _OrderQuantityListState extends State<_OrderQuantityList> {
+  static const _QUANTITY_RADIO_KEY = 'order.quantities';
+
+  late ProductIngredient ingredient;
+
+  String? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleRowWrap(children: <Widget>[
+      RadioText(
+        onSelected: (_) => CartIngredients.instance.select(ingredient.id, null),
+        groupId: _QUANTITY_RADIO_KEY,
+        value: '',
+        isSelected: null == selected,
+        text: tt(
+          'order.list.default_quantity',
+          {'amount': ingredient.amount},
+        ),
+      ),
+      for (final quantity in ingredient.items)
+        RadioText(
+          onSelected: (_) {
+            CartIngredients.instance.select(ingredient.id, quantity.id);
+          },
+          groupId: _QUANTITY_RADIO_KEY,
+          value: quantity.id,
+          isSelected: quantity.id == selected,
+          text: '${quantity.name}（${quantity.amount}）',
+        ),
+    ]);
+  }
+
+  @override
+  void initState() {
+    ingredient = widget.ingredient;
+    selected = widget.selected;
+    super.initState();
+  }
+
+  void update({
+    required ProductIngredient ingredient,
+    String? selected,
+  }) {
+    setState(() {
+      this.ingredient = ingredient;
+      this.selected = selected;
+    });
   }
 }

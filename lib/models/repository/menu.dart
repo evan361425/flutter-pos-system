@@ -28,6 +28,9 @@ class Menu extends ChangeNotifier
     Menu.instance = this;
   }
 
+  List<Catalog> get notEmptyItems =>
+      itemList.where((e) => e.isNotEmpty).toList();
+
   @override
   Catalog buildModel(String id, Map<String, Object?> value) {
     return Catalog.fromObject(

@@ -5,7 +5,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class OrderBySlidingPanel extends StatefulWidget {
   final Widget row1;

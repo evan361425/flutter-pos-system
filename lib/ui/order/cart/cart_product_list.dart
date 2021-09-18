@@ -14,7 +14,7 @@ class CartProductList extends StatefulWidget {
 }
 
 class CartProductListState extends State<CartProductList> {
-  ScrollController? scrollController;
+  late ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +26,20 @@ class CartProductListState extends State<CartProductList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var product in cart.products)
-            _CartProductListTile(
-              value: product.isSelected,
-              selected: product.isSelected,
-              onChanged: (bool? checked) => _handleSelected(checked, product),
-              onTap: () {
-                cart.toggleAll(false);
-                _handleSelected(true, product);
-              },
-              title: Text(
-                product.product.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: product.ingredients.isEmpty
-                  ? null
-                  : MetaBlock.withString(context, product.ingredientNames),
-              trailing: _ProductCountAction(product: product),
+          for (final product in cart.products)
+            ChangeNotifierProvider<OrderProduct>.value(
+              value: product,
+              child: _CartProductListTile(),
             )
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,97 +49,60 @@ class CartProductListState extends State<CartProductList> {
   }
 
   Future<void> scrollToBottom() {
-    return scrollController!.animateTo(
-      scrollController!.position.maxScrollExtent + 80,
+    return scrollController.animateTo(
+      scrollController.position.maxScrollExtent + 80,
       duration: Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
   }
-
-  void _handleSelected(bool? checked, OrderProduct product) {
-    if (checked != null && product.toggleSelected(checked)) {
-      setState(() {});
-    }
-  }
 }
 
 class _CartProductListTile extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool?> onChanged;
-  final VoidCallback onTap;
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget? trailing;
-  final bool selected;
-
-  const _CartProductListTile({
-    Key? key,
-    required this.value,
-    required this.onChanged,
-    this.title,
-    this.subtitle,
-    this.trailing,
-    this.selected = false,
-    required this.onTap,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    final Widget leading = Checkbox(
-      value: value,
-      onChanged: onChanged,
+    final theme = Theme.of(context);
+    final product = context.watch<OrderProduct>();
+
+    final leading = Checkbox(
+      value: product.isSelected,
+      onChanged: (checked) => product.toggleSelected(checked),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
-    final theme = Theme.of(context);
+
+    final trailing = Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Text(product.count.toString()),
+        IconButton(
+          icon: Icon(Icons.add_circle_outline_sharp),
+          onPressed: () => product.increment(),
+        ),
+        Text(tt('order.list.price', {'price': product.price})),
+      ],
+    );
 
     return MergeSemantics(
       child: ListTileTheme.merge(
         selectedColor: theme.textTheme.bodyText1!.color,
         child: ListTile(
           leading: leading,
-          title: title,
-          subtitle: subtitle,
+          title: Text(product.name, overflow: TextOverflow.ellipsis),
+          subtitle: product.isEmpty
+              ? null
+              : MetaBlock.withString(
+                  context,
+                  product.quantitiedIngredientNames,
+                ),
           trailing: trailing,
-          onTap: onTap,
+          onTap: () => Cart.instance.toggleAll(false, except: product.id),
           onLongPress: () {
-            // select product
-            onTap();
-            // and do action
+            Cart.instance.toggleAll(false, except: product.id);
             CartActions.showActions(context);
           },
-          selected: selected,
+          selected: product.isSelected,
           selectedTileColor: theme.primaryColorLight,
         ),
       ),
-    );
-  }
-}
-
-class _ProductCountAction extends StatefulWidget {
-  final OrderProduct product;
-
-  _ProductCountAction({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
-
-  @override
-  _ProductCountActionState createState() => _ProductCountActionState();
-}
-
-class _ProductCountActionState extends State<_ProductCountAction> {
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        Text(widget.product.count.toString()),
-        IconButton(
-          icon: Icon(Icons.add_circle_outline_sharp),
-          onPressed: () => setState(() => widget.product.increment()),
-        ),
-        Text(tt('order.list.price', {'price': widget.product.price})),
-      ],
     );
   }
 }

@@ -47,7 +47,7 @@ class OrderActions {
     ];
   }
 
-  static Future<void> onAction(
+  static Future<void> execAction(
     BuildContext context,
     OrderActionTypes? action,
   ) async {

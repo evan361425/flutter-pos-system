@@ -5,14 +5,15 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
 
 class OrderProductList extends StatefulWidget {
+  final List<Product> products;
+
+  final void Function(Product) handleSelected;
+
   const OrderProductList({
     Key? key,
     required this.products,
     required this.handleSelected,
   }) : super(key: key);
-
-  final List<Product> products;
-  final void Function(Product) handleSelected;
 
   @override
   OrderProductListState createState() => OrderProductListState();
@@ -21,13 +22,11 @@ class OrderProductList extends StatefulWidget {
 class OrderProductListState extends State<OrderProductList> {
   late List<Product> _products;
 
-  void updateProducts(Catalog catalog) =>
-      setState(() => _products = catalog.itemList);
-
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 4.0),
+      // Small top margin to avoid double size between catalogs
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(kSpacing1),
@@ -46,17 +45,20 @@ class OrderProductListState extends State<OrderProductList> {
     );
   }
 
+  @override
+  void initState() {
+    _products = widget.products;
+    super.initState();
+  }
+
+  void updateProducts(Catalog catalog) =>
+      setState(() => _products = catalog.itemList);
+
   void _handleSelected(Product product) {
     Cart.instance
       ..toggleAll(false)
       ..add(product);
     // scroll to bottom
     widget.handleSelected(product);
-  }
-
-  @override
-  void initState() {
-    _products = widget.products;
-    super.initState();
   }
 }

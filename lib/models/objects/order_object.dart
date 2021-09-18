@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/database.dart';
@@ -28,30 +28,19 @@ class OrderObject {
   }) : createdAt = createdAt ?? DateTime.now();
 
   List<OrderProduct> parseToProduct() {
-    return products.map<OrderProduct>((orderProduct) {
-      final product = Menu.instance.getProduct(orderProduct.productId)!;
+    final result = products.map<OrderProduct?>((orderProduct) {
+      final product = Menu.instance.getProduct(orderProduct.productId);
 
-      final ingredients = <OrderIngredient>[];
-      for (var orderIngredient in orderProduct.ingredients.values) {
-        if (orderIngredient.quantityId == null) continue;
+      return product == null
+          ? null
+          : OrderProduct(
+              product,
+              count: orderProduct.count,
+              singlePrice: orderProduct.singlePrice,
+            );
+    });
 
-        final ingredient = product.getItem(orderIngredient.id)!;
-
-        ingredients.add(
-          OrderIngredient(
-            ingredient: ingredient,
-            quantity: ingredient.getItem(orderIngredient.quantityId!)!,
-          ),
-        );
-      }
-
-      return OrderProduct(
-        product,
-        count: orderProduct.count,
-        singlePrice: orderProduct.singlePrice,
-        ingredients: ingredients,
-      );
-    }).toList();
+    return result.where((item) => item != null).cast<OrderProduct>().toList();
   }
 
   Map<String, Object?> toMap() {
@@ -212,6 +201,23 @@ class OrderIngredientObject {
       amount: data['amount'] as num? ?? 0,
       quantityId: data['quantityId'] as String?,
       quantityName: data['quantityName'] as String?,
+    );
+  }
+
+  factory OrderIngredientObject.fromIngredient(
+    ProductIngredient ingredient,
+    String? quantityId,
+  ) {
+    final quantity = quantityId == null ? null : ingredient.getItem(quantityId);
+
+    return OrderIngredientObject(
+      id: ingredient.id,
+      name: ingredient.name,
+      amount: ingredient.amount + (quantity?.amount ?? 0),
+      quantityId: quantity?.id,
+      quantityName: quantity?.name,
+      additionalCost: quantity?.additionalCost,
+      additionalPrice: quantity?.additionalPrice,
     );
   }
 }
