@@ -95,15 +95,11 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
     }
 
     try {
-      await Cart.instance.paid(snapshot.currentState?.selected);
+      final success = await Cart.instance.paid(snapshot.currentState?.selected);
       // send success message
-      Navigator.of(context).pop(true);
-    } catch (e) {
-      if (e == 'too low') {
-        showErrorSnackbar(context, tt('order.cashier.error.low_paid'));
-      } else {
-        showErrorSnackbar(context, e.toString());
-      }
+      Navigator.of(context).pop(success);
+    } on PaidException {
+      showErrorSnackbar(context, tt('order.cashier.error.low_paid'));
     }
   }
 }

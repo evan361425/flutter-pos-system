@@ -54,6 +54,7 @@ class Cart extends ChangeNotifier {
   void clear() {
     products.clear();
     customerSettings.clear();
+    isHistoryMode = false;
     notifyListeners();
   }
 
@@ -64,59 +65,42 @@ class Cart extends ChangeNotifier {
     super.dispose();
   }
 
+  /// Drop the stashed order
   Future<bool> drop() async {
     final order = await Seller.instance.drop();
     if (order == null) return false;
 
-    info(order.id.toString(), 'order.cart.drop');
+    info(order.totalCount.toString(), 'order.cart.drop');
     replaceProducts(order.parseToProduct());
 
     return true;
   }
 
-  void leaveHistoryMode() {
-    isHistoryMode = false;
-    clear();
-  }
-
-  Future<void> paid(num? paid) async {
+  /// Paid to the order
+  Future<bool> paid(num? paid) async {
     if (totalCount == 0) {
-      isHistoryMode ? leaveHistoryMode() : clear();
-      return;
+      clear();
+      return false;
     }
 
     final price = totalPrice;
     paid ??= price;
-    if (paid < price) throw 'too low';
+    if (paid < price) throw PaidException('insufficient_amount');
 
     // if history mode update data
-    if (isHistoryMode) {
-      final oldData = await Seller.instance.pop();
-      final data = toObject(paid: paid, object: oldData);
+    isHistoryMode
+        ? await _finishHistoryMode(paid, price)
+        : await _finishNormalMode(paid, price);
 
-      info(data.id.toString(), 'order.cart.update');
-      await Seller.instance.update(data);
-      await Stock.instance.order(data, oldData: oldData);
-      await Cashier.instance.paid(paid, data.totalPrice, oldData?.totalPrice);
-
-      leaveHistoryMode();
-    } else {
-      final data = toObject(paid: paid);
-
-      info(data.totalCount.toString(), 'order.cart.push');
-      await Seller.instance.push(data);
-      await Stock.instance.order(data);
-      await Cashier.instance.paid(paid, data.totalPrice);
-
-      clear();
-    }
+    clear();
+    return true;
   }
 
   Future<bool> popHistory() async {
     final order = await Seller.instance.pop();
     if (order == null) return false;
 
-    info(order.id.toString(), 'order.cart.pop');
+    info(order.totalCount.toString(), 'order.cart.pop');
     replaceProducts(order.parseToProduct());
 
     isHistoryMode = true;
@@ -151,7 +135,9 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// If not stashable return false
+  /// Stash order to DB
+  ///
+  /// It will not stash customer setting. Return false if not storable
   /// Rate limit = 5
   Future<bool> stash() async {
     if (isEmpty) return true;
@@ -211,4 +197,29 @@ class Cart extends ChangeNotifier {
     selected.forEach((e) => e.singlePrice = price);
     notifyListeners();
   }
+
+  Future<void> _finishHistoryMode(num paid, num price) async {
+    final oldData = await Seller.instance.pop();
+    final data = toObject(paid: paid, object: oldData);
+
+    info('${data.totalCount} - ${oldData?.totalCount}', 'order.paid.update');
+    await Seller.instance.update(data);
+    await Stock.instance.order(data, oldData: oldData);
+    await Cashier.instance.paid(paid, price, oldData?.totalPrice);
+  }
+
+  Future<void> _finishNormalMode(num paid, num price) async {
+    final data = toObject(paid: paid);
+
+    info(data.totalCount.toString(), 'order.paid.add');
+    await Seller.instance.push(data);
+    await Stock.instance.order(data);
+    await Cashier.instance.paid(paid, price);
+  }
+}
+
+class PaidException implements Exception {
+  final String cause;
+
+  const PaidException(this.cause);
 }

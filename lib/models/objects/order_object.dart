@@ -8,7 +8,7 @@ import 'package:possystem/services/database.dart';
 
 class OrderObject {
   final int? id;
-  num? paid;
+  final num? paid;
   final num totalPrice;
   final int totalCount;
   final List<String>? productNames;
@@ -28,19 +28,21 @@ class OrderObject {
   }) : createdAt = createdAt ?? DateTime.now();
 
   List<OrderProduct> parseToProduct() {
-    final result = products.map<OrderProduct?>((orderProduct) {
-      final product = Menu.instance.getProduct(orderProduct.productId);
+    return products
+        .map<OrderProduct?>((orderProduct) {
+          final product = Menu.instance.getProduct(orderProduct.productId);
 
-      return product == null
-          ? null
-          : OrderProduct(
-              product,
-              count: orderProduct.count,
-              singlePrice: orderProduct.singlePrice,
-            );
-    });
-
-    return result.where((item) => item != null).cast<OrderProduct>().toList();
+          return product == null
+              ? null
+              : OrderProduct(
+                  product,
+                  count: orderProduct.count,
+                  singlePrice: orderProduct.singlePrice,
+                );
+        })
+        .where((item) => item != null)
+        .cast<OrderProduct>()
+        .toList();
   }
 
   Map<String, Object?> toMap() {

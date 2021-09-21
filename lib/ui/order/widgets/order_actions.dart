@@ -53,7 +53,7 @@ class OrderActions {
   ) async {
     switch (action) {
       case OrderActionTypes.leave_history:
-        return Cart.instance.leaveHistoryMode();
+        return Cart.instance.clear();
       case OrderActionTypes.leave:
         return Navigator.of(context).pop();
       case OrderActionTypes.show_last:
