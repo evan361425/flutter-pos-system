@@ -69,7 +69,7 @@ class OrderObject {
     };
   }
 
-  factory OrderObject.build(Map<String, Object?> data) {
+  factory OrderObject.fromMap(Map<String, Object?> data) {
     final encodedProduct = data['encodedProducts'] as String?;
     final products = jsonDecode(encodedProduct ?? '[]') as List<dynamic>;
     final createdAt = data['createdAt'] == null

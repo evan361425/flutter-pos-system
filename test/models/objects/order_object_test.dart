@@ -100,7 +100,7 @@ void main() {
               }),
         ]);
     final map = object.toMap();
-    final newObject = OrderObject.build({'id': 1, ...map});
+    final newObject = OrderObject.fromMap({'id': 1, ...map});
     final newMap = newObject.toMap();
 
     expect(map, equals(newMap));

@@ -12,7 +12,7 @@ class Seller {
     );
     if (row == null) return null;
 
-    final object = OrderObject.build(row);
+    final object = OrderObject.fromMap(row);
 
     await Database.instance.delete(Tables.order_stash, object.id);
 
@@ -78,7 +78,7 @@ class Seller {
       offset: offset,
     );
 
-    return rows.map((row) => OrderObject.build(row)).toList();
+    return rows.map((row) => OrderObject.fromMap(row)).toList();
   }
 
   Future<num> getStashCount() async {
@@ -94,7 +94,7 @@ class Seller {
         whereArgs: [Util.toUTC(hour: 0)]);
     if (row == null) return null;
 
-    return OrderObject.build(row);
+    return OrderObject.fromMap(row);
   }
 
   Future<void> push(OrderObject order) {
