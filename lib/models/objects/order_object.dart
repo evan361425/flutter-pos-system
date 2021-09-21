@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/order/order_product.dart';
@@ -13,7 +14,9 @@ class OrderObject {
   final int totalCount;
   final List<String>? productNames;
   final List<String>? ingredientNames;
+  final int? customerSettingsCombinationId;
   final DateTime createdAt;
+  final Map<String, String> customerSettings;
   final Iterable<OrderProductObject> products;
 
   OrderObject({
@@ -23,6 +26,8 @@ class OrderObject {
     required this.totalCount,
     this.productNames,
     this.ingredientNames,
+    this.customerSettings = const {},
+    this.customerSettingsCombinationId,
     required this.products,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
@@ -59,6 +64,7 @@ class OrderObject {
       'totalPrice': totalPrice,
       'totalCount': totalCount,
       'createdAt': Util.toUTC(now: createdAt),
+      'customerSettingCombinationId': customerSettingsCombinationId,
       'usedProducts': Database.join(
         products.map<String>((e) => e.productName),
       ),
@@ -85,6 +91,10 @@ class OrderObject {
       totalCount: data['totalCount'] as int? ?? 0,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
+      customerSettings: DBTransferer.parseCombination(
+          data['customerSettingsCombination'] as String?),
+      customerSettingsCombinationId:
+          data['customerSettingsCombinationId'] as int?,
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }

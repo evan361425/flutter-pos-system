@@ -4,7 +4,6 @@ import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
 
 const Map<Tables, String> TableName = {
-  Tables.search_history: 'search_history',
   // order
   Tables.order: 'order',
   Tables.order_stash: 'order_stash',
@@ -141,7 +140,7 @@ class Database {
 }
 
 enum Tables {
-  search_history,
+  customer_setting_combinations,
   // order
   order,
   order_stash,

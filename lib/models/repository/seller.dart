@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
@@ -17,6 +18,12 @@ class Seller {
     await Database.instance.delete(Tables.order_stash, object.id);
 
     return object;
+  }
+
+  Future<int> genCustomerSettingCombinationId(Map<int, int> data) {
+    return Database.instance.push(Tables.customer_setting_combinations, {
+      'combination': DBTransferer.toCombination(data),
+    });
   }
 
   Future<Map<DateTime, int>> getCountBetween(
@@ -39,6 +46,18 @@ class Seller {
       for (final row in rows)
         Util.fromUTC(row['createdAt'] as int): row['count'] as int
     };
+  }
+
+  Future<int?> getCustomerSettingCombinationId(Map<int, int> data) async {
+    final result = await Database.instance.query(
+      Tables.customer_setting_combinations,
+      columns: ['id'],
+      where: 'combination = ?',
+      whereArgs: [DBTransferer.toCombination(data)],
+      limit: 1,
+    );
+
+    return result.isEmpty ? null : (result.first['id'] as int);
   }
 
   Future<Map<String, num>> getMetricBetween([

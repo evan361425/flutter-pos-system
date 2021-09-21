@@ -71,8 +71,8 @@ class Cart extends ChangeNotifier {
     if (order == null) return false;
 
     info(order.totalCount.toString(), 'order.cart.drop');
-    replaceProducts(order.parseToProduct());
 
+    replaceByObject(order);
     return true;
   }
 
@@ -101,8 +101,8 @@ class Cart extends ChangeNotifier {
     if (order == null) return false;
 
     info(order.totalCount.toString(), 'order.cart.pop');
-    replaceProducts(order.parseToProduct());
 
+    replaceByObject(order);
     isHistoryMode = true;
 
     return true;
@@ -130,8 +130,11 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
-  void replaceProducts(List<OrderProduct> products) {
-    this.products = products;
+  void replaceByObject(OrderObject object) {
+    products = object.parseToProduct();
+    customerSettings
+      ..clear()
+      ..addAll(object.customerSettings);
     notifyListeners();
   }
 
@@ -163,11 +166,17 @@ class Cart extends ChangeNotifier {
         .toggleSelected(identical(product, except) ? !checked! : checked));
   }
 
-  OrderObject toObject({num? paid, OrderObject? object}) {
+  OrderObject toObject({
+    num? paid,
+    OrderObject? object,
+    int? customerSettingsCombinationId,
+  }) {
     return OrderObject(
       id: object?.id,
       paid: paid,
       createdAt: object?.createdAt,
+      customerSettings: customerSettings,
+      customerSettingsCombinationId: customerSettingsCombinationId,
       totalPrice: totalPrice,
       totalCount: totalCount,
       products: products.map<OrderProductObject>((e) => e.toObject()),
@@ -200,7 +209,12 @@ class Cart extends ChangeNotifier {
 
   Future<void> _finishHistoryMode(num paid, num price) async {
     final oldData = await Seller.instance.pop();
-    final data = toObject(paid: paid, object: oldData);
+    final data = toObject(
+      paid: paid,
+      object: oldData,
+      customerSettingsCombinationId:
+          await _prepareCustomerSettingCombinationId(),
+    );
 
     info('${data.totalCount} - ${oldData?.totalCount}', 'order.paid.update');
     await Seller.instance.update(data);
@@ -209,12 +223,23 @@ class Cart extends ChangeNotifier {
   }
 
   Future<void> _finishNormalMode(num paid, num price) async {
-    final data = toObject(paid: paid);
+    final data = toObject(
+      paid: paid,
+      customerSettingsCombinationId:
+          await _prepareCustomerSettingCombinationId(),
+    );
 
     info(data.totalCount.toString(), 'order.paid.add');
     await Seller.instance.push(data);
     await Stock.instance.order(data);
     await Cashier.instance.paid(paid, price);
+  }
+
+  Future<int> _prepareCustomerSettingCombinationId() async {
+    final result = await Seller.instance
+            .getCustomerSettingCombinationId(customerSettings) ??
+        await Seller.instance.genCustomerSettingCombinationId(customerSettings);
+    return result;
   }
 }
 

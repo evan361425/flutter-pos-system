@@ -38,7 +38,7 @@ ON `order` (createdAt);
 );''',
     '''CREATE TABLE `customer_setting_combinations` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  combinations TEXT NOT NULL UNIQUE
+  combination TEXT NOT NULL UNIQUE
 );''',
     '''ALTER TABLE `order`
 ADD COLUMN customerSettingCombinationId INTEGER;''',
