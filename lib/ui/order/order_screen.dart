@@ -4,6 +4,7 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
@@ -49,12 +50,18 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
       products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
       handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
     );
-    final cartProductRow = ChangeNotifierProvider.value(
+    final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
-      builder: (_, __) => CartScreen(productsKey: _cartProductList),
+      child: CartScreen(productsKey: _cartProductList),
     );
-    // TODO: add change notifier
-    final menuIngredientRow = OrderIngredientList();
+    final menuIngredientRow = MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Cart>.value(value: Cart.instance),
+        ChangeNotifierProvider<CartIngredients>.value(
+            value: CartIngredients.instance),
+      ],
+      child: OrderIngredientList(),
+    );
 
     return Scaffold(
       // avoid resize when keyboard(bottom inset) shows
@@ -123,6 +130,8 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
     if (FeatureProvider.instance.awakeOrdering) {
       Wakelock.enable();
     }
+    // rebind menu/customer_setting if changed
+    Cart.instance.rebind();
     super.didPush();
   }
 

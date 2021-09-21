@@ -3,9 +3,10 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
-import 'cart_ingredients.dart';
 import 'cashier.dart';
 import 'seller.dart';
 import 'stock.dart';
@@ -43,12 +44,9 @@ class Cart extends ChangeNotifier {
 
   OrderProduct add(Product product) {
     final orderProduct = OrderProduct(product, isSelected: true);
-
     products.add(orderProduct);
+
     notifyListeners();
-    // If unselect all products and add new product
-    // this can help notify ingredients
-    CartIngredients.instance.notifyListeners();
 
     return orderProduct;
   }
@@ -126,6 +124,23 @@ class Cart extends ChangeNotifier {
     return true;
   }
 
+  void rebind() {
+    // remove not exist product
+    products.removeWhere((product) {
+      return Menu.instance.items
+          .every((catalog) => !catalog.hasItem(product.id));
+    });
+    // remove not exist customer
+    customerSettings.entries.toList().forEach((entry) {
+      final setting = CustomerSettings.instance.getItem(entry.key);
+      if (setting == null || !setting.hasItem(entry.value)) {
+        customerSettings.remove(entry.key);
+      }
+    });
+    // rebind product ingredient/quantity
+    products.forEach((product) => product.rebind());
+  }
+
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
     notifyListeners();
@@ -154,12 +169,12 @@ class Cart extends ChangeNotifier {
     return true;
   }
 
-  void toggleAll(bool? checked, {String? except}) {
+  void toggleAll(bool? checked, {OrderProduct? except}) {
     // except only acceptable when specify checked
     assert(checked != null || except == null);
 
-    products.forEach((product) =>
-        product.toggleSelected(product.id == except ? !checked! : checked));
+    products.forEach((product) => product
+        .toggleSelected(identical(product, except) ? !checked! : checked));
   }
 
   OrderObject toObject({num? paid, OrderObject? object}) {

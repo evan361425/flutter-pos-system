@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/translator.dart';
@@ -37,33 +36,27 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       return _emptyRows(context, tt('order.list.no_quantity'));
     }
 
-    final selected = ingredients.ingredients.first;
-    final quantityId = ingredients.getSelectedQuantityId(selected.id);
-    // Update if Cart or CartIngredients changed but already initialized
-    quantityList.currentState?.update(
-      ingredient: selected,
-      selected: quantityId,
-    );
+    final ingredientId = ingredients.selected!.id;
+    final quantityId = ingredients.getSelectedQuantityId();
+    quantityList.currentState?.update(quantityId);
 
     return _rowWrapper([
       SingleRowWrap(children: <Widget>[
         for (final ingredient in ingredients.ingredients)
           RadioText(
             onSelected: (_) {
-              quantityList.currentState?.update(
-                ingredient: ingredient,
-                selected: ingredients.getSelectedQuantityId(ingredient.id),
-              );
+              ingredients.selectIngredient(ingredient);
+              quantityList.currentState
+                  ?.update(ingredients.getSelectedQuantityId());
             },
             groupId: _INGREDIENT_RADIO_KEY,
-            isSelected: selected.id == ingredient.id,
+            isSelected: ingredientId == ingredient.id,
             value: ingredient.id,
             text: ingredient.name,
           ),
       ]),
       _OrderQuantityList(
         key: quantityList,
-        ingredient: selected,
         selected: quantityId,
       ),
     ]);
@@ -91,13 +84,10 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
 }
 
 class _OrderQuantityList extends StatefulWidget {
-  final ProductIngredient ingredient;
-
   final String? selected;
 
   const _OrderQuantityList({
     Key? key,
-    required this.ingredient,
     required this.selected,
   }) : super(key: key);
 
@@ -108,27 +98,26 @@ class _OrderQuantityList extends StatefulWidget {
 class _OrderQuantityListState extends State<_OrderQuantityList> {
   static const _QUANTITY_RADIO_KEY = 'order.quantities';
 
-  late ProductIngredient ingredient;
-
   String? selected;
 
   @override
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
       RadioText(
-        onSelected: (_) => CartIngredients.instance.select(ingredient.id, null),
+        onSelected: (_) => CartIngredients.instance.selectQuantity(null),
         groupId: _QUANTITY_RADIO_KEY,
         value: '',
         isSelected: null == selected,
         text: tt(
           'order.list.default_quantity',
-          {'amount': ingredient.amount},
+          {'amount': CartIngredients.instance.selected!.amount},
         ),
       ),
-      for (final quantity in ingredient.items)
+      for (final quantity in CartIngredients.instance.selected!.items)
         RadioText(
           onSelected: (_) {
-            CartIngredients.instance.select(ingredient.id, quantity.id);
+            selected = quantity.id;
+            CartIngredients.instance.selectQuantity(quantity.id);
           },
           groupId: _QUANTITY_RADIO_KEY,
           value: quantity.id,
@@ -140,18 +129,20 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
 
   @override
   void initState() {
-    ingredient = widget.ingredient;
     selected = widget.selected;
     super.initState();
   }
 
-  void update({
-    required ProductIngredient ingredient,
-    String? selected,
-  }) {
-    setState(() {
-      this.ingredient = ingredient;
-      this.selected = selected;
-    });
+  void select(String quantityId) {
+    selected = quantityId;
+    CartIngredients.instance.selectQuantity(quantityId);
+  }
+
+  void update(String? selected) {
+    if (selected != this.selected) {
+      setState(() {
+        this.selected = selected;
+      });
+    }
   }
 }

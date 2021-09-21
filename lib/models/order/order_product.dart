@@ -25,9 +25,25 @@ class OrderProduct extends ChangeNotifier {
           for (final ingredient in product.items) ingredient.id: null
         };
 
+  void rebind() {
+    // check missing
+    for (final ingredient in product.items) {
+      if (!selectedQuantity.containsKey(ingredient.id)) {
+        selectedQuantity[ingredient.id] = null;
+      }
+    }
+
+    // check not exist
+    selectedQuantity.keys.forEach((key) {
+      if (!product.hasItem(key)) {
+        selectedQuantity.remove(key);
+      }
+    });
+  }
+
   String get id => product.id;
 
-  bool get isEmpty => selectedQuantity.values.any((e) => e != null);
+  bool get isEmpty => selectedQuantity.values.every((e) => e == null);
 
   String get name => product.name;
 
@@ -65,6 +81,8 @@ class OrderProduct extends ChangeNotifier {
 
     selectedQuantity[ingredientId] = quantityId;
     singlePrice += getQuantityPrice(ingredientId, quantityId);
+
+    selectedQuantity[ingredientId] = quantityId;
   }
 
   /// if [checked] is defferent with current state

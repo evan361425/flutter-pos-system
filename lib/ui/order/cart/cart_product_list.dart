@@ -94,9 +94,9 @@ class _CartProductListTile extends StatelessWidget {
                   product.quantitiedIngredientNames,
                 ),
           trailing: trailing,
-          onTap: () => Cart.instance.toggleAll(false, except: product.id),
+          onTap: () => Cart.instance.toggleAll(false, except: product),
           onLongPress: () {
-            Cart.instance.toggleAll(false, except: product.id);
+            Cart.instance.toggleAll(false, except: product);
             CartActions.showActions(context);
           },
           selected: product.isSelected,

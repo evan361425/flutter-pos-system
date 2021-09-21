@@ -9,6 +9,10 @@ class CartIngredients extends ChangeNotifier {
 
   late List<ProductIngredient> ingredients;
 
+  late ProductIngredient? selected;
+
+  String productId = '';
+
   CartIngredients._();
 
   bool get isEmpty => ingredients.isEmpty;
@@ -17,9 +21,9 @@ class CartIngredients extends ChangeNotifier {
   ///
   /// If all using default(null quantity ID), it will return null.
   /// If selected are not same return empty string
-  String? getSelectedQuantityId(String ingredientId) {
+  String? getSelectedQuantityId() {
     final quantites = Cart.instance.selected
-        .map((product) => product.selectedQuantity[ingredientId])
+        .map((product) => product.selectedQuantity[selected!.id])
         .toList();
 
     assert(quantites.isNotEmpty);
@@ -28,15 +32,26 @@ class CartIngredients extends ChangeNotifier {
     return quantites.every((e) => e == firstId) ? firstId : '';
   }
 
-  void select(String ingredientId, String? quantityId) {
+  void selectIngredient(ProductIngredient ingredient) {
+    selected = ingredient;
+  }
+
+  void selectQuantity(String? quantityId) {
     Cart.instance.selected.forEach((product) {
-      product.selectedQuantity[ingredientId] = quantityId;
+      product.selectQuantity(selected!.id, quantityId);
     });
     // It will change subtitle in product list
     Cart.instance.notifyListeners();
   }
 
   void setIngredients(Product product) {
-    ingredients = product.ingredientsWithQuantity.toList();
+    if (productId != product.id) {
+      productId = product.id;
+      ingredients = product.ingredientsWithQuantity.toList();
+
+      if (ingredients.isNotEmpty) {
+        selected = ingredients.first;
+      }
+    }
   }
 }
