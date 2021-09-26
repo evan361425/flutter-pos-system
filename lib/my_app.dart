@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
 
           return _isRegistedServices
               ? ModelIntializer(child: HomeScreen())
-              : WelcomeSplash();
+              : const WelcomeSplash();
         },
       ),
     );

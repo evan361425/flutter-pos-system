@@ -19,7 +19,7 @@ class CustomerSettings extends ChangeNotifier
 
   static const COMBINATION_TABLE = 'customer_setting_combinations';
 
-  static CustomerSettings instance = CustomerSettings();
+  static late CustomerSettings instance;
 
   @override
   final Stores storageStore = Stores.customers;
@@ -37,6 +37,18 @@ class CustomerSettings extends ChangeNotifier
 
   List<CustomerSetting> get selectableItemList =>
       itemList.where((item) => item.isNotEmpty).toList();
+
+  @override
+  Future<void> addItemToStorage(CustomerSetting item) async {
+    final object = item.toObject();
+    final id = await Database.instance.push(TABLE, object.toMap());
+    item.id = id.toString();
+
+    for (final option in object.optionsToMap()) {
+      option['customerSettingId'] = id;
+      await Database.instance.push(OPTION_TABLE, option);
+    }
+  }
 
   @override
   Future<CustomerSetting> buildItem(Map<String, Object?> item) async {

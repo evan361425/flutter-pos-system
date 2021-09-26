@@ -55,17 +55,33 @@ class Database {
 
   Future<void> initialize() async {
     if (_initialized) return;
+    _initialized = true;
 
     final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
     db = await openDatabase(
       databasePath,
-      version: 1,
-      onCreate: (db, version) {
-        info(version.toString(), 'database.create');
-        return Future.wait(DB_MIG_UP[1]!.map((sql) => db.execute(sql)));
+      version: 2,
+      onCreate: (db, version) async {
+        info(version.toString(), 'database.create.$version');
+        for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
+          await _execMigration(exeVersion);
+        }
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        info(oldVersion.toString(), 'database.upgrade.$newVersion');
+        await _execMigration(newVersion);
       },
     );
-    _initialized = true;
+  }
+
+  Future<void> _execMigration(int version) async {
+    for (final sql in DB_MIG_UP[version]!) {
+      try {
+        await db.execute(sql);
+      } catch (e, stack) {
+        await error(e.toString(), 'database.migration.error', stack);
+      }
+    }
   }
 
   Future<int> push(String table, Map<String, Object?> data) {
@@ -103,7 +119,7 @@ class Database {
     String? where,
     List<Object>? whereArgs,
     List<String> columns = const ['*'],
-    String? join,
+    String join = '',
     String? groupBy,
   }) {
     final select = columns.join(',');

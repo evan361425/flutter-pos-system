@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -8,7 +7,10 @@ import 'customer_setting.dart';
 class CustomerSettingOption
     with
         Model<CustomerSettingOptionObject>,
+        DBModel<CustomerSettingOptionObject>,
         OrderableModel<CustomerSettingOptionObject> {
+  static const TABLE = 'customer_setting_options';
+
   /// Connect to parent model
   late CustomerSetting setting;
 
@@ -30,7 +32,7 @@ class CustomerSettingOption
     this.modeValue,
     CustomerSetting? setting,
   }) {
-    this.id = id ?? Util.uuidV4();
+    if (id != null) this.id = id;
     this.name = name;
     this.index = index;
 
@@ -49,6 +51,9 @@ class CustomerSettingOption
 
   @override
   String get prefix => '${setting.prefix}.options.$id';
+
+  @override
+  String get tableName => TABLE;
 
   @override
   void handleUpdated() {

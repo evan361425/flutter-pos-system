@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:provider/provider.dart';
 
 import 'models/repository/customer_settings.dart';
@@ -54,6 +55,9 @@ void main() async {
           ),
           ChangeNotifierProvider<CustomerSettings>(
             create: (_) => CustomerSettings(),
+          ),
+          ChangeNotifierProvider<Seller>(
+            create: (_) => Seller(),
           ),
         ],
         child: MyApp(),

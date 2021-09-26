@@ -1,4 +1,4 @@
-import 'package:possystem/services/storage.dart';
+import 'package:possystem/services/database.dart';
 
 import '../model.dart';
 import '../objects/customer_object.dart';
@@ -9,16 +9,18 @@ import 'customer_setting_option.dart';
 class CustomerSetting extends NotifyModel<CustomerSettingObject>
     with
         OrderableModel<CustomerSettingObject>,
+        DBModel<CustomerSettingObject>,
         Repository<CustomerSettingOption>,
         NotifyRepository<CustomerSettingOption>,
         OrderablRepository<CustomerSettingOption> {
+  static const TABLE = 'customer_settings';
+
+  static const OPTION_TABLE = 'customer_setting_options';
+
   CustomerSettingOptionMode mode;
 
   @override
   final String logCode = 'customers.setting';
-
-  @override
-  final Stores storageStore = Stores.customers;
 
   CustomerSetting({
     String? id,
@@ -26,7 +28,8 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
     int index = 0,
     this.mode = CustomerSettingOptionMode.statOnly,
     Map<String, CustomerSettingOption>? options,
-  }) : super(id) {
+  }) {
+    if (id != null) this.id = id;
     this.name = name;
     this.index = index;
     replaceItems(options ?? <String, CustomerSettingOption>{});
@@ -56,10 +59,15 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
   bool get shouldHaveModeValue => mode != CustomerSettingOptionMode.statOnly;
 
   @override
-  Future<void> addItemToStorage(CustomerSettingOption option) {
-    return Storage.instance.set(storageStore, {
-      option.prefix: option.toObject().toMap(),
-    });
+  String get tableName => TABLE;
+
+  @override
+  Future<void> addItemToStorage(CustomerSettingOption item) async {
+    final map = item.toObject().toMap();
+    map['customerSettingId'] = int.parse(id);
+
+    final optionId = await Database.instance.push(tableName, map);
+    item.id = optionId.toString();
   }
 
   Future<void> clearDefault() async {
@@ -90,6 +98,25 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
+
+  /// Update options' [modeValue] if [mode] changed
+  @override
+  Future<void> updateItemToDB(Map<String, Object?> data) async {
+    final intId = int.parse(id);
+    await Database.instance.update(tableName, intId, data);
+
+    if (data['mode'] == null) return;
+
+    for (final item in items) {
+      item.modeValue = null;
+    }
+    await Database.instance.update(
+      OPTION_TABLE,
+      intId,
+      {'modeValue': null},
+      keyName: 'customerSettingId',
+    );
+  }
 
   void _prepareOptions() => items.forEach((e) => e.setting = this);
 }

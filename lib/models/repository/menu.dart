@@ -14,7 +14,7 @@ class Menu extends ChangeNotifier
         NotifyRepository<Catalog>,
         OrderablRepository<Catalog>,
         InitilizableRepository<Catalog> {
-  static Menu instance = Menu();
+  static late Menu instance;
 
   @override
   final Stores storageStore = Stores.menu;

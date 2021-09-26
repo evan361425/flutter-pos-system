@@ -161,9 +161,10 @@ mixin Repository<T extends Model> {
     if (!hasItem(item.id)) {
       info(item.toString(), '${item.logCode}.add');
 
-      addItem(item);
-
+      // add to DB to get ID
       await addItemToStorage(item);
+
+      addItem(item);
     }
 
     notifyItem();

@@ -40,23 +40,17 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
   @override
   Map<String, Object?> diff(CustomerSetting setting) {
     final result = <String, Object?>{};
-    final prefix = setting.prefix;
     if (name != null && name != setting.name) {
       setting.name = name!;
-      result['$prefix.name'] = name!;
+      result['name'] = name!;
     }
     if (index != null && index != setting.index) {
       setting.index = index!;
-      result['$prefix.index'] = index!;
+      result['index'] = index!;
     }
     if (mode != null && mode != setting.mode) {
       setting.mode = mode!;
-      result['$prefix.mode'] = mode!.index;
-
-      for (final item in setting.items) {
-        item.modeValue = null;
-        result['${item.prefix}.modeValue'] = null;
-      }
+      result['mode'] = mode!.index;
     }
     return result;
   }
@@ -67,8 +61,11 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       'name': name!,
       'index': index!,
       'mode': mode!.index,
-      'options': {for (var option in options) option.id: option.toMap()},
     };
+  }
+
+  List<Map<String, Object?>> optionsToMap() {
+    return [for (final option in options) option.toMap()];
   }
 }
 
@@ -106,7 +103,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
     return {
       'name': name,
       'index': index,
-      'isDefault': isDefault,
+      'isDefault': (isDefault ?? false) ? 1 : 0,
       'modeValue': modeValue,
     };
   }

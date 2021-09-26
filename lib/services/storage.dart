@@ -21,12 +21,11 @@ class Storage {
 
   Future<void> initialize() async {
     if (_initialized) return;
+    _initialized = true;
 
     final databasePath = await getDatabasesPath() + '/pos_system.sembast';
 
     db = await databaseFactoryIo.openDatabase(databasePath);
-
-    _initialized = true;
   }
 
   Future<void> deleteAll() async {

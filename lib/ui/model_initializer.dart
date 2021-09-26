@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class ModelIntializer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isReady(context) ? child : WelcomeSplash();
+    return isReady(context) ? child : const WelcomeSplash();
   }
 
   bool isReady(BuildContext context) {
@@ -26,9 +27,11 @@ class ModelIntializer extends StatelessWidget {
     final stock = context.watch<Stock>();
     final quantities = context.watch<Quantities>();
     final settings = context.watch<CustomerSettings>();
+    final replenisher = context.watch<Replenisher>();
     if (!menu.isReady ||
         !stock.isReady ||
         !quantities.isReady ||
+        !replenisher.isReady ||
         !settings.isReady) {
       return false;
     }

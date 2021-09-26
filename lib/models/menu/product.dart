@@ -46,8 +46,8 @@ class Product extends NotifyModel<ProductObject>
     this.searchedAt,
     Catalog? catalog,
     Map<String, ProductIngredient>? ingredients,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        super(id) {
+  }) : createdAt = createdAt ?? DateTime.now() {
+    this.id = id ?? generateId();
     this.name = name;
     this.index = index;
 

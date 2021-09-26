@@ -8,7 +8,11 @@ class Seller extends ChangeNotifier {
 
   static const ORDER_TABLE = 'order';
 
-  static Seller instance = Seller();
+  static late Seller instance;
+
+  Seller() {
+    instance = this;
+  }
 
   Future<OrderObject?> drop() async {
     final row = await Database.instance.getLast(

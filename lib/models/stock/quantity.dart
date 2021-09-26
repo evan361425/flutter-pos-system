@@ -17,7 +17,8 @@ class Quantity extends NotifyModel<QuantityObject> with SearchableModel {
     String? id,
     String name = 'quantity',
     this.defaultProportion = 1,
-  }) : super(id) {
+  }) {
+    this.id = id ?? generateId();
     this.name = name;
   }
 
