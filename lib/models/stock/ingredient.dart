@@ -38,8 +38,7 @@ class Ingredient extends NotifyModel<IngredientObject> with SearchableModel {
     this.lastAddAmount,
     this.updatedAt,
     String? id,
-  }) {
-    this.id = id ?? generateId();
+  }) : super(id) {
     this.name = name;
   }
 

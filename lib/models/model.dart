@@ -36,7 +36,7 @@ mixin DBModel<T extends ModelObject> on Model<T> {
 }
 
 mixin Model<T extends ModelObject> {
-  late final String id;
+  late String id;
 
   late String name;
 
@@ -80,6 +80,10 @@ mixin Model<T extends ModelObject> {
 
 abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
     with Model<T> {
+  NotifyModel(String? id) {
+    this.id = id ?? generateId();
+  }
+
   @override
   void handleUpdated() {
     notifyItem();

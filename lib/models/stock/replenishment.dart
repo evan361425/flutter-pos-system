@@ -18,8 +18,8 @@ class Replenishment extends NotifyModel {
     String? id,
     String name = 'replenishment',
     Map<String, num>? data,
-  }) : data = data ?? {} {
-    this.id = id ?? generateId();
+  })  : data = data ?? {},
+        super(id) {
     this.name = name;
   }
 

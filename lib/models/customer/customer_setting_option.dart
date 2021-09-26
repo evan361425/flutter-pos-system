@@ -32,7 +32,7 @@ class CustomerSettingOption
     this.modeValue,
     CustomerSetting? setting,
   }) {
-    if (id != null) this.id = id;
+    this.id = id ?? generateId();
     this.name = name;
     this.index = index;
 

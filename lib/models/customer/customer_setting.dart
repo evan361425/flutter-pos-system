@@ -28,8 +28,7 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
     int index = 0,
     this.mode = CustomerSettingOptionMode.statOnly,
     Map<String, CustomerSettingOption>? options,
-  }) {
-    if (id != null) this.id = id;
+  }) : super(id) {
     this.name = name;
     this.index = index;
     replaceItems(options ?? <String, CustomerSettingOption>{});
