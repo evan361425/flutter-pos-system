@@ -1,7 +1,46 @@
 import 'package:flutter/foundation.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
+import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
+
+mixin DBRepository<T extends Model> on NotifyRepository<T> {
+  bool isReady = false;
+
+  String get tableName;
+
+  Future<T> buildItem(Map<String, Object?> value);
+
+  Future<List<Map<String, Object?>>> fetchItems() {
+    return Database.instance.rawQuery(
+      tableName,
+      where: 'isDelete = ?',
+      whereArgs: [0],
+    );
+  }
+
+  Future<void> initialize() async {
+    try {
+      final items = await fetchItems();
+
+      replaceItems({});
+      isReady = true;
+
+      for (final item in items) {
+        try {
+          addItem(await buildItem(item));
+        } catch (e, stack) {
+          await error(e.toString(), 'db.$tableName.parse.error', stack);
+        }
+      }
+
+      notifyListeners();
+    } catch (e, stack) {
+      print(stack);
+      await error(e.toString(), 'db.$tableName.fetch.error', stack);
+    }
+  }
+}
 
 mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
   bool isReady = false;

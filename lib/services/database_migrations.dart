@@ -26,14 +26,15 @@ ON `order` (createdAt);
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   `name` TEXT NOT NULL,
   `index` INTEGER NOT NULL,
-  mode TEXT NOT NULL
+  isDelete INTEGER NOT NULL DEFAULT 0,
+  mode INTEGER NOT NULL
 );''',
     '''CREATE TABLE `customer_setting_options` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   customerSettingId INTEGER,
   `name` TEXT NOT NULL,
   `index` INTEGER NOT NULL,
-  isDefault INTEGER NOT NULL,
+  isDefault INTEGER NOT NULL DEFAULT 0,
   modeValue REAL
 );''',
     '''CREATE TABLE `customer_setting_combinations` (
@@ -42,6 +43,9 @@ ON `order` (createdAt);
 );''',
     '''ALTER TABLE `order`
 ADD COLUMN customerSettingCombinationId INTEGER;''',
+    '''CREATE INDEX idx_customer_setting_options_id
+ON `customer_setting_options` (customerSettingId);
+''',
   ],
   3: <String>[
     '''CREATE TABLE `menu_catalogs` (

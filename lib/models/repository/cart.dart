@@ -236,10 +236,10 @@ class Cart extends ChangeNotifier {
   }
 
   Future<String> _prepareCustomerSettingCombinationId() async {
-    final id =
-        await Seller.instance.getCustomerSettingCombinationId(customerSettings);
-    return id ??
-        await Seller.instance.genCustomerSettingCombinationId(customerSettings);
+    final settings = CustomerSettings.instance;
+
+    final id = await settings.getCombinationId(customerSettings);
+    return id ?? await settings.generateCombinationId(customerSettings);
   }
 }
 

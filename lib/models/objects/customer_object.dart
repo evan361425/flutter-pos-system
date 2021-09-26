@@ -22,20 +22,18 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
     this.options = const Iterable.empty(),
   });
 
-  factory CustomerSettingObject.build(Map<String, Object?> data) {
-    final options =
-        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
-
+  factory CustomerSettingObject.build(
+    Map<String, Object?> data,
+    List<Map<String, Object?>> options,
+  ) {
     return CustomerSettingObject(
-      id: data['id'] as String,
+      id: (data['id'] as int).toString(),
       name: data['name'] as String,
       index: data['index'] as int,
       mode: CustomerSettingOptionMode.values[data['mode'] as int],
-      options: options.entries.map<CustomerSettingOptionObject>(
-          (e) => CustomerSettingOptionObject.build({
-                'id': e.key,
-                ...e.value as Map<String, Object?>,
-              })),
+      options: options.map<CustomerSettingOptionObject>(
+        (option) => CustomerSettingOptionObject.build(option),
+      ),
     );
   }
 
@@ -95,10 +93,10 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
 
   factory CustomerSettingOptionObject.build(Map<String, Object?> data) {
     return CustomerSettingOptionObject(
-      id: data['id'] as String,
+      id: (data['id'] as int).toString(),
       name: data['name'] as String,
       index: data['index'] as int,
-      isDefault: data['isDefault'] as bool,
+      isDefault: data['isDefault'] == 1,
       modeValue: data['modeValue'] as num?,
     );
   }

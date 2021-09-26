@@ -3,12 +3,6 @@ import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
 
-const Map<Tables, String> TableName = {
-  // order
-  Tables.order: 'order',
-  Tables.order_stash: 'order_stash',
-};
-
 class Database {
   static Database instance = Database();
 
@@ -20,25 +14,25 @@ class Database {
   bool _initialized = false;
 
   Future<int?> count(
-    Tables table, {
+    String table, {
     String? where,
     List<Object>? whereArgs,
   }) async {
-    final result = await db.query(TableName[table]!, columns: ['COUNT(*)']);
+    final result = await db.query(table, columns: ['COUNT(*)']);
 
     return Sqflite.firstIntValue(result);
   }
 
   Future<void> delete(
-    Tables table,
+    String table,
     Object? id, {
     String keyName = 'id',
   }) {
-    return db.delete(TableName[table]!, where: '$keyName = ?', whereArgs: [id]);
+    return db.delete(table, where: '$keyName = ?', whereArgs: [id]);
   }
 
   Future<Map<String, Object?>?> getLast(
-    Tables table, {
+    String table, {
     String sortBy = 'id',
     List<String>? columns,
     String? where,
@@ -46,7 +40,7 @@ class Database {
   }) async {
     try {
       final data = await db.query(
-        TableName[table]!,
+        table,
         columns: columns,
         orderBy: '$sortBy DESC',
         limit: 1,
@@ -74,12 +68,12 @@ class Database {
     _initialized = true;
   }
 
-  Future<int> push(Tables table, Map<String, Object?> data) {
-    return db.insert(TableName[table]!, data);
+  Future<int> push(String table, Map<String, Object?> data) {
+    return db.insert(table, data);
   }
 
   Future<List<Map<String, Object?>>> query(
-    Tables table, {
+    String table, {
     String? where,
     List<Object>? whereArgs,
     bool? distinct,
@@ -91,7 +85,7 @@ class Database {
     int? offset,
   }) {
     return instance.db.query(
-      TableName[table]!,
+      table,
       where: where,
       whereArgs: whereArgs,
       distinct: distinct,
@@ -105,27 +99,31 @@ class Database {
   }
 
   Future<List<Map<String, Object?>>> rawQuery(
-    Tables table, {
+    String table, {
     String? where,
     List<Object>? whereArgs,
-    required List<String> columns,
+    List<String> columns = const ['*'],
+    String? join,
     String? groupBy,
   }) {
     final select = columns.join(',');
+    final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
+
     return instance.db.rawQuery('''
-    SELECT $select FROM "${TableName[table]}"
+    SELECT $select FROM $table
     WHERE $where
-    GROUP BY $groupBy''', whereArgs);
+    $join
+    $groupByQuery''', whereArgs);
   }
 
   Future<int> update(
-    Tables table,
+    String table,
     Object? key,
     Map<String, Object?> data, {
     keyName = 'id',
   }) {
     return db.update(
-      TableName[table]!,
+      table,
       data,
       where: '$keyName = ?',
       whereArgs: [key],
@@ -137,11 +135,4 @@ class Database {
 
   static List<String> split(String? value) =>
       value?.trim().split(delimiter) ?? [];
-}
-
-enum Tables {
-  customer_setting_combinations,
-  // order
-  order,
-  order_stash,
 }
