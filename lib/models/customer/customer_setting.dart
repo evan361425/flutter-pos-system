@@ -65,7 +65,7 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
     final map = item.toObject().toMap();
     map['customerSettingId'] = int.parse(id);
 
-    final optionId = await Database.instance.push(tableName, map);
+    final optionId = await Database.instance.push(OPTION_TABLE, map);
     item.id = optionId.toString();
   }
 
