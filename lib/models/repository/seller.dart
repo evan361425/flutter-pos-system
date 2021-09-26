@@ -20,10 +20,15 @@ class Seller {
     return object;
   }
 
-  Future<int> genCustomerSettingCombinationId(Map<int, int> data) {
-    return Database.instance.push(Tables.customer_setting_combinations, {
-      'combination': DBTransferer.toCombination(data),
-    });
+  Future<String> genCustomerSettingCombinationId(
+    Map<String, String> data,
+  ) async {
+    final id = await Database.instance.push(
+      Tables.customer_setting_combinations,
+      {'combination': DBTransferer.toCombination(data)},
+    );
+
+    return id.toString();
   }
 
   Future<Map<DateTime, int>> getCountBetween(
@@ -48,7 +53,9 @@ class Seller {
     };
   }
 
-  Future<int?> getCustomerSettingCombinationId(Map<int, int> data) async {
+  Future<String?> getCustomerSettingCombinationId(
+    Map<String, String> data,
+  ) async {
     final result = await Database.instance.query(
       Tables.customer_setting_combinations,
       columns: ['id'],
@@ -57,7 +64,7 @@ class Seller {
       limit: 1,
     );
 
-    return result.isEmpty ? null : (result.first['id'] as int);
+    return result.isEmpty ? null : (result.first['id'] as int).toString();
   }
 
   Future<Map<String, num>> getMetricBetween([

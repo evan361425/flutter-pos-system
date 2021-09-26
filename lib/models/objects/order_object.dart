@@ -14,7 +14,7 @@ class OrderObject {
   final int totalCount;
   final List<String>? productNames;
   final List<String>? ingredientNames;
-  final int? customerSettingsCombinationId;
+  final String? customerSettingsCombinationId;
   final DateTime createdAt;
   final Map<String, String> customerSettings;
   final Iterable<OrderProductObject> products;
@@ -94,7 +94,7 @@ class OrderObject {
       customerSettings: DBTransferer.parseCombination(
           data['customerSettingsCombination'] as String?),
       customerSettingsCombinationId:
-          data['customerSettingsCombinationId'] as int?,
+          data['customerSettingsCombinationId'] as String?,
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }

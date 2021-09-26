@@ -169,7 +169,7 @@ class Cart extends ChangeNotifier {
   OrderObject toObject({
     num? paid,
     OrderObject? object,
-    int? customerSettingsCombinationId,
+    String? customerSettingsCombinationId,
   }) {
     return OrderObject(
       id: object?.id,
@@ -235,11 +235,11 @@ class Cart extends ChangeNotifier {
     await Cashier.instance.paid(paid, price);
   }
 
-  Future<int> _prepareCustomerSettingCombinationId() async {
-    final result = await Seller.instance
-            .getCustomerSettingCombinationId(customerSettings) ??
+  Future<String> _prepareCustomerSettingCombinationId() async {
+    final id =
+        await Seller.instance.getCustomerSettingCombinationId(customerSettings);
+    return id ??
         await Seller.instance.genCustomerSettingCombinationId(customerSettings);
-    return result;
   }
 }
 

@@ -1,5 +1,5 @@
 class DBTransferer {
-  static String toCombination(Map<Object, Object> data) {
+  static String toCombination(Map<String, String> data) {
     return ',' +
         data.entries
             .map<String>((entry) => '${entry.key}:${entry.value}')
