@@ -9,7 +9,6 @@ import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/feature_provider.dart';
-import 'package:possystem/providers/order_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -111,8 +110,6 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   @override
   void didPop() {
     Wakelock.disable();
-    // TODO: move to [Cart]
-    OrderProvider.instance.ordered();
     super.didPop();
   }
 

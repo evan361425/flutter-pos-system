@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,11 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   @override
   void initState() {
     super.initState();
+
+    context.watch<Seller>();
+
+    _loadedMonths.clear();
+    _loadedCounts.clear();
 
     _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
 

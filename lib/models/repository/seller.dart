@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 
-class Seller {
+class Seller extends ChangeNotifier {
   static const STASH_TABLE = 'order_stash';
 
   static const ORDER_TABLE = 'order';

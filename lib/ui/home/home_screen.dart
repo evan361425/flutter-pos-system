@@ -10,30 +10,30 @@ import 'widgets/upgrade_alert.dart';
 class HomeScreen extends StatelessWidget {
   static const icons = {
     'home.types.store': {
-      'menu': _LabeledIcon(
+      'menu': _LabledIconItem(
         icon: Icons.collections_sharp,
         label: 'menu',
         route: Routes.menu,
         tipVersion: 1,
       ),
-      'stock': _LabeledIcon(
+      'stock': _LabledIconItem(
         icon: Icons.store_sharp,
         label: 'stock',
         route: Routes.stock,
         tipVersion: 1,
       ),
-      'quantities': _LabeledIcon(
+      'quantities': _LabledIconItem(
         icon: Icons.exposure_sharp,
         label: 'quantities',
         route: Routes.stockQuantity,
       ),
-      'cashier': _LabeledIcon(
+      'cashier': _LabledIconItem(
         icon: Icons.attach_money_sharp,
         label: 'cashier',
         route: Routes.cashier,
         tipVersion: 1,
       ),
-      'customer': _LabeledIcon(
+      'customer': _LabledIconItem(
         icon: Icons.assignment_ind_sharp,
         label: 'customer',
         route: Routes.customer,
@@ -41,13 +41,13 @@ class HomeScreen extends StatelessWidget {
       ),
     },
     'home.types.other': {
-      'analysis': _LabeledIcon(
+      'analysis': _LabledIconItem(
         icon: Icons.equalizer_sharp,
         label: 'analysis',
         route: Routes.analysis,
         tipVersion: 1,
       ),
-      'setting': _LabeledIcon(
+      'setting': _LabledIconItem(
         icon: Icons.settings_sharp,
         label: 'setting',
         route: Routes.setting,
@@ -70,18 +70,8 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(tt(entry.key), style: theme.textTheme.headline5),
             Wrap(spacing: 8.0, children: [
-              for (var item in entry.value.values)
-                item.tipVersion == 0
-                    ? item.toButton(context)
-                    : OrderedTip(
-                        groupId: 'home',
-                        title: tt('home.${item.label}'),
-                        message: tt('home.tutorial.${item.label}'),
-                        id: item.label,
-                        version: item.tipVersion,
-                        order: count++,
-                        child: item.toButton(context),
-                      )
+              for (final item in entry.value.values)
+                _LabledIcon(item, index: count++)
             ]),
             Divider(),
           ],
@@ -114,30 +104,53 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _LabeledIcon {
-  final IconData? icon;
-  final String label;
-  final String? route;
-  final int tipVersion;
+class _LabledIcon extends StatelessWidget {
+  final _LabledIconItem item;
 
-  const _LabeledIcon({
-    this.icon,
-    required this.label,
-    this.route,
-    this.tipVersion = 0,
-  });
+  final int index;
 
-  Widget toButton(BuildContext context) {
-    return TextButton(
-      onPressed: () => Navigator.of(context).pushNamed(route!),
+  const _LabledIcon(this.item, {required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    final base = TextButton(
+      onPressed: () => Navigator.of(context).pushNamed(item.route),
       style: TextButton.styleFrom(shape: CircleBorder()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(icon, size: 48.0),
-          Text(tt('home.$label')),
+          Icon(item.icon, size: 48.0),
+          Text(tt('home.${item.label}')),
         ],
       ),
     );
+
+    if (item.tipVersion == 0) {
+      return base;
+    }
+
+    return OrderedTip(
+      groupId: 'home',
+      title: tt('home.${item.label}'),
+      message: tt('home.tutorial.${item.label}'),
+      id: item.label,
+      version: item.tipVersion,
+      order: index,
+      child: base,
+    );
   }
+}
+
+class _LabledIconItem {
+  final IconData? icon;
+  final String label;
+  final String route;
+  final int tipVersion;
+
+  const _LabledIconItem({
+    this.icon,
+    required this.label,
+    required this.route,
+    this.tipVersion = 0,
+  });
 }
