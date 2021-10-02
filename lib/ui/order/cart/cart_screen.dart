@@ -69,7 +69,7 @@ class _CartMetadata extends StatelessWidget {
       child: Row(children: [
         Text(tt('order.total_count', {'count': cart.totalCount})),
         MetaBlock(),
-        Text(tt('order.total_price', {'price': cart.totalPrice})),
+        Text(tt('order.total_price', {'price': cart.productsPrice})),
       ]),
     );
   }

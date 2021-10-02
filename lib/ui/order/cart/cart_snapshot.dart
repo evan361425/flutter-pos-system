@@ -32,7 +32,7 @@ class CartSnapshot extends StatelessWidget {
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
-          cart.totalPrice.toString(),
+          cart.productsPrice.toString(),
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),

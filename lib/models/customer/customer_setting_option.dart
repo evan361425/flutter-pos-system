@@ -71,4 +71,18 @@ class CustomerSettingOption
         isDefault: isDefault,
         modeValue: modeValue,
       );
+
+  /// Use [modeValue] to calculate correct final price in order.
+  num calculatePrice(num price) {
+    if (modeValue == null) return price;
+
+    switch (setting.mode) {
+      case CustomerSettingOptionMode.changeDiscount:
+        return price * modeValue!;
+      case CustomerSettingOptionMode.changePrice:
+        return price + modeValue!;
+      case CustomerSettingOptionMode.statOnly:
+        return price;
+    }
+  }
 }

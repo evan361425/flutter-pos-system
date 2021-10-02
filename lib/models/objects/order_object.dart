@@ -11,6 +11,7 @@ class OrderObject {
   final int? id;
   final num? paid;
   final num totalPrice;
+  final num productsPrice;
   final int totalCount;
   final List<String>? productNames;
   final List<String>? ingredientNames;
@@ -23,6 +24,7 @@ class OrderObject {
     this.id,
     this.paid,
     required this.totalPrice,
+    required this.productsPrice,
     required this.totalCount,
     this.productNames,
     this.ingredientNames,
@@ -81,14 +83,16 @@ class OrderObject {
     final createdAt = data['createdAt'] == null
         ? null
         : Util.fromUTC(data['createdAt'] as int);
+    final totalPrice = data['totalPrice'] as num? ?? 0;
 
     return OrderObject(
       createdAt: createdAt,
       id: data['id'] as int,
       // if fetching without these, it might be null
       paid: data['paid'] as num? ?? 0,
-      totalPrice: data['totalPrice'] as num? ?? 0,
+      totalPrice: totalPrice,
       totalCount: data['totalCount'] as int? ?? 0,
+      productsPrice: data['productsPrice'] as int? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
       customerSettings: DBTransferer.parseCombination(

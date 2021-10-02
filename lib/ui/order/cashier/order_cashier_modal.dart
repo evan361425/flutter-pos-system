@@ -46,7 +46,10 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       ),
     );
 
-    final body = OrderFinalList();
+    final body = OrderFinalList(
+      totalPrice: totalPrice,
+      productsPrice: Cart.instance.productsPrice,
+    );
 
     final collapsed = OrderCashierSnapshot(
       key: snapshot,

@@ -38,8 +38,21 @@ class Cart extends ChangeNotifier {
     return products.fold(0, (value, product) => value + product.count);
   }
 
-  num get totalPrice {
+  num get productsPrice {
     return products.fold(0, (value, product) => value + product.price);
+  }
+
+  num get totalPrice {
+    var total = productsPrice;
+
+    CustomerSettings.instance.itemList.forEach((setting) {
+      final optionId = customerSettings[setting.id];
+      if (optionId != null) {
+        total = setting.getItem(optionId)?.calculatePrice(total) ?? total;
+      }
+    });
+
+    return total;
   }
 
   OrderProduct add(Product product) {
@@ -179,6 +192,7 @@ class Cart extends ChangeNotifier {
       customerSettingsCombinationId: customerSettingsCombinationId,
       totalPrice: totalPrice,
       totalCount: totalCount,
+      productsPrice: productsPrice,
       products: products.map<OrderProductObject>((e) => e.toObject()),
     );
   }
