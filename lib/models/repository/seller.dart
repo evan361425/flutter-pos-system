@@ -96,18 +96,18 @@ class Seller extends ChangeNotifier {
     return count ?? 0;
   }
 
-  Future<OrderObject?> pop() async {
+  Future<OrderObject?> getTodayLast() async {
     final row = await Database.instance.getLast(ORDER_TABLE,
         columns: ['id', 'encodedProducts', 'createdAt'],
         where: 'createdAt >= ?',
         whereArgs: [Util.toUTC(hour: 0)]);
-    if (row == null) return null;
 
-    return OrderObject.fromMap(row);
+    return row == null ? null : OrderObject.fromMap(row);
   }
 
-  Future<void> push(OrderObject order) {
-    return Database.instance.push(ORDER_TABLE, order.toMap());
+  Future<void> push(OrderObject order) async {
+    await Database.instance.push(ORDER_TABLE, order.toMap());
+    notifyListeners();
   }
 
   Future<void> stash(OrderObject order) {
@@ -119,11 +119,8 @@ class Seller extends ChangeNotifier {
     });
   }
 
-  Future<void> update(OrderObject order) {
-    return Database.instance.update(
-      ORDER_TABLE,
-      order.id,
-      order.toMap(),
-    );
+  Future<void> update(OrderObject order) async {
+    await Database.instance.update(ORDER_TABLE, order.id, order.toMap());
+    notifyListeners();
   }
 }

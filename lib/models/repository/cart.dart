@@ -97,7 +97,7 @@ class Cart extends ChangeNotifier {
   }
 
   Future<bool> popHistory() async {
-    final order = await Seller.instance.pop();
+    final order = await Seller.instance.getTodayLast();
     if (order == null) return false;
 
     info(order.totalCount.toString(), 'order.cart.pop');
@@ -208,7 +208,7 @@ class Cart extends ChangeNotifier {
   }
 
   Future<void> _finishHistoryMode(num paid, num price) async {
-    final oldData = await Seller.instance.pop();
+    final oldData = await Seller.instance.getTodayLast();
     final data = toObject(
       paid: paid,
       object: oldData,
