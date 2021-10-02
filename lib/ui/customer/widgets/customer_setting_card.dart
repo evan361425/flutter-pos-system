@@ -36,13 +36,22 @@ class CustomerSettingCard extends StatelessWidget {
                   ),
                 )
             ]),
-            Row(children: [
-              ElevatedButton(
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              TextButton.icon(
                 onPressed: () => Navigator.of(context).pushNamed(
                   Routes.customerSetting,
                   arguments: setting,
                 ),
-                child: Text('查看細節'),
+                icon: Icon(Icons.edit_sharp),
+                label: Text('編輯資訊'),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.of(context).pushNamed(
+                  Routes.customerSetting,
+                  arguments: setting,
+                ),
+                icon: Icon(Icons.manage_search_sharp),
+                label: Text('查看細節'),
               ),
             ]),
           ],
