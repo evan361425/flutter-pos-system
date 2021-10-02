@@ -3,17 +3,17 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
 
-class ItemEditableInfo extends StatelessWidget {
+class ItemMoreActionButton extends StatelessWidget {
   final Model item;
 
   final Widget? metadata;
 
-  final VoidCallback onEdit;
+  final VoidCallback onTap;
 
-  const ItemEditableInfo({
+  const ItemMoreActionButton({
     Key? key,
     required this.item,
-    required this.onEdit,
+    required this.onTap,
     this.metadata,
   }) : super(key: key);
 
@@ -35,8 +35,8 @@ class ItemEditableInfo extends StatelessWidget {
           ),
         ),
         IconButton(
-          onPressed: onEdit,
-          icon: Icon(KIcons.edit),
+          onPressed: onTap,
+          icon: Icon(KIcons.more),
         ),
       ]),
     );

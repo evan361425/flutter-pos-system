@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/item_editable_info.dart';
+import 'package:possystem/components/style/item_more_action_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
@@ -34,11 +34,11 @@ class CustomerSettingScreen extends StatelessWidget {
         child: Icon(KIcons.add),
       ),
       body: Column(children: [
-        ItemEditableInfo(
+        ItemMoreActionButton(
           item: setting,
           metadata: Text(
               '此顧客設定的種類為「${customerSettingOptionModeString[setting.mode]!}」'),
-          onEdit: () => _showActions(context, setting),
+          onTap: () => _showActions(context, setting),
         ),
         setting.isEmpty
             ? EmptyBody(title: '尚未新增選項', onPressed: _navigateNewOption)
