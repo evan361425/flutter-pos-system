@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -29,10 +27,6 @@ class ProductQuantityModal extends StatefulWidget {
   _ProductQuantityModalState createState() => _ProductQuantityModalState();
 }
 
-enum _Actions {
-  delete,
-}
-
 class _ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
@@ -41,23 +35,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
   String quantityName = '';
   String quantityId = '';
-
-  @override
-  List<Widget> get actions => widget.isNew
-      ? const []
-      : [
-          IconButton(
-            onPressed: () => BottomSheetActions.withDelete<_Actions>(
-              context,
-              deleteValue: _Actions.delete,
-              warningContent:
-                  Text(tt('delete_confirm', {'name': widget.quantity!.name})),
-              popAfterDeleted: true,
-              deleteCallback: widget.quantity!.remove,
-            ),
-            icon: Icon(KIcons.more),
-          ),
-        ];
 
   @override
   Widget? get title => Text(tt(

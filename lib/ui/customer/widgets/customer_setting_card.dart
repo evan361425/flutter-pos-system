@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
+import 'package:possystem/components/style/expansion_action_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class CustomerSettingCard extends StatelessWidget {
   final CustomerSetting setting;
@@ -37,21 +41,25 @@ class CustomerSettingCard extends StatelessWidget {
                 )
             ]),
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              TextButton.icon(
+              ExpansionActionButton(
                 onPressed: () => Navigator.of(context).pushNamed(
                   Routes.customerSetting,
                   arguments: setting,
                 ),
-                icon: Icon(Icons.edit_sharp),
-                label: Text('編輯資訊'),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  Routes.customerSetting,
-                  arguments: setting,
-                ),
-                icon: Icon(Icons.manage_search_sharp),
+                icon: Icon(Icons.description_sharp),
                 label: Text('查看細節'),
+              ),
+              ExpansionActionButton(
+                isDanger: true,
+                onPressed: () => DeleteDialog.show(
+                  context,
+                  deleteCallback: setting.remove,
+                  warningContent: Text(
+                    tt('delete_confirm', {'name': setting.name}),
+                  ),
+                ),
+                icon: Icon(KIcons.delete),
+                label: Text('刪除設定'),
               ),
             ]),
           ],

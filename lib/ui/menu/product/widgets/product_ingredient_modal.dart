@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -29,33 +27,12 @@ class ProductIngredientModal extends StatefulWidget {
   _ProductIngredientModalState createState() => _ProductIngredientModalState();
 }
 
-enum _Actions {
-  delete,
-}
-
 class _ProductIngredientModalState extends State<ProductIngredientModal>
     with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
 
   String ingredientId = '';
   String ingredientName = '';
-
-  @override
-  List<Widget> get actions => widget.isNew
-      ? const []
-      : [
-          IconButton(
-            onPressed: () => BottomSheetActions.withDelete<_Actions>(
-              context,
-              deleteValue: _Actions.delete,
-              warningContent:
-                  Text(tt('delete_confirm', {'name': widget.ingredient!.name})),
-              popAfterDeleted: true,
-              deleteCallback: widget.ingredient!.remove,
-            ),
-            icon: Icon(KIcons.more),
-          ),
-        ];
 
   @override
   Widget? get title => Text(tt(

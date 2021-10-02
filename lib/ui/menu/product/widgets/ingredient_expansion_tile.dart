@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/expansion_action_button.dart';
 import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -56,27 +58,34 @@ class _IngredientExpansionActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
-      child: Row(children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            icon: Icon(Icons.settings_sharp),
-            label: Text(tt('menu.ingredient.edit')),
-            onPressed: () => Navigator.of(context).pushNamed(
-              Routes.menuIngredient,
-              arguments: ingredient,
-            ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        ExpansionActionButton(
+          onPressed: () => Navigator.of(context).pushNamed(
+            Routes.menuIngredient,
+            arguments: ingredient,
           ),
+          icon: Icon(KIcons.edit),
+          label: Text(tt('menu.ingredient.edit')),
         ),
-        const SizedBox(width: kSpacing2),
-        Expanded(
-          child: ElevatedButton.icon(
-            icon: Icon(KIcons.add),
-            label: Text(tt('menu.quantity.add')),
-            onPressed: () => Navigator.of(context).pushNamed(
-              Routes.menuQuantity,
-              arguments: ingredient,
+        ExpansionActionButton(
+          onPressed: () => Navigator.of(context).pushNamed(
+            Routes.menuQuantity,
+            arguments: ingredient,
+          ),
+          icon: Icon(KIcons.add),
+          label: Text(tt('menu.quantity.add')),
+        ),
+        ExpansionActionButton(
+          isDanger: true,
+          onPressed: () => DeleteDialog.show(
+            context,
+            deleteCallback: ingredient.remove,
+            warningContent: Text(
+              tt('delete_confirm', {'name': ingredient.name}),
             ),
           ),
+          icon: Icon(KIcons.delete),
+          label: Text('刪除成分'),
         ),
       ]),
     );
