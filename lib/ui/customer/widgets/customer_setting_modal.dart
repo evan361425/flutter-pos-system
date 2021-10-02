@@ -94,7 +94,7 @@ class _CustomerModalState extends State<CustomerModal>
   Future<void> updateItem() async {
     final setting = await getSetting();
 
-    // go to catalog screen
+    // go to detail screen
     widget.isNew
         ? Navigator.of(context).popAndPushNamed(
             Routes.customerSetting,

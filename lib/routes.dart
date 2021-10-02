@@ -21,7 +21,7 @@ import 'ui/analysis/analysis_screen.dart';
 import 'ui/cashier/cashier_screen.dart';
 import 'ui/cashier/changer/changer_modal.dart';
 import 'ui/customer/setting/customer_setting_screen.dart';
-import 'ui/customer/widgets/customer_modal.dart';
+import 'ui/customer/widgets/customer_setting_modal.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
