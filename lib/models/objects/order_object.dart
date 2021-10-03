@@ -95,10 +95,8 @@ class OrderObject {
       productsPrice: data['productsPrice'] as int? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
-      customerSettings: DBTransferer.parseCombination(
-          data['customerSettingsCombination'] as String?),
-      customerSettingsCombinationId:
-          data['customerSettingsCombinationId'] as String?,
+      customerSettings:
+          DBTransferer.parseCombination(data['combination'] as String?),
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }

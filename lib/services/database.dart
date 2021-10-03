@@ -33,19 +33,21 @@ class Database {
 
   Future<Map<String, Object?>?> getLast(
     String table, {
-    String sortBy = 'id',
+    String orderByKey = 'id',
     List<String>? columns,
     String? where,
     List<Object?>? whereArgs,
+    JoinQuery? join,
   }) async {
     try {
-      final data = await db.query(
+      final data = await rawQuery(
         table,
         columns: columns,
-        orderBy: '$sortBy DESC',
+        orderBy: '$orderByKey DESC',
         limit: 1,
         where: where,
         whereArgs: whereArgs,
+        join: join,
       );
       return data.first;
     } catch (e) {
@@ -117,19 +119,27 @@ class Database {
   Future<List<Map<String, Object?>>> rawQuery(
     String table, {
     String? where,
-    List<Object>? whereArgs,
-    List<String> columns = const ['*'],
-    String join = '',
+    List<Object?>? whereArgs,
+    List<String>? columns,
+    JoinQuery? join,
     String? groupBy,
+    String? orderBy,
+    int? limit,
+    int offset = 0,
   }) {
-    final select = columns.join(',');
+    final selectQuery = columns?.join(',') ?? '*';
     final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
+    final orderByQuery = orderBy == null ? '' : 'ORDER BY $orderBy';
+    final limitQuery = limit == null ? '' : 'LIMIT $offset, $limit';
+    final joinQuery = join == null ? '' : join.toString();
 
     return instance.db.rawQuery('''
-    SELECT $select FROM $table
+    SELECT $selectQuery FROM $table
     WHERE $where
-    $join
-    $groupByQuery''', whereArgs);
+    $joinQuery
+    $groupByQuery
+    $orderByQuery
+    $limitQuery''', whereArgs);
   }
 
   Future<int> update(
@@ -151,4 +161,25 @@ class Database {
 
   static List<String> split(String? value) =>
       value?.trim().split(delimiter) ?? [];
+}
+
+class JoinQuery {
+  final String hostTable;
+  final String guestTable;
+  final String hostKey;
+  final String guestKey;
+  final String joinType;
+
+  const JoinQuery({
+    required this.hostTable,
+    required this.guestTable,
+    required this.hostKey,
+    required this.guestKey,
+    this.joinType = 'INNER',
+  });
+
+  @override
+  String toString() {
+    return '$joinType JOIN $guestTable ON $hostTable.$hostKey = $guestTable.$guestKey';
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_product.dart';
@@ -45,14 +46,23 @@ class Cart extends ChangeNotifier {
   num get totalPrice {
     var total = productsPrice;
 
-    CustomerSettings.instance.itemList.forEach((setting) {
-      final optionId = customerSettings[setting.id];
-      if (optionId != null) {
-        total = setting.getItem(optionId)?.calculatePrice(total) ?? total;
-      }
+    selectedCustomerSettingOptions.forEach((option) {
+      total = option.calculatePrice(total);
     });
 
     return CurrencyProvider.instance.isInt ? total.toInt() : total;
+  }
+
+  Iterable<CustomerSettingOption> get selectedCustomerSettingOptions sync* {
+    for (var setting in CustomerSettings.instance.itemList) {
+      final optionId = customerSettings[setting.id];
+      final option =
+          optionId == null ? setting.defaultOption : setting.getItem(optionId);
+
+      if (option != null) {
+        yield option;
+      }
+    }
   }
 
   OrderProduct add(Product product) {
@@ -251,9 +261,13 @@ class Cart extends ChangeNotifier {
 
   Future<String> _prepareCustomerSettingCombinationId() async {
     final settings = CustomerSettings.instance;
+    final data = {
+      for (final option in selectedCustomerSettingOptions)
+        option.setting.id: option.id
+    };
 
-    final id = await settings.getCombinationId(customerSettings);
-    return id ?? await settings.generateCombinationId(customerSettings);
+    final id = await settings.getCombinationId(data);
+    return id ?? await settings.generateCombinationId(data);
   }
 }
 

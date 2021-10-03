@@ -97,10 +97,26 @@ class Seller extends ChangeNotifier {
   }
 
   Future<OrderObject?> getTodayLast() async {
-    final row = await Database.instance.getLast(ORDER_TABLE,
-        columns: ['id', 'encodedProducts', 'createdAt'],
-        where: 'createdAt >= ?',
-        whereArgs: [Util.toUTC(hour: 0)]);
+    final row = await Database.instance.getLast(
+      ORDER_TABLE,
+      columns: const [
+        'totalCount',
+        'totalPrice',
+        'id',
+        'encodedProducts',
+        'createdAt',
+        'combination',
+      ],
+      where: 'createdAt >= ?',
+      whereArgs: [Util.toUTC(hour: 0)],
+      join: const JoinQuery(
+        joinType: 'LEFT',
+        hostTable: ORDER_TABLE,
+        guestTable: 'customer_setting_combinations',
+        hostKey: 'customerSettingCombinationId',
+        guestKey: 'id',
+      ),
+    );
 
     return row == null ? null : OrderObject.fromMap(row);
   }
@@ -110,6 +126,9 @@ class Seller extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Save the order in to DB
+  ///
+  /// It will not save customer setting.
   Future<void> stash(OrderObject order) {
     final data = order.toMap();
 
