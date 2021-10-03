@@ -8,6 +8,14 @@ class Seller extends ChangeNotifier {
 
   static const ORDER_TABLE = 'order';
 
+  static const JOIN_COMBINATION = JoinQuery(
+    joinType: 'LEFT',
+    hostTable: ORDER_TABLE,
+    guestTable: 'customer_setting_combinations',
+    hostKey: 'customerSettingCombinationId',
+    guestKey: 'id',
+  );
+
   static late Seller instance;
 
   Seller() {
@@ -17,7 +25,13 @@ class Seller extends ChangeNotifier {
   Future<OrderObject?> drop() async {
     final row = await Database.instance.getLast(
       STASH_TABLE,
-      columns: ['id', 'encodedProducts', 'createdAt'],
+      join: JOIN_COMBINATION,
+      columns: const [
+        'id',
+        'encodedProducts',
+        'combination',
+        'createdAt',
+      ],
     );
     if (row == null) return null;
 
@@ -109,13 +123,7 @@ class Seller extends ChangeNotifier {
       ],
       where: 'createdAt >= ?',
       whereArgs: [Util.toUTC(hour: 0)],
-      join: const JoinQuery(
-        joinType: 'LEFT',
-        hostTable: ORDER_TABLE,
-        guestTable: 'customer_setting_combinations',
-        hostKey: 'customerSettingCombinationId',
-        guestKey: 'id',
-      ),
+      join: JOIN_COMBINATION,
     );
 
     return row == null ? null : OrderObject.fromMap(row);
@@ -129,11 +137,12 @@ class Seller extends ChangeNotifier {
   /// Save the order in to DB
   ///
   /// It will not save customer setting.
-  Future<void> stash(OrderObject order) {
+  Future<int> stash(OrderObject order) {
     final data = order.toMap();
 
     return Database.instance.push(STASH_TABLE, {
       'createdAt': data['createdAt'],
+      'customerSettingCombinationId': data['customerSettingCombinationId'],
       'encodedProducts': data['encodedProducts'],
     });
   }

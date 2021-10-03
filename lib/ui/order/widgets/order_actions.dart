@@ -87,7 +87,7 @@ class OrderActions {
             : showInfoSnackbar(context, tt('order.action.error.stash_empty'));
       case OrderActionTypes.stash:
         final success = await Cart.instance.stash();
-        return success
+        return success && !Cart.instance.isEmpty
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.stash_limit'));
       case OrderActionTypes.changer:

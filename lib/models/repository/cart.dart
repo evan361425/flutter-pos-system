@@ -32,26 +32,12 @@ class Cart extends ChangeNotifier {
     return selected.every((e) => e.id == firstId);
   }
 
-  Iterable<OrderProduct> get selected =>
-      products.where((product) => product.isSelected);
-
-  int get totalCount {
-    return products.fold(0, (value, product) => value + product.count);
-  }
-
   num get productsPrice {
     return products.fold(0, (value, product) => value + product.price);
   }
 
-  num get totalPrice {
-    var total = productsPrice;
-
-    selectedCustomerSettingOptions.forEach((option) {
-      total = option.calculatePrice(total);
-    });
-
-    return CurrencyProvider.instance.isInt ? total.toInt() : total;
-  }
+  Iterable<OrderProduct> get selected =>
+      products.where((product) => product.isSelected);
 
   Iterable<CustomerSettingOption> get selectedCustomerSettingOptions sync* {
     for (var setting in CustomerSettings.instance.itemList) {
@@ -63,6 +49,20 @@ class Cart extends ChangeNotifier {
         yield option;
       }
     }
+  }
+
+  int get totalCount {
+    return products.fold(0, (value, product) => value + product.count);
+  }
+
+  num get totalPrice {
+    var total = productsPrice;
+
+    selectedCustomerSettingOptions.forEach((option) {
+      total = option.calculatePrice(total);
+    });
+
+    return CurrencyProvider.instance.isInt ? total.toInt() : total;
   }
 
   OrderProduct add(Product product) {
@@ -93,7 +93,7 @@ class Cart extends ChangeNotifier {
     final order = await Seller.instance.drop();
     if (order == null) return false;
 
-    info(order.totalCount.toString(), 'order.cart.drop');
+    info(order.id.toString(), 'order.cart.drop');
 
     replaceByObject(order);
     return true;
@@ -163,7 +163,7 @@ class Cart extends ChangeNotifier {
 
   /// Stash order to DB
   ///
-  /// It will not stash customer setting. Return false if not storable
+  /// Return false if not storable
   /// Rate limit = 5
   Future<bool> stash() async {
     if (isEmpty) return true;
@@ -172,9 +172,9 @@ class Cart extends ChangeNotifier {
     final length = await Seller.instance.getStashCount();
     if (length > 4) return false;
 
-    final data = toObject();
-    info(data.totalCount.toString(), 'order.cart.stash');
-    await Seller.instance.stash(data);
+    final data = await toObject();
+    final id = await Seller.instance.stash(data);
+    info(id.toString(), 'order.cart.stash');
 
     clear();
 
@@ -189,17 +189,17 @@ class Cart extends ChangeNotifier {
         .toggleSelected(identical(product, except) ? !checked! : checked));
   }
 
-  OrderObject toObject({
+  Future<OrderObject> toObject({
     num? paid,
     OrderObject? object,
-    String? customerSettingsCombinationId,
-  }) {
+  }) async {
+    final combinationId = await _prepareCustomerSettingCombinationId();
     return OrderObject(
       id: object?.id,
       paid: paid,
       createdAt: object?.createdAt,
       customerSettings: customerSettings,
-      customerSettingsCombinationId: customerSettingsCombinationId,
+      customerSettingsCombinationId: combinationId,
       totalPrice: totalPrice,
       totalCount: totalCount,
       productsPrice: productsPrice,
@@ -233,12 +233,7 @@ class Cart extends ChangeNotifier {
 
   Future<void> _finishHistoryMode(num paid, num price) async {
     final oldData = await Seller.instance.getTodayLast();
-    final data = toObject(
-      paid: paid,
-      object: oldData,
-      customerSettingsCombinationId:
-          await _prepareCustomerSettingCombinationId(),
-    );
+    final data = await toObject(paid: paid, object: oldData);
 
     info('${data.totalCount} - ${oldData?.totalCount}', 'order.paid.update');
     await Seller.instance.update(data);
@@ -247,11 +242,7 @@ class Cart extends ChangeNotifier {
   }
 
   Future<void> _finishNormalMode(num paid, num price) async {
-    final data = toObject(
-      paid: paid,
-      customerSettingsCombinationId:
-          await _prepareCustomerSettingCombinationId(),
-    );
+    final data = await toObject(paid: paid);
 
     info(data.totalCount.toString(), 'order.paid.add');
     await Seller.instance.push(data);
