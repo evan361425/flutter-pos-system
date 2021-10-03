@@ -52,7 +52,7 @@ class Cart extends ChangeNotifier {
       }
     });
 
-    return total;
+    return CurrencyProvider.instance.isInt ? total.toInt() : total;
   }
 
   OrderProduct add(Product product) {

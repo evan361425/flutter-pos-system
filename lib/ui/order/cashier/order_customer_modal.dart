@@ -24,7 +24,7 @@ class OrderCustomerModal extends StatelessWidget {
           AppbarTextButton(
             onPressed: () async {
               final result = await Navigator.of(context)
-                  .pushReplacementNamed<bool, bool>(Routes.orderCalculator);
+                  .pushReplacementNamed(Routes.orderCalculator);
 
               if (result == true) {
                 showSuccessSnackbar(context, tt('success'));
