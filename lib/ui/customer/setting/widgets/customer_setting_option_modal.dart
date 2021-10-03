@@ -68,7 +68,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
             : '-30 代表減少三十塊';
     final modeValueValidator =
         widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? Validator.positiveInt('折價', maximum: 100, allowNull: true)
+            ? Validator.positiveInt('折價', maximum: 1000, allowNull: true)
             : Validator.isNumber('變價', allowNull: true);
 
     return [

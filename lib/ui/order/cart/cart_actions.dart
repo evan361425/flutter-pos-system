@@ -50,7 +50,7 @@ class CartActions extends StatelessWidget {
         item = _DialogItem(
           validator: Validator.positiveInt(
             tt('order.cart.name.discount'),
-            maximum: 100,
+            maximum: 1000,
           ),
           decoration: InputDecoration(
             hintText: tt('order.cart.hint.discount'),
