@@ -22,15 +22,7 @@ class IngredientExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: GestureDetector(
-        onLongPress: () => BottomSheetActions.withDelete<_Actions>(
-          context,
-          deleteValue: _Actions.delete,
-          warningContent: Text(tt('delete_confirm', {'name': ingredient.name})),
-          deleteCallback: ingredient.remove,
-        ),
-        child: Text(ingredient.name),
-      ),
+      title: Text(ingredient.name),
       subtitle: Text(
         tt('menu.ingredient.amount', {'amount': ingredient.amount}),
       ),
