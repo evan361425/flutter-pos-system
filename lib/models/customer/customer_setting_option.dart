@@ -78,7 +78,7 @@ class CustomerSettingOption
 
     switch (setting.mode) {
       case CustomerSettingOptionMode.changeDiscount:
-        return price * modeValue!;
+        return price * modeValue! / 100;
       case CustomerSettingOptionMode.changePrice:
         return price + modeValue!;
       case CustomerSettingOptionMode.statOnly:
