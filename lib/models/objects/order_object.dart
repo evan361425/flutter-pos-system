@@ -65,6 +65,7 @@ class OrderObject {
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
+      'productsPrice': productsPrice,
       'createdAt': Util.toUTC(now: createdAt),
       'customerSettingCombinationId': customerSettingsCombinationId,
       'usedProducts': Database.join(

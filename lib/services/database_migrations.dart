@@ -42,7 +42,8 @@ ON `order` (createdAt);
   combination TEXT NOT NULL UNIQUE
 );''',
     '''ALTER TABLE `order`
-ADD COLUMN customerSettingCombinationId INTEGER;''',
+ADD COLUMN customerSettingCombinationId INTEGER,
+ADD COLUMN productsPrice REAL;''',
     '''ALTER TABLE `order_stash`
 ADD COLUMN customerSettingCombinationId INTEGER;''',
     '''CREATE INDEX idx_customer_setting_options_id
