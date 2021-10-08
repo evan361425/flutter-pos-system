@@ -110,6 +110,7 @@ class Cart extends ChangeNotifier {
     paid ??= price;
     if (paid < price) throw PaidException('insufficient_amount');
 
+    info('', 'order.paid.verified');
     // if history mode update data
     isHistoryMode
         ? await _finishHistoryMode(paid, price)
@@ -123,7 +124,7 @@ class Cart extends ChangeNotifier {
     final order = await Seller.instance.getTodayLast();
     if (order == null) return false;
 
-    info(order.totalCount.toString(), 'order.cart.pop');
+    info(order.id.toString(), 'order.cart.pop');
 
     replaceByObject(order);
     isHistoryMode = true;
@@ -235,8 +236,8 @@ class Cart extends ChangeNotifier {
     final oldData = await Seller.instance.getTodayLast();
     final data = await toObject(paid: paid, object: oldData);
 
-    info('${data.totalCount} - ${oldData?.totalCount}', 'order.paid.update');
     await Seller.instance.update(data);
+    info(oldData?.id.toString() ?? 'unknown', 'order.paid.update');
     await Stock.instance.order(data, oldData: oldData);
     await Cashier.instance.paid(paid, price, oldData?.totalPrice);
   }
@@ -244,8 +245,8 @@ class Cart extends ChangeNotifier {
   Future<void> _finishNormalMode(num paid, num price) async {
     final data = await toObject(paid: paid);
 
-    info(data.totalCount.toString(), 'order.paid.add');
-    await Seller.instance.push(data);
+    final id = await Seller.instance.push(data);
+    info(id.toString(), 'order.paid.add');
     await Stock.instance.order(data);
     await Cashier.instance.paid(paid, price);
   }

@@ -129,9 +129,11 @@ class Seller extends ChangeNotifier {
     return row == null ? null : OrderObject.fromMap(row);
   }
 
-  Future<void> push(OrderObject order) async {
-    await Database.instance.push(ORDER_TABLE, order.toMap());
+  Future<int> push(OrderObject order) async {
+    final id = await Database.instance.push(ORDER_TABLE, order.toMap());
     notifyListeners();
+
+    return id;
   }
 
   /// Save the order in to DB
