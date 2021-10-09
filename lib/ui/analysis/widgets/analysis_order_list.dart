@@ -11,16 +11,16 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'order_modal.dart';
 
-class OrderList extends StatefulWidget {
+class AnalysisOrderList extends StatefulWidget {
   final Future<List<OrderObject>> Function(Map<String, Object>, int) handleLoad;
 
-  OrderList({Key? key, required this.handleLoad}) : super(key: key);
+  AnalysisOrderList({Key? key, required this.handleLoad}) : super(key: key);
 
   @override
-  OrderListState createState() => OrderListState();
+  AnalysisOrderListState createState() => AnalysisOrderListState();
 }
 
-class OrderListState extends State<OrderList> {
+class AnalysisOrderListState extends State<AnalysisOrderList> {
   final _scrollController = RefreshController();
 
   final List<OrderObject> _data = [];

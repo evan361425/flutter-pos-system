@@ -64,12 +64,10 @@ class _CartMetadata extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(children: [
-        Text(tt('order.total_count', {'count': cart.totalCount})),
-        MetaBlock(),
-        Text(tt('order.total_price', {'price': cart.productsPrice})),
+    return Container(
+      child: MetaBlock.withString(context, <String>[
+        tt('order.total_count', {'count': cart.totalCount}),
+        tt('order.total_price', {'price': cart.productsPrice}),
       ]),
     );
   }

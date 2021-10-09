@@ -3,7 +3,6 @@ import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/icon_filled_button.dart';
-import 'package:possystem/components/style/icon_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -66,27 +65,12 @@ class _IngredientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return ListTile(
-      title: Text(ingredient.name, style: theme.textTheme.headline6),
-      subtitle: Row(
-        children: <Widget>[
-          IconText(
-            text: ingredient.currentAmount?.toString() ??
-                tt('stock.ingredient.unset'),
-            icon: Icons.store_sharp,
-            isHint: true,
-          ),
-          MetaBlock(),
-          IconText(
-            text: ingredient.lastAmount?.toString() ??
-                tt('stock.ingredient.un_add'),
-            icon: Icons.shopping_cart_sharp,
-            isHint: true,
-          ),
-        ],
-      ),
+      title: Text(ingredient.name),
+      subtitle: MetaBlock.withString(context, <String>[
+        '庫存：${ingredient.currentAmount ?? '無'}',
+        '紀錄：${ingredient.lastAmount ?? '無'}',
+      ]),
       trailing: Wrap(
         spacing: kSpacing1,
         children: <Widget>[

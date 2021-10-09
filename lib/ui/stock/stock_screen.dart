@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
@@ -31,23 +29,21 @@ class StockScreen extends StatelessWidget {
         child: Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
-      body: stock.isReady
-          ? stock.isEmpty
-              ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
-              : _body(stock)
-          : CircularLoading(),
+      body: stock.isEmpty
+          ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
+          : _body(stock),
     );
   }
 
   Widget _body(Stock stock) {
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ReplenishmentActions(),
-      ),
-      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: _StockMetadata(stock),
+        child: Column(children: [
+          ReplenishmentActions(),
+          HintText(tt('total_count', {'count': stock.length})),
+          HintText('上次補貨時間：${stock.updatedDate ?? '無'}'),
+        ]),
       ),
       Expanded(
         child: SingleChildScrollView(
@@ -55,60 +51,5 @@ class StockScreen extends StatelessWidget {
         ),
       ),
     ]);
-  }
-}
-
-class _StockMetadata extends StatelessWidget {
-  final Stock stock;
-
-  const _StockMetadata(this.stock);
-
-  @override
-  Widget build(BuildContext context) {
-    final captionStyle = Theme.of(context).textTheme.caption!;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Flexible(
-          fit: FlexFit.tight,
-          child: Row(
-            children: [
-              Icon(
-                Icons.store_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
-              ),
-              HintText(
-                tt('stock.ingredient.current_amount'),
-                overflow: TextOverflow.ellipsis,
-              ),
-              MetaBlock(),
-              Icon(
-                Icons.shopping_cart_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
-              ),
-              HintText(
-                tt('stock.ingredient.last_amount'),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 4.0),
-          child: Tooltip(
-            message: tt('stock.ingredient.updated_at'),
-            child: Icon(
-              Icons.access_time,
-              size: captionStyle.fontSize,
-              color: captionStyle.color,
-            ),
-          ),
-        ),
-        HintText(stock.updatedDate ?? tt('stock.ingredient.un_add')),
-      ],
-    );
   }
 }

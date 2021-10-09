@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -20,20 +20,18 @@ class QuantityScreen extends StatelessWidget {
     final navigateNewQuantity =
         () => Navigator.of(context).pushNamed(Routes.stockQuantityModal);
 
-    final body = quantities.isReady
-        ? quantities.isEmpty
-            ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
-            : Padding(
-                padding: const EdgeInsets.symmetric(vertical: kSpacing2),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      QuantityList(quantities: quantities.itemList),
-                    ],
-                  ),
-                ),
-              )
-        : CircularLoading();
+    final body = quantities.isEmpty
+        ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
+        : SingleChildScrollView(
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
+                child:
+                    HintText(tt('total_count', {'count': quantities.length})),
+              ),
+              QuantityList(quantities: quantities.itemList),
+            ]),
+          );
 
     return Scaffold(
       appBar: AppBar(

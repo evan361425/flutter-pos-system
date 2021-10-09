@@ -85,13 +85,12 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     super.didChangeDependencies();
 
     _locale = context.watch<LanguageProvider>().locale;
+    context.watch<Seller>();
   }
 
   @override
   void initState() {
     super.initState();
-
-    context.watch<Seller>();
 
     _loadedMonths.clear();
     _loadedCounts.clear();

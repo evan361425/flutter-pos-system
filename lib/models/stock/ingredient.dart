@@ -64,9 +64,11 @@ class Ingredient extends NotifyModel<IngredientObject> with SearchableModel {
             currentAmount: (currentAmount ?? 0) + amount,
             lastAmount: (currentAmount ?? 0) + amount,
           )
-        : IngredientObject(
-            currentAmount: max((currentAmount ?? 0) + amount, 0),
-          );
+        : currentAmount == null
+            ? IngredientObject()
+            : IngredientObject(
+                currentAmount: max((currentAmount ?? 0) + amount, 0),
+              );
 
     return object.diff(this);
   }

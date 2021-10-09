@@ -5,11 +5,11 @@ import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 
-class OrderFinalList extends StatelessWidget {
+class OrderProductList extends StatelessWidget {
   final num totalPrice;
   final num productsPrice;
 
-  const OrderFinalList({
+  const OrderProductList({
     Key? key,
     required this.totalPrice,
     required this.productsPrice,

@@ -9,7 +9,7 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/product/widgets/ingredient_expansion_tile.dart';
+import 'package:possystem/ui/menu/product/widgets/product_ingredient_list.dart';
 
 void main() {
   ProductIngredient createIngredient(String name, int amount,

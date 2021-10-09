@@ -5,7 +5,6 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
-import 'package:possystem/routes.dart';
 
 class CustomerModal extends StatefulWidget {
   final CustomerSetting? setting;
@@ -68,7 +67,8 @@ class _CustomerModalState extends State<CustomerModal>
     ];
   }
 
-  Future<CustomerSetting> getSetting() async {
+  @override
+  Future<void> updateItem() async {
     final object = CustomerSettingObject(
       name: _nameController.text,
       mode: modesKey.currentState?.selectedMode ??
@@ -83,24 +83,11 @@ class _CustomerModalState extends State<CustomerModal>
       );
 
       await CustomerSettings.instance.setItem(setting);
-      return setting;
     } else {
       await widget.setting!.update(object);
-      return widget.setting!;
     }
-  }
 
-  @override
-  Future<void> updateItem() async {
-    final setting = await getSetting();
-
-    // go to detail screen
-    widget.isNew
-        ? Navigator.of(context).popAndPushNamed(
-            Routes.customerSetting,
-            arguments: setting,
-          )
-        : Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -27,8 +27,7 @@ class OrderModal extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Column(children: [
-                for (var product in order.products)
-                  _productTile(context, product)
+                for (var product in order.products) _ProductTile(product),
               ]),
             ),
           ),
@@ -53,18 +52,38 @@ class OrderModal extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _productTile(BuildContext context, OrderProductObject product) {
-    final ingredients = product.ingredients.values.map((e) {
-      final quantity = e.quantityName == null ? '' : '（${e.quantityName}）';
-      return '${e.name}$quantity';
-    });
-    final price = product.singlePrice * product.count;
+class _ProductTile extends StatelessWidget {
+  final OrderProductObject product;
 
-    return CardTile(
-      title: Text('${product.productName} * ${product.count}'),
-      subtitle: MetaBlock.withString(context, ingredients),
-      trailing: Text(CurrencyProvider.instance.numToString(price)),
-    );
+  const _ProductTile(this.product);
+
+  @override
+  Widget build(BuildContext context) {
+    final ingredients = product.ingredients.values.map<String>((e) =>
+        e.quantityName == null ? e.name : '${e.name} - ${e.quantityName}');
+    final title = Text(product.productName);
+    final subtitle = MetaBlock.withString(context, <String>[
+      '總價：${product.singlePrice * product.count}',
+      '總數：${product.count}',
+    ]);
+
+    return ingredients.isEmpty
+        ? ListTile(
+            title: title,
+            subtitle: subtitle,
+          )
+        : ExpansionTile(
+            title: title,
+            subtitle: subtitle,
+            expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(children: [
+                for (final ingredient in ingredients) OutlinedText(ingredient)
+              ]),
+              SizedBox(height: 8.0),
+            ],
+          );
   }
 }

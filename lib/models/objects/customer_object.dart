@@ -111,22 +111,21 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   @override
   Map<String, Object?> diff(CustomerSettingOption option) {
     final result = <String, Object?>{};
-    final prefix = option.prefix;
     if (name != null && name != option.name) {
       option.name = name!;
-      result['$prefix.name'] = name!;
+      result['name'] = name!;
     }
     if (index != null && index != option.index) {
       option.index = index!;
-      result['$prefix.index'] = index!;
+      result['index'] = index!;
     }
     if (isDefault != null && isDefault != option.isDefault) {
       option.isDefault = isDefault!;
-      result['$prefix.isDefault'] = isDefault!;
+      result['isDefault'] = isDefault!;
     }
     if (modeValue != option.modeValue) {
       option.modeValue = modeValue;
-      result['$prefix.modeValue'] = modeValue;
+      result['modeValue'] = modeValue;
     }
     return result;
   }

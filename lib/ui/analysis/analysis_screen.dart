@@ -4,10 +4,11 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
-import 'package:possystem/ui/analysis/widgets/order_list.dart';
+import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
+import 'package:provider/provider.dart';
 
 class AnalysisScreen extends StatelessWidget {
-  static final orderListState = GlobalKey<OrderListState>();
+  static final orderListState = GlobalKey<AnalysisOrderListState>();
 
   const AnalysisScreen({Key? key}) : super(key: key);
 
@@ -54,15 +55,19 @@ class AnalysisScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: CalendarWrapper(
-            isPortrait: false,
-            handleDaySelected: handleDaySelected,
-            searchCountInMonth: _searchCountInMonth,
+          child: ChangeNotifierProvider.value(
+            value: Seller.instance,
+            child: CalendarWrapper(
+              isPortrait: false,
+              handleDaySelected: handleDaySelected,
+              searchCountInMonth: _searchCountInMonth,
+            ),
           ),
         ),
         Expanded(
           child: Center(
-            child: OrderList(key: orderListState, handleLoad: handleLoad),
+            child:
+                AnalysisOrderList(key: orderListState, handleLoad: handleLoad),
           ),
         ),
       ],
@@ -77,7 +82,7 @@ class AnalysisScreen extends StatelessWidget {
         searchCountInMonth: _searchCountInMonth,
       ),
       Expanded(
-        child: OrderList(key: orderListState, handleLoad: handleLoad),
+        child: AnalysisOrderList(key: orderListState, handleLoad: handleLoad),
       ),
     ]);
   }

@@ -5,7 +5,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/ui/analysis/widgets/order_list.dart';
+import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../mocks/mock_models.mocks.dart';

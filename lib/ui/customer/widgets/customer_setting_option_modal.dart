@@ -6,6 +6,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/providers/currency_provider.dart';
 
 class CustomerSettingOptionModal extends StatefulWidget {
   final CustomerSetting setting;
@@ -45,8 +46,11 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
   @override
   void initState() {
     _nameController = TextEditingController(text: widget.option?.name);
-    _modeValueController =
-        TextEditingController(text: widget.option?.modeValue.toString() ?? '');
+    _modeValueController = TextEditingController(
+      text: widget.option?.modeValue == null
+          ? ''
+          : CurrencyProvider.instance.numToString(widget.option!.modeValue!),
+    );
     isDefault = widget.option?.isDefault ?? false;
 
     super.initState();
@@ -89,17 +93,17 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         validator: Validator.textLimit('選項名稱', 50),
       ),
       CheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
         value: isDefault,
         selected: isDefault,
         onChanged: toggledDefault,
         title: Text('設為預設'),
       ),
-      Divider(),
       widget.setting.shouldHaveModeValue
           ? TextFormField(
               controller: _modeValueController,
               textInputAction: TextInputAction.send,
-              textCapitalization: TextCapitalization.words,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: modeValueLabel,
                 helperText: modeValueHelper,

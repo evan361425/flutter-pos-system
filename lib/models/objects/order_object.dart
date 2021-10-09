@@ -93,7 +93,7 @@ class OrderObject {
       paid: data['paid'] as num? ?? 0,
       totalPrice: totalPrice,
       totalCount: data['totalCount'] as int? ?? 0,
-      productsPrice: data['productsPrice'] as int? ?? totalPrice,
+      productsPrice: data['productsPrice'] as num? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
       customerSettings:

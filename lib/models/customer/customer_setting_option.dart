@@ -50,43 +50,6 @@ class CustomerSettingOption
     );
   }
 
-  @override
-  String get prefix => '${setting.prefix}.options.$id';
-
-  @override
-  String get tableName => TABLE;
-
-  @override
-  void handleUpdated() {
-    setting.notifyItem();
-  }
-
-  @override
-  void removeFromRepo() => setting.removeItem(id);
-
-  @override
-  CustomerSettingOptionObject toObject() => CustomerSettingOptionObject(
-        id: id,
-        name: name,
-        index: index,
-        isDefault: isDefault,
-        modeValue: modeValue,
-      );
-
-  /// Use [modeValue] to calculate correct final price in order.
-  num calculatePrice(num price) {
-    if (modeValue == null) return price;
-
-    switch (setting.mode) {
-      case CustomerSettingOptionMode.changeDiscount:
-        return price * modeValue! / 100;
-      case CustomerSettingOptionMode.changePrice:
-        return price + modeValue!;
-      case CustomerSettingOptionMode.statOnly:
-        return price;
-    }
-  }
-
   String get modeValueName {
     if (modeValue == null ||
         setting.mode == CustomerSettingOptionMode.statOnly) {
@@ -109,4 +72,41 @@ class CustomerSettingOption
               : '減少 $value 元';
     }
   }
+
+  @override
+  String get prefix => '${setting.prefix}.options.$id';
+
+  @override
+  String get tableName => TABLE;
+
+  /// Use [modeValue] to calculate correct final price in order.
+  num calculatePrice(num price) {
+    if (modeValue == null) return price;
+
+    switch (setting.mode) {
+      case CustomerSettingOptionMode.changeDiscount:
+        return price * modeValue! / 100;
+      case CustomerSettingOptionMode.changePrice:
+        return price + modeValue!;
+      case CustomerSettingOptionMode.statOnly:
+        return price;
+    }
+  }
+
+  @override
+  void handleUpdated() {
+    setting.notifyItem();
+  }
+
+  @override
+  void removeFromRepo() => setting.removeItem(id);
+
+  @override
+  CustomerSettingOptionObject toObject() => CustomerSettingOptionObject(
+        id: id,
+        name: name,
+        index: index,
+        isDefault: isDefault,
+        modeValue: modeValue,
+      );
 }

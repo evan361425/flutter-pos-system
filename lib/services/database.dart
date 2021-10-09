@@ -134,7 +134,7 @@ class Database {
     final joinQuery = join == null ? '' : join.toString();
 
     return instance.db.rawQuery('''
-    SELECT $selectQuery FROM $table
+    SELECT $selectQuery FROM `$table`
     WHERE $where
     $joinQuery
     $groupByQuery
