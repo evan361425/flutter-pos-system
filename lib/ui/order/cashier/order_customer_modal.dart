@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/translator.dart';
 
 class OrderCustomerModal extends StatelessWidget {
   const OrderCustomerModal({Key? key}) : super(key: key);

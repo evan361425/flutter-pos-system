@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/ui/customer/customer_screen.dart';
-import 'package:possystem/ui/customer/setting/widgets/customer_setting_option_modal.dart';
-import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_modal.dart';
-import 'package:possystem/ui/order/cashier/order_customer_modal.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -20,9 +15,11 @@ import 'models/stock/replenishment.dart';
 import 'ui/analysis/analysis_screen.dart';
 import 'ui/cashier/cashier_screen.dart';
 import 'ui/cashier/changer/changer_modal.dart';
-import 'ui/customer/setting/customer_setting_screen.dart';
-import 'ui/customer/widgets/customer_setting_modal.dart';
+import 'ui/customer/customer_screen.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
+import 'ui/customer/widgets/customer_setting_modal.dart';
+import 'ui/customer/widgets/customer_setting_option_modal.dart';
+import 'ui/customer/widgets/customer_setting_orderable_list.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
@@ -35,6 +32,8 @@ import 'ui/menu/product/widgets/product_quantity_modal.dart';
 import 'ui/menu/product/widgets/product_quantity_search.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
+import 'ui/order/cashier/order_cashier_modal.dart';
+import 'ui/order/cashier/order_customer_modal.dart';
 import 'ui/order/order_screen.dart';
 import 'ui/setting/setting_screen.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
@@ -92,10 +91,6 @@ class Routes {
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
     customerReorder: (context) => CustomerOrderableList(),
-    customerSetting: (context) => ChangeNotifierProvider.value(
-          value: arg<CustomerSetting>(context),
-          builder: (_, __) => CustomerSettingScreen(),
-        ),
     customerSettingOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is CustomerSettingOption
