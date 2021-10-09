@@ -91,7 +91,7 @@ class _CartProductListTile extends StatelessWidget {
               ? null
               : MetaBlock.withString(
                   context,
-                  product.quantitiedIngredientNames,
+                  product.getIngredientNames(),
                 ),
           trailing: trailing,
           onTap: () => Cart.instance.toggleAll(false, except: product),

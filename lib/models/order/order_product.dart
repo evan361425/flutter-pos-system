@@ -49,13 +49,16 @@ class OrderProduct extends ChangeNotifier {
 
   num get price => count * singlePrice;
 
-  Iterable<String> get quantitiedIngredientNames {
-    return selectedQuantity.entries
-        .where((entry) => entry.value != null)
-        .map<String>((entry) {
-      final ingredient = product.getItem(entry.key)!;
-      final quantity = ingredient.getItem(entry.value!)!;
+  Iterable<String> getIngredientNames({bool onlyQuantitied = true}) {
+    final entries = onlyQuantitied
+        ? selectedQuantity.entries.where((entry) => entry.value != null)
+        : selectedQuantity.entries;
 
+    return entries.map<String>((entry) {
+      final ingredient = product.getItem(entry.key)!;
+      if (entry.value == null) return ingredient.name;
+
+      final quantity = ingredient.getItem(entry.value!)!;
       return '${ingredient.name} - ${quantity.name}';
     });
   }

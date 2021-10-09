@@ -57,27 +57,27 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
         Divider(),
       ]),
       Column(children: [
-        Row(children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
           _CalculatorPostfixAction(action: execPostfix, text: '1'),
           _CalculatorPostfixAction(action: execPostfix, text: '2'),
           _CalculatorPostfixAction(action: execPostfix, text: '3'),
           _CalculatorAction(action: execClear, child: Icon(Icons.clear_sharp)),
         ]),
-        Row(children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
           _CalculatorPostfixAction(action: execPostfix, text: '4'),
           _CalculatorPostfixAction(action: execPostfix, text: '5'),
           _CalculatorPostfixAction(action: execPostfix, text: '6'),
           _CalculatorAction(
               action: execBack, child: Icon(Icons.arrow_back_rounded)),
         ]),
-        Row(children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
           _CalculatorPostfixAction(action: execPostfix, text: '7'),
           _CalculatorPostfixAction(action: execPostfix, text: '8'),
           _CalculatorPostfixAction(action: execPostfix, text: '9'),
           _CalculatorAction(
               action: execCeil, child: Icon(Icons.merge_type_rounded)),
         ]),
-        Row(children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
           SizedBox(width: 64, height: 64),
           _CalculatorPostfixAction(action: execPostfix, text: '0'),
           CurrencyProvider.instance.isInt

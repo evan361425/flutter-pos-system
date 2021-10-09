@@ -22,14 +22,8 @@ class OrderCustomerModal extends StatelessWidget {
         title: Text('顧客設定'),
         actions: [
           AppbarTextButton(
-            onPressed: () async {
-              final result = await Navigator.of(context)
-                  .pushReplacementNamed(Routes.orderCalculator);
-
-              if (result == true) {
-                showSuccessSnackbar(context, tt('success'));
-              }
-            },
+            onPressed: () =>
+                Navigator.of(context).popAndPushNamed(Routes.orderCalculator),
             child: Text('下一步'),
           ),
         ],

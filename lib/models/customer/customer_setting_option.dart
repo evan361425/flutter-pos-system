@@ -1,4 +1,5 @@
 import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
@@ -83,6 +84,29 @@ class CustomerSettingOption
         return price + modeValue!;
       case CustomerSettingOptionMode.statOnly:
         return price;
+    }
+  }
+
+  String get modeValueName {
+    if (modeValue == null ||
+        setting.mode == CustomerSettingOptionMode.statOnly) {
+      return '';
+    }
+
+    if (setting.mode == CustomerSettingOptionMode.changeDiscount) {
+      final value = modeValue!.toInt();
+      return value == 0
+          ? '使訂單免費'
+          : value >= 100
+              ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
+              : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';
+    } else {
+      final value = CurrencyProvider.instance.numToString(modeValue!);
+      return modeValue! == 0
+          ? ''
+          : modeValue! > 0
+              ? '增加 $value 元'
+              : '減少 $value 元';
     }
   }
 }

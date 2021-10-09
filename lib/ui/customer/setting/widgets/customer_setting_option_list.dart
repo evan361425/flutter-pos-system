@@ -32,36 +32,13 @@ class CustomerSettingOptionList extends StatelessWidget {
   }
 
   Widget _tileBuilder(BuildContext _, int __, CustomerSettingOption option) {
-    final subtitle = setting.shouldHaveModeValue && option.modeValue != null
-        ? setting.mode == CustomerSettingOptionMode.changePrice
-            ? _priceSubtitle(option)
-            : _discountSubtitle(option)
-        : null;
+    final subtitle = option.modeValueName;
 
     return ListTile(
       title: Text(option.name),
-      subtitle: subtitle,
+      subtitle: subtitle.isEmpty ? null : Text(subtitle),
       trailing: option.isDefault ? OutlinedText('預設') : null,
     );
-  }
-
-  Text _discountSubtitle(CustomerSettingOption option) {
-    final value = option.modeValue!;
-    if (value == 0) {
-      return Text('使訂單免費');
-    }
-
-    return Text(value >= 100
-        ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
-        : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折');
-  }
-
-  Text? _priceSubtitle(CustomerSettingOption option) {
-    final value = option.modeValue!;
-    if (value == 0) {
-      return null;
-    }
-    return Text(value > 0 ? '增加 $value 元' : '減少 $value 元');
   }
 }
 

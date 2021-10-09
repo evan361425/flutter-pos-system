@@ -51,6 +51,8 @@ class SlidingUpOpener extends StatefulWidget {
   /// This fades out as the panel is opened.
   final Widget collapsed;
 
+  final double collapsedHorizontalMargin;
+
   SlidingUpOpener({
     Key? key,
     required this.panel,
@@ -65,6 +67,7 @@ class SlidingUpOpener extends StatefulWidget {
     this.clickToOpen = true,
     this.renderPanelSheet = true,
     this.defaultPanelState = PanelState.CLOSED,
+    this.collapsedHorizontalMargin = 4.0,
   }) : super(key: key);
 
   @override
@@ -128,7 +131,12 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
           ];
     final margin = widget.renderPanelSheet
         ? const EdgeInsets.symmetric(horizontal: 4.0)
-        : const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 0);
+        : EdgeInsets.fromLTRB(
+            widget.collapsedHorizontalMargin,
+            4.0,
+            widget.collapsedHorizontalMargin,
+            0,
+          );
 
     Widget collapsed = Container(
       margin: margin,

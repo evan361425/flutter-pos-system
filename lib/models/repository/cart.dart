@@ -110,7 +110,7 @@ class Cart extends ChangeNotifier {
     paid ??= price;
     if (paid < price) throw PaidException('insufficient_amount');
 
-    info('', 'order.paid.verified');
+    info(isHistoryMode ? 'history' : 'normal', 'order.paid.verified');
     // if history mode update data
     isHistoryMode
         ? await _finishHistoryMode(paid, price)

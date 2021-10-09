@@ -25,14 +25,11 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
     final totalPrice = Cart.instance.totalPrice;
-    // 64*4 + 32 (padding)
-    final panelMargin = (mediaQuery.size.width - 256 - 16 - 16) / 2;
 
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      margin: EdgeInsets.fromLTRB(panelMargin, 0, panelMargin, 16.0),
+      margin: EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(18.0)),
