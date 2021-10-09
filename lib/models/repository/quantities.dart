@@ -19,9 +19,7 @@ class Quantities extends ChangeNotifier
   final Stores storageStore = Stores.quantities;
 
   Quantities() {
-    initialize();
-
-    Quantities.instance = this;
+    instance = this;
   }
 
   @override

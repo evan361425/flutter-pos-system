@@ -22,9 +22,7 @@ class Stock extends ChangeNotifier
   final Stores storageStore = Stores.stock;
 
   Stock() {
-    initialize();
-
-    Stock.instance = this;
+    instance = this;
   }
 
   String? get updatedDate {

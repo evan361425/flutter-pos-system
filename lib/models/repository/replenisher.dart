@@ -18,9 +18,7 @@ class Replenisher extends ChangeNotifier
   final Stores storageStore = Stores.replenisher;
 
   Replenisher() {
-    initialize();
-
-    Replenisher.instance = this;
+    instance = this;
   }
 
   @override

@@ -9,11 +9,11 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode? _mode;
 
-  bool get isReady => _mode != null;
-
   ThemeMode get mode => _mode!;
 
   void initialize() {
+    if (_mode != null) return;
+
     // get from cache, if not found get system setting
     final value = Cache.instance.get<int>(Caches.dark_mode);
     _mode = ThemeMode.values[value ?? ThemeMode.system.index];

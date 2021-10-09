@@ -40,7 +40,7 @@ class AnalysisOrderListState extends State<AnalysisOrderList> {
       return HintText(tt('analysis.empty'));
     }
 
-    final totalPrice = CurrencyProvider.instance.numToString(this.totalPrice);
+    final totalPrice = CurrencyProvider.n2s(this.totalPrice);
 
     return Column(
       children: [

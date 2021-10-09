@@ -99,7 +99,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   void execCeil() {
     final price = num.tryParse(text) ?? widget.totalPrice;
     final ceilPrice = CurrencyProvider.instance.ceil(price);
-    text = CurrencyProvider.instance.numToString(ceilPrice);
+    text = CurrencyProvider.n2s(ceilPrice);
   }
 
   void execClear() {

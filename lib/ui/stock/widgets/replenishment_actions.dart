@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -17,7 +16,6 @@ class ReplenishmentActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = context.watch<Replenisher>();
-    if (!repo.isReady) return CircularLoading();
 
     return Row(
       children: [

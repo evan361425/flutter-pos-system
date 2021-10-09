@@ -37,11 +37,11 @@ class LanguageProvider extends ChangeNotifier {
     instance = this;
   }
 
-  bool get isReady => _locale != null;
-
   Locale get locale => _locale!;
 
   void initialize() {
+    if (_locale != null) return;
+
     final locale = Cache.instance.get<String>(Caches.language_code);
     final parsed = _parseLanguage(locale);
 
@@ -98,10 +98,6 @@ class LanguageProvider extends ChangeNotifier {
 
     return Locale(codes[0], codes.length == 1 ? null : codes[1]);
   }
-
-  void translatorFilesChanged() {
-    notifyListeners();
-  }
 }
 
 // LocalizationsDelegate is a factory for a set of localized resources
@@ -117,7 +113,8 @@ class _LocalizationsDelegate extends LocalizationsDelegate<Translator> {
   @override
   Future<Translator> load(Locale locale) async {
     await Translator.instance.load(locale);
-    LanguageProvider.instance.translatorFilesChanged();
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    LanguageProvider.instance.notifyListeners();
     return Translator.instance;
   }
 

@@ -17,12 +17,8 @@ final currency = MockCurrencyProvider();
 void _initialize() {
   CurrencyProvider.instance = currency;
   LanguageProvider.instance = language;
-  _finished = true;
 }
 
-var _finished = false;
 void initializeProviders() {
-  if (!_finished) {
-    _initialize();
-  }
+  _initialize();
 }

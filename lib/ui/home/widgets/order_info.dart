@@ -97,8 +97,8 @@ class _OrderMetadataState extends State<_OrderMetadata> {
   void _queryValue(Seller seller) async {
     final result = await seller.getMetricBetween();
     setState(() {
-      revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);
-      count = (result['count'] as int?)?.toString();
+      revenue = CurrencyProvider.n2s(result['totalPrice']!);
+      count = result['count'].toString();
     });
   }
 }

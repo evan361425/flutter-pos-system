@@ -1,35 +1,30 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-import 'package:possystem/components/tip/cache_state_manager.dart';
-import 'package:possystem/constants/app_themes.dart';
-import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/providers/currency_provider.dart';
-import 'package:possystem/providers/language_provider.dart';
-import 'package:possystem/providers/theme_provider.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/services/cache.dart';
-import 'package:possystem/services/database.dart';
-import 'package:possystem/services/storage.dart';
-import 'package:possystem/ui/home/home_screen.dart';
-import 'package:possystem/ui/model_initializer.dart';
-import 'package:possystem/ui/splash/welcome_splash.dart';
 import 'package:provider/provider.dart';
+
+import 'constants/app_themes.dart';
+import 'models/repository/customer_settings.dart';
+import 'models/repository/menu.dart';
+import 'models/repository/quantities.dart';
+import 'models/repository/replenisher.dart';
+import 'models/repository/seller.dart';
+import 'models/repository/stock.dart';
+import 'providers/currency_provider.dart';
+import 'providers/language_provider.dart';
+import 'providers/theme_provider.dart';
+import 'routes.dart';
 
 class MyApp extends StatelessWidget {
   static final analytics = FirebaseAnalytics();
 
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  static bool _isLoadedSettings = false;
+  static bool _initialized = false;
 
-  static bool _isRegistedServices = false;
+  final Widget child;
 
-  final bool isDebug;
-
-  const MyApp({Key? key, this.isDebug = kDebugMode}) : super(key: key);
+  const MyApp(this.child);
 
   // This widget is the root of your application.
   @override
@@ -38,66 +33,96 @@ class MyApp extends StatelessWidget {
     final language = context.watch<LanguageProvider>();
     final currency = context.watch<CurrencyProvider>();
 
-    if (_isRegistedServices && !_isLoadedSettings) {
+    if (!_initialized) {
       theme.initialize();
       language.initialize();
       currency.initialize();
-      _isLoadedSettings = true;
+      _setupMenuFromOthers();
+      _initialized = true;
     }
 
     return MaterialApp(
-      title: 'POS System',
-      routes: Routes.routes,
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: analytics),
-        routeObserver,
-      ],
-      // === language setting ===
-      locale: language.isReady ? language.locale : null,
-      supportedLocales: LanguageProvider.supports,
-      localizationsDelegates: LanguageProvider.delegates,
-      localeListResolutionCallback: language.localeListResolutionCallback,
-      // === theme setting ===
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
-      themeMode: theme.isReady ? theme.mode : null,
-      // === home widget ===
-      home: FutureBuilder<bool>(
-        future: _registerServices(context),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            error('${snapshot.error}', 'initialize', snapshot.stackTrace);
-          }
-
-          return _isRegistedServices
-              ? ModelIntializer(child: HomeScreen())
-              : const WelcomeSplash();
-        },
-      ),
-    );
+        title: 'POS System',
+        routes: Routes.routes,
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: analytics),
+          routeObserver,
+        ],
+        // === language setting ===
+        locale: language.locale,
+        supportedLocales: LanguageProvider.supports,
+        localizationsDelegates: LanguageProvider.delegates,
+        localeListResolutionCallback: language.localeListResolutionCallback,
+        // === theme setting ===
+        theme: AppThemes.lightTheme,
+        darkTheme: AppThemes.darkTheme,
+        themeMode: theme.mode,
+        // === home widget ===
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Menu>(
+              create: (_) => Menu(),
+            ),
+            ChangeNotifierProvider<Stock>(
+              create: (_) => Stock(),
+            ),
+            ChangeNotifierProvider<Quantities>(
+              create: (_) => Quantities(),
+            ),
+            ChangeNotifierProvider<Replenisher>(
+              create: (_) => Replenisher(),
+            ),
+            ChangeNotifierProvider<CustomerSettings>(
+              create: (_) => CustomerSettings(),
+            ),
+            ChangeNotifierProvider<Seller>(
+              create: (_) => Seller(),
+            ),
+          ],
+          child: child,
+        ));
   }
 
-  Future<bool> _registerServices(BuildContext context) async {
-    if (_isRegistedServices) {
-      return true;
-    }
+  void _setupMenuFromOthers() {
+    Menu.instance.items.forEach((catalog) {
+      catalog.items.forEach((product) {
+        product.items
+            .where((ingredient) {
+              // Although it should always be searchable, still make null handler
+              // to avoid not found one and kill all others
+              final ing =
+                  Stock.instance.getItem(ingredient.storageIngredientId!);
+              if (ing == null) {
+                return true;
+              }
 
-    if (isDebug) {
-      await analytics.setAnalyticsCollectionEnabled(false);
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-    }
+              ingredient.ingredient = ing;
+              ingredient.items
+                  .where((quantity) {
+                    final qua = Quantities.instance
+                        .getItem(quantity.storageQuantityId!);
+                    if (qua == null) {
+                      return true;
+                    }
 
-    await Database.instance.initialize();
-    await Storage.instance.initialize();
-    await Cache.instance.initialize();
-    CacheStateManager.initialize();
+                    quantity.quantity = qua;
+                    return false;
+                  })
+                  .toList()
+                  .forEach((quantity) => ingredient.removeItem(
+                        quantity.id,
+                        notifing: false,
+                      ));
 
-    _isRegistedServices = true;
-
-    // rebuild app
-    LanguageProvider.instance.translatorFilesChanged();
-
-    return true;
+              return false;
+            })
+            .toList()
+            .forEach((ingredient) => product.removeItem(
+                  ingredient.id,
+                  notifing: false,
+                ));
+      });
+    });
   }
 }

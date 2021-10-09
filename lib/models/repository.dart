@@ -5,8 +5,6 @@ import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 
 mixin DBRepository<T extends Model> on NotifyRepository<T> {
-  bool isReady = false;
-
   String get tableName;
 
   Future<T> buildItem(Map<String, Object?> value);
@@ -24,7 +22,6 @@ mixin DBRepository<T extends Model> on NotifyRepository<T> {
       final items = await fetchItems();
 
       replaceItems({});
-      isReady = true;
 
       for (final item in items) {
         try {
@@ -33,8 +30,6 @@ mixin DBRepository<T extends Model> on NotifyRepository<T> {
           await error(e.toString(), 'db.$tableName.parse.error', stack);
         }
       }
-
-      notifyListeners();
     } catch (e, stack) {
       print(stack);
       await error(e.toString(), 'db.$tableName.fetch.error', stack);
@@ -43,8 +38,6 @@ mixin DBRepository<T extends Model> on NotifyRepository<T> {
 }
 
 mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
-  bool isReady = false;
-
   bool versionChanged = false;
 
   /// Only use for logging
@@ -55,7 +48,6 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
   Future<void> initialize() {
     return Storage.instance.get(storageStore).then((data) async {
       replaceItems({});
-      isReady = true;
 
       data.forEach((id, value) {
         try {
@@ -72,8 +64,6 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
             item.prefix: item.toObject().toMap(),
         });
       }
-
-      notifyListeners();
     }).onError((e, stack) {
       print(stack);
       error(e.toString(), '$repositoryName.fetch.error', stack);
@@ -148,10 +138,10 @@ mixin Repository<T extends Model> {
 
   /// only remove map value and notify listeners
   /// you should remove item by `item.remove()`
-  void removeItem(String id) {
+  void removeItem(String id, {bool notifing = true}) {
     _items.remove(id);
 
-    notifyItem();
+    if (notifing) notifyItem();
   }
 
   void replaceItems(Map<String, T> map) => _items = map;

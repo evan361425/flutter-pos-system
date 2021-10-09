@@ -23,9 +23,7 @@ class Menu extends ChangeNotifier
   final String repositoryName = 'menu';
 
   Menu() {
-    initialize();
-
-    Menu.instance = this;
+    instance = this;
   }
 
   List<Catalog> get notEmptyItems =>

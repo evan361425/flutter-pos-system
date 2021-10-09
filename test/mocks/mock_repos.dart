@@ -38,12 +38,8 @@ void _initialize() {
   Replenisher.instance = replenisher;
   Seller.instance = seller;
   Stock.instance = stock;
-  _finished = true;
 }
 
-var _finished = false;
 void initializeRepos() {
-  if (!_finished) {
-    _initialize();
-  }
+  _initialize();
 }

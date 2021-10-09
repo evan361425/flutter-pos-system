@@ -28,9 +28,7 @@ class CustomerSettings extends ChangeNotifier
   final String tableName = TABLE;
 
   CustomerSettings() {
-    initialize();
-
-    CustomerSettings.instance = this;
+    instance = this;
   }
 
   bool get hasSelectableSetting => items.any((item) => item.isNotEmpty);

@@ -49,7 +49,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     _modeValueController = TextEditingController(
       text: widget.option?.modeValue == null
           ? ''
-          : CurrencyProvider.instance.numToString(widget.option!.modeValue!),
+          : CurrencyProvider.n2s(widget.option!.modeValue!),
     );
     isDefault = widget.option?.isDefault ?? false;
 
