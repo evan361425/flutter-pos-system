@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tip/cache_state_manager.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ import 'models/repository/customer_settings.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
+import 'models/repository/seller.dart';
 import 'models/repository/stock.dart';
 import 'my_app.dart';
 import 'providers/currency_provider.dart';
@@ -40,30 +42,48 @@ void main() async {
     await Storage.instance.initialize();
     await Cache.instance.initialize();
 
-    await Stock.instance.initialize();
-    await Quantities.instance.initialize();
-    await CustomerSettings.instance.initialize();
-    await Replenisher.instance.initialize();
-    // Last for setup ingredient and quantity
-    await Menu.instance.initialize();
+    CacheStateManager.initialize();
 
-    runApp(
-      /// Why use provider?
-      /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ThemeProvider>(
-            create: (_) => ThemeProvider(),
-          ),
-          ChangeNotifierProvider<LanguageProvider>(
-            create: (_) => LanguageProvider(),
-          ),
-          ChangeNotifierProvider<CurrencyProvider>(
-            create: (_) => CurrencyProvider(),
-          ),
-        ],
-        child: MyApp(HomeScreen()),
-      ),
-    );
+    await Stock().initialize();
+    await Quantities().initialize();
+    await CustomerSettings().initialize();
+    await Replenisher().initialize();
+    // Last for setup ingredient and quantity
+    await Menu().initialize();
+
+    /// Why use provider?
+    /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider<LanguageProvider>(
+          create: (_) => LanguageProvider(),
+        ),
+        ChangeNotifierProvider<CurrencyProvider>(
+          create: (_) => CurrencyProvider(),
+        ),
+        ChangeNotifierProvider<Menu>(
+          create: (_) => Menu.instance,
+        ),
+        ChangeNotifierProvider<Stock>(
+          create: (_) => Stock.instance,
+        ),
+        ChangeNotifierProvider<Quantities>(
+          create: (_) => Quantities.instance,
+        ),
+        ChangeNotifierProvider<Replenisher>(
+          create: (_) => Replenisher.instance,
+        ),
+        ChangeNotifierProvider<CustomerSettings>(
+          create: (_) => CustomerSettings.instance,
+        ),
+        ChangeNotifierProvider<Seller>(
+          create: (_) => Seller(),
+        ),
+      ],
+      child: MyApp(HomeScreen()),
+    ));
   }, FirebaseCrashlytics.instance.recordError);
 }

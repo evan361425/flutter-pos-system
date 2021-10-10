@@ -28,7 +28,7 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Future<void> _handleDelete(_, ingredient) async {
+  Future<void> _handleDelete(ingredient) async {
     await ingredient.remove();
     return Menu.instance.removeIngredients(ingredient.id);
   }
@@ -66,7 +66,8 @@ class _IngredientTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(ingredient.name),
+      title:
+          Text(ingredient.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(context, <String>[
         '庫存：${ingredient.currentAmount ?? '無'}',
         '紀錄：${ingredient.lastAmount ?? '無'}',

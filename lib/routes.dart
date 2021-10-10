@@ -7,8 +7,6 @@ import 'models/menu/catalog.dart';
 import 'models/menu/product.dart';
 import 'models/menu/product_ingredient.dart';
 import 'models/menu/product_quantity.dart';
-import 'models/repository/quantities.dart';
-import 'models/repository/stock.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
@@ -27,9 +25,7 @@ import 'ui/menu/menu_screen.dart';
 import 'ui/menu/menu_search.dart';
 import 'ui/menu/product/product_screen.dart';
 import 'ui/menu/product/widgets/product_ingredient_modal.dart';
-import 'ui/menu/product/widgets/product_ingredient_search.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
-import 'ui/menu/product/widgets/product_quantity_search.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
 import 'ui/order/cashier/order_cashier_modal.dart';
@@ -67,8 +63,6 @@ class Routes {
   static const String menuProductReorder = 'menu/product/reorder';
   static const String menuIngredient = 'menu/ingredient';
   static const String menuQuantity = 'menu/quantity';
-  static const String menuIngredientSearch = 'menu/ingredient/search';
-  static const String menuQuantitySearch = 'menu/quantity/search';
   static const String orderCustomer = 'order/customer';
   static const String orderCalculator = 'order/calculator';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
@@ -125,7 +119,7 @@ class Routes {
           : ProductModal(catalog: arg as Catalog);
     },
     menuProductReorder: (context) =>
-        ProductOrderableList(catalog: arg<Catalog>(context)),
+        ProductOrderableList(arg<Catalog>(context)),
     menuIngredient: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductIngredient
@@ -135,12 +129,6 @@ class Routes {
             )
           : ProductIngredientModal(product: arg as Product);
     },
-    menuIngredientSearch: (context) => ChangeNotifierProvider.value(
-          value: Stock.instance,
-          builder: (_, __) => ProductIngredientSearch(
-            text: arg<String?>(context),
-          ),
-        ),
     menuQuantity: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductQuantity
@@ -150,12 +138,6 @@ class Routes {
             )
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
-    menuQuantitySearch: (context) => ChangeNotifierProvider.value(
-          value: Quantities.instance,
-          builder: (_, __) => ProductQuantitySearch(
-            text: arg<String?>(context),
-          ),
-        ),
     // order
     orderCustomer: (_) => OrderCustomerModal(),
     orderCalculator: (_) => OrderCashierModal(),

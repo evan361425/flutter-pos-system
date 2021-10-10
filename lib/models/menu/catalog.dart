@@ -32,7 +32,7 @@ class Catalog extends NotifyModel<CatalogObject>
         super(id) {
     this.name = name;
     this.index = index;
-    replaceItems(products ?? {});
+    if (products != null) replaceItems(products);
   }
 
   factory Catalog.fromObject(CatalogObject object) {
@@ -79,7 +79,10 @@ class Catalog extends NotifyModel<CatalogObject>
   }
 
   @override
-  void removeFromRepo() => Menu.instance.removeItem(id);
+  void removeFromRepo() {
+    Menu.instance.removeItem(id);
+    Menu.instance.notifyListeners();
+  }
 
   @override
   CatalogObject toObject() => CatalogObject(

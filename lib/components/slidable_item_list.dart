@@ -11,7 +11,7 @@ class SlidableItemList<T, Action> extends StatefulWidget {
 
   /// Show bottom actions of deletions
   final Action? deleteValue;
-  final Future<void> Function(BuildContext, T) handleDelete;
+  final Future<void> Function(T) handleDelete;
   final Widget Function(BuildContext, int, T) tileBuilder;
   final Widget Function(BuildContext, T)? warningContextBuilder;
   final void Function(BuildContext, T)? handleTap;
@@ -81,7 +81,7 @@ class SlidableItemListState<T, Action>
       warningContent: widget.warningContextBuilder == null
           ? null
           : widget.warningContextBuilder!(context, item),
-      deleteCallback: () => widget.handleDelete(context, item),
+      deleteCallback: () => widget.handleDelete(item),
     );
   }
 
@@ -109,7 +109,7 @@ class SlidableItemListState<T, Action>
             icon: KIcons.delete,
             onTap: () => DeleteDialog.show(
               context,
-              deleteCallback: () => widget.handleDelete(context, item),
+              deleteCallback: () => widget.handleDelete(item),
               warningContent: widget.warningContextBuilder == null
                   ? null
                   : widget.warningContextBuilder!(context, item),

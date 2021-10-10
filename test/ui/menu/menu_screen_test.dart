@@ -10,13 +10,11 @@ import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
-import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_repos.dart';
 
 void main() {
   testWidgets('should show empty body if empty', (tester) async {
-    when(menu.isEmpty).thenReturn(true);
-    when(menu.isNotEmpty).thenReturn(false);
+    final menu = Menu();
+    // show tips
     when(cache.getRaw(any)).thenReturn(0);
 
     await tester.pumpWidget(MultiProvider(providers: [
@@ -27,10 +25,8 @@ void main() {
   });
 
   testWidgets('should navigate correctly', (tester) async {
-    when(menu.isEmpty).thenReturn(false);
-    when(menu.isNotEmpty).thenReturn(true);
-    when(menu.length).thenReturn(1);
-    when(menu.itemList).thenReturn([Catalog(name: 'hi there')]);
+    final menu = Menu()..addItem(Catalog());
+    // hide tips
     when(cache.getRaw(any)).thenReturn(1);
     var navCount = 0;
     final poper = (BuildContext context) => TextButton(
@@ -39,9 +35,7 @@ void main() {
         );
 
     await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: menu),
-        ],
+        providers: [ChangeNotifierProvider<Menu>.value(value: menu)],
         child: MaterialApp(routes: {
           Routes.menuCatalogReorder: poper,
           Routes.menuSearch: poper,
@@ -63,28 +57,13 @@ void main() {
   });
 
   testWidgets('should addable', (tester) async {
-    final catalog = MockCatalog();
-    final product = MockProduct();
+    final menu = Menu();
+    // hide tips
     when(cache.getRaw(any)).thenReturn(1);
-    when(product.name).thenReturn('p-name');
-    when(catalog.id).thenReturn('id');
-    when(catalog.name).thenReturn('name');
-    when(catalog.itemList).thenReturn([product]);
-    when(menu.isEmpty).thenReturn(false);
-    when(menu.isNotEmpty).thenReturn(true);
-    when(menu.length).thenReturn(1);
-    when(menu.itemList).thenReturn([catalog]);
-
-    var navigateCount = 0;
-
     await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: menu),
-        ],
+        providers: [ChangeNotifierProvider<Menu>.value(value: menu)],
         child: MaterialApp(
-          routes: {
-            Routes.menuCatalogModal: (_) => Text((navigateCount++).toString()),
-          },
+          routes: {Routes.menuCatalogModal: (_) => Text('hi')},
           home: MenuScreen(),
         )));
 
@@ -92,11 +71,10 @@ void main() {
     await tester.tap(find.byIcon(KIcons.add));
     await tester.pumpAndSettle();
 
-    expect(navigateCount, equals(1));
+    expect(find.text('hi'), findsOneWidget);
   });
 
   setUpAll(() {
     initializeCache();
-    initializeRepos();
   });
 }

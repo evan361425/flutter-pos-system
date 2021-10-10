@@ -22,7 +22,7 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Future<void> _handleDelete(_, quantity) async {
+  Future<void> _handleDelete(quantity) async {
     await quantity.remove();
     return Menu.instance.removeQuantities(quantity.id);
   }

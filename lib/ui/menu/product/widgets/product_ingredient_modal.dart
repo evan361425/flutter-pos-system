@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/search_scaffold.dart';
+import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -7,8 +9,9 @@ import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductIngredientModal extends StatefulWidget {
   final ProductIngredient? ingredient;
@@ -58,6 +61,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         onTap: _selectIngredient,
       ),
       TextFormField(
+        key: Key('menu.ingredient.amount'),
         controller: _amountController,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
@@ -124,10 +128,9 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   }
 
   Future<void> _selectIngredient(BuildContext context) async {
-    final result = await Navigator.of(context).pushNamed(
-      Routes.menuIngredientSearch,
-      arguments: ingredientName,
-    );
+    final result = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => _ProductIngredientSearch(text: ingredientName),
+    ));
 
     if (result is Ingredient) {
       final ingredient = result;
@@ -138,5 +141,59 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         ingredientName = ingredient.name;
       });
     }
+  }
+}
+
+class _ProductIngredientSearch extends StatelessWidget {
+  final String? text;
+
+  const _ProductIngredientSearch({Key? key, this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final stock = context.watch<Stock>();
+
+    return SearchScaffold<Ingredient>(
+      handleChanged: (text) async {
+        return stock.sortBySimilarity(text);
+      },
+      itemBuilder: itemBuilder,
+      emptyBuilder: emptyBuilder,
+      initialData: stock.itemList,
+      text: text ?? '',
+      hintText: tt('menu.ingredient.label.name'),
+      textCapitalization: TextCapitalization.words,
+    );
+  }
+
+  Widget emptyBuilder(BuildContext context, String text) {
+    return CardTile(
+      title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
+      onTap: () async {
+        final ingredient = Ingredient(name: text);
+        await Stock.instance.setItem(ingredient);
+        Navigator.of(context).pop<Ingredient>(ingredient);
+      },
+    );
+  }
+
+  Widget itemBuilder(BuildContext context, Ingredient ingredient) {
+    return CardTile(
+      title: Text(ingredient.name),
+      trailing: IconButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => IngredientModal(
+              ingredient: ingredient,
+              editable: false,
+            ),
+          ));
+        },
+        icon: Icon(Icons.open_in_new_sharp),
+      ),
+      onTap: () {
+        Navigator.of(context).pop(ingredient);
+      },
+    );
   }
 }

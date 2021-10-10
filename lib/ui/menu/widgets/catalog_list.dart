@@ -21,7 +21,7 @@ class CatalogList extends StatelessWidget {
       warningContextBuilder: _warningContextBuilder,
       actionBuilder: _actionBuilder,
       handleTap: _handleTap,
-      handleDelete: (_, item) => item.remove(),
+      handleDelete: (item) => item.remove(),
     );
   }
 

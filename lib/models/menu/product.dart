@@ -51,7 +51,7 @@ class Product extends NotifyModel<ProductObject>
     this.name = name;
     this.index = index;
 
-    replaceItems(ingredients ?? {});
+    if (ingredients != null) replaceItems(ingredients);
 
     if (catalog != null) this.catalog = catalog;
   }
@@ -117,14 +117,15 @@ class Product extends NotifyModel<ProductObject>
 
   @override
   void notifyItem() {
-    // catalog screen will also shows ingredients
-    catalog.notifyListeners();
-
+    catalog.notifyItem();
     notifyListeners();
   }
 
   @override
-  void removeFromRepo() => catalog.removeItem(id);
+  void removeFromRepo() {
+    catalog.removeItem(id);
+    catalog.notifyItem();
+  }
 
   Future<void> searched() {
     return update(ProductObject(searchedAt: DateTime.now()), event: 'search');

@@ -82,6 +82,7 @@ class _IngredientModalState extends State<IngredientModal>
   @override
   List<Widget> formFields() => <Widget>[
         TextFormField(
+          key: Key('stock.ingredient.name'),
           controller: _nameController,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,

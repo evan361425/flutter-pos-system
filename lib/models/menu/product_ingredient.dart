@@ -39,7 +39,7 @@ class ProductIngredient
   }) {
     this.id = id ?? generateId();
 
-    replaceItems(quantities ?? {});
+    if (quantities != null) replaceItems(quantities);
 
     if (product != null) this.product = product;
 
@@ -96,7 +96,7 @@ class ProductIngredient
 
   @override
   void notifyItem() {
-    product.setItem(this);
+    product.notifyItem();
   }
 
   @override
@@ -105,7 +105,10 @@ class ProductIngredient
   }
 
   @override
-  void removeFromRepo() => product.removeItem(id);
+  void removeFromRepo() {
+    product.removeItem(id);
+    product.notifyItem();
+  }
 
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(

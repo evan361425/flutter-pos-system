@@ -31,7 +31,7 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
   }) : super(id) {
     this.name = name;
     this.index = index;
-    replaceItems(options ?? <String, CustomerSettingOption>{});
+    if (options != null) replaceItems(options);
   }
 
   factory CustomerSetting.fromObject(CustomerSettingObject object) {

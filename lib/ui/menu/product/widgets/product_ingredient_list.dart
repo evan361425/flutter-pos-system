@@ -88,7 +88,7 @@ class _QuantityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(quantity.name),
+      title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(context, <String>[
         '額外使用量：${quantity.amount}',
         '額外售價：${quantity.additionalPrice}',

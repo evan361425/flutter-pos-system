@@ -73,7 +73,10 @@ class ProductQuantity
   }
 
   @override
-  void removeFromRepo() => ingredient.removeItem(id);
+  void removeFromRepo() {
+    ingredient.removeItem(id);
+    ingredient.notifyItem();
+  }
 
   @override
   ProductQuantityObject toObject() => ProductQuantityObject(

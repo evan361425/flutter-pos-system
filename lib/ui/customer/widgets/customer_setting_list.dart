@@ -112,7 +112,7 @@ class _OptionTile extends StatelessWidget {
     final subtitle = option.modeValueName;
 
     return ListTile(
-      title: Text(option.name),
+      title: Text(option.name, style: Theme.of(context).textTheme.headline6),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
       trailing: option.isDefault ? OutlinedText('預設') : null,
       onLongPress: () => BottomSheetActions.withDelete<int>(

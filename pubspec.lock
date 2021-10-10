@@ -419,7 +419,7 @@ packages:
       name: mockito
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.12"
+    version: "5.0.16"
   modal_bottom_sheet:
     dependency: "direct main"
     description:

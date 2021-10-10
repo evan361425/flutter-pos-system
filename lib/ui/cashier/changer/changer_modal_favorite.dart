@@ -36,7 +36,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
     final listView = SlidableItemList<FavoriteItem, _Action>(
       key: slidableItemList,
       deleteValue: _Action.delete,
-      handleDelete: (_, item) => handleDeletion(item.index),
+      handleDelete: (item) => handleDeletion(item.index),
       tileBuilder: (_, __, item) => RadioListTile<FavoriteItem>(
         value: item,
         title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),

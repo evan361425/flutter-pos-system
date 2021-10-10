@@ -68,7 +68,7 @@ dev_dependencies:
   build: ^2.0.2
 
   # mock object
-  mockito: ^5.0.9
+  mockito: ^5.0.16
   build_runner: ^2.0.4
 
 # For information on the generic Dart part of this file, see the

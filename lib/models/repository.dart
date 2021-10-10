@@ -47,8 +47,6 @@ mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
 
   Future<void> initialize() {
     return Storage.instance.get(storageStore).then((data) async {
-      replaceItems({});
-
       data.forEach((id, value) {
         try {
           addItem(buildModel(id, value as Map<String, Object?>));
@@ -104,7 +102,7 @@ mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
 }
 
 mixin Repository<T extends Model> {
-  late Map<String, T> _items;
+  Map<String, T> _items = {};
 
   final Stores storageStore = Stores.menu;
 
@@ -138,10 +136,8 @@ mixin Repository<T extends Model> {
 
   /// only remove map value and notify listeners
   /// you should remove item by `item.remove()`
-  void removeItem(String id, {bool notifing = true}) {
+  void removeItem(String id) {
     _items.remove(id);
-
-    if (notifing) notifyItem();
   }
 
   void replaceItems(Map<String, T> map) => _items = map;
