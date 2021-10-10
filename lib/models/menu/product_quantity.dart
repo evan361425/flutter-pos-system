@@ -1,8 +1,11 @@
-import 'package:possystem/models/menu/product_ingredient.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/menu_object.dart';
-import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/storage.dart';
+
+import '../model.dart';
+import '../objects/menu_object.dart';
+import '../repository/quantities.dart';
+import '../stock/quantity.dart';
+import 'product_ingredient.dart';
 
 class ProductQuantity
     with Model<ProductQuantityObject>, SearchableModel<ProductQuantityObject> {
@@ -21,9 +24,6 @@ class ProductQuantity
   /// finalPrice = product.price + additionPrice
   num additionalPrice;
 
-  /// Only use for set up [quantity]
-  final String? storageQuantityId;
-
   @override
   final String logCode = 'menu.quantity';
 
@@ -34,7 +34,6 @@ class ProductQuantity
     String? id,
     Quantity? quantity,
     ProductIngredient? ingredient,
-    this.storageQuantityId,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
@@ -47,9 +46,15 @@ class ProductQuantity
   }
 
   factory ProductQuantity.fromObject(ProductQuantityObject object) {
+    final quantity = Quantities.instance.getItem(object.quantityId!);
+    if (quantity == null) {
+      info(object.quantityId!, 'menu.parse.error.quantity');
+      throw Error();
+    }
+
     return ProductQuantity(
       id: object.id,
-      storageQuantityId: object.quantityId!,
+      quantity: quantity,
       amount: object.amount!,
       additionalCost: object.additionalCost!,
       additionalPrice: object.additionalPrice!,
@@ -73,7 +78,7 @@ class ProductQuantity
   @override
   ProductQuantityObject toObject() => ProductQuantityObject(
         id: id,
-        quantityId: storageQuantityId ?? quantity.id,
+        quantityId: quantity.id,
         amount: amount,
         additionalCost: additionalCost,
         additionalPrice: additionalPrice,

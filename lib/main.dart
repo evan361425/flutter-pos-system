@@ -40,11 +40,12 @@ void main() async {
     await Storage.instance.initialize();
     await Cache.instance.initialize();
 
-    await Menu.instance.initialize();
     await Stock.instance.initialize();
     await Quantities.instance.initialize();
     await CustomerSettings.instance.initialize();
     await Replenisher.instance.initialize();
+    // Last for setup ingredient and quantity
+    await Menu.instance.initialize();
 
     runApp(
       /// Why use provider?

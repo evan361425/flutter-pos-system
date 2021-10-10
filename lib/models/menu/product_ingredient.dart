@@ -1,9 +1,11 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
 import '../objects/menu_object.dart';
 import '../repository.dart';
 import '../repository/menu.dart';
+import '../repository/stock.dart';
 import '../stock/ingredient.dart';
 import 'product.dart';
 import 'product_quantity.dart';
@@ -19,9 +21,6 @@ class ProductIngredient
   /// Connect to stock.
   late Ingredient ingredient;
 
-  /// Only use for set up [ingredient]
-  final String? storageIngredientId;
-
   /// Amount of ingredient per product
   num amount;
 
@@ -35,7 +34,6 @@ class ProductIngredient
     String? id,
     Ingredient? ingredient,
     Product? product,
-    this.storageIngredientId,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) {
@@ -50,17 +48,30 @@ class ProductIngredient
 
   /// [ingredient] set by [ModelInitializer]
   factory ProductIngredient.fromObject(ProductIngredientObject object) {
-    final quantities = object.quantities.map(
-      (e) => ProductQuantity.fromObject(e),
-    );
+    final quantities = object.quantities
+        .map<ProductQuantity?>((e) {
+          try {
+            return ProductQuantity.fromObject(e);
+          } catch (e) {
+            return null;
+          }
+        })
+        .where((e) => e != null)
+        .cast<ProductQuantity>();
 
     if (!object.quantities.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
     }
 
+    final ingredient = Stock.instance.getItem(object.ingredientId!);
+    if (ingredient == null) {
+      info(object.ingredientId!, 'menu.parse.error.ingredient');
+      throw Error();
+    }
+
     return ProductIngredient(
       id: object.id,
-      storageIngredientId: object.ingredientId!,
+      ingredient: ingredient,
       amount: object.amount!,
       quantities: {for (var quantity in quantities) quantity.id: quantity},
     ).._prepareQuantities();
@@ -99,7 +110,7 @@ class ProductIngredient
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
-        ingredientId: storageIngredientId ?? ingredient.id,
+        ingredientId: ingredient.id,
         amount: amount,
         quantities: items.map((e) => e.toObject()).toList(),
       );

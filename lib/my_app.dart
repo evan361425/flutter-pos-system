@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
       theme.initialize();
       language.initialize();
       currency.initialize();
-      _setupMenuFromOthers();
       _initialized = true;
     }
 
@@ -82,47 +81,5 @@ class MyApp extends StatelessWidget {
           ],
           child: child,
         ));
-  }
-
-  void _setupMenuFromOthers() {
-    Menu.instance.items.forEach((catalog) {
-      catalog.items.forEach((product) {
-        product.items
-            .where((ingredient) {
-              // Although it should always be searchable, still make null handler
-              // to avoid not found one and kill all others
-              final ing =
-                  Stock.instance.getItem(ingredient.storageIngredientId!);
-              if (ing == null) {
-                return true;
-              }
-
-              ingredient.ingredient = ing;
-              ingredient.items
-                  .where((quantity) {
-                    final qua = Quantities.instance
-                        .getItem(quantity.storageQuantityId!);
-                    if (qua == null) {
-                      return true;
-                    }
-
-                    quantity.quantity = qua;
-                    return false;
-                  })
-                  .toList()
-                  .forEach((quantity) => ingredient.removeItem(
-                        quantity.id,
-                        notifing: false,
-                      ));
-
-              return false;
-            })
-            .toList()
-            .forEach((ingredient) => product.removeItem(
-                  ingredient.id,
-                  notifing: false,
-                ));
-      });
-    });
   }
 }

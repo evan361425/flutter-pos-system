@@ -57,9 +57,16 @@ class Product extends NotifyModel<ProductObject>
   }
 
   factory Product.fromObject(ProductObject object) {
-    final ingredients = object.ingredients.map(
-      (e) => ProductIngredient.fromObject(e),
-    );
+    final ingredients = object.ingredients
+        .map((e) {
+          try {
+            return ProductIngredient.fromObject(e);
+          } catch (e) {
+            return null;
+          }
+        })
+        .where((e) => e != null)
+        .cast<ProductIngredient>();
 
     if (!object.ingredients.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
