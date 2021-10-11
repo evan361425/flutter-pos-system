@@ -6,14 +6,14 @@ import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
-class OrderProductList extends StatelessWidget {
+class OrderCashierProductList extends StatelessWidget {
   final List<CustomerSettingOption> customerSettings;
   final List<OrderProductTileData> products;
   final num totalPrice;
   final num productsPrice;
   final num customerPrice;
 
-  const OrderProductList({
+  const OrderCashierProductList({
     Key? key,
     required this.customerSettings,
     required this.products,

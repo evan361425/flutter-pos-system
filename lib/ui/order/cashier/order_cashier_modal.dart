@@ -9,7 +9,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
 
-import 'order_product_list.dart';
+import 'order_cashier_product_list.dart';
 
 class OrderCashierModal extends StatefulWidget {
   const OrderCashierModal({Key? key}) : super(key: key);
@@ -43,7 +43,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       ),
     );
 
-    final body = OrderProductList(
+    final body = OrderCashierProductList(
       customerSettings: Cart.instance.selectedCustomerSettingOptions.toList(),
       products: Cart.instance.products
           .map((e) => OrderProductTileData(

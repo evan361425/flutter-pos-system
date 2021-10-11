@@ -10,7 +10,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/order_product_list.dart';
+import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AnalysisOrderList<T> extends StatefulWidget {
@@ -115,7 +115,7 @@ class _AnalysisOrderModal extends StatelessWidget {
       body: Column(children: [
         HintText(createdAt),
         Expanded(
-          child: OrderProductList(
+          child: OrderCashierProductList(
             customerSettings: selectedCustomerSettingOptions.toList(),
             products: order.products
                 .map((product) => OrderProductTileData(
