@@ -40,7 +40,7 @@ class Database {
     JoinQuery? join,
   }) async {
     try {
-      final data = await rawQuery(
+      final data = await query(
         table,
         columns: columns,
         orderBy: '$orderByKey DESC',
@@ -93,32 +93,6 @@ class Database {
   Future<List<Map<String, Object?>>> query(
     String table, {
     String? where,
-    List<Object>? whereArgs,
-    bool? distinct,
-    List<String>? columns,
-    String? groupBy,
-    String? orderBy,
-    String? having,
-    int? limit,
-    int? offset,
-  }) {
-    return instance.db.query(
-      table,
-      where: where,
-      whereArgs: whereArgs,
-      distinct: distinct,
-      columns: columns,
-      groupBy: groupBy,
-      orderBy: orderBy,
-      having: having,
-      limit: limit,
-      offset: offset,
-    );
-  }
-
-  Future<List<Map<String, Object?>>> rawQuery(
-    String table, {
-    String? where,
     List<Object?>? whereArgs,
     List<String>? columns,
     JoinQuery? join,
@@ -135,8 +109,8 @@ class Database {
 
     return instance.db.rawQuery('''
     SELECT $selectQuery FROM `$table`
-    WHERE $where
     $joinQuery
+    WHERE $where
     $groupByQuery
     $orderByQuery
     $limitQuery''', whereArgs);
@@ -180,6 +154,6 @@ class JoinQuery {
 
   @override
   String toString() {
-    return '$joinType JOIN $guestTable ON $hostTable.$hostKey = $guestTable.$guestKey';
+    return '$joinType JOIN `$guestTable` ON `$hostTable`.$hostKey = `$guestTable`.$guestKey';
   }
 }

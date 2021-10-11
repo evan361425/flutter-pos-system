@@ -3,12 +3,13 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
+import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
 import 'package:provider/provider.dart';
 
 class AnalysisScreen extends StatelessWidget {
-  static final orderListState = GlobalKey<AnalysisOrderListState>();
+  static final orderListState =
+      GlobalKey<AnalysisOrderListState<_OrderListParams>>();
 
   const AnalysisScreen({Key? key}) : super(key: key);
 
@@ -20,34 +21,28 @@ class AnalysisScreen extends StatelessWidget {
         leading: PopButton(),
       ),
       body: OrientationBuilder(
-          builder: (_, orientation) => orientation == Orientation.portrait
-              ? _buildPortrait()
-              : _buildLandscape()),
+        builder: (_, orientation) => orientation == Orientation.portrait
+            ? _buildPortrait()
+            : _buildLandscape(),
+      ),
     );
   }
 
-  void handleDaySelected(DateTime day) {
+  void handleDaySelected(DateTime day) async {
     final end = DateTime(day.year, day.month, day.day + 1);
     final start = DateTime(day.year, day.month, day.day);
 
-    Seller.instance.getMetricBetween(start, end).then((result) {
-      orderListState.currentState?.reset(
-        {'start': start, 'end': end},
-        totalPrice: result['totalPrice'] as num,
-        totalCount: result['count'] as int,
-      );
-    });
+    final result = await Seller.instance.getMetricBetween(start, end);
+
+    orderListState.currentState?.reset(
+      _OrderListParams(start: start, end: end),
+      totalPrice: result['totalPrice'] as num,
+      totalCount: result['count'] as int,
+    );
   }
 
-  Future<List<OrderObject>> handleLoad(
-    Map<String, Object> params,
-    int offset,
-  ) {
-    return Seller.instance.getOrderBetween(
-      params['start'] as DateTime,
-      params['end'] as DateTime,
-      offset,
-    );
+  Future<List<OrderObject>> handleLoad(_OrderListParams params, int offset) {
+    return Seller.instance.getOrderBetween(params.start, params.end, offset);
   }
 
   Widget _buildLandscape() {
@@ -66,8 +61,10 @@ class AnalysisScreen extends StatelessWidget {
         ),
         Expanded(
           child: Center(
-            child:
-                AnalysisOrderList(key: orderListState, handleLoad: handleLoad),
+            child: AnalysisOrderList<_OrderListParams>(
+              key: orderListState,
+              handleLoad: handleLoad,
+            ),
           ),
         ),
       ],
@@ -94,4 +91,11 @@ class AnalysisScreen extends StatelessWidget {
 
     return Seller.instance.getCountBetween(start, end);
   }
+}
+
+class _OrderListParams {
+  final DateTime start;
+  final DateTime end;
+
+  const _OrderListParams({required this.start, required this.end});
 }

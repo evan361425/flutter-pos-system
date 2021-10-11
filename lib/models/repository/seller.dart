@@ -47,7 +47,7 @@ class Seller extends ChangeNotifier {
     DateTime end, {
     range = '%d',
   }) async {
-    final rows = await Database.instance.rawQuery(
+    final rows = await Database.instance.query(
       ORDER_TABLE,
       columns: ['COUNT(*) count', 'createdAt'],
       where: 'createdAt BETWEEN ? AND ?',
@@ -96,6 +96,7 @@ class Seller extends ChangeNotifier {
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
+      join: JOIN_COMBINATION,
       orderBy: 'createdAt desc',
       limit: 10,
       offset: offset,

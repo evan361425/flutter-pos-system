@@ -44,6 +44,15 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
     );
 
     final body = OrderProductList(
+      customerSettings: Cart.instance.selectedCustomerSettingOptions.toList(),
+      products: Cart.instance.products
+          .map((e) => OrderProductTileData(
+                ingredientNames: e.getIngredientNames(onlyQuantitied: false),
+                productName: e.name,
+                totalPrice: e.price,
+                totalCount: e.count,
+              ))
+          .toList(),
       totalPrice: totalPrice,
       productsPrice: Cart.instance.productsPrice,
     );

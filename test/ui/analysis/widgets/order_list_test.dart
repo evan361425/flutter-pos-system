@@ -13,11 +13,11 @@ import '../../../mocks/mock_providers.dart';
 
 void main() {
   testWidgets('should not load when initialize', (tester) async {
-    final orderListState = GlobalKey<OrderListState>();
+    final orderListState = GlobalKey<AnalysisOrderListState>();
     var loadCount = 0;
 
     await tester.pumpWidget(MaterialApp(
-      home: OrderList(
+      home: AnalysisOrderList(
           key: orderListState,
           handleLoad: (_, __) {
             loadCount++;
@@ -58,14 +58,14 @@ void main() {
       return order;
     }
 
-    final orderListState = GlobalKey<OrderListState>();
+    final orderListState = GlobalKey<AnalysisOrderListState>();
     final data = <OrderObject>[createOrder(1), createOrder(2)];
     var loadCount = 0;
     when(currency.numToString(any)).thenReturn('');
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: OrderList(
+        child: AnalysisOrderList(
             key: orderListState,
             handleLoad: (_, start) {
               loadCount++;
@@ -122,12 +122,12 @@ void main() {
     when(order.paid).thenReturn(5);
     when(order.products).thenReturn([pro1, pro2]);
 
-    final orderListState = GlobalKey<OrderListState>();
+    final orderListState = GlobalKey<AnalysisOrderListState>();
     when(currency.numToString(any)).thenReturn('');
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
-        child: OrderList(
+        child: AnalysisOrderList(
             key: orderListState,
             handleLoad: (_, __) => Future.value(<OrderObject>[order])),
       ),

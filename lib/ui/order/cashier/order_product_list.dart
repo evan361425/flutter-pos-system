@@ -1,43 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/models/order/order_product.dart';
-import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/providers/currency_provider.dart';
 
 class OrderProductList extends StatelessWidget {
+  final List<CustomerSettingOption> customerSettings;
+  final List<OrderProductTileData> products;
   final num totalPrice;
   final num productsPrice;
+  final num customerPrice;
 
   const OrderProductList({
     Key? key,
+    required this.customerSettings,
+    required this.products,
     required this.totalPrice,
     required this.productsPrice,
-  }) : super(key: key);
+  })  : customerPrice = totalPrice - productsPrice,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final selected = Cart.instance.selectedCustomerSettingOptions;
-
     final priceWidget = ExpansionTile(
-      title: Text('總價：$totalPrice 元'),
+      title: Text('總價：${CurrencyProvider.n2s(totalPrice)} 元'),
       children: <Widget>[
         ListTile(
           title: Text('產品總價'),
-          trailing: Text(productsPrice.toString()),
+          trailing: Text(CurrencyProvider.n2s(productsPrice)),
         ),
         ListTile(
           title: Text('顧客設定總價'),
-          trailing: Text((totalPrice - productsPrice).toString()),
+          trailing: Text(CurrencyProvider.n2s(customerPrice)),
         ),
       ],
     );
 
     final customerSettingWidget = ExpansionTile(
       title: Text('顧客設定'),
-      subtitle: Text('設定 ${selected.length} 項'),
+      subtitle: Text('設定 ${customerSettings.length} 項'),
       children: <Widget>[
-        for (final option in selected)
+        for (final option in customerSettings)
           ListTile(
             title: Text(option.name),
             subtitle: option.modeValueName.isNotEmpty
@@ -48,32 +53,51 @@ class OrderProductList extends StatelessWidget {
       ],
     );
 
+    final totalCount = products.fold<int>(
+      0,
+      (value, data) => value + data.totalCount,
+    );
+
     return SingleChildScrollView(
       child: Column(children: [
         priceWidget,
         customerSettingWidget,
         TextDivider(label: '購買產品'),
-        for (final product in Cart.instance.products) _ProductTile(product),
+        HintText('總數：$totalCount'),
+        for (final product in products) _ProductTile(product),
       ]),
     );
   }
 }
 
-class _ProductTile extends StatelessWidget {
-  final OrderProduct product;
+class OrderProductTileData {
+  final Iterable<String> ingredientNames;
+  final String productName;
+  final num totalPrice;
+  final int totalCount;
 
-  const _ProductTile(this.product);
+  OrderProductTileData({
+    required this.ingredientNames,
+    required this.productName,
+    required this.totalPrice,
+    required this.totalCount,
+  });
+}
+
+class _ProductTile extends StatelessWidget {
+  final OrderProductTileData data;
+
+  const _ProductTile(this.data);
 
   @override
   Widget build(BuildContext context) {
-    final ingredients = product.getIngredientNames(onlyQuantitied: false);
-    final title = Text(product.name);
+    final title = Text(data.productName);
     final subtitle = MetaBlock.withString(context, <String>[
-      '總價：${product.price}',
-      '總數：${product.count}',
+      '總價：${data.totalPrice}',
+      '總數：${data.totalCount}',
     ]);
 
-    return ingredients.isEmpty
+    return data.ingredientNames.isEmpty
         ? ListTile(
             title: title,
             subtitle: subtitle,
@@ -84,7 +108,8 @@ class _ProductTile extends StatelessWidget {
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Wrap(children: [
-                for (final ingredient in ingredients) OutlinedText(ingredient)
+                for (final ingredient in data.ingredientNames)
+                  OutlinedText(ingredient)
               ]),
               SizedBox(height: 8.0),
             ],

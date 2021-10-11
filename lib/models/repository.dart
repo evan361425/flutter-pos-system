@@ -10,7 +10,7 @@ mixin DBRepository<T extends Model> on NotifyRepository<T> {
   Future<T> buildItem(Map<String, Object?> value);
 
   Future<List<Map<String, Object?>>> fetchItems() {
-    return Database.instance.rawQuery(
+    return Database.instance.query(
       tableName,
       where: 'isDelete = ?',
       whereArgs: [0],
