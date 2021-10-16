@@ -56,7 +56,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
             enablePullUp: true,
             enablePullDown: false,
             onLoading: () => _handleLoad(),
-            footer: _OrderListFooter(),
+            footer: _buildFooter(),
             child: ListView.builder(
               itemBuilder: (context, index) => _OrderTile(_data[index]),
               itemCount: _data.length,
@@ -76,6 +76,24 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
         _isLoading = true;
         _handleLoad();
       });
+
+  Widget _buildFooter() {
+    return CustomFooter(
+      height: 30,
+      builder: (BuildContext context, LoadStatus? mode) {
+        switch (mode) {
+          case LoadStatus.canLoading:
+            return Center(child: Text('下拉以載入更多'));
+          case LoadStatus.loading:
+            return CircularLoading();
+          case LoadStatus.noMore:
+            return Center(child: Text(tt('analysis.allLoaded')));
+          default:
+            return Container();
+        }
+      },
+    );
+  }
 
   Future<void> _handleLoad() async {
     final data = await widget.handleLoad(_params, _data.length);
@@ -134,31 +152,6 @@ class _AnalysisOrderModal extends StatelessWidget {
   }
 }
 
-class _OrderListFooter extends StatelessWidget {
-  const _OrderListFooter({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomFooter(
-      height: 30,
-      builder: (BuildContext context, LoadStatus? mode) {
-        switch (mode) {
-          case LoadStatus.canLoading:
-            return Center(child: Text('下拉以載入更多'));
-          case LoadStatus.loading:
-            return CircularLoading();
-          case LoadStatus.failed:
-            return Center(child: Text(tt('unknown_error')));
-          case LoadStatus.noMore:
-            return Center(child: Text(tt('analysis.allLoaded')));
-          default:
-            return Container();
-        }
-      },
-    );
-  }
-}
-
 class _OrderTile extends StatelessWidget {
   final OrderObject order;
 
@@ -189,6 +182,7 @@ class _OrderTile extends StatelessWidget {
     ]);
 
     return ListTile(
+      key: Key('analysis.order_list.${order.id}'),
       leading: leading,
       title: title,
       subtitle: subtitle,

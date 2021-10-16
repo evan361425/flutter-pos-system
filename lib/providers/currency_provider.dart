@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/services/cache.dart';
 
 const _CurrencyNames = <CurrencyTypes, String>{
@@ -100,8 +99,6 @@ class CurrencyProvider extends ChangeNotifier {
     isInt = intIndex == 0;
 
     _currency = value;
-
-    Cashier.instance.reset(currency, unitList);
   }
 
   /// Alias of [instance.numToString(value)]

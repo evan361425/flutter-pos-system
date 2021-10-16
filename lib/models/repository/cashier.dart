@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/services/storage.dart';
 
 class Cashier extends ChangeNotifier {
@@ -12,7 +13,7 @@ class Cashier extends ChangeNotifier {
 
   static const _DEFAULT = 'default';
 
-  static Cashier instance = Cashier();
+  static late Cashier instance;
 
   /// Cashier current status
   final List<CashierUnitObject> _current = [];
@@ -25,6 +26,11 @@ class Cashier extends ChangeNotifier {
 
   /// Cashier current using currency name
   String _recordName = '';
+
+  Cashier() {
+    CurrencyProvider.instance.addListener(reset);
+    instance = this;
+  }
 
   num get currentTotal => _current.fold(0, (value, e) => value + e.total);
 
@@ -76,6 +82,12 @@ class Cashier extends ChangeNotifier {
         'cashier.favorite.not_found',
       );
     }
+  }
+
+  @override
+  void dispose() {
+    CurrencyProvider.instance.removeListener(reset);
+    super.dispose();
   }
 
   Iterable<FavoriteItem> favoriteItems() sync* {
@@ -168,11 +180,11 @@ class Cashier extends ChangeNotifier {
   }
 
   /// When [Currency] changed, it must be fired
-  Future<void> reset(String name, List<num> units) async {
-    _recordName = name;
+  void reset() async {
+    _recordName = CurrencyProvider.instance.currency;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 
-    await setCurrent(record[_CURRENT], units);
+    await setCurrent(record[_CURRENT], CurrencyProvider.instance.unitList);
     await setFavorite(record[_FAVORITES]);
 
     if (record[_DEFAULT] != null) {

@@ -1,19 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/customer/customer_setting.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../../mocks/mock_models.mocks.dart';
-import '../../../mocks/mock_providers.dart';
+import '../../../mocks/mock_cache.dart';
 
 void main() {
   testWidgets('should not load when initialize', (tester) async {
     final orderListState = GlobalKey<AnalysisOrderListState>();
+
     var loadCount = 0;
 
     await tester.pumpWidget(MaterialApp(
@@ -47,21 +53,12 @@ void main() {
   });
 
   testWidgets('should load more', (tester) async {
-    initializeProviders();
-    OrderObject createOrder(int count) {
-      final order = MockOrderObject();
-      when(order.createdAt).thenReturn(DateTime.now());
-      when(order.totalPrice).thenReturn(count);
-      when(order.paid).thenReturn(0);
-      when(order.products).thenReturn([]);
-
-      return order;
-    }
-
     final orderListState = GlobalKey<AnalysisOrderListState>();
-    final data = <OrderObject>[createOrder(1), createOrder(2)];
+    final data = [
+      OrderObject.fromMap({'id': 1}),
+      OrderObject.fromMap({'id': 2}),
+    ];
     var loadCount = 0;
-    when(currency.numToString(any)).thenReturn('');
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
@@ -69,8 +66,9 @@ void main() {
             key: orderListState,
             handleLoad: (_, start) {
               loadCount++;
-              if (start == 2) return Future.value([]);
-              return Future.value(data.sublist(start, start + 1));
+              return Future.value(
+                start == data.length ? [] : data.sublist(start, start + 1),
+              );
             }),
       ),
     ));
@@ -100,30 +98,37 @@ void main() {
   });
 
   testWidgets('should navigate to modal', (tester) async {
-    final order = MockOrderObject();
-    final pro1 = OrderProductObject(
+    final orderListState = GlobalKey<AnalysisOrderListState>();
+    final customerSettings = CustomerSettings();
+    final customerSetting = CustomerSetting();
+    final product = OrderProductObject(
         singlePrice: 1,
         originalPrice: 2,
         count: 3,
-        productId: 'pro1',
-        productName: 'pro1',
+        productId: 'p-1',
+        productName: 'p-1',
         isDiscount: true,
-        ingredients: {});
-    final pro2 = OrderProductObject(
-        singlePrice: 1,
-        originalPrice: 1,
-        count: 1,
-        productId: 'pro2',
-        productName: 'pro2',
-        isDiscount: false,
-        ingredients: {});
-    when(order.createdAt).thenReturn(DateTime.now());
-    when(order.totalPrice).thenReturn(4);
-    when(order.paid).thenReturn(5);
-    when(order.products).thenReturn([pro1, pro2]);
+        ingredients: {
+          'i-1': OrderIngredientObject(
+              id: 'i-1',
+              name: 'i-1',
+              additionalPrice: 2,
+              additionalCost: 1,
+              amount: 3,
+              quantityId: 'q-1',
+              quantityName: 'q-1')
+        });
+    final order = OrderObject.fromMap({
+      'id': 1,
+      'encodedProducts': '[${jsonEncode(product.toMap())}]',
+      'combination': '1:2,2:3',
+    });
 
-    final orderListState = GlobalKey<AnalysisOrderListState>();
-    when(currency.numToString(any)).thenReturn('');
+    customerSetting.replaceItems({'3': CustomerSettingOption()});
+    customerSettings.replaceItems({
+      '1': CustomerSetting(),
+      '2': customerSetting,
+    });
 
     await tester.pumpWidget(MaterialApp(
       home: Material(
@@ -136,14 +141,21 @@ void main() {
     orderListState.currentState?.reset({}, totalPrice: 0, totalCount: 0);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(['pro1 * 3', 'pro2'].join(MetaBlock.string)));
+    await tester.tap(find.byKey(Key('analysis.order_list.1')));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(KIcons.back));
     await tester.pumpAndSettle();
   });
 
+  setUp(() async {
+    final currency = CurrencyProvider();
+    when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+    LOG_LEVEL = 0;
+    await currency.setCurrency(CurrencyTypes.TWD);
+  });
+
   setUpAll(() {
-    initializeProviders();
+    initializeCache();
   });
 }
