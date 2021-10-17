@@ -5,7 +5,6 @@ import 'package:possystem/translator.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/order_info.dart';
-import 'widgets/upgrade_alert.dart';
 
 class HomeScreen extends StatelessWidget {
   static const icons = {
@@ -79,25 +78,21 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      body: SafeArea(
-        child: UpgradeAlert(
-          child: Padding(
-            padding: const EdgeInsets.all(kSpacing3),
-            child: Column(
-              children: [
-                OrderInfo(),
-                const SizedBox(height: kSpacing2),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: icons,
-                    ),
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(kSpacing3),
+        child: Column(
+          children: [
+            OrderInfo(),
+            const SizedBox(height: kSpacing2),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: icons,
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -114,6 +109,7 @@ class _LabledIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = TextButton(
+      key: Key('home.${item.label}'),
       onPressed: () => Navigator.of(context).pushNamed(item.route),
       style: TextButton.styleFrom(shape: CircleBorder()),
       child: Column(

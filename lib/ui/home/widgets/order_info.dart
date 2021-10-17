@@ -34,6 +34,7 @@ class OrderInfo extends StatelessWidget {
             version: 1,
             order: 99,
             child: ElevatedButton(
+              key: Key('home.order'),
               onPressed: () => Navigator.of(context).pushNamed(Routes.order),
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
