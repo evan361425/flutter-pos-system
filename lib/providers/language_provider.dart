@@ -29,7 +29,7 @@ class LanguageProvider extends ChangeNotifier {
   ];
 
   /// List of all supported locales
-  static const Locale defaultLocale = Locale('en', 'US');
+  static const Locale defaultLocale = Locale('zh', 'TW');
 
   Locale? _locale;
 
