@@ -14,6 +14,8 @@ class AnalysisScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<Seller>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('analysis.title')),
@@ -28,13 +30,10 @@ class AnalysisScreen extends StatelessWidget {
   }
 
   Widget _buildCalendar({required bool isPortrait}) {
-    return ChangeNotifierProvider.value(
-      value: Seller.instance,
-      child: CalendarWrapper(
-        isPortrait: isPortrait,
-        handleDaySelected: _handleDaySelected,
-        searchCountInMonth: _searchCountInMonth,
-      ),
+    return CalendarWrapper(
+      isPortrait: isPortrait,
+      handleDaySelected: _handleDaySelected,
+      searchCountInMonth: _searchCountInMonth,
     );
   }
 
@@ -43,9 +42,8 @@ class AnalysisScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: _buildCalendar(isPortrait: false)),
-        Expanded(
-          child: Center(child: _buildOrderList()),
-        ),
+        // TODO: check center usage
+        Expanded(child: Center(child: _buildOrderList())),
       ],
     );
   }

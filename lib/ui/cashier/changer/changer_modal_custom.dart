@@ -9,11 +9,11 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 class ChangerModalCustom extends StatefulWidget {
-  final void Function() handleFavoriteAdded;
+  final VoidCallback afterFavoriteAdded;
 
   const ChangerModalCustom({
     Key? key,
-    required this.handleFavoriteAdded,
+    required this.afterFavoriteAdded,
   }) : super(key: key);
 
   @override
@@ -173,7 +173,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
             CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
-    widget.handleFavoriteAdded();
+    widget.afterFavoriteAdded();
   }
 
   void handleUnitChanged(num? value) {

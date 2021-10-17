@@ -45,9 +45,6 @@ class Cashier extends ChangeNotifier {
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
 
-  /// Add [count] money of unit at [index] to cashier
-  Future<void> add(int index, int count) => update({index: count});
-
   Future<void> addFavorite(CashierChangeBatchObject item) {
     _favorites.add(item);
 
@@ -179,20 +176,23 @@ class Cashier extends ChangeNotifier {
     return update(deltas);
   }
 
+  /// Add [count] money of unit at [index] to cashier
+  Future<void> plus(int index, int count) => update({index: count});
+
   /// When [Currency] changed, it must be fired
   void reset() async {
     _recordName = CurrencyProvider.instance.currency;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 
-    await setCurrent(record[_CURRENT], CurrencyProvider.instance.unitList);
+    await setCurrent(record[_CURRENT]);
     await setFavorite(record[_FAVORITES]);
 
     if (record[_DEFAULT] != null) {
-      await setDefault(record: record[_DEFAULT]!);
+      await setDefault(record[_DEFAULT] as Iterable);
     }
   }
 
-  Future<void> setCurrent(Object? record, List<num> currency) async {
+  Future<void> setCurrent(Object? record) async {
     try {
       // if null, set to empty units
       assert(record != null);
@@ -210,7 +210,8 @@ class Cashier extends ChangeNotifier {
       _current
         ..clear()
         ..addAll([
-          for (var unit in currency) CashierUnitObject(unit: unit, count: 0)
+          for (var unit in CurrencyProvider.instance.unitList)
+            CashierUnitObject(unit: unit, count: 0)
         ]);
 
       // reset to empty
@@ -220,11 +221,9 @@ class Cashier extends ChangeNotifier {
 
   /// Set default data
   ///
-  /// If [record] is null, [useCurrent] must be true
-  Future<void> setDefault({Object record = '', bool useCurrent = false}) async {
-    assert(record != '' || useCurrent);
-
-    if (useCurrent) {
+  /// If [record] is null, it will use current currency
+  Future<void> setDefault([Iterable? record]) async {
+    if (record == null) {
       _default
         ..clear()
         ..addAll([
@@ -232,18 +231,17 @@ class Cashier extends ChangeNotifier {
             CashierUnitObject(unit: item.unit, count: item.count)
         ]);
 
-      await _updateDefaultStorage();
-    } else {
-      try {
-        _default
-          ..clear()
-          ..addAll([
-            for (var item in record as Iterable)
-              CashierUnitObject.fromMap(item.cast<String, num>())
-          ]);
-      } catch (e, stack) {
-        await error(e.toString(), 'cashier.fetch.unit.error', stack);
-      }
+      return _updateDefaultStorage();
+    }
+    try {
+      _default
+        ..clear()
+        ..addAll([
+          for (var item in record)
+            CashierUnitObject.fromMap(item.cast<String, num>())
+        ]);
+    } catch (e, stack) {
+      await error(e.toString(), 'cashier.fetch.unit.error', stack);
     }
   }
 
@@ -332,9 +330,11 @@ class Cashier extends ChangeNotifier {
     });
   }
 
-  Future<void> _updateFavoriteStorage() {
-    return Storage.instance.set(Stores.cashier, {
+  Future<void> _updateFavoriteStorage() async {
+    await Storage.instance.set(Stores.cashier, {
       '$_recordName.$_FAVORITES': _favorites.map((e) => e.toMap()).toList(),
     });
+
+    notifyListeners();
   }
 }

@@ -27,21 +27,18 @@ class _ChangerModalState extends State<ChangerModal>
       labelColor: theme.indicatorColor,
       unselectedLabelColor: theme.hintColor,
       tabs: [
-        Tab(text: '常用'),
-        Tab(text: '手動'),
+        Tab(key: Key('cashier.changer.favorite'), text: '常用'),
+        Tab(key: Key('cashier.changer.custom'), text: '手動'),
       ],
     );
     final tabBarView = TabBarView(controller: controller, children: [
       ChangerModalFavorite(
         key: favoriteState,
-        handleAdd: () => controller.animateTo(1),
+        emptyAction: () => controller.animateTo(1),
       ),
       ChangerModalCustom(
         key: customState,
-        handleFavoriteAdded: () {
-          controller.animateTo(0);
-          favoriteState.currentState?.reset();
-        },
+        afterFavoriteAdded: () => controller.animateTo(0),
       ),
     ]);
 
@@ -51,7 +48,11 @@ class _ChangerModalState extends State<ChangerModal>
         leading: PopButton(),
         title: Text('換錢'),
         actions: [
-          AppbarTextButton(onPressed: handleApply, child: Text('套用')),
+          AppbarTextButton(
+            key: Key('cashier.changer.apply'),
+            onPressed: handleApply,
+            child: Text('套用'),
+          ),
         ],
       ),
       body: DefaultTabController(

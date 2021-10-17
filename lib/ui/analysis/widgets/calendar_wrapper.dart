@@ -1,10 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
@@ -81,21 +79,13 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    context.watch<Seller>();
+  void initState() {
+    super.initState();
+    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
 
     _loadedMonths.clear();
     _loadedCounts.clear();
     _searchCountInMonth(_selectedDay);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
   }
 
   Widget? _badgeBuilder(BuildContext context, DateTime day, List<Null> value) {
