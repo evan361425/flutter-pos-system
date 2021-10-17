@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/ui/stock/replenishment/replenishment_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -65,6 +66,7 @@ class Routes {
   static const String menuQuantity = 'menu/quantity';
   static const String orderCustomer = 'order/customer';
   static const String orderCalculator = 'order/calculator';
+  static const String stockReplenishment = 'stock/replenishment';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
@@ -147,6 +149,7 @@ class Routes {
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) =>
         QuantityModal(quantity: arg<Quantity?>(context)),
+    stockReplenishment: (context) => ReplenishmentScreen(),
     stockReplenishmentModal: (context) =>
         ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
   };

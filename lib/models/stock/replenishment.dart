@@ -29,7 +29,7 @@ class Replenishment extends NotifyModel {
         data: object.data,
       );
 
-  void apply() => Stock.instance.applyAmounts(data);
+  Future<void> apply() => Stock.instance.applyAmounts(data);
 
   num? getNumOfId(String id) => data[id];
 

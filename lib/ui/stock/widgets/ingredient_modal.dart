@@ -63,6 +63,7 @@ class _IngredientModalState extends State<IngredientModal>
             default:
               final product = ingredients[index - 2].product;
               return CardTile(
+                key: Key('stock.ingredient.${product.id}'),
                 title: Text(
                   '${product.catalog.name} - ${product.name}',
                 ),
@@ -97,6 +98,7 @@ class _IngredientModalState extends State<IngredientModal>
           validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
         ),
         TextFormField(
+          key: Key('stock.ingredient.amount'),
           controller: _amountController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,

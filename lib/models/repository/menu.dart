@@ -44,10 +44,11 @@ class Menu extends ChangeNotifier
 
     items.forEach((catalog) {
       catalog.items.forEach((product) {
-        final ingredient = product.getItem(ingredientId);
-        if (ingredient != null) {
-          result.add(ingredient);
-        }
+        product.items.forEach((ing) {
+          if (ing.ingredient.id == ingredientId) {
+            result.add(ing);
+          }
+        });
       });
     });
 
@@ -70,10 +71,11 @@ class Menu extends ChangeNotifier
     items.forEach((catalog) {
       catalog.items.forEach((product) {
         product.items.forEach((ingredient) {
-          final quantity = ingredient.getItem(quantityId);
-          if (quantity != null) {
-            result.add(quantity);
-          }
+          ingredient.items.forEach((qua) {
+            if (qua.quantity.id == quantityId) {
+              result.add(qua);
+            }
+          });
         });
       });
     });
@@ -88,13 +90,13 @@ class Menu extends ChangeNotifier
   Future<void> removeIngredients(String id) {
     final ingredients = getIngredients(id);
 
-    return _remove(ingredients.map((e) => e.product), ingredients);
+    return _remove(ingredients.map((e) => e.product).toList(), ingredients);
   }
 
   Future<void> removeQuantities(String id) {
     final quantities = getQuantities(id);
 
-    return _remove(quantities.map((e) => e.ingredient), quantities);
+    return _remove(quantities.map((e) => e.ingredient).toList(), quantities);
   }
 
   /// Search products by [text].
@@ -144,16 +146,17 @@ class Menu extends ChangeNotifier
     return sorted.map<Product>((e) => e.key);
   }
 
-  Future<void> _remove(Iterable<Repository> repos, List<Model> items) {
+  Future<void> _remove(List<Repository> repos, List<Model> items) async {
     if (items.isEmpty) return Future.value();
 
     final updateData = {for (var item in items) item.prefix: null};
 
-    final id = items.first.id;
-    repos.forEach((repo) => repo.removeItem(id));
+    for (var i = 0; i < items.length; i++) {
+      repos[i].removeItem(items[i].id);
+    }
+
+    await Storage.instance.set(Stores.menu, updateData);
 
     notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
   }
 }

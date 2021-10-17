@@ -18,6 +18,7 @@ class DeleteDialog extends StatelessWidget {
       actions: <Widget>[
         PopButton(title: tt('cancel')),
         ElevatedButton(
+          key: Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
             primary: theme.errorColor,

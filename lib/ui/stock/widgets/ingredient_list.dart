@@ -28,7 +28,7 @@ class IngredientList extends StatelessWidget {
     );
   }
 
-  Future<void> _handleDelete(ingredient) async {
+  Future<void> _handleDelete(Ingredient ingredient) async {
     await ingredient.remove();
     return Menu.instance.removeIngredients(ingredient.id);
   }
@@ -65,9 +65,10 @@ class _IngredientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ListTile(
-      title:
-          Text(ingredient.name, style: Theme.of(context).textTheme.headline6),
+      key: Key('stock.${ingredient.id}'),
+      title: Text(ingredient.name, style: theme.textTheme.headline6),
       subtitle: MetaBlock.withString(context, <String>[
         '庫存：${ingredient.currentAmount ?? '無'}',
         '紀錄：${ingredient.lastAmount ?? '無'}',
@@ -76,26 +77,24 @@ class _IngredientTile extends StatelessWidget {
         spacing: kSpacing1,
         children: <Widget>[
           IconFilledButton(
-            onPressed: () async {
-              final result = await _showTextDialog(
-                context,
-                defaultValue: ingredient.lastAddAmount?.toString(),
-                title: tt('stock.add_amount', {'name': ingredient.name}),
-              );
-
-              await _updateAmount(result);
-            },
+            key: Key('stock.${ingredient.id}.plus'),
+            onPressed: () => _showTextDialog(
+              context,
+              initialValue: ingredient.lastAddAmount?.toString(),
+              title: tt('stock.add_amount', {'name': ingredient.name}),
+            ).then((value) {
+              if (value != null) ingredient.addAmount(value);
+            }),
             icon: KIcons.add,
           ),
           IconFilledButton(
-            onPressed: () async {
-              final result = await _showTextDialog(
-                context,
-                title: tt('stock.minus_amount', {'name': ingredient.name}),
-              );
-
-              await _updateAmount(result == null ? null : -result);
-            },
+            key: Key('stock.${ingredient.id}.minus'),
+            onPressed: () => _showTextDialog(
+              context,
+              title: tt('stock.minus_amount', {'name': ingredient.name}),
+            ).then((value) {
+              if (value != null) ingredient.addAmount(-value);
+            }),
             icon: KIcons.remove,
           ),
         ],
@@ -105,24 +104,19 @@ class _IngredientTile extends StatelessWidget {
 
   Future<num?> _showTextDialog(
     BuildContext context, {
-    String? defaultValue,
+    String? initialValue,
     required String title,
   }) async {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => SingleTextDialog(
         title: Text(title),
+        initialValue: initialValue ?? '0',
         validator: Validator.positiveNumber(''),
         keyboardType: TextInputType.number,
       ),
     );
 
     return result == null ? null : num.tryParse(result);
-  }
-
-  Future<void> _updateAmount(num? amount) async {
-    if (amount != null) {
-      await ingredient.addAmount(amount);
-    }
   }
 }

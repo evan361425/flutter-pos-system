@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
-import 'package:possystem/ui/stock/widgets/replenishment_actions.dart';
 import 'package:provider/provider.dart';
 
 class StockScreen extends StatelessWidget {
@@ -31,23 +32,39 @@ class StockScreen extends StatelessWidget {
       // this page need to draw lots of data, wait a will to make sure page shown
       body: stock.isEmpty
           ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
-          : _body(stock),
+          : _body(context),
     );
   }
 
-  Widget _body(Stock stock) {
+  Widget _body(BuildContext context) {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(children: [
-          ReplenishmentActions(),
-          HintText(tt('total_count', {'count': stock.length})),
-          HintText('上次補貨時間：${stock.updatedDate ?? '無'}'),
+          HintText('上次補貨時間：${Stock.instance.updatedDate ?? '無'}'),
+          TipTutorial(
+            label: 'replenishment.apply',
+            message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
+            child: TextButton(
+              key: Key('stock.replenisher'),
+              onPressed: () async {
+                final result = await Navigator.of(context).pushNamed(
+                  Routes.stockReplenishment,
+                );
+
+                if (result == true) {
+                  showSuccessSnackbar(context, tt('succss'));
+                }
+              },
+              child: Text('設定採購'),
+            ),
+          ),
+          HintText(tt('total_count', {'count': Stock.instance.length})),
         ]),
       ),
       Expanded(
         child: SingleChildScrollView(
-          child: IngredientList(ingredients: stock.itemList),
+          child: IngredientList(ingredients: Stock.instance.itemList),
         ),
       ),
     ]);

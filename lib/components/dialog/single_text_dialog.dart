@@ -34,6 +34,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         child: Form(
           key: form,
           child: TextFormField(
+            key: Key('text_dialog.text'),
             controller: textController,
             autofocus: true,
             onSaved: onSubmit,
