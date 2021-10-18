@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -25,6 +26,7 @@ class ReplenishmentScreen extends StatelessWidget {
         leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('replenisher.add'),
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.stockReplenishmentModal),
         tooltip: '新增採購種類',
@@ -37,9 +39,16 @@ class ReplenishmentScreen extends StatelessWidget {
           child: HintText(tt('total_count', {'count': replenisher.length})),
         ),
         Expanded(
-          child: ListView(children: [
-            for (final item in replenisher.items) _ReplenishmentTile(item)
-          ]),
+          child: SingleChildScrollView(
+            child: SlidableItemList<Replenishment, int>(
+              handleDelete: (item) => item.remove(),
+              deleteValue: 1,
+              warningContextBuilder: (_, item) =>
+                  Text(tt('delete_confirm', {'name': item.name})),
+              items: replenisher.itemList,
+              tileBuilder: (_, index, item) => _ReplenishmentTile(item),
+            ),
+          ),
         ),
       ]),
     );
@@ -54,11 +63,12 @@ class _ReplenishmentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        key: Key('replenishment.${item.id}'),
+        key: Key('replenisher.${item.id}'),
         title: Text(item.name),
         subtitle: Text('會影響 ${item.data.length} 項成份'),
         onTap: () => handleApply(context),
         trailing: IconButton(
+          key: Key('replenisher.${item.id}.edit'),
           onPressed: () => Navigator.of(context).pushNamed(
             Routes.stockReplenishmentModal,
             arguments: item,

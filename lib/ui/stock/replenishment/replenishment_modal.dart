@@ -72,14 +72,14 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
 
   Widget _fieldIngredient(Ingredient ingredient) {
     return TextFormField(
+      key: Key('replenishment.ingredients.${ingredient.id}'),
       onSaved: (String? value) {
         final numValue = num.tryParse(value!);
         if (numValue != null && numValue != 0) {
           updateData[ingredient.id] = numValue;
         }
       },
-      initialValue:
-          widget.replenishment?.getNumOfId(ingredient.id)?.toString() ?? '',
+      initialValue: widget.replenishment?.getNumOfId(ingredient.id)?.toString(),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
@@ -91,6 +91,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
 
   Widget _fieldName(TextTheme textTheme) {
     return TextFormField(
+      key: Key('replenishment.name'),
       controller: _nameController,
       textInputAction: TextInputAction.done,
       textCapitalization: TextCapitalization.words,
@@ -118,13 +119,13 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (widget.isNew) {
-      final model = Replenishment(name: object.name, data: object.data);
-
-      await Replenisher.instance.setItem(model);
-    } else {
+    if (!widget.isNew) {
       await widget.replenishment!.update(object);
     }
+
+    final model = widget.replenishment ??
+        Replenishment(name: object.name, data: object.data);
+    await Replenisher.instance.setItem(model);
 
     Navigator.of(context).pop();
   }

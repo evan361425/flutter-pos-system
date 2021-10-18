@@ -4,7 +4,7 @@ import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
-class Replenishment extends NotifyModel {
+class Replenishment with Model<ReplenishmentObject> {
   /// ingredient id => add number
   final Map<String, num> data;
 
@@ -18,8 +18,8 @@ class Replenishment extends NotifyModel {
     String? id,
     String name = 'replenishment',
     Map<String, num>? data,
-  })  : data = data ?? {},
-        super(id) {
+  }) : data = data ?? {} {
+    this.id = id ?? generateId();
     this.name = name;
   }
 
@@ -35,7 +35,9 @@ class Replenishment extends NotifyModel {
 
   @override
   void removeFromRepo() {
-    Replenisher.instance.removeItem(id);
+    Replenisher.instance
+      ..removeItem(id)
+      ..notifyItem();
   }
 
   @override
