@@ -36,7 +36,7 @@ class _QuantityModalState extends State<QuantityModal>
   List<Widget> formFields() {
     return [
       TextFormField(
-        key: Key('quantities.quantity.name'),
+        key: Key('quantity.name'),
         controller: _nameController,
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
@@ -52,7 +52,7 @@ class _QuantityModalState extends State<QuantityModal>
         validator: Validator.textLimit(tt('stock.quantity.label.name'), 30),
       ),
       TextFormField(
-        key: Key('quantities.quantity.proportion'),
+        key: Key('quantity.proportion'),
         controller: _proportionController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,

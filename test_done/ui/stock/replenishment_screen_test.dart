@@ -85,7 +85,6 @@ void main() {
       await tester.tap(find.byKey(Key('replenisher.add')));
       await tester.pumpAndSettle();
 
-      // should failed
       await tester.enterText(find.byKey(Key('replenishment.name')), 'r-1');
       await tester.enterText(
           find.byKey(Key('replenishment.ingredients.i-1')), '1');

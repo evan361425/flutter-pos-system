@@ -39,6 +39,7 @@ class QuantityScreen extends StatelessWidget {
         leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('quantities.add'),
         onPressed: navigateNewQuantity,
         tooltip: tt('stock.quantity.add'),
         child: Icon(KIcons.add),

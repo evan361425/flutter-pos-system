@@ -29,7 +29,9 @@ class Quantity extends NotifyModel<QuantityObject> with SearchableModel {
 
   @override
   void removeFromRepo() {
-    Quantities.instance.removeItem(prefix);
+    Quantities.instance
+      ..removeItem(prefix)
+      ..notifyItem();
   }
 
   @override
