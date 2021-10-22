@@ -89,16 +89,12 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveBatch(Iterable<_BatchData> data) {
-    final batch = Database.instance.db.batch();
-    data.forEach((item) {
-      batch.update(
-        repoTableName,
-        {item.key: item.value},
-        where: '$idName = ?',
-        whereArgs: [item.id],
-      );
-    });
-    return batch.commit();
+    return Database.instance.batchUpdate(
+      repoTableName,
+      data.map((e) => {e.key: e.value}).toList(),
+      where: '$idName = ?',
+      whereArgs: data.map((e) => [e.id]).toList(),
+    );
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' hide Database;
@@ -88,6 +90,22 @@ class Database {
 
   Future<int> push(String table, Map<String, Object?> data) {
     return db.insert(table, data);
+  }
+
+  Future<List<Object?>> batchUpdate(
+    String table,
+    List<Map<String, Object?>> data, {
+    required String where,
+    required List<List<Object>> whereArgs,
+  }) {
+    final batch = db.batch();
+    final maxLength = min(data.length, whereArgs.length);
+
+    for (var i = 0; i < maxLength; i++) {
+      batch.update(table, data[i], where: where, whereArgs: whereArgs[i]);
+    }
+
+    return batch.commit();
   }
 
   Future<List<Map<String, Object?>>> query(

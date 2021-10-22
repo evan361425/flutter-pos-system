@@ -35,14 +35,18 @@ void main() {
       // pop
       await tester.pumpAndSettle();
 
-      final setting = settings.items.first;
       final w = find.byKey(Key('customer_settings.1')).evaluate().first.widget;
-
       expect(((w as ExpansionTile).title as Text).data, equals('cs-1'));
+
+      final setting = settings.items.first;
       expect(setting.defaultOption, isNull);
       expect(setting.index, equals(1));
-      // default value
       expect(setting.mode, equals(CustomerSettingOptionMode.statOnly));
+
+      verify(database.push(
+        CustomerSetting.TABLE,
+        argThat(equals({'name': 'cs-1', 'index': 1, 'mode': 0})),
+      ));
     });
 
     Future<void> buildAppWithSettings(WidgetTester tester) async {
@@ -101,14 +105,14 @@ void main() {
     testWidgets('Edit setting', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        any,
+        CustomerSetting.TABLE,
         1,
         argThat(equals({'name': 'new', 'mode': 2})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((_) => Future.value(1));
       // need to setup option
       when(database.update(
-        any,
+        CustomerSetting.OPTION_TABLE,
         1,
         argThat(equals({'modeValue': null})),
         keyName: anyNamed('keyName'),
@@ -136,10 +140,10 @@ void main() {
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final setting = CustomerSettings.instance.items.first;
       final w = find.byKey(Key('customer_settings.1')).evaluate().first.widget;
-
       expect(((w as ExpansionTile).title as Text).data, equals('new'));
+
+      final setting = CustomerSettings.instance.items.first;
       expect(setting.mode, equals(CustomerSettingOptionMode.values[2]));
       expect(setting.items.every((option) => option.modeValue == null), isTrue);
     });
@@ -147,9 +151,9 @@ void main() {
     testWidgets('Delete setting', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        any,
+        CustomerSetting.TABLE,
         1,
-        argThat(equals({'name': 'new', 'mode': 2})),
+        argThat(equals({'isDelete': 1})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((_) => Future.value(1));
 
@@ -169,16 +173,30 @@ void main() {
 
     testWidgets('Reorder setting', (tester) async {
       await buildAppWithSettings(tester);
-      when(database.delete(any, 1)).thenAnswer((_) => Future.value(1));
+      when(database.batchUpdate(
+        CustomerSetting.TABLE,
+        argThat(equals([
+          {'index': 1},
+          {'index': 2},
+        ])),
+        where: argThat(equals('id = ?'), named: 'where'),
+        whereArgs: argThat(
+            equals([
+              ['2'],
+              ['1'],
+            ]),
+            named: 'whereArgs'),
+      )).thenAnswer((_) => Future.value([]));
 
       await tester.tap(find.byKey(Key('customer_settings.action')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
+      final rect = tester.getRect(find.byKey(Key('reorder.0')));
 
       await tester.drag(
         find.byIcon(Icons.reorder_sharp).first,
-        const Offset(0, 500.0),
+        Offset(0, rect.height + rect.top),
       );
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
@@ -188,8 +206,8 @@ void main() {
       final itemList = CustomerSettings.instance.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('2'));
-      expect(itemList[1].id, equals('3'));
-      expect(itemList[2].id, equals('1'));
+      expect(itemList[1].id, equals('1'));
+      expect(itemList[2].id, equals('3'));
     });
 
     testWidgets('Add option', (tester) async {});
