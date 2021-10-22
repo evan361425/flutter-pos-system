@@ -35,7 +35,8 @@ ON `order` (createdAt);
   `name` TEXT NOT NULL,
   `index` INTEGER NOT NULL,
   isDefault INTEGER NOT NULL DEFAULT 0,
-  modeValue REAL
+  modeValue REAL,
+  isDelete INTEGER NOT NULL DEFAULT 0
 );''',
     '''CREATE TABLE `customer_setting_combinations` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

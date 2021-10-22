@@ -119,7 +119,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
     }
     if (isDefault != null && isDefault != option.isDefault) {
       option.isDefault = isDefault!;
-      result['isDefault'] = isDefault!;
+      result['isDefault'] = isDefault! ? 1 : 0;
     }
     if (modeValue != option.modeValue) {
       option.modeValue = modeValue;

@@ -19,10 +19,10 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   Future<void> addItem(T item) async {
     if (!hasItem(item.id)) {
+      item.repository = this;
       await saveItem(item);
 
       _items[item.id] = item;
-      item.repository = this;
 
       notifyItem();
     }

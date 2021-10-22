@@ -61,6 +61,7 @@ class _CustomerSettingCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
             child: Row(children: [
               ElevatedButton.icon(
+                key: Key('$key.add'),
                 onPressed: () => Navigator.of(context).pushNamed(
                   Routes.customerSettingOption,
                   arguments: setting,
@@ -115,6 +116,7 @@ class _OptionTile extends StatelessWidget {
     final subtitle = option.modeValueName;
 
     return ListTile(
+      key: Key('customer_setting.${option.setting.id}.${option.id}'),
       title: Text(option.name, style: Theme.of(context).textTheme.headline6),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
       trailing: option.isDefault ? OutlinedText('預設') : null,

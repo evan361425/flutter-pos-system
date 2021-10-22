@@ -77,6 +77,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
     return [
       TextFormField(
+        key: Key('customer_setting_option.name'),
         controller: _nameController,
         textInputAction: widget.setting.shouldHaveModeValue
             ? TextInputAction.next
@@ -93,6 +94,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         validator: Validator.textLimit('選項名稱', 50),
       ),
       CheckboxListTile(
+        key: Key('customer_setting_option.isDefault'),
         controlAffinity: ListTileControlAffinity.leading,
         value: isDefault,
         selected: isDefault,
@@ -101,6 +103,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
       ),
       widget.setting.shouldHaveModeValue
           ? TextFormField(
+              key: Key('customer_setting_option.modeValue'),
               controller: _modeValueController,
               textInputAction: TextInputAction.send,
               keyboardType: TextInputType.number,
@@ -132,9 +135,12 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         ),
       );
 
-      if (confirmed != true) return;
+      if (confirmed == true) {
+        setState(() => isDefault = value!);
+      }
+    } else {
+      setState(() => isDefault = value!);
     }
-    setState(() => isDefault = value ?? false);
   }
 
   @override
