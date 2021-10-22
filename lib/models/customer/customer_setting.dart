@@ -6,13 +6,13 @@ import '../repository.dart';
 import '../repository/customer_settings.dart';
 import 'customer_setting_option.dart';
 
-class CustomerSetting extends NotifyModel<CustomerSettingObject>
+class CustomerSetting extends Model<CustomerSettingObject>
     with
-        OrderableModel<CustomerSettingObject>,
-        DBModel<CustomerSettingObject>,
+        ModelOrderable<CustomerSettingObject>,
+        ModelDB<CustomerSettingObject>,
         Repository<CustomerSettingOption>,
-        NotifyRepository<CustomerSettingOption>,
-        OrderablRepository<CustomerSettingOption> {
+        RepositoryDB<CustomerSettingOption>,
+        RepositoryOrderable<CustomerSettingOption> {
   static const TABLE = 'customer_settings';
 
   static const OPTION_TABLE = 'customer_setting_options';
@@ -20,7 +20,10 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
   CustomerSettingOptionMode mode;
 
   @override
-  final String logCode = 'customers.setting';
+  final String modelTableName = TABLE;
+
+  @override
+  final String repoTableName = OPTION_TABLE;
 
   CustomerSetting({
     String? id,
@@ -36,15 +39,11 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
 
   factory CustomerSetting.fromObject(CustomerSettingObject object) {
     return CustomerSetting(
-        id: object.id,
-        name: object.name!,
-        index: object.index!,
-        mode: object.mode!,
-        options: {
-          for (var option in object.options)
-            option.id!: CustomerSettingOption.fromObject(option)
-        })
-      .._prepareOptions();
+      id: object.id,
+      name: object.name!,
+      index: object.index!,
+      mode: object.mode!,
+    );
   }
 
   CustomerSettingOption? get defaultOption {
@@ -55,39 +54,59 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
     }
   }
 
+  @override
+  CustomerSettings get repository => CustomerSettings.instance;
+
+  @override
+  set repository(repo) {}
+
   bool get shouldHaveModeValue => mode != CustomerSettingOptionMode.statOnly;
 
   @override
-  String get tableName => TABLE;
-
-  @override
-  Future<void> addItemToStorage(CustomerSettingOption item) async {
-    final map = item.toObject().toMap();
-    map['customerSettingId'] = int.parse(id);
-
-    final optionId = await Database.instance.push(OPTION_TABLE, map);
-    item.id = optionId.toString();
+  Future<CustomerSettingOption> buildItem(Map<String, Object?> value) async {
+    final object = CustomerSettingOptionObject.build(value);
+    return CustomerSettingOption.fromObject(object);
   }
 
   Future<void> clearDefault() async {
     final option = defaultOption;
-    if (option == null) return;
 
     // `modeValue` must be set, avoid setting it to null
-    await option.update(CustomerSettingOptionObject(
+    await option?.update(CustomerSettingOptionObject(
       isDefault: false,
       modeValue: option.modeValue,
     ));
   }
 
-  @override
-  void notifyItem() {
-    notifyListeners();
-    CustomerSettings.instance.notifyItem();
+  Future<int> clearModeValues() {
+    for (final item in items) {
+      item.modeValue = null;
+    }
+
+    return Database.instance.update(
+      repoTableName,
+      int.parse(id),
+      {'modeValue': null},
+      keyName: 'customerSettingId',
+    );
   }
 
   @override
-  void removeFromRepo() => CustomerSettings.instance.removeItem(id);
+  Future<List<Map<String, Object?>>> fetchItems() {
+    return Database.instance.query(
+      repoTableName,
+      where: 'customerSettingId = ?',
+      whereArgs: [int.parse(id)],
+    );
+  }
+
+  /// Update options' [modeValue] if [mode] changed
+  @override
+  Future<void> save(Map<String, Object?> data) async {
+    await super.save(data);
+
+    await clearModeValues();
+  }
 
   @override
   CustomerSettingObject toObject() => CustomerSettingObject(
@@ -97,25 +116,4 @@ class CustomerSetting extends NotifyModel<CustomerSettingObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
-
-  /// Update options' [modeValue] if [mode] changed
-  @override
-  Future<void> updateItemToDB(Map<String, Object?> data) async {
-    final intId = int.parse(id);
-    await Database.instance.update(tableName, intId, data);
-
-    if (data['mode'] == null) return;
-
-    for (final item in items) {
-      item.modeValue = null;
-    }
-    await Database.instance.update(
-      OPTION_TABLE,
-      intId,
-      {'modeValue': null},
-      keyName: 'customerSettingId',
-    );
-  }
-
-  void _prepareOptions() => items.forEach((e) => e.setting = this);
 }

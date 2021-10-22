@@ -11,16 +11,12 @@ import 'package:possystem/services/storage.dart';
 class Menu extends ChangeNotifier
     with
         Repository<Catalog>,
-        NotifyRepository<Catalog>,
-        OrderablRepository<Catalog>,
-        InitilizableRepository<Catalog> {
+        RepositoryStorage<Catalog>,
+        RepositoryOrderable<Catalog> {
   static late Menu instance;
 
   @override
   final Stores storageStore = Stores.menu;
-
-  @override
-  final String repositoryName = 'menu';
 
   Menu() {
     instance = this;
@@ -30,7 +26,7 @@ class Menu extends ChangeNotifier
       itemList.where((e) => e.isNotEmpty).toList();
 
   @override
-  Catalog buildModel(String id, Map<String, Object?> value) {
+  Catalog buildItem(String id, Map<String, Object?> value) {
     return Catalog.fromObject(
       CatalogObject.build({
         'id': id,
@@ -88,15 +84,11 @@ class Menu extends ChangeNotifier
   }
 
   Future<void> removeIngredients(String id) {
-    final ingredients = getIngredients(id);
-
-    return _remove(ingredients.map((e) => e.product).toList(), ingredients);
+    return _removeBatch(getIngredients(id));
   }
 
   Future<void> removeQuantities(String id) {
-    final quantities = getQuantities(id);
-
-    return _remove(quantities.map((e) => e.ingredient).toList(), quantities);
+    return _removeBatch(getQuantities(id));
   }
 
   /// Search products by [text].
@@ -146,17 +138,13 @@ class Menu extends ChangeNotifier
     return sorted.map<Product>((e) => e.key);
   }
 
-  Future<void> _remove(List<Repository> repos, List<Model> items) async {
-    if (items.isEmpty) return Future.value();
+  Future<void> _removeBatch(List<Model> items) async {
+    if (items.isEmpty) return;
 
-    final updateData = {for (var item in items) item.prefix: null};
+    await Storage.instance.set(storageStore, {
+      for (final item in items) item.prefix: null,
+    });
 
-    for (var i = 0; i < items.length; i++) {
-      repos[i].removeItem(items[i].id);
-    }
-
-    await Storage.instance.set(Stores.menu, updateData);
-
-    notifyListeners();
+    items.forEach((item) => item.repository.removeItem(item.id));
   }
 }

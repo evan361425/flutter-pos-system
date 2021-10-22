@@ -10,13 +10,9 @@ import '../repository.dart';
 class Stock extends ChangeNotifier
     with
         Repository<Ingredient>,
-        NotifyRepository<Ingredient>,
-        InitilizableRepository,
-        SearchableRepository {
+        RepositoryStorage<Ingredient>,
+        RepositorySearchable<Ingredient> {
   static late Stock instance;
-
-  @override
-  final String repositoryName = 'stock';
 
   @override
   final Stores storageStore = Stores.stock;
@@ -26,8 +22,6 @@ class Stock extends ChangeNotifier
   }
 
   String? get updatedDate {
-    if (isEmpty) return null;
-
     DateTime? lastest;
     items.forEach((element) {
       if (lastest == null) {
@@ -40,27 +34,27 @@ class Stock extends ChangeNotifier
     return Util.timeToDate(lastest);
   }
 
-  Future<void> applyAmounts(Map<String, num> amounts) {
+  Future<void> applyAmounts(Map<String, num> amounts) async {
     final updateData = <String, Object>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        final child = getItem(id);
-        if (child != null) {
-          updateData.addAll(child.getUpdateData(amount));
-        }
+        getItem(id)?.getUpdateData(amount).forEach((key, value) {
+          updateData[key] = value;
+        });
       }
     });
 
     if (updateData.isEmpty) return Future.value();
 
-    notifyListeners();
+    // should use [saveBatch] instead
+    await Storage.instance.set(Stores.stock, updateData);
 
-    return Storage.instance.set(Stores.stock, updateData);
+    notifyListeners();
   }
 
   @override
-  Ingredient buildModel(String id, Map<String, Object?> value) {
+  Ingredient buildItem(String id, Map<String, Object?> value) {
     return Ingredient.fromObject(
       IngredientObject.build({
         'id': id,

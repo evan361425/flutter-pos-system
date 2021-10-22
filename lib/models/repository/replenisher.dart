@@ -5,14 +5,8 @@ import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/services/storage.dart';
 
 class Replenisher extends ChangeNotifier
-    with
-        Repository<Replenishment>,
-        NotifyRepository<Replenishment>,
-        InitilizableRepository {
+    with Repository<Replenishment>, RepositoryStorage<Replenishment> {
   static late Replenisher instance;
-
-  @override
-  final String repositoryName = 'Replenisher';
 
   @override
   final Stores storageStore = Stores.replenisher;
@@ -22,7 +16,7 @@ class Replenisher extends ChangeNotifier
   }
 
   @override
-  Replenishment buildModel(String id, Map<String, Object?> value) {
+  Replenishment buildItem(String id, Map<String, Object?> value) {
     return Replenishment.fromObject(
       ReplenishmentObject.build({
         'id': id,

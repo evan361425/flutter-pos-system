@@ -57,6 +57,13 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -64,10 +71,29 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
+  Future<void> updateItem() async {
+    final object = _parseObject();
 
-    super.dispose();
+    if (widget.isNew) {
+      await Replenisher.instance.addItem(Replenishment(
+        name: object.name,
+        data: object.data,
+      ));
+    } else {
+      await widget.replenishment!.update(object);
+    }
+
+    Navigator.of(context).pop();
+  }
+
+  @override
+  String? validate() {
+    final name = _nameController.text;
+
+    if (widget.replenishment?.name != name &&
+        Replenisher.instance.hasName(name)) {
+      return tt('stock.replenisher.error.name');
+    }
   }
 
   Widget _fieldIngredient(Ingredient ingredient) {
@@ -113,30 +139,5 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
     formKey.currentState!.save();
 
     return ReplenishmentObject(name: _nameController.text, data: updateData);
-  }
-
-  @override
-  Future<void> updateItem() async {
-    final object = _parseObject();
-
-    if (!widget.isNew) {
-      await widget.replenishment!.update(object);
-    }
-
-    final model = widget.replenishment ??
-        Replenishment(name: object.name, data: object.data);
-    await Replenisher.instance.setItem(model);
-
-    Navigator.of(context).pop();
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.replenishment?.name != name &&
-        Replenisher.instance.hasName(name)) {
-      return tt('stock.replenisher.error.name');
-    }
   }
 }

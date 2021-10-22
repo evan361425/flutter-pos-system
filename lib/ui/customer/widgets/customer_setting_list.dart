@@ -45,9 +45,11 @@ class _CustomerSettingCard extends StatelessWidget {
     final setting = context.watch<CustomerSetting>();
     final mode = customerSettingOptionModeString[setting.mode];
     final defaultName = setting.defaultOption?.name ?? '無';
+    final key = 'customer_settings.${setting.id}';
 
     return Card(
       child: ExpansionTile(
+        key: Key(key),
         title: Text(setting.name),
         subtitle: MetaBlock.withString(context, [
           '種類：$mode',
@@ -67,6 +69,7 @@ class _CustomerSettingCard extends StatelessWidget {
                 label: Text('新增顧客設定選項'),
               ),
               IconButton(
+                key: Key('$key.more'),
                 onPressed: () => showActions(context, setting),
                 icon: Icon(KIcons.more),
               )

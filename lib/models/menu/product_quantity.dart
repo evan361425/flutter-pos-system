@@ -1,4 +1,5 @@
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
@@ -7,8 +8,10 @@ import '../repository/quantities.dart';
 import '../stock/quantity.dart';
 import 'product_ingredient.dart';
 
-class ProductQuantity
-    with Model<ProductQuantityObject>, SearchableModel<ProductQuantityObject> {
+class ProductQuantity extends Model<ProductQuantityObject>
+    with
+        ModelStorage<ProductQuantityObject>,
+        ModelSearchable<ProductQuantityObject> {
   /// Connect to parent object
   late final ProductIngredient ingredient;
 
@@ -25,9 +28,6 @@ class ProductQuantity
   num additionalPrice;
 
   @override
-  final String logCode = 'menu.quantity';
-
-  @override
   final Stores storageStore = Stores.menu;
 
   ProductQuantity({
@@ -37,9 +37,7 @@ class ProductQuantity
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) {
-    this.id = id ?? generateId();
-
+  }) : super(id) {
     if (ingredient != null) this.ingredient = ingredient;
 
     if (quantity != null) this.quantity = quantity;
@@ -68,15 +66,10 @@ class ProductQuantity
   String get prefix => '${ingredient.prefix}.quantities.$id';
 
   @override
-  void handleUpdated() {
-    ingredient.notifyItem();
-  }
+  ProductIngredient get repository => ingredient;
 
   @override
-  void removeFromRepo() {
-    ingredient.removeItem(id);
-    ingredient.notifyItem();
-  }
+  set repository(Repository repo) => ingredient = repo as ProductIngredient;
 
   @override
   ProductQuantityObject toObject() => ProductQuantityObject(

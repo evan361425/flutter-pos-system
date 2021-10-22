@@ -151,15 +151,12 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     }
 
     if (widget.isNew) {
-      final option = CustomerSettingOption(
+      await widget.setting.addItem(CustomerSettingOption(
         name: object.name!,
-        setting: widget.setting,
         index: widget.setting.newIndex,
         isDefault: isDefault,
         modeValue: object.modeValue,
-      );
-
-      await widget.setting.setItem(option);
+      ));
     } else {
       await widget.option!.update(object);
     }

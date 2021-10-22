@@ -3,16 +3,14 @@ import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/services/database.dart';
-import 'package:possystem/services/storage.dart';
 
 import '../repository.dart';
 
 class CustomerSettings extends ChangeNotifier
     with
         Repository<CustomerSetting>,
-        NotifyRepository<CustomerSetting>,
-        OrderablRepository<CustomerSetting>,
-        DBRepository<CustomerSetting> {
+        RepositoryOrderable<CustomerSetting>,
+        RepositoryDB<CustomerSetting> {
   static const TABLE = 'customer_settings';
 
   static const OPTION_TABLE = 'customer_setting_options';
@@ -22,10 +20,7 @@ class CustomerSettings extends ChangeNotifier
   static late CustomerSettings instance;
 
   @override
-  final Stores storageStore = Stores.customers;
-
-  @override
-  final String tableName = TABLE;
+  final String repoTableName = TABLE;
 
   CustomerSettings() {
     instance = this;
@@ -37,28 +32,13 @@ class CustomerSettings extends ChangeNotifier
       itemList.where((item) => item.isNotEmpty).toList();
 
   @override
-  Future<void> addItemToStorage(CustomerSetting item) async {
-    final object = item.toObject();
-    final id = await Database.instance.push(TABLE, object.toMap());
-    item.id = id.toString();
-
-    for (final option in object.optionsToMap()) {
-      option['customerSettingId'] = id;
-      await Database.instance.push(OPTION_TABLE, option);
-    }
-  }
-
-  @override
   Future<CustomerSetting> buildItem(Map<String, Object?> item) async {
-    final options = await Database.instance.query(
-      OPTION_TABLE,
-      where: 'customerSettingId = ?',
-      whereArgs: [item['id'] as int],
-    );
+    final object = CustomerSettingObject.build(item);
 
-    final object = CustomerSettingObject.build(item, options);
+    final cs = CustomerSetting.fromObject(object);
+    await cs.initialize();
 
-    return CustomerSetting.fromObject(object);
+    return cs;
   }
 
   Future<String> generateCombinationId(

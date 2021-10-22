@@ -134,15 +134,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     final object = _parseObject();
 
     if (widget.isNew) {
-      final quantity = ProductQuantity(
+      await widget.ingredient.addItem(ProductQuantity(
         quantity: Quantities.instance.getItem(quantityId),
-        ingredient: widget.ingredient,
         amount: object.amount!,
         additionalPrice: object.additionalPrice!,
         additionalCost: object.additionalCost!,
-      );
-
-      await quantity.ingredient.setItem(quantity);
+      ));
     } else {
       await widget.quantity!.update(object);
     }
@@ -210,6 +207,17 @@ class _ProductQuantitySearch extends StatelessWidget {
     );
   }
 
+  Widget emptyBuilder(BuildContext context, String text) {
+    return CardTile(
+      title: Text(tt('menu.quantity.add_quantity', {'name': text})),
+      onTap: () async {
+        final quantity = Quantity(name: text);
+        await Quantities.instance.addItem(quantity);
+        Navigator.of(context).pop<Quantity>(quantity);
+      },
+    );
+  }
+
   Widget itemBuilder(BuildContext context, Quantity quantity) {
     return CardTile(
       title: Text(quantity.name),
@@ -219,17 +227,6 @@ class _ProductQuantitySearch extends StatelessWidget {
         icon: Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {
-        Navigator.of(context).pop<Quantity>(quantity);
-      },
-    );
-  }
-
-  Widget emptyBuilder(BuildContext context, String text) {
-    return CardTile(
-      title: Text(tt('menu.quantity.add_quantity', {'name': text})),
-      onTap: () async {
-        final quantity = Quantity(name: text);
-        await Quantities.instance.setItem(quantity);
         Navigator.of(context).pop<Quantity>(quantity);
       },
     );

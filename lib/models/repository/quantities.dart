@@ -7,13 +7,9 @@ import 'package:possystem/services/storage.dart';
 class Quantities extends ChangeNotifier
     with
         Repository<Quantity>,
-        NotifyRepository<Quantity>,
-        InitilizableRepository,
-        SearchableRepository {
+        RepositoryStorage<Quantity>,
+        RepositorySearchable<Quantity> {
   static late Quantities instance;
-
-  @override
-  final String repositoryName = 'Quantities';
 
   @override
   final Stores storageStore = Stores.quantities;
@@ -23,7 +19,7 @@ class Quantities extends ChangeNotifier
   }
 
   @override
-  Quantity buildModel(String id, Map<String, Object?> value) {
+  Quantity buildItem(String id, Map<String, Object?> value) {
     return Quantity.fromObject(
       QuantityObject.build({
         'id': id,

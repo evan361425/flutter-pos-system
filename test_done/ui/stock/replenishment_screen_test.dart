@@ -39,7 +39,7 @@ void main() {
         ),
       ));
 
-      await tester.tap(find.byKey(Key('replenisher.r-1.edit')));
+      await tester.tap(find.byKey(Key('replenisher.r-1')));
       await tester.pumpAndSettle();
 
       // should failed

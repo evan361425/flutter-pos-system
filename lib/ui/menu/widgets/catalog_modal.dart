@@ -31,13 +31,6 @@ class _CatalogModalState extends State<CatalogModal>
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    _nameController = TextEditingController(text: widget.catalog?.name);
-  }
-
-  @override
   List<Widget> formFields() {
     return [
       TextFormField(
@@ -61,19 +54,26 @@ class _CatalogModalState extends State<CatalogModal>
 
   Future<Catalog> getCatalog() async {
     final object = CatalogObject(name: _nameController.text);
+    final catalog = widget.catalog ??
+        Catalog(
+          name: object.name,
+          index: Menu.instance.newIndex,
+        );
 
     if (widget.isNew) {
-      final catalog = Catalog(
-        name: object.name,
-        index: Menu.instance.newIndex,
-      );
-
-      await Menu.instance.setItem(catalog);
-      return catalog;
+      await Menu.instance.addItem(catalog);
     } else {
-      await widget.catalog!.update(object);
-      return widget.catalog!;
+      await catalog.update(object);
     }
+
+    return catalog;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nameController = TextEditingController(text: widget.catalog?.name);
   }
 
   @override

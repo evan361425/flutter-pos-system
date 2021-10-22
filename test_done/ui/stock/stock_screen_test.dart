@@ -62,7 +62,7 @@ void main() {
 
       await tester.tap(find.byKey(Key('stock.replenisher')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('replenisher.r-1')));
+      await tester.tap(find.byKey(Key('replenisher.r-1.apply')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();

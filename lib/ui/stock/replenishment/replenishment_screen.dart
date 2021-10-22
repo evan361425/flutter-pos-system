@@ -66,14 +66,14 @@ class _ReplenishmentTile extends StatelessWidget {
         key: Key('replenisher.${item.id}'),
         title: Text(item.name),
         subtitle: Text('會影響 ${item.data.length} 項成份'),
-        onTap: () => handleApply(context),
+        onTap: () => Navigator.of(context).pushNamed(
+              Routes.stockReplenishmentModal,
+              arguments: item,
+            ),
         trailing: IconButton(
-          key: Key('replenisher.${item.id}.edit'),
-          onPressed: () => Navigator.of(context).pushNamed(
-            Routes.stockReplenishmentModal,
-            arguments: item,
-          ),
-          icon: Icon(KIcons.edit),
+          key: Key('replenisher.${item.id}.apply'),
+          onPressed: () => handleApply(context),
+          icon: Icon(Icons.shopping_cart_sharp),
         ));
   }
 

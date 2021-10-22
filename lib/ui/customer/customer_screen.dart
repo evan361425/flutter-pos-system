@@ -24,6 +24,7 @@ class CustomerScreen extends StatelessWidget {
           leading: PopButton(),
           actions: [
             IconButton(
+              key: Key('customer_settings.action'),
               onPressed: () => _showActions(context),
               icon: Icon(KIcons.more),
             ),

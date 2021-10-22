@@ -4,107 +4,8 @@ import 'package:possystem/models/model.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 
-mixin DBRepository<T extends Model> on NotifyRepository<T> {
-  String get tableName;
-
-  Future<T> buildItem(Map<String, Object?> value);
-
-  Future<List<Map<String, Object?>>> fetchItems() {
-    return Database.instance.query(
-      tableName,
-      where: 'isDelete = ?',
-      whereArgs: [0],
-    );
-  }
-
-  Future<void> initialize() async {
-    try {
-      final items = await fetchItems();
-
-      replaceItems({});
-
-      for (final item in items) {
-        try {
-          addItem(await buildItem(item));
-        } catch (e, stack) {
-          await error(e.toString(), 'db.$tableName.parse.error', stack);
-        }
-      }
-    } catch (e, stack) {
-      print(stack);
-      await error(e.toString(), 'db.$tableName.fetch.error', stack);
-    }
-  }
-}
-
-mixin InitilizableRepository<T extends Model> on NotifyRepository<T> {
-  bool versionChanged = false;
-
-  /// Only use for logging
-  final String repositoryName = 'repository';
-
-  T buildModel(String id, Map<String, Object?> value);
-
-  Future<void> initialize() {
-    return Storage.instance.get(storageStore).then((data) async {
-      data.forEach((id, value) {
-        try {
-          addItem(buildModel(id, value as Map<String, Object?>));
-        } catch (e, stack) {
-          error(e.toString(), '$repositoryName.parse.error', stack);
-        }
-      });
-
-      if (versionChanged) {
-        info(_items.toString(), '$repositoryName.upgrade');
-        await Storage.instance.setAll(storageStore, {
-          for (final item in _items.values)
-            item.prefix: item.toObject().toMap(),
-        });
-      }
-    }).onError((e, stack) {
-      print(stack);
-      error(e.toString(), '$repositoryName.fetch.error', stack);
-    });
-  }
-}
-
-mixin NotifyRepository<T extends Model> on Repository<T>, ChangeNotifier {
-  /// Repository is not always [ChangeNotifier], like `ProductIngredient`
-  @override
-  void notifyItem() => notifyListeners();
-}
-
-mixin OrderablRepository<T extends OrderableModel> on NotifyRepository<T> {
-  /// sorted by index
-  @override
-  List<T> get itemList =>
-      items.toList()..sort((a, b) => a.index.compareTo(b.index));
-
-  /// Get highest index of products plus 1
-  /// 1-index
-  int get newIndex =>
-      isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
-
-  Future<void> reorderItems(List<T> items) async {
-    final updateData = <String, Object>{};
-    var i = 1;
-
-    items.forEach((item) {
-      item.index = i++;
-      updateData.addAll({'${item.prefix}.index': item.index});
-    });
-
-    await Storage.instance.set(storageStore, updateData);
-
-    notifyItem();
-  }
-}
-
-mixin Repository<T extends Model> {
+mixin Repository<T extends Model> on ChangeNotifier {
   Map<String, T> _items = {};
-
-  final Stores storageStore = Stores.menu;
 
   bool get isEmpty => _items.isEmpty;
 
@@ -116,14 +17,15 @@ mixin Repository<T extends Model> {
 
   int get length => _items.length;
 
-  void addItem(T item) => _items[item.id] = item;
+  Future<void> addItem(T item) async {
+    if (!hasItem(item.id)) {
+      await saveItem(item);
 
-  Future<void> addItemToStorage(T item) {
-    return Storage.instance.add(
-      storageStore,
-      item.id,
-      item.toObject().toMap(),
-    );
+      _items[item.id] = item;
+      item.repository = this;
+
+      notifyItem();
+    }
   }
 
   T? getItem(String id) => _items[id];
@@ -132,32 +34,122 @@ mixin Repository<T extends Model> {
 
   bool hasName(String name) => items.any((item) => item.name == name);
 
-  void notifyItem();
+  void notifyItem() => notifyListeners();
+
+  void prepareItem() => items.forEach((item) => item.repository = this);
 
   /// only remove map value and notify listeners
   /// you should remove item by `item.remove()`
   void removeItem(String id) {
     _items.remove(id);
+    notifyItem();
   }
 
   void replaceItems(Map<String, T> map) => _items = map;
 
-  /// add item if not exist and always notify listeners
-  Future<void> setItem(T item) async {
-    if (!hasItem(item.id)) {
-      info(item.toString(), '${item.logCode}.add');
+  Future<void> saveBatch(Iterable<_BatchData> data);
 
-      // add to DB to get ID
-      await addItemToStorage(item);
+  Future<void> saveItem(T item);
+}
 
-      addItem(item);
+mixin RepositoryDB<T extends Model> on Repository<T> {
+  final String idName = 'id';
+
+  final String repoTableName = '';
+
+  Future<T> buildItem(Map<String, Object?> value);
+
+  Future<List<Map<String, Object?>>> fetchItems() {
+    return Database.instance.query(
+      repoTableName,
+      where: 'isDelete = ?',
+      whereArgs: [0],
+    );
+  }
+
+  Future<void> initialize() async {
+    try {
+      final items = await fetchItems();
+
+      for (final itemData in items) {
+        try {
+          final item = await buildItem(itemData);
+          _items[item.id] = item;
+        } catch (e, stack) {
+          await error(e.toString(), 'db.$repoTableName.parse.error', stack);
+        }
+      }
+
+      prepareItem();
+    } catch (e, stack) {
+      print(stack);
+      await error(e.toString(), 'db.$repoTableName.fetch.error', stack);
     }
+  }
 
-    notifyItem();
+  @override
+  Future<void> saveBatch(Iterable<_BatchData> data) {
+    final batch = Database.instance.db.batch();
+    data.forEach((item) {
+      batch.update(
+        repoTableName,
+        {item.key: item.value},
+        where: '$idName = ?',
+        whereArgs: [item.id],
+      );
+    });
+    return batch.commit();
+  }
+
+  @override
+  Future<void> saveItem(T item) async {
+    info(item.toString(), '$repoTableName.add');
+
+    final id = await Database.instance.push(
+      repoTableName,
+      item.toObject().toMap(),
+    );
+
+    item.id = id.toString();
   }
 }
 
-mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
+mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
+  /// sorted by index
+  @override
+  List<T> get itemList =>
+      items.toList()..sort((a, b) => a.index.compareTo(b.index));
+
+  /// Get highest index of products plus 1
+  /// 1-index
+  int get newIndex =>
+      isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
+
+  Future<void> reorderItems(List<T> items) async {
+    var i = 0;
+    final data = items
+        .where((item) {
+          if (item.index != ++i) {
+            item.index = i;
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .map<_BatchData>((item) =>
+            _BatchData(id: item.prefix, key: 'index', value: item.index))
+        .toList();
+
+    if (data.isNotEmpty) {
+      info(data.length.toString(), '${items.first.logName}.reorder');
+      await saveBatch(data);
+
+      notifyItem();
+    }
+  }
+}
+
+mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
   List<T> sortBySimilarity(String text, {int limit = 10}) {
     if (text.isEmpty) {
       return [];
@@ -176,4 +168,71 @@ mixin SearchableRepository<T extends SearchableModel> on Repository<T> {
     final end = similarities.length < limit ? similarities.length : limit;
     return similarities.sublist(0, end).map((e) => getItem(e.key)!).toList();
   }
+}
+
+mixin RepositoryStorage<T extends Model> on Repository<T> {
+  bool versionChanged = false;
+
+  final Stores storageStore = Stores.menu;
+
+  final RepositoryStorageType repoType = RepositoryStorageType.PureRepo;
+
+  T buildItem(String id, Map<String, Object?> value);
+
+  Future<void> initialize() async {
+    try {
+      final data = await Storage.instance.get(storageStore);
+
+      data.forEach((id, value) {
+        try {
+          final item = buildItem(id, value as Map<String, Object?>);
+          _items[item.id] = item;
+        } catch (e, stack) {
+          error(e.toString(), '$storageStore.parse.error', stack);
+        }
+      });
+
+      prepareItem();
+
+      if (versionChanged) {
+        info(_items.toString(), '$storageStore.upgrade');
+        await Storage.instance.setAll(storageStore, {
+          for (final item in _items.values)
+            item.prefix: item.toObject().toMap(),
+        });
+      }
+    } catch (e, stack) {
+      print(stack);
+      await error(e.toString(), '$storageStore.fetch.error', stack);
+    }
+  }
+
+  @override
+  Future<void> saveBatch(Iterable<_BatchData> data) {
+    return Storage.instance.set(storageStore, {
+      for (final item in data) '${item.id}.${item.key}': item.value,
+    });
+  }
+
+  @override
+  Future<void> saveItem(T item) {
+    info(item.toString(), '$storageStore.add');
+
+    final data = item.toObject().toMap();
+    return repoType == RepositoryStorageType.PureRepo
+        ? Storage.instance.add(storageStore, item.id, data)
+        : Storage.instance.set(storageStore, {item.prefix: data});
+  }
+}
+
+enum RepositoryStorageType {
+  PureRepo,
+  RepoModel,
+}
+
+class _BatchData {
+  final String id;
+  final String key;
+  final Object? value;
+  const _BatchData({required this.id, required this.key, this.value});
 }

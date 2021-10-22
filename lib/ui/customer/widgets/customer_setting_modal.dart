@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
@@ -43,6 +44,7 @@ class _CustomerModalState extends State<CustomerModal>
   List<Widget> formFields() {
     return [
       TextFormField(
+        key: Key('customer_setting.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
@@ -57,7 +59,7 @@ class _CustomerModalState extends State<CustomerModal>
         maxLength: 30,
         validator: Validator.textLimit('顧客設定名稱', 30),
       ),
-      Text('顧客設定種類'),
+      TextDivider(label: '顧客設定種類'),
       _CustomerModalModes(
         key: modesKey,
         selectedMode: widget.isNew
@@ -76,13 +78,11 @@ class _CustomerModalState extends State<CustomerModal>
     );
 
     if (widget.isNew) {
-      final setting = CustomerSetting(
+      await CustomerSettings.instance.addItem(CustomerSetting(
         name: object.name!,
         mode: object.mode!,
         index: CustomerSettings.instance.newIndex,
-      );
-
-      await CustomerSettings.instance.setItem(setting);
+      ));
     } else {
       await widget.setting!.update(object);
     }
@@ -132,6 +132,7 @@ class _CustomerModalModesState extends State<_CustomerModalModes>
         for (final mode in CustomerSettingOptionMode.values)
           Expanded(
             child: RadioText(
+              key: Key('customer_setting.modes.${mode.index}'),
               margin: const EdgeInsets.symmetric(horizontal: 2.0),
               groupId: 'customer.setting.mode',
               isSelected: selectedMode == mode,

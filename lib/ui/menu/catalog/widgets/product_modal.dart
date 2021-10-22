@@ -86,22 +86,21 @@ class _ProductModalState extends State<ProductModal>
 
   Future<Product> getProduct() async {
     final object = _parseObject();
+    final product = widget.product ??
+        Product(
+          index: widget.catalog.newIndex,
+          name: object.name!,
+          price: object.price!,
+          cost: object.cost!,
+        );
 
     if (widget.isNew) {
-      final product = Product(
-        catalog: widget.catalog,
-        index: widget.catalog.newIndex,
-        name: object.name!,
-        price: object.price!,
-        cost: object.cost!,
-      );
-
-      await widget.catalog.setItem(product);
-      return product;
+      await widget.catalog.addItem(product);
     } else {
-      await widget.product!.update(object);
-      return widget.product!;
+      await product.update(object);
     }
+
+    return product;
   }
 
   @override

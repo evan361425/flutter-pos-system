@@ -4,8 +4,8 @@ import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -126,15 +126,14 @@ class _IngredientModalState extends State<IngredientModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (!widget.isNew) {
+    if (widget.isNew) {
+      await Stock.instance.addItem(Ingredient(
+        name: object.name!,
+        currentAmount: object.currentAmount!,
+      ));
+    } else {
       await widget.ingredient!.update(object);
     }
-
-    await Stock.instance.setItem(widget.ingredient ??
-        Ingredient(
-          name: object.name!,
-          currentAmount: object.currentAmount!,
-        ));
 
     Navigator.of(context).pop();
   }

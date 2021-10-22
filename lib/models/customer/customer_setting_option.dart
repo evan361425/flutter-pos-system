@@ -1,15 +1,13 @@
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/providers/currency_provider.dart';
-import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
 import 'customer_setting.dart';
 
-class CustomerSettingOption
+class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     with
-        Model<CustomerSettingOptionObject>,
-        DBModel<CustomerSettingOptionObject>,
-        OrderableModel<CustomerSettingOptionObject> {
+        ModelDB<CustomerSettingOptionObject>,
+        ModelOrderable<CustomerSettingOptionObject> {
   static const TABLE = 'customer_setting_options';
 
   /// Connect to parent model
@@ -19,21 +17,14 @@ class CustomerSettingOption
 
   num? modeValue;
 
-  @override
-  final String logCode = 'customers.setting.option';
-
-  @override
-  final Stores storageStore = Stores.customers;
-
   CustomerSettingOption({
-    String? id,
+    String id = '0',
     String name = 'customer setting option',
     int index = 0,
     this.isDefault = false,
     this.modeValue,
     CustomerSetting? setting,
-  }) {
-    this.id = id ?? '0';
+  }) : super(id) {
     this.name = name;
     this.index = index;
 
@@ -49,6 +40,9 @@ class CustomerSettingOption
       modeValue: object.modeValue,
     );
   }
+
+  @override
+  String get modelTableName => TABLE;
 
   String get modeValueName {
     if (modeValue == null ||
@@ -74,10 +68,10 @@ class CustomerSettingOption
   }
 
   @override
-  String get prefix => '${setting.prefix}.options.$id';
+  CustomerSetting get repository => setting;
 
   @override
-  String get tableName => TABLE;
+  set repository(repo) => setting = repo as CustomerSetting;
 
   /// Use [modeValue] to calculate correct final price in order.
   num calculatePrice(num price) {
@@ -94,19 +88,12 @@ class CustomerSettingOption
   }
 
   @override
-  void handleUpdated() {
-    setting.notifyItem();
-  }
-
-  @override
-  void removeFromRepo() => setting.removeItem(id);
-
-  @override
   CustomerSettingOptionObject toObject() => CustomerSettingOptionObject(
         id: id,
         name: name,
         index: index,
         isDefault: isDefault,
         modeValue: modeValue,
+        customerSettingId: int.parse(setting.id),
       );
 }

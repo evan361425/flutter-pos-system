@@ -22,18 +22,12 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
     this.options = const Iterable.empty(),
   });
 
-  factory CustomerSettingObject.build(
-    Map<String, Object?> data,
-    List<Map<String, Object?>> options,
-  ) {
+  factory CustomerSettingObject.build(Map<String, Object?> data) {
     return CustomerSettingObject(
       id: (data['id'] as int).toString(),
       name: data['name'] as String,
       index: data['index'] as int,
       mode: CustomerSettingOptionMode.values[data['mode'] as int],
-      options: options.map<CustomerSettingOptionObject>(
-        (option) => CustomerSettingOptionObject.build(option),
-      ),
     );
   }
 
@@ -70,6 +64,8 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
 }
 
 class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
+  final int? customerSettingId;
+
   final String? id;
 
   final String? name;
@@ -81,6 +77,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   final num? modeValue;
 
   const CustomerSettingOptionObject({
+    this.customerSettingId,
     this.id,
     this.name,
     this.index,
@@ -101,6 +98,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   @override
   Map<String, Object?> toMap() {
     return {
+      'customerSettingId': customerSettingId,
       'name': name,
       'index': index,
       'isDefault': (isDefault ?? false) ? 1 : 0,

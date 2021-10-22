@@ -10,11 +10,12 @@ import '../stock/ingredient.dart';
 import 'product.dart';
 import 'product_quantity.dart';
 
-class ProductIngredient
+class ProductIngredient extends Model<ProductIngredientObject>
     with
-        Model<ProductIngredientObject>,
-        SearchableModel<ProductIngredientObject>,
-        Repository<ProductQuantity> {
+        ModelStorage<ProductIngredientObject>,
+        ModelSearchable<ProductIngredientObject>,
+        Repository<ProductQuantity>,
+        RepositoryStorage<ProductQuantity> {
   /// Connect to parent object
   late final Product product;
 
@@ -25,7 +26,7 @@ class ProductIngredient
   num amount;
 
   @override
-  final String logCode = 'menu.ingredient';
+  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
 
   @override
   final Stores storageStore = Stores.menu;
@@ -36,9 +37,7 @@ class ProductIngredient
     Product? product,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
-  }) {
-    this.id = id ?? generateId();
-
+  }) : super(id) {
     if (quantities != null) replaceItems(quantities);
 
     if (product != null) this.product = product;
@@ -48,33 +47,31 @@ class ProductIngredient
 
   /// [ingredient] set by [ModelInitializer]
   factory ProductIngredient.fromObject(ProductIngredientObject object) {
-    final quantities = object.quantities
-        .map<ProductQuantity?>((e) {
-          try {
-            return ProductQuantity.fromObject(e);
-          } catch (e) {
-            return null;
-          }
-        })
-        .where((e) => e != null)
-        .cast<ProductQuantity>();
-
-    if (!object.quantities.every((object) => object.isLatest)) {
-      Menu.instance.versionChanged = true;
-    }
-
     final ingredient = Stock.instance.getItem(object.ingredientId!);
     if (ingredient == null) {
       info(object.ingredientId!, 'menu.parse.error.ingredient');
       throw Error();
     }
 
+    final quantities = object.quantities.map<ProductQuantity?>((e) {
+      try {
+        return ProductQuantity.fromObject(e);
+      } catch (e) {
+        // not finding quantity
+        return null;
+      }
+    }).where((e) => e != null);
+
+    if (!object.quantities.every((object) => object.isLatest)) {
+      Menu.instance.versionChanged = true;
+    }
+
     return ProductIngredient(
       id: object.id,
       ingredient: ingredient,
       amount: object.amount!,
-      quantities: {for (var quantity in quantities) quantity.id: quantity},
-    ).._prepareQuantities();
+      quantities: {for (var quantity in quantities) quantity!.id: quantity},
+    )..prepareItem();
   }
 
   @override
@@ -84,30 +81,18 @@ class ProductIngredient
   String get prefix => '${product.prefix}.ingredients.$id';
 
   @override
-  Future<void> addItemToStorage(ProductQuantity child) {
-    return Storage.instance.set(storageStore, {
-      child.prefix: child.toObject().toMap(),
-    });
+  Product get repository => product;
+
+  @override
+  set repository(Repository repo) => product = repo as Product;
+
+  @override
+  ProductQuantity buildItem(String id, Map<String, Object?> value) {
+    throw UnimplementedError();
   }
 
   bool hasQuantity(String id) {
     return items.any((item) => item.quantity.id == id);
-  }
-
-  @override
-  void notifyItem() {
-    product.notifyItem();
-  }
-
-  @override
-  void handleUpdated() {
-    notifyItem();
-  }
-
-  @override
-  void removeFromRepo() {
-    product.removeItem(id);
-    product.notifyItem();
   }
 
   @override
@@ -117,10 +102,4 @@ class ProductIngredient
         amount: amount,
         quantities: items.map((e) => e.toObject()).toList(),
       );
-
-  void _prepareQuantities() {
-    items.forEach((e) {
-      e.ingredient = this;
-    });
-  }
 }

@@ -94,16 +94,13 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (!widget.isNew) {
-      await widget.ingredient!.update(object);
-    } else {
-      final ingredient = ProductIngredient(
+    if (widget.isNew) {
+      await widget.product.addItem(ProductIngredient(
         ingredient: Stock.instance.getItem(ingredientId),
-        product: widget.product,
         amount: object.amount!,
-      );
-
-      await widget.product.setItem(ingredient);
+      ));
+    } else {
+      await widget.ingredient!.update(object);
     }
 
     Navigator.of(context).pop();
@@ -171,7 +168,7 @@ class _ProductIngredientSearch extends StatelessWidget {
       title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
       onTap: () async {
         final ingredient = Ingredient(name: text);
-        await Stock.instance.setItem(ingredient);
+        await Stock.instance.addItem(ingredient);
         Navigator.of(context).pop<Ingredient>(ingredient);
       },
     );
