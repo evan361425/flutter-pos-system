@@ -33,8 +33,10 @@ class _IngredientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final key = 'product_ingredient.${ingredient.id}';
     return Card(
       child: ExpansionTile(
+        key: Key(key),
         title: Text(ingredient.name),
         subtitle: Text('使用量：${ingredient.amount}'),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,6 +45,7 @@ class _IngredientTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
             child: Row(children: [
               ElevatedButton.icon(
+                key: Key('$key.add'),
                 onPressed: () => Navigator.of(context).pushNamed(
                   Routes.menuQuantity,
                   arguments: ingredient,
@@ -51,6 +54,7 @@ class _IngredientTile extends StatelessWidget {
                 label: Text(tt('menu.quantity.add')),
               ),
               IconButton(
+                key: Key('$key.more'),
                 onPressed: () => showActions(context),
                 icon: Icon(KIcons.more),
               )
@@ -88,6 +92,7 @@ class _QuantityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      key: Key('product_quantity.${quantity.id}'),
       title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(context, <String>[
         '額外使用量：${quantity.amount}',

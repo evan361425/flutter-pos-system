@@ -24,7 +24,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
       _items[item.id] = item;
 
-      notifyItem();
+      notifyItems();
     }
   }
 
@@ -34,7 +34,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   bool hasName(String name) => items.any((item) => item.name == name);
 
-  void notifyItem() => notifyListeners();
+  void notifyItems() => notifyListeners();
 
   void prepareItem() => items.forEach((item) => item.repository = this);
 
@@ -42,7 +42,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
   /// you should remove item by `item.remove()`
   void removeItem(String id) {
     _items.remove(id);
-    notifyItem();
+    notifyItems();
   }
 
   void replaceItems(Map<String, T> map) => _items = map;
@@ -140,7 +140,7 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
       info(data.length.toString(), '${items.first.logName}.reorder');
       await saveBatch(data);
 
-      notifyItem();
+      notifyItems();
     }
   }
 }

@@ -118,6 +118,12 @@ class Product extends Model<ProductObject>
     return items.any((item) => item.ingredient.id == id);
   }
 
+  @override
+  void notifyItems() {
+    notifyListeners();
+    catalog.notifyItem();
+  }
+
   Future<void> searched() {
     return update(ProductObject(searchedAt: DateTime.now()), event: 'search');
   }

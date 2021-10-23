@@ -18,7 +18,7 @@ class EmptyBody extends StatelessWidget {
         children: [
           Text(
             title ?? tt('empty_body'),
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline6,
           ),
           OutlinedButton(
             key: Key('empty_body'),

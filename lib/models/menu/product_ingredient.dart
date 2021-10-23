@@ -96,6 +96,12 @@ class ProductIngredient extends Model<ProductIngredientObject>
   }
 
   @override
+  void notifyItems() {
+    notifyListeners();
+    product.notifyItems();
+  }
+
+  @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
         ingredientId: ingredient.id,

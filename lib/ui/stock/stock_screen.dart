@@ -25,6 +25,7 @@ class StockScreen extends StatelessWidget {
         leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('stock.add'),
         onPressed: navigateNewIngredient,
         tooltip: tt('stock.ingredient.add'),
         child: Icon(KIcons.add),

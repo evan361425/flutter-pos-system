@@ -29,6 +29,7 @@ class CatalogScreen extends StatelessWidget {
       title: catalog.name,
       trailing: PopButton(toHome: true),
       floatingActionButton: FloatingActionButton(
+        key: Key('catalog.add'),
         onPressed: navigateNewProduct,
         tooltip: tt('menu.product.add'),
         child: Icon(KIcons.add),

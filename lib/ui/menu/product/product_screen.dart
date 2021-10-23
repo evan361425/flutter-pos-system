@@ -38,6 +38,7 @@ class ProductScreen extends StatelessWidget {
       title: product.name,
       trailing: PopButton(toHome: true),
       floatingActionButton: FloatingActionButton(
+        key: Key('product.add'),
         onPressed: navigateNewIngredient,
         tooltip: tt('menu.integredient.add'),
         child: Icon(KIcons.add),

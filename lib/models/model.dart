@@ -21,7 +21,10 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
   set repository(Repository repo);
 
-  void notifyItem() => notifyListeners();
+  void notifyItem() {
+    notifyListeners();
+    repository.notifyItems();
+  }
 
   Future<void> remove() async {
     info(toString(), '$logName.remove');
@@ -51,7 +54,6 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
     await save(updateData);
 
     notifyItem();
-    repository.notifyItem();
   }
 }
 

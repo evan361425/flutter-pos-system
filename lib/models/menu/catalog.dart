@@ -20,6 +20,9 @@ class Catalog extends Model<CatalogObject>
   @override
   final Stores storageStore = Stores.menu;
 
+  @override
+  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
+
   Catalog({
     String? id,
     String name = 'catalog',
@@ -53,6 +56,12 @@ class Catalog extends Model<CatalogObject>
 
   @override
   set repository(Repository repo) {}
+
+  @override
+  void notifyItems() {
+    notifyListeners();
+    Menu.instance.notifyItems();
+  }
 
   @override
   Product buildItem(String id, Map<String, Object?> value) {

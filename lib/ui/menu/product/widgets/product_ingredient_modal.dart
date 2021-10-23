@@ -52,7 +52,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        key: Key('menu.ingredient.search'),
+        key: Key('product_ingredient.search'),
         text: ingredientName,
         labelText: tt('menu.ingredient.label.name'),
         hintText: tt('menu.ingredient.hint.name'),
@@ -61,7 +61,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         onTap: _selectIngredient,
       ),
       TextFormField(
-        key: Key('menu.ingredient.amount'),
+        key: Key('product_ingredient.amount'),
         controller: _amountController,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
@@ -165,6 +165,7 @@ class _ProductIngredientSearch extends StatelessWidget {
 
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
+      key: Key('product_ingredient.add_ingredient'),
       title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
       onTap: () async {
         final ingredient = Ingredient(name: text);

@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/tip/cache_state_manager.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/providers/language_provider.dart';
+import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -84,31 +94,65 @@ void main() {
 
     testWidgets('should navigate correctly', (tester) async {
       disableTips();
-      var navCount = 0;
+      when(cache.get(any)).thenReturn(null);
+      when(cache.getRaw(any)).thenReturn(1);
+      when(database.query(
+        Seller.ORDER_TABLE,
+        columns: anyNamed('columns'),
+        where: anyNamed('where'),
+        whereArgs: anyNamed('whereArgs'),
+        groupBy: argThat(isNotNull, named: 'groupBy'),
+      )).thenAnswer((_) => Future.value([]));
 
-      final poper = (BuildContext context) => TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text((++navCount).toString()),
-          );
-
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Seller.instance,
-        builder: (_, __) => MaterialApp(
-          routes: {Routes.menu: poper, Routes.order: poper},
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: ThemeProvider()..initialize()),
+          ChangeNotifierProvider.value(value: LanguageProvider()..initialize()),
+          ChangeNotifierProvider.value(value: Seller.instance),
+          ChangeNotifierProvider.value(value: Menu()),
+          ChangeNotifierProvider.value(value: Stock()),
+          ChangeNotifierProvider.value(value: Quantities()),
+          ChangeNotifierProvider.value(value: CustomerSettings()),
+          ChangeNotifierProvider.value(value: Cart()),
+          ChangeNotifierProvider.value(value: Cashier()),
+        ],
+        child: MaterialApp(
+          routes: Routes.routes,
+          theme: ThemeData(),
+          darkTheme: ThemeData.dark(),
+          locale: Locale('zh', 'TW'),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
           home: HomeScreen(),
         ),
       ));
 
-      await tester.tap(find.byKey(Key('home.menu')));
-      await tester.pumpAndSettle();
+      final navAndPop = (String key, String check) async {
+        await tester.tap(find.byKey(Key('home.$key')));
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('1'));
-      await tester.pumpAndSettle();
+        expect(find.byKey(Key(check)), findsOneWidget);
+
+        await tester.tap(find.byIcon(KIcons.back));
+        await tester.pumpAndSettle();
+      };
 
       await tester.tap(find.byKey(Key('home.order')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('order.action.more')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('order.action.leave')));
+      await tester.pumpAndSettle();
 
-      expect(find.text('2'), findsOneWidget);
+      await navAndPop('menu', 'menu.add');
+      await navAndPop('stock', 'stock.add');
+      await navAndPop('quantities', 'quantities.add');
+      await navAndPop('cashier', 'cashier.changer');
+      await navAndPop('customer', 'customer_settings.action');
+      await navAndPop('analysis', 'analysis_screen');
+      await navAndPop('setting', 'setting.theme');
     });
 
     setUp(() {

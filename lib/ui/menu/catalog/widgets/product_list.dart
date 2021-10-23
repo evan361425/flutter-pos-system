@@ -58,6 +58,7 @@ class ProductList extends StatelessWidget {
 
   Widget _tileBuilder(BuildContext context, int index, Product product) {
     return ListTile(
+      key: Key('product.${product.id}'),
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),
       ),

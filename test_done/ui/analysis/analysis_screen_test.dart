@@ -76,85 +76,88 @@ void main() {
     )).thenAnswer((_) => Future.value(data));
   }
 
-  testWidgets('select date and show order list in portrait', (tester) async {
-    final now = DateTime.now();
-    mockGetOrderBetween([
-      {'id': 1},
-      {'id': 2},
-    ]);
-    mockGetMetricBetween([]);
-    mockGetCountBetween([
-      {
-        'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-        'count': 100, // show 99+
-      },
-      {
-        // yesterday
-        'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400,
-        'count': 50,
-      },
-    ]);
+  group('Analysis Screen', () {
+    testWidgets('select date and show order list in portrait', (tester) async {
+      final now = DateTime.now();
+      mockGetOrderBetween([
+        {'id': 1},
+        {'id': 2},
+      ]);
+      mockGetMetricBetween([]);
+      mockGetCountBetween([
+        {
+          'createdAt': now.millisecondsSinceEpoch ~/ 1000,
+          'count': 100, // show 99+
+        },
+        {
+          // yesterday
+          'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400,
+          'count': 50,
+        },
+      ]);
 
-    // setup protrait env
-    tester.binding.window.physicalSizeTestValue = Size(1000, 2000);
+      // setup protrait env
+      tester.binding.window.physicalSizeTestValue = Size(1000, 2000);
 
-    // resets the screen to its orinal size after the test end
-    addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      // resets the screen to its orinal size after the test end
+      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
-    await tester.pumpWidget(buildAnalysisScreen());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildAnalysisScreen());
+      await tester.pumpAndSettle();
 
-    expect(find.text('99+'), findsOneWidget);
+      expect(find.text('99+'), findsOneWidget);
 
-    // change format
-    await tester.tap(find.text('month'));
-    await tester.pumpAndSettle();
+      // change format
+      await tester.tap(find.text('month'));
+      await tester.pumpAndSettle();
 
-    // select date
-    await tester.tap(find.text(now.day.toString()));
-    await tester.pumpAndSettle();
+      // select date
+      await tester.tap(find.text(now.day.toString()));
+      await tester.pumpAndSettle();
 
-    // find by OrderTile key
-    expect(find.byKey(Key('analysis.order_list.1')), findsOneWidget);
-    expect(find.byKey(Key('analysis.order_list.2')), findsOneWidget);
-  });
+      // find by OrderTile key
+      expect(find.byKey(Key('analysis.order_list.1')), findsOneWidget);
+      expect(find.byKey(Key('analysis.order_list.2')), findsOneWidget);
+    });
 
-  testWidgets('load count when page changed in landscape', (tester) async {
-    final now = DateTime.now();
-    mockGetCountBetween([
-      {
-        'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-        'count': 50,
-      },
-      {
-        // last month
-        'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400 * (now.day + 7),
-        'count': 60,
-      },
-    ]);
+    testWidgets('load count when page changed in landscape', (tester) async {
+      final now = DateTime.now();
+      mockGetCountBetween([
+        {
+          'createdAt': now.millisecondsSinceEpoch ~/ 1000,
+          'count': 50,
+        },
+        {
+          // last month
+          'createdAt':
+              now.millisecondsSinceEpoch ~/ 1000 - 86400 * (now.day + 7),
+          'count': 60,
+        },
+      ]);
 
-    // setup landscape env
-    tester.binding.window.physicalSizeTestValue = Size(2000, 1000);
+      // setup landscape env
+      tester.binding.window.physicalSizeTestValue = Size(2000, 1000);
 
-    // resets the screen to its orinal size after the test end
-    addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      // resets the screen to its orinal size after the test end
+      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
-    await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));
+      await tester.pumpAndSettle();
 
-    expect(find.text('50'), findsOneWidget);
-    expect(find.text('60'), findsNothing);
+      expect(find.text('50'), findsOneWidget);
+      expect(find.text('60'), findsNothing);
 
-    // go to prev page(month)
-    await tester.tap(find.byIcon(Icons.chevron_left));
-    await tester.pumpAndSettle();
+      // go to prev page(month)
+      await tester.tap(find.byIcon(Icons.chevron_left));
+      await tester.pumpAndSettle();
 
-    expect(find.text('50'), findsNothing);
-    expect(find.text('60'), findsOneWidget);
-  });
+      expect(find.text('50'), findsNothing);
+      expect(find.text('60'), findsOneWidget);
+    });
 
-  setUpAll(() {
-    initializeCache();
-    initializeDatabase();
+    setUpAll(() {
+      initializeCache();
+      initializeDatabase();
+    });
   });
 }

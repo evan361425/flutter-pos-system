@@ -56,7 +56,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        key: Key('menu.quantity.search'),
+        key: Key('product_quantity.search'),
         text: quantityName,
         labelText: tt('menu.quantity.label.name'),
         hintText: tt('menu.quantity.hint.name'),
@@ -65,7 +65,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         onTap: _selectQuantity,
       ),
       TextFormField(
-        key: Key('menu.quantity.amount'),
+        key: Key('product_quantity.amount'),
         controller: _amountController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
@@ -76,7 +76,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         validator: Validator.positiveNumber(tt('menu.quantity.label.amount')),
       ),
       TextFormField(
-        key: Key('menu.quantity.price'),
+        key: Key('product_quantity.price'),
         controller: _priceController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
@@ -92,7 +92,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         ),
       ),
       TextFormField(
-        key: Key('menu.quantity.cost'),
+        key: Key('product_quantity.cost'),
         controller: _costController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
@@ -209,6 +209,7 @@ class _ProductQuantitySearch extends StatelessWidget {
 
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
+      key: Key('product_quantity.add_quantity'),
       title: Text(tt('menu.quantity.add_quantity', {'name': text})),
       onTap: () async {
         final quantity = Quantity(name: text);

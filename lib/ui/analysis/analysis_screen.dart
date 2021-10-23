@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
-import 'package:possystem/ui/analysis/widgets/calendar_wrapper.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/analysis_order_list.dart';
+import 'widgets/calendar_wrapper.dart';
 
 class AnalysisScreen extends StatelessWidget {
   static final orderListState =
@@ -17,6 +18,7 @@ class AnalysisScreen extends StatelessWidget {
     context.watch<Seller>();
 
     return Scaffold(
+      key: Key('analysis_screen'),
       appBar: AppBar(
         title: Text(tt('analysis.title')),
         leading: PopButton(),

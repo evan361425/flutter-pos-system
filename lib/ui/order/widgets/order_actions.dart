@@ -20,26 +20,31 @@ class OrderActions {
 
     return [
       BottomSheetAction(
+        key: Key('order.action.show_last'),
         title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
         returnValue: OrderActionTypes.show_last,
       ),
       BottomSheetAction(
+        key: Key('order.action.changer'),
         title: Text('換錢'),
         leading: Icon(Icons.change_circle_outlined),
         returnValue: OrderActionTypes.changer,
       ),
       BottomSheetAction(
+        key: Key('order.action.stash'),
         title: Text(tt('order.action.stash')),
         leading: Icon(Icons.file_download),
         returnValue: OrderActionTypes.stash,
       ),
       BottomSheetAction(
+        key: Key('order.action.drop_stash'),
         title: Text(tt('order.action.drop_stash')),
         leading: Icon(Icons.file_upload),
         returnValue: OrderActionTypes.drop_stash,
       ),
       BottomSheetAction(
+        key: Key('order.action.leave'),
         title: Text(tt('order.action.leave')),
         leading: Icon(Icons.logout),
         returnValue: OrderActionTypes.leave,

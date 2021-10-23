@@ -22,6 +22,7 @@ class MenuSearch extends StatelessWidget {
 
   Widget _itemBuilder(BuildContext context, Product item) {
     return CardTile(
+      key: Key('search.${item.id}'),
       title: Text(item.name),
       onTap: () => Navigator.of(context).pushReplacementNamed(
         Routes.menuProduct,

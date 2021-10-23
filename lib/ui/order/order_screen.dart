@@ -67,6 +67,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
+          key: Key('order.action.more'),
           onPressed: () async {
             final result = await showCircularBottomSheet<OrderActionTypes>(
               context,
