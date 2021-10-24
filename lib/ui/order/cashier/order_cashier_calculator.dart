@@ -44,12 +44,14 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
       Column(children: [
         _SingleField(
           key: paidState,
+          keyPrefix: 'cashier.calculator.paid',
           prefix: '付額',
           defaultText: widget.totalPrice.toString(),
         ),
         Divider(),
         _SingleField(
           key: changeState,
+          keyPrefix: 'cashier.calculator.change',
           prefix: '找錢',
           defaultText: '0',
           errorText: '必須大於付額',
@@ -61,30 +63,47 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _CalculatorPostfixAction(action: execPostfix, text: '1'),
           _CalculatorPostfixAction(action: execPostfix, text: '2'),
           _CalculatorPostfixAction(action: execPostfix, text: '3'),
-          _CalculatorAction(action: execClear, child: Icon(Icons.clear_sharp)),
+          _CalculatorAction(
+            key: Key('cashier.calculator.clear'),
+            action: execClear,
+            child: Icon(Icons.clear_sharp),
+          ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
           _CalculatorPostfixAction(action: execPostfix, text: '4'),
           _CalculatorPostfixAction(action: execPostfix, text: '5'),
           _CalculatorPostfixAction(action: execPostfix, text: '6'),
           _CalculatorAction(
-              action: execBack, child: Icon(Icons.arrow_back_rounded)),
+            key: Key('cashier.calculator.back'),
+            action: execBack,
+            child: Icon(Icons.arrow_back_rounded),
+          ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
           _CalculatorPostfixAction(action: execPostfix, text: '7'),
           _CalculatorPostfixAction(action: execPostfix, text: '8'),
           _CalculatorPostfixAction(action: execPostfix, text: '9'),
           _CalculatorAction(
-              action: execCeil, child: Icon(Icons.merge_type_rounded)),
+            key: Key('cashier.calculator.ceil'),
+            action: execCeil,
+            child: Icon(Icons.merge_type_rounded),
+          ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
           SizedBox(width: 64, height: 64),
           _CalculatorPostfixAction(action: execPostfix, text: '0'),
           CurrencyProvider.instance.isInt
               ? SizedBox(width: 64, height: 64)
-              : _CalculatorAction(action: execDot, child: Text('.')),
+              : _CalculatorAction(
+                  key: Key('cashier.calculator.dot'),
+                  action: execDot,
+                  child: Text('.'),
+                ),
           _CalculatorAction(
-              action: widget.onSubmit, child: Icon(Icons.done_rounded)),
+            key: Key('cashier.calculator.submit'),
+            action: widget.onSubmit,
+            child: Icon(Icons.done_rounded),
+          ),
         ]),
       ]),
     ]);
@@ -128,7 +147,8 @@ class _CalculatorAction extends StatelessWidget {
 
   final Widget child;
 
-  const _CalculatorAction({required this.action, required this.child});
+  const _CalculatorAction({Key? key, required this.action, required this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +173,7 @@ class _CalculatorPostfixAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _CalculatorAction(
+      key: Key('cashier.calculator.$text'),
       action: () => action(text),
       child: Text(text),
     );
@@ -166,8 +187,11 @@ class _SingleField extends StatefulWidget {
 
   final String errorText;
 
+  final String keyPrefix;
+
   _SingleField({
     Key? key,
+    required this.keyPrefix,
     required this.prefix,
     required this.defaultText,
     this.errorText = '',
@@ -185,10 +209,17 @@ class _SingleFieldState extends State<_SingleField> {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text(widget.prefix),
       text == null
-          ? HintText(widget.errorText)
+          ? HintText(widget.errorText, key: Key('${widget.keyPrefix}.error'))
           : text!.isEmpty
-              ? HintText(widget.defaultText)
-              : Text(text!, style: Theme.of(context).textTheme.headline5),
+              ? HintText(
+                  widget.defaultText,
+                  key: Key('${widget.keyPrefix}.hint'),
+                )
+              : Text(
+                  text!,
+                  key: Key(widget.keyPrefix),
+                  style: Theme.of(context).textTheme.headline6,
+                ),
     ]);
   }
 

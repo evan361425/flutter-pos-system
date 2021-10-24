@@ -69,7 +69,11 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
         leading: PopButton(),
         title: Text('計算機'),
         actions: [
-          AppbarTextButton(onPressed: handleSubmit, child: Text('結帳')),
+          AppbarTextButton(
+            key: Key('cashier.order'),
+            onPressed: handleSubmit,
+            child: Text('結帳'),
+          ),
         ],
       ),
       body: SlidingUpOpener(

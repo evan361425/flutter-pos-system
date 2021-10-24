@@ -44,7 +44,7 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
         value: Cart.instance,
         builder: (_, __) => Padding(
           padding: const EdgeInsets.all(kSpacing0),
-          child: CartSnapshot(),
+          child: CartSnapshot(key: Key('cart.collapsed')),
         ),
       ),
     );

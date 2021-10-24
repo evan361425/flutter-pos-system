@@ -4,7 +4,6 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -87,14 +86,14 @@ void main() {
           products: {'p-2': Product(id: 'p-2', name: 'p-2', price: 11)},
         )..prepareItem(),
       });
+
+      // setup model
+      Seller();
+      Cart.instance = Cart();
     }
 
     group('Slidable Panel', () {
       testWidgets('Selecting change state', (tester) async {
-        when(cache.get(any)).thenReturn(null);
-
-        prepareData();
-
         final key = GlobalKey<OrderScreenState>();
         await tester.pumpWidget(MaterialApp(home: OrderScreen(key: key)));
 
@@ -159,7 +158,7 @@ void main() {
           ['p-2', '1'],
         ], 28);
 
-        await tester.tap(find.byKey(Key('sliding_up_opener.collapsed')));
+        await tester.tap(find.byKey(Key('cart.collapsed')));
         await tester.pumpAndSettle();
 
         verifyProductList(0, title: 'p-1', selected: false);
@@ -258,7 +257,7 @@ void main() {
         await tester.tap(find.byKey(Key('order.product.p-2')));
         await tester.pumpAndSettle();
 
-        expect(find.byKey(Key('sliding_up_opener.collapsed')), findsNothing);
+        expect(find.byKey(Key('cart.collapsed')), findsNothing);
         final scrollController = tester
             .widget<SingleChildScrollView>(find.byKey(Key('cart.product_list')))
             .controller!;
@@ -278,16 +277,17 @@ void main() {
     });
 
     testWidgets('Cart actions', (tester) async {
-      when(cache.get(any)).thenReturn(null);
+      final currency = CurrencyProvider();
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+      await currency.setCurrency(CurrencyTypes.TWD);
 
-      prepareData();
       Cart.instance.replaceAll(products: [
         OrderProduct(Menu.instance.getProduct('p-1')!, count: 8),
         OrderProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
       ]);
 
       await tester.pumpWidget(MaterialApp(home: OrderScreen()));
-      await tester.tap(find.byKey(Key('sliding_up_opener.collapsed')));
+      await tester.tap(find.byKey(Key('cart.collapsed')));
       await tester.pumpAndSettle();
 
       final tapAction = (String action, {int? product, String? text}) async {
@@ -358,18 +358,11 @@ void main() {
     });
 
     setUp(() {
-      LOG_LEVEL = 0;
-      // setup currency
-      final currency = CurrencyProvider();
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      currency.setCurrency(CurrencyTypes.TWD);
-
-      // setup model
-      Seller();
-      Cart.instance = Cart();
-
-      // disable tips
+      // disable feature and tips
       when(cache.getRaw(any)).thenReturn(1);
+      when(cache.get(any)).thenReturn(null);
+
+      prepareData();
     });
 
     setUpAll(() {

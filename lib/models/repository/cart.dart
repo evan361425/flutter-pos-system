@@ -258,6 +258,7 @@ class Cart extends ChangeNotifier {
 
     await Seller.instance.update(data);
     info(oldData?.id.toString() ?? 'unknown', 'order.paid.update');
+
     await Stock.instance.order(data, oldData: oldData);
     await Cashier.instance.paid(paid, price, oldData?.totalPrice);
   }
@@ -267,6 +268,7 @@ class Cart extends ChangeNotifier {
 
     final id = await Seller.instance.push(data);
     info(id.toString(), 'order.paid.add');
+
     await Stock.instance.order(data);
     await Cashier.instance.paid(paid, price);
   }

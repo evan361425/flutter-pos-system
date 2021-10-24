@@ -68,15 +68,17 @@ class Stock extends ChangeNotifier
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
-      product.ingredients.forEach((id, ingredient) {
-        amounts[id] = (amounts[id] ?? 0) - ingredient.amount;
+      product.ingredients.values.forEach((ingredient) {
+        amounts[ingredient.id] =
+            (amounts[ingredient.id] ?? 0) - ingredient.amount;
       });
     });
 
     // if we need to update order, need to revert stock status
     oldData?.products.forEach((product) {
-      product.ingredients.forEach((id, ingredient) {
-        amounts[id] = (amounts[id] ?? 0) + ingredient.amount;
+      product.ingredients.values.forEach((ingredient) {
+        amounts[ingredient.id] =
+            (amounts[ingredient.id] ?? 0) + ingredient.amount;
       });
     });
 

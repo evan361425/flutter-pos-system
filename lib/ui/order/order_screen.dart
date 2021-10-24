@@ -67,7 +67,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
         leading: OrderActions(key: Key('order.action.more')),
         actions: [
           AppbarTextButton(
-            key: Key('order.action.order'),
+            key: Key('order.cashier'),
             onPressed: () => _handleOrder(),
             child: Text('結帳'),
           ),

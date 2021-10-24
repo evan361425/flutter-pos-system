@@ -44,7 +44,7 @@ class OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
       const SizedBox(width: 8.0),
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text('找錢：$changeValue'),
+        child: Text('找錢：$changeValue', key: Key('cashier.snapshot.change')),
       ),
     ]);
   }
@@ -75,6 +75,7 @@ class OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
 
   Widget radioBuilder(num value) {
     return Container(
+      key: Key('cashier.snapshot.$value'),
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       child: RadioText(
         groupId: 'cashier.quick_changer',

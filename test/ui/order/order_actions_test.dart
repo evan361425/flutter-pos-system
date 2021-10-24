@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -30,116 +29,125 @@ import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
 
 void main() {
-  void prepareData() {
-    Stock().replaceItems({
-      'i-1': Ingredient(id: 'i-1', name: 'i-1'),
-      'i-2': Ingredient(id: 'i-2', name: 'i-2'),
-    });
-    Quantities().replaceItems({
-      'q-1': Quantity(id: 'q-1', name: 'q-1'),
-      'q-2': Quantity(id: 'q-2', name: 'q-2')
-    });
-    final ingreidnet1 = ProductIngredient(
-      id: 'pi-1',
-      ingredient: Stock.instance.getItem('i-1'),
-      amount: 5,
-      quantities: {
-        'pq-1': ProductQuantity(
-          id: 'pq-1',
-          quantity: Quantities.instance.getItem('q-1'),
-          amount: 5,
-          additionalCost: 5,
-          additionalPrice: 10,
-        ),
-        'pq-2': ProductQuantity(
-          id: 'pq-2',
-          quantity: Quantities.instance.getItem('q-2'),
-          amount: -5,
-          additionalCost: -5,
-          additionalPrice: -10,
-        ),
-      },
-    );
-    final ingreidnet2 = ProductIngredient(
-      id: 'pi-2',
-      ingredient: Stock.instance.getItem('i-2'),
-      amount: 3,
-    );
-    final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-      'pi-1': ingreidnet1..prepareItem(),
-      'pi-2': ingreidnet2..prepareItem(),
-    });
-    Menu().replaceItems({
-      'c-1': Catalog(
-        id: 'c-1',
-        name: 'c-1',
-        index: 1,
-        products: {'p-1': product..prepareItem()},
-      )..prepareItem(),
-      'c-2': Catalog(
-        name: 'c-2',
-        id: 'c-2',
-        index: 2,
-        products: {'p-2': Product(id: 'p-2', name: 'p-2', price: 11)},
-      )..prepareItem(),
-    });
-
-    final s1 = CustomerSetting(
-        id: 'c-1', options: {'co-1': CustomerSettingOption(id: 'co-1')});
-    final s2 = CustomerSetting(
-        id: 'c-2', options: {'co-2': CustomerSettingOption(id: 'co-2')});
-    CustomerSettings().replaceItems({
-      'c-1': s1..prepareItem(),
-      'c-2': s2..prepareItem(),
-    });
-    Cart.instance.replaceAll(products: [
-      OrderProduct(Menu.instance.getProduct('p-1')!),
-      OrderProduct(Menu.instance.getProduct('p-2')!),
-    ], customerSettings: {
-      'c-1': 'co-1',
-      'c-2': 'co-2'
-    });
-  }
-
-  Map<String, Object> getDbData() {
-    return {
-      'id': 1,
-      'encodedProducts': jsonEncode([
-        {
-          'singlePrice': 10,
-          'originalPrice': 10,
-          'count': 1,
-          'productId': 'p-1',
-          'productName': 'p-1',
-          'isDiscount': false,
-          'ingredients': [
-            {
-              'name': 'i-1',
-              'id': 'i-1',
-              'amount': 10,
-              'additionalPrice': 10,
-              'additionalCost': 5,
-              'quantityId': 'q-1',
-              'quantityName': 'q-1',
-              'productIngredientId': 'pi-1',
-              'productQuantityId': 'pq-1',
-            }
-          ]
-        },
-        {
-          'singlePrice': 10,
-          'originalPrice': 10,
-          'count': 1,
-          'productId': 'p-3',
-          'productName': 'p-3',
-          'isDiscount': false,
-          'ingredients': []
-        },
-      ]),
-    };
-  }
-
   group('Order actions', () {
+    void prepareData() {
+      Stock().replaceItems({
+        'i-1': Ingredient(id: 'i-1', name: 'i-1'),
+        'i-2': Ingredient(id: 'i-2', name: 'i-2'),
+      });
+      Quantities().replaceItems({
+        'q-1': Quantity(id: 'q-1', name: 'q-1'),
+        'q-2': Quantity(id: 'q-2', name: 'q-2')
+      });
+      final ingreidnet1 = ProductIngredient(
+        id: 'pi-1',
+        ingredient: Stock.instance.getItem('i-1'),
+        amount: 5,
+        quantities: {
+          'pq-1': ProductQuantity(
+            id: 'pq-1',
+            quantity: Quantities.instance.getItem('q-1'),
+            amount: 5,
+            additionalCost: 5,
+            additionalPrice: 10,
+          ),
+          'pq-2': ProductQuantity(
+            id: 'pq-2',
+            quantity: Quantities.instance.getItem('q-2'),
+            amount: -5,
+            additionalCost: -5,
+            additionalPrice: -10,
+          ),
+        },
+      );
+      final ingreidnet2 = ProductIngredient(
+        id: 'pi-2',
+        ingredient: Stock.instance.getItem('i-2'),
+        amount: 3,
+      );
+      final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
+        'pi-1': ingreidnet1..prepareItem(),
+        'pi-2': ingreidnet2..prepareItem(),
+      });
+      Menu().replaceItems({
+        'c-1': Catalog(
+          id: 'c-1',
+          name: 'c-1',
+          index: 1,
+          products: {'p-1': product..prepareItem()},
+        )..prepareItem(),
+        'c-2': Catalog(
+          name: 'c-2',
+          id: 'c-2',
+          index: 2,
+          products: {'p-2': Product(id: 'p-2', name: 'p-2', price: 11)},
+        )..prepareItem(),
+      });
+
+      final s1 = CustomerSetting(
+          id: 'c-1', options: {'co-1': CustomerSettingOption(id: 'co-1')});
+      final s2 = CustomerSetting(
+          id: 'c-2', options: {'co-2': CustomerSettingOption(id: 'co-2')});
+      CustomerSettings().replaceItems({
+        'c-1': s1..prepareItem(),
+        'c-2': s2..prepareItem(),
+      });
+
+      Cart.instance = Cart();
+      Cart.instance.replaceAll(products: [
+        OrderProduct(Menu.instance.getProduct('p-1')!),
+        OrderProduct(Menu.instance.getProduct('p-2')!),
+      ], customerSettings: {
+        'c-1': 'co-1',
+        'c-2': 'co-2'
+      });
+      Seller();
+    }
+
+    Map<String, Object> getDbData() {
+      return {
+        'id': 1,
+        'encodedProducts': jsonEncode([
+          {
+            'singlePrice': 10,
+            'originalPrice': 10,
+            'count': 1,
+            'productId': 'p-1',
+            'productName': 'p-1',
+            'isDiscount': false,
+            'ingredients': [
+              {
+                'name': 'i-1',
+                'id': 'i-1',
+                'amount': 10,
+                'additionalPrice': 10,
+                'additionalCost': 5,
+                'quantityId': 'q-1',
+                'quantityName': 'q-1',
+                'productIngredientId': 'pi-1',
+                'productQuantityId': 'pq-1',
+              }
+            ]
+          },
+          {
+            'singlePrice': 10,
+            'originalPrice': 10,
+            'count': 1,
+            'productId': 'p-3',
+            'productName': 'p-3',
+            'isDiscount': false,
+            'ingredients': []
+          },
+        ]),
+      };
+    }
+
+    Future<void> prepareCurrency() async {
+      final currency = CurrencyProvider();
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+      await currency.setCurrency(CurrencyTypes.TWD);
+    }
+
     void verifyOderPoped() {
       expect(Cart.instance.products.length, equals(1));
       final product = Cart.instance.products.first;
@@ -170,6 +178,7 @@ void main() {
     });
 
     testWidgets('Show last order', (tester) async {
+      await prepareCurrency();
       await tester.pumpWidget(MaterialApp(home: OrderScreen()));
 
       final act = (bool? confirm) async {
@@ -234,6 +243,7 @@ void main() {
     });
 
     testWidgets('Drop stashed', (tester) async {
+      await prepareCurrency();
       await tester.pumpWidget(MaterialApp(home: OrderScreen()));
 
       final act = (bool? confirm) async {
@@ -303,6 +313,7 @@ void main() {
     });
 
     testWidgets('Stash', (tester) async {
+      await prepareCurrency();
       await tester.pumpWidget(MaterialApp(home: OrderScreen()));
 
       final act = () async {
@@ -340,6 +351,7 @@ void main() {
     });
 
     testWidgets('Changer', (tester) async {
+      await prepareCurrency();
       final cashier = Cashier();
       when(storage.get(any, any)).thenAnswer((_) => Future.value({
             'current': [
@@ -378,17 +390,7 @@ void main() {
     });
 
     setUp(() {
-      LOG_LEVEL = 0;
-      // setup currency
-      final currency = CurrencyProvider();
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      currency.setCurrency(CurrencyTypes.TWD);
-
-      // setup model
-      Seller();
-      Cart.instance = Cart();
-
-      // disable tips
+      // disable tips and features
       when(cache.getRaw(any)).thenReturn(1);
       when(cache.get(any)).thenReturn(null);
 
