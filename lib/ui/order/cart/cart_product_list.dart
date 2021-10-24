@@ -19,9 +19,10 @@ class CartProductListState extends State<CartProductList> {
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
+    var count = 0;
 
     return SingleChildScrollView(
-      key: Key('order.cart.product_list'),
+      key: Key('cart.product_list'),
       controller: scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,7 +30,7 @@ class CartProductListState extends State<CartProductList> {
           for (final product in cart.products)
             ChangeNotifierProvider<OrderProduct>.value(
               value: product,
-              child: _CartProductListTile(),
+              child: _CartProductListTile(count++),
             )
         ],
       ),
@@ -58,12 +59,17 @@ class CartProductListState extends State<CartProductList> {
 }
 
 class _CartProductListTile extends StatelessWidget {
+  final int index;
+
+  const _CartProductListTile(this.index);
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final product = context.watch<OrderProduct>();
 
     final leading = Checkbox(
+      key: Key('cart.product.$index.select'),
       value: product.isSelected,
       onChanged: (checked) => product.toggleSelected(checked),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -72,12 +78,16 @@ class _CartProductListTile extends StatelessWidget {
     final trailing = Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
-        Text(product.count.toString()),
+        Text(product.count.toString(), key: Key('cart.product.$index.count')),
         IconButton(
+          key: Key('cart.product.$index.add'),
           icon: Icon(Icons.add_circle_outline_sharp),
           onPressed: () => product.increment(),
         ),
-        Text(tt('order.list.price', {'price': product.price})),
+        Text(
+          tt('order.list.price', {'price': product.price}),
+          key: Key('cart.product.$index.price'),
+        ),
       ],
     );
 
@@ -85,6 +95,7 @@ class _CartProductListTile extends StatelessWidget {
       child: ListTileTheme.merge(
         selectedColor: theme.textTheme.bodyText1!.color,
         child: ListTile(
+          key: Key('cart.product.$index'),
           leading: leading,
           title: Text(product.name, overflow: TextOverflow.ellipsis),
           subtitle: product.isEmpty

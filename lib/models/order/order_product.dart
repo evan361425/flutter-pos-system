@@ -66,13 +66,16 @@ class OrderProduct extends ChangeNotifier {
   num getQuantityPrice(String ingredientId, String? quantityId) {
     if (quantityId == null) return 0;
 
-    return product.getItem(ingredientId)!.getItem(quantityId)!.additionalPrice;
+    return product
+            .getItem(ingredientId)
+            ?.getItem(quantityId)
+            ?.additionalPrice ??
+        0;
   }
 
   void increment() {
     count += 1;
     notifyListeners();
-    // change metadata
     Cart.instance.notifyListeners();
   }
 
@@ -84,8 +87,6 @@ class OrderProduct extends ChangeNotifier {
 
     selectedQuantity[ingredientId] = quantityId;
     singlePrice += getQuantityPrice(ingredientId, quantityId);
-
-    selectedQuantity[ingredientId] = quantityId;
   }
 
   /// if [checked] is defferent with current state

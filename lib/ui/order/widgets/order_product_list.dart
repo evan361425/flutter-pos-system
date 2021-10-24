@@ -35,6 +35,7 @@ class OrderProductListState extends State<OrderProductList> {
             children: [
               for (final product in _products)
                 OutlinedButton(
+                  key: Key('order.product.${product.id}'),
                   onPressed: () => _handleSelected(product),
                   child: Text(product.name),
                 ),

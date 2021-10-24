@@ -27,13 +27,13 @@ class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
 
   @override
-  _OrderScreenState createState() => _OrderScreenState();
+  State<StatefulWidget> createState() => OrderScreenState();
 }
 
-class _OrderScreenState extends State<OrderScreen> with RouteAware {
+class OrderScreenState extends State<OrderScreen> with RouteAware {
   final _orderProductList = GlobalKey<OrderProductListState>();
   final _cartProductList = GlobalKey<CartProductListState>();
-  final _slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+  final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
       ),
       body: FeatureProvider.instance.outlookOrder == OutlookOrder.sliding_panel
           ? OrderBySlidingPanel(
-              key: _slidingPanel,
+              key: slidingPanel,
               row1: menuCatalogRow,
               row2: menuProductRow,
               row3: cartProductRow,
@@ -118,7 +118,7 @@ class _OrderScreenState extends State<OrderScreen> with RouteAware {
   void didPopNext() {
     // Avoid popping actions, only close it when ordered.
     if (Cart.instance.isEmpty) {
-      _slidingPanel.currentState?.reset();
+      slidingPanel.currentState?.reset();
     }
     super.didPopNext();
   }

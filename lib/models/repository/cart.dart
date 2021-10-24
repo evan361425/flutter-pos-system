@@ -4,6 +4,7 @@ import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/providers/currency_provider.dart';
@@ -15,9 +16,9 @@ import 'stock.dart';
 class Cart extends ChangeNotifier {
   static Cart instance = Cart();
 
-  List<OrderProduct> products = [];
+  final List<OrderProduct> products = [];
 
-  Map<String, String> customerSettings = {};
+  final Map<String, String> customerSettings = {};
 
   bool isHistoryMode = false;
 
@@ -69,7 +70,7 @@ class Cart extends ChangeNotifier {
     final orderProduct = OrderProduct(product, isSelected: true);
     products.add(orderProduct);
 
-    notifyListeners();
+    _selectedChanged();
 
     return orderProduct;
   }
@@ -78,7 +79,7 @@ class Cart extends ChangeNotifier {
     products.clear();
     customerSettings.clear();
     isHistoryMode = false;
-    notifyListeners();
+    _selectedChanged();
   }
 
   @override
@@ -151,15 +152,17 @@ class Cart extends ChangeNotifier {
 
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
-    notifyListeners();
+    _selectedChanged();
   }
 
   void replaceByObject(OrderObject object) {
-    products = object.parseToProduct();
+    products
+      ..clear()
+      ..addAll(object.parseToProduct());
     customerSettings
       ..clear()
       ..addAll(object.customerSettings);
-    notifyListeners();
+    _selectedChanged();
   }
 
   /// Stash order to DB
@@ -260,6 +263,11 @@ class Cart extends ChangeNotifier {
 
     final id = await settings.getCombinationId(data);
     return id ?? await settings.generateCombinationId(data);
+  }
+
+  void _selectedChanged() {
+    notifyListeners();
+    CartIngredients.instance.notifyListeners();
   }
 }
 

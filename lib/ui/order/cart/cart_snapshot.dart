@@ -21,6 +21,7 @@ class CartSnapshot extends StatelessWidget {
         for (final product in cart.products)
           OutlinedText(
             product.name,
+            key: Key('cart_snapshot.${product.id}'),
             badge: product.count > 9 ? '9+' : product.count.toString(),
           ),
       ]),
@@ -33,6 +34,7 @@ class CartSnapshot extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
           cart.productsPrice.toString(),
+          key: Key('cart_snapshot.price'),
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),

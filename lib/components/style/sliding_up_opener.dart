@@ -139,6 +139,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
           );
 
     Widget collapsed = Container(
+      key: Key('sliding_up_opener.collapsed'),
       margin: margin,
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,

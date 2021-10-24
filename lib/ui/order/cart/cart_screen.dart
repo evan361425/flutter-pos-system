@@ -65,6 +65,7 @@ class _CartMetadata extends StatelessWidget {
     final cart = context.watch<Cart>();
 
     return Container(
+      key: Key('cart.metadata'),
       child: MetaBlock.withString(context, <String>[
         tt('order.total_count', {'count': cart.totalCount}),
         tt('order.total_price', {'price': cart.productsPrice}),

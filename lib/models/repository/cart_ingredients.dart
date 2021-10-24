@@ -40,7 +40,7 @@ class CartIngredients extends ChangeNotifier {
     Cart.instance.selected.forEach((product) {
       product.selectQuantity(selected!.id, quantityId);
     });
-    // It will change subtitle in product list
+    // It will change price on metadata
     Cart.instance.notifyListeners();
   }
 

@@ -20,20 +20,19 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<Cart>();
     final ingredients = context.watch<CartIngredients>();
 
-    if (cart.isEmpty) {
-      return _emptyRows(context, tt('order.list.cart_empty'));
+    if (Cart.instance.isEmpty) {
+      return _emptyRows(context, 'cart_empty');
     }
 
-    if (!cart.isSameProducts) {
-      return _emptyRows(context, tt('order.list.not_same_product'));
+    if (!Cart.instance.isSameProducts) {
+      return _emptyRows(context, 'not_same_product');
     }
 
-    ingredients.setIngredients(cart.selected.first.product);
+    ingredients.setIngredients(Cart.instance.selected.first.product);
     if (ingredients.isEmpty) {
-      return _emptyRows(context, tt('order.list.no_quantity'));
+      return _emptyRows(context, 'no_quantity');
     }
 
     final ingredientId = ingredients.selected!.id;
@@ -44,6 +43,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
       SingleRowWrap(children: <Widget>[
         for (final ingredient in ingredients.ingredients)
           RadioText(
+            key: Key('order.ingredient.${ingredient.id}'),
             onSelected: (_) {
               ingredients.selectIngredient(ingredient);
               quantityList.currentState
@@ -62,10 +62,11 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     ]);
   }
 
-  Widget _emptyRows(BuildContext context, String ingredientMessage) {
+  Widget _emptyRows(BuildContext context, String key) {
     return _rowWrapper([
       SingleRowWrap(
-        children: <Widget>[RadioText.empty(ingredientMessage)],
+        key: Key('order.ingredient.$key'),
+        children: <Widget>[RadioText.empty(tt('order.list.$key'))],
       ),
       SingleRowWrap(
         children: <Widget>[
@@ -104,6 +105,7 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
       RadioText(
+        key: Key('order.quantity.default'),
         onSelected: (_) => CartIngredients.instance.selectQuantity(null),
         groupId: _QUANTITY_RADIO_KEY,
         value: '',
@@ -115,10 +117,8 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
       ),
       for (final quantity in CartIngredients.instance.selected!.items)
         RadioText(
-          onSelected: (_) {
-            selected = quantity.id;
-            CartIngredients.instance.selectQuantity(quantity.id);
-          },
+          key: Key('order.quantity.${quantity.id}'),
+          onSelected: (_) => select(quantity.id),
           groupId: _QUANTITY_RADIO_KEY,
           value: quantity.id,
           isSelected: quantity.id == selected,
