@@ -90,8 +90,8 @@ class Cart extends ChangeNotifier {
   }
 
   /// Drop the stashed order
-  Future<bool> drop() async {
-    final order = await Seller.instance.drop();
+  Future<bool> drop(int lastCount) async {
+    final order = await Seller.instance.drop(lastCount);
     if (order == null) return false;
 
     info(order.id.toString(), 'order.cart.drop');
@@ -153,6 +153,23 @@ class Cart extends ChangeNotifier {
   void removeSelected() {
     products.removeWhere((e) => e.isSelected);
     _selectedChanged();
+  }
+
+  @visibleForTesting
+  void replaceAll({
+    List<OrderProduct>? products,
+    Map<String, String>? customerSettings,
+  }) {
+    if (products != null) {
+      this.products
+        ..clear()
+        ..addAll(products);
+    }
+    if (customerSettings != null) {
+      this.customerSettings
+        ..clear()
+        ..addAll(customerSettings);
+    }
   }
 
   void replaceByObject(OrderObject object) {
@@ -254,7 +271,7 @@ class Cart extends ChangeNotifier {
     await Cashier.instance.paid(paid, price);
   }
 
-  Future<String> _prepareCustomerSettingCombinationId() async {
+  Future<int> _prepareCustomerSettingCombinationId() async {
     final settings = CustomerSettings.instance;
     final data = {
       for (final option in selectedCustomerSettingOptions)

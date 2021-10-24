@@ -180,7 +180,7 @@ class Cashier extends ChangeNotifier {
   Future<void> plus(int index, int count) => update({index: count});
 
   /// When [Currency] changed, it must be fired
-  void reset() async {
+  Future<void> reset() async {
     _recordName = CurrencyProvider.instance.currency;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 

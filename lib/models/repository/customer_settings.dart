@@ -41,7 +41,7 @@ class CustomerSettings extends ChangeNotifier
     return cs;
   }
 
-  Future<String> generateCombinationId(
+  Future<int> generateCombinationId(
     Map<String, String> data,
   ) async {
     final id = await Database.instance.push(
@@ -49,10 +49,10 @@ class CustomerSettings extends ChangeNotifier
       {'combination': DBTransferer.toCombination(data)},
     );
 
-    return id.toString();
+    return id;
   }
 
-  Future<String?> getCombinationId(
+  Future<int?> getCombinationId(
     Map<String, String> data,
   ) async {
     final result = await Database.instance.query(
@@ -63,6 +63,6 @@ class CustomerSettings extends ChangeNotifier
       limit: 1,
     );
 
-    return result.isEmpty ? null : (result.first['id'] as int).toString();
+    return result.isEmpty ? null : result.first['id'] as int;
   }
 }

@@ -15,13 +15,15 @@ class CartSnapshot extends StatelessWidget {
       return Center(child: HintText('尚未點餐'));
     }
 
+    var count = 0;
+
     final products = SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: <Widget>[
         for (final product in cart.products)
           OutlinedText(
             product.name,
-            key: Key('cart_snapshot.${product.id}'),
+            key: Key('cart_snapshot.${count++}'),
             badge: product.count > 9 ? '9+' : product.count.toString(),
           ),
       ]),

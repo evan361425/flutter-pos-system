@@ -22,7 +22,7 @@ class Seller extends ChangeNotifier {
     instance = this;
   }
 
-  Future<OrderObject?> drop() async {
+  Future<OrderObject?> drop(int lastCount) async {
     final row = await Database.instance.getLast(
       STASH_TABLE,
       join: JOIN_COMBINATION,
@@ -32,6 +32,7 @@ class Seller extends ChangeNotifier {
         'combination',
         'createdAt',
       ],
+      count: lastCount,
     );
     if (row == null) return null;
 

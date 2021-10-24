@@ -9,6 +9,8 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -20,7 +22,6 @@ import 'package:possystem/services/cache.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
 import '../../mocks/mock_cache.dart';
-import '../../mocks/mock_storage.dart';
 
 void main() {
   group('Order Screen', () {
@@ -58,6 +59,15 @@ void main() {
         id: 'pi-2',
         ingredient: Stock.instance.getItem('i-2'),
         amount: 3,
+        quantities: {
+          'pq-3': ProductQuantity(
+            id: 'pq-3',
+            quantity: Quantities.instance.getItem('q-2'),
+            amount: -5,
+            additionalCost: -5,
+            additionalPrice: -10,
+          ),
+        },
       );
       final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
         'pi-1': ingreidnet1..prepareItem(),
@@ -81,7 +91,6 @@ void main() {
 
     group('Slidable Panel', () {
       testWidgets('Selecting change state', (tester) async {
-        when(cache.getRaw(any)).thenReturn(1);
         when(cache.get(any)).thenReturn(null);
 
         prepareData();
@@ -96,9 +105,10 @@ void main() {
         await tester.pumpAndSettle();
 
         final verifySnapshot = (List<List<String>> data, num price) {
+          var count = 0;
           data.forEach((item) {
             final w = tester.widget<OutlinedText>(
-                find.byKey(Key('cart_snapshot.${item[0]}')));
+                find.byKey(Key('cart_snapshot.${count++}')));
             expect(w.text, equals(item[0]));
             expect(w.badge, equals(item[1]));
           });
@@ -199,6 +209,24 @@ void main() {
                 .isSelected,
             isTrue);
 
+        await tester.tap(find.byKey(Key('order.ingredient.pi-2')));
+        await tester.pumpAndSettle();
+        expect(
+            tester
+                .widget<RadioText>(find.byKey(Key('order.quantity.default')))
+                .isSelected,
+            isTrue);
+
+        // select all, toggle all
+        await tester.tap(find.byKey(Key('cart.toggle_all')));
+        await tester.pumpAndSettle();
+        verifyProductList(0, selected: false);
+        verifyProductList(1, selected: true);
+        await tester.tap(find.byKey(Key('cart.select_all')));
+        await tester.pumpAndSettle();
+        verifyProductList(0, selected: true);
+        verifyProductList(1, selected: true);
+
         // close panel
         key.currentState?.slidingPanel.currentState?.reset();
         await tester.pumpAndSettle();
@@ -236,7 +264,97 @@ void main() {
             .controller!;
         // scroll to bottom
         expect(scrollController.position.maxScrollExtent, isNonZero);
+        expect(find.byKey(Key('order.orientation.lanscape')), findsOneWidget);
+
+        // setup portrait env
+        tester.binding.window.physicalSizeTestValue = Size(1000, 2000);
+
+        await tester.pumpAndSettle();
+        expect(find.byKey(Key('order.orientation.portrait')), findsOneWidget);
+
+        // resets the screen to its orinal size after the test end
+        tester.binding.window.clearPhysicalSizeTestValue();
       });
+    });
+
+    testWidgets('Cart actions', (tester) async {
+      when(cache.get(any)).thenReturn(null);
+
+      prepareData();
+      Cart.instance.replaceAll(products: [
+        OrderProduct(Menu.instance.getProduct('p-1')!, count: 8),
+        OrderProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
+      ]);
+
+      await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+      await tester.tap(find.byKey(Key('sliding_up_opener.collapsed')));
+      await tester.pumpAndSettle();
+
+      final tapAction = (String action, {int? product, String? text}) async {
+        if (product == null) {
+          await tester.tap(find.byKey(Key('cart.action')));
+          await tester.pumpAndSettle();
+        } else {
+          await tester.longPress(find.byKey(Key('cart.product.$product')));
+          await tester.pumpAndSettle();
+        }
+
+        await tester.tap(find.byKey(Key('cart.action.$action')));
+        await tester.pumpAndSettle();
+
+        if (text != null) {
+          await tester.enterText(find.byType(TextFormField), text);
+          await tester.tap(find.byKey(Key('text_dialog.confirm')));
+          await tester.pumpAndSettle();
+        }
+      };
+
+      final verifyProductList = (int index, {int? count, num? price}) {
+        final key = 'cart.product.$index';
+        if (count != null) {
+          expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data,
+              equals(count.toString()));
+        }
+        if (price != null) {
+          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+              equals('price-$price'));
+        }
+      };
+
+      final verifyMetadata = (int count, num price) {
+        final w = tester.widget<Container>(find.byKey(Key('cart.metadata')));
+        final t = 'total_count-$count${MetaBlock.string}total_price-$price';
+        expect((w.child as RichText).text.toPlainText(), equals(t));
+      };
+
+      await tapAction('count', text: '20');
+      verifyProductList(0, count: 8, price: 17 * 8);
+      verifyProductList(1, count: 20, price: 11 * 20);
+      verifyMetadata(28, 17 * 8 + 11 * 20);
+
+      await tapAction('price', product: 0, text: '30');
+      verifyProductList(0, count: 8, price: 30 * 8);
+      verifyProductList(1, count: 20, price: 11 * 20);
+      verifyMetadata(28, 30 * 8 + 11 * 20);
+
+      await tester.tap(find.byKey(Key('cart.product.1.select')));
+      await tester.pumpAndSettle();
+
+      // discount will use original price.
+      await tapAction('discount', text: '50');
+      verifyProductList(0, count: 8, price: 9 * 8);
+      verifyProductList(1, count: 20, price: 6 * 20);
+      verifyMetadata(28, 9 * 8 + 6 * 20);
+
+      await tapAction('free');
+      verifyProductList(0, count: 8, price: 0);
+      verifyProductList(1, count: 20, price: 0);
+      verifyMetadata(28, 0);
+
+      await tapAction('delete', product: 1);
+      verifyProductList(0, count: 8, price: 0);
+      expect(find.byKey(Key('cart.product.1')), findsNothing);
+      verifyMetadata(8, 0);
     });
 
     setUp(() {
@@ -246,13 +364,16 @@ void main() {
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
       currency.setCurrency(CurrencyTypes.TWD);
 
-      // setup seller
+      // setup model
       Seller();
+      Cart.instance = Cart();
+
+      // disable tips
+      when(cache.getRaw(any)).thenReturn(1);
     });
 
     setUpAll(() {
       initializeCache();
-      initializeStorage();
     });
   });
 }

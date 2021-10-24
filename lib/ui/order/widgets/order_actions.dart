@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class OrderActions {
-  static List<BottomSheetAction<OrderActionTypes>> actions() {
+class OrderActions extends StatelessWidget {
+  const OrderActions({Key? key}) : super(key: key);
+
+  List<BottomSheetAction<_Types>> get actions {
     if (Cart.instance.isHistoryMode) {
       return [
         BottomSheetAction(
+          key: Key('order.action.leave_history'),
           title: Text(tt('order.action.leave_history')),
           leading: Icon(Icons.assignment_return_sharp),
-          returnValue: OrderActionTypes.leave_history,
+          returnValue: _Types.leave_history,
         ),
       ];
     }
@@ -23,52 +27,61 @@ class OrderActions {
         key: Key('order.action.show_last'),
         title: Text(tt('order.action.show_last')),
         leading: Icon(Icons.history_sharp),
-        returnValue: OrderActionTypes.show_last,
+        returnValue: _Types.show_last,
       ),
       BottomSheetAction(
         key: Key('order.action.changer'),
         title: Text('換錢'),
         leading: Icon(Icons.change_circle_outlined),
-        returnValue: OrderActionTypes.changer,
+        returnValue: _Types.changer,
       ),
       BottomSheetAction(
         key: Key('order.action.stash'),
         title: Text(tt('order.action.stash')),
         leading: Icon(Icons.file_download),
-        returnValue: OrderActionTypes.stash,
+        returnValue: _Types.stash,
       ),
       BottomSheetAction(
         key: Key('order.action.drop_stash'),
         title: Text(tt('order.action.drop_stash')),
         leading: Icon(Icons.file_upload),
-        returnValue: OrderActionTypes.drop_stash,
+        returnValue: _Types.drop_stash,
       ),
       BottomSheetAction(
         key: Key('order.action.leave'),
         title: Text(tt('order.action.leave')),
         leading: Icon(Icons.logout),
-        returnValue: OrderActionTypes.leave,
+        returnValue: _Types.leave,
       ),
     ];
   }
 
-  static Future<void> execAction(
-    BuildContext context,
-    OrderActionTypes? action,
-  ) async {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        final result = await showCircularBottomSheet<_Types>(
+          context,
+          actions: actions,
+        );
+        await exec(context, result);
+      },
+      icon: Icon(KIcons.more),
+    );
+  }
+
+  Future<void> exec(BuildContext context, _Types? action) async {
     switch (action) {
-      case OrderActionTypes.leave_history:
+      case _Types.leave_history:
         return Cart.instance.clear();
-      case OrderActionTypes.leave:
+      case _Types.leave:
         return Navigator.of(context).pop();
-      case OrderActionTypes.show_last:
-        if (!await _confirmStashCurrent(context)) return;
+      case _Types.show_last:
+        if (!await _confirmStashable(context)) return;
 
         if (!await Cart.instance.stash()) {
           return showInfoSnackbar(
-            context,
-            tt('order.action.error.stash_limit'),
-          );
+              context, tt('order.action.error.stash_limit'));
         }
 
         final success = await Cart.instance.popHistory();
@@ -76,8 +89,10 @@ class OrderActions {
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.last_empty'));
         return;
-      case OrderActionTypes.drop_stash:
-        if (!await _confirmStashCurrent(context)) return;
+      case _Types.drop_stash:
+        if (!await _confirmStashable(context)) return;
+
+        final isEmpty = Cart.instance.isEmpty;
 
         if (!await Cart.instance.stash()) {
           return showInfoSnackbar(
@@ -86,16 +101,17 @@ class OrderActions {
           );
         }
 
-        final success = await Cart.instance.drop();
+        final success = await Cart.instance.drop(isEmpty ? 1 : 2);
         return success
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.stash_empty'));
-      case OrderActionTypes.stash:
-        final success = await Cart.instance.stash();
-        return success && !Cart.instance.isEmpty
+      case _Types.stash:
+        if (Cart.instance.isEmpty) return;
+
+        return await Cart.instance.stash()
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.stash_limit'));
-      case OrderActionTypes.changer:
+      case _Types.changer:
         final success =
             await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
@@ -108,7 +124,7 @@ class OrderActions {
     }
   }
 
-  static Future<bool> _confirmStashCurrent(BuildContext context) async {
+  Future<bool> _confirmStashable(BuildContext context) async {
     if (Cart.instance.isEmpty) return true;
 
     final result = await showDialog(
@@ -120,7 +136,7 @@ class OrderActions {
   }
 }
 
-enum OrderActionTypes {
+enum _Types {
   show_last,
   changer,
   stash,

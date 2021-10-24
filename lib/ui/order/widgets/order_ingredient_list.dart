@@ -6,38 +6,31 @@ import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class OrderIngredientList extends StatefulWidget {
-  const OrderIngredientList({Key? key}) : super(key: key);
-
-  @override
-  _OrderIngredientListState createState() => _OrderIngredientListState();
-}
-
-class _OrderIngredientListState extends State<OrderIngredientList> {
+class OrderIngredientList extends StatelessWidget {
   static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
 
-  final quantityList = GlobalKey<_OrderQuantityListState>();
+  const OrderIngredientList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final ingredients = context.watch<CartIngredients>();
 
     if (Cart.instance.isEmpty) {
-      return _emptyRows(context, 'cart_empty');
+      return _emptyRows('cart_empty');
     }
 
     if (!Cart.instance.isSameProducts) {
-      return _emptyRows(context, 'not_same_product');
+      return _emptyRows('not_same_product');
     }
 
     ingredients.setIngredients(Cart.instance.selected.first.product);
     if (ingredients.isEmpty) {
-      return _emptyRows(context, 'no_quantity');
+      return _emptyRows('no_quantity');
     }
 
     final ingredientId = ingredients.selected!.id;
     final quantityId = ingredients.getSelectedQuantityId();
-    quantityList.currentState?.update(quantityId);
+    final quantityList = GlobalKey<_OrderQuantityListState>();
 
     return _rowWrapper([
       SingleRowWrap(children: <Widget>[
@@ -62,7 +55,7 @@ class _OrderIngredientListState extends State<OrderIngredientList> {
     ]);
   }
 
-  Widget _emptyRows(BuildContext context, String key) {
+  Widget _emptyRows(String key) {
     return _rowWrapper([
       SingleRowWrap(
         key: Key('order.ingredient.$key'),

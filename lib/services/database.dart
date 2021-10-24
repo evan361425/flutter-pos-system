@@ -40,18 +40,19 @@ class Database {
     String? where,
     List<Object?>? whereArgs,
     JoinQuery? join,
+    int count = 1,
   }) async {
     try {
       final data = await query(
         table,
         columns: columns,
         orderBy: '$orderByKey DESC',
-        limit: 1,
+        limit: count,
         where: where,
         whereArgs: whereArgs,
         join: join,
       );
-      return data.first;
+      return data[count - 1];
     } catch (e) {
       return null;
     }

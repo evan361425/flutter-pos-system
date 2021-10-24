@@ -9,26 +9,31 @@ class CartActions extends StatelessWidget {
   static final List<BottomSheetAction> actions =
       <BottomSheetAction<_ActionTypes>>[
     BottomSheetAction(
+      key: Key('cart.action.discount'),
       leading: Icon(Icons.loyalty_sharp),
       title: Text(tt('order.cart.discount')),
       returnValue: _ActionTypes.discount,
     ),
     BottomSheetAction(
+      key: Key('cart.action.price'),
       leading: Icon(Icons.attach_money_sharp),
       title: Text(tt('order.cart.price')),
       returnValue: _ActionTypes.price,
     ),
     BottomSheetAction(
+      key: Key('cart.action.count'),
       leading: Icon(Icons.exposure_sharp),
       title: Text(tt('order.cart.count')),
       returnValue: _ActionTypes.count,
     ),
     BottomSheetAction(
+      key: Key('cart.action.free'),
       leading: Icon(Icons.free_breakfast_sharp),
       title: Text(tt('order.cart.free')),
       returnValue: _ActionTypes.free,
     ),
     BottomSheetAction(
+      key: Key('cart.action.delete'),
       leading: Icon(Icons.delete_sharp),
       title: Text(tt('order.cart.delete')),
       returnValue: _ActionTypes.delete,
@@ -38,6 +43,7 @@ class CartActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      key: Key('cart.action'),
       onPressed: () => showActions(context),
       child: Text(tt('order.cart.action_hint')),
     );

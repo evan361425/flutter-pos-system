@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
@@ -66,17 +64,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       // avoid resize when keyboard(bottom inset) shows
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
-          key: Key('order.action.more'),
-          onPressed: () async {
-            final result = await showCircularBottomSheet<OrderActionTypes>(
-              context,
-              actions: OrderActions.actions(),
-            );
-            await OrderActions.execAction(context, result);
-          },
-          icon: Icon(KIcons.more),
-        ),
+        leading: OrderActions(key: Key('order.action.more')),
         actions: [
           AppbarTextButton(
             key: Key('order.action.order'),

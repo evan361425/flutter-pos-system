@@ -20,10 +20,10 @@ class OrderProduct extends ChangeNotifier {
     this.count = 1,
     num? singlePrice,
     this.isSelected = false,
+    Map<String, String?>? selectedQuantity,
   })  : singlePrice = singlePrice ?? product.price,
-        selectedQuantity = {
-          for (final ingredient in product.items) ingredient.id: null
-        };
+        selectedQuantity = selectedQuantity ??
+            {for (final ingredient in product.items) ingredient.id: null};
 
   void rebind() {
     // check missing
@@ -34,9 +34,12 @@ class OrderProduct extends ChangeNotifier {
     }
 
     // check not exist
-    selectedQuantity.keys.forEach((key) {
-      if (!product.hasItem(key)) {
-        selectedQuantity.remove(key);
+    selectedQuantity.forEach((ingredientId, quantityId) {
+      final ingredient = product.getItem(ingredientId);
+      if (ingredient == null) {
+        selectedQuantity.remove(ingredientId);
+      } else if (quantityId != null && ingredient.getItem(quantityId) == null) {
+        selectedQuantity[ingredientId] = null;
       }
     });
   }
@@ -108,7 +111,7 @@ class OrderProduct extends ChangeNotifier {
   OrderProductObject toObject() {
     final ingredients = <String, OrderIngredientObject>{
       for (var entry in selectedQuantity.entries)
-        entry.key: OrderIngredientObject.fromIngredient(
+        entry.key: OrderIngredientObject.fromModel(
           product.getItem(entry.key)!,
           entry.value,
         )
