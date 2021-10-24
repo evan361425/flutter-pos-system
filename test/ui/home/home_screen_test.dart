@@ -13,6 +13,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/providers/language_provider.dart';
 import 'package:possystem/providers/theme_provider.dart';
@@ -118,6 +119,7 @@ void main() {
         ],
         child: MaterialApp(
           routes: Routes.routes,
+          navigatorObservers: [MyApp.routeObserver],
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
           locale: Locale('zh', 'TW'),

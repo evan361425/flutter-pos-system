@@ -20,6 +20,7 @@ class OrderCustomerModal extends StatelessWidget {
         title: Text('顧客設定'),
         actions: [
           AppbarTextButton(
+            key: Key('cashier.customer.next'),
             onPressed: () =>
                 Navigator.of(context).popAndPushNamed(Routes.orderCalculator),
             child: Text('下一步'),
@@ -38,37 +39,34 @@ class OrderCustomerModal extends StatelessWidget {
   }
 }
 
-class _CustomerSettingGroup extends StatefulWidget {
+class _CustomerSettingGroup extends StatelessWidget {
   final CustomerSetting setting;
 
   const _CustomerSettingGroup(this.setting);
 
   @override
-  State<_CustomerSettingGroup> createState() => _CustomerSettingGroupState();
-}
-
-class _CustomerSettingGroupState extends State<_CustomerSettingGroup> {
-  @override
   Widget build(BuildContext context) {
-    final selected = Cart.instance.customerSettings[widget.setting.id] ??
-        widget.setting.defaultOption?.id;
+    final selected =
+        Cart.instance.customerSettings[setting.id] ?? setting.defaultOption?.id;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(widget.setting.name, style: Theme.of(context).textTheme.headline5),
+      Text(setting.name, style: Theme.of(context).textTheme.headline5),
       const SizedBox(height: kSpacing0),
       Card(
         margin: const EdgeInsets.only(bottom: kSpacing2),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
           child: Wrap(spacing: kSpacing0, children: [
-            for (final option in widget.setting.itemList)
+            for (final option in setting.itemList)
               RadioText(
-                  groupId: 'order.customer.${widget.setting.id}',
-                  onSelected: (isSelected) => selectOption(option, isSelected),
-                  value: option.id,
-                  isTogglable: true,
-                  isSelected: selected == option.id,
-                  text: option.name)
+                key: Key('cashier.customer.${setting.id}.${option.id}'),
+                groupId: 'order.customer.${setting.id}',
+                onSelected: (isSelected) => selectOption(option, isSelected),
+                value: option.id,
+                isTogglable: true,
+                isSelected: selected == option.id,
+                text: option.name,
+              )
           ]),
         ),
       ),
@@ -76,12 +74,11 @@ class _CustomerSettingGroupState extends State<_CustomerSettingGroup> {
   }
 
   void selectOption(CustomerSettingOption option, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        Cart.instance.customerSettings[widget.setting.id] = option.id;
-      } else {
-        Cart.instance.customerSettings.remove(widget.setting.id);
-      }
-    });
+    if (isSelected) {
+      Cart.instance.customerSettings[setting.id] = option.id;
+    } else {
+      // disable it
+      Cart.instance.customerSettings[setting.id] = '';
+    }
   }
 }

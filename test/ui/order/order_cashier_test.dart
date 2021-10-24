@@ -8,6 +8,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -18,6 +19,7 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/my_app.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
@@ -108,12 +110,49 @@ void main() {
 
     void prepareCustomerSettings() {
       final s1 = CustomerSetting(
-          id: 'c-1', options: {'co-1': CustomerSettingOption(id: 'co-1')});
+        id: 'c-1',
+        mode: CustomerSettingOptionMode.changeDiscount,
+        options: {
+          'co-1': CustomerSettingOption(
+            id: 'co-1',
+            isDefault: true,
+            modeValue: 10,
+          ),
+          'co-2': CustomerSettingOption(
+            id: 'co-2',
+            modeValue: 50,
+          ),
+        },
+      );
       final s2 = CustomerSetting(
-          id: 'c-2', options: {'co-2': CustomerSettingOption(id: 'co-2')});
+        id: 'c-2',
+        mode: CustomerSettingOptionMode.changePrice,
+        options: {
+          'co-3': CustomerSettingOption(
+            id: 'co-3',
+            modeValue: 10,
+          ),
+          'co-4': CustomerSettingOption(
+            id: 'co-4',
+            isDefault: true,
+            modeValue: -10,
+          ),
+        },
+      );
+      final s3 = CustomerSetting(
+        id: 'c-3',
+        options: {'co-5': CustomerSettingOption(id: 'co-5', isDefault: true)},
+      );
+      final s4 = CustomerSetting(
+        id: 'c-4',
+        options: {'co-6': CustomerSettingOption(id: 'co-6')},
+      );
       CustomerSettings.instance.replaceItems({
         'c-1': s1..prepareItem(),
         'c-2': s2..prepareItem(),
+        'c-3': s3..prepareItem(),
+        'c-4': s4..prepareItem(),
+        'c-5': CustomerSetting(id: 'c-5'),
       });
     }
 
@@ -260,7 +299,71 @@ void main() {
       }))));
     });
 
-    testWidgets('With customer setting and history mode', (tester) async {});
+    testWidgets('With customer setting and history mode', (tester) async {
+      await prepareCurrency();
+      prepareCustomerSettings();
+      Cart.instance.isHistoryMode = true;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          navigatorObservers: [MyApp.routeObserver],
+          routes: Routes.routes,
+          home: OrderScreen(),
+        ),
+      );
+
+      await tester.tap(find.byKey(Key('order.cashier')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(Key('cashier.customer.c-1.co-1')));
+      await tester.tap(find.byKey(Key('cashier.customer.c-2.co-3')));
+
+      await tester.tap(find.byKey(Key('cashier.customer.next')));
+      await tester.pumpAndSettle();
+
+      when(database.query(
+        any,
+        columns: anyNamed('columns'),
+        where: anyNamed('where'),
+        whereArgs: argThat(equals([',c-2:co-3,c-3:co-5,']), named: 'whereArgs'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) => Future.value([
+            {'id': 1}
+          ]));
+      when(database.getLast(
+        Seller.ORDER_TABLE,
+        columns: anyNamed('columns'),
+        where: anyNamed('where'),
+        whereArgs: anyNamed('whereArgs'),
+        join: anyNamed('join'),
+      )).thenAnswer((_) => Future.value({'id': 1}));
+      when(database.update(Seller.ORDER_TABLE, 1, any))
+          .thenAnswer((_) => Future.value(1));
+
+      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('confirm_dialog.cancel')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      expect(Cart.instance.isEmpty, isTrue);
+      // navigator poped
+      expect(find.byKey(Key('cashier.order')), findsNothing);
+
+      verify(storage.set(Stores.cashier, argThat(predicate((data) {
+        return data is Map && data['新台幣.current'][2]['count'] == 3;
+      }))));
+      verify(storage.set(Stores.stock, argThat(predicate((data) {
+        return data is Map &&
+            data['i-1.currentAmount'] == 90 &&
+            data['i-1.updatedAt'] != null &&
+            data['i-2.currentAmount'] == 97 &&
+            data['i-2.updatedAt'] != null;
+      }))));
+    });
 
     setUp(() {
       // disable feature and tips
