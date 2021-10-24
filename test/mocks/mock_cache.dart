@@ -8,14 +8,6 @@ import 'mock_cache.mocks.dart';
 final cache = MockCache();
 
 @GenerateMocks([Cache])
-void _initialize() {
-  Cache.instance = cache;
-  _finished = true;
-}
-
-var _finished = false;
 void initializeCache() {
-  if (!_finished) {
-    _initialize();
-  }
+  Cache.instance = cache;
 }
