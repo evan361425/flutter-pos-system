@@ -62,8 +62,7 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
   Future<List<Map<String, Object?>>> fetchItems() {
     return Database.instance.query(
       repoTableName,
-      where: 'isDelete = ?',
-      whereArgs: [0],
+      where: 'isDelete = 0',
     );
   }
 
@@ -82,7 +81,6 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
       prepareItem();
     } catch (e, stack) {
-      print(stack);
       await error(e.toString(), 'db.$repoTableName.fetch.error', stack);
     }
   }
@@ -198,7 +196,6 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
         });
       }
     } catch (e, stack) {
-      print(stack);
       await error(e.toString(), '$storageStore.fetch.error', stack);
     }
   }

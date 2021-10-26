@@ -85,9 +85,9 @@ class IngredientObject extends ModelObject<Ingredient> {
       alertAmount: data['alertAmount'] as num?,
       lastAmount: data['lastAmount'] as num?,
       lastAddAmount: data['lastAddAmount'] as num?,
-      updatedAt: data['updatedTime'] == null
+      updatedAt: data['updatedAt'] == null
           ? null
-          : Util.fromUTC(data['updatedTime'] as int),
+          : Util.fromUTC(data['updatedAt'] as int),
     );
   }
 }
