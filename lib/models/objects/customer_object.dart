@@ -38,10 +38,6 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       setting.name = name!;
       result['name'] = name!;
     }
-    if (index != null && index != setting.index) {
-      setting.index = index!;
-      result['index'] = index!;
-    }
     if (mode != null && mode != setting.mode) {
       setting.mode = mode!;
       result['mode'] = mode!.index;
@@ -56,10 +52,6 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       'index': index!,
       'mode': mode!.index,
     };
-  }
-
-  List<Map<String, Object?>> optionsToMap() {
-    return [for (final option in options) option.toMap()];
   }
 }
 
@@ -112,10 +104,6 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
     if (name != null && name != option.name) {
       option.name = name!;
       result['name'] = name!;
-    }
-    if (index != null && index != option.index) {
-      option.index = index!;
-      result['index'] = index!;
     }
     if (isDefault != null && isDefault != option.isDefault) {
       option.isDefault = isDefault!;

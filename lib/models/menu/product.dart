@@ -45,7 +45,6 @@ class Product extends Model<ProductObject>
     this.price = 0,
     DateTime? createdAt,
     this.searchedAt,
-    Catalog? catalog,
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
@@ -53,8 +52,6 @@ class Product extends Model<ProductObject>
     this.index = index;
 
     if (ingredients != null) replaceItems(ingredients);
-
-    if (catalog != null) this.catalog = catalog;
   }
 
   factory Product.fromObject(ProductObject object) {

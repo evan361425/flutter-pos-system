@@ -112,7 +112,7 @@ void main() {
           ..replaceItems({
             'i-1': Ingredient(id: 'i-1', name: 'i-1'),
             'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 1),
-            'i-3': Ingredient(id: 'i-3', name: 'i-3'),
+            'i-3': Ingredient(id: 'i-3', name: 'prefix-i-3'),
           });
         final ingredient = ProductIngredient(
           id: 'pi-1',
@@ -181,9 +181,21 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'abc');
         await tester.pumpAndSettle();
+
+        // prefix-i-3 should be smaller similarity
+        await tester.enterText(find.byType(TextField), 'i-');
+        await tester.pumpAndSettle();
+        expect(
+            tester
+                .getCenter(find.byKey(Key('product_ingredient.search.i-2')))
+                .dy,
+            lessThan(tester
+                .getCenter(find.byKey(Key('product_ingredient.search.i-3')))
+                .dy));
+
         await tester.enterText(find.byType(TextField), '3');
         await tester.pumpAndSettle();
-        await tester.tap(find.text('i-3'));
+        await tester.tap(find.byKey(Key('product_ingredient.search.i-3')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('save'));
@@ -192,7 +204,7 @@ void main() {
 
         // reset ingredient name
         final w = find.byKey(Key(key)).evaluate().first.widget;
-        expect(((w as ExpansionTile).title as Text).data, equals('i-3'));
+        expect(((w as ExpansionTile).title as Text).data, equals('prefix-i-3'));
         expect(ingredient.amount, equals(1));
 
         // edit ingredient and product ingredient

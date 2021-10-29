@@ -23,12 +23,9 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-    CustomerSetting? setting,
   }) : super(id) {
     this.name = name;
     this.index = index;
-
-    if (setting != null) this.setting = setting;
   }
 
   factory CustomerSettingOption.fromObject(CustomerSettingOptionObject object) {
@@ -82,7 +79,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
         return price * modeValue! / 100;
       case CustomerSettingOptionMode.changePrice:
         return price + modeValue!;
-      case CustomerSettingOptionMode.statOnly:
+      default:
         return price;
     }
   }

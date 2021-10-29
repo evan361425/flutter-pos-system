@@ -145,10 +145,6 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
 
 mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
   List<T> sortBySimilarity(String text, {int limit = 10}) {
-    if (text.isEmpty) {
-      return [];
-    }
-
     final similarities = items
         .map((e) => MapEntry(e.id, e.getSimilarity(text)))
         .where((e) => e.value > 0)

@@ -62,9 +62,9 @@ class Ingredient extends Model<IngredientObject>
       Stock.instance.applyAmounts({id: amount});
 
   /// Add/minus [amount] of ingredient and return update data
-  Map<String, Object> getUpdateData(num amount) {
+  Map<String, Object> getUpdateData(num amount, {onlyAmount = false}) {
     final newAmount = (currentAmount ?? 0) + amount;
-    final object = amount > 0
+    final object = amount > 0 && !onlyAmount
         ? IngredientObject(
             lastAddAmount: amount,
             currentAmount: newAmount,

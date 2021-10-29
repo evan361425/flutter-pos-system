@@ -34,12 +34,13 @@ class OrderProduct extends ChangeNotifier {
     }
 
     // check not exist
-    selectedQuantity.forEach((ingredientId, quantityId) {
-      final ingredient = product.getItem(ingredientId);
+    selectedQuantity.entries.toList().forEach((entry) {
+      final ingredient = product.getItem(entry.key);
       if (ingredient == null) {
-        selectedQuantity.remove(ingredientId);
-      } else if (quantityId != null && ingredient.getItem(quantityId) == null) {
-        selectedQuantity[ingredientId] = null;
+        selectedQuantity.remove(entry.key);
+      } else if (entry.value != null &&
+          ingredient.getItem(entry.value!) == null) {
+        selectedQuantity[entry.key] = null;
       }
     });
   }

@@ -31,9 +31,20 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   late TextEditingController _nameController;
 
   @override
-  Widget body() {
+  Widget body() => form(formFields());
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  List<Widget> formFields() {
     final textTheme = Theme.of(context).textTheme;
-    final fields = <Widget>[
+
+    return <Widget>[
       Padding(
         padding: const EdgeInsets.all(kSpacing3),
         child: _fieldName(textTheme),
@@ -52,15 +63,6 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         ),
       ),
     ];
-
-    return form(fields);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-
-    super.dispose();
   }
 
   @override

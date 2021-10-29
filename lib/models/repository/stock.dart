@@ -34,12 +34,17 @@ class Stock extends ChangeNotifier
     return Util.timeToDate(lastest);
   }
 
-  Future<void> applyAmounts(Map<String, num> amounts) async {
+  Future<void> applyAmounts(
+    Map<String, num> amounts, {
+    onlyAmount = false,
+  }) async {
     final updateData = <String, Object>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        getItem(id)?.getUpdateData(amount).forEach((key, value) {
+        getItem(id)
+            ?.getUpdateData(amount, onlyAmount: onlyAmount)
+            .forEach((key, value) {
           updateData[key] = value;
         });
       }
@@ -82,6 +87,6 @@ class Stock extends ChangeNotifier
       });
     });
 
-    return applyAmounts(amounts);
+    return applyAmounts(amounts, onlyAmount: true);
   }
 }

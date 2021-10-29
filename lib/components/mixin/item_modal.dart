@@ -54,7 +54,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   }
 
   /// Fields in form
-  List<Widget> formFields() => const <Widget>[];
+  List<Widget> formFields();
 
   /// Handle user submition
   Future<void> handleSubmit() async {

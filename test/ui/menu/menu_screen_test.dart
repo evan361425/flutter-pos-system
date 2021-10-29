@@ -21,10 +21,17 @@ import '../../mocks/mock_storage.dart';
 void main() {
   group('Menu Screen', () {
     testWidgets('Add catalog', (WidgetTester tester) async {
+      when(cache.getRaw(any)).thenReturn(null);
+      when(cache.setRaw(any, any)).thenAnswer((_) => Future.value(true));
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu()),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
       ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+
+      // close tip
+      await tester.pumpAndSettle();
+      await tester.tapAt(Offset(0, 0));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(Key('empty_body')));
       await tester.pumpAndSettle();
@@ -168,7 +175,9 @@ void main() {
     });
 
     testWidgets('Search product', (WidgetTester tester) async {
-      final product = Product(id: 'p-1', name: 'p-1', ingredients: {
+      final now = DateTime.now();
+      final product =
+          Product(id: 'p-1', name: 'p-1', searchedAt: now, ingredients: {
         'pi-1': ProductIngredient(
             id: 'pi-1',
             ingredient: Ingredient(id: 'i-1', name: 'i-1'),
@@ -184,25 +193,38 @@ void main() {
           ingredient: Ingredient(id: 'i-2', name: 'i-2'),
         ),
       })
-        ..prepareItem();
+            ..prepareItem();
       Menu().replaceItems({
         'c-1': Catalog(id: 'c-1', products: {
           'p-1': product,
-          'p-2': Product(id: 'p-2', name: 'p-2'),
+          'p-2': Product(
+            id: 'p-2',
+            name: 'p-2',
+            searchedAt: DateTime(now.year + 1),
+          ),
         })
           ..prepareItem()
       });
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+          ],
+          child: MaterialApp(
+            routes: Routes.routes,
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.dark,
+            home: MenuScreen(),
+          )));
       await tester.tap(find.byKey(Key('menu.search')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('search.p-1')), findsOneWidget);
-      expect(find.byKey(Key('search.p-2')), findsOneWidget);
+      // product 2 has older searchedAt value
+      final y1 = tester.getCenter(find.byKey(Key('search.p-1'))).dy;
+      final y2 = tester.getCenter(find.byKey(Key('search.p-2'))).dy;
+      expect(y1, greaterThan(y2));
 
       // enter non-matched products
       await tester.enterText(find.byType(TextField), 'empty');

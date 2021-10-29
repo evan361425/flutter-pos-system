@@ -107,6 +107,7 @@ void main() {
     Map<String, Object> getDbData() {
       return {
         'id': 1,
+        'createdAt': 12345678,
         'encodedProducts': jsonEncode([
           {
             'singlePrice': 10,

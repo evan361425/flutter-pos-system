@@ -177,6 +177,7 @@ class _ProductIngredientSearch extends StatelessWidget {
 
   Widget itemBuilder(BuildContext context, Ingredient ingredient) {
     return CardTile(
+      key: Key('product_ingredient.search.${ingredient.id}'),
       title: Text(ingredient.name),
       trailing: IconButton(
         onPressed: () {

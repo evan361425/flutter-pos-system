@@ -51,14 +51,6 @@ class IngredientObject extends ModelObject<Ingredient> {
       ingredient.currentAmount = currentAmount!;
       result['$prefix.currentAmount'] = currentAmount!;
     }
-    if (warningAmount != null && warningAmount != ingredient.warningAmount) {
-      ingredient.warningAmount = warningAmount;
-      result['$prefix.warningAmount'] = warningAmount!;
-    }
-    if (alertAmount != null && alertAmount != ingredient.alertAmount) {
-      ingredient.alertAmount = alertAmount;
-      result['$prefix.alertAmount'] = alertAmount!;
-    }
     if (lastAmount != null && lastAmount != ingredient.lastAmount) {
       ingredient.lastAmount = lastAmount;
       result['$prefix.lastAmount'] = lastAmount!;

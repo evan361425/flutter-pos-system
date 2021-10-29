@@ -34,13 +34,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
   ProductIngredient({
     String? id,
     Ingredient? ingredient,
-    Product? product,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) : super(id) {
     if (quantities != null) replaceItems(quantities);
-
-    if (product != null) this.product = product;
 
     if (ingredient != null) this.ingredient = ingredient;
   }

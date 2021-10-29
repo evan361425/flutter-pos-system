@@ -142,9 +142,6 @@ class OrderProductObject {
     };
   }
 
-  @override
-  String toString() => '$productName * $count';
-
   factory OrderProductObject.input(Map<String, dynamic> data) {
     final ingredients =
         (data['ingredients'] ?? const Iterable.empty()) as Iterable<dynamic>;
@@ -187,22 +184,6 @@ class OrderIngredientObject {
     this.quantityName,
   });
 
-  void update({
-    required num additionalPrice,
-    required num additionalCost,
-    required num amount,
-    required String quantityId,
-    required String quantityName,
-  }) {
-    this.additionalPrice = additionalPrice;
-    this.additionalCost = additionalCost;
-    // amount with special quantity
-    this.amount = amount;
-    // quantity info
-    this.quantityId = quantityId;
-    this.quantityName = quantityName;
-  }
-
   Map<String, Object?> toMap() {
     return {
       'name': name,
@@ -223,7 +204,7 @@ class OrderIngredientObject {
       id: data['id'] as String,
       // back compatible
       productIngredientId: data['productIngredientId'] ?? '',
-      productQuantityId: data['productQuantityId'],
+      productQuantityId: data['productQuantityId'] ?? '',
       additionalPrice: data['additionalPrice'],
       additionalCost: data['additionalCost'],
       amount: data['amount'] ?? 0,

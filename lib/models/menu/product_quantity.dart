@@ -33,13 +33,10 @@ class ProductQuantity extends Model<ProductQuantityObject>
   ProductQuantity({
     String? id,
     Quantity? quantity,
-    ProductIngredient? ingredient,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
   }) : super(id) {
-    if (ingredient != null) this.ingredient = ingredient;
-
     if (quantity != null) this.quantity = quantity;
   }
 

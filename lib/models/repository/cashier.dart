@@ -40,8 +40,6 @@ class Cashier extends ChangeNotifier {
 
   bool get favoriteIsEmpty => _favorites.isEmpty;
 
-  int get favoriteLength => _favorites.length;
-
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
 
@@ -126,13 +124,13 @@ class Cashier extends ChangeNotifier {
       }
     } else {
       for (var i = unitLength - 1; i > index; i--) {
-        final unit = at(i).unit;
+        final iUnit = at(i).unit;
 
         // if not enough to change this unit
-        if (total >= unit) {
+        if (total >= iUnit && iUnit != unit) {
           return CashierChangeEntryObject(
-            unit: unit,
-            count: (total / unit).floor(),
+            unit: iUnit,
+            count: (total / iUnit).floor(),
           );
         }
       }

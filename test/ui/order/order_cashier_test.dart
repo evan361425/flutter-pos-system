@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -35,6 +37,7 @@ void main() {
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),
         'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 100),
+        'i-3': Ingredient(id: 'i-3', name: 'i-3', currentAmount: 100),
       });
       Quantities().replaceItems({
         'q-1': Quantity(id: 'q-1', name: 'q-1'),
@@ -164,6 +167,22 @@ void main() {
           .thenAnswer((_) => Future.value({}));
       await currency.setCurrency(CurrencyTypes.TWD);
     }
+
+    testWidgets('Order without any product', (tester) async {
+      Cart.instance = Cart();
+      await prepareCurrency();
+
+      await tester.pumpWidget(
+        MaterialApp(routes: Routes.routes, home: OrderScreen()),
+      );
+
+      await tester.tap(find.byKey(Key('order.cashier')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(Key('order.action.more')), findsOneWidget);
+    });
 
     testWidgets('Order without customer setting', (tester) async {
       await prepareCurrency();
@@ -336,7 +355,31 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         join: anyNamed('join'),
-      )).thenAnswer((_) => Future.value({'id': 1}));
+      )).thenAnswer((_) => Future.value({
+            'id': 1,
+            'encodedProducts': jsonEncode([
+              {
+                'singlePrice': 10,
+                'originalPrice': 10,
+                'count': 1,
+                'productId': 'p-1',
+                'productName': 'p-1',
+                'isDiscount': false,
+                'ingredients': [
+                  {
+                    'name': 'i-1',
+                    'id': 'i-1',
+                    'amount': 2,
+                  },
+                  {
+                    'name': 'i-3',
+                    'id': 'i-3',
+                    'amount': 5,
+                  },
+                ]
+              },
+            ]),
+          }));
       when(database.update(Seller.ORDER_TABLE, 1, any))
           .thenAnswer((_) => Future.value(1));
 
@@ -358,10 +401,12 @@ void main() {
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
-            data['i-1.currentAmount'] == 90 &&
+            data['i-1.currentAmount'] == 92 &&
             data['i-1.updatedAt'] != null &&
             data['i-2.currentAmount'] == 97 &&
-            data['i-2.updatedAt'] != null;
+            data['i-2.updatedAt'] != null &&
+            data['i-3.currentAmount'] == 105 &&
+            data['i-3.updatedAt'] != null;
       }))));
     });
 

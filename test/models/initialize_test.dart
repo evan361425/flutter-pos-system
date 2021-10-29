@@ -63,9 +63,16 @@ void main() {
                         'additionalCost': 0,
                         'additionalPrice': 0,
                       },
+                      'pq-3': {
+                        'quantityId': 'q-3',
+                        'amount': 5,
+                        'additionalCost': 5,
+                        'additionalPrice': 10,
+                      },
                     },
                   },
                   'i-2': {'amount': 5},
+                  'pi-3': {'ingredientId': 'i-3', 'amount': 5},
                 },
               },
               'p-2': {
