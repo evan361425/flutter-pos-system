@@ -7,13 +7,14 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:provider/provider.dart';
 
 class ChangerModalFavorite extends StatefulWidget {
-  final void Function() handleAdd;
+  final VoidCallback emptyAction;
 
   const ChangerModalFavorite({
     Key? key,
-    required this.handleAdd,
+    required this.emptyAction,
   }) : super(key: key);
 
   @override
@@ -28,16 +29,23 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
   String? errorMessage;
 
   @override
+  void didChangeDependencies() {
+    context.watch<Cashier>();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
-      return EmptyBody(onPressed: widget.handleAdd);
+      return EmptyBody(onPressed: widget.emptyAction);
     }
 
-    final listView = SlidableItemList<FavoriteItem, _Action>(
+    final listView = SlidableItemList<FavoriteItem, int>(
       key: slidableItemList,
-      deleteValue: _Action.delete,
-      handleDelete: (_, item) => handleDeletion(item.index),
-      tileBuilder: (_, __, item) => RadioListTile<FavoriteItem>(
+      deleteValue: 0,
+      handleDelete: (item) => handleDeletion(item.index),
+      tileBuilder: (_, index, item) => RadioListTile<FavoriteItem>(
+        key: Key('cashier.changer.favorite.$index'),
         value: item,
         title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),
         subtitle: MetaBlock.withString(
@@ -85,12 +93,4 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
 
     setState(() => selected = null);
   }
-
-  void reset() {
-    setState(() {});
-  }
-}
-
-enum _Action {
-  delete,
 }

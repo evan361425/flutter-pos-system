@@ -21,12 +21,6 @@ class CashierChangeBatchObject {
       'targets': [for (var target in targets) target.toMap()],
     };
   }
-
-  @override
-  String toString() {
-    final t = targets.map((e) => '${e.unit} (${e.count})').join(', ');
-    return '${source.unit} (${source.count}) => [$t]';
-  }
 }
 
 class CashierChangeEntryObject {

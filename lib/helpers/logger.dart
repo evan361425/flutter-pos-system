@@ -63,6 +63,7 @@ void warn(String message, String code, [Map<String, Object>? detail]) async {
 /// It will send to crashlytic not analytic
 Future<void> error(String message, String code, [StackTrace? stack]) async {
   if (LOG_LEVEL != 0) {
+    print(stack);
     developer.log(message, name: code);
     await FirebaseCrashlytics.instance.recordError(
       error,

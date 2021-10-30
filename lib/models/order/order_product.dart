@@ -1,78 +1,96 @@
+import 'package:flutter/material.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/cart_ingredients.dart';
 
-enum OrderProductListenerTypes {
-  count,
-  selection,
-}
+class OrderProduct extends ChangeNotifier {
+  final Product product;
 
-class OrderProduct {
-  static final listeners = <OrderProductListenerTypes, List<void Function()>>{
-    OrderProductListenerTypes.count: [],
-    OrderProductListenerTypes.selection: [],
-  };
+  final Map<String, String?> selectedQuantity;
 
-  Product product;
   bool isSelected;
+
   num singlePrice;
+
   int count;
-  final List<OrderIngredient> ingredients;
 
   OrderProduct(
     this.product, {
     this.count = 1,
     num? singlePrice,
     this.isSelected = false,
-    List<OrderIngredient>? ingredients,
+    Map<String, String?>? selectedQuantity,
   })  : singlePrice = singlePrice ?? product.price,
-        ingredients = ingredients ?? [];
+        selectedQuantity = selectedQuantity ??
+            {for (final ingredient in product.items) ingredient.id: null};
 
-  Iterable<String> get ingredientNames => ingredients.map((e) => e.toString());
-
-  num get price => count * singlePrice;
-
-  void addIngredient(OrderIngredient ingredient) {
-    var i = 0;
-    for (var element in ingredients) {
-      if (element.id == ingredient.id) {
-        // remove it to push to end, use element.price for old price
-        singlePrice -= element.price;
-        ingredients.removeAt(i);
-        break;
+  void rebind() {
+    // check missing
+    for (final ingredient in product.items) {
+      if (!selectedQuantity.containsKey(ingredient.id)) {
+        selectedQuantity[ingredient.id] = null;
       }
-      i++;
     }
 
-    singlePrice += ingredient.price;
-    ingredients.add(ingredient);
-  }
-
-  void decrement([int value = 1]) => setCount(-value);
-
-  OrderIngredient? getIngredient(String? id) {
-    try {
-      return ingredients.firstWhere((e) => e.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  void increment([int value = 1]) => setCount(value);
-
-  void removeIngredient(String id) {
-    ingredients.removeWhere((e) {
-      if (e.id == id) {
-        singlePrice -= e.price;
-        return true;
+    // check not exist
+    selectedQuantity.entries.toList().forEach((entry) {
+      final ingredient = product.getItem(entry.key);
+      if (ingredient == null) {
+        selectedQuantity.remove(entry.key);
+      } else if (entry.value != null &&
+          ingredient.getItem(entry.value!) == null) {
+        selectedQuantity[entry.key] = null;
       }
-      return false;
     });
   }
 
-  void setCount(int value) {
-    count += value;
-    notifyListener(OrderProductListenerTypes.count);
+  String get id => product.id;
+
+  bool get isEmpty => selectedQuantity.values.every((e) => e == null);
+
+  String get name => product.name;
+
+  num get price => count * singlePrice;
+
+  Iterable<String> getIngredientNames({bool onlyQuantitied = true}) {
+    final entries = onlyQuantitied
+        ? selectedQuantity.entries.where((entry) => entry.value != null)
+        : selectedQuantity.entries;
+
+    return entries.map<String>((entry) {
+      final ingredient = product.getItem(entry.key)!;
+      if (entry.value == null) return ingredient.name;
+
+      final quantity = ingredient.getItem(entry.value!)!;
+      return '${ingredient.name} - ${quantity.name}';
+    });
+  }
+
+  num getQuantityPrice(String ingredientId, String? quantityId) {
+    if (quantityId == null) return 0;
+
+    return product
+            .getItem(ingredientId)
+            ?.getItem(quantityId)
+            ?.additionalPrice ??
+        0;
+  }
+
+  void increment() {
+    count += 1;
+    notifyListeners();
+    Cart.instance.notifyListeners();
+  }
+
+  void selectQuantity(String ingredientId, [String? quantityId]) {
+    assert(selectedQuantity.containsKey(ingredientId));
+
+    final oldQuantity = selectedQuantity[ingredientId];
+    singlePrice -= getQuantityPrice(ingredientId, oldQuantity);
+
+    selectedQuantity[ingredientId] = quantityId;
+    singlePrice += getQuantityPrice(ingredientId, quantityId);
   }
 
   /// if [checked] is defferent with current state
@@ -83,36 +101,23 @@ class OrderProduct {
 
     if (changed) {
       isSelected = checked;
-      notifyListener(OrderProductListenerTypes.selection);
+      notifyListeners();
+      // selected changed, need change ingredients
+      CartIngredients.instance.notifyListeners();
     }
 
     return changed;
   }
 
   OrderProductObject toObject() {
-    // including default quantity ingredient
-    final allIngredients = <String, OrderIngredientObject>{
-      for (var ingredient in product.items)
-        ingredient.id: OrderIngredientObject(
-          id: ingredient.id,
-          name: ingredient.name,
-          amount: ingredient.amount,
+    final ingredients = <String, OrderIngredientObject>{
+      for (var entry in selectedQuantity.entries)
+        entry.key: OrderIngredientObject.fromModel(
+          product.getItem(entry.key)!,
+          entry.value,
         )
     };
-
-    var originalPrice = product.price;
-    // ingredient with special quantity
-    ingredients.forEach((ingredient) {
-      originalPrice += ingredient.price;
-
-      allIngredients[ingredient.id]!.update(
-        additionalCost: ingredient.cost,
-        additionalPrice: ingredient.price,
-        amount: ingredient.amount,
-        quantityId: ingredient.quantity.id,
-        quantityName: ingredient.quantity.name,
-      );
-    });
+    final originalPrice = product.price;
 
     return OrderProductObject(
       singlePrice: singlePrice,
@@ -121,26 +126,7 @@ class OrderProduct {
       productName: product.name,
       originalPrice: originalPrice,
       isDiscount: singlePrice < originalPrice,
-      ingredients: allIngredients,
+      ingredients: ingredients,
     );
-  }
-
-  // Custom Listeners for performace
-  static void addListener(
-    void Function() listener,
-    OrderProductListenerTypes type,
-  ) {
-    listeners[type]!.add(listener);
-  }
-
-  static void notifyListener(OrderProductListenerTypes type) {
-    listeners[type]!.forEach((lisnter) => lisnter());
-  }
-
-  static void removeListener(
-    void Function() listener,
-    OrderProductListenerTypes type,
-  ) {
-    listeners[type]!.remove(listener);
   }
 }

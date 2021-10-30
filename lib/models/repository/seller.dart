@@ -1,20 +1,44 @@
+import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 
-class Seller {
-  static Seller instance = Seller();
+class Seller extends ChangeNotifier {
+  static const STASH_TABLE = 'order_stash';
 
-  Future<OrderObject?> drop() async {
+  static const ORDER_TABLE = 'order';
+
+  static const JOIN_COMBINATION = JoinQuery(
+    joinType: 'LEFT',
+    hostTable: ORDER_TABLE,
+    guestTable: 'customer_setting_combinations',
+    hostKey: 'customerSettingCombinationId',
+    guestKey: 'id',
+  );
+
+  static late Seller instance;
+
+  Seller() {
+    instance = this;
+  }
+
+  Future<OrderObject?> drop(int lastCount) async {
     final row = await Database.instance.getLast(
-      Tables.order_stash,
-      columns: ['id', 'encodedProducts', 'createdAt'],
+      STASH_TABLE,
+      join: JOIN_COMBINATION,
+      columns: const [
+        'id',
+        'encodedProducts',
+        'combination',
+        'createdAt',
+      ],
+      count: lastCount,
     );
     if (row == null) return null;
 
-    final object = OrderObject.build(row);
+    final object = OrderObject.fromMap(row);
 
-    await Database.instance.delete(Tables.order_stash, object.id);
+    await Database.instance.delete(STASH_TABLE, object.id);
 
     return object;
   }
@@ -24,8 +48,8 @@ class Seller {
     DateTime end, {
     range = '%d',
   }) async {
-    final rows = await Database.instance.rawQuery(
-      Tables.order,
+    final rows = await Database.instance.query(
+      ORDER_TABLE,
       columns: ['COUNT(*) count', 'createdAt'],
       where: 'createdAt BETWEEN ? AND ?',
       groupBy: "STRFTIME('$range', createdAt,'unixepoch')",
@@ -48,7 +72,7 @@ class Seller {
     final begin = start == null ? Util.toUTC(hour: 0) : Util.toUTC(now: start);
     final finish = end == null ? 9999999999 : Util.toUTC(now: end);
 
-    final result = await Database.instance.query(Tables.order,
+    final result = await Database.instance.query(ORDER_TABLE,
         columns: ['COUNT(*) count', 'SUM(totalPrice) totalPrice'],
         where: 'createdAt BETWEEN ? AND ?',
         whereArgs: [begin, finish]);
@@ -67,54 +91,68 @@ class Seller {
     int offset = 0,
   ]) async {
     final rows = await Database.instance.query(
-      Tables.order,
+      ORDER_TABLE,
       where: 'createdAt BETWEEN ? AND ?',
       whereArgs: [
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
+      join: JOIN_COMBINATION,
       orderBy: 'createdAt desc',
       limit: 10,
       offset: offset,
     );
 
-    return rows.map((row) => OrderObject.build(row)).toList();
+    return rows.map((row) => OrderObject.fromMap(row)).toList();
   }
 
   Future<num> getStashCount() async {
-    final count = await Database.instance.count(Tables.order_stash);
+    final count = await Database.instance.count(STASH_TABLE);
 
     return count ?? 0;
   }
 
-  Future<OrderObject?> pop() async {
-    final row = await Database.instance.getLast(Tables.order,
-        columns: ['id', 'encodedProducts', 'createdAt'],
-        where: 'createdAt >= ?',
-        whereArgs: [Util.toUTC(hour: 0)]);
-    if (row == null) return null;
+  Future<OrderObject?> getTodayLast() async {
+    final row = await Database.instance.getLast(
+      ORDER_TABLE,
+      columns: const [
+        'totalCount',
+        'totalPrice',
+        'id',
+        'encodedProducts',
+        'createdAt',
+        'combination',
+      ],
+      where: 'createdAt >= ?',
+      whereArgs: [Util.toUTC(hour: 0)],
+      join: JOIN_COMBINATION,
+    );
 
-    return OrderObject.build(row);
+    return row == null ? null : OrderObject.fromMap(row);
   }
 
-  Future<void> push(OrderObject order) {
-    return Database.instance.push(Tables.order, order.toMap());
+  Future<int> push(OrderObject order) async {
+    final id = await Database.instance.push(ORDER_TABLE, order.toMap());
+    notifyListeners();
+
+    return id;
   }
 
-  Future<void> stash(OrderObject order) {
+  /// Save the order in to DB
+  ///
+  /// It will not save customer setting.
+  Future<int> stash(OrderObject order) {
     final data = order.toMap();
 
-    return Database.instance.push(Tables.order_stash, {
+    return Database.instance.push(STASH_TABLE, {
       'createdAt': data['createdAt'],
+      'customerSettingCombinationId': data['customerSettingCombinationId'],
       'encodedProducts': data['encodedProducts'],
     });
   }
 
-  Future<void> update(OrderObject order) {
-    return Database.instance.update(
-      Tables.order,
-      order.id,
-      order.toMap(),
-    );
+  Future<void> update(OrderObject order) async {
+    await Database.instance.update(ORDER_TABLE, order.id, order.toMap());
+    notifyListeners();
   }
 }

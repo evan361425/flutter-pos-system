@@ -34,3 +34,11 @@ void showInfoSnackbar(BuildContext context, String message) {
         color: Color(0xFF81C784),
       ));
 }
+
+void showErrorSnackbar(BuildContext context, String message) {
+  showSnackBar(context, message,
+      icon: Icon(
+        Icons.error_outline,
+        color: Theme.of(context).errorColor,
+      ));
+}

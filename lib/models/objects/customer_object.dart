@@ -23,42 +23,24 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
   });
 
   factory CustomerSettingObject.build(Map<String, Object?> data) {
-    final options =
-        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
-
     return CustomerSettingObject(
-      id: data['id'] as String,
+      id: (data['id'] as int).toString(),
       name: data['name'] as String,
       index: data['index'] as int,
       mode: CustomerSettingOptionMode.values[data['mode'] as int],
-      options: options.entries.map<CustomerSettingOptionObject>(
-          (e) => CustomerSettingOptionObject.build({
-                'id': e.key,
-                ...e.value as Map<String, Object?>,
-              })),
     );
   }
 
   @override
   Map<String, Object?> diff(CustomerSetting setting) {
     final result = <String, Object?>{};
-    final prefix = setting.prefix;
     if (name != null && name != setting.name) {
       setting.name = name!;
-      result['$prefix.name'] = name!;
-    }
-    if (index != null && index != setting.index) {
-      setting.index = index!;
-      result['$prefix.index'] = index!;
+      result['name'] = name!;
     }
     if (mode != null && mode != setting.mode) {
       setting.mode = mode!;
-      result['$prefix.mode'] = mode!.index;
-
-      for (final item in setting.items) {
-        item.modeValue = null;
-        result['${item.prefix}.modeValue'] = null;
-      }
+      result['mode'] = mode!.index;
     }
     return result;
   }
@@ -69,12 +51,13 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
       'name': name!,
       'index': index!,
       'mode': mode!.index,
-      'options': {for (var option in options) option.id: option.toMap()},
     };
   }
 }
 
 class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
+  final int? customerSettingId;
+
   final String? id;
 
   final String? name;
@@ -86,6 +69,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   final num? modeValue;
 
   const CustomerSettingOptionObject({
+    this.customerSettingId,
     this.id,
     this.name,
     this.index,
@@ -95,10 +79,10 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
 
   factory CustomerSettingOptionObject.build(Map<String, Object?> data) {
     return CustomerSettingOptionObject(
-      id: data['id'] as String,
+      id: (data['id'] as int).toString(),
       name: data['name'] as String,
       index: data['index'] as int,
-      isDefault: data['isDefault'] as bool,
+      isDefault: data['isDefault'] == 1,
       modeValue: data['modeValue'] as num?,
     );
   }
@@ -106,9 +90,10 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   @override
   Map<String, Object?> toMap() {
     return {
+      'customerSettingId': customerSettingId,
       'name': name,
       'index': index,
-      'isDefault': isDefault,
+      'isDefault': (isDefault ?? false) ? 1 : 0,
       'modeValue': modeValue,
     };
   }
@@ -116,22 +101,17 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   @override
   Map<String, Object?> diff(CustomerSettingOption option) {
     final result = <String, Object?>{};
-    final prefix = option.prefix;
     if (name != null && name != option.name) {
       option.name = name!;
-      result['$prefix.name'] = name!;
-    }
-    if (index != null && index != option.index) {
-      option.index = index!;
-      result['$prefix.index'] = index!;
+      result['name'] = name!;
     }
     if (isDefault != null && isDefault != option.isDefault) {
       option.isDefault = isDefault!;
-      result['$prefix.isDefault'] = isDefault!;
+      result['isDefault'] = isDefault! ? 1 : 0;
     }
     if (modeValue != option.modeValue) {
       option.modeValue = modeValue;
-      result['$prefix.modeValue'] = modeValue;
+      result['modeValue'] = modeValue;
     }
     return result;
   }

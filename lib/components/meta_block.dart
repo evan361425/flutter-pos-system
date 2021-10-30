@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 
-class MetaBlock extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: const Text('•'),
-    );
-  }
-
+class MetaBlock {
   static TextSpan span() {
     return const TextSpan(text: string);
   }
 
-  static const string = ' • ';
+  static const string = '  •  ';
 
+  /// Divide strings with [MetaBlock]
+  ///
+  /// return null if [emptyText] is not provided and [data] is empty
   static Widget? withString(
     BuildContext context,
     Iterable<String> data, {

@@ -28,6 +28,7 @@ class OrderByOrientation extends StatelessWidget {
 
   Widget _portrait() {
     return Column(
+      key: Key('order.orientation.portrait'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         row1,
@@ -40,6 +41,7 @@ class OrderByOrientation extends StatelessWidget {
 
   Widget _landscape() {
     return Row(
+      key: Key('order.orientation.lanscape'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Flexible(

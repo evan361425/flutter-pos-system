@@ -18,9 +18,13 @@ class EmptyBody extends StatelessWidget {
         children: [
           Text(
             title ?? tt('empty_body'),
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline6,
           ),
-          OutlinedButton(onPressed: onPressed, child: Text('立即設定')),
+          OutlinedButton(
+            key: Key('empty_body'),
+            onPressed: onPressed,
+            child: Text('立即設定'),
+          ),
         ],
       ),
     );

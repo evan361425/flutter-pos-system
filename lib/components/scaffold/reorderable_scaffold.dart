@@ -104,16 +104,10 @@ class _ReorderableListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      key: Key('reorder.$index'),
       shape: const RoundedRectangleBorder(),
       margin: const EdgeInsets.all(0.5),
-      child: _tile(context),
-    );
-  }
-
-  Widget _tile(BuildContext context) {
-    return Row(
-      // crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+      child: Row(children: [
         Expanded(
           child: ReorderableDelayedDragStartListener(
             index: index!,
@@ -130,7 +124,7 @@ class _ReorderableListItem extends StatelessWidget {
             child: Center(child: Icon(Icons.reorder_sharp)),
           ),
         ),
-      ],
+      ]),
     );
   }
 }

@@ -47,10 +47,6 @@ class CatalogObject extends ModelObject<Catalog> {
   Map<String, Object> diff(Catalog catalog) {
     final result = <String, Object>{};
     final prefix = catalog.prefix;
-    if (index != null && index != catalog.index) {
-      catalog.index = index!;
-      result['$prefix.index'] = index!;
-    }
     if (name != catalog.name) {
       catalog.name = name;
       result['$prefix.name'] = name;

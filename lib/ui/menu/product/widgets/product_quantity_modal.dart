@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/search_scaffold.dart';
+import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductQuantityModal extends StatefulWidget {
   final ProductQuantity? quantity;
@@ -29,10 +30,6 @@ class ProductQuantityModal extends StatefulWidget {
   _ProductQuantityModalState createState() => _ProductQuantityModalState();
 }
 
-enum _Actions {
-  delete,
-}
-
 class _ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
@@ -41,23 +38,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
   String quantityName = '';
   String quantityId = '';
-
-  @override
-  List<Widget> get actions => widget.isNew
-      ? const []
-      : [
-          IconButton(
-            onPressed: () => BottomSheetActions.withDelete<_Actions>(
-              context,
-              deleteValue: _Actions.delete,
-              warningContent:
-                  Text(tt('delete_confirm', {'name': widget.quantity!.name})),
-              popAfterDeleted: true,
-              deleteCallback: widget.quantity!.remove,
-            ),
-            icon: Icon(KIcons.more),
-          ),
-        ];
 
   @override
   Widget? get title => Text(tt(
@@ -76,7 +56,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        key: Key('menu.quantity.search'),
+        key: Key('product_quantity.search'),
         text: quantityName,
         labelText: tt('menu.quantity.label.name'),
         hintText: tt('menu.quantity.hint.name'),
@@ -85,6 +65,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         onTap: _selectQuantity,
       ),
       TextFormField(
+        key: Key('product_quantity.amount'),
         controller: _amountController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
@@ -95,6 +76,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         validator: Validator.positiveNumber(tt('menu.quantity.label.amount')),
       ),
       TextFormField(
+        key: Key('product_quantity.price'),
         controller: _priceController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
@@ -110,6 +92,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         ),
       ),
       TextFormField(
+        key: Key('product_quantity.cost'),
         controller: _costController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
@@ -133,10 +116,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     super.initState();
 
     final q = widget.quantity;
-    _amountController = TextEditingController(text: q?.amount.toString());
+    _amountController =
+        TextEditingController(text: q?.amount.toString() ?? '0');
     _priceController =
-        TextEditingController(text: q?.additionalPrice.toString());
-    _costController = TextEditingController(text: q?.additionalCost.toString());
+        TextEditingController(text: q?.additionalPrice.toString() ?? '0');
+    _costController =
+        TextEditingController(text: q?.additionalCost.toString() ?? '0');
 
     if (q != null) {
       quantityId = q.quantity.id;
@@ -149,15 +134,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     final object = _parseObject();
 
     if (widget.isNew) {
-      final quantity = ProductQuantity(
+      await widget.ingredient.addItem(ProductQuantity(
         quantity: Quantities.instance.getItem(quantityId),
-        ingredient: widget.ingredient,
         amount: object.amount!,
         additionalPrice: object.additionalPrice!,
         additionalCost: object.additionalCost!,
-      );
-
-      await quantity.ingredient.setItem(quantity);
+      ));
     } else {
       await widget.quantity!.update(object);
     }
@@ -186,22 +168,68 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   }
 
   Future<void> _selectQuantity(BuildContext context) async {
-    final quantity = await Navigator.of(context).pushNamed(
-      Routes.menuQuantitySearch,
-      arguments: quantityName,
-    );
+    final result = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => _ProductQuantitySearch(quantityName),
+    ));
 
-    if (quantity != null && quantity is Quantity) {
+    if (result is Quantity) {
       setState(() {
         errorMessage = null;
-        quantityId = quantity.id;
-        quantityName = quantity.name;
-        _updateByProportion(quantity.defaultProportion);
+        quantityId = result.id;
+        quantityName = result.name;
+        _updateByProportion(result.defaultProportion);
       });
     }
   }
 
   void _updateByProportion(num proportion) {
     _amountController.text = (widget.ingredient.amount * proportion).toString();
+  }
+}
+
+class _ProductQuantitySearch extends StatelessWidget {
+  final String? text;
+
+  const _ProductQuantitySearch(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final quantities = context.watch<Quantities>();
+
+    return SearchScaffold<Quantity>(
+      handleChanged: (text) async => quantities.sortBySimilarity(text),
+      itemBuilder: itemBuilder,
+      emptyBuilder: emptyBuilder,
+      initialData: quantities.itemList,
+      text: text ?? '',
+      hintText: tt('menu.quantity.label.name'),
+      textCapitalization: TextCapitalization.words,
+    );
+  }
+
+  Widget emptyBuilder(BuildContext context, String text) {
+    return CardTile(
+      key: Key('product_quantity.add_quantity'),
+      title: Text(tt('menu.quantity.add_quantity', {'name': text})),
+      onTap: () async {
+        final quantity = Quantity(name: text);
+        await Quantities.instance.addItem(quantity);
+        Navigator.of(context).pop<Quantity>(quantity);
+      },
+    );
+  }
+
+  Widget itemBuilder(BuildContext context, Quantity quantity) {
+    return CardTile(
+      title: Text(quantity.name),
+      trailing: IconButton(
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => QuantityModal(quantity: quantity))),
+        icon: Icon(Icons.open_in_new_sharp),
+      ),
+      onTap: () {
+        Navigator.of(context).pop<Quantity>(quantity);
+      },
+    );
   }
 }

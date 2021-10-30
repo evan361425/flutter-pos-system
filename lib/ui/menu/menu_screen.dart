@@ -28,12 +28,14 @@ class MenuScreen extends StatelessWidget {
         leading: PopButton(),
         actions: [
           IconButton(
+            key: Key('menu.more'),
             onPressed: () => _showActions(context),
             icon: Icon(KIcons.more),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('menu.add'),
         onPressed: goAddCatalog,
         tooltip: tt('menu.catalog.add'),
         child: TipTutorial(

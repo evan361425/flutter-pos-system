@@ -2,43 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 
-import '../mocks/mock_widgets.dart';
-
 void main() {
-  Widget createWidget(List<BottomSheetAction<void>> actions) {
-    return MediaQuery(
-      data: MediaQueryData(padding: EdgeInsets.all(20.0)),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: BottomSheetActions(actions: actions),
-      ),
+  group('Widget BottomSheetActions', () {
+    testWidgets('should cancelable', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(home: _ExampleWidget()));
+
+      await tester.tap(find.text('hi'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.cancel_sharp));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.cancel_sharp), findsNothing);
+    });
+  });
+}
+
+class _ExampleWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => showCircularBottomSheet(context, actions: []),
+      child: Text('hi'),
     );
   }
-
-  testWidgets('should set up actions', (WidgetTester tester) async {
-    final actions = <BottomSheetAction<void>>[
-      BottomSheetAction(
-        title: Text('hi'),
-        leading: Text('there'),
-        navigateRoute: '',
-      )
-    ];
-    await tester.pumpWidget(createWidget(actions));
-
-    expect(find.text('hi'), findsOneWidget);
-  });
-
-  testWidgets('should cancelable', (WidgetTester tester) async {
-    await tester.pumpWidget(bindWithNavigator(createWidget([])));
-
-    await tester.tap(find.byIcon(Icons.cancel_sharp));
-    await tester.pumpAndSettle();
-
-    expect(find.byIcon(Icons.cancel_sharp), findsNothing);
-  });
-
-  test('should failed if missing actions and builder', () {
-    expect(() => showCircularBottomSheet(MockBuildContext()),
-        throwsAssertionError);
-  });
 }

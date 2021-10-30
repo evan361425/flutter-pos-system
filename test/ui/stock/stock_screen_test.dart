@@ -1,81 +1,193 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/circular_loading.dart';
-import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/stock/ingredient.dart';
+import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_models.mocks.dart';
-import '../../mocks/mock_repos.dart';
+import '../../mocks/mock_cache.dart';
+import '../../mocks/mock_storage.dart';
+import '../../test_helpers/disable_tips.dart';
 
 void main() {
-  testWidgets('should show loading if not ready', (tester) async {
-    when(stock.isReady).thenReturn(false);
+  group('Stock Screen', () {
+    testWidgets('add ingredient', (tester) async {
+      final stock = Stock()..replaceItems({});
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<Stock>.value(value: stock),
+        ChangeNotifierProvider<Replenisher>.value(
+            value: Replenisher()..replaceItems({})),
+        ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
+      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      await tester.tap(find.byKey(Key('empty_body')));
+      await tester.pumpAndSettle();
 
-    await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<Stock>.value(value: stock),
-    ], child: MaterialApp(home: StockScreen())));
-    // wait for delay
-    await tester.pump(Duration(milliseconds: 15));
+      await tester.enterText(find.byKey(Key('stock.ingredient.amount')), '1');
+      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-1');
+      await tester.tap(find.text('save'));
+      // wait for updating
+      await tester.pumpAndSettle();
+      // wait for pop
+      await tester.pumpAndSettle();
 
-    expect(find.byType(CircularLoading), findsOneWidget);
-  });
+      expect(stock.length, equals(1));
+      expect(stock.items.first.name, equals('i-1'));
+      expect(stock.items.first.currentAmount, equals(1));
+    });
 
-  testWidgets('should show empty body if empty', (tester) async {
-    when(stock.isReady).thenReturn(true);
-    when(stock.isEmpty).thenReturn(true);
+    testWidgets('replenishment apply successfully', (tester) async {
+      final replenishment = Replenishment(id: 'r-1', data: {
+        'i-1': 10,
+        'i-2': -5,
+      });
+      final ing1 = Ingredient(id: 'i-1', name: 'i-1');
+      final ing2 = Ingredient(id: 'i-2', name: 'i-2', currentAmount: 4);
+      final stock = Stock()..replaceItems({'i-1': ing1, 'i-2': ing2});
+      final repli = Replenisher()..replaceItems({'r-1': replenishment});
 
-    await tester.pumpWidget(MultiProvider(providers: [
-      ChangeNotifierProvider<Stock>.value(value: stock),
-    ], child: MaterialApp(home: StockScreen())));
-    // wait for delay
-    await tester.pump(Duration(milliseconds: 15));
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<Stock>.value(value: stock),
+        ChangeNotifierProvider<Replenisher>.value(value: repli),
+      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
 
-    expect(find.byType(EmptyBody), findsOneWidget);
-  });
+      await tester.tap(find.byKey(Key('stock.replenisher')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('replenisher.r-1.apply')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
+      await tester.pumpAndSettle();
 
-  testWidgets('should addable', (tester) async {
-    final ingredient = MockIngredient();
-    when(ingredient.id).thenReturn('id');
-    when(ingredient.name).thenReturn('name');
-    when(ingredient.lastAmount).thenReturn(0);
-    when(ingredient.lastAddAmount).thenReturn(0);
-    when(ingredient.currentAmount).thenReturn(0);
-    when(stock.isReady).thenReturn(true);
-    when(stock.isEmpty).thenReturn(false);
-    when(stock.updatedDate).thenReturn('hi');
-    when(stock.itemList).thenReturn([ingredient]);
-    when(replenisher.isReady).thenReturn(false);
+      expect(ing1.currentAmount, equals(10));
+      expect(ing1.lastAddAmount, equals(10));
+      expect(ing1.lastAmount, equals(10));
+      expect(ing2.currentAmount, equals(0));
+    });
 
-    var navigateCount = 0;
+    Future<void> buildAppWithIngredients(WidgetTester tester) async {
+      final ingredient = Ingredient(id: 'i-1', name: 'i-1');
+      final stock = Stock()
+        ..replaceItems({
+          'i-1': ingredient,
+          'i-2': Ingredient(id: 'i-2', name: 'i-2'),
+        });
+      final catalog = Catalog(id: 'c-1', products: {
+        'p-1': Product(id: 'p-1', ingredients: {
+          'pi-1': ProductIngredient(id: 'pi-1', ingredient: ingredient),
+        }),
+      });
+      final menu = Menu()..replaceItems({'c-1': catalog});
+      final quantities = Quantities()..replaceItems({});
 
-    await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: stock),
-          ChangeNotifierProvider<Replenisher>.value(value: replenisher),
-        ],
-        child: MaterialApp(
-          routes: {
-            Routes.stockIngredient: (_) => Text((navigateCount++).toString()),
-          },
-          home: StockScreen(),
-        )));
-    // wait for delay
-    await tester.pump(Duration(milliseconds: 15));
+      catalog.items.forEach((pro) {
+        pro.catalog = catalog;
+        pro.items.forEach((ing) => ing.product = pro);
+      });
+      when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-    // tap to add ingredient
-    await tester.tap(find.byIcon(KIcons.add).last);
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<Stock>.value(value: stock),
+        ChangeNotifierProvider<Menu>.value(value: menu),
+        ChangeNotifierProvider<Quantities>.value(value: quantities),
+      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+    }
 
-    expect(navigateCount, equals(1));
-  });
+    testWidgets('edit amount of ingredient', (tester) async {
+      await buildAppWithIngredients(tester);
 
-  setUpAll(() {
-    initializeRepos();
+      final tapAndEnter = (String key, String text) async {
+        await tester.tap(find.byKey(Key(key)));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byKey(Key('text_dialog.text')), text);
+        await tester.tap(find.byKey(Key('text_dialog.confirm')));
+        await tester.pumpAndSettle();
+      };
+
+      final ingredient = Stock.instance.items.first;
+      await tapAndEnter('stock.i-1.plus', '10');
+      expect(ingredient.currentAmount, equals(10));
+      expect(ingredient.lastAddAmount, equals(10));
+      expect(ingredient.lastAmount, equals(10));
+
+      await tapAndEnter('stock.i-1.minus', '4');
+      expect(ingredient.currentAmount, equals(6));
+      expect(ingredient.lastAddAmount, equals(10));
+      expect(ingredient.lastAmount, equals(10));
+    });
+
+    testWidgets('edit ingredient', (tester) async {
+      await buildAppWithIngredients(tester);
+      // go to ingredient modal
+      await tester.tap(find.byKey(Key('stock.i-1')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(Key('stock.ingredient.amount')), '1');
+
+      // go to product
+      await tester.tap(find.byKey(Key('stock.ingredient.p-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.back));
+      await tester.pumpAndSettle();
+
+      // validate failed
+      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-2');
+      await tester.tap(find.text('save'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-3');
+      await tester.tap(find.text('save'));
+      // wait for updating
+      await tester.pumpAndSettle();
+      // wait for pop
+      await tester.pumpAndSettle();
+
+      // check name is changed
+      final w = find.byKey(Key('stock.i-1')).evaluate().first.widget;
+      expect(((w as ListTile).title as Text).data, equals('i-3'));
+
+      final ingredient = Stock.instance.items.first;
+      expect(ingredient.name, equals('i-3'));
+      expect(ingredient.currentAmount, equals(1));
+    });
+
+    testWidgets('delete ingredient', (tester) async {
+      await buildAppWithIngredients(tester);
+
+      final deleteIngredient = (String id) async {
+        await tester.longPress(find.byKey(Key('stock.$id')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('delete'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+        await tester.pumpAndSettle();
+      };
+
+      await deleteIngredient('i-1');
+      expect(Stock.instance.length, equals(1));
+      // product's ingredient should also deleted
+      expect(Menu.instance.items.first.items.first.length, isZero);
+
+      await deleteIngredient('i-2');
+      expect(Stock.instance.length, isZero);
+    });
+
+    setUp(() {
+      when(cache.getRaw(any)).thenReturn(1);
+    });
+
+    setUpAll(() {
+      disableTips();
+      initializeStorage();
+      initializeCache();
+    });
   });
 }

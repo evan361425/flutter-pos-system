@@ -10,26 +10,18 @@ import '../repository.dart';
 class Stock extends ChangeNotifier
     with
         Repository<Ingredient>,
-        NotifyRepository<Ingredient>,
-        InitilizableRepository,
-        SearchableRepository {
+        RepositoryStorage<Ingredient>,
+        RepositorySearchable<Ingredient> {
   static late Stock instance;
-
-  @override
-  final String repositoryName = 'stock';
 
   @override
   final Stores storageStore = Stores.stock;
 
   Stock() {
-    initialize();
-
-    Stock.instance = this;
+    instance = this;
   }
 
   String? get updatedDate {
-    if (isEmpty) return null;
-
     DateTime? lastest;
     items.forEach((element) {
       if (lastest == null) {
@@ -42,27 +34,32 @@ class Stock extends ChangeNotifier
     return Util.timeToDate(lastest);
   }
 
-  Future<void> applyAmounts(Map<String, num> amounts) {
+  Future<void> applyAmounts(
+    Map<String, num> amounts, {
+    onlyAmount = false,
+  }) async {
     final updateData = <String, Object>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        final child = getItem(id);
-        if (child != null) {
-          updateData.addAll(child.getUpdateData(amount));
-        }
+        getItem(id)
+            ?.getUpdateData(amount, onlyAmount: onlyAmount)
+            .forEach((key, value) {
+          updateData[key] = value;
+        });
       }
     });
 
     if (updateData.isEmpty) return Future.value();
 
-    notifyListeners();
+    // should use [saveBatch] instead
+    await Storage.instance.set(Stores.stock, updateData);
 
-    return Storage.instance.set(Stores.stock, updateData);
+    notifyListeners();
   }
 
   @override
-  Ingredient buildModel(String id, Map<String, Object?> value) {
+  Ingredient buildItem(String id, Map<String, Object?> value) {
     return Ingredient.fromObject(
       IngredientObject.build({
         'id': id,
@@ -76,18 +73,20 @@ class Stock extends ChangeNotifier
     final amounts = <String, num>{};
 
     data.products.forEach((product) {
-      product.ingredients.forEach((id, ingredient) {
-        amounts[id] = (amounts[id] ?? 0) - ingredient.amount;
+      product.ingredients.values.forEach((ingredient) {
+        amounts[ingredient.id] =
+            (amounts[ingredient.id] ?? 0) - ingredient.amount;
       });
     });
 
     // if we need to update order, need to revert stock status
     oldData?.products.forEach((product) {
-      product.ingredients.forEach((id, ingredient) {
-        amounts[id] = (amounts[id] ?? 0) + ingredient.amount;
+      product.ingredients.values.forEach((ingredient) {
+        amounts[ingredient.id] =
+            (amounts[ingredient.id] ?? 0) + ingredient.amount;
       });
     });
 
-    return applyAmounts(amounts);
+    return applyAmounts(amounts, onlyAmount: true);
   }
 }

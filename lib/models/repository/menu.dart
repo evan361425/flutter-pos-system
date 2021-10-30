@@ -11,25 +11,22 @@ import 'package:possystem/services/storage.dart';
 class Menu extends ChangeNotifier
     with
         Repository<Catalog>,
-        NotifyRepository<Catalog>,
-        OrderablRepository<Catalog>,
-        InitilizableRepository<Catalog> {
-  static Menu instance = Menu();
+        RepositoryStorage<Catalog>,
+        RepositoryOrderable<Catalog> {
+  static late Menu instance;
 
   @override
   final Stores storageStore = Stores.menu;
 
-  @override
-  final String repositoryName = 'menu';
-
   Menu() {
-    initialize();
-
-    Menu.instance = this;
+    instance = this;
   }
 
+  List<Catalog> get notEmptyItems =>
+      itemList.where((e) => e.isNotEmpty).toList();
+
   @override
-  Catalog buildModel(String id, Map<String, Object?> value) {
+  Catalog buildItem(String id, Map<String, Object?> value) {
     return Catalog.fromObject(
       CatalogObject.build({
         'id': id,
@@ -43,10 +40,11 @@ class Menu extends ChangeNotifier
 
     items.forEach((catalog) {
       catalog.items.forEach((product) {
-        final ingredient = product.getItem(ingredientId);
-        if (ingredient != null) {
-          result.add(ingredient);
-        }
+        product.items.forEach((ing) {
+          if (ing.ingredient.id == ingredientId) {
+            result.add(ing);
+          }
+        });
       });
     });
 
@@ -69,10 +67,11 @@ class Menu extends ChangeNotifier
     items.forEach((catalog) {
       catalog.items.forEach((product) {
         product.items.forEach((ingredient) {
-          final quantity = ingredient.getItem(quantityId);
-          if (quantity != null) {
-            result.add(quantity);
-          }
+          ingredient.items.forEach((qua) {
+            if (qua.quantity.id == quantityId) {
+              result.add(qua);
+            }
+          });
         });
       });
     });
@@ -85,15 +84,11 @@ class Menu extends ChangeNotifier
   }
 
   Future<void> removeIngredients(String id) {
-    final ingredients = getIngredients(id);
-
-    return _remove(ingredients.map((e) => e.product), ingredients);
+    return _removeBatch(getIngredients(id));
   }
 
   Future<void> removeQuantities(String id) {
-    final quantities = getQuantities(id);
-
-    return _remove(quantities.map((e) => e.ingredient), quantities);
+    return _removeBatch(getQuantities(id));
   }
 
   /// Search products by [text].
@@ -143,16 +138,13 @@ class Menu extends ChangeNotifier
     return sorted.map<Product>((e) => e.key);
   }
 
-  Future<void> _remove(Iterable<Repository> repos, List<Model> items) {
-    if (items.isEmpty) return Future.value();
+  Future<void> _removeBatch(List<Model> items) async {
+    if (items.isEmpty) return;
 
-    final updateData = {for (var item in items) item.prefix: null};
+    await Storage.instance.set(storageStore, {
+      for (final item in items) item.prefix: null,
+    });
 
-    final id = items.first.id;
-    repos.forEach((repo) => repo.removeItem(id));
-
-    notifyListeners();
-
-    return Storage.instance.set(Stores.menu, updateData);
+    items.forEach((item) => item.repository.removeItem(item.id));
   }
 }

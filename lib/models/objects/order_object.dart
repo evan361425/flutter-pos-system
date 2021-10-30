@@ -1,57 +1,59 @@
 import 'dart:convert';
 
+import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/order/order_ingredient.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/database.dart';
 
 class OrderObject {
   final int? id;
-  num? paid;
+  final num? paid;
   final num totalPrice;
+  final num productsPrice;
   final int totalCount;
   final List<String>? productNames;
   final List<String>? ingredientNames;
+  final int? customerSettingsCombinationId;
   final DateTime createdAt;
+  final Map<String, String> customerSettings;
   final Iterable<OrderProductObject> products;
 
   OrderObject({
     this.id,
     this.paid,
     required this.totalPrice,
+    required this.productsPrice,
     required this.totalCount,
     this.productNames,
     this.ingredientNames,
+    this.customerSettings = const {},
+    this.customerSettingsCombinationId,
     required this.products,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
   List<OrderProduct> parseToProduct() {
-    return products.map<OrderProduct>((orderProduct) {
-      final product = Menu.instance.getProduct(orderProduct.productId)!;
+    return products
+        .map<OrderProduct?>((orderProduct) {
+          final product = Menu.instance.getProduct(orderProduct.productId);
 
-      final ingredients = <OrderIngredient>[];
-      for (var orderIngredient in orderProduct.ingredients.values) {
-        if (orderIngredient.quantityId == null) continue;
+          if (product == null) return null;
 
-        final ingredient = product.getItem(orderIngredient.id)!;
-
-        ingredients.add(
-          OrderIngredient(
-            ingredient: ingredient,
-            quantity: ingredient.getItem(orderIngredient.quantityId!)!,
-          ),
-        );
-      }
-
-      return OrderProduct(
-        product,
-        count: orderProduct.count,
-        singlePrice: orderProduct.singlePrice,
-        ingredients: ingredients,
-      );
-    }).toList();
+          return OrderProduct(
+            product,
+            count: orderProduct.count,
+            singlePrice: orderProduct.singlePrice,
+            selectedQuantity: {
+              for (final item in orderProduct.ingredients.values)
+                item.productIngredientId: item.productQuantityId
+            },
+          );
+        })
+        .where((item) => item != null)
+        .cast<OrderProduct>()
+        .toList();
   }
 
   Map<String, Object?> toMap() {
@@ -67,7 +69,9 @@ class OrderObject {
       'paid': paid,
       'totalPrice': totalPrice,
       'totalCount': totalCount,
+      'productsPrice': productsPrice,
       'createdAt': Util.toUTC(now: createdAt),
+      'customerSettingCombinationId': customerSettingsCombinationId,
       'usedProducts': Database.join(
         products.map<String>((e) => e.productName),
       ),
@@ -78,22 +82,26 @@ class OrderObject {
     };
   }
 
-  factory OrderObject.build(Map<String, Object?> data) {
+  factory OrderObject.fromMap(Map<String, Object?> data) {
     final encodedProduct = data['encodedProducts'] as String?;
     final products = jsonDecode(encodedProduct ?? '[]') as List<dynamic>;
     final createdAt = data['createdAt'] == null
         ? null
         : Util.fromUTC(data['createdAt'] as int);
+    final totalPrice = data['totalPrice'] as num? ?? 0;
 
     return OrderObject(
       createdAt: createdAt,
       id: data['id'] as int,
       // if fetching without these, it might be null
       paid: data['paid'] as num? ?? 0,
-      totalPrice: data['totalPrice'] as num? ?? 0,
+      totalPrice: totalPrice,
       totalCount: data['totalCount'] as int? ?? 0,
+      productsPrice: data['productsPrice'] as num? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
+      customerSettings:
+          DBTransferer.parseCombination(data['combination'] as String?),
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }
@@ -134,12 +142,9 @@ class OrderProductObject {
     };
   }
 
-  @override
-  String toString() => '$productName * $count';
-
   factory OrderProductObject.input(Map<String, dynamic> data) {
     final ingredients =
-        (data['ingredients'] ?? Iterable.empty()) as Iterable<dynamic>;
+        (data['ingredients'] ?? const Iterable.empty()) as Iterable<dynamic>;
 
     return OrderProductObject(
       singlePrice: data['singlePrice'] as num,
@@ -159,42 +164,32 @@ class OrderProductObject {
 class OrderIngredientObject {
   final String id;
   final String name;
+  final String productIngredientId;
   num? additionalPrice;
   num? additionalCost;
   num amount;
+  String? productQuantityId;
   String? quantityId;
   String? quantityName;
 
   OrderIngredientObject({
     required this.id,
+    required this.productIngredientId,
     required this.name,
     this.additionalPrice,
     this.additionalCost,
     required this.amount,
+    this.productQuantityId,
     this.quantityId,
     this.quantityName,
   });
-
-  void update({
-    required num additionalPrice,
-    required num additionalCost,
-    required num amount,
-    required String quantityId,
-    required String quantityName,
-  }) {
-    this.additionalPrice = additionalPrice;
-    this.additionalCost = additionalCost;
-    // amount with special quantity
-    this.amount = amount;
-    // quantity info
-    this.quantityId = quantityId;
-    this.quantityName = quantityName;
-  }
 
   Map<String, Object?> toMap() {
     return {
       'name': name,
       'id': id,
+      'productIngredientId': productIngredientId,
+      'productQuantityId': productQuantityId,
       'additionalPrice': additionalPrice,
       'additionalCost': additionalCost,
       'amount': amount,
@@ -207,11 +202,33 @@ class OrderIngredientObject {
     return OrderIngredientObject(
       name: data['name'] as String,
       id: data['id'] as String,
-      additionalPrice: data['additionalPrice'] as num?,
-      additionalCost: data['additionalCost'] as num?,
-      amount: data['amount'] as num? ?? 0,
-      quantityId: data['quantityId'] as String?,
-      quantityName: data['quantityName'] as String?,
+      // back compatible
+      productIngredientId: data['productIngredientId'] ?? '',
+      productQuantityId: data['productQuantityId'] ?? '',
+      additionalPrice: data['additionalPrice'],
+      additionalCost: data['additionalCost'],
+      amount: data['amount'] ?? 0,
+      quantityId: data['quantityId'],
+      quantityName: data['quantityName'],
+    );
+  }
+
+  factory OrderIngredientObject.fromModel(
+    ProductIngredient ingredient,
+    String? quantityId,
+  ) {
+    final quantity = quantityId == null ? null : ingredient.getItem(quantityId);
+
+    return OrderIngredientObject(
+      id: ingredient.ingredient.id,
+      name: ingredient.name,
+      productIngredientId: ingredient.id,
+      productQuantityId: quantity?.id,
+      amount: ingredient.amount + (quantity?.amount ?? 0),
+      quantityId: quantity?.quantity.id,
+      quantityName: quantity?.name,
+      additionalCost: quantity?.additionalCost,
+      additionalPrice: quantity?.additionalPrice,
     );
   }
 }

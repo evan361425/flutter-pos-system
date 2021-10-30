@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/fade_in_title_scaffold.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/item_editable_info.dart';
+import 'package:possystem/components/style/item_more_action_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -30,19 +29,20 @@ class CatalogScreen extends StatelessWidget {
       title: catalog.name,
       trailing: PopButton(toHome: true),
       floatingActionButton: FloatingActionButton(
+        key: Key('catalog.add'),
         onPressed: navigateNewProduct,
         tooltip: tt('menu.product.add'),
         child: Icon(KIcons.add),
       ),
       body: Column(children: <Widget>[
-        ItemEditableInfo(
+        ItemMoreActionButton(
           item: catalog,
-          metadata: _CatalogMetadata(catalog),
-          onEdit: () => _showActions(context, catalog),
+          metadata: Text('建立時間：${catalog.createdDate}'),
+          onTap: () => _showActions(context, catalog),
         ),
         catalog.isEmpty
             ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)
-            : ProductList(products: catalog.itemList),
+            : ProductList(catalog.itemList),
       ]),
     );
   }
@@ -68,30 +68,6 @@ class CatalogScreen extends StatelessWidget {
           navigateRoute: Routes.menuProductReorder,
         ),
       ],
-    );
-  }
-}
-
-class _CatalogMetadata extends StatelessWidget {
-  final Catalog catalog;
-
-  const _CatalogMetadata(this.catalog);
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: Theme.of(context).textTheme.bodyText1,
-        text: tt('menu.product.count'),
-        children: [
-          TextSpan(
-            text: catalog.length.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          MetaBlock.span(),
-          TextSpan(text: catalog.createdDate),
-        ],
-      ),
     );
   }
 }

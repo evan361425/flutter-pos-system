@@ -40,8 +40,11 @@ class BottomSheetAction<T> {
 
   final dynamic navigateArgument;
 
+  final Key? key;
+
   const BottomSheetAction({
     required this.title,
+    this.key,
     this.leading,
     this.returnValue,
     this.navigateRoute,
@@ -50,6 +53,7 @@ class BottomSheetAction<T> {
 
   Widget toWidget(BuildContext context) {
     return ListTile(
+      key: key,
       enableFeedback: true,
       leading: leading,
       title: title,

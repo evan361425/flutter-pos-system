@@ -9,12 +9,13 @@ import '../repository/menu.dart';
 import 'catalog.dart';
 import 'product_ingredient.dart';
 
-class Product extends NotifyModel<ProductObject>
+class Product extends Model<ProductObject>
     with
-        OrderableModel<ProductObject>,
+        ModelStorage<ProductObject>,
+        ModelOrderable<ProductObject>,
+        ModelSearchable<ProductObject>,
         Repository<ProductIngredient>,
-        SearchableModel<ProductObject>,
-        NotifyRepository<ProductIngredient> {
+        RepositoryStorage<ProductIngredient> {
   /// Connect to parent object
   late final Catalog catalog;
 
@@ -31,10 +32,10 @@ class Product extends NotifyModel<ProductObject>
   DateTime? searchedAt;
 
   @override
-  final String logCode = 'menu.product';
+  final Stores storageStore = Stores.menu;
 
   @override
-  final Stores storageStore = Stores.menu;
+  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
 
   Product({
     String? id,
@@ -44,22 +45,24 @@ class Product extends NotifyModel<ProductObject>
     this.price = 0,
     DateTime? createdAt,
     this.searchedAt,
-    Catalog? catalog,
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     this.name = name;
     this.index = index;
 
-    replaceItems(ingredients ?? {});
-
-    if (catalog != null) this.catalog = catalog;
+    if (ingredients != null) replaceItems(ingredients);
   }
 
   factory Product.fromObject(ProductObject object) {
-    final ingredients = object.ingredients.map(
-      (e) => ProductIngredient.fromObject(e),
-    );
+    final ingredients = object.ingredients.map((e) {
+      try {
+        return ProductIngredient.fromObject(e);
+      } catch (e) {
+        // not finding ingredient
+        return null;
+      }
+    }).where((e) => e != null);
 
     if (!object.ingredients.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
@@ -74,9 +77,9 @@ class Product extends NotifyModel<ProductObject>
       createdAt: object.createdAt,
       searchedAt: object.searchedAt,
       ingredients: {
-        for (var ingredient in ingredients) ingredient.id: ingredient
+        for (var ingredient in ingredients) ingredient!.id: ingredient
       },
-    ).._prepareIngredients();
+    )..prepareItem();
   }
 
   /// help to decide wheather showing ingredient panel in cart
@@ -87,10 +90,14 @@ class Product extends NotifyModel<ProductObject>
   String get prefix => '${catalog.prefix}.products.$id';
 
   @override
-  Future<void> addItemToStorage(ProductIngredient child) {
-    return Storage.instance.set(storageStore, {
-      child.prefix: child.toObject().toMap(),
-    });
+  Catalog get repository => catalog;
+
+  @override
+  set repository(Repository repo) => catalog = repo as Catalog;
+
+  @override
+  ProductIngredient buildItem(String id, Map<String, Object?> value) {
+    throw UnimplementedError();
   }
 
   int getItemsSimilarity(String pattern) {
@@ -109,15 +116,10 @@ class Product extends NotifyModel<ProductObject>
   }
 
   @override
-  void notifyItem() {
-    // catalog screen will also shows ingredients
-    catalog.notifyListeners();
-
+  void notifyItems() {
     notifyListeners();
+    catalog.notifyItem();
   }
-
-  @override
-  void removeFromRepo() => catalog.removeItem(id);
 
   Future<void> searched() {
     return update(ProductObject(searchedAt: DateTime.now()), event: 'search');
@@ -133,6 +135,4 @@ class Product extends NotifyModel<ProductObject>
         createdAt: createdAt,
         ingredients: items.map((e) => e.toObject()).toList(),
       );
-
-  void _prepareIngredients() => items.forEach((e) => e.product = this);
 }

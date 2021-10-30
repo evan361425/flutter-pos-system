@@ -7,20 +7,21 @@ import '../repository.dart';
 import '../repository/menu.dart';
 import 'product.dart';
 
-class Catalog extends NotifyModel<CatalogObject>
+class Catalog extends Model<CatalogObject>
     with
-        OrderableModel<CatalogObject>,
+        ModelStorage<CatalogObject>,
+        ModelOrderable<CatalogObject>,
         Repository<Product>,
-        NotifyRepository<Product>,
-        OrderablRepository<Product> {
+        RepositoryStorage<Product>,
+        RepositoryOrderable<Product> {
   /// The time of added to menu
   final DateTime createdAt;
 
   @override
-  final String logCode = 'menu.catalog';
+  final Stores storageStore = Stores.menu;
 
   @override
-  final Stores storageStore = Stores.menu;
+  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
 
   Catalog({
     String? id,
@@ -32,7 +33,7 @@ class Catalog extends NotifyModel<CatalogObject>
         super(id) {
     this.name = name;
     this.index = index;
-    replaceItems(products ?? {});
+    if (products != null) replaceItems(products);
   }
 
   factory Catalog.fromObject(CatalogObject object) {
@@ -45,16 +46,26 @@ class Catalog extends NotifyModel<CatalogObject>
         for (var product in object.products)
           product.id!: Product.fromObject(product)
       },
-    ).._preparePorducts();
+    )..prepareItem();
   }
 
   String? get createdDate => Util.timeToDate(createdAt);
 
   @override
-  Future<void> addItemToStorage(Product child) {
-    return Storage.instance.set(storageStore, {
-      child.prefix: child.toObject().toMap(),
-    });
+  Menu get repository => Menu.instance;
+
+  @override
+  set repository(Repository repo) {}
+
+  @override
+  void notifyItems() {
+    notifyListeners();
+    Menu.instance.notifyItems();
+  }
+
+  @override
+  Product buildItem(String id, Map<String, Object?> value) {
+    throw UnimplementedError();
   }
 
   /// Get similarity from product
@@ -73,15 +84,6 @@ class Catalog extends NotifyModel<CatalogObject>
   }
 
   @override
-  void notifyItem() {
-    notifyListeners();
-    Menu.instance.notifyItem();
-  }
-
-  @override
-  void removeFromRepo() => Menu.instance.removeItem(id);
-
-  @override
   CatalogObject toObject() => CatalogObject(
         id: id,
         index: index,
@@ -89,6 +91,4 @@ class Catalog extends NotifyModel<CatalogObject>
         createdAt: createdAt,
         products: items.map((e) => e.toObject()).toList(),
       );
-
-  void _preparePorducts() => items.forEach((e) => e.catalog = this);
 }

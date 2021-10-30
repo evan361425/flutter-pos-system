@@ -8,7 +8,7 @@ class OrderCatalogList extends StatelessWidget {
 
   final void Function(Catalog) handleSelected;
 
-  static const _RADIO_Key = 'order.catalogs';
+  static const _RADIO_KEY = 'order.catalogs';
 
   const OrderCatalogList({
     Key? key,
@@ -25,8 +25,9 @@ class OrderCatalogList extends StatelessWidget {
     return SingleRowWrap(children: <Widget>[
       for (final catalog in catalogs)
         RadioText(
+          key: Key('order.catalog.${catalog.id}'),
           onSelected: (_) => handleSelected(catalog),
-          groupId: _RADIO_Key,
+          groupId: _RADIO_KEY,
           value: catalog.id,
           text: catalog.name,
         ),

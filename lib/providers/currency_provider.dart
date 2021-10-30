@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/services/cache.dart';
+
+const _CurrencyNames = <CurrencyTypes, String>{
+  CurrencyTypes.TWD: '新台幣',
+  CurrencyTypes.USD: 'USD',
+};
 
 class CurrencyProvider extends ChangeNotifier {
   static late CurrencyProvider instance;
 
-  static const defaultCurrency = '新台幣';
+  static const defaultCurrency = CurrencyTypes.TWD;
 
   static const currencyCandidates = {
-    '新台幣': [1, 5, 10, 50, 100, 500, 1000],
-    'USD': [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
+    CurrencyTypes.TWD: [1, 5, 10, 50, 100, 500, 1000],
+    CurrencyTypes.USD: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };
 
-  late String _currency;
+  CurrencyTypes? _currency;
 
   /// Current available unit of money
   late List<num> unitList;
@@ -28,21 +32,19 @@ class CurrencyProvider extends ChangeNotifier {
     instance = this;
   }
 
-  String get currency => _currency;
+  String get currency => _CurrencyNames[_currency ?? defaultCurrency]!;
 
   /// Ceiling [value] to currency least value
   ///
-  /// ```dart
-  /// // types = [5, 10 ,50];
-  /// ceil(3) == 5
-  /// ceil(6) == 10
-  /// ceil(11) == 15
-  /// ceil(25) == 30
-  /// ceil(30) == 50
-  /// ceil(60) == 100
-  /// ```
+  /// 1~4 => 5
+  /// 5~9 => 10
+  /// 10 => 50
+  /// 11~14 => 15
+  /// 15~19 => 20
+  /// 50 => 100
+  /// 110 => 150
   num ceil(num value) {
-    if (value < 0) return 0;
+    assert(value >= 0);
 
     // if it is double ceil to int first
     if (value != value.ceil()) return value.ceil();
@@ -59,30 +61,32 @@ class CurrencyProvider extends ChangeNotifier {
   }
 
   void initialize() {
+    if (_currency != null) return;
+
     final currency = Cache.instance.get<String>(Caches.currency_code);
-    if (!_setCurrency(currency)) {
-      _setCurrency(defaultCurrency);
-    }
+    final index = currency == null
+        ? -1
+        : _CurrencyNames.values.toList().indexOf(currency);
+
+    _setCurrency(index == -1 ? defaultCurrency : CurrencyTypes.values[index]);
   }
 
   String numToString(num value) {
     return isInt ? value.round().toString() : value.toString();
   }
 
-  Future<void> setCurrency(String value) async {
-    info(value, 'setting.currency');
-    await Cache.instance.set<String>(Caches.currency_code, value);
+  Future<void> setCurrency(CurrencyTypes value) async {
+    final name = _CurrencyNames[value]!;
+    info(name, 'setting.currency');
+    await Cache.instance.set<String>(Caches.currency_code, name);
 
-    if (value != _currency && _setCurrency(value)) {
+    if (value != _currency) {
+      _setCurrency(value);
       notifyListeners();
     }
   }
 
-  bool _setCurrency(String? value) {
-    if (value == null) return false;
-
-    if (currencyCandidates[value] == null) return false;
-
+  void _setCurrency(CurrencyTypes value) {
     unitList = currencyCandidates[value]!;
 
     // index when money start using int
@@ -95,12 +99,10 @@ class CurrencyProvider extends ChangeNotifier {
     isInt = intIndex == 0;
 
     _currency = value;
-
-    Cashier.instance.reset(value, unitList);
-
-    return true;
   }
 
   /// Alias of [instance.numToString(value)]
   static String n2s(num value) => instance.numToString(value);
 }
+
+enum CurrencyTypes { TWD, USD }

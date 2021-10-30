@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
-import 'package:possystem/ui/stock/widgets/replenishment_actions.dart';
 import 'package:provider/provider.dart';
 
 class StockScreen extends StatelessWidget {
@@ -26,89 +25,49 @@ class StockScreen extends StatelessWidget {
         leading: PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('stock.add'),
         onPressed: navigateNewIngredient,
         tooltip: tt('stock.ingredient.add'),
         child: Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
-      body: stock.isReady
-          ? stock.isEmpty
-              ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
-              : _body(stock)
-          : CircularLoading(),
+      body: stock.isEmpty
+          ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
+          : _body(context),
     );
   }
 
-  Widget _body(Stock stock) {
+  Widget _body(BuildContext context) {
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ReplenishmentActions(),
-      ),
-      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: _StockMetadata(stock),
+        child: Column(children: [
+          HintText('上次補貨時間：${Stock.instance.updatedDate ?? '無'}'),
+          TipTutorial(
+            label: 'replenishment.apply',
+            message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
+            child: TextButton(
+              key: Key('stock.replenisher'),
+              onPressed: () async {
+                final result = await Navigator.of(context).pushNamed(
+                  Routes.stockReplenishment,
+                );
+
+                if (result == true) {
+                  showSuccessSnackbar(context, tt('succss'));
+                }
+              },
+              child: Text('設定採購'),
+            ),
+          ),
+          HintText(tt('total_count', {'count': Stock.instance.length})),
+        ]),
       ),
       Expanded(
         child: SingleChildScrollView(
-          child: IngredientList(ingredients: stock.itemList),
+          child: IngredientList(ingredients: Stock.instance.itemList),
         ),
       ),
     ]);
-  }
-}
-
-class _StockMetadata extends StatelessWidget {
-  final Stock stock;
-
-  const _StockMetadata(this.stock);
-
-  @override
-  Widget build(BuildContext context) {
-    final captionStyle = Theme.of(context).textTheme.caption!;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Flexible(
-          fit: FlexFit.tight,
-          child: Row(
-            children: [
-              Icon(
-                Icons.store_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
-              ),
-              HintText(
-                tt('stock.ingredient.current_amount'),
-                overflow: TextOverflow.ellipsis,
-              ),
-              MetaBlock(),
-              Icon(
-                Icons.shopping_cart_sharp,
-                size: captionStyle.fontSize,
-                color: captionStyle.color,
-              ),
-              HintText(
-                tt('stock.ingredient.last_amount'),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 4.0),
-          child: Tooltip(
-            message: tt('stock.ingredient.updated_at'),
-            child: Icon(
-              Icons.access_time,
-              size: captionStyle.fontSize,
-              color: captionStyle.color,
-            ),
-          ),
-        ),
-        HintText(stock.updatedDate ?? tt('stock.ingredient.un_add')),
-      ],
-    );
   }
 }

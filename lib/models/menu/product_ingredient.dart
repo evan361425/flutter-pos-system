@@ -1,32 +1,32 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
 import '../objects/menu_object.dart';
 import '../repository.dart';
 import '../repository/menu.dart';
+import '../repository/stock.dart';
 import '../stock/ingredient.dart';
 import 'product.dart';
 import 'product_quantity.dart';
 
-class ProductIngredient
+class ProductIngredient extends Model<ProductIngredientObject>
     with
-        Model<ProductIngredientObject>,
-        SearchableModel<ProductIngredientObject>,
-        Repository<ProductQuantity> {
+        ModelStorage<ProductIngredientObject>,
+        ModelSearchable<ProductIngredientObject>,
+        Repository<ProductQuantity>,
+        RepositoryStorage<ProductQuantity> {
   /// Connect to parent object
   late final Product product;
 
   /// Connect to stock.
   late Ingredient ingredient;
 
-  /// Only use for set up [ingredient]
-  final String? storageIngredientId;
-
   /// Amount of ingredient per product
   num amount;
 
   @override
-  final String logCode = 'menu.ingredient';
+  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
 
   @override
   final Stores storageStore = Stores.menu;
@@ -34,25 +34,30 @@ class ProductIngredient
   ProductIngredient({
     String? id,
     Ingredient? ingredient,
-    Product? product,
-    this.storageIngredientId,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
-  }) {
-    this.id = id ?? generateId();
-
-    replaceItems(quantities ?? {});
-
-    if (product != null) this.product = product;
+  }) : super(id) {
+    if (quantities != null) replaceItems(quantities);
 
     if (ingredient != null) this.ingredient = ingredient;
   }
 
   /// [ingredient] set by [ModelInitializer]
   factory ProductIngredient.fromObject(ProductIngredientObject object) {
-    final quantities = object.quantities.map(
-      (e) => ProductQuantity.fromObject(e),
-    );
+    final ingredient = Stock.instance.getItem(object.ingredientId!);
+    if (ingredient == null) {
+      info(object.ingredientId!, 'menu.parse.error.ingredient');
+      throw Error();
+    }
+
+    final quantities = object.quantities.map<ProductQuantity?>((e) {
+      try {
+        return ProductQuantity.fromObject(e);
+      } catch (e) {
+        // not finding quantity
+        return null;
+      }
+    }).where((e) => e != null);
 
     if (!object.quantities.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
@@ -60,10 +65,10 @@ class ProductIngredient
 
     return ProductIngredient(
       id: object.id,
-      storageIngredientId: object.ingredientId!,
+      ingredient: ingredient,
       amount: object.amount!,
-      quantities: {for (var quantity in quantities) quantity.id: quantity},
-    ).._prepareQuantities();
+      quantities: {for (var quantity in quantities) quantity!.id: quantity},
+    )..prepareItem();
   }
 
   @override
@@ -73,10 +78,14 @@ class ProductIngredient
   String get prefix => '${product.prefix}.ingredients.$id';
 
   @override
-  Future<void> addItemToStorage(ProductQuantity child) {
-    return Storage.instance.set(storageStore, {
-      child.prefix: child.toObject().toMap(),
-    });
+  Product get repository => product;
+
+  @override
+  set repository(Repository repo) => product = repo as Product;
+
+  @override
+  ProductQuantity buildItem(String id, Map<String, Object?> value) {
+    throw UnimplementedError();
   }
 
   bool hasQuantity(String id) {
@@ -84,29 +93,16 @@ class ProductIngredient
   }
 
   @override
-  void notifyItem() {
-    product.setItem(this);
+  void notifyItems() {
+    notifyListeners();
+    product.notifyItems();
   }
-
-  @override
-  void handleUpdated() {
-    notifyItem();
-  }
-
-  @override
-  void removeFromRepo() => product.removeItem(id);
 
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
-        ingredientId: storageIngredientId ?? ingredient.id,
+        ingredientId: ingredient.id,
         amount: amount,
         quantities: items.map((e) => e.toObject()).toList(),
       );
-
-  void _prepareQuantities() {
-    items.forEach((e) {
-      e.ingredient = this;
-    });
-  }
 }

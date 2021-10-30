@@ -9,11 +9,11 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/providers/currency_provider.dart';
 
 class ChangerModalCustom extends StatefulWidget {
-  final void Function() handleFavoriteAdded;
+  final VoidCallback afterFavoriteAdded;
 
   const ChangerModalCustom({
     Key? key,
-    required this.handleFavoriteAdded,
+    required this.afterFavoriteAdded,
   }) : super(key: key);
 
   @override
@@ -42,13 +42,15 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
 
     final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       ElevatedButton(
-        onPressed: handleFavorite,
+        key: Key('changer.custom.add_favorite'),
+        onPressed: handleAddFavorite,
         child: Text('新增常用'),
       ),
     ]);
 
     final sourceEntry = _wrapInRow(
       TextFormField(
+        key: Key('changer.custom.source.count'),
         controller: sourceCount,
         keyboardType: TextInputType.number,
         onChanged: handleCountChanged,
@@ -56,7 +58,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
         validator: Validator.positiveInt('數量', minimum: 1),
       ),
       DropdownButtonFormField<num>(
-        key: Key('changer.source'),
+        key: Key('changer.custom.source.unit'),
         value: sourceUnit,
         hint: Text('幣值'),
         validator: Validator.positiveNumber('幣值'),
@@ -71,6 +73,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
           padding: const EdgeInsets.only(top: kSpacing1),
           child: _wrapInRow(
               TextFormField(
+                key: Key('changer.custom.target.${entry.key}.count'),
                 controller: entry.key == 0 ? targetController : null,
                 initialValue:
                     entry.key == 0 ? null : entry.value.count?.toString(),
@@ -81,7 +84,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                     entry.value.count = int.tryParse(value ?? ''),
               ),
               DropdownButtonFormField<num>(
-                key: Key('changer.target.${entry.key}'),
+                key: Key('changer.custom.target.${entry.key}.unit'),
                 value: entry.value.unit,
                 hint: Text('幣值'),
                 onChanged: (value) => setState(() => entry.value.unit = value),
@@ -160,7 +163,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
     _changeSource(int.tryParse(value));
   }
 
-  void handleFavorite() async {
+  void handleAddFavorite() async {
     if (!validate()) return;
 
     await Cashier.instance.addFavorite(CashierChangeBatchObject(
@@ -173,7 +176,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
             CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
-    widget.handleFavoriteAdded();
+    widget.afterFavoriteAdded();
   }
 
   void handleUnitChanged(num? value) {
@@ -192,7 +195,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   }
 
   bool validate() {
-    final isValid = formKey.currentState?.validate() ?? false;
+    final isValid = formKey.currentState!.validate();
 
     if (isValid) {
       formKey.currentState?.save();
@@ -237,9 +240,8 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
 
     targets.forEach((target) {
       if (!target.isEmpty) {
-        deltas[target.unit!] = deltas[target.unit!] == null
-            ? target.count!
-            : deltas[target.unit!]! + target.count!;
+        final old = deltas[target.unit!] ?? 0;
+        deltas[target.unit!] = old + target.count!;
       }
     });
 

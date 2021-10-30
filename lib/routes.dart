@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/ui/customer/customer_screen.dart';
-import 'package:possystem/ui/customer/setting/widgets/customer_setting_option_modal.dart';
-import 'package:possystem/ui/customer/setting/widgets/customer_setting_orderable_list.dart';
+import 'package:possystem/ui/stock/replenishment/replenishment_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -10,17 +8,17 @@ import 'models/menu/catalog.dart';
 import 'models/menu/product.dart';
 import 'models/menu/product_ingredient.dart';
 import 'models/menu/product_quantity.dart';
-import 'models/repository/quantities.dart';
-import 'models/repository/stock.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
 import 'ui/analysis/analysis_screen.dart';
 import 'ui/cashier/cashier_screen.dart';
 import 'ui/cashier/changer/changer_modal.dart';
-import 'ui/customer/setting/customer_setting_screen.dart';
-import 'ui/customer/widgets/customer_modal.dart';
+import 'ui/customer/customer_screen.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
+import 'ui/customer/widgets/customer_setting_modal.dart';
+import 'ui/customer/widgets/customer_setting_option_modal.dart';
+import 'ui/customer/widgets/customer_setting_orderable_list.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
@@ -28,11 +26,11 @@ import 'ui/menu/menu_screen.dart';
 import 'ui/menu/menu_search.dart';
 import 'ui/menu/product/product_screen.dart';
 import 'ui/menu/product/widgets/product_ingredient_modal.dart';
-import 'ui/menu/product/widgets/product_ingredient_search.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
-import 'ui/menu/product/widgets/product_quantity_search.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
+import 'ui/order/cashier/order_cashier_modal.dart';
+import 'ui/order/cashier/order_customer_modal.dart';
 import 'ui/order/order_screen.dart';
 import 'ui/setting/setting_screen.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
@@ -66,8 +64,9 @@ class Routes {
   static const String menuProductReorder = 'menu/product/reorder';
   static const String menuIngredient = 'menu/ingredient';
   static const String menuQuantity = 'menu/quantity';
-  static const String menuIngredientSearch = 'menu/ingredient/search';
-  static const String menuQuantitySearch = 'menu/quantity/search';
+  static const String orderCustomer = 'order/customer';
+  static const String orderCalculator = 'order/calculator';
+  static const String stockReplenishment = 'stock/replenishment';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
@@ -88,10 +87,6 @@ class Routes {
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
     customerReorder: (context) => CustomerOrderableList(),
-    customerSetting: (context) => ChangeNotifierProvider.value(
-          value: arg<CustomerSetting>(context),
-          builder: (_, __) => CustomerSettingScreen(),
-        ),
     customerSettingOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is CustomerSettingOption
@@ -126,7 +121,7 @@ class Routes {
           : ProductModal(catalog: arg as Catalog);
     },
     menuProductReorder: (context) =>
-        ProductOrderableList(catalog: arg<Catalog>(context)),
+        ProductOrderableList(arg<Catalog>(context)),
     menuIngredient: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductIngredient
@@ -136,12 +131,6 @@ class Routes {
             )
           : ProductIngredientModal(product: arg as Product);
     },
-    menuIngredientSearch: (context) => ChangeNotifierProvider.value(
-          value: Stock.instance,
-          builder: (_, __) => ProductIngredientSearch(
-            text: arg<String?>(context),
-          ),
-        ),
     menuQuantity: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductQuantity
@@ -151,18 +140,16 @@ class Routes {
             )
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
-    menuQuantitySearch: (context) => ChangeNotifierProvider.value(
-          value: Quantities.instance,
-          builder: (_, __) => ProductQuantitySearch(
-            text: arg<String?>(context),
-          ),
-        ),
+    // order
+    orderCustomer: (_) => OrderCustomerModal(),
+    orderCalculator: (_) => OrderCashierModal(),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
     stockQuantity: (_) => QuantityScreen(),
     stockQuantityModal: (context) =>
         QuantityModal(quantity: arg<Quantity?>(context)),
+    stockReplenishment: (context) => ReplenishmentScreen(),
     stockReplenishmentModal: (context) =>
         ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
   };

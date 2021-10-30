@@ -42,6 +42,7 @@ class _ProductModalState extends State<ProductModal>
   List<Widget> formFields() {
     return [
       TextFormField(
+        key: Key('product.name'),
         controller: _nameController,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
@@ -56,6 +57,7 @@ class _ProductModalState extends State<ProductModal>
         validator: Validator.textLimit(tt('menu.product.label.name'), 30),
       ),
       TextFormField(
+        key: Key('product.price'),
         controller: _priceController,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
@@ -67,6 +69,7 @@ class _ProductModalState extends State<ProductModal>
         validator: Validator.isNumber(tt('menu.product.label.price')),
       ),
       TextFormField(
+        key: Key('product.cost'),
         controller: _costController,
         textInputAction: TextInputAction.done,
         keyboardType: TextInputType.number,
@@ -83,22 +86,21 @@ class _ProductModalState extends State<ProductModal>
 
   Future<Product> getProduct() async {
     final object = _parseObject();
+    final product = widget.product ??
+        Product(
+          index: widget.catalog.newIndex,
+          name: object.name!,
+          price: object.price!,
+          cost: object.cost!,
+        );
 
     if (widget.isNew) {
-      final product = Product(
-        catalog: widget.catalog,
-        index: widget.catalog.newIndex,
-        name: object.name!,
-        price: object.price!,
-        cost: object.cost!,
-      );
-
-      await widget.catalog.setItem(product);
-      return product;
+      await widget.catalog.addItem(product);
     } else {
-      await widget.product!.update(object);
-      return widget.product!;
+      await product.update(object);
     }
+
+    return product;
   }
 
   @override

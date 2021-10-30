@@ -26,29 +26,6 @@ class SettingScreen extends StatefulWidget {
   _SettingScreenState createState() => _SettingScreenState();
 }
 
-class _GroupTitle extends StatelessWidget {
-  final bool isFirst;
-
-  final String title;
-
-  const _GroupTitle({
-    Key? key,
-    required this.title,
-    this.isFirst = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: isFirst
-          ? const EdgeInsets.all(kSpacing1)
-          : const EdgeInsets.fromLTRB(
-              kSpacing1, kSpacing3, kSpacing1, kSpacing1),
-      child: Text(title),
-    );
-  }
-}
-
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
@@ -70,7 +47,6 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       body: ListView(
         children: <Widget>[
-          _GroupTitle(title: '外觀', isFirst: true),
           CardTile(
             key: Key('setting.theme'),
             title: Text(tt('setting.theme.title')),
@@ -95,6 +71,7 @@ class _SettingScreenState extends State<SettingScreen> {
               selected: selectedLanguage,
             ),
           ),
+          const SizedBox(height: kSpacing2),
           CardTile(
             key: Key('setting.outlook_order'),
             title: Text('點餐的外觀'),
@@ -108,7 +85,6 @@ class _SettingScreenState extends State<SettingScreen> {
               selected: outlookOrder.index,
             ),
           ),
-          _GroupTitle(title: '操作'),
           CardTile(
             title: Text('點餐時不關閉螢幕'),
             trailing: FeatureSwitch(

@@ -2,31 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
+import 'package:possystem/models/repository.dart';
+import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 
-mixin Model<T extends ModelObject> {
-  late final String id;
+abstract class Model<T extends ModelObject> extends ChangeNotifier {
+  late String id;
 
   late String name;
 
-  final String logCode = 'model';
+  Model(String? id) : id = id ?? Util.uuidV4();
 
-  final Stores storageStore = Stores.menu;
+  String get logName;
 
   String get prefix => id;
 
-  String generateId() => Util.uuidV4();
+  Repository<Model<T>> get repository;
 
-  void handleUpdated() {}
+  set repository(Repository repo);
 
-  Future<void> remove() async {
-    info(toString(), '$logCode.remove');
-    await Storage.instance.set(storageStore, {prefix: null});
-
-    removeFromRepo();
+  void notifyItem() {
+    notifyListeners();
+    repository.notifyItems();
   }
 
-  void removeFromRepo();
+  Future<void> remove() async {
+    info(toString(), '$logName.remove');
+
+    await removeRemotely();
+
+    repository.removeItem(id);
+  }
+
+  Future<void> removeRemotely();
+
+  Future<void> save(Map<String, Object?> data);
 
   T toObject();
 
@@ -39,33 +49,38 @@ mixin Model<T extends ModelObject> {
 
     if (updateData.isEmpty) return;
 
-    info(toString(), '$logCode.$event');
+    info(toString(), '$logName.$event');
 
-    await Storage.instance.set(storageStore, updateData);
+    await save(updateData);
 
-    handleUpdated();
-  }
-}
-
-abstract class NotifyModel<T extends ModelObject> extends ChangeNotifier
-    with Model<T> {
-  NotifyModel(String? id) {
-    this.id = id ?? generateId();
-  }
-
-  void notifyItem() => notifyListeners();
-
-  @override
-  void handleUpdated() {
     notifyItem();
   }
 }
 
-mixin OrderableModel<T extends ModelObject> on Model<T> {
+mixin ModelDB<T extends ModelObject> on Model<T> {
+  final String modelTableName = 'table';
+
+  @override
+  String get logName => modelTableName;
+
+  @override
+  Future<void> removeRemotely() {
+    return Database.instance.update(modelTableName, int.parse(id), {
+      'isDelete': 1,
+    });
+  }
+
+  @override
+  Future<void> save(Map<String, Object?> data) {
+    return Database.instance.update(modelTableName, int.parse(id), data);
+  }
+}
+
+mixin ModelOrderable<T extends ModelObject> on Model<T> {
   late int index;
 }
 
-mixin SearchableModel<T extends ModelObject> on Model<T> {
+mixin ModelSearchable<T extends ModelObject> on Model<T> {
   /// get similarity between [name] and [pattern]
   int getSimilarity(String pattern) {
     final name = this.name.toLowerCase();
@@ -81,5 +96,22 @@ mixin SearchableModel<T extends ModelObject> on Model<T> {
     });
 
     return score;
+  }
+}
+
+mixin ModelStorage<T extends ModelObject> on Model<T> {
+  final Stores storageStore = Stores.menu;
+
+  @override
+  String get logName => storageStore.toString();
+
+  @override
+  Future<void> removeRemotely() {
+    return save({prefix: null});
+  }
+
+  @override
+  Future<void> save(Map<String, Object?> data) {
+    return Storage.instance.set(storageStore, data);
   }
 }

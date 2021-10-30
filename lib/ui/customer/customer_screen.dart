@@ -5,7 +5,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/customer/widgets/customer_setting_card.dart';
+import 'package:possystem/ui/customer/widgets/customer_setting_list.dart';
 import 'package:provider/provider.dart';
 
 class CustomerScreen extends StatelessWidget {
@@ -24,6 +24,7 @@ class CustomerScreen extends StatelessWidget {
           leading: PopButton(),
           actions: [
             IconButton(
+              key: Key('customer_settings.action'),
               onPressed: () => _showActions(context),
               icon: Icon(KIcons.more),
             ),
@@ -36,18 +37,7 @@ class CustomerScreen extends StatelessWidget {
         ),
         body: settings.isEmpty
             ? Center(child: EmptyBody(onPressed: goAddSetting))
-            : _body(settings));
-  }
-
-  Widget _body(CustomerSettings settings) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          for (final setting in settings.itemList)
-            CustomerSettingCard(setting: setting)
-        ],
-      ),
-    );
+            : CustomerSettingList(settings.itemList));
   }
 
   void _showActions(BuildContext context) async {

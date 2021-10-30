@@ -36,6 +36,7 @@ class _QuantityModalState extends State<QuantityModal>
   List<Widget> formFields() {
     return [
       TextFormField(
+        key: Key('quantity.name'),
         controller: _nameController,
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
@@ -51,6 +52,7 @@ class _QuantityModalState extends State<QuantityModal>
         validator: Validator.textLimit(tt('stock.quantity.label.name'), 30),
       ),
       TextFormField(
+        key: Key('quantity.proportion'),
         controller: _proportionController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
@@ -84,16 +86,14 @@ class _QuantityModalState extends State<QuantityModal>
   Future<void> updateItem() async {
     final object = _parseObject();
 
-    if (!widget.isNew) {
+    if (widget.isNew) {
+      await Quantities.instance.addItem(Quantity(
+        name: object.name!,
+        defaultProportion: object.defaultProportion!,
+      ));
+    } else {
       await widget.quantity!.update(object);
     }
-
-    // quantity is not notifier, need set item to fire listener
-    await Quantities.instance.setItem(widget.quantity ??
-        Quantity(
-          name: object.name!,
-          defaultProportion: object.defaultProportion!,
-        ));
 
     Navigator.of(context).pop();
   }

@@ -22,7 +22,7 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Future<void> _handleDelete(_, quantity) async {
+  Future<void> _handleDelete(Quantity quantity) async {
     await quantity.remove();
     return Menu.instance.removeQuantities(quantity.id);
   }
@@ -36,6 +36,7 @@ class QuantityList extends StatelessWidget {
 
   Widget _tileBuilder(BuildContext context, int index, Quantity quantity) {
     return ListTile(
+      key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
       subtitle: Text(tt(
         'stock.quantity.proportion',

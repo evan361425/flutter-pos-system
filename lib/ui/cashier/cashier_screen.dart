@@ -24,6 +24,7 @@ class CashierScreen extends StatelessWidget {
           order: 1,
           message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
           child: ElevatedButton(
+            key: Key('cashier.surplus'),
             onPressed: () => handleSurplus(context),
             child: Text('結餘'),
           ),
@@ -32,6 +33,7 @@ class CashierScreen extends StatelessWidget {
       SizedBox(width: kSpacing1),
       Expanded(
         child: ElevatedButton(
+          key: Key('cashier.changer'),
           onPressed: () => handleChanging(context),
           child: Text('換錢'),
         ),
@@ -50,6 +52,7 @@ class CashierScreen extends StatelessWidget {
             order: 2,
             message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
             child: AppbarTextButton(
+              key: Key('cashier.defaulter'),
               onPressed: () => handleSetDefault(context),
               child: Text('設為預設'),
             ),
@@ -114,7 +117,7 @@ class CashierScreen extends StatelessWidget {
       }
     }
 
-    await Cashier.instance.setDefault(useCurrent: true);
+    await Cashier.instance.setDefault();
 
     showSuccessSnackbar(context, tt('success'));
   }

@@ -5,10 +5,9 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/translator.dart';
 
 class ProductOrderableList extends StatelessWidget {
-  const ProductOrderableList({Key? key, required this.catalog})
-      : super(key: key);
-
   final Catalog catalog;
+
+  const ProductOrderableList(this.catalog, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

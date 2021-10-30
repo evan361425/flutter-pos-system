@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -9,21 +11,25 @@ import 'package:possystem/translator.dart';
 class ProductList extends StatelessWidget {
   final List<Product> products;
 
-  const ProductList({
-    required this.products,
-  });
+  const ProductList(this.products);
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Product, _Action>(
-      items: products,
-      deleteValue: _Action.delete,
-      actionBuilder: _actionBuilder,
-      tileBuilder: _tileBuilder,
-      warningContextBuilder: _warningContextBuilder,
-      handleTap: _handleTap,
-      handleDelete: (_, item) => item.remove(),
-    );
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.all(kSpacing1),
+        child: HintText(tt('total_count', {'count': products.length})),
+      ),
+      SlidableItemList<Product, _Action>(
+        items: products,
+        deleteValue: _Action.delete,
+        actionBuilder: _actionBuilder,
+        tileBuilder: _tileBuilder,
+        warningContextBuilder: _warningContextBuilder,
+        handleTap: _handleTap,
+        handleDelete: (item) => item.remove(),
+      ),
+    ]);
   }
 
   Iterable<BottomSheetAction<_Action>> _actionBuilder(Product product) {
@@ -52,6 +58,7 @@ class ProductList extends StatelessWidget {
 
   Widget _tileBuilder(BuildContext context, int index, Product product) {
     return ListTile(
+      key: Key('product.${product.id}'),
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),
       ),

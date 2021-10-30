@@ -9,6 +9,7 @@ class Cache {
 
   Future<void> initialize() async {
     if (_initialized) return;
+    _initialized = true;
 
     service = await SharedPreferences.getInstance();
 
@@ -16,8 +17,6 @@ class Cache {
     if (version == null) {
       await service.setInt('version', 1);
     }
-
-    _initialized = true;
   }
 
   T? get<T>(Caches cache) => getRaw<T>(cache.toString());

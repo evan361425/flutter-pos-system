@@ -1,15 +1,14 @@
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
-class Replenishment extends NotifyModel {
+class Replenishment extends Model<ReplenishmentObject>
+    with ModelStorage<ReplenishmentObject> {
   /// ingredient id => add number
   final Map<String, num> data;
-
-  @override
-  final String logCode = 'stock.batch';
 
   @override
   final Stores storageStore = Stores.replenisher;
@@ -29,14 +28,15 @@ class Replenishment extends NotifyModel {
         data: object.data,
       );
 
-  void apply() => Stock.instance.applyAmounts(data);
-
-  num? getNumOfId(String id) => data[id];
+  @override
+  Replenisher get repository => Replenisher.instance;
 
   @override
-  void removeFromRepo() {
-    Replenisher.instance.removeItem(id);
-  }
+  set repository(Repository repo) {}
+
+  Future<void> apply() => Stock.instance.applyAmounts(data);
+
+  num? getNumOfId(String id) => data[id];
 
   @override
   ReplenishmentObject toObject() => ReplenishmentObject(

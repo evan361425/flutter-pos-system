@@ -4,16 +4,13 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 class OrderInfo extends StatelessWidget {
   const OrderInfo({Key? key}) : super(key: key);
 
   static final _metadata = GlobalKey<_OrderMetadataState>();
-
-  static void resetMetadata() {
-    _metadata.currentState?.reset();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +34,7 @@ class OrderInfo extends StatelessWidget {
             version: 1,
             order: 99,
             child: ElevatedButton(
+              key: Key('home.order'),
               onPressed: () => Navigator.of(context).pushNamed(Routes.order),
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
@@ -75,17 +73,11 @@ class _OrderMetadataState extends State<_OrderMetadata> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _queryValue();
-  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  void reset() {
-    setState(() {
-      count = null;
-      revenue = null;
-      _queryValue();
-    });
+    final seller = context.watch<Seller>();
+    _queryValue(seller);
   }
 
   Expanded _column(String title, String? value, TextStyle? textStyle) {
@@ -103,12 +95,11 @@ class _OrderMetadataState extends State<_OrderMetadata> {
     );
   }
 
-  void _queryValue() async {
-    final result = await Seller.instance.getMetricBetween();
-
+  void _queryValue(Seller seller) async {
+    final result = await seller.getMetricBetween();
     setState(() {
-      revenue = CurrencyProvider.instance.numToString(result['totalPrice']!);
-      count = (result['count'] as int?)?.toString();
+      revenue = CurrencyProvider.n2s(result['totalPrice']!);
+      count = result['count'].toString();
     });
   }
 }
