@@ -13,26 +13,28 @@ import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 import 'package:provider/provider.dart';
 
 class CatalogScreen extends StatelessWidget {
+  const CatalogScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final catalog = context.watch<Catalog>();
     // if change ingredient in product_ingredient_search
     context.watch<Stock>();
 
-    final navigateNewProduct = () => Navigator.of(context).pushNamed(
+    navigateNewProduct() => Navigator.of(context).pushNamed(
           Routes.menuProductModal,
           arguments: catalog,
         );
 
     return FadeInTitleScaffold(
-      leading: PopButton(),
+      leading: const PopButton(),
       title: catalog.name,
-      trailing: PopButton(toHome: true),
+      trailing: const PopButton(toHome: true),
       floatingActionButton: FloatingActionButton(
-        key: Key('catalog.add'),
+        key: const Key('catalog.add'),
         onPressed: navigateNewProduct,
         tooltip: tt('menu.product.add'),
-        child: Icon(KIcons.add),
+        child: const Icon(KIcons.add),
       ),
       body: Column(children: <Widget>[
         ItemMoreActionButton(
@@ -57,13 +59,13 @@ class CatalogScreen extends StatelessWidget {
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
           title: Text(tt('menu.catalog.edit')),
-          leading: Icon(Icons.text_fields_sharp),
+          leading: const Icon(Icons.text_fields_sharp),
           navigateArgument: catalog,
           navigateRoute: Routes.menuCatalogModal,
         ),
         BottomSheetAction(
           title: Text(tt('menu.product.order')),
-          leading: Icon(Icons.reorder_sharp),
+          leading: const Icon(Icons.reorder_sharp),
           navigateArgument: catalog,
           navigateRoute: Routes.menuProductReorder,
         ),

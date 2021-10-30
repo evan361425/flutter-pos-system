@@ -5,7 +5,7 @@ class FeatureSwitch extends StatefulWidget {
 
   final Function(bool) onChanged;
 
-  FeatureSwitch({
+  const FeatureSwitch({
     Key? key,
     required this.value,
     required this.onChanged,

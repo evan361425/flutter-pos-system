@@ -6,8 +6,9 @@ class TextDivider extends StatelessWidget {
   final String label;
 
   const TextDivider({
+    Key? key,
     required this.label,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +18,14 @@ class TextDivider extends StatelessWidget {
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(left: kSpacing1, right: kSpacing2),
-            child: Divider(),
+            child: const Divider(),
           ),
         ),
         Text(label),
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(left: kSpacing2, right: kSpacing1),
-            child: Divider(),
+            child: const Divider(),
           ),
         ),
       ]),

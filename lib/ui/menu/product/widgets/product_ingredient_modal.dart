@@ -19,7 +19,7 @@ class ProductIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  ProductIngredientModal({
+  const ProductIngredientModal({
     Key? key,
     this.ingredient,
     required this.product,
@@ -52,7 +52,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        key: Key('product_ingredient.search'),
+        key: const Key('product_ingredient.search'),
         text: ingredientName,
         labelText: tt('menu.ingredient.label.name'),
         hintText: tt('menu.ingredient.hint.name'),
@@ -61,7 +61,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         onTap: _selectIngredient,
       ),
       TextFormField(
-        key: Key('product_ingredient.amount'),
+        key: const Key('product_ingredient.amount'),
         controller: _amountController,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
@@ -165,7 +165,7 @@ class _ProductIngredientSearch extends StatelessWidget {
 
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
-      key: Key('product_ingredient.add_ingredient'),
+      key: const Key('product_ingredient.add_ingredient'),
       title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
       onTap: () async {
         final ingredient = Ingredient(name: text);
@@ -188,7 +188,7 @@ class _ProductIngredientSearch extends StatelessWidget {
             ),
           ));
         },
-        icon: Icon(Icons.open_in_new_sharp),
+        icon: const Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {
         Navigator.of(context).pop(ingredient);

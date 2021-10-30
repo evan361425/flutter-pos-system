@@ -12,7 +12,7 @@ import 'package:possystem/translator.dart';
 class ProductIngredientList extends StatelessWidget {
   final List<ProductIngredient> ingredients;
 
-  const ProductIngredientList(this.ingredients);
+  const ProductIngredientList(this.ingredients, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _IngredientTile extends StatelessWidget {
               IconButton(
                 key: Key('$key.more'),
                 onPressed: () => showActions(context),
-                icon: Icon(KIcons.more),
+                icon: const Icon(KIcons.more),
               )
             ]),
           ),
@@ -73,7 +73,7 @@ class _IngredientTile extends StatelessWidget {
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
           title: Text(tt('menu.ingredient.edit')),
-          leading: Icon(Icons.text_fields_sharp),
+          leading: const Icon(Icons.text_fields_sharp),
           navigateRoute: Routes.menuIngredient,
           navigateArgument: ingredient,
         ),

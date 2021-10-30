@@ -44,7 +44,7 @@ class _CustomerModalState extends State<CustomerModal>
   List<Widget> formFields() {
     return [
       TextFormField(
-        key: Key('customer_setting.name'),
+        key: const Key('customer_setting.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
@@ -59,7 +59,7 @@ class _CustomerModalState extends State<CustomerModal>
         maxLength: 30,
         validator: Validator.textLimit('顧客設定名稱', 30),
       ),
-      TextDivider(label: '顧客設定種類'),
+      const TextDivider(label: '顧客設定種類'),
       _CustomerModalModes(
         key: modesKey,
         selectedMode: widget.isNew

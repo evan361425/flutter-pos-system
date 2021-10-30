@@ -22,15 +22,15 @@ class ReplenishmentScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('採購列表'),
-        leading: PopButton(),
+        title: const Text('採購列表'),
+        leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('replenisher.add'),
+        key: const Key('replenisher.add'),
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.stockReplenishmentModal),
         tooltip: '新增採購種類',
-        child: Icon(KIcons.add),
+        child: const Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
       body: Column(children: [
@@ -73,7 +73,7 @@ class _ReplenishmentTile extends StatelessWidget {
         trailing: IconButton(
           key: Key('replenisher.${item.id}.apply'),
           onPressed: () => handleApply(context),
-          icon: Icon(Icons.shopping_cart_sharp),
+          icon: const Icon(Icons.shopping_cart_sharp),
         ));
   }
 

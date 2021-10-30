@@ -7,26 +7,7 @@ class Cache {
 
   bool _initialized = false;
 
-  Future<void> initialize() async {
-    if (_initialized) return;
-    _initialized = true;
-
-    service = await SharedPreferences.getInstance();
-
-    final version = service.getInt('version');
-    if (version == null) {
-      await service.setInt('version', 1);
-    }
-  }
-
-  T? get<T>(Caches cache) => getRaw<T>(cache.toString());
-
-  Future<bool> set<T>(Caches cache, T value) => setRaw<T>(
-        cache.toString(),
-        value,
-      );
-
-  T? getRaw<T>(String name) {
+  T? get<T>(String name) {
     if (T == bool) {
       return service.getBool(name) as T?;
     } else if (T == String) {
@@ -40,25 +21,29 @@ class Cache {
     }
   }
 
-  Future<bool> setRaw<T>(String name, T value) {
+  Future<void> initialize() async {
+    if (_initialized) return;
+    _initialized = true;
+
+    service = await SharedPreferences.getInstance();
+
+    final version = service.getInt('version');
+    if (version == null) {
+      await service.setInt('version', 1);
+    }
+  }
+
+  Future<bool> set<T>(String key, T value) {
     if (T == bool) {
-      return service.setBool(name, value as bool);
+      return service.setBool(key, value as bool);
     } else if (T == String) {
-      return service.setString(name, value as String);
+      return service.setString(key, value as String);
     } else if (T == int) {
-      return service.setInt(name, value as int);
+      return service.setInt(key, value as int);
     } else if (T == double) {
-      return service.setDouble(name, value as double);
+      return service.setDouble(key, value as double);
     } else {
       throw ArgumentError();
     }
   }
-}
-
-enum Caches {
-  dark_mode,
-  language_code,
-  currency_code,
-  outlook_order,
-  feature_awake_provider,
 }

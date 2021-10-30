@@ -13,7 +13,7 @@ class SearchBar extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final void Function(String) onChanged;
 
-  SearchBar({
+  const SearchBar({
     Key? key,
     required this.onChanged,
     this.text = '',
@@ -50,7 +50,7 @@ class SearchBarState extends State<SearchBar> {
               controller.clear();
               _onChanged('');
             },
-            child: Icon(KIcons.clear, size: 16.0),
+            child: const Icon(KIcons.clear, size: 16.0),
           );
 
     return TextField(

@@ -10,21 +10,21 @@ class CashierSurplus extends StatelessWidget {
 
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('現有金'),
+        const Text('現有金'),
         Text(
           Cashier.instance.currentTotal.toString(),
           style: theme.textTheme.headline4,
         ),
       ]),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('初始金'),
+        const Text('初始金'),
         Text(Cashier.instance.defaultTotal.toString()),
       ]),
-      Divider(),
+      const Divider(),
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          columns: <DataColumn>[
+          columns: const <DataColumn>[
             DataColumn(label: Text('金額'), numeric: true),
             DataColumn(label: Text('初始'), numeric: true),
             DataColumn(label: Text('差異'), numeric: true),

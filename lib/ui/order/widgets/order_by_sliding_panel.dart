@@ -42,8 +42,8 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
           '如果需要一次顯示所有訊息的排版，可以至「設定」>「點餐的外觀」設定。',
       child: ChangeNotifierProvider.value(
         value: Cart.instance,
-        builder: (_, __) => Padding(
-          padding: const EdgeInsets.all(kSpacing0),
+        builder: (_, __) => const Padding(
+          padding: EdgeInsets.all(kSpacing0),
           child: CartSnapshot(key: Key('cart.collapsed')),
         ),
       ),

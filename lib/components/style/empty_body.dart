@@ -6,11 +6,12 @@ class EmptyBody extends StatelessWidget {
 
   final String? title;
 
-  EmptyBody({this.title, required this.onPressed});
+  const EmptyBody({Key? key, this.title, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 300,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -21,9 +22,9 @@ class EmptyBody extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           OutlinedButton(
-            key: Key('empty_body'),
+            key: const Key('empty_body'),
             onPressed: onPressed,
-            child: Text('立即設定'),
+            child: const Text('立即設定'),
           ),
         ],
       ),

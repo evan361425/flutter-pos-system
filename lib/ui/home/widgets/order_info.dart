@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 class OrderInfo extends StatelessWidget {
-  const OrderInfo({Key? key}) : super(key: key);
-
   static final _metadata = GlobalKey<_OrderMetadataState>();
+
+  const OrderInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +34,14 @@ class OrderInfo extends StatelessWidget {
             version: 1,
             order: 99,
             child: ElevatedButton(
-              key: Key('home.order'),
+              key: const Key('home.order'),
               onPressed: () => Navigator.of(context).pushNamed(Routes.order),
               style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
+                shape: const CircleBorder(),
                 padding: const EdgeInsets.all(kSpacing5),
               ),
-              child: Text(tt('home.order'), style: TextStyle(fontSize: 32.0)),
+              child: Text(tt('home.order'),
+                  style: const TextStyle(fontSize: 32.0)),
             ),
           ),
         ),
@@ -50,7 +51,7 @@ class OrderInfo extends StatelessWidget {
 }
 
 class _OrderMetadata extends StatefulWidget {
-  _OrderMetadata({Key? key}) : super(key: key);
+  const _OrderMetadata({Key? key}) : super(key: key);
 
   @override
   _OrderMetadataState createState() => _OrderMetadataState();
@@ -62,12 +63,11 @@ class _OrderMetadataState extends State<_OrderMetadata> {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.headline3;
     return Row(
       children: <Widget>[
-        _column(tt('home.today_order'), count, textStyle),
+        _column(tt('home.today_order'), count),
         const SizedBox(width: 64.0),
-        _column(tt('home.today_price'), revenue, textStyle),
+        _column(tt('home.today_price'), revenue),
       ],
     );
   }
@@ -80,7 +80,7 @@ class _OrderMetadataState extends State<_OrderMetadata> {
     _queryValue(seller);
   }
 
-  Expanded _column(String title, String? value, TextStyle? textStyle) {
+  Expanded _column(String title, String? value) {
     return Expanded(
       child: Column(
         children: <Widget>[
@@ -88,7 +88,8 @@ class _OrderMetadataState extends State<_OrderMetadata> {
           Text(
             value ?? '...',
             textAlign: TextAlign.center,
-            style: textStyle,
+            style: const TextStyle(fontSize: 20.0),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -98,7 +99,7 @@ class _OrderMetadataState extends State<_OrderMetadata> {
   void _queryValue(Seller seller) async {
     final result = await seller.getMetricBetween();
     setState(() {
-      revenue = CurrencyProvider.n2s(result['totalPrice']!);
+      revenue = result['totalPrice']!.toCurrency();
       count = result['count'].toString();
     });
   }

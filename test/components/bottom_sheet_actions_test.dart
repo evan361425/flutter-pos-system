@@ -22,7 +22,7 @@ class _ExampleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () => showCircularBottomSheet(context, actions: []),
-      child: Text('hi'),
+      child: const Text('hi'),
     );
   }
 }

@@ -22,7 +22,7 @@ class CartProductListState extends State<CartProductList> {
     var count = 0;
 
     return SingleChildScrollView(
-      key: Key('cart.product_list'),
+      key: const Key('cart.product_list'),
       controller: scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,7 +52,7 @@ class CartProductListState extends State<CartProductList> {
   Future<void> scrollToBottom() {
     return scrollController.animateTo(
       scrollController.position.maxScrollExtent + 80,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
   }
@@ -81,7 +81,7 @@ class _CartProductListTile extends StatelessWidget {
         Text(product.count.toString(), key: Key('cart.product.$index.count')),
         IconButton(
           key: Key('cart.product.$index.add'),
-          icon: Icon(Icons.add_circle_outline_sharp),
+          icon: const Icon(Icons.add_circle_outline_sharp),
           onPressed: () => product.increment(),
         ),
         Text(

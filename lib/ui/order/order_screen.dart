@@ -6,8 +6,10 @@ import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/my_app.dart';
-import 'package:possystem/providers/feature_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -57,23 +59,25 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
         ChangeNotifierProvider<CartIngredients>.value(
             value: CartIngredients.instance),
       ],
-      child: OrderIngredientList(),
+      child: const OrderIngredientList(),
     );
+
+    final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();
 
     return Scaffold(
       // avoid resize when keyboard(bottom inset) shows
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: OrderActions(key: Key('order.action.more')),
+        leading: const OrderActions(key: Key('order.action.more')),
         actions: [
           AppbarTextButton(
-            key: Key('order.cashier'),
+            key: const Key('order.cashier'),
             onPressed: () => _handleOrder(),
-            child: Text('結帳'),
+            child: const Text('結帳'),
           ),
         ],
       ),
-      body: FeatureProvider.instance.outlookOrder == OutlookOrder.sliding_panel
+      body: outlook.value == OrderOutlookTypes.slidingPanel
           ? OrderBySlidingPanel(
               key: slidingPanel,
               row1: menuCatalogRow,
@@ -113,7 +117,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
 
   @override
   void didPush() {
-    if (FeatureProvider.instance.awakeOrdering) {
+    if (SettingsProvider.instance.getSetting<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
     // rebind menu/customer_setting if changed

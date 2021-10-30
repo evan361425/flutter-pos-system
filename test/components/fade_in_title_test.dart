@@ -23,7 +23,7 @@ void main() {
       expect(title.opacity, equals(0));
 
       // drag to bottom
-      await tester.drag(find.text('1'), Offset(0, -800));
+      await tester.drag(find.text('1'), const Offset(0, -800));
       await tester.pumpAndSettle();
 
       // check it is showing

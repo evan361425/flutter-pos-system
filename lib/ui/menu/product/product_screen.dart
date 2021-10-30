@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 import 'widgets/product_ingredient_list.dart';
 
 class ProductScreen extends StatelessWidget {
+  const ProductScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final product = context.watch<Product>();
@@ -24,7 +26,7 @@ class ProductScreen extends StatelessWidget {
     // if change quantity in product_quantity_search
     context.watch<Quantities>();
 
-    final navigateNewIngredient = () => Navigator.of(context).pushNamed(
+    navigateNewIngredient() => Navigator.of(context).pushNamed(
           Routes.menuIngredient,
           arguments: product,
         );
@@ -34,14 +36,14 @@ class ProductScreen extends StatelessWidget {
         : ProductIngredientList(product.itemList);
 
     return FadeInTitleScaffold(
-      leading: PopButton(),
+      leading: const PopButton(),
       title: product.name,
-      trailing: PopButton(toHome: true),
+      trailing: const PopButton(toHome: true),
       floatingActionButton: FloatingActionButton(
-        key: Key('product.add'),
+        key: const Key('product.add'),
         onPressed: navigateNewIngredient,
         tooltip: tt('menu.integredient.add'),
-        child: Icon(KIcons.add),
+        child: const Icon(KIcons.add),
       ),
       body: Column(
         children: [
@@ -69,7 +71,7 @@ class ProductScreen extends StatelessWidget {
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
           title: Text(tt('menu.product.edit')),
-          leading: Icon(Icons.text_fields_sharp),
+          leading: const Icon(Icons.text_fields_sharp),
           navigateArgument: product,
           navigateRoute: Routes.menuProductModal,
         ),

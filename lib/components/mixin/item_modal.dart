@@ -31,7 +31,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: PopButton(),
+        leading: const PopButton(),
         title: title,
         actions: [
           AppbarTextButton(

@@ -38,15 +38,15 @@ class Menu extends ChangeNotifier
   List<ProductIngredient> getIngredients(String ingredientId) {
     final result = <ProductIngredient>[];
 
-    items.forEach((catalog) {
-      catalog.items.forEach((product) {
-        product.items.forEach((ing) {
+    for (var catalog in items) {
+      for (var product in catalog.items) {
+        for (var ing in product.items) {
           if (ing.ingredient.id == ingredientId) {
             result.add(ing);
           }
-        });
-      });
-    });
+        }
+      }
+    }
 
     return result;
   }
@@ -64,17 +64,17 @@ class Menu extends ChangeNotifier
   List<ProductQuantity> getQuantities(String quantityId) {
     final result = <ProductQuantity>[];
 
-    items.forEach((catalog) {
-      catalog.items.forEach((product) {
-        product.items.forEach((ingredient) {
-          ingredient.items.forEach((qua) {
+    for (var catalog in items) {
+      for (var product in catalog.items) {
+        for (var ingredient in product.items) {
+          for (var qua in ingredient.items) {
             if (qua.quantity.id == quantityId) {
               result.add(qua);
             }
-          });
-        });
-      });
-    });
+          }
+        }
+      }
+    }
 
     return result;
   }
@@ -145,6 +145,8 @@ class Menu extends ChangeNotifier
       for (final item in items) item.prefix: null,
     });
 
-    items.forEach((item) => item.repository.removeItem(item.id));
+    for (var item in items) {
+      item.repository.removeItem(item.id);
+    }
   }
 }

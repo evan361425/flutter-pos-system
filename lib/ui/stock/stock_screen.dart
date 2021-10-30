@@ -12,23 +12,25 @@ import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
 import 'package:provider/provider.dart';
 
 class StockScreen extends StatelessWidget {
+  const StockScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final stock = context.watch<Stock>();
 
-    final navigateNewIngredient =
-        () => Navigator.of(context).pushNamed(Routes.stockIngredient);
+    navigateNewIngredient() =>
+        Navigator.of(context).pushNamed(Routes.stockIngredient);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.stock')),
-        leading: PopButton(),
+        leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('stock.add'),
+        key: const Key('stock.add'),
         onPressed: navigateNewIngredient,
         tooltip: tt('stock.ingredient.add'),
-        child: Icon(KIcons.add),
+        child: const Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
       body: stock.isEmpty
@@ -47,7 +49,7 @@ class StockScreen extends StatelessWidget {
             label: 'replenishment.apply',
             message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
             child: TextButton(
-              key: Key('stock.replenisher'),
+              key: const Key('stock.replenisher'),
               onPressed: () async {
                 final result = await Navigator.of(context).pushNamed(
                   Routes.stockReplenishment,
@@ -57,7 +59,7 @@ class StockScreen extends StatelessWidget {
                   showSuccessSnackbar(context, tt('succss'));
                 }
               },
-              child: Text('設定採購'),
+              child: const Text('設定採購'),
             ),
           ),
           HintText(tt('total_count', {'count': Stock.instance.length})),

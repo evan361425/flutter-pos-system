@@ -19,24 +19,27 @@ void main() {
       final catalog = Catalog(id: 'c-1');
       Menu().replaceItems({'c-1': catalog});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-      ], child: MaterialApp(routes: Routes.routes, home: CatalogScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
-      await tester.tap(find.byKey(Key('empty_body')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('product.name')), 'name');
-      await tester.enterText(find.byKey(Key('product.price')), '1');
-      await tester.enterText(find.byKey(Key('product.cost')), '1');
+      await tester.enterText(find.byKey(const Key('product.name')), 'name');
+      await tester.enterText(find.byKey(const Key('product.price')), '1');
+      await tester.enterText(find.byKey(const Key('product.cost')), '1');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
       // navigate to product screen
-      expect(find.byKey(Key('product.add')), findsOneWidget);
+      expect(find.byKey(const Key('product.add')), findsOneWidget);
 
       final product = catalog.items.first;
       expect(product.name, equals('name'));
@@ -59,16 +62,19 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-      ], child: MaterialApp(routes: Routes.routes, home: CatalogScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
-      await tester.tap(find.byKey(Key('product.p-1')));
+      await tester.tap(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('product.add')), findsOneWidget);
+      expect(find.byKey(const Key('product.add')), findsOneWidget);
     });
 
     testWidgets('Edit product', (WidgetTester tester) async {
@@ -79,30 +85,33 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: CatalogScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
-      await tester.longPress(find.byKey(Key('product.p-1')));
+      await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
       await tester.pumpAndSettle();
 
       // save failed
-      await tester.enterText(find.byKey(Key('product.name')), 'p-2');
+      await tester.enterText(find.byKey(const Key('product.name')), 'p-2');
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('product.name')), 'new-name');
-      await tester.enterText(find.byKey(Key('product.price')), '1');
-      await tester.enterText(find.byKey(Key('product.cost')), '1');
+      await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
+      await tester.enterText(find.byKey(const Key('product.price')), '1');
+      await tester.enterText(find.byKey(const Key('product.cost')), '1');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
       // reset product name
-      final w = find.byKey(Key('product.p-1')).evaluate().first.widget;
+      final w = find.byKey(const Key('product.p-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('new-name'));
       expect(product.cost, equals(1));
       expect(product.price, equals(1));
@@ -126,23 +135,27 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: CatalogScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
       await tester.tap(find.byIcon(KIcons.more));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, Offset(0, 150));
+      await tester.drag(
+          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
 
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final y1 = tester.getCenter(find.byKey(Key('product.p-1'))).dy;
-      final y2 = tester.getCenter(find.byKey(Key('product.p-2'))).dy;
+      final y1 = tester.getCenter(find.byKey(const Key('product.p-1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('product.p-2'))).dy;
       final itemList = catalog.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('p-2'));
@@ -162,20 +175,23 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ChangeNotifierProvider<Catalog>.value(value: catalog),
-      ], child: MaterialApp(routes: Routes.routes, home: CatalogScreen())));
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
-      await tester.longPress(find.byKey(Key('product.p-1')));
+      await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('product.p-1')), findsNothing);
+      expect(find.byKey(const Key('product.p-1')), findsNothing);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
     });

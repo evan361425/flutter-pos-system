@@ -1,4 +1,4 @@
-const DB_MIG_UP = <int, List<String>>{
+const dbMigrationUp = <int, List<String>>{
   1: <String>[
     '''CREATE TABLE `order` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

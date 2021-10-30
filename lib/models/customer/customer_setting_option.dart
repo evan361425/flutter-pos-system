@@ -1,5 +1,5 @@
 import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 import '../model.dart';
 import 'customer_setting.dart';
@@ -8,7 +8,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     with
         ModelDB<CustomerSettingOptionObject>,
         ModelOrderable<CustomerSettingOptionObject> {
-  static const TABLE = 'customer_setting_options';
+  static const table = 'customer_setting_options';
 
   /// Connect to parent model
   late CustomerSetting setting;
@@ -39,7 +39,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
   }
 
   @override
-  String get modelTableName => TABLE;
+  String get modelTableName => table;
 
   String get modeValueName {
     if (modeValue == null ||
@@ -55,7 +55,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
               ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
               : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';
     } else {
-      final value = CurrencyProvider.n2s(modeValue!);
+      final value = modeValue!.toCurrency;
       return modeValue! == 0
           ? ''
           : modeValue! > 0

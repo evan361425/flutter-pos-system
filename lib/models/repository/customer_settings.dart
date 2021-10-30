@@ -11,16 +11,16 @@ class CustomerSettings extends ChangeNotifier
         Repository<CustomerSetting>,
         RepositoryOrderable<CustomerSetting>,
         RepositoryDB<CustomerSetting> {
-  static const TABLE = 'customer_settings';
+  static const table = 'customer_settings';
 
-  static const OPTION_TABLE = 'customer_setting_options';
+  static const optionTable = 'customer_setting_options';
 
-  static const COMBINATION_TABLE = 'customer_setting_combinations';
+  static const combinationTable = 'customer_setting_combinations';
 
   static late CustomerSettings instance;
 
   @override
-  final String repoTableName = TABLE;
+  final String repoTableName = table;
 
   CustomerSettings() {
     instance = this;
@@ -32,8 +32,8 @@ class CustomerSettings extends ChangeNotifier
       itemList.where((item) => item.isNotEmpty).toList();
 
   @override
-  Future<CustomerSetting> buildItem(Map<String, Object?> item) async {
-    final object = CustomerSettingObject.build(item);
+  Future<CustomerSetting> buildItem(Map<String, Object?> value) async {
+    final object = CustomerSettingObject.build(value);
 
     final cs = CustomerSetting.fromObject(object);
     await cs.initialize();
@@ -45,7 +45,7 @@ class CustomerSettings extends ChangeNotifier
     Map<String, String> data,
   ) async {
     final id = await Database.instance.push(
-      COMBINATION_TABLE,
+      combinationTable,
       {'combination': DBTransferer.toCombination(data)},
     );
 
@@ -56,7 +56,7 @@ class CustomerSettings extends ChangeNotifier
     Map<String, String> data,
   ) async {
     final result = await Database.instance.query(
-      COMBINATION_TABLE,
+      combinationTable,
       columns: ['id'],
       where: 'combination = ?',
       whereArgs: [DBTransferer.toCombination(data)],

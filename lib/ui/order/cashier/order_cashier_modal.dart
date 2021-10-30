@@ -29,10 +29,10 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
 
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      margin: EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
+      margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(18.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(18.0)),
       ),
       child: OrderCashierCalculator(
         key: calculator,
@@ -66,13 +66,13 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: PopButton(),
-        title: Text('計算機'),
+        leading: const PopButton(),
+        title: const Text('計算機'),
         actions: [
           AppbarTextButton(
-            key: Key('cashier.order'),
+            key: const Key('cashier.order'),
             onPressed: handleSubmit,
-            child: Text('結帳'),
+            child: const Text('結帳'),
           ),
         ],
       ),

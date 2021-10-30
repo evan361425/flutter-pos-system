@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 class CashierScreen extends StatelessWidget {
+  const CashierScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final actions = Row(children: [
@@ -24,26 +26,26 @@ class CashierScreen extends StatelessWidget {
           order: 1,
           message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
           child: ElevatedButton(
-            key: Key('cashier.surplus'),
+            key: const Key('cashier.surplus'),
             onPressed: () => handleSurplus(context),
-            child: Text('結餘'),
+            child: const Text('結餘'),
           ),
         ),
       ),
-      SizedBox(width: kSpacing1),
+      const SizedBox(width: kSpacing1),
       Expanded(
         child: ElevatedButton(
-          key: Key('cashier.changer'),
+          key: const Key('cashier.changer'),
           onPressed: () => handleChanging(context),
-          child: Text('換錢'),
+          child: const Text('換錢'),
         ),
       ),
     ]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('收銀機'),
-        leading: PopButton(),
+        title: const Text('收銀機'),
+        leading: const PopButton(),
         actions: [
           OrderedTip(
             groupId: 'cashier',
@@ -52,9 +54,9 @@ class CashierScreen extends StatelessWidget {
             order: 2,
             message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
             child: AppbarTextButton(
-              key: Key('cashier.defaulter'),
+              key: const Key('cashier.defaulter'),
               onPressed: () => handleSetDefault(context),
-              child: Text('設為預設'),
+              child: const Text('設為預設'),
             ),
           )
         ],
@@ -63,11 +65,11 @@ class CashierScreen extends StatelessWidget {
         padding: const EdgeInsets.all(kSpacing3),
         child: Column(children: [
           actions,
-          Divider(),
+          const Divider(),
           Expanded(
             child: ChangeNotifierProvider.value(
               value: Cashier.instance,
-              child: CashierUnitList(),
+              child: const CashierUnitList(),
             ),
           ),
         ]),
@@ -91,7 +93,7 @@ class CashierScreen extends StatelessWidget {
 
     final success = await showDialog<bool>(
         context: context,
-        builder: (_) => ConfirmDialog(
+        builder: (_) => const ConfirmDialog(
               title: '點選確認以結餘',
               content: CashierSurplus(),
             ));
@@ -107,7 +109,7 @@ class CashierScreen extends StatelessWidget {
     if (!Cashier.instance.defaultNotSet) {
       final result = await showDialog(
           context: context,
-          builder: (_) => ConfirmDialog(
+          builder: (_) => const ConfirmDialog(
                 title: '確認通知',
                 content: Text('將會覆蓋先前的設定\n此動作無法復原。'),
               ));

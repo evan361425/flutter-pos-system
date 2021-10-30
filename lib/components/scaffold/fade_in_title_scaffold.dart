@@ -7,7 +7,7 @@ class FadeInTitleScaffold extends StatefulWidget {
   final Widget body;
   final Widget? floatingActionButton;
 
-  FadeInTitleScaffold({
+  const FadeInTitleScaffold({
     Key? key,
     this.leading,
     this.trailing,
@@ -30,7 +30,7 @@ class _FadeInTitleScaffoldState extends State<FadeInTitleScaffold> {
         leading: widget.leading,
         actions: widget.trailing == null ? null : <Widget>[widget.trailing!],
         title: AnimatedOpacity(
-          duration: Duration(seconds: 0),
+          duration: const Duration(seconds: 0),
           opacity: _opacity,
           child: Text(widget.title),
         ),

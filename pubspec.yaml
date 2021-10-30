@@ -57,18 +57,14 @@ dev_dependencies:
     sdk: flutter
 
   # code style
-  pedantic: ^1.11.0
+  flutter_lints: ^1.0.0
 
   # tools
   flutter_native_splash: ^1.2.0
 
-  # build language json file from yaml
-  yaml: ^3.1.0
-  build: ^2.0.2
-
   # mock object
   mockito: ^5.0.16
-  build_runner: ^2.0.4
+  build_runner: ^2.1.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -77,9 +73,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  assets:
-    - lang/zh_TW/app.g.json
-    - lang/en_US/app.g.json
+  # Enable generation of localized Strings from arb files.
+  generate: true
 
 flutter_native_splash:
   color: "#000000"

@@ -36,7 +36,11 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   void notifyItems() => notifyListeners();
 
-  void prepareItem() => items.forEach((item) => item.repository = this);
+  void prepareItem() {
+    for (var item in items) {
+      item.repository = this;
+    }
+  }
 
   /// only remove map value and notify listeners
   /// you should remove item by `item.remove()`
@@ -53,9 +57,9 @@ mixin Repository<T extends Model> on ChangeNotifier {
 }
 
 mixin RepositoryDB<T extends Model> on Repository<T> {
-  final String idName = 'id';
+  String get idName => 'id';
 
-  final String repoTableName = '';
+  String get repoTableName => '';
 
   Future<T> buildItem(Map<String, Object?> value);
 
@@ -163,9 +167,9 @@ mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
 mixin RepositoryStorage<T extends Model> on Repository<T> {
   bool versionChanged = false;
 
-  final Stores storageStore = Stores.menu;
+  Stores get storageStore => Stores.menu;
 
-  final RepositoryStorageType repoType = RepositoryStorageType.PureRepo;
+  RepositoryStorageType get repoType => RepositoryStorageType.pureRepo;
 
   T buildItem(String id, Map<String, Object?> value);
 
@@ -208,15 +212,15 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
     info(item.toString(), '$storageStore.add');
 
     final data = item.toObject().toMap();
-    return repoType == RepositoryStorageType.PureRepo
+    return repoType == RepositoryStorageType.pureRepo
         ? Storage.instance.add(storageStore, item.id, data)
         : Storage.instance.set(storageStore, {item.prefix: data});
   }
 }
 
 enum RepositoryStorageType {
-  PureRepo,
-  RepoModel,
+  pureRepo,
+  repoModel,
 }
 
 class _BatchData {

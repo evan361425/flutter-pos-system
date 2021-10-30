@@ -44,11 +44,11 @@ class CatalogObject extends ModelObject<Catalog> {
   }
 
   @override
-  Map<String, Object> diff(Catalog catalog) {
+  Map<String, Object> diff(Catalog model) {
     final result = <String, Object>{};
-    final prefix = catalog.prefix;
-    if (name != catalog.name) {
-      catalog.name = name;
+    final prefix = model.prefix;
+    if (name != model.name) {
+      model.name = name;
       result['$prefix.name'] = name;
     }
     return result;
@@ -66,7 +66,7 @@ class CatalogObject extends ModelObject<Catalog> {
 }
 
 class ProductIngredientObject extends ModelObject<ProductIngredient> {
-  static const VERSION = 2;
+  static const latestVersion = 2;
 
   final String? id;
   final String? ingredientId;
@@ -109,19 +109,19 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
     );
   }
 
-  bool get isLatest => version == VERSION;
+  bool get isLatest => version == latestVersion;
 
   @override
-  Map<String, Object> diff(ProductIngredient ingredient) {
+  Map<String, Object> diff(ProductIngredient model) {
     final result = <String, Object>{};
-    final prefix = ingredient.prefix;
+    final prefix = model.prefix;
 
-    if (amount != null && amount != ingredient.amount) {
-      ingredient.amount = amount!;
+    if (amount != null && amount != model.amount) {
+      model.amount = amount!;
       result['$prefix.amount'] = amount!;
     }
-    if (ingredientId != null && ingredientId != ingredient.ingredient.id) {
-      ingredient.ingredient = Stock.instance.getItem(ingredientId!)!;
+    if (ingredientId != null && ingredientId != model.ingredient.id) {
+      model.ingredient = Stock.instance.getItem(ingredientId!)!;
       result['$prefix.ingredientId'] = ingredientId!;
     }
 
@@ -184,23 +184,23 @@ class ProductObject extends ModelObject<Product> {
   }
 
   @override
-  Map<String, Object> diff(Product product) {
+  Map<String, Object> diff(Product model) {
     final result = <String, Object>{};
-    final prefix = product.prefix;
-    if (price != null && price != product.price) {
-      product.price = price!;
+    final prefix = model.prefix;
+    if (price != null && price != model.price) {
+      model.price = price!;
       result['$prefix.price'] = price!;
     }
-    if (cost != null && cost != product.cost) {
-      product.cost = cost!;
+    if (cost != null && cost != model.cost) {
+      model.cost = cost!;
       result['$prefix.cost'] = cost!;
     }
-    if (name != null && name != product.name) {
-      product.name = name!;
+    if (name != null && name != model.name) {
+      model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (searchedAt != null && searchedAt != product.searchedAt) {
-      product.searchedAt = searchedAt;
+    if (searchedAt != null && searchedAt != model.searchedAt) {
+      model.searchedAt = searchedAt;
       result['$prefix.searchedAt'] = Util.toUTC(now: searchedAt);
     }
     return result;
@@ -223,7 +223,7 @@ class ProductObject extends ModelObject<Product> {
 }
 
 class ProductQuantityObject extends ModelObject<ProductQuantity> {
-  static const VERSION = 2;
+  static const latestVersion = 2;
 
   final String? id;
   final String? quantityId;
@@ -265,28 +265,27 @@ class ProductQuantityObject extends ModelObject<ProductQuantity> {
     );
   }
 
-  bool get isLatest => version == VERSION;
+  bool get isLatest => version == latestVersion;
 
   @override
-  Map<String, Object> diff(ProductQuantity quantity) {
+  Map<String, Object> diff(ProductQuantity model) {
     final result = <String, Object>{};
-    final prefix = quantity.prefix;
+    final prefix = model.prefix;
 
-    if (amount != null && amount != quantity.amount) {
-      quantity.amount = amount!;
+    if (amount != null && amount != model.amount) {
+      model.amount = amount!;
       result['$prefix.amount'] = amount!;
     }
-    if (additionalCost != null && additionalCost != quantity.additionalCost) {
-      quantity.additionalCost = additionalCost!;
+    if (additionalCost != null && additionalCost != model.additionalCost) {
+      model.additionalCost = additionalCost!;
       result['$prefix.additionalCost'] = additionalCost!;
     }
-    if (additionalPrice != null &&
-        additionalPrice != quantity.additionalPrice) {
-      quantity.additionalPrice = additionalPrice!;
+    if (additionalPrice != null && additionalPrice != model.additionalPrice) {
+      model.additionalPrice = additionalPrice!;
       result['$prefix.additionalPrice'] = additionalPrice!;
     }
-    if (quantityId != null && quantityId != quantity.quantity.id) {
-      quantity.quantity = Quantities.instance.getItem(quantityId!)!;
+    if (quantityId != null && quantityId != model.quantity.id) {
+      model.quantity = Quantities.instance.getItem(quantityId!)!;
       result['$prefix.quantityId'] = quantityId!;
     }
 

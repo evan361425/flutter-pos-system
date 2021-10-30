@@ -32,6 +32,6 @@ class MenuSearch extends StatelessWidget {
   }
 
   Widget _emptyBuilder(BuildContext context, String text) {
-    return Center(child: Text('搜尋不到相關資訊，打錯字了嗎？'));
+    return const Center(child: Text('搜尋不到相關資訊，打錯字了嗎？'));
   }
 }

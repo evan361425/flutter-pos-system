@@ -26,7 +26,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
   num amount;
 
   @override
-  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
+  final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
 
   @override
   final Stores storageStore = Stores.menu;

@@ -56,7 +56,7 @@ void main() {
     });
 
     testWidgets('should selected specific one', (WidgetTester tester) async {
-      final selected = 2;
+      const selected = 2;
       final radios = [
         for (var i = 0; i < 5; i++)
           RadioText(

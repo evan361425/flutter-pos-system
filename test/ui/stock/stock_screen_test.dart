@@ -28,12 +28,14 @@ void main() {
         ChangeNotifierProvider<Replenisher>.value(
             value: Replenisher()..replaceItems({})),
         ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
-      await tester.tap(find.byKey(Key('empty_body')));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('stock.ingredient.amount')), '1');
-      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-1');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.amount')), '1');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.name')), 'i-1');
       await tester.tap(find.text('save'));
       // wait for updating
       await tester.pumpAndSettle();
@@ -58,13 +60,13 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
         ChangeNotifierProvider<Replenisher>.value(value: repli),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
 
-      await tester.tap(find.byKey(Key('stock.replenisher')));
+      await tester.tap(find.byKey(const Key('stock.replenisher')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('replenisher.r-1.apply')));
+      await tester.tap(find.byKey(const Key('replenisher.r-1.apply')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
 
       expect(ing1.currentAmount, equals(10));
@@ -88,29 +90,31 @@ void main() {
       final menu = Menu()..replaceItems({'c-1': catalog});
       final quantities = Quantities()..replaceItems({});
 
-      catalog.items.forEach((pro) {
+      for (var pro in catalog.items) {
         pro.catalog = catalog;
-        pro.items.forEach((ing) => ing.product = pro);
-      });
+        for (var ing in pro.items) {
+          ing.product = pro;
+        }
+      }
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
         ChangeNotifierProvider<Menu>.value(value: menu),
         ChangeNotifierProvider<Quantities>.value(value: quantities),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
     }
 
     testWidgets('edit amount of ingredient', (tester) async {
       await buildAppWithIngredients(tester);
 
-      final tapAndEnter = (String key, String text) async {
+      tapAndEnter(String key, String text) async {
         await tester.tap(find.byKey(Key(key)));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byKey(Key('text_dialog.text')), text);
-        await tester.tap(find.byKey(Key('text_dialog.confirm')));
+        await tester.enterText(find.byKey(const Key('text_dialog.text')), text);
+        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
         await tester.pumpAndSettle();
-      };
+      }
 
       final ingredient = Stock.instance.items.first;
       await tapAndEnter('stock.i-1.plus', '10');
@@ -127,23 +131,26 @@ void main() {
     testWidgets('edit ingredient', (tester) async {
       await buildAppWithIngredients(tester);
       // go to ingredient modal
-      await tester.tap(find.byKey(Key('stock.i-1')));
+      await tester.tap(find.byKey(const Key('stock.i-1')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('stock.ingredient.amount')), '1');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.amount')), '1');
 
       // go to product
-      await tester.tap(find.byKey(Key('stock.ingredient.p-1')));
+      await tester.tap(find.byKey(const Key('stock.ingredient.p-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();
 
       // validate failed
-      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-2');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.name')), 'i-2');
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('stock.ingredient.name')), 'i-3');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.name')), 'i-3');
       await tester.tap(find.text('save'));
       // wait for updating
       await tester.pumpAndSettle();
@@ -151,7 +158,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // check name is changed
-      final w = find.byKey(Key('stock.i-1')).evaluate().first.widget;
+      final w = find.byKey(const Key('stock.i-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('i-3'));
 
       final ingredient = Stock.instance.items.first;
@@ -162,14 +169,14 @@ void main() {
     testWidgets('delete ingredient', (tester) async {
       await buildAppWithIngredients(tester);
 
-      final deleteIngredient = (String id) async {
+      deleteIngredient(String id) async {
         await tester.longPress(find.byKey(Key('stock.$id')));
         await tester.pumpAndSettle();
         await tester.tap(find.text('delete'));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+        await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
-      };
+      }
 
       await deleteIngredient('i-1');
       expect(Stock.instance.length, equals(1));
@@ -181,7 +188,7 @@ void main() {
     });
 
     setUp(() {
-      when(cache.getRaw(any)).thenReturn(1);
+      when(cache.get(any)).thenReturn(1);
     });
 
     setUpAll(() {

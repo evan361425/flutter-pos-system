@@ -18,10 +18,10 @@ class AnalysisScreen extends StatelessWidget {
     context.watch<Seller>();
 
     return Scaffold(
-      key: Key('analysis_screen'),
+      key: const Key('analysis_screen'),
       appBar: AppBar(
         title: Text(tt('analysis.title')),
-        leading: PopButton(),
+        leading: const PopButton(),
       ),
       body: OrientationBuilder(
         builder: (_, orientation) => orientation == Orientation.portrait
@@ -80,8 +80,9 @@ class AnalysisScreen extends StatelessWidget {
 
   Future<Map<DateTime, int>> _searchCountInMonth(DateTime day) {
     // add/sub 7 days for first/last few days on next/last month
-    final end = DateTime(day.year, day.month + 1).add(Duration(days: 7));
-    final start = DateTime(day.year, day.month).subtract(Duration(days: 7));
+    final end = DateTime(day.year, day.month + 1).add(const Duration(days: 7));
+    final start =
+        DateTime(day.year, day.month).subtract(const Duration(days: 7));
 
     return Seller.instance.getCountBetween(start, end);
   }

@@ -13,55 +13,46 @@ void main() {
 
   group('Cache', () {
     test('#get', () {
-      when(service.getBool('Caches.currency_code')).thenReturn(true);
-      expect(Cache.instance.get<bool>(Caches.currency_code), isTrue);
+      when(service.getBool('a')).thenReturn(true);
+      expect(Cache.instance.get<bool>('a'), isTrue);
 
-      when(service.getString('Caches.currency_code')).thenReturn('true');
-      expect(Cache.instance.get<String>(Caches.currency_code), equals('true'));
+      when(service.getString('b')).thenReturn('true');
+      expect(Cache.instance.get<String>('b'), equals('true'));
 
-      when(service.getInt('Caches.currency_code')).thenReturn(0);
-      expect(Cache.instance.get<int>(Caches.currency_code), isZero);
+      when(service.getInt('c')).thenReturn(0);
+      expect(Cache.instance.get<int>('c'), isZero);
 
-      when(service.getDouble('Caches.currency_code')).thenReturn(1.0);
-      expect(Cache.instance.get<double>(Caches.currency_code), equals(1.0));
+      when(service.getDouble('d')).thenReturn(1.0);
+      expect(Cache.instance.get<double>('d'), equals(1.0));
     });
 
     test('#set', () {
-      when(service.setBool('Caches.currency_code', true))
-          .thenAnswer((_) => Future.value(true));
-      Cache.instance.set<bool>(Caches.currency_code, true);
+      when(service.setBool('a', true)).thenAnswer((_) => Future.value(true));
+      Cache.instance.set<bool>('a', true);
 
-      when(service.setString('Caches.currency_code', 'true'))
+      when(service.setString('b', 'true'))
           .thenAnswer((_) => Future.value(true));
-      Cache.instance.set<String>(Caches.currency_code, 'true');
+      Cache.instance.set<String>('b', 'true');
 
-      when(service.setInt('Caches.currency_code', 0))
-          .thenAnswer((_) => Future.value(true));
-      Cache.instance.set<int>(Caches.currency_code, 0);
+      when(service.setInt('c', 0)).thenAnswer((_) => Future.value(true));
+      Cache.instance.set<int>('c', 0);
 
-      when(service.setDouble('Caches.currency_code', 1.0))
-          .thenAnswer((_) => Future.value(true));
-      Cache.instance.set<double>(Caches.currency_code, 1.0);
+      when(service.setDouble('d', 1.0)).thenAnswer((_) => Future.value(true));
+      Cache.instance.set<double>('d', 1.0);
     });
 
     test('throw to get/set unsupport type', () {
-      expect(
-        () => Cache.instance.get<List>(Caches.currency_code),
-        throwsArgumentError,
-      );
-      expect(
-        () => Cache.instance.set<List>(Caches.currency_code, []),
-        throwsArgumentError,
-      );
+      expect(() => Cache.instance.get<List>('a'), throwsArgumentError);
+      expect(() => Cache.instance.set<List>('a', []), throwsArgumentError);
     });
 
-    setUp(() {
+    setUpAll(() {
       service = MockSharedPreferences();
       Cache.instance = Cache();
       Cache.instance.service = service;
     });
 
-    tearDown(() {
+    tearDownAll(() {
       Cache.instance = cache;
     });
   });

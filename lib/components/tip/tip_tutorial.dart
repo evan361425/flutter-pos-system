@@ -17,13 +17,14 @@ class TipTutorial extends StatefulWidget {
   final bool disabled;
 
   const TipTutorial({
+    Key? key,
     required this.label,
     this.version = 1,
     required this.message,
     this.title,
     required this.child,
     this.disabled = false,
-  });
+  }) : super(key: key);
 
   bool get isDisabled =>
       disabled || !CacheStateManager.instance.shouldShowRaw(label, version);

@@ -6,7 +6,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 class ChangerModalCustom extends StatefulWidget {
   final VoidCallback afterFavoriteAdded;
@@ -42,25 +42,25 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
 
     final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       ElevatedButton(
-        key: Key('changer.custom.add_favorite'),
+        key: const Key('changer.custom.add_favorite'),
         onPressed: handleAddFavorite,
-        child: Text('新增常用'),
+        child: const Text('新增常用'),
       ),
     ]);
 
     final sourceEntry = _wrapInRow(
       TextFormField(
-        key: Key('changer.custom.source.count'),
+        key: const Key('changer.custom.source.count'),
         controller: sourceCount,
         keyboardType: TextInputType.number,
         onChanged: handleCountChanged,
-        decoration: InputDecoration(labelText: '數量'),
+        decoration: const InputDecoration(labelText: '數量'),
         validator: Validator.positiveInt('數量', minimum: 1),
       ),
       DropdownButtonFormField<num>(
-        key: Key('changer.custom.source.unit'),
+        key: const Key('changer.custom.source.unit'),
         value: sourceUnit,
-        hint: Text('幣值'),
+        hint: const Text('幣值'),
         validator: Validator.positiveNumber('幣值'),
         onChanged: handleUnitChanged,
         items: _unitDropdownMenuItems(),
@@ -78,7 +78,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                 initialValue:
                     entry.key == 0 ? null : entry.value.count?.toString(),
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: '數量'),
+                decoration: const InputDecoration(labelText: '數量'),
                 validator: Validator.positiveInt('', allowNull: true),
                 onSaved: (value) =>
                     entry.value.count = int.tryParse(value ?? ''),
@@ -86,7 +86,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
               DropdownButtonFormField<num>(
                 key: Key('changer.custom.target.${entry.key}.unit'),
                 value: entry.value.unit,
-                hint: Text('幣值'),
+                hint: const Text('幣值'),
                 onChanged: (value) => setState(() => entry.value.unit = value),
                 onSaved: (value) => entry.value.unit = value,
                 items: ChangerModalCustomState._unitDropdownMenuItems(),
@@ -98,7 +98,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                         targets.removeAt(entry.key);
                       }),
                       color: theme.errorColor,
-                      icon: Icon(Icons.remove_circle_sharp),
+                      icon: const Icon(Icons.remove_circle_sharp),
                     )),
         )
     ];
@@ -122,7 +122,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                 onPressed: () => setState(() {
                   targets.add(CashierChangeEntryObject());
                 }),
-                child: Icon(KIcons.add),
+                child: const Icon(KIcons.add),
               )
             ],
           ),
@@ -136,6 +136,22 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
     sourceCount.dispose();
     targetController.dispose();
     super.dispose();
+  }
+
+  void handleAddFavorite() async {
+    if (!validate()) return;
+
+    await Cashier.instance.addFavorite(CashierChangeBatchObject(
+        source: CashierChangeEntryObject(
+          count: int.parse(sourceCount.text),
+          unit: sourceUnit!,
+        ),
+        targets: [
+          for (var target in _mergedTargets().entries)
+            CashierChangeEntryObject(count: target.value, unit: target.key)
+        ]));
+
+    widget.afterFavoriteAdded();
   }
 
   Future<bool> handleApply() async {
@@ -163,22 +179,6 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
     _changeSource(int.tryParse(value));
   }
 
-  void handleAddFavorite() async {
-    if (!validate()) return;
-
-    await Cashier.instance.addFavorite(CashierChangeBatchObject(
-        source: CashierChangeEntryObject(
-          count: int.parse(sourceCount.text),
-          unit: sourceUnit!,
-        ),
-        targets: [
-          for (var target in _mergedTargets().entries)
-            CashierChangeEntryObject(count: target.value, unit: target.key)
-        ]));
-
-    widget.afterFavoriteAdded();
-  }
-
   void handleUnitChanged(num? value) {
     setState(() {
       sourceUnit = value;
@@ -203,20 +203,20 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
       final count = int.parse(sourceCount.text);
       var total = count * sourceUnit!;
 
-      targets.forEach((target) {
+      for (var target in targets) {
         total -= target.total;
-      });
+      }
 
       if (total == 0) {
         return true;
       }
 
       var msg = '$count 個 $sourceUnit 元沒辦法換';
-      targets.forEach((target) {
+      for (var target in targets) {
         if (!target.isEmpty) {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
-      });
+      }
       showInfoSnackbar(context, msg);
     }
 
@@ -238,12 +238,12 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   Map<num, int> _mergedTargets() {
     final deltas = <num, int>{};
 
-    targets.forEach((target) {
+    for (var target in targets) {
       if (!target.isEmpty) {
         final old = deltas[target.unit!] ?? 0;
         deltas[target.unit!] = old + target.count!;
       }
-    });
+    }
 
     return deltas;
   }
@@ -258,7 +258,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   }
 
   static List<DropdownMenuItem<num>> _unitDropdownMenuItems() {
-    return CurrencyProvider.instance.unitList.map((unit) {
+    return CurrencySetting.instance.unitList.map((unit) {
       return DropdownMenuItem(value: unit, child: Text(unit.toString()));
     }).toList();
   }

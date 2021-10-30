@@ -73,20 +73,20 @@ class Routes {
   static const String stockQuantityModal = 'stock/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
-    analysis: (_) => AnalysisScreen(),
-    customer: (_) => CustomerScreen(),
-    cashier: (_) => CashierScreen(),
-    menu: (_) => MenuScreen(),
-    order: (_) => OrderScreen(),
-    setting: (_) => SettingScreen(),
-    stock: (_) => StockScreen(),
+    analysis: (_) => const AnalysisScreen(),
+    customer: (_) => const CustomerScreen(),
+    cashier: (_) => const CashierScreen(),
+    menu: (_) => const MenuScreen(),
+    order: (_) => const OrderScreen(),
+    setting: (_) => const SettingScreen(),
+    stock: (_) => const StockScreen(),
     // sub-route
     // cashier
-    cashierChanger: (context) => ChangerModal(),
+    cashierChanger: (context) => const ChangerModal(),
     // customer
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
-    customerReorder: (context) => CustomerOrderableList(),
+    customerReorder: (context) => const CustomerOrderableList(),
     customerSettingOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is CustomerSettingOption
@@ -99,17 +99,17 @@ class Routes {
     customerSettingReorder: (context) =>
         CustomerSettingOrderableList(setting: arg<CustomerSetting>(context)),
     // menu
-    menuSearch: (_) => MenuSearch(),
+    menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(
           value: arg<Catalog>(context),
-          builder: (_, __) => CatalogScreen(),
+          builder: (_, __) => const CatalogScreen(),
         ),
     menuCatalogModal: (context) =>
         CatalogModal(catalog: arg<Catalog?>(context)),
-    menuCatalogReorder: (context) => CatalogOrderableList(),
+    menuCatalogReorder: (context) => const CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
           value: arg<Product>(context),
-          builder: (_, __) => ProductScreen(),
+          builder: (_, __) => const ProductScreen(),
         ),
     menuProductModal: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
@@ -141,15 +141,15 @@ class Routes {
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
     // order
-    orderCustomer: (_) => OrderCustomerModal(),
-    orderCalculator: (_) => OrderCashierModal(),
+    orderCustomer: (_) => const OrderCustomerModal(),
+    orderCalculator: (_) => const OrderCashierModal(),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
-    stockQuantity: (_) => QuantityScreen(),
+    stockQuantity: (_) => const QuantityScreen(),
     stockQuantityModal: (context) =>
         QuantityModal(quantity: arg<Quantity?>(context)),
-    stockReplenishment: (context) => ReplenishmentScreen(),
+    stockReplenishment: (context) => const ReplenishmentScreen(),
     stockReplenishmentModal: (context) =>
         ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
   };

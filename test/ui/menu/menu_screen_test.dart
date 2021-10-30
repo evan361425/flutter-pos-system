@@ -21,28 +21,28 @@ import '../../mocks/mock_storage.dart';
 void main() {
   group('Menu Screen', () {
     testWidgets('Add catalog', (WidgetTester tester) async {
-      when(cache.getRaw(any)).thenReturn(null);
-      when(cache.setRaw(any, any)).thenAnswer((_) => Future.value(true));
+      when(cache.get(any)).thenReturn(null);
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu()),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       // close tip
       await tester.pumpAndSettle();
-      await tester.tapAt(Offset(0, 0));
+      await tester.tapAt(const Offset(0, 0));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('empty_body')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('catalog.name')), 'name');
+      await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
       // navigate to catalog screen
-      expect(find.byKey(Key('catalog.add')), findsOneWidget);
+      expect(find.byKey(const Key('catalog.add')), findsOneWidget);
 
       final catalog = Menu.instance.items.first;
       expect(catalog.name, equals('name'));
@@ -66,12 +66,12 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
-      await tester.tap(find.byKey(Key('catalog.c-1')));
+      await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('catalog.add')), findsOneWidget);
+      expect(find.byKey(const Key('catalog.add')), findsOneWidget);
     });
 
     testWidgets('Edit catalog', (WidgetTester tester) async {
@@ -81,25 +81,25 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
-      await tester.longPress(find.byKey(Key('catalog.c-1')));
+      await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
       await tester.pumpAndSettle();
 
       // save failed
-      await tester.enterText(find.byKey(Key('catalog.name')), 'c-2');
+      await tester.enterText(find.byKey(const Key('catalog.name')), 'c-2');
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('catalog.name')), 'new-name');
+      await tester.enterText(find.byKey(const Key('catalog.name')), 'new-name');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
       // reset catalog name
-      final w = find.byKey(Key('catalog.c-1')).evaluate().first.widget;
+      final w = find.byKey(const Key('catalog.c-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('new-name'));
 
       verify(storage.set(any, argThat(equals({'c-1.name': 'new-name'}))));
@@ -113,20 +113,21 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
-      await tester.tap(find.byKey(Key('menu.more')));
+      await tester.tap(find.byKey(const Key('menu.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, Offset(0, 150));
+      await tester.drag(
+          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
 
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final y1 = tester.getCenter(find.byKey(Key('catalog.c-1'))).dy;
-      final y2 = tester.getCenter(find.byKey(Key('catalog.c-2'))).dy;
+      final y1 = tester.getCenter(find.byKey(const Key('catalog.c-1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('catalog.c-2'))).dy;
       final itemList = Menu.instance.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('c-2'));
@@ -148,28 +149,28 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
-      await tester.longPress(find.byKey(Key('catalog.c-1')));
+      await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('catalog.c-1')), findsNothing);
+      expect(find.byKey(const Key('catalog.c-1')), findsNothing);
       verify(storage.set(any, argThat(equals({catalog1.prefix: null}))));
 
-      await tester.longPress(find.byKey(Key('catalog.c-2')));
+      await tester.longPress(find.byKey(const Key('catalog.c-2')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('catalog.c-2')), findsNothing);
+      expect(find.byKey(const Key('catalog.c-2')), findsNothing);
       expect(Menu.instance.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({catalog2.prefix: null}))));
     });
@@ -216,14 +217,14 @@ void main() {
             routes: Routes.routes,
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,
-            home: MenuScreen(),
+            home: const MenuScreen(),
           )));
-      await tester.tap(find.byKey(Key('menu.search')));
+      await tester.tap(find.byKey(const Key('menu.search')));
       await tester.pumpAndSettle();
 
       // product 2 has older searchedAt value
-      final y1 = tester.getCenter(find.byKey(Key('search.p-1'))).dy;
-      final y2 = tester.getCenter(find.byKey(Key('search.p-2'))).dy;
+      final y1 = tester.getCenter(find.byKey(const Key('search.p-1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('search.p-2'))).dy;
       expect(y1, greaterThan(y2));
 
       // enter non-matched products
@@ -236,22 +237,22 @@ void main() {
       await tester.enterText(find.byType(TextField), '2');
       await tester.pump();
 
-      expect(find.byKey(Key('search.p-1')), findsOneWidget);
-      expect(find.byKey(Key('search.p-2')), findsOneWidget);
+      expect(find.byKey(const Key('search.p-1')), findsOneWidget);
+      expect(find.byKey(const Key('search.p-2')), findsOneWidget);
 
       // should match specific quantity
       await tester.enterText(find.byType(TextField), 'q-1');
       await tester.pump();
 
-      expect(find.byKey(Key('search.p-1')), findsOneWidget);
-      expect(find.byKey(Key('search.p-2')), findsNothing);
+      expect(find.byKey(const Key('search.p-1')), findsOneWidget);
+      expect(find.byKey(const Key('search.p-2')), findsNothing);
 
       // navigate to product
-      await tester.tap(find.byKey(Key('search.p-1')));
+      await tester.tap(find.byKey(const Key('search.p-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('product_ingredient.pi-1')), findsOneWidget);
-      expect(find.byKey(Key('product_ingredient.pi-2')), findsOneWidget);
+      expect(find.byKey(const Key('product_ingredient.pi-1')), findsOneWidget);
+      expect(find.byKey(const Key('product_ingredient.pi-2')), findsOneWidget);
 
       // should update searchedAt
       verify(storage.set(any, argThat(predicate((data) {
@@ -261,7 +262,7 @@ void main() {
 
     setUp(() {
       // for tip
-      when(cache.getRaw(any)).thenReturn(1);
+      when(cache.get(any)).thenReturn(1);
     });
 
     setUpAll(() {

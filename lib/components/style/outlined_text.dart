@@ -25,10 +25,10 @@ class OutlinedText extends StatelessWidget {
     final base = Container(
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       padding: const EdgeInsets.fromLTRB(kSpacing1, 4.0, kSpacing1, 4.0),
-      constraints: BoxConstraints(minWidth: 64.0),
+      constraints: const BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
         color: colored ? color : null,
-        border: Border.all(color: colored ? color : Color(0xDD000000)),
+        border: Border.all(color: colored ? color : const Color(0xDD000000)),
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
@@ -45,10 +45,10 @@ class OutlinedText extends StatelessWidget {
             right: 0,
             top: 0,
             child: Container(
-              padding: EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(2.0),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0), color: color),
-              constraints: BoxConstraints(minWidth: 16, minHeight: 16),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(badge!,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 10, color: textColor)),

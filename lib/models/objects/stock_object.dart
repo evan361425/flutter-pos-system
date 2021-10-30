@@ -39,30 +39,30 @@ class IngredientObject extends ModelObject<Ingredient> {
   }
 
   @override
-  Map<String, Object> diff(Ingredient ingredient) {
+  Map<String, Object> diff(Ingredient model) {
     final result = <String, Object>{};
-    final prefix = ingredient.prefix;
+    final prefix = model.prefix;
 
-    if (name != null && name != ingredient.name) {
-      ingredient.name = name!;
+    if (name != null && name != model.name) {
+      model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (currentAmount != null && currentAmount != ingredient.currentAmount) {
-      ingredient.currentAmount = currentAmount!;
+    if (currentAmount != null && currentAmount != model.currentAmount) {
+      model.currentAmount = currentAmount!;
       result['$prefix.currentAmount'] = currentAmount!;
     }
-    if (lastAmount != null && lastAmount != ingredient.lastAmount) {
-      ingredient.lastAmount = lastAmount;
+    if (lastAmount != null && lastAmount != model.lastAmount) {
+      model.lastAmount = lastAmount;
       result['$prefix.lastAmount'] = lastAmount!;
     }
-    if (lastAddAmount != null && lastAddAmount != ingredient.lastAddAmount) {
-      ingredient.lastAddAmount = lastAddAmount;
+    if (lastAddAmount != null && lastAddAmount != model.lastAddAmount) {
+      model.lastAddAmount = lastAddAmount;
       result['$prefix.lastAddAmount'] = lastAddAmount!;
     }
 
     if (result.isNotEmpty) {
-      ingredient.updatedAt = DateTime.now();
-      result['$prefix.updatedAt'] = ingredient.updatedAt.toString();
+      model.updatedAt = DateTime.now();
+      result['$prefix.updatedAt'] = model.updatedAt.toString();
     }
 
     return result;
@@ -104,17 +104,17 @@ class QuantityObject extends ModelObject<Quantity> {
   }
 
   @override
-  Map<String, Object> diff(Quantity quantity) {
+  Map<String, Object> diff(Quantity model) {
     final result = <String, Object>{};
-    final prefix = quantity.prefix;
+    final prefix = model.prefix;
 
-    if (name != null && name != quantity.name) {
-      quantity.name = name!;
+    if (name != null && name != model.name) {
+      model.name = name!;
       result['$prefix.name'] = name!;
     }
     if (defaultProportion != null &&
-        defaultProportion != quantity.defaultProportion) {
-      quantity.defaultProportion = defaultProportion!;
+        defaultProportion != model.defaultProportion) {
+      model.defaultProportion = defaultProportion!;
       result['$prefix.defaultProportion'] = defaultProportion!;
     }
 
@@ -150,17 +150,17 @@ class ReplenishmentObject extends ModelObject<Replenishment> {
   }
 
   @override
-  Map<String, Object> diff(Replenishment replenishment) {
+  Map<String, Object> diff(Replenishment model) {
     final result = <String, Object>{};
-    final prefix = replenishment.prefix;
+    final prefix = model.prefix;
 
-    if (name != replenishment.name) {
-      replenishment.name = name;
+    if (name != model.name) {
+      model.name = name;
       result['$prefix.name'] = name;
     }
     data.forEach((key, value) {
-      if (replenishment.getNumOfId(key) != value) {
-        replenishment.data[key] = value;
+      if (model.getNumOfId(key) != value) {
+        model.data[key] = value;
         result['$prefix.data.$key'] = value;
       }
     });

@@ -4,7 +4,7 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 class OrderCashierProductList extends StatelessWidget {
   final List<CustomerSettingOption> customerSettings;
@@ -25,21 +25,21 @@ class OrderCashierProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final priceWidget = ExpansionTile(
-      title: Text('總價：${CurrencyProvider.n2s(totalPrice)} 元'),
+      title: Text('總價：${totalPrice.toCurrency()} 元'),
       children: <Widget>[
         ListTile(
-          title: Text('產品總價'),
-          trailing: Text(CurrencyProvider.n2s(productsPrice)),
+          title: const Text('產品總價'),
+          trailing: Text(productsPrice.toCurrency()),
         ),
         ListTile(
-          title: Text('顧客設定總價'),
-          trailing: Text(CurrencyProvider.n2s(customerPrice)),
+          title: const Text('顧客設定總價'),
+          trailing: Text(customerPrice.toCurrency()),
         ),
       ],
     );
 
     final customerSettingWidget = ExpansionTile(
-      title: Text('顧客設定'),
+      title: const Text('顧客設定'),
       subtitle: Text('設定 ${customerSettings.length} 項'),
       children: <Widget>[
         for (final option in customerSettings)
@@ -62,7 +62,7 @@ class OrderCashierProductList extends StatelessWidget {
       child: Column(children: [
         priceWidget,
         customerSettingWidget,
-        TextDivider(label: '購買產品'),
+        const TextDivider(label: '購買產品'),
         HintText('總數：$totalCount'),
         for (final product in products) _ProductTile(product),
       ]),
@@ -111,7 +111,7 @@ class _ProductTile extends StatelessWidget {
                 for (final ingredient in data.ingredientNames)
                   OutlinedText(ingredient)
               ]),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
             ],
           );
   }

@@ -40,7 +40,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
       expect(find.text('go to product'), findsOneWidget);
@@ -54,18 +54,21 @@ void main() {
         final catalog = Catalog(id: 'c-1', products: {'p-1': product});
         Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock()),
+              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        await tester.tap(find.byKey(Key('empty_body')));
+        await tester.tap(find.byKey(const Key('empty_body')));
         await tester.pumpAndSettle();
 
         // enter amount
         await tester.enterText(
-            find.byKey(Key('product_ingredient.amount')), '1');
+            find.byKey(const Key('product_ingredient.amount')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -73,11 +76,12 @@ void main() {
         expect(find.text('name_empty'), findsOneWidget);
 
         // add new ingredient
-        await tester.tap(find.byKey(Key('product_ingredient.search')));
+        await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'new-ingredient');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_ingredient.add_ingredient')));
+        await tester
+            .tap(find.byKey(const Key('product_ingredient.add_ingredient')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('save'));
@@ -99,9 +103,9 @@ void main() {
         // add product ingredient
         verify(storage.set(any, argThat(predicate((data) {
           return data is Map &&
-              data['${ingredient.prefix}'] is Map &&
-              data['${ingredient.prefix}']['ingredientId'] == id &&
-              data['${ingredient.prefix}']['amount'] == 1;
+              data[ingredient.prefix] is Map &&
+              data[ingredient.prefix]['ingredientId'] == id &&
+              data[ingredient.prefix]['amount'] == 1;
         }))));
         // product ingredient id is different from ingredient id
         expect(id, isNot(equals(ingredient.id)));
@@ -134,22 +138,25 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        final key = 'product_ingredient.pi-1';
-        await tester.tap(find.byKey(Key(key)));
+        const key = 'product_ingredient.pi-1';
+        await tester.tap(find.byKey(const Key(key)));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('$key.more')));
+        await tester.tap(find.byKey(const Key('$key.more')));
         await tester.pumpAndSettle();
         await tester.tap(find.byIcon(Icons.text_fields_sharp));
         await tester.pumpAndSettle();
 
         // search for ingredient2
-        await tester.tap(find.byKey(Key('product_ingredient.search')));
+        await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), '2');
         await tester.pumpAndSettle();
@@ -158,7 +165,7 @@ void main() {
         await tester.tap(find.byIcon(Icons.open_in_new_sharp));
         await tester.pumpAndSettle();
         await tester.enterText(
-            find.byKey(Key('stock.ingredient.name')), 'i-2-n');
+            find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
         await tester.tap(find.text('save'));
         await tester.pumpAndSettle();
@@ -169,7 +176,7 @@ void main() {
 
         // enter amount
         await tester.enterText(
-            find.byKey(Key('product_ingredient.amount')), '1');
+            find.byKey(const Key('product_ingredient.amount')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -177,7 +184,7 @@ void main() {
         expect(find.text('name_repeat'), findsOneWidget);
 
         // search for ingredient3
-        await tester.tap(find.byKey(Key('product_ingredient.search')));
+        await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'abc');
         await tester.pumpAndSettle();
@@ -187,15 +194,18 @@ void main() {
         await tester.pumpAndSettle();
         expect(
             tester
-                .getCenter(find.byKey(Key('product_ingredient.search.i-2')))
+                .getCenter(
+                    find.byKey(const Key('product_ingredient.search.i-2')))
                 .dy,
             lessThan(tester
-                .getCenter(find.byKey(Key('product_ingredient.search.i-3')))
+                .getCenter(
+                    find.byKey(const Key('product_ingredient.search.i-3')))
                 .dy));
 
         await tester.enterText(find.byType(TextField), '3');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_ingredient.search.i-3')));
+        await tester
+            .tap(find.byKey(const Key('product_ingredient.search.i-3')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('save'));
@@ -203,7 +213,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // reset ingredient name
-        final w = find.byKey(Key(key)).evaluate().first.widget;
+        final w = find.byKey(const Key(key)).evaluate().first.widget;
         expect(((w as ExpansionTile).title as Text).data, equals('prefix-i-3'));
         expect(ingredient.amount, equals(1));
 
@@ -229,23 +239,26 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        await tester.tap(find.byKey(Key('product_ingredient.pi-1')));
+        await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_ingredient.pi-1.more')));
+        await tester.tap(find.byKey(const Key('product_ingredient.pi-1.more')));
         await tester.pumpAndSettle();
         await tester.tap(find.byIcon(KIcons.delete));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+        await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        expect(find.byKey(Key('product_ingredient.pi-1')), findsNothing);
+        expect(find.byKey(const Key('product_ingredient.pi-1')), findsNothing);
         expect(product.getItem('pi-1'), isNull);
         verify(storage.set(any, argThat(equals({ingredient.prefix: null}))));
       });
@@ -279,19 +292,25 @@ void main() {
         prepareData();
         final product = Menu.instance.items.first.items.first;
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+              ChangeNotifierProvider<Quantities>.value(
+                  value: Quantities.instance),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        await tester.tap(find.byKey(Key('product_ingredient.pi-1')));
+        await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_ingredient.pi-1.add')));
+        await tester.tap(find.byKey(const Key('product_ingredient.pi-1.add')));
         await tester.pumpAndSettle();
 
-        await tester.enterText(find.byKey(Key('product_quantity.price')), '1');
-        await tester.enterText(find.byKey(Key('product_quantity.cost')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.price')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.cost')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -299,14 +318,16 @@ void main() {
         expect(find.text('name_empty'), findsOneWidget);
 
         // add new quantity
-        await tester.tap(find.byKey(Key('product_quantity.search')));
+        await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'new-quantity');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_quantity.add_quantity')));
+        await tester
+            .tap(find.byKey(const Key('product_quantity.add_quantity')));
         await tester.pumpAndSettle();
 
-        await tester.enterText(find.byKey(Key('product_quantity.amount')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.amount')), '1');
 
         await tester.tap(find.text('save'));
         await tester.pumpAndSettle();
@@ -329,11 +350,11 @@ void main() {
         // add product ingredient
         verify(storage.set(any, argThat(predicate((data) {
           return data is Map &&
-              data['${quantity.prefix}'] is Map &&
-              data['${quantity.prefix}']['quantityId'] == id &&
-              data['${quantity.prefix}']['amount'] == 1 &&
-              data['${quantity.prefix}']['additionalCost'] == 1 &&
-              data['${quantity.prefix}']['additionalPrice'] == 1;
+              data[quantity.prefix] is Map &&
+              data[quantity.prefix]['quantityId'] == id &&
+              data[quantity.prefix]['amount'] == 1 &&
+              data[quantity.prefix]['additionalCost'] == 1 &&
+              data[quantity.prefix]['additionalPrice'] == 1;
         }))));
         // product ingredient id is different from ingredient id
         expect(id, isNot(equals(quantity.id)));
@@ -344,19 +365,23 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final quantity = product.items.first.items.first;
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+              ChangeNotifierProvider<Quantities>.value(
+                  value: Quantities.instance),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        await tester.tap(find.byKey(Key('product_ingredient.pi-1')));
+        await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('product_quantity.pq-1')));
+        await tester.tap(find.byKey(const Key('product_quantity.pq-1')));
         await tester.pumpAndSettle();
 
         // search for quantity2
-        await tester.tap(find.byKey(Key('product_quantity.search')));
+        await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), '2');
         await tester.pumpAndSettle();
@@ -364,7 +389,7 @@ void main() {
         // go into modal and edit quantity2 name
         await tester.tap(find.byIcon(Icons.open_in_new_sharp));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byKey(Key('quantity.name')), 'q-2-n');
+        await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2-n');
         await tester.pumpAndSettle();
         await tester.tap(find.text('save'));
         await tester.pumpAndSettle();
@@ -374,8 +399,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // edit properties
-        await tester.enterText(find.byKey(Key('product_quantity.price')), '1');
-        await tester.enterText(find.byKey(Key('product_quantity.cost')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.price')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.cost')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -383,7 +410,7 @@ void main() {
         expect(find.text('name_repeat'), findsOneWidget);
 
         // search for quantity3
-        await tester.tap(find.byKey(Key('product_quantity.search')));
+        await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'abc');
         await tester.pumpAndSettle();
@@ -393,16 +420,18 @@ void main() {
         await tester.pumpAndSettle();
 
         // amount will be effect by proportion
-        var w = find.byKey(Key('product_quantity.amount')).evaluate().first;
+        var w =
+            find.byKey(const Key('product_quantity.amount')).evaluate().first;
         expect((w.widget as TextFormField).initialValue, equals('0'));
 
-        await tester.enterText(find.byKey(Key('product_quantity.amount')), '1');
+        await tester.enterText(
+            find.byKey(const Key('product_quantity.amount')), '1');
         await tester.tap(find.text('save'));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
         // reset quantitiy name
-        w = find.byKey(Key('product_quantity.pq-1')).evaluate().first;
+        w = find.byKey(const Key('product_quantity.pq-1')).evaluate().first;
         expect(((w.widget as ListTile).title as Text).data, equals('q-3'));
         expect(quantity.amount, equals(1));
         expect(quantity.additionalCost, equals(1));
@@ -429,25 +458,31 @@ void main() {
         final ingredient = product.items.first;
         final quantity = ingredient.items.first;
 
-        await tester.pumpWidget(MultiProvider(providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
-        ], child: MaterialApp(routes: Routes.routes, home: ProductScreen())));
+        await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Product>.value(value: product),
+              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+              ChangeNotifierProvider<Quantities>.value(
+                  value: Quantities.instance),
+            ],
+            child: MaterialApp(
+                routes: Routes.routes, home: const ProductScreen())));
 
-        await tester.longPress(find.byKey(Key('product_ingredient.pi-1')));
+        await tester
+            .longPress(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
-        await tester.longPress(find.byKey(Key('product_quantity.pq-1')));
+        await tester.longPress(find.byKey(const Key('product_quantity.pq-1')));
         await tester.pumpAndSettle();
         await tester.tap(find.byIcon(KIcons.delete));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+        await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
 
         // expansion is still open
-        expect(find.byKey(Key('product_ingredient.pi-1.add')), findsOneWidget);
-        expect(find.byKey(Key('product_quantity.pq-1')), findsNothing);
+        expect(find.byKey(const Key('product_ingredient.pi-1.add')),
+            findsOneWidget);
+        expect(find.byKey(const Key('product_quantity.pq-1')), findsNothing);
         expect(ingredient.getItem('pq-1'), isNull);
         verify(storage.set(any, argThat(equals({quantity.prefix: null}))));
       });
@@ -465,9 +500,9 @@ class _Nav2Product extends StatelessWidget {
     return Scaffold(
       body: TextButton(
         onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ProductScreen()),
+          MaterialPageRoute(builder: (_) => const ProductScreen()),
         ),
-        child: Text('go to product'),
+        child: const Text('go to product'),
       ),
     );
   }

@@ -11,7 +11,7 @@ import 'package:possystem/translator.dart';
 class ProductList extends StatelessWidget {
   final List<Product> products;
 
-  const ProductList(this.products);
+  const ProductList(this.products, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -21,7 +21,7 @@ class Catalog extends Model<CatalogObject>
   final Stores storageStore = Stores.menu;
 
   @override
-  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
+  final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
 
   Catalog({
     String? id,

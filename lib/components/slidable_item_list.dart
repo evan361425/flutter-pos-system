@@ -97,11 +97,11 @@ class SlidableItemListState<T, Action>
 
   Widget _itemBuilder(T item, {required ThemeData theme, required int index}) {
     return Card(
-      shape: RoundedRectangleBorder(),
+      shape: const RoundedRectangleBorder(),
       margin: const EdgeInsets.all(0),
       child: Slidable(
         controller: _slidableController,
-        actionPane: SlidableDrawerActionPane(),
+        actionPane: const SlidableDrawerActionPane(),
         secondaryActions: <Widget>[
           IconSlideAction(
             color: theme.errorColor,

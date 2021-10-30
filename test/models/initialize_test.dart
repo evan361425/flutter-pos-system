@@ -163,7 +163,7 @@ void main() {
                         'additionalCost': 5,
                         'additionalPrice': 10
                       },
-                      '${pq2.id}': {
+                      pq2.id: {
                         'quantityId': 'q-2',
                         'amount': -5,
                         'additionalCost': 0,
@@ -171,11 +171,7 @@ void main() {
                       }
                     }
                   },
-                  '${pi2.id}': {
-                    'ingredientId': 'i-2',
-                    'amount': 5,
-                    'quantities': {}
-                  }
+                  pi2.id: {'ingredientId': 'i-2', 'amount': 5, 'quantities': {}}
                 }
               },
               'p-2': {
@@ -273,7 +269,7 @@ void main() {
 
     test('CustomerSettings', () async {
       when(database.query(
-        CustomerSettings.TABLE,
+        CustomerSettings.table,
         where: argThat(equals('isDelete = 0'), named: 'where'),
       )).thenAnswer(
         (_) => Future.value([
@@ -296,7 +292,7 @@ void main() {
         ]),
       );
       when(database.query(
-        CustomerSettings.OPTION_TABLE,
+        CustomerSettings.optionTable,
         where: anyNamed('where'),
         whereArgs: argThat(equals([1]), named: 'whereArgs'),
       )).thenAnswer(
@@ -318,7 +314,7 @@ void main() {
         ]),
       );
       when(database.query(
-        CustomerSettings.OPTION_TABLE,
+        CustomerSettings.optionTable,
         where: anyNamed('where'),
         whereArgs: argThat(equals([2]), named: 'whereArgs'),
       )).thenAnswer((_) => Future.error('error'));
@@ -338,7 +334,7 @@ void main() {
     setUpAll(() {
       initializeDatabase();
       initializeStorage();
-      LOG_LEVEL = 0;
+      logLevel = 0;
     });
   });
 }

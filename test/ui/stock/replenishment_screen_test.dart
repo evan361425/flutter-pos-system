@@ -35,30 +35,33 @@ void main() {
         ],
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: ReplenishmentScreen(),
+          home: const ReplenishmentScreen(),
         ),
       ));
 
-      await tester.tap(find.byKey(Key('replenisher.r-1')));
+      await tester.tap(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();
 
       // should failed
-      await tester.enterText(find.byKey(Key('replenishment.name')), 'r-2');
+      await tester.enterText(
+          find.byKey(const Key('replenishment.name')), 'r-2');
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('replenishment.name')), 'r-3');
       await tester.enterText(
-          find.byKey(Key('replenishment.ingredients.i-1')), '2');
+          find.byKey(const Key('replenishment.name')), 'r-3');
       await tester.enterText(
-          find.byKey(Key('replenishment.ingredients.i-2')), '3');
+          find.byKey(const Key('replenishment.ingredients.i-1')), '2');
+      await tester.enterText(
+          find.byKey(const Key('replenishment.ingredients.i-2')), '3');
       await tester.tap(find.text('save'));
       // update to storage
       await tester.pumpAndSettle();
       // pop
       await tester.pumpAndSettle();
 
-      final w = find.byKey(Key('replenisher.r-1')).evaluate().first.widget;
+      final w =
+          find.byKey(const Key('replenisher.r-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('r-3'));
       expect(replenishment.getNumOfId('i-1'), equals(2));
       expect(replenishment.getNumOfId('i-2'), equals(3));
@@ -78,18 +81,19 @@ void main() {
         ],
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: ReplenishmentScreen(),
+          home: const ReplenishmentScreen(),
         ),
       ));
 
-      await tester.tap(find.byKey(Key('replenisher.add')));
+      await tester.tap(find.byKey(const Key('replenisher.add')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('replenishment.name')), 'r-1');
       await tester.enterText(
-          find.byKey(Key('replenishment.ingredients.i-1')), '1');
+          find.byKey(const Key('replenishment.name')), 'r-1');
       await tester.enterText(
-          find.byKey(Key('replenishment.ingredients.i-2')), '2');
+          find.byKey(const Key('replenishment.ingredients.i-1')), '1');
+      await tester.enterText(
+          find.byKey(const Key('replenishment.ingredients.i-2')), '2');
       await tester.tap(find.text('save'));
       // save to storage
       await tester.pumpAndSettle();
@@ -117,18 +121,18 @@ void main() {
         value: replenisher,
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: ReplenishmentScreen(),
+          home: const ReplenishmentScreen(),
         ),
       ));
 
-      await tester.longPress(find.byKey(Key('replenisher.r-1')));
+      await tester.longPress(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('delete'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('replenisher.r-1')), findsNothing);
+      expect(find.byKey(const Key('replenisher.r-1')), findsNothing);
     });
 
     setUpAll(() {

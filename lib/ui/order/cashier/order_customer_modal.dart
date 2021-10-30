@@ -16,14 +16,14 @@ class OrderCustomerModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: PopButton(),
-        title: Text('顧客設定'),
+        leading: const PopButton(),
+        title: const Text('顧客設定'),
         actions: [
           AppbarTextButton(
-            key: Key('cashier.customer.next'),
+            key: const Key('cashier.customer.next'),
             onPressed: () =>
                 Navigator.of(context).popAndPushNamed(Routes.orderCalculator),
-            child: Text('下一步'),
+            child: const Text('下一步'),
           ),
         ],
       ),

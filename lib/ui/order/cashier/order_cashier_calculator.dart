@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 class OrderCashierCalculator extends StatefulWidget {
   final void Function(String) onTextChanged;
@@ -48,7 +48,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           prefix: '付額',
           defaultText: widget.totalPrice.toString(),
         ),
-        Divider(),
+        const Divider(),
         _SingleField(
           key: changeState,
           keyPrefix: 'cashier.calculator.change',
@@ -56,7 +56,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           defaultText: '0',
           errorText: '必須大於付額',
         ),
-        Divider(),
+        const Divider(),
       ]),
       Column(children: [
         Row(mainAxisSize: MainAxisSize.min, children: [
@@ -64,9 +64,9 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _CalculatorPostfixAction(action: execPostfix, text: '2'),
           _CalculatorPostfixAction(action: execPostfix, text: '3'),
           _CalculatorAction(
-            key: Key('cashier.calculator.clear'),
+            key: const Key('cashier.calculator.clear'),
             action: execClear,
-            child: Icon(Icons.clear_sharp),
+            child: const Icon(Icons.clear_sharp),
           ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
@@ -74,9 +74,9 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _CalculatorPostfixAction(action: execPostfix, text: '5'),
           _CalculatorPostfixAction(action: execPostfix, text: '6'),
           _CalculatorAction(
-            key: Key('cashier.calculator.back'),
+            key: const Key('cashier.calculator.back'),
             action: execBack,
-            child: Icon(Icons.arrow_back_rounded),
+            child: const Icon(Icons.arrow_back_rounded),
           ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
@@ -84,25 +84,25 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _CalculatorPostfixAction(action: execPostfix, text: '8'),
           _CalculatorPostfixAction(action: execPostfix, text: '9'),
           _CalculatorAction(
-            key: Key('cashier.calculator.ceil'),
+            key: const Key('cashier.calculator.ceil'),
             action: execCeil,
-            child: Icon(Icons.merge_type_rounded),
+            child: const Icon(Icons.merge_type_rounded),
           ),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
-          SizedBox(width: 64, height: 64),
+          const SizedBox(width: 64, height: 64),
           _CalculatorPostfixAction(action: execPostfix, text: '0'),
-          CurrencyProvider.instance.isInt
-              ? SizedBox(width: 64, height: 64)
+          CurrencySetting.instance.isInt
+              ? const SizedBox(width: 64, height: 64)
               : _CalculatorAction(
-                  key: Key('cashier.calculator.dot'),
+                  key: const Key('cashier.calculator.dot'),
                   action: execDot,
-                  child: Text('.'),
+                  child: const Text('.'),
                 ),
           _CalculatorAction(
-            key: Key('cashier.calculator.submit'),
+            key: const Key('cashier.calculator.submit'),
             action: widget.onSubmit,
-            child: Icon(Icons.done_rounded),
+            child: const Icon(Icons.done_rounded),
           ),
         ]),
       ]),
@@ -117,8 +117,8 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
 
   void execCeil() {
     final price = num.tryParse(text) ?? widget.totalPrice;
-    final ceilPrice = CurrencyProvider.instance.ceil(price);
-    text = CurrencyProvider.n2s(ceilPrice);
+    final ceilPrice = CurrencySetting.instance.ceil(price);
+    text = ceilPrice.toCurrency();
   }
 
   void execClear() {
@@ -189,7 +189,7 @@ class _SingleField extends StatefulWidget {
 
   final String keyPrefix;
 
-  _SingleField({
+  const _SingleField({
     Key? key,
     required this.keyPrefix,
     required this.prefix,

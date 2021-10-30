@@ -3,7 +3,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
 class SingleTextDialog extends StatefulWidget {
-  SingleTextDialog({
+  const SingleTextDialog({
     Key? key,
     this.validator,
     this.decoration,
@@ -34,7 +34,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         child: Form(
           key: form,
           child: TextFormField(
-            key: Key('text_dialog.text'),
+            key: const Key('text_dialog.text'),
             controller: textController,
             autofocus: true,
             onSaved: onSubmit,
@@ -47,9 +47,9 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         ),
       ),
       actions: [
-        PopButton(key: Key('text_dialog.cancel'), title: tt('cancel')),
+        PopButton(key: const Key('text_dialog.cancel'), title: tt('cancel')),
         ElevatedButton(
-          key: Key('text_dialog.confirm'),
+          key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
           child: Text(tt('confirm')),
         ),

@@ -3,8 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/providers/currency_provider.dart';
-import 'package:possystem/providers/language_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/language_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -13,36 +14,34 @@ import '../../mocks/mock_database.dart';
 
 void main() {
   Widget buildAnalysisScreen({themeMode = ThemeMode.light}) {
-    final language = LanguageProvider();
-    final currency = CurrencyProvider();
-    final defaultLanguage = Locale('zh', 'TW');
-    // provider setting
-    when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-    language.setLocale(defaultLanguage);
-    currency.setCurrency(CurrencyTypes.TWD);
+    when(cache.get(any)).thenReturn(null);
+    final settings = SettingsProvider([
+      LanguageSetting(),
+      CurrencySetting(),
+    ]);
 
     return MaterialApp(
       themeMode: themeMode,
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
-      locale: defaultLanguage,
+      locale: LanguageSetting.defaultLanguage,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
       home: MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: language),
+          ChangeNotifierProvider.value(value: settings..loadSetting()),
           ChangeNotifierProvider.value(value: Seller()),
         ],
-        builder: (_, __) => AnalysisScreen(),
+        builder: (_, __) => const AnalysisScreen(),
       ),
     );
   }
 
   void mockGetOrderBetween(List<Map<String, Object?>> data) {
     when(database.query(
-      Seller.ORDER_TABLE,
+      Seller.orderTable,
       columns: anyNamed('columns'),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
@@ -55,7 +54,7 @@ void main() {
 
   void mockGetCountBetween(List<Map<String, Object>> data) {
     when(database.query(
-      Seller.ORDER_TABLE,
+      Seller.orderTable,
       columns: anyNamed('columns'),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
@@ -65,7 +64,7 @@ void main() {
 
   void mockGetMetricBetween(List<Map<String, Object>> data) {
     when(database.query(
-      Seller.ORDER_TABLE,
+      Seller.orderTable,
       columns: argThat(
         predicate(
             (data) => data is List && data[1] == 'SUM(totalPrice) totalPrice'),
@@ -97,7 +96,7 @@ void main() {
       ]);
 
       // setup protrait env
-      tester.binding.window.physicalSizeTestValue = Size(1000, 2000);
+      tester.binding.window.physicalSizeTestValue = const Size(1000, 2000);
 
       // resets the screen to its orinal size after the test end
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
@@ -116,8 +115,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // find by OrderTile key
-      expect(find.byKey(Key('analysis.order_list.1')), findsOneWidget);
-      expect(find.byKey(Key('analysis.order_list.2')), findsOneWidget);
+      expect(find.byKey(const Key('analysis.order_list.1')), findsOneWidget);
+      expect(find.byKey(const Key('analysis.order_list.2')), findsOneWidget);
     });
 
     testWidgets('load count when page changed in landscape', (tester) async {
@@ -136,7 +135,7 @@ void main() {
       ]);
 
       // setup landscape env
-      tester.binding.window.physicalSizeTestValue = Size(2000, 1000);
+      tester.binding.window.physicalSizeTestValue = const Size(2000, 1000);
 
       // resets the screen to its orinal size after the test end
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);

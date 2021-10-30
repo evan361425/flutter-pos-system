@@ -7,7 +7,7 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class OrderIngredientList extends StatelessWidget {
-  static const _INGREDIENT_RADIO_KEY = 'order.ingredients';
+  static const _ingredientRadioKey = 'order.ingredients';
 
   const OrderIngredientList({Key? key}) : super(key: key);
 
@@ -42,7 +42,7 @@ class OrderIngredientList extends StatelessWidget {
               quantityList.currentState
                   ?.update(ingredients.getSelectedQuantityId());
             },
-            groupId: _INGREDIENT_RADIO_KEY,
+            groupId: _ingredientRadioKey,
             isSelected: ingredientId == ingredient.id,
             value: ingredient.id,
             text: ingredient.name,
@@ -90,7 +90,7 @@ class _OrderQuantityList extends StatefulWidget {
 }
 
 class _OrderQuantityListState extends State<_OrderQuantityList> {
-  static const _QUANTITY_RADIO_KEY = 'order.quantities';
+  static const _quantityRadioKey = 'order.quantities';
 
   String? selected;
 
@@ -98,9 +98,9 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
       RadioText(
-        key: Key('order.quantity.default'),
+        key: const Key('order.quantity.default'),
         onSelected: (_) => CartIngredients.instance.selectQuantity(null),
-        groupId: _QUANTITY_RADIO_KEY,
+        groupId: _quantityRadioKey,
         value: '',
         isSelected: null == selected,
         text: tt(
@@ -112,7 +112,7 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
         RadioText(
           key: Key('order.quantity.${quantity.id}'),
           onSelected: (_) => select(quantity.id),
-          groupId: _QUANTITY_RADIO_KEY,
+          groupId: _quantityRadioKey,
           value: quantity.id,
           isSelected: quantity.id == selected,
           text: '${quantity.name}（${quantity.amount}）',

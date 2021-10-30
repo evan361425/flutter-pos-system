@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/cashier/changer/changer_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -28,12 +27,21 @@ void main() {
     }
 
     Future<void> buildApp(WidgetTester tester) {
-      return tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Cashier.instance,
+      // setup currency and cashier relation
+      when(cache.get(any)).thenReturn(null);
+      when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
+
+      CurrencySetting.instance.initialize();
+      Cashier.instance.setCurrent(null);
+
+      return tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: Cashier.instance),
+        ],
         builder: (_, __) => MaterialApp(
           home: Navigator(
             onPopPage: (route, result) => route.didPop(result),
-            pages: [
+            pages: const [
               MaterialPage(child: Text('hi', key: Key('poped'))),
               MaterialPage(child: ChangerModal()),
             ],
@@ -45,7 +53,7 @@ void main() {
     testWidgets('add favorite and failed if not enough', (tester) async {
       await buildApp(tester);
 
-      await tester.tap(find.byKey(Key('empty_body')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
       await tester.tap(findByK('source.unit'));
       await tester.pumpAndSettle();
@@ -58,16 +66,16 @@ void main() {
       await tester.tap(findByK('add_favorite'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
       expect(find.text('請選擇要套用的組合'), findsOneWidget);
 
-      await tester.tap(find.byKey(Key('cashier.changer.favorite.0')));
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.favorite.0')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('poped')), findsNothing);
+      expect(find.byKey(const Key('poped')), findsNothing);
     });
 
     testWidgets('delete favorite item', (tester) async {
@@ -82,21 +90,22 @@ void main() {
 
       await buildApp(tester);
 
-      expect(find.byKey(Key('cashier.changer.favorite.0')), findsOneWidget);
+      expect(
+          find.byKey(const Key('cashier.changer.favorite.0')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.more_vert_sharp));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('cashier.changer.favorite.0')), findsNothing);
+      expect(find.byKey(const Key('cashier.changer.favorite.0')), findsNothing);
     });
 
     testWidgets('apply custom', (tester) async {
       await buildApp(tester);
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      final setCountUnit = (String key, {String? unit, String? count}) async {
+      setCountUnit(String key, {String? unit, String? count}) async {
         if (count != null) {
           await tester.enterText(findByK('$key.count'), count);
           await tester.pumpAndSettle();
@@ -107,9 +116,9 @@ void main() {
           await tester.tap(find.text(unit).last);
           await tester.pumpAndSettle();
         }
-      };
+      }
 
-      await tester.tap(find.byKey(Key('cashier.changer.custom')));
+      await tester.tap(find.byKey(const Key('cashier.changer.custom')));
       await tester.pumpAndSettle();
       // change count should also fired target reset
       await setCountUnit('source', unit: '10');
@@ -135,7 +144,7 @@ void main() {
       await setCountUnit('target.2', unit: '1', count: '5');
 
       // 5*10 is not able to change 10*5 + 1*5 + 5*1
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
       expect(
@@ -145,33 +154,26 @@ void main() {
 
       // apply correctly now!
       await setCountUnit('target.0', count: '6');
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
       // should setup current data
-      expect(find.byKey(Key('poped')), findsNothing);
+      expect(find.byKey(const Key('poped')), findsNothing);
 
       await Cashier.instance.plus(2, 10);
 
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('poped')), findsOneWidget);
+      expect(find.byKey(const Key('poped')), findsOneWidget);
       expect(Cashier.instance.at(2).count, equals(6));
       expect(Cashier.instance.at(1).count, equals(7));
       expect(Cashier.instance.at(0).count, equals(5));
     });
 
     setUp(() {
-      LOG_LEVEL = 0;
-      // setup currency and cashier relation
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      final currency = CurrencyProvider();
+      CurrencySetting();
       Cashier();
-      currency.setCurrency(CurrencyTypes.TWD);
-
-      // setup cashier storage data
-      when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
     });
 
     setUpAll(() {

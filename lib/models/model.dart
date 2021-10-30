@@ -58,7 +58,7 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 }
 
 mixin ModelDB<T extends ModelObject> on Model<T> {
-  final String modelTableName = 'table';
+  String get modelTableName => 'table';
 
   @override
   String get logName => modelTableName;
@@ -100,7 +100,7 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
 }
 
 mixin ModelStorage<T extends ModelObject> on Model<T> {
-  final Stores storageStore = Stores.menu;
+  Stores get storageStore => Stores.menu;
 
   @override
   String get logName => storageStore.toString();

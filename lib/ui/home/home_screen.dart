@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
               for (final item in entry.value.values)
                 _LabledIcon(item, index: count++)
             ]),
-            Divider(),
+            const Divider(),
           ],
         )
     ];
@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(kSpacing3),
         child: Column(
           children: [
-            OrderInfo(),
+            const OrderInfo(),
             const SizedBox(height: kSpacing2),
             Expanded(
               child: SingleChildScrollView(
@@ -111,7 +111,7 @@ class _LabledIcon extends StatelessWidget {
     final base = TextButton(
       key: Key('home.${item.label}'),
       onPressed: () => Navigator.of(context).pushNamed(item.route),
-      style: TextButton.styleFrom(shape: CircleBorder()),
+      style: TextButton.styleFrom(shape: const CircleBorder()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

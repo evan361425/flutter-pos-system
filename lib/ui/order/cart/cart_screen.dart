@@ -18,7 +18,7 @@ class CartScreen extends StatelessWidget {
     final selector = Row(children: <Widget>[
       Expanded(
         child: ElevatedButton(
-          key: Key('cart.select_all'),
+          key: const Key('cart.select_all'),
           onPressed: () => Cart.instance.toggleAll(true),
           child: Text(tt('order.cart.select_all')),
         ),
@@ -26,7 +26,7 @@ class CartScreen extends StatelessWidget {
       const SizedBox(width: 4.0),
       Expanded(
         child: ElevatedButton(
-          key: Key('cart.toggle_all'),
+          key: const Key('cart.toggle_all'),
           onPressed: () => Cart.instance.toggleAll(null),
           child: Text(tt('order.cart.toggle_all')),
         ),
@@ -34,7 +34,7 @@ class CartScreen extends StatelessWidget {
     ]);
 
     final actions = Row(children: <Widget>[
-      CartActions(),
+      const CartActions(),
       const SizedBox(width: kSpacing3),
       Expanded(child: _CartMetadata()),
     ]);
@@ -65,7 +65,7 @@ class _CartMetadata extends StatelessWidget {
     final cart = context.watch<Cart>();
 
     return Container(
-      key: Key('cart.metadata'),
+      key: const Key('cart.metadata'),
       child: MetaBlock.withString(context, <String>[
         tt('order.total_count', {'count': cart.totalCount}),
         tt('order.total_price', {'price': cart.productsPrice}),

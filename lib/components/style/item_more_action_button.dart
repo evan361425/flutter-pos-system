@@ -36,7 +36,7 @@ class ItemMoreActionButton extends StatelessWidget {
         ),
         IconButton(
           onPressed: onTap,
-          icon: Icon(KIcons.more),
+          icon: const Icon(KIcons.more),
         ),
       ]),
     );

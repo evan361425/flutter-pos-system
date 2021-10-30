@@ -10,7 +10,7 @@ import 'package:possystem/translator.dart';
 class CatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  const CatalogList(this.catalogs);
+  const CatalogList(this.catalogs, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,13 @@ class CatalogList extends StatelessWidget {
     return <BottomSheetAction<_Action>>[
       BottomSheetAction(
         title: Text(tt('menu.catalog.edit')),
-        leading: Icon(Icons.text_fields_sharp),
+        leading: const Icon(Icons.text_fields_sharp),
         navigateArgument: catalog,
         navigateRoute: Routes.menuCatalogModal,
       ),
       BottomSheetAction(
         title: Text(tt('menu.catalog.order')),
-        leading: Icon(Icons.reorder_sharp),
+        leading: const Icon(Icons.reorder_sharp),
         navigateArgument: catalog,
         navigateRoute: Routes.menuCatalogReorder,
       ),

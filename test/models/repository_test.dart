@@ -5,7 +5,7 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 import '../mocks/mock_cache.dart';
 import '../mocks/mock_storage.dart';
@@ -22,10 +22,8 @@ void main() {
       });
 
       test('Cashier', () async {
-        final currency = CurrencyProvider();
         when(cache.get(any)).thenReturn(null);
-        when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-        await currency.setCurrency(CurrencyTypes.TWD);
+        final currency = CurrencySetting()..initialize();
         final cashier = Cashier();
 
         // ignore: invalid_use_of_protected_member
@@ -47,7 +45,7 @@ void main() {
         final dirtyData = [
           {'count': '', 'unit': 2}
         ];
-        CurrencyProvider().unitList = [1, 2, 3];
+        CurrencySetting().unitList = [1, 2, 3];
 
         final cashier = Cashier();
         await cashier.deleteFavorite(0);
@@ -66,7 +64,7 @@ void main() {
 
     group('Cashier', () {
       test('findPossibleChange', () async {
-        CurrencyProvider();
+        CurrencySetting();
         final cashier = Cashier();
         await cashier.setCurrent([
           {'unit': 10},
@@ -96,7 +94,7 @@ void main() {
     });
 
     setUpAll(() {
-      LOG_LEVEL = 0;
+      logLevel = 0;
       initializeCache();
       initializeStorage();
     });

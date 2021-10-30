@@ -4,15 +4,15 @@ import 'dart:developer' as developer;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:possystem/my_app.dart';
 
-const _LEVEL_MAP = {
+const _levelMap = {
   'debug': 4,
   'info': 3,
   'warn': 2,
   'error': 1,
 };
-const _LEVEL = String.fromEnvironment('LOG_LEVEL', defaultValue: 'info');
+const _level = String.fromEnvironment('LOG_LEVEL', defaultValue: 'info');
 // allow editing in unit test
-var LOG_LEVEL = _LEVEL_MAP[_LEVEL] ?? 3;
+var logLevel = _levelMap[_level] ?? 3;
 
 Future<void> _log(
     String message, String code, Map<String, Object>? detail, int level) async {
@@ -33,7 +33,7 @@ Future<void> _log(
 ///
 /// LEVEL: 4
 void debug(String message, String code, [Map<String, Object>? detail]) async {
-  if (LOG_LEVEL > 3) {
+  if (logLevel > 3) {
     await _log(message, code, detail, 4);
   }
 }
@@ -42,7 +42,7 @@ void debug(String message, String code, [Map<String, Object>? detail]) async {
 ///
 /// LEVEL: 3
 void info(String message, String code, [Map<String, Object>? detail]) async {
-  if (LOG_LEVEL > 2) {
+  if (logLevel > 2) {
     await _log(message, code, detail, 3);
   }
 }
@@ -51,7 +51,7 @@ void info(String message, String code, [Map<String, Object>? detail]) async {
 ///
 /// LEVEL: 2
 void warn(String message, String code, [Map<String, Object>? detail]) async {
-  if (LOG_LEVEL > 1) {
+  if (logLevel > 1) {
     await _log(message, code, detail, 2);
   }
 }
@@ -62,8 +62,7 @@ void warn(String message, String code, [Map<String, Object>? detail]) async {
 ///
 /// It will send to crashlytic not analytic
 Future<void> error(String message, String code, [StackTrace? stack]) async {
-  if (LOG_LEVEL != 0) {
-    print(stack);
+  if (logLevel != 0) {
     developer.log(message, name: code);
     await FirebaseCrashlytics.instance.recordError(
       error,

@@ -6,8 +6,9 @@ import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
-import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -22,20 +23,22 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: settings,
-        child: MaterialApp(routes: Routes.routes, home: CustomerScreen()),
+        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
       ));
 
-      await tester.tap(find.byKey(Key('empty_body')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('customer_setting.name')), 'cs-1');
+      await tester.enterText(
+          find.byKey(const Key('customer_setting.name')), 'cs-1');
       await tester.tap(find.text('save'));
       // save to storage
       await tester.pumpAndSettle();
       // pop
       await tester.pumpAndSettle();
 
-      final w = find.byKey(Key('customer_settings.1')).evaluate().first.widget;
+      final w =
+          find.byKey(const Key('customer_settings.1')).evaluate().first.widget;
       expect(((w as ExpansionTile).title as Text).data, equals('cs-1'));
 
       final setting = settings.items.first;
@@ -44,7 +47,7 @@ void main() {
       expect(setting.mode, equals(CustomerSettingOptionMode.statOnly));
 
       verify(database.push(
-        CustomerSetting.TABLE,
+        CustomerSetting.table,
         argThat(equals({'name': 'cs-1', 'index': 1, 'mode': 0})),
       ));
     });
@@ -86,54 +89,58 @@ void main() {
           '2': setting2,
           '3': CustomerSetting(id: '3', name: 'cs-3', index: 3),
         });
-      final currency = CurrencyProvider();
 
       when(cache.get(any)).thenReturn(null);
+      final currency = CurrencySetting();
 
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
-          ChangeNotifierProvider.value(value: currency..initialize()),
+          ChangeNotifierProvider.value(
+              value: SettingsProvider([currency])..loadSetting()),
         ],
-        child: MaterialApp(routes: Routes.routes, home: CustomerScreen()),
+        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
       ));
     }
 
     testWidgets('Edit setting', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        CustomerSetting.TABLE,
+        CustomerSetting.table,
         1,
         argThat(equals({'name': 'new', 'mode': 2})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((_) => Future.value(1));
       // need to setup option
       when(database.update(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         1,
         argThat(equals({'modeValue': null})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((_) => Future.value(1));
       // open expansion
-      await tester.tap(find.byKey(Key('customer_settings.1')));
+      await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_settings.1.more')));
+      await tester.tap(find.byKey(const Key('customer_settings.1.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
       await tester.pumpAndSettle();
 
       // repeat name
-      await tester.enterText(find.byKey(Key('customer_setting.name')), 'cs-2');
+      await tester.enterText(
+          find.byKey(const Key('customer_setting.name')), 'cs-2');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('customer_setting.name')), 'new');
-      await tester.tap(find.byKey(Key('customer_setting.modes.1')));
-      await tester.tap(find.byKey(Key('customer_setting.modes.2')));
+      await tester.enterText(
+          find.byKey(const Key('customer_setting.name')), 'new');
+      await tester.tap(find.byKey(const Key('customer_setting.modes.1')));
+      await tester.tap(find.byKey(const Key('customer_setting.modes.2')));
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final w = find.byKey(Key('customer_settings.1')).evaluate().first.widget;
+      final w =
+          find.byKey(const Key('customer_settings.1')).evaluate().first.widget;
       expect(((w as ExpansionTile).title as Text).data, equals('new'));
 
       final setting = CustomerSettings.instance.items.first;
@@ -144,30 +151,30 @@ void main() {
     testWidgets('Delete setting', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        CustomerSetting.TABLE,
+        CustomerSetting.table,
         1,
         argThat(equals({'isDelete': 1})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((_) => Future.value(1));
 
-      await tester.tap(find.byKey(Key('customer_settings.1')));
+      await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_settings.1.more')));
+      await tester.tap(find.byKey(const Key('customer_settings.1.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('customer_settings.1')), findsNothing);
+      expect(find.byKey(const Key('customer_settings.1')), findsNothing);
       expect(CustomerSettings.instance.length, equals(2));
     });
 
     testWidgets('Reorder setting', (tester) async {
       await buildAppWithSettings(tester);
       when(database.batchUpdate(
-        CustomerSetting.TABLE,
+        CustomerSetting.table,
         argThat(equals([
           {'index': 1},
           {'index': 2},
@@ -181,11 +188,11 @@ void main() {
             named: 'whereArgs'),
       )).thenAnswer((_) => Future.value([]));
 
-      await tester.tap(find.byKey(Key('customer_settings.action')));
+      await tester.tap(find.byKey(const Key('customer_settings.action')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
-      final rect = tester.getRect(find.byKey(Key('reorder.0')));
+      final rect = tester.getRect(find.byKey(const Key('reorder.0')));
 
       await tester.drag(
         find.byIcon(Icons.reorder_sharp).first,
@@ -194,8 +201,10 @@ void main() {
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final y1 = tester.getCenter(find.byKey(Key('customer_settings.1'))).dy;
-      final y2 = tester.getCenter(find.byKey(Key('customer_settings.2'))).dy;
+      final y1 =
+          tester.getCenter(find.byKey(const Key('customer_settings.1'))).dy;
+      final y2 =
+          tester.getCenter(find.byKey(const Key('customer_settings.2'))).dy;
       final itemList = CustomerSettings.instance.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('2'));
@@ -206,13 +215,13 @@ void main() {
     testWidgets('Add option', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         1,
         argThat(equals({'isDefault': 0})),
         keyName: anyNamed('keyName'),
       )).thenAnswer((realInvocation) => Future.value(1));
       when(database.push(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         argThat(equals({
           'customerSettingId': 1,
           'name': 'cso-new',
@@ -222,13 +231,12 @@ void main() {
         })),
       )).thenAnswer((realInvocation) => Future.value(100));
 
-      await tester.tap(find.byKey(Key('customer_settings.1')));
+      await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_settings.1.add')));
+      await tester.tap(find.byKey(const Key('customer_settings.1.add')));
       await tester.pumpAndSettle();
 
-      final fbk =
-          (String key) => find.byKey(Key('customer_setting_option.$key'));
+      fbk(String key) => find.byKey(Key('customer_setting_option.$key'));
 
       // repeat name
       await tester.enterText(fbk('name'), 'cso-1');
@@ -238,7 +246,7 @@ void main() {
       // reset default
       await tester.tap(fbk('isDefault'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
 
       await tester.enterText(fbk('name'), 'cso-new');
       await tester.enterText(fbk('modeValue'), '10');
@@ -246,14 +254,14 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('customer_setting.1.100')), findsOneWidget);
+      expect(find.byKey(const Key('customer_setting.1.100')), findsOneWidget);
       expect(CustomerSettings.instance.items.first.length, equals(5));
     });
 
     testWidgets('Edit option', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         7,
         argThat(equals({
           'name': 'cso-new',
@@ -263,20 +271,19 @@ void main() {
       )).thenAnswer((realInvocation) => Future.value(1));
 
       // show [CustomerSettingOptionMode.statOnly] data
-      await tester.tap(find.byKey(Key('customer_settings.3')));
+      await tester.tap(find.byKey(const Key('customer_settings.3')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_settings.3.add')));
+      await tester.tap(find.byKey(const Key('customer_settings.3.add')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('customer_settings.2')));
+      await tester.tap(find.byKey(const Key('customer_settings.2')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_setting.2.7')));
+      await tester.tap(find.byKey(const Key('customer_setting.2.7')));
       await tester.pumpAndSettle();
 
-      final fbk =
-          (String key) => find.byKey(Key('customer_setting_option.$key'));
+      fbk(String key) => find.byKey(Key('customer_setting_option.$key'));
 
       // repeat name
       await tester.enterText(fbk('name'), 'cso-new');
@@ -286,7 +293,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      final w = find.byKey(Key('customer_setting.2.7')).evaluate().first.widget;
+      final w =
+          find.byKey(const Key('customer_setting.2.7')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('cso-new'));
 
       final setting = CustomerSettings.instance.getItem('2')!;
@@ -299,23 +307,23 @@ void main() {
     testWidgets('Delete option', (tester) async {
       await buildAppWithSettings(tester);
       when(database.update(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         1,
         argThat(equals({'isDelete': 1})),
       )).thenAnswer((realInvocation) => Future.value(1));
 
       // show [CustomerSettingOptionMode.statOnly] data
-      await tester.tap(find.byKey(Key('customer_settings.1')));
+      await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
-      await tester.longPress(find.byKey(Key('customer_setting.1.1')));
+      await tester.longPress(find.byKey(const Key('customer_setting.1.1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
       final setting = CustomerSettings.instance.items.first;
-      expect(find.byKey(Key('customer_setting.1.1')), findsNothing);
+      expect(find.byKey(const Key('customer_setting.1.1')), findsNothing);
       expect(setting.length, equals(3));
       expect(setting.defaultOption, isNull);
     });
@@ -323,7 +331,7 @@ void main() {
     testWidgets('Reorder option', (tester) async {
       await buildAppWithSettings(tester);
       when(database.batchUpdate(
-        CustomerSetting.OPTION_TABLE,
+        CustomerSetting.optionTable,
         argThat(equals([
           {'index': 1},
           {'index': 2},
@@ -339,19 +347,22 @@ void main() {
             named: 'whereArgs'),
       )).thenAnswer((_) => Future.value([]));
 
-      await tester.tap(find.byKey(Key('customer_settings.1')));
+      await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('customer_settings.1.more')));
+      await tester.tap(find.byKey(const Key('customer_settings.1.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, Offset(0, 200));
+      await tester.drag(
+          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      final y1 = tester.getCenter(find.byKey(Key('customer_setting.1.1'))).dy;
-      final y2 = tester.getCenter(find.byKey(Key('customer_setting.1.2'))).dy;
+      final y1 =
+          tester.getCenter(find.byKey(const Key('customer_setting.1.1'))).dy;
+      final y2 =
+          tester.getCenter(find.byKey(const Key('customer_setting.1.2'))).dy;
       final itemList = CustomerSettings.instance.items.first.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('2'));

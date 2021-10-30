@@ -90,4 +90,7 @@ class FavoriteItem {
   bool operator ==(Object other) {
     return other is FavoriteItem && other.index == index;
   }
+
+  @override
+  int get hashCode => index;
 }

@@ -119,7 +119,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
 
   Widget _fieldName(TextTheme textTheme) {
     return TextFormField(
-      key: Key('replenishment.name'),
+      key: const Key('replenishment.name'),
       controller: _nameController,
       textInputAction: TextInputAction.done,
       textCapitalization: TextCapitalization.words,

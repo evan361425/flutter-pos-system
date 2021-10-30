@@ -37,9 +37,9 @@ class CartIngredients extends ChangeNotifier {
   }
 
   void selectQuantity(String? quantityId) {
-    Cart.instance.selected.forEach((product) {
+    for (var product in Cart.instance.selected) {
       product.selectQuantity(selected!.id, quantityId);
-    });
+    }
     // It will change price on metadata
     Cart.instance.notifyListeners();
   }

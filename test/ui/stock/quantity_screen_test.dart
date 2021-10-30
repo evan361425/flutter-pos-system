@@ -30,27 +30,27 @@ void main() {
         value: quantities,
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: QuantityScreen(),
+          home: const QuantityScreen(),
         ),
       ));
 
-      await tester.tap(find.byKey(Key('quantities.q-1')));
+      await tester.tap(find.byKey(const Key('quantities.q-1')));
       await tester.pumpAndSettle();
 
       // should failed
-      await tester.enterText(find.byKey(Key('quantity.name')), 'q-2');
+      await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2');
       await tester.tap(find.text('save'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('quantity.name')), 'q-3');
-      await tester.enterText(find.byKey(Key('quantity.proportion')), '2');
+      await tester.enterText(find.byKey(const Key('quantity.name')), 'q-3');
+      await tester.enterText(find.byKey(const Key('quantity.proportion')), '2');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       // update to storage
       await tester.pumpAndSettle();
       // pop
       await tester.pumpAndSettle();
 
-      final w = find.byKey(Key('quantities.q-1')).evaluate().first.widget;
+      final w = find.byKey(const Key('quantities.q-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('q-3'));
       expect(quantity.defaultProportion, equals(2));
     });
@@ -63,15 +63,15 @@ void main() {
         value: quantities,
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: QuantityScreen(),
+          home: const QuantityScreen(),
         ),
       ));
 
-      await tester.tap(find.byKey(Key('quantities.add')));
+      await tester.tap(find.byKey(const Key('quantities.add')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(Key('quantity.name')), 'q-1');
-      await tester.enterText(find.byKey(Key('quantity.proportion')), '2');
+      await tester.enterText(find.byKey(const Key('quantity.name')), 'q-1');
+      await tester.enterText(find.byKey(const Key('quantity.proportion')), '2');
       await tester.tap(find.text('save'));
       // save to storage
       await tester.pumpAndSettle();
@@ -104,13 +104,15 @@ void main() {
         'p-1': Product(id: 'p-1', ingredients: {'pi-1': pIng}),
       });
       final menu = Menu()..replaceItems({'c-1': catalog});
-      catalog.items.forEach((pro) {
+      for (var pro in catalog.items) {
         pro.catalog = catalog;
-        pro.items.forEach((ing) {
+        for (var ing in pro.items) {
           ing.product = pro;
-          ing.items.forEach((qua) => qua.ingredient = ing);
-        });
-      });
+          for (var qua in ing.items) {
+            qua.ingredient = ing;
+          }
+        }
+      }
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(MultiProvider(
@@ -120,24 +122,24 @@ void main() {
         ],
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,
-          home: QuantityScreen(),
+          home: const QuantityScreen(),
         ),
       ));
 
-      final deleteQuantity = (String id) async {
+      deleteQuantity(String id) async {
         await tester.longPress(find.byKey(Key('quantities.$id')));
         await tester.pumpAndSettle();
         await tester.tap(find.text('delete'));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('delete_dialog.confirm')));
+        await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
-      };
+      }
 
       expect(pIng.length, isNonZero);
 
       await deleteQuantity('q-1');
 
-      expect(find.byKey(Key('quantities.q-1')), findsNothing);
+      expect(find.byKey(const Key('quantities.q-1')), findsNothing);
       expect(Quantities.instance.length, equals(1));
       // product ingredient's quantity should also deleted
       expect(pIng.length, isZero);

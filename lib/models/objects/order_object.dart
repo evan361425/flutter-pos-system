@@ -59,11 +59,11 @@ class OrderObject {
   Map<String, Object?> toMap() {
     final usedIngredients = <String>[];
 
-    products.forEach(
-      (product) => product.ingredients.values.forEach(
-        (ingredient) => usedIngredients.add(ingredient.name),
-      ),
-    );
+    for (var product in products) {
+      for (var ingredient in product.ingredients.values) {
+        usedIngredients.add(ingredient.name);
+      }
+    }
 
     return {
       'paid': paid,

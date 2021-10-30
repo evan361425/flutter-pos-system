@@ -19,8 +19,11 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +34,12 @@ import '../../mocks/mock_storage.dart';
 void main() {
   group('Order actions', () {
     void prepareData() {
+      SettingsProvider([
+        CurrencySetting(),
+        OrderOutlookSetting(),
+        OrderAwakeningSetting(),
+      ]).loadSetting();
+
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
@@ -143,22 +152,16 @@ void main() {
       };
     }
 
-    Future<void> prepareCurrency() async {
-      final currency = CurrencyProvider();
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      await currency.setCurrency(CurrencyTypes.TWD);
-    }
-
     void verifyOderPoped() {
       expect(Cart.instance.products.length, equals(1));
       final product = Cart.instance.products.first;
       expect(product.id, equals('p-1'));
       expect(product.isEmpty, isFalse);
 
-      expect(find.byKey(Key('cart_snapshot.0')), findsOneWidget);
+      expect(find.byKey(const Key('cart_snapshot.0')), findsOneWidget);
 
-      final w =
-          find.byKey(Key('cart.product.0')).evaluate().first.widget as ListTile;
+      final w = find.byKey(const Key('cart.product.0')).evaluate().first.widget
+          as ListTile;
       expect((w.title as Text).data, equals('p-1'));
       expect((w.subtitle as RichText).text.toPlainText(), equals('i-1 - q-1'));
     }
@@ -166,49 +169,48 @@ void main() {
     testWidgets('Leave history mode', (tester) async {
       Cart.instance.isHistoryMode = true;
 
-      await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
 
-      expect(find.byKey(Key('cart_snapshot.0')), findsOneWidget);
-      await tester.tap(find.byKey(Key('order.action.more')));
+      expect(find.byKey(const Key('cart_snapshot.0')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('order.action.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('order.action.leave_history')));
+      await tester.tap(find.byKey(const Key('order.action.leave_history')));
       await tester.pumpAndSettle();
 
       expect(Cart.instance.products.length, isZero);
-      expect(find.byKey(Key('cart_snapshot.0')), findsNothing);
+      expect(find.byKey(const Key('cart_snapshot.0')), findsNothing);
     });
 
     testWidgets('Show last order', (tester) async {
-      await prepareCurrency();
-      await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
 
-      final act = (bool? confirm) async {
-        await tester.tap(find.byKey(Key('order.action.more')));
+      act(bool? confirm) async {
+        await tester.tap(find.byKey(const Key('order.action.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('order.action.show_last')));
+        await tester.tap(find.byKey(const Key('order.action.show_last')));
         await tester.pumpAndSettle();
         if (confirm != null) {
           final a = confirm ? 'confirm' : 'cancel';
           await tester.tap(find.byKey(Key('confirm_dialog.$a')));
           await tester.pumpAndSettle();
         }
-      };
+      }
 
       await act(false);
 
       // failed to stash
       when(database.count(any)).thenAnswer((_) => Future.value(5));
       await act(true);
-      verifyNever(database.push(Seller.STASH_TABLE, any));
-      verify(database.count(Seller.STASH_TABLE));
+      verifyNever(database.push(Seller.stashTable, any));
+      verify(database.count(Seller.stashTable));
 
       // no data before
       when(database.count(any)).thenAnswer((_) => Future.value(1));
-      when(database.push(Seller.STASH_TABLE, any))
+      when(database.push(Seller.stashTable, any))
           .thenAnswer((_) => Future.value(1));
       // get customer setting combination
       when(database.query(
-        CustomerSettings.COMBINATION_TABLE,
+        CustomerSettings.combinationTable,
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
@@ -225,7 +227,7 @@ void main() {
         join: anyNamed('join'),
       )).thenAnswer((_) => Future.value(null));
       await act(true);
-      verify(database.push(Seller.STASH_TABLE, any));
+      verify(database.push(Seller.stashTable, any));
 
       // should be stashed
       expect(Cart.instance.isEmpty, isTrue);
@@ -244,39 +246,38 @@ void main() {
     });
 
     testWidgets('Drop stashed', (tester) async {
-      await prepareCurrency();
-      await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
 
-      final act = (bool? confirm) async {
-        await tester.tap(find.byKey(Key('order.action.more')));
+      act(bool? confirm) async {
+        await tester.tap(find.byKey(const Key('order.action.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('order.action.drop_stash')));
+        await tester.tap(find.byKey(const Key('order.action.drop_stash')));
         await tester.pumpAndSettle();
         if (confirm != null) {
           final a = confirm ? 'confirm' : 'cancel';
           await tester.tap(find.byKey(Key('confirm_dialog.$a')));
           await tester.pumpAndSettle();
         }
-      };
+      }
 
       await act(false);
 
       // failed to stash
       when(database.count(any)).thenAnswer((_) => Future.value(5));
       await act(true);
-      verifyNever(database.push(Seller.STASH_TABLE, any));
-      verify(database.count(Seller.STASH_TABLE));
+      verifyNever(database.push(Seller.stashTable, any));
+      verify(database.count(Seller.stashTable));
 
       // no data before
       when(database.count(any)).thenAnswer((_) => Future.value(1));
-      when(database.push(Seller.STASH_TABLE, any))
+      when(database.push(Seller.stashTable, any))
           .thenAnswer((_) => Future.value(1));
       // add customer setting combination
-      when(database.push(CustomerSettings.COMBINATION_TABLE, any))
+      when(database.push(CustomerSettings.combinationTable, any))
           .thenAnswer((_) => Future.value(2));
       // get empty customer setting combination
       when(database.query(
-        CustomerSettings.COMBINATION_TABLE,
+        CustomerSettings.combinationTable,
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
@@ -288,12 +289,11 @@ void main() {
         join: anyNamed('join'),
         count: anyNamed('count'),
       )).thenAnswer((_) => Future.value(null));
-      ;
       await act(true);
-      verify(database.push(Seller.STASH_TABLE, any));
-      verify(database.push(CustomerSettings.COMBINATION_TABLE, any));
+      verify(database.push(Seller.stashTable, any));
+      verify(database.push(CustomerSettings.combinationTable, any));
       verify(database.getLast(
-        Seller.STASH_TABLE,
+        Seller.stashTable,
         columns: anyNamed('columns'),
         join: anyNamed('join'),
         count: anyNamed('count'),
@@ -314,15 +314,14 @@ void main() {
     });
 
     testWidgets('Stash', (tester) async {
-      await prepareCurrency();
-      await tester.pumpWidget(MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
 
-      final act = () async {
-        await tester.tap(find.byKey(Key('order.action.more')));
+      act() async {
+        await tester.tap(find.byKey(const Key('order.action.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(Key('order.action.stash')));
+        await tester.tap(find.byKey(const Key('order.action.stash')));
         await tester.pumpAndSettle();
-      };
+      }
 
       // failed to stash
       when(database.count(any)).thenAnswer((_) => Future.value(5));
@@ -331,7 +330,7 @@ void main() {
       when(database.count(any)).thenAnswer((_) => Future.value(1));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
       when(database.query(
-        CustomerSettings.COMBINATION_TABLE,
+        CustomerSettings.combinationTable,
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: argThat(equals([',c-1:co-1,c-2:co-2,']), named: 'whereArgs'),
@@ -343,7 +342,7 @@ void main() {
 
       expect(Cart.instance.isEmpty, isTrue);
       verify(database.push(
-          Seller.STASH_TABLE,
+          Seller.stashTable,
           argThat(predicate((data) =>
               data is Map &&
               data['createdAt'] != null &&
@@ -352,7 +351,6 @@ void main() {
     });
 
     testWidgets('Changer', (tester) async {
-      await prepareCurrency();
       final cashier = Cashier();
       when(storage.get(any, any)).thenAnswer((_) => Future.value({
             'current': [
@@ -372,28 +370,28 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: cashier,
-        child: MaterialApp(routes: Routes.routes, home: OrderScreen()),
+        child: MaterialApp(routes: Routes.routes, home: const OrderScreen()),
       ));
 
-      await tester.tap(find.byKey(Key('order.action.more')));
+      await tester.tap(find.byKey(const Key('order.action.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('order.action.changer')));
+      await tester.tap(find.byKey(const Key('order.action.changer')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('cashier.changer.favorite.0')));
-      await tester.tap(find.byKey(Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('cashier.changer.favorite.0')));
+      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
       // should go back
-      expect(find.byKey(Key('order.action.more')), findsOneWidget);
+      expect(find.byKey(const Key('order.action.more')), findsOneWidget);
       expect(cashier.at(0).count, equals(5));
       expect(cashier.at(1).count, isZero);
     });
 
     setUp(() {
       // disable tips and features
-      when(cache.getRaw(any)).thenReturn(1);
       when(cache.get(any)).thenReturn(null);
+      when(cache.get(argThat(startsWith('_tip')))).thenReturn(1);
 
       prepareData();
     });

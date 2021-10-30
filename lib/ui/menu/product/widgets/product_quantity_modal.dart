@@ -56,7 +56,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   List<Widget> formFields() {
     return [
       SearchBarInline(
-        key: Key('product_quantity.search'),
+        key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: tt('menu.quantity.label.name'),
         hintText: tt('menu.quantity.hint.name'),
@@ -65,7 +65,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         onTap: _selectQuantity,
       ),
       TextFormField(
-        key: Key('product_quantity.amount'),
+        key: const Key('product_quantity.amount'),
         controller: _amountController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
@@ -76,12 +76,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         validator: Validator.positiveNumber(tt('menu.quantity.label.amount')),
       ),
       TextFormField(
-        key: Key('product_quantity.price'),
+        key: const Key('product_quantity.price'),
         controller: _priceController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.loyalty_sharp),
+          prefixIcon: const Icon(Icons.loyalty_sharp),
           labelText: tt('menu.quantity.label.additional_price'),
           helperText: tt('menu.quantity.helper.additional_price'),
           helperMaxLines: 10,
@@ -92,13 +92,13 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         ),
       ),
       TextFormField(
-        key: Key('product_quantity.cost'),
+        key: const Key('product_quantity.cost'),
         controller: _costController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.attach_money_sharp),
+          prefixIcon: const Icon(Icons.attach_money_sharp),
           labelText: tt('menu.quantity.label.additional_cost'),
           helperText: tt('menu.quantity.helper.additional_cost'),
           helperMaxLines: 10,
@@ -209,7 +209,7 @@ class _ProductQuantitySearch extends StatelessWidget {
 
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
-      key: Key('product_quantity.add_quantity'),
+      key: const Key('product_quantity.add_quantity'),
       title: Text(tt('menu.quantity.add_quantity', {'name': text})),
       onTap: () async {
         final quantity = Quantity(name: text);
@@ -225,7 +225,7 @@ class _ProductQuantitySearch extends StatelessWidget {
       trailing: IconButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => QuantityModal(quantity: quantity))),
-        icon: Icon(Icons.open_in_new_sharp),
+        icon: const Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {
         Navigator.of(context).pop<Quantity>(quantity);

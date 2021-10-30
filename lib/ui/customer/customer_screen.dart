@@ -15,25 +15,24 @@ class CustomerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = context.watch<CustomerSettings>();
 
-    final goAddSetting =
-        () => Navigator.of(context).pushNamed(Routes.customerModal);
+    goAddSetting() => Navigator.of(context).pushNamed(Routes.customerModal);
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('顧客設定'),
-          leading: PopButton(),
+          title: const Text('顧客設定'),
+          leading: const PopButton(),
           actions: [
             IconButton(
-              key: Key('customer_settings.action'),
+              key: const Key('customer_settings.action'),
               onPressed: () => _showActions(context),
-              icon: Icon(KIcons.more),
+              icon: const Icon(KIcons.more),
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: goAddSetting,
           tooltip: '新增顧客設定',
-          child: Icon(KIcons.add),
+          child: const Icon(KIcons.add),
         ),
         body: settings.isEmpty
             ? Center(child: EmptyBody(onPressed: goAddSetting))
@@ -42,7 +41,7 @@ class CustomerScreen extends StatelessWidget {
 
   void _showActions(BuildContext context) async {
     await showCircularBottomSheet(context, actions: [
-      BottomSheetAction(
+      const BottomSheetAction(
         title: Text('排序'),
         leading: Icon(Icons.reorder_sharp),
         navigateRoute: Routes.customerReorder,

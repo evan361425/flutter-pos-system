@@ -41,9 +41,15 @@ void main() {
           ..prepareItem();
         num price = 100;
 
-        s1.items.forEach((option) => price = option.calculatePrice(price));
-        s2.items.forEach((option) => price = option.calculatePrice(price));
-        s3.items.forEach((option) => price = option.calculatePrice(price));
+        for (var option in s1.items) {
+          price = option.calculatePrice(price);
+        }
+        for (var option in s2.items) {
+          price = option.calculatePrice(price);
+        }
+        for (var option in s3.items) {
+          price = option.calculatePrice(price);
+        }
 
         expect(price, equals(100 * 0.5 + 5));
       });

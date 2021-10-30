@@ -14,43 +14,43 @@ class OrderActions extends StatelessWidget {
     if (Cart.instance.isHistoryMode) {
       return [
         BottomSheetAction(
-          key: Key('order.action.leave_history'),
+          key: const Key('order.action.leave_history'),
           title: Text(tt('order.action.leave_history')),
-          leading: Icon(Icons.assignment_return_sharp),
-          returnValue: _Types.leave_history,
+          leading: const Icon(Icons.assignment_return_sharp),
+          returnValue: _Types.leaveHistory,
         ),
       ];
     }
 
     return [
       BottomSheetAction(
-        key: Key('order.action.show_last'),
+        key: const Key('order.action.show_last'),
         title: Text(tt('order.action.show_last')),
-        leading: Icon(Icons.history_sharp),
-        returnValue: _Types.show_last,
+        leading: const Icon(Icons.history_sharp),
+        returnValue: _Types.showLast,
       ),
-      BottomSheetAction(
+      const BottomSheetAction(
         key: Key('order.action.changer'),
         title: Text('換錢'),
         leading: Icon(Icons.change_circle_outlined),
         returnValue: _Types.changer,
       ),
       BottomSheetAction(
-        key: Key('order.action.stash'),
+        key: const Key('order.action.stash'),
         title: Text(tt('order.action.stash')),
-        leading: Icon(Icons.file_download),
+        leading: const Icon(Icons.file_download),
         returnValue: _Types.stash,
       ),
       BottomSheetAction(
-        key: Key('order.action.drop_stash'),
+        key: const Key('order.action.drop_stash'),
         title: Text(tt('order.action.drop_stash')),
-        leading: Icon(Icons.file_upload),
-        returnValue: _Types.drop_stash,
+        leading: const Icon(Icons.file_upload),
+        returnValue: _Types.dropStash,
       ),
       BottomSheetAction(
-        key: Key('order.action.leave'),
+        key: const Key('order.action.leave'),
         title: Text(tt('order.action.leave')),
-        leading: Icon(Icons.logout),
+        leading: const Icon(Icons.logout),
         returnValue: _Types.leave,
       ),
     ];
@@ -66,17 +66,17 @@ class OrderActions extends StatelessWidget {
         );
         await exec(context, result);
       },
-      icon: Icon(KIcons.more),
+      icon: const Icon(KIcons.more),
     );
   }
 
   Future<void> exec(BuildContext context, _Types? action) async {
     switch (action) {
-      case _Types.leave_history:
+      case _Types.leaveHistory:
         return Cart.instance.clear();
       case _Types.leave:
         return Navigator.of(context).pop();
-      case _Types.show_last:
+      case _Types.showLast:
         if (!await _confirmStashable(context)) return;
 
         if (!await Cart.instance.stash()) {
@@ -89,7 +89,7 @@ class OrderActions extends StatelessWidget {
             ? showSuccessSnackbar(context, tt('success'))
             : showInfoSnackbar(context, tt('order.action.error.last_empty'));
         return;
-      case _Types.drop_stash:
+      case _Types.dropStash:
         if (!await _confirmStashable(context)) return;
 
         final isEmpty = Cart.instance.isEmpty;
@@ -137,10 +137,10 @@ class OrderActions extends StatelessWidget {
 }
 
 enum _Types {
-  show_last,
+  showLast,
   changer,
   stash,
-  drop_stash,
+  dropStash,
   leave,
-  leave_history,
+  leaveHistory,
 }

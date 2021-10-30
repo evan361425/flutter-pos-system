@@ -13,17 +13,17 @@ class CustomerSetting extends Model<CustomerSettingObject>
         Repository<CustomerSettingOption>,
         RepositoryDB<CustomerSettingOption>,
         RepositoryOrderable<CustomerSettingOption> {
-  static const TABLE = 'customer_settings';
+  static const table = 'customer_settings';
 
-  static const OPTION_TABLE = 'customer_setting_options';
+  static const optionTable = 'customer_setting_options';
 
   CustomerSettingOptionMode mode;
 
   @override
-  final String modelTableName = TABLE;
+  final String modelTableName = table;
 
   @override
-  final String repoTableName = OPTION_TABLE;
+  final String repoTableName = optionTable;
 
   CustomerSetting({
     String? id,

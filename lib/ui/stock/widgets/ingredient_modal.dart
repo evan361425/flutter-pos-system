@@ -83,7 +83,7 @@ class _IngredientModalState extends State<IngredientModal>
   @override
   List<Widget> formFields() => <Widget>[
         TextFormField(
-          key: Key('stock.ingredient.name'),
+          key: const Key('stock.ingredient.name'),
           controller: _nameController,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
@@ -98,7 +98,7 @@ class _IngredientModalState extends State<IngredientModal>
           validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
         ),
         TextFormField(
-          key: Key('stock.ingredient.amount'),
+          key: const Key('stock.ingredient.amount'),
           controller: _amountController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,

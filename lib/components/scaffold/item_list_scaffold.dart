@@ -21,13 +21,13 @@ class ItemListScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        leading: PopButton(),
+        leading: const PopButton(),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
           return CardTile(
             title: Text(items[index]),
-            trailing: selected == index ? Icon(Icons.check_sharp) : null,
+            trailing: selected == index ? const Icon(Icons.check_sharp) : null,
             onTap: () {
               if (selected != index) {
                 Navigator.of(context).pop(index);

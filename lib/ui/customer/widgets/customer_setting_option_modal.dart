@@ -6,7 +6,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 class CustomerSettingOptionModal extends StatefulWidget {
   final CustomerSetting setting;
@@ -49,7 +49,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     _modeValueController = TextEditingController(
       text: widget.option?.modeValue == null
           ? ''
-          : CurrencyProvider.n2s(widget.option!.modeValue!),
+          : widget.option!.modeValue!.toCurrency(),
     );
     isDefault = widget.option?.isDefault ?? false;
 
@@ -77,7 +77,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
     return [
       TextFormField(
-        key: Key('customer_setting_option.name'),
+        key: const Key('customer_setting_option.name'),
         controller: _nameController,
         textInputAction: widget.setting.shouldHaveModeValue
             ? TextInputAction.next
@@ -94,16 +94,16 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         validator: Validator.textLimit('選項名稱', 50),
       ),
       CheckboxListTile(
-        key: Key('customer_setting_option.isDefault'),
+        key: const Key('customer_setting_option.isDefault'),
         controlAffinity: ListTileControlAffinity.leading,
         value: isDefault,
         selected: isDefault,
         onChanged: toggledDefault,
-        title: Text('設為預設'),
+        title: const Text('設為預設'),
       ),
       widget.setting.shouldHaveModeValue
           ? TextFormField(
-              key: Key('customer_setting_option.modeValue'),
+              key: const Key('customer_setting_option.modeValue'),
               controller: _modeValueController,
               textInputAction: TextInputAction.send,
               keyboardType: TextInputType.number,
@@ -117,7 +117,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
               onFieldSubmitted: (_) => handleSubmit(),
               validator: modeValueValidator,
             )
-          : HintText('因為本設定為「一般」故無須設定「折價」或「變價」'),
+          : const HintText('因為本設定為「一般」故無須設定「折價」或「變價」'),
     ];
   }
 

@@ -1,7 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:possystem/providers/language_provider.dart';
+import 'package:possystem/settings/language_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -18,7 +19,7 @@ class CalendarWrapper extends StatefulWidget {
   /// default: DateTime.now()
   final DateTime? initialDate;
 
-  CalendarWrapper({
+  const CalendarWrapper({
     Key? key,
     required this.searchCountInMonth,
     required this.handleDaySelected,
@@ -46,7 +47,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return TableCalendar<Null>(
+    return TableCalendar<int>(
       firstDay: DateTime(2021, 1),
       lastDay: DateTime.now(),
       focusedDay: _focusedDay,
@@ -54,11 +55,14 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       shouldFillViewport: widget.isPortrait ? false : true,
       startingDayOfWeek: StartingDayOfWeek.monday,
       rangeSelectionMode: RangeSelectionMode.disabled,
-      locale: LanguageProvider.instance.locale.toString(),
+      locale: SettingsProvider.instance
+          .getSetting<LanguageSetting>()
+          .value
+          .toString(),
       // chinese will be hidden if using default value
       daysOfWeekHeight: 20.0,
       // header
-      headerStyle: HeaderStyle(formatButtonShowsNext: false),
+      headerStyle: const HeaderStyle(formatButtonShowsNext: false),
       availableCalendarFormats: {
         CalendarFormat.month: tt('analysis.calendar.month'),
         CalendarFormat.twoWeeks: tt('analysis.calendar.twoWeeks'),
@@ -69,7 +73,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       weekendDays: const [],
       // event handlers
       selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
-      eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, null),
+      eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, 0),
       calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder),
       onPageChanged: _handlePageChange,
       onFormatChanged: (format) => setState(() => _calendarFormat = format),
@@ -88,7 +92,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     _searchCountInMonth(_selectedDay);
   }
 
-  Widget? _badgeBuilder(BuildContext context, DateTime day, List<Null> value) {
+  Widget? _badgeBuilder(BuildContext context, DateTime day, List<int> value) {
     if (value.isEmpty) return null;
 
     final length = value.length;
@@ -101,7 +105,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       right: 0,
       bottom: 0,
       child: Material(
-        shape: CircleBorder(side: BorderSide.none),
+        shape: const CircleBorder(side: BorderSide.none),
         color: theme.primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(6.0),

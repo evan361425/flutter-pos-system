@@ -12,7 +12,7 @@ class CacheStateManager extends StateManager {
   }
 
   bool shouldShowRaw(String name, int version) {
-    final cachedVersion = Cache.instance.getRaw<int>('_tip.$name');
+    final cachedVersion = Cache.instance.get<int>('_tip.$name');
     return cachedVersion == null ? true : cachedVersion < version;
   }
 
@@ -22,7 +22,7 @@ class CacheStateManager extends StateManager {
   }
 
   Future<void> tipReadRaw(String name, int version) {
-    return Cache.instance.setRaw<int>('_tip.$name', version);
+    return Cache.instance.set<int>('_tip.$name', version);
   }
 
   static void initialize() {

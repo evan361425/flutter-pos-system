@@ -26,7 +26,7 @@ class _ChangerModalState extends State<ChangerModal>
       controller: controller,
       labelColor: theme.indicatorColor,
       unselectedLabelColor: theme.hintColor,
-      tabs: [
+      tabs: const [
         Tab(key: Key('cashier.changer.favorite'), text: '常用'),
         Tab(key: Key('cashier.changer.custom'), text: '手動'),
       ],
@@ -45,13 +45,13 @@ class _ChangerModalState extends State<ChangerModal>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: PopButton(),
-        title: Text('換錢'),
+        leading: const PopButton(),
+        title: const Text('換錢'),
         actions: [
           AppbarTextButton(
-            key: Key('cashier.changer.apply'),
+            key: const Key('cashier.changer.apply'),
             onPressed: handleApply,
-            child: Text('套用'),
+            child: const Text('套用'),
           ),
         ],
       ),

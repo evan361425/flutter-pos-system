@@ -55,7 +55,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
         ),
         secondary: IconButton(
           onPressed: () => slidableItemList.currentState?.showActions(item),
-          icon: Icon(Icons.more_vert_sharp),
+          icon: const Icon(Icons.more_vert_sharp),
         ),
         groupValue: selected,
         selected: selected == item,
@@ -65,8 +65,8 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
     );
 
     return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(kSpacing1),
+      const Padding(
+        padding: EdgeInsets.all(kSpacing1),
         child: HintText('選完後請點選「套用」來使用該組合'),
       ),
       Expanded(child: listView),

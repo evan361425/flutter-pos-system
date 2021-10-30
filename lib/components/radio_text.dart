@@ -134,11 +134,11 @@ class _RadioTextState extends State<RadioText> {
 
     return Container(
       margin: widget.margin,
-      constraints: BoxConstraints(minWidth: 64.0),
+      constraints: const BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
         color: widget.isSelected ? color : null,
         border: Border.all(
-          color: widget.isSelected ? color : Color(0xDD000000),
+          color: widget.isSelected ? color : const Color(0xDD000000),
         ),
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
       ),

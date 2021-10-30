@@ -35,7 +35,7 @@ class Product extends Model<ProductObject>
   final Stores storageStore = Stores.menu;
 
   @override
-  final RepositoryStorageType repoType = RepositoryStorageType.RepoModel;
+  final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
 
   Product({
     String? id,

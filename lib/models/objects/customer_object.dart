@@ -32,14 +32,14 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
   }
 
   @override
-  Map<String, Object?> diff(CustomerSetting setting) {
+  Map<String, Object?> diff(CustomerSetting model) {
     final result = <String, Object?>{};
-    if (name != null && name != setting.name) {
-      setting.name = name!;
+    if (name != null && name != model.name) {
+      model.name = name!;
       result['name'] = name!;
     }
-    if (mode != null && mode != setting.mode) {
-      setting.mode = mode!;
+    if (mode != null && mode != model.mode) {
+      model.mode = mode!;
       result['mode'] = mode!.index;
     }
     return result;
@@ -99,18 +99,18 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   }
 
   @override
-  Map<String, Object?> diff(CustomerSettingOption option) {
+  Map<String, Object?> diff(CustomerSettingOption model) {
     final result = <String, Object?>{};
-    if (name != null && name != option.name) {
-      option.name = name!;
+    if (name != null && name != model.name) {
+      model.name = name!;
       result['name'] = name!;
     }
-    if (isDefault != null && isDefault != option.isDefault) {
-      option.isDefault = isDefault!;
+    if (isDefault != null && isDefault != model.isDefault) {
+      model.isDefault = isDefault!;
       result['isDefault'] = isDefault! ? 1 : 0;
     }
-    if (modeValue != option.modeValue) {
-      option.modeValue = modeValue;
+    if (modeValue != model.modeValue) {
+      model.modeValue = modeValue;
       result['modeValue'] = modeValue;
     }
     return result;

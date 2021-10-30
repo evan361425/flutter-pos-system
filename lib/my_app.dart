@@ -1,58 +1,63 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/settings/theme_setting.dart';
 
 import 'constants/app_themes.dart';
-import 'providers/currency_provider.dart';
-import 'providers/language_provider.dart';
-import 'providers/theme_provider.dart';
 import 'routes.dart';
+import 'settings/language_setting.dart';
+import 'settings/setting.dart';
 
 class MyApp extends StatelessWidget {
   static final analytics = FirebaseAnalytics();
 
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  static bool _initialized = false;
-
   final Widget child;
 
-  const MyApp(this.child);
+  final SettingsProvider settings;
+
+  const MyApp({
+    Key? key,
+    required this.settings,
+    required this.child,
+  }) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
-    final language = context.watch<LanguageProvider>();
-    final currency = context.watch<CurrencyProvider>();
+    // Glue the SettingsController to the MaterialApp.
+    //
+    // The AnimatedBuilder Widget listens to the SettingsController for changes.
+    // Whenever the user updates their settings, the MaterialApp is rebuilt.
+    return AnimatedBuilder(
+        animation: settings,
+        builder: (_, __) {
+          return MaterialApp(
+            title: 'POS System',
+            routes: Routes.routes,
+            debugShowCheckedModeBanner: false,
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: analytics),
+              routeObserver,
+            ],
 
-    if (!_initialized) {
-      theme.initialize();
-      language.initialize();
-      currency.initialize();
-      _initialized = true;
-    }
+            // Provide the generated AppLocalizations to the MaterialApp. This
+            // allows descendant Widgets to display the correct translations
+            // depending on the user's locale.
+            locale: settings.getSetting<LanguageSetting>().value,
+            supportedLocales: LanguageSetting.supports,
+            localizationsDelegates: LanguageSetting.delegates,
 
-    return MaterialApp(
-      title: 'POS System',
-      routes: Routes.routes,
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: analytics),
-        routeObserver,
-      ],
-      // === language setting ===
-      locale: language.locale,
-      supportedLocales: LanguageProvider.supports,
-      localizationsDelegates: LanguageProvider.delegates,
-      localeListResolutionCallback: language.localeListResolutionCallback,
-      // === theme setting ===
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
-      themeMode: theme.mode,
-      // === home widget ===
-      home: child,
-    );
+            // Define a light and dark color theme. Then, read the user's
+            // preferred ThemeMode (light, dark, or system default) from the
+            // SettingsController to display the correct theme.
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+            themeMode: settings.getSetting<ThemeSetting>().value,
+
+            home: child,
+          );
+        });
   }
 }

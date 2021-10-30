@@ -5,14 +5,14 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
 class CartSnapshot extends StatelessWidget {
-  CartSnapshot({Key? key}) : super(key: key);
+  const CartSnapshot({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
 
     if (cart.isEmpty) {
-      return Center(child: HintText('尚未點餐'));
+      return const Center(child: HintText('尚未點餐'));
     }
 
     var count = 0;
@@ -36,8 +36,8 @@ class CartSnapshot extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
           cart.productsPrice.toString(),
-          key: Key('cart_snapshot.price'),
-          style: TextStyle(fontWeight: FontWeight.bold),
+          key: const Key('cart_snapshot.price'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     ]);

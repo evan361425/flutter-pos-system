@@ -7,7 +7,7 @@ import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 import 'cashier.dart';
 import 'seller.dart';
@@ -59,11 +59,11 @@ class Cart extends ChangeNotifier {
   num get totalPrice {
     var total = productsPrice;
 
-    selectedCustomerSettingOptions.forEach((option) {
+    for (var option in selectedCustomerSettingOptions) {
       total = option.calculatePrice(total);
-    });
+    }
 
-    return CurrencyProvider.instance.isInt ? total.toInt() : total;
+    return total.toCurrencyNum();
   }
 
   OrderProduct add(Product product) {
@@ -109,7 +109,7 @@ class Cart extends ChangeNotifier {
 
     final price = totalPrice;
     paid ??= price;
-    if (paid < price) throw PaidException('insufficient_amount');
+    if (paid < price) throw const PaidException('insufficient_amount');
 
     info(isHistoryMode ? 'history' : 'normal', 'order.paid.verified');
     // if history mode update data
@@ -147,7 +147,9 @@ class Cart extends ChangeNotifier {
       }
     });
     // rebind product ingredient/quantity
-    products.forEach((product) => product.rebind());
+    for (var product in products) {
+      product.rebind();
+    }
   }
 
   void removeSelected() {
@@ -206,8 +208,9 @@ class Cart extends ChangeNotifier {
     // except only acceptable when specify checked
     assert(checked != null || except == null);
 
-    products.forEach((product) => product
-        .toggleSelected(identical(product, except) ? !checked! : checked));
+    for (var product in products) {
+      product.toggleSelected(identical(product, except) ? !checked! : checked);
+    }
   }
 
   Future<OrderObject> toObject({
@@ -231,24 +234,28 @@ class Cart extends ChangeNotifier {
   void updateSelectedCount(int? count) {
     if (count == null) return;
 
-    selected.forEach((e) => e.count = count);
+    for (var e in selected) {
+      e.count = count;
+    }
     notifyListeners();
   }
 
   void updateSelectedDiscount(int? discount) {
     if (discount == null) return;
 
-    selected.forEach((e) {
+    for (var e in selected) {
       final price = e.product.price * discount / 100;
-      e.singlePrice = CurrencyProvider.instance.isInt ? price.round() : price;
-    });
+      e.singlePrice = price.toCurrencyNum();
+    }
     notifyListeners();
   }
 
   void updateSelectedPrice(num? price) {
     if (price == null) return;
 
-    selected.forEach((e) => e.singlePrice = price);
+    for (var e in selected) {
+      e.singlePrice = price;
+    }
     notifyListeners();
   }
 

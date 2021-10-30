@@ -34,7 +34,7 @@ class _CatalogModalState extends State<CatalogModal>
   List<Widget> formFields() {
     return [
       TextFormField(
-        key: Key('catalog.name'),
+        key: const Key('catalog.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,

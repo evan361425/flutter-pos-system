@@ -14,28 +14,29 @@ import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatelessWidget {
+  const MenuScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
 
-    final goAddCatalog =
-        () => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
+    goAddCatalog() => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('menu.catalog.title')),
-        leading: PopButton(),
+        leading: const PopButton(),
         actions: [
           IconButton(
-            key: Key('menu.more'),
+            key: const Key('menu.more'),
             onPressed: () => _showActions(context),
-            icon: Icon(KIcons.more),
+            icon: const Icon(KIcons.more),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('menu.add'),
+        key: const Key('menu.add'),
         onPressed: goAddCatalog,
         tooltip: tt('menu.catalog.add'),
         child: TipTutorial(
@@ -46,7 +47,7 @@ class MenuScreen extends StatelessWidget {
               '若需要新增產品種類，可以點此按鈕。',
           label: 'menu.catalog',
           disabled: menu.isNotEmpty,
-          child: Icon(KIcons.add),
+          child: const Icon(KIcons.add),
         ),
       ),
       body: menu.isEmpty
@@ -61,7 +62,7 @@ class MenuScreen extends StatelessWidget {
       actions: <BottomSheetAction<void>>[
         BottomSheetAction(
           title: Text(tt('menu.catalog.order')),
-          leading: Icon(Icons.reorder_sharp),
+          leading: const Icon(Icons.reorder_sharp),
           navigateRoute: Routes.menuCatalogReorder,
         ),
       ],
@@ -79,7 +80,7 @@ class _MenuBody extends StatelessWidget {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
-        key: Key('menu.search'),
+        key: const Key('menu.search'),
         hintText: '搜尋產品、成份、份量',
         onTap: (context) => Navigator.of(context).pushNamed(Routes.menuSearch),
       ),

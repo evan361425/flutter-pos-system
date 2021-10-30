@@ -18,7 +18,7 @@ Future<T?> showCircularBottomSheet<T>(
 
   return showMaterialModalBottomSheet<T>(
     context: context,
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(20),
       ),
@@ -89,7 +89,7 @@ class BottomSheetActions extends StatelessWidget {
   Widget _cancelAction(BuildContext context) {
     return ListTile(
       title: Text(tt('cancel')),
-      leading: Icon(Icons.cancel_sharp),
+      leading: const Icon(Icons.cancel_sharp),
       onTap: () => Navigator.of(context).pop(),
     );
   }

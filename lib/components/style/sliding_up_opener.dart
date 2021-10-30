@@ -53,7 +53,7 @@ class SlidingUpOpener extends StatefulWidget {
 
   final double collapsedHorizontalMargin;
 
-  SlidingUpOpener({
+  const SlidingUpOpener({
     Key? key,
     required this.panel,
     required this.body,
@@ -117,7 +117,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         color: theme.shadowColor.withAlpha(176),
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
     );
 

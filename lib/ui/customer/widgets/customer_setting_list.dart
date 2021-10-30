@@ -29,7 +29,7 @@ class CustomerSettingList extends StatelessWidget {
           for (final setting in settings)
             ChangeNotifierProvider<CustomerSetting>.value(
               value: setting,
-              child: _CustomerSettingCard(),
+              child: const _CustomerSettingCard(),
             )
         ],
       ),
@@ -66,13 +66,13 @@ class _CustomerSettingCard extends StatelessWidget {
                   Routes.customerSettingOption,
                   arguments: setting,
                 ),
-                icon: Icon(KIcons.add),
-                label: Text('新增顧客設定選項'),
+                icon: const Icon(KIcons.add),
+                label: const Text('新增顧客設定選項'),
               ),
               IconButton(
                 key: Key('$key.more'),
                 onPressed: () => showActions(context, setting),
-                icon: Icon(KIcons.more),
+                icon: const Icon(KIcons.more),
               )
             ]),
           ),
@@ -88,14 +88,14 @@ class _CustomerSettingCard extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text('編輯資訊'),
-          leading: Icon(Icons.text_fields_sharp),
+          title: const Text('編輯資訊'),
+          leading: const Icon(Icons.text_fields_sharp),
           navigateRoute: Routes.customerModal,
           navigateArgument: setting,
         ),
         BottomSheetAction(
-          title: Text('排序'),
-          leading: Icon(Icons.reorder_sharp),
+          title: const Text('排序'),
+          leading: const Icon(Icons.reorder_sharp),
           navigateRoute: Routes.customerSettingReorder,
           navigateArgument: setting,
         ),
@@ -119,7 +119,7 @@ class _OptionTile extends StatelessWidget {
       key: Key('customer_setting.${option.setting.id}.${option.id}'),
       title: Text(option.name, style: Theme.of(context).textTheme.headline6),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
-      trailing: option.isDefault ? OutlinedText('預設') : null,
+      trailing: option.isDefault ? const OutlinedText('預設') : null,
       onLongPress: () => BottomSheetActions.withDelete<int>(
         context,
         deleteValue: 0,

@@ -22,9 +22,12 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/my_app.dart';
-import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/setting.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -34,6 +37,12 @@ import '../../mocks/mock_storage.dart';
 void main() {
   group('Order Cashier', () {
     void prepareData() {
+      SettingsProvider([
+        CurrencySetting(),
+        OrderOutlookSetting(),
+        OrderAwakeningSetting(),
+      ]).loadSetting();
+
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),
         'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 100),
@@ -159,133 +168,124 @@ void main() {
       });
     }
 
-    Future<void> prepareCurrency() async {
-      final currency = CurrencyProvider();
-      Cashier();
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      when(storage.get(Stores.cashier, any))
-          .thenAnswer((_) => Future.value({}));
-      await currency.setCurrency(CurrencyTypes.TWD);
-    }
-
     testWidgets('Order without any product', (tester) async {
       Cart.instance = Cart();
-      await prepareCurrency();
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: OrderScreen()),
+        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
       );
 
-      await tester.tap(find.byKey(Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('order.action.more')), findsOneWidget);
+      expect(find.byKey(const Key('order.action.more')), findsOneWidget);
     });
 
     testWidgets('Order without customer setting', (tester) async {
-      await prepareCurrency();
-      CurrencyProvider.instance.isInt = false;
-      tester.binding.window.physicalSizeTestValue = Size(1000, 3000);
+      CurrencySetting.instance.isInt = false;
+      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: OrderScreen()),
+        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
       );
 
-      await tester.tap(find.byKey(Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
 
       expect(Cart.instance.totalPrice, equals(28));
-      expect(find.byKey(Key('cashier.snapshot.28')), findsOneWidget);
-      expect(find.byKey(Key('cashier.snapshot.50')), findsOneWidget);
-      expect(find.byKey(Key('cashier.snapshot.100')), findsOneWidget);
-      expect(find.byKey(Key('cashier.snapshot.500')), findsOneWidget);
-      expect(find.byKey(Key('cashier.snapshot.1000')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.50')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.100')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.500')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.1000')), findsOneWidget);
 
-      await tester.tap(find.byKey(Key('cashier.snapshot.30')));
+      await tester.tap(find.byKey(const Key('cashier.snapshot.30')));
       await tester.pumpAndSettle();
 
-      final sChange = find.byKey(Key('cashier.snapshot.change'));
+      final sChange = find.byKey(const Key('cashier.snapshot.change'));
       expect(tester.widget<Text>(sChange).data, equals('找錢：2'));
       await tester.tap(sChange);
       await tester.pumpAndSettle();
 
-      final verifyText = (String key, String expectValue) {
+      verifyText(String key, String expectValue) {
         expect(
           tester.widget<Text>(find.byKey(Key('cashier.calculator.$key'))).data,
           equals(expectValue),
         );
-      };
+      }
 
       verifyText('paid', '30');
       verifyText('change', '2');
 
-      await tester.tap(find.byKey(Key('cashier.calculator.clear')));
-      await tester.tap(find.byKey(Key('cashier.calculator.dot')));
-      await tester.tap(find.byKey(Key('cashier.calculator.1')));
-      await tester.tap(find.byKey(Key('cashier.calculator.2')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.dot')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.1')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.2')));
       await tester.pumpAndSettle();
 
       verifyText('paid', '0.12');
       expect(
-        find.byKey(Key('cashier.calculator.change.error')),
+        find.byKey(const Key('cashier.calculator.change.error')),
         findsOneWidget,
       );
-      await tester.tap(find.byKey(Key('cashier.calculator.submit')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.submit')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('cashier.calculator.clear')));
-      await tester.tap(find.byKey(Key('cashier.calculator.3')));
-      await tester.tap(find.byKey(Key('cashier.calculator.4')));
-      await tester.tap(find.byKey(Key('cashier.calculator.5')));
-      await tester.tap(find.byKey(Key('cashier.calculator.6')));
-      await tester.tap(find.byKey(Key('cashier.calculator.7')));
-      await tester.tap(find.byKey(Key('cashier.calculator.dot')));
-      await tester.tap(find.byKey(Key('cashier.calculator.8')));
-      await tester.tap(find.byKey(Key('cashier.calculator.ceil')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.3')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.4')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.5')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.6')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.7')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.dot')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.8')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.ceil')));
       await tester.pumpAndSettle();
 
       verifyText('paid', '34568');
       verifyText('change', '34540');
 
-      await tester.tap(find.byKey(Key('cashier.calculator.back')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.back')));
       await tester.pumpAndSettle();
 
       verifyText('paid', '3456');
       verifyText('change', '3428');
 
-      await tester.tap(find.byKey(Key('cashier.calculator.clear')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
       await tester.pumpAndSettle();
 
       expect(
         tester
-            .widget<HintText>(find.byKey(Key('cashier.calculator.paid.hint')))
+            .widget<HintText>(
+                find.byKey(const Key('cashier.calculator.paid.hint')))
             .text,
         equals('28'),
       );
       expect(
         tester
-            .widget<HintText>(find.byKey(Key('cashier.calculator.change.hint')))
+            .widget<HintText>(
+                find.byKey(const Key('cashier.calculator.change.hint')))
             .text,
         equals('0'),
       );
 
-      await tester.tap(find.byKey(Key('cashier.calculator.9')));
-      await tester.tap(find.byKey(Key('cashier.calculator.0')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.9')));
+      await tester.tap(find.byKey(const Key('cashier.calculator.0')));
       await tester.pumpAndSettle();
 
       verifyText('paid', '90');
       verifyText('change', '62');
 
       await tester.drag(
-        find.byKey(Key('cashier.calculator.paid')),
-        Offset(0, 500),
+        find.byKey(const Key('cashier.calculator.paid')),
+        const Offset(0, 500),
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(Key('cashier.snapshot.90')), findsOneWidget);
+      expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
       expect(tester.widget<Text>(sChange).data, equals('找錢：62'));
 
       when(database.query(
@@ -298,7 +298,7 @@ void main() {
             {'id': 1}
           ]));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
-      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
@@ -307,7 +307,7 @@ void main() {
       expect(sChange, findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        return data is Map && data['新台幣.current'][2]['count'] == 3;
+        return data is Map && data['.current'][2]['count'] == 3;
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
@@ -319,7 +319,6 @@ void main() {
     });
 
     testWidgets('With customer setting and history mode', (tester) async {
-      await prepareCurrency();
       prepareCustomerSettings();
       Cart.instance.isHistoryMode = true;
 
@@ -327,17 +326,17 @@ void main() {
         MaterialApp(
           navigatorObservers: [MyApp.routeObserver],
           routes: Routes.routes,
-          home: OrderScreen(),
+          home: const OrderScreen(),
         ),
       );
 
-      await tester.tap(find.byKey(Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(Key('cashier.customer.c-1.co-1')));
-      await tester.tap(find.byKey(Key('cashier.customer.c-2.co-3')));
+      await tester.tap(find.byKey(const Key('cashier.customer.c-1.co-1')));
+      await tester.tap(find.byKey(const Key('cashier.customer.c-2.co-3')));
 
-      await tester.tap(find.byKey(Key('cashier.customer.next')));
+      await tester.tap(find.byKey(const Key('cashier.customer.next')));
       await tester.pumpAndSettle();
 
       when(database.query(
@@ -350,7 +349,7 @@ void main() {
             {'id': 1}
           ]));
       when(database.getLast(
-        Seller.ORDER_TABLE,
+        Seller.orderTable,
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
@@ -380,24 +379,24 @@ void main() {
               },
             ]),
           }));
-      when(database.update(Seller.ORDER_TABLE, 1, any))
+      when(database.update(Seller.orderTable, 1, any))
           .thenAnswer((_) => Future.value(1));
 
-      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('confirm_dialog.cancel')));
+      await tester.tap(find.byKey(const Key('confirm_dialog.cancel')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('confirm_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator poped
-      expect(find.byKey(Key('cashier.order')), findsNothing);
+      expect(find.byKey(const Key('cashier.order')), findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        return data is Map && data['新台幣.current'][2]['count'] == 3;
+        return data is Map && data['.current'][2]['count'] == 3;
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
@@ -411,11 +410,12 @@ void main() {
     });
 
     setUp(() {
-      // disable feature and tips
-      when(cache.getRaw(any)).thenReturn(1);
+      // disable tips and features
       when(cache.get(any)).thenReturn(null);
+      when(cache.get(argThat(startsWith('_tip')))).thenReturn(1);
 
       prepareData();
+      Cashier().setCurrent(null);
     });
 
     setUpAll(() {

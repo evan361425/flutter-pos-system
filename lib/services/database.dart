@@ -80,7 +80,7 @@ class Database {
   }
 
   Future<void> _execMigration(int version) async {
-    for (final sql in DB_MIG_UP[version]!) {
+    for (final sql in dbMigrationUp[version]!) {
       try {
         await db.execute(sql);
       } catch (e, stack) {

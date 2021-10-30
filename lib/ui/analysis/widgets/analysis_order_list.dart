@@ -8,7 +8,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
-import 'package:possystem/providers/currency_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -16,7 +16,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class AnalysisOrderList<T> extends StatefulWidget {
   final Future<List<OrderObject>> Function(T, int) handleLoad;
 
-  AnalysisOrderList({Key? key, required this.handleLoad}) : super(key: key);
+  const AnalysisOrderList({Key? key, required this.handleLoad})
+      : super(key: key);
 
   @override
   AnalysisOrderListState<T> createState() => AnalysisOrderListState<T>();
@@ -35,7 +36,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading == true) {
-      return CircularLoading();
+      return const CircularLoading();
     } else if (_isLoading == null) {
       return HintText(tt('analysis.unset'));
     } else if (_data.isEmpty) {
@@ -69,7 +70,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
 
   void reset(T params, {required num totalPrice, required int totalCount}) =>
       setState(() {
-        this.totalPrice = CurrencyProvider.n2s(totalPrice);
+        this.totalPrice = totalPrice.toCurrency();
         this.totalCount = totalCount;
         _params = params;
         _data.clear();
@@ -83,9 +84,9 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
       builder: (BuildContext context, LoadStatus? mode) {
         switch (mode) {
           case LoadStatus.canLoading:
-            return Center(child: Text('下拉以載入更多'));
+            return const Center(child: Text('下拉以載入更多'));
           case LoadStatus.loading:
-            return CircularLoading();
+            return const CircularLoading();
           case LoadStatus.noMore:
             return Center(child: Text(tt('analysis.allLoaded')));
           default:
@@ -129,7 +130,7 @@ class _AnalysisOrderModal extends StatelessWidget {
     final createdAt = order.createdAt.toString().substring(0, 19);
 
     return Scaffold(
-      appBar: AppBar(leading: PopButton()),
+      appBar: AppBar(leading: const PopButton()),
       body: Column(children: [
         HintText(createdAt),
         Expanded(
@@ -177,8 +178,8 @@ class _OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subtitle = MetaBlock.withString(context, [
-      tt('analysis.price', {'price': CurrencyProvider.n2s(order.totalPrice)}),
-      tt('analysis.paid', {'paid': CurrencyProvider.n2s(order.paid!)}),
+      tt('analysis.price', {'price': order.totalPrice.toCurrency()}),
+      tt('analysis.paid', {'paid': order.paid!.toCurrency()}),
     ]);
 
     return ListTile(

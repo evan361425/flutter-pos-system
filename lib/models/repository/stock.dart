@@ -23,13 +23,13 @@ class Stock extends ChangeNotifier
 
   String? get updatedDate {
     DateTime? lastest;
-    items.forEach((element) {
+    for (var element in items) {
       if (lastest == null) {
         lastest = element.updatedAt;
-      } else if (element.updatedAt?.isAfter(lastest!) == true) {
+      } else if (element.updatedAt?.isAfter(lastest) == true) {
         lastest = element.updatedAt;
       }
-    });
+    }
 
     return Util.timeToDate(lastest);
   }
@@ -72,20 +72,22 @@ class Stock extends ChangeNotifier
   Future<void> order(OrderObject data, {OrderObject? oldData}) async {
     final amounts = <String, num>{};
 
-    data.products.forEach((product) {
-      product.ingredients.values.forEach((ingredient) {
+    for (var product in data.products) {
+      for (var ingredient in product.ingredients.values) {
         amounts[ingredient.id] =
             (amounts[ingredient.id] ?? 0) - ingredient.amount;
-      });
-    });
+      }
+    }
 
     // if we need to update order, need to revert stock status
-    oldData?.products.forEach((product) {
-      product.ingredients.values.forEach((ingredient) {
-        amounts[ingredient.id] =
-            (amounts[ingredient.id] ?? 0) + ingredient.amount;
-      });
-    });
+    if (oldData != null) {
+      for (var product in oldData.products) {
+        for (var ingredient in product.ingredients.values) {
+          amounts[ingredient.id] =
+              (amounts[ingredient.id] ?? 0) + ingredient.amount;
+        }
+      }
+    }
 
     return applyAmounts(amounts, onlyAmount: true);
   }

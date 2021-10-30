@@ -3,15 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
-import 'package:possystem/providers/currency_provider.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:possystem/settings/currency_setting.dart';
 
 class Cashier extends ChangeNotifier {
-  static const _FAVORITES = 'favorites';
+  static const _favoriteKey = 'favorites';
 
-  static const _CURRENT = 'current';
+  static const _currentKey = 'current';
 
-  static const _DEFAULT = 'default';
+  static const _defaultKey = 'default';
 
   static late Cashier instance;
 
@@ -28,7 +28,7 @@ class Cashier extends ChangeNotifier {
   String _recordName = '';
 
   Cashier() {
-    CurrencyProvider.instance.addListener(reset);
+    CurrencySetting.instance.addListener(reset);
     instance = this;
   }
 
@@ -81,7 +81,7 @@ class Cashier extends ChangeNotifier {
 
   @override
   void dispose() {
-    CurrencyProvider.instance.removeListener(reset);
+    CurrencySetting.instance.removeListener(reset);
     super.dispose();
   }
 
@@ -179,14 +179,14 @@ class Cashier extends ChangeNotifier {
 
   /// When [Currency] changed, it must be fired
   Future<void> reset() async {
-    _recordName = CurrencyProvider.instance.currency;
+    _recordName = CurrencySetting.instance.recordName;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
 
-    await setCurrent(record[_CURRENT]);
-    await setFavorite(record[_FAVORITES]);
+    await setCurrent(record[_currentKey]);
+    await setFavorite(record[_favoriteKey]);
 
-    if (record[_DEFAULT] != null) {
-      await setDefault(record[_DEFAULT] as Iterable);
+    if (record[_defaultKey] != null) {
+      await setDefault(record[_defaultKey] as Iterable);
     }
   }
 
@@ -208,7 +208,7 @@ class Cashier extends ChangeNotifier {
       _current
         ..clear()
         ..addAll([
-          for (var unit in CurrencyProvider.instance.unitList)
+          for (var unit in CurrencySetting.instance.unitList)
             CashierUnitObject(unit: unit, count: 0)
         ]);
 
@@ -308,15 +308,15 @@ class Cashier extends ChangeNotifier {
 
   Future<void> _registerStorage() {
     return Storage.instance.add(Stores.cashier, _recordName, {
-      _CURRENT: _current.map((e) => e.toMap()).toList(),
-      _DEFAULT: [],
-      _FAVORITES: [],
+      _currentKey: _current.map((e) => e.toMap()).toList(),
+      _defaultKey: [],
+      _favoriteKey: [],
     });
   }
 
   Future<void> _updateCurrentStorage() async {
     await Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_CURRENT': _current.map((e) => e.toMap()).toList(),
+      '$_recordName.$_currentKey': _current.map((e) => e.toMap()).toList(),
     });
 
     notifyListeners();
@@ -324,13 +324,13 @@ class Cashier extends ChangeNotifier {
 
   Future<void> _updateDefaultStorage() {
     return Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_DEFAULT': _default.map((e) => e.toMap()).toList(),
+      '$_recordName.$_defaultKey': _default.map((e) => e.toMap()).toList(),
     });
   }
 
   Future<void> _updateFavoriteStorage() async {
     await Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_FAVORITES': _favorites.map((e) => e.toMap()).toList(),
+      '$_recordName.$_favoriteKey': _favorites.map((e) => e.toMap()).toList(),
     });
 
     notifyListeners();

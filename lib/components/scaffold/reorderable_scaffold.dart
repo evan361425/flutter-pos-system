@@ -23,7 +23,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: PopButton(),
+        leading: const PopButton(),
         actions: [
           AppbarTextButton(
               onPressed: () async {
@@ -54,7 +54,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
 class _OrderableList<T> extends StatefulWidget {
   final List<T> items;
 
-  _OrderableList({
+  const _OrderableList({
     Key? key,
     required this.items,
   }) : super(key: key);
@@ -99,7 +99,8 @@ class _ReorderableListItem extends StatelessWidget {
 
   final int? index;
 
-  _ReorderableListItem({this.title, this.index, Key? key}) : super(key: key);
+  const _ReorderableListItem({this.title, this.index, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +120,8 @@ class _ReorderableListItem extends StatelessWidget {
         ),
         ReorderableDragStartListener(
           index: index!,
-          child: Padding(
-            padding: const EdgeInsets.only(right: kSpacing3),
+          child: const Padding(
+            padding: EdgeInsets.only(right: kSpacing3),
             child: Center(child: Icon(Icons.reorder_sharp)),
           ),
         ),

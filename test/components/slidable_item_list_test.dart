@@ -9,9 +9,9 @@ void main() {
       var tapCount = 0;
       final widget = MaterialApp(
         home: SlidableItemList<String, void>(
-          items: ['1', '2'],
+          items: const ['1', '2'],
           tileBuilder: (_, int index, item) => Text(item),
-          warningContextBuilder: (_, __) => Text('hi'),
+          warningContextBuilder: (_, __) => const Text('hi'),
           handleTap: (_, __) => Future.value(tapCount++),
           handleDelete: (_) => Future.value(),
         ),
@@ -22,7 +22,7 @@ void main() {
       expect(find.byIcon(KIcons.delete), findsNothing);
 
       // swipe to left
-      await tester.drag(find.text('1'), Offset(-50, 0));
+      await tester.drag(find.text('1'), const Offset(-50, 0));
       await tester.pumpAndSettle();
 
       expect(find.byIcon(KIcons.delete), findsOneWidget);
@@ -42,16 +42,16 @@ void main() {
       var deletionFired = false;
       await tester.pumpWidget(MaterialApp(
         home: SlidableItemList<String, void>(
-          items: ['1', '2'],
+          items: const ['1', '2'],
           tileBuilder: (_, int index, item) => Text(item),
-          warningContextBuilder: (_, __) => Text('hi'),
+          warningContextBuilder: (_, __) => const Text('hi'),
           handleTap: (_, __) => Future.value(),
           handleDelete: (_) async => deletionFired = true,
         ),
       ));
 
       // show slider action
-      await tester.drag(find.text('1'), Offset(-100, 0));
+      await tester.drag(find.text('1'), const Offset(-100, 0));
       await tester.pumpAndSettle();
 
       // tap delete icon

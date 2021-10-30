@@ -52,7 +52,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: PopButton(),
+        leading: const PopButton(),
         title: SearchBar(
           key: searchBar,
           onChanged: (text) {
@@ -73,7 +73,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
               : colorScheme.onPrimary,
         ),
       ),
-      body: isSearching ? CircularLoading() : _body(context),
+      body: isSearching ? const CircularLoading() : _body(context),
     );
   }
 

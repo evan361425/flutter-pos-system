@@ -17,8 +17,8 @@ class QuantityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final quantities = context.watch<Quantities>();
 
-    final navigateNewQuantity =
-        () => Navigator.of(context).pushNamed(Routes.stockQuantityModal);
+    navigateNewQuantity() =>
+        Navigator.of(context).pushNamed(Routes.stockQuantityModal);
 
     final body = quantities.isEmpty
         ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
@@ -36,13 +36,13 @@ class QuantityScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(tt('home.quantities')),
-        leading: PopButton(),
+        leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('quantities.add'),
+        key: const Key('quantities.add'),
         onPressed: navigateNewQuantity,
         tooltip: tt('stock.quantity.add'),
-        child: Icon(KIcons.add),
+        child: const Icon(KIcons.add),
       ),
       body: body,
     );

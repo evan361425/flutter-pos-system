@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/tip/cache_state_manager.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -14,10 +13,13 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/my_app.dart';
-import 'package:possystem/providers/currency_provider.dart';
-import 'package:possystem/providers/language_provider.dart';
-import 'package:possystem/providers/theme_provider.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/language_setting.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/ui/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -30,34 +32,34 @@ void main() {
   group('Home Screen', () {
     testWidgets('should show tip correctly', (tester) async {
       CacheStateManager.initialize();
-      when(cache.getRaw(any)).thenReturn(1);
-      when(cache.getRaw('_tip.home.menu')).thenReturn(0);
-      when(cache.getRaw('_tip.home.order')).thenReturn(0);
-      when(cache.setRaw(any, any)).thenAnswer((_) => Future.value(true));
+      when(cache.get(any)).thenReturn(1);
+      when(cache.get('_tip.home.menu')).thenReturn(0);
+      when(cache.get('_tip.home.order')).thenReturn(0);
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
-        builder: (_, __) => MaterialApp(home: HomeScreen()),
+        builder: (_, __) => const MaterialApp(home: HomeScreen()),
       ));
       // show menu tip animation
       await tester.pumpAndSettle();
 
-      when(cache.getRaw('_tip.home.menu')).thenReturn(1);
+      when(cache.get('_tip.home.menu')).thenReturn(1);
 
       // close tip
-      await tester.tapAt(Offset(0, 0));
+      await tester.tapAt(const Offset(0, 0));
       await tester.pumpAndSettle();
 
-      verify(cache.setRaw('_tip.home.menu', isNonZero));
+      verify(cache.set('_tip.home.menu', isNonZero));
 
       // close order tip
-      when(cache.getRaw('_tip.home.order')).thenReturn(1);
+      when(cache.get('_tip.home.order')).thenReturn(1);
 
       // close tip
-      await tester.tapAt(Offset(0, 0));
+      await tester.tapAt(const Offset(0, 0));
       await tester.pumpAndSettle();
 
-      verify(cache.setRaw('_tip.home.order', isNonZero));
+      verify(cache.set('_tip.home.order', isNonZero));
     });
 
     testWidgets('should reset info after update', (tester) async {
@@ -66,7 +68,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
-        builder: (_, __) => MaterialApp(home: HomeScreen()),
+        builder: (_, __) => const MaterialApp(home: HomeScreen()),
       ));
       // wait for query order from DB
       await tester.pumpAndSettle();
@@ -96,19 +98,26 @@ void main() {
     testWidgets('should navigate correctly', (tester) async {
       disableTips();
       when(cache.get(any)).thenReturn(null);
-      when(cache.getRaw(any)).thenReturn(1);
+      when(cache.get(argThat(predicate<String>((f) => f.startsWith('_tip')))))
+          .thenReturn(1);
       when(database.query(
-        Seller.ORDER_TABLE,
+        Seller.orderTable,
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         groupBy: argThat(isNotNull, named: 'groupBy'),
       )).thenAnswer((_) => Future.value([]));
+      final settings = SettingsProvider([
+        CurrencySetting.instance,
+        ThemeSetting(),
+        LanguageSetting(),
+        OrderOutlookSetting(),
+        OrderAwakeningSetting()
+      ]);
 
       await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: ThemeProvider()..initialize()),
-          ChangeNotifierProvider.value(value: LanguageProvider()..initialize()),
+          ChangeNotifierProvider.value(value: settings..loadSetting()),
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Menu()),
           ChangeNotifierProvider.value(value: Stock()),
@@ -122,16 +131,16 @@ void main() {
           navigatorObservers: [MyApp.routeObserver],
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          locale: Locale('zh', 'TW'),
+          locale: const Locale('zh', 'TW'),
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
-          home: HomeScreen(),
+          home: const HomeScreen(),
         ),
       ));
 
-      final navAndPop = (String key, String check) async {
+      navAndPop(String key, String check) async {
         await tester.tap(find.byKey(Key('home.$key')));
         await tester.pumpAndSettle();
 
@@ -139,13 +148,13 @@ void main() {
 
         await tester.tap(find.byIcon(KIcons.back));
         await tester.pumpAndSettle();
-      };
+      }
 
-      await tester.tap(find.byKey(Key('home.order')));
+      await tester.tap(find.byKey(const Key('home.order')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('order.action.more')));
+      await tester.tap(find.byKey(const Key('order.action.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('order.action.leave')));
+      await tester.tap(find.byKey(const Key('order.action.leave')));
       await tester.pumpAndSettle();
 
       await navAndPop('menu', 'menu.add');
@@ -158,11 +167,9 @@ void main() {
     });
 
     setUp(() {
-      LOG_LEVEL = 0;
       // setup currency
-      final currency = CurrencyProvider();
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      currency.setCurrency(CurrencyTypes.TWD);
+      when(cache.get('currency')).thenReturn(null);
+      CurrencySetting().initialize();
 
       // setup seller
       Seller();

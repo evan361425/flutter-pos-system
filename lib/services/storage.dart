@@ -113,16 +113,15 @@ class SanitizedData {
     }
 
     // only use first setting value
-    if (!(data[value.id] is Map)) {
+    if (data[value.id] is! Map) {
       return;
-    } else if (!(value.data is Map)) {
+    } else if (value.data is! Map) {
       warn('Ignoring different type setting', 'storage.sanitize');
       return;
     }
 
     // check overlap
     data[value.id] = {...data[value.id] as Map, ...value.data as Map};
-    ;
   }
 
   /// Update [origin] value from [source]

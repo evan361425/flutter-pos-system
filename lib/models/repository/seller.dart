@@ -4,13 +4,13 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
 
 class Seller extends ChangeNotifier {
-  static const STASH_TABLE = 'order_stash';
+  static const stashTable = 'order_stash';
 
-  static const ORDER_TABLE = 'order';
+  static const orderTable = 'order';
 
-  static const JOIN_COMBINATION = JoinQuery(
+  static const joinCombination = JoinQuery(
     joinType: 'LEFT',
-    hostTable: ORDER_TABLE,
+    hostTable: orderTable,
     guestTable: 'customer_setting_combinations',
     hostKey: 'customerSettingCombinationId',
     guestKey: 'id',
@@ -24,8 +24,8 @@ class Seller extends ChangeNotifier {
 
   Future<OrderObject?> drop(int lastCount) async {
     final row = await Database.instance.getLast(
-      STASH_TABLE,
-      join: JOIN_COMBINATION,
+      stashTable,
+      join: joinCombination,
       columns: const [
         'id',
         'encodedProducts',
@@ -38,7 +38,7 @@ class Seller extends ChangeNotifier {
 
     final object = OrderObject.fromMap(row);
 
-    await Database.instance.delete(STASH_TABLE, object.id);
+    await Database.instance.delete(stashTable, object.id);
 
     return object;
   }
@@ -49,7 +49,7 @@ class Seller extends ChangeNotifier {
     range = '%d',
   }) async {
     final rows = await Database.instance.query(
-      ORDER_TABLE,
+      orderTable,
       columns: ['COUNT(*) count', 'createdAt'],
       where: 'createdAt BETWEEN ? AND ?',
       groupBy: "STRFTIME('$range', createdAt,'unixepoch')",
@@ -72,7 +72,7 @@ class Seller extends ChangeNotifier {
     final begin = start == null ? Util.toUTC(hour: 0) : Util.toUTC(now: start);
     final finish = end == null ? 9999999999 : Util.toUTC(now: end);
 
-    final result = await Database.instance.query(ORDER_TABLE,
+    final result = await Database.instance.query(orderTable,
         columns: ['COUNT(*) count', 'SUM(totalPrice) totalPrice'],
         where: 'createdAt BETWEEN ? AND ?',
         whereArgs: [begin, finish]);
@@ -91,13 +91,13 @@ class Seller extends ChangeNotifier {
     int offset = 0,
   ]) async {
     final rows = await Database.instance.query(
-      ORDER_TABLE,
+      orderTable,
       where: 'createdAt BETWEEN ? AND ?',
       whereArgs: [
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
-      join: JOIN_COMBINATION,
+      join: joinCombination,
       orderBy: 'createdAt desc',
       limit: 10,
       offset: offset,
@@ -107,14 +107,14 @@ class Seller extends ChangeNotifier {
   }
 
   Future<num> getStashCount() async {
-    final count = await Database.instance.count(STASH_TABLE);
+    final count = await Database.instance.count(stashTable);
 
     return count ?? 0;
   }
 
   Future<OrderObject?> getTodayLast() async {
     final row = await Database.instance.getLast(
-      ORDER_TABLE,
+      orderTable,
       columns: const [
         'totalCount',
         'totalPrice',
@@ -125,14 +125,14 @@ class Seller extends ChangeNotifier {
       ],
       where: 'createdAt >= ?',
       whereArgs: [Util.toUTC(hour: 0)],
-      join: JOIN_COMBINATION,
+      join: joinCombination,
     );
 
     return row == null ? null : OrderObject.fromMap(row);
   }
 
   Future<int> push(OrderObject order) async {
-    final id = await Database.instance.push(ORDER_TABLE, order.toMap());
+    final id = await Database.instance.push(orderTable, order.toMap());
     notifyListeners();
 
     return id;
@@ -144,7 +144,7 @@ class Seller extends ChangeNotifier {
   Future<int> stash(OrderObject order) {
     final data = order.toMap();
 
-    return Database.instance.push(STASH_TABLE, {
+    return Database.instance.push(stashTable, {
       'createdAt': data['createdAt'],
       'customerSettingCombinationId': data['customerSettingCombinationId'],
       'encodedProducts': data['encodedProducts'],
@@ -152,7 +152,7 @@ class Seller extends ChangeNotifier {
   }
 
   Future<void> update(OrderObject order) async {
-    await Database.instance.update(ORDER_TABLE, order.id, order.toMap());
+    await Database.instance.update(orderTable, order.id, order.toMap());
     notifyListeners();
   }
 }

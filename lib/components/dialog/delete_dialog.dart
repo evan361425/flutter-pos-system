@@ -18,7 +18,7 @@ class DeleteDialog extends StatelessWidget {
       actions: <Widget>[
         PopButton(title: tt('cancel')),
         ElevatedButton(
-          key: Key('delete_dialog.confirm'),
+          key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
             primary: theme.errorColor,
@@ -41,14 +41,14 @@ class DeleteDialog extends StatelessWidget {
     bool popAfterDeleted = false,
     Widget? warningContent,
   }) async {
-    final startDelete = () async {
+    startDelete() async {
       await deleteCallback();
       showSuccessSnackbar(context, tt('success'));
 
       if (popAfterDeleted) {
         Navigator.of(context).pop();
       }
-    };
+    }
 
     // Directly delete if no content given
     if (warningContent == null) {
