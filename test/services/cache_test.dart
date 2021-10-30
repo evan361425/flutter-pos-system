@@ -4,7 +4,6 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../mocks/mock_cache.dart';
 import 'cache_test.mocks.dart';
 
 @GenerateMocks([SharedPreferences])
@@ -50,10 +49,6 @@ void main() {
       service = MockSharedPreferences();
       Cache.instance = Cache();
       Cache.instance.service = service;
-    });
-
-    tearDownAll(() {
-      Cache.instance = cache;
     });
   });
 }

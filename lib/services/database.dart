@@ -15,12 +15,33 @@ class Database {
 
   bool _initialized = false;
 
+  Future<List<Object?>> batchUpdate(
+    String table,
+    List<Map<String, Object?>> data, {
+    required String where,
+    required List<List<Object>> whereArgs,
+  }) {
+    final batch = db.batch();
+    final maxLength = min(data.length, whereArgs.length);
+
+    for (var i = 0; i < maxLength; i++) {
+      batch.update(table, data[i], where: where, whereArgs: whereArgs[i]);
+    }
+
+    return batch.commit();
+  }
+
   Future<int?> count(
     String table, {
     String? where,
     List<Object>? whereArgs,
   }) async {
-    final result = await db.query(table, columns: ['COUNT(*)']);
+    final result = await db.query(
+      table,
+      columns: ['COUNT(*)'],
+      where: where,
+      whereArgs: whereArgs,
+    );
 
     return Sqflite.firstIntValue(result);
   }
@@ -79,34 +100,8 @@ class Database {
     );
   }
 
-  Future<void> _execMigration(int version) async {
-    for (final sql in dbMigrationUp[version]!) {
-      try {
-        await db.execute(sql);
-      } catch (e, stack) {
-        await error(e.toString(), 'database.migration.error', stack);
-      }
-    }
-  }
-
   Future<int> push(String table, Map<String, Object?> data) {
     return db.insert(table, data);
-  }
-
-  Future<List<Object?>> batchUpdate(
-    String table,
-    List<Map<String, Object?>> data, {
-    required String where,
-    required List<List<Object>> whereArgs,
-  }) {
-    final batch = db.batch();
-    final maxLength = min(data.length, whereArgs.length);
-
-    for (var i = 0; i < maxLength; i++) {
-      batch.update(table, data[i], where: where, whereArgs: whereArgs[i]);
-    }
-
-    return batch.commit();
   }
 
   Future<List<Map<String, Object?>>> query(
@@ -121,18 +116,15 @@ class Database {
     int offset = 0,
   }) {
     final selectQuery = columns?.join(',') ?? '*';
+    final whereQuery = where == null ? '' : 'WHERE $where';
     final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
     final orderByQuery = orderBy == null ? '' : 'ORDER BY $orderBy';
     final limitQuery = limit == null ? '' : 'LIMIT $offset, $limit';
     final joinQuery = join == null ? '' : join.toString();
 
-    return instance.db.rawQuery('''
-    SELECT $selectQuery FROM `$table`
-    $joinQuery
-    WHERE $where
-    $groupByQuery
-    $orderByQuery
-    $limitQuery''', whereArgs);
+    return instance.db.rawQuery(
+        'SELECT $selectQuery FROM `$table` $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
+        whereArgs);
   }
 
   Future<int> update(
@@ -147,6 +139,16 @@ class Database {
       where: '$keyName = ?',
       whereArgs: [key],
     );
+  }
+
+  Future<void> _execMigration(int version) async {
+    for (final sql in dbMigrationUp[version]!) {
+      try {
+        await db.execute(sql);
+      } catch (e, stack) {
+        await error(e.toString(), 'database.migration.error', stack);
+      }
+    }
   }
 
   static String join(Iterable<String>? data) =>
