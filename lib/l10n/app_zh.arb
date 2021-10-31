@@ -1,6 +1,64 @@
 {
-  "appTitle": "example",
-  "@appTitle": {
-    "description": "The title of the application"
+  "actSuccess": "執行成功",
+  "@actSuccess": {
+    "description": "執行行為成功，並顯示於 Snackbar 中"
+  },
+  "cancelBtn": "取消",
+  "@cancelBtn": {
+    "description": "取消按鈕"
+  },
+  "confirmBtn": "確認",
+  "@confirmBtn": {
+    "description": "確認按鈕"
+  },
+  "deleteBtn": "刪除",
+  "@deleteBtn": {
+    "description": "刪除按鈕"
+  },
+  "saveBtn": "儲存",
+  "@saveBtn": {
+    "description": "儲存按鈕"
+  },
+  "totalCount": "總共 {count} 項",
+  "@totalCount": {
+    "description": "顯示於 ListView 上的數量總數",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "searchCount": "搜尋到 {count} 個結果",
+  "@searchCount": {
+    "description": "顯示於 SearchScaffold 上的數量總數",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "dialogDeletionTitle": "刪除確認通知",
+  "@dialogDeletionTitle": {
+    "description": "顯示於 DeleteDialog 上的標題"
+  },
+  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n此動作將無法復原！",
+  "@dialogDeletionTitle": {
+    "description": "顯示於 DeleteDialog 上的內文",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "蔬菜三明治"
+      }
+    }
+  },
+  "bottomSheetActionsTitle": "執行動作",
+  "@bottomSheetActionsTitle": {
+    "description": "顯示於 BottomSheetActions 上的標題"
+  },
+  "emptyBodyContent": "哎呀！這裡還是空的",
+  "@emptyBodyContent": {
+    "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目"
   }
 }
