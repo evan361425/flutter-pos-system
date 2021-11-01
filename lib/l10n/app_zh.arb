@@ -3,20 +3,20 @@
   "@actSuccess": {
     "description": "執行行為成功，並顯示於 Snackbar 中"
   },
-  "cancelBtn": "取消",
-  "@cancelBtn": {
+  "btnCancel": "取消",
+  "@btnCancel": {
     "description": "取消按鈕"
   },
-  "confirmBtn": "確認",
-  "@confirmBtn": {
+  "btnConfirm": "確認",
+  "@btnConfirm": {
     "description": "確認按鈕"
   },
-  "deleteBtn": "刪除",
-  "@deleteBtn": {
+  "btnDelete": "刪除",
+  "@btnDelete": {
     "description": "刪除按鈕"
   },
-  "saveBtn": "儲存",
-  "@saveBtn": {
+  "btnSave": "儲存",
+  "@btnSave": {
     "description": "儲存按鈕"
   },
   "totalCount": "總共 {count} 項",
@@ -44,7 +44,7 @@
     "description": "顯示於 DeleteDialog 上的標題"
   },
   "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n此動作將無法復原！",
-  "@dialogDeletionTitle": {
+  "@dialogDeletionContent": {
     "description": "顯示於 DeleteDialog 上的內文",
     "placeholders": {
       "name": {
