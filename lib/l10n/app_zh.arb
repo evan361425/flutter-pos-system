@@ -60,5 +60,85 @@
   "emptyBodyContent": "哎呀！這裡還是空的",
   "@emptyBodyContent": {
     "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目"
+  },
+  "homeIcons": "{icon, select, menu{菜單} setting{設定} analysis{統計分析} stock{庫存} quantities{份量} order{點餐} cashier{收銀機} customer{顧客設定}}",
+  "@homeIcons": {
+    "description": "首頁的按鈕名稱",
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存，並同時設定成份的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單，並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：20-30歲、外帶、上班族。}}",
+  "@homeIconTutorial": {
+    "description": "首頁的按鈕的說明",
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "homeIconTypes": "{type, select, store{店家設定} other{其他}}",
+  "@homeIconTypes": {
+    "description": "首頁的按鈕種類",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "homeOrderInfoTodayEarn": "今日營收",
+  "@homeOrderInfoTodayEarn": {
+    "description": "首頁的今日快訊之一"
+  },
+  "homeOrderInfoTodayCount": "今日單量",
+  "@homeOrderInfoTodayCount": {
+    "description": "首頁的今日快訊之一"
+  },
+  "analysisTitle": "統計分析",
+  "@analysisTitle": {
+    "description": "首頁 analysis 後導入的頁面"
+  },
+  "analysisCalendarMonth": "單月",
+  "@analysisCalendarMonth": {
+    "description": "分析頁的日曆週期轉換單位之一"
+  },
+  "analysisCalendarWeek": "單週",
+  "@analysisCalendarWeek": {
+    "description": "分析頁的日曆週期轉換單位之一"
+  },
+  "analysisCalendarTwoWeek": "雙週",
+  "@analysisCalendarTwoWeek": {
+    "description": "分析頁的日曆週期轉換單位之一"
+  },
+  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢}}",
+  "@analysisOrderListStatus": {
+    "description": "分析頁的點餐列表狀態",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisOrderListMetaPrice": "售價：{price}",
+  "@analysisOrderListMetaPrice": {
+    "description": "分析頁的點餐列表中，每次點餐的售價值",
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "analysisOrderListMetaPaid": "付額：{paid}",
+  "@analysisOrderListMetaPaid": {
+    "description": "分析頁的點餐列表中，每次點餐的付額",
+    "placeholders": {
+      "paid": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
   }
 }

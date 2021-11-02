@@ -1,0 +1,104 @@
+{
+  "title": "ARB placeholder configuration files",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+
+  "patternProperties": {
+    "^[a-zA-Z]+": {
+      "type": "string"
+    },
+    "^@": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "placeholders": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["String", "int", "double", "num", "DateTime"]
+                },
+                "example": { "type": "string" },
+                "description": { "type": "string" },
+                "optionalParameters": {
+                  "type": "object",
+                  "patternProperties": { ".*": { "type": "string" } }
+                },
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "compact",
+                    "compactCurrency",
+                    "compactLong",
+                    "compactSimpleCurrency",
+                    "currency",
+                    "decimalPattern",
+                    "decimalPercentPattern",
+                    "percentPattern",
+                    "scientificPattern",
+                    "simpleCurrency",
+                    "d",
+                    "E",
+                    "EEEE",
+                    "LLL",
+                    "LLLL",
+                    "M",
+                    "Md",
+                    "MEd",
+                    "MMM",
+                    "MMMd",
+                    "MMMEd",
+                    "MMMM",
+                    "MMMMd",
+                    "MMMMEEEEd",
+                    "QQQ",
+                    "QQQQ",
+                    "y",
+                    "yM",
+                    "yMd",
+                    "yMEd",
+                    "yMMM",
+                    "yMMMd",
+                    "yMMMEd",
+                    "yMMMM",
+                    "yMMMMd",
+                    "yMMMMEEEEd",
+                    "yQQQ",
+                    "yQQQQ",
+                    "H",
+                    "Hm",
+                    "Hms",
+                    "j",
+                    "jm",
+                    "jms",
+                    "m",
+                    "ms",
+                    "s"
+                  ],
+                  "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
+                }
+              },
+              "defaultSnippets": [
+                {
+                  "label": "Placeholder with description",
+                  "description": "Add description inside @key placeholder",
+                  "body": { "description": "$1", "type": "$2" }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "With description",
+          "description": "Add description inside @key",
+          "body": { "description": "$1" }
+        }
+      ]
+    }
+  },
+  "type": "object"
+}

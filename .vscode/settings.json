@@ -18,51 +18,7 @@
   "json.schemas": [
     {
       "fileMatch": ["/lib/l10n/*.arb"],
-      "schema": {
-        "type": "object",
-        "patternProperties": {
-          "^[a-zA-Z]+": {
-            "type": "string"
-          },
-          "^@": {
-            "type": "object",
-            "properties": {
-              "description": { "type": "string" },
-              "placeholders": {
-                "type": "object",
-                "patternProperties": {
-                  ".*": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "enum": ["String", "int", "DateTime"]
-                      },
-                      "example": { "type": "string" },
-                      "format": { "type": "string" },
-                      "description": { "type": "string" }
-                    },
-                    "defaultSnippets": [
-                      {
-                        "label": "Placeholder with description",
-                        "description": "Add description inside @key placeholder",
-                        "body": { "description": "$1", "type": "$2" }
-                      }
-                    ]
-                  }
-                }
-              }
-            },
-            "defaultSnippets": [
-              {
-                "label": "With description",
-                "description": "Add description inside @key",
-                "body": { "description": "$1" }
-              }
-            ]
-          }
-        }
-      }
+      "url": "/.vscode/arb.schema.json"
     }
   ]
 }
