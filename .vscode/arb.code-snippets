@@ -6,7 +6,7 @@
       "\"${1:name}\": \"$2\",",
       "\"@$1\": {",
       "\t\"description\": \"${3:description}\"",
-      "}"
+      "},"
     ],
     "description": "Add one item and description for ARB"
   },
@@ -22,7 +22,7 @@
       "\t\t\t\"type\": \"int\"",
       "\t\t}",
       "\t}",
-      "}"
+      "},"
     ],
     "description": "Add one plural for ARB"
   },
@@ -38,7 +38,7 @@
       "\t\t\t\"type\": \"String\"",
       "\t\t}",
       "\t}",
-      "}"
+      "},"
     ],
     "description": "Add one select for ARB"
   }

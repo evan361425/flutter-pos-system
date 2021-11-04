@@ -31,6 +31,7 @@ dependencies:
 
   # core helper
   provider: ^5.0.0
+  intl: ^0.17.0
   firebase_core: ^1.2.1
   firebase_analytics: "^8.1.1"
   firebase_crashlytics: ^2.0.6

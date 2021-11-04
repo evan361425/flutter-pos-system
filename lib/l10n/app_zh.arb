@@ -61,6 +61,88 @@
   "@emptyBodyContent": {
     "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目"
   },
+  "invalidNumberType": "{field}必須是數字",
+  "@invalidNumberType": {
+    "description": "當發現輸入不是數字時的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      }
+    }
+  },
+  "invalidIntegerType": "{field}必須是整數",
+  "@invalidIntegerType": {
+    "description": "當發現輸入不是整數時的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      }
+    }
+  },
+  "invalidPositiveNumber": "{field}不能為負數",
+  "@invalidPositiveNumber": {
+    "description": "當發現輸入不是正數時的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      }
+    }
+  },
+  "invalidNumberMaximum": "{field}不能大於 {maximum}",
+  "@invalidNumberMaximum": {
+    "description": "當發現輸入過大時的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      },
+      "maximum": {
+        "description": "最大值，必須小於（且不等於）該值",
+        "type": "num"
+      }
+    }
+  },
+  "invalidNumberMinimum": "{field}不能大於 {minimum}",
+  "@invalidNumberMinimum": {
+    "description": "當發現輸入過小時的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      },
+      "minimum": {
+        "description": "最小值，必須大於（且不等於）該值",
+        "type": "num"
+      }
+    }
+  },
+  "invalidEmptyString": "{field}不能為空",
+  "@invalidEmptyString": {
+    "description": "當發現尚未輸入文字的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      }
+    }
+  },
+  "invalidStringMaximum": "{field}的長度不能超過 {maximum}",
+  "@invalidStringMaximum": {
+    "description": "當發現尚未輸入文字的警語",
+    "placeholders": {
+      "field": {
+        "description": "欄位名稱",
+        "type": "String"
+      },
+      "maximum": {
+        "description": "最大值，文字長度必須小於（且不等於）該值",
+        "type": "int"
+      }
+    }
+  },
   "homeIcons": "{icon, select, menu{菜單} setting{設定} analysis{統計分析} stock{庫存} quantities{份量} order{點餐} cashier{收銀機} customer{顧客設定}}",
   "@homeIcons": {
     "description": "首頁的按鈕名稱",
@@ -121,24 +203,171 @@
       }
     }
   },
-  "analysisOrderListMetaPrice": "售價：{price}",
-  "@analysisOrderListMetaPrice": {
+  "analysisOrderListItemMetaPrice": "售價：{price}",
+  "@analysisOrderListItemMetaPrice": {
     "description": "分析頁的點餐列表中，每次點餐的售價值",
     "placeholders": {
       "price": {
-        "type": "num",
+        "type": "int",
         "format": "compact"
       }
     }
   },
-  "analysisOrderListMetaPaid": "付額：{paid}",
-  "@analysisOrderListMetaPaid": {
+  "analysisOrderListItemMetaPaid": "付額：{paid}",
+  "@analysisOrderListItemMetaPaid": {
     "description": "分析頁的點餐列表中，每次點餐的付額",
     "placeholders": {
       "paid": {
-        "type": "num",
+        "type": "int",
         "format": "compact"
       }
     }
+  },
+  "analysisOrderListMetaPrice": "總營收：{price}",
+  "@analysisOrderListMetaPrice": {
+    "description": "分析頁的點餐列表中，單日點餐的營收",
+    "placeholders": {
+      "price": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "analysisOrderListMetaPaid": "總單數：{paid}",
+  "@analysisOrderListMetaPaid": {
+    "description": "分析頁的點餐列表中，單日點餐的數量",
+    "placeholders": {
+      "paid": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "menuCatalogListTitle": "產品種類列表",
+  "@menuCatalogListTitle": {
+    "description": "菜單頁的標題"
+  },
+  "menuCatalogListCreate": "新增產品種類",
+  "@menuCatalogListCreate": {
+    "description": "菜單頁的 floatingActionButton 說明"
+  },
+  "menuCatalogListUpdate": "編輯產品種類",
+  "@menuCatalogListUpdate": {
+    "description": "菜單頁編輯產品種類"
+  },
+  "menuCatalogListReorder": "排序產品種類",
+  "@menuCatalogListReorder": {
+    "description": "菜單頁排序產品種類"
+  },
+  "menuCatalogDialogDeletionContent": "確定要刪除 {name} 嗎？\n\n將會一同刪除掉 {count} 個產品\n\n此動作將無法復原！",
+  "@menuCatalogDialogDeletionContent": {
+    "description": "菜單頁刪除產品種類時的警語",
+    "placeholders": {
+      "count": {
+        "description": "產品數量",
+        "type": "int"
+      }
+    }
+  },
+  "menuCatalogNameLabel": "種類名稱",
+  "@menuCatalogNameLabel": {
+    "description": "產品種類名稱的標題"
+  },
+  "menuCatalogNameHint": "漢堡",
+  "@menuCatalogNameHint": {
+    "description": "產品種類名稱的範例"
+  },
+  "menuCatalogNameRepeatError": "種類名稱重複",
+  "@menuCatalogNameRepeatError": {
+    "description": "產品種類名稱發現重複的說明"
+  },
+  "menuProductListCreate": "新增產品",
+  "menuProductListUpdate": "編輯產品",
+  "menuProductListReorder": "排序產品",
+  "menuProductNameLabel": "產品名稱",
+  "menuProductNameHint": "起司漢堡",
+  "menuProductNameRepeatError": "產品名稱重複",
+  "menuProductPriceLabel": "產品價格",
+  "menuProductPriceHint": "給客人看的價錢，50",
+  "menuProductCostLabel": "產品成本",
+  "menuProductCostHint": "用來算出利潤，30",
+  "menuIngredientListCreate": "新增成份",
+  "menuIngredientListUpdate": "編輯成份",
+  "menuIngredientSearchLabel": "成份",
+  "menuIngredientSearchAdd": "新增成份份量「{name}」",
+  "@menuIngredientSearchAdd": {
+    "description": "當搜尋不到成份時，需要新增成份",
+    "placeholders": {
+      "name": {
+        "description": "成份名稱",
+        "type": "String"
+      }
+    }
+  },
+  "menuIngredientSearchHint": "起司",
+  "menuIngredientSearchEmptyError": "必須設定成份，請點選以設定。",
+  "menuIngredientSearchHelper": "新增成份後，可至「庫存」設定相關資訊。",
+  "menuIngredientRepeatError": "成份不能重複選取。",
+  "menuIngredientAmountLabel": "使用量",
+  "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成分的使用量，請於成份的「份量」中設定。",
+  "menuQuantityListCreate": "新增份量",
+  "menuQuantityListUpdate": "編輯份量",
+  "menuQuantitySearchLabel": "份量",
+  "menuQuantitySearchAdd": "新增份量「{name}」",
+  "@menuQuantitySearchAdd": {
+    "description": "當搜尋不到份量時，需要新增份量",
+    "placeholders": {
+      "name": {
+        "description": "份量名稱",
+        "type": "String"
+      }
+    }
+  },
+  "menuQuantitySearchHint": "少量、多量",
+  "menuQuantitySearchEmptyError": "必須設定份量，請點選以設定。",
+  "menuQuantitySearchHelper": "新增成份份量後，可至「份量」設定相關資訊。",
+  "menuQuantityRepeatError": "份量不能重複選取。",
+  "menuQuantityAmountLabel": "額外使用量",
+  "menuQuantityAdditionalPriceLabel": "額外售價",
+  "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
+  "menuQuantityAdditionalCostLabel": "額外成本",
+  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
+  "settingThemeTitle": "調色盤",
+  "@settingThemeTitle": {
+    "description": "設定頁面中主題的標題"
+  },
+  "settingThemeTypes": "{type, select, dark{暗色模式} light{日光模式} system{跟隨系統}}",
+  "@settingThemeTypes": {
+    "description": "應用程式 theme 的類型",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "description": "dark, light, system",
+        "example": "system"
+      }
+    }
+  },
+  "settingLanguageTitle": "語言",
+  "@settingLanguageTitle": {
+    "description": "設定頁面中語言的標題"
+  },
+  "settingOrderOutlookTitle": "點餐的外觀",
+  "@settingOrderOutlookTitle": {
+    "description": "設定頁面中點餐外觀的標題"
+  },
+  "settingOrderOutlookTypes": "{type, select, slidingPanel{酷炫面板} singleView{經典模式}}",
+  "@settingOrderOutlookTypes": {
+    "description": "點餐時的外觀類型",
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "description": "slidingPanel, singleView",
+        "example": "slidingPanel"
+      }
+    }
+  },
+  "settingOrderAwakeningTitle": "點餐時不關閉螢幕",
+  "@settingOrderAwakeningTitle": {
+    "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
   }
 }
