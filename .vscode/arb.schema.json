@@ -97,12 +97,24 @@
                 {
                   "label": "String",
                   "description": "Add description inside @key placeholder",
-                  "body": { "description": "$1", "type": "String" }
+                  "body": { "description": "$1", "type": "${2:String}" }
                 },
                 {
-                  "label": "unknown",
+                  "label": "currency",
+                  "description": "Add currency format",
+                  "body": {
+                    "description": "$1",
+                    "type": "num",
+                    "format": "compactCurrency",
+                    "optionalParameters": {
+                      "decimalDigits": 0
+                    }
+                  }
+                },
+                {
+                  "label": "int",
                   "description": "Add description and type inside @key placeholder",
-                  "body": { "description": "$1", "type": "$2" }
+                  "body": { "description": "$1", "type": "${2:int}" }
                 }
               ]
             }
