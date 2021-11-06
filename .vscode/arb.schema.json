@@ -24,7 +24,20 @@
                 "description": { "type": "string" },
                 "optionalParameters": {
                   "type": "object",
-                  "patternProperties": { ".*": { "type": "string" } }
+                  "properties": {
+                    "decimalDigits": {
+                      "type": "number",
+                      "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
+                    },
+                    "symbol": {
+                      "type": "string",
+                      "description": "Use for currency and compactCurrency"
+                    },
+                    "customPattern": {
+                      "type": "string",
+                      "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
+                    }
+                  }
                 },
                 "format": {
                   "type": "string",

@@ -43,13 +43,17 @@
   "@dialogDeletionTitle": {
     "description": "顯示於 DeleteDialog 上的標題"
   },
-  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n此動作將無法復原！",
+  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！",
   "@dialogDeletionContent": {
     "description": "顯示於 DeleteDialog 上的內文",
     "placeholders": {
       "name": {
         "type": "String",
         "example": "蔬菜三明治"
+      },
+      "more": {
+        "description": "更多訊息，例如刪除此項目會有什麼其他影響",
+        "type": "String"
       }
     }
   },
@@ -208,8 +212,11 @@
     "description": "分析頁的點餐列表中，每次點餐的售價值",
     "placeholders": {
       "price": {
-        "type": "int",
-        "format": "compact"
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
       }
     }
   },
@@ -218,8 +225,11 @@
     "description": "分析頁的點餐列表中，每次點餐的付額",
     "placeholders": {
       "paid": {
-        "type": "int",
-        "format": "compact"
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
       }
     }
   },
@@ -228,8 +238,11 @@
     "description": "分析頁的點餐列表中，單日點餐的營收",
     "placeholders": {
       "price": {
-        "type": "int",
-        "format": "compact"
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
       }
     }
   },
@@ -238,28 +251,31 @@
     "description": "分析頁的點餐列表中，單日點餐的數量",
     "placeholders": {
       "paid": {
-        "type": "int",
-        "format": "compact"
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
       }
     }
   },
-  "menuCatalogListTitle": "產品種類列表",
-  "@menuCatalogListTitle": {
+  "menuCatalogTitle": "產品種類列表",
+  "@menuCatalogTitle": {
     "description": "菜單頁的標題"
   },
-  "menuCatalogListCreate": "新增產品種類",
-  "@menuCatalogListCreate": {
+  "menuCatalogCreate": "新增產品種類",
+  "@menuCatalogCreate": {
     "description": "菜單頁的 floatingActionButton 說明"
   },
-  "menuCatalogListUpdate": "編輯產品種類",
-  "@menuCatalogListUpdate": {
+  "menuCatalogUpdate": "編輯產品種類",
+  "@menuCatalogUpdate": {
     "description": "菜單頁編輯產品種類"
   },
-  "menuCatalogListReorder": "排序產品種類",
-  "@menuCatalogListReorder": {
+  "menuCatalogReorder": "排序產品種類",
+  "@menuCatalogReorder": {
     "description": "菜單頁排序產品種類"
   },
-  "menuCatalogDialogDeletionContent": "確定要刪除 {name} 嗎？\n\n將會一同刪除掉 {count} 個產品\n\n此動作將無法復原！",
+  "menuCatalogDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品}",
   "@menuCatalogDialogDeletionContent": {
     "description": "菜單頁刪除產品種類時的警語",
     "placeholders": {
@@ -281,9 +297,9 @@
   "@menuCatalogNameRepeatError": {
     "description": "產品種類名稱發現重複的說明"
   },
-  "menuProductListCreate": "新增產品",
-  "menuProductListUpdate": "編輯產品",
-  "menuProductListReorder": "排序產品",
+  "menuProductCreate": "新增產品",
+  "menuProductUpdate": "編輯產品",
+  "menuProductReorder": "排序產品",
   "menuProductNameLabel": "產品名稱",
   "menuProductNameHint": "起司漢堡",
   "menuProductNameRepeatError": "產品名稱重複",
@@ -291,8 +307,8 @@
   "menuProductPriceHint": "給客人看的價錢，50",
   "menuProductCostLabel": "產品成本",
   "menuProductCostHint": "用來算出利潤，30",
-  "menuIngredientListCreate": "新增成份",
-  "menuIngredientListUpdate": "編輯成份",
+  "menuIngredientCreate": "新增成份",
+  "menuIngredientUpdate": "編輯成份",
   "menuIngredientSearchLabel": "成份",
   "menuIngredientSearchAdd": "新增成份份量「{name}」",
   "@menuIngredientSearchAdd": {
@@ -309,9 +325,9 @@
   "menuIngredientSearchHelper": "新增成份後，可至「庫存」設定相關資訊。",
   "menuIngredientRepeatError": "成份不能重複選取。",
   "menuIngredientAmountLabel": "使用量",
-  "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成分的使用量，請於成份的「份量」中設定。",
-  "menuQuantityListCreate": "新增份量",
-  "menuQuantityListUpdate": "編輯份量",
+  "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成份的使用量，請於成份的「份量」中設定。",
+  "menuQuantityCreate": "新增份量",
+  "menuQuantityUpdate": "編輯份量",
   "menuQuantitySearchLabel": "份量",
   "menuQuantitySearchAdd": "新增份量「{name}」",
   "@menuQuantitySearchAdd": {
@@ -331,7 +347,124 @@
   "menuQuantityAdditionalPriceLabel": "額外售價",
   "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantityAdditionalCostLabel": "額外成本",
-  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
+  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成份的使用，相對成本降低。",
+  "stockUpdatedAt": "{updatedAt, select, null{上次補貨時間：無} other{上次補貨時間：{updatedAt}}}",
+  "@stockUpdatedAt": {
+    "description": "庫存上次補貨的時間",
+    "placeholders": {
+      "updatedAt": {
+        "type": "DateTime",
+        "format": "MMMEd"
+      }
+    }
+  },
+  "stockIngredientCreate": "新增成份",
+  "stockIngredientDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品的成份}",
+  "@stockIngredientDialogDeletionContent": {
+    "description": "刪除成份時會提示多少個產品受影響",
+    "placeholders": {
+      "count": {
+        "description": "產品數量",
+        "type": "int"
+      }
+    }
+  },
+  "stockIngredientMetaCurrentAmount": "{count, plural, zero{庫存：無} other{庫存：{count}}}",
+  "@stockIngredientMetaCurrentAmount": {
+    "description": "成份庫存數量",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockIngredientMetaLastAmount": "{count, plural, zero{紀錄：無} other{紀錄：{count}}}",
+  "@stockIngredientMetaLastAmount": {
+    "description": "成份上次補貨後的庫存數量",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockIngredientConnectedProductsCount": "共有 {count} 個產品使用 {name}",
+  "@stockIngredientConnectedProductsCount": {
+    "description": "在編輯成份時，會提示有幾個產品正在使用，並允許點擊導進產品頁",
+    "placeholders": {
+      "count": {
+        "description": "產品數量",
+        "type": "int"
+      },
+      "name": {
+        "description": "成份名稱",
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientNameLabel": "成份名稱",
+  "stockIngredientNameHint": "起司",
+  "stockIngredientNameRepeatError": "成份名稱重複",
+  "stockIngredientAmountLabel": "現有庫存",
+  "stockIngredientAmountHelper": "設定此值並不記錄為「補貨」。或要補貨，請從「庫存」頁設定。",
+  "stockReplenishmentTitle": "採購列表",
+  "stockReplenishmentSubtitle": "會影響 {count} 項成份",
+  "@stockReplenishmentSubtitle": {
+    "description": "採購列表中各個項目會顯示的子標題",
+    "placeholders": {
+      "count": {
+        "description": "會影響的成份數量",
+        "type": "int"
+      }
+    }
+  },
+  "stockReplenishmentApplyConfirmTitle": "是否要套用「{name}」？",
+  "@stockReplenishmentApplyConfirmTitle": {
+    "description": "套用採購時的確認標題",
+    "placeholders": {
+      "count": {
+        "description": "採購種類名稱",
+        "type": "String"
+      }
+    }
+  },
+  "stockReplenishmentApplyConfirmContent": "將會影響以下的成份：",
+  "@stockReplenishmentApplyConfirmContent": {
+    "description": "套用採購時的確認內文第一行"
+  },
+  "stockReplenishmentIngredientListTitle": "點選以設定不同成份欲設定的量",
+  "@stockReplenishmentIngredientListTitle": {
+    "description": "設定採購時成份列表的標題"
+  },
+  "stockReplenishmentCreate": "新增採購種類",
+  "stockReplenishmentNameLabel": "採購名稱",
+  "stockReplenishmentNameHint": "Costco 採購",
+  "stockReplenishmentNameRepeatError": "採購名稱重複",
+  "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
+  "stockQuantityTitle": "份量列表",
+  "stockQuantityMetaProportion": "預設比例：{proportion}",
+  "@stockQuantityMetaProportion": {
+    "description": "份量列表中各個項目的子標題中，說明預設比例的文字",
+    "placeholders": {
+      "proportion": {
+        "description": "預設會套用的比例",
+        "type": "num"
+      }
+    }
+  },
+  "stockQuantityDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品成份的份量}",
+  "@stockQuantityDialogDeletionContent": {
+    "description": "刪除份量時會提示多少個產品成份受影響",
+    "count": {
+      "description": "產品成份數量",
+      "type": "int"
+    }
+  },
+  "stockQuantityCreate": "新增份量",
+  "stockQuantityNameLabel": "份量名稱",
+  "stockQuantityNameHint": "少量、多量",
+  "stockQuantityNameRepeatError": "份量名稱重複",
+  "stockQuantityProportionLabel": "預設比例",
+  "stockQuantityProportionHelper": "當產品成份使用此份量時，預設替該成份增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成份「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
   "settingThemeTitle": "調色盤",
   "@settingThemeTitle": {
     "description": "設定頁面中主題的標題"
