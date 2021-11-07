@@ -7,7 +7,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/cashier_surplus.dart';
