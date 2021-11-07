@@ -26,11 +26,13 @@ class ReorderableScaffold<T> extends StatelessWidget {
         leading: const PopButton(),
         actions: [
           AppbarTextButton(
-              onPressed: () async {
-                await handleSubmit(items);
-                Navigator.of(context).pop();
-              },
-              child: Text(S.btnSave)),
+            key: const Key('reorder.save'),
+            onPressed: () async {
+              await handleSubmit(items);
+              Navigator.of(context).pop();
+            },
+            child: Text(S.btnSave),
+          ),
         ],
         title: title == null ? null : Text(title!),
       ),

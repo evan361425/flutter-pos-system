@@ -10,6 +10,7 @@ import 'package:possystem/ui/stock/replenishment/replenishment_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Replenishment Screen', () {
@@ -45,7 +46,7 @@ void main() {
       // should failed
       await tester.enterText(
           find.byKey(const Key('replenishment.name')), 'r-2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -54,7 +55,7 @@ void main() {
           find.byKey(const Key('replenishment.ingredients.i-1')), '2');
       await tester.enterText(
           find.byKey(const Key('replenishment.ingredients.i-2')), '3');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // update to storage
       await tester.pumpAndSettle();
       // pop
@@ -94,7 +95,7 @@ void main() {
           find.byKey(const Key('replenishment.ingredients.i-1')), '1');
       await tester.enterText(
           find.byKey(const Key('replenishment.ingredients.i-2')), '2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // save to storage
       await tester.pumpAndSettle();
       // pop
@@ -127,7 +128,7 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('delete'));
+      await tester.tap(find.byKey(const Key('btn.delete')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
@@ -137,6 +138,7 @@ void main() {
 
     setUpAll(() {
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

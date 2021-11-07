@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../mocks/mock_cache.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Analysis Order List', () {
@@ -157,6 +158,7 @@ void main() {
 
     setUpAll(() {
       initializeCache();
+      initializeTranslator();
     });
   });
 }

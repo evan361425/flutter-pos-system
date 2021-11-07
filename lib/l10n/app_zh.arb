@@ -201,7 +201,7 @@
   "@analysisCalendarTwoWeek": {
     "description": "分析頁的日曆週期轉換單位之一"
   },
-  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢}}",
+  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢} ready{下拉以載入更多}}",
   "@analysisOrderListStatus": {
     "description": "分析頁的點餐列表狀態",
     "placeholders": {
@@ -218,7 +218,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -231,7 +232,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -244,7 +246,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -330,7 +333,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -343,7 +347,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -404,7 +409,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -416,7 +422,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -687,7 +694,7 @@
       "mode": {}
     }
   },
-  "customerSettingOptionsModeHint": "{mode, select, changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
+  "customerSettingOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
   "@customerSettingOptionsModeHint": {
     "description": "模式的提示",
     "placeholders": {
@@ -713,7 +720,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -792,7 +800,7 @@
   "orderCartActionsChangeCountSuffix": "個",
   "orderCartActionsFree": "招待",
   "orderCartActionsDelete": "刪除",
-  "orderCartItemPrice": "{price, plural, =0{免費} other{{price}}}",
+  "orderCartItemPrice": "{price, plural, =0{免費} other{{price} 元}}",
   "@orderCartItemPrice": {
     "description": "產品的價格",
     "placeholders": {
@@ -800,7 +808,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -856,7 +865,7 @@
   "orderCashierCalculatorPaidLabel": "付額",
   "orderCashierCalculatorChangeLabel": "找錢",
   "orderCashierCalculatorChangeNotEnough": "必須大於付額",
-  "orderCashierSnapshotChangeField": "找錢:{price}",
+  "orderCashierSnapshotChangeField": "找錢：{price}",
   "@orderCashierSnapshotChangeField": {
     "description": "快照上說明的找錢資訊",
     "placeholders": {
@@ -864,7 +873,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -878,7 +888,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }
@@ -926,7 +937,8 @@
         "type": "num",
         "format": "compactCurrency",
         "optionalParameters": {
-          "decimalDigits": 0
+          "decimalDigits": 0,
+          "symbol": ""
         }
       }
     }

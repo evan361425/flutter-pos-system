@@ -12,10 +12,12 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/product/product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Product Screen', () {
@@ -73,7 +75,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text('name_empty'), findsOneWidget);
+        expect(find.text(S.menuIngredientSearchEmptyError), findsOneWidget);
 
         // add new ingredient
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
@@ -84,7 +86,7 @@ void main() {
             .tap(find.byKey(const Key('product_ingredient.add_ingredient')));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
@@ -167,7 +169,7 @@ void main() {
         await tester.enterText(
             find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
 
         // select new name
@@ -181,7 +183,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text('name_repeat'), findsOneWidget);
+        expect(find.text(S.menuIngredientRepeatError), findsOneWidget);
 
         // search for ingredient3
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
@@ -208,7 +210,7 @@ void main() {
             .tap(find.byKey(const Key('product_ingredient.search.i-3')));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
@@ -315,7 +317,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text('name_empty'), findsOneWidget);
+        expect(find.text(S.menuQuantitySearchEmptyError), findsOneWidget);
 
         // add new quantity
         await tester.tap(find.byKey(const Key('product_quantity.search')));
@@ -329,7 +331,7 @@ void main() {
         await tester.enterText(
             find.byKey(const Key('product_quantity.amount')), '1');
 
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
@@ -391,7 +393,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
 
         // select new name
@@ -407,7 +409,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text('name_repeat'), findsOneWidget);
+        expect(find.text(S.menuQuantityRepeatError), findsOneWidget);
 
         // search for quantity3
         await tester.tap(find.byKey(const Key('product_quantity.search')));
@@ -426,7 +428,7 @@ void main() {
 
         await tester.enterText(
             find.byKey(const Key('product_quantity.amount')), '1');
-        await tester.tap(find.text('save'));
+        await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
@@ -490,6 +492,7 @@ void main() {
 
     setUpAll(() {
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

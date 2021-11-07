@@ -84,7 +84,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
       builder: (BuildContext context, LoadStatus? mode) {
         switch (mode) {
           case LoadStatus.canLoading:
-            return const Center(child: Text('下拉以載入更多'));
+            return Center(child: Text(S.analysisOrderListStatus('ready')));
           case LoadStatus.loading:
             return const CircularLoading();
           case LoadStatus.noMore:

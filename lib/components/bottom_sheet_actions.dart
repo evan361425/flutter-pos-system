@@ -119,6 +119,7 @@ class BottomSheetActions extends StatelessWidget {
     final result = await showCircularBottomSheet<T>(context, actions: [
       ...actions,
       BottomSheetAction(
+        key: const Key('btn.delete'),
         title: Text(S.btnDelete),
         leading: Icon(
           KIcons.delete,

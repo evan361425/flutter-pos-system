@@ -7,10 +7,12 @@ import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Setting Screen', () {
@@ -32,15 +34,15 @@ void main() {
     testWidgets('select theme', (tester) async {
       await buildApp(tester);
 
-      expect(find.text('system'), findsOneWidget);
+      expect(find.text(S.settingThemeTypes('system')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('setting.theme')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('dark'));
+      await tester.tap(find.text(S.settingThemeTypes('dark')));
       await tester.pumpAndSettle();
 
-      expect(find.text('dark'), findsOneWidget);
+      expect(find.text(S.settingThemeTypes('dark')), findsOneWidget);
     });
 
     testWidgets('select language', (tester) async {
@@ -60,15 +62,17 @@ void main() {
     testWidgets('select outlook_order', (tester) async {
       await buildApp(tester);
 
-      expect(find.text('酷炫面板'), findsOneWidget);
+      expect(find.text(S.settingOrderOutlookTypes('slidingPanel')),
+          findsOneWidget);
 
       await tester.tap(find.byKey(const Key('setting.outlook_order')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('經典模式'));
+      await tester.tap(find.text(S.settingOrderOutlookTypes('singleView')));
       await tester.pumpAndSettle();
 
-      expect(find.text('經典模式'), findsOneWidget);
+      expect(
+          find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
     });
 
     testWidgets('select awake_ordering', (tester) async {
@@ -87,6 +91,7 @@ void main() {
 
     setUpAll(() {
       initializeCache();
+      initializeTranslator();
     });
   });
 }

@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/disable_tips.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Cashier Screen', () {
@@ -92,7 +93,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.surplus')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('confirm'));
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
 
       expect(Cashier.instance.at(0).count, equals(10));
@@ -178,6 +179,7 @@ void main() {
       disableTips();
       initializeStorage();
       initializeCache();
+      initializeTranslator();
     });
   });
 }

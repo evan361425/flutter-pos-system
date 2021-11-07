@@ -12,6 +12,7 @@ import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Catalog Screen', () {
@@ -100,7 +101,7 @@ void main() {
 
       // save failed
       await tester.enterText(find.byKey(const Key('product.name')), 'p-2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
@@ -151,7 +152,7 @@ void main() {
       await tester.drag(
           find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
 
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
       final y1 = tester.getCenter(find.byKey(const Key('product.p-1'))).dy;
@@ -198,6 +199,7 @@ void main() {
 
     setUpAll(() {
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

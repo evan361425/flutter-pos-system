@@ -28,11 +28,13 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Order Cashier', () {
@@ -206,7 +208,8 @@ void main() {
       await tester.pumpAndSettle();
 
       final sChange = find.byKey(const Key('cashier.snapshot.change'));
-      expect(tester.widget<Text>(sChange).data, equals('找錢：2'));
+      expect(tester.widget<Text>(sChange).data,
+          equals(S.orderCashierSnapshotChangeField(2)));
       await tester.tap(sChange);
       await tester.pumpAndSettle();
 
@@ -422,6 +425,7 @@ void main() {
       initializeCache();
       initializeDatabase();
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

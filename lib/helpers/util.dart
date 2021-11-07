@@ -25,9 +25,4 @@ class Util {
 
     return now;
   }
-
-  static String? timeToDate(DateTime? time) {
-    if (time == null) return null;
-    return '${time.year}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')}';
-  }
 }

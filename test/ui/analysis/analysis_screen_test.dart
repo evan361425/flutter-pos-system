@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   Widget buildAnalysisScreen({themeMode = ThemeMode.light}) {
@@ -24,11 +25,6 @@ void main() {
       themeMode: themeMode,
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
-      locale: LanguageSetting.defaultLanguage,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings..loadSetting()),
@@ -107,7 +103,7 @@ void main() {
       expect(find.text('99+'), findsOneWidget);
 
       // change format
-      await tester.tap(find.text('month'));
+      await tester.tap(find.text(S.analysisCalendarMonth));
       await tester.pumpAndSettle();
 
       // select date
@@ -157,6 +153,7 @@ void main() {
     setUpAll(() {
       initializeCache();
       initializeDatabase();
+      initializeTranslator();
     });
   });
 }

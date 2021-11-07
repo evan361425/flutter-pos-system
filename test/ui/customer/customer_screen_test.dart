@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Customer Screen', () {
@@ -31,7 +32,7 @@ void main() {
 
       await tester.enterText(
           find.byKey(const Key('customer_setting.name')), 'cs-1');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // save to storage
       await tester.pumpAndSettle();
       // pop
@@ -136,7 +137,7 @@ void main() {
           find.byKey(const Key('customer_setting.name')), 'new');
       await tester.tap(find.byKey(const Key('customer_setting.modes.1')));
       await tester.tap(find.byKey(const Key('customer_setting.modes.2')));
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       final w =
@@ -198,7 +199,7 @@ void main() {
         find.byIcon(Icons.reorder_sharp).first,
         Offset(0, rect.height + rect.top),
       );
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
       final y1 =
@@ -240,7 +241,7 @@ void main() {
 
       // repeat name
       await tester.enterText(fbk('name'), 'cso-1');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       // reset default
@@ -356,7 +357,7 @@ void main() {
 
       await tester.drag(
           find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
       final y1 =
@@ -374,6 +375,7 @@ void main() {
     setUpAll(() {
       initializeCache();
       initializeDatabase();
+      initializeTranslator();
     });
   });
 }

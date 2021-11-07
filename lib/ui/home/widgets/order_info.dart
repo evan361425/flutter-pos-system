@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
@@ -99,8 +99,7 @@ class _OrderMetadataState extends State<_OrderMetadata> {
   void _queryValue(Seller seller) async {
     final result = await seller.getMetricBetween();
     setState(() {
-      revenue = NumberFormat.compactCurrency(locale: S.localeName, symbol: '')
-          .format(result['totalPrice']);
+      revenue = result['totalPrice']!.toCurrency();
       count = result['count'].toString();
     });
   }

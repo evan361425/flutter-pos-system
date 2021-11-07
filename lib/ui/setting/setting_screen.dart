@@ -42,7 +42,8 @@ class _SettingScreenState extends State<SettingScreen> {
     final orderAwakening = settings.getSetting<OrderAwakeningSetting>();
     final orderOutlook = settings.getSetting<OrderOutlookSetting>();
 
-    final selectedLanguage = language.value.languageCode;
+    final selectedLanguage =
+        _supportedLanguages.indexOf(language.value.languageCode);
 
     return Scaffold(
       appBar: AppBar(leading: const PopButton()),
@@ -65,11 +66,12 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.language'),
             title: Text(S.settingLanguageTitle),
+            subtitle: Text(_languageNames[selectedLanguage]),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => language.update(Locale(_supportedLanguages[index])),
               title: S.settingLanguageTitle,
-              selected: _supportedLanguages.indexOf(selectedLanguage),
+              selected: selectedLanguage,
               items: _languageNames,
             ),
           ),
