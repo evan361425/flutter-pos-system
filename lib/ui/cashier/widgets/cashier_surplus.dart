@@ -10,14 +10,14 @@ class CashierSurplus extends StatelessWidget {
 
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('現有金'),
+        const Text('現有總額'),
         Text(
           Cashier.instance.currentTotal.toString(),
           style: theme.textTheme.headline4,
         ),
       ]),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('初始金'),
+        const Text('預設總額'),
         Text(Cashier.instance.defaultTotal.toString()),
       ]),
       const Divider(),
@@ -26,7 +26,7 @@ class CashierSurplus extends StatelessWidget {
         child: DataTable(
           columns: const <DataColumn>[
             DataColumn(label: Text('金額'), numeric: true),
-            DataColumn(label: Text('初始'), numeric: true),
+            DataColumn(label: Text('預設'), numeric: true),
             DataColumn(label: Text('差異'), numeric: true),
             DataColumn(label: Text('現有'), numeric: true),
           ],

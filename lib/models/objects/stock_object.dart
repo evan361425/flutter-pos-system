@@ -79,7 +79,7 @@ class IngredientObject extends ModelObject<Ingredient> {
       lastAddAmount: data['lastAddAmount'] as num?,
       updatedAt: data['updatedAt'] == null
           ? null
-          : Util.fromUTC(data['updatedAt'] as int),
+          : DateTime.parse(data['updatedAt'] as String),
     );
   }
 }

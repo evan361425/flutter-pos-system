@@ -1,3 +1,7 @@
 {
-  "appTitle": "POS System"
+  "appTitle": "POS System",
+  "homeIcons": "{icon, select, menu{Menu} setting{Setting} analysis{Analysis} stock{Stock} quantities{Quantities} order{Order} cashier{Cashier} customer{Customer}}",
+  "settingThemeTitle": "調色盤",
+  "settingThemeTypes": "{type, select, dark{Dark Mode} light{Light Mode} system{Follow System}}",
+  "settingLanguageTitle": "Language"
 }

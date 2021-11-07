@@ -216,7 +216,7 @@
     "placeholders": {
       "price": {
         "type": "num",
-        "format": "compactCurrency",
+        "format": "currency",
         "optionalParameters": {
           "decimalDigits": 0,
           "symbol": ""
@@ -230,7 +230,7 @@
     "placeholders": {
       "paid": {
         "type": "num",
-        "format": "compactCurrency",
+        "format": "currency",
         "optionalParameters": {
           "decimalDigits": 0,
           "symbol": ""
@@ -295,7 +295,7 @@
     "placeholders": {
       "createdAt": {
         "type": "DateTime",
-        "format": "MMMEd"
+        "format": "MMMd"
       }
     }
   },
@@ -800,7 +800,7 @@
   "orderCartActionsChangeCountSuffix": "個",
   "orderCartActionsFree": "招待",
   "orderCartActionsDelete": "刪除",
-  "orderCartItemPrice": "{price, plural, =0{免費} other{{price} 元}}",
+  "orderCartItemPrice": "{price, plural, =0{免費} other{{price}元}}",
   "@orderCartItemPrice": {
     "description": "產品的價格",
     "placeholders": {
@@ -886,7 +886,7 @@
       "price": {
         "description": "總價",
         "type": "num",
-        "format": "compactCurrency",
+        "format": "currency",
         "optionalParameters": {
           "decimalDigits": 0,
           "symbol": ""
@@ -935,7 +935,7 @@
       "price": {
         "description": "單一餐點的總價",
         "type": "num",
-        "format": "compactCurrency",
+        "format": "currency",
         "optionalParameters": {
           "decimalDigits": 0,
           "symbol": ""

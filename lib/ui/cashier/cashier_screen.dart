@@ -67,12 +67,7 @@ class CashierScreen extends StatelessWidget {
         child: Column(children: [
           actions,
           const Divider(),
-          Expanded(
-            child: ChangeNotifierProvider.value(
-              value: Cashier.instance,
-              child: const CashierUnitList(),
-            ),
-          ),
+          const Expanded(child: CashierUnitList()),
         ]),
       ),
     );

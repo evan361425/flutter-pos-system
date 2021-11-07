@@ -107,6 +107,7 @@ class _IngredientTile extends StatelessWidget {
         title: Text(title),
         initialValue: initialValue ?? '0',
         validator: Validator.positiveNumber(''),
+        selectAll: true,
         keyboardType: TextInputType.number,
       ),
     );

@@ -95,7 +95,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
   Future<List<Map<String, Object?>>> fetchItems() {
     return Database.instance.query(
       repoTableName,
-      where: 'customerSettingId = ? && isDelete = 0',
+      where: 'customerSettingId = ? AND isDelete = 0',
       whereArgs: [int.parse(id)],
     );
   }

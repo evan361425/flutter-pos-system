@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -20,6 +21,27 @@ class ReplenishmentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final replenisher = context.watch<Replenisher>();
 
+    void navToAdd() =>
+        Navigator.of(context).pushNamed(Routes.stockReplenishmentModal);
+
+    final body = replenisher.isEmpty
+        ? <Widget>[Expanded(child: EmptyBody(onPressed: navToAdd))]
+        : <Widget>[
+            Center(child: HintText(S.totalCount(replenisher.length))),
+            Expanded(
+              child: SingleChildScrollView(
+                child: SlidableItemList<Replenishment, int>(
+                  handleDelete: (item) => item.remove(),
+                  deleteValue: 1,
+                  warningContextBuilder: (_, item) =>
+                      Text(S.dialogDeletionContent(item.name, '')),
+                  items: replenisher.itemList,
+                  tileBuilder: (_, index, item) => _ReplenishmentTile(item),
+                ),
+              ),
+            ),
+          ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(S.stockReplenishmentTitle),
@@ -27,30 +49,15 @@ class ReplenishmentScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('replenisher.add'),
-        onPressed: () =>
-            Navigator.of(context).pushNamed(Routes.stockReplenishmentModal),
+        onPressed: navToAdd,
         tooltip: S.stockReplenishmentCreate,
         child: const Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(kSpacing1),
-          child: HintText(S.totalCount(replenisher.length)),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: SlidableItemList<Replenishment, int>(
-              handleDelete: (item) => item.remove(),
-              deleteValue: 1,
-              warningContextBuilder: (_, item) =>
-                  Text(S.dialogDeletionContent(item.name, '')),
-              items: replenisher.itemList,
-              tileBuilder: (_, index, item) => _ReplenishmentTile(item),
-            ),
-          ),
-        ),
-      ]),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: body,
+      ),
     );
   }
 }
@@ -78,10 +85,13 @@ class _ReplenishmentTile extends StatelessWidget {
   }
 
   Future<void> handleApply(BuildContext context) async {
-    final names = item.data.keys
-        .map((id) => Stock.instance.getItem(id)?.name)
-        .where((name) => name != null)
-        .toList();
+    final data = <String, num>{};
+    item.data.forEach((key, value) {
+      final ingredient = Stock.instance.getItem(key);
+      if (ingredient != null) {
+        data[ingredient.name] = value;
+      }
+    });
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -92,7 +102,16 @@ class _ReplenishmentTile extends StatelessWidget {
           children: [
             Text(S.stockReplenishmentApplyConfirmContent),
             const SizedBox(height: kSpacing1),
-            for (var names in names) Text('- $names'),
+            DataTable(columns: const [
+              DataColumn(label: Text('名稱')),
+              DataColumn(numeric: true, label: Text('數量'))
+            ], rows: <DataRow>[
+              for (final entry in data.entries)
+                DataRow(cells: [
+                  DataCell(Text(entry.key)),
+                  DataCell(Text(entry.value.toString())),
+                ])
+            ]),
           ],
         ),
       ),

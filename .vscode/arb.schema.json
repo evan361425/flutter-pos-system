@@ -3,10 +3,10 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
 
   "patternProperties": {
-    "^[a-zA-Z]+": {
+    "^[\\w]+": {
       "type": "string"
     },
-    "^@": {
+    "^@[\\w]": {
       "type": "object",
       "properties": {
         "description": { "type": "string" },

@@ -190,8 +190,8 @@ void main() {
     });
 
     test('Stock', () async {
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      when(storage.get(Stores.stock, argThat(isNull))).thenAnswer(
+      final now = DateTime.now();
+      when(storage.get(Stores.stock, any)).thenAnswer(
         (_) => Future.value({
           'i-1': {
             'name': 'i-1',
@@ -200,7 +200,7 @@ void main() {
             'alertAmount': 30,
             'lastAmount': 40,
             'lastAddAmount': 30,
-            'updatedAt': now,
+            'updatedAt': now.toString(),
           },
           'i-2': {'name': 'i-2'},
         }),

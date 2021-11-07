@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -87,6 +88,10 @@ void main() async {
         ),
         ChangeNotifierProvider<Seller>(
           create: (_) => Seller(),
+        ),
+        ChangeNotifierProvider<Cashier>(
+          create: (_) => Cashier()..reset(),
+          lazy: false,
         ),
       ],
       child: MyApp(

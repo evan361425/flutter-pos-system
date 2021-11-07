@@ -55,7 +55,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
               ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
               : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';
     } else {
-      final value = modeValue!.toCurrency;
+      final value = modeValue!.toCurrency();
       return modeValue! == 0
           ? ''
           : modeValue! > 0

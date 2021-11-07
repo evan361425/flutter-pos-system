@@ -42,6 +42,7 @@ class StockScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     final updatedAt = Stock.instance.updatedAt;
+    final theme = Theme.of(context);
 
     return Column(children: [
       Padding(
@@ -53,8 +54,11 @@ class StockScreen extends StatelessWidget {
           TipTutorial(
             label: 'replenishment.apply',
             message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
-            child: TextButton(
+            child: ElevatedButton(
               key: const Key('stock.replenisher'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 30),
+              ),
               onPressed: () async {
                 final result = await Navigator.of(context).pushNamed(
                   Routes.stockReplenishment,
@@ -64,7 +68,7 @@ class StockScreen extends StatelessWidget {
                   showSuccessSnackbar(context, S.actSuccess);
                 }
               },
-              child: const Text('設定採購'),
+              child: Text('設定採購', style: theme.textTheme.headline6),
             ),
           ),
           HintText(S.totalCount(Stock.instance.length)),

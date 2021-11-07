@@ -68,6 +68,7 @@ class CashierUnitList extends StatelessWidget {
         title: Text(title),
         validator: Validator.positiveInt('數量'),
         initialValue: '1',
+        selectAll: true,
         keyboardType: TextInputType.number,
       ),
     );

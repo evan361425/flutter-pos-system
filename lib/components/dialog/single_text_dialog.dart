@@ -9,6 +9,7 @@ class SingleTextDialog extends StatefulWidget {
     this.decoration,
     this.initialValue,
     this.keyboardType,
+    this.selectAll = false,
     this.title,
   }) : super(key: key);
 
@@ -17,6 +18,7 @@ class SingleTextDialog extends StatefulWidget {
   final InputDecoration? decoration;
   final String? initialValue;
   final TextInputType? keyboardType;
+  final bool selectAll;
 
   @override
   _SingleTextDialogState createState() => _SingleTextDialogState();
@@ -67,5 +69,11 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
   void initState() {
     super.initState();
     textController = TextEditingController(text: widget.initialValue);
+    if (widget.selectAll && widget.initialValue != null) {
+      textController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: widget.initialValue!.length,
+      );
+    }
   }
 }

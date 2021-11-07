@@ -5,7 +5,7 @@ import 'package:possystem/settings/setting.dart';
 
 class LanguageSetting extends Setting<Locale> {
   // Make SettingsService a private variable so it is not used directly.
-  static const defaultLanguage = Locale('zh');
+  static const defaultLanguage = Locale('zh', 'TW');
 
   @override
   final String key = 'language';
