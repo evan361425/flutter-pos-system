@@ -6,6 +6,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/translator.dart';
 
 class CustomerModal extends StatefulWidget {
   final CustomerSetting? setting;
@@ -50,16 +51,16 @@ class _CustomerModalState extends State<CustomerModal>
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: '顧客設定名稱',
-          hintText: '年齡',
+          labelText: S.customerSettingNameLabel,
+          hintText: S.customerSettingNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
-        validator: Validator.textLimit('顧客設定名稱', 30),
+        validator: Validator.textLimit(S.customerSettingNameLabel, 30),
       ),
-      const TextDivider(label: '顧客設定種類'),
+      TextDivider(label: S.customerSettingModeTitle),
       _CustomerModalModes(
         key: modesKey,
         selectedMode: widget.isNew
@@ -96,7 +97,7 @@ class _CustomerModalState extends State<CustomerModal>
 
     if (widget.setting?.name != name &&
         CustomerSettings.instance.hasName(name)) {
-      return '名稱不能重複';
+      return S.customerSettingNameRepeatError;
     }
   }
 }
@@ -115,14 +116,6 @@ class _CustomerModalModes extends StatefulWidget {
 
 class _CustomerModalModesState extends State<_CustomerModalModes>
     with TickerProviderStateMixin {
-  static const descriptions = <CustomerSettingOptionMode, String>{
-    CustomerSettingOptionMode.statOnly: '一般的設定，選取時並不會影響點單價格。',
-    CustomerSettingOptionMode.changePrice:
-        '選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。',
-    CustomerSettingOptionMode.changeDiscount:
-        '選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。',
-  };
-
   late CustomerSettingOptionMode selectedMode;
 
   @override
@@ -138,12 +131,12 @@ class _CustomerModalModesState extends State<_CustomerModalModes>
               isSelected: selectedMode == mode,
               onSelected: (_) => setState(() => selectedMode = mode),
               value: mode.toString(),
-              text: customerSettingOptionModeString[mode]!,
+              text: S.customerSettingModeNames(mode),
             ),
           )
       ]),
       const SizedBox(height: 8.0),
-      Text(descriptions[selectedMode]!),
+      Text(S.customerSettingModeDescriptions(selectedMode)),
     ]);
   }
 

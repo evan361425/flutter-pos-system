@@ -93,7 +93,7 @@ class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
       return Column(children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: HintText(tt('search_count', {'count': count})),
+          child: HintText(S.searchCount(count)),
         ),
         Expanded(child: _listBuilder(context, list)),
       ]);

@@ -249,16 +249,12 @@
       }
     }
   },
-  "analysisOrderListMetaPaid": "總單數：{paid}",
-  "@analysisOrderListMetaPaid": {
+  "analysisOrderListMetaCount": "總單數：{count}",
+  "@analysisOrderListMetaCount": {
     "description": "分析頁的點餐列表中，單日點餐的數量",
     "placeholders": {
-      "paid": {
-        "type": "num",
-        "format": "compactCurrency",
-        "optionalParameters": {
-          "decimalDigits": 0
-        }
+      "count": {
+        "type": "int"
       }
     }
   },
@@ -627,6 +623,87 @@
   "settingOrderAwakeningTitle": "點餐時不關閉螢幕",
   "@settingOrderAwakeningTitle": {
     "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
+  },
+  "customerSettingTitle": "顧客設定",
+  "customerSettingCreate": "新增顧客設定",
+  "customerSettingUpdate": "編輯顧客設定",
+  "customerSettingReorder": "排序設定順序",
+  "customerSettingMetaMode": "種類：{mode}",
+  "@customerSettingMetaMode": {
+    "description": "顧客設定列表的設定資訊之一",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "customerSettingMetaNoDefault": "無",
+  "customerSettingMetaDefault": "預設：{name}",
+  "@customerSettingMetaDefault": {
+    "description": "顧客設定列表的設定資訊之一",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customerSettingModeNames": "mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}",
+  "@customerSettingModeNames": {
+    "description": "顧客設定種類名稱",
+    "placeholders": {
+      "mode": {}
+    }
+  },
+  "customerSettingModeDescriptions": "mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}",
+  "@customerSettingModeDescriptions": {
+    "description": "顧客設定種類名稱",
+    "placeholders": {
+      "mode": {}
+    }
+  },
+  "customerSettingNameLabel": "顧客設定名稱",
+  "customerSettingNameHint": "年齡",
+  "customerSettingNameRepeatError": "名稱不能重複",
+  "customerSettingModeTitle": "顧客設定種類",
+  "customerSettingOptionCreate": "新增顧客設定選項",
+  "customerSettingOptionIsDefault": "預設",
+  "customerSettingOptionIsReorder": "排序選項順序",
+  "customerSettingOptionCreateTitle": "新增{name}的選項",
+  "@customerSettingOptionCreateTitle": {
+    "description": "讓標題更清楚",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customerSettingOptionNameLabel": "選項名稱",
+  "customerSettingOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
+  "customerSettingOptionNameRepeatError": "名稱不能重複",
+  "customerSettingOptionsModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價}}",
+  "@customerSettingOptionsModeHelper": {
+    "description": "模式的說明",
+    "placeholders": {
+      "mode": {}
+    }
+  },
+  "customerSettingOptionsModeHint": "{mode, select, changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
+  "@customerSettingOptionsModeHint": {
+    "description": "模式的提示",
+    "placeholders": {
+      "mode": {}
+    }
+  },
+  "customerSettingOptionSetToDefault": "設為預設",
+  "customerSettingOptionConfirmChangeDefaultTitle": "確定要覆蓋預設值嗎",
+  "customerSettingOptionConfirmChangeDefaultContent": "這麼做會讓「{name}」變成非預設值",
+  "@customerSettingOptionConfirmChangeDefaultContent": {
+    "description": "為了確保使用者知道原先的預設值是什麼而做的提示",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "orderMetaTotalPrice": "總價：{price}",
   "@orderMetaTotalPrice": {

@@ -36,7 +36,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         actions: [
           AppbarTextButton(
             onPressed: () => handleSubmit(),
-            child: Text(tt('save')),
+            child: Text(S.btnSave),
           ),
         ],
       ),

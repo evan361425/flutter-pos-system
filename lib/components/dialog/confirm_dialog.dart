@@ -18,11 +18,11 @@ class ConfirmDialog extends StatelessWidget {
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(key: const Key('confirm_dialog.cancel'), title: tt('cancel')),
+        PopButton(key: const Key('confirm_dialog.cancel'), title: S.btnCancel),
         ElevatedButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(tt('confirm')),
+          child: Text(S.btnConfirm),
         ),
       ],
     );

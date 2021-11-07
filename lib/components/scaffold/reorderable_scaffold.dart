@@ -30,7 +30,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
                 await handleSubmit(items);
                 Navigator.of(context).pop();
               },
-              child: Text(tt('save'))),
+              child: Text(S.btnSave)),
         ],
         title: title == null ? null : Text(title!),
       ),
@@ -40,7 +40,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(kSpacing0),
-            child: HintText(tt('total_count', {'count': items.length})),
+            child: HintText(S.totalCount(items.length)),
           ),
           Expanded(
             child: _OrderableList(items: items),

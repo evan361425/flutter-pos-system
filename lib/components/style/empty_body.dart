@@ -18,7 +18,7 @@ class EmptyBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            title ?? tt('empty_body'),
+            title ?? S.emptyBodyContent,
             style: Theme.of(context).textTheme.headline6,
           ),
           OutlinedButton(

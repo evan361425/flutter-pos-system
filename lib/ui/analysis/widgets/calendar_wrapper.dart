@@ -64,9 +64,9 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       // header
       headerStyle: const HeaderStyle(formatButtonShowsNext: false),
       availableCalendarFormats: {
-        CalendarFormat.month: tt('analysis.calendar.month'),
-        CalendarFormat.twoWeeks: tt('analysis.calendar.twoWeeks'),
-        CalendarFormat.week: tt('analysis.calendar.week'),
+        CalendarFormat.month: S.analysisCalendarMonth,
+        CalendarFormat.twoWeeks: S.analysisCalendarTwoWeek,
+        CalendarFormat.week: S.analysisCalendarWeek,
       },
       // no need holiday/weekend days
       holidayPredicate: (day) => false,

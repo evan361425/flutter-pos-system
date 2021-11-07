@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/scaffold/reorderable_scaffold.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/translator.dart';
 
 class CustomerSettingOrderableList extends StatelessWidget {
   final CustomerSetting setting;
@@ -15,7 +16,7 @@ class CustomerSettingOrderableList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReorderableScaffold<CustomerSettingOption>(
       items: setting.itemList,
-      title: '重新排序',
+      title: S.customerSettingOptionIsReorder,
       handleSubmit: (items) => setting.reorderItems(items),
     );
   }

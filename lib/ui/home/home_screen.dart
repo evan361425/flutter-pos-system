@@ -8,7 +8,7 @@ import 'widgets/order_info.dart';
 
 class HomeScreen extends StatelessWidget {
   static const icons = {
-    'home.types.store': {
+    'store': {
       'menu': _LabledIconItem(
         icon: Icons.collections_sharp,
         label: 'menu',
@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
         tipVersion: 1,
       ),
     },
-    'home.types.other': {
+    'other': {
       'analysis': _LabledIconItem(
         icon: Icons.equalizer_sharp,
         label: 'analysis',
@@ -67,7 +67,7 @@ class HomeScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(tt(entry.key), style: theme.textTheme.headline5),
+            Text(S.homeIconTypes(entry.key), style: theme.textTheme.headline5),
             Wrap(spacing: 8.0, children: [
               for (final item in entry.value.values)
                 _LabledIcon(item, index: count++)
@@ -116,7 +116,7 @@ class _LabledIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(item.icon, size: 48.0),
-          Text(tt('home.${item.label}')),
+          Text(S.homeIcons(item.label)),
         ],
       ),
     );
@@ -127,8 +127,8 @@ class _LabledIcon extends StatelessWidget {
 
     return OrderedTip(
       groupId: 'home',
-      title: tt('home.${item.label}'),
-      message: tt('home.tutorial.${item.label}'),
+      title: S.homeIcons(item.label),
+      message: S.homeIconTutorial(item.label),
       id: item.label,
       version: item.tipVersion,
       order: index,
