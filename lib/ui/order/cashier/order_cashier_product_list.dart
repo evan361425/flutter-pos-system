@@ -5,6 +5,7 @@ import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class OrderCashierProductList extends StatelessWidget {
   final List<CustomerSettingOption> customerSettings;
@@ -25,22 +26,22 @@ class OrderCashierProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final priceWidget = ExpansionTile(
-      title: Text('總價：${totalPrice.toCurrency()} 元'),
+      title: Text(S.orderCashierTotalPrice(totalPrice)),
       children: <Widget>[
         ListTile(
-          title: const Text('產品總價'),
+          title: Text(S.orderCashierProductTotalPrice),
           trailing: Text(productsPrice.toCurrency()),
         ),
         ListTile(
-          title: const Text('顧客設定總價'),
+          title: Text(S.orderCashierCustomerTotalPrice),
           trailing: Text(customerPrice.toCurrency()),
         ),
       ],
     );
 
     final customerSettingWidget = ExpansionTile(
-      title: const Text('顧客設定'),
-      subtitle: Text('設定 ${customerSettings.length} 項'),
+      title: Text(S.orderCashierCustomerInfoTitle),
+      subtitle: Text(S.orderCashierCustomerTotalCount(customerSettings.length)),
       children: <Widget>[
         for (final option in customerSettings)
           ListTile(
@@ -62,8 +63,8 @@ class OrderCashierProductList extends StatelessWidget {
       child: Column(children: [
         priceWidget,
         customerSettingWidget,
-        const TextDivider(label: '購買產品'),
-        HintText('總數：$totalCount'),
+        TextDivider(label: S.orderCashierProductInfoTitle),
+        HintText(S.orderCashierProductMetaCount(totalCount)),
         for (final product in products) _ProductTile(product),
       ]),
     );
@@ -93,8 +94,8 @@ class _ProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = Text(data.productName);
     final subtitle = MetaBlock.withString(context, <String>[
-      '總價：${data.totalPrice}',
-      '總數：${data.totalCount}',
+      S.orderCashierProductMetaPrice(data.totalPrice),
+      S.orderCashierProductMetaCount(data.totalCount),
     ]);
 
     return data.ingredientNames.isEmpty

@@ -11,16 +11,20 @@ import 'package:possystem/settings/setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
 
-const _outlookOrderNames = <OrderOutlookTypes, String>{
-  OrderOutlookTypes.slidingPanel: '酷炫面板',
-  OrderOutlookTypes.singleView: '經典模式',
-};
-
 const _themeNames = <ThemeMode, String>{
   ThemeMode.system: 'system',
   ThemeMode.light: 'light',
   ThemeMode.dark: 'dark',
 };
+
+const _orderOutlookNames = <OrderOutlookTypes, String>{
+  OrderOutlookTypes.singleView: 'singleView',
+  OrderOutlookTypes.slidingPanel: 'slidingPanel',
+};
+
+const _languageNames = ['繁體中文', 'English'];
+
+const _supportedLanguages = ['zh', 'en'];
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -38,58 +42,56 @@ class _SettingScreenState extends State<SettingScreen> {
     final orderAwakening = settings.getSetting<OrderAwakeningSetting>();
     final orderOutlook = settings.getSetting<OrderOutlookSetting>();
 
-    final selectedLanguage = LanguageSetting.supports.indexOf(language.value);
+    final selectedLanguage = language.value.languageCode;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(tt('home.setting')),
-        leading: const PopButton(),
-      ),
+      appBar: AppBar(leading: const PopButton()),
       body: ListView(
         children: <Widget>[
           CardTile(
             key: const Key('setting.theme'),
-            title: Text(tt('setting.theme.title')),
-            subtitle: Text(tt('setting.theme.${_themeNames[theme.value]}')),
+            title: Text(S.settingThemeTitle),
+            subtitle: Text(S.settingThemeTypes(_themeNames[theme.value]!)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => theme.update(ThemeMode.values[index]),
-              title: tt('setting.theme.title'),
+              title: S.settingThemeTitle,
               items: ThemeMode.values
-                  .map<String>((e) => tt('setting.theme.${_themeNames[e]}'))
+                  .map<String>((e) => S.settingThemeTypes(_themeNames[e]!))
                   .toList(),
               selected: theme.value.index,
             ),
           ),
           CardTile(
             key: const Key('setting.language'),
-            title: Text(tt('setting.language.title')),
-            subtitle: Text(LanguageSetting.supportNames[selectedLanguage]),
+            title: Text(S.settingLanguageTitle),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
-              (index) => language.update(LanguageSetting.supports[index]),
-              title: tt('setting.language.title'),
-              items: LanguageSetting.supportNames,
-              selected: selectedLanguage,
+              (index) => language.update(Locale(_supportedLanguages[index])),
+              title: S.settingLanguageTitle,
+              selected: _supportedLanguages.indexOf(selectedLanguage),
+              items: _languageNames,
             ),
           ),
           const SizedBox(height: kSpacing2),
           CardTile(
             key: const Key('setting.outlook_order'),
-            title: const Text('點餐的外觀'),
-            subtitle: Text(_outlookOrderNames[orderOutlook.value]!),
+            title: Text(S.settingOrderOutlookTitle),
+            subtitle: Text(S.settingOrderOutlookTypes(
+                _orderOutlookNames[orderOutlook.value]!)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
-              title: '點餐的外觀',
+              title: S.settingOrderOutlookTitle,
               items: OrderOutlookTypes.values
-                  .map((e) => _outlookOrderNames[e]!)
+                  .map(
+                      (e) => S.settingOrderOutlookTypes(_orderOutlookNames[e]!))
                   .toList(),
               selected: orderOutlook.value.index,
             ),
           ),
           CardTile(
-            title: const Text('點餐時不關閉螢幕'),
+            title: Text(S.settingOrderAwakeningTitle),
             trailing: FeatureSwitch(
               key: const Key('setting.feature.awake_ordering'),
               value: orderAwakening.value,

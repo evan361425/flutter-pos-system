@@ -38,24 +38,15 @@ class QuantityList extends StatelessWidget {
     return ListTile(
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
-      subtitle: Text(tt(
-        'stock.quantity.proportion',
-        {'proportion': quantity.defaultProportion},
-      )),
+      subtitle: Text(S.stockQuantityMetaProportion(quantity.defaultProportion)),
     );
   }
 
   Widget _warningContextBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
+    final moreCtx = S.stockQuantityDialogDeletionContent(count);
 
-    if (count == 0) {
-      return Text(tt('delete_confirm', {'name': quantity.name}));
-    }
-
-    return Text(tt(
-      'stock.quantity.delete_confirm',
-      {'name': quantity.name, 'count': count},
-    ));
+    return Text(S.dialogDeletionContent(quantity.name, moreCtx));
   }
 }
 

@@ -19,7 +19,7 @@ class ProductIngredientList extends StatelessWidget {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(kSpacing1),
-        child: HintText(tt('total_count', {'count': ingredients.length})),
+        child: HintText(S.totalCount(ingredients.length)),
       ),
       for (final ingredient in ingredients) _IngredientTile(ingredient),
     ]);
@@ -38,7 +38,7 @@ class _IngredientTile extends StatelessWidget {
       child: ExpansionTile(
         key: Key(key),
         title: Text(ingredient.name),
-        subtitle: Text('使用量：${ingredient.amount}'),
+        subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
@@ -51,7 +51,7 @@ class _IngredientTile extends StatelessWidget {
                   arguments: ingredient,
                 ),
                 icon: const Icon(KIcons.add),
-                label: Text(tt('menu.quantity.add')),
+                label: Text(S.menuQuantityCreate),
               ),
               IconButton(
                 key: Key('$key.more'),
@@ -72,13 +72,13 @@ class _IngredientTile extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(tt('menu.ingredient.edit')),
+          title: Text(S.menuIngredientUpdate),
           leading: const Icon(Icons.text_fields_sharp),
           navigateRoute: Routes.menuIngredient,
           navigateArgument: ingredient,
         ),
       ],
-      warningContent: Text(tt('delete_confirm', {'name': ingredient.name})),
+      warningContent: Text(S.dialogDeletionContent(ingredient.name, '')),
       deleteCallback: () => ingredient.remove(),
     );
   }
@@ -95,14 +95,14 @@ class _QuantityTile extends StatelessWidget {
       key: Key('product_quantity.${quantity.id}'),
       title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
       subtitle: MetaBlock.withString(context, <String>[
-        '額外使用量：${quantity.amount}',
-        '額外售價：${quantity.additionalPrice}',
-        '額外成本：${quantity.additionalCost}',
+        S.menuQuantityMetaAmount(quantity.amount),
+        S.menuQuantityMetaPrice(quantity.additionalPrice),
+        S.menuQuantityMetaCost(quantity.additionalCost),
       ]),
       onLongPress: () => BottomSheetActions.withDelete<int>(
         context,
         deleteValue: 0,
-        warningContent: Text(tt('delete_confirm', {'name': quantity.name})),
+        warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
         deleteCallback: quantity.remove,
       ),
       onTap: () => Navigator.of(context).pushNamed(

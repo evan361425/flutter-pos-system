@@ -8,8 +8,9 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/stock/widgets/ingredient_list.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/ingredient_list.dart';
 
 class StockScreen extends StatelessWidget {
   const StockScreen({Key? key}) : super(key: key);
@@ -23,13 +24,13 @@ class StockScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tt('home.stock')),
+        title: Text(S.stockTitle),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('stock.add'),
         onPressed: navigateNewIngredient,
-        tooltip: tt('stock.ingredient.add'),
+        tooltip: S.stockIngredientCreate,
         child: const Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
@@ -40,11 +41,15 @@ class StockScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
+    final updatedAt = Stock.instance.updatedAt;
+
     return Column(children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(children: [
-          HintText('上次補貨時間：${Stock.instance.updatedDate ?? '無'}'),
+          HintText(updatedAt == null
+              ? S.stockHasNotReplenishEver
+              : S.stockUpdatedAt(updatedAt)),
           TipTutorial(
             label: 'replenishment.apply',
             message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
@@ -56,13 +61,13 @@ class StockScreen extends StatelessWidget {
                 );
 
                 if (result == true) {
-                  showSuccessSnackbar(context, tt('succss'));
+                  showSuccessSnackbar(context, S.actSuccess);
                 }
               },
               child: const Text('設定採購'),
             ),
           ),
-          HintText(tt('total_count', {'count': Stock.instance.length})),
+          HintText(S.totalCount(Stock.instance.length)),
         ]),
       ),
       Expanded(

@@ -3,8 +3,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cart/cart_actions.dart';
 import 'package:provider/provider.dart';
+
+import 'cart_actions.dart';
 
 class CartProductList extends StatefulWidget {
   const CartProductList({Key? key}) : super(key: key);
@@ -85,7 +86,9 @@ class _CartProductListTile extends StatelessWidget {
           onPressed: () => product.increment(),
         ),
         Text(
-          tt('order.list.price', {'price': product.price}),
+          // This should be num indeed, need to fix at
+          // https://github.com/flutter/flutter/blob/36a0bc5b964cb2f49988bfd0410ef8601955f554/packages/flutter_tools/lib/src/localizations/gen_l10n.dart#L229
+          S.orderCartItemPrice(product.price.toInt()),
           key: Key('cart.product.$index.price'),
         ),
       ],

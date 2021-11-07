@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/radio_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class OrderCashierSnapshot extends StatefulWidget {
   final num totalPrice;
@@ -44,8 +45,10 @@ class OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
       const SizedBox(width: 8.0),
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child:
-            Text('找錢：$changeValue', key: const Key('cashier.snapshot.change')),
+        child: Text(
+          S.orderCashierSnapshotChangeField(changeValue),
+          key: const Key('cashier.snapshot.change'),
+        ),
       ),
     ]);
   }

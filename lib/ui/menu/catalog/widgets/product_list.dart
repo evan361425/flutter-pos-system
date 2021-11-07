@@ -18,7 +18,7 @@ class ProductList extends StatelessWidget {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(kSpacing1),
-        child: HintText(tt('total_count', {'count': products.length})),
+        child: HintText(S.totalCount(products.length)),
       ),
       SlidableItemList<Product, _Action>(
         items: products,
@@ -35,13 +35,13 @@ class ProductList extends StatelessWidget {
   Iterable<BottomSheetAction<_Action>> _actionBuilder(Product product) {
     return <BottomSheetAction<_Action>>[
       BottomSheetAction(
-        title: Text(tt('menu.product.edit')),
+        title: Text(S.menuProductUpdate),
         leading: const Icon(Icons.text_fields_sharp),
         navigateRoute: Routes.menuProductModal,
         navigateArgument: product,
       ),
       BottomSheetAction(
-        title: Text(tt('menu.product.order')),
+        title: Text(S.menuProductReorder),
         leading: const Icon(Icons.reorder_sharp),
         navigateRoute: Routes.menuProductReorder,
         navigateArgument: product.catalog,
@@ -66,13 +66,13 @@ class ProductList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),
-        emptyText: tt('menu.ingredient.unset'),
+        emptyText: S.menuProductListEmptyIngredient,
       ),
     );
   }
 
   Widget _warningContextBuilder(BuildContext context, Product product) {
-    return Text(tt('delete_confirm', {'name': product.name}));
+    return Text(S.dialogDeletionContent(product.name, ''));
   }
 }
 

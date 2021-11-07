@@ -15,7 +15,7 @@ class OrderActions extends StatelessWidget {
       return [
         BottomSheetAction(
           key: const Key('order.action.leave_history'),
-          title: Text(tt('order.action.leave_history')),
+          title: Text(S.orderActionsLeaveHistoryMode),
           leading: const Icon(Icons.assignment_return_sharp),
           returnValue: _Types.leaveHistory,
         ),
@@ -25,31 +25,31 @@ class OrderActions extends StatelessWidget {
     return [
       BottomSheetAction(
         key: const Key('order.action.show_last'),
-        title: Text(tt('order.action.show_last')),
+        title: Text(S.orderActionsShowLastOrder),
         leading: const Icon(Icons.history_sharp),
         returnValue: _Types.showLast,
       ),
-      const BottomSheetAction(
-        key: Key('order.action.changer'),
-        title: Text('換錢'),
-        leading: Icon(Icons.change_circle_outlined),
+      BottomSheetAction(
+        key: const Key('order.action.changer'),
+        title: Text(S.orderActionsOpenChanger),
+        leading: const Icon(Icons.change_circle_outlined),
         returnValue: _Types.changer,
       ),
       BottomSheetAction(
         key: const Key('order.action.stash'),
-        title: Text(tt('order.action.stash')),
+        title: Text(S.orderActionsStash),
         leading: const Icon(Icons.file_download),
         returnValue: _Types.stash,
       ),
       BottomSheetAction(
         key: const Key('order.action.drop_stash'),
-        title: Text(tt('order.action.drop_stash')),
+        title: Text(S.orderActionsDropStash),
         leading: const Icon(Icons.file_upload),
         returnValue: _Types.dropStash,
       ),
       BottomSheetAction(
         key: const Key('order.action.leave'),
-        title: Text(tt('order.action.leave')),
+        title: Text(S.orderActionsLeave),
         leading: const Icon(Icons.logout),
         returnValue: _Types.leave,
       ),
@@ -80,14 +80,13 @@ class OrderActions extends StatelessWidget {
         if (!await _confirmStashable(context)) return;
 
         if (!await Cart.instance.stash()) {
-          return showInfoSnackbar(
-              context, tt('order.action.error.stash_limit'));
+          return showInfoSnackbar(context, S.orderActionsStashHitLimit);
         }
 
         final success = await Cart.instance.popHistory();
         success
-            ? showSuccessSnackbar(context, tt('success'))
-            : showInfoSnackbar(context, tt('order.action.error.last_empty'));
+            ? showSuccessSnackbar(context, S.actSuccess)
+            : showInfoSnackbar(context, S.orderActionsShowLastOrderNotFound);
         return;
       case _Types.dropStash:
         if (!await _confirmStashable(context)) return;
@@ -97,26 +96,26 @@ class OrderActions extends StatelessWidget {
         if (!await Cart.instance.stash()) {
           return showInfoSnackbar(
             context,
-            tt('order.action.error.stash_limit'),
+            S.orderActionsStashHitLimit,
           );
         }
 
         final success = await Cart.instance.drop(isEmpty ? 1 : 2);
         return success
-            ? showSuccessSnackbar(context, tt('success'))
-            : showInfoSnackbar(context, tt('order.action.error.stash_empty'));
+            ? showSuccessSnackbar(context, S.actSuccess)
+            : showInfoSnackbar(context, S.orderActionsDropStashNotFound);
       case _Types.stash:
         if (Cart.instance.isEmpty) return;
 
         return await Cart.instance.stash()
-            ? showSuccessSnackbar(context, tt('success'))
-            : showInfoSnackbar(context, tt('order.action.error.stash_limit'));
+            ? showSuccessSnackbar(context, S.actSuccess)
+            : showInfoSnackbar(context, S.orderActionsStashHitLimit);
       case _Types.changer:
         final success =
             await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
         if (success == true) {
-          showSuccessSnackbar(context, tt('success'));
+          showSuccessSnackbar(context, S.actSuccess);
         }
         return;
       default:
@@ -129,7 +128,7 @@ class OrderActions extends StatelessWidget {
 
     final result = await showDialog(
       context: context,
-      builder: (_) => ConfirmDialog(title: tt('order.action.confirm.stash')),
+      builder: (_) => ConfirmDialog(title: S.orderActionsConfirmStashCurrent),
     );
 
     return result ?? false;

@@ -11,7 +11,7 @@ class CatalogOrderableList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReorderableScaffold(
       items: Menu.instance.itemList,
-      title: tt('menu.catalog.order'),
+      title: S.menuCatalogReorder,
       handleSubmit: (List<Catalog> items) => Menu.instance.reorderItems(items),
     );
   }

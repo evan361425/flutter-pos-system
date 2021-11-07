@@ -6,10 +6,10 @@ import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
 
+import 'order_cashier_calculator.dart';
 import 'order_cashier_product_list.dart';
+import 'order_cashier_snapshot.dart';
 
 class OrderCashierModal extends StatefulWidget {
   const OrderCashierModal({Key? key}) : super(key: key);
@@ -67,12 +67,12 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        title: const Text('計算機'),
+        title: Text(S.orderCashierTitle),
         actions: [
           AppbarTextButton(
             key: const Key('cashier.order'),
             onPressed: handleSubmit,
-            child: const Text('結帳'),
+            child: Text(S.orderCashierActionsOrder),
           ),
         ],
       ),
@@ -95,7 +95,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
     final result = await showDialog(
       context: context,
       builder: (_) => ConfirmDialog(
-        title: tt('order.cashier.confirm.leave_history'),
+        title: S.orderCashierPaidConfirmLeaveHistoryMode,
       ),
     );
 
@@ -112,7 +112,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       // send success message
       Navigator.of(context).pop(success);
     } on PaidException {
-      showErrorSnackbar(context, tt('order.cashier.error.low_paid'));
+      showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
     }
   }
 }

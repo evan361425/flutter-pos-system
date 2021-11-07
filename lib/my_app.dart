@@ -1,12 +1,14 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/settings/theme_setting.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
 import 'settings/language_setting.dart';
 import 'settings/setting.dart';
+import 'settings/theme_setting.dart';
+import 'translator.dart';
 
 class MyApp extends StatelessWidget {
   static final analytics = FirebaseAnalytics();
@@ -34,7 +36,19 @@ class MyApp extends StatelessWidget {
         animation: settings,
         builder: (_, __) {
           return MaterialApp(
-            title: 'POS System',
+            onGenerateTitle: (context) {
+              final localizations = AppLocalizations.of(context)!;
+              final language = settings.getSetting<LanguageSetting>();
+              // final locale = language.parseLanguage(localizations.localeName)!;
+
+              // if user change language by system
+              // language.update(locale);
+
+              S = localizations;
+              currentLocale = language.value;
+
+              return localizations.appTitle;
+            },
             routes: Routes.routes,
             debugShowCheckedModeBanner: false,
             navigatorObservers: [
@@ -46,8 +60,8 @@ class MyApp extends StatelessWidget {
             // allows descendant Widgets to display the correct translations
             // depending on the user's locale.
             locale: settings.getSetting<LanguageSetting>().value,
-            supportedLocales: LanguageSetting.supports,
-            localizationsDelegates: LanguageSetting.delegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
 
             // Define a light and dark color theme. Then, read the user's
             // preferred ThemeMode (light, dark, or system default) from the

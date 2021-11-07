@@ -47,7 +47,7 @@ class CartIngredients extends ChangeNotifier {
   void setIngredients(Product product) {
     if (productId != product.id) {
       productId = product.id;
-      ingredients = product.ingredientsWithQuantity.toList();
+      ingredients = product.items.toList();
 
       if (ingredients.isNotEmpty) {
         selected = ingredients.first;

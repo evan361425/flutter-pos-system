@@ -28,13 +28,13 @@ class CatalogList extends StatelessWidget {
   Iterable<BottomSheetAction<_Action>> _actionBuilder(catalog) {
     return <BottomSheetAction<_Action>>[
       BottomSheetAction(
-        title: Text(tt('menu.catalog.edit')),
+        title: Text(S.menuCatalogUpdate),
         leading: const Icon(Icons.text_fields_sharp),
         navigateArgument: catalog,
         navigateRoute: Routes.menuCatalogModal,
       ),
       BottomSheetAction(
-        title: Text(tt('menu.catalog.order')),
+        title: Text(S.menuCatalogReorder),
         leading: const Icon(Icons.reorder_sharp),
         navigateArgument: catalog,
         navigateRoute: Routes.menuCatalogReorder,
@@ -59,7 +59,7 @@ class CatalogList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
-        emptyText: tt('menu.product.unset'),
+        emptyText: S.menuCatalogListEmptyProduct,
       ),
     );
     if (index == 0) {
@@ -74,14 +74,8 @@ class CatalogList extends StatelessWidget {
   }
 
   Widget _warningContextBuilder(BuildContext context, Catalog catalog) {
-    if (catalog.isEmpty) {
-      return Text(tt('delete_confirm', {'name': catalog.name}));
-    }
-
-    return Text(tt(
-      'menu.catalog.delete_confirm',
-      {'name': catalog.name, 'count': catalog.length},
-    ));
+    final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
+    return Text(S.dialogDeletionContent(catalog.name, moreCtx));
   }
 }
 

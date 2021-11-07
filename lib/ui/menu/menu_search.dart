@@ -4,6 +4,7 @@ import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class MenuSearch extends StatelessWidget {
   const MenuSearch({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class MenuSearch extends StatelessWidget {
       itemBuilder: _itemBuilder,
       emptyBuilder: _emptyBuilder,
       initialData: Menu.instance.searchProducts().toList(),
-      hintText: '搜尋產品、成份、份量',
+      hintText: S.menuSearchProductHint,
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -32,6 +33,6 @@ class MenuSearch extends StatelessWidget {
   }
 
   Widget _emptyBuilder(BuildContext context, String text) {
-    return const Center(child: Text('搜尋不到相關資訊，打錯字了嗎？'));
+    return Center(child: Text(S.menuSearchProductNotFound));
   }
 }

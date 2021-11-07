@@ -7,10 +7,11 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
-import 'package:possystem/ui/cashier/widgets/cashier_unit_list.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
+
+import 'widgets/cashier_surplus.dart';
+import 'widgets/cashier_unit_list.dart';
 
 class CashierScreen extends StatelessWidget {
   const CashierScreen({Key? key}) : super(key: key);
@@ -86,25 +87,6 @@ class CashierScreen extends StatelessWidget {
     }
   }
 
-  void handleSurplus(BuildContext context) async {
-    if (Cashier.instance.defaultNotSet) {
-      return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
-    }
-
-    final success = await showDialog<bool>(
-        context: context,
-        builder: (_) => const ConfirmDialog(
-              title: '點選確認以結餘',
-              content: CashierSurplus(),
-            ));
-
-    if (success == true) {
-      await Cashier.instance.surplus();
-
-      showSuccessSnackbar(context, tt('success'));
-    }
-  }
-
   void handleSetDefault(BuildContext context) async {
     if (!Cashier.instance.defaultNotSet) {
       final result = await showDialog(
@@ -122,5 +104,24 @@ class CashierScreen extends StatelessWidget {
     await Cashier.instance.setDefault();
 
     showSuccessSnackbar(context, tt('success'));
+  }
+
+  void handleSurplus(BuildContext context) async {
+    if (Cashier.instance.defaultNotSet) {
+      return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
+    }
+
+    final success = await showDialog<bool>(
+        context: context,
+        builder: (_) => const ConfirmDialog(
+              title: '點選確認以結餘',
+              content: CashierSurplus(),
+            ));
+
+    if (success == true) {
+      await Cashier.instance.surplus();
+
+      showSuccessSnackbar(context, tt('success'));
+    }
   }
 }

@@ -42,15 +42,9 @@ class IngredientList extends StatelessWidget {
 
   Widget _warningContextBuilder(BuildContext context, Ingredient ingredient) {
     final count = Menu.instance.getIngredients(ingredient.id).length;
+    final moreCtx = S.stockIngredientDialogDeletionContent(count);
 
-    if (count == 0) {
-      return Text(tt('delete_confirm', {'name': ingredient.name}));
-    }
-
-    return Text(tt(
-      'stock.ingredient.delete_confirm',
-      {'name': ingredient.name, 'count': count},
-    ));
+    return Text(S.dialogDeletionContent(ingredient.name, moreCtx));
   }
 }
 
@@ -81,7 +75,7 @@ class _IngredientTile extends StatelessWidget {
             onPressed: () => _showTextDialog(
               context,
               initialValue: ingredient.lastAddAmount?.toString(),
-              title: tt('stock.add_amount', {'name': ingredient.name}),
+              title: S.stockIngredientDialogIncrementTitle(ingredient.name),
             ).then((value) {
               if (value != null) ingredient.addAmount(value);
             }),
@@ -91,7 +85,7 @@ class _IngredientTile extends StatelessWidget {
             key: Key('stock.${ingredient.id}.minus'),
             onPressed: () => _showTextDialog(
               context,
-              title: tt('stock.minus_amount', {'name': ingredient.name}),
+              title: S.stockIngredientDialogDecrementTitle(ingredient.name),
             ).then((value) {
               if (value != null) ingredient.addAmount(-value);
             }),

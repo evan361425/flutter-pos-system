@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class OrderCashierCalculator extends StatefulWidget {
   final void Function(String) onTextChanged;
@@ -45,16 +46,16 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
         _SingleField(
           key: paidState,
           keyPrefix: 'cashier.calculator.paid',
-          prefix: '付額',
+          prefix: S.orderCashierCalculatorPaidLabel,
           defaultText: widget.totalPrice.toString(),
         ),
         const Divider(),
         _SingleField(
           key: changeState,
           keyPrefix: 'cashier.calculator.change',
-          prefix: '找錢',
+          prefix: S.orderCashierCalculatorChangeLabel,
           defaultText: '0',
-          errorText: '必須大於付額',
+          errorText: S.orderCashierCalculatorChangeNotEnough,
         ),
         const Divider(),
       ]),

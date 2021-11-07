@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/ui/stock/replenishment/replenishment_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
+import 'models/customer/customer_setting_option.dart';
 import 'models/menu/catalog.dart';
 import 'models/menu/product.dart';
 import 'models/menu/product_ingredient.dart';
@@ -36,6 +35,7 @@ import 'ui/setting/setting_screen.dart';
 import 'ui/stock/quantity/quantity_screen.dart';
 import 'ui/stock/quantity/widgets/quantity_modal.dart';
 import 'ui/stock/replenishment/replenishment_modal.dart';
+import 'ui/stock/replenishment/replenishment_screen.dart';
 import 'ui/stock/stock_screen.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 

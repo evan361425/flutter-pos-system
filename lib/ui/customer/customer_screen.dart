@@ -5,8 +5,9 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/customer/widgets/customer_setting_list.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/customer_setting_list.dart';
 
 class CustomerScreen extends StatelessWidget {
   const CustomerScreen({Key? key}) : super(key: key);

@@ -8,6 +8,7 @@ import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class OrderCustomerModal extends StatelessWidget {
   const OrderCustomerModal({Key? key}) : super(key: key);
@@ -17,13 +18,13 @@ class OrderCustomerModal extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        title: const Text('顧客設定'),
+        title: Text(S.orderCustomerSettingTitle),
         actions: [
           AppbarTextButton(
             key: const Key('cashier.customer.next'),
             onPressed: () =>
                 Navigator.of(context).popAndPushNamed(Routes.orderCalculator),
-            child: const Text('下一步'),
+            child: Text(S.orderCustomerSettingActionsDone),
           ),
         ],
       ),

@@ -38,9 +38,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   String ingredientName = '';
 
   @override
-  Widget? get title => Text(tt(
-      widget.isNew ? 'menu.ingredient.add_title' : 'menu.ingredient.edit_title',
-      {'name': widget.ingredient?.name ?? ''}));
+  Widget? get title =>
+      Text(widget.isNew ? S.menuIngredientCreate : widget.ingredient!.name);
 
   @override
   void dispose() {
@@ -54,10 +53,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       SearchBarInline(
         key: const Key('product_ingredient.search'),
         text: ingredientName,
-        labelText: tt('menu.ingredient.label.name'),
-        hintText: tt('menu.ingredient.hint.name'),
+        labelText: S.menuIngredientSearchLabel,
+        hintText: S.menuIngredientSearchHint,
         errorText: errorMessage,
-        helperText: tt('menu.ingredient.helper.name'),
+        helperText: S.menuIngredientSearchHelper,
         onTap: _selectIngredient,
       ),
       TextFormField(
@@ -67,12 +66,12 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         onFieldSubmitted: (_) => handleSubmit(),
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: tt('menu.ingredient.label.amount'),
-          helperText: tt('menu.ingredient.helper.amount'),
+          labelText: S.menuIngredientAmountLabel,
+          helperText: S.menuIngredientAmountHelper,
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.positiveNumber(tt('menu.ingredient.label.amount')),
+        validator: Validator.positiveNumber(S.menuIngredientAmountLabel),
       ),
     ];
   }
@@ -109,11 +108,11 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   @override
   String? validate() {
     if (ingredientId.isEmpty) {
-      return tt('menu.ingredient.error.name_empty');
+      return S.menuIngredientSearchEmptyError;
     }
     if (widget.ingredient?.ingredient.id != ingredientId &&
         widget.product.hasIngredient(ingredientId)) {
-      return tt('menu.ingredient.error.name_repeat');
+      return S.menuIngredientRepeatError;
     }
   }
 
@@ -158,7 +157,7 @@ class _ProductIngredientSearch extends StatelessWidget {
       emptyBuilder: emptyBuilder,
       initialData: stock.itemList,
       text: text ?? '',
-      hintText: tt('menu.ingredient.label.name'),
+      hintText: S.menuIngredientSearchLabel,
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -166,7 +165,7 @@ class _ProductIngredientSearch extends StatelessWidget {
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
       key: const Key('product_ingredient.add_ingredient'),
-      title: Text(tt('menu.ingredient.add_ingredient', {'name': text})),
+      title: Text(S.menuIngredientSearchAdd(text)),
       onTap: () async {
         final ingredient = Ingredient(name: text);
         await Stock.instance.addItem(ingredient);

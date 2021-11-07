@@ -1,4 +1,5 @@
 {
+  "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {
     "description": "執行行為成功，並顯示於 Snackbar 中"
@@ -105,7 +106,8 @@
       },
       "maximum": {
         "description": "最大值，必須小於（且不等於）該值",
-        "type": "num"
+        "type": "num",
+        "format": "decimalPattern"
       }
     }
   },
@@ -119,7 +121,8 @@
       },
       "minimum": {
         "description": "最小值，必須大於（且不等於）該值",
-        "type": "num"
+        "type": "num",
+        "format": "decimalPattern"
       }
     }
   },
@@ -156,7 +159,7 @@
       }
     }
   },
-  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存，並同時設定成份的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單，並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：20-30歲、外帶、上班族。}}",
+  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存\\n並同時設定成份的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單\\n並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\\n20-30歲、外帶、上班族。}}",
   "@homeIconTutorial": {
     "description": "首頁的按鈕的說明",
     "placeholders": {
@@ -259,9 +262,21 @@
       }
     }
   },
+  "menuSearchProductHint": "搜尋產品、成份、份量",
+  "@menuSearchProductHint": {
+    "description": "搜尋產品時的文字匡 placeholder"
+  },
+  "menuSearchProductNotFound": "搜尋不到相關資訊，打錯字了嗎？",
+  "@menuSearchProductNotFound": {
+    "description": "搜尋產品時找不到該文字的搜尋結果"
+  },
   "menuCatalogTitle": "產品種類列表",
   "@menuCatalogTitle": {
     "description": "菜單頁的標題"
+  },
+  "menuCatalogListEmptyProduct": "尚未設定產品",
+  "@menuCatalogListEmptyProduct": {
+    "description": "當產品種類並未有產品時在列表中的子標題文字"
   },
   "menuCatalogCreate": "新增產品種類",
   "@menuCatalogCreate": {
@@ -275,7 +290,21 @@
   "@menuCatalogReorder": {
     "description": "菜單頁排序產品種類"
   },
-  "menuCatalogDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品}",
+  "menuCatalogMetaCreatedAt": "建立時間：{createdAt}",
+  "@menuCatalogMetaCreatedAt": {
+    "description": "產品種類建立時間",
+    "placeholders": {
+      "createdAt": {
+        "type": "DateTime",
+        "format": "MMMEd"
+      }
+    }
+  },
+  "menuCatalogEmptyBody": "可以新增產品囉！",
+  "@menuCatalogEmptyBody": {
+    "description": "若產品種類沒有任何產品，在其產品種類頁會顯示的文字"
+  },
+  "menuCatalogDialogDeletionContent": "{count, plural, =0{其內無任何產品\\n\\n} other{將會一同刪除掉 {count} 個產品\\n\\n}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "菜單頁刪除產品種類時的警語",
     "placeholders": {
@@ -297,9 +326,37 @@
   "@menuCatalogNameRepeatError": {
     "description": "產品種類名稱發現重複的說明"
   },
+  "menuProductMetaPrice": "價格：{price}",
+  "@menuProductMetaPrice": {
+    "description": "產品價格",
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
+      }
+    }
+  },
+  "menuProductMetaCost": "成本：{cost}",
+  "@menuProductMetaCost": {
+    "description": "產品成本",
+    "placeholders": {
+      "cost": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
+      }
+    }
+  },
+  "menuProductListEmptyIngredient": "尚未設定成份",
   "menuProductCreate": "新增產品",
   "menuProductUpdate": "編輯產品",
   "menuProductReorder": "排序產品",
+  "menuProductEmptyBody": "可以設定產品的成份囉！",
   "menuProductNameLabel": "產品名稱",
   "menuProductNameHint": "起司漢堡",
   "menuProductNameRepeatError": "產品名稱重複",
@@ -307,6 +364,15 @@
   "menuProductPriceHint": "給客人看的價錢，50",
   "menuProductCostLabel": "產品成本",
   "menuProductCostHint": "用來算出利潤，30",
+  "menuIngredientMetaAmount": "使用量：{amount}",
+  "@menuIngredientMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "menuIngredientCreate": "新增成份",
   "menuIngredientUpdate": "編輯成份",
   "menuIngredientSearchLabel": "成份",
@@ -326,6 +392,39 @@
   "menuIngredientRepeatError": "成份不能重複選取。",
   "menuIngredientAmountLabel": "使用量",
   "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成份的使用量，請於成份的「份量」中設定。",
+  "menuQuantityMetaAmount": "額外使用量：{amount}",
+  "@menuQuantityMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "menuQuantityMetaPrice": "額外售價：{price}",
+  "@menuQuantityMetaPrice": {
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
+      }
+    }
+  },
+  "menuQuantityMetaCost": "額外成本：{cost}",
+  "@menuQuantityMetaCost": {
+    "placeholders": {
+      "cost": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "decimalDigits": 0
+        }
+      }
+    }
+  },
   "menuQuantityCreate": "新增份量",
   "menuQuantityUpdate": "編輯份量",
   "menuQuantitySearchLabel": "份量",
@@ -348,7 +447,12 @@
   "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantityAdditionalCostLabel": "額外成本",
   "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成份的使用，相對成本降低。",
-  "stockUpdatedAt": "{updatedAt, select, null{上次補貨時間：無} other{上次補貨時間：{updatedAt}}}",
+  "stockTitle": "庫存",
+  "stockHasNotReplenishEver": "尚未補貨過",
+  "@stockHasNotReplenishEver": {
+    "description": "庫存頁面會顯示上次補貨時間，若未補貨過則設此文字"
+  },
+  "stockUpdatedAt": "上次補貨時間：{updatedAt}",
   "@stockUpdatedAt": {
     "description": "庫存上次補貨的時間",
     "placeholders": {
@@ -359,7 +463,25 @@
     }
   },
   "stockIngredientCreate": "新增成份",
-  "stockIngredientDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品的成份}",
+  "stockIngredientDialogIncrementTitle": "增加 {name} 的庫存",
+  "@stockIngredientDialogIncrementTitle": {
+    "description": "新增庫存的對話匡標題",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientDialogDecrementTitle": "減少 {name} 的庫存",
+  "@stockIngredientDialogDecrementTitle": {
+    "description": "新增庫存的對話匡標題",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成份\\n\\n} other{將會一同刪除掉 {count} 個產品的成份\\n\\n}}",
   "@stockIngredientDialogDeletionContent": {
     "description": "刪除成份時會提示多少個產品受影響",
     "placeholders": {
@@ -369,7 +491,7 @@
       }
     }
   },
-  "stockIngredientMetaCurrentAmount": "{count, plural, zero{庫存：無} other{庫存：{count}}}",
+  "stockIngredientMetaCurrentAmount": "{count, plural, =0{庫存：無} other{庫存：{count}}}",
   "@stockIngredientMetaCurrentAmount": {
     "description": "成份庫存數量",
     "placeholders": {
@@ -378,7 +500,7 @@
       }
     }
   },
-  "stockIngredientMetaLastAmount": "{count, plural, zero{紀錄：無} other{紀錄：{count}}}",
+  "stockIngredientMetaLastAmount": "{count, plural, =0{紀錄：無} other{紀錄：{count}}}",
   "@stockIngredientMetaLastAmount": {
     "description": "成份上次補貨後的庫存數量",
     "placeholders": {
@@ -421,7 +543,7 @@
   "@stockReplenishmentApplyConfirmTitle": {
     "description": "套用採購時的確認標題",
     "placeholders": {
-      "count": {
+      "name": {
         "description": "採購種類名稱",
         "type": "String"
       }
@@ -447,16 +569,19 @@
     "placeholders": {
       "proportion": {
         "description": "預設會套用的比例",
-        "type": "num"
+        "type": "num",
+        "format": "decimalPattern"
       }
     }
   },
-  "stockQuantityDialogDeletionContent": "count, plural, zero{無任何綁定，可以放心移除} other{將會一同刪除掉 {count} 個產品成份的份量}",
+  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成份有本份量\\n\\n} other{將會一同刪除掉 {count} 個產品成份的份量\\n\\n}}",
   "@stockQuantityDialogDeletionContent": {
     "description": "刪除份量時會提示多少個產品成份受影響",
-    "count": {
-      "description": "產品成份數量",
-      "type": "int"
+    "placeholders": {
+      "count": {
+        "description": "產品成份數量",
+        "type": "int"
+      }
     }
   },
   "stockQuantityCreate": "新增份量",
@@ -525,10 +650,11 @@
       }
     }
   },
-  "orderActionsOrder": "點餐",
-  "@orderActionsOrder": {
+  "orderActionsOrderDone": "結帳",
+  "@orderActionsOrderDone": {
     "description": "確認好購物車裡的餐點後準備往下一步走"
   },
+  "orderActionsOpenChanger": "換錢",
   "orderActionsLeaveHistoryMode": "退出改單模式",
   "@orderActionsLeaveHistoryMode": {
     "description": "在使用「顯示最後一次點餐」後，退出編輯該點餐的行為"
@@ -537,8 +663,8 @@
   "@orderActionsShowLastOrder": {
     "description": "顯示當日最後一次的單點"
   },
-  "orderActionsShowLastOrderConfirmStash": "要暫存本次點餐並顯示舊的單嗎？",
-  "@orderActionsShowLastOrderConfirmStash": {
+  "orderActionsConfirmStashCurrent": "要暫存本次點餐並顯示舊的單嗎？",
+  "@orderActionsConfirmStashCurrent": {
     "description": "若需要「顯示最後一次點餐」而購物車仍有餐點時，會跳出本確認提示"
   },
   "orderActionsShowLastOrderNotFound": "找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄",
@@ -589,7 +715,7 @@
   "orderCartActionsChangeCountSuffix": "個",
   "orderCartActionsFree": "招待",
   "orderCartActionsDelete": "刪除",
-  "orderCartItemPrice": "{price, plural, zero{免費} other{{price}}}",
+  "orderCartItemPrice": "{price, plural, =0{免費} other{{price}}}",
   "@orderCartItemPrice": {
     "description": "產品的價格",
     "placeholders": {
@@ -602,7 +728,7 @@
       }
     }
   },
-  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成份} differentProducts{請選擇相同的產品來設定其成份}}",
+  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成份} differentProducts{請選擇相同的產品來設定其成份} noNeedIngredient{這個產品沒有可以設定的成份}}",
   "@orderCartIngredientStatus": {
     "description": "點餐時，若點選的產品不需要設定成分資訊，會需要提示給使用者",
     "placeholders": {
@@ -621,7 +747,8 @@
     "placeholders": {
       "amount": {
         "description": "成份預設需要使用的量",
-        "type": "num"
+        "type": "num",
+        "format": "decimalPattern"
       }
     }
   },
@@ -715,7 +842,7 @@
   },
   "orderCashierProductMetaPrice": "總價：{price}",
   "@orderCashierProductMetaPrice": {
-    "description": "結帳時會最終顯示產品列表，這是其價錢",
+    "description": "訂單列表的單一餐點的價錢",
     "placeholders": {
       "price": {
         "description": "單一餐點的總價",
