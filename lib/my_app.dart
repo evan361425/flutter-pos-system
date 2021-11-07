@@ -38,14 +38,14 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             onGenerateTitle: (context) {
               final localizations = AppLocalizations.of(context)!;
-              final language = settings.getSetting<LanguageSetting>();
+              // TODO check if monitor device language changing
+              // final language = settings.getSetting<LanguageSetting>();
               // final locale = language.parseLanguage(localizations.localeName)!;
 
               // if user change language by system
               // language.update(locale);
 
               S = localizations;
-              currentLocale = language.value;
 
               return localizations.appTitle;
             },

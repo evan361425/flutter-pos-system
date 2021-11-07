@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/validator.dart';
 
+import '../test_helpers/translator.dart';
+
 void main() {
   group('Validator', () {
     test('#positiveNumber', () {
@@ -54,6 +56,10 @@ void main() {
       expect(validator('ab'), isNull);
       expect(validator('二長'), isNull);
       expect(validator('😂'), isNull);
+    });
+
+    setUpAll(() {
+      initializeTranslator();
     });
   });
 }

@@ -15,8 +15,6 @@ class CartIngredients extends ChangeNotifier {
 
   CartIngredients._();
 
-  bool get isEmpty => ingredients.isEmpty;
-
   /// Get selected quantity ID.
   ///
   /// If all using default(null quantity ID), it will return null.

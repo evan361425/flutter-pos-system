@@ -82,10 +82,6 @@ class Product extends Model<ProductObject>
     )..prepareItem();
   }
 
-  /// help to decide wheather showing ingredient panel in cart
-  Iterable<ProductIngredient> get ingredientsWithQuantity =>
-      items.where((e) => e.isNotEmpty);
-
   @override
   String get prefix => '${catalog.prefix}.products.$id';
 

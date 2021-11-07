@@ -234,6 +234,18 @@ void main() {
 
       await tester.tap(find.byKey(const Key('customer_settings.1')));
       await tester.pumpAndSettle();
+      // show [CustomerSettingOptionMode.changePrice] modeValue
+      await tester.tap(find.byKey(const Key('customer_setting.1.2')));
+      await tester.pumpAndSettle();
+      expect(
+          tester
+              .widget<TextFormField>(
+                  find.byKey(const Key('customer_setting_option.modeValue')))
+              .controller
+              ?.text,
+          equals('-10'));
+      await tester.tap(find.byIcon(KIcons.back));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('customer_settings.1.add')));
       await tester.pumpAndSettle();
 

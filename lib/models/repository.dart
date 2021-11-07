@@ -59,7 +59,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
 mixin RepositoryDB<T extends Model> on Repository<T> {
   String get idName => 'id';
 
-  String get repoTableName => '';
+  String get repoTableName;
 
   Future<T> buildItem(Map<String, Object?> value);
 
@@ -167,7 +167,7 @@ mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
 mixin RepositoryStorage<T extends Model> on Repository<T> {
   bool versionChanged = false;
 
-  Stores get storageStore => Stores.menu;
+  Stores get storageStore;
 
   RepositoryStorageType get repoType => RepositoryStorageType.pureRepo;
 
