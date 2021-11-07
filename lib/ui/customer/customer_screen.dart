@@ -5,8 +5,10 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/customer/widgets/customer_setting_list.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/customer_setting_list.dart';
 
 class CustomerScreen extends StatelessWidget {
   const CustomerScreen({Key? key}) : super(key: key);
@@ -19,7 +21,7 @@ class CustomerScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('顧客設定'),
+          title: Text(S.customerSettingTitle),
           leading: const PopButton(),
           actions: [
             IconButton(
@@ -31,7 +33,7 @@ class CustomerScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: goAddSetting,
-          tooltip: '新增顧客設定',
+          tooltip: S.customerSettingCreate,
           child: const Icon(KIcons.add),
         ),
         body: settings.isEmpty
@@ -41,9 +43,9 @@ class CustomerScreen extends StatelessWidget {
 
   void _showActions(BuildContext context) async {
     await showCircularBottomSheet(context, actions: [
-      const BottomSheetAction(
-        title: Text('排序'),
-        leading: Icon(Icons.reorder_sharp),
+      BottomSheetAction(
+        title: Text(S.customerSettingReorder),
+        leading: const Icon(Icons.reorder_sharp),
         navigateRoute: Routes.customerReorder,
       ),
     ]);

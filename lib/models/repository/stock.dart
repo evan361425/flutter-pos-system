@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -21,7 +20,7 @@ class Stock extends ChangeNotifier
     instance = this;
   }
 
-  String? get updatedDate {
+  DateTime? get updatedAt {
     DateTime? lastest;
     for (var element in items) {
       if (lastest == null) {
@@ -31,7 +30,7 @@ class Stock extends ChangeNotifier
       }
     }
 
-    return Util.timeToDate(lastest);
+    return lastest;
   }
 
   Future<void> applyAmounts(

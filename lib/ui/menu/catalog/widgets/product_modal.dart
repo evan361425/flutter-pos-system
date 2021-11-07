@@ -48,13 +48,13 @@ class _ProductModalState extends State<ProductModal>
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: tt('menu.product.label.name'),
-          hintText: tt('menu.product.hint.name'),
+          labelText: S.menuProductNameLabel,
+          hintText: S.menuProductNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(tt('menu.product.label.name'), 30),
+        validator: Validator.textLimit(S.menuProductNameLabel, 30),
       ),
       TextFormField(
         key: const Key('product.price'),
@@ -62,11 +62,11 @@ class _ProductModalState extends State<ProductModal>
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: tt('menu.product.label.price'),
-          hintText: tt('menu.product.hint.price'),
+          labelText: S.menuProductPriceLabel,
+          hintText: S.menuProductPriceHint,
           filled: false,
         ),
-        validator: Validator.isNumber(tt('menu.product.label.price')),
+        validator: Validator.isNumber(S.menuProductPriceLabel),
       ),
       TextFormField(
         key: const Key('product.cost'),
@@ -74,12 +74,12 @@ class _ProductModalState extends State<ProductModal>
         textInputAction: TextInputAction.done,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: tt('menu.product.label.cost'),
-          hintText: tt('menu.product.hint.cost'),
+          labelText: S.menuProductCostLabel,
+          hintText: S.menuProductCostHint,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
-        validator: Validator.positiveNumber(tt('menu.product.label.cost')),
+        validator: Validator.positiveNumber(S.menuProductCostLabel),
       ),
     ];
   }
@@ -131,7 +131,7 @@ class _ProductModalState extends State<ProductModal>
     final name = _nameController.text;
 
     if (widget.product?.name != name && Menu.instance.hasProductByName(name)) {
-      return tt('menu.product.error.name');
+      return S.menuProductNameRepeatError;
     }
   }
 

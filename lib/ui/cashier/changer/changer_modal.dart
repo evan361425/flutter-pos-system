@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/ui/cashier/changer/changer_modal_custom.dart';
-import 'package:possystem/ui/cashier/changer/changer_modal_favorite.dart';
+
+import 'changer_modal_custom.dart';
+import 'changer_modal_favorite.dart';
 
 class ChangerModal extends StatefulWidget {
   const ChangerModal({Key? key}) : super(key: key);

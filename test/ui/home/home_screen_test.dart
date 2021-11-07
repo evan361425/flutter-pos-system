@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/tip/cache_state_manager.dart';
@@ -27,6 +26,7 @@ import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/disable_tips.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Home Screen', () {
@@ -131,11 +131,6 @@ void main() {
           navigatorObservers: [MyApp.routeObserver],
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          locale: const Locale('zh', 'TW'),
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
           home: const HomeScreen(),
         ),
       ));
@@ -187,6 +182,7 @@ void main() {
       initializeCache();
       initializeStorage();
       initializeDatabase();
+      initializeTranslator();
     });
   });
 }

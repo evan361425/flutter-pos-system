@@ -1,0 +1,143 @@
+{
+  "title": "ARB placeholder configuration files",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+
+  "patternProperties": {
+    "^[a-zA-Z]+": {
+      "type": "string"
+    },
+    "^@": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "placeholders": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["String", "int", "double", "num", "DateTime"]
+                },
+                "example": { "type": "string" },
+                "description": { "type": "string" },
+                "optionalParameters": {
+                  "type": "object",
+                  "properties": {
+                    "decimalDigits": {
+                      "type": "number",
+                      "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
+                    },
+                    "symbol": {
+                      "type": "string",
+                      "description": "Use for currency and compactCurrency"
+                    },
+                    "customPattern": {
+                      "type": "string",
+                      "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
+                    }
+                  }
+                },
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "compact",
+                    "compactCurrency",
+                    "compactLong",
+                    "compactSimpleCurrency",
+                    "currency",
+                    "decimalPattern",
+                    "decimalPercentPattern",
+                    "percentPattern",
+                    "scientificPattern",
+                    "simpleCurrency",
+                    "d",
+                    "E",
+                    "EEEE",
+                    "LLL",
+                    "LLLL",
+                    "M",
+                    "Md",
+                    "MEd",
+                    "MMM",
+                    "MMMd",
+                    "MMMEd",
+                    "MMMM",
+                    "MMMMd",
+                    "MMMMEEEEd",
+                    "QQQ",
+                    "QQQQ",
+                    "y",
+                    "yM",
+                    "yMd",
+                    "yMEd",
+                    "yMMM",
+                    "yMMMd",
+                    "yMMMEd",
+                    "yMMMM",
+                    "yMMMMd",
+                    "yMMMMEEEEd",
+                    "yQQQ",
+                    "yQQQQ",
+                    "H",
+                    "Hm",
+                    "Hms",
+                    "j",
+                    "jm",
+                    "jms",
+                    "m",
+                    "ms",
+                    "s"
+                  ],
+                  "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
+                }
+              },
+              "defaultSnippets": [
+                {
+                  "label": "String",
+                  "description": "Add description inside @key placeholder",
+                  "body": { "description": "$1", "type": "${2:String}" }
+                },
+                {
+                  "label": "currency",
+                  "description": "Currency format placeholder",
+                  "body": {
+                    "description": "$1",
+                    "type": "num",
+                    "format": "compactCurrency",
+                    "optionalParameters": {
+                      "decimalDigits": 0
+                    }
+                  }
+                },
+                {
+                  "label": "int",
+                  "description": "int placeholder",
+                  "body": { "description": "$1", "type": "${2:int}" }
+                },
+                {
+                  "label": "DateTime",
+                  "description": "DateTime placeholder",
+                  "body": {
+                    "description": "$1",
+                    "type": "DateTime",
+                    "format": "${2:MMMEd}"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "With description",
+          "description": "Add description inside @key",
+          "body": { "description": "$1" }
+        }
+      ]
+    }
+  },
+  "type": "object"
+}

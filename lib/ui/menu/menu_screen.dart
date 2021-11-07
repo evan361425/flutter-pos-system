@@ -10,8 +10,9 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/widgets/catalog_list.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/catalog_list.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class MenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tt('menu.catalog.title')),
+        title: Text(S.menuCatalogTitle),
         leading: const PopButton(),
         actions: [
           IconButton(
@@ -38,7 +39,7 @@ class MenuScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         key: const Key('menu.add'),
         onPressed: goAddCatalog,
-        tooltip: tt('menu.catalog.add'),
+        tooltip: S.menuCatalogCreate,
         child: TipTutorial(
           title: '產品種類',
           message: '我們會把相似「產品」放在「產品種類」中，到時候點餐會比較方便。例如：\n'
@@ -61,7 +62,7 @@ class MenuScreen extends StatelessWidget {
       context,
       actions: <BottomSheetAction<void>>[
         BottomSheetAction(
-          title: Text(tt('menu.catalog.order')),
+          title: Text(S.menuCatalogReorder),
           leading: const Icon(Icons.reorder_sharp),
           navigateRoute: Routes.menuCatalogReorder,
         ),
@@ -81,14 +82,14 @@ class _MenuBody extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
       child: SearchBarInline(
         key: const Key('menu.search'),
-        hintText: '搜尋產品、成份、份量',
+        hintText: S.menuSearchProductHint,
         onTap: (context) => Navigator.of(context).pushNamed(Routes.menuSearch),
       ),
     );
 
     final catalogCount = Padding(
       padding: const EdgeInsets.all(kSpacing1),
-      child: HintText(tt('total_count', {'count': menu.length})),
+      child: HintText(S.totalCount(menu.length)),
     );
     // get sorted catalogs
     final catalogList = CatalogList(menu.itemList);

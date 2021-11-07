@@ -9,8 +9,9 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/catalog/widgets/product_list.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/product_list.dart';
 
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({Key? key}) : super(key: key);
@@ -33,17 +34,18 @@ class CatalogScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         key: const Key('catalog.add'),
         onPressed: navigateNewProduct,
-        tooltip: tt('menu.product.add'),
+        tooltip: S.menuProductCreate,
         child: const Icon(KIcons.add),
       ),
       body: Column(children: <Widget>[
         ItemMoreActionButton(
           item: catalog,
-          metadata: Text('建立時間：${catalog.createdDate}'),
+          metadata: Text(S.menuCatalogMetaCreatedAt(catalog.createdAt)),
           onTap: () => _showActions(context, catalog),
         ),
         catalog.isEmpty
-            ? EmptyBody(title: '可以新增產品囉！', onPressed: navigateNewProduct)
+            ? EmptyBody(
+                title: S.menuCatalogEmptyBody, onPressed: navigateNewProduct)
             : ProductList(catalog.itemList),
       ]),
     );
@@ -55,16 +57,16 @@ class CatalogScreen extends StatelessWidget {
       deleteCallback: catalog.remove,
       deleteValue: _Action.delete,
       popAfterDeleted: true,
-      warningContent: Text(tt('delete_confirm', {'name': catalog.name})),
+      warningContent: Text(S.dialogDeletionContent(catalog.name, '')),
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
-          title: Text(tt('menu.catalog.edit')),
+          title: Text(S.menuCatalogUpdate),
           leading: const Icon(Icons.text_fields_sharp),
           navigateArgument: catalog,
           navigateRoute: Routes.menuCatalogModal,
         ),
         BottomSheetAction(
-          title: Text(tt('menu.product.order')),
+          title: Text(S.menuProductReorder),
           leading: const Icon(Icons.reorder_sharp),
           navigateArgument: catalog,
           navigateRoute: Routes.menuProductReorder,

@@ -11,31 +11,31 @@ class CartActions extends StatelessWidget {
     BottomSheetAction(
       key: const Key('cart.action.discount'),
       leading: const Icon(Icons.loyalty_sharp),
-      title: Text(tt('order.cart.discount')),
+      title: Text(S.orderCartActionsDiscount),
       returnValue: _ActionTypes.discount,
     ),
     BottomSheetAction(
       key: const Key('cart.action.price'),
       leading: const Icon(Icons.attach_money_sharp),
-      title: Text(tt('order.cart.price')),
+      title: Text(S.orderCartActionsChangePrice),
       returnValue: _ActionTypes.price,
     ),
     BottomSheetAction(
       key: const Key('cart.action.count'),
       leading: const Icon(Icons.exposure_sharp),
-      title: Text(tt('order.cart.count')),
+      title: Text(S.orderCartActionsChangeCount),
       returnValue: _ActionTypes.count,
     ),
     BottomSheetAction(
       key: const Key('cart.action.free'),
       leading: const Icon(Icons.free_breakfast_sharp),
-      title: Text(tt('order.cart.free')),
+      title: Text(S.orderCartActionsFree),
       returnValue: _ActionTypes.free,
     ),
     BottomSheetAction(
       key: const Key('cart.action.delete'),
       leading: const Icon(Icons.delete_sharp),
-      title: Text(tt('order.cart.delete')),
+      title: Text(S.orderCartActionsDelete),
       returnValue: _ActionTypes.delete,
     ),
   ];
@@ -47,7 +47,7 @@ class CartActions extends StatelessWidget {
     return ElevatedButton(
       key: const Key('cart.action'),
       onPressed: () => showActions(context),
-      child: Text(tt('order.cart.action_hint')),
+      child: Text(S.orderCartActionsBtn),
     );
   }
 
@@ -57,14 +57,14 @@ class CartActions extends StatelessWidget {
       case _ActionTypes.discount:
         item = _DialogItem(
           validator: Validator.positiveInt(
-            tt('order.cart.name.discount'),
+            S.orderCartActionsDiscountLabel,
             maximum: 1000,
           ),
           decoration: InputDecoration(
-            hintText: tt('order.cart.hint.discount'),
-            helperText: tt('order.cart.helper.discount'),
+            hintText: S.orderCartActionsDiscountHint,
+            helperText: S.orderCartActionsDiscountHelper,
             helperMaxLines: 4,
-            suffix: Text(tt('order.cart.suffix.discount')),
+            suffix: Text(S.orderCartActionsDiscountSuffix),
           ),
           action: (result) {
             Cart.instance.updateSelectedDiscount(int.tryParse(result));
@@ -73,10 +73,11 @@ class CartActions extends StatelessWidget {
         break;
       case _ActionTypes.price:
         item = _DialogItem(
-          validator: Validator.positiveNumber(tt('order.cart.name.price')),
+          validator:
+              Validator.positiveNumber(S.orderCartActionsChangePriceLabel),
           decoration: InputDecoration(
-            hintText: tt('order.cart.hint.price'),
-            suffix: Text(tt('order.cart.suffix.price')),
+            hintText: S.orderCartActionsChangePriceHint,
+            suffix: Text(S.orderCartActionsChangePriceSuffix),
           ),
           action: (result) {
             Cart.instance.updateSelectedPrice(num.tryParse(result));
@@ -86,14 +87,14 @@ class CartActions extends StatelessWidget {
       case _ActionTypes.count:
         item = _DialogItem(
           validator: Validator.positiveInt(
-            tt('order.cart.name.count'),
+            S.orderCartActionsChangeCountLabel,
             maximum: 10000,
             minimum: 1,
           ),
           decoration: InputDecoration(
-            hintText: tt('order.cart.hint.count'),
+            hintText: S.orderCartActionsChangeCountHint,
             helperMaxLines: 4,
-            suffix: Text(tt('order.cart.suffix.count')),
+            suffix: Text(S.orderCartActionsChangeCountSuffix),
           ),
           action: (result) {
             Cart.instance.updateSelectedCount(int.tryParse(result));

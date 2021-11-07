@@ -40,14 +40,14 @@ class _CatalogModalState extends State<CatalogModal>
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: tt('menu.catalog.label.name'),
-          hintText: tt('menu.catalog.hint.name'),
+          labelText: S.menuCatalogNameLabel,
+          hintText: S.menuCatalogNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
-        validator: Validator.textLimit(tt('menu.catalog.label.name'), 30),
+        validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
       )
     ];
   }
@@ -94,7 +94,7 @@ class _CatalogModalState extends State<CatalogModal>
     final name = _nameController.text;
 
     if (widget.catalog?.name != name && Menu.instance.hasName(name)) {
-      return tt('menu.catalog.error.name');
+      return S.menuCatalogNameRepeatError;
     }
   }
 }

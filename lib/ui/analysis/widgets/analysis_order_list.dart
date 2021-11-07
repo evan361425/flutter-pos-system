@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -8,7 +9,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -30,7 +30,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
   late T _params;
   bool? _isLoading;
 
-  String totalPrice = '0';
+  num totalPrice = 0;
   int totalCount = 0;
 
   @override
@@ -38,17 +38,17 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
     if (_isLoading == true) {
       return const CircularLoading();
     } else if (_isLoading == null) {
-      return HintText(tt('analysis.unset'));
+      return HintText(S.analysisOrderListStatus('unset'));
     } else if (_data.isEmpty) {
-      return HintText(tt('analysis.empty'));
+      return HintText(S.analysisOrderListStatus('empty'));
     }
 
     return Column(
       children: [
         Center(
           child: MetaBlock.withString(context, [
-            tt('analysis.total_price', {'price': totalPrice}),
-            tt('analysis.total_order', {'count': totalCount}),
+            S.analysisOrderListMetaPrice(totalPrice),
+            S.analysisOrderListMetaCount(totalCount),
           ]),
         ),
         Expanded(
@@ -70,7 +70,7 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
 
   void reset(T params, {required num totalPrice, required int totalCount}) =>
       setState(() {
-        this.totalPrice = totalPrice.toCurrency();
+        this.totalPrice = totalPrice;
         this.totalCount = totalCount;
         _params = params;
         _data.clear();
@@ -84,11 +84,11 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
       builder: (BuildContext context, LoadStatus? mode) {
         switch (mode) {
           case LoadStatus.canLoading:
-            return const Center(child: Text('下拉以載入更多'));
+            return Center(child: Text(S.analysisOrderListStatus('ready')));
           case LoadStatus.loading:
             return const CircularLoading();
           case LoadStatus.noMore:
-            return Center(child: Text(tt('analysis.allLoaded')));
+            return Center(child: Text(S.analysisOrderListStatus('allLoaded')));
           default:
             return Container();
         }
@@ -159,11 +159,9 @@ class _OrderTile extends StatelessWidget {
   const _OrderTile(this.order);
 
   Widget get leading {
-    final hour = order.createdAt.hour.toString().padLeft(2, '0');
-    final minute = order.createdAt.minute.toString().padLeft(2, '0');
     return Padding(
       padding: const EdgeInsets.only(top: kSpacing1),
-      child: Text('$hour:$minute'),
+      child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
     );
   }
 
@@ -178,8 +176,8 @@ class _OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subtitle = MetaBlock.withString(context, [
-      tt('analysis.price', {'price': order.totalPrice.toCurrency()}),
-      tt('analysis.paid', {'paid': order.paid!.toCurrency()}),
+      S.analysisOrderListItemMetaPrice(order.totalPrice),
+      S.analysisOrderListItemMetaPaid(order.paid!),
     ]);
 
     return ListTile(

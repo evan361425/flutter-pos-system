@@ -1,0 +1,45 @@
+{
+  "Add key value": {
+    "scope": "json",
+    "prefix": "add",
+    "body": [
+      "\"${1:name}\": \"$2\",",
+      "\"@$1\": {",
+      "\t\"description\": \"${3:description}\"",
+      "},"
+    ],
+    "description": "Add one item and description for ARB"
+  },
+  "Add plural": {
+    "scope": "json",
+    "prefix": "plural",
+    "body": [
+      "\"${1:name}\": \"{${2:placeholder}, plural, =0{$3} =1{$4} other{{$2}}}\",",
+      "\"@$1\": {",
+      "\t\"description\": \"${0:description}\",",
+      "\t\"placeholders\": {",
+      "\t\t\"$2\": {",
+      "\t\t\t\"type\": \"int\"",
+      "\t\t}",
+      "\t}",
+      "},"
+    ],
+    "description": "Add one plural for ARB"
+  },
+  "Add select": {
+    "scope": "json",
+    "prefix": "select",
+    "body": [
+      "\"${1:name}\": \"{${2:placeholder}, select, other{$3}}\",",
+      "\"@$1\": {",
+      "\t\"description\": \"${0:description}\",",
+      "\t\"placeholders\": {",
+      "\t\t\"$2\": {",
+      "\t\t\t\"type\": \"String\"",
+      "\t\t}",
+      "\t}",
+      "},"
+    ],
+    "description": "Add one select for ARB"
+  }
+}

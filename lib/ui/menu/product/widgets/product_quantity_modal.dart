@@ -40,9 +40,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   String quantityId = '';
 
   @override
-  Widget? get title => Text(tt(
-      widget.isNew ? 'menu.quantity.add_title' : 'menu.quantity.edit_title',
-      {'name': widget.quantity?.name ?? ''}));
+  Widget? get title =>
+      Text(widget.isNew ? S.menuQuantityCreate : widget.quantity!.name);
 
   @override
   void dispose() {
@@ -58,10 +57,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       SearchBarInline(
         key: const Key('product_quantity.search'),
         text: quantityName,
-        labelText: tt('menu.quantity.label.name'),
-        hintText: tt('menu.quantity.hint.name'),
+        labelText: S.menuQuantitySearchLabel,
+        hintText: S.menuQuantitySearchHint,
         errorText: errorMessage,
-        helperText: tt('menu.quantity.helper.name'),
+        helperText: S.menuQuantitySearchHelper,
         onTap: _selectQuantity,
       ),
       TextFormField(
@@ -70,10 +69,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: tt('menu.quantity.label.amount'),
+          labelText: S.menuQuantityAmountLabel,
           filled: false,
         ),
-        validator: Validator.positiveNumber(tt('menu.quantity.label.amount')),
+        validator: Validator.positiveNumber(S.menuQuantityAmountLabel),
       ),
       TextFormField(
         key: const Key('product_quantity.price'),
@@ -82,14 +81,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.loyalty_sharp),
-          labelText: tt('menu.quantity.label.additional_price'),
-          helperText: tt('menu.quantity.helper.additional_price'),
+          labelText: S.menuQuantityAdditionalPriceLabel,
+          helperText: S.menuQuantityAdditionalPriceHelper,
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber(
-          tt('menu.quantity.label.additional_price'),
-        ),
+        validator: Validator.isNumber(S.menuQuantityAdditionalPriceLabel),
       ),
       TextFormField(
         key: const Key('product_quantity.cost'),
@@ -99,14 +96,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.attach_money_sharp),
-          labelText: tt('menu.quantity.label.additional_cost'),
-          helperText: tt('menu.quantity.helper.additional_cost'),
+          labelText: S.menuQuantityAdditionalCostLabel,
+          helperText: S.menuQuantityAdditionalCostHelper,
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber(
-          tt('menu.quantity.label.additional_cost'),
-        ),
+        validator: Validator.isNumber(S.menuQuantityAdditionalCostLabel),
       )
     ];
   }
@@ -150,11 +145,11 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   @override
   String? validate() {
     if (quantityId.isEmpty) {
-      return tt('menu.quantity.error.name_empty');
+      return S.menuQuantitySearchEmptyError;
     }
     if (widget.quantity?.quantity.id != quantityId &&
         widget.ingredient.hasQuantity(quantityId)) {
-      return tt('menu.quantity.error.name_repeat');
+      return S.menuQuantityRepeatError;
     }
   }
 
@@ -202,7 +197,7 @@ class _ProductQuantitySearch extends StatelessWidget {
       emptyBuilder: emptyBuilder,
       initialData: quantities.itemList,
       text: text ?? '',
-      hintText: tt('menu.quantity.label.name'),
+      hintText: S.menuQuantitySearchLabel,
       textCapitalization: TextCapitalization.words,
     );
   }
@@ -210,7 +205,7 @@ class _ProductQuantitySearch extends StatelessWidget {
   Widget emptyBuilder(BuildContext context, String text) {
     return CardTile(
       key: const Key('product_quantity.add_quantity'),
-      title: Text(tt('menu.quantity.add_quantity', {'name': text})),
+      title: Text(S.menuQuantitySearchAdd(text)),
       onTap: () async {
         final quantity = Quantity(name: text);
         await Quantities.instance.addItem(quantity);

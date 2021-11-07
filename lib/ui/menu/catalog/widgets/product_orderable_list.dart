@@ -13,7 +13,7 @@ class ProductOrderableList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReorderableScaffold(
       items: catalog.itemList,
-      title: tt('menu.product.order'),
+      title: S.menuProductReorder,
       handleSubmit: (List<Product> items) => catalog.reorderItems(items),
     );
   }

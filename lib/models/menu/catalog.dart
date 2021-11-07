@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
@@ -48,8 +47,6 @@ class Catalog extends Model<CatalogObject>
       },
     )..prepareItem();
   }
-
-  String? get createdDate => Util.timeToDate(createdAt);
 
   @override
   Menu get repository => Menu.instance;

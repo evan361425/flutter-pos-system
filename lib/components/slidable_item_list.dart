@@ -105,7 +105,7 @@ class SlidableItemListState<T, Action>
         secondaryActions: <Widget>[
           IconSlideAction(
             color: theme.errorColor,
-            caption: tt('delete'),
+            caption: S.btnDelete,
             icon: KIcons.delete,
             onTap: () => DeleteDialog.show(
               context,

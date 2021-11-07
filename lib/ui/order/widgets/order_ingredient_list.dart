@@ -16,16 +16,16 @@ class OrderIngredientList extends StatelessWidget {
     final ingredients = context.watch<CartIngredients>();
 
     if (Cart.instance.isEmpty) {
-      return _emptyRows('cart_empty');
+      return _emptyRows('emptyCart');
     }
 
     if (!Cart.instance.isSameProducts) {
-      return _emptyRows('not_same_product');
+      return _emptyRows('differentProducts');
     }
 
     ingredients.setIngredients(Cart.instance.selected.first.product);
-    if (ingredients.isEmpty) {
-      return _emptyRows('no_quantity');
+    if (ingredients.ingredients.isEmpty) {
+      return _emptyRows('noNeedIngredient');
     }
 
     final ingredientId = ingredients.selected!.id;
@@ -55,15 +55,17 @@ class OrderIngredientList extends StatelessWidget {
     ]);
   }
 
-  Widget _emptyRows(String key) {
+  Widget _emptyRows(String status) {
     return _rowWrapper([
       SingleRowWrap(
-        key: Key('order.ingredient.$key'),
-        children: <Widget>[RadioText.empty(tt('order.list.$key'))],
+        key: Key('order.ingredient.$status'),
+        children: <Widget>[
+          RadioText.empty(S.orderCartIngredientStatus(status)),
+        ],
       ),
       SingleRowWrap(
         children: <Widget>[
-          RadioText.empty(tt('order.list.wait_select_ingredient')),
+          RadioText.empty(S.orderCartQuantityNotAble),
         ],
       ),
     ]);
@@ -103,10 +105,8 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
         groupId: _quantityRadioKey,
         value: '',
         isSelected: null == selected,
-        text: tt(
-          'order.list.default_quantity',
-          {'amount': CartIngredients.instance.selected!.amount},
-        ),
+        text: S.orderCartQuantityDefault(
+            CartIngredients.instance.selected!.amount),
       ),
       for (final quantity in CartIngredients.instance.selected!.items)
         RadioText(

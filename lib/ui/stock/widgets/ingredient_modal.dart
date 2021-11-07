@@ -51,12 +51,9 @@ class _IngredientModalState extends State<IngredientModal>
               return Padding(
                 padding: const EdgeInsets.only(bottom: kSpacing2),
                 child: Center(
-                  child: HintText(tt(
-                    'stock.ingredient.total_count',
-                    {
-                      'count': length - 2,
-                      'name': widget.ingredient!.name,
-                    },
+                  child: HintText(S.stockIngredientConnectedProductsCount(
+                    length - 2,
+                    widget.ingredient!.name,
                   )),
                 ),
               );
@@ -88,14 +85,14 @@ class _IngredientModalState extends State<IngredientModal>
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            labelText: tt('stock.ingredient.label.name'),
-            hintText: tt('stock.ingredient.hint.name'),
+            labelText: S.stockIngredientNameLabel,
+            hintText: S.stockIngredientNameHint,
             errorText: errorMessage,
             filled: false,
           ),
           autofocus: widget.isNew,
           maxLength: 30,
-          validator: Validator.textLimit(tt('stock.ingredient.label.name'), 30),
+          validator: Validator.textLimit(S.stockIngredientNameLabel, 30),
         ),
         TextFormField(
           key: const Key('stock.ingredient.amount'),
@@ -103,13 +100,12 @@ class _IngredientModalState extends State<IngredientModal>
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            labelText: tt('stock.ingredient.label.amount'),
-            helperText: tt('stock.ingredient.helper.amount'),
+            labelText: S.stockIngredientAmountLabel,
+            helperText: S.stockIngredientAmountHelper,
             errorText: errorMessage,
             filled: false,
           ),
-          validator:
-              Validator.positiveNumber(tt('stock.ingredient.label.amount')),
+          validator: Validator.positiveNumber(S.stockIngredientAmountLabel),
         ),
       ];
 
@@ -143,7 +139,7 @@ class _IngredientModalState extends State<IngredientModal>
     final name = _nameController!.text;
 
     if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
-      return tt('stock.ingredient.error.name_repeat');
+      return S.stockIngredientNameRepeatError;
     }
   }
 

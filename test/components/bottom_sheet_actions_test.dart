@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 
+import '../test_helpers/translator.dart';
+
 void main() {
   group('Widget BottomSheetActions', () {
     testWidgets('should cancelable', (WidgetTester tester) async {
@@ -13,6 +15,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.cancel_sharp), findsNothing);
+    });
+
+    setUpAll(() {
+      initializeTranslator();
     });
   });
 }

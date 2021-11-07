@@ -28,8 +28,8 @@ class OrderInfo extends StatelessWidget {
           bottom: 0,
           child: OrderedTip(
             groupId: 'home',
-            title: tt('home.order'),
-            message: tt('home.tutorial.order'),
+            title: S.homeIcons('order'),
+            message: S.homeIconTutorial('order'),
             id: 'order',
             version: 1,
             order: 99,
@@ -40,7 +40,7 @@ class OrderInfo extends StatelessWidget {
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(kSpacing5),
               ),
-              child: Text(tt('home.order'),
+              child: Text(S.homeIcons('order'),
                   style: const TextStyle(fontSize: 32.0)),
             ),
           ),
@@ -65,9 +65,9 @@ class _OrderMetadataState extends State<_OrderMetadata> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        _column(tt('home.today_order'), count),
+        _column(S.homeOrderInfoTodayCount, count),
         const SizedBox(width: 64.0),
-        _column(tt('home.today_price'), revenue),
+        _column(S.homeOrderInfoTodayEarn, revenue),
       ],
     );
   }

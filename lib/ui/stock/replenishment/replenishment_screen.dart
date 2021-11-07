@@ -11,7 +11,7 @@ import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
 
-import '../../../translator.dart';
+import 'package:possystem/translator.dart';
 
 class ReplenishmentScreen extends StatelessWidget {
   const ReplenishmentScreen({Key? key}) : super(key: key);
@@ -22,21 +22,21 @@ class ReplenishmentScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('採購列表'),
+        title: Text(S.stockReplenishmentTitle),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('replenisher.add'),
         onPressed: () =>
             Navigator.of(context).pushNamed(Routes.stockReplenishmentModal),
-        tooltip: '新增採購種類',
+        tooltip: S.stockReplenishmentCreate,
         child: const Icon(KIcons.add),
       ),
       // this page need to draw lots of data, wait a will to make sure page shown
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.all(kSpacing1),
-          child: HintText(tt('total_count', {'count': replenisher.length})),
+          child: HintText(S.totalCount(replenisher.length)),
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -44,7 +44,7 @@ class ReplenishmentScreen extends StatelessWidget {
               handleDelete: (item) => item.remove(),
               deleteValue: 1,
               warningContextBuilder: (_, item) =>
-                  Text(tt('delete_confirm', {'name': item.name})),
+                  Text(S.dialogDeletionContent(item.name, '')),
               items: replenisher.itemList,
               tileBuilder: (_, index, item) => _ReplenishmentTile(item),
             ),
@@ -65,7 +65,7 @@ class _ReplenishmentTile extends StatelessWidget {
     return ListTile(
         key: Key('replenisher.${item.id}'),
         title: Text(item.name),
-        subtitle: Text('會影響 ${item.data.length} 項成份'),
+        subtitle: Text(S.stockReplenishmentSubtitle(item.data.length)),
         onTap: () => Navigator.of(context).pushNamed(
               Routes.stockReplenishmentModal,
               arguments: item,
@@ -86,11 +86,11 @@ class _ReplenishmentTile extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => ConfirmDialog(
-        title: tt('stock.replenisher.confirm.title'),
+        title: S.stockReplenishmentApplyConfirmTitle(item.name),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(tt('stock.replenisher.confirm.content')),
+            Text(S.stockReplenishmentApplyConfirmContent),
             const SizedBox(height: kSpacing1),
             for (var names in names) Text('- $names'),
           ],

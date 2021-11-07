@@ -51,7 +51,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: kSpacing1),
-        child: HintText(tt('stock.replenisher.tutorial')),
+        child: HintText(S.stockReplenishmentIngredientListTitle),
       ),
       Expanded(
         child: Padding(
@@ -94,7 +94,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
 
     if (widget.replenishment?.name != name &&
         Replenisher.instance.hasName(name)) {
-      return tt('stock.replenisher.error.name');
+      return S.stockReplenishmentNameRepeatError;
     }
   }
 
@@ -112,7 +112,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: ingredient.name,
-        hintText: tt('stock.replenisher.hint.amount'),
+        hintText: S.stockReplenishmentNameHint,
       ),
     );
   }
@@ -124,15 +124,15 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       textInputAction: TextInputAction.done,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        labelText: tt('stock.replenisher.label.name'),
-        hintText: tt('stock.replenisher.hint.name'),
+        labelText: S.stockReplenishmentNameLabel,
+        hintText: S.stockReplenishmentNameHint,
         errorText: errorMessage,
         filled: false,
       ),
       style: textTheme.headline6,
       autofocus: widget.isNew,
       maxLength: 30,
-      validator: Validator.textLimit(tt('stock.replenisher.label.name'), 30),
+      validator: Validator.textLimit(S.stockReplenishmentNameLabel, 60),
     );
   }
 

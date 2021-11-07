@@ -14,6 +14,7 @@ import 'package:possystem/ui/stock/quantity/quantity_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Quantity Screen', () {
@@ -39,7 +40,7 @@ void main() {
 
       // should failed
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-3');
@@ -72,7 +73,7 @@ void main() {
 
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-1');
       await tester.enterText(find.byKey(const Key('quantity.proportion')), '2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // save to storage
       await tester.pumpAndSettle();
       // pop
@@ -129,7 +130,7 @@ void main() {
       deleteQuantity(String id) async {
         await tester.longPress(find.byKey(Key('quantities.$id')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('delete'));
+        await tester.tap(find.byKey(const Key('btn.delete')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
@@ -150,6 +151,7 @@ void main() {
 
     setUpAll(() {
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

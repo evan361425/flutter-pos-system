@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Changer', () {
@@ -179,6 +180,7 @@ void main() {
     setUpAll(() {
       initializeStorage();
       initializeCache();
+      initializeTranslator();
     });
   });
 }

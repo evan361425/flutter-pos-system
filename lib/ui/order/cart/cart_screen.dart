@@ -20,7 +20,7 @@ class CartScreen extends StatelessWidget {
         child: ElevatedButton(
           key: const Key('cart.select_all'),
           onPressed: () => Cart.instance.toggleAll(true),
-          child: Text(tt('order.cart.select_all')),
+          child: Text(S.orderCartSelectAll),
         ),
       ),
       const SizedBox(width: 4.0),
@@ -28,7 +28,7 @@ class CartScreen extends StatelessWidget {
         child: ElevatedButton(
           key: const Key('cart.toggle_all'),
           onPressed: () => Cart.instance.toggleAll(null),
-          child: Text(tt('order.cart.toggle_all')),
+          child: Text(S.orderCartToggleSelection),
         ),
       ),
     ]);
@@ -67,8 +67,8 @@ class _CartMetadata extends StatelessWidget {
     return Container(
       key: const Key('cart.metadata'),
       child: MetaBlock.withString(context, <String>[
-        tt('order.total_count', {'count': cart.totalCount}),
-        tt('order.total_price', {'price': cart.productsPrice}),
+        S.orderMetaTotalCount(cart.totalCount),
+        S.orderMetaTotalPrice(cart.productsPrice),
       ]),
     );
   }

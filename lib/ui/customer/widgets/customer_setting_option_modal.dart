@@ -7,6 +7,7 @@ import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class CustomerSettingOptionModal extends StatefulWidget {
   final CustomerSetting setting;
@@ -33,8 +34,9 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
   late bool isDefault;
 
   @override
-  Widget? get title =>
-      Text(widget.isNew ? '新增${widget.setting.name}的選項' : widget.option!.name);
+  Widget? get title => Text(widget.isNew
+      ? S.customerSettingOptionCreateTitle(widget.setting.name)
+      : widget.option!.name);
 
   @override
   void dispose() {
@@ -49,7 +51,9 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     _modeValueController = TextEditingController(
       text: widget.option?.modeValue == null
           ? ''
-          : widget.option!.modeValue!.toCurrency(),
+          : widget.setting.mode == CustomerSettingOptionMode.changeDiscount
+              ? widget.option!.modeValue!.toInt().toString()
+              : widget.option!.modeValue!.toCurrency(),
     );
     isDefault = widget.option?.isDefault ?? false;
 
@@ -58,22 +62,13 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
   @override
   List<Widget> formFields() {
-    final modeValueLabel =
+    final label = S.customerSettingModeNames(widget.setting.mode);
+    final helper = S.customerSettingOptionsModeHelper(widget.setting.mode);
+    final hint = S.customerSettingOptionsModeHint(widget.setting.mode);
+    final validator =
         widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? '折價'
-            : '變價';
-    final modeValueHelper =
-        widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? '點單時選擇此項會套用此折價'
-            : '點單時選擇此項會套用此變價';
-    final modeValueHint =
-        widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? '80 代表「八折」'
-            : '-30 代表減少三十塊';
-    final modeValueValidator =
-        widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? Validator.positiveInt('折價', maximum: 1000, allowNull: true)
-            : Validator.isNumber('變價', allowNull: true);
+            ? Validator.positiveInt(label, maximum: 1000, allowNull: true)
+            : Validator.isNumber(label, allowNull: true);
 
     return [
       TextFormField(
@@ -85,13 +80,13 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: '顧客設定選項',
-          helperText: '以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲',
+          labelText: S.customerSettingOptionNameLabel,
+          helperText: S.customerSettingOptionNameHelper,
           errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit('選項名稱', 50),
+        validator: Validator.textLimit(S.customerSettingOptionNameLabel, 50),
       ),
       CheckboxListTile(
         key: const Key('customer_setting_option.isDefault'),
@@ -99,7 +94,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
         value: isDefault,
         selected: isDefault,
         onChanged: toggledDefault,
-        title: const Text('設為預設'),
+        title: Text(S.customerSettingOptionSetToDefault),
       ),
       widget.setting.shouldHaveModeValue
           ? TextFormField(
@@ -108,16 +103,16 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
               textInputAction: TextInputAction.send,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: modeValueLabel,
-                helperText: modeValueHelper,
-                hintText: modeValueHint,
+                labelText: label,
+                helperText: helper,
+                hintText: hint,
                 errorText: errorMessage,
                 filled: false,
               ),
               onFieldSubmitted: (_) => handleSubmit(),
-              validator: modeValueValidator,
+              validator: validator,
             )
-          : const HintText('因為本設定為「一般」故無須設定「折價」或「變價」'),
+          : HintText(helper),
     ];
   }
 
@@ -130,8 +125,9 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
       final confirmed = await showDialog(
         context: context,
         builder: (_) => ConfirmDialog(
-          title: '確定要覆蓋預設值嗎',
-          content: Text('這麼做會讓「${defaultOption.name}」變成非預設值'),
+          title: S.customerSettingOptionConfirmChangeDefaultTitle,
+          content: Text(S.customerSettingOptionConfirmChangeDefaultContent(
+              defaultOption.name)),
         ),
       );
 
@@ -175,7 +171,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     final name = _nameController.text;
 
     if (widget.option?.name != name && widget.setting.hasName(name)) {
-      return '名稱不能重複';
+      return S.customerSettingOptionNameRepeatError;
     }
   }
 }

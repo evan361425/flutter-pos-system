@@ -50,6 +50,6 @@ google-services.json
 services.*.tar
 
 # mocks
-*.mocks.dart
+# *.mocks.dart
 
 coverage/

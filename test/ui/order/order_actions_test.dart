@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Order actions', () {
@@ -400,6 +401,7 @@ void main() {
       initializeCache();
       initializeDatabase();
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

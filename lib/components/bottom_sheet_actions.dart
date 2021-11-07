@@ -88,7 +88,7 @@ class BottomSheetActions extends StatelessWidget {
 
   Widget _cancelAction(BuildContext context) {
     return ListTile(
-      title: Text(tt('cancel')),
+      title: Text(S.btnCancel),
       leading: const Icon(Icons.cancel_sharp),
       onTap: () => Navigator.of(context).pop(),
     );
@@ -97,7 +97,7 @@ class BottomSheetActions extends StatelessWidget {
   Widget _title(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(kSpacing0),
-      child: Center(child: Text(tt('action_title'))),
+      child: Center(child: Text(S.bottomSheetActionsTitle)),
     );
   }
 
@@ -119,7 +119,8 @@ class BottomSheetActions extends StatelessWidget {
     final result = await showCircularBottomSheet<T>(context, actions: [
       ...actions,
       BottomSheetAction(
-        title: Text(tt('delete')),
+        key: const Key('btn.delete'),
+        title: Text(S.btnDelete),
         leading: Icon(
           KIcons.delete,
           color: Theme.of(context).errorColor,

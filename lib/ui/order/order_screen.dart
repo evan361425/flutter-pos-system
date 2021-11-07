@@ -73,7 +73,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
           AppbarTextButton(
             key: const Key('order.cashier'),
             onPressed: () => _handleOrder(),
-            child: const Text('結帳'),
+            child: Text(S.orderActionsOrderDone),
           ),
         ],
       ),
@@ -138,7 +138,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
     final result = await Navigator.of(context).pushNamed(route);
 
     if (result == true) {
-      showSuccessSnackbar(context, tt('success'));
+      showSuccessSnackbar(context, S.actSuccess);
     }
   }
 }

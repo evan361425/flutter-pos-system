@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/translator.dart';
+
+import '../test_helpers/translator.dart';
 
 void main() {
   group('Widget SlidableItemList', () {
@@ -58,10 +61,14 @@ void main() {
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('delete'));
+      await tester.tap(find.text(S.btnDelete));
       await tester.pumpAndSettle();
 
       expect(deletionFired, isTrue);
+    });
+
+    setUpAll(() {
+      initializeTranslator();
     });
   });
 }

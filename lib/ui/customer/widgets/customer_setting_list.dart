@@ -7,7 +7,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,7 @@ class CustomerSettingList extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(kSpacing1),
-            child: HintText(tt('total_count', {'count': settings.length})),
+            child: HintText(S.totalCount(settings.length)),
           ),
           for (final setting in settings)
             ChangeNotifierProvider<CustomerSetting>.value(
@@ -43,8 +42,9 @@ class _CustomerSettingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final setting = context.watch<CustomerSetting>();
-    final mode = customerSettingOptionModeString[setting.mode];
-    final defaultName = setting.defaultOption?.name ?? '無';
+    final mode = S.customerSettingModeNames(setting.mode);
+    final defaultName =
+        setting.defaultOption?.name ?? S.customerSettingMetaNoDefault;
     final key = 'customer_settings.${setting.id}';
 
     return Card(
@@ -52,8 +52,8 @@ class _CustomerSettingCard extends StatelessWidget {
         key: Key(key),
         title: Text(setting.name),
         subtitle: MetaBlock.withString(context, [
-          '種類：$mode',
-          '預設：$defaultName',
+          S.customerSettingMetaMode(mode),
+          S.customerSettingMetaDefault(defaultName),
         ]),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -67,7 +67,7 @@ class _CustomerSettingCard extends StatelessWidget {
                   arguments: setting,
                 ),
                 icon: const Icon(KIcons.add),
-                label: const Text('新增顧客設定選項'),
+                label: Text(S.customerSettingOptionCreate),
               ),
               IconButton(
                 key: Key('$key.more'),
@@ -88,19 +88,19 @@ class _CustomerSettingCard extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: const Text('編輯資訊'),
+          title: Text(S.customerSettingUpdate),
           leading: const Icon(Icons.text_fields_sharp),
           navigateRoute: Routes.customerModal,
           navigateArgument: setting,
         ),
         BottomSheetAction(
-          title: const Text('排序'),
+          title: Text(S.customerSettingOptionIsReorder),
           leading: const Icon(Icons.reorder_sharp),
           navigateRoute: Routes.customerSettingReorder,
           navigateArgument: setting,
         ),
       ],
-      warningContent: Text(tt('delete_confirm', {'name': setting.name})),
+      warningContent: Text(S.dialogDeletionContent(setting.name, '')),
       deleteCallback: () => setting.remove(),
     );
   }
@@ -119,11 +119,13 @@ class _OptionTile extends StatelessWidget {
       key: Key('customer_setting.${option.setting.id}.${option.id}'),
       title: Text(option.name, style: Theme.of(context).textTheme.headline6),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
-      trailing: option.isDefault ? const OutlinedText('預設') : null,
+      trailing: option.isDefault
+          ? OutlinedText(S.customerSettingOptionIsDefault)
+          : null,
       onLongPress: () => BottomSheetActions.withDelete<int>(
         context,
         deleteValue: 0,
-        warningContent: Text(tt('delete_confirm', {'name': option.name})),
+        warningContent: Text(S.dialogDeletionContent(option.name, '')),
         deleteCallback: () => option.remove(),
       ),
       onTap: () => Navigator.of(context).pushNamed(

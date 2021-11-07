@@ -1,31 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:possystem/settings/setting.dart';
 
 class LanguageSetting extends Setting<Locale> {
   // Make SettingsService a private variable so it is not used directly.
-  static const defaultLanguage = Locale('zh', 'TW');
-
-  /// shared pref object
-  static const delegates = <LocalizationsDelegate<dynamic>>[
-    AppLocalizations.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ];
-
-  static const supports = [
-    defaultLanguage,
-    Locale('en'),
-  ];
-
-  static const supportNames = [
-    '繁體中文',
-    'English',
-  ];
+  static const defaultLanguage = Locale('zh');
 
   @override
   final String key = 'language';
@@ -35,7 +15,7 @@ class LanguageSetting extends Setting<Locale> {
 
   @override
   void initialize() {
-    value = _parseLanguage(service.get<String>(key)) ?? defaultLanguage;
+    value = parseLanguage(service.get<String>(key)) ?? defaultLanguage;
   }
 
   @override
@@ -43,7 +23,7 @@ class LanguageSetting extends Setting<Locale> {
     return service.set<String>(key, data.toString());
   }
 
-  Locale? _parseLanguage(String? value) {
+  Locale? parseLanguage(String? value) {
     if (value == null || value.isEmpty) return null;
 
     final codes = value.split('_');

@@ -20,7 +20,7 @@ class AnalysisScreen extends StatelessWidget {
     return Scaffold(
       key: const Key('analysis_screen'),
       appBar: AppBar(
-        title: Text(tt('analysis.title')),
+        title: Text(S.analysisTitle),
         leading: const PopButton(),
       ),
       body: OrientationBuilder(

@@ -102,9 +102,7 @@ jobs:
 
       # Get flutter dependencies.
       - name: Build dependencies
-        run: |
-          flutter pub get
-          flutter pub run build_runner build
+        run: flutter pub get
 
       - name: Configure Firebase
         run: |

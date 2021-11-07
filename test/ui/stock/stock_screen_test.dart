@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/disable_tips.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Stock Screen', () {
@@ -36,7 +37,7 @@ void main() {
           find.byKey(const Key('stock.ingredient.amount')), '1');
       await tester.enterText(
           find.byKey(const Key('stock.ingredient.name')), 'i-1');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // wait for updating
       await tester.pumpAndSettle();
       // wait for pop
@@ -146,12 +147,12 @@ void main() {
       // validate failed
       await tester.enterText(
           find.byKey(const Key('stock.ingredient.name')), 'i-2');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
           find.byKey(const Key('stock.ingredient.name')), 'i-3');
-      await tester.tap(find.text('save'));
+      await tester.tap(find.byKey(const Key('modal.save')));
       // wait for updating
       await tester.pumpAndSettle();
       // wait for pop
@@ -172,7 +173,7 @@ void main() {
       deleteIngredient(String id) async {
         await tester.longPress(find.byKey(Key('stock.$id')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('delete'));
+        await tester.tap(find.byKey(const Key('btn.delete')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
         await tester.pumpAndSettle();
@@ -195,6 +196,7 @@ void main() {
       disableTips();
       initializeStorage();
       initializeCache();
+      initializeTranslator();
     });
   });
 }

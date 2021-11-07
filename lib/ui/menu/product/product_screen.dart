@@ -32,7 +32,8 @@ class ProductScreen extends StatelessWidget {
         );
 
     final body = product.isEmpty
-        ? EmptyBody(title: '可以設定產品的成份囉！', onPressed: navigateNewIngredient)
+        ? EmptyBody(
+            title: S.menuProductEmptyBody, onPressed: navigateNewIngredient)
         : ProductIngredientList(product.itemList);
 
     return FadeInTitleScaffold(
@@ -42,7 +43,7 @@ class ProductScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         key: const Key('product.add'),
         onPressed: navigateNewIngredient,
-        tooltip: tt('menu.integredient.add'),
+        tooltip: S.menuIngredientCreate,
         child: const Icon(KIcons.add),
       ),
       body: Column(
@@ -50,8 +51,8 @@ class ProductScreen extends StatelessWidget {
           ItemMoreActionButton(
             item: product,
             metadata: MetaBlock.withString(context, <String>[
-              '價格：${product.price}',
-              '成本：${product.cost}',
+              S.menuProductMetaPrice(product.price),
+              S.menuProductMetaCost(product.cost),
             ]),
             onTap: () => _showActions(context, product),
           ),
@@ -65,12 +66,12 @@ class ProductScreen extends StatelessWidget {
     await BottomSheetActions.withDelete(
       context,
       deleteCallback: product.remove,
-      deleteValue: _Action.delete,
+      deleteValue: 0,
       popAfterDeleted: true,
-      warningContent: Text(tt('delete_confirm', {'name': product.name})),
-      actions: <BottomSheetAction<_Action>>[
+      warningContent: Text(S.dialogDeletionContent(product.name, '')),
+      actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(tt('menu.product.edit')),
+          title: Text(S.menuProductUpdate),
           leading: const Icon(Icons.text_fields_sharp),
           navigateArgument: product,
           navigateRoute: Routes.menuProductModal,
@@ -78,8 +79,4 @@ class ProductScreen extends StatelessWidget {
       ],
     );
   }
-}
-
-enum _Action {
-  delete,
 }

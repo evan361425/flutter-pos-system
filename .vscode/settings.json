@@ -11,5 +11,14 @@
     "signin",
     "sqflite",
     "upgrader"
+  ],
+  "files.associations": {
+    "*.arb": "json"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["/lib/l10n/*.arb"],
+      "url": "/.vscode/arb.schema.json"
+    }
   ]
 }

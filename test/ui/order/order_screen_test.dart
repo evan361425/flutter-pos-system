@@ -21,10 +21,12 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/translator.dart';
 
 void main() {
   group('Order Screen', () {
@@ -154,14 +156,15 @@ void main() {
           }
           if (price != null) {
             expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-                equals('price-$price'));
+                equals(S.orderCartItemPrice(price.toInt())));
           }
         }
 
         verifyMetadata(int count, num price) {
           final w =
               tester.widget<Container>(find.byKey(const Key('cart.metadata')));
-          final t = 'total_count-$count${MetaBlock.string}total_price-$price';
+          final t =
+              '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
           expect((w.child as RichText).text.toPlainText(), equals(t));
         }
 
@@ -177,7 +180,7 @@ void main() {
         verifyProductList(1, title: 'p-2', selected: true);
         verifyMetadata(2, 28);
 
-        expect(find.byKey(const Key('order.ingredient.no_quantity')),
+        expect(find.byKey(const Key('order.ingredient.noNeedIngredient')),
             findsOneWidget);
         await tester.tap(find.byKey(const Key('cart.product.0')));
         await tester.pumpAndSettle();
@@ -208,7 +211,7 @@ void main() {
         await tester.pumpAndSettle();
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: true);
-        expect(find.byKey(const Key('order.ingredient.not_same_product')),
+        expect(find.byKey(const Key('order.ingredient.differentProducts')),
             findsOneWidget);
 
         await tester.tap(find.byKey(const Key('cart.product.1.select')));
@@ -330,14 +333,15 @@ void main() {
         }
         if (price != null) {
           expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-              equals('price-$price'));
+              equals(S.orderCartItemPrice(price.toInt())));
         }
       }
 
       verifyMetadata(int count, num price) {
         final w =
             tester.widget<Container>(find.byKey(const Key('cart.metadata')));
-        final t = 'total_count-$count${MetaBlock.string}total_price-$price';
+        final t =
+            '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
         expect((w.child as RichText).text.toPlainText(), equals(t));
       }
 
@@ -383,6 +387,7 @@ void main() {
     setUpAll(() {
       initializeCache();
       initializeStorage();
+      initializeTranslator();
     });
   });
 }

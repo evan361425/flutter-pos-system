@@ -13,10 +13,10 @@ class DeleteDialog extends StatelessWidget {
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: Text(tt('delete_title')),
+      title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(title: tt('cancel')),
+        PopButton(title: S.btnCancel),
         ElevatedButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
@@ -24,7 +24,7 @@ class DeleteDialog extends StatelessWidget {
             primary: theme.errorColor,
             onPrimary: Colors.white,
           ),
-          child: Text(tt('delete')),
+          child: Text(S.btnDelete),
         ),
       ],
     );
@@ -43,7 +43,7 @@ class DeleteDialog extends StatelessWidget {
   }) async {
     startDelete() async {
       await deleteCallback();
-      showSuccessSnackbar(context, tt('success'));
+      showSuccessSnackbar(context, S.actSuccess);
 
       if (popAfterDeleted) {
         Navigator.of(context).pop();
