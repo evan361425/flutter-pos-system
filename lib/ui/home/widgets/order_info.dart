@@ -40,8 +40,10 @@ class OrderInfo extends StatelessWidget {
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(kSpacing5),
               ),
-              child: Text(S.homeIcons('order'),
-                  style: const TextStyle(fontSize: 32.0)),
+              child: Text(
+                S.homeIcons('order'),
+                style: const TextStyle(fontSize: 24.0),
+              ),
             ),
           ),
         ),
@@ -88,7 +90,7 @@ class _OrderMetadataState extends State<_OrderMetadata> {
           Text(
             value ?? '...',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20.0),
+            style: const TextStyle(fontSize: 26.0),
             overflow: TextOverflow.ellipsis,
           ),
         ],

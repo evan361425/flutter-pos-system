@@ -1,6 +1,7 @@
 {
   "en": [
     "actSuccess",
+    "actError",
     "btnCancel",
     "btnConfirm",
     "btnDelete",
@@ -206,6 +207,7 @@
   "zh_TW": [
     "appTitle",
     "actSuccess",
+    "actError",
     "btnCancel",
     "btnConfirm",
     "btnDelete",

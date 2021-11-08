@@ -43,7 +43,8 @@ ON `order` (createdAt);
   combination TEXT NOT NULL UNIQUE
 );''',
     '''ALTER TABLE `order`
-ADD COLUMN customerSettingCombinationId INTEGER,
+ADD COLUMN customerSettingCombinationId INTEGER;''',
+    '''ALTER TABLE `order`
 ADD COLUMN productsPrice REAL;''',
     '''ALTER TABLE `order_stash`
 ADD COLUMN customerSettingCombinationId INTEGER;''',

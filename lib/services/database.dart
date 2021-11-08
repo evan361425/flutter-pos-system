@@ -90,12 +90,12 @@ class Database {
       onCreate: (db, version) async {
         info(version.toString(), 'database.create.$version');
         for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
-          await _execMigration(exeVersion);
+          await _execMigration(db, exeVersion);
         }
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         info(oldVersion.toString(), 'database.upgrade.$newVersion');
-        await _execMigration(newVersion);
+        await _execMigration(db, newVersion);
       },
     );
   }
@@ -141,7 +141,7 @@ class Database {
     );
   }
 
-  Future<void> _execMigration(int version) async {
+  Future<void> _execMigration(no_sql.Database db, int version) async {
     for (final sql in dbMigrationUp[version]!) {
       try {
         await db.execute(sql);

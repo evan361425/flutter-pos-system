@@ -40,9 +40,11 @@ class ReorderableScaffold<T> extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(kSpacing0),
-            child: HintText(S.totalCount(items.length)),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(kSpacing0),
+              child: HintText(S.totalCount(items.length)),
+            ),
           ),
           Expanded(
             child: _OrderableList(items: items),

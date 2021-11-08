@@ -4,6 +4,10 @@
   "@actSuccess": {
     "description": "執行行為成功，並顯示於 Snackbar 中"
   },
+  "actError": "發生未知錯誤",
+  "@actError": {
+    "description": "當發生錯誤時，會顯示在 SnackBar 上的文字"
+  },
   "btnCancel": "取消",
   "@btnCancel": {
     "description": "取消按鈕"
@@ -654,14 +658,14 @@
       }
     }
   },
-  "customerSettingModeNames": "mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}",
+  "customerSettingModeNames": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}}",
   "@customerSettingModeNames": {
     "description": "顧客設定種類名稱",
     "placeholders": {
       "mode": {}
     }
   },
-  "customerSettingModeDescriptions": "mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}",
+  "customerSettingModeDescriptions": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}}",
   "@customerSettingModeDescriptions": {
     "description": "顧客設定種類名稱",
     "placeholders": {

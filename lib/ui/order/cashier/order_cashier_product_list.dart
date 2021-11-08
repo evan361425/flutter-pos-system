@@ -39,20 +39,24 @@ class OrderCashierProductList extends StatelessWidget {
       ],
     );
 
-    final customerSettingWidget = ExpansionTile(
-      title: Text(S.orderCashierCustomerInfoTitle),
-      subtitle: Text(S.orderCashierCustomerTotalCount(customerSettings.length)),
-      children: <Widget>[
-        for (final option in customerSettings)
-          ListTile(
-            title: Text(option.name),
-            subtitle: option.modeValueName.isNotEmpty
-                ? Text(option.modeValueName)
-                : null,
-            visualDensity: const VisualDensity(horizontal: 0, vertical: -3),
-          ),
-      ],
-    );
+    final customerSettingWidget = customerSettings.isEmpty
+        ? Container()
+        : ExpansionTile(
+            title: Text(S.orderCashierCustomerInfoTitle),
+            subtitle:
+                Text(S.orderCashierCustomerTotalCount(customerSettings.length)),
+            children: <Widget>[
+              for (final option in customerSettings)
+                ListTile(
+                  title: Text(option.name),
+                  subtitle: option.modeValueName.isNotEmpty
+                      ? Text(option.modeValueName)
+                      : null,
+                  visualDensity:
+                      const VisualDensity(horizontal: 0, vertical: -3),
+                ),
+            ],
+          );
 
     final totalCount = products.fold<int>(
       0,

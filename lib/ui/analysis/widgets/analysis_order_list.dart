@@ -126,13 +126,17 @@ class _AnalysisOrderModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // YYYY-MM-DD HH:mm:ss
-    final createdAt = order.createdAt.toString().substring(0, 19);
+    final createdAt = DateFormat.MEd(S.localeName).format(order.createdAt) +
+        ' ' +
+        DateFormat.Hms(S.localeName).format(order.createdAt);
 
     return Scaffold(
       appBar: AppBar(leading: const PopButton()),
       body: Column(children: [
-        HintText(createdAt),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: HintText(createdAt),
+        ),
         Expanded(
           child: OrderCashierProductList(
             customerSettings: selectedCustomerSettingOptions.toList(),

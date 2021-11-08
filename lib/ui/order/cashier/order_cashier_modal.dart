@@ -4,6 +4,7 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
@@ -113,6 +114,9 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       Navigator.of(context).pop(success);
     } on PaidException {
       showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
+    } catch (err, stack) {
+      showErrorSnackbar(context, S.actError);
+      error(err.toString(), 'order.error', stack);
     }
   }
 }
