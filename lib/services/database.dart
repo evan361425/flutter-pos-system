@@ -86,7 +86,7 @@ class Database {
     final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
     db = await openDatabase(
       databasePath,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         info(version.toString(), 'database.create.$version');
         for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
