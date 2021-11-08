@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
@@ -61,7 +62,11 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   Future<void> handleSubmit() async {
     if (!_validate()) return;
 
-    return updateItem();
+    try {
+      await updateItem();
+    } catch (e, stack) {
+      error(e.toString(), 'item_modal.error', stack);
+    }
   }
 
   Future<void> updateItem();

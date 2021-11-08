@@ -86,7 +86,7 @@ class Database {
     final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
     db = await openDatabase(
       databasePath,
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
         info(version.toString(), 'database.create.$version');
         for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
@@ -95,7 +95,9 @@ class Database {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         info(oldVersion.toString(), 'database.upgrade.$newVersion');
-        await _execMigration(db, newVersion);
+        for (var i = oldVersion + 1; i <= newVersion; i++) {
+          await _execMigration(db, i);
+        }
       },
     );
   }
@@ -142,7 +144,10 @@ class Database {
   }
 
   Future<void> _execMigration(no_sql.Database db, int version) async {
-    for (final sql in dbMigrationUp[version]!) {
+    final sqls = dbMigrationUp[version];
+    if (sqls == null) return;
+
+    for (final sql in sqls) {
       try {
         await db.execute(sql);
       } catch (e, stack) {

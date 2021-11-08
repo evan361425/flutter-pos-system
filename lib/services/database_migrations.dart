@@ -21,7 +21,13 @@ const dbMigrationUp = <int, List<String>>{
 ON `order` (createdAt);
 ''',
   ],
-  2: <String>[
+  3: <String>[
+    '''ALTER TABLE `order`
+ADD COLUMN customerSettingCombinationId INTEGER;''',
+    '''ALTER TABLE `order`
+ADD COLUMN productsPrice REAL;''',
+  ],
+  4: <String>[
     '''CREATE TABLE `customer_settings` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   `name` TEXT NOT NULL,
@@ -46,15 +52,9 @@ ON `order` (createdAt);
 ADD COLUMN customerSettingCombinationId INTEGER;''',
     '''CREATE INDEX idx_customer_setting_options_id
 ON `customer_setting_options` (customerSettingId);
-''',
+'''
   ],
-  3: <String>[
-    '''ALTER TABLE `order`
-ADD COLUMN customerSettingCombinationId INTEGER;''',
-    '''ALTER TABLE `order`
-ADD COLUMN productsPrice REAL;''',
-  ],
-  4: <String>[
+  999: <String>[
     '''CREATE TABLE `menu_catalogs` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   `name` TEXT NOT NULL,
