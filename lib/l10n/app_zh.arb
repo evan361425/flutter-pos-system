@@ -756,7 +756,7 @@
   "@orderActionsConfirmStashCurrent": {
     "description": "若需要「顯示最後一次點餐」而購物車仍有餐點時，會跳出本確認提示"
   },
-  "orderActionsShowLastOrderNotFound": "找不到當日上一次的紀錄，可以去點單紀錄查詢更久的紀錄",
+  "orderActionsShowLastOrderNotFound": "找不到當日上一次的紀錄\n可以去點單紀錄查詢更久的紀錄",
   "@orderActionsShowLastOrderNotFound": {
     "description": "在資料庫中找不到任何一筆當日點餐紀錄"
   },
