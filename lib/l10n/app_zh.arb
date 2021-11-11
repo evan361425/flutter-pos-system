@@ -307,7 +307,7 @@
   "@menuCatalogEmptyBody": {
     "description": "若產品種類沒有任何產品，在其產品種類頁會顯示的文字"
   },
-  "menuCatalogDialogDeletionContent": "{count, plural, =0{其內無任何產品\\n\\n} other{將會一同刪除掉 {count} 個產品\\n\\n}}",
+  "menuCatalogDialogDeletionContent": "{count, plural, =0{其內無任何產品\n\n} other{將會一同刪除掉 {count} 個產品\n\n}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "菜單頁刪除產品種類時的警語",
     "placeholders": {
@@ -488,7 +488,7 @@
       }
     }
   },
-  "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成份\\n\\n} other{將會一同刪除掉 {count} 個產品的成份\\n\\n}}",
+  "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成份\n\n} other{將會一同刪除掉 {count} 個產品的成份\n\n}}",
   "@stockIngredientDialogDeletionContent": {
     "description": "刪除成份時會提示多少個產品受影響",
     "placeholders": {
@@ -581,7 +581,7 @@
       }
     }
   },
-  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成份有本份量\\n\\n} other{將會一同刪除掉 {count} 個產品成份的份量\\n\\n}}",
+  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成份有本份量\n\n} other{將會一同刪除掉 {count} 個產品成份的份量\n\n}}",
   "@stockQuantityDialogDeletionContent": {
     "description": "刪除份量時會提示多少個產品成份受影響",
     "placeholders": {
