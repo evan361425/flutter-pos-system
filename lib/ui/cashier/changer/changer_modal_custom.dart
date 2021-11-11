@@ -151,6 +151,9 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
             CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
+    // close keyboard
+    FocusScope.of(context).unfocus();
+
     widget.afterFavoriteAdded();
   }
 
