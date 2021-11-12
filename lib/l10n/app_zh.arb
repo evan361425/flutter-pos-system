@@ -163,7 +163,7 @@
       }
     }
   },
-  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存\\n並同時設定成份的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單\\n並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\\n20-30歲、外帶、上班族。}}",
+  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存\\n並同時設定成分的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單\\n並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\\n20-30歲、外帶、上班族。}}",
   "@homeIconTutorial": {
     "description": "首頁的按鈕的說明",
     "placeholders": {
@@ -265,7 +265,7 @@
       }
     }
   },
-  "menuSearchProductHint": "搜尋產品、成份、份量",
+  "menuSearchProductHint": "搜尋產品、成分、份量",
   "@menuSearchProductHint": {
     "description": "搜尋產品時的文字匡 placeholder"
   },
@@ -357,11 +357,11 @@
       }
     }
   },
-  "menuProductListEmptyIngredient": "尚未設定成份",
+  "menuProductListEmptyIngredient": "尚未設定成分",
   "menuProductCreate": "新增產品",
   "menuProductUpdate": "編輯產品",
   "menuProductReorder": "排序產品",
-  "menuProductEmptyBody": "可以設定產品的成份囉！",
+  "menuProductEmptyBody": "可以設定產品的成分囉！",
   "menuProductNameLabel": "產品名稱",
   "menuProductNameHint": "起司漢堡",
   "menuProductNameRepeatError": "產品名稱重複",
@@ -378,25 +378,25 @@
       }
     }
   },
-  "menuIngredientCreate": "新增成份",
-  "menuIngredientUpdate": "編輯成份",
-  "menuIngredientSearchLabel": "成份",
-  "menuIngredientSearchAdd": "新增成份份量「{name}」",
+  "menuIngredientCreate": "新增成分",
+  "menuIngredientUpdate": "編輯成分",
+  "menuIngredientSearchLabel": "成分",
+  "menuIngredientSearchAdd": "新增成分份量「{name}」",
   "@menuIngredientSearchAdd": {
-    "description": "當搜尋不到成份時，需要新增成份",
+    "description": "當搜尋不到成分時，需要新增成分",
     "placeholders": {
       "name": {
-        "description": "成份名稱",
+        "description": "成分名稱",
         "type": "String"
       }
     }
   },
   "menuIngredientSearchHint": "起司",
-  "menuIngredientSearchEmptyError": "必須設定成份，請點選以設定。",
-  "menuIngredientSearchHelper": "新增成份後，可至「庫存」設定相關資訊。",
-  "menuIngredientRepeatError": "成份不能重複選取。",
+  "menuIngredientSearchEmptyError": "必須設定成分，請點選以設定。",
+  "menuIngredientSearchHelper": "新增成分後，可至「庫存」設定相關資訊。",
+  "menuIngredientRepeatError": "成分不能重複選取。",
   "menuIngredientAmountLabel": "使用量",
-  "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成份的使用量，請於成份的「份量」中設定。",
+  "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成分的使用量，請於成分的「份量」中設定。",
   "menuQuantityMetaAmount": "額外使用量：{amount}",
   "@menuQuantityMetaAmount": {
     "placeholders": {
@@ -447,13 +447,13 @@
   },
   "menuQuantitySearchHint": "少量、多量",
   "menuQuantitySearchEmptyError": "必須設定份量，請點選以設定。",
-  "menuQuantitySearchHelper": "新增成份份量後，可至「份量」設定相關資訊。",
+  "menuQuantitySearchHelper": "新增成分份量後，可至「份量」設定相關資訊。",
   "menuQuantityRepeatError": "份量不能重複選取。",
   "menuQuantityAmountLabel": "額外使用量",
   "menuQuantityAdditionalPriceLabel": "額外售價",
   "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantityAdditionalCostLabel": "額外成本",
-  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成份的使用，相對成本降低。",
+  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
   "stockTitle": "庫存",
   "stockHasNotReplenishEver": "尚未補貨過",
   "@stockHasNotReplenishEver": {
@@ -469,7 +469,7 @@
       }
     }
   },
-  "stockIngredientCreate": "新增成份",
+  "stockIngredientCreate": "新增成分",
   "stockIngredientDialogIncrementTitle": "增加 {name} 的庫存",
   "@stockIngredientDialogIncrementTitle": {
     "description": "新增庫存的對話匡標題",
@@ -488,9 +488,9 @@
       }
     }
   },
-  "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成份\n\n} other{將會一同刪除掉 {count} 個產品的成份\n\n}}",
+  "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成分\n\n} other{將會一同刪除掉 {count} 個產品的成分\n\n}}",
   "@stockIngredientDialogDeletionContent": {
-    "description": "刪除成份時會提示多少個產品受影響",
+    "description": "刪除成分時會提示多少個產品受影響",
     "placeholders": {
       "count": {
         "description": "產品數量",
@@ -500,7 +500,7 @@
   },
   "stockIngredientMetaCurrentAmount": "{count, plural, =0{庫存：無} other{庫存：{count}}}",
   "@stockIngredientMetaCurrentAmount": {
-    "description": "成份庫存數量",
+    "description": "成分庫存數量",
     "placeholders": {
       "count": {
         "type": "int"
@@ -509,7 +509,7 @@
   },
   "stockIngredientMetaLastAmount": "{count, plural, =0{紀錄：無} other{紀錄：{count}}}",
   "@stockIngredientMetaLastAmount": {
-    "description": "成份上次補貨後的庫存數量",
+    "description": "成分上次補貨後的庫存數量",
     "placeholders": {
       "count": {
         "type": "int"
@@ -518,30 +518,30 @@
   },
   "stockIngredientConnectedProductsCount": "共有 {count} 個產品使用 {name}",
   "@stockIngredientConnectedProductsCount": {
-    "description": "在編輯成份時，會提示有幾個產品正在使用，並允許點擊導進產品頁",
+    "description": "在編輯成分時，會提示有幾個產品正在使用，並允許點擊導進產品頁",
     "placeholders": {
       "count": {
         "description": "產品數量",
         "type": "int"
       },
       "name": {
-        "description": "成份名稱",
+        "description": "成分名稱",
         "type": "String"
       }
     }
   },
-  "stockIngredientNameLabel": "成份名稱",
+  "stockIngredientNameLabel": "成分名稱",
   "stockIngredientNameHint": "起司",
-  "stockIngredientNameRepeatError": "成份名稱重複",
+  "stockIngredientNameRepeatError": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountHelper": "設定此值並不記錄為「補貨」。或要補貨，請從「庫存」頁設定。",
   "stockReplenishmentTitle": "採購列表",
-  "stockReplenishmentSubtitle": "會影響 {count} 項成份",
+  "stockReplenishmentSubtitle": "會影響 {count} 項成分",
   "@stockReplenishmentSubtitle": {
     "description": "採購列表中各個項目會顯示的子標題",
     "placeholders": {
       "count": {
-        "description": "會影響的成份數量",
+        "description": "會影響的成分數量",
         "type": "int"
       }
     }
@@ -556,13 +556,13 @@
       }
     }
   },
-  "stockReplenishmentApplyConfirmContent": "將會影響以下的成份：",
+  "stockReplenishmentApplyConfirmContent": "將會影響以下的成分：",
   "@stockReplenishmentApplyConfirmContent": {
     "description": "套用採購時的確認內文第一行"
   },
-  "stockReplenishmentIngredientListTitle": "點選以設定不同成份欲設定的量",
+  "stockReplenishmentIngredientListTitle": "點選以設定不同成分欲設定的量",
   "@stockReplenishmentIngredientListTitle": {
-    "description": "設定採購時成份列表的標題"
+    "description": "設定採購時成分列表的標題"
   },
   "stockReplenishmentCreate": "新增採購種類",
   "stockReplenishmentNameLabel": "採購名稱",
@@ -581,12 +581,12 @@
       }
     }
   },
-  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成份有本份量\n\n} other{將會一同刪除掉 {count} 個產品成份的份量\n\n}}",
+  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成分有本份量\n\n} other{將會一同刪除掉 {count} 個產品成分的份量\n\n}}",
   "@stockQuantityDialogDeletionContent": {
-    "description": "刪除份量時會提示多少個產品成份受影響",
+    "description": "刪除份量時會提示多少個產品成分受影響",
     "placeholders": {
       "count": {
-        "description": "產品成份數量",
+        "description": "產品成分數量",
         "type": "int"
       }
     }
@@ -596,7 +596,7 @@
   "stockQuantityNameHint": "少量、多量",
   "stockQuantityNameRepeatError": "份量名稱重複",
   "stockQuantityProportionLabel": "預設比例",
-  "stockQuantityProportionHelper": "當產品成份使用此份量時，預設替該成份增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成份「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
+  "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
   "settingThemeTitle": "調色盤",
   "@settingThemeTitle": {
     "description": "設定頁面中主題的標題"
@@ -818,7 +818,7 @@
       }
     }
   },
-  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成份} differentProducts{請選擇相同的產品來設定其成份} noNeedIngredient{這個產品沒有可以設定的成份}}",
+  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成分} differentProducts{請選擇相同的產品來設定其成分} noNeedIngredient{這個產品沒有可以設定的成分}}",
   "@orderCartIngredientStatus": {
     "description": "點餐時，若點選的產品不需要設定成分資訊，會需要提示給使用者",
     "placeholders": {
@@ -827,16 +827,16 @@
       }
     }
   },
-  "orderCartQuantityNotAble": "請選擇成份來設定份量",
+  "orderCartQuantityNotAble": "請選擇成分來設定份量",
   "@orderCartQuantityNotAble": {
-    "description": "點餐時，須先點選要設定的成份才可以設定份量"
+    "description": "點餐時，須先點選要設定的成分才可以設定份量"
   },
   "orderCartQuantityDefault": "預設值（{amount}）",
   "@orderCartQuantityDefault": {
-    "description": "設定成份時，份量可以自訂或使用預設值（不使用份量）",
+    "description": "設定成分時，份量可以自訂或使用預設值（不使用份量）",
     "placeholders": {
       "amount": {
-        "description": "成份預設需要使用的量",
+        "description": "成分預設需要使用的量",
         "type": "num",
         "format": "decimalPattern"
       }
@@ -899,6 +899,27 @@
     }
   },
   "orderCashierProductTotalPrice": "產品總價",
+  "orderProductIngredientDefaultName": "{ingredient}（預設）",
+  "@orderProductIngredientDefaultName": {
+    "description": "點單時的產品列表中各項產品的成分資訊",
+    "placeholders": {
+      "ingredient": {
+        "type": "String"
+      }
+    }
+  },
+  "orderProductIngredientName": "{ingredient}（quantity）",
+  "@orderProductIngredientName": {
+    "description": "點單時的產品列表中各項產品的成分和份量資訊",
+    "placeholders": {
+      "ingredient": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
   "orderCashierCustomerInfoTitle": "顧客設定",
   "orderCashierCustomerTotalPrice": "顧客設定總價",
   "orderCashierCustomerTotalCount": "設定 {count} 項",

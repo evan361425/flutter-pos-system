@@ -3,6 +3,7 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
+import 'package:possystem/translator.dart';
 
 class OrderProduct extends ChangeNotifier {
   final Product product;
@@ -60,10 +61,12 @@ class OrderProduct extends ChangeNotifier {
 
     return entries.map<String>((entry) {
       final ingredient = product.getItem(entry.key)!;
-      if (entry.value == null) return ingredient.name;
+      if (entry.value == null) {
+        return S.orderProductIngredientDefaultName(ingredient.name);
+      }
 
       final quantity = ingredient.getItem(entry.value!)!;
-      return '${ingredient.name} - ${quantity.name}';
+      return S.orderProductIngredientName(ingredient.name, quantity.name);
     });
   }
 

@@ -143,7 +143,12 @@ class _AnalysisOrderModal extends StatelessWidget {
             products: order.products
                 .map((product) => OrderProductTileData(
                     ingredientNames: product.ingredients.values
-                        .map((e) => '${e.name} - ${e.quantityName}'),
+                        .map((e) => e.quantityName == null
+                            ? S.orderProductIngredientDefaultName(e.name)
+                            : S.orderProductIngredientName(
+                                e.name,
+                                e.quantityName!,
+                              )),
                     productName: product.productName,
                     totalCount: product.count,
                     totalPrice: product.count * product.singlePrice))
