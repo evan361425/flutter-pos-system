@@ -22,8 +22,7 @@ class OrderCustomerModal extends StatelessWidget {
         actions: [
           AppbarTextButton(
             key: const Key('cashier.customer.next'),
-            onPressed: () =>
-                Navigator.of(context).popAndPushNamed(Routes.orderCalculator),
+            onPressed: () => Navigator.of(context).pop(Routes.orderCalculator),
             child: Text(S.orderCustomerSettingActionsDone),
           ),
         ],

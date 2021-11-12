@@ -183,6 +183,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('order.action.more')), findsOneWidget);
+      expect(find.text(S.actSuccess), findsNothing);
     });
 
     testWidgets('Order without customer setting', (tester) async {
@@ -235,6 +236,8 @@ void main() {
         findsOneWidget,
       );
       await tester.tap(find.byKey(const Key('cashier.calculator.submit')));
+      await tester.pump();
+      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
@@ -302,8 +305,11 @@ void main() {
           ]));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
       await tester.tap(find.byKey(const Key('cashier.order')));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+      // wait for error message disappear
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator poped
@@ -392,7 +398,11 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
-      await tester.pumpAndSettle();
+      // wait for error message disappear
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator poped

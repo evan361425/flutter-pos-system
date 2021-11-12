@@ -135,7 +135,10 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
     final route = CustomerSettings.instance.hasSelectableSetting
         ? Routes.orderCustomer
         : Routes.orderCalculator;
-    final result = await Navigator.of(context).pushNamed(route);
+    var result = await Navigator.of(context).pushNamed(route);
+    if (result is String) {
+      result = await Navigator.of(context).pushNamed(result);
+    }
 
     if (result == true) {
       showSuccessSnackbar(context, S.actSuccess);
