@@ -10,7 +10,7 @@
 
 ## 圖示
 
-![Introduction](https://evan361425.github.io/flutter-pos-system/assets/images/index-introduction.png)
+![Introduction](https://evan361425.github.io/flutter-pos-system/images/index-introduction.png)
 
 本 POS 系統的特色。
 
