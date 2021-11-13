@@ -1,0 +1,39 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+      - mkdocs.yaml
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: GitHub Pages
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      # This also install mkdocs and mkdocs-material
+      - name: Install dependencies
+        run: |
+          pip install mkdocs-git-revision-date-plugin
+
+      - name: Build
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: mkdocs build
+
+      - name: Deploy
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: mkdocs gh-deploy

@@ -1,0 +1,58 @@
+site_name: POS 系統
+site_url: https://evan361425.github.io/flutter-pos-system
+site_description: 開源的 Flutter 應用程式，希望和使用者一起建立一個好用的 POS 系統（點餐系統）
+docs_dir: docs/
+repo_name: GitHub
+repo_url: https://github.com/evan361425/flutter-pos-system
+edit_uri: https://github.com/evan361425/flutter-pos-system/edit/master
+
+nav:
+  - 幫助: about/contribute.md
+  - 架構: about/structure.md
+
+theme:
+  name: material
+  language: "zh-TW"
+  features:
+    - search.suggest
+    - navigation.tabs
+    - navigation.tabs.sticky
+  favicon: images/favicon.ico
+  logo: images/logo.png
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: light-blue
+      toggle:
+        icon: material/weather-sunny
+        name: 黑夜降臨
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue-grey
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: 白日昇起
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences:
+  # 允許增加 tooltip，於 MD 檔下方中增加下列說明
+  # *[Text] Description
+  - abbr
+  # 允許設定警告卡片
+  # !!! [note|abstract|info|tip|success|question|warning|failure|bug|example|quote|danger] "Custom title"
+  - admonition
+  # 設定腳註
+  # [^1]: Description
+  - footnotes
+
+extra:
+  analytics:
+    provider: google
+    property: G-3D6N25J5ZM
+
+plugins:
+  - git-revision-date
+  - search
