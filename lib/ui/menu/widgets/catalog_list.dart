@@ -55,7 +55,7 @@ class CatalogList extends StatelessWidget {
       leading: CircleAvatar(
         child: Text(catalog.name.characters.first.toUpperCase()),
       ),
-      title: Text(catalog.name, style: Theme.of(context).textTheme.headline6),
+      title: Text(catalog.name),
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),

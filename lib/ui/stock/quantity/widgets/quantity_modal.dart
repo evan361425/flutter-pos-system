@@ -46,7 +46,6 @@ class _QuantityModalState extends State<QuantityModal>
           errorText: errorMessage,
           filled: false,
         ),
-        style: Theme.of(context).textTheme.headline6,
         autofocus: widget.isNew,
         maxLength: 30,
         validator: Validator.textLimit(S.stockQuantityNameLabel, 50),

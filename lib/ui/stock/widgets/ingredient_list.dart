@@ -59,10 +59,9 @@ class _IngredientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return ListTile(
       key: Key('stock.${ingredient.id}'),
-      title: Text(ingredient.name, style: theme.textTheme.headline6),
+      title: Text(ingredient.name),
       subtitle: MetaBlock.withString(context, <String>[
         '庫存：${ingredient.currentAmount ?? '無'}',
         '紀錄：${ingredient.lastAmount ?? '無'}',

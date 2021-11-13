@@ -117,7 +117,7 @@ class _OptionTile extends StatelessWidget {
 
     return ListTile(
       key: Key('customer_setting.${option.setting.id}.${option.id}'),
-      title: Text(option.name, style: Theme.of(context).textTheme.headline6),
+      title: Text(option.name),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
       trailing: option.isDefault
           ? OutlinedText(S.customerSettingOptionIsDefault)

@@ -93,7 +93,7 @@ class _QuantityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: Key('product_quantity.${quantity.id}'),
-      title: Text(quantity.name, style: Theme.of(context).textTheme.headline6),
+      title: Text(quantity.name),
       subtitle: MetaBlock.withString(context, <String>[
         S.menuQuantityMetaAmount(quantity.amount),
         S.menuQuantityMetaPrice(quantity.additionalPrice),

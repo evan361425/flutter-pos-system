@@ -397,7 +397,7 @@
   "menuIngredientRepeatError": "成分不能重複選取。",
   "menuIngredientAmountLabel": "使用量",
   "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成分的使用量，請於成分的「份量」中設定。",
-  "menuQuantityMetaAmount": "額外使用量：{amount}",
+  "menuQuantityMetaAmount": "使用量：{amount}",
   "@menuQuantityMetaAmount": {
     "placeholders": {
       "amount": {
@@ -449,7 +449,7 @@
   "menuQuantitySearchEmptyError": "必須設定份量，請點選以設定。",
   "menuQuantitySearchHelper": "新增成分份量後，可至「份量」設定相關資訊。",
   "menuQuantityRepeatError": "份量不能重複選取。",
-  "menuQuantityAmountLabel": "額外使用量",
+  "menuQuantityAmountLabel": "使用量",
   "menuQuantityAdditionalPriceLabel": "額外售價",
   "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantityAdditionalCostLabel": "額外成本",

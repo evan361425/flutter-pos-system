@@ -62,7 +62,7 @@ class ProductList extends StatelessWidget {
       leading: CircleAvatar(
         child: Text(product.name.characters.first.toUpperCase()),
       ),
-      title: Text(product.name, style: Theme.of(context).textTheme.headline6),
+      title: Text(product.name),
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),
