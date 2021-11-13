@@ -25,9 +25,10 @@ jobs:
         with:
           python-version: 3.x
 
-      # This also install mkdocs and mkdocs-material
       - name: Install dependencies
         run: |
+          pip install mkdocs
+          pip install mkdocs-material
           pip install mkdocs-git-revision-date-plugin
 
       - name: Build
