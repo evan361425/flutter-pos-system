@@ -3,9 +3,12 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-baseFolder = os.path.dirname(__file__)
-folder = os.path.join(
-    baseFolder,
+
+def pp(file):
+    return os.path.join(os.path.dirname(__file__), file)
+
+
+folder = pp(
     "../android/fastlane/metadata/android/zh-TW/images/phoneScreenshots",
 )
 space = 60
@@ -30,7 +33,7 @@ for im in images:
     x_offset += im.size[0] + space
 
 draw = ImageDraw.Draw(new_im)
-font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Unicode.ttf", 50)
+font = ImageFont.truetype(pp("fonts/NotoSansTC-Bold.otf"), 50)
 x_offset = space // 2
 for text, im in zip(textList, images):
     w, h = draw.textsize(text, font=font)
@@ -42,4 +45,4 @@ for text, im in zip(textList, images):
     )
     x_offset += im.size[0] + space
 
-new_im.save(os.path.join(baseFolder + "/images/index-introduction.png"))
+new_im.save(os.path.join(pp("images/index-introduction.png")))
