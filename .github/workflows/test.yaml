@@ -8,8 +8,10 @@ on:
       - master
     paths-ignore:
       - "**.md"
+      - "docs/**"
       - "android/fastlane/**"
       - "pubspec.yaml"
+      - "mkdocs.yaml"
       - ".github/**"
   pull_request:
 
