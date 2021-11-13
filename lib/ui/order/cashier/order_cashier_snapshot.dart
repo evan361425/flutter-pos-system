@@ -1,103 +1,167 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class OrderCashierSnapshot extends StatefulWidget {
+class OrderCashierSnapshot extends StatelessWidget {
   final num totalPrice;
 
   final void Function(num) onPaidChanged;
 
-  const OrderCashierSnapshot({
+  final selector = GlobalKey<_PaidMoneySelectorState>();
+
+  final changeShower = GlobalKey<_ChangeShowerState>();
+
+  OrderCashierSnapshot({
     Key? key,
     required this.totalPrice,
     required this.onPaidChanged,
   }) : super(key: key);
 
   @override
-  OrderCashierSnapshotState createState() => OrderCashierSnapshotState();
-}
-
-class OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
-  final options = <num>[];
-
-  late num selected;
-
-  num? customPaid;
-
-  /// Change value
-  ///
-  /// changeValue = paid - [widget.totalPrice]
-  num changeValue = 0;
-
-  @override
   Widget build(BuildContext context) {
-    final paidOptions = SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(children: <Widget>[
-        if (customPaid != null) radioBuilder(customPaid!),
-        for (final option in options) radioBuilder(option),
-      ]),
-    );
+    final options = <num>[totalPrice];
 
-    return Row(children: <Widget>[
-      Expanded(child: paidOptions),
-      const SizedBox(width: 8.0),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(
-          S.orderCashierSnapshotChangeField(changeValue),
-          key: const Key('cashier.snapshot.change'),
-        ),
-      ),
-    ]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    selected = widget.totalPrice;
-    options.add(widget.totalPrice);
-
-    var value = widget.totalPrice;
+    var value = totalPrice;
     var ceiledValue = CurrencySetting.instance.ceil(value);
     while (ceiledValue != value) {
       options.add(ceiledValue);
       value = ceiledValue;
       ceiledValue = CurrencySetting.instance.ceil(ceiledValue);
     }
+
+    return Row(children: <Widget>[
+      Expanded(
+        child: _PaidMoneySelector(
+          key: selector,
+          onChanged: _updatePaid,
+          options: options,
+        ),
+      ),
+      const SizedBox(width: 8.0),
+      _ChangeShower(
+        key: changeShower,
+        value: 0,
+      ),
+    ]);
   }
 
   void paidChanged(num? value) {
-    if (value == null) {
-      return _updatePaid(widget.totalPrice);
-    }
+    value = value ?? totalPrice;
+    if (selector.currentState?.selected != value) {
+      selector.currentState?.select(value);
+      final change = value - totalPrice;
 
-    customPaid = options.contains(value) ? null : value;
-    _updatePaid(value);
+      if (change >= 0) {
+        selector.currentState?.setCustomMoney(value);
+        changeShower.currentState?.change(change);
+      }
+    }
   }
 
-  Widget radioBuilder(num value) {
+  void _updatePaid(num value) {
+    changeShower.currentState?.change(value - totalPrice);
+    onPaidChanged(value);
+  }
+}
+
+class _ChangeShower extends StatefulWidget {
+  final num value;
+
+  const _ChangeShower({
+    Key? key,
+    required this.value,
+  }) : super(key: key);
+
+  @override
+  _ChangeShowerState createState() => _ChangeShowerState();
+}
+
+class _ChangeShowerState extends State<_ChangeShower> {
+  late num value;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      key: Key('cashier.snapshot.$value'),
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: RadioText(
-        groupId: 'cashier.quick_changer',
-        onSelected: (bool isSelected) => _updatePaid(value),
-        isSelected: selected == value,
-        text: value.toString(),
-        value: value.toString(),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(
+        S.orderCashierSnapshotChangeField(value),
+        key: const Key('cashier.snapshot.change'),
       ),
     );
   }
 
-  void _updatePaid(num value) {
-    if (selected != value) {
-      setState(() {
-        selected = value;
-        changeValue = value - widget.totalPrice;
-        widget.onPaidChanged(selected);
-      });
-    }
+  void change(num value) {
+    setState(() => this.value = value);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.value;
+  }
+}
+
+class _PaidMoneySelector extends StatefulWidget {
+  final List<num> options;
+
+  final void Function(num) onChanged;
+
+  const _PaidMoneySelector({
+    Key? key,
+    required this.options,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _PaidMoneySelectorState createState() => _PaidMoneySelectorState();
+}
+
+class _PaidMoneySelectorState extends State<_PaidMoneySelector> {
+  late num selected;
+
+  num? customMoney;
+
+  @override
+  Widget build(BuildContext context) {
+    final data = <num>[
+      if (customMoney != null) customMoney!,
+      ...widget.options,
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: <Widget>[
+        for (final option in data)
+          Container(
+            key: Key('cashier.snapshot.$option'),
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: RadioText(
+              onChanged: (_) {
+                select(option);
+                widget.onChanged(option);
+              },
+              isSelected: selected == option,
+              text: option.toCurrency(),
+            ),
+          ),
+      ]),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selected = widget.options.first;
+  }
+
+  void select(num select) {
+    setState(() => selected = select);
+  }
+
+  void setCustomMoney(num customMoney) {
+    widget.options.contains(customMoney)
+        ? setState(() => this.customMoney = null)
+        : setState(() => this.customMoney = customMoney);
   }
 }

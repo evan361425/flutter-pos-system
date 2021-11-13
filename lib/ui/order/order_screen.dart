@@ -20,7 +20,7 @@ import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
 import 'widgets/order_by_sliding_panel.dart';
 import 'widgets/order_catalog_list.dart';
-import 'widgets/order_ingredient_list.dart';
+import 'widgets/order_product_state_selector.dart';
 import 'widgets/order_product_list.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -59,7 +59,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
         ChangeNotifierProvider<CartIngredients>.value(
             value: CartIngredients.instance),
       ],
-      child: const OrderIngredientList(),
+      child: const OrderProductStateSelector(),
     );
 
     final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();

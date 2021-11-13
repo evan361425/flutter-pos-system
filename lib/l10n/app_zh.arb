@@ -908,7 +908,7 @@
       }
     }
   },
-  "orderProductIngredientName": "{ingredient}（quantity）",
+  "orderProductIngredientName": "{ingredient}（{quantity}）",
   "@orderProductIngredientName": {
     "description": "點單時的產品列表中各項產品的成分和份量資訊",
     "placeholders": {

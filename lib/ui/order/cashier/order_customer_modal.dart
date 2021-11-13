@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -39,32 +39,37 @@ class OrderCustomerModal extends StatelessWidget {
   }
 }
 
-class _CustomerSettingGroup extends StatelessWidget {
+class _CustomerSettingGroup extends StatefulWidget {
   final CustomerSetting setting;
 
   const _CustomerSettingGroup(this.setting);
 
   @override
-  Widget build(BuildContext context) {
-    final selected =
-        Cart.instance.customerSettings[setting.id] ?? setting.defaultOption?.id;
+  State<_CustomerSettingGroup> createState() => _CustomerSettingGroupState();
+}
 
+class _CustomerSettingGroupState extends State<_CustomerSettingGroup> {
+  late String? selectedId;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(setting.name, style: Theme.of(context).textTheme.headline5),
+      Text(widget.setting.name, style: Theme.of(context).textTheme.headline5),
       const SizedBox(height: kSpacing0),
       Card(
         margin: const EdgeInsets.only(bottom: kSpacing2),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
           child: Wrap(spacing: kSpacing0, children: [
-            for (final option in setting.itemList)
+            for (final option in widget.setting.itemList)
               RadioText(
-                key: Key('cashier.customer.${setting.id}.${option.id}'),
-                groupId: 'order.customer.${setting.id}',
-                onSelected: (isSelected) => selectOption(option, isSelected),
-                value: option.id,
+                key: Key('cashier.customer.${widget.setting.id}.${option.id}'),
+                onChanged: (isSelected) {
+                  setState(() => selectedId = isSelected ? option.id : null);
+                  selectOption(option, isSelected);
+                },
                 isTogglable: true,
-                isSelected: selected == option.id,
+                isSelected: selectedId == option.id,
                 text: option.name,
               )
           ]),
@@ -73,12 +78,19 @@ class _CustomerSettingGroup extends StatelessWidget {
     ]);
   }
 
+  @override
+  void initState() {
+    super.initState();
+    selectedId = Cart.instance.customerSettings[widget.setting.id] ??
+        widget.setting.defaultOption?.id;
+  }
+
   void selectOption(CustomerSettingOption option, bool isSelected) {
     if (isSelected) {
-      Cart.instance.customerSettings[setting.id] = option.id;
+      Cart.instance.customerSettings[widget.setting.id] = option.id;
     } else {
       // disable it
-      Cart.instance.customerSettings[setting.id] = '';
+      Cart.instance.customerSettings[widget.setting.id] = '';
     }
   }
 }

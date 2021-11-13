@@ -126,7 +126,9 @@ void main() {
                 amount: 3,
                 quantityId: 'q-1',
                 productQuantityId: 'pq-1',
-                quantityName: 'q-1')
+                quantityName: 'q-1'),
+            'i-2': OrderIngredientObject(
+                id: 'i-2', name: 'i-2', productIngredientId: 'pi-1', amount: 0),
           });
       final order = OrderObject.fromMap({
         'id': 1,

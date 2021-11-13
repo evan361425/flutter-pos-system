@@ -4,7 +4,6 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
@@ -12,21 +11,27 @@ import 'order_cashier_calculator.dart';
 import 'order_cashier_product_list.dart';
 import 'order_cashier_snapshot.dart';
 
-class OrderCashierModal extends StatefulWidget {
-  const OrderCashierModal({Key? key}) : super(key: key);
-
-  @override
-  _OrderCashierModalState createState() => _OrderCashierModalState();
-}
-
-class _OrderCashierModalState extends State<OrderCashierModal> {
-  final snapshot = GlobalKey<OrderCashierSnapshotState>();
+class OrderCashierModal extends StatelessWidget {
   final calculator = GlobalKey<OrderCashierCalculatorState>();
+
+  OrderCashierModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final totalPrice = Cart.instance.totalPrice;
+
+    final collapsed = OrderCashierSnapshot(
+      totalPrice: totalPrice,
+      onPaidChanged: (value) =>
+          calculator.currentState?.text = value.toString(),
+    );
+
+    void handleSubmit() async {
+      if (await confirmChangeHistory(context)) {
+        this.handleSubmit(context, collapsed.selector.currentState?.selected);
+      }
+    }
 
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
@@ -37,8 +42,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       ),
       child: OrderCashierCalculator(
         key: calculator,
-        onTextChanged: (value) =>
-            snapshot.currentState?.paidChanged(num.tryParse(value)),
+        onTextChanged: (value) => collapsed.paidChanged(num.tryParse(value)),
         onSubmit: handleSubmit,
         totalPrice: totalPrice,
       ),
@@ -56,13 +60,6 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
           .toList(),
       totalPrice: totalPrice,
       productsPrice: Cart.instance.productsPrice,
-    );
-
-    final collapsed = OrderCashierSnapshot(
-      key: snapshot,
-      totalPrice: totalPrice,
-      onPaidChanged: (value) =>
-          calculator.currentState?.text = value.toString(),
     );
 
     return Scaffold(
@@ -90,7 +87,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
   }
 
   /// Confirm leaving history mode
-  Future<bool> confirmChangeHistory() async {
+  Future<bool> confirmChangeHistory(BuildContext context) async {
     if (!Cart.instance.isHistoryMode) return true;
 
     final result = await showDialog(
@@ -103,20 +100,13 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
     return result ?? false;
   }
 
-  void handleSubmit() async {
-    if (!await confirmChangeHistory()) {
-      return;
-    }
-
+  void handleSubmit(BuildContext context, num? paid) async {
     try {
-      final success = await Cart.instance.paid(snapshot.currentState?.selected);
+      final success = await Cart.instance.paid(paid);
       // send success message
       Navigator.of(context).pop(success);
     } on PaidException {
       showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
-    } catch (err, stack) {
-      showErrorSnackbar(context, S.actError);
-      error(err.toString(), 'order.error', stack);
     }
   }
 }
