@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/catalog.dart';
 
-class OrderCatalogList extends StatelessWidget {
+class OrderCatalogList extends StatefulWidget {
   final List<Catalog> catalogs;
 
   final void Function(Catalog) handleSelected;
-
-  static const _radioKey = 'order.catalogs';
 
   const OrderCatalogList({
     Key? key,
@@ -17,20 +15,35 @@ class OrderCatalogList extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<OrderCatalogList> createState() => _OrderCatalogListState();
+}
+
+class _OrderCatalogListState extends State<OrderCatalogList> {
+  late String selectedId;
+
+  @override
   Widget build(BuildContext context) {
-    if (catalogs.isEmpty) {
+    if (widget.catalogs.isEmpty) {
       return SingleRowWrap(children: [RadioText.empty()]);
     }
 
     return SingleRowWrap(children: <Widget>[
-      for (final catalog in catalogs)
+      for (final catalog in widget.catalogs)
         RadioText(
           key: Key('order.catalog.${catalog.id}'),
-          onSelected: (_) => handleSelected(catalog),
-          groupId: _radioKey,
-          value: catalog.id,
+          onChanged: (_) {
+            setState(() => selectedId = catalog.id);
+            widget.handleSelected(catalog);
+          },
+          isSelected: catalog.id == selectedId,
           text: catalog.name,
         ),
     ]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedId = widget.catalogs.isEmpty ? '' : widget.catalogs.first.id;
   }
 }

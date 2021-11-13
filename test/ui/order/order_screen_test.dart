@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';

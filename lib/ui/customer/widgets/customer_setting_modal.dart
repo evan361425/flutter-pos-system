@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/radio_text.dart';
+import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
@@ -21,6 +21,49 @@ class CustomerModal extends StatefulWidget {
   _CustomerModalState createState() => _CustomerModalState();
 }
 
+class _CustomerModalModes extends StatefulWidget {
+  final CustomerSettingOptionMode selectedMode;
+
+  const _CustomerModalModes({
+    Key? key,
+    required this.selectedMode,
+  }) : super(key: key);
+
+  @override
+  _CustomerModalModesState createState() => _CustomerModalModesState();
+}
+
+class _CustomerModalModesState extends State<_CustomerModalModes>
+    with TickerProviderStateMixin {
+  late CustomerSettingOptionMode selectedMode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        for (final mode in CustomerSettingOptionMode.values)
+          Expanded(
+            child: RadioText(
+              key: Key('customer_setting.modes.${mode.index}'),
+              margin: const EdgeInsets.symmetric(horizontal: 2.0),
+              isSelected: selectedMode == mode,
+              onChanged: (_) => setState(() => selectedMode = mode),
+              text: S.customerSettingModeNames(mode),
+            ),
+          )
+      ]),
+      const SizedBox(height: 8.0),
+      Text(S.customerSettingModeDescriptions(selectedMode)),
+    ]);
+  }
+
+  @override
+  void initState() {
+    selectedMode = widget.selectedMode;
+    super.initState();
+  }
+}
+
 class _CustomerModalState extends State<CustomerModal>
     with ItemModal<CustomerModal> {
   late TextEditingController _nameController;
@@ -31,14 +74,6 @@ class _CustomerModalState extends State<CustomerModal>
   void dispose() {
     _nameController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    _nameController = TextEditingController(text: widget.setting?.name);
-    modesKey = GlobalKey<_CustomerModalModesState>();
-
-    super.initState();
   }
 
   @override
@@ -71,6 +106,14 @@ class _CustomerModalState extends State<CustomerModal>
   }
 
   @override
+  void initState() {
+    _nameController = TextEditingController(text: widget.setting?.name);
+    modesKey = GlobalKey<_CustomerModalModesState>();
+
+    super.initState();
+  }
+
+  @override
   Future<void> updateItem() async {
     final object = CustomerSettingObject(
       name: _nameController.text,
@@ -99,50 +142,5 @@ class _CustomerModalState extends State<CustomerModal>
         CustomerSettings.instance.hasName(name)) {
       return S.customerSettingNameRepeatError;
     }
-  }
-}
-
-class _CustomerModalModes extends StatefulWidget {
-  final CustomerSettingOptionMode selectedMode;
-
-  const _CustomerModalModes({
-    Key? key,
-    required this.selectedMode,
-  }) : super(key: key);
-
-  @override
-  _CustomerModalModesState createState() => _CustomerModalModesState();
-}
-
-class _CustomerModalModesState extends State<_CustomerModalModes>
-    with TickerProviderStateMixin {
-  late CustomerSettingOptionMode selectedMode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        for (final mode in CustomerSettingOptionMode.values)
-          Expanded(
-            child: RadioText(
-              key: Key('customer_setting.modes.${mode.index}'),
-              margin: const EdgeInsets.symmetric(horizontal: 2.0),
-              groupId: 'customer.setting.mode',
-              isSelected: selectedMode == mode,
-              onSelected: (_) => setState(() => selectedMode = mode),
-              value: mode.toString(),
-              text: S.customerSettingModeNames(mode),
-            ),
-          )
-      ]),
-      const SizedBox(height: 8.0),
-      Text(S.customerSettingModeDescriptions(selectedMode)),
-    ]);
-  }
-
-  @override
-  void initState() {
-    selectedMode = widget.selectedMode;
-    super.initState();
   }
 }

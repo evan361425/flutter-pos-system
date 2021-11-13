@@ -142,7 +142,7 @@ class Routes {
     },
     // order
     orderCustomer: (_) => const OrderCustomerModal(),
-    orderCalculator: (_) => const OrderCashierModal(),
+    orderCalculator: (_) => OrderCashierModal(),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
