@@ -24,6 +24,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -164,7 +165,8 @@ void main() {
       final w = find.byKey(const Key('cart.product.0')).evaluate().first.widget
           as ListTile;
       expect((w.title as Text).data, equals('p-1'));
-      expect((w.subtitle as RichText).text.toPlainText(), equals('i-1 - q-1'));
+      expect((w.subtitle as RichText).text.toPlainText(),
+          equals(S.orderProductIngredientName('i-1', 'q-1')));
     }
 
     testWidgets('Leave history mode', (tester) async {
@@ -226,6 +228,7 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         join: anyNamed('join'),
+        orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(null));
       await act(true);
       verify(database.push(Seller.stashTable, any));
@@ -239,6 +242,7 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         join: anyNamed('join'),
+        orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(getDbData()));
       await act(null);
 
@@ -289,6 +293,7 @@ void main() {
         columns: anyNamed('columns'),
         join: anyNamed('join'),
         count: anyNamed('count'),
+        orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(null));
       await act(true);
       verify(database.push(Seller.stashTable, any));
@@ -298,6 +303,7 @@ void main() {
         columns: anyNamed('columns'),
         join: anyNamed('join'),
         count: anyNamed('count'),
+        orderByKey: anyNamed('orderByKey'),
       ));
 
       // should be stashed
@@ -308,6 +314,7 @@ void main() {
         columns: anyNamed('columns'),
         join: anyNamed('join'),
         count: anyNamed('count'),
+        orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(getDbData()));
       await act(null);
 

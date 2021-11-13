@@ -61,12 +61,11 @@ class OrderProduct extends ChangeNotifier {
 
     return entries.map<String>((entry) {
       final ingredient = product.getItem(entry.key)!;
-      if (entry.value == null) {
-        return S.orderProductIngredientDefaultName(ingredient.name);
-      }
+      final quantity = ingredient.getItem(entry.value ?? '');
 
-      final quantity = ingredient.getItem(entry.value!)!;
-      return S.orderProductIngredientName(ingredient.name, quantity.name);
+      return quantity == null
+          ? S.orderProductIngredientDefaultName(ingredient.name)
+          : S.orderProductIngredientName(ingredient.name, quantity.name);
     });
   }
 

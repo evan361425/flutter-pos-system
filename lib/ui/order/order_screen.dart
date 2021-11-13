@@ -107,15 +107,6 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
   }
 
   @override
-  void didPopNext() {
-    // Avoid popping actions, only close it when ordered.
-    if (Cart.instance.isEmpty) {
-      slidingPanel.currentState?.reset();
-    }
-    super.didPopNext();
-  }
-
-  @override
   void didPush() {
     if (SettingsProvider.instance.getSetting<OrderAwakeningSetting>().value) {
       Wakelock.enable();
@@ -142,6 +133,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
 
     if (result == true) {
       showSuccessSnackbar(context, S.actSuccess);
+      slidingPanel.currentState?.reset();
     }
   }
 }

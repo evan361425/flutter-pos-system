@@ -190,7 +190,8 @@ void main() {
 
         await tester.tap(find.byKey(const Key('order.quantity.pq-1')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: 'i-1 - q-1', price: 27);
+        verifyProductList(0,
+            subtitle: S.orderProductIngredientName('i-1', 'q-1'), price: 27);
 
         await tester.tap(find.byKey(const Key('order.quantity.default')));
         await tester.pumpAndSettle();
@@ -198,7 +199,8 @@ void main() {
 
         await tester.tap(find.byKey(const Key('order.quantity.pq-2')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: 'i-1 - q-2', price: 7);
+        verifyProductList(0,
+            subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
 
         await tester.tap(find.byKey(const Key('cart.product.0.add')));
         await tester.tap(find.byKey(const Key('cart.product.1.add')));

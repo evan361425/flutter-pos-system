@@ -363,6 +363,7 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         join: anyNamed('join'),
+        orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value({
             'id': 1,
             'encodedProducts': jsonEncode([

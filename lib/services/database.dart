@@ -63,20 +63,16 @@ class Database {
     JoinQuery? join,
     int count = 1,
   }) async {
-    try {
-      final data = await query(
-        table,
-        columns: columns,
-        orderBy: '$orderByKey DESC',
-        limit: count,
-        where: where,
-        whereArgs: whereArgs,
-        join: join,
-      );
-      return data[count - 1];
-    } catch (e) {
-      return null;
-    }
+    final data = await query(
+      table,
+      columns: columns,
+      orderBy: '$orderByKey DESC',
+      limit: count,
+      where: where,
+      whereArgs: whereArgs,
+      join: join,
+    );
+    return data.isEmpty ? null : data[count - 1];
   }
 
   Future<void> initialize() async {
@@ -116,7 +112,7 @@ class Database {
     String? orderBy,
     int? limit,
     int offset = 0,
-  }) {
+  }) async {
     final selectQuery = columns?.join(',') ?? '*';
     final whereQuery = where == null ? '' : 'WHERE $where';
     final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
@@ -124,9 +120,15 @@ class Database {
     final limitQuery = limit == null ? '' : 'LIMIT $offset, $limit';
     final joinQuery = join == null ? '' : join.toString();
 
-    return instance.db.rawQuery(
+    try {
+      return await instance.db.rawQuery(
         'SELECT $selectQuery FROM `$table` $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
-        whereArgs);
+        whereArgs,
+      );
+    } catch (e, stack) {
+      error(e.toString(), 'db.query.error', stack);
+      return [];
+    }
   }
 
   Future<int> update(

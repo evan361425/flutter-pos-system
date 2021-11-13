@@ -25,14 +25,21 @@ class Seller extends ChangeNotifier {
   Future<OrderObject?> drop(int lastCount) async {
     final row = await Database.instance.getLast(
       stashTable,
-      join: joinCombination,
+      join: const JoinQuery(
+        joinType: 'LEFT',
+        hostTable: stashTable,
+        guestTable: 'customer_setting_combinations',
+        hostKey: 'customerSettingCombinationId',
+        guestKey: 'id',
+      ),
       columns: const [
-        'id',
+        '`$stashTable`.id',
         'encodedProducts',
         'combination',
         'createdAt',
       ],
       count: lastCount,
+      orderByKey: '`$stashTable`.id',
     );
     if (row == null) return null;
 
@@ -116,13 +123,14 @@ class Seller extends ChangeNotifier {
     final row = await Database.instance.getLast(
       orderTable,
       columns: const [
+        '`$orderTable`.id',
         'totalCount',
         'totalPrice',
-        'id',
         'encodedProducts',
         'createdAt',
         'combination',
       ],
+      orderByKey: '`$orderTable`.id',
       where: 'createdAt >= ?',
       whereArgs: [Util.toUTC(hour: 0)],
       join: joinCombination,
