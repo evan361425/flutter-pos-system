@@ -84,19 +84,20 @@ jobs:
         working-directory: android/fastlane/metadata/android/zh-TW/changelogs
         run: '(test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1) || exit 0'
 
-  # If pushing tag with '-rc1' (first release candidate), it should be fired.
-  # End of workflows in RC mode.
+  # If pushing tag with '-rc' (release candidate), it should be fired.
+  # If it is first RC tag, create pre-release
   rc-release:
     name: Create RC release
     runs-on: ubuntu-latest
     needs: check-version
-    if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
+    if: ${{ contains(needs.check-version.outputs.tag, '-rc') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Build Changelog
         id: build_changelog
+        if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
         uses: mikepenz/release-changelog-builder-action@v1
         with:
           configuration: "release.config.json"
@@ -104,6 +105,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Draft release with changelog
+        if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
         uses: actions/create-release@v1
         with:
           tag_name: ${{ needs.check-version.outputs.tag }}
@@ -161,6 +163,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: 'master'
+
+      - name: List all directory
+        run: |
+          ls -l
+          ls -l android
+          ls -l android/fastlane
+          ls -l android/fastlane/metadata
+          ls -l android/fastlane/metadata/android/zh-TW
+          ls -l android/fastlane/metadata/android/zh-TW/changelogs
 
       - name: Push to GitHub
         run: |
@@ -248,3 +259,16 @@ jobs:
           asset_path: ./pos_system.apk
           asset_name: pos_system.${{ steps.flavor.outputs.value }}.apk
           asset_content_type: application/vnd.android.package-archive
+
+  # If any of needs job success, it will be fired
+  # Make "Deploy to Play Store" action able to listen workflow_run
+  final-job:
+    name: Final job
+    runs-on: ubuntu-latest
+    needs:
+      - rc-release
+      - create-asset
+    if: ${{ always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) }}
+    steps:
+      - run: echo 'done'
+
