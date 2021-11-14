@@ -130,6 +130,7 @@ jobs:
         id: get_release
         run: |
           data=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H 'Accept: application/vnd.github.v3+json' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }}-rc1)
           body=$(echo "$data" | jq '.body')
@@ -144,6 +145,7 @@ jobs:
         run: |
           curl -X PATCH \
             -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ steps.get_release.outputs.id }}
 
@@ -157,6 +159,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: 'master'
 
       - name: Create changelog file for Fastlane
         working-directory: android/fastlane/metadata/android/zh-TW/changelogs
@@ -167,7 +171,6 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git checkout master
           git add --all
           git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
           git push
