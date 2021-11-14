@@ -151,7 +151,7 @@ jobs:
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
           echo "::set-output name=changelog::$body"
-          echo "::set-output name=upload_url::$(echo "$data" | jq '.upload_url')"
+          echo "::set-output name=upload_url::$(echo "$data" | jq -r '.upload_url')"
           echo "::set-output name=asset_length::$(echo "$data" | jq '.assets | length')"
 
   # Push changelog to repository
@@ -169,10 +169,10 @@ jobs:
 
       - name: Push to GitHub
         run: |
-          test -f "${{ needs.check-version.outputs.build_code }}.txt" && exit 0
+          file="android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          echo "${{ needs.get-release.outputs.changelog }}" > android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt
+          echo "${{ needs.get-release.outputs.changelog }}" > "$file"
           git add --all
           git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
           git push
