@@ -111,7 +111,7 @@ jobs:
           tag_name: ${{ needs.check-version.outputs.tag }}
           release_name: v${{ needs.check-version.outputs.tag_version }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          prerelease: true
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -124,31 +124,31 @@ jobs:
     if: ${{ !contains(needs.check-version.outputs.tag, '-rc') }}
     outputs:
       upload_url: ${{ steps.get_release.outputs.upload_url }}
-      changelog: ${{ steps.changelog.outputs.changelog }}
+      changelog: ${{ steps.get_release.outputs.changelog }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.3
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
       # escape special characters
       # https://github.com/actions/toolkit/issues/403
       - name: Get Changelog from rc1
         id: changelog
         run: |
-          body=$(curl -s \
+          data=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H 'Accept: application/vnd.github.v3+json' \
-            https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ steps.get_release.outputs.id }} \
-            | jq '.body')
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }}-rc1)
+          if [ "$(echo "$data" | jq -r '.message')" = "Not Found" ]; then
+            data=$(curl -s \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H 'Accept: application/vnd.github.v3+json' \
+              https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }})
+          fi
+          [ "$(echo "$data" | jq -r '.message')" = "Not Found" ] && exit 1
+          body="$(echo "$data" | jq '.body')"
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
+          echo "::set-output name=id::$(echo "$data" | jq '.id')"
           echo "::set-output name=changelog::$body"
+          echo "::set-output name=upload_url::$(echo "$data" | jq '.upload_url')"
 
       - name: Link to latest tag
         run: |
