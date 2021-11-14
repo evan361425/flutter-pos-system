@@ -150,10 +150,13 @@ jobs:
 
           [ "$(echo "$data" | jq -r '.message')" = "Not Found" ] && exit 1
 
-          body="$(echo "$data" | jq '.body')"
+          body="$(echo "$data" | jq -r '.body')"
+          echo "$body"
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
+          echo "$body"
+          echo "$(echo "$data" | jq '.assets | length')"
           echo "::set-output name=changelog::$body"
           echo "::set-output name=upload_url::$(echo "$data" | jq '.upload_url')"
           echo "::set-output name=asset_length::$(echo "$data" | jq '.assets | length')"
@@ -173,6 +176,7 @@ jobs:
 
       - name: Push to GitHub
         run: |
+          exit 1
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           echo ${{ needs.get-release.outputs.changelog }} > android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt
