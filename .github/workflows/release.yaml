@@ -149,7 +149,7 @@ jobs:
             -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ steps.get_release.outputs.id }}
 
-  # Push changelog to GitHub
+  # Push changelog to repository
   add-changelog:
     name: Add changelog to Fastlane
     runs-on: ubuntu-latest
@@ -162,15 +162,11 @@ jobs:
         with:
           ref: 'master'
 
-      - name: Create changelog file for Fastlane
-        working-directory: android/fastlane/metadata/android/zh-TW/changelogs
-        run: |
-          echo "${{ needs.get-release.outputs.changelog }}" > ${{ needs.check-version.outputs.build_code }}.txt
-
       - name: Push to GitHub
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          echo "${{ needs.get-release.outputs.changelog }}" > android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt
           git add --all
           git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
           git push
