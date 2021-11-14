@@ -32,6 +32,7 @@ jobs:
     outputs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
       tag: ${{ steps.tag.outputs.result }}
+      tag_version: ${{ steps.pubspec_version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -83,13 +84,13 @@ jobs:
         working-directory: android/fastlane/metadata/android/zh-TW/changelogs
         run: '(test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1) || exit 0'
 
-  # If pushing tag with '-rc' (release candidate), it should be fired.
+  # If pushing tag with '-rc1' (first release candidate), it should be fired.
   # End of workflows in RC mode.
   rc-release:
     name: Create RC release
     runs-on: ubuntu-latest
     needs: check-version
-    if: ${{ contains(needs.check-version.outputs.tag, '-rc') }}
+    if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -106,7 +107,7 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: ${{ needs.check-version.outputs.tag }}
-          release_name: ${{ needs.check-version.outputs.tag }}
+          release_name: v${{ needs.check-version.outputs.tag_version }}
           body: ${{ steps.build_changelog.outputs.changelog }}
           prerelease: true
         env:
@@ -114,45 +115,44 @@ jobs:
 
   # If pushing released tag (vX.X.X), it should be fired.
   # Should build some artifacts, see below.
-  prod-release:
-    name: Create release
+  get-release:
+    name: Get release
     runs-on: ubuntu-latest
     needs: check-version
     if: ${{ !contains(needs.check-version.outputs.tag, '-rc') }}
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      changelog: ${{ steps.build_changelog.outputs.changelog }}
+      upload_url: ${{ steps.get_release.outputs.upload_url }}
+      changelog: ${{ steps.get_release.outputs.changelog }}
     steps:
       # escape special characters
       # https://github.com/actions/toolkit/issues/403
       - name: Get Changelog from rc1
-        id: build_changelog
+        id: get_release
         run: |
-          BODY=$(curl \
+          data=$(curl -s \
             -H 'Accept: application/vnd.github.v3+json' \
-            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }}-rc1 \
-            | jq -r '.body')
-          BODY="${BODY//'%'/'%25'}"
-          BODY="${BODY//$'\n'/'%0A'}"
-          BODY="${BODY//$'\r'/'%0D'}"
-          echo "::set-output name=changelog::$BODY"
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases/tags/${{ needs.check-version.outputs.tag }}-rc1)
+          body=$(echo "$data" | jq '.body')
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}"
+          echo "::set-output name=changelog::$body"
+          echo "::set-output name=id::$(echo "$data" | jq '.id')"
+          echo "::set-output name=upload_url::$(echo "$data" | jq '.upload_url')"
 
-      - name: Draft release with changelog
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ needs.check-version.outputs.tag }}
-          release_name: ${{ needs.check-version.outputs.tag }}
-          body: ${{ steps.build_changelog.outputs.changelog }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Link to latest tag
+        run: |
+          curl -X PATCH \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ steps.get_release.outputs.id }}
 
   # Push changelog to GitHub
   add-changelog:
     name: Add changelog to Fastlane
     runs-on: ubuntu-latest
     needs:
-      - prod-release
+      - get-release
       - check-version
     steps:
       - name: Checkout code
@@ -161,7 +161,7 @@ jobs:
       - name: Create changelog file for Fastlane
         working-directory: android/fastlane/metadata/android/zh-TW/changelogs
         run: |
-          echo "${{ needs.prod-release.outputs.changelog }}" > ${{ needs.check-version.outputs.build_code }}.txt
+          echo "${{ needs.get-release.outputs.changelog }}" > ${{ needs.check-version.outputs.build_code }}.txt
 
       - name: Push to GitHub
         run: |
@@ -178,7 +178,7 @@ jobs:
     name: Create Android build
     runs-on: ubuntu-latest
     needs:
-      - prod-release
+      - get-release
       - check-version
     if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
@@ -245,7 +245,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.prod-release.outputs.upload_url }}
+          upload_url: ${{ needs.get-release.outputs.upload_url }}
           asset_path: ./pos_system.apk
           asset_name: pos_system.${{ steps.flavor.outputs.value }}.apk
           asset_content_type: application/vnd.android.package-archive
