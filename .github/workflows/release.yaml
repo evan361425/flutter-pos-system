@@ -80,10 +80,6 @@ jobs:
           echo '${{ steps.tag_version.outputs.result }} is not equal to ${{ steps.pubspec_version.outputs.version }}''
           exit 1
 
-      - name: Check code, should not exist same code changelog
-        working-directory: android/fastlane/metadata/android/zh-TW/changelogs
-        run: '(test -f "${{ steps.pubspec_version.outputs.code }}.txt" && exit 1) || exit 0'
-
   # If pushing tag with '-rc' (release candidate), it should be fired.
   # If it is first RC tag, create pre-release
   rc-release:
@@ -173,6 +169,7 @@ jobs:
 
       - name: Push to GitHub
         run: |
+          test -f "${{ needs.check-version.outputs.build_code }}.txt" && exit 0
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           echo "${{ needs.get-release.outputs.changelog }}" > android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt
@@ -188,8 +185,7 @@ jobs:
     needs:
       - get-release
       - check-version
-      - add-changelog
-    if: ${{ needs.get-release.outputs.asset_length != 0 }}
+    if: ${{ needs.get-release.outputs.asset_length == '0' }}
     steps:
       - name: Get flavor
         id: flavor

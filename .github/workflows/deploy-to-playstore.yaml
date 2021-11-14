@@ -8,10 +8,10 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
         required: true
         default: "internal"
-  # workflow_run:
-  #   workflows: ["Draft Github Release"]
-  #   branches: [master]
-  #   types: [completed]
+  workflow_run:
+    workflows: ["Draft Github Release"]
+    branches: [master]
+    types: [completed]
 
 jobs:
   # Extract some useful variable
