@@ -254,16 +254,3 @@ jobs:
           asset_path: ./pos_system.apk
           asset_name: pos_system.${{ steps.flavor.outputs.value }}.apk
           asset_content_type: application/vnd.android.package-archive
-
-  # If any of needs job success, it will be fired
-  # Make "Deploy to Play Store" action able to listen workflow_run
-  final-job:
-    name: Final job
-    runs-on: ubuntu-latest
-    needs:
-      - rc-release
-      - create-asset
-    # allow canceled and success
-    if: ${{ always() && !contains(needs.*.result, 'failure') }}
-    steps:
-      - run: echo '${{ needs.*.result }}'

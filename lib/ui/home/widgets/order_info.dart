@@ -5,7 +5,6 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 class OrderInfo extends StatelessWidget {
   static final _metadata = GlobalKey<_OrderMetadataState>();
