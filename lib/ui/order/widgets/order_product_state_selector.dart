@@ -22,27 +22,26 @@ class OrderProductStateSelector extends StatelessWidget {
       return _emptyRows('differentProducts');
     }
 
-    ingredients.setIngredients(Cart.instance.selected.first.product);
-    if (ingredients.ingredients.isEmpty) {
+    ingredients.selectIngredientBy(Cart.instance.selected.first.product);
+    if (ingredients.isEmpty) {
       return _emptyRows('noNeedIngredient');
     }
 
-    final ingredientId = ingredients.selected!.id;
     final quantityList = GlobalKey<_OrderQuantityListState>();
 
     return _rowWrapper([
       _OrderIngredientList(
+        key: GlobalKey<_OrderIngredientListState>(),
         onSelected: (ingredient) {
           ingredients.selectIngredient(ingredient);
-          quantityList.currentState
-              ?.update(ingredients.getSelectedQuantityId());
+          quantityList.currentState?.update(ingredients.selectedQuantityId);
         },
-        ingredients: ingredients.ingredients,
-        selectedId: ingredientId,
+        ingredients: ingredients.itemList,
+        selectedId: ingredients.selectedId,
       ),
       _OrderQuantityList(
         key: quantityList,
-        selectedId: ingredients.getSelectedQuantityId(),
+        selectedId: ingredients.selectedQuantityId,
       ),
     ]);
   }
@@ -109,9 +108,9 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
     selectedId = widget.selectedId;
+    super.didChangeDependencies();
   }
 }
 
@@ -132,16 +131,15 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
 
   @override
   Widget build(BuildContext context) {
+    final ingredients = CartIngredients.instance;
     return SingleRowWrap(children: <Widget>[
       RadioText(
         key: const Key('order.quantity.default'),
         onChanged: (_) => select(null),
         isSelected: null == selectedId,
-        text: S.orderCartQuantityDefault(
-          CartIngredients.instance.selected!.amount,
-        ),
+        text: S.orderCartQuantityDefault(ingredients.selectedAmount),
       ),
-      for (final quantity in CartIngredients.instance.selected!.items)
+      for (final quantity in ingredients.quantityList)
         RadioText(
           key: Key('order.quantity.${quantity.id}'),
           onChanged: (_) => select(quantity.id),
@@ -152,9 +150,9 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     selectedId = widget.selectedId;
-    super.initState();
+    super.didChangeDependencies();
   }
 
   void select(String? quantityId) {
@@ -162,9 +160,7 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
     setState(() => selectedId = quantityId);
   }
 
-  void update(String? selected) {
-    if (selected != selectedId) {
-      setState(() => selectedId = selected);
-    }
+  void update(String? selectedId) {
+    setState(() => this.selectedId = selectedId);
   }
 }
