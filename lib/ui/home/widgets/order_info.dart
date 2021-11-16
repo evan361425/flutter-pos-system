@@ -26,24 +26,16 @@ class OrderInfo extends StatelessWidget {
         ),
         Positioned(
           bottom: 0,
-          child: OrderedTip(
-            groupId: 'home',
-            title: S.homeIcons('order'),
-            message: S.homeIconTutorial('order'),
-            id: 'order',
-            version: 1,
-            order: 99,
-            child: ElevatedButton(
-              key: const Key('home.order'),
-              onPressed: () => Navigator.of(context).pushNamed(Routes.order),
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(kSpacing5),
-              ),
-              child: Text(
-                S.homeIcons('order'),
-                style: const TextStyle(fontSize: 24.0),
-              ),
+          child: ElevatedButton(
+            key: const Key('home.order'),
+            onPressed: () => Navigator.of(context).pushNamed(Routes.order),
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(kSpacing5),
+            ),
+            child: Text(
+              S.homeIcons('order'),
+              style: const TextStyle(fontSize: 24.0),
             ),
           ),
         ),

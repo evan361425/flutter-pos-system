@@ -34,7 +34,7 @@ void main() {
       CacheStateManager.initialize();
       when(cache.get(any)).thenReturn(1);
       when(cache.get('_tip.home.menu')).thenReturn(0);
-      when(cache.get('_tip.home.order')).thenReturn(0);
+      when(cache.get('_tip.home.stock')).thenReturn(0);
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
@@ -46,20 +46,21 @@ void main() {
 
       when(cache.get('_tip.home.menu')).thenReturn(1);
 
-      // close tip
+      // close and show tip
       await tester.tapAt(const Offset(0, 0));
+      await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
       verify(cache.set('_tip.home.menu', isNonZero));
 
-      // close order tip
-      when(cache.get('_tip.home.order')).thenReturn(1);
+      // close stock tip
+      when(cache.get('_tip.home.stock')).thenReturn(1);
 
       // close tip
       await tester.tapAt(const Offset(0, 0));
       await tester.pumpAndSettle();
 
-      verify(cache.set('_tip.home.order', isNonZero));
+      verify(cache.set('_tip.home.stock', isNonZero));
     });
 
     testWidgets('should reset info after update', (tester) async {
