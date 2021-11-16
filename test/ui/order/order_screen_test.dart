@@ -40,6 +40,7 @@ void main() {
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
+        'i-3': Ingredient(id: 'i-3', name: 'i-3'),
       });
       Quantities().replaceItems({
         'q-1': Quantity(id: 'q-1', name: 'q-1'),
@@ -80,22 +81,31 @@ void main() {
           ),
         },
       );
-      final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
+      final ingredient3 = ProductIngredient(
+        id: 'pi-3',
+        ingredient: Stock.instance.getItem('i-3'),
+        amount: 1,
+      );
+      final product1 = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
         'pi-1': ingreidnet1..prepareItem(),
         'pi-2': ingreidnet2..prepareItem(),
+      });
+      final product2 = Product(id: 'p-2', name: 'p-2', price: 11);
+      final product3 = Product(id: 'p-3', name: 'p-3', price: 0, ingredients: {
+        'pi-3': ingredient3,
       });
       Menu().replaceItems({
         'c-1': Catalog(
           id: 'c-1',
           name: 'c-1',
           index: 1,
-          products: {'p-1': product..prepareItem()},
+          products: {'p-1': product1..prepareItem(), 'p-3': product3},
         )..prepareItem(),
         'c-2': Catalog(
           name: 'c-2',
           id: 'c-2',
           index: 2,
-          products: {'p-2': Product(id: 'p-2', name: 'p-2', price: 11)},
+          products: {'p-2': product2},
         )..prepareItem(),
       });
 
@@ -375,6 +385,24 @@ void main() {
       verifyProductList(0, count: 8, price: 0);
       expect(find.byKey(const Key('cart.product.1')), findsNothing);
       verifyMetadata(8, 0);
+    });
+
+    testWidgets('Ingredient should selected by product', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+
+      await tester.tap(find.byKey(const Key('order.product.p-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.product.p-3')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cart.collapsed')));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<RadioText>(find.byKey(const Key('order.ingredient.pi-3')))
+            .isSelected,
+        isTrue,
+      );
     });
 
     setUp(() {

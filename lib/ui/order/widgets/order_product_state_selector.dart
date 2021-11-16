@@ -31,6 +31,7 @@ class OrderProductStateSelector extends StatelessWidget {
 
     return _rowWrapper([
       _OrderIngredientList(
+        key: GlobalKey<_OrderIngredientListState>(),
         onSelected: (ingredient) {
           ingredients.selectIngredient(ingredient);
           quantityList.currentState?.update(ingredients.selectedQuantityId);
@@ -107,9 +108,9 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
     selectedId = widget.selectedId;
+    super.didChangeDependencies();
   }
 }
 
@@ -149,9 +150,9 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     selectedId = widget.selectedId;
-    super.initState();
+    super.didChangeDependencies();
   }
 
   void select(String? quantityId) {

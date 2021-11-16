@@ -10,7 +10,7 @@ class CartIngredients extends ChangeNotifier {
 
   late List<ProductIngredient> _ingredients;
 
-  late ProductIngredient? _selected;
+  ProductIngredient? _selected;
 
   String _productId = '';
 
