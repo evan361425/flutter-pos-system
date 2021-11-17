@@ -147,6 +147,8 @@ jobs:
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
+          body="${body//$'## '/}"
+          body="${body//$'-'/•}"
           echo "::set-output name=changelog::$body"
           echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
           echo "::set-output name=asset_length::$(echo "$release" | jq '.assets | length')"
