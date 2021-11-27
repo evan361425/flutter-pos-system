@@ -59,7 +59,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
         ChangeNotifierProvider<CartIngredients>.value(
             value: CartIngredients.instance),
       ],
-      child: const OrderProductStateSelector(),
+      child: OrderProductStateSelector(),
     );
 
     final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();

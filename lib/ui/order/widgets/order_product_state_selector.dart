@@ -8,7 +8,11 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class OrderProductStateSelector extends StatelessWidget {
-  const OrderProductStateSelector({Key? key}) : super(key: key);
+  final quantityListState = GlobalKey<_OrderQuantityListState>();
+
+  final ingredientListState = GlobalKey<_OrderIngredientListState>();
+
+  OrderProductStateSelector({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +31,19 @@ class OrderProductStateSelector extends StatelessWidget {
       return _emptyRows('noNeedIngredient');
     }
 
-    final quantityList = GlobalKey<_OrderQuantityListState>();
+    ingredientListState.currentState?.selectedId = ingredients.selectedId;
+    quantityListState.currentState?.selectedId = ingredients.selectedQuantityId;
 
     return _rowWrapper([
       _OrderIngredientList(
-        key: GlobalKey<_OrderIngredientListState>(),
+        key: ingredientListState,
         onSelected: (ingredient) {
           ingredients.selectIngredient(ingredient);
-          quantityList.currentState?.update(ingredients.selectedQuantityId);
+          quantityListState.currentState
+              ?.update(ingredients.selectedQuantityId);
         },
-        ingredients: ingredients.itemList,
-        selectedId: ingredients.selectedId,
       ),
-      _OrderQuantityList(
-        key: quantityList,
-        selectedId: ingredients.selectedQuantityId,
-      ),
+      _OrderQuantityList(key: quantityListState),
     ]);
   }
 
@@ -71,17 +72,11 @@ class OrderProductStateSelector extends StatelessWidget {
 }
 
 class _OrderIngredientList extends StatefulWidget {
-  final List<ProductIngredient> ingredients;
-
-  final String selectedId;
-
   final void Function(ProductIngredient) onSelected;
 
   const _OrderIngredientList({
     Key? key,
     required this.onSelected,
-    required this.ingredients,
-    required this.selectedId,
   }) : super(key: key);
 
   @override
@@ -94,7 +89,7 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
   @override
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
-      for (final ingredient in widget.ingredients)
+      for (final ingredient in CartIngredients.instance.itemList)
         RadioText(
           key: Key('order.ingredient.${ingredient.id}'),
           isSelected: selectedId == ingredient.id,
@@ -109,18 +104,13 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
 
   @override
   void didChangeDependencies() {
-    selectedId = widget.selectedId;
+    selectedId = CartIngredients.instance.selectedId;
     super.didChangeDependencies();
   }
 }
 
 class _OrderQuantityList extends StatefulWidget {
-  final String? selectedId;
-
-  const _OrderQuantityList({
-    Key? key,
-    required this.selectedId,
-  }) : super(key: key);
+  const _OrderQuantityList({Key? key}) : super(key: key);
 
   @override
   State<_OrderQuantityList> createState() => _OrderQuantityListState();
@@ -151,7 +141,7 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
 
   @override
   void didChangeDependencies() {
-    selectedId = widget.selectedId;
+    selectedId = CartIngredients.instance.selectedQuantityId;
     super.didChangeDependencies();
   }
 
