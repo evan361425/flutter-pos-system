@@ -33,6 +33,7 @@ class MenuScreen extends StatelessWidget {
       id: 'menu',
       candidateLength: 3,
       disabledTips: [if (menu.isNotEmpty) 'introduction'],
+      routeObserver: routeObserver,
       child: Scaffold(
         appBar: AppBar(
           title: OrderedTip(
@@ -69,7 +70,7 @@ class MenuScreen extends StatelessWidget {
         ),
         body: menu.isEmpty
             ? Center(child: EmptyBody(onPressed: goAddCatalog))
-            : _MenuBody(menu),
+            : _MenuBody(menu, tipGrouper),
       ),
     );
   }
@@ -91,7 +92,9 @@ class MenuScreen extends StatelessWidget {
 class _MenuBody extends StatelessWidget {
   final Menu menu;
 
-  const _MenuBody(this.menu);
+  final GlobalKey<TipGrouperState> tipGrouper;
+
+  const _MenuBody(this.menu, this.tipGrouper);
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +112,7 @@ class _MenuBody extends StatelessWidget {
       child: HintText(S.totalCount(menu.length)),
     );
     // get sorted catalogs
-    final catalogList = CatalogList(menu.itemList);
+    final catalogList = CatalogList(menu.itemList, tipGrouper: tipGrouper);
 
     return Column(
       children: [

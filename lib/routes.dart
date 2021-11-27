@@ -74,13 +74,13 @@ class Routes {
   static const String stockQuantityModal = 'stock/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
-    analysis: (_) => AnalysisScreen(),
+    analysis: (_) => AnalysisScreen(routeObserver: MyApp.routeObserver),
     customer: (_) => CustomerScreen(routeObserver: MyApp.routeObserver),
     cashier: (_) => CashierScreen(routeObserver: MyApp.routeObserver),
     menu: (_) => MenuScreen(routeObserver: MyApp.routeObserver),
     order: (_) => const OrderScreen(),
     setting: (_) => const SettingScreen(),
-    stock: (_) => StockScreen(),
+    stock: (_) => StockScreen(routeObserver: MyApp.routeObserver),
     // sub-route
     // cashier
     cashierChanger: (context) => const ChangerModal(),

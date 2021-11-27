@@ -70,6 +70,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       key: _tipGrouper,
       id: 'order',
       candidateLength: 1,
+      routeObserver: MyApp.routeObserver,
       child: Scaffold(
         // avoid resize when keyboard(bottom inset) shows
         resizeToAvoidBottomInset: false,

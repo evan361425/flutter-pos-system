@@ -30,6 +30,7 @@ class StockScreen extends StatelessWidget {
       key: tipGrouper,
       id: 'stock',
       candidateLength: 1,
+      routeObserver: routeObserver,
       child: Scaffold(
         appBar: AppBar(
           title: Text(S.stockTitle),

@@ -8,6 +8,9 @@ on:
       - "docs/**"
       - mkdocs.yaml
   pull_request:
+    paths:
+      - "docs/**"
+      - mkdocs.yaml
   workflow_dispatch:
 
 jobs:

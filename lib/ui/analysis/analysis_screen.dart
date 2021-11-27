@@ -10,9 +10,12 @@ import 'widgets/calendar_wrapper.dart';
 
 class AnalysisScreen extends StatelessWidget {
   final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
+
   final tipGrouper = GlobalKey<TipGrouperState>();
 
-  AnalysisScreen({Key? key}) : super(key: key);
+  final RouteObserver<ModalRoute<void>>? routeObserver;
+
+  AnalysisScreen({Key? key, this.routeObserver}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +25,7 @@ class AnalysisScreen extends StatelessWidget {
       key: tipGrouper,
       id: 'analysis',
       candidateLength: 1,
+      routeObserver: routeObserver,
       child: Scaffold(
         key: const Key('analysis_screen'),
         appBar: AppBar(
