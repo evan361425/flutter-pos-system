@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 class CatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  const CatalogList(this.catalogs, {Key? key}) : super(key: key);
+  final GlobalKey<TipGrouperState>? tipGrouper;
+
+  const CatalogList(
+    this.catalogs, {
+    Key? key,
+    this.tipGrouper,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +69,12 @@ class CatalogList extends StatelessWidget {
       ),
     );
     if (index == 0) {
-      return TipTutorial(
+      return OrderedTip(
+        id: 'cagtalog_item',
+        grouper: tipGrouper,
         message: '「長按」- 重新排序或編輯 產品種類\n「滑動」- 刪除 產品種類',
-        label: 'menu.cagtalog.item',
+        order: 10,
+        version: 1,
         child: child,
       );
     }

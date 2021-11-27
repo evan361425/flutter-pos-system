@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
-import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 class OrderBySlidingPanel extends StatefulWidget {
   final Widget row1;
   final Widget row2;
   final Widget row3;
   final Widget row4;
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   const OrderBySlidingPanel({
     Key? key,
@@ -18,6 +19,7 @@ class OrderBySlidingPanel extends StatefulWidget {
     required this.row2,
     required this.row3,
     required this.row4,
+    this.tipGrouper,
   }) : super(key: key);
 
   @override
@@ -34,8 +36,11 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
     final panelHeight =
         mediaQuery.size.height - mediaQuery.padding.top - kToolbarHeight - 64.0;
 
-    final collapsed = TipTutorial(
-      label: 'order.panel',
+    final collapsed = OrderedTip(
+      id: 'panel',
+      grouper: widget.tipGrouper,
+      order: 10,
+      version: 1,
       title: '新版點餐設計',
       message: '為了讓點選產品可以更方便，\n'
           '我們把點餐後的產品設定至於此面板，點選或滑動以查看。\n'

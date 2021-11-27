@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/tip/cache_state_manager.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -30,42 +29,8 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Home Screen', () {
-    testWidgets('should show tip correctly', (tester) async {
-      CacheStateManager.initialize();
-      when(cache.get(any)).thenReturn(1);
-      when(cache.get('_tip.home.menu')).thenReturn(0);
-      when(cache.get('_tip.home.stock')).thenReturn(0);
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Seller.instance,
-        builder: (_, __) => const MaterialApp(home: HomeScreen()),
-      ));
-      // show menu tip animation
-      await tester.pumpAndSettle();
-
-      when(cache.get('_tip.home.menu')).thenReturn(1);
-
-      // close and show tip
-      await tester.tapAt(const Offset(0, 0));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
-
-      verify(cache.set('_tip.home.menu', isNonZero));
-
-      // close stock tip
-      when(cache.get('_tip.home.stock')).thenReturn(1);
-
-      // close tip
-      await tester.tapAt(const Offset(0, 0));
-      await tester.pumpAndSettle();
-
-      verify(cache.set('_tip.home.stock', isNonZero));
-    });
-
     testWidgets('should reset info after update', (tester) async {
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
-      disableTips();
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
@@ -97,7 +62,6 @@ void main() {
     });
 
     testWidgets('should navigate correctly', (tester) async {
-      disableTips();
       when(cache.get(any)).thenReturn(null);
       when(cache.get(argThat(predicate<String>((f) => f.startsWith('_tip')))))
           .thenReturn(1);
@@ -177,6 +141,8 @@ void main() {
       )).thenAnswer((_) => Future.value([
             {'totalPrice': 20, 'count': 10},
           ]));
+
+      disableTips();
     });
 
     setUpAll(() {

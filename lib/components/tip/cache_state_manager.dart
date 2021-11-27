@@ -7,25 +7,17 @@ class CacheStateManager extends StateManager {
   CacheStateManager._();
 
   @override
-  bool shouldShow(String groupId, OrderedTipItem item) {
-    return shouldShowRaw('$groupId.${item.id}', item.version);
-  }
-
-  bool shouldShowRaw(String name, int version) {
-    final cachedVersion = Cache.instance.get<int>('_tip.$name');
-    return cachedVersion == null ? true : cachedVersion < version;
+  bool shouldShow(String groupId, TipItem item) {
+    final cachedVersion = Cache.instance.get<int>('_tip.$groupId.${item.id}');
+    return cachedVersion == null ? true : cachedVersion < item.version;
   }
 
   @override
-  Future<void> tipRead(String groupId, OrderedTipItem item) {
-    return tipReadRaw('$groupId.${item.id}', item.version);
-  }
-
-  Future<void> tipReadRaw(String name, int version) {
-    return Cache.instance.set<int>('_tip.$name', version);
+  Future<void> tipRead(String groupId, TipItem item) {
+    return Cache.instance.set<int>('_tip.$groupId.${item.id}', item.version);
   }
 
   static void initialize() {
-    OrderedTip.stateManager = CacheStateManager.instance;
+    TipGrouper.defaultStateManager = CacheStateManager.instance;
   }
 }

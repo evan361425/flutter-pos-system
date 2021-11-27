@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: settings,
-        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
+        child: MaterialApp(routes: Routes.routes, home: CustomerScreen()),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -100,7 +101,11 @@ void main() {
           ChangeNotifierProvider.value(
               value: SettingsProvider([currency])..loadSetting()),
         ],
-        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
+        child: MaterialApp(
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.dark,
+            routes: Routes.routes,
+            home: CustomerScreen()),
       ));
     }
 
@@ -385,6 +390,7 @@ void main() {
     });
 
     setUpAll(() {
+      disableTips();
       initializeCache();
       initializeDatabase();
       initializeTranslator();

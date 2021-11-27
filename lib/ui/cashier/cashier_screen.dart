@@ -13,15 +13,19 @@ import 'widgets/cashier_surplus.dart';
 import 'widgets/cashier_unit_list.dart';
 
 class CashierScreen extends StatelessWidget {
-  const CashierScreen({Key? key}) : super(key: key);
+  final tipGrouper = GlobalKey<TipGrouperState>();
+
+  final RouteObserver<ModalRoute<void>>? routeObserver;
+
+  CashierScreen({Key? key, this.routeObserver}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final actions = Row(children: [
       Expanded(
         child: OrderedTip(
-          groupId: 'cashier',
           id: 'surplus',
+          grouper: tipGrouper,
           version: 1,
           order: 1,
           message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
@@ -42,32 +46,38 @@ class CashierScreen extends StatelessWidget {
       ),
     ]);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('收銀機'),
-        leading: const PopButton(),
-        actions: [
-          OrderedTip(
-            groupId: 'cashier',
-            id: 'setDefault',
-            version: 1,
-            order: 2,
-            message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
-            child: AppbarTextButton(
-              key: const Key('cashier.defaulter'),
-              onPressed: () => handleSetDefault(context),
-              child: const Text('設為預設'),
-            ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(kSpacing3),
-        child: Column(children: [
-          actions,
-          const Divider(),
-          const Expanded(child: CashierUnitList()),
-        ]),
+    return TipGrouper(
+      key: tipGrouper,
+      id: 'cashier',
+      candidateLength: 2,
+      routeObserver: routeObserver,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('收銀機'),
+          leading: const PopButton(),
+          actions: [
+            OrderedTip(
+              id: 'setDefault',
+              grouper: tipGrouper,
+              version: 1,
+              order: 2,
+              message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
+              child: AppbarTextButton(
+                key: const Key('cashier.defaulter'),
+                onPressed: () => handleSetDefault(context),
+                child: const Text('設為預設'),
+              ),
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(kSpacing3),
+          child: Column(children: [
+            actions,
+            const Divider(),
+            const Expanded(child: CashierUnitList()),
+          ]),
+        ),
       ),
     );
   }

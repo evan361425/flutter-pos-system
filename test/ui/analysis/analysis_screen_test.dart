@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -30,7 +31,7 @@ void main() {
           ChangeNotifierProvider.value(value: settings..loadSetting()),
           ChangeNotifierProvider.value(value: Seller()),
         ],
-        builder: (_, __) => const AnalysisScreen(),
+        builder: (_, __) => AnalysisScreen(),
       ),
     );
   }
@@ -151,6 +152,7 @@ void main() {
     });
 
     setUpAll(() {
+      disableTips();
       initializeCache();
       initializeDatabase();
       initializeTranslator();
