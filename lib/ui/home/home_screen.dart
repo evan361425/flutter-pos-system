@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/order_info.dart';
 
@@ -13,13 +12,11 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.collections_sharp,
         label: 'menu',
         route: Routes.menu,
-        tipVersion: 1,
       ),
       'stock': _LabledIconItem(
         icon: Icons.store_sharp,
         label: 'stock',
         route: Routes.stock,
-        tipVersion: 1,
       ),
       'quantities': _LabledIconItem(
         icon: Icons.exposure_sharp,
@@ -30,13 +27,11 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.attach_money_sharp,
         label: 'cashier',
         route: Routes.cashier,
-        tipVersion: 1,
       ),
       'customer': _LabledIconItem(
         icon: Icons.assignment_ind_sharp,
         label: 'customer',
         route: Routes.customer,
-        tipVersion: 1,
       ),
     },
     'other': {
@@ -44,7 +39,6 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.equalizer_sharp,
         label: 'analysis',
         route: Routes.analysis,
-        tipVersion: 1,
       ),
       'setting': _LabledIconItem(
         icon: Icons.settings_sharp,
@@ -108,7 +102,7 @@ class _LabledIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = TextButton(
+    return TextButton(
       key: Key('home.${item.label}'),
       onPressed: () => Navigator.of(context).pushNamed(item.route),
       style: TextButton.styleFrom(shape: const CircleBorder()),
@@ -120,20 +114,6 @@ class _LabledIcon extends StatelessWidget {
         ],
       ),
     );
-
-    if (item.tipVersion == 0) {
-      return base;
-    }
-
-    return OrderedTip(
-      groupId: 'home',
-      title: S.homeIcons(item.label),
-      message: S.homeIconTutorial(item.label),
-      id: item.label,
-      version: item.tipVersion,
-      order: index,
-      child: base,
-    );
   }
 }
 
@@ -141,12 +121,10 @@ class _LabledIconItem {
   final IconData? icon;
   final String label;
   final String route;
-  final int tipVersion;
 
   const _LabledIconItem({
     this.icon,
     required this.label,
     required this.route,
-    this.tipVersion = 0,
   });
 }

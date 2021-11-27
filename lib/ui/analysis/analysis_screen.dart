@@ -3,30 +3,43 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
 
 class AnalysisScreen extends StatelessWidget {
-  static final orderListState =
-      GlobalKey<AnalysisOrderListState<_OrderListParams>>();
+  final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
+  final tipGrouper = GlobalKey<TipGrouperState>();
 
-  const AnalysisScreen({Key? key}) : super(key: key);
+  AnalysisScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     context.watch<Seller>();
 
-    return Scaffold(
-      key: const Key('analysis_screen'),
-      appBar: AppBar(
-        title: Text(S.analysisTitle),
-        leading: const PopButton(),
-      ),
-      body: OrientationBuilder(
-        builder: (_, orientation) => orientation == Orientation.portrait
-            ? _buildPortrait()
-            : _buildLandscape(),
+    return TipGrouper(
+      key: tipGrouper,
+      id: 'analysis',
+      candidateLength: 1,
+      child: Scaffold(
+        key: const Key('analysis_screen'),
+        appBar: AppBar(
+          title: OrderedTip(
+            id: 'introduction',
+            grouper: tipGrouper,
+            order: 1,
+            version: 1,
+            message: '統計分析可以幫助我們點餐後查看點餐的紀錄。',
+            child: Text(S.analysisTitle),
+          ),
+          leading: const PopButton(),
+        ),
+        body: OrientationBuilder(
+          builder: (_, orientation) => orientation == Orientation.portrait
+              ? _buildPortrait()
+              : _buildLandscape(),
+        ),
       ),
     );
   }

@@ -163,15 +163,6 @@
       }
     }
   },
-  "homeIconTutorial": "{icon, select, menu{菜單可以幫助我們整理所有產品的資訊。} analysis{統計分析可以幫助我們點餐後查看點餐的紀錄。} stock{庫存系統可以幫助計算現有庫存\\n並同時設定成分的相關資訊。} order{設定好商店資訊之後，我們馬上就可以開始點餐囉。} cashier{收銀機可以幫助我們結餘當日的訂單\\n並且在點單後計算現在現金應有的數量。} customer{顧客設定可以幫助我們統計都是哪些人來買我們的產品，例如：\\n20-30歲、外帶、上班族。}}",
-  "@homeIconTutorial": {
-    "description": "首頁的按鈕的說明",
-    "placeholders": {
-      "icon": {
-        "type": "String"
-      }
-    }
-  },
   "homeIconTypes": "{type, select, store{店家設定} other{其他}}",
   "@homeIconTypes": {
     "description": "首頁的按鈕種類",

@@ -12,6 +12,7 @@ import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_list.dart';
@@ -34,6 +35,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
   final _orderProductList = GlobalKey<OrderProductListState>();
   final _cartProductList = GlobalKey<CartProductListState>();
   final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+  final _tipGrouper = GlobalKey<TipGrouperState>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,33 +66,39 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
 
     final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();
 
-    return Scaffold(
-      // avoid resize when keyboard(bottom inset) shows
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: const OrderActions(key: Key('order.action.more')),
-        actions: [
-          AppbarTextButton(
-            key: const Key('order.cashier'),
-            onPressed: () => _handleOrder(),
-            child: Text(S.orderActionsOrderDone),
-          ),
-        ],
-      ),
-      body: outlook.value == OrderOutlookTypes.slidingPanel
-          ? OrderBySlidingPanel(
-              key: slidingPanel,
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: menuIngredientRow,
-            )
-          : OrderByOrientation(
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: menuIngredientRow,
+    return TipGrouper(
+      key: _tipGrouper,
+      id: 'order',
+      candidateLength: 1,
+      child: Scaffold(
+        // avoid resize when keyboard(bottom inset) shows
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: const OrderActions(key: Key('order.action.more')),
+          actions: [
+            AppbarTextButton(
+              key: const Key('order.cashier'),
+              onPressed: () => _handleOrder(),
+              child: Text(S.orderActionsOrderDone),
             ),
+          ],
+        ),
+        body: outlook.value == OrderOutlookTypes.slidingPanel
+            ? OrderBySlidingPanel(
+                key: slidingPanel,
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: menuIngredientRow,
+                tipGrouper: _tipGrouper,
+              )
+            : OrderByOrientation(
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: menuIngredientRow,
+              ),
+      ),
     );
   }
 

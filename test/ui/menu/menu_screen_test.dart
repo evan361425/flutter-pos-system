@@ -15,24 +15,17 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   group('Menu Screen', () {
     testWidgets('Add catalog', (WidgetTester tester) async {
-      when(cache.get(any)).thenReturn(null);
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu()),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
-
-      // close tip
-      await tester.pumpAndSettle();
-      await tester.tapAt(const Offset(0, 0));
-      await tester.pumpAndSettle();
+      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -67,7 +60,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
 
       await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -82,7 +75,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -114,7 +107,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
 
       await tester.tap(find.byKey(const Key('menu.more')));
       await tester.pumpAndSettle();
@@ -150,7 +143,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -218,7 +211,7 @@ void main() {
             routes: Routes.routes,
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,
-            home: const MenuScreen(),
+            home: MenuScreen(),
           )));
       await tester.tap(find.byKey(const Key('menu.search')));
       await tester.pumpAndSettle();
@@ -261,13 +254,8 @@ void main() {
       }))));
     });
 
-    setUp(() {
-      // for tip
-      when(cache.get(any)).thenReturn(1);
-    });
-
     setUpAll(() {
-      initializeCache();
+      disableTips();
       initializeStorage();
       initializeTranslator();
     });

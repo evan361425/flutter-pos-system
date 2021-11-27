@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/my_app.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -73,13 +74,13 @@ class Routes {
   static const String stockQuantityModal = 'stock/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
-    analysis: (_) => const AnalysisScreen(),
-    customer: (_) => const CustomerScreen(),
-    cashier: (_) => const CashierScreen(),
-    menu: (_) => const MenuScreen(),
+    analysis: (_) => AnalysisScreen(),
+    customer: (_) => CustomerScreen(routeObserver: MyApp.routeObserver),
+    cashier: (_) => CashierScreen(routeObserver: MyApp.routeObserver),
+    menu: (_) => MenuScreen(routeObserver: MyApp.routeObserver),
     order: (_) => const OrderScreen(),
     setting: (_) => const SettingScreen(),
-    stock: (_) => const StockScreen(),
+    stock: (_) => StockScreen(),
     // sub-route
     // cashier
     cashierChanger: (context) => const ChangerModal(),

@@ -4,18 +4,22 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/components/tip/tip_tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/catalog_list.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({Key? key}) : super(key: key);
+  final tipGrouper = GlobalKey<TipGrouperState>();
+
+  final RouteObserver<ModalRoute<void>>? routeObserver;
+
+  MenuScreen({Key? key, this.routeObserver}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +28,49 @@ class MenuScreen extends StatelessWidget {
 
     goAddCatalog() => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.menuCatalogTitle),
-        leading: const PopButton(),
-        actions: [
-          IconButton(
-            key: const Key('menu.more'),
-            onPressed: () => _showActions(context),
-            icon: const Icon(KIcons.more),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        key: const Key('menu.add'),
-        onPressed: goAddCatalog,
-        tooltip: S.menuCatalogCreate,
-        child: TipTutorial(
-          title: '產品種類',
-          message: '我們會把相似「產品」放在「產品種類」中，到時候點餐會比較方便。例如：\n'
-              '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
-              '「塑膠袋」、「環保杯」整合進「其他」\n'
-              '若需要新增產品種類，可以點此按鈕。',
-          label: 'menu.catalog',
-          disabled: menu.isNotEmpty,
-          child: const Icon(KIcons.add),
+    return TipGrouper(
+      key: tipGrouper,
+      id: 'menu',
+      candidateLength: 3,
+      disabledTips: [if (menu.isNotEmpty) 'introduction'],
+      child: Scaffold(
+        appBar: AppBar(
+          title: OrderedTip(
+              id: 'introduction',
+              grouper: tipGrouper,
+              message: '菜單可以幫助我們整理所有產品的資訊。',
+              order: 1,
+              version: 1,
+              child: Text(S.menuCatalogTitle)),
+          leading: const PopButton(),
+          actions: [
+            IconButton(
+              key: const Key('menu.more'),
+              onPressed: () => _showActions(context),
+              icon: const Icon(KIcons.more),
+            ),
+          ],
         ),
+        floatingActionButton: FloatingActionButton(
+          key: const Key('menu.add'),
+          onPressed: goAddCatalog,
+          tooltip: S.menuCatalogCreate,
+          child: OrderedTip(
+            id: 'catalog',
+            grouper: tipGrouper,
+            message: '我們會把相似「產品」放在「產品種類」中，到時候點餐會比較方便。例如：\n'
+                '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
+                '「塑膠袋」、「環保杯」整合進「其他」\n'
+                '若需要新增產品種類，可以點此按鈕。',
+            order: 2,
+            version: 1,
+            child: const Icon(KIcons.add),
+          ),
+        ),
+        body: menu.isEmpty
+            ? Center(child: EmptyBody(onPressed: goAddCatalog))
+            : _MenuBody(menu),
       ),
-      body: menu.isEmpty
-          ? Center(child: EmptyBody(onPressed: goAddCatalog))
-          : _MenuBody(menu),
     );
   }
 

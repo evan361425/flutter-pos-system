@@ -31,6 +31,7 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -397,14 +398,14 @@ void main() {
     });
 
     setUp(() {
-      // disable tips and features
+      // disable and features
       when(cache.get(any)).thenReturn(null);
-      when(cache.get(argThat(startsWith('_tip')))).thenReturn(1);
 
       prepareData();
     });
 
     setUpAll(() {
+      disableTips();
       initializeCache();
       initializeDatabase();
       initializeStorage();
