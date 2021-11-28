@@ -31,7 +31,6 @@ class Cache {
     if (version == null) {
       await service.setInt('version', 1);
     }
-    await service.clear();
   }
 
   Future<bool> set<T>(String key, T value) {
