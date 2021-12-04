@@ -305,6 +305,8 @@ void main() {
             {'id': 1}
           ]));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
+      await Cashier.instance.setCurrentByUnit(1, 5);
+
       await tester.tap(find.byKey(const Key('cashier.order')));
       // wait for error message disappear
       await tester.pump();
@@ -317,7 +319,10 @@ void main() {
       expect(sChange, findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        return data is Map && data['.current'][2]['count'] == 3;
+        // 95 - 62
+        return data is Map &&
+            data['.current'][2]['count'] == 3 &&
+            data['.current'][0]['count'] == 3;
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
@@ -411,7 +416,11 @@ void main() {
       expect(find.byKey(const Key('cashier.order')), findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        return data is Map && data['.current'][2]['count'] == 3;
+        // 30 + 5 + 3
+        return data is Map &&
+            data['.current'][2]['count'] == 3 &&
+            data['.current'][1]['count'] == 1 &&
+            data['.current'][0]['count'] == 3;
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&

@@ -302,10 +302,14 @@ class Cashier extends ChangeNotifier {
     var index = unitLength - 1;
     for (var item in _current.reversed) {
       if (item.unit <= price) {
-        final count = (price / item.unit).floor();
-        deltas[index] = (deltas[index] ?? 0) + (isPositive ? count : -count);
+        final oldCount = deltas[index] ?? 0;
+        final count = isPositive
+            ? (price / item.unit).floor()
+            : min((price / item.unit).floor(), item.count + oldCount);
 
+        deltas[index] = oldCount + (isPositive ? count : -count);
         price -= item.unit * count;
+
         if (price == 0) break;
       }
       index--;
