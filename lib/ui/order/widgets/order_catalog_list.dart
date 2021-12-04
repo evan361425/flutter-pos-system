@@ -29,14 +29,23 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
 
     return SingleRowWrap(children: <Widget>[
       for (final catalog in widget.catalogs)
-        RadioText(
+        ChoiceChip(
           key: Key('order.catalog.${catalog.id}'),
-          onChanged: (_) {
-            setState(() => selectedId = catalog.id);
-            widget.handleSelected(catalog);
+          avatar: CircleAvatar(
+            foregroundImage:
+                catalog.avator == null ? null : AssetImage(catalog.avator!),
+            child: catalog.avator == null
+                ? Text(catalog.name.characters.first.toUpperCase())
+                : null,
+          ),
+          onSelected: (isSelected) {
+            if (isSelected) {
+              setState(() => selectedId = catalog.id);
+              widget.handleSelected(catalog);
+            }
           },
-          isSelected: catalog.id == selectedId,
-          text: catalog.name,
+          selected: catalog.id == selectedId,
+          label: Text(catalog.name),
         ),
     ]);
   }
