@@ -76,6 +76,9 @@ flutter:
   # Enable generation of localized Strings from arb files.
   generate: true
 
+  assets:
+    - assets/food_placeholder.png
+
 flutter_native_splash:
   color: "#000000"
   fullscreen: true

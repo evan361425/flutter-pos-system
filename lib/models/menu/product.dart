@@ -11,6 +11,7 @@ import 'product_ingredient.dart';
 
 class Product extends Model<ProductObject>
     with
+        ModelAvator<ProductObject>,
         ModelStorage<ProductObject>,
         ModelOrderable<ProductObject>,
         ModelSearchable<ProductObject>,

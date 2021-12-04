@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/model.dart';
 
 class ItemMoreActionButton extends StatelessWidget {
-  final Model item;
-
-  final Widget? metadata;
+  final Widget item;
 
   final VoidCallback onTap;
 
@@ -14,26 +11,14 @@ class ItemMoreActionButton extends StatelessWidget {
     Key? key,
     required this.item,
     required this.onTap,
-    this.metadata,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(context).textTheme.headline4;
-
     return Container(
-      padding: const EdgeInsets.all(kSpacing3),
+      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
       child: Row(children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(item.name, style: titleStyle),
-              if (metadata != null) const SizedBox(height: 4.0),
-              if (metadata != null) metadata!,
-            ],
-          ),
-        ),
+        Expanded(child: item),
         IconButton(
           onPressed: onTap,
           icon: const Icon(KIcons.more),

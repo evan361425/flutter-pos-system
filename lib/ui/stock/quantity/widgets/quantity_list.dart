@@ -12,14 +12,15 @@ class QuantityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Quantity, _Action>(
+    return SlidableItemList<Quantity, int>(
+        delegate: SlidableItemDelegate(
       items: quantities,
-      deleteValue: _Action.delete,
+      deleteValue: 0,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
       handleDelete: _handleDelete,
       handleTap: _handleTap,
-    );
+    ));
   }
 
   Future<void> _handleDelete(Quantity quantity) async {
@@ -34,7 +35,7 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Quantity quantity) {
+  Widget _tileBuilder(BuildContext context, int index, Quantity quantity, _) {
     return ListTile(
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name),
@@ -48,8 +49,4 @@ class QuantityList extends StatelessWidget {
 
     return Text(S.dialogDeletionContent(quantity.name, moreCtx));
   }
-}
-
-enum _Action {
-  delete,
 }

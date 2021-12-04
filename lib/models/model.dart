@@ -115,3 +115,7 @@ mixin ModelStorage<T extends ModelObject> on Model<T> {
     return Storage.instance.set(storageStore, data);
   }
 }
+
+mixin ModelAvator<T extends ModelObject> on Model<T> {
+  String? avator;
+}
