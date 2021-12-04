@@ -147,7 +147,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.chevron_left));
       await tester.pumpAndSettle();
 
-      expect(find.text('50'), findsNothing);
+      expect(find.text('50'),
+          now.day < now.weekday ? findsOneWidget : findsNothing);
       expect(find.text('60'), findsOneWidget);
     });
 

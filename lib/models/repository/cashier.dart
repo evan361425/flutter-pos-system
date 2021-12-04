@@ -147,14 +147,14 @@ class Cashier extends ChangeNotifier {
   }
 
   /// Current and default difference
-  Iterable<List<CashierUnitObject>> getDifference() sync* {
+  Iterable<CashierDiffItem> getDifference() sync* {
     final iterators = [
       _current,
       _default,
     ].map((e) => e.iterator).toList(growable: false);
 
     while (iterators.every((e) => e.moveNext())) {
-      yield iterators.map((e) => e.current).toList(growable: false);
+      yield CashierDiffItem(iterators[0].current, iterators[1].current);
     }
   }
 
@@ -215,6 +215,12 @@ class Cashier extends ChangeNotifier {
       // reset to empty
       await _registerStorage();
     }
+  }
+
+  Future<void> setCurrentByUnit(num unit, int count) {
+    final index = indexOf(unit);
+    final diff = count - _current[index].count;
+    return update({index: diff});
   }
 
   /// Set default data
@@ -335,4 +341,17 @@ class Cashier extends ChangeNotifier {
 
     notifyListeners();
   }
+}
+
+class CashierDiffItem {
+  final CashierUnitObject currentData;
+
+  final CashierUnitObject defaultData;
+
+  const CashierDiffItem(this.currentData, this.defaultData);
+
+  int get currentCount => currentData.count;
+  int get defaultCount => defaultData.count;
+  int get diffCount => currentData.count - defaultData.count;
+  num get unit => currentData.unit;
 }

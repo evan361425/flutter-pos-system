@@ -115,12 +115,9 @@ class CashierScreen extends StatelessWidget {
       return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
     }
 
-    final success = await showDialog<bool>(
-        context: context,
-        builder: (_) => const ConfirmDialog(
-              title: '點選確認以結餘',
-              content: CashierSurplus(),
-            ));
+    final success = await Navigator.of(context).push<bool>(MaterialPageRoute(
+      builder: (_) => CashierSurplus(),
+    ));
 
     if (success == true) {
       await Cashier.instance.surplus();
