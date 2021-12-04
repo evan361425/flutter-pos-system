@@ -93,7 +93,16 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.surplus')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+      await tester.tap(find.text('15'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('text_dialog.text')), '13');
+      await tester.tap(find.byKey(const Key('text_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      expect(Cashier.instance.at(0).count, equals(13));
+
+      await tester.tap(find.byKey(const Key('cashier_surplus.confirm')));
       await tester.pumpAndSettle();
 
       expect(Cashier.instance.at(0).count, equals(10));
@@ -161,13 +170,13 @@ void main() {
       await tester.pumpAndSettle();
 
       // default value not set
-      expect(Cashier.instance.getDifference().first[1].count, equals(10));
+      expect(Cashier.instance.getDifference().first.defaultCount, equals(10));
 
       await tester.tap(find.byKey(const Key('cashier.defaulter')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
-      expect(Cashier.instance.getDifference().first[1].count, equals(15));
+      expect(Cashier.instance.getDifference().first.defaultCount, equals(15));
     });
 
     setUp(() {
