@@ -31,13 +31,7 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
       for (final catalog in widget.catalogs)
         ChoiceChip(
           key: Key('order.catalog.${catalog.id}'),
-          avatar: CircleAvatar(
-            foregroundImage:
-                catalog.avator == null ? null : AssetImage(catalog.avator!),
-            child: catalog.avator == null
-                ? Text(catalog.name.characters.first.toUpperCase())
-                : null,
-          ),
+          avatar: catalog.avator,
           onSelected: (isSelected) {
             if (isSelected) {
               setState(() => selectedId = catalog.id);

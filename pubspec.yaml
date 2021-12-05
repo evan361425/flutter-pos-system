@@ -49,9 +49,15 @@ dependencies:
   pull_to_refresh: ^2.0.0
   simple_tip: ^0.3.1
 
+  # image
+  image: ^3.1.0
+  image_picker: ^0.8.4+4
+  image_cropper: ^1.4.1
+
   # tools
   uuid: ^3.0.4
   wakelock: ^0.5.2
+  path_provider: ^2.0.7
 
 dev_dependencies:
   flutter_test:

@@ -133,10 +133,7 @@ class _ImageCard extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            product.avator ?? 'assets/food_placeholder.png',
-            fit: BoxFit.cover,
-          ),
+          Image(image: product.image, fit: BoxFit.cover),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[Expanded(child: title)],

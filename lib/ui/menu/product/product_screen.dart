@@ -37,8 +37,9 @@ class ProductScreen extends StatelessWidget {
       leading: const PopButton(),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(product.name),
-        background: Image.asset(
-          product.avator ?? "assets/food_placeholder.png",
+        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
+        background: Image(
+          image: product.image,
           fit: BoxFit.cover,
           color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
           colorBlendMode: BlendMode.srcATop,
@@ -91,20 +92,34 @@ class ProductScreen extends StatelessWidget {
   }
 
   void _showActions(BuildContext context, Product product) async {
-    await BottomSheetActions.withDelete(
+    final result = await BottomSheetActions.withDelete<_Action>(
       context,
       deleteCallback: product.remove,
-      deleteValue: 0,
+      deleteValue: _Action.delete,
       popAfterDeleted: true,
       warningContent: Text(S.dialogDeletionContent(product.name, '')),
-      actions: <BottomSheetAction<int>>[
+      actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
           title: Text(S.menuProductUpdate),
           leading: const Icon(Icons.text_fields_sharp),
           navigateArgument: product,
           navigateRoute: Routes.menuProductModal,
         ),
+        const BottomSheetAction(
+          title: Text('更新照片'),
+          leading: Icon(Icons.image_sharp),
+          returnValue: _Action.changeImage,
+        ),
       ],
     );
+
+    if (result == _Action.changeImage) {
+      await product.pickImage();
+    }
   }
+}
+
+enum _Action {
+  delete,
+  changeImage,
 }

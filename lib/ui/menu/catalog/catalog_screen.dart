@@ -33,8 +33,9 @@ class CatalogScreen extends StatelessWidget {
       leading: const PopButton(),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(catalog.name),
-        background: Image.asset(
-          catalog.avator ?? "assets/food_placeholder.png",
+        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
+        background: Image(
+          image: catalog.image,
           fit: BoxFit.cover,
           color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
           colorBlendMode: BlendMode.srcATop,
@@ -77,7 +78,7 @@ class CatalogScreen extends StatelessWidget {
   }
 
   void _showActions(BuildContext context, Catalog catalog) async {
-    await BottomSheetActions.withDelete(
+    final result = await BottomSheetActions.withDelete(
       context,
       deleteCallback: catalog.remove,
       deleteValue: _Action.delete,
@@ -96,11 +97,21 @@ class CatalogScreen extends StatelessWidget {
           navigateArgument: catalog,
           navigateRoute: Routes.menuProductReorder,
         ),
+        const BottomSheetAction(
+          title: Text('更新照片'),
+          leading: Icon(Icons.image_sharp),
+          returnValue: _Action.changeImage,
+        ),
       ],
     );
+
+    if (result == _Action.changeImage) {
+      await catalog.pickImage();
+    }
   }
 }
 
 enum _Action {
   delete,
+  changeImage,
 }

@@ -144,6 +144,7 @@ void main() {
           'c-1': {
             'index': 1,
             'name': 'c-1',
+            'imagePath': null,
             'createdAt': now,
             'products': {
               'p-1': {
@@ -152,6 +153,7 @@ void main() {
                 'index': 1,
                 'name': 'p-1',
                 'createdAt': now,
+                'imagePath': null,
                 'ingredients': {
                   'pi-1': {
                     'ingredientId': 'i-1',
@@ -180,11 +182,18 @@ void main() {
                 'index': 2,
                 'name': 'p-2',
                 'createdAt': now,
+                'imagePath': null,
                 'ingredients': {}
               }
             }
           },
-          'c-2': {'index': 2, 'name': 'c-2', 'createdAt': now, 'products': {}}
+          'c-2': {
+            'index': 2,
+            'name': 'c-2',
+            'imagePath': null,
+            'createdAt': now,
+            'products': {},
+          }
         })),
       ));
     });

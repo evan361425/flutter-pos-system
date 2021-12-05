@@ -8,7 +8,7 @@ import 'product.dart';
 
 class Catalog extends Model<CatalogObject>
     with
-        ModelAvator<CatalogObject>,
+        ModelImage<CatalogObject>,
         ModelStorage<CatalogObject>,
         ModelOrderable<CatalogObject>,
         Repository<Product>,
@@ -27,12 +27,14 @@ class Catalog extends Model<CatalogObject>
     String? id,
     String name = 'catalog',
     int index = 0,
+    String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     this.name = name;
     this.index = index;
+    this.imagePath = imagePath;
     if (products != null) replaceItems(products);
   }
 
@@ -42,6 +44,7 @@ class Catalog extends Model<CatalogObject>
       index: object.index!,
       name: object.name,
       createdAt: object.createdAt,
+      imagePath: object.imagePath,
       products: {
         for (var product in object.products)
           product.id!: Product.fromObject(product)

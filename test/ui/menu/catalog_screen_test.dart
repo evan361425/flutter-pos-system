@@ -49,8 +49,9 @@ void main() {
       expect(product.price, equals(1));
 
       verify(storage.set(any, argThat(predicate((data) {
-        final map = (data as Map).values.first as Map<String, Object>;
-        return map['price'] == 1 &&
+        final map = (data as Map).values.first;
+        return map is Map &&
+            map['price'] == 1 &&
             map['cost'] == 1 &&
             map['name'] == 'name' &&
             map['index'] == 1;

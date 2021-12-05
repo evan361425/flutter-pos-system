@@ -45,9 +45,7 @@ void _handleTap(BuildContext context, Product product) {
 Widget _tileBuilder(BuildContext context, int index, Product product, _) {
   return ListTile(
     key: Key('product.${product.id}'),
-    leading: CircleAvatar(
-      child: Text(product.name.characters.first.toUpperCase()),
-    ),
+    leading: product.avator,
     title: Text(product.name),
     subtitle: MetaBlock.withString(
       context,

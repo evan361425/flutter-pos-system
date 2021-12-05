@@ -59,9 +59,7 @@ class CatalogList extends StatelessWidget {
   Widget _tileBuilder(BuildContext context, int index, Catalog catalog, _) {
     final child = ListTile(
       key: Key('catalog.${catalog.id}'),
-      leading: CircleAvatar(
-        child: Text(catalog.name.characters.first.toUpperCase()),
-      ),
+      leading: catalog.avator,
       title: Text(catalog.name),
       subtitle: MetaBlock.withString(
         context,
