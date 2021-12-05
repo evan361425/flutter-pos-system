@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/mixin/item_image_modal_mixin.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -25,10 +26,12 @@ class ProductModal extends StatefulWidget {
 }
 
 class _ProductModalState extends State<ProductModal>
-    with ItemModal<ProductModal> {
+    with ItemModal<ProductModal>, ItemImageModalMixin<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
+
+  late String? _imagePath;
 
   @override
   void dispose() {
@@ -55,6 +58,10 @@ class _ProductModalState extends State<ProductModal>
         ),
         maxLength: 30,
         validator: Validator.textLimit(S.menuProductNameLabel, 30),
+      ),
+      getImageHolder(
+        _imagePath,
+        (String path) => setState(() => _imagePath = path),
       ),
       TextFormField(
         key: const Key('product.price'),
@@ -111,11 +118,13 @@ class _ProductModalState extends State<ProductModal>
     _nameController = TextEditingController(text: p?.name);
     _priceController = TextEditingController(text: p?.price.toString());
     _costController = TextEditingController(text: p?.cost.toString());
+    _imagePath = widget.product?.imagePath;
   }
 
   @override
   Future<void> updateItem() async {
     final product = await getProduct();
+    await product.replaceImage(_imagePath);
 
     // go to product screen
     widget.isNew
