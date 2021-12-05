@@ -5,6 +5,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
@@ -22,6 +23,7 @@ void main() {
         LanguageSetting(),
         OrderOutlookSetting(),
         OrderAwakeningSetting(),
+        OrderProductAxisCountSetting(),
         CurrencySetting(),
       ]);
 

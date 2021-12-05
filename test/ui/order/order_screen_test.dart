@@ -20,6 +20,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
@@ -36,6 +37,7 @@ void main() {
         CurrencySetting(),
         OrderOutlookSetting(),
         OrderAwakeningSetting(),
+        OrderProductAxisCountSetting(),
       ]).loadSetting();
 
       Stock().replaceItems({

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/feature_switch.dart';
+import 'package:possystem/ui/setting/widgets/feature_slider.dart';
+import 'package:possystem/ui/setting/widgets/feature_switch.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
@@ -41,6 +43,7 @@ class _SettingScreenState extends State<SettingScreen> {
     final language = settings.getSetting<LanguageSetting>();
     final orderAwakening = settings.getSetting<OrderAwakeningSetting>();
     final orderOutlook = settings.getSetting<OrderOutlookSetting>();
+    final orderCount = settings.getSetting<OrderProductAxisCountSetting>();
 
     final selectedLanguage =
         _supportedLanguages.indexOf(language.value.languageCode);
@@ -91,6 +94,14 @@ class _SettingScreenState extends State<SettingScreen> {
                   .toList(),
               selected: orderOutlook.value.index,
             ),
+          ),
+          FeatureSlider(
+            title: '點餐時每行顯示幾個產品',
+            value: orderCount.value,
+            max: 5,
+            minLabel: '純文字顯示',
+            hintText: '設定「零」則點餐時僅會以文字顯示',
+            onChanged: (value) => orderCount.update(value),
           ),
           CardTile(
             title: Text(S.settingOrderAwakeningTitle),
