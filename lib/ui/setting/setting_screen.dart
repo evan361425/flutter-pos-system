@@ -96,6 +96,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
           FeatureSlider(
+            sliderKey: const Key('setting.order_product_count'),
             title: '點餐時每行顯示幾個產品',
             value: orderCount.value,
             max: 5,
@@ -106,7 +107,7 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             title: Text(S.settingOrderAwakeningTitle),
             trailing: FeatureSwitch(
-              key: const Key('setting.feature.awake_ordering'),
+              key: const Key('setting.awake_ordering'),
               value: orderAwakening.value,
               onChanged: (value) => orderAwakening.update(value),
             ),
