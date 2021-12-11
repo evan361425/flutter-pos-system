@@ -48,4 +48,6 @@ class MockCache extends _i1.Mock implements _i3.Cache {
   _i4.Future<bool> set<T>(String? key, T? value) =>
       (super.noSuchMethod(Invocation.method(#set, [key, value]),
           returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
+  @override
+  String toString() => super.toString();
 }

@@ -1,5 +1,3 @@
-// database must seperate with storage, since there have same Database dependecy
-
 import 'package:mockito/annotations.dart';
 import 'package:possystem/services/cache.dart';
 
