@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 class ImageFile {
   final File? _file;
@@ -13,8 +12,6 @@ class ImageFile {
   File get file => _file ?? File(_path!);
 
   String? get path => _path ?? _file?.path;
-
-  Future<Uint8List> readAsBytes() => file.readAsBytes();
 
   Future<ImageFile> copy(String newPath) async => ImageFile(
         file: await file.copy(newPath),

@@ -36,7 +36,7 @@ class ImageDumper {
     int? width,
     int? height,
   }) async {
-    final decodedImage = decodeImage(await image.readAsBytes());
+    final decodedImage = decodeImage(await image.file.readAsBytes());
     if (decodedImage == null) return null;
 
     final result = await File(destination).writeAsBytes(encodeJpg(copyResize(

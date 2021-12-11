@@ -4,7 +4,6 @@
 
 import 'dart:async' as _i5;
 import 'dart:io' as _i2;
-import 'dart:typed_data' as _i6;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:possystem/models/image_file.dart' as _i3;
@@ -69,11 +68,6 @@ class MockImageFile extends _i1.Mock implements _i3.ImageFile {
   _i2.File get file =>
       (super.noSuchMethod(Invocation.getter(#file), returnValue: _FakeFile_0())
           as _i2.File);
-  @override
-  _i5.Future<_i6.Uint8List> readAsBytes() =>
-      (super.noSuchMethod(Invocation.method(#readAsBytes, []),
-              returnValue: Future<_i6.Uint8List>.value(_i6.Uint8List(0)))
-          as _i5.Future<_i6.Uint8List>);
   @override
   _i5.Future<_i3.ImageFile> copy(String? newPath) =>
       (super.noSuchMethod(Invocation.method(#copy, [newPath]),
