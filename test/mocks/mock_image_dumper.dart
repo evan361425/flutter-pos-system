@@ -17,15 +17,11 @@ void prepareItemImageSave(String folder) {
   final resizedImage = MockImageFile();
 
   when(image.path).thenReturn('picked-path');
-  when(image.fileCopy(any)).thenAnswer((_) => Future.value(MockImageFile()));
+  when(image.copy(any)).thenAnswer((_) => Future.value(MockImageFile()));
   when(imageDumper.getPath(any)).thenAnswer((_) => Future.value(folder));
 
   when(imageDumper.pick()).thenAnswer((_) => Future.value(image));
 
-  when(imageDumper.resize(any, width: anyNamed('width')))
+  when(imageDumper.resize(any, any, width: anyNamed('width')))
       .thenAnswer((_) => Future.value(resizedImage));
-
-  when(resizedImage.toPNG(any)).thenAnswer((_) => Future.value(
-        const ImageFile(path: 'picked-resized'),
-      ));
 }

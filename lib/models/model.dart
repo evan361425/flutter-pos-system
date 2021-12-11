@@ -122,11 +122,10 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
     final dstPath = '$path/$id';
 
     // avator first, try sync with image
-    final avator = await ImageDumper.instance.resize(image, width: 120);
-    await avator!.toPNG('$dstPath-avator');
+    await ImageDumper.instance.resize(image, '$dstPath-avator', width: 120);
 
     // save image from pick
-    await image.fileCopy(dstPath);
+    await image.copy(dstPath);
 
     info(toString(), '$logName.updateImage');
 

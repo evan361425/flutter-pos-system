@@ -37,10 +37,11 @@ class MockImageDumper extends _i1.Mock implements _i4.ImageDumper {
               returnValue: Future<_i3.ImageFile?>.value())
           as _i5.Future<_i3.ImageFile?>);
   @override
-  _i5.Future<_i3.ImageFile?> resize(_i3.ImageFile? image,
+  _i5.Future<_i3.ImageFile?> resize(_i3.ImageFile? image, String? destination,
           {int? width, int? height}) =>
       (super.noSuchMethod(
-          Invocation.method(#resize, [image], {#width: width, #height: height}),
+          Invocation.method(
+              #resize, [image, destination], {#width: width, #height: height}),
           returnValue:
               Future<_i3.ImageFile?>.value()) as _i5.Future<_i3.ImageFile?>);
   @override
@@ -69,18 +70,13 @@ class MockImageFile extends _i1.Mock implements _i3.ImageFile {
       (super.noSuchMethod(Invocation.getter(#file), returnValue: _FakeFile_0())
           as _i2.File);
   @override
-  _i5.Future<_i6.Uint8List> fileReadAsBytes() =>
-      (super.noSuchMethod(Invocation.method(#fileReadAsBytes, []),
+  _i5.Future<_i6.Uint8List> readAsBytes() =>
+      (super.noSuchMethod(Invocation.method(#readAsBytes, []),
               returnValue: Future<_i6.Uint8List>.value(_i6.Uint8List(0)))
           as _i5.Future<_i6.Uint8List>);
   @override
-  _i5.Future<_i3.ImageFile> fileCopy(String? newPath) =>
-      (super.noSuchMethod(Invocation.method(#fileCopy, [newPath]),
-              returnValue: Future<_i3.ImageFile>.value(_FakeImageFile_1()))
-          as _i5.Future<_i3.ImageFile>);
-  @override
-  _i5.Future<_i3.ImageFile> toPNG(String? path) =>
-      (super.noSuchMethod(Invocation.method(#toPNG, [path]),
+  _i5.Future<_i3.ImageFile> copy(String? newPath) =>
+      (super.noSuchMethod(Invocation.method(#copy, [newPath]),
               returnValue: Future<_i3.ImageFile>.value(_FakeImageFile_1()))
           as _i5.Future<_i3.ImageFile>);
   @override

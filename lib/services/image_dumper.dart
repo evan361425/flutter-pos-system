@@ -31,19 +31,21 @@ class ImageDumper {
   }
 
   Future<ImageFile?> resize(
-    ImageFile image, {
+    ImageFile image,
+    String destination, {
     int? width,
     int? height,
   }) async {
-    final decodedImage = decodeImage(await image.fileReadAsBytes());
+    final decodedImage = decodeImage(await image.readAsBytes());
     if (decodedImage == null) return null;
 
-    final result = copyResize(
+    final result = await File(destination).writeAsBytes(encodeJpg(copyResize(
       decodedImage,
       width: width,
       height: height,
-    );
-    ImageFile(image: result);
+    )));
+
+    return ImageFile(file: result);
   }
 
   Future<String> getPath(String folder) async {
