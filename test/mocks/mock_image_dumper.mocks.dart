@@ -2,12 +2,13 @@
 // in possystem/test/mocks/mock_image_dumper.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
 import 'dart:io' as _i2;
+import 'dart:typed_data' as _i6;
 
-import 'package:image/image.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:possystem/services/image_dumper.dart' as _i3;
+import 'package:possystem/models/image_file.dart' as _i3;
+import 'package:possystem/services/image_dumper.dart' as _i4;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -20,28 +21,68 @@ import 'package:possystem/services/image_dumper.dart' as _i3;
 
 class _FakeFile_0 extends _i1.Fake implements _i2.File {}
 
+class _FakeImageFile_1 extends _i1.Fake implements _i3.ImageFile {}
+
 /// A class which mocks [ImageDumper].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImageDumper extends _i1.Mock implements _i3.ImageDumper {
+class MockImageDumper extends _i1.Mock implements _i4.ImageDumper {
   MockImageDumper() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.File?> pick() =>
+  _i5.Future<_i3.ImageFile?> pick() =>
       (super.noSuchMethod(Invocation.method(#pick, []),
-          returnValue: Future<_i2.File?>.value()) as _i4.Future<_i2.File?>);
+              returnValue: Future<_i3.ImageFile?>.value())
+          as _i5.Future<_i3.ImageFile?>);
   @override
-  _i4.Future<_i5.Image?> resize(_i2.File? image, {int? width, int? height}) =>
+  _i5.Future<_i3.ImageFile?> resize(_i3.ImageFile? image,
+          {int? width, int? height}) =>
       (super.noSuchMethod(
           Invocation.method(#resize, [image], {#width: width, #height: height}),
-          returnValue: Future<_i5.Image?>.value()) as _i4.Future<_i5.Image?>);
+          returnValue:
+              Future<_i3.ImageFile?>.value()) as _i5.Future<_i3.ImageFile?>);
   @override
-  _i4.Future<_i2.File> toPNG(_i5.Image? image, String? path) =>
-      (super.noSuchMethod(Invocation.method(#toPNG, [image, path]),
-              returnValue: Future<_i2.File>.value(_FakeFile_0()))
-          as _i4.Future<_i2.File>);
+  _i5.Future<String> getPath(String? folder) =>
+      (super.noSuchMethod(Invocation.method(#getPath, [folder]),
+          returnValue: Future<String>.value('')) as _i5.Future<String>);
+  @override
+  _i5.Future<void> deletePath(String? path) =>
+      (super.noSuchMethod(Invocation.method(#deletePath, [path]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+  @override
+  String toString() => super.toString();
+}
+
+/// A class which mocks [ImageFile].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImageFile extends _i1.Mock implements _i3.ImageFile {
+  MockImageFile() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.File get file =>
+      (super.noSuchMethod(Invocation.getter(#file), returnValue: _FakeFile_0())
+          as _i2.File);
+  @override
+  _i5.Future<_i6.Uint8List> fileReadAsBytes() =>
+      (super.noSuchMethod(Invocation.method(#fileReadAsBytes, []),
+              returnValue: Future<_i6.Uint8List>.value(_i6.Uint8List(0)))
+          as _i5.Future<_i6.Uint8List>);
+  @override
+  _i5.Future<_i3.ImageFile> fileCopy(String? newPath) =>
+      (super.noSuchMethod(Invocation.method(#fileCopy, [newPath]),
+              returnValue: Future<_i3.ImageFile>.value(_FakeImageFile_1()))
+          as _i5.Future<_i3.ImageFile>);
+  @override
+  _i5.Future<_i3.ImageFile> toPNG(String? path) =>
+      (super.noSuchMethod(Invocation.method(#toPNG, [path]),
+              returnValue: Future<_i3.ImageFile>.value(_FakeImageFile_1()))
+          as _i5.Future<_i3.ImageFile>);
   @override
   String toString() => super.toString();
 }

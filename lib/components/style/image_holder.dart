@@ -1,19 +1,25 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/models/image_file.dart';
 import 'package:possystem/services/image_dumper.dart';
 
-mixin ItemImageModalMixin<T extends StatefulWidget> on State<T> {
-  late String imagePath;
+class ImageHolder extends StatelessWidget {
+  final String? path;
 
-  Widget getImageHolder(String? path, void Function(String) onSelected) {
-    void onTap() async {
-      final image = await ImageDumper.instance.pick();
-      if (image != null) onSelected(image.path);
-    }
+  final void Function(ImageFile) onSelected;
 
+  const ImageHolder({
+    Key? key,
+    this.path,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     if (path == null) {
       return InkWell(
+        key: const Key('modal.add_image'),
         onTap: onTap,
         child: AspectRatio(
           aspectRatio: 1,
@@ -52,13 +58,13 @@ mixin ItemImageModalMixin<T extends StatefulWidget> on State<T> {
     );
 
     return GestureDetector(
-      key: const Key('edit_item_image'),
+      key: const Key('modal.edit_image'),
       onTap: onTap,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           Image(
-            image: FileImage(File(path)),
+            image: FileImage(File(path!)),
             fit: BoxFit.cover,
             width: double.infinity,
           ),
@@ -69,5 +75,11 @@ mixin ItemImageModalMixin<T extends StatefulWidget> on State<T> {
         ],
       ),
     );
+  }
+
+  void onTap() async {
+    final image = await ImageDumper.instance.pick();
+
+    if (image != null) onSelected(image);
   }
 }

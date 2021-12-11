@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/image_file.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/database.dart';
@@ -111,45 +111,35 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
     await saveImage(image);
   }
 
-  Future<void> replaceImage(String? newPath) async {
-    if (newPath != null && newPath != imagePath) {
-      await saveImage(File(newPath));
+  Future<void> replaceImage(ImageFile image) async {
+    if (image.path != null && image.path != imagePath) {
+      await saveImage(image);
     }
   }
 
-  Future<void> saveImage(File image) async {
-    final path = await _getImagePath();
+  Future<void> saveImage(ImageFile image) async {
+    final path = await ImageDumper.instance.getPath('menu_image');
     final dstPath = '$path/$id';
 
     // avator first, try sync with image
     final avator = await ImageDumper.instance.resize(image, width: 120);
-    await ImageDumper.instance.toPNG(avator!, '$dstPath-avator');
+    await avator!.toPNG('$dstPath-avator');
 
     // save image from pick
-    await image.copy(dstPath);
+    await image.fileCopy(dstPath);
 
     info(toString(), '$logName.updateImage');
 
     await save({'$prefix.imagePath': dstPath});
 
     if (imagePath != null) {
-      await File(imagePath!).delete();
-      await File(_avatorPath).delete();
+      await ImageDumper.instance.deletePath(imagePath!);
+      await ImageDumper.instance.deletePath(_avatorPath);
     }
 
     imagePath = dstPath;
 
     notifyItem();
-  }
-
-  Future<String> _getImagePath() async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    final path = '${directory.path}/menu_image';
-
-    await Directory(path).create();
-
-    return path;
   }
 }
 

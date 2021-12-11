@@ -15,6 +15,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_image_dumper.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
@@ -29,6 +30,11 @@ void main() {
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
+
+      prepareItemImageSave('picked_image');
+      await tester.tap(find.byKey(const Key('modal.add_image')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('modal.edit_image')), findsOneWidget);
 
       await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -51,6 +57,10 @@ void main() {
             data['index'] == 1 &&
             data['createdAt'] > 0 &&
             (data['products'] as Map).isEmpty)),
+      ));
+      verify(storage.set(
+        any,
+        argThat(predicate((data) => data is Map && data['imagePath'] != '')),
       ));
     });
 
@@ -258,6 +268,7 @@ void main() {
       disableTips();
       initializeStorage();
       initializeTranslator();
+      initializeImageDumper();
     });
   });
 }

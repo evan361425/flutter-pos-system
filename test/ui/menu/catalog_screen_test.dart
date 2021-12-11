@@ -11,6 +11,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_image_dumper.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
@@ -80,7 +81,7 @@ void main() {
     });
 
     testWidgets('Edit product', (WidgetTester tester) async {
-      final product = Product(id: 'p-1', name: 'p-1');
+      final product = Product(id: 'p-1', name: 'p-1', imagePath: 'abc');
       final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
         'p-1': product,
         'p-2': Product(id: 'p-2', name: 'p-2'),
@@ -105,6 +106,10 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
+      prepareItemImageSave('picked_image');
+      await tester.tap(find.byKey(const Key('modal.edit_image')));
+      await tester.pumpAndSettle();
+
       await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
       await tester.enterText(find.byKey(const Key('product.price')), '1');
       await tester.enterText(find.byKey(const Key('product.cost')), '1');
@@ -125,6 +130,12 @@ void main() {
             data['$prefix.cost'] == 1 &&
             data['$prefix.name'] == 'new-name';
       }))));
+      verify(storage.set(
+        any,
+        argThat(
+          predicate((data) => data is Map && data['$prefix.imagePath'] != ''),
+        ),
+      ));
     });
 
     testWidgets('Reorder product', (WidgetTester tester) async {
@@ -201,6 +212,7 @@ void main() {
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
+      initializeImageDumper();
     });
   });
 }
