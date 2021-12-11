@@ -12,13 +12,13 @@ void initializeImageDumper() {
   ImageDumper.instance = imageDumper;
 }
 
-void prepareItemImageSave(String pickedPath) {
+void prepareItemImageSave(String folder) {
   final image = MockImageFile();
   final resizedImage = MockImageFile();
 
-  when(image.path).thenReturn(pickedPath);
+  when(image.path).thenReturn('picked-path');
   when(image.fileCopy(any)).thenAnswer((_) => Future.value(MockImageFile()));
-  when(imageDumper.getPath(any)).thenAnswer((_) => Future.value('folder'));
+  when(imageDumper.getPath(any)).thenAnswer((_) => Future.value(folder));
 
   when(imageDumper.pick()).thenAnswer((_) => Future.value(image));
 
@@ -26,6 +26,6 @@ void prepareItemImageSave(String pickedPath) {
       .thenAnswer((_) => Future.value(resizedImage));
 
   when(resizedImage.toPNG(any)).thenAnswer((_) => Future.value(
-        ImageFile(path: '$pickedPath-resized'),
+        const ImageFile(path: 'picked-resized'),
       ));
 }

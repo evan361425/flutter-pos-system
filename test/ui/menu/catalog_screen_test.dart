@@ -209,6 +209,33 @@ void main() {
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
     });
 
+    testWidgets('Update product image', (WidgetTester tester) async {
+      final catalog = Catalog(id: 'c');
+      Menu().replaceItems({'c': catalog});
+
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+
+      prepareItemImageSave('folder');
+      await tester.tap(find.byKey(const Key('item_more_action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      expect(catalog.imagePath, equals('folder/c'));
+      verify(storage.set(
+        any,
+        argThat(
+          predicate((data) => data is Map && data['c.imagePath'] == 'folder/c'),
+        ),
+      ));
+    });
+
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
