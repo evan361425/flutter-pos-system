@@ -7,7 +7,7 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/database.dart';
-import 'package:possystem/services/image_service.dart';
+import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/services/storage.dart';
 
 abstract class Model<T extends ModelObject> extends ChangeNotifier {
@@ -90,7 +90,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
       );
     }
 
-    final image = FileImage(File('$imagePath-avator'));
+    final image = FileImage(File(_avatorPath));
     return CircleAvatar(foregroundImage: image);
   }
 
@@ -102,8 +102,10 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
     return FileImage(File(imagePath!));
   }
 
+  String get _avatorPath => '$imagePath-avator';
+
   Future<void> pickImage() async {
-    final image = await ImageService.pick();
+    final image = await ImageDumper.instance.pick();
     if (image == null) return;
 
     await saveImage(image);
@@ -116,12 +118,14 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
   }
 
   Future<void> saveImage(File image) async {
-    final avator = await ImageService.resize(image, width: 120);
-
     final path = await _getImagePath();
-    final dstPath = '$path/${Util.uuidV4()}';
+    final dstPath = '$path/$id';
 
-    await avator!.toPNG('$dstPath-avator');
+    // avator first, try sync with image
+    final avator = await ImageDumper.instance.resize(image, width: 120);
+    await ImageDumper.instance.toPNG(avator!, '$dstPath-avator');
+
+    // save image from pick
     await image.copy(dstPath);
 
     info(toString(), '$logName.updateImage');
@@ -130,7 +134,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
 
     if (imagePath != null) {
       await File(imagePath!).delete();
-      await File('$imagePath-avator').delete();
+      await File(_avatorPath).delete();
     }
 
     imagePath = dstPath;

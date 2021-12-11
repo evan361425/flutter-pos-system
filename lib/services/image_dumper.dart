@@ -4,17 +4,13 @@ import 'package:image/image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageService {
-  final Image image;
+class ImageDumper {
+  static ImageDumper instance = const ImageDumper._();
 
-  const ImageService._(this.image);
-
-  Future<File> toPNG(String path) {
-    return File(path).writeAsBytes(encodePng(image));
-  }
+  const ImageDumper._();
 
   /// After pick, it is always JPEG image
-  static Future<File?> pick() async {
+  Future<File?> pick() async {
     final picker = ImagePicker();
     // Pick an image
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -30,7 +26,7 @@ class ImageService {
     );
   }
 
-  static Future<ImageService?> resize(
+  Future<Image?> resize(
     File image, {
     int? width,
     int? height,
@@ -38,12 +34,14 @@ class ImageService {
     final decodedImage = decodeImage(await image.readAsBytes());
     if (decodedImage == null) return null;
 
-    final resizedImage = copyResize(
+    return copyResize(
       decodedImage,
       width: width,
       height: height,
     );
+  }
 
-    return ImageService._(resizedImage);
+  Future<File> toPNG(Image image, String path) {
+    return File(path).writeAsBytes(encodePng(image));
   }
 }

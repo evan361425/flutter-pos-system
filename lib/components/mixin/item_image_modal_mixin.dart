@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:possystem/services/image_service.dart';
+import 'package:possystem/services/image_dumper.dart';
 
 mixin ItemImageModalMixin<T extends StatefulWidget> on State<T> {
   late String imagePath;
 
   Widget getImageHolder(String? path, void Function(String) onSelected) {
     void onTap() async {
-      final image = await ImageService.pick();
+      final image = await ImageDumper.instance.pick();
       if (image != null) onSelected(image.path);
     }
 
