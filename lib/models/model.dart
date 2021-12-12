@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/image_file.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/services/storage.dart';
@@ -104,6 +104,13 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
 
   String get _avatorPath => '$imagePath-avator';
 
+  Future<void> deleteImage() async {
+    if (imagePath != null) {
+      XFile(imagePath!).file.delete();
+      XFile(_avatorPath).file.delete();
+    }
+  }
+
   Future<void> pickImage() async {
     final image = await ImageDumper.instance.pick();
     if (image == null) return;
@@ -111,15 +118,21 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
     await saveImage(image);
   }
 
-  Future<void> replaceImage(ImageFile image) async {
-    if (image.path != null && image.path != imagePath) {
-      await saveImage(image);
+  @override
+  Future<void> removeRemotely() async {
+    await super.removeRemotely();
+    await deleteImage();
+  }
+
+  Future<void> replaceImage(String? path) async {
+    if (path != null && path != imagePath) {
+      await saveImage(XFile(path));
     }
   }
 
-  Future<void> saveImage(ImageFile image) async {
-    final path = await ImageDumper.instance.getPath('menu_image');
-    final dstPath = '$path/$id';
+  Future<void> saveImage(XFile image) async {
+    final dir = await XFile.createDir('menu_image');
+    final dstPath = '${dir.path}/$id';
 
     // avator first, try sync with image
     await ImageDumper.instance.resize(image, '$dstPath-avator', width: 120);
@@ -131,10 +144,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
 
     await save({'$prefix.imagePath': dstPath});
 
-    if (imagePath != null) {
-      await ImageDumper.instance.deletePath(imagePath!);
-      await ImageDumper.instance.deletePath(_avatorPath);
-    }
+    await deleteImage();
 
     imagePath = dstPath;
 

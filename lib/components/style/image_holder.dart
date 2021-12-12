@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:possystem/models/image_file.dart';
 import 'package:possystem/services/image_dumper.dart';
 
 class ImageHolder extends StatelessWidget {
   final String? path;
 
-  final void Function(ImageFile) onSelected;
+  final void Function(String) onSelected;
 
   const ImageHolder({
     Key? key,
@@ -80,6 +79,6 @@ class ImageHolder extends StatelessWidget {
   void onTap() async {
     final image = await ImageDumper.instance.pick();
 
-    if (image != null) onSelected(image);
+    if (image != null) onSelected(image.path);
   }
 }

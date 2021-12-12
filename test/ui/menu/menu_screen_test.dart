@@ -11,13 +11,14 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_image_dumper.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/disable_tips.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -31,7 +32,8 @@ void main() {
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      prepareItemImageSave('picked_image');
+      mockImagePick(tester);
+      mockImageCropper(tester);
       await tester.tap(find.byKey(const Key('modal.add_image')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('modal.edit_image')), findsOneWidget);
@@ -58,10 +60,15 @@ void main() {
             data['createdAt'] > 0 &&
             (data['products'] as Map).isEmpty)),
       ));
+
+      final image = '/menu_image/${catalog.id}';
+      final prefix = '${catalog.id}.imagePath';
       verify(storage.set(
         any,
-        argThat(predicate((data) => data is Map && data['imagePath'] != '')),
+        argThat(predicate((data) => data is Map && data[prefix] == image)),
       ));
+      expect(XFile(image).file.existsSync(), isTrue);
+      expect(XFile('$image-avator').file.existsSync(), isTrue);
     });
 
     testWidgets('Navigate to catalog', (WidgetTester tester) async {
@@ -268,7 +275,7 @@ void main() {
       disableTips();
       initializeStorage();
       initializeTranslator();
-      initializeImageDumper();
+      initializeFileSystem();
     });
   });
 }

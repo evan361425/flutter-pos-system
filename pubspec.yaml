@@ -52,7 +52,13 @@ dependencies:
   # image
   image: ^3.1.0
   image_picker: ^0.8.4+4
-  image_cropper: ^1.4.1
+  image_cropper:
+    git:
+      url: git://github.com/evan361425/flutter_image_cropper.git
+      ref: master
+
+  # Make it easy to test
+  file: ^6.1.2
 
   # tools
   uuid: ^3.0.5
@@ -62,7 +68,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.16.8
 
   # code style
   flutter_lints: ^1.0.0

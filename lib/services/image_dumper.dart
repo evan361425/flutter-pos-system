@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:image/image.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:possystem/models/image_file.dart';
+import 'package:image_picker/image_picker.dart' hide XFile;
+import 'package:possystem/models/xfile.dart';
 
 class ImageDumper {
   static ImageDumper instance = const ImageDumper._();
@@ -12,14 +9,13 @@ class ImageDumper {
   const ImageDumper._();
 
   /// After pick, it is always JPEG image
-  Future<ImageFile?> pick() async {
-    final picker = ImagePicker();
+  Future<XFile?> pick() async {
     // Pick an image
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (image == null) return null;
 
-    final file = await ImageCropper.cropImage(
+    final result = await ImageCropper.cropImage(
       sourcePath: image.path,
       maxHeight: 512,
       maxWidth: 512,
@@ -27,11 +23,11 @@ class ImageDumper {
       androidUiSettings: const AndroidUiSettings(toolbarTitle: '裁切'),
     );
 
-    return ImageFile(file: file);
+    return result == null ? null : XFile(result.path);
   }
 
-  Future<ImageFile?> resize(
-    ImageFile image,
+  Future<XFile?> resize(
+    XFile image,
     String destination, {
     int? width,
     int? height,
@@ -39,26 +35,14 @@ class ImageDumper {
     final decodedImage = decodeImage(await image.file.readAsBytes());
     if (decodedImage == null) return null;
 
-    final result = await File(destination).writeAsBytes(encodeJpg(copyResize(
+    final dst = XFile(destination);
+
+    await dst.file.writeAsBytes(encodeJpg(copyResize(
       decodedImage,
       width: width,
       height: height,
     )));
 
-    return ImageFile(file: result);
-  }
-
-  Future<String> getPath(String folder) async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    final path = '${directory.path}/$folder';
-
-    await Directory(path).create();
-
-    return path;
-  }
-
-  Future<void> deletePath(String path) {
-    return File(path).delete();
+    return dst;
   }
 }

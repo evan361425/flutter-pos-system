@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/image_file.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -26,7 +25,7 @@ class _CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
 
-  late ImageFile _image;
+  String? _image;
 
   @override
   void dispose() {
@@ -54,7 +53,7 @@ class _CatalogModalState extends State<CatalogModal>
         validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
       ),
       ImageHolder(
-        path: _image.path,
+        path: _image,
         onSelected: (image) => setState(() => _image = image),
       ),
     ];
@@ -82,7 +81,7 @@ class _CatalogModalState extends State<CatalogModal>
     super.initState();
 
     _nameController = TextEditingController(text: widget.catalog?.name);
-    _image = ImageFile(path: widget.catalog?.imagePath);
+    _image = widget.catalog?.imagePath;
   }
 
   @override

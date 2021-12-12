@@ -16,8 +16,8 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/product/product_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_image_dumper.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -62,12 +62,17 @@ void main() {
           ChangeNotifierProvider<Stock>.value(value: Stock()),
           ChangeNotifierProvider<Quantities>.value(value: Quantities()),
         ],
-        child: MaterialApp(home: _Nav2Product()),
+        child: const MaterialApp(home: ProductScreen()),
       ));
 
-      when(imageDumper.pick()).thenAnswer((_) => Future.value());
-      await tester.tap(find.text('go to product'));
+      mockImagePick(tester, true);
+      await tester.tap(find.byIcon(KIcons.more));
       await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      mockImagePick(tester);
+      mockImageCropper(tester, true);
       await tester.tap(find.byIcon(KIcons.more));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.image_sharp));
@@ -519,7 +524,7 @@ void main() {
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
-      initializeImageDumper();
+      initializeFileSystem();
     });
   });
 }

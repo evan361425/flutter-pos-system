@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/image_file.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
@@ -32,7 +31,7 @@ class _ProductModalState extends State<ProductModal>
   late TextEditingController _priceController;
   late TextEditingController _costController;
 
-  late ImageFile _image;
+  String? _image;
 
   @override
   void dispose() {
@@ -61,7 +60,7 @@ class _ProductModalState extends State<ProductModal>
         validator: Validator.textLimit(S.menuProductNameLabel, 30),
       ),
       ImageHolder(
-        path: _image.path,
+        path: _image,
         onSelected: (image) => setState(() => _image = image),
       ),
       TextFormField(
@@ -119,7 +118,7 @@ class _ProductModalState extends State<ProductModal>
     _nameController = TextEditingController(text: p?.name);
     _priceController = TextEditingController(text: p?.price.toString());
     _costController = TextEditingController(text: p?.cost.toString());
-    _image = ImageFile(path: widget.product?.imagePath);
+    _image = widget.product?.imagePath;
   }
 
   @override
