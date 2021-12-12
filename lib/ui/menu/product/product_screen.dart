@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/slivers/SliverImageAppBar.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/item_more_action_button.dart';
@@ -30,23 +31,6 @@ class ProductScreen extends StatelessWidget {
           Routes.menuIngredient,
           arguments: product,
         );
-
-    final appBar = SliverAppBar(
-      expandedHeight: 250.0,
-      pinned: true,
-      leading: const PopButton(),
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(product.name),
-        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
-        background: Image(
-          image: product.image,
-          fit: BoxFit.cover,
-          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-          colorBlendMode: BlendMode.srcATop,
-        ),
-      ),
-      actions: const <Widget>[PopButton(toHome: true)],
-    );
 
     final metadata = SliverToBoxAdapter(
       child: ItemMoreActionButton(
@@ -78,7 +62,7 @@ class ProductScreen extends StatelessWidget {
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
-        appBar,
+        SliverImageAppBar(title: product.name, image: product.image),
         metadata,
         aboveData,
         SliverList(
