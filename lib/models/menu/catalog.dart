@@ -59,12 +59,6 @@ class Catalog extends Model<CatalogObject>
   set repository(Repository repo) {}
 
   @override
-  void notifyItems() {
-    notifyListeners();
-    Menu.instance.notifyItems();
-  }
-
-  @override
   Product buildItem(String id, Map<String, Object?> value) {
     throw UnimplementedError();
   }
@@ -82,6 +76,18 @@ class Catalog extends Model<CatalogObject>
             : product.getItemsSimilarity(pattern).toDouble(),
       );
     }
+  }
+
+  @override
+  void notifyItems() {
+    notifyListeners();
+    Menu.instance.notifyItems();
+  }
+
+  @override
+  Future<void> removeRemotely() async {
+    await super.removeRemotely();
+    await Future.wait(items.map((e) => e.deleteImage()));
   }
 
   @override

@@ -152,9 +152,13 @@ void main() {
     });
 
     testWidgets('Delete catalog', (WidgetTester tester) async {
-      final catalog1 = Catalog(id: 'c-1', name: 'c-1');
-      final catalog2 = Catalog(id: 'c-2', name: 'c-2', products: {
-        'p-1': Product(id: 'p-1'),
+      final productImage = await createImage('product');
+      final productAvator = await createImage('product-avator');
+      final catalogImage = await createImage('catalog');
+      final catalogAvator = await createImage('catalog-avator');
+      final catalog1 = Catalog(id: 'c-1');
+      final catalog2 = Catalog(id: 'c-2', imagePath: catalogImage, products: {
+        'p-1': Product(id: 'p-1', imagePath: productImage),
       });
       Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
 
@@ -184,6 +188,10 @@ void main() {
       expect(find.byKey(const Key('catalog.c-2')), findsNothing);
       expect(Menu.instance.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({catalog2.prefix: null}))));
+      expect(XFile(productImage).file.existsSync(), isFalse);
+      expect(XFile(productAvator).file.existsSync(), isFalse);
+      expect(XFile(catalogImage).file.existsSync(), isFalse);
+      expect(XFile(catalogAvator).file.existsSync(), isFalse);
     });
 
     testWidgets('Search product', (WidgetTester tester) async {
