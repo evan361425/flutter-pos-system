@@ -20,6 +20,7 @@ class ItemMoreActionButton extends StatelessWidget {
       child: Row(children: [
         Expanded(child: item),
         IconButton(
+          key: const Key('item_more_action'),
           onPressed: onTap,
           icon: const Icon(KIcons.more),
         ),

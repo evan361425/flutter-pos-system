@@ -19,7 +19,8 @@ import 'package:sembast/sembast.dart' as _i2;
 
 class _FakeDatabase_0 extends _i1.Fake implements _i2.Database {}
 
-class _FakeSanitizedData_1 extends _i1.Fake implements _i3.SanitizedData {}
+class _FakeStorageSanitizedData_1 extends _i1.Fake
+    implements _i3.StorageSanitizedData {}
 
 /// A class which mocks [Storage].
 ///
@@ -36,13 +37,9 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
   set db(_i2.Database? _db) => super.noSuchMethod(Invocation.setter(#db, _db),
       returnValueForMissingStub: null);
   @override
-  _i4.Future<void> initialize() =>
-      (super.noSuchMethod(Invocation.method(#initialize, []),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
-  @override
-  _i4.Future<void> deleteAll() =>
-      (super.noSuchMethod(Invocation.method(#deleteAll, []),
+  _i4.Future<void> add(
+          _i3.Stores? storeId, String? recordId, Map<String, Object?>? data) =>
+      (super.noSuchMethod(Invocation.method(#add, [storeId, recordId, data]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
@@ -51,6 +48,20 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
               returnValue:
                   Future<Map<String, Object?>>.value(<String, Object?>{}))
           as _i4.Future<Map<String, Object?>>);
+  @override
+  _i4.Future<void> initialize() =>
+      (super.noSuchMethod(Invocation.method(#initialize, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
+  _i4.Future<void> reset() => (super.noSuchMethod(Invocation.method(#reset, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
+  _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) =>
+      (super.noSuchMethod(Invocation.method(#sanitize, [data]),
+              returnValue: _FakeStorageSanitizedData_1())
+          as _i3.StorageSanitizedData);
   @override
   _i4.Future<void> set(_i3.Stores? storeId, Map<String, Object?>? data) =>
       (super.noSuchMethod(Invocation.method(#set, [storeId, data]),
@@ -61,16 +72,6 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
       (super.noSuchMethod(Invocation.method(#setAll, [storeId, data]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
-  @override
-  _i4.Future<void> add(
-          _i3.Stores? storeId, String? recordId, Map<String, Object?>? data) =>
-      (super.noSuchMethod(Invocation.method(#add, [storeId, recordId, data]),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
-  @override
-  _i3.SanitizedData sanitize(Map<String, Object?>? data) =>
-      (super.noSuchMethod(Invocation.method(#sanitize, [data]),
-          returnValue: _FakeSanitizedData_1()) as _i3.SanitizedData);
   @override
   String toString() => super.toString();
 }

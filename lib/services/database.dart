@@ -131,6 +131,11 @@ class Database {
     }
   }
 
+  Future<void> reset() async {
+    final path = await getDatabasesPath() + '/pos_system.sqlite';
+    return deleteDatabase(path);
+  }
+
   Future<int> update(
     String table,
     Object? key,

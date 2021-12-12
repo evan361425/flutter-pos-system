@@ -18,8 +18,11 @@ class FeatureSlider extends StatefulWidget {
 
   final String? hintText;
 
+  final Key? sliderKey;
+
   const FeatureSlider({
     Key? key,
+    this.sliderKey,
     required this.title,
     required this.value,
     this.min = 0,
@@ -54,6 +57,7 @@ class _FeatureSliderState extends State<FeatureSlider> {
           child: Text(widget.title, style: const TextStyle(fontSize: 16.0)),
         ),
         Slider(
+          key: widget.sliderKey,
           value: value.toDouble(),
           min: widget.min.toDouble(),
           max: widget.max.toDouble(),

@@ -77,13 +77,28 @@ void main() {
           find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
     });
 
-    testWidgets('select awake_ordering', (tester) async {
+    testWidgets('switch awake_ordering', (tester) async {
       await buildApp(tester);
 
-      await tester.tap(find.byKey(const Key('setting.feature.awake_ordering')));
+      await tester.tap(find.byKey(const Key('setting.awake_ordering')));
       await tester.pumpAndSettle();
 
       verify(cache.set(any, false));
+    });
+
+    testWidgets('slide order product count', (tester) async {
+      await buildApp(tester);
+
+      final finder = find.byKey(const Key('setting.order_product_count'));
+      await tester.drag(finder, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+
+      verify(cache.set(any, 0));
+
+      await tester.drag(finder, const Offset(1500, 0));
+      await tester.pumpAndSettle();
+
+      verify(cache.set(any, 5));
     });
 
     setUp(() {

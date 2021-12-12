@@ -113,6 +113,10 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   <Map<String, Object?>>[]))
           as _i4.Future<List<Map<String, Object?>>>);
   @override
+  _i4.Future<void> reset() => (super.noSuchMethod(Invocation.method(#reset, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
   _i4.Future<int> update(String? table, Object? key, Map<String, Object?>? data,
           {dynamic keyName = r'id'}) =>
       (super.noSuchMethod(

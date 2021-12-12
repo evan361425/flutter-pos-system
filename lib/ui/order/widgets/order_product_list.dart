@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -34,6 +32,7 @@ class OrderProductListState extends State<OrderProductList> {
         ? Wrap(children: [
             for (final product in _products)
               ActionChip(
+                key: Key('order.product.${product.id}'),
                 label: Text(product.name),
                 onPressed: () => _handleSelected(product),
               )
@@ -140,9 +139,15 @@ class _ImageCardState extends State<_ImageCard>
     );
 
     return GestureDetector(
-      onTapDown: (_) => _ticker = _controller.forward(),
-      onTapUp: (_) => _ticker.whenComplete(() => _controller.reverse()),
-      onTapCancel: () => _ticker.whenComplete(() => _controller.reverse()),
+      onTapDown: (_) {
+        _ticker = _controller.forward();
+      },
+      onTapUp: (_) {
+        _ticker.whenComplete(() => _controller.reverse());
+      },
+      onTapCancel: () {
+        _ticker.whenComplete(() => _controller.reverse());
+      },
       onTap: widget.onTap,
       child: Transform.scale(
         scale: 1 - _controller.value,

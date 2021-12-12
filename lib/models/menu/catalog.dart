@@ -8,9 +8,9 @@ import 'product.dart';
 
 class Catalog extends Model<CatalogObject>
     with
-        ModelImage<CatalogObject>,
         ModelStorage<CatalogObject>,
         ModelOrderable<CatalogObject>,
+        ModelImage<CatalogObject>,
         Repository<Product>,
         RepositoryStorage<Product>,
         RepositoryOrderable<Product> {

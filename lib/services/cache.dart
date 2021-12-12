@@ -33,6 +33,11 @@ class Cache {
     }
   }
 
+  Future<void> reset() async {
+    final service = await SharedPreferences.getInstance();
+    await service.clear();
+  }
+
   Future<bool> set<T>(String key, T value) {
     if (T == bool) {
       return service.setBool(key, value as bool);

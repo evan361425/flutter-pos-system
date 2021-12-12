@@ -125,6 +125,13 @@ void main() {
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
         await tester.pumpAndSettle();
+        // cancel tap
+        final gesture = await tester.startGesture(
+            tester.getRect(find.byKey(const Key('order.product.p-2'))).center);
+        await tester.pump(const Duration(milliseconds: 100));
+        await gesture.moveBy(const Offset(0.0, 200.0));
+        await gesture.cancel();
+        // normal tap
         await tester.tap(find.byKey(const Key('order.product.p-2')));
         await tester.pumpAndSettle();
 
@@ -273,6 +280,8 @@ void main() {
       testWidgets('scroll to bottom', (tester) async {
         when(cache.get('feat.orderAwakening')).thenReturn(false);
         when(cache.get('feat.orderOutlook')).thenReturn(1);
+        // text only
+        when(cache.get('feat.orderProductAxisCount')).thenReturn(0);
 
         prepareData();
 

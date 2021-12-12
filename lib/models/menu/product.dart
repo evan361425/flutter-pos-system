@@ -11,10 +11,10 @@ import 'product_ingredient.dart';
 
 class Product extends Model<ProductObject>
     with
-        ModelImage<ProductObject>,
         ModelStorage<ProductObject>,
         ModelOrderable<ProductObject>,
         ModelSearchable<ProductObject>,
+        ModelImage<ProductObject>,
         Repository<ProductIngredient>,
         RepositoryStorage<ProductIngredient> {
   /// Connect to parent object

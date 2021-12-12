@@ -17,6 +17,7 @@ import 'package:possystem/ui/menu/product/product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -48,6 +49,36 @@ void main() {
       expect(find.text('go to product'), findsOneWidget);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
+    });
+
+    testWidgets('Update product image', (WidgetTester tester) async {
+      final product = Product(id: 'p-1');
+      final catalog = Catalog(id: 'c-1', products: {'p-1': product});
+      Menu().replaceItems({'c-1': catalog..prepareItem()});
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Product>.value(value: product),
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+        ],
+        child: const MaterialApp(home: ProductScreen()),
+      ));
+
+      mockImagePick(tester, true);
+      await tester.tap(find.byIcon(KIcons.more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      mockImagePick(tester);
+      mockImageCropper(tester, true);
+      await tester.tap(find.byIcon(KIcons.more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      verifyNever(storage.set(any, any));
     });
 
     group('Product Ingredient', () {
@@ -493,6 +524,7 @@ void main() {
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
+      initializeFileSystem();
     });
   });
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/mixin/item_image_modal_mixin.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -22,10 +22,10 @@ class CatalogModal extends StatefulWidget {
 }
 
 class _CatalogModalState extends State<CatalogModal>
-    with ItemModal<CatalogModal>, ItemImageModalMixin<CatalogModal> {
+    with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
 
-  late String? _imagePath;
+  String? _image;
 
   @override
   void dispose() {
@@ -52,14 +52,14 @@ class _CatalogModalState extends State<CatalogModal>
         maxLength: 30,
         validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
       ),
-      getImageHolder(
-        _imagePath,
-        (String path) => setState(() => _imagePath = path),
+      ImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
       ),
     ];
   }
 
-  Future<Catalog> getCatalog() async {
+  Future<Catalog> createCatalog() async {
     final object = CatalogObject(name: _nameController.text);
     final catalog = widget.catalog ??
         Catalog(
@@ -81,13 +81,13 @@ class _CatalogModalState extends State<CatalogModal>
     super.initState();
 
     _nameController = TextEditingController(text: widget.catalog?.name);
-    _imagePath = widget.catalog?.imagePath;
+    _image = widget.catalog?.imagePath;
   }
 
   @override
   Future<void> updateItem() async {
-    final catalog = await getCatalog();
-    await catalog.replaceImage(_imagePath);
+    final catalog = await createCatalog();
+    await catalog.replaceImage(_image);
 
     // go to catalog screen
     widget.isNew
