@@ -31,10 +31,13 @@ class OrderProductListState extends State<OrderProductList> {
     final body = _crossAxisCount == 0
         ? Wrap(children: [
             for (final product in _products)
-              OutlinedButton(
-                key: Key('order.product.${product.id}'),
-                onPressed: () => _handleSelected(product),
-                child: Text(product.name),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: OutlinedButton(
+                  key: Key('order.product.${product.id}'),
+                  onPressed: () => _handleSelected(product),
+                  child: Text(product.name),
+                ),
               )
           ])
         : GridView.count(

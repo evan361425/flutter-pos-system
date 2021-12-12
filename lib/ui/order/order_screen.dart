@@ -71,34 +71,36 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       id: 'order',
       candidateLength: 1,
       routeObserver: MyApp.routeObserver,
-      child: Scaffold(
-        // avoid resize when keyboard(bottom inset) shows
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: const OrderActions(key: Key('order.action.more')),
-          actions: [
-            AppbarTextButton(
-              key: const Key('order.cashier'),
-              onPressed: () => _handleOrder(),
-              child: Text(S.orderActionsOrderDone),
-            ),
-          ],
-        ),
-        body: outlook.value == OrderOutlookTypes.slidingPanel
-            ? OrderBySlidingPanel(
-                key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: menuIngredientRow,
-                tipGrouper: _tipGrouper,
-              )
-            : OrderByOrientation(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: menuIngredientRow,
+      child: SafeArea(
+        child: Scaffold(
+          // avoid resize when keyboard(bottom inset) shows
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leading: const OrderActions(key: Key('order.action.more')),
+            actions: [
+              AppbarTextButton(
+                key: const Key('order.cashier'),
+                onPressed: () => _handleOrder(),
+                child: Text(S.orderActionsOrderDone),
               ),
+            ],
+          ),
+          body: outlook.value == OrderOutlookTypes.slidingPanel
+              ? OrderBySlidingPanel(
+                  key: slidingPanel,
+                  row1: menuCatalogRow,
+                  row2: menuProductRow,
+                  row3: cartProductRow,
+                  row4: menuIngredientRow,
+                  tipGrouper: _tipGrouper,
+                )
+              : OrderByOrientation(
+                  row1: menuCatalogRow,
+                  row2: menuProductRow,
+                  row3: cartProductRow,
+                  row4: menuIngredientRow,
+                ),
+        ),
       ),
     );
   }
