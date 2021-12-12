@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/order_info.dart';
 
@@ -12,6 +14,8 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.collections_sharp,
         label: 'menu',
         route: Routes.menu,
+        tip: '菜單的餐點可以設定圖片喔！',
+        tipVersion: 100,
       ),
       'stock': _LabledIconItem(
         icon: Icons.store_sharp,
@@ -48,7 +52,9 @@ class HomeScreen extends StatelessWidget {
     },
   };
 
-  const HomeScreen({Key? key}) : super(key: key);
+  final tipGrouper = GlobalKey<TipGrouperState>();
+
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,29 +70,35 @@ class HomeScreen extends StatelessWidget {
             Text(S.homeIconTypes(entry.key), style: theme.textTheme.headline5),
             Wrap(spacing: 8.0, children: [
               for (final item in entry.value.values)
-                _LabledIcon(item, index: count++)
+                _LabledIcon(item, tipGrouper, index: count++)
             ]),
             const Divider(),
           ],
         )
     ];
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(kSpacing3),
-        child: Column(
-          children: [
-            const OrderInfo(),
-            const SizedBox(height: kSpacing2),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: icons,
+    return TipGrouper(
+      key: tipGrouper,
+      id: 'menu',
+      candidateLength: 3,
+      routeObserver: MyApp.routeObserver,
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(kSpacing3),
+          child: Column(
+            children: [
+              const OrderInfo(),
+              const SizedBox(height: kSpacing2),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: icons,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -98,20 +110,29 @@ class _LabledIcon extends StatelessWidget {
 
   final int index;
 
-  const _LabledIcon(this.item, {required this.index});
+  final GlobalKey<TipGrouperState> tipGrouper;
+
+  const _LabledIcon(this.item, this.tipGrouper, {required this.index});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      key: Key('home.${item.label}'),
-      onPressed: () => Navigator.of(context).pushNamed(item.route),
-      style: TextButton.styleFrom(shape: const CircleBorder()),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(item.icon, size: 48.0),
-          Text(S.homeIcons(item.label)),
-        ],
+    return OrderedTip(
+      id: item.label,
+      grouper: tipGrouper,
+      message: item.tip,
+      order: index,
+      version: item.tipVersion,
+      child: TextButton(
+        key: Key('home.${item.label}'),
+        onPressed: () => Navigator.of(context).pushNamed(item.route),
+        style: TextButton.styleFrom(shape: const CircleBorder()),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(item.icon, size: 48.0),
+            Text(S.homeIcons(item.label)),
+          ],
+        ),
       ),
     );
   }
@@ -121,10 +142,14 @@ class _LabledIconItem {
   final IconData? icon;
   final String label;
   final String route;
+  final String tip;
+  final int tipVersion;
 
   const _LabledIconItem({
     this.icon,
     required this.label,
     required this.route,
+    this.tip = '',
+    this.tipVersion = 0,
   });
 }

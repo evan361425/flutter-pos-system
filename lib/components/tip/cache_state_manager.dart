@@ -8,6 +8,8 @@ class CacheStateManager extends StateManager {
 
   @override
   bool shouldShow(String groupId, TipItem item) {
+    if (item.version == 0) return false;
+
     final cachedVersion = Cache.instance.get<int>('_tip.$groupId.${item.id}');
     return cachedVersion == null ? true : cachedVersion < item.version;
   }

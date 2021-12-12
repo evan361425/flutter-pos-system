@@ -46,10 +46,17 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       handleSelected: (catalog) =>
           _orderProductList.currentState?.updateProducts(catalog),
     );
-    final menuProductRow = OrderProductList(
-      key: _orderProductList,
-      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+    final menuProductRow = OrderedTip(
+      id: 'product_list',
+      grouper: _tipGrouper,
+      message: '透過圖片點餐更方便！\n你也可以到「設定」頁面設定「每行顯示幾個產品」或僅使用文字點餐',
+      order: 1000,
+      version: catalogs.isEmpty ? 0 : 1,
+      child: OrderProductList(
+        key: _orderProductList,
+        products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
+        handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+      ),
     );
     final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,

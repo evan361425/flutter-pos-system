@@ -98,7 +98,7 @@ void main() async {
       ],
       child: MyApp(
         settings: settings,
-        child: const HomeScreen(),
+        child: HomeScreen(),
       ),
     ));
   }, FirebaseCrashlytics.instance.recordError);
