@@ -11,18 +11,22 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/product/product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   group('Product Screen', () {
     testWidgets('Delete product', (WidgetTester tester) async {
-      final product = Product(id: 'p-1');
+      final imagePath = await createImage('old');
+      final avatorPath = await createImage('old-avator');
+      final product = Product(id: 'p-1', imagePath: imagePath);
       final catalog = Catalog(id: 'c-1', products: {'p-1': product});
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
@@ -48,6 +52,38 @@ void main() {
       expect(find.text('go to product'), findsOneWidget);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
+      expect(XFile(imagePath).file.existsSync(), isFalse);
+      expect(XFile(avatorPath).file.existsSync(), isFalse);
+    });
+
+    testWidgets('Update product image', (WidgetTester tester) async {
+      final product = Product(id: 'p-1');
+      final catalog = Catalog(id: 'c-1', products: {'p-1': product});
+      Menu().replaceItems({'c-1': catalog..prepareItem()});
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Product>.value(value: product),
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+        ],
+        child: const MaterialApp(home: ProductScreen()),
+      ));
+
+      mockImagePick(tester, true);
+      await tester.tap(find.byIcon(KIcons.more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      mockImagePick(tester);
+      mockImageCropper(tester, true);
+      await tester.tap(find.byIcon(KIcons.more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      verifyNever(storage.set(any, any));
     });
 
     group('Product Ingredient', () {
@@ -493,6 +529,7 @@ void main() {
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
+      initializeFileSystem();
     });
   });
 }

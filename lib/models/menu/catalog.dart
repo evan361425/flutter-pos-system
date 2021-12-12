@@ -10,6 +10,7 @@ class Catalog extends Model<CatalogObject>
     with
         ModelStorage<CatalogObject>,
         ModelOrderable<CatalogObject>,
+        ModelImage<CatalogObject>,
         Repository<Product>,
         RepositoryStorage<Product>,
         RepositoryOrderable<Product> {
@@ -26,12 +27,14 @@ class Catalog extends Model<CatalogObject>
     String? id,
     String name = 'catalog',
     int index = 0,
+    String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
         super(id) {
     this.name = name;
     this.index = index;
+    this.imagePath = imagePath;
     if (products != null) replaceItems(products);
   }
 
@@ -41,6 +44,7 @@ class Catalog extends Model<CatalogObject>
       index: object.index!,
       name: object.name,
       createdAt: object.createdAt,
+      imagePath: object.imagePath,
       products: {
         for (var product in object.products)
           product.id!: Product.fromObject(product)
@@ -53,12 +57,6 @@ class Catalog extends Model<CatalogObject>
 
   @override
   set repository(Repository repo) {}
-
-  @override
-  void notifyItems() {
-    notifyListeners();
-    Menu.instance.notifyItems();
-  }
 
   @override
   Product buildItem(String id, Map<String, Object?> value) {
@@ -78,6 +76,18 @@ class Catalog extends Model<CatalogObject>
             : product.getItemsSimilarity(pattern).toDouble(),
       );
     }
+  }
+
+  @override
+  void notifyItems() {
+    notifyListeners();
+    Menu.instance.notifyItems();
+  }
+
+  @override
+  Future<void> removeRemotely() async {
+    await super.removeRemotely();
+    await Future.wait(items.map((e) => e.deleteImage()));
   }
 
   @override

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -25,22 +24,17 @@ class ReplenishmentScreen extends StatelessWidget {
         Navigator.of(context).pushNamed(Routes.stockReplenishmentModal);
 
     final body = replenisher.isEmpty
-        ? <Widget>[Expanded(child: EmptyBody(onPressed: navToAdd))]
-        : <Widget>[
-            Center(child: HintText(S.totalCount(replenisher.length))),
-            Expanded(
-              child: SingleChildScrollView(
-                child: SlidableItemList<Replenishment, int>(
-                  handleDelete: (item) => item.remove(),
-                  deleteValue: 1,
-                  warningContextBuilder: (_, item) =>
-                      Text(S.dialogDeletionContent(item.name, '')),
-                  items: replenisher.itemList,
-                  tileBuilder: (_, index, item) => _ReplenishmentTile(item),
-                ),
-              ),
+        ? Center(child: EmptyBody(onPressed: navToAdd))
+        : SlidableItemList<Replenishment, int>(
+            delegate: SlidableItemDelegate(
+              handleDelete: (item) => item.remove(),
+              deleteValue: 1,
+              warningContextBuilder: (_, item) =>
+                  Text(S.dialogDeletionContent(item.name, '')),
+              items: replenisher.itemList,
+              tileBuilder: (_, index, item, __) => _ReplenishmentTile(item),
             ),
-          ];
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -53,11 +47,7 @@ class ReplenishmentScreen extends StatelessWidget {
         tooltip: S.stockReplenishmentCreate,
         child: const Icon(KIcons.add),
       ),
-      // this page need to draw lots of data, wait a will to make sure page shown
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: body,
-      ),
+      body: body,
     );
   }
 }

@@ -7,10 +7,12 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../test_helpers/file_mocker.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
@@ -49,8 +51,9 @@ void main() {
       expect(product.price, equals(1));
 
       verify(storage.set(any, argThat(predicate((data) {
-        final map = (data as Map).values.first as Map<String, Object>;
-        return map['price'] == 1 &&
+        final map = (data as Map).values.first;
+        return map is Map &&
+            map['price'] == 1 &&
             map['cost'] == 1 &&
             map['name'] == 'name' &&
             map['index'] == 1;
@@ -79,7 +82,9 @@ void main() {
     });
 
     testWidgets('Edit product', (WidgetTester tester) async {
-      final product = Product(id: 'p-1', name: 'p-1');
+      final oldImage = await createImage('old');
+      final oldAvator = await createImage('old-avator');
+      final product = Product(id: 'p-1', name: 'p-1', imagePath: oldImage);
       final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
         'p-1': product,
         'p-2': Product(id: 'p-2', name: 'p-2'),
@@ -104,6 +109,11 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
+      mockImagePick(tester);
+      mockImageCropper(tester);
+      await tester.tap(find.byKey(const Key('modal.edit_image')));
+      await tester.pumpAndSettle();
+
       await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
       await tester.enterText(find.byKey(const Key('product.price')), '1');
       await tester.enterText(find.byKey(const Key('product.cost')), '1');
@@ -124,6 +134,15 @@ void main() {
             data['$prefix.cost'] == 1 &&
             data['$prefix.name'] == 'new-name';
       }))));
+      verify(storage.set(
+        any,
+        argThat(
+          predicate((data) =>
+              data is Map && data['$prefix.imagePath'] == '/menu_image/p-1'),
+        ),
+      ));
+      expect(XFile(oldImage).file.existsSync(), isFalse);
+      expect(XFile(oldAvator).file.existsSync(), isFalse);
     });
 
     testWidgets('Reorder product', (WidgetTester tester) async {
@@ -197,9 +216,41 @@ void main() {
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
     });
 
+    testWidgets('Update product image', (WidgetTester tester) async {
+      final catalog = Catalog(id: 'c');
+      Menu().replaceItems({'c': catalog});
+
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Catalog>.value(value: catalog),
+          ],
+          child:
+              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+
+      mockImagePick(tester);
+      mockImageCropper(tester);
+      await tester.tap(find.byKey(const Key('item_more_action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+
+      const path = '/menu_image/c';
+      expect(catalog.imagePath, equals(path));
+      verify(storage.set(
+        any,
+        argThat(
+          predicate((data) => data is Map && data['c.imagePath'] == path),
+        ),
+      ));
+      expect(const XFile(path).file.existsSync(), isTrue);
+      expect(const XFile('$path-avator').file.existsSync(), isTrue);
+    });
+
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
+      initializeFileSystem();
     });
   });
 }

@@ -11,12 +11,15 @@ void main() {
     testWidgets('should not handle tap when sliding', (tester) async {
       var tapCount = 0;
       final widget = MaterialApp(
-        home: SlidableItemList<String, void>(
-          items: const ['1', '2'],
-          tileBuilder: (_, int index, item) => Text(item),
-          warningContextBuilder: (_, __) => const Text('hi'),
-          handleTap: (_, __) => Future.value(tapCount++),
-          handleDelete: (_) => Future.value(),
+        home: SlidableItemList<String, int>(
+          delegate: SlidableItemDelegate(
+            items: const ['1', '2'],
+            deleteValue: 0,
+            tileBuilder: (_, int index, item, __) => Text(item),
+            warningContextBuilder: (_, __) => const Text('hi'),
+            handleTap: (_, __) => Future.value(tapCount++),
+            handleDelete: (_) => Future.value(),
+          ),
         ),
       );
 
@@ -44,12 +47,15 @@ void main() {
     testWidgets('should show alert when delete', (tester) async {
       var deletionFired = false;
       await tester.pumpWidget(MaterialApp(
-        home: SlidableItemList<String, void>(
-          items: const ['1', '2'],
-          tileBuilder: (_, int index, item) => Text(item),
-          warningContextBuilder: (_, __) => const Text('hi'),
-          handleTap: (_, __) => Future.value(),
-          handleDelete: (_) async => deletionFired = true,
+        home: SlidableItemList<String, int>(
+          delegate: SlidableItemDelegate(
+            items: const ['1', '2'],
+            deleteValue: 0,
+            tileBuilder: (_, int index, item, __) => Text(item),
+            warningContextBuilder: (_, __) => const Text('hi'),
+            handleTap: (_, __) => Future.value(),
+            handleDelete: (_) async => deletionFired = true,
+          ),
         ),
       ));
 

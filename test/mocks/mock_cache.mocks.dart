@@ -45,7 +45,13 @@ class MockCache extends _i1.Mock implements _i3.Cache {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
+  _i4.Future<void> reset() => (super.noSuchMethod(Invocation.method(#reset, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
   _i4.Future<bool> set<T>(String? key, T? value) =>
       (super.noSuchMethod(Invocation.method(#set, [key, value]),
           returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
+  @override
+  String toString() => super.toString();
 }

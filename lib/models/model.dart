@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database.dart';
+import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/services/storage.dart';
 
 abstract class Model<T extends ModelObject> extends ChangeNotifier {
@@ -58,10 +62,10 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 }
 
 mixin ModelDB<T extends ModelObject> on Model<T> {
-  String get modelTableName;
-
   @override
   String get logName => modelTableName;
+
+  String get modelTableName;
 
   @override
   Future<void> removeRemotely() {
@@ -73,6 +77,78 @@ mixin ModelDB<T extends ModelObject> on Model<T> {
   @override
   Future<void> save(Map<String, Object?> data) {
     return Database.instance.update(modelTableName, int.parse(id), data);
+  }
+}
+
+mixin ModelImage<T extends ModelObject> on Model<T> {
+  String? imagePath;
+
+  Widget get avator {
+    if (imagePath == null) {
+      return CircleAvatar(
+        child: Text(name.characters.first.toUpperCase()),
+      );
+    }
+
+    final image = FileImage(File(_avatorPath));
+    return CircleAvatar(foregroundImage: image);
+  }
+
+  ImageProvider get image {
+    if (imagePath == null) {
+      return const AssetImage("assets/food_placeholder.png");
+    }
+
+    return FileImage(File(imagePath!));
+  }
+
+  String get _avatorPath => '$imagePath-avator';
+
+  Future<void> deleteImage() async {
+    if (imagePath != null) {
+      XFile(imagePath!).file.delete();
+      XFile(_avatorPath).file.delete();
+    }
+  }
+
+  Future<void> pickImage() async {
+    final image = await ImageDumper.instance.pick();
+    if (image == null) return;
+
+    await saveImage(image);
+  }
+
+  @override
+  Future<void> removeRemotely() async {
+    await super.removeRemotely();
+    await deleteImage();
+  }
+
+  Future<void> replaceImage(String? path) async {
+    if (path != null && path != imagePath) {
+      await saveImage(XFile(path));
+    }
+  }
+
+  Future<void> saveImage(XFile image) async {
+    final dir = await XFile.createDir('menu_image');
+    final dstPath = '${dir.path}/$id';
+
+    // avator first, try sync with image
+    await ImageDumper.instance.resize(image, '$dstPath-avator', width: 120);
+
+    // save image from pick
+    await image.copy(dstPath);
+
+    info(toString(), '$logName.updateImage');
+
+    await save({'$prefix.imagePath': dstPath});
+
+    await deleteImage();
+
+    imagePath = dstPath;
+
+    notifyItem();
   }
 }
 
@@ -100,10 +176,10 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
 }
 
 mixin ModelStorage<T extends ModelObject> on Model<T> {
-  Stores get storageStore;
-
   @override
   String get logName => storageStore.toString();
+
+  Stores get storageStore;
 
   @override
   Future<void> removeRemotely() {

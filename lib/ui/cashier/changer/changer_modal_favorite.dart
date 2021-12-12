@@ -24,8 +24,6 @@ class ChangerModalFavorite extends StatefulWidget {
 class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
   static FavoriteItem? selected;
 
-  final slidableItemList = GlobalKey<SlidableItemListState>();
-
   String? errorMessage;
 
   @override
@@ -40,11 +38,12 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
       return EmptyBody(onPressed: widget.emptyAction);
     }
 
-    final listView = SlidableItemList<FavoriteItem, int>(
-      key: slidableItemList,
+    final delegate = SlidableItemDelegate<FavoriteItem, int>(
+      items: Cashier.instance.favoriteItems().toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),
-      tileBuilder: (_, index, item) => RadioListTile<FavoriteItem>(
+      tileBuilder: (context, index, item, delegate) =>
+          RadioListTile<FavoriteItem>(
         key: Key('cashier.changer.favorite.$index'),
         value: item,
         title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),
@@ -54,14 +53,13 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
           textOverflow: TextOverflow.visible,
         ),
         secondary: IconButton(
-          onPressed: () => slidableItemList.currentState?.showActions(item),
+          onPressed: () => delegate.showActions(context, item),
           icon: const Icon(Icons.more_vert_sharp),
         ),
         groupValue: selected,
         selected: selected == item,
         onChanged: (item) => setState(() => selected = item),
       ),
-      items: Cashier.instance.favoriteItems(),
     );
 
     return Column(children: [
@@ -69,7 +67,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
         padding: EdgeInsets.all(kSpacing1),
         child: HintText('選完後請點選「套用」來使用該組合'),
       ),
-      Expanded(child: listView),
+      Expanded(child: SlidableItemList(delegate: delegate)),
     ]);
   }
 

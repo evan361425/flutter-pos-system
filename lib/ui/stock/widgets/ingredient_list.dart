@@ -18,13 +18,15 @@ class IngredientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Ingredient, _Action>(
-      items: ingredients,
-      deleteValue: _Action.delete,
-      tileBuilder: (_, __, ingredient) => _IngredientTile(ingredient),
-      warningContextBuilder: _warningContextBuilder,
-      handleDelete: _handleDelete,
-      handleTap: _handleTap,
+    return SlidableItemList<Ingredient, int>(
+      delegate: SlidableItemDelegate(
+        items: ingredients,
+        deleteValue: 0,
+        tileBuilder: (_, __, ingredient, ___) => _IngredientTile(ingredient),
+        warningContextBuilder: _warningContextBuilder,
+        handleDelete: _handleDelete,
+        handleTap: _handleTap,
+      ),
     );
   }
 
@@ -46,10 +48,6 @@ class IngredientList extends StatelessWidget {
 
     return Text(S.dialogDeletionContent(ingredient.name, moreCtx));
   }
-}
-
-enum _Action {
-  delete,
 }
 
 class _IngredientTile extends StatelessWidget {

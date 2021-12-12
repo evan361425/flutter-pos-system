@@ -3,15 +3,6 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
-enum Stores {
-  menu,
-  stock,
-  replenisher,
-  quantities,
-  cashier,
-  customers,
-}
-
 class Storage {
   static Storage instance = Storage();
 
@@ -19,26 +10,14 @@ class Storage {
 
   bool _initialized = false;
 
-  Future<void> initialize() async {
-    if (_initialized) return;
-    _initialized = true;
-
-    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
-
-    db = await databaseFactoryIo.openDatabase(databasePath);
+  /// add data into record
+  Future<void> add(
+    Stores storeId,
+    String recordId,
+    Map<String, Object?> data,
+  ) {
+    return getStore(storeId).record(recordId).put(db, data);
   }
-
-  Future<void> deleteAll() async {
-    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
-
-    await databaseFactoryIo.deleteDatabase(databasePath);
-  }
-
-  /// Get string map Store
-  ///
-  /// variable to make it easy to test
-  static StoreRef getStore(Stores storeId) =>
-      stringMapStoreFactory.store(storeId.toString());
 
   Future<Map<String, Object?>> get(Stores storeId, [String? record]) async {
     if (record != null) {
@@ -51,6 +30,27 @@ class Storage {
     final list = await getStore(storeId).find(db);
 
     return {for (var item in list) item.key: item.value};
+  }
+
+  Future<void> initialize() async {
+    if (_initialized) return;
+    _initialized = true;
+
+    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
+
+    db = await databaseFactoryIo.openDatabase(databasePath);
+  }
+
+  Future<void> reset() async {
+    final path = await getDatabasesPath() + '/pos_system.sembast';
+    return databaseFactoryIo.deleteDatabase(path);
+  }
+
+  StorageSanitizedData sanitize(Map<String, Object?> data) {
+    final sanitizedData = StorageSanitizedData();
+    data.forEach(
+        (key, value) => sanitizedData.add(_SanitizedValue(key, value)));
+    return sanitizedData;
   }
 
   /// update value
@@ -74,24 +74,23 @@ class Storage {
         )));
   }
 
-  /// add data into record
-  Future<void> add(
-    Stores storeId,
-    String recordId,
-    Map<String, Object?> data,
-  ) {
-    return getStore(storeId).record(recordId).put(db, data);
-  }
-
-  SanitizedData sanitize(Map<String, Object?> data) {
-    final sanitizedData = SanitizedData();
-    data.forEach(
-        (key, value) => sanitizedData.add(_SanitizedValue(key, value)));
-    return sanitizedData;
-  }
+  /// Get string map Store
+  ///
+  /// variable to make it easy to test
+  static StoreRef getStore(Stores storeId) =>
+      stringMapStoreFactory.store(storeId.toString());
 }
 
-class SanitizedData {
+enum Stores {
+  menu,
+  stock,
+  replenisher,
+  quantities,
+  cashier,
+  customers,
+}
+
+class StorageSanitizedData {
   final data = <String, Object?>{};
 
   void add(_SanitizedValue value) {

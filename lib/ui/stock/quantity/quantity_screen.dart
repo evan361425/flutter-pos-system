@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/routes.dart';
@@ -23,15 +21,7 @@ class QuantityScreen extends StatelessWidget {
 
     final body = quantities.isEmpty
         ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
-        : SingleChildScrollView(
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
-                child: HintText(S.totalCount(quantities.length)),
-              ),
-              QuantityList(quantities: quantities.itemList),
-            ]),
-          );
+        : QuantityList(quantities: quantities.itemList);
 
     return Scaffold(
       appBar: AppBar(

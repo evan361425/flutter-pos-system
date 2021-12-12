@@ -14,6 +14,7 @@ class CatalogObject extends ModelObject<Catalog> {
   final String? id;
   final int? index;
   final String name;
+  final String? imagePath;
   final DateTime? createdAt;
   final List<ProductObject> products;
 
@@ -21,6 +22,7 @@ class CatalogObject extends ModelObject<Catalog> {
     this.id,
     this.index,
     required this.name,
+    this.imagePath,
     this.createdAt,
     List<ProductObject>? products,
   }) : products = products ?? const [];
@@ -33,6 +35,7 @@ class CatalogObject extends ModelObject<Catalog> {
       id: data['id'] as String,
       index: data['index'] as int,
       name: data['name'] as String,
+      imagePath: data['imagePath'] as String?,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       products: products.entries
           .map<ProductObject>((e) => ProductObject.build({
@@ -55,11 +58,12 @@ class CatalogObject extends ModelObject<Catalog> {
   }
 
   @override
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'index': index!,
       'name': name,
       'createdAt': Util.toUTC(now: createdAt),
+      'imagePath': imagePath,
       'products': {for (var product in products) product.id: product.toMap()}
     };
   }
@@ -146,6 +150,7 @@ class ProductObject extends ModelObject<Product> {
   final int? index;
   final num? price;
   final num? cost;
+  final String? imagePath;
   final DateTime? createdAt;
   final DateTime? searchedAt;
   final List<ProductIngredientObject> ingredients;
@@ -156,6 +161,7 @@ class ProductObject extends ModelObject<Product> {
     this.index,
     this.price,
     this.cost,
+    this.imagePath,
     this.createdAt,
     this.searchedAt,
     List<ProductIngredientObject>? ingredients,
@@ -172,6 +178,7 @@ class ProductObject extends ModelObject<Product> {
       index: data['index'] as int,
       price: data['price'] as num,
       cost: data['cost'] as num,
+      imagePath: data['imagePath'] as String?,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       searchedAt: searchedAt == null ? null : Util.fromUTC(searchedAt),
       ingredients: ingredients.entries
@@ -207,12 +214,13 @@ class ProductObject extends ModelObject<Product> {
   }
 
   @override
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'price': price!,
       'cost': cost!,
       'index': index!,
       'name': name!,
+      'imagePath': imagePath,
       'createdAt': Util.toUTC(now: createdAt),
       if (searchedAt != null) 'searchedAt': Util.toUTC(now: searchedAt),
       'ingredients': {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:possystem/constants/constant.dart';
 
 class TextDivider extends StatelessWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -9,27 +8,10 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class ProductIngredientList extends StatelessWidget {
-  final List<ProductIngredient> ingredients;
-
-  const ProductIngredientList(this.ingredients, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(kSpacing1),
-        child: HintText(S.totalCount(ingredients.length)),
-      ),
-      for (final ingredient in ingredients) _IngredientTile(ingredient),
-    ]);
-  }
-}
-
-class _IngredientTile extends StatelessWidget {
+class IngredientExpantionCard extends StatelessWidget {
   final ProductIngredient ingredient;
 
-  const _IngredientTile(this.ingredient);
+  const IngredientExpantionCard(this.ingredient, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

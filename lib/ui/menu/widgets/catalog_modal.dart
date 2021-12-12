@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -24,6 +25,8 @@ class _CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
 
+  String? _image;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -48,11 +51,15 @@ class _CatalogModalState extends State<CatalogModal>
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
         validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
-      )
+      ),
+      ImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
     ];
   }
 
-  Future<Catalog> getCatalog() async {
+  Future<Catalog> createCatalog() async {
     final object = CatalogObject(name: _nameController.text);
     final catalog = widget.catalog ??
         Catalog(
@@ -74,11 +81,13 @@ class _CatalogModalState extends State<CatalogModal>
     super.initState();
 
     _nameController = TextEditingController(text: widget.catalog?.name);
+    _image = widget.catalog?.imagePath;
   }
 
   @override
   Future<void> updateItem() async {
-    final catalog = await getCatalog();
+    final catalog = await createCatalog();
+    await catalog.replaceImage(_image);
 
     // go to catalog screen
     widget.isNew

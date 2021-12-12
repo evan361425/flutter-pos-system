@@ -20,19 +20,20 @@ class CatalogList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableItemList<Catalog, _Action>(
+    return SlidableItemList<Catalog, int>(
+        delegate: SlidableItemDelegate(
       items: catalogs,
-      deleteValue: _Action.delete,
+      deleteValue: 0,
       tileBuilder: _tileBuilder,
       warningContextBuilder: _warningContextBuilder,
       actionBuilder: _actionBuilder,
       handleTap: _handleTap,
       handleDelete: (item) => item.remove(),
-    );
+    ));
   }
 
-  Iterable<BottomSheetAction<_Action>> _actionBuilder(catalog) {
-    return <BottomSheetAction<_Action>>[
+  Iterable<BottomSheetAction<int>> _actionBuilder(catalog) {
+    return <BottomSheetAction<int>>[
       BottomSheetAction(
         title: Text(S.menuCatalogUpdate),
         leading: const Icon(Icons.text_fields_sharp),
@@ -55,12 +56,10 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Catalog catalog) {
+  Widget _tileBuilder(BuildContext context, int index, Catalog catalog, _) {
     final child = ListTile(
       key: Key('catalog.${catalog.id}'),
-      leading: CircleAvatar(
-        child: Text(catalog.name.characters.first.toUpperCase()),
-      ),
+      leading: catalog.avator,
       title: Text(catalog.name),
       subtitle: MetaBlock.withString(
         context,
@@ -86,8 +85,4 @@ class CatalogList extends StatelessWidget {
     final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
     return Text(S.dialogDeletionContent(catalog.name, moreCtx));
   }
-}
-
-enum _Action {
-  delete,
 }

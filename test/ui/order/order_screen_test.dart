@@ -20,6 +20,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
@@ -36,6 +37,7 @@ void main() {
         CurrencySetting(),
         OrderOutlookSetting(),
         OrderAwakeningSetting(),
+        OrderProductAxisCountSetting(),
       ]).loadSetting();
 
       Stock().replaceItems({
@@ -123,6 +125,13 @@ void main() {
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
         await tester.pumpAndSettle();
+        // cancel tap
+        final gesture = await tester.startGesture(
+            tester.getRect(find.byKey(const Key('order.product.p-2'))).center);
+        await tester.pump(const Duration(milliseconds: 100));
+        await gesture.moveBy(const Offset(0.0, 200.0));
+        await gesture.cancel();
+        // normal tap
         await tester.tap(find.byKey(const Key('order.product.p-2')));
         await tester.pumpAndSettle();
 
@@ -271,6 +280,8 @@ void main() {
       testWidgets('scroll to bottom', (tester) async {
         when(cache.get('feat.orderAwakening')).thenReturn(false);
         when(cache.get('feat.orderOutlook')).thenReturn(1);
+        // text only
+        when(cache.get('feat.orderProductAxisCount')).thenReturn(0);
 
         prepareData();
 

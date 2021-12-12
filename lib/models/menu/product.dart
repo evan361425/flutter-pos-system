@@ -14,6 +14,7 @@ class Product extends Model<ProductObject>
         ModelStorage<ProductObject>,
         ModelOrderable<ProductObject>,
         ModelSearchable<ProductObject>,
+        ModelImage<ProductObject>,
         Repository<ProductIngredient>,
         RepositoryStorage<ProductIngredient> {
   /// Connect to parent object
@@ -43,6 +44,7 @@ class Product extends Model<ProductObject>
     int index = 1,
     this.cost = 0,
     this.price = 0,
+    String? imagePath,
     DateTime? createdAt,
     this.searchedAt,
     Map<String, ProductIngredient>? ingredients,
@@ -50,6 +52,7 @@ class Product extends Model<ProductObject>
         super(id) {
     this.name = name;
     this.index = index;
+    this.imagePath = imagePath;
 
     if (ingredients != null) replaceItems(ingredients);
   }
@@ -74,6 +77,7 @@ class Product extends Model<ProductObject>
       index: object.index!,
       price: object.price!,
       cost: object.cost!,
+      imagePath: object.imagePath,
       createdAt: object.createdAt,
       searchedAt: object.searchedAt,
       ingredients: {

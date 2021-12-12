@@ -91,14 +91,9 @@ class StockScreen extends StatelessWidget {
               child: Text('設定採購', style: theme.textTheme.headline6),
             ),
           ),
-          HintText(S.totalCount(Stock.instance.length)),
         ]),
       ),
-      Expanded(
-        child: SingleChildScrollView(
-          child: IngredientList(ingredients: Stock.instance.itemList),
-        ),
-      ),
+      Expanded(child: IngredientList(ingredients: Stock.instance.itemList)),
     ]);
   }
 }

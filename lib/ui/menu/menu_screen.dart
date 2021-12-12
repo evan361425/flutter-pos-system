@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
 import 'package:possystem/constants/constant.dart';
@@ -107,26 +106,10 @@ class _MenuBody extends StatelessWidget {
       ),
     );
 
-    final catalogCount = Padding(
-      padding: const EdgeInsets.all(kSpacing1),
-      child: HintText(S.totalCount(menu.length)),
-    );
-    // get sorted catalogs
-    final catalogList = CatalogList(menu.itemList, tipGrouper: tipGrouper);
-
     return Column(
       children: [
         searchBar,
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                catalogCount,
-                catalogList,
-              ],
-            ),
-          ),
-        ),
+        Expanded(child: CatalogList(menu.itemList, tipGrouper: tipGrouper)),
       ],
     );
   }
