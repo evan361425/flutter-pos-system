@@ -60,7 +60,7 @@ class SlidingUpOpener extends StatefulWidget {
     required this.collapsed,
     this.controller,
     this.openerKey = 'sliding_up_opener',
-    this.minHeight = 120.0,
+    this.minHeight = 160.0,
     this.maxHeight = 500.0,
     this.borderRadius = 16.0,
     this.backdropEnabled = true,
