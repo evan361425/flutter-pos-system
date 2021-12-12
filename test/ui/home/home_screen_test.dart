@@ -35,7 +35,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
-        builder: (_, __) => const MaterialApp(home: HomeScreen()),
+        builder: (_, __) => MaterialApp(home: HomeScreen()),
       ));
       // wait for query order from DB
       await tester.pumpAndSettle();
@@ -98,7 +98,7 @@ void main() {
           navigatorObservers: [MyApp.routeObserver],
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          home: const HomeScreen(),
+          home: HomeScreen(),
         ),
       ));
 

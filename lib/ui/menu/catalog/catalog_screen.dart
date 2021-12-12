@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/item_more_action_button.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -26,23 +26,6 @@ class CatalogScreen extends StatelessWidget {
           Routes.menuProductModal,
           arguments: catalog,
         );
-
-    final appBar = SliverAppBar(
-      expandedHeight: 250.0,
-      pinned: true,
-      leading: const PopButton(),
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(catalog.name),
-        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
-        background: Image(
-          image: catalog.image,
-          fit: BoxFit.cover,
-          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-          colorBlendMode: BlendMode.srcATop,
-        ),
-      ),
-      actions: const <Widget>[PopButton(toHome: true)],
-    );
 
     final metadata = SliverToBoxAdapter(
       child: ItemMoreActionButton(
@@ -68,7 +51,7 @@ class CatalogScreen extends StatelessWidget {
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
-        appBar,
+        SliverImageAppBar(title: catalog.name, image: catalog.image),
         metadata,
         aboveData,
         if (catalog.isNotEmpty)

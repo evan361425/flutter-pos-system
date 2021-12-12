@@ -60,7 +60,7 @@ class SlidingUpOpener extends StatefulWidget {
     required this.collapsed,
     this.controller,
     this.openerKey = 'sliding_up_opener',
-    this.minHeight = 100.0,
+    this.minHeight = 120.0,
     this.maxHeight = 500.0,
     this.borderRadius = 16.0,
     this.backdropEnabled = true,
@@ -109,6 +109,56 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
   }
 
   Widget buildCollapsed() {
+    final withDragger = _CollapseWithDragger(
+      borderRadius: widget.borderRadius,
+      collapsedHorizontalMargin: widget.collapsedHorizontalMargin,
+      renderPanelSheet: widget.renderPanelSheet,
+      child: widget.collapsed,
+    );
+    if (!widget.clickToOpen) {
+      return withDragger;
+    }
+
+    return IgnorePointer(
+      ignoring: isOpen,
+      child: GestureDetector(
+        key: Key(widget.openerKey),
+        // toggle the panel
+        onTap: () => controller.open(),
+        child: withDragger,
+      ),
+    );
+  }
+
+  void close() => controller.close();
+
+  @override
+  void initState() {
+    isOpen = widget.defaultPanelState == PanelState.OPEN;
+    controller = widget.controller ?? PanelController();
+    super.initState();
+  }
+}
+
+class _CollapseWithDragger extends StatelessWidget {
+  final bool renderPanelSheet;
+
+  final double collapsedHorizontalMargin;
+
+  final double borderRadius;
+
+  final Widget child;
+
+  const _CollapseWithDragger({
+    Key? key,
+    required this.renderPanelSheet,
+    required this.collapsedHorizontalMargin,
+    required this.borderRadius,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final dragger = Container(
@@ -121,7 +171,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
       ),
     );
 
-    final shadow = widget.renderPanelSheet
+    final shadow = renderPanelSheet
         ? null
         : const <BoxShadow>[
             BoxShadow(
@@ -129,51 +179,29 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
               color: Color.fromRGBO(0, 0, 0, 0.5),
             )
           ];
-    final margin = widget.renderPanelSheet
+    final margin = renderPanelSheet
         ? const EdgeInsets.symmetric(horizontal: 4.0)
         : EdgeInsets.fromLTRB(
-            widget.collapsedHorizontalMargin,
+            collapsedHorizontalMargin,
             4.0,
-            widget.collapsedHorizontalMargin,
+            collapsedHorizontalMargin,
             0,
           );
 
-    Widget collapsed = Container(
+    return Container(
       margin: margin,
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(widget.borderRadius),
+          top: Radius.circular(borderRadius),
         ),
         boxShadow: shadow,
       ),
       child: Column(children: [
         Center(child: dragger),
-        Expanded(child: widget.collapsed),
+        Expanded(child: child),
+        const SizedBox(height: 4.0),
       ]),
     );
-
-    if (widget.clickToOpen) {
-      collapsed = IgnorePointer(
-        ignoring: isOpen,
-        child: GestureDetector(
-          key: Key(widget.openerKey),
-          // toggle the panel
-          onTap: () => controller.open(),
-          child: collapsed,
-        ),
-      );
-    }
-
-    return collapsed;
-  }
-
-  void close() => controller.close();
-
-  @override
-  void initState() {
-    isOpen = widget.defaultPanelState == PanelState.OPEN;
-    controller = widget.controller ?? PanelController();
-    super.initState();
   }
 }

@@ -46,10 +46,17 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       handleSelected: (catalog) =>
           _orderProductList.currentState?.updateProducts(catalog),
     );
-    final menuProductRow = OrderProductList(
-      key: _orderProductList,
-      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+    final menuProductRow = OrderedTip(
+      id: 'product_list',
+      grouper: _tipGrouper,
+      message: '透過圖片點餐更方便！\n你也可以到「設定」頁面設定「每行顯示幾個產品」或僅使用文字點餐',
+      order: 1000,
+      version: catalogs.isEmpty ? 0 : 1,
+      child: OrderProductList(
+        key: _orderProductList,
+        products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
+        handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+      ),
     );
     final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
@@ -71,34 +78,36 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
       id: 'order',
       candidateLength: 1,
       routeObserver: MyApp.routeObserver,
-      child: Scaffold(
-        // avoid resize when keyboard(bottom inset) shows
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: const OrderActions(key: Key('order.action.more')),
-          actions: [
-            AppbarTextButton(
-              key: const Key('order.cashier'),
-              onPressed: () => _handleOrder(),
-              child: Text(S.orderActionsOrderDone),
-            ),
-          ],
-        ),
-        body: outlook.value == OrderOutlookTypes.slidingPanel
-            ? OrderBySlidingPanel(
-                key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: menuIngredientRow,
-                tipGrouper: _tipGrouper,
-              )
-            : OrderByOrientation(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: menuIngredientRow,
+      child: SafeArea(
+        child: Scaffold(
+          // avoid resize when keyboard(bottom inset) shows
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leading: const OrderActions(key: Key('order.action.more')),
+            actions: [
+              AppbarTextButton(
+                key: const Key('order.cashier'),
+                onPressed: () => _handleOrder(),
+                child: Text(S.orderActionsOrderDone),
               ),
+            ],
+          ),
+          body: outlook.value == OrderOutlookTypes.slidingPanel
+              ? OrderBySlidingPanel(
+                  key: slidingPanel,
+                  row1: menuCatalogRow,
+                  row2: menuProductRow,
+                  row3: cartProductRow,
+                  row4: menuIngredientRow,
+                  tipGrouper: _tipGrouper,
+                )
+              : OrderByOrientation(
+                  row1: menuCatalogRow,
+                  row2: menuProductRow,
+                  row3: cartProductRow,
+                  row4: menuIngredientRow,
+                ),
+        ),
       ),
     );
   }

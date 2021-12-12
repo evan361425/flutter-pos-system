@@ -67,10 +67,10 @@ class _ReplenishmentTile extends StatelessWidget {
               Routes.stockReplenishmentModal,
               arguments: item,
             ),
-        trailing: IconButton(
+        trailing: TextButton(
           key: Key('replenisher.${item.id}.apply'),
           onPressed: () => handleApply(context),
-          icon: const Icon(Icons.shopping_cart_sharp),
+          child: const Text('套用'),
         ));
   }
 

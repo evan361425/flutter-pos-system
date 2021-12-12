@@ -32,6 +32,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 2.0),
             child: delegate.build(context, item, index: index++, theme: theme),
           ),
+        const SizedBox(height: 4.0),
       ]),
     );
   }
