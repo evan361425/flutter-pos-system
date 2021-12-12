@@ -6,19 +6,15 @@ class OutlinedText extends StatelessWidget {
 
   final String? badge;
 
-  final bool colored;
-
   const OutlinedText(
     this.text, {
     Key? key,
     this.badge,
-    this.colored = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = theme.primaryColor;
     final textColor = theme.colorScheme.brightness == Brightness.dark
         ? theme.colorScheme.onSurface
         : theme.colorScheme.onPrimary;
@@ -27,15 +23,10 @@ class OutlinedText extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(kSpacing1, 4.0, kSpacing1, 4.0),
       constraints: const BoxConstraints(minWidth: 64.0),
       decoration: BoxDecoration(
-        color: colored ? color : null,
-        border: Border.all(color: colored ? color : const Color(0xDD000000)),
+        border: Border.all(color: const Color(0xDD000000)),
         borderRadius: BorderRadius.circular(4.0),
       ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: colored ? textColor : null),
-      ),
+      child: Text(text, textAlign: TextAlign.center),
     );
 
     if (badge != null) {
@@ -47,7 +38,9 @@ class OutlinedText extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(2.0),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), color: color),
+                borderRadius: BorderRadius.circular(10.0),
+                color: theme.primaryColor,
+              ),
               constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(badge!,
                   textAlign: TextAlign.center,
