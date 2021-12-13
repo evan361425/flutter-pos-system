@@ -36,6 +36,10 @@ class _CatalogModalState extends State<CatalogModal>
   @override
   List<Widget> formFields() {
     return [
+      ImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
       TextFormField(
         key: const Key('catalog.name'),
         controller: _nameController,
@@ -51,10 +55,6 @@ class _CatalogModalState extends State<CatalogModal>
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
         validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
-      ),
-      ImageHolder(
-        path: _image,
-        onSelected: (image) => setState(() => _image = image),
       ),
     ];
   }

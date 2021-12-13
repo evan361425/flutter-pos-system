@@ -44,6 +44,10 @@ class _ProductModalState extends State<ProductModal>
   @override
   List<Widget> formFields() {
     return [
+      ImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
       TextFormField(
         key: const Key('product.name'),
         controller: _nameController,
@@ -58,10 +62,6 @@ class _ProductModalState extends State<ProductModal>
         ),
         maxLength: 30,
         validator: Validator.textLimit(S.menuProductNameLabel, 30),
-      ),
-      ImageHolder(
-        path: _image,
-        onSelected: (image) => setState(() => _image = image),
       ),
       TextFormField(
         key: const Key('product.price'),
