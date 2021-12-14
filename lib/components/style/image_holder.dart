@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/image_dumper.dart';
 
 class ImageHolder extends StatelessWidget {
@@ -16,27 +15,57 @@ class ImageHolder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (path == null) {
-      return InkWell(
-        key: const Key('modal.add_image'),
-        onTap: onTap,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(),
-              borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-            ),
-            child: const Center(
-              child: Text('點選以新增圖片'),
-            ),
-          ),
-        ),
-      );
-    }
+    final title = path == null ? '點選以新增圖片' : '點擊以更新圖片';
+    final image = path == null
+        ? const AssetImage("assets/food_placeholder.png")
+        : FileImage(XFile(path!).file);
 
+    return GestureDetector(
+      key: const Key('modal.edit_image'),
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Image(
+            image: image as ImageProvider,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            errorBuilder: (context, err, stack) {
+              return const Image(
+                key: Key('image_holder.missed'),
+                image: AssetImage("assets/food_placeholder.png"),
+                fit: BoxFit.cover,
+                width: double.infinity,
+              );
+            },
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Expanded(child: _GradientTitle(title)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void onTap() async {
+    final image = await ImageDumper.instance.pick();
+
+    if (image != null) onSelected(image.path);
+  }
+}
+
+class _GradientTitle extends StatelessWidget {
+  final String text;
+
+  const _GradientTitle(this.text, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).scaffoldBackgroundColor;
-    final title = Container(
+    return Container(
       padding: const EdgeInsets.fromLTRB(2, 8, 2, 4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -49,36 +78,11 @@ class ImageHolder extends StatelessWidget {
           ],
         ),
       ),
-      child: const Text(
-        '點擊以更新圖片',
+      child: Text(
+        text,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 18.0),
+        style: const TextStyle(fontSize: 18.0),
       ),
     );
-
-    return GestureDetector(
-      key: const Key('modal.edit_image'),
-      onTap: onTap,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Image(
-            image: FileImage(File(path!)),
-            fit: BoxFit.cover,
-            width: double.infinity,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[Expanded(child: title)],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void onTap() async {
-    final image = await ImageDumper.instance.pick();
-
-    if (image != null) onSelected(image.path);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
@@ -83,15 +81,21 @@ mixin ModelDB<T extends ModelObject> on Model<T> {
 mixin ModelImage<T extends ModelObject> on Model<T> {
   String? imagePath;
 
+  bool _avatorMissed = false;
+
   Widget get avator {
-    if (imagePath == null) {
+    if (imagePath == null || _avatorMissed) {
       return CircleAvatar(
         child: Text(name.characters.first.toUpperCase()),
       );
     }
 
-    final image = FileImage(File(_avatorPath));
-    return CircleAvatar(foregroundImage: image);
+    final image = FileImage(XFile(_avatorPath).file);
+    return CircleAvatar(
+        foregroundImage: image,
+        onForegroundImageError: (err, stack) {
+          _avatorMissed = true;
+        });
   }
 
   ImageProvider get image {
@@ -99,15 +103,17 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
       return const AssetImage("assets/food_placeholder.png");
     }
 
-    return FileImage(File(imagePath!));
+    return FileImage(XFile(imagePath!).file);
   }
 
   String get _avatorPath => '$imagePath-avator';
 
   Future<void> deleteImage() async {
     if (imagePath != null) {
-      XFile(imagePath!).file.delete();
-      XFile(_avatorPath).file.delete();
+      await Future.wait([
+        XFile(imagePath!).file.delete(),
+        XFile(_avatorPath).file.delete(),
+      ]).onError((error, stackTrace) => []);
     }
   }
 

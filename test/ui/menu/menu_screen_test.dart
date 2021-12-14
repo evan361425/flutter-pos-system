@@ -34,7 +34,7 @@ void main() {
 
       mockImagePick(tester);
       mockImageCropper(tester);
-      await tester.tap(find.byKey(const Key('modal.add_image')));
+      await tester.tap(find.byKey(const Key('modal.edit_image')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('modal.edit_image')), findsOneWidget);
 
@@ -86,7 +86,7 @@ void main() {
     });
 
     testWidgets('Edit catalog', (WidgetTester tester) async {
-      final catalog1 = Catalog(id: 'c-1', name: 'c-1');
+      final catalog1 = Catalog(id: 'c-1', name: 'c-1', imagePath: 'wrong-path');
       final catalog2 = Catalog(id: 'c-2', name: 'c-2');
       Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
 
@@ -98,6 +98,9 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
       await tester.pumpAndSettle();
+
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('image_holder.missed')), findsOneWidget);
 
       // save failed
       await tester.enterText(find.byKey(const Key('catalog.name')), 'c-2');

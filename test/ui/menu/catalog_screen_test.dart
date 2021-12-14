@@ -19,7 +19,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Catalog Screen', () {
     testWidgets('Add product', (WidgetTester tester) async {
-      final catalog = Catalog(id: 'c-1');
+      final catalog = Catalog(id: 'c-1', imagePath: 'some-non-exist');
       Menu().replaceItems({'c-1': catalog});
 
       await tester.pumpWidget(MultiProvider(
@@ -30,6 +30,10 @@ void main() {
           ],
           child:
               MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+
+      await tester.pumpAndSettle();
+      expect(
+          find.byKey(const Key('sliber_image_app_bar.missed')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();

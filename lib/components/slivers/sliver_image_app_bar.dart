@@ -26,6 +26,13 @@ class SliverImageAppBar extends StatelessWidget {
           fit: BoxFit.cover,
           color: Theme.of(context).backgroundColor.withOpacity(0.7),
           colorBlendMode: BlendMode.srcATop,
+          errorBuilder: (context, err, stack) => Image(
+            key: const Key('sliber_image_app_bar.missed'),
+            image: const AssetImage("assets/food_placeholder.png"),
+            fit: BoxFit.cover,
+            color: Theme.of(context).backgroundColor.withOpacity(0.7),
+            colorBlendMode: BlendMode.srcATop,
+          ),
         ),
       ),
       actions: const <Widget>[PopButton(toHome: true)],
