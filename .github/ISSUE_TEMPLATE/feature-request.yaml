@@ -1,0 +1,25 @@
+name: 功能提議
+description: 提供對於本專案的建議或想法
+labels:
+  - "enhancement"
+body:
+  - type: textarea
+    attributes:
+      label: 你預期這功能長什麼樣子？
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 這個功能是和你遇到的問題有關？
+  - type: textarea
+    attributes:
+      label: 沒有這功能時，你都怎麼做？
+  - type: markdown
+    attributes:
+      value: 任何想要補充的。
+  - type: checkboxes
+    attributes:
+      label: 你都查過了嗎？
+      options:
+        - label: 我有檢查其他 [issue](https://github.com/evan361425/flutter-pos-system/issues) 了
+          required: true
