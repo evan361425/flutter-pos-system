@@ -1,6 +1,6 @@
 contact_links:
   - name: 💡 功能提議
-    url: https://github.com/evan361425/flutter-pos-system/issues/new?template=feature-request.yaml
+    url: https://github.com/evan361425/flutter-pos-system/issues/new?template=feature-request.yml
     about: 若有任何想要的功能。
   - name: ❗ 安全性問題
     url: https://zh.wikipedia.org/wiki/负责任的披露
