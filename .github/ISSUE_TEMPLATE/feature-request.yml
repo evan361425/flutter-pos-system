@@ -4,22 +4,30 @@ labels:
   - "enhancement"
 body:
   - type: textarea
+    id: expected
     attributes:
       label: 你預期這功能長什麼樣子？
+      description: 怎麼操作，怎麼呈現。
+      render: shell
     validations:
       required: true
   - type: textarea
+    id: problems
     attributes:
       label: 這個功能是和你遇到的問題有關？
+      description: 每次想要... 就發現不能...
+      render: shell
   - type: textarea
+    id: alternative
     attributes:
       label: 沒有這功能時，你都怎麼做？
   - type: markdown
     attributes:
       value: 任何想要補充的。
   - type: checkboxes
+    id: checks
     attributes:
-      label: 你都查過了嗎？
+      label: 開新的 issue 前
       options:
         - label: 我有檢查其他 [issue](https://github.com/evan361425/flutter-pos-system/issues) 了
           required: true
