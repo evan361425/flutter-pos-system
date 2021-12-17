@@ -1,8 +1,15 @@
-name: 💡 功能提議
-description: 對於 POS系統 提供建議或想法
+name: 😺 使用者體驗
+description: POS系統目前哪裡不好用
 labels:
-  - "enhancement"
+  - "ux"
 body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: 哪個功能不好用
+      description: 哪個頁面的功能，為什麼不好用？
+    validations:
+      required: true
   - type: textarea
     id: expected
     attributes:
@@ -10,15 +17,6 @@ body:
       description: 怎麼操作，怎麼呈現。
     validations:
       required: true
-  - type: textarea
-    id: problems
-    attributes:
-      label: 這個功能是和你遇到的問題有關？
-      description: 每次想要... 就發現不能...
-  - type: textarea
-    id: alternative
-    attributes:
-      label: 沒有這功能時，你都怎麼做？
   - type: textarea
     id: more
     attributes:
