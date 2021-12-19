@@ -32,8 +32,8 @@ jobs:
       - name: Get latest tag
         id: tag
         run: |
-          TAG=curl -s "https://api.github.com/repos/evan361425/flutter-pos-system/tags" | jq -r '.[0].name'
-          echo "::set-output name=value::$TAG"
+          tag=$(curl -s "https://api.github.com/repos/evan361425/flutter-pos-system/tags" | jq -r '.[0].name')
+          echo "::set-output name=value::$tag"
 
       - name: Extract lane
         id: lane
