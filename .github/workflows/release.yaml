@@ -119,7 +119,6 @@ jobs:
     needs: check-version
     if: ${{ !contains(needs.check-version.outputs.tag, '-rc') }}
     outputs:
-      upload_url: ${{ steps.get_release.outputs.upload_url }}
       changelog: ${{ steps.get_release.outputs.changelog }}
     steps:
       # escape special characters
@@ -149,7 +148,6 @@ jobs:
           body="${body//$'## '/}"
           body="${body//$'-'/•}"
           echo "::set-output name=changelog::$body"
-          echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
 
   # Push changelog to repository
   add-changelog:
@@ -238,6 +236,16 @@ jobs:
           mv build/app/outputs/flutter-apk/app-${{ steps.flavor.outputs.value }}-release.apk \
             $GITHUB_WORKSPACE/pos_system.apk
 
+      - name: Get upload URL
+        id: get_release
+        run: |
+          release=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H 'Accept: application/vnd.github.v3+json' \
+            https://api.github.com/repos/evan361425/flutter-pos-system/releases \
+            | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag_version }}"))')
+          echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
+
       # Upload the build.
       - name: Add packaged build to release
         id: upload_release_asset
@@ -245,7 +253,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./pos_system.apk
           asset_name: pos_system.${{ steps.flavor.outputs.value }}.${{ needs.check-version.outputs.build_code }}.apk
           asset_content_type: application/vnd.android.package-archive
