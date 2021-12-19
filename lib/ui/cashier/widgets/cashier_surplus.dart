@@ -53,7 +53,10 @@ class CashierSurplus extends StatelessWidget {
                   '如果現金和預期的不一樣，是不是今天用店裡的錢買了什麼東西呢？\n若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
               child: AppbarTextButton(
                 key: const Key('cashier_surplus.confirm'),
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () async {
+                  await Cashier.instance.surplus();
+                  Navigator.of(context).pop(true);
+                },
                 child: const Text('完成'),
               ),
             ),

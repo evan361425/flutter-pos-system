@@ -30,7 +30,7 @@ class QuantityList extends StatelessWidget {
 
   void _handleTap(BuildContext context, Quantity quantity) {
     Navigator.of(context).pushNamed(
-      Routes.stockQuantityModal,
+      Routes.quantityModal,
       arguments: quantity,
     );
   }

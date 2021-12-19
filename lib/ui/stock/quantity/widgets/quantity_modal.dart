@@ -11,7 +11,7 @@ class QuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const QuantityModal({Key? key, this.quantity})
+  const QuantityModal(this.quantity, {Key? key})
       : isNew = quantity == null,
         super(key: key);
 

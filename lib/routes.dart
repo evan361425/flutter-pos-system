@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/my_app.dart';
+import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
+import 'my_app.dart';
 import 'package:provider/provider.dart';
 
 import 'models/customer/customer_setting.dart';
@@ -46,11 +47,13 @@ class Routes {
   static const String customer = 'customer';
   static const String menu = 'menu';
   static const String order = 'order';
+  static const String quantities = 'quantities';
   static const String setting = 'setting';
   static const String stock = 'stock';
 
   // sub-route
   static const String cashierChanger = 'cashier/changer';
+  static const String cashierSurplus = 'cashier/surplus';
   static const String customerModal = 'customer/modal';
   static const String customerReorder = 'customer/reorder';
   static const String customerSetting = 'customer/setting';
@@ -67,11 +70,10 @@ class Routes {
   static const String menuQuantity = 'menu/quantity';
   static const String orderCustomer = 'order/customer';
   static const String orderCalculator = 'order/calculator';
+  static const String quantityModal = 'quantities/modal';
   static const String stockReplenishment = 'stock/replenishment';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
-  static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
-  static const String stockQuantityModal = 'stock/quantity/modal';
 
   static final routes = <String, WidgetBuilder>{
     analysis: (_) => AnalysisScreen(routeObserver: MyApp.routeObserver),
@@ -84,6 +86,7 @@ class Routes {
     // sub-route
     // cashier
     cashierChanger: (context) => const ChangerModal(),
+    cashierSurplus: (context) => CashierSurplus(),
     // customer
     customerModal: (context) =>
         CustomerModal(setting: arg<CustomerSetting?>(context)),
@@ -144,12 +147,12 @@ class Routes {
     // order
     orderCustomer: (_) => const OrderCustomerModal(),
     orderCalculator: (_) => OrderCashierModal(),
+    // quantities
+    quantities: (_) => const QuantityScreen(),
+    quantityModal: (context) => QuantityModal(arg<Quantity?>(context)),
     // stock
     stockIngredient: (context) =>
         IngredientModal(ingredient: arg<Ingredient?>(context)),
-    stockQuantity: (_) => const QuantityScreen(),
-    stockQuantityModal: (context) =>
-        QuantityModal(quantity: arg<Quantity?>(context)),
     stockReplenishment: (context) => const ReplenishmentScreen(),
     stockReplenishmentModal: (context) =>
         ReplenishmentModal(replenishment: arg<Replenishment?>(context)),

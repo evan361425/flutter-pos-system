@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
       'quantities': _LabledIconItem(
         icon: Icons.exposure_sharp,
         label: 'quantities',
-        route: Routes.stockQuantity,
+        route: Routes.quantities,
       ),
       'cashier': _LabledIconItem(
         icon: Icons.attach_money_sharp,

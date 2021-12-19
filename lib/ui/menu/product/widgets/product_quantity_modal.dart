@@ -218,8 +218,8 @@ class _ProductQuantitySearch extends StatelessWidget {
     return CardTile(
       title: Text(quantity.name),
       trailing: IconButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => QuantityModal(quantity: quantity))),
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => QuantityModal(quantity))),
         icon: const Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {

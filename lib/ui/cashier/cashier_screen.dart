@@ -1,94 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
-import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:simple_tip/simple_tip.dart';
 
-import 'widgets/cashier_surplus.dart';
 import 'widgets/cashier_unit_list.dart';
 
 class CashierScreen extends StatelessWidget {
-  final tipGrouper = GlobalKey<TipGrouperState>();
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  CashierScreen({Key? key, this.routeObserver}) : super(key: key);
+  const CashierScreen({
+    Key? key,
+    this.routeObserver,
+    this.tipGrouper,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final actions = Row(children: [
-      Expanded(
-        child: OrderedTip(
-          id: 'surplus',
-          grouper: tipGrouper,
-          version: 1,
-          order: 1,
-          message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
-          child: ElevatedButton(
-            key: const Key('cashier.surplus'),
-            onPressed: () => handleSurplus(context),
-            child: const Text('結餘'),
-          ),
-        ),
-      ),
-      const SizedBox(width: kSpacing1),
-      Expanded(
-        child: ElevatedButton(
-          key: const Key('cashier.changer'),
-          onPressed: () => handleChanging(context),
-          child: const Text('換錢'),
-        ),
-      ),
-    ]);
-
     return TipGrouper(
       key: tipGrouper,
       id: 'cashier',
       candidateLength: 2,
       routeObserver: routeObserver,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('收銀機'),
-          leading: const PopButton(),
-          actions: [
-            OrderedTip(
+        body: Column(children: [
+          OrderedTip(
+            id: 'surplus',
+            grouper: tipGrouper,
+            version: 1,
+            order: 1,
+            message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
+            child: RouteTile(
+              key: const Key('cashier.surplus'),
+              route: Routes.cashierSurplus,
+              icon: Icons.coffee_outlined,
+              title: '結餘',
+              popTrueShowSuccess: true,
+              preCheck: () =>
+                  Cashier.instance.defaultNotSet ? '尚未設定，請點選右上角「設為預設」' : null,
+            ),
+          ),
+          const RouteTile(
+            key: Key('cashier.changer'),
+            route: Routes.cashierChanger,
+            icon: Icons.sync_alt_outlined,
+            title: '換錢',
+            popTrueShowSuccess: true,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: OrderedTip(
               id: 'setDefault',
               grouper: tipGrouper,
               version: 1,
               order: 2,
               message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
-              child: AppbarTextButton(
-                key: const Key('cashier.defaulter'),
-                onPressed: () => handleSetDefault(context),
-                child: const Text('設為預設'),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: OutlinedButton(
+                  key: const Key('cashier.defaulter'),
+                  onPressed: () => handleSetDefault(context),
+                  child: const Text('設為預設'),
+                ),
               ),
-            )
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(kSpacing3),
-          child: Column(children: [
-            actions,
-            const Divider(),
-            const Expanded(child: CashierUnitList()),
-          ]),
-        ),
+            ),
+          ),
+          const Expanded(child: CashierUnitList()),
+        ]),
       ),
     );
-  }
-
-  void handleChanging(BuildContext context) async {
-    final success =
-        await Navigator.of(context).pushNamed(Routes.cashierChanger);
-
-    if (success == true) {
-      showSuccessSnackbar(context, S.actSuccess);
-    }
   }
 
   void handleSetDefault(BuildContext context) async {
@@ -108,21 +93,5 @@ class CashierScreen extends StatelessWidget {
     await Cashier.instance.setDefault();
 
     showSuccessSnackbar(context, S.actSuccess);
-  }
-
-  void handleSurplus(BuildContext context) async {
-    if (Cashier.instance.defaultNotSet) {
-      return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
-    }
-
-    final success = await Navigator.of(context).push<bool>(MaterialPageRoute(
-      builder: (_) => CashierSurplus(),
-    ));
-
-    if (success == true) {
-      await Cashier.instance.surplus();
-
-      showSuccessSnackbar(context, S.actSuccess);
-    }
   }
 }

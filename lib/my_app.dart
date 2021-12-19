@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             darkTheme: AppThemes.darkTheme,
             themeMode: settings.getSetting<ThemeSetting>().value,
 
-            home: SafeArea(child: child),
+            home: child,
           );
         });
   }

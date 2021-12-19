@@ -17,7 +17,7 @@ class QuantityScreen extends StatelessWidget {
     final quantities = context.watch<Quantities>();
 
     navigateNewQuantity() =>
-        Navigator.of(context).pushNamed(Routes.stockQuantityModal);
+        Navigator.of(context).pushNamed(Routes.quantityModal);
 
     final body = quantities.isEmpty
         ? Center(child: EmptyBody(onPressed: navigateNewQuantity))
