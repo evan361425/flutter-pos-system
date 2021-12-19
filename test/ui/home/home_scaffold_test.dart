@@ -19,7 +19,7 @@ import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
-import 'package:possystem/ui/home/home_screen.dart';
+import 'package:possystem/ui/home/home_scaffold.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -35,7 +35,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
-        builder: (_, __) => MaterialApp(home: HomeScreen()),
+        builder: (_, __) => MaterialApp(home: HomeScaffold()),
       ));
       // wait for query order from DB
       await tester.pumpAndSettle();
@@ -98,7 +98,7 @@ void main() {
           navigatorObservers: [MyApp.routeObserver],
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          home: HomeScreen(),
+          home: HomeScaffold(),
         ),
       ));
 

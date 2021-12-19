@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/route_tile.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';

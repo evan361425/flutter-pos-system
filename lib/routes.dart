@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
-import 'my_app.dart';
+import 'package:possystem/ui/home/home_setup_feature_request.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 import 'models/customer/customer_setting.dart';
 import 'models/customer/customer_setting_option.dart';
@@ -12,8 +13,7 @@ import 'models/menu/product_quantity.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
-import 'ui/analysis/analysis_screen.dart';
-import 'ui/cashier/cashier_screen.dart';
+import 'my_app.dart';
 import 'ui/cashier/changer/changer_modal.dart';
 import 'ui/customer/customer_screen.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
@@ -33,23 +33,20 @@ import 'ui/menu/widgets/catalog_orderable_list.dart';
 import 'ui/order/cashier/order_cashier_modal.dart';
 import 'ui/order/cashier/order_customer_modal.dart';
 import 'ui/order/order_screen.dart';
+import 'ui/quantities/quantity_screen.dart';
+import 'ui/quantities/widgets/quantity_modal.dart';
 import 'ui/setting/setting_screen.dart';
-import 'ui/stock/quantity/quantity_screen.dart';
-import 'ui/stock/quantity/widgets/quantity_modal.dart';
 import 'ui/stock/replenishment/replenishment_modal.dart';
 import 'ui/stock/replenishment/replenishment_screen.dart';
-import 'ui/stock/stock_screen.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 
 class Routes {
-  static const String analysis = 'analysis';
-  static const String cashier = 'cashier';
   static const String customer = 'customer';
+  static const String featureRequest = 'feature_request';
   static const String menu = 'menu';
   static const String order = 'order';
   static const String quantities = 'quantities';
   static const String setting = 'setting';
-  static const String stock = 'stock';
 
   // sub-route
   static const String cashierChanger = 'cashier/changer';
@@ -76,13 +73,20 @@ class Routes {
   static const String stockIngredient = 'stock/ingredient';
 
   static final routes = <String, WidgetBuilder>{
-    analysis: (_) => AnalysisScreen(routeObserver: MyApp.routeObserver),
-    customer: (_) => CustomerScreen(routeObserver: MyApp.routeObserver),
-    cashier: (_) => CashierScreen(routeObserver: MyApp.routeObserver),
-    menu: (_) => MenuScreen(routeObserver: MyApp.routeObserver),
-    order: (_) => const OrderScreen(),
+    customer: (_) => CustomerScreen(
+          routeObserver: MyApp.routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
+    featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
+    menu: (_) => MenuScreen(
+          routeObserver: MyApp.routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
+    order: (_) => OrderScreen(
+          routeObserver: MyApp.routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
     setting: (_) => const SettingScreen(),
-    stock: (_) => StockScreen(routeObserver: MyApp.routeObserver),
     // sub-route
     // cashier
     cashierChanger: (context) => const ChangerModal(),

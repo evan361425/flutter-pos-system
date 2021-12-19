@@ -43,4 +43,12 @@
       android:screenOrientation="portrait"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
   </application>
+
+  <queries>
+    <!-- https URLs -->
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="https" />
+    </intent>
+  </queries>
 </manifest>

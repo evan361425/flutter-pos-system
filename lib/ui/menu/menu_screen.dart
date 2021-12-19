@@ -14,11 +14,15 @@ import 'package:simple_tip/simple_tip.dart';
 import 'widgets/catalog_list.dart';
 
 class MenuScreen extends StatelessWidget {
-  final tipGrouper = GlobalKey<TipGrouperState>();
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  MenuScreen({Key? key, this.routeObserver}) : super(key: key);
+  const MenuScreen({
+    Key? key,
+    this.routeObserver,
+    this.tipGrouper,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +73,7 @@ class MenuScreen extends StatelessWidget {
         ),
         body: menu.isEmpty
             ? Center(child: EmptyBody(onPressed: goAddCatalog))
-            : _MenuBody(menu, tipGrouper),
+            : _MenuBody(menu, tipGrouper: tipGrouper),
       ),
     );
   }
@@ -91,9 +95,9 @@ class MenuScreen extends StatelessWidget {
 class _MenuBody extends StatelessWidget {
   final Menu menu;
 
-  final GlobalKey<TipGrouperState> tipGrouper;
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
-  const _MenuBody(this.menu, this.tipGrouper);
+  const _MenuBody(this.menu, {this.tipGrouper});
 
   @override
   Widget build(BuildContext context) {

@@ -12,11 +12,15 @@ import 'package:simple_tip/simple_tip.dart';
 import 'widgets/customer_setting_list.dart';
 
 class CustomerScreen extends StatelessWidget {
-  final tipGrouper = GlobalKey<TipGrouperState>();
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  CustomerScreen({Key? key, this.routeObserver}) : super(key: key);
+  const CustomerScreen({
+    Key? key,
+    this.routeObserver,
+    this.tipGrouper,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

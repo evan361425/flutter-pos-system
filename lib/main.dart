@@ -25,7 +25,7 @@ import 'settings/order_outlook_setting.dart';
 import 'settings/order_product_axis_count_setting.dart';
 import 'settings/setting.dart';
 import 'settings/theme_setting.dart';
-import 'ui/home/bottom_nav_home.dart';
+import 'ui/home/home_scaffold.dart';
 
 void main() async {
   // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
@@ -98,7 +98,7 @@ void main() async {
       ],
       child: MyApp(
         settings: settings,
-        child: const HomeScreen(),
+        child: const HomeScaffold(),
       ),
     ));
   }, FirebaseCrashlytics.instance.recordError);

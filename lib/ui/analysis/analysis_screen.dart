@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
@@ -23,11 +21,16 @@ class AnalysisScreen extends StatefulWidget {
   State<AnalysisScreen> createState() => _AnalysisScreenState();
 }
 
-class _AnalysisScreenState extends State<AnalysisScreen> {
+class _AnalysisScreenState extends State<AnalysisScreen>
+    with AutomaticKeepAliveClientMixin<AnalysisScreen> {
   final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     context.watch<Seller>();
 
     return TipGrouper(
