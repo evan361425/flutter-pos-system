@@ -19,7 +19,11 @@ void main() {
     ]);
     final app = ChangeNotifierProvider.value(
       value: settings..loadSetting(),
-      builder: (_, __) => MyApp(settings: settings, child: _TestChild()),
+      builder: (_, __) => MyApp(
+        settings: settings,
+        child: _TestChild(),
+        routeObserver: RouteObserver<ModalRoute<void>>(),
+      ),
     );
 
     await tester.pumpWidget(app);

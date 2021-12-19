@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
@@ -13,11 +12,15 @@ import 'package:simple_tip/simple_tip.dart';
 import 'widgets/ingredient_list.dart';
 
 class StockScreen extends StatelessWidget {
-  final tipGrouper = GlobalKey<TipGrouperState>();
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  StockScreen({Key? key, this.routeObserver}) : super(key: key);
+  const StockScreen({
+    Key? key,
+    this.routeObserver,
+    this.tipGrouper,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +35,6 @@ class StockScreen extends StatelessWidget {
       candidateLength: 1,
       routeObserver: routeObserver,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.stockTitle),
-          leading: const PopButton(),
-        ),
         floatingActionButton: OrderedTip(
           grouper: tipGrouper,
           id: 'introduction',
@@ -52,18 +51,24 @@ class StockScreen extends StatelessWidget {
         // this page need to draw lots of data, wait a will to make sure page shown
         body: stock.isEmpty
             ? Center(child: EmptyBody(onPressed: navigateNewIngredient))
-            : _body(context),
+            : _StockBody(tipGrouper: tipGrouper),
       ),
     );
   }
+}
 
-  Widget _body(BuildContext context) {
+class _StockBody extends StatelessWidget {
+  final GlobalKey<TipGrouperState>? tipGrouper;
+
+  const _StockBody({Key? key, this.tipGrouper}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final updatedAt = Stock.instance.updatedAt;
-    final theme = Theme.of(context);
 
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Column(children: [
           HintText(updatedAt == null
               ? S.stockHasNotReplenishEver
@@ -74,21 +79,12 @@ class StockScreen extends StatelessWidget {
             order: 2,
             version: 1,
             message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
-            child: ElevatedButton(
-              key: const Key('stock.replenisher'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 30),
-              ),
-              onPressed: () async {
-                final result = await Navigator.of(context).pushNamed(
-                  Routes.stockReplenishment,
-                );
-
-                if (result == true) {
-                  showSuccessSnackbar(context, S.actSuccess);
-                }
-              },
-              child: Text('設定採購', style: theme.textTheme.headline6),
+            child: const RouteTile(
+              key: Key('stock.replenisher'),
+              icon: Icons.shopping_basket_sharp,
+              route: Routes.stockReplenishment,
+              popTrueShowSuccess: true,
+              title: '採購',
             ),
           ),
         ]),

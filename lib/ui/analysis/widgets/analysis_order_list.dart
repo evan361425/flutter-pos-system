@@ -23,11 +23,11 @@ class AnalysisOrderList<T> extends StatefulWidget {
 }
 
 class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
-  final _scrollController = RefreshController();
+  late final RefreshController _scrollController;
 
   final List<OrderObject> _data = [];
   late T _params;
-  bool? _isLoading;
+  bool _isLoading = false;
 
   num totalPrice = 0;
   int totalCount = 0;
@@ -36,8 +36,6 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
   Widget build(BuildContext context) {
     if (_isLoading == true) {
       return const CircularLoading();
-    } else if (_isLoading == null) {
-      return HintText(S.analysisOrderListStatus('unset'));
     } else if (_data.isEmpty) {
       return HintText(S.analysisOrderListStatus('empty'));
     }
@@ -65,6 +63,12 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = RefreshController();
   }
 
   void reset(T params, {required num totalPrice, required int totalCount}) =>

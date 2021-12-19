@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/my_app.dart';
+import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
+import 'package:possystem/ui/home/home_setup_feature_request.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tip/simple_tip.dart';
 
 import 'models/customer/customer_setting.dart';
 import 'models/customer/customer_setting_option.dart';
@@ -11,8 +13,6 @@ import 'models/menu/product_quantity.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
-import 'ui/analysis/analysis_screen.dart';
-import 'ui/cashier/cashier_screen.dart';
 import 'ui/cashier/changer/changer_modal.dart';
 import 'ui/customer/customer_screen.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
@@ -32,25 +32,24 @@ import 'ui/menu/widgets/catalog_orderable_list.dart';
 import 'ui/order/cashier/order_cashier_modal.dart';
 import 'ui/order/cashier/order_customer_modal.dart';
 import 'ui/order/order_screen.dart';
+import 'ui/quantities/quantity_screen.dart';
+import 'ui/quantities/widgets/quantity_modal.dart';
 import 'ui/setting/setting_screen.dart';
-import 'ui/stock/quantity/quantity_screen.dart';
-import 'ui/stock/quantity/widgets/quantity_modal.dart';
 import 'ui/stock/replenishment/replenishment_modal.dart';
 import 'ui/stock/replenishment/replenishment_screen.dart';
-import 'ui/stock/stock_screen.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 
 class Routes {
-  static const String analysis = 'analysis';
-  static const String cashier = 'cashier';
   static const String customer = 'customer';
+  static const String featureRequest = 'feature_request';
   static const String menu = 'menu';
   static const String order = 'order';
+  static const String quantities = 'quantities';
   static const String setting = 'setting';
-  static const String stock = 'stock';
 
   // sub-route
   static const String cashierChanger = 'cashier/changer';
+  static const String cashierSurplus = 'cashier/surplus';
   static const String customerModal = 'customer/modal';
   static const String customerReorder = 'customer/reorder';
   static const String customerSetting = 'customer/setting';
@@ -67,27 +66,35 @@ class Routes {
   static const String menuQuantity = 'menu/quantity';
   static const String orderCustomer = 'order/customer';
   static const String orderCalculator = 'order/calculator';
+  static const String quantityModal = 'quantities/modal';
   static const String stockReplenishment = 'stock/replenishment';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
-  static const String stockQuantity = 'stock/quantity';
   static const String stockIngredient = 'stock/ingredient';
-  static const String stockQuantityModal = 'stock/quantity/modal';
+
+  static late final RouteObserver<ModalRoute<void>> routeObserver;
 
   static final routes = <String, WidgetBuilder>{
-    analysis: (_) => AnalysisScreen(routeObserver: MyApp.routeObserver),
-    customer: (_) => CustomerScreen(routeObserver: MyApp.routeObserver),
-    cashier: (_) => CashierScreen(routeObserver: MyApp.routeObserver),
-    menu: (_) => MenuScreen(routeObserver: MyApp.routeObserver),
-    order: (_) => const OrderScreen(),
+    customer: (_) => CustomerScreen(
+          routeObserver: routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
+    featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
+    menu: (_) => MenuScreen(
+          routeObserver: routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
+    order: (_) => OrderScreen(
+          routeObserver: routeObserver,
+          tipGrouper: GlobalKey<TipGrouperState>(),
+        ),
     setting: (_) => const SettingScreen(),
-    stock: (_) => StockScreen(routeObserver: MyApp.routeObserver),
     // sub-route
     // cashier
-    cashierChanger: (context) => const ChangerModal(),
+    cashierChanger: (_) => const ChangerModal(),
+    cashierSurplus: (_) => CashierSurplus(),
     // customer
-    customerModal: (context) =>
-        CustomerModal(setting: arg<CustomerSetting?>(context)),
-    customerReorder: (context) => const CustomerOrderableList(),
+    customerModal: (ctx) => CustomerModal(setting: _a<CustomerSetting?>(ctx)),
+    customerReorder: (_) => const CustomerOrderableList(),
     customerSettingOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is CustomerSettingOption
@@ -97,19 +104,18 @@ class Routes {
             )
           : CustomerSettingOptionModal(setting: arg as CustomerSetting);
     },
-    customerSettingReorder: (context) =>
-        CustomerSettingOrderableList(setting: arg<CustomerSetting>(context)),
+    customerSettingReorder: (ctx) =>
+        CustomerSettingOrderableList(setting: _a<CustomerSetting>(ctx)),
     // menu
     menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(
-          value: arg<Catalog>(context),
+          value: _a<Catalog>(context),
           builder: (_, __) => const CatalogScreen(),
         ),
-    menuCatalogModal: (context) =>
-        CatalogModal(catalog: arg<Catalog?>(context)),
+    menuCatalogModal: (context) => CatalogModal(catalog: _a<Catalog?>(context)),
     menuCatalogReorder: (context) => const CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
-          value: arg<Product>(context),
+          value: _a<Product>(context),
           builder: (_, __) => const ProductScreen(),
         ),
     menuProductModal: (context) {
@@ -121,8 +127,7 @@ class Routes {
             )
           : ProductModal(catalog: arg as Catalog);
     },
-    menuProductReorder: (context) =>
-        ProductOrderableList(arg<Catalog>(context)),
+    menuProductReorder: (ctx) => ProductOrderableList(_a<Catalog>(ctx)),
     menuIngredient: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductIngredient
@@ -144,17 +149,16 @@ class Routes {
     // order
     orderCustomer: (_) => const OrderCustomerModal(),
     orderCalculator: (_) => OrderCashierModal(),
+    // quantities
+    quantities: (_) => const QuantityScreen(),
+    quantityModal: (ctx) => QuantityModal(_a<Quantity?>(ctx)),
     // stock
-    stockIngredient: (context) =>
-        IngredientModal(ingredient: arg<Ingredient?>(context)),
-    stockQuantity: (_) => const QuantityScreen(),
-    stockQuantityModal: (context) =>
-        QuantityModal(quantity: arg<Quantity?>(context)),
-    stockReplenishment: (context) => const ReplenishmentScreen(),
-    stockReplenishmentModal: (context) =>
-        ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
+    stockIngredient: (ctx) => IngredientModal(ingredient: _a<Ingredient?>(ctx)),
+    stockReplenishment: (_) => const ReplenishmentScreen(),
+    stockReplenishmentModal: (ctx) =>
+        ReplenishmentModal(_a<Replenishment?>(ctx)),
   };
 
-  static T arg<T>(BuildContext context) =>
+  static T _a<T>(BuildContext context) =>
       ModalRoute.of(context)!.settings.arguments as T;
 }

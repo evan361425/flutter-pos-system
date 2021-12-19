@@ -64,6 +64,7 @@ dependencies:
   uuid: ^3.0.5
   wakelock: ^0.5.6
   path_provider: ^2.0.8
+  url_launcher: ^6.0.17
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
 
   assets:
     - assets/food_placeholder.png
+    - assets/feature_request_please.gif
 
 flutter_native_splash:
   color: "#000000"

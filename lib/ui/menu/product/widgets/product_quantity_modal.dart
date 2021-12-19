@@ -10,7 +10,7 @@ import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/stock/quantity/widgets/quantity_modal.dart';
+import 'package:possystem/ui/quantities/widgets/quantity_modal.dart';
 import 'package:provider/provider.dart';
 
 class ProductQuantityModal extends StatefulWidget {
@@ -218,8 +218,8 @@ class _ProductQuantitySearch extends StatelessWidget {
     return CardTile(
       title: Text(quantity.name),
       trailing: IconButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => QuantityModal(quantity: quantity))),
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => QuantityModal(quantity))),
         icon: const Icon(Icons.open_in_new_sharp),
       ),
       onTap: () {

@@ -31,13 +31,13 @@ void main() {
           ChangeNotifierProvider.value(value: settings..loadSetting()),
           ChangeNotifierProvider.value(value: Seller()),
         ],
-        builder: (_, __) => AnalysisScreen(),
+        builder: (_, __) => const Scaffold(body: AnalysisScreen()),
       ),
     );
   }
 
-  void mockGetOrderBetween(List<Map<String, Object?>> data) {
-    when(database.query(
+  Future<List<Map<String, Object?>>> mockGetOrderBetween() {
+    return database.query(
       Seller.orderTable,
       columns: anyNamed('columns'),
       where: anyNamed('where'),
@@ -46,21 +46,21 @@ void main() {
       orderBy: anyNamed('orderBy'),
       limit: anyNamed('limit'),
       offset: anyNamed('offset'),
-    )).thenAnswer((_) => Future.value(data));
+    );
   }
 
-  void mockGetCountBetween(List<Map<String, Object>> data) {
-    when(database.query(
+  Future<List<Map<String, Object?>>> mockGetCountBetween() {
+    return database.query(
       Seller.orderTable,
       columns: anyNamed('columns'),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
       groupBy: argThat(isNotNull, named: 'groupBy'),
-    )).thenAnswer((_) => Future.value(data));
+    );
   }
 
-  void mockGetMetricBetween(List<Map<String, Object>> data) {
-    when(database.query(
+  Future<List<Map<String, Object?>>> mockGetMetricBetween() {
+    return database.query(
       Seller.orderTable,
       columns: argThat(
         predicate(
@@ -69,28 +69,28 @@ void main() {
       ),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
-    )).thenAnswer((_) => Future.value(data));
+    );
   }
 
   group('Analysis Screen', () {
     testWidgets('select date and show order list in portrait', (tester) async {
       final now = DateTime.now();
-      mockGetOrderBetween([
-        {'id': 1},
-        {'id': 2},
-      ]);
-      mockGetMetricBetween([]);
-      mockGetCountBetween([
-        {
-          'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-          'count': 100, // show 99+
-        },
-        {
-          // yesterday
-          'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400,
-          'count': 50,
-        },
-      ]);
+      when(mockGetOrderBetween()).thenAnswer((_) => Future.value([
+            {'id': 1},
+            {'id': 2},
+          ]));
+      when(mockGetMetricBetween()).thenAnswer((_) => Future.value([]));
+      when(mockGetCountBetween()).thenAnswer((_) => Future.value([
+            {
+              'createdAt': now.millisecondsSinceEpoch ~/ 1000,
+              'count': 100, // show 99+
+            },
+            {
+              // yesterday
+              'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400,
+              'count': 50,
+            },
+          ]));
 
       // setup protrait env
       tester.binding.window.physicalSizeTestValue = const Size(1000, 2000);
@@ -118,18 +118,20 @@ void main() {
 
     testWidgets('load count when page changed in landscape', (tester) async {
       final now = DateTime.now();
-      mockGetCountBetween([
-        {
-          'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-          'count': 50,
-        },
-        {
-          // last month
-          'createdAt':
-              now.millisecondsSinceEpoch ~/ 1000 - 86400 * (now.day + 7),
-          'count': 60,
-        },
-      ]);
+      when(mockGetCountBetween()).thenAnswer((_) => Future.value([
+            {
+              'createdAt': now.millisecondsSinceEpoch ~/ 1000,
+              'count': 50,
+            },
+            {
+              // last month
+              'createdAt':
+                  now.millisecondsSinceEpoch ~/ 1000 - 86400 * (now.day + 7),
+              'count': 60,
+            },
+          ]));
+      when(mockGetMetricBetween()).thenAnswer((_) => Future.value([]));
+      when(mockGetOrderBetween()).thenAnswer((_) => Future.value([]));
 
       // setup landscape env
       tester.binding.window.physicalSizeTestValue = const Size(2000, 1000);
@@ -142,6 +144,10 @@ void main() {
 
       expect(find.text('50'), findsOneWidget);
       expect(find.text('60'), findsNothing);
+      // verify it has load orders after initialized
+      verify(mockGetMetricBetween());
+      verify(mockGetOrderBetween());
+      verify(mockGetCountBetween());
 
       // go to prev page(month)
       await tester.tap(find.byIcon(Icons.chevron_left));

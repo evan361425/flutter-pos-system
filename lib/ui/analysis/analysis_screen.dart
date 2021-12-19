@@ -1,58 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
 
-class AnalysisScreen extends StatelessWidget {
-  final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
-
-  final tipGrouper = GlobalKey<TipGrouperState>();
+class AnalysisScreen extends StatefulWidget {
+  final GlobalKey<TipGrouperState>? tipGrouper;
 
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  AnalysisScreen({Key? key, this.routeObserver}) : super(key: key);
+  const AnalysisScreen({
+    Key? key,
+    this.routeObserver,
+    this.tipGrouper,
+  }) : super(key: key);
+
+  @override
+  State<AnalysisScreen> createState() => _AnalysisScreenState();
+}
+
+class _AnalysisScreenState extends State<AnalysisScreen>
+    with AutomaticKeepAliveClientMixin<AnalysisScreen> {
+  final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     context.watch<Seller>();
 
     return TipGrouper(
-      key: tipGrouper,
+      key: widget.tipGrouper,
       id: 'analysis',
       candidateLength: 1,
-      routeObserver: routeObserver,
-      child: Scaffold(
-        key: const Key('analysis_screen'),
-        appBar: AppBar(
-          title: OrderedTip(
-            id: 'introduction',
-            grouper: tipGrouper,
-            order: 1,
-            version: 1,
-            message: '統計分析可以幫助我們點餐後查看點餐的紀錄。',
-            child: Text(S.analysisTitle),
-          ),
-          leading: const PopButton(),
-        ),
-        body: OrientationBuilder(
-          builder: (_, orientation) => orientation == Orientation.portrait
-              ? _buildPortrait()
-              : _buildLandscape(),
-        ),
+      routeObserver: widget.routeObserver,
+      child: OrientationBuilder(
+        key: const Key('analysis.builder'),
+        builder: (_, orientation) => orientation == Orientation.portrait
+            ? _buildPortrait()
+            : _buildLandscape(),
       ),
     );
   }
 
   Widget _buildCalendar({required bool isPortrait}) {
-    return CalendarWrapper(
-      isPortrait: isPortrait,
-      handleDaySelected: _handleDaySelected,
-      searchCountInMonth: _searchCountInMonth,
+    return OrderedTip(
+      id: 'introduction',
+      grouper: widget.tipGrouper,
+      order: 1,
+      version: 1,
+      message: '上下滑動可以顯上單週或單月，左右滑動調整日期',
+      child: CalendarWrapper(
+        isPortrait: isPortrait,
+        handleDaySelected: _handleDaySelected,
+        searchCountInMonth: _searchCountInMonth,
+      ),
     );
   }
 
@@ -61,8 +67,7 @@ class AnalysisScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: _buildCalendar(isPortrait: false)),
-        // TODO: check center usage
-        Expanded(child: Center(child: _buildOrderList())),
+        Expanded(child: _buildOrderList()),
       ],
     );
   }

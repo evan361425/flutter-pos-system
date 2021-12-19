@@ -10,7 +10,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/stock/quantity/quantity_screen.dart';
+import 'package:possystem/ui/quantities/quantity_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';

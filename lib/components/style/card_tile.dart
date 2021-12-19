@@ -4,6 +4,7 @@ class CardTile extends StatelessWidget {
   final Widget? title;
   final Widget? subtitle;
   final Widget? trailing;
+  final Widget? leading;
   final VoidCallback? onTap;
 
   const CardTile({
@@ -11,6 +12,7 @@ class CardTile extends StatelessWidget {
     this.title,
     this.subtitle,
     this.onTap,
+    this.leading,
     this.trailing,
   }) : super(key: key);
 
@@ -21,6 +23,7 @@ class CardTile extends StatelessWidget {
       margin: const EdgeInsets.all(0),
       child: ListTile(
         title: title,
+        leading: leading,
         subtitle: subtitle,
         onTap: onTap,
         trailing: trailing,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
@@ -21,21 +21,28 @@ import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
 import 'widgets/order_by_sliding_panel.dart';
 import 'widgets/order_catalog_list.dart';
-import 'widgets/order_product_state_selector.dart';
 import 'widgets/order_product_list.dart';
+import 'widgets/order_product_state_selector.dart';
 
 class OrderScreen extends StatefulWidget {
-  const OrderScreen({Key? key}) : super(key: key);
+  final RouteObserver<ModalRoute<void>>? routeObserver;
+
+  final GlobalKey<TipGrouperState>? tipGrouper;
+
+  const OrderScreen({
+    Key? key,
+    this.tipGrouper,
+    this.routeObserver,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => OrderScreenState();
 }
 
-class OrderScreenState extends State<OrderScreen> with RouteAware {
+class OrderScreenState extends State<OrderScreen> {
   final _orderProductList = GlobalKey<OrderProductListState>();
   final _cartProductList = GlobalKey<CartProductListState>();
   final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
-  final _tipGrouper = GlobalKey<TipGrouperState>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,7 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
     );
     final menuProductRow = OrderedTip(
       id: 'product_list',
-      grouper: _tipGrouper,
+      grouper: widget.tipGrouper,
       message: '透過圖片點餐更方便！\n你也可以到「設定」頁面設定「每行顯示幾個產品」或僅使用文字點餐',
       order: 1000,
       version: catalogs.isEmpty ? 0 : 1,
@@ -74,70 +81,57 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
     final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();
 
     return TipGrouper(
-      key: _tipGrouper,
+      key: widget.tipGrouper,
       id: 'order',
       candidateLength: 1,
-      routeObserver: MyApp.routeObserver,
-      child: SafeArea(
-        child: Scaffold(
-          // avoid resize when keyboard(bottom inset) shows
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            leading: const OrderActions(key: Key('order.action.more')),
-            actions: [
-              AppbarTextButton(
-                key: const Key('order.cashier'),
-                onPressed: () => _handleOrder(),
-                child: Text(S.orderActionsOrderDone),
-              ),
-            ],
-          ),
-          body: outlook.value == OrderOutlookTypes.slidingPanel
-              ? OrderBySlidingPanel(
-                  key: slidingPanel,
-                  row1: menuCatalogRow,
-                  row2: menuProductRow,
-                  row3: cartProductRow,
-                  row4: menuIngredientRow,
-                  tipGrouper: _tipGrouper,
-                )
-              : OrderByOrientation(
-                  row1: menuCatalogRow,
-                  row2: menuProductRow,
-                  row3: cartProductRow,
-                  row4: menuIngredientRow,
-                ),
+      routeObserver: widget.routeObserver,
+      child: Scaffold(
+        // avoid resize when keyboard(bottom inset) shows
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: const PopButton(),
+          actions: [
+            const OrderActions(key: Key('order.action.more')),
+            AppbarTextButton(
+              key: const Key('order.cashier'),
+              onPressed: () => _handleOrder(),
+              child: Text(S.orderActionsOrderDone),
+            ),
+          ],
         ),
+        body: outlook.value == OrderOutlookTypes.slidingPanel
+            ? OrderBySlidingPanel(
+                key: slidingPanel,
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: menuIngredientRow,
+                tipGrouper: widget.tipGrouper,
+              )
+            : OrderByOrientation(
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: menuIngredientRow,
+              ),
       ),
     );
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    MyApp.routeObserver.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void didPop() {
+  void dispose() {
     Wakelock.disable();
-    super.didPop();
+    super.dispose();
   }
 
   @override
-  void didPush() {
+  void initState() {
     if (SettingsProvider.instance.getSetting<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
     // rebind menu/customer_setting if changed
     Cart.instance.rebind();
-    super.didPush();
-  }
-
-  @override
-  void dispose() {
-    MyApp.routeObserver.unsubscribe(this);
-    super.dispose();
+    super.initState();
   }
 
   void _handleOrder() async {

@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu()),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -77,7 +77,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -92,7 +92,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -127,7 +127,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       await tester.tap(find.byKey(const Key('menu.more')));
       await tester.pumpAndSettle();
@@ -167,7 +167,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: MenuScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -239,7 +239,7 @@ void main() {
             routes: Routes.routes,
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,
-            home: MenuScreen(),
+            home: const MenuScreen(),
           )));
       await tester.tap(find.byKey(const Key('menu.search')));
       await tester.pumpAndSettle();

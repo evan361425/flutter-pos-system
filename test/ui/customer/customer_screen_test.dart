@@ -25,7 +25,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: settings,
-        child: MaterialApp(routes: Routes.routes, home: CustomerScreen()),
+        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -105,7 +105,7 @@ void main() {
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,
             routes: Routes.routes,
-            home: CustomerScreen()),
+            home: const CustomerScreen()),
       ));
     }
 

@@ -92,6 +92,12 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     _searchCountInMonth(_selectedDay);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.handleDaySelected(_selectedDay);
+  }
+
   Widget? _badgeBuilder(BuildContext context, DateTime day, List<int> value) {
     if (value.isEmpty) return null;
 
