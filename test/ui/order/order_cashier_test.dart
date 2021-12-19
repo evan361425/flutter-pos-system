@@ -21,7 +21,6 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -341,7 +340,6 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          navigatorObservers: [MyApp.routeObserver],
           routes: Routes.routes,
           home: const OrderScreen(),
         ),

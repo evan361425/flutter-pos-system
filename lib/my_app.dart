@@ -13,21 +13,23 @@ import 'translator.dart';
 class MyApp extends StatelessWidget {
   static final analytics = FirebaseAnalytics();
 
-  static final routeObserver = RouteObserver<ModalRoute<void>>();
-
   final Widget child;
 
   final SettingsProvider settings;
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   const MyApp({
     Key? key,
     required this.settings,
     required this.child,
+    required this.routeObserver,
   }) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Routes.routeObserver = routeObserver;
     // Glue the SettingsController to the MaterialApp.
     //
     // The AnimatedBuilder Widget listens to the SettingsController for changes.

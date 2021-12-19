@@ -53,7 +53,7 @@ void main() {
         OrderProductAxisCountSetting(),
       ]);
 
-      final routeObserver = RouteObserver<ModalRoute<void>>();
+      Routes.routeObserver = RouteObserver<ModalRoute<void>>();
 
       await tester.pumpWidget(MultiProvider(
         providers: [
@@ -68,10 +68,10 @@ void main() {
         ],
         child: MaterialApp(
           routes: Routes.routes,
-          navigatorObservers: [routeObserver],
+          navigatorObservers: [Routes.routeObserver],
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          home: HomeScaffold(routeObserver: routeObserver),
+          home: HomeScaffold(routeObserver: Routes.routeObserver),
         ),
       ));
 

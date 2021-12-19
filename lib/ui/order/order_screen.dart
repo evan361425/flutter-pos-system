@@ -21,8 +21,8 @@ import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
 import 'widgets/order_by_sliding_panel.dart';
 import 'widgets/order_catalog_list.dart';
-import 'widgets/order_product_state_selector.dart';
 import 'widgets/order_product_list.dart';
+import 'widgets/order_product_state_selector.dart';
 
 class OrderScreen extends StatefulWidget {
   final RouteObserver<ModalRoute<void>>? routeObserver;
@@ -39,7 +39,7 @@ class OrderScreen extends StatefulWidget {
   State<StatefulWidget> createState() => OrderScreenState();
 }
 
-class OrderScreenState extends State<OrderScreen> with RouteAware {
+class OrderScreenState extends State<OrderScreen> {
   final _orderProductList = GlobalKey<OrderProductListState>();
   final _cartProductList = GlobalKey<CartProductListState>();
   final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
@@ -119,31 +119,19 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    widget.routeObserver?.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void didPop() {
+  void dispose() {
     Wakelock.disable();
-    super.didPop();
+    super.dispose();
   }
 
   @override
-  void didPush() {
+  void initState() {
     if (SettingsProvider.instance.getSetting<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
     // rebind menu/customer_setting if changed
     Cart.instance.rebind();
-    super.didPush();
-  }
-
-  @override
-  void dispose() {
-    widget.routeObserver?.unsubscribe(this);
-    super.dispose();
+    super.initState();
   }
 
   void _handleOrder() async {

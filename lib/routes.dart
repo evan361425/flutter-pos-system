@@ -13,7 +13,6 @@ import 'models/menu/product_quantity.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
-import 'my_app.dart';
 import 'ui/cashier/changer/changer_modal.dart';
 import 'ui/customer/customer_screen.dart';
 import 'ui/customer/widgets/customer_orderable_list.dart';
@@ -72,29 +71,30 @@ class Routes {
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockIngredient = 'stock/ingredient';
 
+  static late final RouteObserver<ModalRoute<void>> routeObserver;
+
   static final routes = <String, WidgetBuilder>{
     customer: (_) => CustomerScreen(
-          routeObserver: MyApp.routeObserver,
+          routeObserver: routeObserver,
           tipGrouper: GlobalKey<TipGrouperState>(),
         ),
     featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
     menu: (_) => MenuScreen(
-          routeObserver: MyApp.routeObserver,
+          routeObserver: routeObserver,
           tipGrouper: GlobalKey<TipGrouperState>(),
         ),
     order: (_) => OrderScreen(
-          routeObserver: MyApp.routeObserver,
+          routeObserver: routeObserver,
           tipGrouper: GlobalKey<TipGrouperState>(),
         ),
     setting: (_) => const SettingScreen(),
     // sub-route
     // cashier
-    cashierChanger: (context) => const ChangerModal(),
-    cashierSurplus: (context) => CashierSurplus(),
+    cashierChanger: (_) => const ChangerModal(),
+    cashierSurplus: (_) => CashierSurplus(),
     // customer
-    customerModal: (context) =>
-        CustomerModal(setting: arg<CustomerSetting?>(context)),
-    customerReorder: (context) => const CustomerOrderableList(),
+    customerModal: (ctx) => CustomerModal(setting: _a<CustomerSetting?>(ctx)),
+    customerReorder: (_) => const CustomerOrderableList(),
     customerSettingOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is CustomerSettingOption
@@ -104,19 +104,18 @@ class Routes {
             )
           : CustomerSettingOptionModal(setting: arg as CustomerSetting);
     },
-    customerSettingReorder: (context) =>
-        CustomerSettingOrderableList(setting: arg<CustomerSetting>(context)),
+    customerSettingReorder: (ctx) =>
+        CustomerSettingOrderableList(setting: _a<CustomerSetting>(ctx)),
     // menu
     menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(
-          value: arg<Catalog>(context),
+          value: _a<Catalog>(context),
           builder: (_, __) => const CatalogScreen(),
         ),
-    menuCatalogModal: (context) =>
-        CatalogModal(catalog: arg<Catalog?>(context)),
+    menuCatalogModal: (context) => CatalogModal(catalog: _a<Catalog?>(context)),
     menuCatalogReorder: (context) => const CatalogOrderableList(),
     menuProduct: (context) => ChangeNotifierProvider.value(
-          value: arg<Product>(context),
+          value: _a<Product>(context),
           builder: (_, __) => const ProductScreen(),
         ),
     menuProductModal: (context) {
@@ -128,8 +127,7 @@ class Routes {
             )
           : ProductModal(catalog: arg as Catalog);
     },
-    menuProductReorder: (context) =>
-        ProductOrderableList(arg<Catalog>(context)),
+    menuProductReorder: (ctx) => ProductOrderableList(_a<Catalog>(ctx)),
     menuIngredient: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       return arg is ProductIngredient
@@ -153,15 +151,14 @@ class Routes {
     orderCalculator: (_) => OrderCashierModal(),
     // quantities
     quantities: (_) => const QuantityScreen(),
-    quantityModal: (context) => QuantityModal(arg<Quantity?>(context)),
+    quantityModal: (ctx) => QuantityModal(_a<Quantity?>(ctx)),
     // stock
-    stockIngredient: (context) =>
-        IngredientModal(ingredient: arg<Ingredient?>(context)),
-    stockReplenishment: (context) => const ReplenishmentScreen(),
-    stockReplenishmentModal: (context) =>
-        ReplenishmentModal(replenishment: arg<Replenishment?>(context)),
+    stockIngredient: (ctx) => IngredientModal(ingredient: _a<Ingredient?>(ctx)),
+    stockReplenishment: (_) => const ReplenishmentScreen(),
+    stockReplenishmentModal: (ctx) =>
+        ReplenishmentModal(_a<Replenishment?>(ctx)),
   };
 
-  static T arg<T>(BuildContext context) =>
+  static T _a<T>(BuildContext context) =>
       ModalRoute.of(context)!.settings.arguments as T;
 }

@@ -99,6 +99,7 @@ void main() async {
       child: MyApp(
         settings: settings,
         child: const HomeScaffold(),
+        routeObserver: RouteObserver<ModalRoute<void>>(),
       ),
     ));
   }, FirebaseCrashlytics.instance.recordError);
