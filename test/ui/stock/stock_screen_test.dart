@@ -29,7 +29,7 @@ void main() {
         ChangeNotifierProvider<Replenisher>.value(
             value: Replenisher()..replaceItems({})),
         ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
@@ -61,7 +61,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
         ChangeNotifierProvider<Replenisher>.value(value: repli),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
 
       await tester.tap(find.byKey(const Key('stock.replenisher')));
       await tester.pumpAndSettle();
@@ -103,7 +103,7 @@ void main() {
         ChangeNotifierProvider<Stock>.value(value: stock),
         ChangeNotifierProvider<Menu>.value(value: menu),
         ChangeNotifierProvider<Quantities>.value(value: quantities),
-      ], child: MaterialApp(routes: Routes.routes, home: StockScreen())));
+      ], child: MaterialApp(routes: Routes.routes, home: const StockScreen())));
     }
 
     testWidgets('edit amount of ingredient', (tester) async {

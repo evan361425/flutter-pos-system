@@ -47,12 +47,6 @@ class OrderActions extends StatelessWidget {
         leading: const Icon(Icons.file_upload),
         returnValue: _Types.dropStash,
       ),
-      BottomSheetAction(
-        key: const Key('order.action.leave'),
-        title: Text(S.orderActionsLeave),
-        leading: const Icon(Icons.logout),
-        returnValue: _Types.leave,
-      ),
     ];
   }
 
@@ -74,8 +68,6 @@ class OrderActions extends StatelessWidget {
     switch (action) {
       case _Types.leaveHistory:
         return Cart.instance.clear();
-      case _Types.leave:
-        return Navigator.of(context).pop();
       case _Types.showLast:
         if (!await _confirmStashable(context)) return;
 
@@ -140,6 +132,5 @@ enum _Types {
   changer,
   stash,
   dropStash,
-  leave,
   leaveHistory,
 }

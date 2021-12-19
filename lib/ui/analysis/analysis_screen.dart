@@ -39,6 +39,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
       candidateLength: 1,
       routeObserver: widget.routeObserver,
       child: OrientationBuilder(
+        key: const Key('analysis.builder'),
         builder: (_, orientation) => orientation == Orientation.portrait
             ? _buildPortrait()
             : _buildLandscape(),

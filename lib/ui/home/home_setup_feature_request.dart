@@ -11,7 +11,10 @@ class HomeSetupFeatureRequestScreen extends StatelessWidget {
       appBar: AppBar(leading: const PopButton()),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset('assets/feature_request_please.gif'),
+          Image.asset(
+            'assets/feature_request_please.gif',
+            key: const Key('feature_request_please'),
+          ),
           Linkify(
             '覺得這裡還少了什麼嗎？\n'
             '歡迎[提供建議](https://github.com/evan361425/flutter-pos-system/issues/new/choose)。\n'

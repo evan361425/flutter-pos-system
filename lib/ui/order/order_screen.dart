@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
@@ -88,8 +89,9 @@ class OrderScreenState extends State<OrderScreen> with RouteAware {
         // avoid resize when keyboard(bottom inset) shows
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: const OrderActions(key: Key('order.action.more')),
+          leading: const PopButton(),
           actions: [
+            const OrderActions(key: Key('order.action.more')),
             AppbarTextButton(
               key: const Key('order.cashier'),
               onPressed: () => _handleOrder(),

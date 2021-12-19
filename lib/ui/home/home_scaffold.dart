@@ -32,6 +32,7 @@ class _HomeScaffoldState extends State<HomeScaffold>
     return Scaffold(
       appBar: AppBar(actions: [
         AppbarTextButton(
+          key: const Key('home.order'),
           onPressed: () => Navigator.of(context).pushNamed(Routes.order),
           child: const Text('點餐'),
         )
@@ -50,21 +51,25 @@ class _HomeScaffoldState extends State<HomeScaffold>
           indicatorColor: Colors.white,
           tabs: const [
             Tab(
+              key: Key('home.analysis'),
               iconMargin: EdgeInsets.only(bottom: 6),
               icon: Icon(Icons.equalizer_outlined),
               text: '統計',
             ),
             Tab(
+              key: Key('home.stock'),
               iconMargin: EdgeInsets.only(bottom: 6),
               icon: Icon(Icons.store_outlined),
               text: '庫存',
             ),
             Tab(
+              key: Key('home.cashier'),
               iconMargin: EdgeInsets.only(bottom: 6),
               icon: Icon(Icons.attach_money_outlined),
               text: '收銀',
             ),
             Tab(
+              key: Key('home.setting'),
               iconMargin: EdgeInsets.only(bottom: 6),
               icon: Icon(Icons.settings_outlined),
               text: '設定',
