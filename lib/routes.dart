@@ -71,7 +71,7 @@ class Routes {
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockIngredient = 'stock/ingredient';
 
-  static late final RouteObserver<ModalRoute<void>> routeObserver;
+  static late RouteObserver<ModalRoute<void>> routeObserver;
 
   static final routes = <String, WidgetBuilder>{
     customer: (_) => CustomerScreen(
