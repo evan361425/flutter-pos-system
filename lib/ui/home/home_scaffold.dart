@@ -50,28 +50,24 @@ class _HomeScaffoldState extends State<HomeScaffold>
           controller: _tabController,
           indicatorColor: Colors.white,
           tabs: const [
-            Tab(
+            _CustomTab(
               key: Key('home.analysis'),
-              iconMargin: EdgeInsets.only(bottom: 6),
-              icon: Icon(Icons.equalizer_outlined),
+              icon: Icons.equalizer_outlined,
               text: '統計',
             ),
-            Tab(
+            _CustomTab(
               key: Key('home.stock'),
-              iconMargin: EdgeInsets.only(bottom: 6),
-              icon: Icon(Icons.store_outlined),
+              icon: Icons.store_outlined,
               text: '庫存',
             ),
-            Tab(
+            _CustomTab(
               key: Key('home.cashier'),
-              iconMargin: EdgeInsets.only(bottom: 6),
-              icon: Icon(Icons.attach_money_outlined),
+              icon: Icons.attach_money_outlined,
               text: '收銀',
             ),
-            Tab(
+            _CustomTab(
               key: Key('home.setting'),
-              iconMargin: EdgeInsets.only(bottom: 6),
-              icon: Icon(Icons.settings_outlined),
+              icon: Icons.settings_outlined,
               text: '設定',
             ),
           ],
@@ -105,6 +101,32 @@ class _HomeScaffoldState extends State<HomeScaffold>
       initialIndex: Menu.instance.isEmpty ? 3 : 0,
       length: 4,
       vsync: this,
+    );
+  }
+}
+
+class _CustomTab extends StatelessWidget {
+  final String text;
+
+  final IconData icon;
+
+  const _CustomTab({
+    Key? key,
+    required this.text,
+    required this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Tab(
+      iconMargin: const EdgeInsets.only(bottom: 6),
+      icon: Icon(icon),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14),
+        softWrap: false,
+        overflow: TextOverflow.fade,
+      ),
     );
   }
 }
