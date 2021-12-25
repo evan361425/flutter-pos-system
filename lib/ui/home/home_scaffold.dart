@@ -30,13 +30,13 @@ class _HomeScaffoldState extends State<HomeScaffold>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        AppbarTextButton(
-          key: const Key('home.order'),
-          onPressed: () => Navigator.of(context).pushNamed(Routes.order),
-          child: const Text('點餐'),
-        )
-      ]),
+      floatingActionButton: FloatingActionButton(
+        key: const Key('home.order'),
+        onPressed: () => Navigator.of(context).pushNamed(Routes.order),
+        tooltip: '點餐',
+        child: const Icon(Icons.local_grocery_store_outlined),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

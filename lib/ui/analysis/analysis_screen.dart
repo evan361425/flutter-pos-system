@@ -38,11 +38,13 @@ class _AnalysisScreenState extends State<AnalysisScreen>
       id: 'analysis',
       candidateLength: 1,
       routeObserver: widget.routeObserver,
-      child: OrientationBuilder(
-        key: const Key('analysis.builder'),
-        builder: (_, orientation) => orientation == Orientation.portrait
-            ? _buildPortrait()
-            : _buildLandscape(),
+      child: SafeArea(
+        child: OrientationBuilder(
+          key: const Key('analysis.builder'),
+          builder: (_, orientation) => orientation == Orientation.portrait
+              ? _buildPortrait()
+              : _buildLandscape(),
+        ),
       ),
     );
   }

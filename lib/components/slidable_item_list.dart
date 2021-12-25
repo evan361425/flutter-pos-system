@@ -9,9 +9,12 @@ import 'package:possystem/translator.dart';
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
 
+  final bool scrollable;
+
   const SlidableItemList({
     Key? key,
     required this.delegate,
+    this.scrollable = true,
   }) : super(key: key);
 
   @override
@@ -19,22 +22,22 @@ class SlidableItemList<T, Action> extends StatelessWidget {
     final theme = Theme.of(context);
     int index = 0;
 
-    return SingleChildScrollView(
-      child: Column(children: <Widget>[
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: HintText(S.totalCount(delegate.items.length)),
-          ),
+    final child = Column(children: <Widget>[
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          child: HintText(S.totalCount(delegate.items.length)),
         ),
-        for (final item in delegate.items)
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 2.0),
-            child: delegate.build(context, item, index: index++, theme: theme),
-          ),
-        const SizedBox(height: 4.0),
-      ]),
-    );
+      ),
+      for (final item in delegate.items)
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 2.0),
+          child: delegate.build(context, item, index: index++, theme: theme),
+        ),
+      const SizedBox(height: 4.0),
+    ]);
+
+    return scrollable ? SingleChildScrollView(child: child) : child;
   }
 }
 

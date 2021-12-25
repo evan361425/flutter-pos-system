@@ -19,6 +19,7 @@ class IngredientList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Ingredient, int>(
+      scrollable: false,
       delegate: SlidableItemDelegate(
         items: ingredients,
         deleteValue: 0,

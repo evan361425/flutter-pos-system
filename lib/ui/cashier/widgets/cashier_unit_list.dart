@@ -14,11 +14,9 @@ class CashierUnitList extends StatelessWidget {
   Widget build(BuildContext context) {
     final cashier = context.watch<Cashier>();
 
-    return ListView.builder(
-      itemBuilder: (_, i) {
-        final unit = cashier.at(i);
-
-        return ListTile(
+    return Column(children: [
+      for (final unit in cashier.currentUnits)
+        ListTile(
           title: Text('幣值：${unit.unit}'),
           subtitle: Text(
             '數量：${unit.count}',
@@ -29,22 +27,22 @@ class CashierUnitList extends StatelessWidget {
             children: <Widget>[
               IconFilledButton(
                 key: Key('cashier.${unit.unit}.plus'),
-                onPressed: () => handlePlus(context, i),
+                onPressed: () =>
+                    handlePlus(context, cashier.indexOf(unit.unit)),
                 icon: KIcons.add,
                 type: IconFilledButtonType.outlined,
               ),
               IconFilledButton(
                 key: Key('cashier.${unit.unit}.minus'),
-                onPressed: () => handleMinus(context, i),
+                onPressed: () =>
+                    handleMinus(context, cashier.indexOf(unit.unit)),
                 icon: KIcons.remove,
                 type: IconFilledButtonType.outlined,
               ),
             ],
           ),
-        );
-      },
-      itemCount: cashier.unitLength,
-    );
+        )
+    ]);
   }
 
   void handlePlus(BuildContext context, int index) async {

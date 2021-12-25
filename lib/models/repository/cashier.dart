@@ -43,6 +43,12 @@ class Cashier extends ChangeNotifier {
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
 
+  Iterable<CashierUnitObject> get currentUnits sync* {
+    for (var item in _current) {
+      yield item;
+    }
+  }
+
   Future<void> addFavorite(CashierChangeBatchObject item) {
     _favorites.add(item);
 
