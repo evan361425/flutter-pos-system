@@ -31,7 +31,7 @@ void main() {
           routes: Routes.routes,
           home: MaterialApp(
             routes: Routes.routes,
-            home: const CashierScreen(),
+            home: const Scaffold(body: CashierScreen()),
           ),
         ),
       );

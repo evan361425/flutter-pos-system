@@ -95,7 +95,7 @@ void main() {
       await navAndPop('home_setup.feature_request', 'feature_request_please');
       await navAndPop('home_setup.setting', 'setting.theme');
       await navAndPop('home.order', 'order.action.more');
-      await navAndCheck('home.stock', 'stock.add');
+      await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');
       await navAndCheck('home.analysis', 'analysis.builder');
     });

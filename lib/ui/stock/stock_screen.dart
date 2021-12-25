@@ -28,11 +28,12 @@ class StockScreen extends StatelessWidget {
 
     final body = stock.isEmpty
         ? Center(
+            key: const Key('stock.empty'),
             child: EmptyBody(
-            onPressed: () => Navigator.of(context).pushNamed(
-              Routes.stockIngredient,
-            ),
-          ))
+              onPressed: () => Navigator.of(context).pushNamed(
+                Routes.stockIngredient,
+              ),
+            ))
         : _StockBody(tipGrouper: tipGrouper);
 
     return TipGrouper(
