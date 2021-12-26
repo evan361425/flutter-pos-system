@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
 
 class AnalysisScreen extends StatefulWidget {
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
-  final RouteObserver<ModalRoute<void>>? routeObserver;
-
-  const AnalysisScreen({
-    Key? key,
-    this.routeObserver,
-    this.tipGrouper,
-  }) : super(key: key);
+  const AnalysisScreen({Key? key}) : super(key: key);
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -28,28 +19,18 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Widget build(BuildContext context) {
     context.watch<Seller>();
 
-    return TipGrouper(
-      key: widget.tipGrouper,
-      id: 'analysis',
-      candidateLength: 1,
-      routeObserver: widget.routeObserver,
-      child: SafeArea(
-        child: OrientationBuilder(
-          key: const Key('analysis.builder'),
-          builder: (_, orientation) => orientation == Orientation.portrait
-              ? _buildPortrait()
-              : _buildLandscape(),
-        ),
+    return SafeArea(
+      child: OrientationBuilder(
+        key: const Key('analysis.builder'),
+        builder: (_, orientation) => orientation == Orientation.portrait
+            ? _buildPortrait()
+            : _buildLandscape(),
       ),
     );
   }
 
   Widget _buildCalendar({required bool isPortrait}) {
-    return OrderedTip(
-      id: 'introduction',
-      grouper: widget.tipGrouper,
-      order: 1,
-      version: 1,
+    return Tooltip(
       message: '上下滑動可以顯上單週或單月，左右滑動調整日期',
       child: CalendarWrapper(
         isPortrait: isPortrait,

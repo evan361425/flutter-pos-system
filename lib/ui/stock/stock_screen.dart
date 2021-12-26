@@ -7,52 +7,27 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/ingredient_list.dart';
 
 class StockScreen extends StatelessWidget {
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
-  final RouteObserver<ModalRoute<void>>? routeObserver;
-
-  const StockScreen({
-    Key? key,
-    this.routeObserver,
-    this.tipGrouper,
-  }) : super(key: key);
+  const StockScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final stock = context.watch<Stock>();
 
-    final body = stock.isEmpty
-        ? Center(
-            key: const Key('stock.empty'),
-            child: EmptyBody(
-              onPressed: () => Navigator.of(context).pushNamed(
-                Routes.stockIngredient,
-              ),
-            ))
-        : _StockBody(tipGrouper: tipGrouper);
+    if (stock.isEmpty) {
+      return Center(
+        key: const Key('stock.empty'),
+        child: EmptyBody(
+          onPressed: () => Navigator.of(context).pushNamed(
+            Routes.stockIngredient,
+          ),
+        ),
+      );
+    }
 
-    return TipGrouper(
-      key: tipGrouper,
-      id: 'stock',
-      candidateLength: 1,
-      routeObserver: routeObserver,
-      child: body,
-    );
-  }
-}
-
-class _StockBody extends StatelessWidget {
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
-  const _StockBody({Key? key, this.tipGrouper}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     final updatedAt = Stock.instance.updatedAt;
 
     return ListView(children: [
@@ -64,14 +39,10 @@ class _StockBody extends StatelessWidget {
       ),
       const SizedBox(height: 4.0),
       Flex(direction: Axis.horizontal, children: [
-        Expanded(
-          child: OrderedTip(
-            grouper: tipGrouper,
-            id: 'replenishment',
-            order: 2,
-            version: 1,
+        const Expanded(
+          child: Tooltip(
             message: '你不需要一個一個去設定庫存，馬上設定採購，一次設定多個成份吧！',
-            child: const RouteCircularButton(
+            child: RouteCircularButton(
               key: Key('stock.replenisher'),
               icon: Icons.shopping_basket_sharp,
               route: Routes.stockReplenishment,
@@ -80,7 +51,7 @@ class _StockBody extends StatelessWidget {
             ),
           ),
         ),
-        const Spacer(),
+        const Spacer(flex: 2),
         Expanded(
           child: RouteCircularButton(
             key: const Key('stock.add'),

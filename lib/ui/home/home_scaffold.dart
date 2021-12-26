@@ -6,12 +6,9 @@ import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
 import 'package:possystem/ui/home/home_setup_screen.dart';
 import '../stock/stock_screen.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 class HomeScaffold extends StatefulWidget {
-  final RouteObserver<ModalRoute<void>>? routeObserver;
-
-  const HomeScaffold({Key? key, this.routeObserver}) : super(key: key);
+  const HomeScaffold({Key? key}) : super(key: key);
 
   @override
   _HomeScaffoldState createState() => _HomeScaffoldState();
@@ -20,11 +17,6 @@ class HomeScaffold extends StatefulWidget {
 class _HomeScaffoldState extends State<HomeScaffold>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  final analysisTipGrouper = GlobalKey<TipGrouperState>();
-  final stockTipGrouper = GlobalKey<TipGrouperState>();
-  final orderTipGrouper = GlobalKey<TipGrouperState>();
-  final settingTipGrouper = GlobalKey<TipGrouperState>();
 
   @override
   Widget build(BuildContext context) {
@@ -74,20 +66,11 @@ class _HomeScaffoldState extends State<HomeScaffold>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          AnalysisScreen(
-            routeObserver: widget.routeObserver,
-            tipGrouper: analysisTipGrouper,
-          ),
-          StockScreen(
-            routeObserver: widget.routeObserver,
-            tipGrouper: stockTipGrouper,
-          ),
-          CashierScreen(
-            routeObserver: widget.routeObserver,
-            tipGrouper: orderTipGrouper,
-          ),
-          const HomeSetupScreen(),
+        children: const [
+          AnalysisScreen(),
+          StockScreen(),
+          CashierScreen(),
+          HomeSetupScreen(),
         ],
       ),
     );

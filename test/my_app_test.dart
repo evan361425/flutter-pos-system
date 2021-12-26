@@ -22,7 +22,6 @@ void main() {
       builder: (_, __) => MyApp(
         settings: settings,
         child: _TestChild(),
-        routeObserver: RouteObserver<ModalRoute<void>>(),
       ),
     );
 

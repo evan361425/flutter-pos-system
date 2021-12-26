@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 import 'package:possystem/ui/home/home_setup_feature_request.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 import 'models/customer/customer_setting.dart';
 import 'models/customer/customer_setting_option.dart';
@@ -71,22 +70,11 @@ class Routes {
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
   static const String stockIngredient = 'stock/ingredient';
 
-  static late RouteObserver<ModalRoute<void>> routeObserver;
-
   static final routes = <String, WidgetBuilder>{
-    customer: (_) => CustomerScreen(
-          routeObserver: routeObserver,
-          tipGrouper: GlobalKey<TipGrouperState>(),
-        ),
+    customer: (_) => const CustomerScreen(),
     featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
-    menu: (_) => MenuScreen(
-          routeObserver: routeObserver,
-          tipGrouper: GlobalKey<TipGrouperState>(),
-        ),
-    order: (_) => OrderScreen(
-          routeObserver: routeObserver,
-          tipGrouper: GlobalKey<TipGrouperState>(),
-        ),
+    menu: (_) => const MenuScreen(),
+    order: (_) => const OrderScreen(),
     setting: (_) => const SettingScreen(),
     // sub-route
     // cashier

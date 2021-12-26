@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'components/tip/cache_state_manager.dart';
 import 'models/repository/cashier.dart';
 import 'models/repository/customer_settings.dart';
 import 'models/repository/menu.dart';
@@ -46,8 +45,6 @@ void main() async {
     await Database.instance.initialize();
     await Storage.instance.initialize();
     await Cache.instance.initialize();
-
-    CacheStateManager.initialize();
 
     final settings = SettingsProvider([
       LanguageSetting(),
@@ -99,7 +96,6 @@ void main() async {
       child: MyApp(
         settings: settings,
         child: const HomeScaffold(),
-        routeObserver: RouteObserver<ModalRoute<void>>(),
       ),
     ));
   }, FirebaseCrashlytics.instance.recordError);

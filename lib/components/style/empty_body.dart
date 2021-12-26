@@ -6,8 +6,14 @@ class EmptyBody extends StatelessWidget {
 
   final String? title;
 
-  const EmptyBody({Key? key, this.title, required this.onPressed})
-      : super(key: key);
+  final String? tooltip;
+
+  const EmptyBody({
+    Key? key,
+    this.title,
+    required this.onPressed,
+    this.tooltip,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +27,11 @@ class EmptyBody extends StatelessWidget {
             title ?? S.emptyBodyContent,
             style: Theme.of(context).textTheme.headline6,
           ),
+          if (tooltip != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(tooltip!, textAlign: TextAlign.center),
+            ),
           OutlinedButton(
             key: const Key('empty_body'),
             onPressed: onPressed,

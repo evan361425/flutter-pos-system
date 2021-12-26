@@ -5,75 +5,52 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 import 'widgets/cashier_unit_list.dart';
 
 class CashierScreen extends StatelessWidget {
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
-  final RouteObserver<ModalRoute<void>>? routeObserver;
-
-  const CashierScreen({
-    Key? key,
-    this.routeObserver,
-    this.tipGrouper,
-  }) : super(key: key);
+  const CashierScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TipGrouper(
-      key: tipGrouper,
-      id: 'cashier',
-      candidateLength: 2,
-      routeObserver: routeObserver,
-      child: ListView(children: [
-        const SizedBox(height: 4.0),
-        Flex(direction: Axis.horizontal, children: [
-          Expanded(
-            child: OrderedTip(
-              id: 'setDefault',
-              grouper: tipGrouper,
-              version: 1,
-              order: 2,
-              message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
-              child: RouteCircularButton(
-                key: const Key('cashier.defaulter'),
-                onTap: () => handleSetDefault(context),
-                icon: Icons.upload_outlined,
-                text: '設為預設',
-              ),
-            ),
-          ),
-          const Expanded(
+    return ListView(children: [
+      const SizedBox(height: 4.0),
+      Flex(direction: Axis.horizontal, children: [
+        Expanded(
+          child: Tooltip(
+            message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
             child: RouteCircularButton(
-              key: Key('cashier.changer'),
-              route: Routes.cashierChanger,
-              icon: Icons.sync_alt_outlined,
-              text: '換錢',
+              key: const Key('cashier.defaulter'),
+              onTap: () => handleSetDefault(context),
+              icon: Icons.upload_outlined,
+              text: '設為預設',
+            ),
+          ),
+        ),
+        const Expanded(
+          child: RouteCircularButton(
+            key: Key('cashier.changer'),
+            route: Routes.cashierChanger,
+            icon: Icons.sync_alt_outlined,
+            text: '換錢',
+            popTrueShowSuccess: true,
+          ),
+        ),
+        Expanded(
+          child: Tooltip(
+            message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
+            child: RouteCircularButton(
+              key: const Key('cashier.surplus'),
+              icon: Icons.coffee_outlined,
+              text: '結餘',
               popTrueShowSuccess: true,
+              onTap: () => handleSurplus(context),
             ),
           ),
-          Expanded(
-            child: OrderedTip(
-              id: 'surplus',
-              grouper: tipGrouper,
-              version: 1,
-              order: 1,
-              message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
-              child: RouteCircularButton(
-                key: const Key('cashier.surplus'),
-                icon: Icons.coffee_outlined,
-                text: '結餘',
-                popTrueShowSuccess: true,
-                onTap: () => handleSurplus(context),
-              ),
-            ),
-          ),
-        ]),
-        const CashierUnitList(),
+        ),
       ]),
-    );
+      const CashierUnitList(),
+    ]);
   }
 
   void handleSetDefault(BuildContext context) async {

@@ -5,17 +5,13 @@ import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:simple_tip/simple_tip.dart';
 
 class CatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
   const CatalogList(
     this.catalogs, {
     Key? key,
-    this.tipGrouper,
   }) : super(key: key);
 
   @override
@@ -67,16 +63,6 @@ class CatalogList extends StatelessWidget {
         emptyText: S.menuCatalogListEmptyProduct,
       ),
     );
-    if (index == 0) {
-      return OrderedTip(
-        id: 'cagtalog_item',
-        grouper: tipGrouper,
-        message: '「長按」- 重新排序或編輯 產品種類\n「滑動」- 刪除 產品種類',
-        order: 10,
-        version: 1,
-        child: child,
-      );
-    }
 
     return child;
   }

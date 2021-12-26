@@ -10,6 +10,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
@@ -24,7 +25,6 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
-import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -53,8 +53,6 @@ void main() {
         OrderProductAxisCountSetting(),
       ]);
 
-      Routes.routeObserver = RouteObserver<ModalRoute<void>>();
-
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings..loadSetting()),
@@ -68,10 +66,10 @@ void main() {
         ],
         child: MaterialApp(
           routes: Routes.routes,
-          navigatorObservers: [Routes.routeObserver],
+          navigatorObservers: [MyApp.routeObserver],
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          home: HomeScaffold(routeObserver: Routes.routeObserver),
+          home: const HomeScaffold(),
         ),
       ));
 
@@ -115,8 +113,6 @@ void main() {
       )).thenAnswer((_) => Future.value([
             {'totalPrice': 20, 'count': 10},
           ]));
-
-      disableTips();
     });
 
     setUpAll(() {

@@ -5,7 +5,14 @@ class HintText extends StatelessWidget {
 
   final TextOverflow? overflow;
 
-  const HintText(this.text, {Key? key, this.overflow}) : super(key: key);
+  final TextAlign? textAlign;
+
+  const HintText(
+    this.text, {
+    Key? key,
+    this.overflow,
+    this.textAlign,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +22,12 @@ class HintText extends StatelessWidget {
       inherit: true,
     );
 
-    return Text(text, style: style, overflow: overflow);
+    return Text(
+      text,
+      style: style,
+      overflow: overflow,
+      textAlign: textAlign,
+    );
   }
 
   static TextSpan inSpan(BuildContext context, String text) {

@@ -46,8 +46,9 @@ class ProductScreen extends StatelessWidget {
     final aboveData = product.isEmpty
         ? SliverToBoxAdapter(
             child: EmptyBody(
-                title: S.menuProductEmptyBody,
-                onPressed: navigateNewIngredient),
+              title: S.menuProductEmptyBody,
+              onPressed: navigateNewIngredient,
+            ),
           )
         : SliverToBoxAdapter(
             child: Center(child: HintText(S.totalCount(ingredients.length))),

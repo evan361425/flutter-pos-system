@@ -17,7 +17,6 @@ import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
-import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
@@ -283,7 +282,6 @@ void main() {
     });
 
     setUpAll(() {
-      disableTips();
       initializeStorage();
       initializeTranslator();
       initializeFileSystem();

@@ -37,7 +37,12 @@ class CatalogScreen extends StatelessWidget {
     final aboveData = catalog.isEmpty
         ? SliverToBoxAdapter(
             child: EmptyBody(
-                title: S.menuCatalogEmptyBody, onPressed: navigateNewProduct),
+              title: S.menuCatalogEmptyBody,
+              tooltip: '「產品」是菜單裡的基本單位，你可以在產品中設定成分等資訊。\n'
+                  '例如：\n'
+                  '「起司漢堡」有「起司」、「麵包」等成分',
+              onPressed: navigateNewProduct,
+            ),
           )
         : SliverToBoxAdapter(
             child: Center(child: HintText(S.totalCount(catalog.length))),

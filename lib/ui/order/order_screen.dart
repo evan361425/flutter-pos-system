@@ -12,7 +12,6 @@ import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tip/simple_tip.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_list.dart';
@@ -25,15 +24,7 @@ import 'widgets/order_product_list.dart';
 import 'widgets/order_product_state_selector.dart';
 
 class OrderScreen extends StatefulWidget {
-  final RouteObserver<ModalRoute<void>>? routeObserver;
-
-  final GlobalKey<TipGrouperState>? tipGrouper;
-
-  const OrderScreen({
-    Key? key,
-    this.tipGrouper,
-    this.routeObserver,
-  }) : super(key: key);
+  const OrderScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => OrderScreenState();
@@ -53,12 +44,8 @@ class OrderScreenState extends State<OrderScreen> {
       handleSelected: (catalog) =>
           _orderProductList.currentState?.updateProducts(catalog),
     );
-    final menuProductRow = OrderedTip(
-      id: 'product_list',
-      grouper: widget.tipGrouper,
+    final menuProductRow = Tooltip(
       message: '透過圖片點餐更方便！\n你也可以到「設定」頁面設定「每行顯示幾個產品」或僅使用文字點餐',
-      order: 1000,
-      version: catalogs.isEmpty ? 0 : 1,
       child: OrderProductList(
         key: _orderProductList,
         products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
@@ -80,41 +67,34 @@ class OrderScreenState extends State<OrderScreen> {
 
     final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();
 
-    return TipGrouper(
-      key: widget.tipGrouper,
-      id: 'order',
-      candidateLength: 1,
-      routeObserver: widget.routeObserver,
-      child: Scaffold(
-        // avoid resize when keyboard(bottom inset) shows
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: const PopButton(),
-          actions: [
-            const OrderActions(key: Key('order.action.more')),
-            AppbarTextButton(
-              key: const Key('order.cashier'),
-              onPressed: () => _handleOrder(),
-              child: Text(S.orderActionsOrderDone),
-            ),
-          ],
-        ),
-        body: outlook.value == OrderOutlookTypes.slidingPanel
-            ? OrderBySlidingPanel(
-                key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-                tipGrouper: widget.tipGrouper,
-              )
-            : OrderByOrientation(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-              ),
+    return Scaffold(
+      // avoid resize when keyboard(bottom inset) shows
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        leading: const PopButton(),
+        actions: [
+          const OrderActions(key: Key('order.action.more')),
+          AppbarTextButton(
+            key: const Key('order.cashier'),
+            onPressed: () => _handleOrder(),
+            child: Text(S.orderActionsOrderDone),
+          ),
+        ],
       ),
+      body: outlook.value == OrderOutlookTypes.slidingPanel
+          ? OrderBySlidingPanel(
+              key: slidingPanel,
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
+            )
+          : OrderByOrientation(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
+            ),
     );
   }
 

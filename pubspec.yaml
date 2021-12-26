@@ -47,7 +47,6 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   table_calendar: ^3.0.3
   pull_to_refresh: ^2.0.0
-  simple_tip: ^0.3.2
 
   # image
   image: ^3.1.0

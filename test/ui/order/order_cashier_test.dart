@@ -34,7 +34,6 @@ import 'package:possystem/ui/order/order_screen.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
-import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -442,7 +441,6 @@ void main() {
     });
 
     setUpAll(() {
-      disableTips();
       initializeCache();
       initializeDatabase();
       initializeStorage();

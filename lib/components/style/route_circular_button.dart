@@ -26,7 +26,7 @@ class RouteCircularButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondary = Theme.of(context).colorScheme.secondary;
     return InkWell(
-      borderRadius: const BorderRadius.all(Radius.circular(128)),
+      borderRadius: const BorderRadius.all(Radius.circular(48)),
       splashColor: Colors.transparent,
       onTap: onTap ??
           () async {
@@ -36,7 +36,7 @@ class RouteCircularButton extends StatelessWidget {
             }
           },
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 96),
+        constraints: const BoxConstraints(maxHeight: 96, maxWidth: 96),
         child: AspectRatio(
           aspectRatio: 1,
           child: Column(

@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
-import '../../test_helpers/disable_tips.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -185,7 +184,6 @@ void main() {
     });
 
     setUpAll(() {
-      disableTips();
       initializeStorage();
       initializeCache();
       initializeTranslator();
