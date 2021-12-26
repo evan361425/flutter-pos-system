@@ -15,9 +15,9 @@ space = 60
 
 images = [
     Image.open("%s/%s" % (folder, x))
-    for x in ["2_menu_product.png", "3_order.png", "7_analytics_dark.png"]
+    for x in ["2_menu_product.png", "3_order.png", "5_stock.png"]
 ]
-textList = ["設定產品", "點餐", "統計點餐紀錄"]
+textList = ["設定產品", "點餐", "庫存系統"]
 widths, heights = zip(*(i.size for i in images))
 
 # with space between images and around
