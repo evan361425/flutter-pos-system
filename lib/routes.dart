@@ -79,7 +79,7 @@ class Routes {
     // sub-route
     // cashier
     cashierChanger: (_) => const ChangerModal(),
-    cashierSurplus: (_) => CashierSurplus(),
+    cashierSurplus: (_) => const CashierSurplus(),
     // customer
     customerModal: (ctx) => CustomerModal(setting: _a<CustomerSetting?>(ctx)),
     customerReorder: (_) => const CustomerOrderableList(),
