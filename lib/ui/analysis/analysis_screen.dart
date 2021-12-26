@@ -21,16 +21,11 @@ class AnalysisScreen extends StatefulWidget {
   State<AnalysisScreen> createState() => _AnalysisScreenState();
 }
 
-class _AnalysisScreenState extends State<AnalysisScreen>
-    with AutomaticKeepAliveClientMixin<AnalysisScreen> {
+class _AnalysisScreenState extends State<AnalysisScreen> {
   final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     context.watch<Seller>();
 
     return TipGrouper(
