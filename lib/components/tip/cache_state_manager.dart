@@ -6,12 +6,15 @@ class CacheStateManager extends StateManager {
 
   CacheStateManager._();
 
+  /// tip 問題很多 https://github.com/evan361425/flutter-pos-system/issues/new
+  /// 先關掉，等都解決再來玩玩
   @override
   bool shouldShow(String groupId, TipItem item) {
-    if (item.version == 0) return false;
+    return false;
+    // if (item.version == 0) return false;
 
-    final cachedVersion = Cache.instance.get<int>('_tip.$groupId.${item.id}');
-    return cachedVersion == null ? true : cachedVersion < item.version;
+    // final cachedVersion = Cache.instance.get<int>('_tip.$groupId.${item.id}');
+    // return cachedVersion == null ? true : cachedVersion < item.version;
   }
 
   @override
