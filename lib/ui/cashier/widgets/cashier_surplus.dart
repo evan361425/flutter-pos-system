@@ -60,12 +60,15 @@ class CashierSurplus extends StatelessWidget {
         ),
         const Divider(),
         const HintText(
-          '如果現金和預期的不一樣，是不是今天用店裡的錢買了什麼東西呢？\n若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
+          '若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
           textAlign: TextAlign.center,
         ),
         Expanded(
-          child: InteractiveViewer(
-            child: DataTable(columns: columns, rows: rows),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InteractiveViewer(
+              child: DataTable(columns: columns, rows: rows),
+            ),
           ),
         ),
       ]),
