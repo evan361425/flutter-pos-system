@@ -48,7 +48,7 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       child: ChangeNotifierProvider.value(
         value: Cart.instance,
         builder: (_, __) => const Padding(
-          padding: EdgeInsets.all(kSpacing0),
+          padding: EdgeInsets.symmetric(horizontal: kSpacing0),
           child: CartSnapshot(key: Key('cart.collapsed')),
         ),
       ),

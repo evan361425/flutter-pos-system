@@ -80,6 +80,7 @@ class _StockBody extends StatelessWidget {
             ),
           ),
         ),
+        const Spacer(),
         Expanded(
           child: RouteCircularButton(
             key: const Key('stock.add'),
@@ -88,7 +89,6 @@ class _StockBody extends StatelessWidget {
             text: S.stockIngredientCreate,
           ),
         ),
-        const Spacer(flex: 2),
       ]),
       const SizedBox(height: 4.0),
       IngredientList(ingredients: Stock.instance.itemList),

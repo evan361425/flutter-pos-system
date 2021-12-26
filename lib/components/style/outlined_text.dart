@@ -6,10 +6,13 @@ class OutlinedText extends StatelessWidget {
 
   final String? badge;
 
+  final double? textScaleFactor;
+
   const OutlinedText(
     this.text, {
     Key? key,
     this.badge,
+    this.textScaleFactor,
   }) : super(key: key);
 
   @override
@@ -29,26 +32,30 @@ class OutlinedText extends StatelessWidget {
       child: Text(text, textAlign: TextAlign.center),
     );
 
-    if (badge != null) {
-      return Stack(alignment: Alignment.center, children: [
-        base,
-        Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              padding: const EdgeInsets.all(2.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: theme.primaryColor,
-              ),
-              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-              child: Text(badge!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 10, color: textColor)),
-            ))
-      ]);
+    if (badge == null) {
+      return base;
     }
 
-    return base;
+    return Stack(alignment: Alignment.center, children: [
+      base,
+      Positioned(
+        right: 0,
+        top: 0,
+        child: Container(
+          padding: const EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            color: theme.primaryColor,
+          ),
+          constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+          child: Text(
+            badge!,
+            textAlign: TextAlign.center,
+            textScaleFactor: textScaleFactor,
+            style: TextStyle(fontSize: 10, color: textColor),
+          ),
+        ),
+      )
+    ]);
   }
 }

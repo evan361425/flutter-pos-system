@@ -123,6 +123,7 @@ class _CustomTab extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(fontSize: 14),
+        textScaleFactor: 1,
         softWrap: false,
         overflow: TextOverflow.fade,
       ),

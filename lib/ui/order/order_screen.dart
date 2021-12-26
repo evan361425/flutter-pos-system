@@ -69,7 +69,7 @@ class OrderScreenState extends State<OrderScreen> {
       value: Cart.instance,
       child: CartScreen(productsKey: _cartProductList),
     );
-    final menuIngredientRow = MultiProvider(
+    final orderProductStateSelector = MultiProvider(
       providers: [
         ChangeNotifierProvider<Cart>.value(value: Cart.instance),
         ChangeNotifierProvider<CartIngredients>.value(
@@ -105,14 +105,14 @@ class OrderScreenState extends State<OrderScreen> {
                 row1: menuCatalogRow,
                 row2: menuProductRow,
                 row3: cartProductRow,
-                row4: menuIngredientRow,
+                row4: orderProductStateSelector,
                 tipGrouper: widget.tipGrouper,
               )
             : OrderByOrientation(
                 row1: menuCatalogRow,
                 row2: menuProductRow,
                 row3: cartProductRow,
-                row4: menuIngredientRow,
+                row4: orderProductStateSelector,
               ),
       ),
     );

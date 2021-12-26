@@ -25,6 +25,7 @@ class CartSnapshot extends StatelessWidget {
             product.name,
             key: Key('cart_snapshot.${count++}'),
             badge: product.count > 9 ? '9+' : product.count.toString(),
+            textScaleFactor: 1,
           ),
       ]),
     );
