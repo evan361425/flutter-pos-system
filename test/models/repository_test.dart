@@ -63,7 +63,7 @@ void main() {
     });
 
     group('Cashier', () {
-      test('findPossibleChange', () async {
+      test('#findPossibleChange', () async {
         CurrencySetting();
         final cashier = Cashier();
         await cashier.setCurrent([
@@ -90,6 +90,46 @@ void main() {
 
         result = cashier.findPossibleChange(9, 10);
         expect(result, isNull);
+      });
+
+      test('#paid', () async {
+        CurrencySetting();
+        final cashier = Cashier();
+        await cashier.setCurrent([
+          {'unit': 5},
+          {'unit': 10},
+          {'unit': 100},
+        ]);
+
+        var result = await cashier.paid(65, 65);
+        expect(result, equals(CashierUpdateStatus.ok));
+
+        await cashier.setCurrent([
+          {'unit': 5, 'count': 3},
+          {'unit': 10, 'count': 2},
+          {'unit': 100},
+        ]);
+
+        result = await cashier.paid(100, 65);
+        expect(result, equals(CashierUpdateStatus.usingSmall));
+
+        await cashier.setCurrent([
+          {'unit': 5, 'count': 1},
+          {'unit': 10, 'count': 3},
+          {'unit': 100},
+        ]);
+
+        result = await cashier.paid(100, 65);
+        expect(result, equals(CashierUpdateStatus.ok));
+
+        await cashier.setCurrent([
+          {'unit': 5, 'count': 0},
+          {'unit': 10, 'count': 3},
+          {'unit': 100},
+        ]);
+
+        result = await cashier.paid(100, 65);
+        expect(result, equals(CashierUpdateStatus.notEnough));
       });
     });
 

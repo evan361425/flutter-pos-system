@@ -101,10 +101,10 @@ class Cart extends ChangeNotifier {
   }
 
   /// Paid to the order
-  Future<bool> paid(num? paid) async {
+  Future<CashierUpdateStatus?> paid(num? paid) async {
     if (totalCount == 0) {
       clear();
-      return false;
+      return null;
     }
 
     final price = totalPrice;
@@ -113,12 +113,12 @@ class Cart extends ChangeNotifier {
 
     info(isHistoryMode ? 'history' : 'normal', 'order.paid.verified');
     // if history mode update data
-    isHistoryMode
+    final result = isHistoryMode
         ? await _finishHistoryMode(paid, price)
         : await _finishNormalMode(paid, price);
 
     clear();
-    return true;
+    return result;
   }
 
   Future<bool> popHistory() async {
@@ -259,7 +259,7 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _finishHistoryMode(num paid, num price) async {
+  Future<CashierUpdateStatus> _finishHistoryMode(num paid, num price) async {
     final oldData = await Seller.instance.getTodayLast();
     final data = await toObject(paid: paid, object: oldData);
 
@@ -267,17 +267,25 @@ class Cart extends ChangeNotifier {
     info(oldData?.id.toString() ?? 'unknown', 'order.paid.update');
 
     await Stock.instance.order(data, oldData: oldData);
-    await Cashier.instance.paid(paid, price, oldData?.totalPrice);
+    final cashierResult = await Cashier.instance.paid(
+      paid,
+      price,
+      oldData?.totalPrice,
+    );
+
+    return cashierResult;
   }
 
-  Future<void> _finishNormalMode(num paid, num price) async {
+  Future<CashierUpdateStatus> _finishNormalMode(num paid, num price) async {
     final data = await toObject(paid: paid);
 
     final id = await Seller.instance.push(data);
     info(id.toString(), 'order.paid.add');
 
     await Stock.instance.order(data);
-    await Cashier.instance.paid(paid, price);
+    final cashierResult = await Cashier.instance.paid(paid, price);
+
+    return cashierResult;
   }
 
   Future<int> _prepareCustomerSettingCombinationId() async {

@@ -102,9 +102,9 @@ class OrderCashierModal extends StatelessWidget {
 
   void handleSubmit(BuildContext context, num? paid) async {
     try {
-      final success = await Cart.instance.paid(paid);
+      final result = await Cart.instance.paid(paid);
       // send success message
-      Navigator.of(context).pop(success);
+      Navigator.of(context).pop(result);
     } on PaidException {
       showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
     }

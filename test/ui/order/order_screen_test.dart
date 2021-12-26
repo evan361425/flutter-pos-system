@@ -11,12 +11,14 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
@@ -414,6 +416,51 @@ void main() {
             .isSelected,
         isTrue,
       );
+    });
+
+    testWidgets('Show different message by cashier status', (tester) async {
+      late CashierUpdateStatus cashierStatus;
+      CustomerSettings();
+      await tester.pumpWidget(MaterialApp(
+        routes: {
+          Routes.orderCalculator: (context) => Scaffold(
+                body: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(cashierStatus);
+                  },
+                  child: const Text('hi', key: Key('test')),
+                ),
+              ),
+        },
+        home: const OrderScreen(),
+      ));
+
+      Future<void> tapWithCheck(
+        CashierUpdateStatus value, [
+        String? expectValue,
+      ]) async {
+        cashierStatus = value;
+        await tester.tap(find.byKey(const Key('order.cashier')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('test')));
+        await tester.pumpAndSettle();
+
+        if (expectValue != null) {
+          expect(find.text(expectValue), findsOneWidget);
+          await tester.pump(const Duration(seconds: 3));
+        }
+      }
+
+      await tapWithCheck(CashierUpdateStatus.ok, S.actSuccess);
+      await tapWithCheck(CashierUpdateStatus.notEnough, '收銀機錢不夠找囉！');
+      await tapWithCheck(CashierUpdateStatus.usingSmall);
+
+      // show tip
+      await tester.tap(find.byKey(const Key('order.cashierUsingSmallAction')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('order.cashierUsingSmallAction.tip')),
+          findsOneWidget);
     });
 
     setUp(() {

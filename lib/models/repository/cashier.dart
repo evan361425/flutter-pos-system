@@ -34,6 +34,12 @@ class Cashier extends ChangeNotifier {
 
   num get currentTotal => _current.fold(0, (value, e) => value + e.total);
 
+  Iterable<CashierUnitObject> get currentUnits sync* {
+    for (var item in _current) {
+      yield item;
+    }
+  }
+
   bool get defaultNotSet => _default.isEmpty;
 
   num get defaultTotal => _default.fold(0, (value, e) => value + e.total);
@@ -42,12 +48,6 @@ class Cashier extends ChangeNotifier {
 
   /// Cashier current using currency units lenght
   int get unitLength => _current.length;
-
-  Iterable<CashierUnitObject> get currentUnits sync* {
-    for (var item in _current) {
-      yield item;
-    }
-  }
 
   Future<void> addFavorite(CashierChangeBatchObject item) {
     _favorites.add(item);
@@ -172,12 +172,54 @@ class Cashier extends ChangeNotifier {
   /// Minus [count] money of unit at [index] to cashier
   Future<void> minus(int index, int count) => update({index: -count});
 
-  Future<void> paid(num paid, num price, [num? oldPrice]) async {
+  /// Customer [given] money for the [price] and update the cashier
+  ///
+  /// Example:
+  /// 給一百元來支付六十五元的商品，並更新收銀機的錢
+  /// 以此為例則是增加一張百元鈔，減少三十五塊的現金來找錢
+  ///
+  /// [oldPrice] 是當在做編輯歷史訂單時需要考慮的
+  Future<CashierUpdateStatus> paid(
+    num given,
+    num price, [
+    num? oldPrice,
+  ]) async {
     final deltas = <int, int>{};
-    _getUpdateDataFromPrice(deltas, paid, true);
-    _getUpdateDataFromPrice(deltas, paid - price + (oldPrice ?? 0), false);
 
-    return update(deltas);
+    CashierUpdateStatus _giveOrTakeByPrice(num price, bool isGiven) {
+      if (price == 0) return CashierUpdateStatus.ok;
+
+      var index = unitLength - 1;
+      var status = CashierUpdateStatus.ok;
+
+      for (var item in _current.reversed) {
+        if (item.unit <= price) {
+          final d = deltas[index] ?? 0;
+          // 35 dollar should use 3 of 10 dollar
+          final shouldUse = (price / item.unit).floor();
+          // should use smaller than cashier have
+          final count = isGiven ? shouldUse : min(shouldUse, item.count + d);
+          if (count != shouldUse) {
+            status = CashierUpdateStatus.usingSmall;
+          }
+
+          deltas[index] = d + (isGiven ? count : -count);
+          price -= item.unit * count;
+
+          if (price == 0) return status;
+        }
+        index--;
+      }
+
+      return CashierUpdateStatus.notEnough;
+    }
+
+    _giveOrTakeByPrice(given, true);
+    final result = _giveOrTakeByPrice(given - price + (oldPrice ?? 0), false);
+
+    await update(deltas);
+
+    return result;
   }
 
   /// Add [count] money of unit at [index] to cashier
@@ -300,28 +342,6 @@ class Cashier extends ChangeNotifier {
     return _current[index].count >= count;
   }
 
-  void _getUpdateDataFromPrice(
-    Map<int, int> deltas,
-    num price,
-    bool isPositive,
-  ) {
-    var index = unitLength - 1;
-    for (var item in _current.reversed) {
-      if (item.unit <= price) {
-        final oldCount = deltas[index] ?? 0;
-        final count = isPositive
-            ? (price / item.unit).floor()
-            : min((price / item.unit).floor(), item.count + oldCount);
-
-        deltas[index] = oldCount + (isPositive ? count : -count);
-        price -= item.unit * count;
-
-        if (price == 0) break;
-      }
-      index--;
-    }
-  }
-
   Future<void> _registerStorage() {
     return Storage.instance.add(Stores.cashier, _recordName, {
       _currentKey: _current.map((e) => e.toMap()).toList(),
@@ -364,4 +384,17 @@ class CashierDiffItem {
   int get defaultCount => defaultData.count;
   int get diffCount => currentData.count - defaultData.count;
   num get unit => currentData.unit;
+}
+
+/// 當收銀機在更新錢的時，有任何狀況會回這個
+enum CashierUpdateStatus {
+  /// 當收銀機沒有足夠的錢去找錢，會回應這個
+  notEnough,
+
+  /// 當收銀機嘗試用較小的額度去換錢時，會回應這個
+  ///
+  /// 例如，找錢 35 時，只有兩個 10 元，於是就使用 3 個 5元。
+  /// 若完全不夠換會使用 [CashierUpdateStatus.notEnough]
+  usingSmall,
+  ok
 }

@@ -4,6 +4,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
+import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
@@ -123,8 +124,42 @@ class OrderScreenState extends State<OrderScreen> {
       result = await Navigator.of(context).pushNamed(result);
     }
 
-    if (result == true) {
-      showSuccessSnackbar(context, S.actSuccess);
+    if (result is CashierUpdateStatus) {
+      switch (result) {
+        case CashierUpdateStatus.ok:
+          showSuccessSnackbar(context, S.actSuccess);
+          break;
+        case CashierUpdateStatus.notEnough:
+          showErrorSnackbar(context, '收銀機錢不夠找囉！');
+          break;
+        case CashierUpdateStatus.usingSmall:
+          showInfoSnackbar(
+            context,
+            '收銀機使用小錢去找零！',
+            SnackBarAction(
+              key: const Key('order.cashierUsingSmallAction'),
+              label: '啥？',
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => const SimpleDialog(
+                  key: Key('order.cashierUsingSmallAction.tip'),
+                  title: Text('收銀機使用小錢去找零'),
+                  contentPadding: EdgeInsets.fromLTRB(8, 12, 8, 16),
+                  children: [
+                    Text('當找的錢不夠用最適合的錢去找的時候會顯示這個訊息。\n\n'
+                        '例如，售價「65」，消費者支付「100」，此時應找「35」\n'
+                        '如果收銀機只有 2 個十元，但是有 3 個以上的五元，就會顯示本訊息。'),
+                    SizedBox(height: 8.0),
+                    Text('這時你可以：\n'
+                        '• 換錢\n'
+                        '• 到設定頁關閉收銀機的相關提示'),
+                  ],
+                ),
+              ),
+            ),
+          );
+          break;
+      }
       slidingPanel.currentState?.reset();
     }
   }
