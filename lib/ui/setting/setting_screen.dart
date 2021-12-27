@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/ui/setting/widgets/feature_slider.dart';
-import 'package:possystem/ui/setting/widgets/feature_switch.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
@@ -12,17 +11,8 @@ import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
-
-const _themeNames = <ThemeMode, String>{
-  ThemeMode.system: 'system',
-  ThemeMode.light: 'light',
-  ThemeMode.dark: 'dark',
-};
-
-const _orderOutlookNames = <OrderOutlookTypes, String>{
-  OrderOutlookTypes.singleView: 'singleView',
-  OrderOutlookTypes.slidingPanel: 'slidingPanel',
-};
+import 'package:possystem/ui/setting/widgets/feature_slider.dart';
+import 'package:possystem/ui/setting/widgets/feature_switch.dart';
 
 const _languageNames = ['繁體中文', 'English'];
 
@@ -43,6 +33,7 @@ class _SettingScreenState extends State<SettingScreen> {
     final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
     final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
     final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
+    final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
 
     final selectedLanguage =
         _supportedLanguages.indexOf(language.value.languageCode);
@@ -54,13 +45,13 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.theme'),
             title: Text(S.settingThemeTitle),
-            subtitle: Text(S.settingThemeTypes(_themeNames[theme.value]!)),
+            subtitle: Text(S.settingThemeTypes(theme.value)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => theme.update(ThemeMode.values[index]),
               title: S.settingThemeTitle,
               items: ThemeMode.values
-                  .map<String>((e) => S.settingThemeTypes(_themeNames[e]!))
+                  .map<String>((e) => S.settingThemeTypes(e))
                   .toList(),
               selected: theme.value.index,
             ),
@@ -81,17 +72,30 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.outlook_order'),
             title: Text(S.settingOrderOutlookTitle),
-            subtitle: Text(S.settingOrderOutlookTypes(
-                _orderOutlookNames[orderOutlook.value]!)),
+            subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
               title: S.settingOrderOutlookTitle,
               items: OrderOutlookTypes.values
-                  .map(
-                      (e) => S.settingOrderOutlookTypes(_orderOutlookNames[e]!))
+                  .map((e) => S.settingOrderOutlookTypes(e))
                   .toList(),
               selected: orderOutlook.value.index,
+            ),
+          ),
+          CardTile(
+            key: const Key('setting.cashier_warning'),
+            title: Text(S.settingCashierWarningTitle),
+            subtitle: Text(S.settingCashierWarningTypes(cashierWarning.value)),
+            trailing: const Icon(Icons.arrow_forward_ios_sharp),
+            onTap: () => _navigateItemList(
+              (index) =>
+                  cashierWarning.update(CashierWarningTypes.values[index]),
+              title: S.settingCashierWarningTitle,
+              items: CashierWarningTypes.values
+                  .map((e) => S.settingCashierWarningTypes(e))
+                  .toList(),
+              selected: cashierWarning.value.index,
             ),
           ),
           FeatureSlider(
