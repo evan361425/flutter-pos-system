@@ -17,13 +17,7 @@ import 'my_app.dart';
 import 'services/cache.dart';
 import 'services/database.dart';
 import 'services/storage.dart';
-import 'settings/currency_setting.dart';
-import 'settings/language_setting.dart';
-import 'settings/order_awakening_setting.dart';
-import 'settings/order_outlook_setting.dart';
-import 'settings/order_product_axis_count_setting.dart';
-import 'settings/setting.dart';
-import 'settings/theme_setting.dart';
+import 'settings/settings_provider.dart';
 import 'ui/home/home_scaffold.dart';
 
 void main() async {
@@ -46,20 +40,13 @@ void main() async {
     await Storage.instance.initialize();
     await Cache.instance.initialize();
 
-    final settings = SettingsProvider([
-      LanguageSetting(),
-      ThemeSetting(),
-      CurrencySetting(),
-      OrderAwakeningSetting(),
-      OrderOutlookSetting(),
-      OrderProductAxisCountSetting(),
-    ])
-      ..loadSetting();
+    final settings = SettingsProvider(SettingsProvider.allSettings);
 
     await Stock().initialize();
     await Quantities().initialize();
     await CustomerSettings().initialize();
     await Replenisher().initialize();
+    await Cashier().reset();
     // Last for setup ingredient and quantity
     await Menu().initialize();
 
@@ -89,8 +76,7 @@ void main() async {
           create: (_) => Seller(),
         ),
         ChangeNotifierProvider<Cashier>(
-          create: (_) => Cashier()..reset(),
-          lazy: false,
+          create: (_) => Cashier.instance,
         ),
       ],
       child: MyApp(

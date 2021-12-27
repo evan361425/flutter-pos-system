@@ -17,7 +17,7 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/ui/home/home_scaffold.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +55,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings..loadSetting()),
+          ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Menu()),
           ChangeNotifierProvider.value(value: Stock()),

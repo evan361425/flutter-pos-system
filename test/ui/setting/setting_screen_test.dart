@@ -6,7 +6,7 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
@@ -28,7 +28,7 @@ void main() {
       ]);
 
       return tester.pumpWidget(ChangeNotifierProvider.value(
-        value: setting..loadSetting(),
+        value: setting,
         builder: (_, __) => const MaterialApp(home: SettingScreen()),
       ));
     }

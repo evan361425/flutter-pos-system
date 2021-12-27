@@ -27,26 +27,3 @@ abstract class Setting<T> extends ChangeNotifier {
 
   Future<void> updateRemotely(T data);
 }
-
-class SettingsProvider extends ChangeNotifier {
-  static late SettingsProvider instance;
-
-  final List<Setting> settings;
-
-  SettingsProvider(this.settings) {
-    instance = this;
-  }
-
-  void loadSetting() {
-    for (var setting in settings) {
-      setting.initialize();
-      if (setting.registyForApp) {
-        setting.addListener(notifyListeners);
-      }
-    }
-  }
-
-  T getSetting<T extends Setting>() {
-    return settings.firstWhere((setting) => setting is T) as T;
-  }
-}

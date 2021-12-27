@@ -9,7 +9,7 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -38,12 +38,11 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
-    final settings = SettingsProvider.instance;
-    final theme = settings.getSetting<ThemeSetting>();
-    final language = settings.getSetting<LanguageSetting>();
-    final orderAwakening = settings.getSetting<OrderAwakeningSetting>();
-    final orderOutlook = settings.getSetting<OrderOutlookSetting>();
-    final orderCount = settings.getSetting<OrderProductAxisCountSetting>();
+    final theme = SettingsProvider.of<ThemeSetting>();
+    final language = SettingsProvider.of<LanguageSetting>();
+    final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
+    final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
+    final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
 
     final selectedLanguage =
         _supportedLanguages.indexOf(language.value.languageCode);

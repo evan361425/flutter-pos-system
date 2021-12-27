@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'constants/app_themes.dart';
 import 'routes.dart';
 import 'settings/language_setting.dart';
-import 'settings/setting.dart';
+import 'settings/settings_provider.dart';
 import 'settings/theme_setting.dart';
 import 'translator.dart';
 

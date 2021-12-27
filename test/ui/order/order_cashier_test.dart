@@ -27,7 +27,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
@@ -44,7 +44,7 @@ void main() {
         OrderOutlookSetting(),
         OrderAwakeningSetting(),
         OrderProductAxisCountSetting(),
-      ]).loadSetting();
+      ]);
 
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),

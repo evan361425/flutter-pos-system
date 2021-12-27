@@ -10,7 +10,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -66,7 +66,7 @@ class OrderScreenState extends State<OrderScreen> {
       child: OrderProductStateSelector(),
     );
 
-    final outlook = SettingsProvider.instance.getSetting<OrderOutlookSetting>();
+    final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
     return Scaffold(
       // avoid resize when keyboard(bottom inset) shows
@@ -107,7 +107,7 @@ class OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
-    if (SettingsProvider.instance.getSetting<OrderAwakeningSetting>().value) {
+    if (SettingsProvider.of<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
     // rebind menu/customer_setting if changed

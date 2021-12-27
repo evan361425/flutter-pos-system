@@ -8,7 +8,7 @@ import 'package:possystem/models/objects/customer_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/customer/customer_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -97,8 +97,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
-          ChangeNotifierProvider.value(
-              value: SettingsProvider([currency])..loadSetting()),
+          ChangeNotifierProvider.value(value: SettingsProvider([currency])),
         ],
         child: MaterialApp(
             darkTheme: ThemeData.dark(),
