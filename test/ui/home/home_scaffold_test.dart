@@ -13,12 +13,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
-import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/ui/home/home_scaffold.dart';
 import 'package:provider/provider.dart';
 
