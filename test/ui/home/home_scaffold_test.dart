@@ -44,14 +44,7 @@ void main() {
         limit: anyNamed('limit'),
         offset: anyNamed('offset'),
       )).thenAnswer((_) => Future.value([]));
-      final settings = SettingsProvider([
-        CurrencySetting.instance,
-        ThemeSetting(),
-        LanguageSetting(),
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-      ]);
+      final settings = SettingsProvider(SettingsProvider.allSettings);
 
       await tester.pumpWidget(MultiProvider(
         providers: [

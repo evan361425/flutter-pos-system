@@ -19,10 +19,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
+import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
@@ -34,12 +31,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Screen', () {
     void prepareData() {
-      SettingsProvider([
-        CurrencySetting(),
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-      ]);
+      SettingsProvider(SettingsProvider.allSettings);
 
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
@@ -421,6 +413,7 @@ void main() {
     testWidgets('Show different message by cashier status', (tester) async {
       late CashierUpdateStatus cashierStatus;
       CustomerSettings();
+
       await tester.pumpWidget(MaterialApp(
         routes: {
           Routes.orderCalculator: (context) => Scaffold(
@@ -452,8 +445,20 @@ void main() {
         }
       }
 
+      // hide all
+      SettingsProvider.of<CashierWarningSetting>().value =
+          CashierWarningTypes.hideAll;
       await tapWithCheck(CashierUpdateStatus.ok, S.actSuccess);
+      await tapWithCheck(CashierUpdateStatus.notEnough, S.actSuccess);
+      await tapWithCheck(CashierUpdateStatus.usingSmall, S.actSuccess);
+      // only not enough
+      SettingsProvider.of<CashierWarningSetting>().value =
+          CashierWarningTypes.onlyNotEnough;
       await tapWithCheck(CashierUpdateStatus.notEnough, '收銀機錢不夠找囉！');
+      await tapWithCheck(CashierUpdateStatus.usingSmall, S.actSuccess);
+      // show all
+      SettingsProvider.of<CashierWarningSetting>().value =
+          CashierWarningTypes.showAll;
       await tapWithCheck(CashierUpdateStatus.usingSmall);
 
       // show tip
@@ -461,6 +466,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('order.cashierUsingSmallAction.tip')),
           findsOneWidget);
+      await tester.tapAt(Offset.zero);
     });
 
     setUp(() {

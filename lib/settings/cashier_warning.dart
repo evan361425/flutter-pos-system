@@ -1,3 +1,4 @@
+import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CashierWarningSetting extends Setting<CashierWarningTypes> {
@@ -12,6 +13,20 @@ class CashierWarningSetting extends Setting<CashierWarningTypes> {
   @override
   Future<void> updateRemotely(CashierWarningTypes data) {
     return service.set<int>(key, value.index);
+  }
+
+  CashierUpdateStatus shouldShow(CashierUpdateStatus status) {
+    if (status == CashierUpdateStatus.ok ||
+        value == CashierWarningTypes.hideAll) {
+      return CashierUpdateStatus.ok;
+    }
+
+    if (status != CashierUpdateStatus.notEnough &&
+        value == CashierWarningTypes.onlyNotEnough) {
+      return CashierUpdateStatus.ok;
+    }
+
+    return status;
   }
 }
 

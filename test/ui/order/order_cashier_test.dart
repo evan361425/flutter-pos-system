@@ -39,12 +39,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Cashier', () {
     void prepareData() {
-      SettingsProvider([
-        CurrencySetting(),
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-      ]);
+      SettingsProvider(SettingsProvider.allSettings);
 
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),
