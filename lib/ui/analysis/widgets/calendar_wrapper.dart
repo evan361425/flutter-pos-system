@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:table_calendar/table_calendar.dart';
 

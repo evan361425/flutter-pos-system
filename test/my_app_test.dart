@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +18,7 @@ void main() {
       LanguageSetting(),
     ]);
     final app = ChangeNotifierProvider.value(
-      value: settings..loadSetting(),
+      value: settings,
       builder: (_, __) => MyApp(
         settings: settings,
         child: _TestChild(),

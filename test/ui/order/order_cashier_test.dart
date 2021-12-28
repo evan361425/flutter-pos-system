@@ -24,10 +24,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
 
@@ -39,12 +36,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Cashier', () {
     void prepareData() {
-      SettingsProvider([
-        CurrencySetting(),
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-      ]).loadSetting();
+      SettingsProvider(SettingsProvider.allSettings);
 
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),

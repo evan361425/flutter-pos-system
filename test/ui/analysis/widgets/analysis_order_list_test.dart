@@ -10,7 +10,7 @@ import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -22,9 +22,8 @@ void main() {
   group('Analysis Order List', () {
     Widget buildApp(Widget home) {
       when(cache.get(any)).thenReturn(null);
-      final settings = SettingsProvider([CurrencySetting()]);
       return ChangeNotifierProvider.value(
-        value: settings..loadSetting(),
+        value: SettingsProvider([CurrencySetting()]),
         child: MaterialApp(home: home),
       );
     }

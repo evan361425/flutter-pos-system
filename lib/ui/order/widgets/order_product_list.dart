@@ -4,7 +4,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 
 class OrderProductList extends StatefulWidget {
   final List<Product> products;
@@ -64,9 +64,7 @@ class OrderProductListState extends State<OrderProductList> {
   @override
   void initState() {
     _products = widget.products;
-    _crossAxisCount = SettingsProvider.instance
-        .getSetting<OrderProductAxisCountSetting>()
-        .value;
+    _crossAxisCount = SettingsProvider.of<OrderProductAxisCountSetting>().value;
     super.initState();
   }
 

@@ -597,7 +597,7 @@
     "description": "應用程式 theme 的類型",
     "placeholders": {
       "type": {
-        "type": "String",
+        "type": "Object",
         "description": "dark, light, system",
         "example": "system"
       }
@@ -606,6 +606,21 @@
   "settingLanguageTitle": "語言",
   "@settingLanguageTitle": {
     "description": "設定頁面中語言的標題"
+  },
+  "settingCashierWarningTitle": "收銀機提示",
+  "@settingCashierWarningTitle": {
+    "description": "設定頁面中是否顯示收銀機的提示的標題"
+  },
+  "settingCashierWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏}}",
+  "@settingCashierWarningTypes": {
+    "description": "是否顯示收銀機的提示",
+    "placeholders": {
+      "type": {
+        "type": "Object",
+        "description": "showAll, onlyNotEnough, hideAll",
+        "example": "showAll"
+      }
+    }
   },
   "settingOrderOutlookTitle": "點餐的外觀",
   "@settingOrderOutlookTitle": {
@@ -616,7 +631,7 @@
     "description": "點餐時的外觀類型",
     "placeholders": {
       "type": {
-        "type": "String",
+        "type": "Object",
         "description": "slidingPanel, singleView",
         "example": "slidingPanel"
       }

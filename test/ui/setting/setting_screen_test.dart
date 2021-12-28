@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/setting.dart';
-import 'package:possystem/settings/theme_setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,17 +12,10 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Setting Screen', () {
     Future<void> buildApp(WidgetTester tester) {
-      final setting = SettingsProvider([
-        ThemeSetting(),
-        LanguageSetting(),
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-        CurrencySetting(),
-      ]);
+      final setting = SettingsProvider(SettingsProvider.allSettings);
 
       return tester.pumpWidget(ChangeNotifierProvider.value(
-        value: setting..loadSetting(),
+        value: setting,
         builder: (_, __) => const MaterialApp(home: SettingScreen()),
       ));
     }
@@ -45,6 +32,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.settingThemeTypes('dark')), findsOneWidget);
+      verify(cache.set(any, 2));
     });
 
     testWidgets('select language', (tester) async {
@@ -59,6 +47,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('English'), findsOneWidget);
+      verify(cache.set(any, 'en'));
     });
 
     testWidgets('select outlook_order', (tester) async {
@@ -75,6 +64,25 @@ void main() {
 
       expect(
           find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
+      verify(cache.set(any, 1));
+    });
+
+    testWidgets('select cashier_warning', (tester) async {
+      await buildApp(tester);
+
+      expect(
+          find.text(S.settingCashierWarningTypes('showAll')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('setting.cashier_warning')));
+      await tester.pumpAndSettle();
+
+      await tester
+          .tap(find.text(S.settingCashierWarningTypes('onlyNotEnough')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.settingCashierWarningTypes('onlyNotEnough')),
+          findsOneWidget);
+      verify(cache.set(any, 1));
     });
 
     testWidgets('switch awake_ordering', (tester) async {

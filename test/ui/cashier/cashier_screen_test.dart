@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +24,7 @@ void main() {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Cashier.instance),
-          ChangeNotifierProvider.value(value: settings..loadSetting()),
+          ChangeNotifierProvider.value(value: settings),
         ],
         builder: (_, __) => MaterialApp(
           routes: Routes.routes,

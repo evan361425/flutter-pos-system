@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,7 @@ void main() {
       darkTheme: ThemeData.dark(),
       home: MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings..loadSetting()),
+          ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller()),
         ],
         builder: (_, __) => const Scaffold(body: AnalysisScreen()),
