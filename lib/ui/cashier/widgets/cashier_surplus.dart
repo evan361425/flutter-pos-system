@@ -66,8 +66,11 @@ class CashierSurplus extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: InteractiveViewer(
-              child: DataTable(columns: columns, rows: rows),
+            child: SingleChildScrollView(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(columns: columns, rows: rows),
+              ),
             ),
           ),
         ),
