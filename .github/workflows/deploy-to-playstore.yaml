@@ -9,7 +9,9 @@ on:
         required: true
         default: "internal"
   workflow_run:
-    workflows: ["Draft Github Release"]
+    workflows:
+      - Add Artifacts for Release
+      - Add Artifacts for Release Candidate
     branches: [master]
     types: [completed]
 
