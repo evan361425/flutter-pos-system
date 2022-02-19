@@ -62,7 +62,7 @@ dependencies:
   # tools
   uuid: ^3.0.5
   wakelock: ^0.5.6
-  path_provider: ^2.0.8
+  path_provider: ^2.0.9
   url_launcher: ^6.0.17
 
 dev_dependencies:
