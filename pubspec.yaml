@@ -49,8 +49,8 @@ dependencies:
   pull_to_refresh: ^2.0.0
 
   # image
-  image: ^3.1.0
-  image_picker: ^0.8.4+4
+  image: ^3.1.3
+  image_picker: ^0.8.4+9
   image_cropper:
     git:
       url: git://github.com/evan361425/flutter_image_cropper.git
