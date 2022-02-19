@@ -151,6 +151,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         widget.ingredient.hasQuantity(quantityId)) {
       return S.menuQuantityRepeatError;
     }
+
+    return null;
   }
 
   ProductQuantityObject _parseObject() {

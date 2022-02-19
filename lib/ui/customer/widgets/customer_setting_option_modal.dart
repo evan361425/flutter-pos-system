@@ -173,5 +173,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     if (widget.option?.name != name && widget.setting.hasName(name)) {
       return S.customerSettingOptionNameRepeatError;
     }
+
+    return null;
   }
 }

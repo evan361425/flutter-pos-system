@@ -114,6 +114,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         widget.product.hasIngredient(ingredientId)) {
       return S.menuIngredientRepeatError;
     }
+
+    return null;
   }
 
   ProductIngredientObject _parseObject() {

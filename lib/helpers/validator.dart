@@ -41,9 +41,9 @@ class Validator {
         return S.invalidNumberMaximum(fieldName, maximum);
       } else if (minimum != null && minimum > number) {
         return S.invalidNumberMinimum(fieldName, minimum);
-      } else {
-        return null;
       }
+
+      return null;
     };
   }
 

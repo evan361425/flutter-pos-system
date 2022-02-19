@@ -142,5 +142,7 @@ class _CustomerModalState extends State<CustomerModal>
         CustomerSettings.instance.hasName(name)) {
       return S.customerSettingNameRepeatError;
     }
+
+    return null;
   }
 }

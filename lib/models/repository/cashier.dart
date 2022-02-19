@@ -46,7 +46,7 @@ class Cashier extends ChangeNotifier {
 
   bool get favoriteIsEmpty => _favorites.isEmpty;
 
-  /// Cashier current using currency units lenght
+  /// Cashier current using currency units length
   int get unitLength => _current.length;
 
   Future<void> addFavorite(CashierChangeBatchObject item) {
@@ -150,6 +150,8 @@ class Cashier extends ChangeNotifier {
         );
       }
     }
+
+    return null;
   }
 
   /// Current and default difference
@@ -319,7 +321,7 @@ class Cashier extends ChangeNotifier {
     await _updateCurrentStorage();
   }
 
-  /// Update chashier by [deltas]
+  /// Update cashier by [deltas]
   ///
   /// [deltas] key is index of units
   Future<void> update(Map<int, int> deltas) async {

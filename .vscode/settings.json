@@ -1,5 +1,7 @@
 {
   "cSpell.words": [
+    "autofocus",
+    "avator",
     "crashlytics",
     "firestore",
     "loadmore",
@@ -10,7 +12,8 @@
     "sembast",
     "signin",
     "sqflite",
-    "upgrader"
+    "upgrader",
+    "xfile"
   ],
   "files.associations": {
     "*.arb": "json"

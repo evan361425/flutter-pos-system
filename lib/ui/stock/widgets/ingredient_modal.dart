@@ -141,6 +141,8 @@ class _IngredientModalState extends State<IngredientModal>
     if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
       return S.stockIngredientNameRepeatError;
     }
+
+    return null;
   }
 
   void _handleTap(Product product) {

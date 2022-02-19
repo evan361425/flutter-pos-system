@@ -142,6 +142,8 @@ class _ProductModalState extends State<ProductModal>
     if (widget.product?.name != name && Menu.instance.hasProductByName(name)) {
       return S.menuProductNameRepeatError;
     }
+
+    return null;
   }
 
   ProductObject _parseObject() {

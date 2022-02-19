@@ -103,6 +103,8 @@ class _QuantityModalState extends State<QuantityModal>
     if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
       return S.stockQuantityNameRepeatError;
     }
+
+    return null;
   }
 
   QuantityObject _parseObject() {

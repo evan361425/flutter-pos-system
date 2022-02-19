@@ -96,6 +96,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         Replenisher.instance.hasName(name)) {
       return S.stockReplenishmentNameRepeatError;
     }
+
+    return null;
   }
 
   Widget _fieldIngredient(Ingredient ingredient) {
