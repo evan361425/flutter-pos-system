@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/firebase_options.dart';
 import 'package:provider/provider.dart';
 
 import 'models/repository/cashier.dart';
@@ -24,7 +25,7 @@ void main() async {
   // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Not all errors are caught by Flutter. Sometimes, errors are instead caught by Zones.
   await runZonedGuarded<Future<void>>(() async {
