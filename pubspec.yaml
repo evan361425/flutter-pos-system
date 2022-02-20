@@ -42,7 +42,7 @@ dependencies:
   shared_preferences: ^2.0.13
 
   # components
-  flutter_slidable: ^0.6.0
+  flutter_slidable: ^1.2.0
   modal_bottom_sheet: ^2.0.0
   sliding_up_panel: ^2.0.0+1
   table_calendar: ^3.0.3

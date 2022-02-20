@@ -27,6 +27,7 @@ class ReplenishmentScreen extends StatelessWidget {
         ? Center(child: EmptyBody(onPressed: navToAdd))
         : SlidableItemList<Replenishment, int>(
             delegate: SlidableItemDelegate(
+              groupTag: 'stock.replenishment',
               handleDelete: (item) => item.remove(),
               deleteValue: 1,
               warningContextBuilder: (_, item) =>

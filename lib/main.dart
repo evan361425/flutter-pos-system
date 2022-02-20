@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -33,7 +34,7 @@ void main() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
     if (kDebugMode) {
-      await MyApp.analytics.setAnalyticsCollectionEnabled(false);
+      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
     }
 
