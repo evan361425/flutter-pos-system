@@ -53,3 +53,4 @@ services.*.tar
 # *.mocks.dart
 
 coverage/
+android/build/*
