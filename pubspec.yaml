@@ -60,7 +60,7 @@ dependencies:
   file: ^6.1.2
 
   # tools
-  uuid: ^3.0.5
+  uuid: ^3.0.6
   wakelock: ^0.6.1+1
   path_provider: ^2.0.9
   url_launcher: ^6.0.20
