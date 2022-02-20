@@ -37,7 +37,13 @@ class SlidableItemList<T, Action> extends StatelessWidget {
       const SizedBox(height: 4.0),
     ]);
 
-    return scrollable ? SingleChildScrollView(child: child) : child;
+    if (!scrollable) return child;
+
+    final view = SingleChildScrollView(child: child);
+
+    return delegate.groupTag == null
+        ? view
+        : SlidableAutoCloseBehavior(child: view);
   }
 }
 
@@ -93,12 +99,13 @@ class SlidableItemDelegate<T, U> {
 
   final void Function(U? action)? handleAction;
 
-  final _slidableController = SlidableController();
+  final Object? groupTag;
 
   SlidableItemDelegate({
     required this.items,
     required this.deleteValue,
     required this.tileBuilder,
+    this.groupTag,
     this.warningContextBuilder,
     this.actionBuilder,
     this.handleAction,
@@ -116,25 +123,29 @@ class SlidableItemDelegate<T, U> {
       shape: const RoundedRectangleBorder(),
       margin: const EdgeInsets.all(0),
       child: Slidable(
-        controller: _slidableController,
-        actionPane: const SlidableDrawerActionPane(),
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            color: theme.errorColor,
-            caption: S.btnDelete,
-            icon: KIcons.delete,
-            onTap: () => DeleteDialog.show(
-              context,
-              deleteCallback: () => handleDelete(item),
-              warningContent: warningContextBuilder == null
-                  ? null
-                  : warningContextBuilder!(context, item),
+        groupTag: groupTag,
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.25,
+          children: [
+            SlidableAction(
+              key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
+              label: S.btnDelete,
+              backgroundColor: theme.errorColor,
+              icon: KIcons.delete,
+              onPressed: (_) => DeleteDialog.show(
+                context,
+                deleteCallback: () => handleDelete(item),
+                warningContent: warningContextBuilder == null
+                    ? null
+                    : warningContextBuilder!(context, item),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
         child: GestureDetector(
           onTap: () {
-            if (_checkPanelStatus() && handleTap != null) {
+            if (handleTap != null) {
               handleTap!(context, item);
             }
           },
@@ -159,15 +170,5 @@ class SlidableItemDelegate<T, U> {
           : warningContextBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
-  }
-
-  /// If there is any action panel opening, close it
-  bool _checkPanelStatus() {
-    if (_slidableController.activeState != null) {
-      _slidableController.activeState!.close();
-      return false;
-    } else {
-      return true;
-    }
   }
 }

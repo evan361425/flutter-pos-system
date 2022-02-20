@@ -39,6 +39,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
     }
 
     final delegate = SlidableItemDelegate<FavoriteItem, int>(
+      groupTag: 'cashier.changer_favorite',
       items: Cashier.instance.favoriteItems().toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),

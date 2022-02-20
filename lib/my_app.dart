@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -11,8 +10,6 @@ import 'settings/theme_setting.dart';
 import 'translator.dart';
 
 class MyApp extends StatelessWidget {
-  static final analytics = FirebaseAnalytics();
-
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
   final Widget child;
@@ -52,7 +49,7 @@ class MyApp extends StatelessWidget {
             routes: Routes.routes,
             debugShowCheckedModeBanner: false,
             navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: analytics),
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
               routeObserver,
             ],
 

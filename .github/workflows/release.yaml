@@ -32,10 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
-      # v1.2.3-rc1, v1.2.3
+      # v1.2.3-rc1, v1.2.3-rc1
       tag: ${{ steps.tag.outputs.result }}
-      # v1.2.3-rc1 => 1.2.3
-      tag_version: ${{ steps.pubspec_version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -60,7 +58,7 @@ jobs:
 
             return version.substr(0, index == -1 ? undefined : index);
 
-      # v1.2.3-rc1, v1.2.3
+      # v1.2.3-rc1, v1.2.3-rc1
       - name: Extract tag name
         id: tag
         uses: actions/github-script@v4
@@ -91,7 +89,6 @@ jobs:
     name: Get release
     runs-on: ubuntu-latest
     needs: check-version
-    if: ${{ !contains(needs.check-version.outputs.tag, '-rc') }}
     outputs:
       changelog: ${{ steps.get_release.outputs.changelog }}
     steps:

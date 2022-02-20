@@ -17,15 +17,17 @@ class CatalogList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Catalog, int>(
-        delegate: SlidableItemDelegate(
-      items: catalogs,
-      deleteValue: 0,
-      tileBuilder: _tileBuilder,
-      warningContextBuilder: _warningContextBuilder,
-      actionBuilder: _actionBuilder,
-      handleTap: _handleTap,
-      handleDelete: (item) => item.remove(),
-    ));
+      delegate: SlidableItemDelegate(
+        groupTag: 'menu.catalog',
+        items: catalogs,
+        deleteValue: 0,
+        tileBuilder: _tileBuilder,
+        warningContextBuilder: _warningContextBuilder,
+        actionBuilder: _actionBuilder,
+        handleTap: _handleTap,
+        handleDelete: (item) => item.remove(),
+      ),
+    );
   }
 
   Iterable<BottomSheetAction<int>> _actionBuilder(catalog) {

@@ -13,14 +13,16 @@ class QuantityList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Quantity, int>(
-        delegate: SlidableItemDelegate(
-      items: quantities,
-      deleteValue: 0,
-      tileBuilder: _tileBuilder,
-      warningContextBuilder: _warningContextBuilder,
-      handleDelete: _handleDelete,
-      handleTap: _handleTap,
-    ));
+      delegate: SlidableItemDelegate(
+        groupTag: 'quantities.quantity',
+        items: quantities,
+        deleteValue: 0,
+        tileBuilder: _tileBuilder,
+        warningContextBuilder: _warningContextBuilder,
+        handleDelete: _handleDelete,
+        handleTap: _handleTap,
+      ),
+    );
   }
 
   Future<void> _handleDelete(Quantity quantity) async {

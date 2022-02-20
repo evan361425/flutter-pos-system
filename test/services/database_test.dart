@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sqflite/sqflite.dart' as sqflite show Database, Batch;
 
@@ -148,7 +147,6 @@ void main() {
     });
 
     test('#query', () async {
-      logLevel = 0;
       final db = Database.instance.db as MockDatabase;
       when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([]));
       when(db.rawQuery('SELECT * FROM `table`     '))

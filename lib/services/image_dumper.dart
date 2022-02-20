@@ -15,7 +15,7 @@ class ImageDumper {
 
     if (image == null) return null;
 
-    final result = await ImageCropper.cropImage(
+    final result = await ImageCropper().cropImage(
       sourcePath: image.path,
       maxHeight: 512,
       maxWidth: 512,

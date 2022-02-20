@@ -23,8 +23,6 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
@@ -36,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 def buildNumber = System.getenv("BUILD_NUMBER") ?: "0"
 
 android {
-  compileSdkVersion 30
+  compileSdkVersion 31
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -55,7 +53,7 @@ android {
     applicationId "com.evanlu.possystem"
     // https://github.com/FirebaseExtended/flutterfire/issues/1401
     minSdkVersion 21
-    targetSdkVersion 30
+    targetSdkVersion 31
     multiDexEnabled true
     versionCode flutterVersionCode.toInteger()
     versionName flutterVersionName

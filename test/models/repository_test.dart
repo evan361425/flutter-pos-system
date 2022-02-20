@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -134,7 +133,6 @@ void main() {
     });
 
     setUpAll(() {
-      logLevel = 0;
       initializeCache();
       initializeStorage();
     });

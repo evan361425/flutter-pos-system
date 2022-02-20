@@ -105,5 +105,7 @@ class _CatalogModalState extends State<CatalogModal>
     if (widget.catalog?.name != name && Menu.instance.hasName(name)) {
       return S.menuCatalogNameRepeatError;
     }
+
+    return null;
   }
 }

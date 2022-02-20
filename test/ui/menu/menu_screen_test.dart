@@ -22,7 +22,7 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Menu Screen', () {
-    testWidgets('Add catalog', (WidgetTester tester) async {
+    testWidgets('Add catalog with image', (WidgetTester tester) async {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu()),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
