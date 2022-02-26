@@ -106,6 +106,11 @@ jobs:
       - name: Build dependencies
         run: flutter pub get
 
+      # Setup Java environment in order to build the Android app.
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+
       - name: Configure Keystore
         run: |
           echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
