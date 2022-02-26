@@ -243,7 +243,9 @@ class Cashier extends ChangeNotifier {
   Future<void> setCurrent(Object? record) async {
     try {
       // if null, set to empty units
-      assert(record != null);
+      if (record == null) {
+        throw TypeError();
+      }
 
       _current
         ..clear()
@@ -252,7 +254,7 @@ class Cashier extends ChangeNotifier {
             CashierUnitObject.fromMap(unit.cast<String, num>())
         ]);
     } catch (e, stack) {
-      if (e is! AssertionError) {
+      if (e is! TypeError) {
         await error(e.toString(), 'cashier.fetch.unit.error', stack);
       }
       _current

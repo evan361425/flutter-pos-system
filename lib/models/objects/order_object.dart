@@ -93,8 +93,8 @@ class OrderObject {
     return OrderObject(
       createdAt: createdAt,
       id: data['id'] as int,
-      // if fetching without these, it might be null
       paid: data['paid'] as num? ?? 0,
+      // price = product + customer
       totalPrice: totalPrice,
       totalCount: data['totalCount'] as int? ?? 0,
       productsPrice: data['productsPrice'] as num? ?? totalPrice,
