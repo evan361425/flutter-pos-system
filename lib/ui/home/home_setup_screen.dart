@@ -18,7 +18,8 @@ class HomeSetupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _HeaderInfoList(),
-            if (kDebugMode) Center(child: RandomGenerateOrderButton()),
+            if (kDebugMode || String.fromEnvironment('app.flavor') == 'dev')
+              Center(child: RandomGenerateOrderButton()),
             RouteTile(
               key: Key('home_setup.menu'),
               icon: Icons.collections_outlined,
