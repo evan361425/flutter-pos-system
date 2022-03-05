@@ -121,7 +121,7 @@ class Database {
     final joinQuery = join == null ? '' : join.toString();
 
     try {
-      return await instance.db.rawQuery(
+      return await db.rawQuery(
         'SELECT $selectQuery FROM `$table` $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
         whereArgs,
       );

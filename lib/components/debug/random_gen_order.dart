@@ -1,18 +1,19 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/seller.dart';
 
 List<OrderObject> generateOrder({
-  int orderCount = 1,
-  DateTime? startFrom,
-  DateTime? endTo,
+  required int orderCount,
+  required DateTime startFrom,
+  required DateTime endTo,
 }) {
   final rng = Random();
   final products = Menu.instance.items
@@ -22,8 +23,6 @@ List<OrderObject> generateOrder({
   final productCount = products.length;
   final result = <OrderObject>[];
 
-  startFrom = startFrom ?? DateTime.now().subtract(const Duration(days: 1));
-  endTo = endTo ?? DateTime.now();
   final interval = endTo.difference(startFrom).inMinutes;
   final createdList = [
     for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
@@ -141,7 +140,7 @@ class _SettingPageState extends State<_SettingPage> {
         leading: const PopButton(),
         actions: [
           AppbarTextButton(
-            onPressed: () => submit(),
+            onPressed: submit,
             child: const Text('OK'),
           )
         ],
@@ -150,6 +149,7 @@ class _SettingPageState extends State<_SettingPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           TextFormField(
+            key: const Key('rgo.count'),
             controller: _countController,
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.number,
@@ -162,6 +162,7 @@ class _SettingPageState extends State<_SettingPage> {
           ),
           const SizedBox(height: 8.0),
           InkWell(
+            key: const Key('rgo.date_range'),
             onTap: selectDates,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -196,7 +197,7 @@ class _SettingPageState extends State<_SettingPage> {
     }
   }
 
-  void submit() {
+  void submit() async {
     final count = int.parse(_countController.text);
     final result = generateOrder(
       orderCount: count,
@@ -204,8 +205,10 @@ class _SettingPageState extends State<_SettingPage> {
       endTo: endTo,
     );
 
-    debugPrint(jsonEncode(result.map((e) => e.toMap()).toList()));
-    // Navigator.of(context).pop();
+    await Future.forEach<OrderObject>(result, (e) => Seller.instance.push(e));
+    showSuccessSnackbar(context, '成功產生 ${result.length} 個訂單');
+
+    Navigator.of(context).pop();
   }
 
   @override

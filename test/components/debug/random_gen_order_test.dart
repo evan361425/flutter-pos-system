@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:possystem/components/debug/random_gen_order.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -6,18 +8,50 @@ import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 
+import '../../mocks/mock_database.dart';
+
 void main() {
   group('Random Generate Order', () {
     test('default setting', () {
-      final result = generateOrder(orderCount: 10);
+      final end = DateTime.now();
+      final result = generateOrder(
+        orderCount: 10,
+        startFrom: end.subtract(const Duration(days: 1)),
+        endTo: end,
+      );
 
       expect(result.length, equals(10));
       expect(result.map((e) => e.totalCount).reduce((a, b) => a + b),
           greaterThan(10));
+    });
+
+    testWidgets('change date and count', (tester) async {
+      Seller();
+      when(database.push(any, any)).thenAnswer((_) => Future.value(1));
+
+      const btn = Key('test');
+      await tester.pumpWidget(const MaterialApp(
+        home: RandomGenerateOrderButton(key: btn),
+      ));
+
+      await tester.tap(find.byKey(btn));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('rgo.count')), '15');
+      await tester.tap(find.byKey(const Key('rgo.date_range')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('OK'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      verify(database.push(any, any)).called(15);
     });
   });
 
@@ -91,5 +125,7 @@ void main() {
       'c-1': Catalog(id: 'c-1', products: {'p-1': p1, 'p-2': p2, 'p-3': p3})
         ..prepareItem()
     });
+
+    initializeDatabase();
   });
 }
