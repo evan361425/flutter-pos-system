@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/debug/random_gen_order.dart';
 import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
@@ -16,6 +18,8 @@ class HomeSetupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _HeaderInfoList(),
+            if (kDebugMode || String.fromEnvironment('app.flavor') == 'dev')
+              Center(child: RandomGenerateOrderButton()),
             RouteTile(
               key: Key('home_setup.menu'),
               icon: Icons.collections_outlined,

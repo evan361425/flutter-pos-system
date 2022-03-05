@@ -57,19 +57,24 @@ class Seller extends ChangeNotifier {
   }) async {
     final rows = await Database.instance.query(
       orderTable,
-      columns: ['COUNT(*) count', 'createdAt'],
+      columns: ['createdAt'],
       where: 'createdAt BETWEEN ? AND ?',
-      groupBy: "STRFTIME('$range', createdAt,'unixepoch')",
+      // This will cause problems when sqlite timezone is different with app's.
+      // groupBy: "STRFTIME('$range', createdAt,'unixepoch')",
       whereArgs: [
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
     );
 
-    return {
-      for (final row in rows)
-        Util.fromUTC(row['createdAt'] as int): row['count'] as int
-    };
+    final result = <DateTime, int>{};
+    for (final row in rows) {
+      final c = Util.fromUTC(row['createdAt'] as int);
+      final d = DateTime(c.year, c.month, c.day);
+      result[d] = (result[d] ?? 0) + 1;
+    }
+
+    return result;
   }
 
   Future<Map<String, num>> getMetricBetween([
@@ -99,6 +104,10 @@ class Seller extends ChangeNotifier {
   ]) async {
     final rows = await Database.instance.query(
       orderTable,
+      columns: const [
+        '`$orderTable`.*',
+        'customer_setting_combinations.combination',
+      ],
       where: 'createdAt BETWEEN ? AND ?',
       whereArgs: [
         Util.toUTC(now: start),

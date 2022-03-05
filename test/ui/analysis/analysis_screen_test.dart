@@ -38,7 +38,13 @@ void main() {
   Future<List<Map<String, Object?>>> mockGetOrderBetween() {
     return database.query(
       Seller.orderTable,
-      columns: anyNamed('columns'),
+      columns: argThat(
+        predicate((data) =>
+            data is List &&
+            data.length == 2 &&
+            data[1] == 'customer_setting_combinations.combination'),
+        named: 'columns',
+      ),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
       join: argThat(isNotNull, named: 'join'),
@@ -51,10 +57,13 @@ void main() {
   Future<List<Map<String, Object?>>> mockGetCountBetween() {
     return database.query(
       Seller.orderTable,
-      columns: anyNamed('columns'),
+      columns: argThat(
+        predicate((data) =>
+            data is List && data.length == 1 && data[0] == 'createdAt'),
+        named: 'columns',
+      ),
       where: anyNamed('where'),
       whereArgs: anyNamed('whereArgs'),
-      groupBy: argThat(isNotNull, named: 'groupBy'),
     );
   }
 
@@ -62,8 +71,10 @@ void main() {
     return database.query(
       Seller.orderTable,
       columns: argThat(
-        predicate(
-            (data) => data is List && data[1] == 'SUM(totalPrice) totalPrice'),
+        predicate((data) =>
+            data is List &&
+            data.length == 2 &&
+            data[1] == 'SUM(totalPrice) totalPrice'),
         named: 'columns',
       ),
       where: anyNamed('where'),
@@ -74,27 +85,21 @@ void main() {
   group('Analysis Screen', () {
     testWidgets('select date and show order list in portrait', (tester) async {
       final now = DateTime.now();
+      final nowS = now.millisecondsSinceEpoch ~/ 1000;
       when(mockGetOrderBetween()).thenAnswer((_) => Future.value([
             {'id': 1},
             {'id': 2},
           ]));
       when(mockGetMetricBetween()).thenAnswer((_) => Future.value([]));
       when(mockGetCountBetween()).thenAnswer((_) => Future.value([
-            {
-              'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-              'count': 100, // show 99+
-            },
-            {
-              // yesterday
-              'createdAt': now.millisecondsSinceEpoch ~/ 1000 - 86400,
-              'count': 50,
-            },
+            ...List.filled(100, {'createdAt': nowS}),
+            ...List.filled(50, {'createdAt': nowS - 86400}),
           ]));
 
-      // setup protrait env
+      // setup portrait env
       tester.binding.window.physicalSizeTestValue = const Size(1000, 2000);
 
-      // resets the screen to its orinal size after the test end
+      // resets the screen to its original size after the test end
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(buildAnalysisScreen());
@@ -117,17 +122,11 @@ void main() {
 
     testWidgets('load count when page changed in landscape', (tester) async {
       final now = DateTime.now();
+      final nowS = now.millisecondsSinceEpoch ~/ 1000;
       when(mockGetCountBetween()).thenAnswer((_) => Future.value([
-            {
-              'createdAt': now.millisecondsSinceEpoch ~/ 1000,
-              'count': 50,
-            },
-            {
-              // last month
-              'createdAt':
-                  now.millisecondsSinceEpoch ~/ 1000 - 86400 * (now.day + 7),
-              'count': 60,
-            },
+            ...List.filled(50, {'createdAt': nowS}),
+            // last month
+            ...List.filled(60, {'createdAt': nowS - 86400 * (now.day + 7)}),
           ]));
       when(mockGetMetricBetween()).thenAnswer((_) => Future.value([]));
       when(mockGetOrderBetween()).thenAnswer((_) => Future.value([]));
@@ -135,7 +134,7 @@ void main() {
       // setup landscape env
       tester.binding.window.physicalSizeTestValue = const Size(2000, 1000);
 
-      // resets the screen to its orinal size after the test end
+      // resets the screen to its original size after the test end
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));

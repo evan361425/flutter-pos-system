@@ -468,7 +468,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
 
-        // reset quantitiy name
+        // reset quantity name
         w = find.byKey(const Key('product_quantity.pq-1')).evaluate().first;
         expect(((w.widget as ListTile).title as Text).data, equals('q-3'));
         expect(quantity.amount, equals(1));
