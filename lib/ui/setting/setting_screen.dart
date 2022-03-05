@@ -77,10 +77,14 @@ class _SettingScreenState extends State<SettingScreen> {
             onTap: () => _navigateItemList(
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
               title: S.settingOrderOutlookTitle,
+              selected: orderOutlook.value.index,
               items: OrderOutlookTypes.values
                   .map((e) => S.settingOrderOutlookTypes(e))
                   .toList(),
-              selected: orderOutlook.value.index,
+              tips: [
+                '點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機',
+                '所有資訊顯示在單一螢幕中，適合大螢幕的平板',
+              ],
             ),
           ),
           CardTile(
@@ -92,10 +96,15 @@ class _SettingScreenState extends State<SettingScreen> {
               (index) =>
                   cashierWarning.update(CashierWarningTypes.values[index]),
               title: S.settingCashierWarningTitle,
+              selected: cashierWarning.value.index,
               items: CashierWarningTypes.values
                   .map((e) => S.settingCashierWarningTypes(e))
                   .toList(),
-              selected: cashierWarning.value.index,
+              tips: [
+                '收銀機若使用小錢會出現提示，例如收銀機 5 塊錢不夠了並嘗試用 1 塊錢去找 5 塊錢',
+                null,
+                null,
+              ],
             ),
           ),
           FeatureSlider(
@@ -125,6 +134,7 @@ class _SettingScreenState extends State<SettingScreen> {
     required String title,
     required List<String> items,
     required int selected,
+    List<String?>? tips,
   }) async {
     final newSelected = await Navigator.of(context).push<int>(
       MaterialPageRoute(
@@ -132,6 +142,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 title: title,
                 items: items,
                 selected: selected,
+                tips: tips,
               )),
     );
 

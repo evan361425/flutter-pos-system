@@ -111,10 +111,11 @@ class RandomGenerateOrderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
       onPressed: () => Navigator.of(context)
           .push(MaterialPageRoute(builder: (_) => const _SettingPage())),
-      child: const Text('產生隨機餐點'),
+      label: const Text('產生隨機餐點'),
+      icon: const Icon(Icons.developer_mode_sharp),
     );
   }
 }
