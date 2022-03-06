@@ -12,7 +12,6 @@ on:
     workflows:
       - Add Artifacts for Release
       - Add Artifacts for Release Candidate
-    branches: [master]
     types: [completed]
 
 jobs:
