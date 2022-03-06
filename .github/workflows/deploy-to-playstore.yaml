@@ -13,6 +13,8 @@ on:
       - Add Artifacts for Release
       - Add Artifacts for Release Candidate
     types: [completed]
+  release:
+    types: [released]
 
 jobs:
   # Extract some useful variable
@@ -23,7 +25,7 @@ jobs:
   var:
     name: Extracting variables
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
@@ -44,7 +46,11 @@ jobs:
           script: |
             return context.eventName === 'workflow_dispatch'
               ? '${{ github.event.inputs.lane }}'
-              : '${{ steps.tag.outputs.value }}'.includes('-rc') ? 'internal' : 'beta';
+              : context.eventName === 'release'
+                ? 'promote_to_production'
+                : '${{ steps.tag.outputs.value }}'.includes('-rc')
+                  ? 'internal'
+                  : 'beta';
 
       - name: Extract Flavor
         id: flavor
