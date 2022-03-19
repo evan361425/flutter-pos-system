@@ -9,6 +9,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:provider/provider.dart';
 
 List<OrderObject> generateOrder({
   required int orderCount,
@@ -141,7 +142,7 @@ class _SettingPageState extends State<_SettingPage> {
         leading: const PopButton(),
         actions: [
           AppbarTextButton(
-            onPressed: submit,
+            onPressed: () => submit(context.read<Seller>()),
             child: const Text('OK'),
           )
         ],
@@ -198,7 +199,7 @@ class _SettingPageState extends State<_SettingPage> {
     }
   }
 
-  void submit() async {
+  void submit(Seller seller) async {
     final count = int.parse(_countController.text);
     final result = generateOrder(
       orderCount: count,
@@ -206,7 +207,7 @@ class _SettingPageState extends State<_SettingPage> {
       endTo: endTo,
     );
 
-    await Future.forEach<OrderObject>(result, (e) => Seller.instance.push(e));
+    await Future.forEach<OrderObject>(result, (e) => seller.push(e));
     showSuccessSnackbar(context, '成功產生 ${result.length} 個訂單');
 
     Navigator.of(context).pop();

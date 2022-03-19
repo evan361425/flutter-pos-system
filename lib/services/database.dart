@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/services/database_migration_actions.dart';
 import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' hide Database;
 import 'package:sqflite/sqflite.dart' as no_sql show Database;
@@ -11,7 +12,11 @@ class Database {
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
+  static const latestVersion = 5;
+
   late no_sql.Database db;
+
+  late int oldVersion = latestVersion;
 
   bool _initialized = false;
 
@@ -82,7 +87,7 @@ class Database {
     final databasePath = await getDatabasesPath() + '/pos_system.sqlite';
     db = await openDatabase(
       databasePath,
-      version: 4,
+      version: latestVersion,
       onCreate: (db, version) async {
         info(version.toString(), 'database.create.$version');
         for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
@@ -91,11 +96,13 @@ class Database {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         info(oldVersion.toString(), 'database.upgrade.$newVersion');
+        this.oldVersion = oldVersion;
         for (var i = oldVersion + 1; i <= newVersion; i++) {
           await _execMigration(db, i);
         }
       },
     );
+    db.setVersion(4);
   }
 
   Future<int> push(String table, Map<String, Object?> data) {
@@ -134,6 +141,20 @@ class Database {
   Future<void> reset() async {
     final path = await getDatabasesPath() + '/pos_system.sqlite';
     return deleteDatabase(path);
+  }
+
+  Future<void> tolerateMigration() async {
+    for (var version = oldVersion + 1; version <= latestVersion; version++) {
+      final action = dbMigrationActions[version];
+      if (action != null) {
+        info(version.toString(), 'database.migration_action');
+        try {
+          await action(db);
+        } catch (e, stack) {
+          await error(e.toString(), 'database.migration_action.error', stack);
+        }
+      }
+    }
   }
 
   Future<int> update(

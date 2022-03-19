@@ -12,6 +12,7 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mock_database.dart';
 
@@ -31,12 +32,12 @@ void main() {
     });
 
     testWidgets('change date and count', (tester) async {
-      Seller();
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
 
       const btn = Key('test');
-      await tester.pumpWidget(const MaterialApp(
-        home: RandomGenerateOrderButton(key: btn),
+      await tester.pumpWidget(ChangeNotifierProvider.value(
+        value: Seller(),
+        child: const MaterialApp(home: RandomGenerateOrderButton(key: btn)),
       ));
 
       await tester.tap(find.byKey(btn));

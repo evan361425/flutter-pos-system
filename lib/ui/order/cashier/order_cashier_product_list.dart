@@ -13,6 +13,10 @@ class OrderCashierProductList extends StatelessWidget {
   final num totalPrice;
   final num productsPrice;
   final num customerPrice;
+  final num? productCost;
+
+  /// 淨利，只需考慮總價和成本，不需考慮付額
+  final num? income;
 
   const OrderCashierProductList({
     Key? key,
@@ -20,6 +24,8 @@ class OrderCashierProductList extends StatelessWidget {
     required this.products,
     required this.totalPrice,
     required this.productsPrice,
+    this.productCost,
+    this.income,
   })  : customerPrice = totalPrice - productsPrice,
         super(key: key);
 
@@ -32,6 +38,16 @@ class OrderCashierProductList extends StatelessWidget {
           title: Text(S.orderCashierProductTotalPrice),
           trailing: Text(productsPrice.toCurrency()),
         ),
+        if (productCost != null)
+          ListTile(
+            title: Text(S.orderCashierProductTotalCost),
+            trailing: Text(productCost!.toCurrency()),
+          ),
+        if (income != null)
+          ListTile(
+            title: Text(S.orderCashierIncome),
+            trailing: Text(income!.toCurrency()),
+          ),
         ListTile(
           title: Text(S.orderCashierCustomerTotalPrice),
           trailing: Text(customerPrice.toCurrency()),

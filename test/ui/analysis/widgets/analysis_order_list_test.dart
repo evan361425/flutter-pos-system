@@ -112,6 +112,7 @@ void main() {
           singlePrice: 1,
           originalPrice: 2,
           count: 3,
+          cost: 1,
           productId: 'p-1',
           productName: 'p-1',
           isDiscount: true,

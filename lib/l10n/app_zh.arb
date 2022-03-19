@@ -233,6 +233,20 @@
       }
     }
   },
+  "analysisOrderListItemMetaIncome": "淨利：{income}",
+  "@analysisOrderListItemMetaIncome": {
+    "description": "分析頁的點餐列表中，每次點餐的淨利",
+    "placeholders": {
+      "income": {
+        "type": "num",
+        "format": "currency",
+        "optionalParameters": {
+          "decimalDigits": 0,
+          "symbol": ""
+        }
+      }
+    }
+  },
   "analysisOrderListMetaPrice": "總營收：{price}",
   "@analysisOrderListMetaPrice": {
     "description": "分析頁的點餐列表中，單日點餐的營收",
@@ -905,6 +919,8 @@
     }
   },
   "orderCashierProductTotalPrice": "產品總價",
+  "orderCashierProductTotalCost": "產品成本",
+  "orderCashierIncome": "淨利",
   "orderProductIngredientDefaultName": "{ingredient}（預設）",
   "@orderProductIngredientDefaultName": {
     "description": "點單時的產品列表中各項產品的成分資訊",
