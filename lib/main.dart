@@ -52,6 +52,8 @@ void main() async {
     // Last for setup ingredient and quantity
     await Menu().initialize();
 
+    await Database.instance.tolerateMigration();
+
     /// Why use provider?
     /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
     runApp(MultiProvider(

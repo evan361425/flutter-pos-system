@@ -9,16 +9,30 @@ import 'package:possystem/services/database.dart';
 
 class OrderObject {
   final int? id;
+
+  /// 付額
   final num? paid;
+
+  /// 總價，產品價錢+顧客設定價錢
   final num totalPrice;
+
+  /// 產品價錢
   final num productsPrice;
+
+  /// 產品總數
   final int totalCount;
+
   final List<String>? productNames;
   final List<String>? ingredientNames;
-  final int? customerSettingsCombinationId;
-  final DateTime createdAt;
+
+  /// 顧客設定，鍵代表種類，值代表選項
   final Map<String, String> customerSettings;
+  final int? customerSettingsCombinationId;
+
   final Iterable<OrderProductObject> products;
+
+  /// 點餐時間
+  final DateTime createdAt;
 
   OrderObject({
     this.id,
@@ -34,23 +48,26 @@ class OrderObject {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
+  List<OrderProduct?> parseToProductWithNull() {
+    return products.map<OrderProduct?>((orderProduct) {
+      final product = Menu.instance.getProduct(orderProduct.productId);
+
+      if (product == null) return null;
+
+      return OrderProduct(
+        product,
+        count: orderProduct.count,
+        singlePrice: orderProduct.singlePrice,
+        selectedQuantity: {
+          for (final item in orderProduct.ingredients.values)
+            item.productIngredientId: item.productQuantityId
+        },
+      );
+    }).toList();
+  }
+
   List<OrderProduct> parseToProduct() {
-    return products
-        .map<OrderProduct?>((orderProduct) {
-          final product = Menu.instance.getProduct(orderProduct.productId);
-
-          if (product == null) return null;
-
-          return OrderProduct(
-            product,
-            count: orderProduct.count,
-            singlePrice: orderProduct.singlePrice,
-            selectedQuantity: {
-              for (final item in orderProduct.ingredients.values)
-                item.productIngredientId: item.productQuantityId
-            },
-          );
-        })
+    return parseToProductWithNull()
         .where((item) => item != null)
         .cast<OrderProduct>()
         .toList();
@@ -82,6 +99,12 @@ class OrderObject {
     };
   }
 
+  get cost => products.fold<num>(
+      0, (total, product) => total + product.cost * product.count);
+
+  /// 淨利
+  get income => totalPrice - cost;
+
   factory OrderObject.fromMap(Map<String, Object?> data) {
     final encodedProduct = data['encodedProducts'] as String?;
     final products = jsonDecode(encodedProduct ?? '[]') as List<dynamic>;
@@ -94,7 +117,6 @@ class OrderObject {
       createdAt: createdAt,
       id: data['id'] as int,
       paid: data['paid'] as num? ?? 0,
-      // price = product + customer
       totalPrice: totalPrice,
       totalCount: data['totalCount'] as int? ?? 0,
       productsPrice: data['productsPrice'] as num? ?? totalPrice,
@@ -108,31 +130,47 @@ class OrderObject {
 }
 
 class OrderProductObject {
-  final num singlePrice;
-  final num originalPrice;
-  final int count;
   final String productId;
   final String productName;
+
+  /// 購買數量
+  final int count;
+
+  /// 單一成本，含份量的異動
+  final num cost;
+
+  /// 單一價格，含折扣的價格
+  final num singlePrice;
+
+  /// 單一原始價格
+  final num originalPrice;
+
+  /// 是否有折扣
+  ///
+  /// 折扣差可以做 method，如果有需要的話
   final bool isDiscount;
+
   final Map<String, OrderIngredientObject> ingredients;
 
   OrderProductObject({
-    required this.singlePrice,
-    required this.originalPrice,
-    required this.count,
     required this.productId,
     required this.productName,
+    required this.count,
+    required this.cost,
+    required this.singlePrice,
+    required this.originalPrice,
     required this.isDiscount,
     required this.ingredients,
   });
 
   Map<String, Object?> toMap() {
     return {
-      'singlePrice': singlePrice,
-      'originalPrice': originalPrice,
-      'count': count,
       'productId': productId,
       'productName': productName,
+      'count': count,
+      'cost': cost,
+      'singlePrice': singlePrice,
+      'originalPrice': originalPrice,
       'isDiscount': isDiscount,
       'ingredients': ingredients.values
           .map<Map<String, Object?>>(
@@ -147,11 +185,12 @@ class OrderProductObject {
         (data['ingredients'] ?? const Iterable.empty()) as Iterable<dynamic>;
 
     return OrderProductObject(
-      singlePrice: data['singlePrice'] as num,
-      originalPrice: data['originalPrice'] as num,
-      count: data['count'] as int,
       productId: data['productId'] as String,
       productName: data['productName'] as String,
+      count: data['count'] as int,
+      cost: data['cost'] as int? ?? 0,
+      singlePrice: data['singlePrice'] as num,
+      originalPrice: data['originalPrice'] as num,
       isDiscount: data['isDiscount'] as bool,
       ingredients: {
         for (Map<String, dynamic> ingredient in ingredients)
@@ -162,15 +201,30 @@ class OrderProductObject {
 }
 
 class OrderIngredientObject {
+  /// 對應 stock 的 ID
   final String id;
-  final String name;
+
+  /// 對應產品的成分 ID
   final String productIngredientId;
-  num? additionalPrice;
-  num? additionalCost;
-  num amount;
-  String? productQuantityId;
+
+  /// 成份名稱
+  final String name;
+
+  /// 對應 quantities 的 ID
   String? quantityId;
+
+  /// 對應產品的份量 ID
+  String? productQuantityId;
   String? quantityName;
+
+  /// 因為份量影響的價錢
+  num? additionalPrice;
+
+  /// 因為份量影響的成本
+  num? additionalCost;
+
+  /// 成分最終數量，含份量的異動
+  num amount;
 
   OrderIngredientObject({
     required this.id,

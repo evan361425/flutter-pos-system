@@ -8,6 +8,7 @@ import 'package:possystem/translator.dart';
 class OrderProduct extends ChangeNotifier {
   final Product product;
 
+  /// 鍵為成分 ID、值為份量 ID
   final Map<String, String?> selectedQuantity;
 
   bool isSelected;
@@ -120,12 +121,15 @@ class OrderProduct extends ChangeNotifier {
         )
     };
     final originalPrice = product.price;
+    final cost = ingredients.values.fold<num>(
+        product.cost, (cost, ing) => cost + (ing.additionalCost ?? 0));
 
     return OrderProductObject(
-      singlePrice: singlePrice,
-      count: count,
       productId: product.id,
       productName: product.name,
+      count: count,
+      cost: cost,
+      singlePrice: singlePrice,
       originalPrice: originalPrice,
       isDiscount: singlePrice < originalPrice,
       ingredients: ingredients,

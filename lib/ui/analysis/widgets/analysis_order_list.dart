@@ -158,6 +158,8 @@ class _AnalysisOrderModal extends StatelessWidget {
                 .toList(),
             productsPrice: order.productsPrice,
             totalPrice: order.totalPrice,
+            productCost: order.cost,
+            income: order.income,
           ),
         ),
       ]),
@@ -190,6 +192,7 @@ class _OrderTile extends StatelessWidget {
     final subtitle = MetaBlock.withString(context, [
       S.analysisOrderListItemMetaPrice(order.totalPrice),
       S.analysisOrderListItemMetaPaid(order.paid!),
+      S.analysisOrderListItemMetaIncome(order.income),
     ]);
 
     return ListTile(
