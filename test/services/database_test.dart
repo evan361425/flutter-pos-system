@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -78,10 +79,9 @@ void main() {
       });
     });
 
-    test('#initialize', () async {
-      sqfliteFfiInit();
+    group('#initialize', () {
       // ignore: prefer_function_declarations_over_variables
-      DbOpener opener = (
+      final DbOpener opener = (
         path, {
         onConfigure,
         onCreate,
@@ -89,7 +89,8 @@ void main() {
         onOpen,
         onUpgrade,
         readOnly = false,
-        singleInstance = true,
+        // avoid pollution from different test
+        singleInstance = false,
         version,
       }) {
         return databaseFactoryFfi.openDatabase(
@@ -107,15 +108,71 @@ void main() {
         );
       };
 
-      await Database.instance.initialize(
-        path: sqflite.inMemoryDatabasePath,
-        opener: opener,
-      );
+      test('onCreate', () async {
+        await Database.instance.initialize(
+          path: sqflite.inMemoryDatabasePath,
+          opener: opener,
+        );
 
-      final dbVersion = await Database.instance.db.getVersion();
-      expect(dbVersion, equals(Database.latestVersion));
+        final dbVersion = await Database.instance.db.getVersion();
+        expect(dbVersion, equals(Database.latestVersion));
+      });
 
-      Database.instance.db = MockDatabase();
+      test('onUpgrade should not failed', () async {
+        await Database.instance.initialize(
+          opener: (path,
+              {onConfigure,
+              onCreate,
+              onDowngrade,
+              onOpen,
+              onUpgrade,
+              readOnly = true,
+              singleInstance = true,
+              version}) async {
+            expect(path, equals('databases/pos_system.sqlite'));
+            final db = await opener(sqflite.inMemoryDatabasePath);
+            await onUpgrade!(db, 0, version!);
+            return db;
+          },
+        );
+      });
+
+      test('onUpgrade should catch the error', () async {
+        logLevel = 4;
+
+        await Database.instance.initialize(opener: (path,
+            {onConfigure,
+            onCreate,
+            onDowngrade,
+            onOpen,
+            onUpgrade,
+            readOnly = true,
+            singleInstance = true,
+            version}) async {
+          final db = await opener(sqflite.inMemoryDatabasePath);
+          // without running version 1, it will throw error
+          await onUpgrade!(db, 3, version!);
+          return db;
+        });
+
+        logLevel = 1;
+      });
+
+      setUpAll(() {
+        sqfliteFfiInit();
+        // if error, it will fire crashlytics and throw error
+        logLevel = 1;
+      });
+
+      tearDownAll(() {
+        Database.instance.db = MockDatabase();
+        logLevel = 4;
+      });
+
+      tearDown(() {
+        // after initialized, it can not initial again
+        Database.instance = Database();
+      });
     });
 
     test('#batchUpdate', () async {

@@ -65,8 +65,12 @@ void warn(String message, String code, [Map<String, Object>? detail]) async {
 /// LEVEL: 1
 ///
 /// It will send to crashlytics not analytic
-Future<void> error(String message, String code,
-    [StackTrace? stack, bool? printDetails]) async {
+Future<void> error(
+  String message,
+  String code, [
+  StackTrace? stack,
+  bool? printDetails,
+]) async {
   developer.log(message, name: code);
 
   if (logLevel == 4) return;

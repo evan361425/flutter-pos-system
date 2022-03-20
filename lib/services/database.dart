@@ -1,12 +1,23 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:developer' as developer;
 
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database_migration_actions.dart';
 import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+
+typedef DbOpener = Future<sqflite.Database> Function(
+  String path, {
+  int? version,
+  FutureOr<void> Function(sqflite.Database)? onConfigure,
+  FutureOr<void> Function(sqflite.Database, int)? onCreate,
+  FutureOr<void> Function(sqflite.Database, int, int)? onUpgrade,
+  FutureOr<void> Function(sqflite.Database, int, int)? onDowngrade,
+  FutureOr<void> Function(sqflite.Database)? onOpen,
+  bool readOnly,
+  bool singleInstance,
+});
 
 class Database {
   static Database instance = Database();
@@ -15,12 +26,6 @@ class Database {
   static final String delimiter = String.fromCharCode(13);
 
   static const latestVersion = 5;
-
-  static Future<String> getRootPath() async {
-    final pathRoot = (await XFile.getRootPath()).split('/');
-    pathRoot[pathRoot.length - 1] = 'databases';
-    return pathRoot.join('/') + '/pos_system.sqlite';
-  }
 
   late sqflite.Database db;
 
@@ -96,21 +101,21 @@ class Database {
     _initialized = true;
 
     final databasePath = path ?? await getRootPath();
-    developer.log(databasePath, name: 'db.path');
+    info(databasePath, 'db.path');
     db = await opener(
       databasePath,
       version: latestVersion,
-      onCreate: (db, version) async {
-        info(version.toString(), 'database.create.$version');
-        for (var exeVersion = 1; exeVersion <= version; exeVersion++) {
-          await _execMigration(db, exeVersion);
+      onCreate: (db, latestVer) async {
+        info(latestVer.toString(), 'database.create.$latestVer');
+        for (var ver = 1; ver <= latestVer; ver++) {
+          await execMigration(db, ver);
         }
       },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        info(oldVersion.toString(), 'database.upgrade.$newVersion');
-        this.oldVersion = oldVersion;
-        for (var i = oldVersion + 1; i <= newVersion; i++) {
-          await _execMigration(db, i);
+      onUpgrade: (db, oldVer, newVer) async {
+        info(oldVer.toString(), 'database.upgrade.$newVer');
+        oldVersion = oldVer;
+        for (var ver = oldVer + 1; ver <= newVer; ver++) {
+          await execMigration(db, ver);
         }
       },
     );
@@ -177,7 +182,7 @@ class Database {
     );
   }
 
-  Future<void> _execMigration(sqflite.Database db, int version) async {
+  static Future<void> execMigration(sqflite.Database db, int version) async {
     final sqlSet = dbMigrationUp[version];
     if (sqlSet == null) return;
 
@@ -188,6 +193,13 @@ class Database {
         await error(e.toString(), 'database.migration.error', stack);
       }
     }
+  }
+
+  static Future<String> getRootPath() async {
+    final paths = (await XFile.getRootPath()).split('/')
+      ..removeLast()
+      ..add('databases');
+    return paths.join('/') + '/pos_system.sqlite';
   }
 
   static String join(Iterable<String>? data) =>
@@ -217,15 +229,3 @@ class JoinQuery {
     return '$joinType JOIN `$guestTable` ON `$hostTable`.$hostKey = `$guestTable`.$guestKey';
   }
 }
-
-typedef DbOpener = Future<sqflite.Database> Function(
-  String path, {
-  int? version,
-  FutureOr<void> Function(sqflite.Database)? onConfigure,
-  FutureOr<void> Function(sqflite.Database, int)? onCreate,
-  FutureOr<void> Function(sqflite.Database, int, int)? onUpgrade,
-  FutureOr<void> Function(sqflite.Database, int, int)? onDowngrade,
-  FutureOr<void> Function(sqflite.Database)? onOpen,
-  bool readOnly,
-  bool singleInstance,
-});

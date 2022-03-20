@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:sqflite/sqflite.dart' show Database;
@@ -17,7 +17,7 @@ final dbMigrationActions = <int, Future<void> Function(Database)>{
         orderBy: 'createdAt asc',
       );
       offset += 100;
-      log('Get ${orders.length} orders', name: 'db.migration_action.5');
+      info('Get ${orders.length} orders', 'db.migration_action.5');
 
       for (final orderRaw in orders) {
         final order = OrderObject.fromMap(orderRaw);
