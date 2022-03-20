@@ -363,7 +363,7 @@ packages:
       path: "."
       ref: master
       resolved-ref: fdcb0f945dce51c8fea5ea4bd97eadeaa7ccf507
-      url: "git://github.com/evan361425/flutter_image_cropper.git"
+      url: "https://github.com/evan361425/flutter_image_cropper.git"
     source: git
     version: "1.5.0"
   image_picker:
