@@ -7,9 +7,10 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/database.dart';
-import 'package:possystem/services/database_migration_actions.dart';
-import 'package:sqflite/sqflite.dart' as sqflite show Database, Batch;
+import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import '../test_helpers/file_mocker.dart';
 import 'database_test.mocks.dart';
 
 @GenerateMocks([sqflite.Database, sqflite.Batch])
@@ -68,12 +69,53 @@ void main() {
                 where: anyNamed('where'), whereArgs: anyNamed('whereArgs')))
             .thenAnswer((_) => Future.value(0));
 
-        await dbMigrationActions[5]!(db);
+        Database.instance.oldVersion = 4;
+        await Database.instance.tolerateMigration(5);
 
         verifyIdExecuted(1);
         verifyIdExecuted(2);
         verifyIdExecuted(3);
       });
+    });
+
+    test('#initialize', () async {
+      sqfliteFfiInit();
+      // ignore: prefer_function_declarations_over_variables
+      DbOpener opener = (
+        path, {
+        onConfigure,
+        onCreate,
+        onDowngrade,
+        onOpen,
+        onUpgrade,
+        readOnly = false,
+        singleInstance = true,
+        version,
+      }) {
+        return databaseFactoryFfi.openDatabase(
+          path,
+          options: sqflite.OpenDatabaseOptions(
+            onConfigure: onConfigure,
+            onCreate: onCreate,
+            onDowngrade: onDowngrade,
+            onOpen: onOpen,
+            onUpgrade: onUpgrade,
+            readOnly: readOnly,
+            singleInstance: singleInstance,
+            version: version,
+          ),
+        );
+      };
+
+      await Database.instance.initialize(
+        path: sqflite.inMemoryDatabasePath,
+        opener: opener,
+      );
+
+      final dbVersion = await Database.instance.db.getVersion();
+      expect(dbVersion, equals(Database.latestVersion));
+
+      Database.instance.db = MockDatabase();
     });
 
     test('#batchUpdate', () async {
@@ -269,6 +311,7 @@ void main() {
     setUpAll(() {
       Database.instance = Database();
       Database.instance.db = MockDatabase();
+      initializeFileSystem();
     });
   });
 }
