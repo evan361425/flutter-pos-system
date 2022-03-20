@@ -35,6 +35,14 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
   set db(_i2.Database? _db) => super.noSuchMethod(Invocation.setter(#db, _db),
       returnValueForMissingStub: null);
   @override
+  int get oldVersion =>
+      (super.noSuchMethod(Invocation.getter(#oldVersion), returnValue: 0)
+          as int);
+  @override
+  set oldVersion(int? _oldVersion) =>
+      super.noSuchMethod(Invocation.setter(#oldVersion, _oldVersion),
+          returnValueForMissingStub: null);
+  @override
   _i4.Future<List<Object?>> batchUpdate(
           String? table, List<Map<String, Object?>>? data,
           {String? where, List<List<Object>>? whereArgs}) =>
@@ -79,8 +87,10 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
               returnValue: Future<Map<String, Object?>?>.value())
           as _i4.Future<Map<String, Object?>?>);
   @override
-  _i4.Future<void> initialize() =>
-      (super.noSuchMethod(Invocation.method(#initialize, []),
+  _i4.Future<void> initialize(
+          {String? path, _i3.DbOpener? opener = _i2.openDatabase}) =>
+      (super.noSuchMethod(
+          Invocation.method(#initialize, [], {#path: path, #opener: opener}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
@@ -114,9 +124,10 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   <Map<String, Object?>>[]))
           as _i4.Future<List<Map<String, Object?>>>);
   @override
-  _i4.Future<void> reset() => (super.noSuchMethod(Invocation.method(#reset, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  _i4.Future<void> tolerateMigration([int? newVersion = 5]) =>
+      (super.noSuchMethod(Invocation.method(#tolerateMigration, [newVersion]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
   _i4.Future<int> update(String? table, Object? key, Map<String, Object?>? data,
           {dynamic keyName = r'id'}) =>
