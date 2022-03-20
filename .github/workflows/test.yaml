@@ -26,14 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "12.x"
-
       # Setup the flutter environment.
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
+          flutter-version: "2.x"
+          cache: true
           channel: "stable"
 
       # Get flutter dependencies.
