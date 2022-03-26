@@ -111,6 +111,7 @@ jobs:
       # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v2
         with:
+          distribution: "zulu"
           java-version: "12.x"
 
       # Setup the flutter environment.
