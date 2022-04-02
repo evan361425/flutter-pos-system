@@ -95,12 +95,14 @@ class OrderProductTileData {
   final Iterable<String> ingredientNames;
   final String productName;
   final num totalPrice;
+  final num? totalCost;
   final int totalCount;
 
   OrderProductTileData({
     required this.ingredientNames,
     required this.productName,
     required this.totalPrice,
+    this.totalCost,
     required this.totalCount,
   });
 }
@@ -116,6 +118,8 @@ class _ProductTile extends StatelessWidget {
     final subtitle = MetaBlock.withString(context, <String>[
       S.orderCashierProductMetaPrice(data.totalPrice),
       S.orderCashierProductMetaCount(data.totalCount),
+      if (data.totalCost != null)
+        S.orderCashierProductMetaCost(data.totalCost!),
     ]);
 
     return data.ingredientNames.isEmpty

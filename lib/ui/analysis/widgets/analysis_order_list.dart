@@ -154,7 +154,8 @@ class _AnalysisOrderModal extends StatelessWidget {
                               )),
                     productName: product.productName,
                     totalCount: product.count,
-                    totalPrice: product.count * product.singlePrice))
+                    totalCost: product.totalCost,
+                    totalPrice: product.totalPrice))
                 .toList(),
             productsPrice: order.productsPrice,
             totalPrice: order.totalPrice,

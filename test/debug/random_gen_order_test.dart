@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/debug/random_gen_order.dart';
+import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -14,7 +14,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_database.dart';
+import '../mocks/mock_database.dart';
 
 void main() {
   group('Random Generate Order', () {

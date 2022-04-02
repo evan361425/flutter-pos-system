@@ -53,6 +53,7 @@ List<OrderObject> generateOrder({
           'singlePrice': product.price,
           'originalPrice': product.price,
           'count': 1,
+          'cost': product.cost,
           'productId': product.id,
           'productName': product.name,
           'isDiscount': rng.nextBool(),

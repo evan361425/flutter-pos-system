@@ -207,7 +207,8 @@
     "orderCashierProductInfoTitle",
     "orderCashierProductTotalCount",
     "orderCashierProductMetaCount",
-    "orderCashierProductMetaPrice"
+    "orderCashierProductMetaPrice",
+    "orderCashierProductMetaCost"
   ],
 
   "zh_TW": [
@@ -423,6 +424,7 @@
     "orderCashierProductInfoTitle",
     "orderCashierProductTotalCount",
     "orderCashierProductMetaCount",
-    "orderCashierProductMetaPrice"
+    "orderCashierProductMetaPrice",
+    "orderCashierProductMetaCost"
   ]
 }

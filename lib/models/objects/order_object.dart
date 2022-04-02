@@ -99,8 +99,8 @@ class OrderObject {
     };
   }
 
-  get cost => products.fold<num>(
-      0, (total, product) => total + product.cost * product.count);
+  get cost =>
+      products.fold<num>(0, (total, product) => total + product.totalCost);
 
   /// 淨利
   get income => totalPrice - cost;
@@ -162,6 +162,10 @@ class OrderProductObject {
     required this.isDiscount,
     required this.ingredients,
   });
+
+  num get totalPrice => count * singlePrice;
+
+  num get totalCost => count * cost;
 
   Map<String, Object?> toMap() {
     return {

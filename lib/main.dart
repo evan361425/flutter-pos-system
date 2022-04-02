@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/debug/setup_menu.dart';
 import 'package:possystem/firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +54,10 @@ void main() async {
     await Menu().initialize();
 
     await Database.instance.tolerateMigration();
+
+    if (kDebugMode) {
+      await debugSetupMenu();
+    }
 
     /// Why use provider?
     /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget

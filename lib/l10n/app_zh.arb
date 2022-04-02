@@ -989,5 +989,20 @@
         }
       }
     }
+  },
+  "orderCashierProductMetaCost": "成本：{cost}",
+  "@orderCashierProductMetaCost": {
+    "description": "訂單列表的單一餐點的成本",
+    "placeholders": {
+      "price": {
+        "description": "單一餐點的成本",
+        "type": "num",
+        "format": "currency",
+        "optionalParameters": {
+          "decimalDigits": 0,
+          "symbol": ""
+        }
+      }
+    }
   }
 }

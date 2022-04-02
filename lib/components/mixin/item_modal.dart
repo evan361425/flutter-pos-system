@@ -57,7 +57,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Fields in form
   List<Widget> formFields();
 
-  /// Handle user submition
+  /// Handle user submission
   Future<void> handleSubmit() async {
     if (!_validate()) return;
 

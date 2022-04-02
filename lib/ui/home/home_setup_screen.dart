@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/debug/random_gen_order.dart';
 import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/app_themes.dart';
+import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
@@ -57,34 +57,6 @@ class HomeSetupScreen extends StatelessWidget {
   }
 }
 
-class _HeaderInfoList extends StatelessWidget {
-  const _HeaderInfoList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0, 16.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(children: [
-          _HeaderInfo(
-            title: Menu.instance.items.fold<int>(0, (v, e) => e.length + v),
-            subtitle: '產品',
-          ),
-          _HeaderInfo(
-            title: Menu.instance.length,
-            subtitle: '種類',
-          ),
-          _HeaderInfo(
-            title: CustomerSettings.instance.length,
-            subtitle: '顧客設定',
-          ),
-        ]),
-      ),
-    );
-  }
-}
-
 class _HeaderInfo extends StatelessWidget {
   final int title;
 
@@ -122,6 +94,34 @@ class _HeaderInfo extends StatelessWidget {
           ),
           Text(subtitle),
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderInfoList extends StatelessWidget {
+  const _HeaderInfoList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0, 16.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: [
+          _HeaderInfo(
+            title: Menu.instance.items.fold<int>(0, (v, e) => e.length + v),
+            subtitle: '產品',
+          ),
+          _HeaderInfo(
+            title: Menu.instance.length,
+            subtitle: '種類',
+          ),
+          _HeaderInfo(
+            title: CustomerSettings.instance.length,
+            subtitle: '顧客設定',
+          ),
+        ]),
       ),
     );
   }
