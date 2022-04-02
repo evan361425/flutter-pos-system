@@ -6,6 +6,7 @@ import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
+import 'package:provider/provider.dart';
 
 class HomeSetupScreen extends StatelessWidget {
   const HomeSetupScreen({Key? key}) : super(key: key);
@@ -104,21 +105,24 @@ class _HeaderInfoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final menu = context.watch<Menu>();
+    final customerSetting = context.watch<CustomerSettings>();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0, 16.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(children: [
           _HeaderInfo(
-            title: Menu.instance.items.fold<int>(0, (v, e) => e.length + v),
+            title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: '產品',
           ),
           _HeaderInfo(
-            title: Menu.instance.length,
+            title: menu.length,
             subtitle: '種類',
           ),
           _HeaderInfo(
-            title: CustomerSettings.instance.length,
+            title: customerSetting.length,
             subtitle: '顧客設定',
           ),
         ]),
