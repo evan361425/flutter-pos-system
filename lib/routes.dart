@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
+import 'package:possystem/ui/exporter/exporter_screen.dart';
 import 'package:possystem/ui/home/home_setup_feature_request.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,7 @@ import 'ui/stock/widgets/ingredient_modal.dart';
 
 class Routes {
   static const String customer = 'customer';
+  static const String exporter = 'exporter';
   static const String featureRequest = 'feature_request';
   static const String menu = 'menu';
   static const String order = 'order';
@@ -94,6 +96,7 @@ class Routes {
     },
     customerSettingReorder: (ctx) =>
         CustomerSettingOrderableList(setting: _a<CustomerSetting>(ctx)),
+    exporter: (_) => const ExporterScreen(),
     // menu
     menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(

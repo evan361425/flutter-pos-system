@@ -28,6 +28,12 @@ class HomeSetupScreen extends StatelessWidget {
               title: '菜單',
             ),
             RouteTile(
+              key: Key('home_setup.exporter'),
+              icon: Icons.upload_file_outlined,
+              route: Routes.exporter,
+              title: '匯出資料',
+            ),
+            RouteTile(
               key: Key('home_setup.customer'),
               icon: Icons.assignment_ind_outlined,
               route: Routes.customer,
