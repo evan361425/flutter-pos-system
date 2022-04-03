@@ -25,6 +25,14 @@ class Menu extends ChangeNotifier
   List<Catalog> get notEmptyItems =>
       itemList.where((e) => e.isNotEmpty).toList();
 
+  Iterable<Product> get products sync* {
+    for (final catalog in itemList) {
+      for (final product in catalog.itemList) {
+        yield product;
+      }
+    }
+  }
+
   @override
   Catalog buildItem(String id, Map<String, Object?> value) {
     return Catalog.fromObject(

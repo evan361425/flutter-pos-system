@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/exporter/google_sheet_exporter.dart';
+import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/google_sheet/google_sheet_exporter_screen.dart';
 
 class ExporterScreen extends StatelessWidget {
   const ExporterScreen({Key? key}) : super(key: key);
@@ -9,17 +11,43 @@ class ExporterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('匯出資料'),
+        title: Text(S.exporterTitle),
         leading: const PopButton(),
       ),
-      body: Center(
-          child: ElevatedButton(
-        onPressed: () async {
-          final exporter = GoogleSheetExporter();
-          await exporter.pickSheets();
-        },
-        child: const Text('hi'),
-      )),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: HintText(S.exporterDescription),
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              backgroundImage: AssetImage('assets/google_sheet_icon.png'),
+              backgroundColor: Colors.white,
+            ),
+            title: Text(S.exporterGSTitle),
+            subtitle: Text(S.exporterGSDescription),
+            onTap: () => _navTo(context, _Pages.googleSheet),
+          ),
+        ]),
+      ),
     );
   }
+
+  void _navTo(BuildContext context, _Pages name) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          switch (name) {
+            case _Pages.googleSheet:
+              return const GoogleSheetExporterScreen();
+          }
+        },
+      ),
+    );
+  }
+}
+
+enum _Pages {
+  googleSheet,
 }

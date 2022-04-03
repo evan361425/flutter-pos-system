@@ -3,6 +3,7 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/services/storage.dart';
 
 class Replenishment extends Model<ReplenishmentObject>
@@ -30,6 +31,13 @@ class Replenishment extends Model<ReplenishmentObject>
 
   @override
   Replenisher get repository => Replenisher.instance;
+
+  Map<Ingredient, num> get ingredientData => {
+        for (final entry in data.entries.where(
+          (entry) => Stock.instance.hasItem(entry.key),
+        ))
+          Stock.instance.getItem(entry.key)!: entry.value,
+      };
 
   @override
   set repository(Repository repo) {}

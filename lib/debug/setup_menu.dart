@@ -11,6 +11,35 @@ import 'package:possystem/models/stock/quantity.dart';
 Future<void> debugSetupMenu() async {
   if (Menu.instance.isNotEmpty) return;
 
+  log('DEBUG setup stock');
+  await Stock.instance.addItem(Ingredient(
+    id: 'cheese',
+    name: 'Cheese',
+    currentAmount: 30,
+  ));
+  await Stock.instance.addItem(Ingredient(
+    id: 'vegetable',
+    name: 'Vegetable',
+    currentAmount: 100,
+  ));
+  await Stock.instance.addItem(Ingredient(
+    id: 'bread',
+    name: 'Bread',
+    currentAmount: 50,
+  ));
+
+  log('DEBUG setup quantities');
+  await Quantities.instance.addItem(Quantity(
+    id: 'more',
+    name: 'More',
+    defaultProportion: 1.5,
+  ));
+  await Quantities.instance.addItem(Quantity(
+    id: 'less',
+    name: 'Less',
+    defaultProportion: 0.8,
+  ));
+
   log('DEBUG setup menu');
   await Menu.instance.addItem(Catalog.fromObject(CatalogObject.build({
     "id": "burger",
@@ -96,31 +125,4 @@ Future<void> debugSetupMenu() async {
       }
     }
   })));
-
-  log('DEBUG setup stock');
-  Stock.instance.addItem(Ingredient(
-    id: 'cheese',
-    name: 'Cheese',
-    currentAmount: 30,
-  ));
-  Stock.instance.addItem(Ingredient(
-    id: 'vegetable',
-    name: 'Vegetable',
-    currentAmount: 100,
-  ));
-  Stock.instance.addItem(Ingredient(
-    id: 'bread',
-    name: 'Bread',
-    currentAmount: 50,
-  ));
-  Quantities.instance.addItem(Quantity(
-    id: 'more',
-    name: 'More',
-    defaultProportion: 1.5,
-  ));
-  Quantities.instance.addItem(Quantity(
-    id: 'less',
-    name: 'Less',
-    defaultProportion: 0.8,
-  ));
 }

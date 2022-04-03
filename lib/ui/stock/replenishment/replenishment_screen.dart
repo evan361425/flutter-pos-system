@@ -6,7 +6,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/replenisher.dart';
-import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
 import 'package:provider/provider.dart';
@@ -76,14 +75,6 @@ class _ReplenishmentTile extends StatelessWidget {
   }
 
   Future<void> handleApply(BuildContext context) async {
-    final data = <String, num>{};
-    item.data.forEach((key, value) {
-      final ingredient = Stock.instance.getItem(key);
-      if (ingredient != null) {
-        data[ingredient.name] = value;
-      }
-    });
-
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => ConfirmDialog(
@@ -97,9 +88,9 @@ class _ReplenishmentTile extends StatelessWidget {
               DataColumn(label: Text('名稱')),
               DataColumn(numeric: true, label: Text('數量'))
             ], rows: <DataRow>[
-              for (final entry in data.entries)
+              for (final entry in item.ingredientData.entries)
                 DataRow(cells: [
-                  DataCell(Text(entry.key)),
+                  DataCell(Text(entry.key.name)),
                   DataCell(Text(entry.value.toString())),
                 ])
             ]),

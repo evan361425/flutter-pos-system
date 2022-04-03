@@ -100,6 +100,7 @@ flutter:
 
   assets:
     - assets/food_placeholder.png
+    - assets/google_sheet_icon.png
     - assets/feature_request_please.gif
 
 flutter_native_splash:
