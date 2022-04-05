@@ -9,6 +9,14 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
 
+typedef GetGoogleSheetHead = List<GoogleSheetCellData> Function({
+  bool withHeader,
+});
+
+typedef GetGoogleSheetItems = List<List<GoogleSheetCellData>> Function({
+  bool withHeader,
+});
+
 extension GoogleSheetMenuFormatter on Menu {
   List<List<GoogleSheetCellData>> getGoogleSheetItems({
     bool withHeader = false,
@@ -30,7 +38,7 @@ extension GoogleSheetMenuFormatter on Menu {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHeader({
+  List<GoogleSheetCellData> getGoogleSheetHead({
     bool withHeader = false,
   }) {
     return <GoogleSheetCellData>[
@@ -89,7 +97,7 @@ extension GoogleSheetStockFormatter on Stock {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHeader({
+  List<GoogleSheetCellData> getGoogleSheetHead({
     bool withHeader = false,
   }) {
     return <GoogleSheetCellData>[
@@ -114,7 +122,7 @@ extension GoogleSheetQuantitiesFormatter on Quantities {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHeader({
+  List<GoogleSheetCellData> getGoogleSheetHead({
     bool withHeader = false,
   }) {
     return <GoogleSheetCellData>[
@@ -140,7 +148,7 @@ extension GoogleSheetReplenisherFormatter on Replenisher {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHeader({
+  List<GoogleSheetCellData> getGoogleSheetHead({
     bool withHeader = false,
   }) {
     return <GoogleSheetCellData>[
@@ -182,7 +190,7 @@ extension GoogleSheetCustomerSettingsFormatter on CustomerSettings {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHeader({
+  List<GoogleSheetCellData> getGoogleSheetHead({
     bool withHeader = false,
   }) {
     return <GoogleSheetCellData>[

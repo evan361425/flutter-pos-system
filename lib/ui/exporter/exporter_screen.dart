@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/google_sheet/google_sheet_exporter_screen.dart';
+import 'package:possystem/ui/exporter/google_sheet_screen.dart';
 
 class ExporterScreen extends StatelessWidget {
   const ExporterScreen({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class ExporterScreen extends StatelessWidget {
         builder: (_) {
           switch (name) {
             case _Pages.googleSheet:
-              return const GoogleSheetExporterScreen();
+              return const GoogleSheetScreen();
           }
         },
       ),

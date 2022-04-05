@@ -995,7 +995,7 @@
   },
   "exporterGSSpreadsheetLabel": "試算表",
   "exporterGSSpreadsheetHint": "點擊以選擇試算表",
-  "exporterGSSpreadsheetHelper": "若不選擇則會在匯出時建立新的試算表，若使用既存的試算表則會覆蓋特定表單中的資料",
+  "exporterGSSpreadsheetHelper": "若使用既存的試算表則會覆蓋指定表單中的資料，若不選擇則會在匯出時建立新的試算表",
   "exporterGSSheetLabel": "{item}的表單標題",
   "@exporterGSSheetLabel": {
     "description": "表單標題的說明",
