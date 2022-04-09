@@ -6,11 +6,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
-import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/models/repository/replenisher.dart';
-import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
@@ -105,40 +100,12 @@ class _ExporterScreen extends StatefulWidget {
 class _ExporterScreenState extends State<_ExporterScreen> {
   final sheetSelector = GlobalKey<_SpreadsheetPickerState>();
 
-  final sheets = <_SheetType, GlobalKey<_SheetNamerState>>{
-    _SheetType.menu: GlobalKey<_SheetNamerState>(),
-    _SheetType.stock: GlobalKey<_SheetNamerState>(),
-    _SheetType.quantities: GlobalKey<_SheetNamerState>(),
-    _SheetType.replenisher: GlobalKey<_SheetNamerState>(),
-    _SheetType.customer: GlobalKey<_SheetNamerState>(),
-  };
-
-  final _sheetFormatter = <_SheetType, _Formatter>{
-    _SheetType.menu: _Formatter(
-      Menu.instance.getGoogleSheetHead,
-      Menu.instance.getGoogleSheetItems,
-      Menu.instance.products.length,
-    ),
-    _SheetType.stock: _Formatter(
-      Stock.instance.getGoogleSheetHead,
-      Stock.instance.getGoogleSheetItems,
-      Stock.instance.length,
-    ),
-    _SheetType.quantities: _Formatter(
-      Quantities.instance.getGoogleSheetHead,
-      Quantities.instance.getGoogleSheetItems,
-      Quantities.instance.length,
-    ),
-    _SheetType.replenisher: _Formatter(
-      Replenisher.instance.getGoogleSheetHead,
-      Replenisher.instance.getGoogleSheetItems,
-      Replenisher.instance.length,
-    ),
-    _SheetType.customer: _Formatter(
-      CustomerSettings.instance.getGoogleSheetHead,
-      CustomerSettings.instance.getGoogleSheetItems,
-      CustomerSettings.instance.length,
-    ),
+  final sheets = <GoogleSheetAble, GlobalKey<_SheetNamerState>>{
+    GoogleSheetAble.menu: GlobalKey<_SheetNamerState>(),
+    GoogleSheetAble.stock: GlobalKey<_SheetNamerState>(),
+    GoogleSheetAble.quantities: GlobalKey<_SheetNamerState>(),
+    GoogleSheetAble.replenisher: GlobalKey<_SheetNamerState>(),
+    GoogleSheetAble.customer: GlobalKey<_SheetNamerState>(),
   };
 
   late final FocusNode focusNode;
@@ -173,7 +140,8 @@ class _ExporterScreenState extends State<_ExporterScreen> {
                 label: entry.key.name,
                 sheets: spreadsheet?.sheets,
                 initialValue: _getInitialValue(entry.key.name),
-                length: _sheetFormatter[entry.key]!.length,
+                initialChecked:
+                    GoogleSheetFormatter.getTarget(entry.key).isNotEmpty,
               ),
             ),
             const SizedBox(width: 8.0),
@@ -183,17 +151,21 @@ class _ExporterScreenState extends State<_ExporterScreen> {
               tooltip: S.exporterGSPreviewerTitle(
                 S.exporterGSDefaultSheetName(entry.key.name),
               ),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => _SheetPreviewer(
-                    source: _SheetPreviewerDataTableSource(
-                      _sheetFormatter[entry.key]!.getItems(),
+              onPressed: () {
+                const formatter = GoogleSheetFormatter(withHeader: false);
+                final target = GoogleSheetFormatter.getTarget(entry.key);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => _SheetPreviewer(
+                      source: _SheetPreviewerDataTableSource(
+                        target.getFormattedItems(formatter),
+                      ),
+                      header: target.getFormattedHead(formatter),
+                      title: S.exporterGSDefaultSheetName(entry.key.name),
                     ),
-                    header: _sheetFormatter[entry.key]!.getHead(),
-                    title: S.exporterGSDefaultSheetName(entry.key.name),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ]),
       ]),
@@ -214,16 +186,16 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> exportData() async {
-    try {
-      focusNode.requestFocus();
-      widget.startLoading();
-      await _exportData();
-    } catch (e) {
-      showErrorSnackbar(context, S.actError);
-      error(e.toString(), 'google_exporter_upload_failed');
-    } finally {
-      widget.finishLoading();
-    }
+    widget.startLoading();
+    focusNode.requestFocus();
+
+    await snackbarErrorHandler(
+      context,
+      _exportData,
+      code: 'google_exporter_upload_failed',
+    );
+
+    widget.finishLoading();
   }
 
   Future<void> _exportData() async {
@@ -239,15 +211,18 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       }
     }
 
+    const formatter = GoogleSheetFormatter(withHeader: true);
+
     for (final entry in prepared.entries) {
+      final target = GoogleSheetFormatter.getTarget(entry.key);
       final label = entry.key.name;
       widget.setProgressStatus(S.exporterGSProgressStatus('update_$label'));
       await updateCacheIfNeed(entry.value.title, label);
       await GoogleSheetExporter.instance.updateSheet(
         spreadsheet!.id,
         entry.value.id,
-        _sheetFormatter[entry.key]!.getItems(withHeader: true),
-        _sheetFormatter[entry.key]!.getHead(withHeader: true),
+        target.getFormattedItems(formatter),
+        target.getFormattedHead(formatter),
         hiddenColumnIndex: 1,
       );
     }
@@ -289,7 +264,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   /// 準備好試算表
   ///
   /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<_SheetType, GoogleSheetProperties>?> _prepareData() async {
+  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _prepareData() async {
     final usedSheets = sheets.entries.where((entry) =>
         entry.value.currentState?.checked == true &&
         entry.value.currentState?.name != null);
@@ -324,7 +299,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       return GoogleSheetProperties(id, name);
     }
 
-    return <_SheetType, GoogleSheetProperties>{
+    return <GoogleSheetAble, GoogleSheetProperties>{
       for (final sheet in usedSheets)
         sheet.key: getSheetByName(sheet.value.currentState!.name!)
     };
@@ -380,58 +355,62 @@ class _ImporterScreen extends StatefulWidget {
 }
 
 class _ImporterScreenState extends State<_ImporterScreen> {
+  final loading = GlobalKey<LoadingWrapperState>();
   final sheetSelector = GlobalKey<_SpreadsheetPickerState>();
 
-  final sheets = <_SheetType, GlobalKey<_SheetSelectorState>>{
-    _SheetType.menu: GlobalKey<_SheetSelectorState>(),
-    _SheetType.stock: GlobalKey<_SheetSelectorState>(),
-    _SheetType.quantities: GlobalKey<_SheetSelectorState>(),
-    _SheetType.replenisher: GlobalKey<_SheetSelectorState>(),
-    _SheetType.customer: GlobalKey<_SheetSelectorState>(),
+  final sheets = <GoogleSheetAble, GlobalKey<_SheetSelectorState>>{
+    GoogleSheetAble.menu: GlobalKey<_SheetSelectorState>(),
+    GoogleSheetAble.stock: GlobalKey<_SheetSelectorState>(),
+    GoogleSheetAble.quantities: GlobalKey<_SheetSelectorState>(),
+    GoogleSheetAble.replenisher: GlobalKey<_SheetSelectorState>(),
+    GoogleSheetAble.customer: GlobalKey<_SheetSelectorState>(),
   };
 
   GoogleSpreadsheet? spreadsheet;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        _SpreadsheetPicker(
-          key: sheetSelector,
-          spreadsheet: spreadsheet,
-          allowEmpty: false,
-          helperText: '應用程式感知不到你的試算表有異動，所以每次匯入前記得重新整理一下。',
-          onSheetChanged: onSheetChanged,
-          onSelectStart: widget.startLoading,
-          onSelectEnd: widget.finishLoading,
-        ),
-        const SizedBox(height: 4.0),
-        ElevatedButton.icon(
-          onPressed: () {},
-          label: const Text('重整表單'),
-          icon: const Icon(Icons.refresh_outlined),
-        ),
-        const Divider(),
-        for (final entry in sheets.entries)
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Expanded(
-              child: _SheetSelector(
-                key: entry.value,
-                label: S.exporterGSSheetLabel(
-                  S.exporterGSDefaultSheetName(entry.key.name),
+    return LoadingWrapper(
+      key: loading,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          _SpreadsheetPicker(
+            key: sheetSelector,
+            spreadsheet: spreadsheet,
+            allowEmpty: false,
+            helperText: '應用程式感知不到你的試算表有異動，重新整理可以重新找到擁有的表單。',
+            onSheetChanged: onSheetChanged,
+            onSelectStart: widget.startLoading,
+            onSelectEnd: widget.finishLoading,
+          ),
+          const SizedBox(height: 4.0),
+          ElevatedButton.icon(
+            onPressed: refreshSheet,
+            label: const Text('重整試算表'),
+            icon: const Icon(Icons.refresh_outlined),
+          ),
+          const Divider(),
+          for (final entry in sheets.entries)
+            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Expanded(
+                child: _SheetSelector(
+                  key: entry.value,
+                  label: S.exporterGSSheetLabel(
+                    S.exporterGSDefaultSheetName(entry.key.name),
+                  ),
+                  defaultValue: _getInitialValue(entry.key.name),
                 ),
-                defaultValue: _getInitialValue(entry.key.name),
               ),
-            ),
-            const SizedBox(width: 8.0),
-            OutlinedButton.icon(
-              onPressed: () => importData(entry.key),
-              label: const Text('匯入'),
-              icon: const Icon(Icons.download_for_offline_outlined),
-            ),
-          ]),
-      ]),
+              const SizedBox(width: 8.0),
+              OutlinedButton.icon(
+                onPressed: () => importData(entry.key),
+                label: const Text('匯入'),
+                icon: const Icon(Icons.download_for_offline_outlined),
+              ),
+            ]),
+        ]),
+      ),
     );
   }
 
@@ -446,19 +425,49 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     await Cache.instance.set<String>(_importerNameCacheKey, spreadsheet!.name);
   }
 
-  Future<void> importData(_SheetType type) async {
-    try {
-      widget.startLoading();
-      await _importData(type);
-    } catch (e) {
-      showErrorSnackbar(context, S.actError);
-      error(e.toString(), 'google_importer_failed');
-    } finally {
-      widget.finishLoading();
+  Future<void> refreshSheet() async {
+    if (spreadsheet == null) {
+      showInfoSnackbar(context, '請先選擇試算表');
+      return;
+    }
+
+    loading.currentState?.startLoading();
+
+    await snackbarErrorHandler(
+      context,
+      _refreshSheet,
+      code: 'google_sheet_get_sheets',
+    );
+
+    loading.currentState?.finishLoading();
+  }
+
+  Future<void> importData(GoogleSheetAble type) async {
+    widget.startLoading();
+
+    await snackbarErrorHandler(
+      context,
+      () => _importData(type),
+      code: 'google_importer_import_failed',
+    );
+
+    widget.finishLoading();
+  }
+
+  Future<void> _refreshSheet() async {
+    final refreshedSheets = await GoogleSheetExporter.instance.getSheets(
+      spreadsheet!.id,
+    );
+
+    if (refreshedSheets.isNotEmpty) {
+      spreadsheet!.sheets.addAll(refreshedSheets);
+      for (var sheet in sheets.values) {
+        sheet.currentState?.setSheets(refreshedSheets);
+      }
     }
   }
 
-  Future<void> _importData(_SheetType type) async {
+  Future<void> _importData(GoogleSheetAble type) async {
     final prepared = await _prepareData(type);
     if (prepared == null) {
       return;
@@ -472,7 +481,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     await Future.delayed(const Duration(seconds: 5));
   }
 
-  Future<GoogleSheetProperties?> _prepareData(_SheetType type) async {
+  Future<GoogleSheetProperties?> _prepareData(GoogleSheetAble type) async {
     if (spreadsheet == null) {
       showErrorSnackbar(context, '必須選擇試算表來匯入');
       return null;
@@ -500,12 +509,14 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         name: name,
         sheets: [],
       );
+      refreshSheet();
     }
     super.initState();
   }
 
   @override
   void dispose() {
+    loading.currentState?.dispose();
     sheetSelector.currentState?.dispose();
     for (var sheet in sheets.values) {
       sheet.currentState?.dispose();
@@ -603,7 +614,7 @@ class _SheetNamer extends StatefulWidget {
 
   final String label;
 
-  final int length;
+  final bool initialChecked;
 
   final List<GoogleSheetProperties>? sheets;
 
@@ -611,7 +622,7 @@ class _SheetNamer extends StatefulWidget {
     Key? key,
     required this.initialValue,
     required this.label,
-    required this.length,
+    required this.initialChecked,
     this.sheets,
   }) : super(key: key);
 
@@ -662,7 +673,7 @@ class _SheetNamerState extends State<_SheetNamer> {
 
   @override
   void initState() {
-    checked = widget.length > 0;
+    checked = widget.initialChecked;
     _controller = TextEditingController(text: widget.initialValue);
     _setHints(widget.sheets);
     super.initState();
@@ -793,20 +804,4 @@ class _SheetPreviewerDataTableSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
-}
-
-enum _SheetType {
-  menu,
-  stock,
-  quantities,
-  replenisher,
-  customer,
-}
-
-class _Formatter {
-  final GetGoogleSheetHead getHead;
-  final GetGoogleSheetItems getItems;
-  final int length;
-
-  _Formatter(this.getHead, this.getItems, this.length);
 }

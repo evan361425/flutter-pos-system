@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/services/database.dart';
@@ -26,6 +27,14 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
       notifyItems();
     }
+  }
+
+  List<Format> getFormattedHead<Format>(Formatter<Format> formatter) {
+    return formatter.getHead(this);
+  }
+
+  List<List<Format>> getFormattedItems<Format>(Formatter<Format> formatter) {
+    return formatter.getItems(this);
   }
 
   T? getItem(String id) => _items[id];
@@ -167,9 +176,9 @@ mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
 mixin RepositoryStorage<T extends Model> on Repository<T> {
   bool versionChanged = false;
 
-  Stores get storageStore;
-
   RepositoryStorageType get repoType => RepositoryStorageType.pureRepo;
+
+  Stores get storageStore;
 
   T buildItem(String id, Map<String, Object?> value);
 

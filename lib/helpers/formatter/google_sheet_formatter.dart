@@ -1,6 +1,8 @@
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -9,20 +11,83 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
 
-typedef GetGoogleSheetHead = List<GoogleSheetCellData> Function({
-  bool withHeader,
-});
+enum GoogleSheetAble {
+  menu,
+  stock,
+  quantities,
+  replenisher,
+  customer,
+}
 
-typedef GetGoogleSheetItems = List<List<GoogleSheetCellData>> Function({
-  bool withHeader,
-});
+class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
+  final bool withHeader;
 
-extension GoogleSheetMenuFormatter on Menu {
-  List<List<GoogleSheetCellData>> getGoogleSheetItems({
-    bool withHeader = false,
-  }) {
+  const GoogleSheetFormatter({required this.withHeader});
+
+  static Repository getTarget(GoogleSheetAble able) {
+    switch (able) {
+      case GoogleSheetAble.menu:
+        return Menu.instance;
+      case GoogleSheetAble.stock:
+        return Stock.instance;
+      case GoogleSheetAble.quantities:
+        return Quantities.instance;
+      case GoogleSheetAble.replenisher:
+        return Replenisher.instance;
+      case GoogleSheetAble.customer:
+        return CustomerSettings.instance;
+    }
+  }
+
+  @override
+  List<GoogleSheetCellData> getHead(Repository target) {
+    if (target is Menu) {
+      return _getMenuHead(target);
+    } else if (target is Stock) {
+      return _getStockHead(target);
+    } else if (target is Quantities) {
+      return _getQuantitiesHead(target);
+    } else if (target is Replenisher) {
+      return _getReplenisherHead(target);
+    } else if (target is CustomerSettings) {
+      return _getCustomersHead(target);
+    }
+
+    return const [];
+  }
+
+  @override
+  List<List<GoogleSheetCellData>> getItems(Repository target) {
+    if (target is Menu) {
+      return _getMenuItems(target);
+    } else if (target is Stock) {
+      return _getStockItems(target);
+    } else if (target is Quantities) {
+      return _getQuantitiesItems(target);
+    } else if (target is Replenisher) {
+      return _getReplenisherItems(target);
+    } else if (target is CustomerSettings) {
+      return _getCustomersItems(target);
+    }
+
+    return const [];
+  }
+
+  List<GoogleSheetCellData> _getMenuHead(Menu menu) {
+    return <GoogleSheetCellData>[
+      if (withHeader) _appUseHeader,
+      _toCD(S.menuCatalogNameLabel),
+      _toCD(S.menuProductNameLabel),
+      _toCD(S.menuProductPriceLabel),
+      _toCD(S.menuProductCostLabel),
+      _toCD(S.exporterProductIngredientInfoTitle,
+          S.exporterProductIngredientInfoNote),
+    ];
+  }
+
+  List<List<GoogleSheetCellData>> _getMenuItems(Menu menu) {
     return <List<GoogleSheetCellData>>[
-      for (final product in products)
+      for (final product in menu.products)
         [
           if (withHeader)
             GoogleSheetCellData(
@@ -38,17 +103,88 @@ extension GoogleSheetMenuFormatter on Menu {
     ];
   }
 
-  List<GoogleSheetCellData> getGoogleSheetHead({
-    bool withHeader = false,
-  }) {
+  List<GoogleSheetCellData> _getStockHead(Stock stock) {
     return <GoogleSheetCellData>[
       if (withHeader) _appUseHeader,
-      _toCD(S.menuCatalogNameLabel),
-      _toCD(S.menuProductNameLabel),
-      _toCD(S.menuProductPriceLabel),
-      _toCD(S.menuProductCostLabel),
-      _toCD(S.exporterProductIngredientInfoTitle,
-          S.exporterProductIngredientInfoNote),
+      _toCD(S.stockIngredientNameLabel),
+      _toCD(S.stockIngredientAmountLabel),
+    ];
+  }
+
+  List<List<GoogleSheetCellData>> _getStockItems(Stock stock) {
+    return <List<GoogleSheetCellData>>[
+      for (final ingredient in stock.itemList)
+        [
+          if (withHeader) GoogleSheetCellData(stringValue: ingredient.id),
+          GoogleSheetCellData(stringValue: ingredient.name),
+          ingredient.currentAmount == null
+              ? GoogleSheetCellData(stringValue: '')
+              : GoogleSheetCellData(numberValue: ingredient.currentAmount),
+        ],
+    ];
+  }
+
+  List<GoogleSheetCellData> _getQuantitiesHead(Quantities quantities) {
+    return <GoogleSheetCellData>[
+      if (withHeader) _appUseHeader,
+      _toCD(S.stockQuantityNameLabel),
+      _toCD(S.stockQuantityProportionLabel, S.stockQuantityProportionHelper),
+    ];
+  }
+
+  List<List<GoogleSheetCellData>> _getQuantitiesItems(Quantities quantities) {
+    return <List<GoogleSheetCellData>>[
+      for (final quantity in quantities.itemList)
+        [
+          if (withHeader) GoogleSheetCellData(stringValue: quantity.id),
+          GoogleSheetCellData(stringValue: quantity.name),
+          GoogleSheetCellData(numberValue: quantity.defaultProportion),
+        ],
+    ];
+  }
+
+  List<GoogleSheetCellData> _getReplenisherHead(Replenisher replenisher) {
+    return <GoogleSheetCellData>[
+      if (withHeader) _appUseHeader,
+      _toCD(S.stockReplenishmentNameLabel),
+      _toCD(S.exporterReplenishmentTitle, S.exporterReplenishmentNote)
+    ];
+  }
+
+  List<List<GoogleSheetCellData>> _getReplenisherItems(
+      Replenisher replenisher) {
+    return <List<GoogleSheetCellData>>[
+      for (final repl in replenisher.itemList)
+        [
+          if (withHeader)
+            GoogleSheetCellData(stringValue: repl.googleSheetHeader),
+          GoogleSheetCellData(stringValue: repl.name),
+          GoogleSheetCellData(stringValue: repl.googleSheetDataInfo),
+        ],
+    ];
+  }
+
+  List<GoogleSheetCellData> _getCustomersHead(CustomerSettings cs) {
+    return <GoogleSheetCellData>[
+      if (withHeader) _appUseHeader,
+      _toCD(S.customerSettingNameLabel),
+      _toCD(S.customerSettingModeTitle, S.exporterCustomerSettingModeNote),
+      _toCD(S.exporterCustomerSettingOptionTitle,
+          S.exporterCustomerSettingOptionNote),
+    ];
+  }
+
+  List<List<GoogleSheetCellData>> _getCustomersItems(CustomerSettings cs) {
+    return <List<GoogleSheetCellData>>[
+      for (final setting in cs.itemList)
+        [
+          if (withHeader)
+            GoogleSheetCellData(stringValue: setting.googleSheetHeader),
+          GoogleSheetCellData(stringValue: setting.name),
+          GoogleSheetCellData(
+              stringValue: S.customerSettingModeNames(setting.mode)),
+          GoogleSheetCellData(stringValue: setting.googleSheetDataInfo),
+        ],
     ];
   }
 }
@@ -81,84 +217,6 @@ extension GoogleSheetProductFormatter on Product {
       ].join('\n');
 }
 
-extension GoogleSheetStockFormatter on Stock {
-  List<List<GoogleSheetCellData>> getGoogleSheetItems({
-    bool withHeader = false,
-  }) {
-    return <List<GoogleSheetCellData>>[
-      for (final ingredient in items)
-        [
-          if (withHeader) GoogleSheetCellData(stringValue: ingredient.id),
-          GoogleSheetCellData(stringValue: ingredient.name),
-          ingredient.currentAmount == null
-              ? GoogleSheetCellData(stringValue: '')
-              : GoogleSheetCellData(numberValue: ingredient.currentAmount),
-        ],
-    ];
-  }
-
-  List<GoogleSheetCellData> getGoogleSheetHead({
-    bool withHeader = false,
-  }) {
-    return <GoogleSheetCellData>[
-      if (withHeader) _appUseHeader,
-      _toCD(S.stockIngredientNameLabel),
-      _toCD(S.stockIngredientAmountLabel),
-    ];
-  }
-}
-
-extension GoogleSheetQuantitiesFormatter on Quantities {
-  List<List<GoogleSheetCellData>> getGoogleSheetItems({
-    bool withHeader = false,
-  }) {
-    return <List<GoogleSheetCellData>>[
-      for (final quantity in items)
-        [
-          if (withHeader) GoogleSheetCellData(stringValue: quantity.id),
-          GoogleSheetCellData(stringValue: quantity.name),
-          GoogleSheetCellData(numberValue: quantity.defaultProportion),
-        ],
-    ];
-  }
-
-  List<GoogleSheetCellData> getGoogleSheetHead({
-    bool withHeader = false,
-  }) {
-    return <GoogleSheetCellData>[
-      if (withHeader) _appUseHeader,
-      _toCD(S.stockQuantityNameLabel),
-      _toCD(S.stockQuantityProportionLabel, S.stockQuantityProportionHelper),
-    ];
-  }
-}
-
-extension GoogleSheetReplenisherFormatter on Replenisher {
-  List<List<GoogleSheetCellData>> getGoogleSheetItems({
-    bool withHeader = false,
-  }) {
-    return <List<GoogleSheetCellData>>[
-      for (final repl in items)
-        [
-          if (withHeader)
-            GoogleSheetCellData(stringValue: repl.googleSheetHeader),
-          GoogleSheetCellData(stringValue: repl.name),
-          GoogleSheetCellData(stringValue: repl.googleSheetDataInfo),
-        ],
-    ];
-  }
-
-  List<GoogleSheetCellData> getGoogleSheetHead({
-    bool withHeader = false,
-  }) {
-    return <GoogleSheetCellData>[
-      if (withHeader) _appUseHeader,
-      _toCD(S.stockReplenishmentNameLabel),
-      _toCD(S.exporterReplenishmentTitle, S.exporterReplenishmentNote)
-    ];
-  }
-}
-
 extension GoogleSheetReplenishmentFormatter on Replenishment {
   String get googleSheetHeader => [
         id,
@@ -171,36 +229,6 @@ extension GoogleSheetReplenishmentFormatter on Replenishment {
         for (final entry in ingredientData.entries)
           '- ${entry.key.name},${entry.value}',
       ].join('\n');
-}
-
-extension GoogleSheetCustomerSettingsFormatter on CustomerSettings {
-  List<List<GoogleSheetCellData>> getGoogleSheetItems({
-    bool withHeader = false,
-  }) {
-    return <List<GoogleSheetCellData>>[
-      for (final setting in itemList)
-        [
-          if (withHeader)
-            GoogleSheetCellData(stringValue: setting.googleSheetHeader),
-          GoogleSheetCellData(stringValue: setting.name),
-          GoogleSheetCellData(
-              stringValue: S.customerSettingModeNames(setting.mode)),
-          GoogleSheetCellData(stringValue: setting.googleSheetDataInfo),
-        ],
-    ];
-  }
-
-  List<GoogleSheetCellData> getGoogleSheetHead({
-    bool withHeader = false,
-  }) {
-    return <GoogleSheetCellData>[
-      if (withHeader) _appUseHeader,
-      _toCD(S.customerSettingNameLabel),
-      _toCD(S.customerSettingModeTitle, S.exporterCustomerSettingModeNote),
-      _toCD(S.exporterCustomerSettingOptionTitle,
-          S.exporterCustomerSettingOptionNote),
-    ];
-  }
 }
 
 extension GoogleSheetCustomerSettingFormatter on CustomerSetting {

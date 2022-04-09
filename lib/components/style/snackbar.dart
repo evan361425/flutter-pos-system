@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/translator.dart';
 
 void showSnackBar(
   BuildContext context,
@@ -67,4 +69,16 @@ void showErrorSnackbar(
     ),
     action: action,
   );
+}
+
+Future<T> snackbarErrorHandler<T>(
+  BuildContext context,
+  Future<T> Function() action, {
+  String code = 'future_error',
+  String? message,
+}) {
+  return action().catchError((err) {
+    showErrorSnackbar(context, message ?? S.actError);
+    error(err.toString(), code);
+  });
 }

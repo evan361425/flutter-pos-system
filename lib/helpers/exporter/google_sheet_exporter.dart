@@ -199,6 +199,15 @@ class GoogleSheetExporter {
     );
   }
 
+  Future<void> getSheetData(String spreadsheetId, int sheetId) async {
+    final sheetsApi = await getSheetsApi();
+    sheetsApi?.spreadsheets.values.batchGet(
+      spreadsheetId,
+      majorDimension: 'ROWS',
+      ranges: [''],
+    );
+  }
+
   Future<bool> _setApiClient() async {
     if (_setUp) {
       return true;
