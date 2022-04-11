@@ -134,7 +134,7 @@ class GoogleSheetExporter {
     final pickedName = Util.removeExtension(picked.files.first.name);
     final id = await findSpreadsheetIdByName(pickedName);
     if (id == null) {
-      return null;
+      throw GoogleSheetError('non_exist_name');
     }
 
     debug(id, 'google_sheet_exporter.pick_sheet');
@@ -199,13 +199,20 @@ class GoogleSheetExporter {
     );
   }
 
-  Future<void> getSheetData(String spreadsheetId, int sheetId) async {
+  Future<List<List<Object?>>?> getSheetData(
+    String spreadsheetId,
+    String sheetTitle, {
+    required int neededColumns,
+  }) async {
     final sheetsApi = await getSheetsApi();
-    sheetsApi?.spreadsheets.values.batchGet(
+    final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheetId,
+      "'$sheetTitle'!A:${String.fromCharCode(64 + neededColumns)}",
       majorDimension: 'ROWS',
-      ranges: [''],
+      $fields: 'values',
     );
+
+    return result?.values;
   }
 
   Future<bool> _setApiClient() async {
@@ -340,4 +347,10 @@ class GoogleSheetCellData {
         value.numberValue?.toString() ??
         value.formulaValue!;
   }
+}
+
+class GoogleSheetError extends Error {
+  final String code;
+
+  GoogleSheetError(this.code);
 }

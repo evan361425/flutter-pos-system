@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/loading_wrapper.dart';
+import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
@@ -13,6 +14,10 @@ const _exporterIdCacheKey = 'exporter_google_sheet_id';
 const _exporterNameCacheKey = 'exporter_google_sheet_name';
 const _importerIdCacheKey = 'importer_google_sheet_id';
 const _importerNameCacheKey = 'importer_google_sheet_name';
+const _errorCodeRefresh = 'google_sheet_refresh_failed';
+const _errorCodeImport = 'google_sheet_import_failed';
+const _errorCodeExport = 'google_sheet_export_failed';
+const _errorCodePick = 'google_sheet_pick_failed';
 
 class GoogleSheetScreen extends StatefulWidget {
   const GoogleSheetScreen({Key? key}) : super(key: key);
@@ -151,21 +156,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
               tooltip: S.exporterGSPreviewerTitle(
                 S.exporterGSDefaultSheetName(entry.key.name),
               ),
-              onPressed: () {
-                const formatter = GoogleSheetFormatter(withHeader: false);
-                final target = GoogleSheetFormatter.getTarget(entry.key);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => _SheetPreviewer(
-                      source: _SheetPreviewerDataTableSource(
-                        target.getFormattedItems(formatter),
-                      ),
-                      header: target.getFormattedHead(formatter),
-                      title: S.exporterGSDefaultSheetName(entry.key.name),
-                    ),
-                  ),
-                );
-              },
+              onPressed: () => previewTarget(entry.key),
             ),
           ]),
       ]),
@@ -173,7 +164,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    debug(newSpreadsheet.toString(), 'google_sheet_exporter.changed');
+    debug(newSpreadsheet.toString(), 'google_sheet_export_changed');
     spreadsheet = newSpreadsheet;
     for (var sheet in sheets.values) {
       sheet.currentState?.setHints(spreadsheet?.sheets);
@@ -185,15 +176,30 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     await Cache.instance.set<String>(_exporterNameCacheKey, spreadsheet!.name);
   }
 
+  void previewTarget(GoogleSheetAble able) {
+    const formatter = GoogleSheetFormatter(withHeader: false);
+    final target = GoogleSheetFormatter.getTarget(able);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _SheetPreviewer(
+          source: _SheetPreviewerDataTableSource(
+            target.getFormattedItems(formatter),
+          ),
+          header: target.getFormattedHead(formatter),
+          title: S.exporterGSDefaultSheetName(able.name),
+        ),
+      ),
+    );
+  }
+
   Future<void> exportData() async {
     widget.startLoading();
     focusNode.requestFocus();
 
-    await snackbarErrorHandler(
-      context,
-      _exportData,
-      code: 'google_exporter_upload_failed',
-    );
+    await _exportData().catchError((err) {
+      showErrorSnackbar(context, S.actError);
+      error(err.toString(), _errorCodeExport);
+    });
 
     widget.finishLoading();
   }
@@ -212,6 +218,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     }
 
     const formatter = GoogleSheetFormatter(withHeader: true);
+    debug(spreadsheet!.id, 'google_sheet_export_ready');
 
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
@@ -415,7 +422,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   }
 
   Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    debug(newSpreadsheet.toString(), 'google_sheet_importer.changed');
+    debug(newSpreadsheet.toString(), 'google_sheet_import_changed');
     spreadsheet = newSpreadsheet;
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(spreadsheet!.sheets);
@@ -433,11 +440,10 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
     loading.currentState?.startLoading();
 
-    await snackbarErrorHandler(
-      context,
-      _refreshSheet,
-      code: 'google_sheet_get_sheets',
-    );
+    await _refreshSheet().catchError((err) {
+      showErrorSnackbar(context, S.actError);
+      error(err.toString(), _errorCodeRefresh);
+    });
 
     loading.currentState?.finishLoading();
   }
@@ -445,11 +451,10 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   Future<void> importData(GoogleSheetAble type) async {
     widget.startLoading();
 
-    await snackbarErrorHandler(
-      context,
-      () => _importData(type),
-      code: 'google_importer_import_failed',
-    );
+    await _importData(type).catchError((err) {
+      showErrorSnackbar(context, S.actError);
+      error(err.toString(), _errorCodeImport);
+    });
 
     widget.finishLoading();
   }
@@ -478,7 +483,57 @@ class _ImporterScreenState extends State<_ImporterScreen> {
       await Cache.instance.set<String>(key, prepared.toCacheValue());
     }
 
-    await Future.delayed(const Duration(seconds: 5));
+    debug(prepared.title, 'google_sheet_import_ready');
+
+    const formatter = GoogleSheetFormatter(withHeader: true);
+    final target = GoogleSheetFormatter.getTarget(type);
+    final neededColumns = target.getFormattedHead(formatter).length;
+
+    final rows = await GoogleSheetExporter.instance.getSheetData(
+      spreadsheet!.id,
+      prepared.title,
+      neededColumns: neededColumns,
+    );
+
+    if (rows == null) {
+      showInfoSnackbar(context, '在表單中沒找到任何值');
+      return;
+    }
+
+    final rowsWithoutHeader = rows.sublist(1).map((row) {
+      row.addAll(List<String>.filled(neededColumns - row.length, ''));
+      return row.sublist(1);
+    }).toList();
+    final confirmed = await _confirmResult(type, rowsWithoutHeader);
+
+    if (!confirmed) return;
+
+    // TODO: update repo
+  }
+
+  Future<bool> _confirmResult(
+    GoogleSheetAble type,
+    List<List<Object?>> source,
+  ) async {
+    const formatter = GoogleSheetFormatter(withHeader: false);
+    final target = GoogleSheetFormatter.getTarget(type);
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => _SheetPreviewer(
+          source: _SheetPreviewerDataTableSource(source),
+          header: target.getFormattedHead(formatter),
+          title: S.exporterGSDefaultSheetName(type.name),
+          actions: [
+            AppbarTextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(S.btnSave),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return result ?? false;
   }
 
   Future<GoogleSheetProperties?> _prepareData(GoogleSheetAble type) async {
@@ -509,7 +564,6 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         name: name,
         sheets: [],
       );
-      refreshSheet();
     }
     super.initState();
   }
@@ -562,16 +616,7 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
     return TextField(
       controller: _controller,
       readOnly: true,
-      onTap: () async {
-        widget.onSelectStart();
-        final result = await GoogleSheetExporter.instance.pickSheet();
-        if (result == null) {
-          showInfoSnackbar(context, '找不到，試算表是否已被刪除？');
-        } else {
-          setSheet(result);
-        }
-        widget.onSelectEnd();
-      },
+      onTap: pickSheet,
       decoration: InputDecoration(
         labelText: S.exporterGSSpreadsheetLabel,
         hintText: S.exporterGSSpreadsheetHint,
@@ -587,6 +632,25 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
             : null,
       ),
     );
+  }
+
+  Future<void> pickSheet() async {
+    try {
+      widget.onSelectStart();
+      final result = await GoogleSheetExporter.instance.pickSheet();
+      if (result != null) {
+        setSheet(result);
+      }
+    } catch (e) {
+      if (e is GoogleSheetError && e.code == 'non_exist_name') {
+        showInfoSnackbar(context, '找不到，試算表是否已被刪除？');
+      } else {
+        showInfoSnackbar(context, S.actError);
+        error(e.toString(), _errorCodePick);
+      }
+    } finally {
+      widget.onSelectEnd();
+    }
   }
 
   Future<void> setSheet(GoogleSpreadsheet? newSheet) {
@@ -746,11 +810,14 @@ class _SheetPreviewer extends StatelessWidget {
 
   final List<GoogleSheetCellData> header;
 
+  final List<Widget>? actions;
+
   const _SheetPreviewer({
     Key? key,
     required this.source,
     required this.title,
     required this.header,
+    this.actions,
   }) : super(key: key);
 
   @override
@@ -759,16 +826,26 @@ class _SheetPreviewer extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         leading: const PopButton(),
+        actions: actions,
       ),
       body: SingleChildScrollView(
         child: PaginatedDataTable(
           columns: [
             for (final cell in header)
               DataColumn(
-                label: Text(
-                  cell.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                label: cell.note == null
+                    ? Text(
+                        cell.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    : Row(children: [
+                        Text(
+                          cell.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.info_outline),
+                      ]),
                 tooltip: cell.note,
               ),
           ],
@@ -781,7 +858,7 @@ class _SheetPreviewer extends StatelessWidget {
 }
 
 class _SheetPreviewerDataTableSource extends DataTableSource {
-  final List<List<GoogleSheetCellData>> data;
+  final List<List<Object?>> data;
 
   _SheetPreviewerDataTableSource(this.data);
 

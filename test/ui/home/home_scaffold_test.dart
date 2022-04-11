@@ -61,24 +61,31 @@ void main() {
         ),
       ));
 
-      navAndCheck(String key, String check) async {
-        await tester.tap(find.byKey(Key(key)));
+      Future<void> navAndCheck(String key, String check) async {
+        final finder = find.byKey(Key(key));
+        await tester.tap(finder);
         await tester.pumpAndSettle();
 
         expect(find.byKey(Key(check)), findsOneWidget);
       }
 
-      navAndPop(String key, String check) async {
+      Future<void> navAndPop(String key, String check) async {
         await navAndCheck(key, check);
 
         await tester.tap(find.byIcon(KIcons.back));
         await tester.pumpAndSettle();
       }
 
+      Future<void> dragUp() {
+        return tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
+      }
+
       await navAndPop('home_setup.menu', 'menu.add');
+      await navAndPop('home_setup.exporter', 'exporter.google_sheet');
       await navAndPop('home_setup.quantities', 'quantities.add');
       await navAndPop('home_setup.customer', 'customer_settings.action');
       await navAndPop('home_setup.feature_request', 'feature_request_please');
+      await dragUp();
       await navAndPop('home_setup.setting', 'setting.theme');
       await navAndPop('home.order', 'order.action.more');
       await navAndCheck('home.stock', 'stock.empty');

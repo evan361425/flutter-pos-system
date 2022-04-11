@@ -21,6 +21,7 @@ class ExporterScreen extends StatelessWidget {
             child: HintText(S.exporterDescription),
           ),
           ListTile(
+            key: const Key('exporter.google_sheet'),
             leading: const CircleAvatar(
               backgroundImage: AssetImage('assets/google_sheet_icon.png'),
               backgroundColor: Colors.white,

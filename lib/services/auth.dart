@@ -16,9 +16,9 @@ class Auth {
   }) async {
     final newScopes = scopes.toSet().difference(_googleSignIn.scopes.toSet());
     if (newScopes.isNotEmpty) {
-      debug(newScopes.join(','), 'auth.request_scopes');
+      debug(newScopes.join(','), 'auth_google_scopes_needed');
       if (await _googleSignIn.requestScopes(newScopes.toList())) {
-        info(newScopes.join(','), 'auth.new_scopes');
+        info(newScopes.join(','), 'auth_google_scopes');
         _googleSignIn.scopes.addAll(newScopes);
       }
     }
