@@ -27,11 +27,12 @@ class CustomerSetting extends Model<CustomerSettingObject>
 
   CustomerSetting({
     String? id,
+    ModelStatus? status,
     String name = 'customer setting',
     int index = 0,
     this.mode = CustomerSettingOptionMode.statOnly,
     Map<String, CustomerSettingOption>? options,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
     this.index = index;
     if (options != null) replaceItems(options);
@@ -43,6 +44,24 @@ class CustomerSetting extends Model<CustomerSettingObject>
       name: object.name!,
       index: object.index!,
       mode: object.mode!,
+    );
+  }
+
+  factory CustomerSetting.fromColumns(
+    CustomerSetting? ori,
+    List<String> columns,
+  ) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+
+    return CustomerSetting(
+      id: ori?.id,
+      name: columns[0],
+      index: ori?.index ?? CustomerSettings.instance.newIndex,
+      mode: CustomerSettingOptionMode.values.firstWhere(
+        (v) => v.name == columns[1],
+        orElse: () => CustomerSettingOptionMode.statOnly,
+      ),
+      status: status,
     );
   }
 

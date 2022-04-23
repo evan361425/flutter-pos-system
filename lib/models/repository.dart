@@ -8,6 +8,8 @@ import 'package:possystem/services/storage.dart';
 mixin Repository<T extends Model> on ChangeNotifier {
   Map<String, T> _items = {};
 
+  final Map<String, T> _stagedItems = {};
+
   bool get isEmpty => _items.isEmpty;
 
   bool get isNotEmpty => _items.isNotEmpty;
@@ -19,13 +21,54 @@ mixin Repository<T extends Model> on ChangeNotifier {
   int get length => _items.length;
 
   Future<void> addItem(T item) async {
-    if (!hasItem(item.id)) {
+    if (item.status != ModelStatus.normal) {
       item.repository = this;
+      _stagedItems[item.id] = item;
+    } else if (!hasItem(item.id)) {
+      item.repository = this;
+
       await saveItem(item);
 
       _items[item.id] = item;
 
       notifyItems();
+    }
+  }
+
+  /// 提交那些暫存的資料
+  Future<void> commitStaged({save = true}) async {
+    final ids = _stagedItems.values.map((item) {
+      item.status = ModelStatus.normal;
+      _items[item.id] = item;
+      return item.id;
+    }).toList();
+
+    if (ids.isEmpty) return;
+
+    if (T is Repository) {
+      for (var item in _stagedItems.values) {
+        (item as Repository).commitStaged(save: false);
+      }
+    }
+
+    _stagedItems.clear();
+
+    if (save) {
+      for (var id in ids) {
+        await saveItem(_items[id]!);
+      }
+
+      notifyItems();
+    }
+  }
+
+  /// 捨棄那些暫存的資料
+  void abortStaged() {
+    _stagedItems.clear();
+    if (T is Repository) {
+      for (var item in items) {
+        (item as Repository).abortStaged();
+      }
     }
   }
 
@@ -38,6 +81,15 @@ mixin Repository<T extends Model> on ChangeNotifier {
   }
 
   T? getItem(String id) => _items[id];
+
+  T? getItemByName(String name) {
+    for (var item in items) {
+      if (item.name == name) {
+        return item;
+      }
+    }
+    return null;
+  }
 
   bool hasItem(String id) => _items.containsKey(id);
 

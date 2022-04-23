@@ -134,7 +134,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       style: textTheme.headline6,
       autofocus: widget.isNew,
       maxLength: 30,
-      validator: Validator.textLimit(S.stockReplenishmentNameLabel, 60),
+      validator: Validator.textLimit(S.stockReplenishmentNameLabel, 30),
     );
   }
 

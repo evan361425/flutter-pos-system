@@ -6,6 +6,8 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
 class Menu extends ChangeNotifier
@@ -69,6 +71,16 @@ class Menu extends ChangeNotifier
     return null;
   }
 
+  Product? getProductByName(String name) {
+    for (var catalog in items) {
+      final product = catalog.getItemByName(name);
+      if (product != null) {
+        return product;
+      }
+    }
+    return null;
+  }
+
   List<ProductQuantity> getQuantities(String quantityId) {
     final result = <ProductQuantity>[];
 
@@ -89,6 +101,20 @@ class Menu extends ChangeNotifier
 
   bool hasProductByName(String name) {
     return items.any((catalog) => catalog.hasName(name));
+  }
+
+  @override
+  Future<void> commitStaged({save = true}) async {
+    await Stock.instance.commitStaged();
+    await Quantities.instance.commitStaged();
+    await super.commitStaged();
+  }
+
+  @override
+  void abortStaged() {
+    super.abortStaged();
+    Quantities.instance.abortStaged();
+    Stock.instance.abortStaged();
   }
 
   Future<void> removeIngredients(String id) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -29,7 +30,10 @@ class CatalogScreen extends StatelessWidget {
 
     final metadata = SliverToBoxAdapter(
       child: ItemMoreActionButton(
-        item: Text(S.menuCatalogMetaCreatedAt(catalog.createdAt)),
+        item: MetaBlock.withString(context, [
+          S.menuCatalogMetaTitle,
+          S.menuCatalogMetaCreatedAt(catalog.createdAt),
+        ])!,
         onTap: () => _showActions(context, catalog),
       ),
     );

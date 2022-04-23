@@ -24,7 +24,7 @@ class MenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.menuCatalogTitle),
+        title: Text(S.menuTitle),
         leading: const PopButton(),
         actions: [
           IconButton(

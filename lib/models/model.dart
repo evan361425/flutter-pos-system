@@ -8,16 +8,29 @@ import 'package:possystem/services/database.dart';
 import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/services/storage.dart';
 
+enum ModelStatus {
+  normal,
+  staged,
+  updated,
+}
+
 abstract class Model<T extends ModelObject> extends ChangeNotifier {
   late String id;
 
   late String name;
 
-  Model(String? id) : id = id ?? Util.uuidV4();
+  // 是否是暫存的資料，並未存進檔案系統中，僅存在於記憶體中。
+  late ModelStatus status;
+
+  Model(String? id, ModelStatus? status)
+      : id = id ?? Util.uuidV4(),
+        status = status ?? ModelStatus.normal;
 
   String get logName;
 
   String get prefix => id;
+
+  String get statusName => status.name;
 
   Repository<Model<T>> get repository;
 

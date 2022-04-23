@@ -25,13 +25,14 @@ class Catalog extends Model<CatalogObject>
 
   Catalog({
     String? id,
+    ModelStatus? status,
     String name = 'catalog',
     int index = 0,
     String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
-        super(id) {
+        super(id, status) {
     this.name = name;
     this.index = index;
     this.imagePath = imagePath;
@@ -50,6 +51,17 @@ class Catalog extends Model<CatalogObject>
           product.id!: Product.fromObject(product)
       },
     )..prepareItem();
+  }
+
+  factory Catalog.fromColumns(Catalog? ori, List<String> columns) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+
+    return Catalog(
+      id: ori?.id,
+      name: columns[0],
+      index: ori?.index ?? Menu.instance.newIndex,
+      status: status,
+    );
   }
 
   @override

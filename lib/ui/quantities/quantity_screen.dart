@@ -25,7 +25,7 @@ class QuantityScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.stockQuantityTitle),
+        title: Text(S.quantityTitle),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(

@@ -41,14 +41,14 @@ class _QuantityModalState extends State<QuantityModal>
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: S.stockQuantityNameLabel,
-          hintText: S.stockQuantityNameHint,
+          labelText: S.quantityNameLabel,
+          hintText: S.quantityNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         autofocus: widget.isNew,
         maxLength: 30,
-        validator: Validator.textLimit(S.stockQuantityNameLabel, 50),
+        validator: Validator.textLimit(S.quantityNameLabel, 30),
       ),
       TextFormField(
         key: const Key('quantity.proportion'),
@@ -57,15 +57,17 @@ class _QuantityModalState extends State<QuantityModal>
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
-          labelText: S.stockQuantityProportionLabel,
+          labelText: S.quantityProportionLabel,
           errorText: errorMessage,
-          helperText: S.stockQuantityProportionHelper,
+          helperText: S.quantityProportionHelper,
           helperMaxLines: 100,
           filled: false,
         ),
         // NOTE: do we need maximum?
-        validator: Validator.positiveNumber(S.stockQuantityProportionLabel,
-            maximum: 100),
+        validator: Validator.positiveNumber(
+          S.quantityProportionLabel,
+          maximum: 100,
+        ),
       )
     ];
   }
@@ -101,7 +103,7 @@ class _QuantityModalState extends State<QuantityModal>
     final name = _nameController!.text;
 
     if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
-      return S.stockQuantityNameRepeatError;
+      return S.quantityNameRepeatError;
     }
 
     return null;

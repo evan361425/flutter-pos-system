@@ -9,6 +9,7 @@ import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/previews/previewer_screen.dart';
 
 const _exporterIdCacheKey = 'exporter_google_sheet_id';
 const _exporterNameCacheKey = 'exporter_google_sheet_name';
@@ -39,10 +40,10 @@ class _GoogleSheetScreenState extends State<GoogleSheetScreen> {
           appBar: AppBar(
             title: Text(S.exporterGSTitle),
             leading: const PopButton(),
-            bottom: const TabBar(
+            bottom: TabBar(
               tabs: [
-                Tab(text: '匯出'),
-                Tab(text: '匯入'),
+                Tab(text: S.btnExport),
+                Tab(text: S.btnImport),
               ],
             ),
           ),
@@ -133,7 +134,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
         ElevatedButton.icon(
           onPressed: exportData,
           focusNode: focusNode,
-          label: Text(S.exporterExportButton),
+          label: Text(S.btnExport),
           icon: const Icon(Icons.upload_file_outlined),
         ),
         const Divider(),
@@ -177,7 +178,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   void previewTarget(GoogleSheetAble able) {
-    const formatter = GoogleSheetFormatter(withHeader: false);
+    const formatter = GoogleSheetFormatter();
     final target = GoogleSheetFormatter.getTarget(able);
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -217,7 +218,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       }
     }
 
-    const formatter = GoogleSheetFormatter(withHeader: true);
+    const formatter = GoogleSheetFormatter();
     debug(spreadsheet!.id, 'google_sheet_export_ready');
 
     for (final entry in prepared.entries) {
@@ -230,7 +231,6 @@ class _ExporterScreenState extends State<_ExporterScreen> {
         entry.value.id,
         target.getFormattedItems(formatter),
         target.getFormattedHead(formatter),
-        hiddenColumnIndex: 1,
       );
     }
   }
@@ -386,7 +386,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
             key: sheetSelector,
             spreadsheet: spreadsheet,
             allowEmpty: false,
-            helperText: '應用程式感知不到你的試算表有異動，重新整理可以重新找到擁有的表單。',
+            helperText: S.btnImporterRefreshHelp,
             onSheetChanged: onSheetChanged,
             onSelectStart: widget.startLoading,
             onSelectEnd: widget.finishLoading,
@@ -394,7 +394,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
           const SizedBox(height: 4.0),
           ElevatedButton.icon(
             onPressed: refreshSheet,
-            label: const Text('重整試算表'),
+            label: Text(S.btnImporterRefresh),
             icon: const Icon(Icons.refresh_outlined),
           ),
           const Divider(),
@@ -434,7 +434,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
   Future<void> refreshSheet() async {
     if (spreadsheet == null) {
-      showInfoSnackbar(context, '請先選擇試算表');
+      showInfoSnackbar(context, S.importerGSError('empty_spreadsheet'));
       return;
     }
 
@@ -451,10 +451,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   Future<void> importData(GoogleSheetAble type) async {
     widget.startLoading();
 
-    await _importData(type).catchError((err) {
-      showErrorSnackbar(context, S.actError);
-      error(err.toString(), _errorCodeImport);
-    });
+    await _importData(type);
 
     widget.finishLoading();
   }
@@ -482,43 +479,48 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     if (prepared.toCacheValue() != Cache.instance.get<String>(key)) {
       await Cache.instance.set<String>(key, prepared.toCacheValue());
     }
-
     debug(prepared.title, 'google_sheet_import_ready');
 
-    const formatter = GoogleSheetFormatter(withHeader: true);
+    const formatter = GoogleSheetFormatter();
     final target = GoogleSheetFormatter.getTarget(type);
     final neededColumns = target.getFormattedHead(formatter).length;
 
-    final rows = await GoogleSheetExporter.instance.getSheetData(
+    final sheetData = await GoogleSheetExporter.instance.getSheetData(
       spreadsheet!.id,
       prepared.title,
       neededColumns: neededColumns,
     );
-
-    if (rows == null) {
-      showInfoSnackbar(context, '在表單中沒找到任何值');
+    if (sheetData == null) {
+      showInfoSnackbar(context, S.importerGSError('empty_data'));
       return;
     }
 
-    final rowsWithoutHeader = rows.sublist(1).map((row) {
-      row.addAll(List<String>.filled(neededColumns - row.length, ''));
-      return row.sublist(1);
-    }).toList();
-    final confirmed = await _confirmResult(type, rowsWithoutHeader);
+    final rows = sheetData.sublist(1);
+    debug(rows.length.toString(), 'google_sheet_import_length');
+    final allowPreviewFormed = await _previewRawResult(type, rows);
+    if (allowPreviewFormed != true) {
+      return;
+    }
 
-    if (!confirmed) return;
-
-    // TODO: update repo
+    final formatted = formatter.format(target, rows);
+    final allowSave = await PreviewerScreen.navByTarget(
+      context,
+      target,
+      formatted,
+    );
+    print(allowSave);
+    return allowSave == true ? target.commitStaged() : target.abortStaged();
   }
 
-  Future<bool> _confirmResult(
+  Future<bool?> _previewRawResult(
     GoogleSheetAble type,
     List<List<Object?>> source,
   ) async {
-    const formatter = GoogleSheetFormatter(withHeader: false);
+    const formatter = GoogleSheetFormatter();
     final target = GoogleSheetFormatter.getTarget(type);
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
+        fullscreenDialog: true,
         builder: (context) => _SheetPreviewer(
           source: _SheetPreviewerDataTableSource(source),
           header: target.getFormattedHead(formatter),
@@ -526,22 +528,22 @@ class _ImporterScreenState extends State<_ImporterScreen> {
           actions: [
             AppbarTextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(S.btnSave),
+              child: Text(S.importPreviewerTitle),
             ),
           ],
         ),
       ),
     );
 
-    return result ?? false;
+    return result;
   }
 
   Future<GoogleSheetProperties?> _prepareData(GoogleSheetAble type) async {
     if (spreadsheet == null) {
-      showErrorSnackbar(context, '必須選擇試算表來匯入');
+      showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
       return null;
     } else if (sheets[type]?.currentState?.selected == null) {
-      showErrorSnackbar(context, '必須選擇指定的表單來匯入');
+      showErrorSnackbar(context, S.importerGSError('empty_sheet'));
       return null;
     }
 
@@ -642,8 +644,8 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
         setSheet(result);
       }
     } catch (e) {
-      if (e is GoogleSheetError && e.code == 'non_exist_name') {
-        showInfoSnackbar(context, '找不到，試算表是否已被刪除？');
+      if (e is GoogleSheetError) {
+        showInfoSnackbar(context, S.exporterGSErrors(e.code));
       } else {
         showInfoSnackbar(context, S.actError);
         error(e.toString(), _errorCodePick);

@@ -32,11 +32,12 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   ProductQuantity({
     String? id,
+    ModelStatus? status,
     Quantity? quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : super(id) {
+  }) : super(id, status) {
     if (quantity != null) this.quantity = quantity;
   }
 
@@ -56,11 +57,43 @@ class ProductQuantity extends Model<ProductQuantityObject>
     );
   }
 
+  factory ProductQuantity.fromColumns(
+    ProductQuantity? ori,
+    List<String> columns,
+  ) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final quantity = Quantity(
+      id: ori?.ingredient.id,
+      name: columns[0],
+      status: status,
+    );
+    Quantities.instance.addItem(quantity);
+
+    return ProductQuantity(
+      id: ori?.id,
+      quantity: quantity,
+      amount: num.parse(columns[1]),
+      additionalPrice: num.parse(columns[2]),
+      additionalCost: num.parse(columns[3]),
+      status: status,
+    );
+  }
+
   @override
   String get name => quantity.name;
 
   @override
   String get prefix => '${ingredient.prefix}.quantities.$id';
+
+  @override
+  String get statusName {
+    // 當產品是新的，代表產品份量一定也是新的，這樣就只需要輸出是否為「新的份量種類」
+    if (ingredient.product.status == ModelStatus.staged) {
+      return quantity.status == ModelStatus.staged ? 'stagedQua' : 'normal';
+    }
+
+    return super.statusName;
+  }
 
   @override
   ProductIngredient get repository => ingredient;

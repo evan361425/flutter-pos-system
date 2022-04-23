@@ -19,11 +19,12 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
 
   CustomerSettingOption({
     String id = '0',
+    ModelStatus? status,
     String name = 'customer setting option',
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
     this.index = index;
   }

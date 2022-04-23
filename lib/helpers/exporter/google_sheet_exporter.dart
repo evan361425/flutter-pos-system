@@ -212,7 +212,10 @@ class GoogleSheetExporter {
       $fields: 'values',
     );
 
-    return result?.values;
+    return result?.values?.map((row) {
+      row.addAll(List<String>.filled(neededColumns - row.length, ''));
+      return row;
+    }).toList();
   }
 
   Future<bool> _setApiClient() async {
@@ -345,7 +348,7 @@ class GoogleSheetCellData {
   String toString() {
     return value.stringValue ??
         value.numberValue?.toString() ??
-        value.formulaValue!;
+        value.formulaValue.toString();
   }
 }
 

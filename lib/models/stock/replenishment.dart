@@ -16,10 +16,11 @@ class Replenishment extends Model<ReplenishmentObject>
 
   Replenishment({
     String? id,
+    ModelStatus? status,
     String name = 'replenishment',
     Map<String, num>? data,
   })  : data = data ?? {},
-        super(id) {
+        super(id, status) {
     this.name = name;
   }
 
@@ -28,6 +29,19 @@ class Replenishment extends Model<ReplenishmentObject>
         name: object.name,
         data: object.data,
       );
+
+  factory Replenishment.fromColumns(
+    Replenishment? ori,
+    List<String> columns,
+  ) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+
+    return Replenishment(
+      id: ori?.id,
+      name: columns[0],
+      status: status,
+    );
+  }
 
   @override
   Replenisher get repository => Replenisher.instance;

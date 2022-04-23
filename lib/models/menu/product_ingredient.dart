@@ -33,10 +33,11 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
   ProductIngredient({
     String? id,
+    ModelStatus? status,
     Ingredient? ingredient,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
-  }) : super(id) {
+  }) : super(id, status) {
     if (quantities != null) replaceItems(quantities);
 
     if (ingredient != null) this.ingredient = ingredient;
@@ -71,6 +72,26 @@ class ProductIngredient extends Model<ProductIngredientObject>
     )..prepareItem();
   }
 
+  factory ProductIngredient.fromColumns(
+    ProductIngredient? ori,
+    List<String> columns,
+  ) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final ingredient = Ingredient(
+      id: ori?.ingredient.id,
+      name: columns[0],
+      status: status,
+    );
+    Stock.instance.addItem(ingredient);
+
+    return ProductIngredient(
+      id: ori?.id,
+      ingredient: ingredient,
+      amount: num.parse(columns[1]),
+      status: status,
+    );
+  }
+
   @override
   String get name => ingredient.name;
 
@@ -79,6 +100,16 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
   @override
   Product get repository => product;
+
+  @override
+  String get statusName {
+    // 當產品是新的，代表產品成份一定也是新的，這樣就只需要輸出是否為「新的庫存成分」
+    if (product.status == ModelStatus.staged) {
+      return ingredient.status == ModelStatus.staged ? 'stagedIng' : 'normal';
+    }
+
+    return super.statusName;
+  }
 
   @override
   set repository(Repository repo) => product = repo as Product;

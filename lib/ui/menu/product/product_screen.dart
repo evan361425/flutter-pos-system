@@ -13,7 +13,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/ingredient_expantion_card.dart';
+import 'widgets/ingredient_expansion_card.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key}) : super(key: key);
@@ -34,6 +34,7 @@ class ProductScreen extends StatelessWidget {
     final metadata = SliverToBoxAdapter(
       child: ItemMoreActionButton(
         item: MetaBlock.withString(context, <String>[
+          S.menuProductMetaTitle,
           S.menuProductMetaPrice(product.price),
           S.menuProductMetaCost(product.cost),
         ])!,
@@ -67,7 +68,7 @@ class ProductScreen extends StatelessWidget {
         aboveData,
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            (_, int index) => IngredientExpantionCard(ingredients[index]),
+            (_, int index) => IngredientExpansionCard(ingredients[index]),
             childCount: ingredients.length,
           ),
         ),
