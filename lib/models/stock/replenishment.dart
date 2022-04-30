@@ -30,17 +30,30 @@ class Replenishment extends Model<ReplenishmentObject>
         data: object.data,
       );
 
-  factory Replenishment.fromColumns(
-    Replenishment? ori,
-    List<String> columns,
-  ) {
+  factory Replenishment.fromRow(Replenishment? ori, List<String> row) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
 
     return Replenishment(
       id: ori?.id,
-      name: columns[0],
+      name: row[0],
       status: status,
     );
+  }
+
+  void supplyByStrings(List<String> row) {
+    final amount = num.tryParse(row[1]);
+    if (amount == null) return;
+
+    Ingredient? ing = Stock.instance.getItemByName(row[0]);
+    if (ing == null) {
+      ing = Ingredient(
+        name: row[0],
+        status: ModelStatus.staged,
+      );
+      Stock.instance.addItem(ing);
+    }
+
+    data[ing.name] = amount;
   }
 
   @override

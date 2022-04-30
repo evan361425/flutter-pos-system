@@ -86,7 +86,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(S.customerSettingOptionNameLabel, 50),
+        validator: Validator.textLimit(S.customerSettingOptionNameLabel, 30),
       ),
       CheckboxListTile(
         key: const Key('customer_setting_option.isDefault'),

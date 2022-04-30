@@ -8,6 +8,7 @@ import 'package:possystem/services/storage.dart';
 mixin Repository<T extends Model> on ChangeNotifier {
   Map<String, T> _items = {};
 
+  /// Use for importing items
   final Map<String, T> _stagedItems = {};
 
   bool get isEmpty => _items.isEmpty;
@@ -20,11 +21,21 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   int get length => _items.length;
 
-  Future<void> addItem(T item) async {
-    if (item.status != ModelStatus.normal) {
+  Iterable<T> get stagedItems => _stagedItems.values;
+
+  /// 捨棄那些暫存的資料
+  void abortStaged() {
+    _stagedItems.clear();
+  }
+
+  Future<void> addItem(T item, {save = true}) async {
+    if (!save) {
       item.repository = this;
-      _stagedItems[item.id] = item;
-    } else if (!hasItem(item.id)) {
+      _items[item.id] = item;
+      return;
+    }
+
+    if (!hasItem(item.id)) {
       item.repository = this;
 
       await saveItem(item);
@@ -35,55 +46,53 @@ mixin Repository<T extends Model> on ChangeNotifier {
     }
   }
 
+  void addStaged(T item) {
+    _stagedItems[item.id] = item;
+  }
+
   /// 提交那些暫存的資料
   Future<void> commitStaged({save = true}) async {
-    final ids = _stagedItems.values.map((item) {
-      item.status = ModelStatus.normal;
-      _items[item.id] = item;
-      return item.id;
-    }).toList();
-
-    if (ids.isEmpty) return;
-
+    // Commit staged items in child, but no need save it(parent have saved)!
     if (T is Repository) {
-      for (var item in _stagedItems.values) {
+      for (var item in stagedItems) {
         (item as Repository).commitStaged(save: false);
       }
     }
 
-    _stagedItems.clear();
-
-    if (save) {
-      for (var id in ids) {
-        await saveItem(_items[id]!);
-      }
-
-      notifyItems();
-    }
-  }
-
-  /// 捨棄那些暫存的資料
-  void abortStaged() {
-    _stagedItems.clear();
-    if (T is Repository) {
-      for (var item in items) {
-        (item as Repository).abortStaged();
+    for (var item in stagedItems) {
+      item.status = ModelStatus.normal;
+      _items[item.id] = item;
+      if (save) {
+        await saveItem(item);
       }
     }
+
+    _stagedItems.clear();
+
+    notifyItems();
   }
 
   List<Format> getFormattedHead<Format>(Formatter<Format> formatter) {
-    return formatter.getHead(this);
+    return formatter.getHeader(this);
   }
 
   List<List<Format>> getFormattedItems<Format>(Formatter<Format> formatter) {
-    return formatter.getItems(this);
+    return formatter.getRows(this);
   }
 
   T? getItem(String id) => _items[id];
 
   T? getItemByName(String name) {
     for (var item in items) {
+      if (item.name == name) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  T? getStagedByName(String name) {
+    for (var item in stagedItems) {
       if (item.name == name) {
         return item;
       }

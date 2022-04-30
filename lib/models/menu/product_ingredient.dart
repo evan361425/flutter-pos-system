@@ -72,22 +72,25 @@ class ProductIngredient extends Model<ProductIngredientObject>
     )..prepareItem();
   }
 
-  factory ProductIngredient.fromColumns(
+  factory ProductIngredient.fromRow(
     ProductIngredient? ori,
-    List<String> columns,
+    List<String> row,
   ) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
-    final ingredient = Ingredient(
-      id: ori?.ingredient.id,
-      name: columns[0],
-      status: status,
-    );
-    Stock.instance.addItem(ingredient);
+    var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]);
+
+    if (ingredient == null) {
+      ingredient = Ingredient(
+        name: row[0],
+        status: ModelStatus.staged,
+      );
+      Stock.instance.addStaged(ingredient);
+    }
 
     return ProductIngredient(
       id: ori?.id,
       ingredient: ingredient,
-      amount: num.parse(columns[1]),
+      amount: row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0,
       status: status,
     );
   }

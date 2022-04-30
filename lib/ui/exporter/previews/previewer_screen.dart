@@ -37,9 +37,6 @@ abstract class PreviewerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorItems = items.where((item) => item.hasError);
-    final correctItems = items.where((item) => !item.hasError);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(S.importPreviewerTitle),
@@ -53,33 +50,10 @@ abstract class PreviewerScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
-          ...getErrors(context, errorItems),
-          Center(child: HintText(S.totalCount(correctItems.length))),
-          ...getDetails(context, correctItems),
+          ...getDetails(context, items),
         ]),
       ),
     );
-  }
-
-  Iterable<Widget> getErrors(
-    BuildContext context,
-    Iterable<FormattedItem> items,
-  ) sync* {
-    if (items.isEmpty) return;
-
-    yield countHint(items.length);
-
-    final theme = Theme.of(context);
-    for (var item in items) {
-      yield ListTile(
-        title: Text(S.importerColumnsInvalid(item.error!.index)),
-        subtitle: Text(
-          item.error!.message,
-          style: TextStyle(color: theme.errorColor),
-        ),
-        tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
-      );
-    }
   }
 
   Iterable<Widget> getDetails(
@@ -129,6 +103,26 @@ class ImporterColumnStatus extends StatelessWidget {
   }
 }
 
+class PreviewerErrorListTile extends StatelessWidget {
+  final FormattedItem item;
+
+  const PreviewerErrorListTile(this.item, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListTile(
+      title: Text(item.item.name),
+      subtitle: Text(
+        item.error!.message,
+        style: TextStyle(color: theme.errorColor),
+      ),
+      tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
+    );
+  }
+}
+
 class _DefaultPreviewScreen extends PreviewerScreen {
   const _DefaultPreviewScreen({
     required List<FormattedItem> items,
@@ -140,7 +134,7 @@ class _DefaultPreviewScreen extends PreviewerScreen {
     Iterable<FormattedItem> items,
   ) sync* {
     for (final item in items) {
-      yield ListTile(title: Text(item.item!.name));
+      yield ListTile(title: Text(item.item.name));
     }
   }
 }

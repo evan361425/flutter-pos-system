@@ -27,13 +27,13 @@ class Quantity extends Model<QuantityObject>
         defaultProportion: object.defaultProportion!,
       );
 
-  factory Quantity.fromColumns(Quantity? ori, List<String> columns) {
+  factory Quantity.fromRow(Quantity? ori, List<String> row) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
 
     return Quantity(
       id: ori?.id,
-      name: columns[0],
-      defaultProportion: num.parse(columns[1]),
+      name: row[0],
+      defaultProportion: num.parse(row[1]),
       status: status,
     );
   }

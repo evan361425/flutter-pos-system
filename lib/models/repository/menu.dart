@@ -36,6 +36,13 @@ class Menu extends ChangeNotifier
   }
 
   @override
+  void abortStaged() {
+    super.abortStaged();
+    Quantities.instance.abortStaged();
+    Stock.instance.abortStaged();
+  }
+
+  @override
   Catalog buildItem(String id, Map<String, Object?> value) {
     return Catalog.fromObject(
       CatalogObject.build({
@@ -43,6 +50,13 @@ class Menu extends ChangeNotifier
         ...value,
       }),
     );
+  }
+
+  @override
+  Future<void> commitStaged({save = true}) async {
+    await Stock.instance.commitStaged();
+    await Quantities.instance.commitStaged();
+    await super.commitStaged();
   }
 
   List<ProductIngredient> getIngredients(String ingredientId) {
@@ -101,20 +115,6 @@ class Menu extends ChangeNotifier
 
   bool hasProductByName(String name) {
     return items.any((catalog) => catalog.hasName(name));
-  }
-
-  @override
-  Future<void> commitStaged({save = true}) async {
-    await Stock.instance.commitStaged();
-    await Quantities.instance.commitStaged();
-    await super.commitStaged();
-  }
-
-  @override
-  void abortStaged() {
-    super.abortStaged();
-    Quantities.instance.abortStaged();
-    Stock.instance.abortStaged();
   }
 
   Future<void> removeIngredients(String id) {

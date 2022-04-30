@@ -39,6 +39,23 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     );
   }
 
+  factory CustomerSettingOption.fromRow(
+    CustomerSetting? cs,
+    CustomerSettingOption? ori,
+    List<String> row,
+  ) {
+    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+
+    return CustomerSettingOption(
+      id: ori?.id ?? '0',
+      name: row[0],
+      isDefault: row.length > 1 ? row[1] == 'true' : false,
+      modeValue: row.length > 2 ? num.tryParse(row[2]) : null,
+      index: ori?.index ?? cs?.newIndex ?? 0,
+      status: status,
+    );
+  }
+
   @override
   String get modelTableName => table;
 

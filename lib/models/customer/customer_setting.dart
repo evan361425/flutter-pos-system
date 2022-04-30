@@ -47,20 +47,14 @@ class CustomerSetting extends Model<CustomerSettingObject>
     );
   }
 
-  factory CustomerSetting.fromColumns(
-    CustomerSetting? ori,
-    List<String> columns,
-  ) {
+  factory CustomerSetting.fromRow(CustomerSetting? ori, List<String> row) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
 
     return CustomerSetting(
       id: ori?.id,
-      name: columns[0],
+      name: row[0],
       index: ori?.index ?? CustomerSettings.instance.newIndex,
-      mode: CustomerSettingOptionMode.values.firstWhere(
-        (v) => v.name == columns[1],
-        orElse: () => CustomerSettingOptionMode.statOnly,
-      ),
+      mode: str2CustomerSettingOptionMode(row[1]),
       status: status,
     );
   }

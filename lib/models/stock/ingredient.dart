@@ -53,13 +53,13 @@ class Ingredient extends Model<IngredientObject>
         updatedAt: object.updatedAt,
       );
 
-  factory Ingredient.fromColumns(Ingredient? ori, List<String> columns) {
+  factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
 
     return Ingredient(
       id: ori?.id,
-      name: columns[0],
-      currentAmount: num.parse(columns[1]),
+      name: row[0],
+      currentAmount: num.parse(row[1]),
       status: status,
     );
   }

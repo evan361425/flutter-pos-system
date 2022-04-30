@@ -87,19 +87,15 @@ class Product extends Model<ProductObject>
     )..prepareItem();
   }
 
-  factory Product.fromColumns(
-    Product? ori,
-    List<String> columns,
-    int defaultIndex,
-  ) {
+  factory Product.fromRow(Product? ori, List<String> row) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
 
     return Product(
       id: ori?.id,
-      name: columns[1],
-      index: ori?.index ?? defaultIndex,
-      price: num.parse(columns[2]),
-      cost: num.parse(columns[3]),
+      name: row[1],
+      index: ori?.index ?? 1,
+      price: num.parse(row[2]),
+      cost: num.parse(row[3]),
       status: status,
     );
   }
@@ -138,6 +134,8 @@ class Product extends Model<ProductObject>
     notifyListeners();
     catalog.notifyItem();
   }
+
+  void replaceCatalog(Catalog newCatalog) {}
 
   Future<void> searched() {
     return update(ProductObject(searchedAt: DateTime.now()), event: 'search');

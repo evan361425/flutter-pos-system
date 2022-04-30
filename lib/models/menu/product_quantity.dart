@@ -57,24 +57,31 @@ class ProductQuantity extends Model<ProductQuantityObject>
     );
   }
 
-  factory ProductQuantity.fromColumns(
+  factory ProductQuantity.fromRow(
     ProductQuantity? ori,
-    List<String> columns,
+    List<String> row,
   ) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
-    final quantity = Quantity(
-      id: ori?.ingredient.id,
-      name: columns[0],
-      status: status,
-    );
-    Quantities.instance.addItem(quantity);
+    var quantity = ori?.quantity ?? Quantities.instance.getItemByName(row[0]);
+
+    if (quantity == null) {
+      quantity = Quantity(
+        name: row[0],
+        status: ModelStatus.staged,
+      );
+      Quantities.instance.addStaged(quantity);
+    }
+
+    num checkAndParse(int index) {
+      return row.length > index ? num.tryParse(row[index]) ?? 0 : 0;
+    }
 
     return ProductQuantity(
       id: ori?.id,
       quantity: quantity,
-      amount: num.parse(columns[1]),
-      additionalPrice: num.parse(columns[2]),
-      additionalCost: num.parse(columns[3]),
+      amount: checkAndParse(1),
+      additionalPrice: checkAndParse(2),
+      additionalCost: checkAndParse(3),
       status: status,
     );
   }

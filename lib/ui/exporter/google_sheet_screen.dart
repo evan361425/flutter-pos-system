@@ -451,7 +451,10 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   Future<void> importData(GoogleSheetAble type) async {
     widget.startLoading();
 
-    await _importData(type);
+    await _importData(type).catchError((err) {
+      showErrorSnackbar(context, S.actError);
+      error(err.toString(), _errorCodeImport);
+    });
 
     widget.finishLoading();
   }
@@ -508,7 +511,6 @@ class _ImporterScreenState extends State<_ImporterScreen> {
       target,
       formatted,
     );
-    print(allowSave);
     return allowSave == true ? target.commitStaged() : target.abortStaged();
   }
 

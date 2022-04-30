@@ -2,6 +2,7 @@ import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -47,154 +48,122 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
 
   @override
   List<FormattedItem> format(Repository target, List<List<Object?>> rows) {
-    final List<FormattedItem> result = [];
-    var index = 1;
+    final formatter = _getFormatter(target);
+    final result = <FormattedItem>[];
+
     for (var row in rows) {
-      final msg = _validate(target, row);
-      if (msg == null) {
-        result.add(FormattedItem(item: _format(target, row)));
+      final r = row.map((e) => e.toString()).toList();
+      final msg = formatter.validate(r) ??
+          (result.any((e) => e.item.name == r[formatter.nameIndex])
+              ? '將忽略本行，相同的項目已於前面出現'
+              : null);
+
+      if (msg != null) {
+        result.add(FormattedItem(
+          Ingredient(name: row.join(', ')),
+          error: FormatterValidateError(msg),
+        ));
       } else {
-        result.add(FormattedItem(error: FormatterValidateError(msg, index)));
+        result.add(FormattedItem(formatter.format(r)));
       }
-      index++;
     }
 
     return result;
   }
 
   @override
-  List<GoogleSheetCellData> getHead(Repository target) {
-    if (target is Menu) {
-      return target._getGoogleSheetHead();
-    } else if (target is Stock) {
-      return target._getGoogleSheetHead();
-    } else if (target is Quantities) {
-      return target._getGoogleSheetHead();
-    } else if (target is Replenisher) {
-      return target._getGoogleSheetHead();
-    } else if (target is CustomerSettings) {
-      return target._getGoogleSheetHead();
-    }
-
-    return const [];
-  }
+  List<GoogleSheetCellData> getHeader(Repository target) =>
+      _getFormatter(target).getHeader();
 
   @override
-  List<List<GoogleSheetCellData>> getItems(Repository target) {
+  List<List<GoogleSheetCellData>> getRows(Repository target) =>
+      _getFormatter(target).getRows();
+
+  _Formatter _getFormatter(Repository target) {
     if (target is Menu) {
-      return target._getGoogleSheetItems();
+      return _MenuFormatter(target);
     } else if (target is Stock) {
-      return target._getGoogleSheetItems();
+      return _StockFormatter(target);
     } else if (target is Quantities) {
-      return target._getGoogleSheetItems();
+      return _QuantitiesFormatter(target);
     } else if (target is Replenisher) {
-      return target._getGoogleSheetItems();
+      return _ReplenisherFormatter(target);
     } else if (target is CustomerSettings) {
-      return target._getGoogleSheetItems();
+      return _CSFormatter(target);
     }
 
-    return const [];
-  }
-
-  String? _validate(Repository target, List<Object?> row) {
-    if (target is Menu) {
-      return target._validateGoogleSheetData(row);
-    } else if (target is Stock) {
-      return target._validateGoogleSheetData(row);
-    } else if (target is Quantities) {
-      return target._validateGoogleSheetData(row);
-    } else if (target is Replenisher) {
-      return target._validateGoogleSheetData(row);
-    } else if (target is CustomerSettings) {
-      return target._validateGoogleSheetData(row);
-    }
-
-    return null;
-  }
-
-  Model? _format(Repository target, List<Object?> row) {
-    if (target is Menu) {
-      return target._formatValidGoogleSheetData(row);
-    } else if (target is Stock) {
-      return target._formatValidGoogleSheetData(row);
-    } else if (target is Quantities) {
-      return target._formatValidGoogleSheetData(row);
-    } else if (target is Replenisher) {
-      return target._formatValidGoogleSheetData(row);
-    } else if (target is CustomerSettings) {
-      return target._formatValidGoogleSheetData(row);
-    }
-
-    return null;
+    throw ArgumentError();
   }
 }
 
-extension GoogleSheetMenuFormatter on Menu {
-  List<GoogleSheetCellData> _getGoogleSheetHead() {
-    return <GoogleSheetCellData>[
-      _toCD(S.menuCatalogNameLabel),
-      _toCD(S.menuProductNameLabel),
-      _toCD(S.menuProductPriceLabel),
-      _toCD(S.menuProductCostLabel),
-      _toCD(S.exporterProductIngredientInfoTitle,
-          S.exporterGSProductIngredientInfoNote),
-    ];
+abstract class _Formatter<T> {
+  final T target;
+
+  final int nameIndex = 0;
+
+  const _Formatter(this.target);
+
+  List<GoogleSheetCellData> getHeader();
+
+  List<List<GoogleSheetCellData>> getRows();
+
+  String? validate(List<String> row);
+
+  Model format(List<String> row);
+}
+
+class _MenuFormatter extends _Formatter<Menu> {
+  const _MenuFormatter(Menu target) : super(target);
+
+  @override
+  int get nameIndex => 1;
+
+  @override
+  List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
+        _toCD(S.menuCatalogNameLabel),
+        _toCD(S.menuProductNameLabel),
+        _toCD(S.menuProductPriceLabel),
+        _toCD(S.menuProductCostLabel),
+        _toCD(S.exporterProductIngredientInfoTitle,
+            S.exporterGSProductIngredientInfoNote),
+      ];
+
+  @override
+  List<List<GoogleSheetCellData>> getRows() {
+    return target.products.map<List<GoogleSheetCellData>>((product) {
+      final ingredientInfo = [
+        for (var ingredient in product.items)
+          '- ${ingredient.name},${ingredient.amount}' +
+              ingredient.itemList
+                  .map((quantity) => <String>[
+                        '\n  + ${quantity.name}',
+                        quantity.amount.toString(),
+                        quantity.additionalPrice.toString(),
+                        quantity.additionalCost.toString(),
+                      ].join(','))
+                  .join('')
+      ].join('\n');
+
+      return [
+        GoogleSheetCellData(stringValue: product.catalog.name),
+        GoogleSheetCellData(stringValue: product.name),
+        GoogleSheetCellData(numberValue: product.price),
+        GoogleSheetCellData(numberValue: product.cost),
+        GoogleSheetCellData(stringValue: ingredientInfo),
+      ];
+    }).toList();
   }
 
-  List<List<GoogleSheetCellData>> _getGoogleSheetItems() {
-    return <List<GoogleSheetCellData>>[
-      for (final product in products)
-        [
-          GoogleSheetCellData(stringValue: product.catalog.name),
-          GoogleSheetCellData(stringValue: product.name),
-          GoogleSheetCellData(numberValue: product.price),
-          GoogleSheetCellData(numberValue: product.cost),
-          GoogleSheetCellData(stringValue: product._googleSheetIngredientInfo),
-        ],
-    ];
-  }
-
-  Product _formatValidGoogleSheetData(List<Object?> row) {
-    final stringRow = row.map((e) => e.toString()).toList();
-
-    final catalog = Catalog.fromColumns(
-      getItemByName(stringRow[0]),
-      stringRow,
-    );
-    Menu.instance.addItem(catalog);
-    final product = Product.fromColumns(
-      getProductByName(stringRow[1]),
-      stringRow,
-      catalog.newIndex,
-    );
-    catalog.addItem(product);
-
-    if (row.length == 4 || row[4] == null) {
-      return product;
-    }
-
-    product._parseGoogleSheetIngredientInfo(stringRow[4]);
-
-    return product;
-  }
-
-  String? _validateGoogleSheetData(List<Object?> row) {
+  @override
+  String? validate(List<String> row) {
     if (row.length < 4) return S.importerColumnsCountError(4);
 
-    final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(
-          row[0]?.toString(),
-        ) ??
-        Validator.textLimit(S.menuProductNameLabel, 30)(
-          row[1]?.toString(),
-        ) ??
-        Validator.isNumber(S.menuProductPriceLabel)(
-          row[2]?.toString(),
-        ) ??
-        Validator.positiveNumber(S.menuProductCostLabel)(
-          row[3]?.toString(),
-        );
+    final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
+        Validator.textLimit(S.menuProductNameLabel, 30)(row[1]) ??
+        Validator.isNumber(S.menuProductPriceLabel)(row[2]) ??
+        Validator.positiveNumber(S.menuProductCostLabel)(row[3]);
 
-    if (errorMsg != null || row.length == 4 || row[4] == null) return errorMsg;
+    if (errorMsg != null || row.length == 4) return errorMsg;
 
     final lines = row[4].toString().split('\n');
     for (var line in lines) {
@@ -202,156 +171,217 @@ extension GoogleSheetMenuFormatter on Menu {
         final columns = line.substring(2).split(',');
         if (columns.length < 2) continue;
 
-        final msg = Validator.textLimit(S.stockIngredientNameLabel, 30)(
-                columns[0]) ??
-            Validator.positiveNumber(S.stockIngredientAmountLabel)(columns[1]);
+        final msg =
+            Validator.textLimit(S.stockIngredientNameLabel, 30)(columns[0]) ??
+                Validator.positiveNumber(
+                  S.stockIngredientAmountLabel,
+                  allowNull: true,
+                )(columns[1]);
         if (msg != null) return msg;
       } else if (line.startsWith('  + ')) {
         final columns = line.substring(4).split(',');
         if (columns.length < 4) continue;
 
         final msg = Validator.textLimit(S.quantityNameLabel, 30)(columns[0]) ??
-            Validator.positiveNumber(S.menuQuantityAmountLabel)(columns[1]) ??
-            Validator.isNumber(S.menuQuantityAdditionalPriceLabel)(
-                columns[2]) ??
-            Validator.isNumber(S.menuQuantityAdditionalCostLabel)(columns[3]);
+            Validator.positiveNumber(
+              S.menuQuantityAmountLabel,
+              allowNull: true,
+            )(columns[1]);
         if (msg != null) return msg;
       }
     }
 
     return null;
   }
-}
 
-extension GoogleSheetStockFormatter on Stock {
-  List<GoogleSheetCellData> _getGoogleSheetHead() {
-    return <GoogleSheetCellData>[
-      _toCD(S.stockIngredientNameLabel),
-      _toCD(S.stockIngredientAmountLabel),
-    ];
+  @override
+  Product format(List<String> row) {
+    final catalog = target.getStagedByName(row[0]) ??
+        Catalog.fromRow(target.getItemByName(row[0]), row);
+    Menu.instance.addStaged(catalog);
+
+    final oriProduct = target.getProductByName(row[1]);
+    final product = Product.fromRow(oriProduct, row);
+    catalog.addItem(product, save: false);
+
+    return row.length == 4
+        ? product
+        : _formatProduct(oriProduct, product, row[4]);
   }
 
-  List<List<GoogleSheetCellData>> _getGoogleSheetItems() {
-    return <List<GoogleSheetCellData>>[
-      for (final ingredient in itemList)
-        [
-          GoogleSheetCellData(stringValue: ingredient.name),
-          ingredient.currentAmount == null
-              ? GoogleSheetCellData(stringValue: '')
-              : GoogleSheetCellData(numberValue: ingredient.currentAmount),
-        ],
-    ];
-  }
+  Product _formatProduct(Product? ori, Product product, String value) {
+    final lines = value.split('\n');
+    ProductIngredient? ingredient;
+    ProductIngredient? oriIngredient;
 
-  Ingredient _formatValidGoogleSheetData(List<Object?> row) {
-    final stringRow = row.map((e) => e.toString()).toList();
+    for (var line in lines) {
+      if (line.startsWith('- ')) {
+        final columns = line.substring(2).split(',');
+        if (columns.isEmpty) continue;
 
-    final ingredient = Ingredient.fromColumns(
-      getItemByName(stringRow[0]),
-      stringRow,
-    );
-    Stock.instance.addItem(ingredient);
+        oriIngredient = ori?.getItemByName(columns[0]);
+        ingredient = ProductIngredient.fromRow(oriIngredient, columns);
+        product.addItem(ingredient, save: false);
+      } else if (ingredient != null && line.startsWith('  + ')) {
+        final columns = line.substring(4).split(',');
+        if (columns.isEmpty) continue;
 
-    return ingredient;
-  }
-
-  String? _validateGoogleSheetData(List<Object?> row) {
-    if (row.length < 2) return S.importerColumnsCountError(2);
-
-    return Validator.textLimit(S.stockIngredientNameLabel, 30)(
-          row[0]?.toString(),
-        ) ??
-        Validator.positiveNumber(S.stockIngredientAmountLabel)(
-          row[1]?.toString(),
+        final quantity = ProductQuantity.fromRow(
+          oriIngredient?.getItemByName(columns[0]),
+          columns,
         );
+        ingredient.addItem(quantity, save: false);
+      }
+    }
+
+    return product;
   }
 }
 
-extension GoogleSheetQuantitiesFormatter on Quantities {
-  List<GoogleSheetCellData> _getGoogleSheetHead() {
-    return <GoogleSheetCellData>[
-      _toCD(S.quantityNameLabel),
-      _toCD(S.quantityProportionLabel, S.quantityProportionHelper),
-    ];
+class _StockFormatter extends _Formatter<Stock> {
+  const _StockFormatter(Stock target) : super(target);
+
+  @override
+  List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
+        _toCD(S.stockIngredientNameLabel),
+        _toCD(S.stockIngredientAmountLabel),
+      ];
+
+  @override
+  List<List<GoogleSheetCellData>> getRows() => target.itemList
+      .map((ingredient) => [
+            GoogleSheetCellData(stringValue: ingredient.name),
+            ingredient.currentAmount == null
+                ? GoogleSheetCellData(stringValue: '')
+                : GoogleSheetCellData(numberValue: ingredient.currentAmount),
+          ])
+      .toList();
+
+  @override
+  String? validate(List<String> row) {
+    if (row.length < 2) return S.importerColumnsCountError(2);
+
+    return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
+        Validator.positiveNumber(S.stockIngredientAmountLabel)(row[1]);
   }
 
-  List<List<GoogleSheetCellData>> _getGoogleSheetItems() {
-    return <List<GoogleSheetCellData>>[
-      for (final quantity in itemList)
-        [
-          GoogleSheetCellData(stringValue: quantity.name),
-          GoogleSheetCellData(numberValue: quantity.defaultProportion),
-        ],
-    ];
-  }
-
-  Quantity _formatValidGoogleSheetData(List<Object?> row) {
-    final stringRow = row.map((e) => e.toString()).toList();
-
-    final ingredient = Quantity.fromColumns(
-      getItemByName(stringRow[0]),
-      stringRow,
-    );
-    Quantities.instance.addItem(ingredient);
+  @override
+  Ingredient format(List<String> row) {
+    final ingredient = Ingredient.fromRow(target.getItemByName(row[0]), row);
+    Stock.instance.addStaged(ingredient);
 
     return ingredient;
   }
+}
 
-  String? _validateGoogleSheetData(List<Object?> row) {
+class _QuantitiesFormatter extends _Formatter<Quantities> {
+  const _QuantitiesFormatter(Quantities target) : super(target);
+
+  @override
+  List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
+        _toCD(S.quantityNameLabel),
+        _toCD(S.quantityProportionLabel, S.quantityProportionHelper),
+      ];
+
+  @override
+  List<List<GoogleSheetCellData>> getRows() => target.itemList
+      .map((quantity) => [
+            GoogleSheetCellData(stringValue: quantity.name),
+            GoogleSheetCellData(numberValue: quantity.defaultProportion),
+          ])
+      .toList();
+
+  @override
+  String? validate(List<String> row) {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
-    return Validator.textLimit(S.quantityNameLabel, 30)(
-          row[0]?.toString(),
-        ) ??
+    return Validator.textLimit(S.quantityNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(S.quantityProportionLabel, maximum: 100)(
-          row[1]?.toString(),
+          row[1],
         );
   }
-}
 
-extension GoogleSheetReplenisherFormatter on Replenisher {
-  List<GoogleSheetCellData> _getGoogleSheetHead() {
-    return <GoogleSheetCellData>[
-      _toCD(S.stockReplenishmentNameLabel),
-      _toCD(S.exporterReplenishmentTitle, S.exporterGSReplenishmentNote)
-    ];
-  }
+  @override
+  Quantity format(List<String> row) {
+    final quantity = Quantity.fromRow(target.getItemByName(row[0]), row);
+    Quantities.instance.addStaged(quantity);
 
-  List<List<GoogleSheetCellData>> _getGoogleSheetItems() {
-    return <List<GoogleSheetCellData>>[
-      for (final repl in itemList)
-        [
-          GoogleSheetCellData(stringValue: repl.name),
-          GoogleSheetCellData(stringValue: repl._googleSheetDataInfo),
-        ],
-    ];
-  }
-
-  Replenishment _formatValidGoogleSheetData(List<Object?> row) {
-    final stringRow = row.map((e) => e.toString()).toList();
-
-    final replenishment = Replenishment.fromColumns(
-      getItemByName(stringRow[0]),
-      stringRow,
-    );
-    Replenisher.instance.addItem(replenishment);
-
-    replenishment._parseGoogleSheetData(stringRow[1]);
-
-    return replenishment;
-  }
-
-  String? _validateGoogleSheetData(List<Object?> row) {
-    if (row.length < 2) return S.importerColumnsCountError(2);
-
-    return Validator.textLimit(S.stockReplenishmentNameLabel, 30)(
-      row[0]?.toString(),
-    );
+    return quantity;
   }
 }
 
-extension GoogleSheetCustomerSettingsFormatter on CustomerSettings {
-  List<GoogleSheetCellData> _getGoogleSheetHead() {
+class _ReplenisherFormatter extends _Formatter<Replenisher> {
+  const _ReplenisherFormatter(Replenisher target) : super(target);
+
+  @override
+  List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
+        _toCD(S.stockReplenishmentNameLabel),
+        _toCD(S.exporterReplenishmentTitle, S.exporterGSReplenishmentNote)
+      ];
+
+  @override
+  List<List<GoogleSheetCellData>> getRows() => target.itemList.map((e) {
+        final info = [
+          for (final entry in e.ingredientData.entries)
+            '- ${entry.key.name},${entry.value}',
+        ].join('\n');
+        return [
+          GoogleSheetCellData(stringValue: e.name),
+          GoogleSheetCellData(stringValue: info),
+        ];
+      }).toList();
+
+  @override
+  String? validate(List<String> row) {
+    if (row.isEmpty) return S.importerColumnsCountError(1);
+
+    final errorMsg =
+        Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
+    if (errorMsg != null || row.length == 1) return errorMsg;
+
+    final lines = row[2].toString().split('\n');
+    for (var line in lines) {
+      if (line.startsWith('- ')) {
+        final columns = line.substring(2).split(',');
+        if (columns.isEmpty) continue;
+
+        final msg =
+            Validator.textLimit(S.stockIngredientNameLabel, 30)(columns[0]);
+        if (msg != null) return msg;
+      }
+    }
+
+    return null;
+  }
+
+  @override
+  Replenishment format(List<String> row) {
+    final rep = Replenishment.fromRow(target.getItemByName(row[0]), row);
+    Replenisher.instance.addStaged(rep);
+
+    return row.length == 1 ? rep : _formatRep(rep, row[1]);
+  }
+
+  Replenishment _formatRep(Replenishment rep, String value) {
+    final lines = value.split('\n');
+    for (var line in lines) {
+      if (!line.startsWith('- ')) continue;
+
+      final columns = line.substring(2).split(',');
+      if (columns.length < 2) continue;
+
+      rep.supplyByStrings(columns);
+    }
+
+    return rep;
+  }
+}
+
+class _CSFormatter extends _Formatter<CustomerSettings> {
+  const _CSFormatter(CustomerSettings target) : super(target);
+
+  @override
+  List<GoogleSheetCellData> getHeader() {
     final note = CustomerSettingOptionMode.values
         .map((e) => S.customerSettingModeDescriptions(e))
         .join('\n');
@@ -364,104 +394,79 @@ extension GoogleSheetCustomerSettingsFormatter on CustomerSettings {
     ];
   }
 
-  List<List<GoogleSheetCellData>> _getGoogleSheetItems() {
-    return <List<GoogleSheetCellData>>[
-      for (final setting in itemList)
-        [
-          GoogleSheetCellData(stringValue: setting.name),
-          GoogleSheetCellData(
-              stringValue: S.customerSettingModeNames(setting.mode)),
-          GoogleSheetCellData(stringValue: setting._googleSheetDataInfo),
-        ],
-    ];
-  }
+  @override
+  List<List<GoogleSheetCellData>> getRows() => target.itemList.map((e) {
+        final info = [
+          for (final item in e.itemList)
+            '- ${item.name},${item.isDefault},${item.modeValue}',
+        ].join('\n');
+        return [
+          GoogleSheetCellData(stringValue: e.name),
+          GoogleSheetCellData(stringValue: S.customerSettingModeNames(e.mode)),
+          GoogleSheetCellData(stringValue: info),
+        ];
+      }).toList();
 
-  CustomerSetting _formatValidGoogleSheetData(List<Object?> row) {
-    final stringRow = row.map((e) => e.toString()).toList();
-
-    final customerSetting = CustomerSetting.fromColumns(
-      getItemByName(stringRow[0]),
-      stringRow,
-    );
-    CustomerSettings.instance.addItem(customerSetting);
-
-    customerSetting._parseGoogleSheetData(stringRow[2]);
-
-    return customerSetting;
-  }
-
-  String? _validateGoogleSheetData(List<Object?> row) {
+  @override
+  String? validate(List<String> row) {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
-    return Validator.textLimit(S.stockReplenishmentNameLabel, 30)(
-      row[0]?.toString(),
-    );
-  }
-}
+    final msg = Validator.textLimit(S.customerSettingNameLabel, 30)(row[0]);
+    final mode = str2CustomerSettingOptionMode(row[1]);
+    if (msg != null || row.length == 2) return msg;
 
-extension GoogleSheetProductFormatter on Product {
-  String get _googleSheetIngredientInfo => [
-        for (var ingredient in items)
-          '- ${ingredient.name},${ingredient.amount}' +
-              ingredient.itemList
-                  .map((quantity) => <String>[
-                        '\n  + ${quantity.name}',
-                        quantity.amount.toString(),
-                        quantity.additionalPrice.toString(),
-                        quantity.additionalCost.toString(),
-                      ].join(','))
-                  .join('')
-      ].join('\n');
-
-  void _parseGoogleSheetIngredientInfo(String value) {
-    final lines = value.split('\n');
-    ProductIngredient? ingredient;
+    final lines = row[2].toString().split('\n');
     for (var line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
-        if (columns.length < 2) continue;
+        if (columns.isEmpty) continue;
 
-        ingredient = ProductIngredient.fromColumns(
-          getItemByName(columns[0]),
-          columns,
-        );
-        addItem(ingredient);
-      } else if (ingredient != null && line.startsWith('  + ')) {
-        final columns = line.substring(4).split(',');
-        if (columns.length < 4) continue;
+        final checkValue = columns.length > 2 &&
+            mode == CustomerSettingOptionMode.changeDiscount;
 
-        final quantity = ProductQuantity.fromColumns(
-          ingredient.getItemByName(columns[0]),
-          columns,
-        );
-        ingredient.addItem(quantity);
+        final err = Validator.textLimit(S.customerSettingOptionNameLabel, 30)(
+                columns[0]) ??
+            (checkValue
+                ? Validator.positiveInt(S.customerSettingModeNames(mode),
+                    maximum: 1000, allowNull: true)(columns[2])
+                : null);
+        if (err != null) return err;
       }
     }
+
+    return null;
   }
-}
 
-extension GoogleSheetReplenishmentFormatter on Replenishment {
-  String get _googleSheetDataInfo => [
-        for (final entry in ingredientData.entries)
-          '- ${entry.key.name},${entry.value}',
-      ].join('\n');
+  @override
+  CustomerSetting format(List<String> row) {
+    final oriCs = target.getItemByName(row[0]);
+    final cs = CustomerSetting.fromRow(oriCs, row);
+    CustomerSettings.instance.addStaged(cs);
 
-  void _parseGoogleSheetData(String value) {
-    data.clear();
-    // TODO
-    data.addAll({});
+    return row.length == 2 ? cs : _formatCS(oriCs, cs, row[2]);
   }
-}
 
-extension GoogleSheetCustomerSettingFormatter on CustomerSetting {
-  String get _googleSheetDataInfo => [
-        for (final item in itemList)
-          '- ${item.name},${item.isDefault},${item.modeValue}',
-      ].join('\n');
+  CustomerSetting _formatCS(
+    CustomerSetting? ori,
+    CustomerSetting cs,
+    String value,
+  ) {
+    final lines = value.split('\n');
+    for (var line in lines) {
+      if (!line.startsWith('- ')) continue;
 
-  void _parseGoogleSheetData(String value) {
-    // TODO
-    replaceItems({});
+      final columns = line.substring(2).split(',');
+      if (columns.isEmpty) continue;
+
+      final option = CustomerSettingOption.fromRow(
+        ori,
+        ori?.getItemByName(columns[0]),
+        columns,
+      );
+      cs.addItem(option, save: false);
+    }
+
+    return cs;
   }
 }
 
