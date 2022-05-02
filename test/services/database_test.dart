@@ -18,6 +18,15 @@ import 'database_test.mocks.dart';
 void main() {
   group('Database', () {
     group('migration actions', () {
+      test('catch error', () async {
+        final db = Database.instance.db as MockDatabase;
+
+        when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
+            .thenThrow(Error());
+
+        await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
+      });
+
       test('5 - set up cost on order', () async {
         final db = Database.instance.db as MockDatabase;
 
@@ -70,8 +79,7 @@ void main() {
                 where: anyNamed('where'), whereArgs: anyNamed('whereArgs')))
             .thenAnswer((_) => Future.value(0));
 
-        Database.instance.oldVersion = 4;
-        await Database.instance.tolerateMigration(5);
+        await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
 
         verifyIdExecuted(1);
         verifyIdExecuted(2);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database_migration_actions.dart';
@@ -29,7 +30,7 @@ class Database {
 
   late sqflite.Database db;
 
-  late int oldVersion = latestVersion;
+  int _oldVersion = latestVersion;
 
   bool _initialized = false;
 
@@ -113,7 +114,7 @@ class Database {
       },
       onUpgrade: (db, oldVer, newVer) async {
         info(oldVer.toString(), 'database.upgrade.$newVer');
-        oldVersion = oldVer;
+        _oldVersion = oldVer;
         for (var ver = oldVer + 1; ver <= newVer; ver++) {
           await execMigration(db, ver);
         }
@@ -154,8 +155,12 @@ class Database {
     }
   }
 
-  Future<void> tolerateMigration([int newVersion = latestVersion]) async {
-    for (var version = oldVersion + 1; version <= newVersion; version++) {
+  Future<void> tolerateMigration({
+    @visibleForTesting int newVersion = latestVersion,
+    @visibleForTesting int? oldVersion,
+  }) async {
+    int version = (oldVersion ?? _oldVersion) + 1;
+    for (; version <= newVersion; version++) {
       final action = dbMigrationActions[version];
       if (action != null) {
         info(version.toString(), 'database.migration_action');

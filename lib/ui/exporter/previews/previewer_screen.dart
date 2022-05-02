@@ -110,12 +110,14 @@ class PreviewerErrorListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(item.hasError);
     final theme = Theme.of(context);
+    final error = item.error!;
 
     return ListTile(
-      title: Text(item.item.name),
+      title: Text(error.raw),
       subtitle: Text(
-        item.error!.message,
+        error.message,
         style: TextStyle(color: theme.errorColor),
       ),
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
@@ -134,7 +136,8 @@ class _DefaultPreviewScreen extends PreviewerScreen {
     Iterable<FormattedItem> items,
   ) sync* {
     for (final item in items) {
-      yield ListTile(title: Text(item.item.name));
+      assert(!item.hasError);
+      yield ListTile(title: Text(item.item!.name));
     }
   }
 }

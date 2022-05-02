@@ -135,8 +135,6 @@ class Product extends Model<ProductObject>
     catalog.notifyItem();
   }
 
-  void replaceCatalog(Catalog newCatalog) {}
-
   Future<void> searched() {
     return update(ProductObject(searchedAt: DateTime.now()), event: 'search');
   }

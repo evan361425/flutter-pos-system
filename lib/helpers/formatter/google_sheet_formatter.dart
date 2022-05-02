@@ -47,24 +47,30 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
   }
 
   @override
-  List<FormattedItem> format(Repository target, List<List<Object?>> rows) {
+  List<FormattedItem<T>> format<T extends Model>(
+    Repository target,
+    List<List<Object?>> rows,
+  ) {
     final formatter = _getFormatter(target);
-    final result = <FormattedItem>[];
+    final result = <FormattedItem<T>>[];
+
+    bool existInResult(String name) {
+      return result.any((e) => !e.hasError && e.item!.name == name);
+    }
 
     for (var row in rows) {
-      final r = row.map((e) => e.toString()).toList();
+      final r = row.map((e) => e.toString().trim()).toList();
       final msg = formatter.validate(r) ??
-          (result.any((e) => e.item.name == r[formatter.nameIndex])
-              ? '將忽略本行，相同的項目已於前面出現'
-              : null);
+          (existInResult(r[formatter.nameIndex]) ? '將忽略本行，相同的項目已於前面出現' : null);
 
       if (msg != null) {
-        result.add(FormattedItem(
-          Ingredient(name: row.join(', ')),
-          error: FormatterValidateError(msg),
-        ));
+        result.add(
+          FormattedItem<T>(
+            error: FormatterValidateError(msg, row.join(' ')),
+          ),
+        );
       } else {
-        result.add(FormattedItem(formatter.format(r)));
+        result.add(FormattedItem<T>(item: formatter.format(r) as T));
       }
     }
 
@@ -96,7 +102,7 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
   }
 }
 
-abstract class _Formatter<T> {
+abstract class _Formatter<T extends Repository, U extends Model> {
   final T target;
 
   final int nameIndex = 0;
@@ -109,10 +115,10 @@ abstract class _Formatter<T> {
 
   String? validate(List<String> row);
 
-  Model format(List<String> row);
+  U format(List<String> row);
 }
 
-class _MenuFormatter extends _Formatter<Menu> {
+class _MenuFormatter extends _Formatter<Menu, Product> {
   const _MenuFormatter(Menu target) : super(target);
 
   @override
@@ -238,7 +244,7 @@ class _MenuFormatter extends _Formatter<Menu> {
   }
 }
 
-class _StockFormatter extends _Formatter<Stock> {
+class _StockFormatter extends _Formatter<Stock, Ingredient> {
   const _StockFormatter(Stock target) : super(target);
 
   @override
@@ -274,7 +280,7 @@ class _StockFormatter extends _Formatter<Stock> {
   }
 }
 
-class _QuantitiesFormatter extends _Formatter<Quantities> {
+class _QuantitiesFormatter extends _Formatter<Quantities, Quantity> {
   const _QuantitiesFormatter(Quantities target) : super(target);
 
   @override
@@ -310,7 +316,7 @@ class _QuantitiesFormatter extends _Formatter<Quantities> {
   }
 }
 
-class _ReplenisherFormatter extends _Formatter<Replenisher> {
+class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
   const _ReplenisherFormatter(Replenisher target) : super(target);
 
   @override
@@ -377,7 +383,7 @@ class _ReplenisherFormatter extends _Formatter<Replenisher> {
   }
 }
 
-class _CSFormatter extends _Formatter<CustomerSettings> {
+class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   const _CSFormatter(CustomerSettings target) : super(target);
 
   @override

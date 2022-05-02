@@ -11,6 +11,20 @@ void main() {
   late MockSharedPreferences service;
 
   group('Cache', () {
+    test('#initialize', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      await Cache.instance.initialize();
+      // only initialize once
+      await Cache.instance.initialize();
+
+      expect(Cache.instance.get<int>('version'), equals(1));
+
+      await Cache.instance.reset();
+
+      expect(Cache.instance.get<int>('version'), isNull);
+    });
+
     test('#get', () {
       when(service.getBool('a')).thenReturn(true);
       expect(Cache.instance.get<bool>('a'), isTrue);

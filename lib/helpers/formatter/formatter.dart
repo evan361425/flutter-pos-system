@@ -4,7 +4,10 @@ import 'package:possystem/models/repository.dart';
 abstract class Formatter<T> {
   const Formatter();
 
-  List<FormattedItem> format(Repository target, List<List<Object?>> rows);
+  List<FormattedItem<U>> format<U extends Model>(
+    Repository target,
+    List<List<Object?>> rows,
+  );
 
   List<T> getHeader(Repository target);
 
@@ -14,15 +17,17 @@ abstract class Formatter<T> {
 class FormatterValidateError extends Error {
   final String message;
 
-  FormatterValidateError(this.message);
+  final String raw;
+
+  FormatterValidateError(this.message, this.raw);
 }
 
-class FormattedItem {
-  final Model item;
+class FormattedItem<T extends Model> {
+  final T? item;
 
   final FormatterValidateError? error;
 
-  const FormattedItem(this.item, {this.error});
+  const FormattedItem({this.item, this.error});
 
   bool get hasError => error != null;
 }
