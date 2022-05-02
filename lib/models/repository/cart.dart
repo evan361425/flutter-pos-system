@@ -244,7 +244,7 @@ class Cart extends ChangeNotifier {
     if (discount == null) return;
 
     for (var e in selected) {
-      final price = e.product.price * discount / 100;
+      final price = e.singlePrice * discount / 100;
       e.singlePrice = price.toCurrencyNum();
     }
     notifyListeners();

@@ -377,9 +377,9 @@ void main() {
 
       // discount will use original price.
       await tapAction('discount', text: '50');
-      verifyProductList(0, count: 8, price: 9 * 8);
+      verifyProductList(0, count: 8, price: 15 * 8);
       verifyProductList(1, count: 20, price: 6 * 20);
-      verifyMetadata(28, 9 * 8 + 6 * 20);
+      verifyMetadata(28, 15 * 8 + 6 * 20);
 
       await tapAction('free');
       verifyProductList(0, count: 8, price: 0);

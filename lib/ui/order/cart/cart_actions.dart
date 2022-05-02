@@ -112,6 +112,7 @@ class CartActions extends StatelessWidget {
       builder: (BuildContext context) => SingleTextDialog(
         validator: item.validator,
         decoration: item.decoration,
+        initialValue: item.initialValue,
         keyboardType: TextInputType.number,
       ),
     );
@@ -141,12 +142,14 @@ enum _ActionTypes {
 
 class _DialogItem {
   final String? Function(String?) validator;
-
   final InputDecoration decoration;
+  final String? initialValue;
   final void Function(String) action;
+
   _DialogItem({
     required this.validator,
     required this.decoration,
     required this.action,
+    this.initialValue,
   });
 }
