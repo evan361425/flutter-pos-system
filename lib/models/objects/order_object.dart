@@ -99,11 +99,11 @@ class OrderObject {
     };
   }
 
-  get cost =>
-      products.fold<num>(0, (total, product) => total + product.totalCost);
+  num get cost =>
+      products.fold<num>(0.0, (total, product) => total + product.totalCost);
 
   /// 淨利
-  get income => totalPrice - cost;
+  num get income => totalPrice - cost;
 
   factory OrderObject.fromMap(Map<String, Object?> data) {
     final encodedProduct = data['encodedProducts'] as String?;
