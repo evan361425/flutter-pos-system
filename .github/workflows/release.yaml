@@ -9,11 +9,10 @@ on:
         required: false
 
   push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
-      - "!v*-rc*" # No need release candidate
-
+    branches:
+      - "master"
+    paths:
+      - "pubspec.yaml"
 # Workflows:
 # 1. Two condition, 'tag' event or 'workflow_dispatch' event
 #    Both will check existence of changelog in the same build code
@@ -53,10 +52,12 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const version = context.payload.ref.replace(/\/?refs\/tags\/v/, '');
-            const index = version.indexOf('-');
+            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0];
+            if (!msg.startsWith('release: v')) {
+              return '';
+            }
 
-            return version.substr(0, index == -1 ? undefined : index);
+            return msg.substring(10).trim();
 
       # v1.2.3-rc1, v1.2.3-rc1
       - name: Extract tag name
@@ -65,9 +66,15 @@ jobs:
         with:
           result-encoding: string
           script: |
-            return context.eventName === 'workflow_dispatch'
-              ? '${{ github.event.inputs.tag }}'
-              : context.payload.ref.replace(/\/?refs\/tags\//, '');
+            if (context.eventName === 'workflow_dispatch') {
+              return '${{ github.event.inputs.tag }}';
+            }
+            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0];
+            if (!msg.startsWith('release: v')) {
+              return '';
+            }
+
+            return msg.substring(9).trim();
 
       - name: Extract pubspec version and code
         id: pubspec_version
@@ -142,3 +149,5 @@ jobs:
           git add --all
           git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
           git push
+          git tag ${{ needs.check-version.outputs.tag }}
+          push origin --tags
