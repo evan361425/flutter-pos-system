@@ -48,13 +48,16 @@ class CustomerSetting extends Model<CustomerSettingObject>
   }
 
   factory CustomerSetting.fromRow(CustomerSetting? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final mode = str2CustomerSettingOptionMode(row[1]);
+    final status = ori == null
+        ? ModelStatus.staged
+        : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
 
     return CustomerSetting(
       id: ori?.id,
       name: row[0],
       index: ori?.index ?? CustomerSettings.instance.newIndex,
-      mode: str2CustomerSettingOptionMode(row[1]),
+      mode: mode,
       status: status,
     );
   }

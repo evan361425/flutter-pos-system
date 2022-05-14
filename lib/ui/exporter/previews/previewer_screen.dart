@@ -115,7 +115,10 @@ class PreviewerErrorListTile extends StatelessWidget {
     final error = item.error!;
 
     return ListTile(
-      title: Text(error.raw),
+      title: Text(
+        error.raw,
+        style: const TextStyle(decoration: TextDecoration.lineThrough),
+      ),
       subtitle: Text(
         error.message,
         style: TextStyle(color: theme.errorColor),

@@ -22,13 +22,16 @@ void main() {
   + q1,1,1,1
   + q2
 - i2
-  + q1,1
+  + q1,0
 - i3,1
+- i4,1
+  + q1
+  + q3
 ''';
         final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.menu);
 
         final items = formatter.format<Product>(target, [
-          ['A', 'pB', 1, 1],
+          ['A', 'pB', 1, 1, '- i0'],
           ['B', 'pA', 1, 1, 'from-format\n +\n-i'],
           ['C', 'pA', 1, 1],
           ['A', 'pA2', 0, 0, ingredients],
@@ -43,23 +46,35 @@ void main() {
 
         // product 1
         final p1 = items[0].item!;
-        expect(p1.catalog.status.name, equals('updated'));
+        expect(p1.catalog.statusName, equals('normal'));
         expect(p1.price, equals(1));
         expect(p1.cost, equals(1));
         expect(p1.name, equals('pB'));
+        expect(p1.statusName, equals('staged'));
+        expect(p1.getItemByName('i0')?.statusName, equals('stagedIng'));
 
         // product 2~3
         final p2 = items[1].item!;
+        final p3 = items[2];
         expect(p2.catalog.status.name, equals('staged'));
         expect(p2.isEmpty, isTrue);
-        expect(items[2].hasError, isTrue);
+        expect(p2.statusName, equals('updated'));
+        expect(p3.hasError, isTrue);
 
         final p4 = items[3].item!;
-        void verifyIng(String iName, List<int> values, [String? qName]) {
+        void verifyIng(
+          String iName,
+          List<int> values,
+          String iStatus, [
+          String? qName,
+          String? qStatus,
+        ]) {
           final ing = p4.getItemByName(iName)!;
+          expect(ing.statusName, iStatus);
           expect(ing.amount, equals(values[0]));
           if (qName == null) return;
           final qua = ing.getItemByName(qName)!;
+          expect(qua.statusName, qStatus);
           expect(qua.amount, equals(values[1]));
           expect(qua.additionalCost, equals(values[2]));
           expect(qua.additionalPrice, equals(values[3]));
@@ -67,10 +82,13 @@ void main() {
 
         expect(p4.getItemByName('i1')!.id, 'pAi1');
         expect(p4.getItemByName('i1')!.getItemByName('q1')!.id, equals('pAq1'));
-        verifyIng('i1', [1, 1, 1, 1], 'q1');
-        verifyIng('i1', [1, 0, 0, 0], 'q2');
-        verifyIng('i2', [0, 1, 0, 0], 'q1');
-        verifyIng('i3', [1]);
+        expect(p4.statusName, equals('normal'));
+        verifyIng('i1', [1, 1, 1, 1], 'updated', 'q1', 'updated');
+        verifyIng('i1', [1, 0, 0, 0], 'updated', 'q2', 'staged');
+        verifyIng('i2', [0, 0, 0, 0], 'normal', 'q1', 'staged');
+        verifyIng('i3', [1], 'staged');
+        verifyIng('i4', [1, 0, 0, 0], 'staged', 'q1', 'normal');
+        verifyIng('i4', [1, 0, 0, 0], 'staged', 'q3', 'stagedQua');
         // created
         expect(Stock.instance.length, equals(2));
         expect(Stock.instance.getStagedByName('i3'), isNotNull);

@@ -54,12 +54,17 @@ class Ingredient extends Model<IngredientObject>
       );
 
   factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (amount == ori.currentAmount
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return Ingredient(
       id: ori?.id,
       name: row[0],
-      currentAmount: num.parse(row[1]),
+      currentAmount: amount,
       status: status,
     );
   }

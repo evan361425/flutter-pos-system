@@ -76,9 +76,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
     ProductIngredient? ori,
     List<String> row,
   ) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
     var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]);
-
     if (ingredient == null) {
       ingredient = Ingredient(
         name: row[0],
@@ -87,10 +85,15 @@ class ProductIngredient extends Model<ProductIngredientObject>
       Stock.instance.addStaged(ingredient);
     }
 
+    final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (amount == ori.amount ? ModelStatus.normal : ModelStatus.updated);
+
     return ProductIngredient(
       id: ori?.id,
       ingredient: ingredient,
-      amount: row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0,
+      amount: amount,
       status: status,
     );
   }

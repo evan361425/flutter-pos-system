@@ -61,9 +61,7 @@ class ProductQuantity extends Model<ProductQuantityObject>
     ProductQuantity? ori,
     List<String> row,
   ) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
     var quantity = ori?.quantity ?? Quantities.instance.getItemByName(row[0]);
-
     if (quantity == null) {
       quantity = Quantity(
         name: row[0],
@@ -72,16 +70,23 @@ class ProductQuantity extends Model<ProductQuantityObject>
       Quantities.instance.addStaged(quantity);
     }
 
-    num checkAndParse(int index) {
-      return row.length > index ? num.tryParse(row[index]) ?? 0 : 0;
-    }
+    final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
+    final ap = row.length > 2 ? num.tryParse(row[2]) ?? 0 : 0;
+    final ac = row.length > 3 ? num.tryParse(row[3]) ?? 0 : 0;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (amount == ori.amount &&
+                ap == ori.additionalPrice &&
+                ac == ori.additionalCost
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return ProductQuantity(
       id: ori?.id,
       quantity: quantity,
-      amount: checkAndParse(1),
-      additionalPrice: checkAndParse(2),
-      additionalCost: checkAndParse(3),
+      amount: amount,
+      additionalPrice: ap,
+      additionalCost: ac,
       status: status,
     );
   }
@@ -94,8 +99,8 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   @override
   String get statusName {
-    // 當產品是新的，代表產品份量一定也是新的，這樣就只需要輸出是否為「新的份量種類」
-    if (ingredient.product.status == ModelStatus.staged) {
+    // 當成分是新的，代表產品份量一定也是新的，這樣就只需要輸出是否為「新的份量種類」
+    if (ingredient.status == ModelStatus.staged) {
       return quantity.status == ModelStatus.staged ? 'stagedQua' : 'normal';
     }
 

@@ -54,7 +54,6 @@ class ProductPreviewer extends PreviewerScreen {
         childrenPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         children: [
           MetaBlock.withString(context, <String>[
-            S.menuProductMetaTitle,
             S.menuProductMetaPrice(product.price),
             S.menuProductMetaCost(product.cost),
           ])!,

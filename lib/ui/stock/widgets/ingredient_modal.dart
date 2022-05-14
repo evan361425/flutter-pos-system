@@ -30,8 +30,8 @@ class IngredientModal extends StatefulWidget {
 
 class _IngredientModalState extends State<IngredientModal>
     with ItemModal<IngredientModal> {
-  TextEditingController? _nameController;
-  TextEditingController? _amountController;
+  late TextEditingController _nameController;
+  late TextEditingController _amountController;
 
   @override
   Widget body() {
@@ -72,8 +72,8 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   void dispose() {
-    _nameController?.dispose();
-    _amountController?.dispose();
+    _nameController.dispose();
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -105,7 +105,10 @@ class _IngredientModalState extends State<IngredientModal>
             errorText: errorMessage,
             filled: false,
           ),
-          validator: Validator.positiveNumber(S.stockIngredientAmountLabel),
+          validator: Validator.positiveNumber(
+            S.stockIngredientAmountLabel,
+            allowNull: true,
+          ),
         ),
       ];
 
@@ -136,7 +139,7 @@ class _IngredientModalState extends State<IngredientModal>
 
   @override
   String? validate() {
-    final name = _nameController!.text;
+    final name = _nameController.text;
 
     if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
       return S.stockIngredientNameRepeatError;
@@ -154,8 +157,8 @@ class _IngredientModalState extends State<IngredientModal>
 
   IngredientObject _parseObject() {
     return IngredientObject(
-      name: _nameController!.text,
-      currentAmount: num.tryParse(_amountController!.text),
+      name: _nameController.text,
+      currentAmount: num.tryParse(_amountController.text),
     );
   }
 }

@@ -28,12 +28,17 @@ class Quantity extends Model<QuantityObject>
       );
 
   factory Quantity.fromRow(Quantity? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final p = row.length > 1 ? num.tryParse(row[1]) ?? 1 : 1;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (p == ori.defaultProportion
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return Quantity(
       id: ori?.id,
       name: row[0],
-      defaultProportion: num.parse(row[1]),
+      defaultProportion: p,
       status: status,
     );
   }

@@ -59,7 +59,7 @@ void main() {
       expect(() => Cache.instance.set<List>('a', []), throwsArgumentError);
     });
 
-    setUpAll(() {
+    setUp(() {
       service = MockSharedPreferences();
       Cache.instance = Cache();
       Cache.instance.service = service;

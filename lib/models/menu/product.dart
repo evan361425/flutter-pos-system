@@ -88,14 +88,20 @@ class Product extends Model<ProductObject>
   }
 
   factory Product.fromRow(Product? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final price = num.parse(row[2]);
+    final cost = num.parse(row[3]);
+    final status = ori == null
+        ? ModelStatus.staged
+        : (price == ori.price && cost == ori.cost
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return Product(
       id: ori?.id,
       name: row[1],
       index: ori?.index ?? 1,
-      price: num.parse(row[2]),
-      cost: num.parse(row[3]),
+      price: price,
+      cost: cost,
       status: status,
     );
   }

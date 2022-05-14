@@ -268,7 +268,10 @@ class _StockFormatter extends _Formatter<Stock, Ingredient> {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(S.stockIngredientAmountLabel)(row[1]);
+        Validator.positiveNumber(
+          S.stockIngredientAmountLabel,
+          allowNull: true,
+        )(row[1]);
   }
 
   @override
@@ -302,7 +305,11 @@ class _QuantitiesFormatter extends _Formatter<Quantities, Quantity> {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
     return Validator.textLimit(S.quantityNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(S.quantityProportionLabel, maximum: 100)(
+        Validator.positiveNumber(
+          S.quantityProportionLabel,
+          maximum: 100,
+          allowNull: true,
+        )(
           row[1],
         );
   }

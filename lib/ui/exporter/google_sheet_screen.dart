@@ -145,7 +145,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
                 key: entry.value,
                 label: entry.key.name,
                 sheets: spreadsheet?.sheets,
-                initialValue: _getInitialValue(entry.key.name),
+                initialValue: _getDefault(entry.key.name),
                 initialChecked:
                     GoogleSheetFormatter.getTarget(entry.key).isNotEmpty,
               ),
@@ -206,26 +206,16 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> _exportData() async {
-    final prepared = await _prepareData();
-    if (prepared == null) {
-      return;
-    }
+    final prepared = await _getSpreadsheet();
+    if (prepared == null) return;
 
-    Future<void> updateCacheIfNeed(String title, String label) async {
-      final key = '$_exporterNameCacheKey.$label';
-      if (title != Cache.instance.get<String>(key)) {
-        await Cache.instance.set<String>(key, title);
-      }
-    }
-
-    const formatter = GoogleSheetFormatter();
     debug(spreadsheet!.id, 'google_sheet_export_ready');
-
+    const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
       final label = entry.key.name;
       widget.setProgressStatus(S.exporterGSProgressStatus('update_$label'));
-      await updateCacheIfNeed(entry.value.title, label);
+      await _setDefault(label, entry.value.title);
       await GoogleSheetExporter.instance.updateSheet(
         spreadsheet!.id,
         entry.value.id,
@@ -271,7 +261,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   /// 準備好試算表
   ///
   /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _prepareData() async {
+  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet() async {
     final usedSheets = sheets.entries.where((entry) =>
         entry.value.currentState?.checked == true &&
         entry.value.currentState?.name != null);
@@ -312,9 +302,16 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     };
   }
 
-  String _getInitialValue(String label) {
+  String _getDefault(String label) {
     return Cache.instance.get<String>('$_exporterNameCacheKey.$label') ??
         S.exporterGSDefaultSheetName(label);
+  }
+
+  Future<void> _setDefault(String label, String title) async {
+    final key = '$_exporterNameCacheKey.$label';
+    if (title != Cache.instance.get<String>(key)) {
+      await Cache.instance.set<String>(key, title);
+    }
   }
 
   @override
@@ -406,7 +403,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
                   label: S.exporterGSSheetLabel(
                     S.exporterGSDefaultSheetName(entry.key.name),
                   ),
-                  defaultValue: _getInitialValue(entry.key.name),
+                  defaultValue: _getDefault(entry.key.name),
                 ),
               ),
               const SizedBox(width: 8.0),
@@ -473,48 +470,24 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   }
 
   Future<void> _importData(GoogleSheetAble type) async {
-    final prepared = await _prepareData(type);
-    if (prepared == null) {
-      return;
-    }
+    final prepared = await _getSheet(type);
+    if (prepared == null) return;
+    await _setDefault(type.name, prepared);
 
-    final key = '$_importerNameCacheKey.${type.name}';
-    if (prepared.toCacheValue() != Cache.instance.get<String>(key)) {
-      await Cache.instance.set<String>(key, prepared.toCacheValue());
-    }
     debug(prepared.title, 'google_sheet_import_ready');
+    final source = await _getSheetData(type, prepared);
+    if (source == null) return;
 
-    const formatter = GoogleSheetFormatter();
+    debug(source.length.toString(), 'google_sheet_import_length');
+    final allowPreviewFormed = await _previewSheetData(type, source);
+    if (allowPreviewFormed != true) return;
+
+    final allowSave = await _previewParsedData(type, source);
     final target = GoogleSheetFormatter.getTarget(type);
-    final neededColumns = target.getFormattedHead(formatter).length;
-
-    final sheetData = await GoogleSheetExporter.instance.getSheetData(
-      spreadsheet!.id,
-      prepared.title,
-      neededColumns: neededColumns,
-    );
-    if (sheetData == null) {
-      showInfoSnackbar(context, S.importerGSError('empty_data'));
-      return;
-    }
-
-    final rows = sheetData.sublist(1);
-    debug(rows.length.toString(), 'google_sheet_import_length');
-    final allowPreviewFormed = await _previewRawResult(type, rows);
-    if (allowPreviewFormed != true) {
-      return;
-    }
-
-    final formatted = formatter.format(target, rows);
-    final allowSave = await PreviewerScreen.navByTarget(
-      context,
-      target,
-      formatted,
-    );
     return allowSave == true ? target.commitStaged() : target.abortStaged();
   }
 
-  Future<bool?> _previewRawResult(
+  Future<bool?> _previewSheetData(
     GoogleSheetAble type,
     List<List<Object?>> source,
   ) async {
@@ -540,7 +513,21 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     return result;
   }
 
-  Future<GoogleSheetProperties?> _prepareData(GoogleSheetAble type) async {
+  Future<bool?> _previewParsedData(
+    GoogleSheetAble type,
+    List<List<Object?>> source,
+  ) {
+    const formatter = GoogleSheetFormatter();
+    final target = GoogleSheetFormatter.getTarget(type);
+    final formatted = formatter.format(target, source);
+    return PreviewerScreen.navByTarget(
+      context,
+      target,
+      formatted,
+    );
+  }
+
+  Future<GoogleSheetProperties?> _getSheet(GoogleSheetAble type) async {
     if (spreadsheet == null) {
       showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
       return null;
@@ -552,7 +539,36 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     return sheets[type]?.currentState?.selected;
   }
 
-  GoogleSheetProperties? _getInitialValue(String label) {
+  Future<List<List<Object?>>?> _getSheetData(
+    GoogleSheetAble type,
+    GoogleSheetProperties sheet,
+  ) async {
+    const formatter = GoogleSheetFormatter();
+    final target = GoogleSheetFormatter.getTarget(type);
+    final neededColumns = target.getFormattedHead(formatter).length;
+
+    final sheetData = await GoogleSheetExporter.instance.getSheetData(
+      spreadsheet!.id,
+      sheet.title,
+      neededColumns: neededColumns,
+    );
+
+    if (sheetData == null) {
+      showInfoSnackbar(context, S.importerGSError('empty_data'));
+      return null;
+    }
+
+    return sheetData.sublist(1);
+  }
+
+  Future<void> _setDefault(String label, GoogleSheetProperties sheet) async {
+    final key = '$_importerNameCacheKey.$label';
+    if (sheet.toCacheValue() != Cache.instance.get<String>(key)) {
+      await Cache.instance.set<String>(key, sheet.toCacheValue());
+    }
+  }
+
+  GoogleSheetProperties? _getDefault(String label) {
     final nameId = Cache.instance.get<String>('$_importerNameCacheKey.$label');
 
     return GoogleSheetProperties.fromCacheValue(nameId);

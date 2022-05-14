@@ -31,7 +31,7 @@ class Replenishment extends Model<ReplenishmentObject>
       );
 
   factory Replenishment.fromRow(Replenishment? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
 
     return Replenishment(
       id: ori?.id,

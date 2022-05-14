@@ -53,9 +53,9 @@ class Menu extends ChangeNotifier
   }
 
   @override
-  Future<void> commitStaged({save = true}) async {
-    await Stock.instance.commitStaged();
-    await Quantities.instance.commitStaged();
+  Future<void> commitStaged({save = true, bool reset = true}) async {
+    await Stock.instance.commitStaged(reset: false);
+    await Quantities.instance.commitStaged(reset: false);
     await super.commitStaged();
   }
 

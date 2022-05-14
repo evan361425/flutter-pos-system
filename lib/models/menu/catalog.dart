@@ -54,7 +54,7 @@ class Catalog extends Model<CatalogObject>
   }
 
   factory Catalog.fromRow(Catalog? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
 
     return Catalog(
       id: ori?.id,

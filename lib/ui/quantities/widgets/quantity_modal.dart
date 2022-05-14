@@ -21,13 +21,13 @@ class QuantityModal extends StatefulWidget {
 
 class _QuantityModalState extends State<QuantityModal>
     with ItemModal<QuantityModal> {
-  TextEditingController? _nameController;
-  TextEditingController? _proportionController;
+  late TextEditingController _nameController;
+  late TextEditingController _proportionController;
 
   @override
   void dispose() {
-    _nameController?.dispose();
-    _proportionController?.dispose();
+    _nameController.dispose();
+    _proportionController.dispose();
 
     super.dispose();
   }
@@ -67,6 +67,7 @@ class _QuantityModalState extends State<QuantityModal>
         validator: Validator.positiveNumber(
           S.quantityProportionLabel,
           maximum: 100,
+          allowNull: true,
         ),
       )
     ];
@@ -100,7 +101,7 @@ class _QuantityModalState extends State<QuantityModal>
 
   @override
   String? validate() {
-    final name = _nameController!.text;
+    final name = _nameController.text;
 
     if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
       return S.quantityNameRepeatError;
@@ -111,8 +112,8 @@ class _QuantityModalState extends State<QuantityModal>
 
   QuantityObject _parseObject() {
     return QuantityObject(
-      name: _nameController!.text,
-      defaultProportion: num.parse(_proportionController!.text),
+      name: _nameController.text,
+      defaultProportion: num.tryParse(_proportionController.text),
     );
   }
 }

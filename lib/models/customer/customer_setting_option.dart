@@ -44,13 +44,19 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     CustomerSettingOption? ori,
     List<String> row,
   ) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.updated;
+    final isDefault = row.length > 1 ? row[1] == 'true' : false;
+    final modeValue = row.length > 2 ? num.tryParse(row[2]) : null;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (isDefault == ori.isDefault && modeValue == ori.modeValue
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return CustomerSettingOption(
       id: ori?.id ?? '0',
       name: row[0],
-      isDefault: row.length > 1 ? row[1] == 'true' : false,
-      modeValue: row.length > 2 ? num.tryParse(row[2]) : null,
+      isDefault: isDefault,
+      modeValue: modeValue,
       index: ori?.index ?? cs?.newIndex ?? 0,
       status: status,
     );
