@@ -1,21 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
+import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/models/stock/replenishment.dart';
 
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Formatter Google Sheet', () {
+  group('Google Sheet Formatter', () {
     group('Menu', () {
-      test('Format', () {
+      test('format', () {
         const formatter = GoogleSheetFormatter();
         const ingredients = '''
 - i1,1
@@ -56,7 +60,7 @@ void main() {
         // product 2~3
         final p2 = items[1].item!;
         final p3 = items[2];
-        expect(p2.catalog.status.name, equals('staged'));
+        expect(p2.catalog.statusName, equals('staged'));
         expect(p2.isEmpty, isTrue);
         expect(p2.statusName, equals('updated'));
         expect(p3.hasError, isTrue);
@@ -128,6 +132,184 @@ void main() {
             }),
           }),
         });
+      });
+    });
+
+    group('Stock', () {
+      test('format', () {
+        const formatter = GoogleSheetFormatter();
+        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.stock);
+
+        final items = formatter.format<Ingredient>(target, [
+          ['i1', 2],
+          ['i1'],
+          [],
+          ['i2'],
+          ['i3'],
+        ]);
+
+        expect(Stock.instance.getItem('i1')!.currentAmount, equals(1));
+
+        void verifyItem(int index, String name, int? a, String status) {
+          final item = items[index].item!;
+          expect(item.name, equals(name));
+          expect(item.currentAmount, equals(a));
+          expect(item.statusName, equals(status));
+        }
+
+        verifyItem(0, 'i1', 2, 'updated');
+        verifyItem(3, 'i2', null, 'normal');
+        verifyItem(4, 'i3', null, 'staged');
+
+        expect(items[1].hasError, isTrue);
+        expect(items[2].hasError, isTrue);
+      });
+
+      setUp(() {
+        final stock = Stock();
+
+        final i1 = Ingredient(id: 'i1', name: 'i1', currentAmount: 1);
+        final i2 = Ingredient(id: 'i2', name: 'i2');
+        stock.replaceItems({'i1': i1, 'i2': i2});
+      });
+    });
+
+    group('Quantities', () {
+      test('format', () {
+        const formatter = GoogleSheetFormatter();
+        final target =
+            GoogleSheetFormatter.getTarget(GoogleSheetAble.quantities);
+
+        final items = formatter.format<Quantity>(target, [
+          ['q1', 2],
+          ['q1'],
+          [],
+          ['q2'],
+          ['q3'],
+        ]);
+
+        // should not changed
+        expect(Quantities.instance.getItem('q1')!.defaultProportion, equals(1));
+
+        void verifyItem(int index, String name, int p, String status) {
+          final item = items[index].item!;
+          expect(item.name, equals(name));
+          expect(item.defaultProportion, equals(p));
+          expect(item.statusName, equals(status));
+        }
+
+        verifyItem(0, 'q1', 2, 'updated');
+        verifyItem(3, 'q2', 1, 'normal');
+        verifyItem(4, 'q3', 1, 'staged');
+
+        expect(items[1].hasError, isTrue);
+        expect(items[2].hasError, isTrue);
+      });
+
+      setUp(() {
+        final quantities = Quantities();
+
+        final q1 = Quantity(id: 'q1', name: 'q1');
+        final q2 = Quantity(id: 'q2', name: 'q2');
+        quantities.replaceItems({'q1': q1, 'q2': q2});
+      });
+    });
+
+    group('Replenisher', () {
+      test('format', () {
+        const formatter = GoogleSheetFormatter();
+        final target =
+            GoogleSheetFormatter.getTarget(GoogleSheetAble.replenisher);
+        const r1Data = '- i1,20\n- i2,-5';
+
+        final items = formatter.format<Replenishment>(target, [
+          ['r1', r1Data],
+          ['r1'],
+          [],
+          ['r2', '- ,'],
+          ['r2'],
+          ['r3', '- i1,\n+\n- i3'],
+        ]);
+
+        // should not changed
+        expect(Replenisher.instance.getItem('r1')!.data.isEmpty, isTrue);
+
+        void verifyItem(int index, String name, int l, String status) {
+          final item = items[index].item!;
+          expect(item.name, equals(name));
+          expect(item.data.length, equals(l));
+          expect(item.statusName, equals(status));
+        }
+
+        verifyItem(0, 'r1', 2, 'updated');
+        expect(items[1].hasError, isTrue);
+        expect(items[2].hasError, isTrue);
+        expect(items[3].hasError, isTrue);
+        verifyItem(4, 'r2', 0, 'normal');
+        verifyItem(5, 'r3', 0, 'staged');
+
+        final i2 = Stock.instance.getStagedByName('i2');
+        expect(items[0].item!.data, equals({'i1': 20, i2!.id: -5}));
+      });
+
+      setUp(() {
+        final stock = Stock();
+        final replenisher = Replenisher();
+
+        final r1 = Replenishment(id: 'r1', name: 'r1');
+        final r2 = Replenishment(id: 'r2', name: 'r2');
+        replenisher.replaceItems({'r1': r1, 'r2': r2});
+
+        stock.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1')});
+      });
+    });
+
+    group('CustomerSettings', () {
+      test('format', () {
+        const formatter = GoogleSheetFormatter();
+        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.customer);
+        const c1Data = '- co1,true\n- co2,,5';
+
+        final items = formatter.format<CustomerSetting>(target, [
+          ['c1', '折扣', c1Data],
+          ['c1', '', '- co1,20'],
+          ['c2'],
+          ['c2', '折扣', '- a,b,10000'],
+          ['c2', ''],
+          ['c3', '變價', '+'],
+        ]);
+
+        // should not changed
+        expect(CustomerSettings.instance.getItem('c1')!.isEmpty, isTrue);
+
+        void verifyItem(
+          int index,
+          String name,
+          String mode,
+          int l,
+          String status,
+        ) {
+          final item = items[index].item!;
+          expect(item.name, equals(name));
+          expect(item.mode.name, equals(mode));
+          expect(item.length, equals(l));
+          expect(item.statusName, equals(status));
+        }
+
+        verifyItem(0, 'c1', 'changeDiscount', 2, 'updated');
+        expect(items[1].hasError, isTrue);
+        expect(items[2].hasError, isTrue);
+        expect(items[3].hasError, isTrue);
+        verifyItem(4, 'c2', 'statOnly', 0, 'normal');
+        verifyItem(5, 'c3', 'changePrice', 0, 'staged');
+      });
+
+      setUp(() {
+        final cs = CustomerSettings();
+
+        final c1 = CustomerSetting(id: 'c1', name: 'c1');
+        final c2 = CustomerSetting(id: 'c2', name: 'c2');
+        cs.replaceItems({'c1': c1, 'c2': c2});
       });
     });
 

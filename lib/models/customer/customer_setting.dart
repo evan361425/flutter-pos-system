@@ -1,4 +1,5 @@
 import 'package:possystem/services/database.dart';
+import 'package:possystem/translator.dart';
 
 import '../model.dart';
 import '../objects/customer_object.dart';
@@ -47,8 +48,13 @@ class CustomerSetting extends Model<CustomerSettingObject>
     );
   }
 
-  factory CustomerSetting.fromRow(CustomerSetting? ori, List<String> row) {
-    final mode = str2CustomerSettingOptionMode(row[1]);
+  factory CustomerSetting.fromRow(
+    CustomerSetting? ori,
+    List<String> row, {
+    required int index,
+    required Map<String, CustomerSettingOption> options,
+  }) {
+    final mode = str2mode(row[1]);
     final status = ori == null
         ? ModelStatus.staged
         : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
@@ -56,10 +62,20 @@ class CustomerSetting extends Model<CustomerSettingObject>
     return CustomerSetting(
       id: ori?.id,
       name: row[0],
-      index: ori?.index ?? CustomerSettings.instance.newIndex,
+      index: index,
       mode: mode,
+      options: options,
       status: status,
     );
+  }
+
+  static CustomerSettingOptionMode str2mode(String key) {
+    final possible = {
+      for (var e in CustomerSettingOptionMode.values)
+        S.customerSettingModeNames(e.name): e,
+    };
+
+    return possible[key] ?? CustomerSettingOptionMode.statOnly;
   }
 
   CustomerSettingOption? get defaultOption {

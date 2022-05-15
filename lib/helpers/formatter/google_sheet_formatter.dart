@@ -58,6 +58,7 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
       return result.any((e) => !e.hasError && e.item!.name == name);
     }
 
+    int counter = 1;
     for (var row in rows) {
       final r = row.map((e) => e.toString().trim()).toList();
       final msg = formatter.validate(r) ??
@@ -70,7 +71,7 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
           ),
         );
       } else {
-        result.add(FormattedItem<T>(item: formatter.format(r) as T));
+        result.add(FormattedItem<T>(item: formatter.format(r, counter++) as T));
       }
     }
 
@@ -115,7 +116,10 @@ abstract class _Formatter<T extends Repository, U extends Model> {
 
   String? validate(List<String> row);
 
-  U format(List<String> row);
+  /// Format list of String to Object
+  ///
+  /// [index] 1-index
+  U format(List<String> row, int index);
 }
 
 class _MenuFormatter extends _Formatter<Menu, Product> {
@@ -172,27 +176,28 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
     if (errorMsg != null || row.length == 4) return errorMsg;
 
     final lines = row[4].toString().split('\n');
+    final vIng = Validator.textLimit(S.stockIngredientNameLabel, 30);
+    final vQua = Validator.textLimit(S.quantityNameLabel, 30);
+    final vAmount = Validator.positiveNumber(
+      S.stockIngredientAmountLabel,
+      allowNull: true,
+    );
+    final vQuaAmount = Validator.positiveNumber(
+      S.menuQuantityAmountLabel,
+      allowNull: true,
+    );
     for (var line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
         if (columns.length < 2) continue;
 
-        final msg =
-            Validator.textLimit(S.stockIngredientNameLabel, 30)(columns[0]) ??
-                Validator.positiveNumber(
-                  S.stockIngredientAmountLabel,
-                  allowNull: true,
-                )(columns[1]);
+        final msg = vIng(columns[0]) ?? vAmount(columns[1]);
         if (msg != null) return msg;
       } else if (line.startsWith('  + ')) {
         final columns = line.substring(4).split(',');
         if (columns.length < 4) continue;
 
-        final msg = Validator.textLimit(S.quantityNameLabel, 30)(columns[0]) ??
-            Validator.positiveNumber(
-              S.menuQuantityAmountLabel,
-              allowNull: true,
-            )(columns[1]);
+        final msg = vQua(columns[0]) ?? vQuaAmount(columns[1]);
         if (msg != null) return msg;
       }
     }
@@ -201,13 +206,17 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
   }
 
   @override
-  Product format(List<String> row) {
+  Product format(List<String> row, int index) {
     final catalog = target.getStagedByName(row[0]) ??
-        Catalog.fromRow(target.getItemByName(row[0]), row);
+        Catalog.fromRow(
+          target.getItemByName(row[0]),
+          row,
+          index: Menu.instance.stagedItems.length + 1,
+        );
     Menu.instance.addStaged(catalog);
 
     final oriProduct = target.getProductByName(row[1]);
-    final product = Product.fromRow(oriProduct, row);
+    final product = Product.fromRow(oriProduct, row, index: index);
     catalog.addItem(product, save: false);
 
     return row.length == 4
@@ -265,17 +274,17 @@ class _StockFormatter extends _Formatter<Stock, Ingredient> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 2) return S.importerColumnsCountError(2);
+    if (row.isEmpty) return S.importerColumnsCountError(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
           S.stockIngredientAmountLabel,
           allowNull: true,
-        )(row[1]);
+        )(row.length > 1 ? row[1] : null);
   }
 
   @override
-  Ingredient format(List<String> row) {
+  Ingredient format(List<String> row, int index) {
     final ingredient = Ingredient.fromRow(target.getItemByName(row[0]), row);
     Stock.instance.addStaged(ingredient);
 
@@ -302,20 +311,18 @@ class _QuantitiesFormatter extends _Formatter<Quantities, Quantity> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 2) return S.importerColumnsCountError(2);
+    if (row.isEmpty) return S.importerColumnsCountError(1);
 
     return Validator.textLimit(S.quantityNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
           S.quantityProportionLabel,
           maximum: 100,
           allowNull: true,
-        )(
-          row[1],
-        );
+        )(row.length > 1 ? row[1] : null);
   }
 
   @override
-  Quantity format(List<String> row) {
+  Quantity format(List<String> row, int index) {
     final quantity = Quantity.fromRow(target.getItemByName(row[0]), row);
     Quantities.instance.addStaged(quantity);
 
@@ -352,14 +359,13 @@ class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
         Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
     if (errorMsg != null || row.length == 1) return errorMsg;
 
-    final lines = row[2].toString().split('\n');
+    final lines = row[1].split('\n');
+    final vName = Validator.textLimit(S.stockIngredientNameLabel, 30);
     for (var line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
-        if (columns.isEmpty) continue;
 
-        final msg =
-            Validator.textLimit(S.stockIngredientNameLabel, 30)(columns[0]);
+        final msg = vName(columns[0]);
         if (msg != null) return msg;
       }
     }
@@ -368,14 +374,19 @@ class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
   }
 
   @override
-  Replenishment format(List<String> row) {
-    final rep = Replenishment.fromRow(target.getItemByName(row[0]), row);
+  Replenishment format(List<String> row, int index) {
+    final rep = Replenishment.fromRow(
+      target.getItemByName(row[0]),
+      row,
+      row.length == 1 ? <String, num>{} : _formatRep(row[1]),
+    );
     Replenisher.instance.addStaged(rep);
 
-    return row.length == 1 ? rep : _formatRep(rep, row[1]);
+    return rep;
   }
 
-  Replenishment _formatRep(Replenishment rep, String value) {
+  Map<String, num> _formatRep(String value) {
+    final data = <String, num>{};
     final lines = value.split('\n');
     for (var line in lines) {
       if (!line.startsWith('- ')) continue;
@@ -383,10 +394,22 @@ class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
       final columns = line.substring(2).split(',');
       if (columns.length < 2) continue;
 
-      rep.supplyByStrings(columns);
+      final amount = num.tryParse(columns[1]);
+      if (amount == null) continue;
+
+      Ingredient? ing = Stock.instance.getItemByName(columns[0]);
+      if (ing == null) {
+        ing = Ingredient(
+          name: columns[0],
+          status: ModelStatus.staged,
+        );
+        Stock.instance.addStaged(ing);
+      }
+
+      data[ing.id] = amount;
     }
 
-    return rep;
+    return data;
   }
 }
 
@@ -425,23 +448,20 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
     final msg = Validator.textLimit(S.customerSettingNameLabel, 30)(row[0]);
-    final mode = str2CustomerSettingOptionMode(row[1]);
     if (msg != null || row.length == 2) return msg;
 
     final lines = row[2].toString().split('\n');
+    final shouldValidateMode = CustomerSetting.str2mode(row[1]) ==
+        CustomerSettingOptionMode.changeDiscount;
+    final vName = Validator.textLimit(S.customerSettingOptionNameLabel, 30);
+    final vMode = Validator.positiveInt(row[1], maximum: 1000, allowNull: true);
     for (var line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
-        if (columns.isEmpty) continue;
 
-        final checkValue = columns.length > 2 &&
-            mode == CustomerSettingOptionMode.changeDiscount;
-
-        final err = Validator.textLimit(S.customerSettingOptionNameLabel, 30)(
-                columns[0]) ??
-            (checkValue
-                ? Validator.positiveInt(S.customerSettingModeNames(mode),
-                    maximum: 1000, allowNull: true)(columns[2])
+        final err = vName(columns[0]) ??
+            (columns.length > 2 && shouldValidateMode
+                ? vMode(columns[2])
                 : null);
         if (err != null) return err;
       }
@@ -451,35 +471,39 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   }
 
   @override
-  CustomerSetting format(List<String> row) {
-    final oriCs = target.getItemByName(row[0]);
-    final cs = CustomerSetting.fromRow(oriCs, row);
+  CustomerSetting format(List<String> row, int index) {
+    final ori = target.getItemByName(row[0]);
+    final options = row.length < 3
+        ? <String, CustomerSettingOption>{}
+        : {for (var option in _formatOptions(ori, row[2])) option.id: option};
+    final cs = CustomerSetting.fromRow(
+      ori,
+      row,
+      index: index,
+      options: options,
+    );
     CustomerSettings.instance.addStaged(cs);
 
-    return row.length == 2 ? cs : _formatCS(oriCs, cs, row[2]);
+    return cs;
   }
 
-  CustomerSetting _formatCS(
+  Iterable<CustomerSettingOption> _formatOptions(
     CustomerSetting? ori,
-    CustomerSetting cs,
     String value,
-  ) {
+  ) sync* {
     final lines = value.split('\n');
+    int counter = 1;
     for (var line in lines) {
       if (!line.startsWith('- ')) continue;
 
       final columns = line.substring(2).split(',');
-      if (columns.isEmpty) continue;
 
-      final option = CustomerSettingOption.fromRow(
-        ori,
+      yield CustomerSettingOption.fromRow(
         ori?.getItemByName(columns[0]),
         columns,
+        index: counter++,
       );
-      cs.addItem(option, save: false);
     }
-
-    return cs;
   }
 }
 

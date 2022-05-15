@@ -122,10 +122,3 @@ enum CustomerSettingOptionMode {
   changePrice,
   changeDiscount,
 }
-
-CustomerSettingOptionMode str2CustomerSettingOptionMode(String value) {
-  return CustomerSettingOptionMode.values.firstWhere(
-    (v) => v.name == value,
-    orElse: () => CustomerSettingOptionMode.statOnly,
-  );
-}

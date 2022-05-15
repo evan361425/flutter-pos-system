@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository.dart';
@@ -30,30 +31,23 @@ class Replenishment extends Model<ReplenishmentObject>
         data: object.data,
       );
 
-  factory Replenishment.fromRow(Replenishment? ori, List<String> row) {
-    final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
+  factory Replenishment.fromRow(
+    Replenishment? ori,
+    List<String> row,
+    Map<String, num> data,
+  ) {
+    final status = ori == null
+        ? ModelStatus.staged
+        : (mapEquals<String, num>(data, ori.data)
+            ? ModelStatus.normal
+            : ModelStatus.updated);
 
     return Replenishment(
       id: ori?.id,
       name: row[0],
       status: status,
+      data: data,
     );
-  }
-
-  void supplyByStrings(List<String> row) {
-    final amount = num.tryParse(row[1]);
-    if (amount == null) return;
-
-    Ingredient? ing = Stock.instance.getItemByName(row[0]);
-    if (ing == null) {
-      ing = Ingredient(
-        name: row[0],
-        status: ModelStatus.staged,
-      );
-      Stock.instance.addItem(ing);
-    }
-
-    data[ing.name] = amount;
   }
 
   @override

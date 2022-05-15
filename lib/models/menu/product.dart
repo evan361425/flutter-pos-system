@@ -87,7 +87,11 @@ class Product extends Model<ProductObject>
     )..prepareItem();
   }
 
-  factory Product.fromRow(Product? ori, List<String> row) {
+  factory Product.fromRow(
+    Product? ori,
+    List<String> row, {
+    required int index,
+  }) {
     final price = num.parse(row[2]);
     final cost = num.parse(row[3]);
     final status = ori == null
@@ -99,7 +103,7 @@ class Product extends Model<ProductObject>
     return Product(
       id: ori?.id,
       name: row[1],
-      index: ori?.index ?? 1,
+      index: index,
       price: price,
       cost: cost,
       status: status,

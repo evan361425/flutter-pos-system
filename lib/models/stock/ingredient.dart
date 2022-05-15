@@ -54,7 +54,7 @@ class Ingredient extends Model<IngredientObject>
       );
 
   factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
-    final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
+    final amount = row.length > 1 ? num.tryParse(row[1]) : null;
     final status = ori == null
         ? ModelStatus.staged
         : (amount == ori.currentAmount

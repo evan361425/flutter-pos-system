@@ -53,13 +53,17 @@ class Catalog extends Model<CatalogObject>
     )..prepareItem();
   }
 
-  factory Catalog.fromRow(Catalog? ori, List<String> row) {
+  factory Catalog.fromRow(
+    Catalog? ori,
+    List<String> row, {
+    required int index,
+  }) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
 
     return Catalog(
       id: ori?.id,
       name: row[0],
-      index: ori?.index ?? Menu.instance.newIndex,
+      index: index,
       status: status,
     );
   }

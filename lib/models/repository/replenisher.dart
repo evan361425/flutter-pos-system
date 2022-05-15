@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -16,6 +17,12 @@ class Replenisher extends ChangeNotifier
   }
 
   @override
+  void abortStaged() {
+    super.abortStaged();
+    Stock.instance.abortStaged();
+  }
+
+  @override
   Replenishment buildItem(String id, Map<String, Object?> value) {
     return Replenishment.fromObject(
       ReplenishmentObject.build({
@@ -23,5 +30,11 @@ class Replenisher extends ChangeNotifier
         ...value,
       }),
     );
+  }
+
+  @override
+  Future<void> commitStaged({bool save = true, bool reset = true}) async {
+    await Stock.instance.commitStaged(reset: false);
+    await super.commitStaged();
   }
 }
