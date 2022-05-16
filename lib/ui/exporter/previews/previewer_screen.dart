@@ -3,12 +3,15 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/models/repository.dart';
-import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/previews/customer_setting_previewer.dart';
+import 'package:possystem/ui/exporter/previews/ingredient_previewer.dart';
 import 'package:possystem/ui/exporter/previews/product_previewer.dart';
+import 'package:possystem/ui/exporter/previews/quantity_previewer.dart';
+import 'package:possystem/ui/exporter/previews/replenishment_previewer.dart';
 
-abstract class PreviewerScreen extends StatelessWidget {
+abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
   final List<FormattedItem> items;
 
   const PreviewerScreen({
@@ -18,18 +21,25 @@ abstract class PreviewerScreen extends StatelessWidget {
 
   static Future<bool?> navByTarget(
     BuildContext context,
-    Repository target,
+    Formattable type,
     List<FormattedItem> items,
   ) {
     return Navigator.of(context).push<bool>(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) {
-          if (target is Menu) {
-            return ProductPreviewer(items: items);
+          switch (type) {
+            case Formattable.menu:
+              return ProductPreviewer(items: items);
+            case Formattable.customer:
+              return CustomerSettingPreviewer(items: items);
+            case Formattable.quantities:
+              return QuantityPreviewer(items: items);
+            case Formattable.stock:
+              return IngredientPreviewer(items: items);
+            case Formattable.replenisher:
+              return ReplenishmentPreviewer(items: items);
           }
-
-          return _DefaultPreviewScreen(items: items);
         },
       ),
     );
@@ -50,6 +60,10 @@ abstract class PreviewerScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: HintText(S.totalCount(items.length))),
+          ),
           ...getDetails(context, items),
         ]),
       ),
@@ -59,11 +73,15 @@ abstract class PreviewerScreen extends StatelessWidget {
   Iterable<Widget> getDetails(
     BuildContext context,
     Iterable<FormattedItem> items,
-  );
-
-  Widget countHint(int count) {
-    return Center(child: HintText(S.totalCount(count)));
+  ) sync* {
+    for (final item in items) {
+      yield item.hasError
+          ? PreviewerErrorListTile(item)
+          : getItem(context, item.item! as T);
+    }
   }
+
+  Widget getItem(BuildContext context, T item);
 }
 
 class ImporterColumnStatus extends StatelessWidget {
@@ -125,22 +143,5 @@ class PreviewerErrorListTile extends StatelessWidget {
       ),
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
     );
-  }
-}
-
-class _DefaultPreviewScreen extends PreviewerScreen {
-  const _DefaultPreviewScreen({
-    required List<FormattedItem> items,
-  }) : super(items: items);
-
-  @override
-  Iterable<Widget> getDetails(
-    BuildContext context,
-    Iterable<FormattedItem> items,
-  ) sync* {
-    for (final item in items) {
-      assert(!item.hasError);
-      yield ListTile(title: Text(item.item!.name));
-    }
   }
 }

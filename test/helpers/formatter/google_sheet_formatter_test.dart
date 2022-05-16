@@ -31,6 +31,8 @@ void main() {
 - i4,1
   + q1
   + q3
+- i5
+  + q1,1,1,1
 ''';
         final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.menu);
 
@@ -41,29 +43,41 @@ void main() {
           ['A', 'pA2', 0, 0, ingredients],
         ]);
 
+        void verifyProd(Product p, List<String> sValues, List<int> iValues) {
+          expect(p.catalog.statusName, equals(sValues[0]));
+          expect(p.name, equals(sValues[1]));
+          expect(p.statusName, equals(sValues[2]));
+          if (sValues.length > 5) {
+            expect(p.getItemByName('i0')?.statusName, equals('stagedIng'));
+          }
+          expect(p.length, equals(iValues[0]));
+          expect(p.price, equals(iValues[1]));
+          expect(p.cost, equals(iValues[2]));
+        }
+
         // should not changed
-        final pA = Menu.instance.getProduct('pA')!;
-        expect(pA.price, equals(2));
-        expect(pA.cost, equals(2));
-        expect(pA.isEmpty, isTrue);
-        expect(Menu.instance.getProduct('pA2')!.length, equals(2));
+        verifyProd(
+          Menu.instance.getProduct('pA')!,
+          ['normal', 'pA', 'normal'],
+          [0, 2, 2],
+        );
+        expect(Menu.instance.getProduct('pA2')!.length, equals(3));
 
         // product 1
-        final p1 = items[0].item!;
-        expect(p1.catalog.statusName, equals('normal'));
-        expect(p1.price, equals(1));
-        expect(p1.cost, equals(1));
-        expect(p1.name, equals('pB'));
-        expect(p1.statusName, equals('staged'));
-        expect(p1.getItemByName('i0')?.statusName, equals('stagedIng'));
+        verifyProd(
+          items[0].item!,
+          ['normal', 'pB', 'staged', 'i0', 'stagedIng'],
+          [1, 1, 1],
+        );
 
-        // product 2~3
-        final p2 = items[1].item!;
-        final p3 = items[2];
-        expect(p2.catalog.statusName, equals('staged'));
-        expect(p2.isEmpty, isTrue);
-        expect(p2.statusName, equals('updated'));
-        expect(p3.hasError, isTrue);
+        // product 2
+        verifyProd(
+          items[1].item!,
+          ['staged', 'pA', 'updated'],
+          [0, 1, 1],
+        );
+
+        expect(items[2].hasError, isTrue);
 
         final p4 = items[3].item!;
         void verifyIng(
@@ -93,8 +107,9 @@ void main() {
         verifyIng('i3', [1], 'staged');
         verifyIng('i4', [1, 0, 0, 0], 'staged', 'q1', 'normal');
         verifyIng('i4', [1, 0, 0, 0], 'staged', 'q3', 'stagedQua');
+        verifyIng('i5', [0, 1, 1, 1], 'normal', 'q1', 'normal');
         // created
-        expect(Stock.instance.length, equals(2));
+        expect(Stock.instance.length, equals(3));
         expect(Stock.instance.getStagedByName('i3'), isNotNull);
         expect(Quantities.instance.length, equals(1));
         expect(Quantities.instance.getStagedByName('q2'), isNotNull);
@@ -107,8 +122,9 @@ void main() {
 
         final i1 = Ingredient(id: 'i1', name: 'i1');
         final i2 = Ingredient(id: 'i2', name: 'i2');
+        final i5 = Ingredient(id: 'i5', name: 'i5');
         final q1 = Quantity(id: 'q1', name: 'q1');
-        stock.replaceItems({'i1': i1, 'i2': i2});
+        stock.replaceItems({'i1': i1, 'i2': i2, 'i5': i5});
         quantities.replaceItems({'q1': q1});
         menu.replaceItems({
           'A': Catalog(id: 'A', name: 'A', products: {
@@ -129,9 +145,28 @@ void main() {
                 },
               ),
               'pAi2': ProductIngredient(id: 'pAi2', ingredient: i2),
+              'pAi3': ProductIngredient(
+                id: 'pAi3',
+                ingredient: i5,
+                quantities: {
+                  'pAq2': ProductQuantity(
+                    id: 'pAq2',
+                    amount: 1,
+                    additionalCost: 1,
+                    additionalPrice: 1,
+                    quantity: q1,
+                  ),
+                },
+              ),
             }),
           }),
         });
+        for (var c in menu.items) {
+          c.prepareItem();
+          for (var p in c.items) {
+            p.prepareItem();
+          }
+        }
       });
     });
 

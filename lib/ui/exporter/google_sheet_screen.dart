@@ -152,6 +152,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
             ),
             const SizedBox(width: 8.0),
             IconButton(
+              key: Key('gs_export.${entry.key.name}.preview'),
               constraints: const BoxConstraints(maxHeight: 24),
               icon: const Icon(Icons.remove_red_eye_sharp),
               tooltip: S.exporterGSPreviewerTitle(
@@ -522,7 +523,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     final formatted = formatter.format(target, source);
     return PreviewerScreen.navByTarget(
       context,
-      target,
+      GoogleSheetFormatter.toFormattable(type),
       formatted,
     );
   }
@@ -726,12 +727,14 @@ class _SheetNamerState extends State<_SheetNamer> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: Key('gs_export.${widget.label}.sheet_name'),
       controller: _controller,
       autofillHints: autofillHints,
       decoration: InputDecoration(
         prefix: SizedBox(
           height: 14,
           child: Checkbox(
+            key: Key('gs_export.${widget.label}.checkbox'),
             value: checked,
             visualDensity: VisualDensity.compact,
             splashRadius: 0,

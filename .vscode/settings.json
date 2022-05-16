@@ -5,6 +5,7 @@
     "avator",
     "crashlytics",
     "firestore",
+    "Formattable",
     "loadmore",
     "mockito",
     "possystem",

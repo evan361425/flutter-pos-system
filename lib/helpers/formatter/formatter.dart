@@ -1,6 +1,14 @@
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/repository.dart';
 
+enum Formattable {
+  menu,
+  stock,
+  quantities,
+  replenisher,
+  customer,
+}
+
 abstract class Formatter<T> {
   const Formatter();
 

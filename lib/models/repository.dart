@@ -95,6 +95,15 @@ mixin Repository<T extends Model> on ChangeNotifier {
     return null;
   }
 
+  T? getStaged(String id) {
+    for (var item in stagedItems) {
+      if (item.id == id) {
+        return item;
+      }
+    }
+    return null;
+  }
+
   T? getStagedByName(String name) {
     for (var item in stagedItems) {
       if (item.name == name) {

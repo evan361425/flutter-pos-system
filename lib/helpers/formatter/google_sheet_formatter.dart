@@ -46,6 +46,10 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
     }
   }
 
+  static Formattable toFormattable(GoogleSheetAble able) {
+    return Formattable.values.firstWhere((e) => e.name == able.name);
+  }
+
   @override
   List<FormattedItem<T>> format<T extends Model>(
     Repository target,
@@ -434,7 +438,7 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   List<List<GoogleSheetCellData>> getRows() => target.itemList.map((e) {
         final info = [
           for (final item in e.itemList)
-            '- ${item.name},${item.isDefault},${item.modeValue}',
+            '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
         ].join('\n');
         return [
           GoogleSheetCellData(stringValue: e.name),
