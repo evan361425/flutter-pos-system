@@ -212,16 +212,36 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> exportData() async {
-    widget.startLoading();
+    // avoid showing keyboard
     focusNode.requestFocus();
 
-    await showSnackbarWhenFailed(_exportData(), context, _errorCodeExport);
+    final usedSheets = sheets.entries.where((entry) =>
+        entry.value.currentState?.checked == true &&
+        entry.value.currentState?.name != null);
+    final names = {
+      for (var sheet in usedSheets) sheet.key: sheet.value.currentState!.name!,
+    };
+
+    if (names.isEmpty) {
+      return;
+    } else if (names.values.toSet().length != names.length) {
+      showErrorSnackbar(context, S.exporterGSErrors('sheet_repeat'));
+      return;
+    }
+
+    widget.startLoading();
+
+    await showSnackbarWhenFailed(
+      _exportData(names),
+      context,
+      _errorCodeExport,
+    );
 
     widget.finishLoading();
   }
 
-  Future<void> _exportData() async {
-    final prepared = await _getSpreadsheet();
+  Future<void> _exportData(Map<GoogleSheetAble, String> names) async {
+    final prepared = await _getSpreadsheet(names);
     if (prepared == null) return;
 
     debug(spreadsheet!.id, 'google_sheet_export_ready');
@@ -240,25 +260,23 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     }
   }
 
-  Future<bool> _addSpreadsheet(List<String> names) async {
+  Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
     widget.setProgressStatus(S.exporterGSProgressStatus('add_spreadsheet'));
-    final newSpreadsheet = await widget.exporter.addSpreadsheet(
+
+    return widget.exporter.addSpreadsheet(
       S.exporterGSDefaultSpreadsheetName,
       names,
     );
-
-    if (newSpreadsheet == null) {
-      return false;
-    }
-
-    await sheetSelector.currentState?.setSheet(newSpreadsheet);
-    return true;
   }
 
-  Future<bool> _addSheets(List<String> names) async {
+  Future<bool> _addSheets(List<String> requiredSheets) async {
     widget.setProgressStatus(S.exporterGSProgressStatus('add_sheets'));
     final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
-    final missing = names.toSet().difference(exist);
+    final missing = requiredSheets.toSet().difference(exist);
+
+    if (missing.isEmpty) {
+      return true;
+    }
 
     final newSheets = await widget.exporter.addSheets(
       spreadsheet!.id,
@@ -270,50 +288,36 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       return true;
     }
 
-    return missing.isEmpty;
+    return false;
   }
 
   /// 準備好試算表
   ///
   /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet() async {
-    final usedSheets = sheets.entries.where((entry) =>
-        entry.value.currentState?.checked == true &&
-        entry.value.currentState?.name != null);
-    final names = usedSheets.map((e) => e.value.currentState!.name!).toList();
-
-    if (names.isEmpty) {
+  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet(
+    Map<GoogleSheetAble, String> requireSheets,
+  ) async {
+    final names = requireSheets.values.toList();
+    spreadsheet ??= await _createSpreadsheet(names);
+    if (spreadsheet == null) {
+      showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
       return null;
-    } else if (names.toSet().length != names.length) {
-      showErrorSnackbar(context, S.exporterGSErrors('sheet_repeat'));
-      return null;
-    } else if (spreadsheet == null) {
-      if (!(await _addSpreadsheet(names))) {
-        showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
+    } else {
+      final sheets = await widget.exporter.getSheets(spreadsheet!.id);
+      spreadsheet!.sheets.addAll(sheets);
+      final success = await _addSheets(names);
+      if (!success) {
+        showErrorSnackbar(context, S.exporterGSErrors('sheet'));
         return null;
       }
-    } else {
-      final sheets = await widget.exporter.getSheets(
-        spreadsheet!.id,
-      );
-      spreadsheet!.sheets.addAll(sheets);
     }
 
-    if (!(await _addSheets(names))) {
-      showErrorSnackbar(context, S.exporterGSErrors('sheet'));
-      return null;
-    }
-
-    GoogleSheetProperties getSheetByName(String name) {
-      final id =
-          spreadsheet!.sheets.where((sheet) => sheet.title == name).first.id;
-
-      return GoogleSheetProperties(id, name);
-    }
-
-    return <GoogleSheetAble, GoogleSheetProperties>{
-      for (final sheet in usedSheets)
-        sheet.key: getSheetByName(sheet.value.currentState!.name!)
+    return {
+      for (var e in requireSheets.entries)
+        e.key: GoogleSheetProperties(
+          spreadsheet!.sheets.firstWhere((sheet) => sheet.title == e.value).id,
+          e.value,
+        )
     };
   }
 
@@ -839,6 +843,9 @@ class _SheetSelectorState extends State<_SheetSelector> {
 
   setSheets(List<GoogleSheetProperties> newSheets) {
     setState(() {
+      if (!newSheets.contains(selected)) {
+        selected = null;
+      }
       sheets = newSheets;
     });
   }

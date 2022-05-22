@@ -50,9 +50,12 @@ class Database {
     return batch.commit();
   }
 
-  Future<void> reset(String? table, [String? path]) async {
+  Future<void> reset(
+    String? table, [
+    Future<void> Function(String path) del = sqflite.deleteDatabase,
+  ]) async {
     if (table == null) {
-      return sqflite.deleteDatabase(path ?? await getRootPath());
+      return del(await getRootPath());
     }
 
     await db.delete(table);

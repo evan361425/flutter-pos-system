@@ -31,14 +31,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Google Sheet Screen', () {
     const eCacheIdKey = 'exporter_google_sheet_id';
-    const iCacheIdKey = 'importer_google_sheet_id';
     const eCacheNameKey = 'exporter_google_sheet_name';
-    const iCacheNameKey = 'importer_google_sheet_name';
-
-    Future<void> go2Importer(WidgetTester tester) async {
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
-      await tester.pumpAndSettle();
-    }
 
     void prepareData() {
       final i1 = Ingredient(id: 'i1', name: 'i1');
@@ -72,7 +65,7 @@ void main() {
     }
 
     group('Exporter', () {
-      testWidgets('preview', (tester) async {
+      testWidgets('#preview', (tester) async {
         Stock.instance.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1')});
 
         await tester.pumpWidget(const MaterialApp(home: GoogleSheetScreen()));
@@ -115,7 +108,161 @@ void main() {
         await checkPreview('replenisher', ['r1', '- i1,1']);
         await checkPreview('customer', ['cs1', '- o1,false,1\n- o2,true,']);
       });
+
+      group('#export', () {
+        Future<void> tapBtn(WidgetTester tester) async {
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.upload_file_outlined));
+          await tester.pumpAndSettle();
+        }
+
+        testWidgets('empty checked', (tester) async {
+          final screen = GlobalKey<GoogleSheetScreenState>();
+          Stock.instance.replaceItems({});
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              key: screen,
+              exporter: GoogleSheetExporter(),
+            ),
+          ));
+          await tapBtn(tester);
+          // no repo checked, do nothing
+          expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
+        });
+
+        testWidgets('repeat name', (tester) async {
+          prepareData();
+          when(cache.get(eCacheNameKey + '.menu')).thenReturn('title');
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(exporter: GoogleSheetExporter()),
+          ));
+          await tapBtn(tester);
+          expect(find.text(S.exporterGSErrors('sheet_repeat')), findsOneWidget);
+        });
+
+        testWidgets('spreadsheet create failed', (tester) async {
+          final sheetsApi = getMockSheetsApi();
+          when(cache.get(eCacheIdKey)).thenReturn(null);
+          when(sheetsApi.spreadsheets.create(
+            argThat(predicate<gs.Spreadsheet>((e) {
+              return e.sheets?.length == 1 &&
+                  e.sheets?.first.properties?.title == 'title';
+            })),
+            $fields: anyNamed('\$fields'),
+          )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
+            ),
+          ));
+          await tapBtn(tester);
+
+          expect(find.text(S.exporterGSErrors('spreadsheet')), findsOneWidget);
+        });
+
+        testWidgets('sheets create failed', (tester) async {
+          final sheetsApi = getMockSheetsApi();
+          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
+              .thenAnswer((_) => Future.value(gs.Spreadsheet()));
+          when(sheetsApi.spreadsheets.batchUpdate(
+            argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
+              return e.requests?.length == 1 &&
+                  e.requests?.first.addSheet?.properties?.title == 'title';
+            })),
+            'id',
+          )).thenAnswer(
+              (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
+            ),
+          ));
+          await tapBtn(tester);
+
+          expect(find.text(S.exporterGSErrors('sheet')), findsOneWidget);
+        });
+
+        testWidgets('export without new sheets', (tester) async {
+          final sheetsApi = getMockSheetsApi();
+          final sheet = gs.SheetProperties(title: 'title', sheetId: 1);
+          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
+              .thenAnswer((_) => Future.value(
+                  gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet)])));
+          when(sheetsApi.spreadsheets.batchUpdate(
+            any,
+            any,
+            $fields: anyNamed('\$fields'),
+          )).thenAnswer(
+              (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
+            ),
+          ));
+          await tapBtn(tester);
+
+          verifyNever(cache.set(eCacheNameKey + '.stock', 'title'));
+        });
+
+        testWidgets('export with new sheets', (tester) async {
+          final sheetsApi = getMockSheetsApi();
+          final sheet = gs.SheetProperties(title: 'new-sheet', sheetId: 2);
+          when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+          // getSheets => return empty
+          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
+              .thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [])));
+          // updateSheet => ok
+          when(sheetsApi.spreadsheets
+                  .batchUpdate(any, 'id', $fields: anyNamed('\$fields')))
+              .thenAnswer(
+                  (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+          // addSheets => add new-title
+          when(sheetsApi.spreadsheets.batchUpdate(
+            argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
+              return e.requests?.length == 1 &&
+                  e.requests?.first.addSheet?.properties?.title == 'new-sheet';
+            })),
+            'id',
+          )).thenAnswer((_) => Future.value(
+                  gs.BatchUpdateSpreadsheetResponse(replies: [
+                gs.Response(addSheet: gs.AddSheetResponse(properties: sheet))
+              ])));
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
+            ),
+          ));
+          await tester.pumpAndSettle();
+
+          // change sheet name
+          final stock = find.byKey(const Key('gs_export.stock.sheet_namer'));
+          await tester.enterText(stock, 'new-sheet');
+
+          await tapBtn(tester);
+
+          verify(cache.set(eCacheNameKey + '.stock', 'new-sheet'));
+        });
+
+        setUp(() {
+          when(cache.get(eCacheIdKey)).thenReturn('id');
+          when(cache.get(eCacheNameKey)).thenReturn('name');
+          when(cache.get(eCacheNameKey + '.stock')).thenReturn('title');
+          final i1 = Ingredient(id: 'i1', name: 'i1');
+          Stock.instance.replaceItems({'i1': i1});
+        });
+      });
     });
+
+    const iCacheIdKey = 'importer_google_sheet_id';
+    const iCacheNameKey = 'importer_google_sheet_name';
+    Future<void> go2Importer(WidgetTester tester) async {
+      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.pumpAndSettle();
+    }
 
     group('Importer', () {
       group('#refresh -', () {
@@ -281,22 +428,46 @@ void main() {
         });
 
         testWidgets('menu(commit)', (tester) async {
-          final sheetApi = getMockSheetsApi();
-          mockSheetData(sheetApi, [
+          final sheetsApi = getMockSheetsApi();
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(
+                sheetsApi: sheetsApi,
+              ),
+            ),
+          ));
+          await tester.pumpAndSettle();
+          await go2Importer(tester);
+
+          // change sheet name
+          final sheet = gs.SheetProperties(sheetId: 2, title: 'new-sheet');
+          when(sheetsApi.spreadsheets.get('id', $fields: anyNamed('\$fields')))
+              .thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
+                    gs.Sheet(properties: sheet),
+                  ])));
+          await tester.tap(find.byIcon(Icons.refresh_outlined));
+          await tester.pumpAndSettle();
+          final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
+          await tester.tap(menu);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('new-sheet').last);
+          await tester.pumpAndSettle();
+
+          mockSheetData(sheetsApi, [
             ['c1', 'p1', 1, 1, '- i1,1\n  + q1,1,1,1\n  + q2'],
             ['c1', 'p2', 2, 2],
             ['c2', 'p2', 2, 2],
             ['c2', 'p3', 3, 3],
           ]);
+          when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetApi,
-              ),
-            ),
-          ));
-          await tapBtn(tester);
+          final btn = find.byIcon(Icons.download_for_offline_outlined);
+          await tester.tap(btn.first);
+          await tester.pumpAndSettle();
+
+          verify(cache.set(iCacheNameKey + '.menu', 'new-sheet 2'));
+
           await tester.tap(find.text(S.importPreviewerTitle));
           await tester.pumpAndSettle();
 
@@ -330,8 +501,9 @@ void main() {
           String name,
           int index,
           bool commit,
-          List<List<Object>> data,
-        ) async {
+          List<List<Object>> data, [
+          List<String>? names,
+        ]) async {
           when(cache.get(iCacheNameKey + '.$name')).thenReturn('title 1');
           final sheetApi = getMockSheetsApi();
           mockSheetData(sheetApi, data);
@@ -347,13 +519,18 @@ void main() {
           await tester.tap(find.text(S.importPreviewerTitle));
           await tester.pumpAndSettle();
 
-          for (var item in data) {
-            findText(item[0] as String, 'staged');
+          if (names == null) {
+            for (var item in data) {
+              findText(item[0] as String, 'staged');
+            }
+          } else {
+            for (var item in names) {
+              findText(item, 'staged');
+            }
           }
 
           await tester.tap(
-            commit ? find.text(S.btnSave) : find.byIcon(Icons.clear_sharp),
-          );
+              commit ? find.text(S.btnSave) : find.byIcon(Icons.clear_sharp));
           await tester.pumpAndSettle();
         }
 
@@ -374,6 +551,10 @@ void main() {
           await prepareImport(tester, 'stock', 1, true, [
             ['i1', 1],
             ['i2'],
+            ['i3', -2],
+          ], [
+            'i1',
+            'i2'
           ]);
 
           expect(Stock.instance.length, equals(2));

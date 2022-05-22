@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
+import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -315,7 +316,7 @@ void main() {
         ]);
 
         // should not changed
-        expect(CustomerSettings.instance.getItem('c1')!.isEmpty, isTrue);
+        expect(CustomerSettings.instance.getItem('c1')!.length, equals(1));
 
         void verifyItem(
           int index,
@@ -332,6 +333,7 @@ void main() {
         }
 
         verifyItem(0, 'c1', 'changeDiscount', 2, 'updated');
+        expect(items[0].item!.getItem('co1'), isNotNull);
         expect(items[1].hasError, isTrue);
         expect(items[2].hasError, isTrue);
         expect(items[3].hasError, isTrue);
@@ -342,10 +344,17 @@ void main() {
       setUp(() {
         final cs = CustomerSettings();
 
-        final c1 = CustomerSetting(id: 'c1', name: 'c1');
+        final c1 = CustomerSetting(id: 'c1', name: 'c1', options: {
+          'co1': CustomerSettingOption(id: 'co1', name: 'co1'),
+        });
         final c2 = CustomerSetting(id: 'c2', name: 'c2');
         cs.replaceItems({'c1': c1, 'c2': c2});
       });
+    });
+
+    test('throw error if not supported', () {
+      const formatter = GoogleSheetFormatter();
+      expect(() => formatter.getRows(Catalog(id: 'c1')), throwsArgumentError);
     });
 
     setUpAll(() {

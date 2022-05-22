@@ -44,8 +44,9 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
               returnValue: Future<List<Object?>>.value(<Object?>[]))
           as _i4.Future<List<Object?>>);
   @override
-  _i4.Future<void> reset(String? table, [String? path]) =>
-      (super.noSuchMethod(Invocation.method(#reset, [table, path]),
+  _i4.Future<void> reset(String? table,
+          [_i4.Future<void> Function(String)? del = _i2.deleteDatabase]) =>
+      (super.noSuchMethod(Invocation.method(#reset, [table, del]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override

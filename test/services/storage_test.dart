@@ -1,13 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:sembast/sembast.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import '../test_helpers/file_mocker.dart';
+
+@GenerateMocks([Database])
 void main() {
   late Storage storage;
 
   group('Storage', () {
     group('#sanitize', () {
-      test('sould seperate ID', () {
+      test('should separate ID', () {
         final result = storage.sanitize({'id.f.g': 'i'});
 
         expect(
@@ -52,8 +57,16 @@ void main() {
       });
     });
 
+    test('#reset', () async {
+      await storage.reset(null, databaseFactoryFfi.deleteDatabase);
+    });
+
     setUp(() {
       storage = Storage();
+    });
+
+    setUpAll(() {
+      initializeFileSystem();
     });
   });
 }

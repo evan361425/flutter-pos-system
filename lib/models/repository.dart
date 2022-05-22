@@ -52,13 +52,6 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   /// 提交那些暫存的資料
   Future<void> commitStaged({bool save = true, bool reset = true}) async {
-    // Commit staged items in child, but no need save it(parent have saved)!
-    if (T is Repository) {
-      for (var item in stagedItems) {
-        (item as Repository).commitStaged(save: false);
-      }
-    }
-
     if (reset) {
       _items.clear();
       if (save) {

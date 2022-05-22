@@ -1,7 +1,7 @@
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 class Storage {
   static Storage instance = Storage();
@@ -36,19 +36,19 @@ class Storage {
     if (_initialized) return;
     _initialized = true;
 
-    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
-
-    db = await databaseFactoryIo.openDatabase(databasePath);
+    db = await databaseFactoryIo.openDatabase(await getRootPath());
   }
 
-  Future<void> reset([Stores? storeId]) async {
+  Future<void> reset(
+    Stores? storeId, [
+    Future<void> Function(String path)? del,
+  ]) async {
     if (storeId == null) {
-      final path = await getDatabasesPath() + '/pos_system.sembast';
-      return databaseFactoryIo.deleteDatabase(path);
+      return (del ?? databaseFactoryIo.deleteDatabase)(await getRootPath());
     }
 
     final store = getStore(storeId);
-    await store.delete(db);
+    await store.drop(db);
   }
 
   StorageSanitizedData sanitize(Map<String, Object?> data) {
@@ -79,20 +79,18 @@ class Storage {
         )));
   }
 
+  static Future<String> getRootPath() async {
+    final paths = (await XFile.getRootPath()).split('/')
+      ..removeLast()
+      ..add('databases');
+    return paths.join('/') + '/pos_system.sembast';
+  }
+
   /// Get string map Store
   ///
   /// variable to make it easy to test
   static StoreRef getStore(Stores storeId) =>
       stringMapStoreFactory.store(storeId.toString());
-}
-
-enum Stores {
-  menu,
-  stock,
-  replenisher,
-  quantities,
-  cashier,
-  customers,
 }
 
 class StorageSanitizedData {
@@ -150,6 +148,15 @@ class StorageSanitizedData {
       }
     });
   }
+}
+
+enum Stores {
+  menu,
+  stock,
+  replenisher,
+  quantities,
+  cashier,
+  customers,
 }
 
 class _SanitizedValue {

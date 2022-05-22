@@ -373,6 +373,17 @@ void main() {
       ));
     });
 
+    test('#reset', () async {
+      final db = Database.instance.db as MockDatabase;
+      when(db.delete(any)).thenAnswer((_) => Future.value(1));
+
+      await Database.instance.reset('table');
+
+      verify(db.delete('table'));
+
+      await Database.instance.reset(null, databaseFactoryFfi.deleteDatabase);
+    });
+
     setUpAll(() {
       Database.instance = Database();
       Database.instance.db = MockDatabase();

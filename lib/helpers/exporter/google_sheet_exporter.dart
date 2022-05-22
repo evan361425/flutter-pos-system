@@ -62,8 +62,6 @@ class GoogleSheetExporter {
     String spreadsheetId,
     List<String> titles,
   ) async {
-    if (titles.isEmpty) return null;
-
     final requests = [
       for (final title in titles)
         gs.Request(
@@ -152,9 +150,8 @@ class GoogleSheetExporter {
     String spreadsheetId,
     int sheetId,
     List<List<GoogleSheetCellData>> data,
-    List<GoogleSheetCellData> header, {
-    int? hiddenColumnIndex,
-  }) async {
+    List<GoogleSheetCellData> header,
+  ) async {
     final requests = [
       gs.Request(
         updateCells: gs.UpdateCellsRequest(
@@ -175,19 +172,6 @@ class GoogleSheetExporter {
           ),
         ),
       ),
-      if (hiddenColumnIndex != null)
-        gs.Request(
-          updateDimensionProperties: gs.UpdateDimensionPropertiesRequest(
-            properties: gs.DimensionProperties(hiddenByUser: true),
-            range: gs.DimensionRange(
-              sheetId: sheetId,
-              dimension: 'COLUMNS',
-              startIndex: hiddenColumnIndex - 1,
-              endIndex: hiddenColumnIndex,
-            ),
-            fields: 'hiddenByUser',
-          ),
-        )
     ];
 
     final sheetsApi = await getSheetsApi();
@@ -253,10 +237,6 @@ class GoogleSpreadsheet {
     required this.sheets,
   });
 
-  bool checkSheetExistByTitle(String title) {
-    return sheets.any((sheet) => sheet.title == title);
-  }
-
   @override
   String toString() {
     return id;
@@ -302,7 +282,9 @@ class GoogleSheetProperties {
   @override
   // ignore: hash_and_equals
   bool operator ==(Object other) {
-    return other is GoogleSheetProperties && other.id == id;
+    return other is GoogleSheetProperties &&
+        other.id == id &&
+        other.title == title;
   }
 }
 
@@ -318,7 +300,6 @@ class GoogleSheetCellData {
     num? numberValue,
     String? stringValue,
     bool isBold = false,
-    bool isDanger = false,
     this.note,
   })  : value = gs.ExtendedValue(
           formulaValue: formulaValue,
@@ -327,9 +308,6 @@ class GoogleSheetCellData {
         ),
         format = gs.CellFormat(
           textFormat: isBold ? gs.TextFormat(bold: true) : null,
-          backgroundColor: isDanger
-              ? gs.Color(red: 0.95294, green: 0.12549, blue: 0.07451)
-              : null,
         );
 
   gs.CellData toGoogleFormat() {
@@ -342,9 +320,7 @@ class GoogleSheetCellData {
 
   @override
   String toString() {
-    return value.stringValue ??
-        value.numberValue?.toString() ??
-        value.formulaValue.toString();
+    return value.stringValue ?? value.numberValue!.toString();
   }
 }
 
