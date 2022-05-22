@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:googleapis/content/v2_1.dart';
 import 'package:googleapis/drive/v3.dart' as gd;
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:possystem/helpers/logger.dart';
@@ -6,22 +7,20 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/services/auth.dart';
 
 class GoogleSheetExporter {
-  static final instance = GoogleSheetExporter._();
+  GoogleSheetExporter({gs.SheetsApi? sheetsApi, gd.DriveApi? driveApi})
+      : _driveApi = driveApi,
+        _sheetsApi = sheetsApi;
 
-  bool _setUp = false;
+  gs.SheetsApi? _sheetsApi;
 
-  late gs.SheetsApi _sheetsApi;
-
-  late gd.DriveApi _driveApi;
-
-  GoogleSheetExporter._();
+  gd.DriveApi? _driveApi;
 
   Future<gd.DriveApi?> getDriveApi() {
-    return _setApiClient().then((success) => success ? _driveApi : null);
+    return _setApiClient().then((_) => _driveApi);
   }
 
   Future<gs.SheetsApi?> getSheetsApi() {
-    return _setApiClient().then((success) => success ? _sheetsApi : null);
+    return _setApiClient().then((_) => _sheetsApi);
   }
 
   gs.SheetProperties getNewSheetProperties(String title) => gs.SheetProperties(
@@ -207,6 +206,7 @@ class GoogleSheetExporter {
     final sheetsApi = await getSheetsApi();
     final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheetId,
+      // TODO: if neededColumns are better than 26, this must change
       "'$sheetTitle'!A:${String.fromCharCode(64 + neededColumns)}",
       majorDimension: 'ROWS',
       $fields: 'values',
@@ -218,9 +218,10 @@ class GoogleSheetExporter {
     }).toList();
   }
 
-  Future<bool> _setApiClient() async {
-    if (_setUp) {
-      return true;
+  Future<void> _setApiClient() async {
+    // allow mock only one object
+    if (_sheetsApi != null || _driveApi != null) {
+      return;
     }
 
     if (await Auth.instance.loginIfNot()) {
@@ -234,11 +235,8 @@ class GoogleSheetExporter {
       if (client != null) {
         _sheetsApi = gs.SheetsApi(client);
         _driveApi = gd.DriveApi(client);
-        _setUp = true;
       }
     }
-
-    return _setUp;
   }
 }
 
@@ -302,12 +300,10 @@ class GoogleSheetProperties {
   String toCacheValue() => '$title $id';
 
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) {
     return other is GoogleSheetProperties && other.id == id;
   }
-
-  @override
-  int get hashCode => super.hashCode;
 }
 
 class GoogleSheetCellData {

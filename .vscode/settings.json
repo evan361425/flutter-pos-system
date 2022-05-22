@@ -6,6 +6,7 @@
     "crashlytics",
     "firestore",
     "Formattable",
+    "googleapis",
     "loadmore",
     "mockito",
     "possystem",

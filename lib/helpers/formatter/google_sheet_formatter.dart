@@ -190,15 +190,15 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
       S.menuQuantityAmountLabel,
       allowNull: true,
     );
-    for (var line in lines) {
+    for (var line in lines.map((e) => e.trim())) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
         if (columns.length < 2) continue;
 
         final msg = vIng(columns[0]) ?? vAmount(columns[1]);
         if (msg != null) return msg;
-      } else if (line.startsWith('  + ')) {
-        final columns = line.substring(4).split(',');
+      } else if (line.startsWith('+ ')) {
+        final columns = line.substring(2).split(',');
         if (columns.length < 4) continue;
 
         final msg = vQua(columns[0]) ?? vQuaAmount(columns[1]);
@@ -233,7 +233,7 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
     ProductIngredient? ingredient;
     ProductIngredient? oriIngredient;
 
-    for (var line in lines) {
+    for (var line in lines.map((e) => e.trim())) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
         if (columns.isEmpty) continue;
@@ -241,8 +241,8 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
         oriIngredient = ori?.getItemByName(columns[0]);
         ingredient = ProductIngredient.fromRow(oriIngredient, columns);
         product.addItem(ingredient, save: false);
-      } else if (ingredient != null && line.startsWith('  + ')) {
-        final columns = line.substring(4).split(',');
+      } else if (ingredient != null && line.startsWith('+ ')) {
+        final columns = line.substring(2).split(',');
         if (columns.isEmpty) continue;
 
         final quantity = ProductQuantity.fromRow(
@@ -392,7 +392,7 @@ class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
   Map<String, num> _formatRep(String value) {
     final data = <String, num>{};
     final lines = value.split('\n');
-    for (var line in lines) {
+    for (var line in lines.map((e) => e.trim())) {
       if (!line.startsWith('- ')) continue;
 
       final columns = line.substring(2).split(',');
@@ -486,6 +486,7 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
       index: index,
       options: options,
     );
+    cs.prepareItem();
     CustomerSettings.instance.addStaged(cs);
 
     return cs;
@@ -497,7 +498,7 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   ) sync* {
     final lines = value.split('\n');
     int counter = 1;
-    for (var line in lines) {
+    for (var line in lines.map((e) => e.trim())) {
       if (!line.startsWith('- ')) continue;
 
       final columns = line.substring(2).split(',');

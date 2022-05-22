@@ -21,14 +21,18 @@ const _errorCodeExport = 'google_sheet_export_failed';
 const _errorCodePick = 'google_sheet_pick_failed';
 
 class GoogleSheetScreen extends StatefulWidget {
-  const GoogleSheetScreen({Key? key}) : super(key: key);
+  final GoogleSheetExporter? exporter;
+
+  const GoogleSheetScreen({Key? key, this.exporter}) : super(key: key);
 
   @override
-  State<GoogleSheetScreen> createState() => _GoogleSheetScreenState();
+  State<GoogleSheetScreen> createState() => GoogleSheetScreenState();
 }
 
-class _GoogleSheetScreenState extends State<GoogleSheetScreen> {
+class GoogleSheetScreenState extends State<GoogleSheetScreen> {
   final loading = GlobalKey<LoadingWrapperState>();
+
+  late final GoogleSheetExporter exporter;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +54,13 @@ class _GoogleSheetScreenState extends State<GoogleSheetScreen> {
           body: TabBarView(
             children: [
               _ExporterScreen(
+                exporter: exporter,
                 startLoading: _startLoading,
                 finishLoading: _finishLoading,
                 setProgressStatus: _setProgressStatus,
               ),
               _ImporterScreen(
+                exporter: exporter,
                 startLoading: _startLoading,
                 finishLoading: _finishLoading,
                 setProgressStatus: _setProgressStatus,
@@ -79,6 +85,12 @@ class _GoogleSheetScreenState extends State<GoogleSheetScreen> {
   }
 
   @override
+  void initState() {
+    exporter = widget.exporter ?? GoogleSheetExporter();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     loading.currentState?.dispose();
     super.dispose();
@@ -92,8 +104,11 @@ class _ExporterScreen extends StatefulWidget {
 
   final void Function(String status) setProgressStatus;
 
+  final GoogleSheetExporter exporter;
+
   const _ExporterScreen({
     Key? key,
+    required this.exporter,
     required this.startLoading,
     required this.finishLoading,
     required this.setProgressStatus,
@@ -124,7 +139,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         _SpreadsheetPicker(
+          id: 'gs_export.exporter_spreadsheet',
           key: sheetSelector,
+          exporter: widget.exporter,
           spreadsheet: spreadsheet,
           helperText: S.exporterGSSpreadsheetHelper,
           onSheetChanged: onSheetChanged,
@@ -198,10 +215,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     widget.startLoading();
     focusNode.requestFocus();
 
-    await _exportData().catchError((err) {
-      showErrorSnackbar(context, S.actError);
-      error(err.toString(), _errorCodeExport);
-    });
+    await showSnackbarWhenFailed(_exportData(), context, _errorCodeExport);
 
     widget.finishLoading();
   }
@@ -217,7 +231,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       final label = entry.key.name;
       widget.setProgressStatus(S.exporterGSProgressStatus('update_$label'));
       await _setDefault(label, entry.value.title);
-      await GoogleSheetExporter.instance.updateSheet(
+      await widget.exporter.updateSheet(
         spreadsheet!.id,
         entry.value.id,
         target.getFormattedItems(formatter),
@@ -228,7 +242,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
 
   Future<bool> _addSpreadsheet(List<String> names) async {
     widget.setProgressStatus(S.exporterGSProgressStatus('add_spreadsheet'));
-    final newSpreadsheet = await GoogleSheetExporter.instance.addSpreadsheet(
+    final newSpreadsheet = await widget.exporter.addSpreadsheet(
       S.exporterGSDefaultSpreadsheetName,
       names,
     );
@@ -246,7 +260,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
     final missing = names.toSet().difference(exist);
 
-    final newSheets = await GoogleSheetExporter.instance.addSheets(
+    final newSheets = await widget.exporter.addSheets(
       spreadsheet!.id,
       missing.toList(),
     );
@@ -279,7 +293,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
         return null;
       }
     } else {
-      final sheets = await GoogleSheetExporter.instance.getSheets(
+      final sheets = await widget.exporter.getSheets(
         spreadsheet!.id,
       );
       spreadsheet!.sheets.addAll(sheets);
@@ -348,8 +362,11 @@ class _ImporterScreen extends StatefulWidget {
 
   final void Function(String status) setProgressStatus;
 
+  final GoogleSheetExporter exporter;
+
   const _ImporterScreen({
     Key? key,
+    required this.exporter,
     required this.startLoading,
     required this.finishLoading,
     required this.setProgressStatus,
@@ -381,7 +398,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           _SpreadsheetPicker(
+            id: 'gs_export.importer_spreadsheet',
             key: sheetSelector,
+            exporter: widget.exporter,
             spreadsheet: spreadsheet,
             allowEmpty: false,
             helperText: S.btnImporterRefreshHelp,
@@ -401,9 +420,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
               Expanded(
                 child: _SheetSelector(
                   key: entry.value,
-                  label: S.exporterGSSheetLabel(
-                    S.exporterGSDefaultSheetName(entry.key.name),
-                  ),
+                  label: entry.key.name,
                   defaultValue: _getDefault(entry.key.name),
                 ),
               ),
@@ -438,46 +455,54 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
     loading.currentState?.startLoading();
 
-    await _refreshSheet().catchError((err) {
-      showErrorSnackbar(context, S.actError);
-      error(err.toString(), _errorCodeRefresh);
-    });
+    await showSnackbarWhenFailed(
+      _refreshSheet(spreadsheet!),
+      context,
+      _errorCodeRefresh,
+    );
 
     loading.currentState?.finishLoading();
   }
 
   Future<void> importData(GoogleSheetAble type) async {
+    if (spreadsheet == null) {
+      showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
+      return;
+    } else if (sheets[type]?.currentState?.selected == null) {
+      showErrorSnackbar(context, S.importerGSError('empty_sheet'));
+      return;
+    }
+
     widget.startLoading();
 
-    await _importData(type).catchError((err) {
-      showErrorSnackbar(context, S.actError);
-      error(err.toString(), _errorCodeImport);
-    });
+    await showSnackbarWhenFailed(
+      _importData(type, sheets[type]!.currentState!.selected!),
+      context,
+      _errorCodeImport,
+    );
 
     widget.finishLoading();
   }
 
-  Future<void> _refreshSheet() async {
-    final refreshedSheets = await GoogleSheetExporter.instance.getSheets(
-      spreadsheet!.id,
+  Future<void> _refreshSheet(GoogleSpreadsheet spreadsheet) async {
+    final refreshedSheets = await widget.exporter.getSheets(
+      spreadsheet.id,
     );
 
-    if (refreshedSheets.isNotEmpty) {
-      spreadsheet!.sheets.addAll(refreshedSheets);
-      for (var sheet in sheets.values) {
-        sheet.currentState?.setSheets(refreshedSheets);
-      }
+    for (var sheet in sheets.values) {
+      sheet.currentState?.setSheets(refreshedSheets);
     }
   }
 
-  Future<void> _importData(GoogleSheetAble type) async {
-    final prepared = await _getSheet(type);
-    if (prepared == null) return;
-    await _setDefault(type.name, prepared);
-
-    debug(prepared.title, 'google_sheet_import_ready');
-    final source = await _getSheetData(type, prepared);
+  Future<void> _importData(
+    GoogleSheetAble type,
+    GoogleSheetProperties sheet,
+  ) async {
+    debug(sheet.title, 'google_sheet_import_ready');
+    final source = await _getSheetData(type, sheet);
     if (source == null) return;
+
+    await _setDefault(type.name, sheet);
 
     debug(source.length.toString(), 'google_sheet_import_length');
     final allowPreviewFormed = await _previewSheetData(type, source);
@@ -528,18 +553,6 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     );
   }
 
-  Future<GoogleSheetProperties?> _getSheet(GoogleSheetAble type) async {
-    if (spreadsheet == null) {
-      showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
-      return null;
-    } else if (sheets[type]?.currentState?.selected == null) {
-      showErrorSnackbar(context, S.importerGSError('empty_sheet'));
-      return null;
-    }
-
-    return sheets[type]?.currentState?.selected;
-  }
-
   Future<List<List<Object?>>?> _getSheetData(
     GoogleSheetAble type,
     GoogleSheetProperties sheet,
@@ -548,18 +561,20 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     final target = GoogleSheetFormatter.getTarget(type);
     final neededColumns = target.getFormattedHead(formatter).length;
 
-    final sheetData = await GoogleSheetExporter.instance.getSheetData(
+    final sheetData = await widget.exporter.getSheetData(
       spreadsheet!.id,
       sheet.title,
       neededColumns: neededColumns,
     );
 
-    if (sheetData == null) {
+    // remove header
+    final data = sheetData?.sublist(1);
+    if (data?.isEmpty != false) {
       showInfoSnackbar(context, S.importerGSError('empty_data'));
       return null;
     }
 
-    return sheetData.sublist(1);
+    return data;
   }
 
   Future<void> _setDefault(String label, GoogleSheetProperties sheet) async {
@@ -601,6 +616,10 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 }
 
 class _SpreadsheetPicker extends StatefulWidget {
+  final String id;
+
+  final GoogleSheetExporter exporter;
+
   final Future<void> Function(GoogleSpreadsheet?) onSheetChanged;
 
   final void Function() onSelectStart;
@@ -616,6 +635,8 @@ class _SpreadsheetPicker extends StatefulWidget {
   const _SpreadsheetPicker({
     Key? key,
     this.spreadsheet,
+    required this.id,
+    required this.exporter,
     required this.onSheetChanged,
     required this.onSelectStart,
     required this.onSelectEnd,
@@ -635,6 +656,7 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: Key(widget.id),
       controller: _controller,
       readOnly: true,
       onTap: pickSheet,
@@ -658,15 +680,15 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
   Future<void> pickSheet() async {
     try {
       widget.onSelectStart();
-      final result = await GoogleSheetExporter.instance.pickSheet();
+      final result = await widget.exporter.pickSheet();
       if (result != null) {
         setSheet(result);
       }
     } catch (e) {
       if (e is GoogleSheetError) {
-        showInfoSnackbar(context, S.exporterGSErrors(e.code));
+        showErrorSnackbar(context, S.exporterGSErrors(e.code));
       } else {
-        showInfoSnackbar(context, S.actError);
+        showErrorSnackbar(context, S.actError);
         error(e.toString(), _errorCodePick);
       }
     } finally {
@@ -727,7 +749,7 @@ class _SheetNamerState extends State<_SheetNamer> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: Key('gs_export.${widget.label}.sheet_name'),
+      key: Key('gs_export.${widget.label}.sheet_namer'),
       controller: _controller,
       autofillHints: autofillHints,
       decoration: InputDecoration(
@@ -796,15 +818,18 @@ class _SheetSelectorState extends State<_SheetSelector> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<GoogleSheetProperties>(
+      key: Key('gs_export.${widget.label}.sheet_selector'),
       value: selected,
       decoration: InputDecoration(
-        label: Text(widget.label),
+        label: Text(S.exporterGSSheetLabel(
+          S.exporterGSDefaultSheetName(widget.label),
+        )),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: (newSelected) => setState(() => selected = newSelected),
       items: [
         for (var sheet in sheets)
-          DropdownMenuItem(
+          DropdownMenuItem<GoogleSheetProperties>(
             value: sheet,
             child: Text(sheet.title),
           ),

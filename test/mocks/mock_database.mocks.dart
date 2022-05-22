@@ -44,6 +44,11 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
               returnValue: Future<List<Object?>>.value(<Object?>[]))
           as _i4.Future<List<Object?>>);
   @override
+  _i4.Future<void> reset(String? table, [String? path]) =>
+      (super.noSuchMethod(Invocation.method(#reset, [table, path]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
   _i4.Future<int?> count(String? table,
           {String? where, List<Object>? whereArgs}) =>
       (super.noSuchMethod(
@@ -116,8 +121,10 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   <Map<String, Object?>>[]))
           as _i4.Future<List<Map<String, Object?>>>);
   @override
-  _i4.Future<void> tolerateMigration({int newVersion = 5, int? oldVersion}) =>
-      (super.noSuchMethod(Invocation.method(#tolerateMigration, [newVersion]),
+  _i4.Future<void> tolerateMigration({int? newVersion = 5, int? oldVersion}) =>
+      (super.noSuchMethod(
+          Invocation.method(#tolerateMigration, [],
+              {#newVersion: newVersion, #oldVersion: oldVersion}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override

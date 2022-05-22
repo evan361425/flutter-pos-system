@@ -55,9 +55,10 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
-  _i4.Future<void> reset() => (super.noSuchMethod(Invocation.method(#reset, []),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  _i4.Future<void> reset([_i3.Stores? storeId]) =>
+      (super.noSuchMethod(Invocation.method(#reset, [storeId]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
   _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) =>
       (super.noSuchMethod(Invocation.method(#sanitize, [data]),

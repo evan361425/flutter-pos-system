@@ -61,6 +61,9 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
     if (reset) {
       _items.clear();
+      if (save) {
+        await dropItems();
+      }
     }
 
     for (var item in stagedItems) {
@@ -137,6 +140,8 @@ mixin Repository<T extends Model> on ChangeNotifier {
   Future<void> saveBatch(Iterable<_BatchData> data);
 
   Future<void> saveItem(T item);
+
+  Future<void> dropItems();
 }
 
 mixin RepositoryDB<T extends Model> on Repository<T> {
@@ -193,6 +198,9 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
     item.id = id.toString();
   }
+
+  @override
+  Future<void> dropItems() => Database.instance.reset(repoTableName);
 }
 
 mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
@@ -299,6 +307,9 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
         ? Storage.instance.add(storageStore, item.id, data)
         : Storage.instance.set(storageStore, {item.prefix: data});
   }
+
+  @override
+  Future<void> dropItems() => Storage.instance.reset(storageStore);
 }
 
 enum RepositoryStorageType {

@@ -41,9 +41,14 @@ class Storage {
     db = await databaseFactoryIo.openDatabase(databasePath);
   }
 
-  Future<void> reset() async {
-    final path = await getDatabasesPath() + '/pos_system.sembast';
-    return databaseFactoryIo.deleteDatabase(path);
+  Future<void> reset([Stores? storeId]) async {
+    if (storeId == null) {
+      final path = await getDatabasesPath() + '/pos_system.sembast';
+      return databaseFactoryIo.deleteDatabase(path);
+    }
+
+    final store = getStore(storeId);
+    await store.delete(db);
   }
 
   StorageSanitizedData sanitize(Map<String, Object?> data) {

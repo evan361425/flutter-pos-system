@@ -5,36 +5,37 @@ import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sig
 import 'package:possystem/helpers/logger.dart';
 
 class Auth {
-  static Auth instance = Auth._();
+  static Auth instance = Auth();
 
-  Auth._();
+  final GoogleSignIn _service;
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: []);
+  Auth([GoogleSignIn? service])
+      : _service = service ?? GoogleSignIn(scopes: []);
 
   Future<Client?> getAuthenticatedClient({
     List<String> scopes = const [],
   }) async {
-    final newScopes = scopes.toSet().difference(_googleSignIn.scopes.toSet());
+    final newScopes = scopes.toSet().difference(_service.scopes.toSet());
     if (newScopes.isNotEmpty) {
       debug(newScopes.join(','), 'auth_google_scopes_needed');
-      if (await _googleSignIn.requestScopes(newScopes.toList())) {
+      if (await _service.requestScopes(newScopes.toList())) {
         info(newScopes.join(','), 'auth_google_scopes');
-        _googleSignIn.scopes.addAll(newScopes);
+        _service.scopes.addAll(newScopes);
       }
     }
 
-    return _googleSignIn.authenticatedClient();
+    return _service.authenticatedClient();
   }
 
   Future<bool> loginIfNot() async {
-    final user = await _googleSignIn.signInSilently();
+    final user = await _service.signInSilently();
     if (user != null && FirebaseAuth.instance.currentUser != null) {
       return true;
     }
 
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? user = await _googleSignIn.signIn();
+      final GoogleSignInAccount? user = await _service.signIn();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? auth = await user?.authentication;
