@@ -50,8 +50,15 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
                   Future<Map<String, Object?>>.value(<String, Object?>{}))
           as _i4.Future<Map<String, Object?>>);
   @override
-  _i4.Future<void> initialize() =>
-      (super.noSuchMethod(Invocation.method(#initialize, []),
+  _i4.Future<void> initialize(
+          {_i4.Future<_i2.Database> Function(String,
+                  {_i2.SembastCodec? codec,
+                  _i2.DatabaseMode? mode,
+                  _i4.Future<dynamic> Function(_i2.Database, int, int)?
+                      onVersionChanged,
+                  int? version})?
+              opener}) =>
+      (super.noSuchMethod(Invocation.method(#initialize, [], {#opener: opener}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override

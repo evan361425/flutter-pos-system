@@ -32,11 +32,11 @@ class Storage {
     return {for (var item in list) item.key: item.value};
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize({_Opener? opener}) async {
     if (_initialized) return;
     _initialized = true;
 
-    db = await databaseFactoryIo.openDatabase(await getRootPath());
+    db = await (opener ?? databaseFactoryIo.openDatabase)(await getRootPath());
   }
 
   Future<void> reset(
@@ -176,3 +176,11 @@ class _SanitizedValue {
     }
   }
 }
+
+typedef _Opener = Future<Database> Function(
+  String path, {
+  int? version,
+  Future<dynamic> Function(Database, int, int)? onVersionChanged,
+  DatabaseMode? mode,
+  SembastCodec? codec,
+});
