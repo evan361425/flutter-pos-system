@@ -30,6 +30,7 @@ class Auth {
     }
 
     return _service.authenticatedClient(
+      // ignore: invalid_use_of_visible_for_testing_member
       debugAuthentication: debugAuthentication,
     );
   }

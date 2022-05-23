@@ -1,25 +1,40 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mockito/annotations.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/services/auth.dart';
 
-import 'auth_test.mocks.dart';
+import 'auth_test_mocks.dart';
 
-@GenerateMocks([
-  GoogleSignIn,
-  FirebaseAuth,
-  GoogleSignInAccount,
-  GoogleSignInAuthentication,
-  User,
-  UserCredential,
-])
+// Custom Mock! avoid clean up after rebuild
+// @GenerateMocks([
+//   GoogleSignIn,
+//   FirebaseAuth,
+//   GoogleSignInAccount,
+//   GoogleSignInAuthentication,
+//   User,
+//   UserCredential,
+//   FirebasePlatform,
+//   FirebaseAppPlatform,
+// ])
 void main() {
   group('Auth', () {
     late Auth auth;
     late MockGoogleSignIn googleSignIn;
     late MockFirebaseAuth firebaseAuth;
+
+    test('construct', () {
+      final delegate = MockFirebasePlatform();
+      final app = MockFirebaseAppPlatform();
+      Firebase.delegatePackingProperty = delegate;
+      when(delegate.app()).thenReturn(app);
+      when(app.name).thenReturn('[DEFAULT]');
+
+      Auth();
+    });
 
     group('#loginIfNot -', () {
       test('ignore if already login', () async {
