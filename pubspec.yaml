@@ -72,6 +72,7 @@ dependencies:
   path_provider: ^2.0.10
   url_launcher: ^6.0.20
   file_picker: ^4.6.0
+  flutter_native_splash: ^2.1.6
 
 dev_dependencies:
   flutter_test:
@@ -79,9 +80,6 @@ dev_dependencies:
 
   # code style
   flutter_lints: ^1.0.4
-
-  # tools
-  flutter_native_splash: ^2.1.6
 
   # mock object
   build_runner: ^2.1.11
