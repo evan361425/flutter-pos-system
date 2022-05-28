@@ -17,11 +17,11 @@ homepage: https://github.com/evan361425/flutter-pos-system
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# 2.4.4
+# 2.4.5
 version: 2.4.5+20405002
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -32,10 +32,10 @@ dependencies:
   # core helper
   provider: ^6.0.2
   intl: ^0.17.0
-  firebase_core: ^1.2.1
-  firebase_analytics: ^9.1.0
-  firebase_auth: ^3.3.11
-  firebase_crashlytics: ^2.0.6
+  firebase_core: ^1.17.1
+  firebase_analytics: ^9.1.9
+  firebase_auth: ^3.3.19
+  firebase_crashlytics: ^2.8.1
 
   # services
   sqflite: ^2.0.2
