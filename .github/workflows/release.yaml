@@ -1,80 +1,21 @@
 name: Add Artifacts for Release
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       tag:
         description: "Draft a release in specific tag. Use current commit, will not create tag."
         required: false
 
-  push:
-    branches:
-      - "master"
-    paths:
-      - "pubspec.yaml"
-# Workflows:
-# 1. Two condition, 'tag' event or 'workflow_dispatch' event
-#    Both will check existence of changelog in the same build code
-#      1. 'tag' - should be same with pubspec.yaml
-#      2. 'workflow_dispatch' - no need to add tag
 jobs:
-  # Two condition, 'tag' event or 'workflow_dispatch' event
-  # Both will check existence of changelog in the same build code
-  #   1. 'tag' - should be same with pubspec.yaml
-  #   2. 'workflow_dispatch' - no need to do
-  # Outputs:
-  #   1. `build_code` - pubspec.yaml build code.
-  #   2. `tag` - tag name. No mater which event is, it should exist.
   check-version:
     name: Check pubspec.yaml version with tag
     runs-on: ubuntu-latest
     outputs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
-      # v1.2.3-rc1, v1.2.3-rc1
-      tag: ${{ steps.tag.outputs.result }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Load pubspec version
-        id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v0.1.0
-        with:
-          file: pubspec.yaml
-          version: version
-
-      # v1.2.3-rc1 => 1.2.3
-      - name: Extract tag version name
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        id: tag_version
-        uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0];
-            if (!msg.startsWith('release: v')) {
-              return '';
-            }
-
-            return msg.substring(10).trim();
-
-      # v1.2.3-rc1, v1.2.3-rc1
-      - name: Extract tag name
-        id: tag
-        uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            if (context.eventName === 'workflow_dispatch') {
-              return '${{ github.event.inputs.tag }}';
-            }
-            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0];
-            if (!msg.startsWith('release: v')) {
-              return '';
-            }
-
-            return msg.substring(9).trim();
 
       - name: Extract pubspec version and code
         id: pubspec_version
@@ -85,10 +26,7 @@ jobs:
           echo "::set-output name=code::$PUBSPEC_BUILD_CODE"
 
       - name: Check version
-        if: ${{ github.event_name != 'workflow_dispatch' && steps.tag_version.outputs.result != steps.pubspec_version.outputs.version }}
-        run: |
-          echo '${{ steps.tag_version.outputs.result }} is not equal to ${{ steps.pubspec_version.outputs.version }}''
-          exit 1
+        run: test '${{ github.event.inputs.tag }}' = 'v${{ steps.pubspec_version.outputs.version }}'
 
   # If pushing released tag (vX.X.X), it should be fired.
   # Should build some artifacts, see below.
@@ -108,14 +46,14 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H 'Accept: application/vnd.github.v3+json' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases \
-            | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag }}"))')
+            | jq -c '.[] | select( .name | contains("${{ github.event.inputs.tag }}"))')
           [ -z "$release" ] && exit 1
 
-          if [ ! "$(echo "$release" | jq -r '.tag_name')" = "${{ needs.check-version.outputs.tag }}" ]; then
+          if [ ! "$(echo "$release" | jq -r '.tag_name')" = "${{ github.event.inputs.tag }}" ]; then
             curl -X PATCH \
               -H 'Accept: application/vnd.github.v3+json' \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
+              -d '{"tag_name":"${{ github.event.inputs.tag }}"}' \
               "https://api.github.com/repos/evan361425/flutter-pos-system/releases/$(echo "$release" | jq -r '.id')"
           fi
 
@@ -147,7 +85,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           echo "${{ needs.get-release.outputs.changelog }}" > "$file"
           git add --all
-          git commit . -m "changelog(android): ${{ needs.check-version.outputs.build_code }}"
+          git commit . -m "release(${{ github.event.inputs.tag }}): ${{ needs.check-version.outputs.build_code }}"
           git push
-          git tag ${{ needs.check-version.outputs.tag }}
+          git tag ${{ github.event.inputs.tag }}
           push origin --tags
