@@ -38,9 +38,9 @@ dependencies:
   firebase_crashlytics: ^2.8.1
 
   # services
-  sqflite: ^2.0.2
-  sembast: ^3.1.2
-  shared_preferences: ^2.0.13
+  sqflite: ^2.0.2+1
+  sembast: ^3.2.0
+  shared_preferences: ^2.0.15
   http: ^0.13.4
 
   # google services
