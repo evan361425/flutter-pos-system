@@ -78,15 +78,15 @@ dev_dependencies:
     sdk: flutter
 
   # code style
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
 
   # tools
-  flutter_native_splash: ^2.0.4
+  flutter_native_splash: ^2.1.6
 
   # mock object
-  build_runner: ^2.1.7
-  mockito: ^5.1.0
-  sqflite_common_ffi: ^2.1.0+2
+  build_runner: ^2.1.11
+  mockito: ^5.2.0
+  sqflite_common_ffi: ^2.1.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -104,6 +104,6 @@ flutter:
     - assets/feature_request_please.gif
 
 flutter_native_splash:
-  color: "#000000"
+  color: "#468bff"
   fullscreen: true
   image: assets/logo.png
