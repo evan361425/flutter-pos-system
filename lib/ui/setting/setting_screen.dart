@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/style/card_tile.dart';
+import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/settings/cashier_warning.dart';
@@ -42,6 +45,22 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: AppBar(leading: const PopButton()),
       body: ListView(
         children: <Widget>[
+          const SizedBox(height: 8.0),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              final info = snapshot.data;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (info != null) Text(info.version + '~' + info.buildNumber),
+                  const SizedBox(width: 8.0),
+                  if (kDebugMode) const OutlinedText('DEV'),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 8.0),
           CardTile(
             key: const Key('setting.theme'),
             title: Text(S.settingThemeTitle),
