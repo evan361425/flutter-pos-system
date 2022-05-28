@@ -30,7 +30,7 @@ dependencies:
     sdk: flutter
 
   # core helper
-  provider: ^6.0.2
+  provider: ^6.0.3
   intl: ^0.17.0
   firebase_core: ^1.17.1
   firebase_analytics: ^9.1.9
@@ -49,15 +49,15 @@ dependencies:
   extension_google_sign_in_as_googleapis_auth: ^2.0.4
 
   # components
-  flutter_slidable: ^1.2.0
-  modal_bottom_sheet: ^2.0.0
+  flutter_slidable: ^1.3.0
+  modal_bottom_sheet: ^2.0.1
   sliding_up_panel: ^2.0.0+1
-  table_calendar: ^3.0.3
+  table_calendar: ^3.0.5
   pull_to_refresh: ^2.0.0
 
   # image
   image: ^3.1.3
-  image_picker: ^0.8.4+9
+  image_picker: ^0.8.5+3
   image_cropper:
     git:
       url: https://github.com/evan361425/flutter_image_cropper.git
@@ -68,10 +68,10 @@ dependencies:
 
   # tools
   uuid: ^3.0.6
-  wakelock: ^0.6.1+1
-  path_provider: ^2.0.9
+  wakelock: ^0.6.1+2
+  path_provider: ^2.0.10
   url_launcher: ^6.0.20
-  file_picker: ^4.5.1
+  file_picker: ^4.6.0
 
 dev_dependencies:
   flutter_test:
