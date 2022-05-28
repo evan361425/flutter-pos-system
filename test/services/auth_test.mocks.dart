@@ -14,8 +14,6 @@ import 'package:google_sign_in/google_sign_in.dart' as _i5;
 import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart'
     as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:plugin_platform_interface/plugin_platform_interface.dart'
-    as custom;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -339,9 +337,6 @@ class MockGoogleSignInAccount extends _i1.Mock
   }
 
   @override
-  operator ==(dynamic other) => true;
-
-  @override
   String get email =>
       (super.noSuchMethod(Invocation.getter(#email), returnValue: '')
           as String);
@@ -551,7 +546,6 @@ class MockFirebasePlatform extends _i1.Mock implements _i6.FirebasePlatform {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseAppPlatform extends _i1.Mock
-    with custom.MockPlatformInterfaceMixin
     implements _i6.FirebaseAppPlatform {
   MockFirebaseAppPlatform() {
     _i1.throwOnMissingStub(this);

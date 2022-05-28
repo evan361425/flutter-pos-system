@@ -1,25 +1,27 @@
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
+import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:mockito/annotations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart'
+    as plugin_platform_interface;
 import 'package:possystem/services/auth.dart';
 
-import 'auth_test_mocks.dart';
+import 'auth_test.mocks.dart';
 
 // Custom Mock! avoid clean up after rebuild
-// @GenerateMocks([
-//   GoogleSignIn,
-//   FirebaseAuth,
-//   GoogleSignInAccount,
-//   GoogleSignInAuthentication,
-//   User,
-//   UserCredential,
-//   FirebasePlatform,
-//   FirebaseAppPlatform,
-// ])
+@GenerateMocks([
+  GoogleSignIn,
+  FirebaseAuth,
+  GoogleSignInAccount,
+  GoogleSignInAuthentication,
+  User,
+  UserCredential,
+  FirebasePlatform,
+  FirebaseAppPlatform,
+])
 void main() {
   group('Auth', () {
     late Auth auth;
@@ -28,7 +30,7 @@ void main() {
 
     test('construct', () {
       final delegate = MockFirebasePlatform();
-      final app = MockFirebaseAppPlatform();
+      final app = CustomAppPlatform();
       Firebase.delegatePackingProperty = delegate;
       when(delegate.app()).thenReturn(app);
       when(app.name).thenReturn('[DEFAULT]');
@@ -98,3 +100,6 @@ void main() {
     });
   });
 }
+
+class CustomAppPlatform extends MockFirebaseAppPlatform
+    with plugin_platform_interface.MockPlatformInterfaceMixin {}

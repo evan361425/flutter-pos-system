@@ -45,7 +45,7 @@ dependencies:
 
   # google services
   googleapis: ^8.1.0
-  google_sign_in: ^5.2.4
+  google_sign_in: ^5.3.2
   extension_google_sign_in_as_googleapis_auth: ^2.0.4
 
   # components
