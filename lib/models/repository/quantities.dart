@@ -27,4 +27,10 @@ class Quantities extends ChangeNotifier
       }),
     );
   }
+
+  @override
+  Future<void> commitStaged({bool save = true, bool reset = true}) {
+    // Avoid reset since it will effect Menu
+    return super.commitStaged(save: save, reset: false);
+  }
 }

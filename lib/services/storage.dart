@@ -36,7 +36,9 @@ class Storage {
     if (_initialized) return;
     _initialized = true;
 
-    db = await (opener ?? databaseFactoryIo.openDatabase)(await getRootPath());
+    final path = await getRootPath();
+    debug(path, 'storage.path');
+    db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 
   Future<void> reset(
@@ -110,7 +112,9 @@ class StorageSanitizedData {
 
     // initialize
     if (data[value.id] == null) {
-      data[value.id] = value.data;
+      if (value.data is Map) {
+        data[value.id] = value.data;
+      }
       return;
     }
 

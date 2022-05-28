@@ -65,4 +65,10 @@ class CustomerSettings extends ChangeNotifier
 
     return result.isEmpty ? null : result.first['id'] as int;
   }
+
+  @override
+  Future<void> dropItems() async {
+    await Database.instance.reset(optionTable);
+    return super.dropItems();
+  }
 }

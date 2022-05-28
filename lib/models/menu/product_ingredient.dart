@@ -76,7 +76,9 @@ class ProductIngredient extends Model<ProductIngredientObject>
     ProductIngredient? ori,
     List<String> row,
   ) {
-    var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]);
+    var ingredient = ori?.ingredient ??
+        Stock.instance.getItemByName(row[0]) ??
+        Stock.instance.getStagedByName(row[0]);
     if (ingredient == null) {
       ingredient = Ingredient(
         name: row[0],

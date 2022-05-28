@@ -1052,7 +1052,7 @@
     }
   },
   "btnImporterRefresh": "重整試算表",
-  "btnImporterRefreshHelp": "應用程式感知不到你的試算表有異動，重新整理可以重新找到擁有的表單。",
+  "btnImporterRefreshHelp": "重新整理可以幫助找到擁有的表單。",
   "importPreviewerTitle": "預覽結果",
   "importerColumnsInvalid": "第 {index} 行的資料有錯",
   "@importerColumnsInvalid": {

@@ -423,9 +423,11 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   @override
   List<GoogleSheetCellData> getHeader() {
     final note = CustomerSettingOptionMode.values
-        .map((e) => S.customerSettingModeDescriptions(e))
+        .map((e) =>
+            S.customerSettingModeNames(e) +
+            ' - ' +
+            S.customerSettingModeDescriptions(e))
         .join('\n');
-    S.customerSettingModeDescriptions;
     return <GoogleSheetCellData>[
       _toCD(S.customerSettingNameLabel),
       _toCD(S.customerSettingModeTitle, note),
@@ -435,17 +437,26 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   }
 
   @override
-  List<List<GoogleSheetCellData>> getRows() => target.itemList.map((e) {
-        final info = [
-          for (final item in e.itemList)
-            '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
-        ].join('\n');
-        return [
-          GoogleSheetCellData(stringValue: e.name),
-          GoogleSheetCellData(stringValue: S.customerSettingModeNames(e.mode)),
-          GoogleSheetCellData(stringValue: info),
-        ];
-      }).toList();
+  List<List<GoogleSheetCellData>> getRows() {
+    final options = CustomerSettingOptionMode.values
+        .map((e) => S.customerSettingModeNames(e))
+        .toList();
+
+    return target.itemList.map((e) {
+      final info = [
+        for (final item in e.itemList)
+          '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
+      ].join('\n');
+      return [
+        GoogleSheetCellData(stringValue: e.name),
+        GoogleSheetCellData(
+          options: options,
+          stringValue: S.customerSettingModeNames(e.mode),
+        ),
+        GoogleSheetCellData(stringValue: info),
+      ];
+    }).toList();
+  }
 
   @override
   String? validate(List<String> row) {
@@ -477,17 +488,19 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   @override
   CustomerSetting format(List<String> row, int index) {
     final ori = target.getItemByName(row[0]);
-    final options = row.length < 3
-        ? <String, CustomerSettingOption>{}
-        : {for (var option in _formatOptions(ori, row[2])) option.id: option};
     final cs = CustomerSetting.fromRow(
       ori,
       row,
       index: index,
-      options: options,
     );
-    cs.prepareItem();
     CustomerSettings.instance.addStaged(cs);
+
+    if (row.length >= 3) {
+      for (var option in _formatOptions(ori, row[2])) {
+        cs.addStaged(option);
+        option.repository = cs;
+      }
+    }
 
     return cs;
   }

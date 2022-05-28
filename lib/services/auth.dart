@@ -42,11 +42,13 @@ class Auth {
     }
 
     try {
+      info('start', 'auth.login');
       // Trigger the authentication flow
       final GoogleSignInAccount? user = await _service.signIn();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? auth = await user?.authentication;
+      info(auth == null ? 'empty' : 'allow', 'auth.login');
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(

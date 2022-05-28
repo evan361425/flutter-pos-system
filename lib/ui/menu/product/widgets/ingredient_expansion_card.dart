@@ -38,6 +38,7 @@ class IngredientExpansionCard extends StatelessWidget {
               IconButton(
                 key: Key('$key.more'),
                 onPressed: () => showActions(context),
+                enableFeedback: true,
                 icon: const Icon(KIcons.more),
               )
             ]),

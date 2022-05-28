@@ -60,11 +60,14 @@ mixin Repository<T extends Model> on ChangeNotifier {
     }
 
     for (var item in stagedItems) {
-      item.status = ModelStatus.normal;
-      _items[item.id] = item;
       if (save) {
         await saveItem(item);
+        if (item is Repository && (item as Repository).stagedItems.isNotEmpty) {
+          await (item as Repository).commitStaged();
+        }
       }
+      item.status = ModelStatus.normal;
+      _items[item.id] = item;
     }
 
     _stagedItems.clear();

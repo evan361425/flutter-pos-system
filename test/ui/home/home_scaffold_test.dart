@@ -80,10 +80,13 @@ void main() {
         return tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
       }
 
+      await navAndPop('home_setup.header.menu1', 'menu.add');
+      await navAndPop('home_setup.header.menu2', 'menu.add');
       await navAndPop('home_setup.menu', 'menu.add');
       await navAndPop('home_setup.exporter', 'exporter.google_sheet');
       await navAndPop('home_setup.quantities', 'quantities.add');
       await navAndPop('home_setup.customer', 'customer_settings.action');
+      await navAndPop('home_setup.header.customer', 'customer_settings.action');
       await navAndPop('home_setup.feature_request', 'feature_request_please');
       await dragUp();
       await navAndPop('home_setup.setting', 'setting.theme');

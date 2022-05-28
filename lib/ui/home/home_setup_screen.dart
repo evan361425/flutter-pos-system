@@ -73,10 +73,13 @@ class _HeaderInfo extends StatelessWidget {
 
   final String subtitle;
 
+  final String route;
+
   const _HeaderInfo({
     Key? key,
     required this.title,
     required this.subtitle,
+    required this.route,
   }) : super(key: key);
 
   @override
@@ -96,15 +99,18 @@ class _HeaderInfo extends StatelessWidget {
           tileMode: TileMode.clamp,
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title.toString(),
-            style: theme.textTheme.headline4,
-          ),
-          Text(subtitle),
-        ],
+      child: InkWell(
+        onTap: () => Navigator.of(context).pushNamed(route),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title.toString(),
+              style: theme.textTheme.headline4,
+            ),
+            Text(subtitle),
+          ],
+        ),
       ),
     );
   }
@@ -124,16 +130,22 @@ class _HeaderInfoList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(children: [
           _HeaderInfo(
+            key: const Key('home_setup.header.menu1'),
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: '產品',
+            route: Routes.menu,
           ),
           _HeaderInfo(
+            key: const Key('home_setup.header.menu2'),
             title: menu.length,
             subtitle: '種類',
+            route: Routes.menu,
           ),
           _HeaderInfo(
+            key: const Key('home_setup.header.customer'),
             title: customerSetting.length,
             subtitle: '顧客設定',
+            route: Routes.customer,
           ),
         ]),
       ),

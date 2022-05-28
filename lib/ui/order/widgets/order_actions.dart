@@ -60,6 +60,7 @@ class OrderActions extends StatelessWidget {
         );
         await exec(context, result);
       },
+      enableFeedback: true,
       icon: const Icon(KIcons.more),
     );
   }

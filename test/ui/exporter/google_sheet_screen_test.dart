@@ -187,6 +187,8 @@ void main() {
         testWidgets('export without new sheets', (tester) async {
           final sheetsApi = getMockSheetsApi();
           final sheet = gs.SheetProperties(title: 'title', sheetId: 1);
+          prepareData();
+          when(cache.get(any)).thenReturn('title');
           when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
               .thenAnswer((_) => Future.value(
                   gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet)])));
@@ -548,6 +550,7 @@ void main() {
         });
 
         testWidgets('stock', (tester) async {
+          Stock.instance.replaceItems({'i0': Ingredient(id: 'i0')});
           await prepareImport(tester, 'stock', 1, true, [
             ['i1', 1],
             ['i2'],
@@ -557,17 +560,22 @@ void main() {
             'i2'
           ]);
 
-          expect(Stock.instance.length, equals(2));
+          // should not reset old value
+          expect(Stock.instance.length, equals(3));
+          expect(Stock.instance.getItem('i0'), isNotNull);
           expect(Stock.instance.getItemByName('i1'), isNotNull);
         });
 
         testWidgets('quantities', (tester) async {
+          Quantities.instance.replaceItems({'q0': Quantity(id: 'q0')});
           await prepareImport(tester, 'quantities', 2, true, [
             ['q1', 2],
             ['q2'],
           ]);
 
-          expect(Quantities.instance.length, equals(2));
+          // should not reset old value
+          expect(Quantities.instance.length, equals(3));
+          expect(Quantities.instance.getItem('q0'), isNotNull);
           expect(Quantities.instance.getItemByName('q1'), isNotNull);
         });
 
@@ -596,15 +604,33 @@ void main() {
         });
 
         testWidgets('customer', (tester) async {
-          when(database.push(any, any)).thenAnswer((_) => Future.value(0));
+          void returnIdByName(int id, String name) {
+            when(database.push(
+              any,
+              argThat(predicate((e) => e is Map && e['name'] == name)),
+            )).thenAnswer((_) => Future.value(id));
+          }
+
+          returnIdByName(100, 'c1');
+          returnIdByName(101, 'c2');
+          returnIdByName(200, 'co1');
+          returnIdByName(201, 'co2');
           when(database.reset(any)).thenAnswer((_) => Future.value());
           await prepareImport(tester, 'customer', 4, true, [
             ['c1', '折扣', '- co1,true\n- co2,,5'],
             ['c2'],
           ]);
 
+          verify(database.reset(CustomerSettings.table)).called(1);
+          verify(database.reset(CustomerSettings.optionTable)).called(1);
           expect(CustomerSettings.instance.length, equals(2));
-          expect(CustomerSettings.instance.getItemByName('c1'), isNotNull);
+
+          final c1 = CustomerSettings.instance.getItem('100');
+          expect(c1?.name, equals('c1'));
+          expect(CustomerSettings.instance.getItem('101')?.name, equals('c2'));
+
+          expect(c1?.getItem('200')?.name, equals('co1'));
+          expect(c1?.getItem('201')?.name, equals('co2'));
         });
 
         setUp(() {

@@ -101,19 +101,29 @@ void main() {
     });
 
     test('#set', () async {
+      Future<void> verifyResult(Map expected) async {
+        final result = await storage.get(Stores.menu, 'a');
+        expect(result, expected);
+      }
+
       await storage.add(Stores.menu, 'a', {'old': 'value'});
       await storage.set(Stores.menu, {
         'a': {'b': 'c'},
       });
-      final result = await storage.get(Stores.menu, 'a');
-      expect(result, {'old': 'value', 'b': 'c'});
+      verifyResult({'old': 'value', 'b': 'c'});
 
-      // delete
-      await storage.set(Stores.menu, {
-        'a.b': null,
-      });
-      final result2 = await storage.get(Stores.menu, 'a');
-      expect(result2, {'old': 'value'});
+      // delete field
+      await storage.set(Stores.menu, {'a.b': null});
+      verifyResult({'old': 'value'});
+
+      // delete all
+      await storage.set(Stores.menu, {'a': null});
+      verifyResult({});
+
+      // must be map
+      await storage.add(Stores.menu, 'a', {'b': 'c'});
+      await storage.set(Stores.menu, {'a.c': 2, 'a': 'b'});
+      verifyResult({'c': 2, 'b': 'c'});
     });
 
     test('#setAll', () async {

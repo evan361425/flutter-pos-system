@@ -62,6 +62,11 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
         child: Column(children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: getHeader(context),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Center(child: HintText(S.totalCount(items.length))),
           ),
           ...getDetails(context, items),
@@ -82,6 +87,10 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
   }
 
   Widget getItem(BuildContext context, T item);
+
+  Widget getHeader(BuildContext context) {
+    return const Text('注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！');
+  }
 }
 
 class ImporterColumnStatus extends StatelessWidget {

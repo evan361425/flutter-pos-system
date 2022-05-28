@@ -164,7 +164,7 @@ class GoogleSheetExporter {
                 for (final cell in row) cell.toGoogleFormat(),
               ])
           ],
-          fields: 'userEnteredValue,userEnteredFormat,note',
+          fields: 'userEnteredValue,userEnteredFormat,dataValidation,note',
           start: gs.GridCoordinate(
             rowIndex: 0,
             columnIndex: 0,
@@ -201,6 +201,8 @@ class GoogleSheetExporter {
       return row;
     }).toList();
   }
+
+  Future<void> auth() => _setApiClient();
 
   Future<void> _setApiClient() async {
     // allow mock only one object
@@ -295,12 +297,15 @@ class GoogleSheetCellData {
 
   final String? note;
 
+  final List<String>? options;
+
   GoogleSheetCellData({
     String? formulaValue,
     num? numberValue,
     String? stringValue,
     bool isBold = false,
     this.note,
+    this.options,
   })  : value = gs.ExtendedValue(
           formulaValue: formulaValue,
           numberValue: numberValue?.toDouble(),
@@ -314,6 +319,16 @@ class GoogleSheetCellData {
     return gs.CellData(
       userEnteredValue: value,
       userEnteredFormat: format,
+      dataValidation: options == null
+          ? null
+          : gs.DataValidationRule(
+              condition: gs.BooleanCondition(
+                type: 'ONE_OF_LIST',
+                values: options!
+                    .map((e) => gs.ConditionValue(userEnteredValue: e))
+                    .toList(),
+              ),
+            ),
       note: note,
     );
   }

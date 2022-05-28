@@ -52,7 +52,6 @@ class CustomerSetting extends Model<CustomerSettingObject>
     CustomerSetting? ori,
     List<String> row, {
     required int index,
-    required Map<String, CustomerSettingOption> options,
   }) {
     final mode = str2mode(row[1]);
     final status = ori == null
@@ -64,7 +63,6 @@ class CustomerSetting extends Model<CustomerSettingObject>
       name: row[0],
       index: index,
       mode: mode,
-      options: options,
       status: status,
     );
   }
@@ -148,4 +146,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
+
+  @override
+  Future<void> dropItems() => Future.value();
 }

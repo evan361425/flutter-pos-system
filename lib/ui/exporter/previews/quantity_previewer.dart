@@ -23,4 +23,9 @@ class QuantityPreviewer extends PreviewerScreen<Quantity> {
       ]),
     );
   }
+
+  @override
+  Widget getHeader(BuildContext context) {
+    return const Text('匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。');
+  }
 }

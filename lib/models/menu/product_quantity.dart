@@ -61,7 +61,9 @@ class ProductQuantity extends Model<ProductQuantityObject>
     ProductQuantity? ori,
     List<String> row,
   ) {
-    var quantity = ori?.quantity ?? Quantities.instance.getItemByName(row[0]);
+    var quantity = ori?.quantity ??
+        Quantities.instance.getItemByName(row[0]) ??
+        Quantities.instance.getStagedByName(row[0]);
     if (quantity == null) {
       quantity = Quantity(
         name: row[0],

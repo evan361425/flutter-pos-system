@@ -42,6 +42,7 @@ void main() {
           ['B', 'pA', 1, 1, 'from-format\n +\n-i'],
           ['C', 'pA', 1, 1],
           ['A', 'pA2', 0, 0, ingredients],
+          ['A', 'pA3', 0, 0, '- i4,1\n+q3'],
         ]);
 
         void verifyProd(Product p, List<String> sValues, List<int> iValues) {
@@ -109,10 +110,25 @@ void main() {
         verifyIng('i4', [1, 0, 0, 0], 'staged', 'q1', 'normal');
         verifyIng('i4', [1, 0, 0, 0], 'staged', 'q3', 'stagedQua');
         verifyIng('i5', [0, 1, 1, 1], 'normal', 'q1', 'normal');
+
+        // should use staged item, not create new
+        final p4i4 = p4.getItemByName('i4');
+        final p5i4 = items[4].item?.getItemByName('i4');
+        expect(p4i4?.ingredient.id, equals(p5i4?.ingredient.id));
+        final p4q3 = p5i4?.getStagedByName('q3');
+        final p5q3 = p4i4?.getStagedByName('q3');
+        expect(p4q3?.quantity.id, equals(p5q3?.quantity.id));
+
         // created
+        // i1,i2,i5
         expect(Stock.instance.length, equals(3));
+        // i0,i3,i4
+        expect(Stock.instance.stagedItems.length, equals(3));
         expect(Stock.instance.getStagedByName('i3'), isNotNull);
+        // q1
         expect(Quantities.instance.length, equals(1));
+        // q2,q3
+        expect(Quantities.instance.stagedItems.length, equals(2));
         expect(Quantities.instance.getStagedByName('q2'), isNotNull);
       });
 
@@ -328,12 +344,12 @@ void main() {
           final item = items[index].item!;
           expect(item.name, equals(name));
           expect(item.mode.name, equals(mode));
-          expect(item.length, equals(l));
+          expect(item.stagedItems.length, equals(l));
           expect(item.statusName, equals(status));
         }
 
         verifyItem(0, 'c1', 'changeDiscount', 2, 'updated');
-        expect(items[0].item!.getItem('co1'), isNotNull);
+        expect(items[0].item!.getStaged('co1'), isNotNull);
         expect(items[1].hasError, isTrue);
         expect(items[2].hasError, isTrue);
         expect(items[3].hasError, isTrue);

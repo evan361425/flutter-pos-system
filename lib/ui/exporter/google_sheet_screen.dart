@@ -258,6 +258,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
         target.getFormattedHead(formatter),
       );
     }
+    showSuccessSnackbar(context, S.actSuccess);
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
@@ -297,6 +298,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet(
     Map<GoogleSheetAble, String> requireSheets,
   ) async {
+    widget.setProgressStatus('驗證身份中');
+    await widget.exporter.auth();
+
     final names = requireSheets.values.toList();
     spreadsheet ??= await _createSpreadsheet(names);
     if (spreadsheet == null) {
@@ -514,7 +518,13 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
     final allowSave = await _previewParsedData(type, source);
     final target = GoogleSheetFormatter.getTarget(type);
-    return allowSave == true ? target.commitStaged() : target.abortStaged();
+
+    if (allowSave == true) {
+      await target.commitStaged();
+      showSuccessSnackbar(context, S.actSuccess);
+    } else {
+      target.abortStaged();
+    }
   }
 
   Future<bool?> _previewSheetData(
@@ -561,6 +571,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     GoogleSheetAble type,
     GoogleSheetProperties sheet,
   ) async {
+    widget.setProgressStatus('驗證身份中');
+    await widget.exporter.auth();
+
     const formatter = GoogleSheetFormatter();
     final target = GoogleSheetFormatter.getTarget(type);
     final neededColumns = target.getFormattedHead(formatter).length;

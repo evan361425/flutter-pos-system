@@ -30,6 +30,7 @@ class MenuScreen extends StatelessWidget {
           IconButton(
             key: const Key('menu.more'),
             onPressed: () => _showActions(context),
+            enableFeedback: true,
             icon: const Icon(KIcons.more),
           ),
         ],

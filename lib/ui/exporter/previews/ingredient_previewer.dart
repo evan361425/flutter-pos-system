@@ -22,4 +22,9 @@ class IngredientPreviewer extends PreviewerScreen<Ingredient> {
       ]),
     );
   }
+
+  @override
+  Widget getHeader(BuildContext context) {
+    return const Text('匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。');
+  }
 }

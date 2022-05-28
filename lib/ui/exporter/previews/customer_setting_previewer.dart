@@ -28,7 +28,7 @@ class CustomerSettingPreviewer extends PreviewerScreen<CustomerSetting> {
       ]),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        for (final option in item.itemList)
+        for (final option in item.stagedItems)
           ListTile(
             title: Text(option.name),
             subtitle: option.modeValueName.isEmpty

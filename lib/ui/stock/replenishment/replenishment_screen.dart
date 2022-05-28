@@ -23,7 +23,11 @@ class ReplenishmentScreen extends StatelessWidget {
         Navigator.of(context).pushNamed(Routes.stockReplenishmentModal);
 
     final body = replenisher.isEmpty
-        ? Center(child: EmptyBody(onPressed: navToAdd))
+        ? Center(
+            child: EmptyBody(
+            onPressed: navToAdd,
+            tooltip: '採購可以幫你快速調整成分的庫存',
+          ))
         : SlidableItemList<Replenishment, int>(
             delegate: SlidableItemDelegate(
               groupTag: 'stock.replenishment',

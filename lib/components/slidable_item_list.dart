@@ -11,10 +11,13 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
   final bool scrollable;
 
+  final String? hintText;
+
   const SlidableItemList({
     Key? key,
     required this.delegate,
     this.scrollable = true,
+    this.hintText,
   }) : super(key: key);
 
   @override
@@ -26,7 +29,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
       Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: HintText(S.totalCount(delegate.items.length)),
+          child: HintText(hintText ?? S.totalCount(delegate.items.length)),
         ),
       ),
       for (final item in delegate.items)

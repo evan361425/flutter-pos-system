@@ -27,6 +27,7 @@ class CustomerScreen extends StatelessWidget {
           IconButton(
             key: const Key('customer_settings.action'),
             onPressed: () => _showActions(context),
+            enableFeedback: true,
             icon: const Icon(KIcons.more),
           ),
         ],
