@@ -17,8 +17,8 @@ homepage: https://github.com/evan361425/flutter-pos-system
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# 2.4.5
-version: 2.4.5+20405002
+# 2.5.0
+version: 2.5.0+20500001
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
