@@ -29,6 +29,8 @@ class Ingredient extends Model<IngredientObject>
   final Stores storageStore = Stores.stock;
 
   Ingredient({
+    String? id,
+    ModelStatus? status,
     String name = 'ingredient',
     this.currentAmount,
     this.warningAmount,
@@ -36,8 +38,7 @@ class Ingredient extends Model<IngredientObject>
     this.lastAmount,
     this.lastAddAmount,
     this.updatedAt,
-    String? id,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
   }
 
@@ -51,6 +52,22 @@ class Ingredient extends Model<IngredientObject>
         lastAddAmount: object.lastAddAmount,
         updatedAt: object.updatedAt,
       );
+
+  factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
+    final amount = row.length > 1 ? num.tryParse(row[1]) : null;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (amount == ori.currentAmount
+            ? ModelStatus.normal
+            : ModelStatus.updated);
+
+    return Ingredient(
+      id: ori?.id,
+      name: row[0],
+      currentAmount: amount,
+      status: status,
+    );
+  }
 
   @override
   Stock get repository => Stock.instance;

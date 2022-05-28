@@ -22,6 +22,7 @@ class ItemMoreActionButton extends StatelessWidget {
         IconButton(
           key: const Key('item_more_action'),
           onPressed: onTap,
+          enableFeedback: true,
           icon: const Icon(KIcons.more),
         ),
       ]),

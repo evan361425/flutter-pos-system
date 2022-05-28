@@ -29,7 +29,7 @@ class Linkify extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyTheme = Theme.of(context).textTheme.bodyText2;
+    final bodyTheme = Theme.of(context).textTheme.bodyMedium;
     final linkStyle = bodyTheme?.copyWith(
       color: Colors.blueAccent,
       decoration: TextDecoration.underline,

@@ -1,7 +1,7 @@
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 class Storage {
   static Storage instance = Storage();
@@ -32,18 +32,25 @@ class Storage {
     return {for (var item in list) item.key: item.value};
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize({_Opener? opener}) async {
     if (_initialized) return;
     _initialized = true;
 
-    final databasePath = await getDatabasesPath() + '/pos_system.sembast';
-
-    db = await databaseFactoryIo.openDatabase(databasePath);
+    final path = await getRootPath();
+    debug(path, 'storage.path');
+    db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 
-  Future<void> reset() async {
-    final path = await getDatabasesPath() + '/pos_system.sembast';
-    return databaseFactoryIo.deleteDatabase(path);
+  Future<void> reset(
+    Stores? storeId, [
+    Future<void> Function(String path)? del,
+  ]) async {
+    if (storeId == null) {
+      return (del ?? databaseFactoryIo.deleteDatabase)(await getRootPath());
+    }
+
+    final store = getStore(storeId);
+    await store.drop(db);
   }
 
   StorageSanitizedData sanitize(Map<String, Object?> data) {
@@ -74,20 +81,18 @@ class Storage {
         )));
   }
 
+  static Future<String> getRootPath() async {
+    final paths = (await XFile.getRootPath()).split('/')
+      ..removeLast()
+      ..add('databases');
+    return paths.join('/') + '/pos_system.sembast';
+  }
+
   /// Get string map Store
   ///
   /// variable to make it easy to test
   static StoreRef getStore(Stores storeId) =>
       stringMapStoreFactory.store(storeId.toString());
-}
-
-enum Stores {
-  menu,
-  stock,
-  replenisher,
-  quantities,
-  cashier,
-  customers,
 }
 
 class StorageSanitizedData {
@@ -107,7 +112,9 @@ class StorageSanitizedData {
 
     // initialize
     if (data[value.id] == null) {
-      data[value.id] = value.data;
+      if (value.data is Map) {
+        data[value.id] = value.data;
+      }
       return;
     }
 
@@ -147,6 +154,15 @@ class StorageSanitizedData {
   }
 }
 
+enum Stores {
+  menu,
+  stock,
+  replenisher,
+  quantities,
+  cashier,
+  customers,
+}
+
 class _SanitizedValue {
   late final String id;
   late final Object? data;
@@ -164,3 +180,11 @@ class _SanitizedValue {
     }
   }
 }
+
+typedef _Opener = Future<Database> Function(
+  String path, {
+  int? version,
+  Future<dynamic> Function(Database, int, int)? onVersionChanged,
+  DatabaseMode? mode,
+  SembastCodec? codec,
+});

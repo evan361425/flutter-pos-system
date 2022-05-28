@@ -86,9 +86,7 @@ class _CartProductListTile extends StatelessWidget {
           onPressed: () => product.increment(),
         ),
         Text(
-          // TODO: This should be num indeed, need to fix at
-          // https://github.com/flutter/flutter/blob/36a0bc5b964cb2f49988bfd0410ef8601955f554/packages/flutter_tools/lib/src/localizations/gen_l10n.dart#L229
-          S.orderCartItemPrice(product.price.toInt()),
+          S.orderCartItemPrice(product.price),
           key: Key('cart.product.$index.price'),
         ),
       ],
@@ -96,7 +94,7 @@ class _CartProductListTile extends StatelessWidget {
 
     return MergeSemantics(
       child: ListTileTheme.merge(
-        selectedColor: theme.textTheme.bodyText1!.color,
+        selectedColor: DefaultTextStyle.of(context).style.color,
         child: ListTile(
           key: Key('cart.product.$index'),
           leading: leading,

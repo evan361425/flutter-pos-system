@@ -32,11 +32,12 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   ProductQuantity({
     String? id,
+    ModelStatus? status,
     Quantity? quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : super(id) {
+  }) : super(id, status) {
     if (quantity != null) this.quantity = quantity;
   }
 
@@ -56,11 +57,57 @@ class ProductQuantity extends Model<ProductQuantityObject>
     );
   }
 
+  factory ProductQuantity.fromRow(
+    ProductQuantity? ori,
+    List<String> row,
+  ) {
+    var quantity = ori?.quantity ??
+        Quantities.instance.getItemByName(row[0]) ??
+        Quantities.instance.getStagedByName(row[0]);
+    if (quantity == null) {
+      quantity = Quantity(
+        name: row[0],
+        status: ModelStatus.staged,
+      );
+      Quantities.instance.addStaged(quantity);
+    }
+
+    final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
+    final ap = row.length > 2 ? num.tryParse(row[2]) ?? 0 : 0;
+    final ac = row.length > 3 ? num.tryParse(row[3]) ?? 0 : 0;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (amount == ori.amount &&
+                ap == ori.additionalPrice &&
+                ac == ori.additionalCost
+            ? ModelStatus.normal
+            : ModelStatus.updated);
+
+    return ProductQuantity(
+      id: ori?.id,
+      quantity: quantity,
+      amount: amount,
+      additionalPrice: ap,
+      additionalCost: ac,
+      status: status,
+    );
+  }
+
   @override
   String get name => quantity.name;
 
   @override
   String get prefix => '${ingredient.prefix}.quantities.$id';
+
+  @override
+  String get statusName {
+    // 當成分是新的，代表產品份量一定也是新的，這樣就只需要輸出是否為「新的份量種類」
+    if (ingredient.status == ModelStatus.staged) {
+      return quantity.status == ModelStatus.staged ? 'stagedQua' : 'normal';
+    }
+
+    return super.statusName;
+  }
 
   @override
   ProductIngredient get repository => ingredient;

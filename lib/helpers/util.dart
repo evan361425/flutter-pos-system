@@ -25,4 +25,12 @@ class Util {
 
     return now;
   }
+
+  static String removeExtension(String name) {
+    final index = name.lastIndexOf('.');
+    if (index == -1) {
+      return name;
+    }
+    return name.substring(0, index);
+  }
 }

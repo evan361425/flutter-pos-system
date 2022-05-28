@@ -6,6 +6,7 @@ import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class HomeSetupScreen extends StatelessWidget {
@@ -13,43 +14,52 @@ class HomeSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const allowGenRandom =
+        kDebugMode || String.fromEnvironment('app.flavor') == 'dev';
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            _HeaderInfoList(),
-            if (kDebugMode || String.fromEnvironment('app.flavor') == 'dev')
-              Center(child: RandomGenerateOrderButton()),
+          children: [
+            const _HeaderInfoList(),
+            if (allowGenRandom)
+              const Center(child: RandomGenerateOrderButton()),
             RouteTile(
-              key: Key('home_setup.menu'),
+              key: const Key('home_setup.menu'),
               icon: Icons.collections_outlined,
               route: Routes.menu,
-              title: '菜單',
+              title: S.menuTitle,
             ),
             RouteTile(
-              key: Key('home_setup.customer'),
+              key: const Key('home_setup.exporter'),
+              icon: Icons.upload_file_outlined,
+              route: Routes.exporter,
+              title: S.exporterTitle,
+            ),
+            RouteTile(
+              key: const Key('home_setup.customer'),
               icon: Icons.assignment_ind_outlined,
               route: Routes.customer,
-              title: '顧客設定',
+              title: S.customerSettingTitle,
             ),
             RouteTile(
-              key: Key('home_setup.quantities'),
+              key: const Key('home_setup.quantities'),
               icon: Icons.exposure_outlined,
               route: Routes.quantities,
-              title: '份量',
+              title: S.quantityTitle,
             ),
             RouteTile(
-              key: Key('home_setup.feature_request'),
+              key: const Key('home_setup.feature_request'),
               icon: Icons.lightbulb_outlined,
               route: Routes.featureRequest,
-              title: '建議',
+              title: S.featureRequestTitle,
             ),
             RouteTile(
-              key: Key('home_setup.setting'),
+              key: const Key('home_setup.setting'),
               icon: Icons.settings_outlined,
               route: Routes.setting,
-              title: '其他設定',
+              title: S.settingTitle,
             ),
           ],
         ),
@@ -63,10 +73,13 @@ class _HeaderInfo extends StatelessWidget {
 
   final String subtitle;
 
+  final String route;
+
   const _HeaderInfo({
     Key? key,
     required this.title,
     required this.subtitle,
+    required this.route,
   }) : super(key: key);
 
   @override
@@ -86,15 +99,18 @@ class _HeaderInfo extends StatelessWidget {
           tileMode: TileMode.clamp,
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title.toString(),
-            style: theme.textTheme.headline4,
-          ),
-          Text(subtitle),
-        ],
+      child: InkWell(
+        onTap: () => Navigator.of(context).pushNamed(route),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title.toString(),
+              style: theme.textTheme.headline4,
+            ),
+            Text(subtitle),
+          ],
+        ),
       ),
     );
   }
@@ -114,16 +130,22 @@ class _HeaderInfoList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(children: [
           _HeaderInfo(
+            key: const Key('home_setup.header.menu1'),
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: '產品',
+            route: Routes.menu,
           ),
           _HeaderInfo(
+            key: const Key('home_setup.header.menu2'),
             title: menu.length,
             subtitle: '種類',
+            route: Routes.menu,
           ),
           _HeaderInfo(
+            key: const Key('home_setup.header.customer'),
             title: customerSetting.length,
             subtitle: '顧客設定',
+            route: Routes.customer,
           ),
         ]),
       ),

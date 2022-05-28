@@ -21,13 +21,13 @@ class QuantityModal extends StatefulWidget {
 
 class _QuantityModalState extends State<QuantityModal>
     with ItemModal<QuantityModal> {
-  TextEditingController? _nameController;
-  TextEditingController? _proportionController;
+  late TextEditingController _nameController;
+  late TextEditingController _proportionController;
 
   @override
   void dispose() {
-    _nameController?.dispose();
-    _proportionController?.dispose();
+    _nameController.dispose();
+    _proportionController.dispose();
 
     super.dispose();
   }
@@ -41,14 +41,14 @@ class _QuantityModalState extends State<QuantityModal>
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: S.stockQuantityNameLabel,
-          hintText: S.stockQuantityNameHint,
+          labelText: S.quantityNameLabel,
+          hintText: S.quantityNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         autofocus: widget.isNew,
         maxLength: 30,
-        validator: Validator.textLimit(S.stockQuantityNameLabel, 50),
+        validator: Validator.textLimit(S.quantityNameLabel, 30),
       ),
       TextFormField(
         key: const Key('quantity.proportion'),
@@ -57,15 +57,18 @@ class _QuantityModalState extends State<QuantityModal>
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
-          labelText: S.stockQuantityProportionLabel,
+          labelText: S.quantityProportionLabel,
           errorText: errorMessage,
-          helperText: S.stockQuantityProportionHelper,
+          helperText: S.quantityProportionHelper,
           helperMaxLines: 100,
           filled: false,
         ),
         // NOTE: do we need maximum?
-        validator: Validator.positiveNumber(S.stockQuantityProportionLabel,
-            maximum: 100),
+        validator: Validator.positiveNumber(
+          S.quantityProportionLabel,
+          maximum: 100,
+          allowNull: true,
+        ),
       )
     ];
   }
@@ -98,10 +101,10 @@ class _QuantityModalState extends State<QuantityModal>
 
   @override
   String? validate() {
-    final name = _nameController!.text;
+    final name = _nameController.text;
 
     if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
-      return S.stockQuantityNameRepeatError;
+      return S.quantityNameRepeatError;
     }
 
     return null;
@@ -109,8 +112,8 @@ class _QuantityModalState extends State<QuantityModal>
 
   QuantityObject _parseObject() {
     return QuantityObject(
-      name: _nameController!.text,
-      defaultProportion: num.parse(_proportionController!.text),
+      name: _nameController.text,
+      defaultProportion: num.tryParse(_proportionController.text),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/services/database.dart';
@@ -6,6 +7,9 @@ import 'package:possystem/services/storage.dart';
 
 mixin Repository<T extends Model> on ChangeNotifier {
   Map<String, T> _items = {};
+
+  /// Use for importing items
+  final Map<String, T> _stagedItems = {};
 
   bool get isEmpty => _items.isEmpty;
 
@@ -17,9 +21,23 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   int get length => _items.length;
 
-  Future<void> addItem(T item) async {
+  Iterable<T> get stagedItems => _stagedItems.values;
+
+  /// 捨棄那些暫存的資料
+  void abortStaged() {
+    _stagedItems.clear();
+  }
+
+  Future<void> addItem(T item, {save = true}) async {
+    if (!save) {
+      item.repository = this;
+      _items[item.id] = item;
+      return;
+    }
+
     if (!hasItem(item.id)) {
       item.repository = this;
+
       await saveItem(item);
 
       _items[item.id] = item;
@@ -28,7 +46,71 @@ mixin Repository<T extends Model> on ChangeNotifier {
     }
   }
 
+  void addStaged(T item) {
+    _stagedItems[item.id] = item;
+  }
+
+  /// 提交那些暫存的資料
+  Future<void> commitStaged({bool save = true, bool reset = true}) async {
+    if (reset) {
+      _items.clear();
+      if (save) {
+        await dropItems();
+      }
+    }
+
+    for (var item in stagedItems) {
+      if (save) {
+        await saveItem(item);
+        if (item is Repository && (item as Repository).stagedItems.isNotEmpty) {
+          await (item as Repository).commitStaged();
+        }
+      }
+      item.status = ModelStatus.normal;
+      _items[item.id] = item;
+    }
+
+    _stagedItems.clear();
+
+    notifyItems();
+  }
+
+  List<Format> getFormattedHead<Format>(Formatter<Format> formatter) {
+    return formatter.getHeader(this);
+  }
+
+  List<List<Format>> getFormattedItems<Format>(Formatter<Format> formatter) {
+    return formatter.getRows(this);
+  }
+
   T? getItem(String id) => _items[id];
+
+  T? getItemByName(String name) {
+    for (var item in items) {
+      if (item.name == name) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  T? getStaged(String id) {
+    for (var item in stagedItems) {
+      if (item.id == id) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  T? getStagedByName(String name) {
+    for (var item in stagedItems) {
+      if (item.name == name) {
+        return item;
+      }
+    }
+    return null;
+  }
 
   bool hasItem(String id) => _items.containsKey(id);
 
@@ -54,6 +136,8 @@ mixin Repository<T extends Model> on ChangeNotifier {
   Future<void> saveBatch(Iterable<_BatchData> data);
 
   Future<void> saveItem(T item);
+
+  Future<void> dropItems();
 }
 
 mixin RepositoryDB<T extends Model> on Repository<T> {
@@ -110,6 +194,9 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
     item.id = id.toString();
   }
+
+  @override
+  Future<void> dropItems() => Database.instance.reset(repoTableName);
 }
 
 mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
@@ -167,9 +254,9 @@ mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
 mixin RepositoryStorage<T extends Model> on Repository<T> {
   bool versionChanged = false;
 
-  Stores get storageStore;
-
   RepositoryStorageType get repoType => RepositoryStorageType.pureRepo;
+
+  Stores get storageStore;
 
   T buildItem(String id, Map<String, Object?> value);
 
@@ -216,6 +303,9 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
         ? Storage.instance.add(storageStore, item.id, data)
         : Storage.instance.set(storageStore, {item.prefix: data});
   }
+
+  @override
+  Future<void> dropItems() => Storage.instance.reset(storageStore);
 }
 
 enum RepositoryStorageType {

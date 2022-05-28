@@ -1,4 +1,5 @@
 import 'package:possystem/services/database.dart';
+import 'package:possystem/translator.dart';
 
 import '../model.dart';
 import '../objects/customer_object.dart';
@@ -27,11 +28,12 @@ class CustomerSetting extends Model<CustomerSettingObject>
 
   CustomerSetting({
     String? id,
+    ModelStatus? status,
     String name = 'customer setting',
     int index = 0,
     this.mode = CustomerSettingOptionMode.statOnly,
     Map<String, CustomerSettingOption>? options,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
     this.index = index;
     if (options != null) replaceItems(options);
@@ -44,6 +46,34 @@ class CustomerSetting extends Model<CustomerSettingObject>
       index: object.index!,
       mode: object.mode!,
     );
+  }
+
+  factory CustomerSetting.fromRow(
+    CustomerSetting? ori,
+    List<String> row, {
+    required int index,
+  }) {
+    final mode = str2mode(row[1]);
+    final status = ori == null
+        ? ModelStatus.staged
+        : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
+
+    return CustomerSetting(
+      id: ori?.id,
+      name: row[0],
+      index: index,
+      mode: mode,
+      status: status,
+    );
+  }
+
+  static CustomerSettingOptionMode str2mode(String key) {
+    final possible = {
+      for (var e in CustomerSettingOptionMode.values)
+        S.customerSettingModeNames(e.name): e,
+    };
+
+    return possible[key] ?? CustomerSettingOptionMode.statOnly;
   }
 
   CustomerSettingOption? get defaultOption {
@@ -116,4 +146,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
+
+  @override
+  Future<void> dropItems() => Future.value();
 }

@@ -41,13 +41,13 @@ class QuantityList extends StatelessWidget {
     return ListTile(
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name),
-      subtitle: Text(S.stockQuantityMetaProportion(quantity.defaultProportion)),
+      subtitle: Text(S.quantityMetaProportion(quantity.defaultProportion)),
     );
   }
 
   Widget _warningContextBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
-    final moreCtx = S.stockQuantityDialogDeletionContent(count);
+    final moreCtx = S.quantityDialogDeletionContent(count);
 
     return Text(S.dialogDeletionContent(quantity.name, moreCtx));
   }

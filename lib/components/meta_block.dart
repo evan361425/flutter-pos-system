@@ -33,7 +33,7 @@ class MetaBlock {
         text: TextSpan(
           children: children,
           // disable parent text style
-          style: textStyle ?? Theme.of(context).textTheme.bodyText1,
+          style: textStyle ?? Theme.of(context).textTheme.bodyMedium,
         ),
       );
     } else if (emptyText != null) {

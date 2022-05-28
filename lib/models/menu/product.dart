@@ -40,6 +40,7 @@ class Product extends Model<ProductObject>
 
   Product({
     String? id,
+    ModelStatus? status,
     String name = 'product',
     int index = 1,
     this.cost = 0,
@@ -49,7 +50,7 @@ class Product extends Model<ProductObject>
     this.searchedAt,
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
-        super(id) {
+        super(id, status) {
     this.name = name;
     this.index = index;
     this.imagePath = imagePath;
@@ -84,6 +85,29 @@ class Product extends Model<ProductObject>
         for (var ingredient in ingredients) ingredient!.id: ingredient
       },
     )..prepareItem();
+  }
+
+  factory Product.fromRow(
+    Product? ori,
+    List<String> row, {
+    required int index,
+  }) {
+    final price = num.parse(row[2]);
+    final cost = num.parse(row[3]);
+    final status = ori == null
+        ? ModelStatus.staged
+        : (price == ori.price && cost == ori.cost
+            ? ModelStatus.normal
+            : ModelStatus.updated);
+
+    return Product(
+      id: ori?.id,
+      name: row[1],
+      index: index,
+      price: price,
+      cost: cost,
+      status: status,
+    );
   }
 
   @override

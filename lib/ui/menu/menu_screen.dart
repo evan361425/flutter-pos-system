@@ -24,12 +24,13 @@ class MenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.menuCatalogTitle),
+        title: Text(S.menuTitle),
         leading: const PopButton(),
         actions: [
           IconButton(
             key: const Key('menu.more'),
             onPressed: () => _showActions(context),
+            enableFeedback: true,
             icon: const Icon(KIcons.more),
           ),
         ],

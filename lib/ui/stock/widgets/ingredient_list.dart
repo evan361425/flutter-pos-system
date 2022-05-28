@@ -18,8 +18,16 @@ class IngredientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final updatedAt = latestUpdatedAt();
+
     return SlidableItemList<Ingredient, int>(
       scrollable: false,
+      hintText: [
+        updatedAt == null
+            ? S.stockHasNotReplenishEver
+            : S.stockUpdatedAt(updatedAt),
+        S.totalCount(ingredients.length),
+      ].join(MetaBlock.string),
       delegate: SlidableItemDelegate(
         items: ingredients,
         deleteValue: 0,
@@ -48,6 +56,19 @@ class IngredientList extends StatelessWidget {
     final moreCtx = S.stockIngredientDialogDeletionContent(count);
 
     return Text(S.dialogDeletionContent(ingredient.name, moreCtx));
+  }
+
+  DateTime? latestUpdatedAt() {
+    DateTime? latest;
+    for (var ingredient in ingredients) {
+      if (latest == null) {
+        latest = ingredient.updatedAt;
+      } else if (ingredient.updatedAt?.isAfter(latest) == true) {
+        latest = ingredient.updatedAt;
+      }
+    }
+
+    return latest;
   }
 }
 

@@ -14,9 +14,10 @@ class Quantity extends Model<QuantityObject>
 
   Quantity({
     String? id,
+    ModelStatus? status,
     String name = 'quantity',
     this.defaultProportion = 1,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
   }
 
@@ -25,6 +26,22 @@ class Quantity extends Model<QuantityObject>
         name: object.name!,
         defaultProportion: object.defaultProportion!,
       );
+
+  factory Quantity.fromRow(Quantity? ori, List<String> row) {
+    final p = row.length > 1 ? num.tryParse(row[1]) ?? 1 : 1;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (p == ori.defaultProportion
+            ? ModelStatus.normal
+            : ModelStatus.updated);
+
+    return Quantity(
+      id: ori?.id,
+      name: row[0],
+      defaultProportion: p,
+      status: status,
+    );
+  }
 
   @override
   Quantities get repository => Quantities.instance;

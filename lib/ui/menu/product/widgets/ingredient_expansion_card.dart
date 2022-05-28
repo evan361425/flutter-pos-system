@@ -8,10 +8,10 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class IngredientExpantionCard extends StatelessWidget {
+class IngredientExpansionCard extends StatelessWidget {
   final ProductIngredient ingredient;
 
-  const IngredientExpantionCard(this.ingredient, {Key? key}) : super(key: key);
+  const IngredientExpansionCard(this.ingredient, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,7 @@ class IngredientExpantionCard extends StatelessWidget {
               IconButton(
                 key: Key('$key.more'),
                 onPressed: () => showActions(context),
+                enableFeedback: true,
                 icon: const Icon(KIcons.more),
               )
             ]),

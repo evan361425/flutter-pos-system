@@ -35,14 +35,6 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
   set db(_i2.Database? _db) => super.noSuchMethod(Invocation.setter(#db, _db),
       returnValueForMissingStub: null);
   @override
-  int get oldVersion =>
-      (super.noSuchMethod(Invocation.getter(#oldVersion), returnValue: 0)
-          as int);
-  @override
-  set oldVersion(int? _oldVersion) =>
-      super.noSuchMethod(Invocation.setter(#oldVersion, _oldVersion),
-          returnValueForMissingStub: null);
-  @override
   _i4.Future<List<Object?>> batchUpdate(
           String? table, List<Map<String, Object?>>? data,
           {String? where, List<List<Object>>? whereArgs}) =>
@@ -51,6 +43,12 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   {#where: where, #whereArgs: whereArgs}),
               returnValue: Future<List<Object?>>.value(<Object?>[]))
           as _i4.Future<List<Object?>>);
+  @override
+  _i4.Future<void> reset(String? table,
+          [_i4.Future<void> Function(String)? del = _i2.deleteDatabase]) =>
+      (super.noSuchMethod(Invocation.method(#reset, [table, del]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
   _i4.Future<int?> count(String? table,
           {String? where, List<Object>? whereArgs}) =>
@@ -124,8 +122,10 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   <Map<String, Object?>>[]))
           as _i4.Future<List<Map<String, Object?>>>);
   @override
-  _i4.Future<void> tolerateMigration([int? newVersion = 5]) =>
-      (super.noSuchMethod(Invocation.method(#tolerateMigration, [newVersion]),
+  _i4.Future<void> tolerateMigration({int? newVersion = 5, int? oldVersion}) =>
+      (super.noSuchMethod(
+          Invocation.method(#tolerateMigration, [],
+              {#newVersion: newVersion, #oldVersion: oldVersion}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override

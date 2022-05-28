@@ -6,6 +6,8 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
 class Menu extends ChangeNotifier
@@ -25,6 +27,21 @@ class Menu extends ChangeNotifier
   List<Catalog> get notEmptyItems =>
       itemList.where((e) => e.isNotEmpty).toList();
 
+  Iterable<Product> get products sync* {
+    for (final catalog in itemList) {
+      for (final product in catalog.itemList) {
+        yield product;
+      }
+    }
+  }
+
+  @override
+  void abortStaged() {
+    super.abortStaged();
+    Quantities.instance.abortStaged();
+    Stock.instance.abortStaged();
+  }
+
   @override
   Catalog buildItem(String id, Map<String, Object?> value) {
     return Catalog.fromObject(
@@ -33,6 +50,13 @@ class Menu extends ChangeNotifier
         ...value,
       }),
     );
+  }
+
+  @override
+  Future<void> commitStaged({save = true, bool reset = true}) async {
+    await Stock.instance.commitStaged(reset: false);
+    await Quantities.instance.commitStaged(reset: false);
+    await super.commitStaged();
   }
 
   List<ProductIngredient> getIngredients(String ingredientId) {
@@ -54,6 +78,16 @@ class Menu extends ChangeNotifier
   Product? getProduct(String productId) {
     for (var catalog in items) {
       final product = catalog.getItem(productId);
+      if (product != null) {
+        return product;
+      }
+    }
+    return null;
+  }
+
+  Product? getProductByName(String name) {
+    for (var catalog in items) {
+      final product = catalog.getItemByName(name);
       if (product != null) {
         return product;
       }

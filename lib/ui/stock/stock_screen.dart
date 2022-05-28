@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -28,16 +27,7 @@ class StockScreen extends StatelessWidget {
       );
     }
 
-    final updatedAt = Stock.instance.updatedAt;
-
     return ListView(children: [
-      const SizedBox(height: 4.0),
-      Center(
-        child: HintText(updatedAt == null
-            ? S.stockHasNotReplenishEver
-            : S.stockUpdatedAt(updatedAt)),
-      ),
-      const SizedBox(height: 4.0),
       Flex(direction: Axis.horizontal, children: [
         const Expanded(
           child: Tooltip(

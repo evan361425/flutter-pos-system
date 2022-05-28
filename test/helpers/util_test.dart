@@ -30,5 +30,10 @@ void main() {
       expect(date.minute, equals(59));
       expect(date.second, equals(33));
     });
+
+    test('#removeExtension', () {
+      final result = Util.removeExtension('/a/b/c.txt');
+      expect(result, equals('/a/b/c'));
+    });
   });
 }

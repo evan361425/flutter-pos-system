@@ -18,12 +18,13 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
   num? modeValue;
 
   CustomerSettingOption({
-    String id = '0',
+    String? id,
+    ModelStatus? status,
     String name = 'customer setting option',
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-  }) : super(id) {
+  }) : super(id, status) {
     this.name = name;
     this.index = index;
   }
@@ -35,6 +36,29 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
       index: object.index!,
       isDefault: object.isDefault!,
       modeValue: object.modeValue,
+    );
+  }
+
+  factory CustomerSettingOption.fromRow(
+    CustomerSettingOption? ori,
+    List<String> row, {
+    required int index,
+  }) {
+    final isDefault = row.length > 1 ? row[1] == 'true' : false;
+    final modeValue = row.length > 2 ? num.tryParse(row[2]) : null;
+    final status = ori == null
+        ? ModelStatus.staged
+        : (isDefault == ori.isDefault && modeValue == ori.modeValue
+            ? ModelStatus.normal
+            : ModelStatus.updated);
+
+    return CustomerSettingOption(
+      id: ori?.id,
+      name: row[0],
+      isDefault: isDefault,
+      modeValue: modeValue,
+      index: index,
+      status: status,
     );
   }
 

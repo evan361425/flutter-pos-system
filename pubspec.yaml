@@ -34,12 +34,19 @@ dependencies:
   intl: ^0.17.0
   firebase_core: ^1.2.1
   firebase_analytics: ^9.1.0
+  firebase_auth: ^3.3.11
   firebase_crashlytics: ^2.0.6
 
   # services
   sqflite: ^2.0.2
   sembast: ^3.1.2
   shared_preferences: ^2.0.13
+  http: ^0.13.4
+
+  # google services
+  googleapis: ^8.1.0
+  google_sign_in: ^5.2.4
+  extension_google_sign_in_as_googleapis_auth: ^2.0.4
 
   # components
   flutter_slidable: ^1.2.0
@@ -64,6 +71,7 @@ dependencies:
   wakelock: ^0.6.1+1
   path_provider: ^2.0.9
   url_launcher: ^6.0.20
+  file_picker: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +100,7 @@ flutter:
 
   assets:
     - assets/food_placeholder.png
+    - assets/google_sheet_icon.png
     - assets/feature_request_please.gif
 
 flutter_native_splash:

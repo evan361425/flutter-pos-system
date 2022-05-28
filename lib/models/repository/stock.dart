@@ -20,19 +20,6 @@ class Stock extends ChangeNotifier
     instance = this;
   }
 
-  DateTime? get updatedAt {
-    DateTime? lastest;
-    for (var element in items) {
-      if (lastest == null) {
-        lastest = element.updatedAt;
-      } else if (element.updatedAt?.isAfter(lastest) == true) {
-        lastest = element.updatedAt;
-      }
-    }
-
-    return lastest;
-  }
-
   Future<void> applyAmounts(
     Map<String, num> amounts, {
     onlyAmount = false,
@@ -89,5 +76,11 @@ class Stock extends ChangeNotifier
     }
 
     return applyAmounts(amounts, onlyAmount: true);
+  }
+
+  @override
+  Future<void> commitStaged({bool save = true, bool reset = true}) {
+    // Avoid reset since it will effect Menu and Replenishment
+    return super.commitStaged(save: save, reset: false);
   }
 }

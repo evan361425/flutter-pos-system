@@ -59,22 +59,26 @@ class _CustomerSettingCard extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
-            child: Row(children: [
-              ElevatedButton.icon(
-                key: Key('$key.add'),
-                onPressed: () => Navigator.of(context).pushNamed(
-                  Routes.customerSettingOption,
-                  arguments: setting,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  key: Key('$key.add'),
+                  onPressed: () => Navigator.of(context).pushNamed(
+                    Routes.customerSettingOption,
+                    arguments: setting,
+                  ),
+                  icon: const Icon(KIcons.add),
+                  label: Text(S.customerSettingOptionCreate),
                 ),
-                icon: const Icon(KIcons.add),
-                label: Text(S.customerSettingOptionCreate),
-              ),
-              IconButton(
-                key: Key('$key.more'),
-                onPressed: () => showActions(context, setting),
-                icon: const Icon(KIcons.more),
-              )
-            ]),
+                IconButton(
+                  key: Key('$key.more'),
+                  onPressed: () => showActions(context, setting),
+                  enableFeedback: true,
+                  icon: const Icon(KIcons.more),
+                )
+              ],
+            ),
           ),
           for (final item in setting.itemList) _OptionTile(item),
         ],

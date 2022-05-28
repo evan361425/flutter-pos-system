@@ -24,6 +24,8 @@
   "@btnSave": {
     "description": "儲存按鈕"
   },
+  "btnImport": "匯入",
+  "btnExport": "匯出",
   "totalCount": "總共 {count} 項",
   "@totalCount": {
     "description": "顯示於 ListView 上的數量總數",
@@ -154,32 +156,6 @@
       }
     }
   },
-  "homeIcons": "{icon, select, menu{菜單} setting{設定} analysis{統計分析} stock{庫存} quantities{份量} order{點餐} cashier{收銀機} customer{顧客設定}}",
-  "@homeIcons": {
-    "description": "首頁的按鈕名稱",
-    "placeholders": {
-      "icon": {
-        "type": "String"
-      }
-    }
-  },
-  "homeIconTypes": "{type, select, store{店家設定} other{其他}}",
-  "@homeIconTypes": {
-    "description": "首頁的按鈕種類",
-    "placeholders": {
-      "type": {
-        "type": "String"
-      }
-    }
-  },
-  "homeOrderInfoTodayEarn": "今日營收",
-  "@homeOrderInfoTodayEarn": {
-    "description": "首頁的今日快訊之一"
-  },
-  "homeOrderInfoTodayCount": "今日單量",
-  "@homeOrderInfoTodayCount": {
-    "description": "首頁的今日快訊之一"
-  },
   "analysisTitle": "統計分析",
   "@analysisTitle": {
     "description": "首頁 analysis 後導入的頁面"
@@ -270,6 +246,7 @@
       }
     }
   },
+  "menuTitle": "菜單",
   "menuSearchProductHint": "搜尋產品、成分、份量",
   "@menuSearchProductHint": {
     "description": "搜尋產品時的文字匡 placeholder"
@@ -277,10 +254,6 @@
   "menuSearchProductNotFound": "搜尋不到相關資訊，打錯字了嗎？",
   "@menuSearchProductNotFound": {
     "description": "搜尋產品時找不到該文字的搜尋結果"
-  },
-  "menuCatalogTitle": "產品種類列表",
-  "@menuCatalogTitle": {
-    "description": "菜單頁的標題"
   },
   "menuCatalogListEmptyProduct": "尚未設定產品",
   "@menuCatalogListEmptyProduct": {
@@ -298,6 +271,7 @@
   "@menuCatalogReorder": {
     "description": "菜單頁排序產品種類"
   },
+  "menuCatalogMetaTitle": "產品種類",
   "menuCatalogMetaCreatedAt": "建立時間：{createdAt}",
   "@menuCatalogMetaCreatedAt": {
     "description": "產品種類建立時間",
@@ -334,6 +308,7 @@
   "@menuCatalogNameRepeatError": {
     "description": "產品種類名稱發現重複的說明"
   },
+  "menuProductMetaTitle": "產品",
   "menuProductMetaPrice": "價格：{price}",
   "@menuProductMetaPrice": {
     "description": "產品價格",
@@ -574,9 +549,10 @@
   "stockReplenishmentNameHint": "Costco 採購",
   "stockReplenishmentNameRepeatError": "採購名稱重複",
   "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
-  "stockQuantityTitle": "份量列表",
-  "stockQuantityMetaProportion": "預設比例：{proportion}",
-  "@stockQuantityMetaProportion": {
+  "quantityTitle": "份量",
+  "quantityListTitle": "份量列表",
+  "quantityMetaProportion": "預設比例：{proportion}",
+  "@quantityMetaProportion": {
     "description": "份量列表中各個項目的子標題中，說明預設比例的文字",
     "placeholders": {
       "proportion": {
@@ -586,8 +562,8 @@
       }
     }
   },
-  "stockQuantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成分有本份量\n\n} other{將會一同刪除掉 {count} 個產品成分的份量\n\n}}",
-  "@stockQuantityDialogDeletionContent": {
+  "quantityDialogDeletionContent": "{count, plural, =0{目前無任何產品成分有本份量\n\n} other{將會一同刪除掉 {count} 個產品成分的份量\n\n}}",
+  "@quantityDialogDeletionContent": {
     "description": "刪除份量時會提示多少個產品成分受影響",
     "placeholders": {
       "count": {
@@ -596,12 +572,14 @@
       }
     }
   },
-  "stockQuantityCreate": "新增份量",
-  "stockQuantityNameLabel": "份量名稱",
-  "stockQuantityNameHint": "少量、多量",
-  "stockQuantityNameRepeatError": "份量名稱重複",
-  "stockQuantityProportionLabel": "預設比例",
-  "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
+  "quantityCreate": "新增份量",
+  "quantityNameLabel": "份量名稱",
+  "quantityNameHint": "少量、多量",
+  "quantityNameRepeatError": "份量名稱重複",
+  "quantityProportionLabel": "預設比例",
+  "quantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
+  "featureRequestTitle": "建議",
+  "settingTitle": "其他設定",
   "settingThemeTitle": "調色盤",
   "@settingThemeTitle": {
     "description": "設定頁面中主題的標題"
@@ -1002,6 +980,104 @@
           "decimalDigits": 0,
           "symbol": ""
         }
+      }
+    }
+  },
+  "exporterTitle": "匯入匯出",
+  "exporterDescription": "請選擇欲匯入匯出的方式",
+  "exporterGSTitle": "Google 試算表",
+  "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
+  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheet_repeat{表單名稱重複} non_exist_name{找不到試算表，是否已被刪除？}}",
+  "@exporterGSErrors": {
+    "description": "發生錯誤時的提示訊息",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterGSSpreadsheetLabel": "試算表",
+  "exporterGSSpreadsheetHint": "點擊以選擇試算表",
+  "exporterGSSpreadsheetHelper": "若使用既存的試算表則會覆蓋指定表單中的資料，若不選擇則會在匯出時建立新的試算表",
+  "exporterGSSheetLabel": "{item}的表單標題",
+  "@exporterGSSheetLabel": {
+    "description": "表單標題的說明",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterGSPreviewerTitle": "預覽{title}輸出結果",
+  "@exporterGSPreviewerTitle": {
+    "description": "預覽標題",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterGSDefaultSpreadsheetName": "POS System 資料",
+  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} customer{顧客設定}}",
+  "@exporterGSDefaultSheetName": {
+    "description": "匯出 Google 試算表時預設的表單名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterGSProgressStatus": "{status, select, add_spreadsheet{新增試算表中..} add_sheets{新增表單中..} update_menu{更新菜單中..} update_stock{更新庫存中..} update_quantities{更新份量中..} update_replenisher{更新補貨中..} update_customer{更新顧客設定中..}}",
+  "@exporterGSProgressStatus": {
+    "description": "執行行為時的狀態說明",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterProductIngredientInfoTitle": "成份資訊",
+  "exporterReplenishmentTitle": "補貨量",
+  "exporterCustomerSettingOptionTitle": "顧客設定選項",
+  "exporterGSProductIngredientInfoNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
+  "exporterGSReplenishmentNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
+  "exporterGSCustomerSettingOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
+  "importerGSError": "{error, select, empty_spreadsheet{必須選擇試算表來匯入} empty_sheet{必須選擇指定的表單來匯入} empty_data{在表單中沒找到任何值}}",
+  "@importerGSError": {
+    "description": "匯入時會有的錯誤",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "btnImporterRefresh": "重整試算表",
+  "btnImporterRefreshHelp": "重新整理可以幫助找到擁有的表單。",
+  "importPreviewerTitle": "預覽結果",
+  "importerColumnsInvalid": "第 {index} 行的資料有錯",
+  "@importerColumnsInvalid": {
+    "description": "匯入時，特定欄位的資料有錯",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "importerColumnsCountError": "資料量不足，需要 {columns} 個欄位",
+  "@importerColumnsCountError": {
+    "description": "匯入時需要的資料量不足",
+    "placeholders": {
+      "columns": {
+        "type": "int"
+      }
+    }
+  },
+  "importerColumnStatus": "{status, select, staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{}}",
+  "@importerColumnStatus": {
+    "description": "顯示該資料的額外狀態",
+    "placeholders": {
+      "status": {
+        "type": "String"
       }
     }
   }

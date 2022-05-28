@@ -5,10 +5,13 @@ class PopButton extends StatelessWidget {
 
   final bool toHome;
 
+  final IconData? icon;
+
   const PopButton({
     Key? key,
     this.title,
     this.toHome = false,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -20,10 +23,11 @@ class PopButton extends StatelessWidget {
       );
     }
 
-    final icon = toHome ? Icons.clear_sharp : Icons.arrow_back_ios_sharp;
+    final ic =
+        icon ?? (toHome ? Icons.clear_sharp : Icons.arrow_back_ios_sharp);
     return IconButton(
       onPressed: () => pop(context),
-      icon: Icon(icon),
+      icon: Icon(ic),
     );
   }
 
