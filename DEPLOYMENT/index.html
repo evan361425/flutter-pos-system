@@ -452,15 +452,21 @@
 </ul>
 <p>分別的部署方式如下：</p>
 <ul>
-<li><code>internal</code></li>
+<li><code>internal</code><ol>
 <li>修改 <a href="https://github.com/evan361425/flutter-pos-system/blob/master/pubspec.yaml">pubspec.yaml</a> 的版本資訊</li>
 <li>在本地端打 tag，例如：<code>v1.0.0-rc1</code></li>
 <li>推到 GitHub 就會進行一系列的 CI/CD 流程。</li>
-<li><code>beta</code></li>
+</ol>
+</li>
+<li><code>beta</code><ol>
 <li>修改 <a href="https://github.com/evan361425/flutter-pos-system/blob/master/pubspec.yaml">pubspec.yaml</a> 的版本資訊</li>
 <li>在 GitHub 上執行 <a href="https://github.com/evan361425/flutter-pos-system/actions/workflows/release.yaml"><code>Add Artifacts for Release</code></a> 的 workflow，並輸入上相應版本，例如：<code>v1.0.0</code>。</li>
-<li><code>promote_to_production</code></li>
+</ol>
+</li>
+<li><code>promote_to_production</code><ol>
 <li>把 GitHub 的 <a href="https://github.com/evan361425/flutter-pos-system/releases">draft release</a> publish 出來。</li>
+</ol>
+</li>
 </ul>
 
   <hr>
