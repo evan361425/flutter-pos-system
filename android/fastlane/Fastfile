@@ -31,7 +31,7 @@ platform :android do
 
   desc "Submit a new Internal Build to Play Store"
   lane :internal do
-    sh "flutter build appbundle -v --flavor dev --dart-define=app.flavor=dev"
+    sh "flutter build appbundle -v --flavor dev --dart-define=appFlavor=dev --dart-define=logLevel=debug"
 
     changelog_from_git_commits
 
@@ -46,7 +46,7 @@ platform :android do
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
-    sh "flutter build appbundle -v --flavor prod"
+    sh "flutter build appbundle -v --flavor prod --dart-define=appFlavor=prod --dart-define=logLevel=info"
 
     upload_to_play_store(
       track: 'beta',
@@ -60,17 +60,6 @@ platform :android do
     upload_to_play_store(
       track: 'beta',
       track_promote_to: 'production',
-      json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
-      version_code: ENV['VERSION_CODE'],
-    )
-  end
-
-  desc "Submit a new production build to Google Play"
-  lane :production do
-    sh "flutter build appbundle -v --flavor prod"
-    upload_to_play_store(
-      track: 'production',
-      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
       version_code: ENV['VERSION_CODE'],
     )

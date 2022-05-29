@@ -23,7 +23,7 @@ class DefaultFirebaseOptions {
       );
     }
 
-    const isProd = String.fromEnvironment('app.flavor') == 'prod';
+    const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
     // ignore: missing_enum_constant_in_switch
     switch (defaultTargetPlatform) {

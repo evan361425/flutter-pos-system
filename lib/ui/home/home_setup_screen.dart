@@ -13,7 +13,7 @@ class HomeSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const isProd = String.fromEnvironment('app.flavor') == 'prod';
+    const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
     return SafeArea(
       child: SingleChildScrollView(

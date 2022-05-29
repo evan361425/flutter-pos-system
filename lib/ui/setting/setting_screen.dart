@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
@@ -8,6 +7,7 @@ import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/language_setting.dart';
@@ -44,6 +44,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     final selectedLanguage =
         _supportedLanguages.indexOf(language.value.languageCode);
+    const flavor = String.fromEnvironment('appFlavor');
 
     return Scaffold(
       appBar: AppBar(leading: const PopButton()),
@@ -59,7 +60,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
-                  if (kDebugMode) const OutlinedText('DEV'),
+                  OutlinedText('${flavor.toUpperCase()}-$logLevel'),
                 ],
               );
             },

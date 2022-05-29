@@ -146,8 +146,6 @@ jobs:
 
       # Build the application.
       - name: Start building
-        env:
-          LOG_LEVEL: info
         run: |
           flutter build -v apk --release --flavor dev
           mv build/app/outputs/flutter-apk/app-dev-release.apk \

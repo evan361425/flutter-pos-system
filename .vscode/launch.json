@@ -10,7 +10,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "env": {
-        "LOG_LEVEL": "debug"
+        "logLevel": "debug"
       },
       "args": ["--flavor", "dev"]
     }

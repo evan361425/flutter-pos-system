@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-const _level = String.fromEnvironment('LOG_LEVEL', defaultValue: 'debug');
+const _level = String.fromEnvironment('logLevel', defaultValue: 'debug');
 // var for testing
 var logLevel = _level == 'error'
     ? 1
@@ -14,10 +14,14 @@ var logLevel = _level == 'error'
             : 4;
 
 Future<void> _log(
-    String message, String code, Map<String, Object>? detail, int level) async {
-  developer.log(message, name: code);
+  String message,
+  String code,
+  Map<String, Object>? detail,
+  int level,
+) async {
+  developer.log(message, name: code, level: level);
   // no need send debug event
-  if (logLevel == 4) return;
+  if (level > logLevel || logLevel == 4) return;
 
   detail ??= {};
   detail['message'] = message;
@@ -28,8 +32,11 @@ Future<void> _log(
   );
 }
 
-Future<void> waitLog(String message, String code,
-    [Map<String, Object>? detail]) async {
+Future<void> waitLog(
+  String message,
+  String code, [
+  Map<String, Object>? detail,
+]) async {
   await _log(message, code, detail, 4);
 }
 
