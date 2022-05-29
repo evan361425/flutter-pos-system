@@ -4,17 +4,17 @@
 
 本 POS 系統的特色。
 
-- 完全允許離線使用
-- 統計點單紀錄
-- 庫存系統幫助你紀錄現有成份庫存
-- 設定顧客資訊
-- 收銀機方便做每日結餘
-- 本系統不會遠端紀錄個資，只會存在你的手機裡，所以可以安心使用
+-   完全允許離線使用
+-   統計點單紀錄
+-   庫存系統幫助你紀錄現有成份庫存
+-   設定顧客資訊
+-   收銀機方便做每日結餘
+-   本系統不會遠端紀錄個資，只會存在你的手機裡，所以可以安心使用
 
 ## 下載
 
-- Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
-- iOS 要再等等，已排程準備。
+-   Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
+-   iOS 要再等等，已排程準備。
 
 ## 貢獻
 
