@@ -161,6 +161,28 @@ void main() {
           expect(find.text(S.exporterGSErrors('spreadsheet')), findsOneWidget);
         });
 
+        testWidgets('spreadsheet create success', (tester) async {
+          final sheetsApi = getMockSheetsApi();
+          when(cache.get(eCacheIdKey)).thenReturn(null);
+          when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+          when(sheetsApi.spreadsheets.create(
+            any,
+            $fields: anyNamed('\$fields'),
+          )).thenAnswer((_) => Future.value(
+                gs.Spreadsheet(spreadsheetId: 'abc'),
+              ));
+
+          await tester.pumpWidget(MaterialApp(
+            home: GoogleSheetScreen(
+              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
+            ),
+          ));
+          await tapBtn(tester);
+
+          verify(cache.set(eCacheIdKey, 'abc'));
+          verify(cache.set(eCacheNameKey, any));
+        });
+
         testWidgets('sheets create failed', (tester) async {
           final sheetsApi = getMockSheetsApi();
           when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
@@ -730,6 +752,7 @@ void main() {
 
         expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
         expect(pickerW.controller?.text, isEmpty);
+        expect(find.text(S.exporterGSErrors('non_exist_name')), findsOneWidget);
 
         FilePicker.platform = _FakeFilePicker('new-name');
         when(driveApi.mockFiles.list(

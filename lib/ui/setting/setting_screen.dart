@@ -53,7 +53,7 @@ class _SettingScreenState extends State<SettingScreen> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (info != null) Text(info.version + '~' + info.buildNumber),
+                  if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
                   if (kDebugMode) const OutlinedText('DEV'),
                 ],

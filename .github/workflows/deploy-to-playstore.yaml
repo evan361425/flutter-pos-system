@@ -14,6 +14,9 @@ on:
       - Add Artifacts for Release Candidate
     types: [completed]
   release:
+    # published: both pre-release and release will trigger
+    # released: only public release published
+    # prereleased: only pre release published
     types: [released]
 
 jobs:

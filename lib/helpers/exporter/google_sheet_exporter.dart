@@ -129,6 +129,7 @@ class GoogleSheetExporter {
     }
 
     final pickedName = Util.removeExtension(picked.files.first.name);
+    info(pickedName, 'google_sheet_exporter.pick_name');
     final id = await findSpreadsheetIdByName(pickedName);
     if (id == null) {
       throw GoogleSheetError('non_exist_name');

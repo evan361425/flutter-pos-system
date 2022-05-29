@@ -192,7 +192,7 @@ class OrderProductObject {
       productId: data['productId'] as String,
       productName: data['productName'] as String,
       count: data['count'] as int,
-      cost: data['cost'] as int? ?? 0,
+      cost: data['cost'] as num? ?? 0,
       singlePrice: data['singlePrice'] as num,
       originalPrice: data['originalPrice'] as num,
       isDiscount: data['isDiscount'] as bool,

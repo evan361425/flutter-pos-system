@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
@@ -117,6 +118,14 @@ void main() {
     setUpAll(() {
       initializeCache();
       initializeTranslator();
+
+      PackageInfo.setMockInitialValues(
+        appName: 'a',
+        packageName: 'b',
+        version: 'c',
+        buildNumber: 'd',
+        buildSignature: 'e',
+      );
     });
   });
 }

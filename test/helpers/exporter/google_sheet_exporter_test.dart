@@ -12,14 +12,19 @@ void main() {
   group('Google Sheet Exporter', () {
     test('login', () async {
       when(auth.loginIfNot()).thenAnswer((_) => Future.value(true));
-      when(auth.getAuthenticatedClient(scopes: [
+      when(auth.getAuthenticatedClient(scopes: anyNamed('scopes')))
+          .thenAnswer((_) => Future.value(Client()));
+
+      final exporter = GoogleSheetExporter();
+      final sheetApi = await exporter.getSheetsApi();
+      final driveApi = await exporter.getDriveApi();
+
+      expect(sheetApi, isNotNull);
+      expect(driveApi, isNotNull);
+      verify(auth.getAuthenticatedClient(scopes: [
         gs.SheetsApi.spreadsheetsScope,
         gd.DriveApi.driveMetadataReadonlyScope,
-      ])).thenAnswer((_) => Future.value(Client()));
-
-      final api = await GoogleSheetExporter().getDriveApi();
-
-      expect(api, isNotNull);
+      ])).called(1);
     });
 
     test('#addSpreadsheet', () async {
@@ -35,6 +40,19 @@ void main() {
       final spreadsheet = await exporter.addSpreadsheet('title', ['sheet1']);
 
       expect(spreadsheet?.id, equals('abc'));
+    });
+
+    test('GoogleSheetCellData #dataValidation', () async {
+      final data = GoogleSheetCellData(stringValue: 'a', options: ['b', 'c']);
+
+      final result = data.toGoogleFormat();
+
+      expect(
+        result.dataValidation?.condition?.values
+            ?.map((e) => e.userEnteredValue)
+            .toList(),
+        equals(['b', 'c']),
+      );
     });
   });
 

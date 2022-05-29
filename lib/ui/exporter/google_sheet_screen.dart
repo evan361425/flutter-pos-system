@@ -302,10 +302,13 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     await widget.exporter.auth();
 
     final names = requireSheets.values.toList();
-    spreadsheet ??= await _createSpreadsheet(names);
     if (spreadsheet == null) {
-      showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
-      return null;
+      final newSpreadsheet = await _createSpreadsheet(names);
+      if (newSpreadsheet == null) {
+        showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
+        return null;
+      }
+      await sheetSelector.currentState?.setSheet(newSpreadsheet);
     } else {
       final sheets = await widget.exporter.getSheets(spreadsheet!.id);
       spreadsheet!.sheets.addAll(sheets);
