@@ -9,6 +9,10 @@ edit_uri: https://github.com/evan361425/flutter-pos-system/edit/master
 nav:
   - 幫助: about/contribute.md
   - 架構: about/structure.md
+  - 文件:
+      - 部署: DEPLOYMENT.md
+      - 公約: CODE_OF_CONDUCT.md
+      - 隱私權規範: PRIVACY_POLICY.md
 
 theme:
   name: material
