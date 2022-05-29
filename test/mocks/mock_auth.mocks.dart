@@ -35,6 +35,10 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
   }
 
   @override
+  set errorMessage(String? _errorMessage) =>
+      super.noSuchMethod(Invocation.setter(#errorMessage, _errorMessage),
+          returnValueForMissingStub: null);
+  @override
   _i4.Future<_i2.Client?> getAuthenticatedClient(
           {List<String>? scopes = const [],
           _i5.GoogleSignInAuthentication? debugAuthentication}) =>

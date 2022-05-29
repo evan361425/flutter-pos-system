@@ -12,6 +12,8 @@ class Auth {
 
   final FirebaseAuth _firebaseAuth;
 
+  String? errorMessage;
+
   Auth([GoogleSignIn? service, FirebaseAuth? auth])
       : _service = service ?? GoogleSignIn(scopes: []),
         _firebaseAuth = auth ?? FirebaseAuth.instance;
@@ -71,6 +73,7 @@ class Auth {
 
       return true;
     } catch (e, stack) {
+      errorMessage = e.toString();
       error(e.toString(), 'auth', stack);
       return false;
     }

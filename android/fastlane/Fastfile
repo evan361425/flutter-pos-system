@@ -31,7 +31,7 @@ platform :android do
 
   desc "Submit a new Internal Build to Play Store"
   lane :internal do
-    sh "flutter build appbundle -v --flavor dev --dart-define=appFlavor=dev --dart-define=logLevel=debug"
+    sh "flutter build appbundle -v --flavor dev --dart-define=appFlavor=dev --dart-define=logLevel=info"
 
     changelog_from_git_commits
 
