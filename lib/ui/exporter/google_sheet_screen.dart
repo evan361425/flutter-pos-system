@@ -138,6 +138,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        const SizedBox(height: 4.0),
         _SpreadsheetPicker(
           id: 'gs_export.exporter_spreadsheet',
           key: sheetSelector,
@@ -193,6 +194,10 @@ class _ExporterScreenState extends State<_ExporterScreen> {
 
     await Cache.instance.set<String>(_exporterIdCacheKey, spreadsheet!.id);
     await Cache.instance.set<String>(_exporterNameCacheKey, spreadsheet!.name);
+    if (Cache.instance.get<String>(_importerIdCacheKey) == null) {
+      await Cache.instance.set(_importerIdCacheKey, spreadsheet!.id);
+      await Cache.instance.set(_importerNameCacheKey, spreadsheet!.name);
+    }
   }
 
   void previewTarget(GoogleSheetAble able) {
@@ -408,6 +413,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          const SizedBox(height: 4.0),
           _SpreadsheetPicker(
             id: 'gs_export.importer_spreadsheet',
             key: sheetSelector,

@@ -7,6 +7,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/setting_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../test_helpers/translator.dart';
 
@@ -20,6 +21,44 @@ void main() {
         builder: (_, __) => const MaterialApp(home: SettingScreen()),
       ));
     }
+
+    group('Auth', () {
+      testWidgets('#signOut', (tester) async {
+        when(auth.getName()).thenReturn('TestUser');
+        when(auth.signOut()).thenAnswer((_) => Future.value());
+        await buildApp(tester);
+
+        expect(find.text('HI，TestUser'), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('setting.sign_out')));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('setting.sign_in')), findsOneWidget);
+      });
+
+      testWidgets('#signIn - success', (tester) async {
+        when(auth.getName()).thenReturn(null);
+        when(auth.loginIfNot()).thenAnswer((_) => Future.value(true));
+        await buildApp(tester);
+
+        when(auth.getName()).thenReturn('TestUser');
+        await tester.tap(find.byKey(const Key('setting.sign_in')));
+        await tester.pumpAndSettle();
+
+        expect(find.text('HI，TestUser'), findsOneWidget);
+      });
+
+      testWidgets('#signIn - failed', (tester) async {
+        when(auth.getName()).thenReturn(null);
+        when(auth.loginIfNot()).thenAnswer((_) => Future.value(false));
+        await buildApp(tester);
+
+        await tester.tap(find.byKey(const Key('setting.sign_in')));
+        await tester.pumpAndSettle();
+
+        expect(find.text(S.actError), findsOneWidget);
+      });
+    });
 
     testWidgets('select theme', (tester) async {
       await buildApp(tester);
@@ -118,6 +157,7 @@ void main() {
     setUpAll(() {
       initializeCache();
       initializeTranslator();
+      initializeAuth();
 
       PackageInfo.setMockInitialValues(
         appName: 'a',

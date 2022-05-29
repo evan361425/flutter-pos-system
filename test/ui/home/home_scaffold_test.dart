@@ -17,6 +17,7 @@ import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/home/home_scaffold.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
@@ -25,6 +26,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Home Scaffold', () {
     testWidgets('should navigate correctly', (tester) async {
+      when(auth.getName()).thenReturn(null);
       when(cache.get(any)).thenReturn(null);
       when(cache.get(argThat(predicate<String>((f) => f.startsWith('_tip')))))
           .thenReturn(1);
@@ -114,6 +116,7 @@ void main() {
     });
 
     setUpAll(() {
+      initializeAuth();
       initializeCache();
       initializeStorage();
       initializeDatabase();

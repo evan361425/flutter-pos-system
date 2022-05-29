@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/style/card_tile.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -29,15 +32,16 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final theme = SettingsProvider.of<ThemeSetting>();
+  final language = SettingsProvider.of<LanguageSetting>();
+  final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
+  final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
+  final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
+  final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
+  String? userName = Auth.instance.getName();
+
   @override
   Widget build(BuildContext context) {
-    final theme = SettingsProvider.of<ThemeSetting>();
-    final language = SettingsProvider.of<LanguageSetting>();
-    final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
-    final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
-    final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
-    final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
-
     final selectedLanguage =
         _supportedLanguages.indexOf(language.value.languageCode);
 
@@ -59,6 +63,11 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               );
             },
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: userName == null ? anonymousHeader() : userHeader(),
           ),
           const SizedBox(height: 8.0),
           CardTile(
@@ -146,6 +155,37 @@ class _SettingScreenState extends State<SettingScreen> {
         ],
       ),
     );
+  }
+
+  Widget userHeader() {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text('HI，' + userName!),
+      ElevatedButton(
+        key: const Key('setting.sign_out'),
+        onPressed: () async {
+          await Auth.instance.signOut();
+          setState(() => userName = null);
+        },
+        child: const Text('登出'),
+      ),
+    ]);
+  }
+
+  Widget anonymousHeader() {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      const HintText('尚未登入'),
+      ElevatedButton(
+        key: const Key('setting.sign_in'),
+        onPressed: () async {
+          if (await Auth.instance.loginIfNot()) {
+            setState(() => userName = Auth.instance.getName());
+          } else {
+            showErrorSnackbar(context, S.actError);
+          }
+        },
+        child: const Text('登入'),
+      ),
+    ]);
   }
 
   void _navigateItemList(

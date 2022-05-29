@@ -22,9 +22,10 @@ class ExporterScreen extends StatelessWidget {
           ),
           ListTile(
             key: const Key('exporter.google_sheet'),
-            leading: const CircleAvatar(
-              backgroundImage: AssetImage('assets/google_sheet_icon.png'),
-              backgroundColor: Colors.white,
+            leading: CircleAvatar(
+              backgroundImage: const AssetImage('assets/google_sheet_icon.png'),
+              backgroundColor: Theme.of(context).focusColor,
+              radius: 24,
             ),
             title: Text(S.exporterGSTitle),
             subtitle: Text(S.exporterGSDescription),

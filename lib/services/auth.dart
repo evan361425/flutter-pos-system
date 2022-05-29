@@ -35,6 +35,16 @@ class Auth {
     );
   }
 
+  String? getName() {
+    return _service.currentUser?.displayName ??
+        _firebaseAuth.currentUser?.displayName;
+  }
+
+  Future<void> signOut() async {
+    await _service.signOut();
+    await _firebaseAuth.signOut();
+  }
+
   Future<bool> loginIfNot() async {
     final user = await _service.signInSilently();
     if (user != null && _firebaseAuth.currentUser != null) {

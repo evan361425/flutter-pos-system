@@ -61,8 +61,6 @@ void main() async {
       await debugSetupMenu();
     }
 
-    FlutterNativeSplash.remove();
-
     /// Why use provider?
     /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
     runApp(MultiProvider(

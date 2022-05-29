@@ -32,6 +32,8 @@ void main() {
   group('Google Sheet Screen', () {
     const eCacheIdKey = 'exporter_google_sheet_id';
     const eCacheNameKey = 'exporter_google_sheet_name';
+    const iCacheIdKey = 'importer_google_sheet_id';
+    const iCacheNameKey = 'importer_google_sheet_name';
 
     void prepareData() {
       final i1 = Ingredient(id: 'i1', name: 'i1');
@@ -181,6 +183,8 @@ void main() {
 
           verify(cache.set(eCacheIdKey, 'abc'));
           verify(cache.set(eCacheNameKey, any));
+          verify(cache.set(iCacheIdKey, 'abc'));
+          verify(cache.set(iCacheNameKey, any));
         });
 
         testWidgets('sheets create failed', (tester) async {
@@ -281,8 +285,6 @@ void main() {
       });
     });
 
-    const iCacheIdKey = 'importer_google_sheet_id';
-    const iCacheNameKey = 'importer_google_sheet_name';
     Future<void> go2Importer(WidgetTester tester) async {
       await tester.tap(find.widgetWithText(Tab, S.btnImport));
       await tester.pumpAndSettle();

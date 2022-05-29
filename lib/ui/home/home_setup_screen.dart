@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/app_themes.dart';
@@ -14,8 +13,7 @@ class HomeSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const allowGenRandom =
-        kDebugMode || String.fromEnvironment('app.flavor') == 'dev';
+    const isProd = String.fromEnvironment('app.flavor') == 'prod';
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -23,8 +21,7 @@ class HomeSetupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _HeaderInfoList(),
-            if (allowGenRandom)
-              const Center(child: RandomGenerateOrderButton()),
+            if (!isProd) const Center(child: RandomGenerateOrderButton()),
             RouteTile(
               key: const Key('home_setup.menu'),
               icon: Icons.collections_outlined,
