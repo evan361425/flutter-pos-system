@@ -2,37 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/CODE_OF_CONDUCT/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/CONTRIBUTING/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://evan361425.github.io/flutter-pos-system/DEPLOYMENT/</loc>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/SUPPORT/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/about/contribute/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/about/structure/</loc>
-         <lastmod>2021-12-28</lastmod>
+         <lastmod>2022-05-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

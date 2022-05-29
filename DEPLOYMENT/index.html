@@ -10,14 +10,14 @@
       
       
       
-        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/CONTRIBUTING/">
+        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/DEPLOYMENT/">
       
       <link rel="icon" href="../images/favicon.ico">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.16">
     
     
       
-        <title>CONTRIBUTING - POS 系統</title>
+        <title>如何部署 - POS 系統</title>
       
     
     
@@ -76,6 +76,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#_1" class="md-skip">
+          跳轉到
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -106,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CONTRIBUTING
+              如何部署
             
           </span>
         </div>
@@ -313,6 +318,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -324,22 +331,32 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/evan361425/flutter-pos-system/edit/master/CONTRIBUTING.md" title="編輯此頁" class="md-content__button md-icon">
+  <a href="https://github.com/evan361425/flutter-pos-system/edit/master/DEPLOYMENT.md" title="編輯此頁" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-  <h1>CONTRIBUTING</h1>
-
-<p>相關說明請<a href="https://evan361425.github.io/flutter-pos-system/docs/contribute">至此</a>查看</p>
+<h1 id="_1">如何部署</h1>
+<p>分為三個環境：</p>
+<ul>
+<li><code>internal</code>：內部測試用。</li>
+<li><code>beta</code>：對外的測試，同樣的檔案會推展到 <code>promote_to_production</code>。</li>
+<li><code>promote_to_production</code>：把 <code>beta</code> 的版本推到線上。</li>
+</ul>
+<p>分別的部署方式如下：</p>
+<ul>
+<li><code>internal</code>：本地端打 tag（例如：<code>v1.0.0-rc1</code>），並推到 GitHub 就會進行一系列的 CI/CD 流程。</li>
+<li><code>beta</code>：在 GitHub 上執行 <code>Add Artifacts for Release</code> 的 workflow，並輸入上相應版本，例如：<code>v1.0.0</code>。</li>
+<li><code>promote_to_production</code>：把 GitHub 的 <a href="https://github.com/evan361425/flutter-pos-system/releases">draft release</a> publish 即可。</li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       最後更新:
-      2021-07-16
+      2022-05-29
     
   </small>
 </div>
