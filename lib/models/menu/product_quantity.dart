@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -44,8 +43,7 @@ class ProductQuantity extends Model<ProductQuantityObject>
   factory ProductQuantity.fromObject(ProductQuantityObject object) {
     final quantity = Quantities.instance.getItem(object.quantityId!);
     if (quantity == null) {
-      info(object.quantityId!, 'menu.parse.error.quantity');
-      throw Error();
+      throw Exception(object.quantityId);
     }
 
     return ProductQuantity(

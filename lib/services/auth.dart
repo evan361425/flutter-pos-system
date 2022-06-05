@@ -24,9 +24,9 @@ class Auth {
   }) async {
     final newScopes = scopes.toSet().difference(_service.scopes.toSet());
     if (newScopes.isNotEmpty) {
-      debug(newScopes.join(','), 'auth_google_scopes_needed');
+      Log.ger('start', 'auth_google_scopes', newScopes.join(','));
       if (await _service.requestScopes(newScopes.toList())) {
-        info(newScopes.join(','), 'auth_google_scopes');
+        Log.ger('success', 'auth_request_scope');
         _service.scopes.addAll(newScopes);
       }
     }
@@ -54,13 +54,13 @@ class Auth {
     }
 
     try {
-      info('start', 'auth.login');
+      Log.ger('start', 'auth_login');
       // Trigger the authentication flow
       final GoogleSignInAccount? user = await _service.signIn();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? auth = await user?.authentication;
-      info(auth == null ? 'empty' : 'allow', 'auth.login');
+      Log.ger(auth == null ? 'empty' : 'allow', 'auth_login');
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -72,9 +72,13 @@ class Auth {
       await _firebaseAuth.signInWithCredential(credential);
 
       return true;
+    } on FirebaseAuthException catch (e, stack) {
+      errorMessage = e.code + (e.message?.replaceAll(' ', '\n') ?? 'unknown');
+      Log.err(e, 'auth_login', stack);
+      return false;
     } catch (e, stack) {
       errorMessage = e.toString();
-      error(e.toString(), 'auth', stack);
+      Log.err(e, 'auth_login', stack);
       return false;
     }
   }

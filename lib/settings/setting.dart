@@ -7,7 +7,9 @@ abstract class Setting<T> extends ChangeNotifier {
 
   String get key;
 
-  bool get registyForApp => false;
+  String get logKey => key.replaceAll('.', '_');
+
+  bool get registryForApp => false;
 
   Cache get service => Cache.instance;
 
@@ -16,8 +18,7 @@ abstract class Setting<T> extends ChangeNotifier {
   Future<void> update(T data) async {
     if (value == data) return;
 
-    info(data.toString(), 'setting.$key');
-
+    Log.ger('update', 'setting_$logKey', data.toString());
     value = data;
 
     notifyListeners();

@@ -1,4 +1,3 @@
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
@@ -47,8 +46,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
   factory ProductIngredient.fromObject(ProductIngredientObject object) {
     final ingredient = Stock.instance.getItem(object.ingredientId!);
     if (ingredient == null) {
-      info(object.ingredientId!, 'menu.parse.error.ingredient');
-      throw Error();
+      throw Exception(object.ingredientId);
     }
 
     final quantities = object.quantities.map<ProductQuantity?>((e) {

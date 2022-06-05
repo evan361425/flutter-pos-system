@@ -15,10 +15,10 @@ const _exporterIdCacheKey = 'exporter_google_sheet_id';
 const _exporterNameCacheKey = 'exporter_google_sheet_name';
 const _importerIdCacheKey = 'importer_google_sheet_id';
 const _importerNameCacheKey = 'importer_google_sheet_name';
-const _errorCodeRefresh = 'google_sheet_refresh_failed';
-const _errorCodeImport = 'google_sheet_import_failed';
-const _errorCodeExport = 'google_sheet_export_failed';
-const _errorCodePick = 'google_sheet_pick_failed';
+const _errorCodeRefresh = 'gs_refresh_failed';
+const _errorCodeImport = 'gs_import_failed';
+const _errorCodeExport = 'gs_export_failed';
+const _errorCodePick = 'gs_pick_failed';
 
 class GoogleSheetScreen extends StatefulWidget {
   final GoogleSheetExporter? exporter;
@@ -184,7 +184,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    debug(newSpreadsheet.toString(), 'google_sheet_export_changed');
+    Log.ger('changed', 'gs_export', newSpreadsheet.toString());
     spreadsheet = newSpreadsheet;
     for (var sheet in sheets.values) {
       sheet.currentState?.setHints(spreadsheet?.sheets);
@@ -249,7 +249,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     final prepared = await _getSpreadsheet(names);
     if (prepared == null) return;
 
-    debug(spreadsheet!.id, 'google_sheet_export_ready');
+    Log.ger('ready', 'gs_export', spreadsheet!.id);
     const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
@@ -454,7 +454,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   }
 
   Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    debug(newSpreadsheet.toString(), 'google_sheet_import_changed');
+    Log.ger('changed', 'gs_import', newSpreadsheet.toString());
     spreadsheet = newSpreadsheet;
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(spreadsheet!.sheets);
@@ -515,13 +515,13 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     GoogleSheetAble type,
     GoogleSheetProperties sheet,
   ) async {
-    debug(sheet.title, 'google_sheet_import_ready');
+    Log.ger('ready', 'gs_import', sheet.title);
     final source = await _getSheetData(type, sheet);
     if (source == null) return;
 
     await _setDefault(type.name, sheet);
 
-    debug(source.length.toString(), 'google_sheet_import_length');
+    Log.ger('received', 'gs_import', source.length.toString());
     final allowPreviewFormed = await _previewSheetData(type, source);
     if (allowPreviewFormed != true) return;
 
@@ -710,12 +710,12 @@ class _SpreadsheetPickerState extends State<_SpreadsheetPicker> {
       if (result != null) {
         setSheet(result);
       }
-    } catch (e) {
+    } catch (e, stack) {
       if (e is GoogleSheetError) {
         showErrorSnackbar(context, S.exporterGSErrors(e.code));
       } else {
         showErrorSnackbar(context, S.actError);
-        error(e.toString(), _errorCodePick);
+        Log.err(e, _errorCodePick, stack);
       }
     } finally {
       widget.onSelectEnd();

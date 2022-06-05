@@ -6,7 +6,7 @@ class ThemeSetting extends Setting<ThemeMode> {
   String get key => 'theme';
 
   @override
-  bool get registyForApp => true;
+  bool get registryForApp => true;
 
   @override
   void initialize() {

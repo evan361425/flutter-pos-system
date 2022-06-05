@@ -163,13 +163,13 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
           final item = await buildItem(itemData);
           _items[item.id] = item;
         } catch (e, stack) {
-          await error(e.toString(), 'db.$repoTableName.parse.error', stack);
+          Log.err(e, 'db_${repoTableName}_parse_error', stack);
         }
       }
 
       prepareItem();
     } catch (e, stack) {
-      await error(e.toString(), 'db.$repoTableName.fetch.error', stack);
+      Log.err(e, 'db_${repoTableName}_fetch_error', stack);
     }
   }
 
@@ -185,7 +185,7 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) async {
-    info(item.toString(), '$repoTableName.add');
+    Log.ger('start', '${repoTableName}_add', item.toString());
 
     final id = await Database.instance.push(
       repoTableName,
@@ -226,7 +226,8 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
         .toList();
 
     if (data.isNotEmpty) {
-      info(data.length.toString(), '${items.first.logName}.reorder');
+      Log.ger(
+          'start', '${items.first.logName}_reorder', data.length.toString());
       await saveBatch(data);
 
       notifyItems();
@@ -269,21 +270,21 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
           final item = buildItem(id, value as Map<String, Object?>);
           _items[item.id] = item;
         } catch (e, stack) {
-          error(e.toString(), '$storageStore.parse.error', stack);
+          Log.err(e, '${storageStore.name}_parse_error', stack);
         }
       });
 
       prepareItem();
 
       if (versionChanged) {
-        info(_items.toString(), '$storageStore.upgrade');
+        Log.ger('start', '${storageStore.name}_upgrade', _items.toString());
         await Storage.instance.setAll(storageStore, {
           for (final item in _items.values)
             item.prefix: item.toObject().toMap(),
         });
       }
     } catch (e, stack) {
-      await error(e.toString(), '$storageStore.fetch.error', stack);
+      Log.err(e, '${storageStore.name}_fetch_error', stack);
     }
   }
 
@@ -296,7 +297,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) {
-    info(item.toString(), '$storageStore.add');
+    Log.ger('start', '${storageStore.name}_add', _items.toString());
 
     final data = item.toObject().toMap();
     return repoType == RepositoryStorageType.pureRepo

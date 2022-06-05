@@ -91,12 +91,13 @@ class Cart extends ChangeNotifier {
 
   /// Drop the stashed order
   Future<bool> drop(int lastCount) async {
+    Log.ger('start', 'order_cart_drop');
     final order = await Seller.instance.drop(lastCount);
     if (order == null) return false;
 
-    info(order.id.toString(), 'order.cart.drop');
-
     replaceByObject(order);
+    Log.ger('done', 'order_cart_drop');
+
     return true;
   }
 
@@ -111,7 +112,7 @@ class Cart extends ChangeNotifier {
     paid ??= price;
     if (paid < price) throw const PaidException('insufficient_amount');
 
-    info(isHistoryMode ? 'history' : 'normal', 'order.paid.verified');
+    Log.ger(isHistoryMode ? 'history' : 'normal', 'order_paid_verified');
     // if history mode update data
     final result = isHistoryMode
         ? await _finishHistoryMode(paid, price)
@@ -122,12 +123,13 @@ class Cart extends ChangeNotifier {
   }
 
   Future<bool> popHistory() async {
+    Log.ger('start', 'order_cart_pop');
     final order = await Seller.instance.getTodayLast();
     if (order == null) return false;
 
-    info(order.id.toString(), 'order.cart.pop');
-
     replaceByObject(order);
+    Log.ger('done', 'order_cart_pop');
+
     isHistoryMode = true;
 
     return true;
@@ -191,15 +193,16 @@ class Cart extends ChangeNotifier {
   Future<bool> stash() async {
     if (isEmpty) return true;
 
+    Log.ger('start', 'order_cart_stash');
     // disallow before stash, so need minus 1
     final length = await Seller.instance.getStashCount();
     if (length > 4) return false;
 
     final data = await toObject();
-    final id = await Seller.instance.stash(data);
-    info(id.toString(), 'order.cart.stash');
+    await Seller.instance.stash(data);
 
     clear();
+    Log.ger('done', 'order_cart_stash');
 
     return true;
   }
@@ -264,7 +267,7 @@ class Cart extends ChangeNotifier {
     final data = await toObject(paid: paid, object: oldData);
 
     await Seller.instance.update(data);
-    info(oldData?.id.toString() ?? 'unknown', 'order.paid.update');
+    Log.ger('history', 'order_paid_done');
 
     await Stock.instance.order(data, oldData: oldData);
     final cashierResult = await Cashier.instance.paid(
@@ -279,8 +282,8 @@ class Cart extends ChangeNotifier {
   Future<CashierUpdateStatus> _finishNormalMode(num paid, num price) async {
     final data = await toObject(paid: paid);
 
-    final id = await Seller.instance.push(data);
-    info(id.toString(), 'order.paid.add');
+    await Seller.instance.push(data);
+    Log.ger('new', 'order_paid_done');
 
     await Stock.instance.order(data);
     final cashierResult = await Cashier.instance.paid(paid, price);

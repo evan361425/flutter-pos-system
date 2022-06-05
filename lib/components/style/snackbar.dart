@@ -78,6 +78,6 @@ Future<T> showSnackbarWhenFailed<T>(
 ) {
   return future.catchError((err) {
     showErrorSnackbar(context, S.actError);
-    error(err.toString(), code, err is Error ? err.stackTrace : null);
+    Log.err(err, code, err is Error ? err.stackTrace : null);
   });
 }

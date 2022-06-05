@@ -17,7 +17,7 @@ final dbMigrationActions = <int, Future<void> Function(Database)>{
         orderBy: 'createdAt asc',
       );
       offset += 100;
-      info('Get ${orders.length} orders', 'db.migration_action.5');
+      Log.ger('5', 'db_migration_action', orders.length.toString());
 
       for (final orderRaw in orders) {
         final order = OrderObject.fromMap(orderRaw);

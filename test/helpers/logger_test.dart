@@ -22,17 +22,14 @@ void main() {
         },
       );
 
-      // FirebaseCrashlyticsPlatform.instanceFor(
-      //     app: app, pluginConstants: {'isCrashlyticsCollectionEnabled': false});
-      // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-      debug('hi', 'there', {'a': 'b'});
-      info('hi', 'there');
-      warn('hi', 'there');
-      await waitLog('hi', 'there');
-      expect(sentCount, equals(4));
+      Log.ger('hi', 'there', 'world', true);
+      await tester.pumpAndSettle();
+
+      expect(sentCount, equals(1));
     });
 
     testWidgets('Should do things on crashlytics', (tester) async {
+      int counter = 0;
       await Firebase.initializeApp();
       MethodChannelFirebaseCrashlytics.channel
           .setMockMethodCallHandler((call) async {
@@ -40,19 +37,15 @@ void main() {
           return {};
         }
 
+        counter++;
         return '';
       });
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
 
-      await error('hi', 'there', null, false);
-    });
+      Log.err(Exception('hi'), 'there', null, true);
+      await tester.pumpAndSettle();
 
-    setUpAll(() {
-      logLevel = 5;
-    });
-
-    tearDownAll(() {
-      logLevel = 4;
+      expect(counter, equals(1));
     });
   });
 }

@@ -77,11 +77,8 @@ class Cashier extends ChangeNotifier {
       _favorites.removeAt(index);
 
       await _updateFavoriteStorage();
-    } catch (e) {
-      await error(
-        'total: $unitLength, index: $index',
-        'cashier.favorite.not_found',
-      );
+    } catch (e, stack) {
+      Log.err(e, 'cashier_favorite_remove', stack);
     }
   }
 
@@ -255,7 +252,7 @@ class Cashier extends ChangeNotifier {
         ]);
     } catch (e, stack) {
       if (e is! TypeError) {
-        await error(e.toString(), 'cashier.fetch.unit.error', stack);
+        Log.err(e, 'cashier_fetch_unit', stack);
       }
       _current
         ..clear()
@@ -297,7 +294,7 @@ class Cashier extends ChangeNotifier {
             CashierUnitObject.fromMap(item.cast<String, num>())
         ]);
     } catch (e, stack) {
-      await error(e.toString(), 'cashier.fetch.unit.error', stack);
+      Log.err(e, 'cashier_fetch_default', stack);
     }
   }
 
@@ -310,7 +307,7 @@ class Cashier extends ChangeNotifier {
             CashierChangeBatchObject.fromMap(map)
         ]);
     } catch (e, stack) {
-      await error(e.toString(), 'cashier.fetch.favorite.error', stack);
+      Log.err(e, 'cashier_fetch_favorite', stack);
     }
   }
 

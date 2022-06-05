@@ -9,6 +9,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart'
     as plugin_platform_interface;
 import 'package:possystem/services/auth.dart';
 
+import '../test_helpers/firebase_mocker.dart';
 import 'auth_test.mocks.dart';
 
 // Custom Mock! avoid clean up after rebuild
@@ -19,8 +20,6 @@ import 'auth_test.mocks.dart';
   GoogleSignInAuthentication,
   User,
   UserCredential,
-  FirebasePlatform,
-  FirebaseAppPlatform,
 ])
 void main() {
   group('Auth', () {
@@ -28,12 +27,10 @@ void main() {
     late MockGoogleSignIn googleSignIn;
     late MockFirebaseAuth firebaseAuth;
 
-    test('construct', () {
-      final delegate = MockFirebasePlatform();
-      final app = CustomAppPlatform();
-      Firebase.delegatePackingProperty = delegate;
-      when(delegate.app()).thenReturn(app);
-      when(app.name).thenReturn('[DEFAULT]');
+    test('construct', () async {
+      setupFirebaseAuthMocks();
+
+      await Firebase.initializeApp();
 
       Auth();
     });
@@ -74,6 +71,18 @@ void main() {
 
         expect(success, isFalse);
       });
+
+      test('failed with firebase exception', () async {
+        when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
+        when(googleSignIn.signIn()).thenAnswer((_) => Future.value());
+        when(firebaseAuth.signInWithCredential(any)).thenThrow(
+          FirebaseAuthException(code: '12'),
+        );
+
+        final success = await auth.loginIfNot();
+
+        expect(success, isFalse);
+      });
     });
 
     test('#getAuthenticatedClient', () async {
@@ -93,6 +102,20 @@ void main() {
       expect(scopes, equals(['a', 'b', 'c']));
     });
 
+    test('#signOut', () async {
+      when(googleSignIn.signOut()).thenAnswer((_) => Future.value(null));
+      when(firebaseAuth.signOut()).thenAnswer((_) => Future.value(null));
+      await auth.signOut();
+    });
+
+    test('#getName', () {
+      when(googleSignIn.currentUser).thenReturn(null);
+      when(firebaseAuth.currentUser).thenReturn(null);
+      final result = auth.getName();
+
+      expect(result, isNull);
+    });
+
     setUp(() {
       googleSignIn = MockGoogleSignIn();
       firebaseAuth = MockFirebaseAuth();
@@ -100,6 +123,3 @@ void main() {
     });
   });
 }
-
-class CustomAppPlatform extends MockFirebaseAppPlatform
-    with plugin_platform_interface.MockPlatformInterfaceMixin {}

@@ -7,7 +7,6 @@ import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/language_setting.dart';
@@ -60,7 +59,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
-                  OutlinedText('${flavor.toUpperCase()}-$logLevel'),
+                  OutlinedText(flavor.toUpperCase()),
                 ],
               );
             },

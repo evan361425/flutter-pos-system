@@ -42,7 +42,7 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
   }
 
   Future<void> remove() async {
-    info(toString(), '$logName.remove');
+    Log.ger('start', '${logName}_remove', toString());
 
     await removeRemotely();
 
@@ -64,7 +64,7 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
     if (updateData.isEmpty) return;
 
-    info(toString(), '$logName.$event');
+    Log.ger('start', '${logName}_$event', toString());
 
     await save(updateData);
 
@@ -159,8 +159,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
     // save image from pick
     await image.copy(dstPath);
 
-    info(toString(), '$logName.updateImage');
-
+    Log.ger('start', '${logName}_save_image', toString());
     await save({'$prefix.imagePath': dstPath});
 
     await deleteImage();
@@ -196,7 +195,7 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
 
 mixin ModelStorage<T extends ModelObject> on Model<T> {
   @override
-  String get logName => storageStore.toString();
+  String get logName => storageStore.name;
 
   Stores get storageStore;
 

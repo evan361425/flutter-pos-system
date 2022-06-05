@@ -146,7 +146,7 @@ void main() {
       });
 
       test('onUpgrade should catch the error', () async {
-        logLevel = 4;
+        Log.errorCount = 0;
 
         await Database.instance.initialize(opener: (path,
             {onConfigure,
@@ -163,18 +163,16 @@ void main() {
           return db;
         });
 
-        logLevel = 1;
+        expect(Log.errorCount, isNonZero);
+        Log.errorCount = 0;
       });
 
       setUpAll(() {
         sqfliteFfiInit();
-        // if error, it will fire crashlytics and throw error
-        logLevel = 1;
       });
 
       tearDownAll(() {
         Database.instance.db = MockDatabase();
-        logLevel = 4;
       });
 
       tearDown(() {

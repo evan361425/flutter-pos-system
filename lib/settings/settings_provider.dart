@@ -28,7 +28,7 @@ class SettingsProvider extends ChangeNotifier {
     instance = this;
     for (var setting in settings) {
       setting.initialize();
-      if (setting.registyForApp) {
+      if (setting.registryForApp) {
         setting.addListener(notifyListeners);
       }
     }

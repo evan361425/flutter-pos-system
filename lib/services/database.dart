@@ -113,18 +113,18 @@ class Database {
     _initialized = true;
 
     final databasePath = path ?? await getRootPath();
-    debug(databasePath, 'db.path');
+    Log.ger('start', 'db_initialize');
     db = await opener(
       databasePath,
       version: latestVersion,
       onCreate: (db, latestVer) async {
-        info(latestVer.toString(), 'database.create.$latestVer');
+        Log.ger(latestVer.toString(), 'db_initialize_0');
         for (var ver = 1; ver <= latestVer; ver++) {
           await execMigration(db, ver);
         }
       },
       onUpgrade: (db, oldVer, newVer) async {
-        info(oldVer.toString(), 'database.upgrade.$newVer');
+        Log.ger(newVer.toString(), 'db_initialize_$oldVer');
         _oldVersion = oldVer;
         for (var ver = oldVer + 1; ver <= newVer; ver++) {
           await execMigration(db, ver);
@@ -161,7 +161,7 @@ class Database {
         whereArgs,
       );
     } catch (e, stack) {
-      error(e.toString(), 'db.query.error', stack);
+      Log.err(e, 'db_query_error', stack);
       return [];
     }
   }
@@ -174,11 +174,11 @@ class Database {
     for (; version <= newVersion; version++) {
       final action = dbMigrationActions[version];
       if (action != null) {
-        info(version.toString(), 'database.migration_action');
+        Log.ger(version.toString(), 'db_migration_start');
         try {
           await action(db);
         } catch (e, stack) {
-          await error(e.toString(), 'database.migration_action.error', stack);
+          Log.err(e, 'db_tolerate_migration_error', stack);
         }
       }
     }
@@ -206,7 +206,7 @@ class Database {
       try {
         await db.execute(sql);
       } catch (e, stack) {
-        await error(e.toString(), 'database.migration.error', stack);
+        Log.err(e, 'db_migration_error', stack);
       }
     }
   }

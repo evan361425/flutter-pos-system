@@ -2,90 +2,59 @@ import 'dart:developer' as developer;
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 
-const _level = String.fromEnvironment('logLevel', defaultValue: 'debug');
-// var for testing
-var logLevel = _level == 'error'
-    ? 1
-    : _level == 'warn'
-        ? 2
-        : _level == 'info'
-            ? 3
-            : 4;
+const _isDebug = kDebugMode || String.fromEnvironment('appFlavor') == 'debug';
 
-Future<void> _log(
-  String message,
-  String code,
-  Map<String, Object>? detail,
-  int level,
-) async {
-  developer.log(message, name: code, level: level);
-  // no need send debug event
-  if (level > logLevel || logLevel == 4) return;
+class Log {
+  static void ger(
+    String action,
+    String code, [
+    String? message,
+    @visibleForTesting bool forceSend = false,
+  ]) {
+    assert(!code.contains('.'));
+    developer.log(action, name: code);
+    if (message != null) {
+      developer.log('$action - $message', name: code);
+    }
 
-  detail ??= {};
-  detail['message'] = message;
-
-  await FirebaseAnalytics.instance.logEvent(
-    name: code.split('.').join('_'),
-    parameters: detail,
-  );
-}
-
-Future<void> waitLog(
-  String message,
-  String code, [
-  Map<String, Object>? detail,
-]) async {
-  await _log(message, code, detail, 4);
-}
-
-/// DEBUG mode logging
-///
-/// LEVEL: 4
-void debug(String message, String code, [Map<String, Object>? detail]) async {
-  if (logLevel > 3) {
-    await _log(message, code, detail, 4);
+    // no need send debug event
+    if (forceSend || !_isDebug) {
+      FirebaseAnalytics.instance.logEvent(
+        name: '${code}_$action',
+        parameters: message != null ? {'message': message} : null,
+      );
+    }
   }
-}
 
-/// INFO mode logging
-///
-/// LEVEL: 3
-void info(String message, String code, [Map<String, Object>? detail]) async {
-  if (logLevel > 2) {
-    await _log(message, code, detail, 3);
+  static void err(
+    Object error,
+    String code, [
+    StackTrace? stackTrace,
+    @visibleForTesting bool forceSend = false,
+  ]) {
+    assert(!code.contains('.'));
+    assert(() {
+      errorCount++;
+      return true;
+    }());
+    developer.log(
+      error.toString(),
+      name: code,
+      error: error,
+      stackTrace: stackTrace,
+    );
+
+    if (forceSend || !_isDebug) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: code,
+      );
+    }
   }
-}
 
-/// WARN mode logging
-///
-/// LEVEL: 2
-void warn(String message, String code, [Map<String, Object>? detail]) async {
-  if (logLevel > 1) {
-    await _log(message, code, detail, 2);
-  }
-}
-
-/// ERROR mode logging
-///
-/// LEVEL: 1
-///
-/// It will send to crashlytics not analytic
-Future<void> error(
-  String message,
-  String code, [
-  StackTrace? stack,
-  bool? printDetails,
-]) async {
-  developer.log(message, name: code);
-
-  if (logLevel == 4) return;
-
-  await FirebaseCrashlytics.instance.recordError(
-    error,
-    stack,
-    reason: '$code - $message',
-    printDetails: printDetails,
-  );
+  @visibleForTesting
+  static int errorCount = 0;
 }

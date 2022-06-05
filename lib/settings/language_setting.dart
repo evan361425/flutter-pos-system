@@ -11,7 +11,7 @@ class LanguageSetting extends Setting<Locale> {
   final String key = 'language';
 
   @override
-  bool get registyForApp => true;
+  bool get registryForApp => true;
 
   @override
   void initialize() {

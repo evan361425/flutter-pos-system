@@ -37,7 +37,7 @@ class Storage {
     _initialized = true;
 
     final path = await getRootPath();
-    debug(path, 'storage.path');
+    Log.ger('start', 'storage_initialize');
     db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 
@@ -119,10 +119,7 @@ class StorageSanitizedData {
     }
 
     // only use first setting value
-    if (data[value.id] is! Map) {
-      return;
-    } else if (value.data is! Map) {
-      warn('Ignoring different type setting', 'storage.sanitize');
+    if (data[value.id] is! Map || value.data is! Map) {
       return;
     }
 

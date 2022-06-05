@@ -34,7 +34,7 @@ class GoogleSheetExporter {
     List<String> sheetTitles,
   ) async {
     final sheetsApi = await getSheetsApi();
-    info(title, 'google_sheet_exporter.add_spreadsheet');
+    Log.ger('start', 'exporter_gs_add_spreadsheet');
     final result = await sheetsApi?.spreadsheets.create(
       gs.Spreadsheet(
         properties: gs.SpreadsheetProperties(title: title),
@@ -47,12 +47,13 @@ class GoogleSheetExporter {
     );
 
     if (result?.spreadsheetId == null) {
+      Log.ger('miss', 'exporter_gs_add_spreadsheet');
       return null;
     }
 
-    info(result!.spreadsheetId!, 'google_sheet_exporter.add_spreadsheet_s');
+    Log.ger('success', 'exporter_gs_add_spreadsheet');
     return GoogleSpreadsheet(
-      id: result.spreadsheetId!,
+      id: result!.spreadsheetId!,
       name: title,
       sheets: GoogleSheetProperties.fromSheet(result.sheets),
     );
@@ -72,7 +73,7 @@ class GoogleSheetExporter {
     ];
 
     final sheetApi = await getSheetsApi();
-    info(titles.length.toString(), 'google_sheet_exporter.add_sheets');
+    Log.ger('start ${titles.length}', 'exporter_gs_add_sheets');
     final result = await sheetApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheetId,
@@ -81,10 +82,11 @@ class GoogleSheetExporter {
     final replies = result?.replies;
     if (replies == null ||
         replies.any((reply) => reply.addSheet?.properties?.sheetId == null)) {
+      Log.ger('miss', 'exporter_gs_add_sheets');
       return null;
     }
 
-    info('', 'google_sheet_exporter.add_sheets_s');
+    Log.ger('success', 'exporter_gs_add_sheets');
     return replies
         .map((reply) => GoogleSheetProperties(
             reply.addSheet!.properties!.sheetId!,
@@ -94,17 +96,19 @@ class GoogleSheetExporter {
 
   Future<List<GoogleSheetProperties>> getSheets(String spreadsheetId) async {
     final sheetsApi = await getSheetsApi();
+    Log.ger('start', 'exporter_gs_get_sheets');
     final res = await sheetsApi?.spreadsheets.get(
       spreadsheetId,
       $fields: 'sheets(properties(sheetId,title))',
     );
 
+    Log.ger('done', 'exporter_gs_get_sheets');
     return GoogleSheetProperties.fromSheet(res?.sheets);
   }
 
   Future<String?> findSpreadsheetIdByName(String name) async {
     final driveApi = await getDriveApi();
-    debug(name, 'google_sheet_exporter.find_sheet');
+    Log.ger('start', 'exporter_gs_find_spreadsheet');
     final drive = await driveApi?.files.list(
       q: [
         "mimeType = 'application/vnd.google-apps.spreadsheet'",
@@ -115,27 +119,28 @@ class GoogleSheetExporter {
     );
 
     if (drive?.files?.isEmpty != false) {
-      info(name, 'google_sheet_exporter.find_missed');
+      Log.ger('miss', 'exporter_gs_find_spreadsheet');
       return null;
     }
 
+    Log.ger('success', 'exporter_gs_find_spreadsheet');
     return drive!.files!.first.id;
   }
 
   Future<GoogleSpreadsheet?> pickSheet() async {
+    Log.ger('start', 'exporter_gs_pick_sheet');
     final picked = await FilePicker.platform.pickFiles();
     if (picked == null || picked.files.isEmpty) {
+      Log.ger('miss', 'exporter_gs_pick_sheet');
       return null;
     }
 
     final pickedName = Util.removeExtension(picked.files.first.name);
-    info(pickedName, 'google_sheet_exporter.pick_name');
     final id = await findSpreadsheetIdByName(pickedName);
     if (id == null) {
       throw GoogleSheetError('non_exist_name');
     }
 
-    debug(id, 'google_sheet_exporter.pick_sheet');
     final sheets = await getSheets(id);
     return GoogleSpreadsheet(
       id: id,
@@ -176,6 +181,7 @@ class GoogleSheetExporter {
     ];
 
     final sheetsApi = await getSheetsApi();
+    Log.ger('start', 'exporter_gs_update_sheet');
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheetId,
@@ -189,6 +195,7 @@ class GoogleSheetExporter {
     required int neededColumns,
   }) async {
     final sheetsApi = await getSheetsApi();
+    Log.ger('start', 'exporter_gs_get_data');
     final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheetId,
       // TODO: if neededColumns are better than 26, this must change
