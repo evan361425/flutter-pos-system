@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart'
-    as plugin_platform_interface;
 import 'package:possystem/services/auth.dart';
 
 import '../test_helpers/firebase_mocker.dart';
