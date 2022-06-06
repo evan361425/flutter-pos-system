@@ -130,6 +130,12 @@ jobs:
       - name: Build dependencies
         run: flutter pub get
 
+      - name: Configure Google Services
+        run: echo "$GOOGLE_SERVICES_JSON" > google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        working-directory: android/app
+
       - name: Configure Play Store
         run: |
           echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
