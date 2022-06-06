@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
+      tag: ${{ steps.tag.outputs.value }}
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.value }}
@@ -103,6 +104,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.var.outputs.tag }}
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
@@ -138,16 +141,7 @@ jobs:
 
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
-      - name: Fastlane internal building
-        if: needs.var.outputs.lane == 'internal'
-        run: bundle exec fastlane ${{ needs.var.outputs.lane }}
-        env:
-          PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_DEV_CONFIG_JSON }}
-          BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
-          VERSION_CODE: ${{ needs.var.outputs.build_code }}
-        working-directory: android
-      - name: Fastlane production building
-        if: needs.var.outputs.lane != 'internal'
+      - name: Fastlane building
         run: bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
