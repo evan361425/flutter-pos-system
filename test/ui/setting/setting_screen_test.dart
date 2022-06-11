@@ -49,7 +49,6 @@ void main() {
       });
 
       testWidgets('#signIn - failed', (tester) async {
-        when(auth.errorMessage).thenReturn(null);
         when(auth.getName()).thenReturn(null);
         when(auth.loginIfNot()).thenAnswer((_) => Future.value(false));
         await buildApp(tester);

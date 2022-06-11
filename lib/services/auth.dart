@@ -12,8 +12,6 @@ class Auth {
 
   final FirebaseAuth _firebaseAuth;
 
-  String? errorMessage;
-
   Auth([GoogleSignIn? service, FirebaseAuth? auth])
       : _service = service ?? GoogleSignIn(scopes: []),
         _firebaseAuth = auth ?? FirebaseAuth.instance;
@@ -72,12 +70,7 @@ class Auth {
       await _firebaseAuth.signInWithCredential(credential);
 
       return true;
-    } on FirebaseAuthException catch (e, stack) {
-      errorMessage = e.code + (e.message?.replaceAll(' ', '\n') ?? 'unknown');
-      Log.err(e, 'auth_login', stack);
-      return false;
     } catch (e, stack) {
-      errorMessage = e.toString();
       Log.err(e, 'auth_login', stack);
       return false;
     }

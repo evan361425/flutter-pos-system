@@ -180,10 +180,7 @@ class _SettingScreenState extends State<SettingScreen> {
           if (await Auth.instance.loginIfNot()) {
             setState(() => userName = Auth.instance.getName());
           } else {
-            showErrorSnackbar(
-              context,
-              Auth.instance.errorMessage ?? S.actError,
-            );
+            showErrorSnackbar(context, S.actError);
           }
         },
         child: const Text('登入'),

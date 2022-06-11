@@ -7,7 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/debug/setup_menu.dart';
-import 'package:possystem/firebase_options.dart';
+import 'package:possystem/firebase_options.dart' as prod;
+import 'package:possystem/firebase_options_dev.dart' as dev;
 import 'package:provider/provider.dart';
 
 import 'models/repository/cashier.dart';
@@ -29,7 +30,11 @@ void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  const isProd = String.fromEnvironment('appFlavor') == 'prod';
+  final options = isProd
+      ? prod.DefaultFirebaseOptions.currentPlatform
+      : dev.DefaultFirebaseOptions.currentPlatform;
+  await Firebase.initializeApp(options: options);
 
   // Not all errors are caught by Flutter. Sometimes, errors are instead caught by Zones.
   await runZonedGuarded<Future<void>>(() async {
