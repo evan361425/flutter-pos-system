@@ -88,6 +88,7 @@ void main() {
       await navAndPop('home_setup.exporter', 'exporter.google_sheet');
       await navAndPop('home_setup.quantities', 'quantities.add');
       await navAndPop('home_setup.customer', 'customer_settings.action');
+      await dragUp();
       await navAndPop('home_setup.header.customer', 'customer_settings.action');
       await navAndPop('home_setup.feature_request', 'feature_request_please');
       await dragUp();

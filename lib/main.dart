@@ -25,75 +25,82 @@ import 'settings/settings_provider.dart';
 import 'ui/home/home_scaffold.dart';
 
 void main() async {
-  // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   // Not all errors are caught by Flutter. Sometimes, errors are instead caught by Zones.
-  await runZonedGuarded<Future<void>>(() async {
-    // Pass all uncaught errors from the framework to Crashlytics.
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  await runZonedGuarded<Future<void>>(
+    () async {
+      // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
+      final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-    if (kDebugMode) {
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-    }
+      await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform);
 
-    await Database.instance.initialize();
-    await Storage.instance.initialize();
-    await Cache.instance.initialize();
+      // Pass all uncaught errors from the framework to Crashlytics.
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-    final settings = SettingsProvider(SettingsProvider.allSettings);
+      if (kDebugMode) {
+        await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+        await FirebaseCrashlytics.instance
+            .setCrashlyticsCollectionEnabled(false);
+      }
 
-    await Stock().initialize();
-    await Quantities().initialize();
-    await CustomerSettings().initialize();
-    await Replenisher().initialize();
-    await Cashier().reset();
-    // Last for setup ingredient and quantity
-    await Menu().initialize();
+      await Database.instance.initialize();
+      await Storage.instance.initialize();
+      await Cache.instance.initialize();
 
-    await Database.instance.tolerateMigration();
+      final settings = SettingsProvider(SettingsProvider.allSettings);
 
-    if (kDebugMode) {
-      await debugSetupMenu();
-    }
+      await Stock().initialize();
+      await Quantities().initialize();
+      await CustomerSettings().initialize();
+      await Replenisher().initialize();
+      await Cashier().reset();
+      // Last for setup ingredient and quantity
+      await Menu().initialize();
 
-    /// Why use provider?
-    /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider<SettingsProvider>.value(
-          value: settings,
+      await Database.instance.tolerateMigration();
+
+      if (kDebugMode) {
+        await debugSetupMenu();
+      }
+
+      /// Why use provider?
+      /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
+      runApp(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsProvider>.value(
+            value: settings,
+          ),
+          ChangeNotifierProvider<Menu>(
+            create: (_) => Menu.instance,
+          ),
+          ChangeNotifierProvider<Stock>(
+            create: (_) => Stock.instance,
+          ),
+          ChangeNotifierProvider<Quantities>(
+            create: (_) => Quantities.instance,
+          ),
+          ChangeNotifierProvider<Replenisher>(
+            create: (_) => Replenisher.instance,
+          ),
+          ChangeNotifierProvider<CustomerSettings>(
+            create: (_) => CustomerSettings.instance,
+          ),
+          ChangeNotifierProvider<Seller>(
+            create: (_) => Seller(),
+          ),
+          ChangeNotifierProvider<Cashier>(
+            create: (_) => Cashier.instance,
+          ),
+        ],
+        child: MyApp(
+          settings: settings,
+          child: const HomeScaffold(),
         ),
-        ChangeNotifierProvider<Menu>(
-          create: (_) => Menu.instance,
-        ),
-        ChangeNotifierProvider<Stock>(
-          create: (_) => Stock.instance,
-        ),
-        ChangeNotifierProvider<Quantities>(
-          create: (_) => Quantities.instance,
-        ),
-        ChangeNotifierProvider<Replenisher>(
-          create: (_) => Replenisher.instance,
-        ),
-        ChangeNotifierProvider<CustomerSettings>(
-          create: (_) => CustomerSettings.instance,
-        ),
-        ChangeNotifierProvider<Seller>(
-          create: (_) => Seller(),
-        ),
-        ChangeNotifierProvider<Cashier>(
-          create: (_) => Cashier.instance,
-        ),
-      ],
-      child: MyApp(
-        settings: settings,
-        child: const HomeScaffold(),
-      ),
-    ));
-  }, FirebaseCrashlytics.instance.recordError);
+      ));
+    },
+    (error, stack) =>
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+  );
 }

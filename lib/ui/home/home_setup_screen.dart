@@ -22,6 +22,13 @@ class HomeSetupScreen extends StatelessWidget {
           children: [
             const _HeaderInfoList(),
             if (!isProd) const Center(child: RandomGenerateOrderButton()),
+            if (!isProd)
+              Center(
+                child: TextButton(
+                  onPressed: () => throw Exception('test'),
+                  child: const Text("Throw Test Exception"),
+                ),
+              ),
             RouteTile(
               key: const Key('home_setup.menu'),
               icon: Icons.collections_outlined,

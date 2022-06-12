@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
@@ -59,7 +60,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
-                  OutlinedText(flavor.toUpperCase()),
+                  OutlinedText((kDebugMode ? '=' : '-') + flavor.toUpperCase()),
                 ],
               );
             },
