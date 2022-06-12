@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -44,8 +43,6 @@ class MyApp extends StatelessWidget {
               // language.update(locale);
 
               S = localizations;
-
-              FlutterNativeSplash.remove();
 
               return localizations.appTitle;
             },
