@@ -25,6 +25,8 @@ List<OrderObject> generateOrder({
   final result = <OrderObject>[];
 
   final interval = endTo.difference(startFrom).inMinutes;
+  if (interval == 0) return const [];
+
   final createdList = [
     for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
   ]..sort();

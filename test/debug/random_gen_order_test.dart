@@ -18,6 +18,17 @@ import '../mocks/mock_database.dart';
 
 void main() {
   group('Random Generate Order', () {
+    test('no gen if same date', () {
+      final now = DateTime.now();
+      final result = generateOrder(
+        orderCount: 10,
+        startFrom: now,
+        endTo: now,
+      );
+
+      expect(result, isEmpty);
+    });
+
     test('default setting', () {
       final end = DateTime.now();
       final result = generateOrder(
