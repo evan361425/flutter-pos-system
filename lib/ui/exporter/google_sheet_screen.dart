@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
@@ -959,7 +960,12 @@ Future<GoogleSpreadsheet?> _selectSpreadsheet(
     context: context,
     builder: (context) {
       return SingleTextDialog(
-        header: Image.asset('assets/feature_request_please.gif'),
+        header: CachedNetworkImage(
+          imageUrl:
+              "https://raw.githubusercontent.com/evan361425/flutter-pos-system/master/assets/web/tutorial-gs-copy-url.gif",
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+        ),
         initialValue: origin?.id,
         decoration: InputDecoration(
           labelText: S.exporterGSSpreadsheetLabel,
