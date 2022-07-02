@@ -1,26 +1,24 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:googleapis/content/v2_1.dart';
-import 'package:googleapis/drive/v3.dart' as gd;
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/services/auth.dart';
 
 class GoogleSheetExporter {
-  GoogleSheetExporter({gs.SheetsApi? sheetsApi, gd.DriveApi? driveApi})
-      : _driveApi = driveApi,
-        _sheetsApi = sheetsApi;
+  GoogleSheetExporter({
+    gs.SheetsApi? sheetsApi,
+    List<String> scopes = const [],
+  })  : _sheetsApi = sheetsApi,
+        _scopes = scopes;
 
   gs.SheetsApi? _sheetsApi;
 
-  gd.DriveApi? _driveApi;
+  List<String> _scopes;
 
-  Future<gd.DriveApi?> getDriveApi() {
-    return _setApiClient().then((_) => _driveApi);
-  }
-
-  Future<gs.SheetsApi?> getSheetsApi() {
-    return _setApiClient().then((_) => _sheetsApi);
+  Future<gs.SheetsApi?> getSheetsApi(bool isOrigin) {
+    final scopes = isOrigin
+        ? const [gs.SheetsApi.driveFileScope]
+        : const [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
+    return _setApiClient(scopes).then((_) => _sheetsApi);
   }
 
   gs.SheetProperties getNewSheetProperties(String title) => gs.SheetProperties(
@@ -33,7 +31,7 @@ class GoogleSheetExporter {
     String title,
     List<String> sheetTitles,
   ) async {
-    final sheetsApi = await getSheetsApi();
+    final sheetsApi = await getSheetsApi(true);
     Log.ger('start', 'exporter_gs_add_spreadsheet');
     final result = await sheetsApi?.spreadsheets.create(
       gs.Spreadsheet(
@@ -56,11 +54,35 @@ class GoogleSheetExporter {
       id: result!.spreadsheetId!,
       name: title,
       sheets: GoogleSheetProperties.fromSheet(result.sheets),
+      isOrigin: true,
+    );
+  }
+
+  Future<GoogleSpreadsheet?> getSpreadsheet(String id) async {
+    final sheetsApi = await getSheetsApi(false);
+    Log.ger('start', 'exporter_gs_get_spreadsheet');
+    final res = await sheetsApi?.spreadsheets.get(
+      id,
+      includeGridData: false,
+      $fields: 'properties.title,sheets.properties(sheetId,title)',
+    );
+
+    if (res?.properties?.title == null) {
+      Log.ger('miss', 'exporter_gs_get_spreadsheet');
+      return null;
+    }
+
+    Log.ger('done', 'exporter_gs_get_spreadsheet');
+    return GoogleSpreadsheet(
+      id: id,
+      name: res!.properties!.title!,
+      sheets: GoogleSheetProperties.fromSheet(res.sheets),
+      isOrigin: false,
     );
   }
 
   Future<List<GoogleSheetProperties>?> addSheets(
-    String spreadsheetId,
+    GoogleSpreadsheet spreadsheet,
     List<String> titles,
   ) async {
     final requests = [
@@ -72,11 +94,11 @@ class GoogleSheetExporter {
         ),
     ];
 
-    final sheetApi = await getSheetsApi();
+    final sheetApi = await getSheetsApi(spreadsheet.isOrigin);
     Log.ger('start ${titles.length}', 'exporter_gs_add_sheets');
     final result = await sheetApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
-      spreadsheetId,
+      spreadsheet.id,
     );
 
     final replies = result?.replies;
@@ -94,11 +116,14 @@ class GoogleSheetExporter {
         .toList();
   }
 
-  Future<List<GoogleSheetProperties>> getSheets(String spreadsheetId) async {
-    final sheetsApi = await getSheetsApi();
+  Future<List<GoogleSheetProperties>> getSheets(
+    GoogleSpreadsheet spreadsheet,
+  ) async {
+    final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     Log.ger('start', 'exporter_gs_get_sheets');
     final res = await sheetsApi?.spreadsheets.get(
-      spreadsheetId,
+      spreadsheet.id,
+      includeGridData: false,
       $fields: 'sheets(properties(sheetId,title))',
     );
 
@@ -106,55 +131,12 @@ class GoogleSheetExporter {
     return GoogleSheetProperties.fromSheet(res?.sheets);
   }
 
-  Future<String?> findSpreadsheetIdByName(String name) async {
-    final driveApi = await getDriveApi();
-    Log.ger('start', 'exporter_gs_find_spreadsheet');
-    final drive = await driveApi?.files.list(
-      q: [
-        "mimeType = 'application/vnd.google-apps.spreadsheet'",
-        "name = '$name'",
-        "trashed = false",
-      ].join(' and '),
-      $fields: 'files(id)',
-    );
-
-    if (drive?.files?.isEmpty != false) {
-      Log.ger('miss', 'exporter_gs_find_spreadsheet');
-      return null;
-    }
-
-    Log.ger('success', 'exporter_gs_find_spreadsheet');
-    return drive!.files!.first.id;
-  }
-
-  Future<GoogleSpreadsheet?> pickSheet() async {
-    Log.ger('start', 'exporter_gs_pick_sheet');
-    final picked = await FilePicker.platform.pickFiles();
-    if (picked == null || picked.files.isEmpty) {
-      Log.ger('miss', 'exporter_gs_pick_sheet');
-      return null;
-    }
-
-    final pickedName = Util.removeExtension(picked.files.first.name);
-    final id = await findSpreadsheetIdByName(pickedName);
-    if (id == null) {
-      throw GoogleSheetError('non_exist_name');
-    }
-
-    final sheets = await getSheets(id);
-    return GoogleSpreadsheet(
-      id: id,
-      name: pickedName,
-      sheets: sheets,
-    );
-  }
-
   /// 更新表單
   ///
   /// [hiddenColumnIndex] 1-index
   Future<void> updateSheet(
-    String spreadsheetId,
-    int sheetId,
+    GoogleSpreadsheet spreadsheet,
+    GoogleSheetProperties sheet,
     List<List<GoogleSheetCellData>> data,
     List<GoogleSheetCellData> header,
   ) async {
@@ -174,30 +156,30 @@ class GoogleSheetExporter {
           start: gs.GridCoordinate(
             rowIndex: 0,
             columnIndex: 0,
-            sheetId: sheetId,
+            sheetId: sheet.id,
           ),
         ),
       ),
     ];
 
-    final sheetsApi = await getSheetsApi();
-    Log.ger('start', 'exporter_gs_update_sheet');
+    final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
+    Log.ger(sheet.typeName, 'exporter_gs_update_sheet');
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
-      spreadsheetId,
+      spreadsheet.id,
       $fields: 'spreadsheetId',
     );
   }
 
   Future<List<List<Object?>>?> getSheetData(
-    String spreadsheetId,
+    GoogleSpreadsheet spreadsheet,
     String sheetTitle, {
     required int neededColumns,
   }) async {
-    final sheetsApi = await getSheetsApi();
+    final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     Log.ger('start', 'exporter_gs_get_data');
     final result = await sheetsApi?.spreadsheets.values.get(
-      spreadsheetId,
+      spreadsheet.id,
       // TODO: if neededColumns are better than 26, this must change
       "'$sheetTitle'!A:${String.fromCharCode(64 + neededColumns)}",
       majorDimension: 'ROWS',
@@ -212,23 +194,19 @@ class GoogleSheetExporter {
 
   Future<void> auth() => _setApiClient();
 
-  Future<void> _setApiClient() async {
-    // allow mock only one object
-    if (_sheetsApi != null || _driveApi != null) {
+  Future<void> _setApiClient([List<String> scopes = const []]) async {
+    final exist = _scopes.toSet();
+    final wanted = scopes.toSet();
+    if (_sheetsApi != null && wanted.difference(exist).isEmpty) {
       return;
     }
 
     if (await Auth.instance.loginIfNot()) {
-      final client = await Auth.instance.getAuthenticatedClient(
-        scopes: [
-          gs.SheetsApi.spreadsheetsScope,
-          gd.DriveApi.driveMetadataReadonlyScope,
-        ],
-      );
+      final client = await Auth.instance.getAuthenticatedClient(scopes: scopes);
 
       if (client != null) {
         _sheetsApi = gs.SheetsApi(client);
-        _driveApi = gd.DriveApi(client);
+        _scopes = exist.union(wanted).toList();
       }
     }
   }
@@ -241,15 +219,40 @@ class GoogleSpreadsheet {
 
   final List<GoogleSheetProperties> sheets;
 
+  // If this spreadsheet created by pos-system
+  final bool isOrigin;
+
   GoogleSpreadsheet({
     required this.id,
     required this.name,
     required this.sheets,
+    this.isOrigin = false,
   });
+
+  static GoogleSpreadsheet? fromString(String value) {
+    try {
+      var index = value.indexOf(':');
+      final id = value.substring(0, index);
+      value = value.substring(index + 1);
+      index = value.indexOf(':');
+      final isOrigin = value.substring(0, index) == 'true';
+      final name = value.substring(index + 1);
+
+      return GoogleSpreadsheet(
+        id: id,
+        name: name,
+        sheets: [],
+        isOrigin: isOrigin,
+      );
+    } catch (error, stack) {
+      Log.err(error, 'gs_spreadsheet_format_failed', stack);
+      return null;
+    }
+  }
 
   @override
   String toString() {
-    return id;
+    return '$id:$isOrigin:$name';
   }
 }
 
@@ -258,7 +261,9 @@ class GoogleSheetProperties {
 
   final String title;
 
-  GoogleSheetProperties(this.id, this.title);
+  final String typeName;
+
+  GoogleSheetProperties(this.id, this.title, {this.typeName = ''});
 
   static List<GoogleSheetProperties> fromSheet(List<gs.Sheet>? sheets) {
     return sheets
@@ -345,10 +350,4 @@ class GoogleSheetCellData {
   String toString() {
     return value.stringValue ?? value.numberValue!.toString();
   }
-}
-
-class GoogleSheetError extends Error {
-  final String code;
-
-  GoogleSheetError(this.code);
 }

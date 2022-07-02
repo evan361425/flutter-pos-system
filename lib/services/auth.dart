@@ -58,12 +58,16 @@ class Auth {
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? auth = await user?.authentication;
-      Log.ger(auth == null ? 'empty' : 'allow', 'auth_login');
+      if (auth == null) {
+        Log.ger('empty', 'auth_login');
+        return false;
+      }
 
+      Log.ger('allow', 'auth_login');
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
-        accessToken: auth?.accessToken,
-        idToken: auth?.idToken,
+        accessToken: auth.accessToken,
+        idToken: auth.idToken,
       );
 
       // Once signed in, return the UserCredential

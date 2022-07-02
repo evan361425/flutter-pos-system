@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:googleapis/drive/v2.dart' as gd;
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
@@ -16,20 +15,24 @@ void main() {
           .thenAnswer((_) => Future.value(Client()));
 
       final exporter = GoogleSheetExporter();
-      final sheetApi = await exporter.getSheetsApi();
-      final driveApi = await exporter.getDriveApi();
+      await exporter.auth();
+      final sheetApi = await exporter.getSheetsApi(false);
 
       expect(sheetApi, isNotNull);
-      expect(driveApi, isNotNull);
+      verify(auth.loginIfNot()).called(2);
+      verify(auth.getAuthenticatedClient(scopes: [])).called(1);
       verify(auth.getAuthenticatedClient(scopes: [
+        gs.SheetsApi.driveFileScope,
         gs.SheetsApi.spreadsheetsScope,
-        gd.DriveApi.driveMetadataReadonlyScope,
       ])).called(1);
     });
 
     test('#addSpreadsheet', () async {
       final api = getMockSheetsApi();
-      final exporter = GoogleSheetExporter(sheetsApi: api);
+      final exporter = GoogleSheetExporter(
+        sheetsApi: api,
+        scopes: [gs.SheetsApi.driveFileScope],
+      );
       when(api.spreadsheets.create(
         argThat(predicate<gs.Spreadsheet>((e) =>
             e.properties?.title == 'title' &&
@@ -40,6 +43,7 @@ void main() {
       final spreadsheet = await exporter.addSpreadsheet('title', ['sheet1']);
 
       expect(spreadsheet?.id, equals('abc'));
+      expect(spreadsheet?.isOrigin, isTrue);
     });
 
     test('GoogleSheetCellData #dataValidation', () async {
@@ -53,6 +57,12 @@ void main() {
             .toList(),
         equals(['b', 'c']),
       );
+    });
+
+    test('GoogleSpreadsheet #fromString throw error', () {
+      final value = GoogleSpreadsheet.fromString('abc');
+
+      expect(value, isNull);
     });
   });
 

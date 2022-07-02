@@ -113,7 +113,7 @@ class Database {
     _initialized = true;
 
     final databasePath = path ?? await getRootPath();
-    Log.ger('start', 'db_initialize');
+    Log.out('start', 'db_initialize');
     db = await opener(
       databasePath,
       version: latestVersion,
