@@ -1,7 +1,5 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:googleapis/drive/v3.dart' as gd;
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -30,10 +28,24 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Google Sheet Screen', () {
-    const eCacheIdKey = 'exporter_google_sheet_id';
-    const eCacheNameKey = 'exporter_google_sheet_name';
-    const iCacheIdKey = 'importer_google_sheet_id';
-    const iCacheNameKey = 'importer_google_sheet_name';
+    const eCacheKey = 'exporter_google_sheet';
+    const iCacheKey = 'importer_google_sheet';
+    const spreadsheetId = '1bCPUG2iS5xXqchWIa9Pq-TT4J-Bt9Pig6i-QqkOWEoE';
+    const gsExporterScopes = [
+      gs.SheetsApi.driveFileScope,
+      gs.SheetsApi.spreadsheetsScope
+    ];
+
+    Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
+      return MaterialApp(
+        home: GoogleSheetScreen(
+          exporter: GoogleSheetExporter(
+            sheetsApi: sheetsApi,
+            scopes: gsExporterScopes,
+          ),
+        ),
+      );
+    }
 
     void prepareData() {
       final i1 = Ingredient(id: 'i1', name: 'i1');
@@ -70,7 +82,7 @@ void main() {
       testWidgets('#preview', (tester) async {
         Stock.instance.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1')});
 
-        await tester.pumpWidget(const MaterialApp(home: GoogleSheetScreen()));
+        await tester.pumpWidget(buildApp());
         await tester.pumpAndSettle();
 
         Checkbox checkbox(String key) =>
@@ -112,21 +124,18 @@ void main() {
       });
 
       group('#export', () {
-        Future<void> tapBtn(WidgetTester tester) async {
+        Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
           await tester.pumpAndSettle();
-          await tester.tap(find.byIcon(Icons.upload_file_outlined));
+          await tester.tap(find.text(selected ? '匯出於指定表單' : '匯出後建立試算單'));
           await tester.pumpAndSettle();
         }
 
         testWidgets('empty checked', (tester) async {
           final screen = GlobalKey<GoogleSheetScreenState>();
           Stock.instance.replaceItems({});
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              key: screen,
-              exporter: GoogleSheetExporter(),
-            ),
-          ));
+          await tester.pumpWidget(
+            MaterialApp(home: GoogleSheetScreen(key: screen)),
+          );
           await tapBtn(tester);
           // no repo checked, do nothing
           expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
@@ -134,17 +143,15 @@ void main() {
 
         testWidgets('repeat name', (tester) async {
           prepareData();
-          when(cache.get(eCacheNameKey + '.menu')).thenReturn('title');
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(exporter: GoogleSheetExporter()),
-          ));
+          when(cache.get(eCacheKey + '.menu')).thenReturn('title');
+          await tester.pumpWidget(buildApp());
           await tapBtn(tester);
           expect(find.text(S.exporterGSErrors('sheet_repeat')), findsOneWidget);
         });
 
         testWidgets('spreadsheet create failed', (tester) async {
           final sheetsApi = getMockSheetsApi();
-          when(cache.get(eCacheIdKey)).thenReturn(null);
+          when(cache.get(eCacheKey)).thenReturn(null);
           when(sheetsApi.spreadsheets.create(
             argThat(predicate<gs.Spreadsheet>((e) {
               return e.sheets?.length == 1 &&
@@ -153,19 +160,15 @@ void main() {
             $fields: anyNamed('\$fields'),
           )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
-          await tapBtn(tester);
+          await tester.pumpWidget(buildApp(sheetsApi));
+          await tapBtn(tester, selected: false);
 
           expect(find.text(S.exporterGSErrors('spreadsheet')), findsOneWidget);
         });
 
         testWidgets('spreadsheet create success', (tester) async {
           final sheetsApi = getMockSheetsApi();
-          when(cache.get(eCacheIdKey)).thenReturn(null);
+          when(cache.get(eCacheKey)).thenReturn(null);
           when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
           when(sheetsApi.spreadsheets.create(
             any,
@@ -174,23 +177,21 @@ void main() {
                 gs.Spreadsheet(spreadsheetId: 'abc'),
               ));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
-          await tapBtn(tester);
+          await tester.pumpWidget(buildApp(sheetsApi));
+          await tapBtn(tester, selected: false);
 
-          verify(cache.set(eCacheIdKey, 'abc'));
-          verify(cache.set(eCacheNameKey, any));
-          verify(cache.set(iCacheIdKey, 'abc'));
-          verify(cache.set(iCacheNameKey, any));
+          final title = S.exporterGSDefaultSpreadsheetName;
+          verify(cache.set(eCacheKey, 'abc:true:' + title));
+          verify(cache.set(iCacheKey, 'abc:true:' + title));
         });
 
         testWidgets('sheets create failed', (tester) async {
           final sheetsApi = getMockSheetsApi();
-          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.value(gs.Spreadsheet()));
+          when(sheetsApi.spreadsheets.get(
+            any,
+            $fields: anyNamed('\$fields'),
+            includeGridData: anyNamed('includeGridData'),
+          )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
           when(sheetsApi.spreadsheets.batchUpdate(
             argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
               return e.requests?.length == 1 &&
@@ -200,11 +201,7 @@ void main() {
           )).thenAnswer(
               (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester);
 
           expect(find.text(S.exporterGSErrors('sheet')), findsOneWidget);
@@ -215,9 +212,14 @@ void main() {
           final sheet = gs.SheetProperties(title: 'title', sheetId: 1);
           prepareData();
           when(cache.get(any)).thenReturn('title');
-          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.value(
-                  gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet)])));
+          when(cache.get(eCacheKey)).thenReturn('id:true:name');
+          when(sheetsApi.spreadsheets.get(
+            any,
+            $fields: anyNamed('\$fields'),
+            includeGridData: anyNamed('includeGridData'),
+          )).thenAnswer((_) => Future.value(
+                gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet)]),
+              ));
           when(sheetsApi.spreadsheets.batchUpdate(
             any,
             any,
@@ -225,14 +227,10 @@ void main() {
           )).thenAnswer(
               (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester);
 
-          verifyNever(cache.set(eCacheNameKey + '.stock', 'title'));
+          verifyNever(cache.set(eCacheKey + '.stock', 'title'));
         });
 
         testWidgets('export with new sheets', (tester) async {
@@ -240,8 +238,11 @@ void main() {
           final sheet = gs.SheetProperties(title: 'new-sheet', sheetId: 2);
           when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
           // getSheets => return empty
-          when(sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [])));
+          when(sheetsApi.spreadsheets.get(
+            any,
+            $fields: anyNamed('\$fields'),
+            includeGridData: anyNamed('includeGridData'),
+          )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [])));
           // updateSheet => ok
           when(sheetsApi.spreadsheets
                   .batchUpdate(any, 'id', $fields: anyNamed('\$fields')))
@@ -259,11 +260,7 @@ void main() {
                 gs.Response(addSheet: gs.AddSheetResponse(properties: sheet))
               ])));
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tester.pumpAndSettle();
 
           // change sheet name
@@ -272,13 +269,12 @@ void main() {
 
           await tapBtn(tester);
 
-          verify(cache.set(eCacheNameKey + '.stock', 'new-sheet'));
+          verify(cache.set(eCacheKey + '.stock', 'new-sheet'));
         });
 
         setUp(() {
-          when(cache.get(eCacheIdKey)).thenReturn('id');
-          when(cache.get(eCacheNameKey)).thenReturn('name');
-          when(cache.get(eCacheNameKey + '.stock')).thenReturn('title');
+          when(cache.get(eCacheKey)).thenReturn('id:true:name');
+          when(cache.get(eCacheKey + '.stock')).thenReturn('title');
           final i1 = Ingredient(id: 'i1', name: 'i1');
           Stock.instance.replaceItems({'i1': i1});
         });
@@ -292,61 +288,55 @@ void main() {
 
     group('Importer', () {
       group('#refresh -', () {
-        testWidgets('failed', (tester) async {
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(exporter: GoogleSheetExporter()),
-          ));
+        Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
+          await tester.tap(find.text(selected ? '檢查所選的試算表' : '選擇試算表'));
+          await tester.pump();
+        }
+
+        testWidgets('empty spreadsheet need select one', (tester) async {
+          await tester.pumpWidget(buildApp());
           await tester.pumpAndSettle();
           await go2Importer(tester);
+          await tapBtn(tester, selected: false);
 
-          await tester.tap(find.byIcon(Icons.refresh_outlined));
-          await tester.pumpAndSettle();
-
-          expect(find.text(S.importerGSError('empty_spreadsheet')),
-              findsOneWidget);
+          expect(find.byKey(const Key('text_dialog.text')), findsOneWidget);
         });
 
         testWidgets('error', (tester) async {
-          when(cache.get(iCacheIdKey)).thenReturn('id');
-          when(cache.get(iCacheNameKey)).thenReturn('name');
+          when(cache.get(iCacheKey)).thenReturn('id:true:name');
 
           final sheetsApi = getMockSheetsApi();
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
-          when(sheetsApi.spreadsheets.get('id', $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.error('error'));
+          when(sheetsApi.spreadsheets.get(
+            'id',
+            $fields: anyNamed('\$fields'),
+            includeGridData: anyNamed('includeGridData'),
+          )).thenAnswer((_) => Future.error('error'));
 
-          await tester.tap(find.byIcon(Icons.refresh_outlined));
-          await tester.pumpAndSettle();
+          await tapBtn(tester);
         });
 
         testWidgets('success', (tester) async {
-          when(cache.get(iCacheIdKey)).thenReturn('id');
-          when(cache.get(iCacheNameKey)).thenReturn('name');
+          when(cache.get(iCacheKey)).thenReturn('id:true:name');
 
           final sheetsApi = getMockSheetsApi();
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(sheetsApi: sheetsApi),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
           final sheet = gs.SheetProperties(sheetId: 1, title: 'new-sheet');
-          when(sheetsApi.spreadsheets.get('id', $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
-                    gs.Sheet(properties: sheet),
-                  ])));
+          when(sheetsApi.spreadsheets.get(
+            'id',
+            $fields: anyNamed('\$fields'),
+            includeGridData: anyNamed('includeGridData'),
+          )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
+                gs.Sheet(properties: sheet),
+              ])));
 
-          await tester.tap(find.byIcon(Icons.refresh_outlined));
-          await tester.pumpAndSettle();
+          await tapBtn(tester);
 
           final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
           await tester.tap(menu);
@@ -390,9 +380,7 @@ void main() {
 
         testWidgets('spreadsheet not selected', (tester) async {
           when(cache.get(any)).thenReturn(null);
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(exporter: GoogleSheetExporter()),
-          ));
+          await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
           expect(find.text(S.importerGSError('empty_spreadsheet')),
@@ -400,26 +388,18 @@ void main() {
         });
 
         testWidgets('sheet not selected', (tester) async {
-          when(cache.get(iCacheNameKey + '.menu')).thenReturn(null);
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(exporter: GoogleSheetExporter()),
-          ));
+          when(cache.get(iCacheKey + '.menu')).thenReturn(null);
+          await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
           expect(find.text(S.importerGSError('empty_sheet')), findsOneWidget);
         });
 
         testWidgets('empty data', (tester) async {
-          final sheetApi = getMockSheetsApi();
-          mockSheetData(sheetApi, []);
+          final sheetsApi = getMockSheetsApi();
+          mockSheetData(sheetsApi, []);
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetApi,
-              ),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester);
 
           expect(find.text(S.importerGSError('empty_data')), findsOneWidget);
@@ -427,9 +407,9 @@ void main() {
 
         testWidgets('pop preview source', (tester) async {
           const ing = '- i1,1\n  + q1,1,1,1\n  + q2';
-          final sheetApi = getMockSheetsApi();
+          final sheetsApi = getMockSheetsApi();
           final screen = GlobalKey<GoogleSheetScreenState>();
-          mockSheetData(sheetApi, [
+          mockSheetData(sheetsApi, [
             ['c1', 'p1', 1, 1],
             ['c1', 'p2', 2, 2, ing],
           ]);
@@ -438,7 +418,8 @@ void main() {
             home: GoogleSheetScreen(
               key: screen,
               exporter: GoogleSheetExporter(
-                sheetsApi: sheetApi,
+                sheetsApi: sheetsApi,
+                scopes: gsExporterScopes,
               ),
             ),
           ));
@@ -456,23 +437,20 @@ void main() {
         testWidgets('menu(commit)', (tester) async {
           final sheetsApi = getMockSheetsApi();
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetsApi,
-              ),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
           // change sheet name
           final sheet = gs.SheetProperties(sheetId: 2, title: 'new-sheet');
-          when(sheetsApi.spreadsheets.get('id', $fields: anyNamed('\$fields')))
-              .thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
-                    gs.Sheet(properties: sheet),
-                  ])));
-          await tester.tap(find.byIcon(Icons.refresh_outlined));
+          when(sheetsApi.spreadsheets.get(
+            'id',
+            includeGridData: anyNamed('includeGridData'),
+            $fields: anyNamed('\$fields'),
+          )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
+                gs.Sheet(properties: sheet),
+              ])));
+          await tester.tap(find.text('檢查所選的試算表'));
           await tester.pumpAndSettle();
           final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
           await tester.tap(menu);
@@ -492,7 +470,7 @@ void main() {
           await tester.tap(btn.first);
           await tester.pumpAndSettle();
 
-          verify(cache.set(iCacheNameKey + '.menu', 'new-sheet 2'));
+          verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
           await tester.tap(find.text(S.importPreviewerTitle));
           await tester.pumpAndSettle();
@@ -530,17 +508,11 @@ void main() {
           List<List<Object>> data, [
           List<String>? names,
         ]) async {
-          when(cache.get(iCacheNameKey + '.$name')).thenReturn('title 1');
-          final sheetApi = getMockSheetsApi();
-          mockSheetData(sheetApi, data);
+          when(cache.get(iCacheKey + '.$name')).thenReturn('title 1');
+          final sheetsApi = getMockSheetsApi();
+          mockSheetData(sheetsApi, data);
 
-          await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetApi,
-              ),
-            ),
-          ));
+          await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester, index);
           await tester.tap(find.text(S.importPreviewerTitle));
           await tester.pumpAndSettle();
@@ -658,9 +630,8 @@ void main() {
         });
 
         setUp(() {
-          when(cache.get(iCacheIdKey)).thenReturn('id');
-          when(cache.get(iCacheNameKey)).thenReturn('name');
-          when(cache.get(iCacheNameKey + '.menu')).thenReturn('title 1');
+          when(cache.get(iCacheKey)).thenReturn('id:true:name');
+          when(cache.get(iCacheKey + '.menu')).thenReturn('title 1');
           when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
           when(storage.reset(any)).thenAnswer((_) => Future.value());
         });
@@ -668,6 +639,17 @@ void main() {
     });
 
     group('#pickSpreadsheet -', () {
+      Future<void> action(
+        WidgetTester tester, [
+        IconData icon = Icons.list_alt_sharp,
+      ]) async {
+        await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.more_vert_sharp));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(icon));
+        await tester.pump();
+      }
+
       DropdownButtonFormField<GoogleSheetProperties> getSelector(
         String label,
       ) {
@@ -686,191 +668,138 @@ void main() {
             .widget as TextField;
       }
 
-      void mockPick(
-        CustomMockDriveApi driveApi,
-        CustomMockSheetsApi sheetsApi,
-      ) {
-        FilePicker.platform = _FakeFilePicker('new-name');
-        final files = gd.FileList(files: [gd.File(id: 'new-id')]);
-        final sheet1 = gs.SheetProperties(title: 'new-sheet', sheetId: 1);
+      void mockPick(CustomMockSheetsApi sheetsApi, String id, String sheet) {
+        final sheet1 = gs.SheetProperties(title: sheet, sheetId: 1);
 
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-        when(driveApi.mockFiles.list(
-          q: argThat(contains("name = 'new-name'"), named: 'q'),
-          $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.value(files));
         when(sheetsApi.mockSpreadsheets.get(
-          argThat(equals('new-id')),
+          argThat(equals(id)),
+          includeGridData: anyNamed('includeGridData'),
           $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.value(
-            gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet1)])));
+        )).thenAnswer((_) => Future.value(gs.Spreadsheet(
+              properties: gs.SpreadsheetProperties(title: 'title'),
+              sheets: [gs.Sheet(properties: sheet1)],
+            )));
       }
 
-      testWidgets('exporter pick failed', (tester) async {
-        when(cache.get(eCacheIdKey)).thenReturn('old-id');
-        when(cache.get(eCacheNameKey)).thenReturn('old-name');
+      testWidgets('exporter pick invalid and exist', (tester) async {
+        when(cache.get(eCacheKey)).thenReturn('old-id:true:old-name');
 
-        final screen = GlobalKey<GoogleSheetScreenState>();
-        await tester.pumpWidget(MaterialApp(
-          home: GoogleSheetScreen(key: screen),
-        ));
+        await tester.pumpWidget(buildApp());
+        await action(tester);
+
+        final editor = find.byKey(const Key('text_dialog.text'));
+        final editorW = editor.evaluate().single.widget as TextFormField;
+        expect(editorW.controller?.text, equals('old-id'));
+
+        await tester.enterText(editor, 'QQ');
+        await tester.tap(find.byKey(const Key('text_dialog.cancel')));
         await tester.pumpAndSettle();
-
-        FilePicker.platform = _FakeFilePicker(null);
-
-        final picker = find.byKey(const Key('gs_export.exporter_spreadsheet'));
-        final pickerW = picker.evaluate().single.widget as TextField;
-        expect(pickerW.controller?.text, equals('old-name'));
-
-        await tester.tap(picker);
-        expect(screen.currentState?.loading.currentState?.isLoading, isTrue);
-
-        await tester.pumpAndSettle();
-        expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
-        expect(pickerW.controller?.text, equals('old-name'));
+        // not in dialog
+        expect(find.byKey(const Key('text_dialog.cancel')), findsNothing);
       });
 
       testWidgets('exporter pick not exist', (tester) async {
-        final screen = GlobalKey<GoogleSheetScreenState>();
-        final driveApi = getMockDriveApi();
-        await tester.pumpWidget(MaterialApp(
-          home: GoogleSheetScreen(
-            key: screen,
-            exporter: GoogleSheetExporter(driveApi: driveApi),
-          ),
-        ));
-        await tester.pumpAndSettle();
-
-        FilePicker.platform = _FakeFilePicker('deleted');
-        when(driveApi.mockFiles.list(
-          q: argThat(contains("name = 'deleted'"), named: 'q'),
+        final sheetsApi = getMockSheetsApi();
+        when(sheetsApi.spreadsheets.get(
+          any,
           $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.value(gd.FileList()));
+          includeGridData: anyNamed('includeGridData'),
+        )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
-        final picker = find.byKey(const Key('gs_export.exporter_spreadsheet'));
-        final pickerW = picker.evaluate().single.widget as TextField;
-        await tester.tap(picker);
+        await tester.pumpWidget(buildApp(sheetsApi));
+        await action(tester);
+
+        await tester.enterText(
+          find.byKey(const Key('text_dialog.text')),
+          'https://docs.google.com/spreadsheets/d/1bCPUG2iS5xXqchWIa9Pq-TT4J-Bt9Pig6i-QqkOWEoE/edit#gid=307928354',
+        );
+        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
-        expect(pickerW.controller?.text, isEmpty);
-        expect(find.text(S.exporterGSErrors('non_exist_name')), findsOneWidget);
-
-        FilePicker.platform = _FakeFilePicker('new-name');
-        when(driveApi.mockFiles.list(
-          q: anyNamed('q'),
-          $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.error('some-error'));
-
-        // wait for error message disappear
-        await tester.pump(const Duration(seconds: 4));
-        await tester.tap(picker);
-        await tester.pumpAndSettle();
-        expect(find.text(S.actError), findsOneWidget);
+        expect(find.text('找不到該表單，是否沒開放權限讀取？'), findsOneWidget);
       });
 
-      testWidgets('exporter pick new', (tester) async {
-        final screen = GlobalKey<GoogleSheetScreenState>();
-        final driveApi = getMockDriveApi();
+      testWidgets('exporter pick success', (tester) async {
         final sheetsApi = getMockSheetsApi();
-        await tester.pumpWidget(MaterialApp(
-          home: GoogleSheetScreen(
-            key: screen,
-            exporter: GoogleSheetExporter(
-              driveApi: driveApi,
-              sheetsApi: sheetsApi,
-            ),
-          ),
-        ));
+        mockPick(sheetsApi, spreadsheetId, 'some-sheet');
+
+        await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
-
-        mockPick(driveApi, sheetsApi);
-
-        final picker = find.byKey(const Key('gs_export.exporter_spreadsheet'));
-        final pickerW = picker.evaluate().single.widget as TextField;
         expect(getNamer('menu').autofillHints, isNull);
-        expect(pickerW.controller?.text, isEmpty);
 
-        await tester.tap(picker);
+        await action(tester);
+
+        final editor = find.byKey(const Key('text_dialog.text'));
+        final editorW = editor.evaluate().single.widget as TextFormField;
+        expect(editorW.controller?.text, isEmpty);
+
+        await tester.enterText(editor, spreadsheetId);
+        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        expect(pickerW.controller?.text, equals('new-name'));
-        expect(getNamer('menu').autofillHints, equals(['new-sheet']));
-        verify(cache.set(eCacheIdKey, 'new-id'));
-        verify(cache.set(eCacheNameKey, 'new-name'));
-        expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
+        expect(getNamer('menu').autofillHints, equals(['some-sheet']));
+        verify(cache.set(eCacheKey, '$spreadsheetId:false:title'));
       });
 
       testWidgets('export cancel old', (tester) async {
-        when(cache.get(eCacheIdKey)).thenReturn('id');
-        when(cache.get(eCacheNameKey)).thenReturn('name');
-        when(cache.get(eCacheNameKey + '.menu')).thenReturn('menu');
+        clearInteractions(cache);
+        when(cache.get(eCacheKey)).thenReturn('id:true:name');
+        when(cache.get(eCacheKey + '.menu')).thenReturn('menu');
 
-        await tester.pumpWidget(const MaterialApp(home: GoogleSheetScreen()));
+        await tester.pumpWidget(buildApp());
         await tester.pumpAndSettle();
 
-        final pFinder = find.byKey(const Key('gs_export.exporter_spreadsheet'));
-        final picker = pFinder.evaluate().single.widget as TextField;
-
-        expect(picker.controller?.text, equals('name'));
         expect(getNamer('menu').controller?.text, equals('menu'));
 
-        await tester.tap(find.byIcon(Icons.clear_sharp));
+        await action(tester, Icons.add_box_outlined);
         await tester.pumpAndSettle();
 
-        expect(picker.controller?.text, isEmpty);
         // should not change
         expect(getNamer('menu').controller?.text, equals('menu'));
+        // should not cache
+        verifyNever(cache.set(any, any));
       });
 
       testWidgets('importer pick new', (tester) async {
-        when(cache.get(iCacheIdKey)).thenReturn('old-id');
-        when(cache.get(iCacheNameKey)).thenReturn('old-name');
+        when(cache.get(iCacheKey)).thenReturn('old-id:true:old-name');
         // test each situation when parsing
-        when(cache.get(iCacheNameKey + '.menu')).thenReturn('menu title 1');
-        when(cache.get(iCacheNameKey + '.stock')).thenReturn('stock');
-        when(cache.get(iCacheNameKey + '.customer')).thenReturn('customer a');
+        when(cache.get(iCacheKey + '.menu')).thenReturn('menu title 1');
+        when(cache.get(iCacheKey + '.stock')).thenReturn('stock');
+        when(cache.get(iCacheKey + '.customer')).thenReturn('customer a');
 
-        final driveApi = getMockDriveApi();
         final sheetsApi = getMockSheetsApi();
-        await tester.pumpWidget(MaterialApp(
-          home: GoogleSheetScreen(
-            exporter: GoogleSheetExporter(
-              driveApi: driveApi,
-              sheetsApi: sheetsApi,
-            ),
-          ),
-        ));
+        await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
         await go2Importer(tester);
 
-        final picker = find.byKey(const Key('gs_export.importer_spreadsheet'));
-        final pickerW = picker.evaluate().single.widget as TextField;
         expect(getSelector('menu').initialValue?.title, equals('menu title'));
         expect(getSelector('menu').initialValue?.id, equals(1));
         expect(getSelector('stock').initialValue, isNull);
         expect(getSelector('customer').initialValue, isNull);
-        expect(pickerW.controller?.text, equals('old-name'));
 
-        mockPick(driveApi, sheetsApi);
+        mockPick(sheetsApi, spreadsheetId, 'new-sheet');
 
-        await tester.tap(picker);
+        await action(tester);
+        await tester.enterText(
+          find.byKey(const Key('text_dialog.text')),
+          '/spreadsheets/d/$spreadsheetId/',
+        );
+        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        expect(pickerW.controller?.text, equals('new-name'));
-        verify(cache.set(iCacheIdKey, 'new-id'));
-        verify(cache.set(iCacheNameKey, 'new-name'));
+        verify(cache.set(iCacheKey, '$spreadsheetId:false:title'));
 
-        Future<void> tapSelector(String l) =>
-            tester.tap(find.byKey(Key('gs_export.$l.sheet_selector')));
+        Future<void> tapSelector(String l) async {
+          await tester.tap(find.byKey(Key('gs_export.$l.sheet_selector')));
+          await tester.pumpAndSettle();
+        }
 
         // both mene and stock (and others) exist new sheet options
         await tapSelector('menu');
-        await tester.pumpAndSettle();
         await tester.tap(find.text('new-sheet').last);
         await tester.pumpAndSettle();
         await tapSelector('stock');
-        await tester.pumpAndSettle();
         await tester.tap(find.text('new-sheet').last);
         await tester.pumpAndSettle();
       });
@@ -892,29 +821,4 @@ void main() {
       initializeDatabase();
     });
   });
-}
-
-class _FakeFilePicker extends FilePicker {
-  final String? name;
-
-  _FakeFilePicker(this.name);
-
-  @override
-  Future<FilePickerResult?> pickFiles({
-    String? dialogTitle,
-    String? initialDirectory,
-    FileType type = FileType.any,
-    List<String>? allowedExtensions,
-    Function(FilePickerStatus p1)? onFileLoading,
-    bool allowCompression = true,
-    bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
-  }) async {
-    await Future.delayed(const Duration(milliseconds: 10));
-    return FilePickerResult(
-      name == null ? [] : [PlatformFile(name: name!, size: 0)],
-    );
-  }
 }

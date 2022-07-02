@@ -61,20 +61,16 @@ void main() {
 
       test('failed', () async {
         when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
-        when(googleSignIn.signIn()).thenAnswer((_) => Future.value());
-        when(firebaseAuth.signInWithCredential(any)).thenThrow('hi');
+        when(googleSignIn.signIn()).thenThrow('hi');
 
         final success = await auth.loginIfNot();
 
         expect(success, isFalse);
       });
 
-      test('failed with firebase exception', () async {
+      test('failed with empty google user', () async {
         when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
         when(googleSignIn.signIn()).thenAnswer((_) => Future.value());
-        when(firebaseAuth.signInWithCredential(any)).thenThrow(
-          FirebaseAuthException(code: '12'),
-        );
 
         final success = await auth.loginIfNot();
 

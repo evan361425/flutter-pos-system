@@ -37,7 +37,7 @@ class Storage {
     _initialized = true;
 
     final path = await getRootPath();
-    Log.ger('start', 'storage_initialize');
+    Log.out('start', 'storage_initialize');
     db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 

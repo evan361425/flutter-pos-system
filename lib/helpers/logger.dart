@@ -7,6 +7,10 @@ import 'package:flutter/foundation.dart';
 const _isDebug = kDebugMode || String.fromEnvironment('appFlavor') == 'debug';
 
 class Log {
+  static void out(String msg, String code) {
+    developer.log(msg, name: code);
+  }
+
   static void ger(
     String action,
     String code, [
@@ -14,9 +18,10 @@ class Log {
     @visibleForTesting bool forceSend = false,
   ]) {
     assert(!code.contains('.'));
-    developer.log(action, name: code);
     if (message != null) {
       developer.log('$action - $message', name: code);
+    } else {
+      developer.log(action, name: code);
     }
 
     // no need send debug event
