@@ -9,6 +9,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
+import 'package:possystem/helpers/laucher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
@@ -296,7 +297,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     final prepared = await _getSpreadsheet(names);
     if (prepared == null) return;
 
-    Log.ger('ready', 'gs_export', spreadsheet!.id);
+    Log.ger('export ready', 'gs_export', spreadsheet!.id);
     const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
@@ -310,7 +311,19 @@ class _ExporterScreenState extends State<_ExporterScreen> {
         target.getFormattedHead(formatter),
       );
     }
-    showSuccessSnackbar(context, S.actSuccess);
+    Log.ger('export finish', 'gs_export');
+    showSuccessSnackbar(
+      context,
+      S.actSuccess,
+      SnackBarAction(
+        label: '開啟表單',
+        onPressed: () {
+          final link = spreadsheet!.toLink();
+          Log.ger('export launch', 'gs_export', link);
+          Launcher.launch(link).ignore();
+        },
+      ),
+    );
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {

@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:possystem/helpers/laucher.dart';
 
 final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/[^\)]+)\)');
 
@@ -44,7 +44,7 @@ class Linkify extends StatelessWidget {
                       text: element.text,
                       style: linkStyle,
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => launch(element.link!).ignore(),
+                        ..onTap = () => Launcher.launch(element.link!).ignore(),
                     )
                   : TextSpan(
                       text: element.text,

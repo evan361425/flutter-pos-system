@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/helpers/laucher.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -209,16 +210,30 @@ void main() {
 
         testWidgets('export without new sheets', (tester) async {
           final sheetsApi = getMockSheetsApi();
-          final sheet = gs.SheetProperties(title: 'title', sheetId: 1);
+          gs.Sheet createSheet(String type, int id) {
+            return gs.Sheet(
+              properties: gs.SheetProperties(title: '$type title', sheetId: id),
+            );
+          }
+
+          when(cache.get(eCacheKey + '.menu')).thenReturn('m title');
+          when(cache.get(eCacheKey + '.stock')).thenReturn('s title');
+          when(cache.get(eCacheKey + '.quantities')).thenReturn('q title');
+          when(cache.get(eCacheKey + '.customer')).thenReturn('c title');
+          when(cache.get(eCacheKey + '.replenisher')).thenReturn('r title');
           prepareData();
-          when(cache.get(any)).thenReturn('title');
-          when(cache.get(eCacheKey)).thenReturn('id:true:name');
           when(sheetsApi.spreadsheets.get(
             any,
             $fields: anyNamed('\$fields'),
             includeGridData: anyNamed('includeGridData'),
           )).thenAnswer((_) => Future.value(
-                gs.Spreadsheet(sheets: [gs.Sheet(properties: sheet)]),
+                gs.Spreadsheet(sheets: [
+                  createSheet('m', 1),
+                  createSheet('s', 2),
+                  createSheet('q', 3),
+                  createSheet('c', 4),
+                  createSheet('r', 5),
+                ]),
               ));
           when(sheetsApi.spreadsheets.batchUpdate(
             any,
@@ -231,6 +246,18 @@ void main() {
           await tapBtn(tester);
 
           verifyNever(cache.set(eCacheKey + '.stock', 'title'));
+          verify(sheetsApi.spreadsheets.batchUpdate(
+            any,
+            any,
+            $fields: anyNamed('\$fields'),
+          )).called(5);
+
+          // which also verify button exist!
+          await tester.tap(find.text('開啟表單'));
+          await tester.pumpAndSettle();
+
+          expect(Launcher.lastUrl,
+              equals('https://docs.google.com/spreadsheets/d/id/edit'));
         });
 
         testWidgets('export with new sheets', (tester) async {

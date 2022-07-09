@@ -249,6 +249,10 @@ class GoogleSpreadsheet {
     }
   }
 
+  String toLink() {
+    return 'https://docs.google.com/spreadsheets/d/$id/edit';
+  }
+
   @override
   String toString() {
     return '$id:$isOrigin:$name';
