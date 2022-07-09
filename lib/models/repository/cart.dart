@@ -110,9 +110,10 @@ class Cart extends ChangeNotifier {
 
     final price = totalPrice;
     paid ??= price;
+    Log.ger(isHistoryMode ? 'history' : 'normal', 'order_paid');
     if (paid < price) throw const PaidException('insufficient_amount');
 
-    Log.ger(isHistoryMode ? 'history' : 'normal', 'order_paid_verified');
+    Log.ger('verified', 'order_paid');
     // if history mode update data
     final result = isHistoryMode
         ? await _finishHistoryMode(paid, price)
@@ -267,7 +268,7 @@ class Cart extends ChangeNotifier {
     final data = await toObject(paid: paid, object: oldData);
 
     await Seller.instance.update(data);
-    Log.ger('history', 'order_paid_done');
+    Log.ger('history done', 'order_paid');
 
     await Stock.instance.order(data, oldData: oldData);
     final cashierResult = await Cashier.instance.paid(
@@ -283,7 +284,7 @@ class Cart extends ChangeNotifier {
     final data = await toObject(paid: paid);
 
     await Seller.instance.push(data);
-    Log.ger('new', 'order_paid_done');
+    Log.ger('normal done', 'order_paid');
 
     await Stock.instance.order(data);
     final cashierResult = await Cashier.instance.paid(paid, price);

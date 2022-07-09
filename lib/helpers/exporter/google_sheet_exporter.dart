@@ -31,7 +31,7 @@ class GoogleSheetExporter {
     List<String> sheetTitles,
   ) async {
     final sheetsApi = await getSheetsApi(true);
-    Log.ger('start', 'exporter_gs_add_spreadsheet');
+    Log.ger('add_spreadsheet start', _logCode);
     final result = await sheetsApi?.spreadsheets.create(
       gs.Spreadsheet(
         properties: gs.SpreadsheetProperties(title: title),
@@ -44,11 +44,11 @@ class GoogleSheetExporter {
     );
 
     if (result?.spreadsheetId == null) {
-      Log.ger('miss', 'exporter_gs_add_spreadsheet');
+      Log.ger('add_spreadsheet miss', _logCode);
       return null;
     }
 
-    Log.ger('success', 'exporter_gs_add_spreadsheet');
+    Log.ger('add_spreadsheet success', _logCode);
     return GoogleSpreadsheet(
       id: result!.spreadsheetId!,
       name: title,
@@ -59,7 +59,7 @@ class GoogleSheetExporter {
 
   Future<GoogleSpreadsheet?> getSpreadsheet(String id) async {
     final sheetsApi = await getSheetsApi(false);
-    Log.ger('start', 'exporter_gs_get_spreadsheet');
+    Log.ger('get_spreadsheet start', _logCode);
     final res = await sheetsApi?.spreadsheets.get(
       id,
       includeGridData: false,
@@ -67,11 +67,11 @@ class GoogleSheetExporter {
     );
 
     if (res?.properties?.title == null) {
-      Log.ger('miss', 'exporter_gs_get_spreadsheet');
+      Log.ger('get_spreadsheet miss', _logCode);
       return null;
     }
 
-    Log.ger('done', 'exporter_gs_get_spreadsheet');
+    Log.ger('get_spreadsheet done', _logCode);
     return GoogleSpreadsheet(
       id: id,
       name: res!.properties!.title!,
@@ -94,7 +94,7 @@ class GoogleSheetExporter {
     ];
 
     final sheetApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('start ${titles.length}', 'exporter_gs_add_sheets');
+    Log.ger('add_sheets start ${titles.length}', _logCode);
     final result = await sheetApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,
@@ -103,11 +103,11 @@ class GoogleSheetExporter {
     final replies = result?.replies;
     if (replies == null ||
         replies.any((reply) => reply.addSheet?.properties?.sheetId == null)) {
-      Log.ger('miss', 'exporter_gs_add_sheets');
+      Log.ger('add_sheets miss', _logCode);
       return null;
     }
 
-    Log.ger('success', 'exporter_gs_add_sheets');
+    Log.ger('add_sheets success', _logCode);
     return replies
         .map((reply) => GoogleSheetProperties(
             reply.addSheet!.properties!.sheetId!,
@@ -119,14 +119,14 @@ class GoogleSheetExporter {
     GoogleSpreadsheet spreadsheet,
   ) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('start', 'exporter_gs_get_sheets');
+    Log.ger('get_sheets start', _logCode);
     final res = await sheetsApi?.spreadsheets.get(
       spreadsheet.id,
       includeGridData: false,
       $fields: 'sheets(properties(sheetId,title))',
     );
 
-    Log.ger('done', 'exporter_gs_get_sheets');
+    Log.ger('get_sheets done', _logCode);
     return GoogleSheetProperties.fromSheet(res?.sheets);
   }
 
@@ -162,7 +162,7 @@ class GoogleSheetExporter {
     ];
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger(sheet.typeName, 'exporter_gs_update_sheet');
+    Log.ger('update_sheet ${sheet.typeName}', _logCode);
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,
@@ -176,7 +176,7 @@ class GoogleSheetExporter {
     required int neededColumns,
   }) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('start', 'exporter_gs_get_data');
+    Log.ger('get_data start', _logCode);
     final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheet.id,
       // TODO: if neededColumns are better than 26, this must change
@@ -244,7 +244,7 @@ class GoogleSpreadsheet {
         isOrigin: isOrigin,
       );
     } catch (error, stack) {
-      Log.err(error, 'gs_spreadsheet_format_failed', stack);
+      Log.err(error, _logCode + '_format_failed', stack);
       return null;
     }
   }
@@ -350,3 +350,5 @@ class GoogleSheetCellData {
     return value.stringValue ?? value.numberValue!.toString();
   }
 }
+
+const _logCode = 'exporter_gs';

@@ -185,7 +185,7 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) async {
-    Log.ger('start', '${repoTableName}_add', item.toString());
+    Log.ger('add start', repoTableName, item.toString());
 
     final id = await Database.instance.push(
       repoTableName,
@@ -226,8 +226,7 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
         .toList();
 
     if (data.isNotEmpty) {
-      Log.ger(
-          'start', '${items.first.logName}_reorder', data.length.toString());
+      Log.ger('reorder start', items.first.logName, data.length.toString());
       await saveBatch(data);
 
       notifyItems();
@@ -277,7 +276,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
       prepareItem();
 
       if (versionChanged) {
-        Log.ger('start', '${storageStore.name}_upgrade', _items.toString());
+        Log.ger('upgrade start', storageStore.name, _items.toString());
         await Storage.instance.setAll(storageStore, {
           for (final item in _items.values)
             item.prefix: item.toObject().toMap(),
@@ -297,7 +296,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) {
-    Log.ger('start', '${storageStore.name}_add', _items.toString());
+    Log.ger('add start', storageStore.name, _items.toString());
 
     final data = item.toObject().toMap();
     return repoType == RepositoryStorageType.pureRepo

@@ -118,13 +118,13 @@ class Database {
       databasePath,
       version: latestVersion,
       onCreate: (db, latestVer) async {
-        Log.ger(latestVer.toString(), 'db_initialize_0');
+        Log.ger('0 $latestVer', 'db_initialize');
         for (var ver = 1; ver <= latestVer; ver++) {
           await execMigration(db, ver);
         }
       },
       onUpgrade: (db, oldVer, newVer) async {
-        Log.ger(newVer.toString(), 'db_initialize_$oldVer');
+        Log.ger('$oldVer $newVer', 'db_initialize');
         _oldVersion = oldVer;
         for (var ver = oldVer + 1; ver <= newVer; ver++) {
           await execMigration(db, ver);
@@ -174,11 +174,11 @@ class Database {
     for (; version <= newVersion; version++) {
       final action = dbMigrationActions[version];
       if (action != null) {
-        Log.ger(version.toString(), 'db_migration_start');
+        Log.ger('start $version', 'db_migration');
         try {
           await action(db);
         } catch (e, stack) {
-          Log.err(e, 'db_tolerate_migration_error', stack);
+          Log.err(e, 'db_migration', stack);
         }
       }
     }

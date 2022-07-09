@@ -22,9 +22,9 @@ class Auth {
   }) async {
     final newScopes = scopes.toSet().difference(_service.scopes.toSet());
     if (newScopes.isNotEmpty) {
-      Log.ger('start', 'auth_google_scopes', newScopes.join(','));
+      Log.ger('scopes start', 'auth_google', newScopes.join(','));
       if (await _service.requestScopes(newScopes.toList())) {
-        Log.ger('success', 'auth_request_scope');
+        Log.ger('scopes success', 'auth_google');
         _service.scopes.addAll(newScopes);
       }
     }

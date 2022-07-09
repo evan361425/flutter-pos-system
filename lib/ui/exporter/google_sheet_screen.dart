@@ -211,17 +211,21 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    Log.ger('changed', 'gs_export', newSpreadsheet?.toString());
+    Log.ger('change start', 'gs_export', newSpreadsheet?.toString());
     setState(() => spreadsheet = newSpreadsheet);
     for (var sheet in sheets.values) {
       sheet.currentState?.setHints(newSpreadsheet?.sheets);
     }
 
-    if (newSpreadsheet == null) return;
+    if (newSpreadsheet == null) {
+      Log.ger('change clear', 'gs_export');
+      return;
+    }
 
     final value = newSpreadsheet.toString();
     await Cache.instance.set<String>(_exporterCacheKey, value);
     if (Cache.instance.get<String>(_importerCacheKey) == null) {
+      Log.ger('change success', 'gs_export');
       await Cache.instance.set(_importerCacheKey, value);
     }
   }
@@ -511,7 +515,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   }
 
   Future<void> changeSpreadsheet(GoogleSpreadsheet newSpreadsheet) async {
-    Log.ger('changed', 'gs_import', newSpreadsheet.toString());
+    Log.ger('change start', 'gs_import', newSpreadsheet.toString());
 
     setState(() => spreadsheet = newSpreadsheet);
     for (var sheet in sheets.values) {
@@ -520,6 +524,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
     await Cache.instance
         .set<String>(_importerCacheKey, newSpreadsheet.toString());
+    Log.ger('change finish', 'gs_import');
   }
 
   Future<void> selectSheet() async {

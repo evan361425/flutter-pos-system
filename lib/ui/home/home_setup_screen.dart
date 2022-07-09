@@ -25,7 +25,7 @@ class HomeSetupScreen extends StatelessWidget {
             if (!isProd)
               Center(
                 child: TextButton(
-                  onPressed: () => throw Exception('test'),
+                  onPressed: () => throw Exception('This is a test message'),
                   child: const Text("Throw Test Exception"),
                 ),
               ),
