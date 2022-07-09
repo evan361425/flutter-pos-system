@@ -207,6 +207,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       await selectSheet();
     } else if (selected == _ActionTypes.clear) {
       await onSheetChanged(null);
+      showInfoSnackbar(context, S.actSuccess);
     }
   }
 
@@ -240,6 +241,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     );
     if (result != null) {
       await onSheetChanged(result);
+      showInfoSnackbar(context, S.actSuccess);
     }
 
     widget.finishLoading();
@@ -537,6 +539,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     );
     if (result != null) {
       await changeSpreadsheet(result);
+      showInfoSnackbar(context, S.actSuccess);
     }
 
     widget.finishLoading();
@@ -582,6 +585,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(refreshedSheets);
     }
+    showInfoSnackbar(context, S.actSuccess);
   }
 
   Future<void> _importData(
