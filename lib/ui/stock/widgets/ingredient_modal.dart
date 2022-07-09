@@ -158,7 +158,7 @@ class _IngredientModalState extends State<IngredientModal>
   IngredientObject _parseObject() {
     return IngredientObject(
       name: _nameController.text,
-      currentAmount: num.tryParse(_amountController.text),
+      currentAmount: num.tryParse(_amountController.text) ?? 0,
     );
   }
 }

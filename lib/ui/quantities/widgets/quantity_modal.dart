@@ -113,7 +113,7 @@ class _QuantityModalState extends State<QuantityModal>
   QuantityObject _parseObject() {
     return QuantityObject(
       name: _nameController.text,
-      defaultProportion: num.tryParse(_proportionController.text),
+      defaultProportion: num.tryParse(_proportionController.text) ?? 1,
     );
   }
 }

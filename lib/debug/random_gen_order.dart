@@ -25,13 +25,13 @@ List<OrderObject> generateOrder({
   final result = <OrderObject>[];
 
   final interval = endTo.difference(startFrom).inMinutes;
-  if (interval == 0) return const [];
+  if (interval == 0 || productCount == 0) return const [];
 
   final createdList = [
     for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
   ]..sort();
 
-  while (orderCount-- != 0) {
+  while (orderCount-- > 0) {
     final ordered = <Map<String, Object>>[];
     // 1~10
     var round = rng.nextInt(10) + 1;
@@ -203,9 +203,9 @@ class _SettingPageState extends State<_SettingPage> {
   }
 
   void submit(Seller seller) async {
-    final count = int.parse(_countController.text);
+    final count = int.tryParse(_countController.text);
     final result = generateOrder(
-      orderCount: count,
+      orderCount: count ?? 0,
       startFrom: startFrom,
       endTo: endTo,
     );
