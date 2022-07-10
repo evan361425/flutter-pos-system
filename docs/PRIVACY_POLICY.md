@@ -1,6 +1,6 @@
 # Privacy Policy
 
-At POS System, accessible from https://evan361425.github.io/flutter-pos-system, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by POS System and how we use it.
+At POS System, accessible from <https://evan361425.github.io/flutter-pos-system>, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by POS System and how we use it.
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.
 
