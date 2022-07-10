@@ -50,8 +50,8 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-3D6N25J5ZM"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-3D6N25J5ZM",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3D6N25J5ZM"></script>
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-P67FD9XP83"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-P67FD9XP83",{page_path:e.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P67FD9XP83"></script>
 
 
     
@@ -234,7 +234,23 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../DEPLOYMENT/" class="md-tabs__link">
+      <a href="../../maintenance/deployment/" class="md-tabs__link">
+        維運
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CODE_OF_CONDUCT/" class="md-tabs__link">
         文件
       </a>
     </li>
@@ -433,12 +449,60 @@
       
       
         <label class="md-nav__link" for="__nav_3">
+          維運
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="維運" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          維運
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/deployment/" class="md-nav__link">
+        部署流程
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
           文件
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="文件" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
+        <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           文件
         </label>
@@ -450,22 +514,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../DEPLOYMENT/" class="md-nav__link">
-        部署
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../CODE_OF_CONDUCT/" class="md-nav__link">
-        公約
+        開發公約
       </a>
     </li>
   
@@ -612,13 +662,13 @@
 
 
 
-<h1 id="_1">架構</h1>
+<h1 id="_1">架構<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <p>使用 <a href="https://flutter.dev">Flutter</a> 去撰寫所有應用程式相關邏輯，他提供很多素材去做學習，包括各種應用程式的完成品，如 <a href="https://github.com/flutter/gallery">Gallery</a> 和其他<a href="https://github.com/flutter/samples">小範例</a>。</p>
 <p>Flutter 透過 <a href="https://skia.org">Skia</a> 來做繪圖工具，在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，減少和各平台的接口接觸，進而達到能在眾平台中統一介面。</p>
 <p>當然，在一些特殊情境上，仍需要單獨處理平台的設定。例如，iOS 的通知，便需要在 XCode 和 <a href="http://appstoreconnect.apple.com">AppStoreConnect</a> 中設定。但整體的商務邏輯和應用程式設計都可以直接透過 Flutter 設定。</p>
 <p>Flutter 是一個框架，撰寫其框架的語言是 <a href="https://dart.dev">Dart</a>，其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。這有幾個詳細說明的文章，無聊可以讀讀，<a href="https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332">10-good-reasons-why-you-should-learn-dart</a>、<a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">why-flutter-uses-dart</a>。</p>
 <p>如果想馬上來試試，可以玩玩看他們的線上 <a href="https://dartpad.dev/?null_safety=true">compiler</a>。</p>
-<h2 id="pos-flutter">POS 系統在 Flutter 之上的架構</h2>
+<h2 id="pos-flutter">POS 系統在 Flutter 之上的架構<a class="headerlink" href="#pos-flutter" title="Permanent link">&para;</a></h2>
 <p><strong>主要架構</strong></p>
 <div class="highlight"><pre><span></span><code>.
 ├── assets/             - 各種圖片，未來可能會放字體
@@ -637,7 +687,7 @@
 │   └── translator.dart - 讓應用程式不需要每次都呼叫很長的翻譯物件
 └── test/               - 單元和元件測試，架構和 lib/ 一樣
 </code></pre></div>
-<h3 id="components">Components</h3>
+<h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>components/                     - 各種 UI 輔助元件
 ├── dialog/                     - 對話框
 │    ├── confirm_dialog         - 確認通知
@@ -660,20 +710,20 @@
 ├── search_bar                  - 搜尋框
 └── slidable_item_list          - 可以讓子元件滑動的列表
 </code></pre></div>
-<h3 id="constants">Constants</h3>
+<h3 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>constants/     - 各種定死的標準，例如外觀顏色，常用圖標
 ├── app_themes - 外觀顏色
 ├── constant   - 數字類的標準，如 padding、margin 的大小
 └── icons      - 常用圖標
 </code></pre></div>
-<h3 id="helpers">Helpers</h3>
+<h3 id="helpers">Helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>helpers/          - 各地方常用函示，例如 Log
 ├── db_transferer - 資料庫特殊格式的輸入輸出格式轉換
 ├── logger        - 輸出，包括輸出到 Firebase Analytics
 ├── util          - 雜項
 └── validator     - 驗證輸入的工具，例如文字必須為數字且必須大於一
 </code></pre></div>
-<h3 id="models">Models</h3>
+<h3 id="models">Models<a class="headerlink" href="#models" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>models/                          - 物件，例如產品、成份等等。會在這裡和 Services 接觸而非 UI 裡面
 ├── menu/                        - 菜單
 │    ├── customer_setting_option - 顧客設定的選項
@@ -709,14 +759,14 @@
 ├── model                        - model 的基本物件
 └── repository                   - repository 的基本物件
 </code></pre></div>
-<h3 id="services">Services</h3>
+<h3 id="services">Services<a class="headerlink" href="#services" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>services/               - 和應用程式外部溝通的工具，例如 DB
 ├── cache               - 記錄使用者的設定和行為，例如是否看過 tutorial
 ├── database            - 紀錄點單等多筆的資料，Sqlite
 ├── database_migrations - database 不同版本時整合的紀錄
 └── storage             - 紀錄菜單和庫存等高變種的資料，NoSQL
 </code></pre></div>
-<h3 id="settings">Settings</h3>
+<h3 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>settings/                   - 使用者可以調整的設定，例如主題、語言
 ├── currency_setting        - 幣種，目前尚無使用，僅是預先做好，未來有需要可以開
 ├── language_setting        - 語言
@@ -725,7 +775,7 @@
 ├── setting                 - 設定的介面
 └── theme_setting           - 主題，目前僅有日光和暗色
 </code></pre></div>
-<h3 id="ui">UI</h3>
+<h3 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">&para;</a></h3>
 <p>基本架構為</p>
 <div class="highlight"><pre><span></span><code>feature/             - 特定功能
 ├── ...              - 功能下的子功能，若有會列出來
@@ -791,13 +841,13 @@
       
       
         
-        <a href="../../DEPLOYMENT/" class="md-footer__link md-footer__link--next" aria-label="下一頁: 部署" rel="next">
+        <a href="../../maintenance/deployment/" class="md-footer__link md-footer__link--next" aria-label="下一頁: 部署流程" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 下一頁
               </span>
-              部署
+              部署流程
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -827,7 +877,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "navigation.tabs", "navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "\u5df2\u8907\u88fd", "clipboard.copy": "\u8907\u88fd", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e\uff1f\uff1b]+", "search.placeholder": "\u641c\u5c0b", "search.result.more.one": "\u6b64\u9801\u5c1a\u6709 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.more.other": "\u6b64\u9801\u5c1a\u6709 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.none": "\u6c92\u6709\u7b26\u5408\u7684\u9805\u76ee", "search.result.one": "\u627e\u5230 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.other": "\u627e\u5230 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.placeholder": "\u6253\u5b57\u9032\u884c\u641c\u5c0b", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "\u5df2\u8907\u88fd", "clipboard.copy": "\u8907\u88fd", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e\uff1f\uff1b]+", "search.placeholder": "\u641c\u5c0b", "search.result.more.one": "\u6b64\u9801\u5c1a\u6709 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.more.other": "\u6b64\u9801\u5c1a\u6709 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.none": "\u6c92\u6709\u7b26\u5408\u7684\u9805\u76ee", "search.result.one": "\u627e\u5230 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.other": "\u627e\u5230 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.placeholder": "\u6253\u5b57\u9032\u884c\u641c\u5c0b", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>

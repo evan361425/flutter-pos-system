@@ -16,11 +16,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://evan361425.github.io/flutter-pos-system/DEPLOYMENT/</loc>
-         <lastmod>2022-07-10</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://evan361425.github.io/flutter-pos-system/LICENSE/</loc>
          <lastmod>2022-07-10</lastmod>
          <changefreq>daily</changefreq>
@@ -42,6 +37,11 @@
     </url>
     <url>
          <loc>https://evan361425.github.io/flutter-pos-system/about/structure/</loc>
+         <lastmod>2022-07-10</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://evan361425.github.io/flutter-pos-system/maintenance/deployment/</loc>
          <lastmod>2022-07-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
