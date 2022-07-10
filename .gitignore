@@ -54,3 +54,4 @@ services.*.tar
 
 coverage/
 android/build/*
+site/

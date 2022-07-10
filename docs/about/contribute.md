@@ -110,7 +110,7 @@
 
 ## Code of conduct
 
-This project is governed by [the Contributor Covenant Code of Conduct]({{ site.github.repository_url }}/blob/master/docs/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+This project is governed by [the Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## 其他有用資源
 

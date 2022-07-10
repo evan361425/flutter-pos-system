@@ -12,7 +12,7 @@ nav:
   - 文件:
       - 部署: DEPLOYMENT.md
       - 公約: CODE_OF_CONDUCT.md
-      - 使用許可: LICENSE
+      - 使用許可: LICENSE.md
       - 隱私權規範: PRIVACY_POLICY.md
 
 theme:
