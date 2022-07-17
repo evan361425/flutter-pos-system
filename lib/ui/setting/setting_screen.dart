@@ -1,12 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
+import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
@@ -38,7 +38,6 @@ class _SettingScreenState extends State<SettingScreen> {
   final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
   final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
   final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
-  String? userName = Auth.instance.getName();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +59,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
-                  OutlinedText((kDebugMode ? '=' : '-') + flavor.toUpperCase()),
+                  OutlinedText((kDebugMode ? '-' : '') + flavor.toUpperCase()),
                 ],
               );
             },
@@ -68,7 +67,7 @@ class _SettingScreenState extends State<SettingScreen> {
           const SizedBox(height: 8.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: userName == null ? anonymousHeader() : userHeader(),
+            child: SignInButton(signedInWidget: signedInWidget),
           ),
           const SizedBox(height: 8.0),
           CardTile(
@@ -158,33 +157,15 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget userHeader() {
+  Widget signedInWidget(User user) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text('HI，' + userName!),
+      Text('HI，${user.displayName}'),
       ElevatedButton(
         key: const Key('setting.sign_out'),
         onPressed: () async {
           await Auth.instance.signOut();
-          setState(() => userName = null);
         },
         child: const Text('登出'),
-      ),
-    ]);
-  }
-
-  Widget anonymousHeader() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      const HintText('尚未登入'),
-      ElevatedButton(
-        key: const Key('setting.sign_in'),
-        onPressed: () async {
-          if (await Auth.instance.loginIfNot()) {
-            setState(() => userName = Auth.instance.getName());
-          } else {
-            showErrorSnackbar(context, S.actError);
-          }
-        },
-        child: const Text('登入'),
       ),
     ]);
   }

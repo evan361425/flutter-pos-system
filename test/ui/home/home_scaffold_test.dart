@@ -26,7 +26,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Home Scaffold', () {
     testWidgets('should navigate correctly', (tester) async {
-      when(auth.getName()).thenReturn(null);
+      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
       when(cache.get(any)).thenReturn(null);
       when(cache.get(argThat(predicate<String>((f) => f.startsWith('_tip')))))
           .thenReturn(1);

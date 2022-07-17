@@ -3,10 +3,11 @@
 // Do not manually edit this file.
 
 import 'dart:async' as _i4;
-import 'dart:convert' as _i6;
-import 'dart:typed_data' as _i7;
+import 'dart:convert' as _i7;
+import 'dart:typed_data' as _i8;
 
-import 'package:google_sign_in/google_sign_in.dart' as _i5;
+import 'package:firebase_auth/firebase_auth.dart' as _i5;
+import 'package:google_sign_in/google_sign_in.dart' as _i6;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:possystem/services/auth.dart' as _i3;
@@ -35,13 +36,13 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
   }
 
   @override
-  set errorMessage(String? _errorMessage) =>
-      super.noSuchMethod(Invocation.setter(#errorMessage, _errorMessage),
-          returnValueForMissingStub: null);
+  _i4.Stream<_i5.User?> authStateChanges() =>
+      (super.noSuchMethod(Invocation.method(#authStateChanges, []),
+          returnValue: Stream<_i5.User?>.empty()) as _i4.Stream<_i5.User?>);
   @override
   _i4.Future<_i2.Client?> getAuthenticatedClient(
           {List<String>? scopes = const [],
-          _i5.GoogleSignInAuthentication? debugAuthentication}) =>
+          _i6.GoogleSignInAuthentication? debugAuthentication}) =>
       (super.noSuchMethod(
           Invocation.method(#getAuthenticatedClient, [],
               {#scopes: scopes, #debugAuthentication: debugAuthentication}),
@@ -52,8 +53,8 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
-  _i4.Future<bool> loginIfNot() =>
-      (super.noSuchMethod(Invocation.method(#loginIfNot, []),
+  _i4.Future<bool> signIn() =>
+      (super.noSuchMethod(Invocation.method(#signIn, []),
           returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
 }
 
@@ -79,7 +80,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
   _i4.Future<_i2.Response> post(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i6.Encoding? encoding}) =>
+          _i7.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#post, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -89,7 +90,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
   _i4.Future<_i2.Response> put(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i6.Encoding? encoding}) =>
+          _i7.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#put, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -99,7 +100,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
   _i4.Future<_i2.Response> patch(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i6.Encoding? encoding}) =>
+          _i7.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#patch, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -109,7 +110,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
   _i4.Future<_i2.Response> delete(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i6.Encoding? encoding}) =>
+          _i7.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#delete, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -120,12 +121,12 @@ class MockClient extends _i1.Mock implements _i2.Client {
       (super.noSuchMethod(Invocation.method(#read, [url], {#headers: headers}),
           returnValue: Future<String>.value('')) as _i4.Future<String>);
   @override
-  _i4.Future<_i7.Uint8List> readBytes(Uri? url,
+  _i4.Future<_i8.Uint8List> readBytes(Uri? url,
           {Map<String, String>? headers}) =>
       (super.noSuchMethod(
               Invocation.method(#readBytes, [url], {#headers: headers}),
-              returnValue: Future<_i7.Uint8List>.value(_i7.Uint8List(0)))
-          as _i4.Future<_i7.Uint8List>);
+              returnValue: Future<_i8.Uint8List>.value(_i8.Uint8List(0)))
+          as _i4.Future<_i8.Uint8List>);
   @override
   _i4.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(Invocation.method(#send, [request]),

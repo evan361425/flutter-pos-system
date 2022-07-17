@@ -200,13 +200,11 @@ class GoogleSheetExporter {
       return;
     }
 
-    if (await Auth.instance.loginIfNot()) {
-      final client = await Auth.instance.getAuthenticatedClient(scopes: scopes);
+    final client = await Auth.instance.getAuthenticatedClient(scopes: scopes);
 
-      if (client != null) {
-        _sheetsApi = gs.SheetsApi(client);
-        _scopes = exist.union(wanted).toList();
-      }
+    if (client != null) {
+      _sheetsApi = gs.SheetsApi(client);
+      _scopes = exist.union(wanted).toList();
     }
   }
 }

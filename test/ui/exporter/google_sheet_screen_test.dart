@@ -21,10 +21,12 @@ import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/google_sheet_screen.dart';
 
+import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_google_api.dart';
 import '../../mocks/mock_storage.dart';
+import '../../services/auth_test.mocks.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -839,6 +841,7 @@ void main() {
       CustomerSettings();
       Replenisher();
       when(cache.get(any)).thenReturn(null);
+      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(MockUser()));
     });
 
     setUpAll(() {
@@ -846,6 +849,7 @@ void main() {
       initializeStorage();
       initializeCache();
       initializeDatabase();
+      initializeAuth();
     });
   });
 }

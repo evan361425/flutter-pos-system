@@ -2,7 +2,7 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_classes_with_only_static_members
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show defaultTargetPlatform, kDebugMode, kIsWeb, TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -24,7 +24,7 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        return kDebugMode ? androidDebug : android;
       case TargetPlatform.iOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for ios - '
@@ -51,6 +51,14 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions androidDebug = FirebaseOptions(
+    apiKey: 'AIzaSyDb_WeFh5nG-l0ScDhVYYnyBYPwbykFPAY',
+    appId: '1:53696347946:android:ac27f47cd1ca1e9c556853',
+    messagingSenderId: '53696347946',
+    projectId: 'flutter-pos-system-debug',
+    storageBucket: 'flutter-pos-system-debug.appspot.com',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDfu1cLBlQaAcEFkbK81CZx3xJthZvgGw4',

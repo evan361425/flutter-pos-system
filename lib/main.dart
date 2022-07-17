@@ -7,8 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/debug/setup_menu.dart';
-import 'package:possystem/firebase_options.dart';
-import 'package:possystem/firebase_options_debug.dart' as debug_firebase;
+import 'package:possystem/firebase_compatible_options.dart';
 import 'package:provider/provider.dart';
 
 import 'models/repository/cashier.dart';
@@ -34,9 +33,8 @@ void main() async {
       FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
       await Firebase.initializeApp(
-          options: kDebugMode
-              ? debug_firebase.DefaultFirebaseOptions.currentPlatform
-              : DefaultFirebaseOptions.currentPlatform);
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       // Pass all uncaught errors from the framework to Crashlytics.
       FlutterError.onError =

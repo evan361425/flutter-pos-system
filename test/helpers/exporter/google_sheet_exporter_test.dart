@@ -10,7 +10,6 @@ import '../../mocks/mock_google_api.dart';
 void main() {
   group('Google Sheet Exporter', () {
     test('login', () async {
-      when(auth.loginIfNot()).thenAnswer((_) => Future.value(true));
       when(auth.getAuthenticatedClient(scopes: anyNamed('scopes')))
           .thenAnswer((_) => Future.value(Client()));
 
@@ -19,7 +18,6 @@ void main() {
       final sheetApi = await exporter.getSheetsApi(false);
 
       expect(sheetApi, isNotNull);
-      verify(auth.loginIfNot()).called(2);
       verify(auth.getAuthenticatedClient(scopes: [])).called(1);
       verify(auth.getAuthenticatedClient(scopes: [
         gs.SheetsApi.driveFileScope,

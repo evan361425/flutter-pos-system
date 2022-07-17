@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -9,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
+import '../../services/auth_test.mocks.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -22,42 +25,44 @@ void main() {
       ));
     }
 
-    group('Auth', () {
-      testWidgets('#signOut', (tester) async {
-        when(auth.getName()).thenReturn('TestUser');
-        when(auth.signOut()).thenAnswer((_) => Future.value());
-        await buildApp(tester);
+    testWidgets('Auth sign in and out', (tester) async {
+      final user = MockUser();
+      final controller = StreamController<MockUser?>();
+      when(user.displayName).thenReturn('TestUser');
+      when(auth.authStateChanges()).thenAnswer((_) => controller.stream);
+      when(auth.signOut()).thenAnswer((_) => Future.value());
 
-        expect(find.text('HI，TestUser'), findsOneWidget);
+      await buildApp(tester);
 
-        await tester.tap(find.byKey(const Key('setting.sign_out')));
-        await tester.pumpAndSettle();
+      // signin failed
+      when(auth.signIn()).thenAnswer((_) => Future.error('QQ'));
+      await tester.tap(find.byKey(const Key('google_sign_in')));
+      await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('setting.sign_in')), findsOneWidget);
-      });
+      verify(auth.signIn());
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('QQ'), findsOneWidget);
 
-      testWidgets('#signIn - success', (tester) async {
-        when(auth.getName()).thenReturn(null);
-        when(auth.loginIfNot()).thenAnswer((_) => Future.value(true));
-        await buildApp(tester);
+      // signin success
+      when(auth.signIn()).thenAnswer((_) => Future.value(true));
+      await tester.tap(find.byKey(const Key('google_sign_in')));
+      await tester.pumpAndSettle();
 
-        when(auth.getName()).thenReturn('TestUser');
-        await tester.tap(find.byKey(const Key('setting.sign_in')));
-        await tester.pumpAndSettle();
+      verify(auth.signIn());
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-        expect(find.text('HI，TestUser'), findsOneWidget);
-      });
+      controller.add(user);
+      await tester.pumpAndSettle();
 
-      testWidgets('#signIn - failed', (tester) async {
-        when(auth.getName()).thenReturn(null);
-        when(auth.loginIfNot()).thenAnswer((_) => Future.value(false));
-        await buildApp(tester);
+      expect(find.text('HI，TestUser'), findsOneWidget);
 
-        await tester.tap(find.byKey(const Key('setting.sign_in')));
-        await tester.pumpAndSettle();
+      // sign out
+      await tester.tap(find.byKey(const Key('setting.sign_out')));
+      controller.add(null);
+      await tester.pumpAndSettle();
 
-        expect(find.text(S.actError), findsOneWidget);
-      });
+      verify(auth.signOut());
+      expect(find.byKey(const Key('google_sign_in')), findsOneWidget);
     });
 
     testWidgets('select theme', (tester) async {
@@ -152,6 +157,7 @@ void main() {
     setUp(() {
       when(cache.get(any)).thenReturn(null);
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 
     setUpAll(() {

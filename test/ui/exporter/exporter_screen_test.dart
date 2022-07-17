@@ -8,6 +8,7 @@ import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 
+import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../test_helpers/translator.dart';
 
@@ -34,11 +35,13 @@ void main() {
       Quantities();
       CustomerSettings();
       Replenisher();
+      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 
     setUpAll(() {
       initializeTranslator();
       initializeCache();
+      initializeAuth();
     });
   });
 }

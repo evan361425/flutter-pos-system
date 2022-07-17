@@ -32,21 +32,19 @@ void main() {
       Auth();
     });
 
-    group('#loginIfNot -', () {
-      test('ignore if already login', () async {
-        when(firebaseAuth.currentUser).thenReturn(MockUser());
-        when(googleSignIn.signInSilently())
-            .thenAnswer((_) => Future.value(MockGoogleSignInAccount()));
+    test('#authStateChanges', () async {
+      when(firebaseAuth.authStateChanges())
+          .thenAnswer((_) => Stream.value(null));
 
-        final success = await auth.loginIfNot();
+      final result = await auth.authStateChanges().first;
 
-        expect(success, isTrue);
-      });
+      expect(result, isNull);
+    });
 
+    group('#signIn -', () {
       test('success', () async {
         final user = MockGoogleSignInAccount();
         final cred = MockGoogleSignInAuthentication();
-        when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
         when(googleSignIn.signIn()).thenAnswer((_) => Future.value(user));
         when(user.authentication).thenAnswer((_) => Future.value(cred));
         when(cred.accessToken).thenReturn('hi');
@@ -54,25 +52,15 @@ void main() {
         when(firebaseAuth.signInWithCredential(any))
             .thenAnswer((_) => Future.value(MockUserCredential()));
 
-        final success = await auth.loginIfNot();
+        final success = await auth.signIn();
 
         expect(success, isTrue);
       });
 
-      test('failed', () async {
-        when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
-        when(googleSignIn.signIn()).thenThrow('hi');
-
-        final success = await auth.loginIfNot();
-
-        expect(success, isFalse);
-      });
-
-      test('failed with empty google user', () async {
-        when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
+      test('empty google user', () async {
         when(googleSignIn.signIn()).thenAnswer((_) => Future.value());
 
-        final success = await auth.loginIfNot();
+        final success = await auth.signIn();
 
         expect(success, isFalse);
       });
@@ -99,14 +87,6 @@ void main() {
       when(googleSignIn.signOut()).thenAnswer((_) => Future.value(null));
       when(firebaseAuth.signOut()).thenAnswer((_) => Future.value(null));
       await auth.signOut();
-    });
-
-    test('#getName', () {
-      when(googleSignIn.currentUser).thenReturn(null);
-      when(firebaseAuth.currentUser).thenReturn(null);
-      final result = auth.getName();
-
-      expect(result, isNull);
     });
 
     setUp(() {

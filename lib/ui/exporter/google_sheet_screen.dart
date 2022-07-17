@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/loading_wrapper.dart';
+import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
@@ -129,8 +131,6 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     GoogleSheetAble.customer: GlobalKey<_SheetNamerState>(),
   };
 
-  late final FocusNode focusNode;
-
   GoogleSpreadsheet? spreadsheet;
 
   bool get hasSelect => spreadsheet != null;
@@ -144,21 +144,8 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        Row(children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: exportData,
-              focusNode: focusNode,
-              child: Text(exportLabel),
-            ),
-          ),
-          IconButton(
-            onPressed: showActions,
-            icon: const Icon(Icons.more_vert_sharp),
-          ),
-        ]),
-        Center(child: HintText(hint)),
+      child: Column(children: [
+        SignInButton(signedInWidget: _signedInWidget),
         const Divider(),
         for (final entry in sheets.entries)
           Row(children: [
@@ -266,7 +253,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
 
   Future<void> exportData() async {
     // avoid showing keyboard
-    focusNode.requestFocus();
+    FocusScope.of(context).unfocus();
 
     final usedSheets = sheets.entries.where((entry) =>
         entry.value.currentState?.checked == true &&
@@ -406,9 +393,26 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     }
   }
 
+  Widget _signedInWidget(User user) {
+    return Column(children: [
+      Row(children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: exportData,
+            child: Text(exportLabel),
+          ),
+        ),
+        IconButton(
+          onPressed: showActions,
+          icon: const Icon(Icons.more_vert_sharp),
+        ),
+      ]),
+      HintText(hint),
+    ]);
+  }
+
   @override
   void initState() {
-    focusNode = FocusNode();
     final cached = Cache.instance.get<String>(_exporterCacheKey);
     if (cached != null) {
       spreadsheet = GoogleSpreadsheet.fromString(cached);
@@ -418,7 +422,6 @@ class _ExporterScreenState extends State<_ExporterScreen> {
 
   @override
   void dispose() {
-    focusNode.dispose();
     for (var sheet in sheets.values) {
       sheet.currentState?.dispose();
     }
@@ -473,23 +476,8 @@ class _ImporterScreenState extends State<_ImporterScreen> {
       key: loading,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          const SizedBox(height: 4.0),
-          Row(children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await (hasSelect ? refreshSheet() : selectSheet());
-                },
-                child: Text(prepareLabel),
-              ),
-            ),
-            IconButton(
-              onPressed: showActions,
-              icon: const Icon(Icons.more_vert_sharp),
-            ),
-          ]),
-          Center(child: HintText(hint)),
+        child: Column(children: [
+          SignInButton(signedInWidget: _signedInWidget),
           const Divider(),
           for (final entry in sheets.entries)
             Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -704,6 +692,26 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     final nameId = Cache.instance.get<String>('$_importerCacheKey.$label');
 
     return GoogleSheetProperties.fromCacheValue(nameId);
+  }
+
+  Widget _signedInWidget(User user) {
+    return Column(children: [
+      Row(children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () async {
+              await (hasSelect ? refreshSheet() : selectSheet());
+            },
+            child: Text(prepareLabel),
+          ),
+        ),
+        IconButton(
+          onPressed: showActions,
+          icon: const Icon(Icons.more_vert_sharp),
+        ),
+      ]),
+      HintText(hint),
+    ]);
   }
 
   @override

@@ -74,6 +74,7 @@ dependencies:
   flutter_native_splash: ^2.1.6
   package_info_plus: ^1.4.2
   cached_network_image: ^3.2.0
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -101,6 +102,7 @@ flutter:
     - assets/food_placeholder.png
     - assets/google_sheet_icon.png
     - assets/feature_request_please.gif
+    - assets/google_signin_button.svg
 
 flutter_native_splash:
   color: "#468bff"
