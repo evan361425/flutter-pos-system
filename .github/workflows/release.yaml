@@ -17,6 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Load pubspec version
+        id: pubspec
+        uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        with:
+          file: pubspec.yaml
+          version: version
+
       - name: Extract pubspec version and code
         id: pubspec_version
         run: |
@@ -88,4 +95,4 @@ jobs:
           git commit . -m "release(${{ github.event.inputs.tag }}): ${{ needs.check-version.outputs.build_code }}"
           git push
           git tag ${{ github.event.inputs.tag }}
-          push origin --tags
+          git push origin --tags
