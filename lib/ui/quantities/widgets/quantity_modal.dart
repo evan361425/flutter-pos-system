@@ -58,7 +58,6 @@ class _QuantityModalState extends State<QuantityModal>
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
           labelText: S.quantityProportionLabel,
-          errorText: errorMessage,
           helperText: S.quantityProportionHelper,
           helperMaxLines: 100,
           filled: false,

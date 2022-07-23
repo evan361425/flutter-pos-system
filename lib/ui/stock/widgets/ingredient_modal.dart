@@ -102,7 +102,6 @@ class _IngredientModalState extends State<IngredientModal>
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountLabel,
             helperText: S.stockIngredientAmountHelper,
-            errorText: errorMessage,
             filled: false,
           ),
           validator: Validator.positiveNumber(

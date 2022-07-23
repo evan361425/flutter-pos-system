@@ -106,7 +106,6 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
                 labelText: label,
                 helperText: helper,
                 hintText: hint,
-                errorText: errorMessage,
                 filled: false,
               ),
               onFieldSubmitted: (_) => handleSubmit(),
