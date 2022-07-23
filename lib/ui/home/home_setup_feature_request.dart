@@ -24,7 +24,7 @@ class HomeSetupFeatureRequestScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14.0),
-            Linkify(
+            Linkify.fromString(
               '覺得這裡還少了什麼嗎？\n'
               '歡迎[提供建議](https://github.com/evan361425/flutter-pos-system/issues/new/choose)。\n'
               '也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。',

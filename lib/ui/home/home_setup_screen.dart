@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/linkify.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
@@ -58,6 +60,12 @@ class HomeSetupScreen extends StatelessWidget {
               route: Routes.setting,
               title: S.settingTitle,
             ),
+            const Divider(),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+              Linkify([LinkifyData('Privacy Policy', _privacyPolicy)]),
+              Text(MetaBlock.string),
+              Linkify([LinkifyData('License', _license)]),
+            ])
           ],
         ),
       ),
@@ -149,3 +157,7 @@ class _HeaderInfoList extends StatelessWidget {
     );
   }
 }
+
+const _privacyPolicy =
+    'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/';
+const _license = 'https://evan361425.github.io/flutter-pos-system/LICENSE/';

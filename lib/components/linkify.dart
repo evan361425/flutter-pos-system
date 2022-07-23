@@ -4,28 +4,16 @@ import 'package:possystem/helpers/laucher.dart';
 
 final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/[^\)]+)\)');
 
-Iterable<_Data> _parseText(String text) sync* {
-  do {
-    final match = _regex.firstMatch(text);
-    if (match == null) {
-      yield _Data(text);
-      break;
-    }
-
-    yield _Data(text.substring(0, match.start));
-    yield _Data(match.group(1)!, match.group(2));
-    text = text.substring(match.end);
-  } while (text.isNotEmpty);
-}
-
 class Linkify extends StatelessWidget {
-  final Iterable<_Data> data;
+  final Iterable<LinkifyData> data;
 
   final TextAlign? textAlign;
 
-  Linkify(String text, {Key? key, this.textAlign})
-      : data = _parseText(text),
-        super(key: key);
+  const Linkify(this.data, {Key? key, this.textAlign}) : super(key: key);
+
+  factory Linkify.fromString(text, {TextAlign? textAlign}) {
+    return Linkify(_parseText(text), textAlign: textAlign);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +46,26 @@ class Linkify extends StatelessWidget {
   }
 }
 
-class _Data {
+class LinkifyData {
   final String text;
 
   final String? link;
 
-  const _Data(this.text, [this.link]);
+  const LinkifyData(this.text, [this.link]);
 
   bool get linkable => link != null;
+}
+
+Iterable<LinkifyData> _parseText(String text) sync* {
+  do {
+    final match = _regex.firstMatch(text);
+    if (match == null) {
+      yield LinkifyData(text);
+      break;
+    }
+
+    yield LinkifyData(text.substring(0, match.start));
+    yield LinkifyData(match.group(1)!, match.group(2));
+    text = text.substring(match.end);
+  } while (text.isNotEmpty);
 }
