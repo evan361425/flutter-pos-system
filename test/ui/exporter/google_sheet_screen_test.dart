@@ -434,7 +434,7 @@ void main() {
           await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester);
 
-          expect(find.text(S.importerGSError('empty_data')), findsOneWidget);
+          expect(find.text('找不到表單「title」的資料'), findsOneWidget);
         });
 
         testWidgets('pop preview source', (tester) async {

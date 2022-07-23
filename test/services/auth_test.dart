@@ -70,6 +70,7 @@ void main() {
       final scopes = ['a'];
       final cred = MockGoogleSignInAuthentication();
       when(cred.accessToken).thenReturn(null);
+      when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
       when(googleSignIn.scopes).thenReturn(scopes);
       when(googleSignIn.requestScopes(['b', 'c']))
           .thenAnswer((_) => Future.value(true));

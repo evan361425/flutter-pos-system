@@ -874,7 +874,10 @@ class _SheetSelectorState extends State<_SheetSelector> {
       items: [
         DropdownMenuItem<GoogleSheetProperties?>(
           value: null,
-          child: Text('尚未選擇',style: TextStyle(color: Theme.of(context).hintColor),),
+          child: Text(
+            '尚未選擇',
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
         ),
         for (var sheet in sheets)
           DropdownMenuItem<GoogleSheetProperties?>(

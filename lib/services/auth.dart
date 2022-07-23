@@ -22,6 +22,8 @@ class Auth {
     List<String> scopes = const [],
     @visibleForTesting GoogleSignInAuthentication? debugAuthentication,
   }) async {
+    await _service.signInSilently();
+
     final newScopes = scopes.toSet().difference(_service.scopes.toSet());
     if (newScopes.isNotEmpty) {
       Log.ger('scopes start', 'auth_google', newScopes.join(','));
