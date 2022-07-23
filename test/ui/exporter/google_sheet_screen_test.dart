@@ -387,11 +387,14 @@ void main() {
 
         void mockSheetData(
           CustomMockSheetsApi sheetApi,
-          List<List<Object>> data,
-        ) {
+          List<List<Object>> data, [
+          String? title,
+        ]) {
           when(sheetApi.spreadsheets.values.get(
             'id',
-            any,
+            argThat(predicate<String>((n) {
+              return title == null ? true : n.startsWith("'$title'");
+            })),
             majorDimension: anyNamed('majorDimension'),
             $fields: 'values',
           )).thenAnswer((_) => Future.value(gs.ValueRange(values: [
@@ -658,6 +661,34 @@ void main() {
           expect(c1?.getItem('201')?.name, equals('co2'));
         });
 
+        testWidgets('menu + stock', (tester) async {
+          when(cache.get(iCacheKey + '.stock')).thenReturn('stock 2');
+          final sheetsApi = getMockSheetsApi();
+          final data1 = [
+            ['c1', 'p1', 1, 1, '- i1,1\n  + q1,1,1,1\n  + q2'],
+          ];
+          final data2 = [
+            ['i1', 1],
+            ['i2'],
+            ['i3', -2],
+          ];
+          mockSheetData(sheetsApi, data1, 'title');
+          mockSheetData(sheetsApi, data2, 'stock');
+
+          await tester.pumpWidget(buildApp(sheetsApi));
+          await tester.pumpAndSettle();
+          await go2Importer(tester);
+
+          await tester.tap(find.text('匯入所選'));
+          await tester.pumpAndSettle();
+          await tester.pumpAndSettle();
+
+          // should not reset old value
+          expect(Stock.instance.length, equals(2));
+          expect(Stock.instance.getItemByName('i1'), isNotNull);
+          expect(Menu.instance.length, equals(1));
+        });
+
         setUp(() {
           when(cache.get(iCacheKey)).thenReturn('id:true:name');
           when(cache.get(iCacheKey + '.menu')).thenReturn('title 1');
@@ -679,14 +710,14 @@ void main() {
         await tester.pump();
       }
 
-      DropdownButtonFormField<GoogleSheetProperties> getSelector(
+      DropdownButtonFormField<GoogleSheetProperties?> getSelector(
         String label,
       ) {
         return find
             .byKey(Key('gs_export.$label.sheet_selector'))
             .evaluate()
             .single
-            .widget as DropdownButtonFormField<GoogleSheetProperties>;
+            .widget as DropdownButtonFormField<GoogleSheetProperties?>;
       }
 
       TextField getNamer(String label) {

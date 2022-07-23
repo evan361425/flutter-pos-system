@@ -495,6 +495,10 @@ class _ImporterScreenState extends State<_ImporterScreen> {
                 icon: const Icon(Icons.download_for_offline_outlined),
               ),
             ]),
+          ElevatedButton(
+            onPressed: () => importData(null),
+            child: const Text('匯入所選'),
+          ),
         ]),
       ),
     );
@@ -560,11 +564,18 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     widget.finishLoading();
   }
 
-  Future<void> importData(GoogleSheetAble type) async {
+  Future<void> importData(GoogleSheetAble? type) async {
     if (!hasSelect) {
       showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
       return;
-    } else if (sheets[type]?.currentState?.selected == null) {
+    }
+
+    final selected = sheets.entries
+        .where((e) => e.value.currentState?.selected != null)
+        .where((e) => type == null || type == e.key)
+        .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
+        .toList();
+    if (selected.isEmpty) {
       showErrorSnackbar(context, S.importerGSError('empty_sheet'));
       return;
     }
@@ -572,7 +583,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     widget.startLoading();
 
     await showSnackbarWhenFailed(
-      _importData(type, sheets[type]!.currentState!.selected!),
+      _importData(selected),
       context,
       _errorCodeImport,
     );
@@ -590,28 +601,41 @@ class _ImporterScreenState extends State<_ImporterScreen> {
   }
 
   Future<void> _importData(
-    GoogleSheetAble type,
-    GoogleSheetProperties sheet,
+    List<MapEntry<GoogleSheetAble, GoogleSheetProperties>> data,
   ) async {
-    Log.ger('ready', 'gs_import', sheet.title);
-    final source = await _getSheetData(type, sheet);
-    if (source == null) return;
+    final allowPreview = data.length == 1;
+    for (final entry in data) {
+      final type = entry.key;
+      final sheet = entry.value;
+      final msg = S.exporterGSProgressStatus('update_${type.name}');
+      widget.setProgressStatus(msg);
 
-    await _setDefault(type.name, sheet);
+      Log.ger('ready', 'gs_import', sheet.title);
+      final source = await _getSheetData(type, sheet);
+      if (source == null) {
+        showErrorSnackbar(context, '找不到表單「${sheet.title}」的資料');
+        return;
+      }
 
-    Log.ger('received', 'gs_import', source.length.toString());
-    final allowPreviewFormed = await _previewSheetData(type, source);
-    if (allowPreviewFormed != true) return;
+      Log.ger('received', 'gs_import', source.length.toString());
+      await _setDefault(type.name, sheet);
 
-    final allowSave = await _previewParsedData(type, source);
-    final target = GoogleSheetFormatter.getTarget(type);
+      if (allowPreview) {
+        final allowPreviewFormed = await _previewSheetData(type, source);
+        if (allowPreviewFormed != true) return;
+      }
 
-    if (allowSave == true) {
+      Log.ger('parsing', 'gs_import', type.name);
+      final allowSave = await _parsedData(type, source, preview: allowPreview);
+      final target = GoogleSheetFormatter.getTarget(type);
+      if (allowSave != true) {
+        target.abortStaged();
+        return;
+      }
+
       await target.commitStaged();
-      showSuccessSnackbar(context, S.actSuccess);
-    } else {
-      target.abortStaged();
     }
+    showSuccessSnackbar(context, S.actSuccess);
   }
 
   Future<bool?> _previewSheetData(
@@ -640,18 +664,22 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     return result;
   }
 
-  Future<bool?> _previewParsedData(
+  Future<bool?> _parsedData(
     GoogleSheetAble type,
-    List<List<Object?>> source,
-  ) {
+    List<List<Object?>> source, {
+    required bool preview,
+  }) {
     const formatter = GoogleSheetFormatter();
     final target = GoogleSheetFormatter.getTarget(type);
     final formatted = formatter.format(target, source);
-    return PreviewerScreen.navByTarget(
-      context,
-      GoogleSheetFormatter.toFormattable(type),
-      formatted,
-    );
+
+    return preview
+        ? PreviewerScreen.navByTarget(
+            context,
+            GoogleSheetFormatter.toFormattable(type),
+            formatted,
+          )
+        : Future.value(true);
   }
 
   Future<List<List<Object?>>?> _getSheetData(
@@ -674,7 +702,6 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     // remove header
     final data = sheetData?.sublist(1);
     if (data?.isEmpty != false) {
-      showInfoSnackbar(context, S.importerGSError('empty_data'));
       return null;
     }
 
@@ -834,7 +861,7 @@ class _SheetSelectorState extends State<_SheetSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<GoogleSheetProperties>(
+    return DropdownButtonFormField<GoogleSheetProperties?>(
       key: Key('gs_export.${widget.label}.sheet_selector'),
       value: selected,
       decoration: InputDecoration(
@@ -845,8 +872,12 @@ class _SheetSelectorState extends State<_SheetSelector> {
       ),
       onChanged: (newSelected) => setState(() => selected = newSelected),
       items: [
+        DropdownMenuItem<GoogleSheetProperties?>(
+          value: null,
+          child: Text('尚未選擇',style: TextStyle(color: Theme.of(context).hintColor),),
+        ),
         for (var sheet in sheets)
-          DropdownMenuItem<GoogleSheetProperties>(
+          DropdownMenuItem<GoogleSheetProperties?>(
             value: sheet,
             child: Text(sheet.title),
           ),
