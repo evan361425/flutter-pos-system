@@ -70,6 +70,18 @@ Another part of our priority is adding protection for children while using the i
 
 POS System does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our apps, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
 
+## Google user data
+
+We will collect your Google user data once you have confirmed in the POS System. The user data will only be used for identify who are asking the API request for security reason.
+
+You are always able to sign-out the Google account.
+
+## Google Spreadsheet permissions
+
+In POS System, we will create, edit the spreadsheet in your Google Drive if and only if you are trying to export data to your own spreadsheet for backup reason. Same with importing data, once you are importing data from spreadsheet we will need the capability of read.
+
+The timing of requesting the permission is only happen when you are trying to export/import. Feel free to cancel the authorization when you have any hesitation.
+
 ## Google Limited Use disclosure
 
 POS System use and transfer to any other app of information received from Google APIs will adhere to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes), including the Limited Use requirements.
