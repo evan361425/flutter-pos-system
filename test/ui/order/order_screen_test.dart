@@ -23,6 +23,7 @@ import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
@@ -110,10 +111,17 @@ void main() {
       Cart.instance = Cart();
     }
 
+    Widget orderScreenWidget([Key? key]) {
+      return ChangeNotifierProvider.value(
+        value: Seller(),
+        child: OrderScreen(key: key),
+      );
+    }
+
     group('Slidable Panel', () {
       testWidgets('Selecting change state', (tester) async {
         final key = GlobalKey<OrderScreenState>();
-        await tester.pumpWidget(MaterialApp(home: OrderScreen(key: key)));
+        await tester.pumpWidget(MaterialApp(home: orderScreenWidget(key)));
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -278,7 +286,7 @@ void main() {
 
         prepareData();
 
-        await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+        await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -319,7 +327,7 @@ void main() {
         OrderProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
       ]);
 
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
       await tester.tap(find.byKey(const Key('cart.collapsed')));
       await tester.pumpAndSettle();
 
@@ -393,7 +401,7 @@ void main() {
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
 
       await tester.tap(find.byKey(const Key('order.product.p-1')));
       await tester.pumpAndSettle();
@@ -425,7 +433,7 @@ void main() {
                 ),
               ),
         },
-        home: const OrderScreen(),
+        home: orderScreenWidget(),
       ));
 
       Future<void> tapWithCheck(

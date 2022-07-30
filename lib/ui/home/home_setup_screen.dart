@@ -4,8 +4,8 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -37,10 +37,10 @@ class HomeSetupScreen extends StatelessWidget {
               title: S.exporterTitle,
             ),
             RouteTile(
-              key: const Key('home_setup.customer'),
+              key: const Key('home_setup.order_attribute'),
               icon: Icons.assignment_ind_outlined,
-              route: Routes.customer,
-              title: S.customerSettingTitle,
+              route: Routes.orderAttr,
+              title: S.orderAttributeTitle,
             ),
             RouteTile(
               key: const Key('home_setup.quantities'),
@@ -127,7 +127,7 @@ class _HeaderInfoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menu = context.watch<Menu>();
-    final customerSetting = context.watch<CustomerSettings>();
+    final attrs = context.watch<OrderAttributes>();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0, 16.0),
@@ -147,10 +147,10 @@ class _HeaderInfoList extends StatelessWidget {
             route: Routes.menu,
           ),
           _HeaderInfo(
-            key: const Key('home_setup.header.customer'),
-            title: customerSetting.length,
+            key: const Key('home_setup.header.attrs'),
+            title: attrs.length,
             subtitle: '顧客設定',
-            route: Routes.customer,
+            route: Routes.orderAttr,
           ),
         ]),
       ),

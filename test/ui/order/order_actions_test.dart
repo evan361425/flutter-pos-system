@@ -110,7 +110,7 @@ void main() {
       Cart.instance.replaceAll(products: [
         OrderProduct(Menu.instance.getProduct('p-1')!),
         OrderProduct(Menu.instance.getProduct('p-2')!),
-      ], customerSettings: {
+      ], attributes: {
         'c-1': 'co-1',
         'c-2': 'co-2'
       });

@@ -32,7 +32,7 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
             case Formattable.menu:
               return ProductPreviewer(items: items);
             case Formattable.customer:
-              return CustomerSettingPreviewer(items: items);
+              return OrderAttributePreviewer(items: items);
             case Formattable.quantities:
               return QuantityPreviewer(items: items);
             case Formattable.stock:

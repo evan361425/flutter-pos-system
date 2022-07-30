@@ -319,7 +319,8 @@ void main() {
     group('CustomerSettings', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.customer);
+        final target =
+            GoogleSheetFormatter.getTarget(GoogleSheetAble.orderAttr);
         const c1Data = '- co1,true\n- co2,,5';
 
         final items = formatter.format<CustomerSetting>(target, [

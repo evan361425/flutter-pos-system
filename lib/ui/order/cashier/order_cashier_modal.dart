@@ -49,7 +49,7 @@ class OrderCashierModal extends StatelessWidget {
     );
 
     final body = OrderCashierProductList(
-      customerSettings: Cart.instance.selectedCustomerSettingOptions.toList(),
+      options: Cart.instance.selectedAttributeOptions.toList(),
       products: Cart.instance.products
           .map((e) => OrderProductTileData(
                 ingredientNames: e.getIngredientNames(onlyQuantitied: false),

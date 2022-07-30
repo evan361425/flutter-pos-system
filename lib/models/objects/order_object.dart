@@ -26,7 +26,7 @@ class OrderObject {
   final List<String>? ingredientNames;
 
   /// 顧客設定，鍵代表種類，值代表選項
-  final Map<String, String> customerSettings;
+  final Map<String, String> attributes;
   final int? customerSettingsCombinationId;
 
   final Iterable<OrderProductObject> products;
@@ -42,7 +42,7 @@ class OrderObject {
     required this.totalCount,
     this.productNames,
     this.ingredientNames,
-    this.customerSettings = const {},
+    this.attributes = const {},
     this.customerSettingsCombinationId,
     required this.products,
     DateTime? createdAt,
@@ -122,8 +122,7 @@ class OrderObject {
       productsPrice: data['productsPrice'] as num? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
-      customerSettings:
-          DBTransferer.parseCombination(data['combination'] as String?),
+      attributes: DBTransferer.parseCombination(data['combination'] as String?),
       products: products.map((product) => OrderProductObject.input(product)),
     );
   }

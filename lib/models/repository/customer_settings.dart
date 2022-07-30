@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/services/database.dart';
 
 import '../repository.dart';
@@ -33,7 +33,7 @@ class CustomerSettings extends ChangeNotifier
 
   @override
   Future<CustomerSetting> buildItem(Map<String, Object?> value) async {
-    final object = CustomerSettingObject.build(value);
+    final object = OrderAttributeObject.build(value);
 
     final cs = CustomerSetting.fromObject(object);
     await cs.initialize();

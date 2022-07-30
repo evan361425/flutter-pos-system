@@ -1,20 +1,20 @@
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 
-import '../customer/customer_setting.dart';
 import '../model_object.dart';
 
-class CustomerSettingObject extends ModelObject<CustomerSetting> {
+class OrderAttributeObject extends ModelObject<OrderAttribute> {
   final String? id;
 
   final String? name;
 
   final int? index;
 
-  final CustomerSettingOptionMode? mode;
+  final OrderAttributeMode? mode;
 
-  final Iterable<CustomerSettingOptionObject> options;
+  final Iterable<OrderAttributeOptionObject> options;
 
-  CustomerSettingObject({
+  OrderAttributeObject({
     this.id,
     this.name,
     this.index,
@@ -22,17 +22,27 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
     this.options = const Iterable.empty(),
   });
 
-  factory CustomerSettingObject.build(Map<String, Object?> data) {
-    return CustomerSettingObject(
-      id: (data['id'] as int).toString(),
+  factory OrderAttributeObject.build(Map<String, Object?> data) {
+    final options =
+        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
+
+    return OrderAttributeObject(
+      id: data['id'].toString(),
       name: data['name'] as String,
       index: data['index'] as int,
-      mode: CustomerSettingOptionMode.values[data['mode'] as int],
+      mode: OrderAttributeMode.values[data['mode'] as int],
+      options: options.entries
+          .map<OrderAttributeOptionObject>(
+              (e) => OrderAttributeOptionObject.build({
+                    'id': e.key,
+                    ...e.value as Map<String, Object?>,
+                  }))
+          .toList(),
     );
   }
 
   @override
-  Map<String, Object?> diff(CustomerSetting model) {
+  Map<String, Object?> diff(OrderAttribute model) {
     final result = <String, Object?>{};
     if (name != null && name != model.name) {
       model.name = name!;
@@ -55,9 +65,7 @@ class CustomerSettingObject extends ModelObject<CustomerSetting> {
   }
 }
 
-class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
-  final int? customerSettingId;
-
+class OrderAttributeOptionObject extends ModelObject<OrderAttributeOption> {
   final String? id;
 
   final String? name;
@@ -68,8 +76,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
 
   final num? modeValue;
 
-  const CustomerSettingOptionObject({
-    this.customerSettingId,
+  const OrderAttributeOptionObject({
     this.id,
     this.name,
     this.index,
@@ -77,12 +84,13 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
     this.modeValue,
   });
 
-  factory CustomerSettingOptionObject.build(Map<String, Object?> data) {
-    return CustomerSettingOptionObject(
-      id: (data['id'] as int).toString(),
+  factory OrderAttributeOptionObject.build(Map<String, Object?> data) {
+    return OrderAttributeOptionObject(
+      id: data['id'].toString(),
       name: data['name'] as String,
       index: data['index'] as int,
-      isDefault: data['isDefault'] == 1,
+      // backward compatible for DB, it will be 1 if true
+      isDefault: data['isDefault'] == 1 || data['isDefault'] == true,
       modeValue: data['modeValue'] as num?,
     );
   }
@@ -90,16 +98,15 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   @override
   Map<String, Object?> toMap() {
     return {
-      'customerSettingId': customerSettingId,
       'name': name,
       'index': index,
-      'isDefault': (isDefault ?? false) ? 1 : 0,
+      'isDefault': isDefault ?? false,
       'modeValue': modeValue,
     };
   }
 
   @override
-  Map<String, Object?> diff(CustomerSettingOption model) {
+  Map<String, Object?> diff(OrderAttributeOption model) {
     final result = <String, Object?>{};
     if (name != null && name != model.name) {
       model.name = name!;
@@ -117,7 +124,7 @@ class CustomerSettingOptionObject extends ModelObject<CustomerSettingOption> {
   }
 }
 
-enum CustomerSettingOptionMode {
+enum OrderAttributeMode {
   statOnly,
   changePrice,
   changeDiscount,

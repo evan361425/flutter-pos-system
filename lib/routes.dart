@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 import 'package:possystem/ui/home/home_setup_feature_request.dart';
 import 'package:provider/provider.dart';
 
-import 'models/customer/customer_setting.dart';
-import 'models/customer/customer_setting_option.dart';
 import 'models/menu/catalog.dart';
 import 'models/menu/product.dart';
 import 'models/menu/product_ingredient.dart';
@@ -14,11 +14,11 @@ import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
 import 'ui/cashier/changer/changer_modal.dart';
-import 'ui/customer/customer_screen.dart';
-import 'ui/customer/widgets/customer_orderable_list.dart';
-import 'ui/customer/widgets/customer_setting_modal.dart';
-import 'ui/customer/widgets/customer_setting_option_modal.dart';
-import 'ui/customer/widgets/customer_setting_orderable_list.dart';
+import 'ui/order_attr/order_attribute_screen.dart';
+import 'ui/order_attr/widgets/order_attribute_reorder.dart';
+import 'ui/order_attr/widgets/order_attribute_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
@@ -40,7 +40,7 @@ import 'ui/stock/replenishment/replenishment_screen.dart';
 import 'ui/stock/widgets/ingredient_modal.dart';
 
 class Routes {
-  static const String customer = 'customer';
+  static const String orderAttr = 'order_attr';
   static const String exporter = 'exporter';
   static const String featureRequest = 'feature_request';
   static const String menu = 'menu';
@@ -51,11 +51,10 @@ class Routes {
   // sub-route
   static const String cashierChanger = 'cashier/changer';
   static const String cashierSurplus = 'cashier/surplus';
-  static const String customerModal = 'customer/modal';
-  static const String customerReorder = 'customer/reorder';
-  static const String customerSetting = 'customer/setting';
-  static const String customerSettingOption = 'customer/setting/option';
-  static const String customerSettingReorder = 'customer/setting/reorder';
+  static const String orderAttrModal = 'order_attr/modal';
+  static const String orderAttrReorder = 'order_attr/reorder';
+  static const String orderAttrOption = 'order_attr/option';
+  static const String orderAttrOptionReorder = 'order_attr/option/reorder';
   static const String menuSearch = 'menu/search';
   static const String menuCatalog = 'menu/catalog';
   static const String menuCatalogModal = 'menu/catalog/modal';
@@ -65,7 +64,7 @@ class Routes {
   static const String menuProductReorder = 'menu/product/reorder';
   static const String menuIngredient = 'menu/ingredient';
   static const String menuQuantity = 'menu/quantity';
-  static const String orderCustomer = 'order/customer';
+  static const String orderAttribute = 'order/attribute';
   static const String orderCalculator = 'order/calculator';
   static const String quantityModal = 'quantities/modal';
   static const String stockReplenishment = 'stock/replenishment';
@@ -73,7 +72,7 @@ class Routes {
   static const String stockIngredient = 'stock/ingredient';
 
   static final routes = <String, WidgetBuilder>{
-    customer: (_) => const CustomerScreen(),
+    orderAttr: (_) => const OrderAttributeScreen(),
     featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
     menu: (_) => const MenuScreen(),
     order: (_) => const OrderScreen(),
@@ -82,20 +81,21 @@ class Routes {
     // cashier
     cashierChanger: (_) => const ChangerModal(),
     cashierSurplus: (_) => const CashierSurplus(),
-    // customer
-    customerModal: (ctx) => CustomerModal(setting: _a<CustomerSetting?>(ctx)),
-    customerReorder: (_) => const CustomerOrderableList(),
-    customerSettingOption: (context) {
+    // order_attribute
+    orderAttrModal: (ctx) =>
+        OrderAttributeModal(attribute: _a<OrderAttribute?>(ctx)),
+    orderAttrReorder: (_) => const OrderAttributeReorder(),
+    orderAttrOption: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is CustomerSettingOption
-          ? CustomerSettingOptionModal(
+      return arg is OrderAttributeOption
+          ? OrderAttributeOptionModal(
               option: arg,
-              setting: arg.setting,
+              attribute: arg.attribute,
             )
-          : CustomerSettingOptionModal(setting: arg as CustomerSetting);
+          : OrderAttributeOptionModal(attribute: arg as OrderAttribute);
     },
-    customerSettingReorder: (ctx) =>
-        CustomerSettingOrderableList(setting: _a<CustomerSetting>(ctx)),
+    orderAttrOptionReorder: (ctx) =>
+        OrderAttributeOptionReorder(attribute: _a<OrderAttribute>(ctx)),
     exporter: (_) => const ExporterScreen(),
     // menu
     menuSearch: (_) => const MenuSearch(),
@@ -138,7 +138,7 @@ class Routes {
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
     // order
-    orderCustomer: (_) => const OrderCustomerModal(),
+    orderAttribute: (_) => const OrderCustomerModal(),
     orderCalculator: (_) => OrderCashierModal(),
     // quantities
     quantities: (_) => const QuantityScreen(),

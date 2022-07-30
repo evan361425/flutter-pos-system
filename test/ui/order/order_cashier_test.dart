@@ -10,7 +10,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -109,7 +109,7 @@ void main() {
         OrderProduct(Menu.instance.getProduct('p-1')!,
             selectedQuantity: {'pi-1': 'pq-1', 'pi-2': null}),
         OrderProduct(Menu.instance.getProduct('p-2')!),
-      ], customerSettings: {
+      ], attributes: {
         'c-1': 'co-1',
         'c-2': 'co-2'
       });
@@ -118,7 +118,7 @@ void main() {
     void prepareCustomerSettings() {
       final s1 = CustomerSetting(
         id: 'c-1',
-        mode: CustomerSettingOptionMode.changeDiscount,
+        mode: OrderAttributeMode.changeDiscount,
         options: {
           'co-1': CustomerSettingOption(
             id: 'co-1',
@@ -133,7 +133,7 @@ void main() {
       );
       final s2 = CustomerSetting(
         id: 'c-2',
-        mode: CustomerSettingOptionMode.changePrice,
+        mode: OrderAttributeMode.changePrice,
         options: {
           'co-3': CustomerSettingOption(
             id: 'co-3',

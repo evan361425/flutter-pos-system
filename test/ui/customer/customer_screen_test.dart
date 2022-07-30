@@ -4,12 +4,12 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/customer/customer_setting.dart';
 import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
-import 'package:possystem/ui/customer/customer_screen.dart';
+import 'package:possystem/ui/order_attr/order_attribute_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -24,7 +24,8 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: settings,
-        child: MaterialApp(routes: Routes.routes, home: const CustomerScreen()),
+        child: MaterialApp(
+            routes: Routes.routes, home: const OrderAttributeScreen()),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -45,7 +46,7 @@ void main() {
       final setting = settings.items.first;
       expect(setting.defaultOption, isNull);
       expect(setting.index, equals(1));
-      expect(setting.mode, equals(CustomerSettingOptionMode.statOnly));
+      expect(setting.mode, equals(OrderAttributeMode.statOnly));
 
       verify(database.push(
         CustomerSetting.table,
@@ -58,7 +59,7 @@ void main() {
           id: '1',
           name: 'cs-1',
           index: 1,
-          mode: CustomerSettingOptionMode.changePrice,
+          mode: OrderAttributeMode.changePrice,
           options: {
             '1': CustomerSettingOption(
                 id: '1',
@@ -77,7 +78,7 @@ void main() {
           id: '2',
           name: 'cs-2',
           index: 2,
-          mode: CustomerSettingOptionMode.changeDiscount,
+          mode: OrderAttributeMode.changeDiscount,
           options: {
             '5': CustomerSettingOption(id: '5', name: 'cso-5', modeValue: 110),
             '6': CustomerSettingOption(id: '6', name: 'cso-6', modeValue: 60),
@@ -103,7 +104,7 @@ void main() {
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,
             routes: Routes.routes,
-            home: const CustomerScreen()),
+            home: const OrderAttributeScreen()),
       ));
     }
 
@@ -148,7 +149,7 @@ void main() {
       expect(((w as ExpansionTile).title as Text).data, equals('new'));
 
       final setting = CustomerSettings.instance.items.first;
-      expect(setting.mode, equals(CustomerSettingOptionMode.values[2]));
+      expect(setting.mode, equals(OrderAttributeMode.values[2]));
       expect(setting.items.every((option) => option.modeValue == null), isTrue);
     });
 

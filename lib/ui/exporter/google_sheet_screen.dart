@@ -128,7 +128,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     GoogleSheetAble.stock: GlobalKey<_SheetNamerState>(),
     GoogleSheetAble.quantities: GlobalKey<_SheetNamerState>(),
     GoogleSheetAble.replenisher: GlobalKey<_SheetNamerState>(),
-    GoogleSheetAble.customer: GlobalKey<_SheetNamerState>(),
+    GoogleSheetAble.orderAttr: GlobalKey<_SheetNamerState>(),
   };
 
   GoogleSpreadsheet? spreadsheet;
@@ -458,7 +458,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     GoogleSheetAble.stock: GlobalKey<_SheetSelectorState>(),
     GoogleSheetAble.quantities: GlobalKey<_SheetSelectorState>(),
     GoogleSheetAble.replenisher: GlobalKey<_SheetSelectorState>(),
-    GoogleSheetAble.customer: GlobalKey<_SheetSelectorState>(),
+    GoogleSheetAble.orderAttr: GlobalKey<_SheetSelectorState>(),
   };
 
   GoogleSpreadsheet? spreadsheet;

@@ -2,15 +2,15 @@ import 'package:possystem/services/database.dart';
 import 'package:possystem/translator.dart';
 
 import '../model.dart';
-import '../objects/customer_object.dart';
+import '../objects/order_attribute_object.dart';
 import '../repository.dart';
 import '../repository/customer_settings.dart';
 import 'customer_setting_option.dart';
 
-class CustomerSetting extends Model<CustomerSettingObject>
+class CustomerSetting extends Model<OrderAttributeObject>
     with
-        ModelOrderable<CustomerSettingObject>,
-        ModelDB<CustomerSettingObject>,
+        ModelOrderable<OrderAttributeObject>,
+        ModelDB<OrderAttributeObject>,
         Repository<CustomerSettingOption>,
         RepositoryDB<CustomerSettingOption>,
         RepositoryOrderable<CustomerSettingOption> {
@@ -18,7 +18,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
 
   static const optionTable = 'customer_setting_options';
 
-  CustomerSettingOptionMode mode;
+  OrderAttributeMode mode;
 
   @override
   final String modelTableName = table;
@@ -31,7 +31,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
     ModelStatus? status,
     String name = 'customer setting',
     int index = 0,
-    this.mode = CustomerSettingOptionMode.statOnly,
+    this.mode = OrderAttributeMode.statOnly,
     Map<String, CustomerSettingOption>? options,
   }) : super(id, status) {
     this.name = name;
@@ -39,7 +39,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
     if (options != null) replaceItems(options);
   }
 
-  factory CustomerSetting.fromObject(CustomerSettingObject object) {
+  factory CustomerSetting.fromObject(OrderAttributeObject object) {
     return CustomerSetting(
       id: object.id,
       name: object.name!,
@@ -67,13 +67,13 @@ class CustomerSetting extends Model<CustomerSettingObject>
     );
   }
 
-  static CustomerSettingOptionMode str2mode(String key) {
+  static OrderAttributeMode str2mode(String key) {
     final possible = {
-      for (var e in CustomerSettingOptionMode.values)
-        S.customerSettingModeNames(e.name): e,
+      for (var e in OrderAttributeMode.values)
+        S.orderAttributeModeNames(e.name): e,
     };
 
-    return possible[key] ?? CustomerSettingOptionMode.statOnly;
+    return possible[key] ?? OrderAttributeMode.statOnly;
   }
 
   CustomerSettingOption? get defaultOption {
@@ -90,11 +90,11 @@ class CustomerSetting extends Model<CustomerSettingObject>
   @override
   set repository(repo) {}
 
-  bool get shouldHaveModeValue => mode != CustomerSettingOptionMode.statOnly;
+  bool get shouldHaveModeValue => mode != OrderAttributeMode.statOnly;
 
   @override
   Future<CustomerSettingOption> buildItem(Map<String, Object?> value) async {
-    final object = CustomerSettingOptionObject.build(value);
+    final object = OrderAttributeOptionObject.build(value);
     return CustomerSettingOption.fromObject(object);
   }
 
@@ -102,7 +102,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
     final option = defaultOption;
 
     // `modeValue` must be set, avoid setting it to null
-    await option?.update(CustomerSettingOptionObject(
+    await option?.update(OrderAttributeOptionObject(
       isDefault: false,
       modeValue: option.modeValue,
     ));
@@ -139,7 +139,7 @@ class CustomerSetting extends Model<CustomerSettingObject>
   }
 
   @override
-  CustomerSettingObject toObject() => CustomerSettingObject(
+  OrderAttributeObject toObject() => OrderAttributeObject(
         id: id,
         name: name,
         index: index,

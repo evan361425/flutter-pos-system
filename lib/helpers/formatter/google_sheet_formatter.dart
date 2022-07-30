@@ -1,17 +1,17 @@
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -25,7 +25,7 @@ enum GoogleSheetAble {
   stock,
   quantities,
   replenisher,
-  customer,
+  orderAttr,
 }
 
 class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
@@ -41,8 +41,8 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
         return Quantities.instance;
       case GoogleSheetAble.replenisher:
         return Replenisher.instance;
-      case GoogleSheetAble.customer:
-        return CustomerSettings.instance;
+      case GoogleSheetAble.orderAttr:
+        return OrderAttributes.instance;
     }
   }
 
@@ -99,8 +99,8 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
       return _QuantitiesFormatter(target);
     } else if (target is Replenisher) {
       return _ReplenisherFormatter(target);
-    } else if (target is CustomerSettings) {
-      return _CSFormatter(target);
+    } else if (target is OrderAttributes) {
+      return _OAFormatter(target);
     }
 
     throw ArgumentError();
@@ -417,29 +417,29 @@ class _ReplenisherFormatter extends _Formatter<Replenisher, Replenishment> {
   }
 }
 
-class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
-  const _CSFormatter(CustomerSettings target) : super(target);
+class _OAFormatter extends _Formatter<OrderAttributes, OrderAttribute> {
+  const _OAFormatter(OrderAttributes target) : super(target);
 
   @override
   List<GoogleSheetCellData> getHeader() {
-    final note = CustomerSettingOptionMode.values
+    final note = OrderAttributeMode.values
         .map((e) =>
-            S.customerSettingModeNames(e) +
+            S.orderAttributeModeNames(e) +
             ' - ' +
-            S.customerSettingModeDescriptions(e))
+            S.orderAttributeModeDescriptions(e))
         .join('\n');
     return <GoogleSheetCellData>[
-      _toCD(S.customerSettingNameLabel),
-      _toCD(S.customerSettingModeTitle, note),
-      _toCD(S.exporterCustomerSettingOptionTitle,
-          S.exporterGSCustomerSettingOptionNote),
+      _toCD(S.orderAttributeNameLabel),
+      _toCD(S.orderAttributeModeTitle, note),
+      _toCD(S.exporterOrderAttributeOptionTitle,
+          S.exporterGSOrderAttributeOptionNote),
     ];
   }
 
   @override
   List<List<GoogleSheetCellData>> getRows() {
-    final options = CustomerSettingOptionMode.values
-        .map((e) => S.customerSettingModeNames(e))
+    final options = OrderAttributeMode.values
+        .map((e) => S.orderAttributeModeNames(e))
         .toList();
 
     return target.itemList.map((e) {
@@ -451,7 +451,7 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
         GoogleSheetCellData(stringValue: e.name),
         GoogleSheetCellData(
           options: options,
-          stringValue: S.customerSettingModeNames(e.mode),
+          stringValue: S.orderAttributeModeNames(e.mode),
         ),
         GoogleSheetCellData(stringValue: info),
       ];
@@ -462,13 +462,13 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   String? validate(List<String> row) {
     if (row.length < 2) return S.importerColumnsCountError(2);
 
-    final msg = Validator.textLimit(S.customerSettingNameLabel, 30)(row[0]);
+    final msg = Validator.textLimit(S.orderAttributeNameLabel, 30)(row[0]);
     if (msg != null || row.length == 2) return msg;
 
     final lines = row[2].toString().split('\n');
-    final shouldValidateMode = CustomerSetting.str2mode(row[1]) ==
-        CustomerSettingOptionMode.changeDiscount;
-    final vName = Validator.textLimit(S.customerSettingOptionNameLabel, 30);
+    final shouldValidateMode =
+        _str2mode(row[1]) == OrderAttributeMode.changeDiscount;
+    final vName = Validator.textLimit(S.orderAttributeOptionNameLabel, 30);
     final vMode = Validator.positiveInt(row[1], maximum: 1000, allowNull: true);
     for (var line in lines) {
       if (line.startsWith('- ')) {
@@ -486,27 +486,28 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
   }
 
   @override
-  CustomerSetting format(List<String> row, int index) {
+  OrderAttribute format(List<String> row, int index) {
     final ori = target.getItemByName(row[0]);
-    final cs = CustomerSetting.fromRow(
+    final attr = OrderAttribute.fromRow(
       ori,
       row,
       index: index,
+      mode: _str2mode(row[1]),
     );
-    CustomerSettings.instance.addStaged(cs);
+    OrderAttributes.instance.addStaged(attr);
 
     if (row.length >= 3) {
       for (var option in _formatOptions(ori, row[2])) {
-        cs.addStaged(option);
-        option.repository = cs;
+        attr.addStaged(option);
+        option.repository = attr;
       }
     }
 
-    return cs;
+    return attr;
   }
 
-  Iterable<CustomerSettingOption> _formatOptions(
-    CustomerSetting? ori,
+  Iterable<OrderAttributeOption> _formatOptions(
+    OrderAttribute? ori,
     String value,
   ) sync* {
     final lines = value.split('\n');
@@ -516,12 +517,22 @@ class _CSFormatter extends _Formatter<CustomerSettings, CustomerSetting> {
 
       final columns = line.substring(2).split(',');
 
-      yield CustomerSettingOption.fromRow(
+      yield OrderAttributeOption.fromRow(
         ori?.getItemByName(columns[0]),
         columns,
         index: counter++,
       );
     }
+  }
+
+  OrderAttributeMode _str2mode(String key) {
+    for (final e in OrderAttributeMode.values) {
+      if (S.orderAttributeModeNames(e.name) == key) {
+        return e;
+      }
+    }
+
+    return OrderAttributeMode.statOnly;
   }
 }
 

@@ -38,4 +38,7 @@ final dbMigrationActions = <int, Future<void> Function(Database)>{
       }
     } while (orders.isNotEmpty);
   },
+  6: (db) async {
+    // db.query(table)
+  },
 };
