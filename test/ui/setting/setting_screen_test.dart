@@ -130,15 +130,6 @@ void main() {
       verify(cache.set(any, 1));
     });
 
-    testWidgets('switch awake_ordering', (tester) async {
-      await buildApp(tester);
-
-      await tester.tap(find.byKey(const Key('setting.awake_ordering')));
-      await tester.pumpAndSettle();
-
-      verify(cache.set(any, false));
-    });
-
     testWidgets('slide order product count', (tester) async {
       await buildApp(tester);
 
@@ -152,6 +143,25 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(cache.set(any, 5));
+    });
+
+    testWidgets('switch awake_ordering', (tester) async {
+      await buildApp(tester);
+
+      await tester.tap(find.byKey(const Key('setting.awake_ordering')));
+      await tester.pumpAndSettle();
+
+      verify(cache.set(any, false));
+    });
+
+    testWidgets('switch collect_events', (tester) async {
+      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
+      await buildApp(tester);
+
+      await tester.tap(find.byKey(const Key('setting.collect_events')));
+      await tester.pumpAndSettle();
+
+      verify(cache.set(any, false));
     });
 
     setUp(() {

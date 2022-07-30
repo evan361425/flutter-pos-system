@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/debug/setup_menu.dart';
 import 'package:possystem/firebase_compatible_options.dart';
+import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:provider/provider.dart';
 
 import 'models/repository/cashier.dart';
@@ -51,6 +53,7 @@ void main() async {
       await Cache.instance.initialize();
 
       final settings = SettingsProvider(SettingsProvider.allSettings);
+      Log.allowSendEvents = SettingsProvider.of<CollectEventsSetting>().value;
 
       await Stock().initialize();
       await Quantities().initialize();

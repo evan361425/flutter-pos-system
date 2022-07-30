@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/collect_events_setting.dart';
 
 import 'currency_setting.dart';
 import 'language_setting.dart';
@@ -20,6 +21,7 @@ class SettingsProvider extends ChangeNotifier {
     OrderOutlookSetting(),
     OrderProductAxisCountSetting(),
     CashierWarningSetting(),
+    CollectEventsSetting(),
   ], growable: false);
 
   final List<Setting> settings;

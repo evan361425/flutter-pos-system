@@ -16,7 +16,7 @@ The personal information that you are asked to provide, and the reasons why you 
 
 If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.
 
-When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.
+When you register for an Account, we may ask for your contact information, including items such as name, and email address.
 
 ## How we use your information
 
@@ -32,21 +32,7 @@ We use the information we collect in various ways, including to:
 
 ## Log Files
 
-POS System follows a standard procedure of using log files. These files log visitors when they visit apps. All hosting companies do this and a part of hosting services' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the apps, and gathering demographic information.
-
-## Advertising Partners Privacy Policies
-
-You may consult this list to find the Privacy Policy for each of the advertising partners of POS System.
-
-Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on POS System, which are sent directly to users' browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on apps that you visit.
-
-Note that POS System has no access to or control over these cookies that are used by third-party advertisers.
-
-## Third Party Privacy Policies
-
-POS System's Privacy Policy does not apply to other advertisers or apps. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
-
-You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers' respective apps.
+POS System follows a standard procedure of using log files. These files log visitors when they visit apps. All hosting companies do this and a part of hosting services' analytics. The information collected by log files include device type (for example Android's version), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the apps, and gathering demographic information.
 
 ## CCPA Privacy Rights (Do Not Sell My Personal Information)
 
@@ -83,3 +69,7 @@ If you make a request, we have one month to respond to you. If you would like to
 Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
 
 POS System does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our apps, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
+
+## Google Limited Use disclosure
+
+POS System use and transfer to any other app of information received from Google APIs will adhere to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes), including the Limited Use requirements.

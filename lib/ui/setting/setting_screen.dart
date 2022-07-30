@@ -10,6 +10,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
@@ -38,6 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
   final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
   final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
+  final collectEvents = SettingsProvider.of<CollectEventsSetting>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   if (info != null) Text('版本：' + info.version),
                   const SizedBox(width: 8.0),
-                  OutlinedText((kDebugMode ? '-' : '') + flavor.toUpperCase()),
+                  OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
                 ],
               );
             },
@@ -150,6 +152,16 @@ class _SettingScreenState extends State<SettingScreen> {
               key: const Key('setting.awake_ordering'),
               value: orderAwakening.value,
               onChanged: (value) => orderAwakening.update(value),
+            ),
+          ),
+          const Divider(),
+          CardTile(
+            title: const Text('收集錯誤訊息和事件'),
+            subtitle: const Text('當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長'),
+            trailing: FeatureSwitch(
+              key: const Key('setting.collect_events'),
+              value: collectEvents.value,
+              onChanged: (value) => collectEvents.update(value),
             ),
           ),
         ],

@@ -24,8 +24,7 @@ class Log {
       developer.log(action, name: code);
     }
 
-    // no need send debug event
-    if (forceSend || !_isDebug) {
+    if (forceSend || allowSendEvents) {
       FirebaseAnalytics.instance.logEvent(
         name: '${code}_$action',
         parameters: message != null ? {'message': message} : null,
@@ -51,7 +50,7 @@ class Log {
       stackTrace: stackTrace,
     );
 
-    if (forceSend || !_isDebug) {
+    if (forceSend || allowSendEvents) {
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
@@ -59,6 +58,12 @@ class Log {
       );
     }
   }
+
+  // no need send event in debug mode
+  static bool _allowSendEvents = !_isDebug;
+  static bool get allowSendEvents => _allowSendEvents;
+  static set allowSendEvents(bool value) =>
+      _allowSendEvents = _isDebug ? false : value;
 
   @visibleForTesting
   static int errorCount = 0;
