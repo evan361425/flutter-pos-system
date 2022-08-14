@@ -339,10 +339,10 @@ void main() {
       await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.customer.c-1.co-1')));
-      await tester.tap(find.byKey(const Key('cashier.customer.c-2.co-3')));
+      await tester.tap(find.byKey(const Key('set_attribute.c-1.co-1')));
+      await tester.tap(find.byKey(const Key('set_attribute.c-2.co-3')));
 
-      await tester.tap(find.byKey(const Key('cashier.customer.next')));
+      await tester.tap(find.byKey(const Key('set_attribute.next')));
       await tester.pumpAndSettle();
 
       when(database.query(

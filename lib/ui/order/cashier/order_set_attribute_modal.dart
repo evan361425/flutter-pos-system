@@ -10,8 +10,8 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class OrderCustomerModal extends StatelessWidget {
-  const OrderCustomerModal({Key? key}) : super(key: key);
+class OderSetAttributeModal extends StatelessWidget {
+  const OderSetAttributeModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class OrderCustomerModal extends StatelessWidget {
         title: Text(S.orderSetAttributeTitle),
         actions: [
           AppbarTextButton(
-            key: const Key('cashier.customer.next'),
+            key: const Key('set_attribute.next'),
             onPressed: () => Navigator.of(context).pop(Routes.orderCalculator),
             child: Text(S.orderSetAttributeActionsDone),
           ),
@@ -32,23 +32,23 @@ class OrderCustomerModal extends StatelessWidget {
         padding: const EdgeInsets.all(kSpacing2),
         child: ListView(children: [
           for (final item in OrderAttributes.instance.notEmptyItems)
-            _CustomerSettingGroup(item),
+            _OrderAttributeGroup(item),
         ]),
       ),
     );
   }
 }
 
-class _CustomerSettingGroup extends StatefulWidget {
+class _OrderAttributeGroup extends StatefulWidget {
   final OrderAttribute attribute;
 
-  const _CustomerSettingGroup(this.attribute);
+  const _OrderAttributeGroup(this.attribute);
 
   @override
-  State<_CustomerSettingGroup> createState() => _CustomerSettingGroupState();
+  State<_OrderAttributeGroup> createState() => _OrderAttributeGroupState();
 }
 
-class _CustomerSettingGroupState extends State<_CustomerSettingGroup> {
+class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
   late String? selectedId;
 
   @override
@@ -63,8 +63,7 @@ class _CustomerSettingGroupState extends State<_CustomerSettingGroup> {
           child: Wrap(spacing: kSpacing0, children: [
             for (final option in widget.attribute.itemList)
               RadioText(
-                key:
-                    Key('cashier.customer.${widget.attribute.id}.${option.id}'),
+                key: Key('set_attribute.${widget.attribute.id}.${option.id}'),
                 onChanged: (isSelected) {
                   setState(() => selectedId = isSelected ? option.id : null);
                   selectOption(option, isSelected);

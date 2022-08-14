@@ -142,7 +142,7 @@ class Cart extends ChangeNotifier {
       return Menu.instance.items
           .every((catalog) => !catalog.hasItem(product.id));
     });
-    // remove not exist customer
+    // remove non exist attribute
     attributes.entries.toList().forEach((entry) {
       final attr = OrderAttributes.instance.getItem(entry.key);
       if (attr == null || !attr.hasItem(entry.value)) {
@@ -183,7 +183,7 @@ class Cart extends ChangeNotifier {
       ..addAll(object.parseToProduct());
     attributes
       ..clear()
-      ..addAll(object.attributes);
+      ..addAll(object.parseToAttrId());
     _selectedChanged();
   }
 
@@ -221,13 +221,13 @@ class Cart extends ChangeNotifier {
     num? paid,
     OrderObject? object,
   }) async {
-    final combinationId = await _prepareCustomerSettingCombinationId();
     return OrderObject(
       id: object?.id,
       paid: paid,
       createdAt: object?.createdAt,
-      attributes: attributes,
-      customerSettingsCombinationId: combinationId,
+      attributes: attributes.entries
+          .map((e) => OrderSelectedAttributeObject.fromId(e.key, e.value))
+          .where((e) => e.isNotEmpty),
       totalPrice: totalPrice,
       totalCount: totalCount,
       productsPrice: productsPrice,
@@ -290,18 +290,6 @@ class Cart extends ChangeNotifier {
     final cashierResult = await Cashier.instance.paid(paid, price);
 
     return cashierResult;
-  }
-
-  Future<int> _prepareCustomerSettingCombinationId() async {
-    return 1;
-    // final settings = OrderAttributes.instance;
-    // final data = {
-    //   for (final option in selectedAttributeOptions)
-    //     option.repository.id: option.id
-    // };
-
-    // final id = await settings.getCombinationId(data);
-    // return id ?? await settings.generateCombinationId(data);
   }
 
   void _selectedChanged() {

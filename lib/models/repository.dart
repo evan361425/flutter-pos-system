@@ -28,7 +28,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
     _stagedItems.clear();
   }
 
-  Future<void> addItem(T item, {save = true}) async {
+  Future<void> addItem(T item, {bool save = true}) async {
     if (!save) {
       item.repository = this;
       _items[item.id] = item;

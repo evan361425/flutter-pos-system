@@ -92,7 +92,7 @@ List<OrderObject> generateOrder({
               (e['ingredients'] as List).map((i) => (i['name'] as String)))
           .toSet()
           .toList(),
-      products: ordered.map((product) => OrderProductObject.input(product)),
+      products: ordered.map((product) => OrderProductObject.fromMap(product)),
     ));
   }
 

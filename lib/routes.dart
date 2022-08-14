@@ -30,7 +30,7 @@ import 'ui/menu/product/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
 import 'ui/order/cashier/order_cashier_modal.dart';
-import 'ui/order/cashier/order_customer_modal.dart';
+import 'ui/order/cashier/order_set_attribute_modal.dart';
 import 'ui/order/order_screen.dart';
 import 'ui/quantities/quantity_screen.dart';
 import 'ui/quantities/widgets/quantity_modal.dart';
@@ -138,7 +138,7 @@ class Routes {
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
     // order
-    orderAttribute: (_) => const OrderCustomerModal(),
+    orderAttribute: (_) => const OderSetAttributeModal(),
     orderCalculator: (_) => OrderCashierModal(),
     // quantities
     quantities: (_) => const QuantityScreen(),

@@ -1,10 +1,13 @@
 import 'dart:convert';
 
-import 'package:possystem/helpers/db_transferer.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/services/database.dart';
 
 class OrderObject {
@@ -26,8 +29,7 @@ class OrderObject {
   final List<String>? ingredientNames;
 
   /// 顧客設定，鍵代表種類，值代表選項
-  final Map<String, String> attributes;
-  final int? customerSettingsCombinationId;
+  final Iterable<OrderSelectedAttributeObject> attributes;
 
   final Iterable<OrderProductObject> products;
 
@@ -42,8 +44,7 @@ class OrderObject {
     required this.totalCount,
     this.productNames,
     this.ingredientNames,
-    this.attributes = const {},
-    this.customerSettingsCombinationId,
+    this.attributes = const [],
     required this.products,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
@@ -73,6 +74,13 @@ class OrderObject {
         .toList();
   }
 
+  Map<String, String> parseToAttrId() {
+    return {
+      for (final entry in attributes.map((e) => e.toInstanceEntry()))
+        if (entry != null) entry.key.id: entry.value.id,
+    };
+  }
+
   Map<String, Object?> toMap() {
     final usedIngredients = <String>[];
 
@@ -88,11 +96,14 @@ class OrderObject {
       'totalCount': totalCount,
       'productsPrice': productsPrice,
       'createdAt': Util.toUTC(now: createdAt),
-      'customerSettingCombinationId': customerSettingsCombinationId,
       'usedProducts': Database.join(
         products.map<String>((e) => e.productName),
       ),
       'usedIngredients': Database.join(usedIngredients),
+      'encodedAttributes': jsonEncode(attributes
+          .where((e) => e.isNotEmpty)
+          .map<Map<String, Object>>((e) => e.toMap())
+          .toList()),
       'encodedProducts': jsonEncode(
         products.map<Map<String, Object?>>((e) => e.toMap()).toList(),
       ),
@@ -106,8 +117,8 @@ class OrderObject {
   num get income => totalPrice - cost;
 
   factory OrderObject.fromMap(Map<String, Object?> data) {
-    final encodedProduct = data['encodedProducts'] as String?;
-    final products = jsonDecode(encodedProduct ?? '[]') as List<dynamic>;
+    final products = _safeParseList(data['encodedProducts'] as String?);
+    final attributes = _safeParseList(data['encodedAttributes'] as String?);
     final createdAt = data['createdAt'] == null
         ? null
         : Util.fromUTC(data['createdAt'] as int);
@@ -122,8 +133,9 @@ class OrderObject {
       productsPrice: data['productsPrice'] as num? ?? totalPrice,
       productNames: Database.split(data['usedProducts'] as String?),
       ingredientNames: Database.split(data['usedIngredients'] as String?),
-      attributes: DBTransferer.parseCombination(data['combination'] as String?),
-      products: products.map((product) => OrderProductObject.input(product)),
+      attributes:
+          attributes.map((e) => OrderSelectedAttributeObject.fromMap(e)),
+      products: products.map((product) => OrderProductObject.fromMap(product)),
     );
   }
 }
@@ -183,7 +195,7 @@ class OrderProductObject {
     };
   }
 
-  factory OrderProductObject.input(Map<String, dynamic> data) {
+  factory OrderProductObject.fromMap(Map<String, dynamic> data) {
     final ingredients =
         (data['ingredients'] ?? const Iterable.empty()) as Iterable<dynamic>;
 
@@ -287,5 +299,83 @@ class OrderIngredientObject {
       additionalCost: quantity?.additionalCost,
       additionalPrice: quantity?.additionalPrice,
     );
+  }
+}
+
+class OrderSelectedAttributeObject {
+  final String? name;
+
+  final String? optionName;
+
+  final OrderAttributeMode? mode;
+
+  final num? modeValue;
+
+  const OrderSelectedAttributeObject({
+    this.name,
+    this.optionName,
+    this.mode,
+    this.modeValue,
+  });
+
+  factory OrderSelectedAttributeObject.fromMap(Map<String, dynamic> data) {
+    final modeRaw = data['mode'] as String;
+    final mode = OrderAttributeMode.values.firstWhere(
+      (e) => e.name == modeRaw,
+      orElse: () => OrderAttributeMode.statOnly,
+    );
+
+    return OrderSelectedAttributeObject(
+      name: data['name'] as String,
+      optionName: data['optionName'] as String,
+      mode: mode,
+      modeValue: data['modeValue'] as num?,
+    );
+  }
+
+  factory OrderSelectedAttributeObject.fromId(id, optionId) {
+    try {
+      final attr = OrderAttributes.instance.items.firstWhere((e) => e.id == id);
+      final option = attr.items.firstWhere((e) => e.id == optionId);
+
+      return OrderSelectedAttributeObject(
+        name: attr.name,
+        optionName: option.name,
+        mode: attr.mode,
+        modeValue: option.modeValue,
+      );
+    } on StateError {
+      return const OrderSelectedAttributeObject();
+    }
+  }
+
+  MapEntry<OrderAttribute, OrderAttributeOption>? toInstanceEntry() {
+    try {
+      final attr =
+          OrderAttributes.instance.items.firstWhere((e) => e.name == name);
+      final option = attr.items.firstWhere((e) => e.name == optionName);
+      return MapEntry(attr, option);
+    } on StateError {
+      return null;
+    }
+  }
+
+  Map<String, Object> toMap() {
+    return {
+      'name': name!,
+      'optionName': optionName!,
+      'mode': mode!,
+      'modeValue': modeValue!,
+    };
+  }
+
+  bool get isNotEmpty => name != null;
+}
+
+List<dynamic> _safeParseList(String? source) {
+  try {
+    return jsonDecode(source ?? '');
+  } catch (e) {
+    return const [];
   }
 }

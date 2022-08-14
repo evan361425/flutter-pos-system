@@ -7,7 +7,6 @@ import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -41,8 +40,6 @@ class OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // initialize seller
-    context.read<Seller>();
     final catalogs = Menu.instance.notEmptyItems;
 
     final menuCatalogRow = OrderCatalogList(
@@ -115,7 +112,7 @@ class OrderScreenState extends State<OrderScreen> {
     if (SettingsProvider.of<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
-    // rebind menu/customer_setting if changed
+    // rebind menu/attributes if changed
     Cart.instance.rebind();
     super.initState();
   }

@@ -7,7 +7,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -117,12 +116,11 @@ class _AnalysisOrderModal extends StatelessWidget {
   const _AnalysisOrderModal(this.order);
 
   Iterable<OrderAttributeOption> get selectedAttributeOptions sync* {
-    for (final entry in order.attributes.entries) {
-      final setting = OrderAttributes.instance.getItem(entry.key);
-      final option = setting?.getItem(entry.value);
+    for (final attr in order.attributes) {
+      final entry = attr.toInstanceEntry();
 
-      if (option != null) {
-        yield option;
+      if (entry != null) {
+        yield entry.value;
       }
     }
   }

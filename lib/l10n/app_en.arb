@@ -1,6 +1,5 @@
 {
   "appTitle": "POS System",
-  "homeIcons": "{icon, select, menu{Menu} setting{Setting} analysis{Analysis} stock{Stock} quantities{Quantities} order{Order} cashier{Cashier} customer{Customer}}",
   "settingThemeTitle": "Platte",
   "settingThemeTypes": "{type, select, dark{Dark Mode} light{Light Mode} system{Follow System}}",
   "settingLanguageTitle": "Language"

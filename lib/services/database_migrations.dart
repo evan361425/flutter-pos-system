@@ -50,4 +50,15 @@ ON `order` (createdAt);
   5: <String>[
     'ALTER TABLE `order` ADD COLUMN `cost` INTEGER DEFAULT 0;',
   ],
+  6: <String>[
+    'ALTER TABLE `order` ADD COLUMN `encodedAttributes` BLOB NOT NULL;',
+    'ALTER TABLE `order_stash` ADD COLUMN `encodedAttributes` BLOB NOT NULL;',
+  ],
+  7: <String>[
+    'ALTER TABLE `order` DROP COLUMN `customerSettingCombinationId`;',
+    'ALTER TABLE `order_stash` DROP COLUMN `customerSettingCombinationId`;',
+    'DROP TABLE `customer_settings`;',
+    'DROP TABLE `customer_setting_options`;',
+    'DROP TABLE `customer_setting_combinations`;',
+  ],
 };
