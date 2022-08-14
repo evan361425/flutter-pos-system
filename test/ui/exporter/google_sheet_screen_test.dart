@@ -4,13 +4,13 @@ import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/laucher.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
@@ -18,12 +18,12 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
+import 'package:possystem/services/storage.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/google_sheet_screen.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
-import '../../mocks/mock_database.dart';
 import '../../mocks/mock_google_api.dart';
 import '../../mocks/mock_storage.dart';
 import '../../services/auth_test.mocks.dart';
@@ -71,14 +71,14 @@ void main() {
       final r1 = Replenishment(id: 'r1', name: 'r1', data: {'i1': 1});
       Replenisher.instance.replaceItems({'r1': r1});
 
-      final o1 = CustomerSettingOption(id: 'o1', name: 'o1', modeValue: 1);
-      final o2 = CustomerSettingOption(id: 'o2', name: 'o2', isDefault: true);
-      final cs1 = CustomerSetting(id: 'cs1', name: 'cs1', options: {
+      final o1 = OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1);
+      final o2 = OrderAttributeOption(id: 'o2', name: 'o2', isDefault: true);
+      final cs1 = OrderAttribute(id: 'cs1', name: 'cs1', options: {
         'o1': o1,
         'o2': o2,
       });
       cs1.prepareItem();
-      CustomerSettings.instance.replaceItems({'cs1': cs1});
+      OrderAttributes.instance.replaceItems({'cs1': cs1});
     }
 
     group('Exporter', () {
@@ -99,7 +99,7 @@ void main() {
           'stock',
           'quantities',
           'replenisher',
-          'customer'
+          'orderAttr'
         ];
         expect(sheets.where(isChecked).length, equals(1));
 
@@ -123,7 +123,7 @@ void main() {
         await checkPreview('quantities', ['q1']);
         await checkPreview('menu', ['c1', 'p1', '- i1,0\n  + q1,0,0,0']);
         await checkPreview('replenisher', ['r1', '- i1,1']);
-        await checkPreview('customer', ['cs1', '- o1,false,1\n- o2,true,']);
+        await checkPreview('orderAttr', ['cs1', '- o1,false,1\n- o2,true,']);
       });
 
       group('#export', () {
@@ -221,7 +221,7 @@ void main() {
           when(cache.get(eCacheKey + '.menu')).thenReturn('m title');
           when(cache.get(eCacheKey + '.stock')).thenReturn('s title');
           when(cache.get(eCacheKey + '.quantities')).thenReturn('q title');
-          when(cache.get(eCacheKey + '.customer')).thenReturn('c title');
+          when(cache.get(eCacheKey + '.orderAttr')).thenReturn('c title');
           when(cache.get(eCacheKey + '.replenisher')).thenReturn('r title');
           prepareData();
           when(sheetsApi.spreadsheets.get(
@@ -631,34 +631,25 @@ void main() {
           expect(Replenisher.instance.stagedItems.isEmpty, isTrue);
         });
 
-        testWidgets('customer', (tester) async {
-          void returnIdByName(int id, String name) {
-            when(database.push(
-              any,
-              argThat(predicate((e) => e is Map && e['name'] == name)),
-            )).thenAnswer((_) => Future.value(id));
-          }
-
-          returnIdByName(100, 'c1');
-          returnIdByName(101, 'c2');
-          returnIdByName(200, 'co1');
-          returnIdByName(201, 'co2');
-          when(database.reset(any)).thenAnswer((_) => Future.value());
-          await prepareImport(tester, 'customer', 4, true, [
+        testWidgets('orderAttribute', (tester) async {
+          await prepareImport(tester, 'orderAttr', 4, true, [
             ['c1', '折扣', '- co1,true\n- co2,,5'],
             ['c2'],
           ]);
 
-          verify(database.reset(CustomerSettings.table)).called(1);
-          verify(database.reset(CustomerSettings.optionTable)).called(1);
-          expect(CustomerSettings.instance.length, equals(2));
+          verify(storage.reset(Stores.orderAttributes)).called(1);
+          verify(storage.add(Stores.orderAttributes, any, any)).called(2);
+          verify(storage.set(Stores.orderAttributes, any)).called(2);
 
-          final c1 = CustomerSettings.instance.getItem('100');
-          expect(c1?.name, equals('c1'));
-          expect(CustomerSettings.instance.getItem('101')?.name, equals('c2'));
+          expect(OrderAttributes.instance.length, equals(2));
 
-          expect(c1?.getItem('200')?.name, equals('co1'));
-          expect(c1?.getItem('201')?.name, equals('co2'));
+          final items = OrderAttributes.instance.itemList;
+          expect(items[0].name, equals('c1'));
+          expect(items[1].name, equals('c2'));
+
+          final options = items.first.itemList;
+          expect(options[0].name, equals('co1'));
+          expect(options[1].name, equals('co2'));
         });
 
         testWidgets('menu + stock', (tester) async {
@@ -826,7 +817,7 @@ void main() {
         // test each situation when parsing
         when(cache.get(iCacheKey + '.menu')).thenReturn('menu title 1');
         when(cache.get(iCacheKey + '.stock')).thenReturn('stock');
-        when(cache.get(iCacheKey + '.customer')).thenReturn('customer a');
+        when(cache.get(iCacheKey + '.orderAttr')).thenReturn('orderAttr a');
 
         final sheetsApi = getMockSheetsApi();
         await tester.pumpWidget(buildApp(sheetsApi));
@@ -836,7 +827,7 @@ void main() {
         expect(getSelector('menu').initialValue?.title, equals('menu title'));
         expect(getSelector('menu').initialValue?.id, equals(1));
         expect(getSelector('stock').initialValue, isNull);
-        expect(getSelector('customer').initialValue, isNull);
+        expect(getSelector('orderAttr').initialValue, isNull);
 
         mockPick(sheetsApi, spreadsheetId, 'new-sheet');
 
@@ -869,7 +860,7 @@ void main() {
       Menu();
       Stock();
       Quantities();
-      CustomerSettings();
+      OrderAttributes();
       Replenisher();
       when(cache.get(any)).thenReturn(null);
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(MockUser()));
@@ -879,7 +870,6 @@ void main() {
       initializeTranslator();
       initializeStorage();
       initializeCache();
-      initializeDatabase();
       initializeAuth();
     });
   });

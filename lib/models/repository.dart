@@ -305,7 +305,11 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
   }
 
   @override
-  Future<void> dropItems() => Storage.instance.reset(storageStore);
+  Future<void> dropItems() {
+    if (repoType == RepositoryStorageType.repoModel) return Future.value();
+
+    return Storage.instance.reset(storageStore);
+  }
 }
 
 enum RepositoryStorageType {

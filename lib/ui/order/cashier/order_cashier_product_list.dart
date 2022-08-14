@@ -59,6 +59,7 @@ class OrderCashierProductList extends StatelessWidget {
     final attributeWidget = options.isEmpty
         ? const SizedBox.shrink()
         : ExpansionTile(
+            key: const Key('order_cashier_product_list.attributes'),
             title: Text(S.orderCashierAttributeInfoTitle),
             subtitle: Text(S.orderCashierAttributeTotalCount(options.length)),
             children: <Widget>[

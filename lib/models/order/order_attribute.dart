@@ -90,7 +90,11 @@ class OrderAttribute extends Model<OrderAttributeObject>
     final option = defaultOption;
 
     if (option != null) {
-      option.isDefault = false;
+      await option.update(OrderAttributeOptionObject(
+        isDefault: false,
+        // null is settable, should specify the value here
+        modeValue: option.modeValue,
+      ));
     }
   }
 

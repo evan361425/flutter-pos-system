@@ -38,16 +38,10 @@ void main() {
   Future<List<Map<String, Object?>>> mockGetOrderBetween() {
     return database.query(
       Seller.orderTable,
-      columns: argThat(
-        predicate((data) =>
-            data is List &&
-            data.length == 2 &&
-            data[1] == 'customer_setting_combinations.combination'),
-        named: 'columns',
-      ),
-      where: anyNamed('where'),
+      columns: argThat(isNull, named: 'columns'),
+      where: argThat(equals('createdAt BETWEEN ? AND ?'), named: 'where'),
       whereArgs: anyNamed('whereArgs'),
-      join: argThat(isNotNull, named: 'join'),
+      join: argThat(isNull, named: 'join'),
       orderBy: anyNamed('orderBy'),
       limit: anyNamed('limit'),
       offset: anyNamed('offset'),

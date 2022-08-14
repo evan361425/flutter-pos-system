@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -12,7 +13,7 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -52,7 +53,7 @@ void main() {
         'q-1': Quantity(id: 'q-1', name: 'q-1'),
         'q-2': Quantity(id: 'q-2', name: 'q-2')
       });
-      final ingreidnet1 = ProductIngredient(
+      final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),
         amount: 5,
@@ -73,14 +74,14 @@ void main() {
           ),
         },
       );
-      final ingreidnet2 = ProductIngredient(
+      final ingredient2 = ProductIngredient(
         id: 'pi-2',
         ingredient: Stock.instance.getItem('i-2'),
         amount: 3,
       );
       final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-        'pi-1': ingreidnet1..prepareItem(),
-        'pi-2': ingreidnet2..prepareItem(),
+        'pi-1': ingredient1..prepareItem(),
+        'pi-2': ingredient2..prepareItem(),
       });
       Menu().replaceItems({
         'c-1': Catalog(
@@ -97,13 +98,15 @@ void main() {
         )..prepareItem(),
       });
 
-      final s1 = CustomerSetting(
-          id: 'c-1', options: {'co-1': CustomerSettingOption(id: 'co-1')});
-      final s2 = CustomerSetting(
-          id: 'c-2', options: {'co-2': CustomerSettingOption(id: 'co-2')});
-      CustomerSettings().replaceItems({
-        'c-1': s1..prepareItem(),
-        'c-2': s2..prepareItem(),
+      OrderAttributes().replaceItems({
+        for (var i = 1; i < 3; i++)
+          'oa-$i': OrderAttribute(
+            id: 'oa-$i',
+            name: 'oa-$i',
+            options: {
+              'oao-$i': OrderAttributeOption(id: 'oao-$i', name: 'oao-$i'),
+            },
+          )..prepareItem()
       });
 
       Cart.instance = Cart();
@@ -111,8 +114,8 @@ void main() {
         OrderProduct(Menu.instance.getProduct('p-1')!),
         OrderProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
-        'c-1': 'co-1',
-        'c-2': 'co-2'
+        'oa-1': 'oao-1',
+        'oa-2': 'oao-2'
       });
       Seller();
     }
@@ -121,6 +124,10 @@ void main() {
       return {
         'id': 1,
         'createdAt': 12345678,
+        'encodedAttributes': jsonEncode([
+          OrderSelectedAttributeObject.fromId('oa-1', 'oao-1').toMap(),
+          OrderSelectedAttributeObject.fromId('oa-2', 'oao-2').toMap(),
+        ]),
         'encodedProducts': jsonEncode([
           {
             'singlePrice': 10,
@@ -156,7 +163,7 @@ void main() {
       };
     }
 
-    void verifyOderPoped() {
+    void verifyOrderPopped() {
       expect(Cart.instance.products.length, equals(1));
       final product = Cart.instance.products.first;
       expect(product.id, equals('p-1'));
@@ -169,6 +176,11 @@ void main() {
       expect((w.title as Text).data, equals('p-1'));
       expect((w.subtitle as RichText).text.toPlainText(),
           equals(S.orderProductIngredientName('i-1', 'q-1')));
+
+      expect(
+        Cart.instance.attributes,
+        equals({'oa-1': 'oao-1', 'oa-2': 'oao-2'}),
+      );
     }
 
     testWidgets('Leave history mode', (tester) async {
@@ -205,7 +217,9 @@ void main() {
 
       // failed to stash
       when(database.count(any)).thenAnswer((_) => Future.value(5));
+
       await act(true);
+
       verifyNever(database.push(Seller.stashTable, any));
       verify(database.count(Seller.stashTable));
 
@@ -213,16 +227,6 @@ void main() {
       when(database.count(any)).thenAnswer((_) => Future.value(1));
       when(database.push(Seller.stashTable, any))
           .thenAnswer((_) => Future.value(1));
-      // get customer setting combination
-      when(database.query(
-        CustomerSettings.combinationTable,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([
-            {'id': 1}
-          ]));
       // get last order
       when(database.getLast(
         any,
@@ -232,7 +236,9 @@ void main() {
         join: anyNamed('join'),
         orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(null));
+
       await act(true);
+
       verify(database.push(Seller.stashTable, any));
 
       // should be stashed
@@ -246,9 +252,10 @@ void main() {
         join: anyNamed('join'),
         orderByKey: anyNamed('orderByKey'),
       )).thenAnswer((_) => Future.value(getDbData()));
+
       await act(null);
 
-      verifyOderPoped();
+      verifyOrderPopped();
       expect(Cart.instance.isHistoryMode, isTrue);
     });
 
@@ -279,17 +286,6 @@ void main() {
       when(database.count(any)).thenAnswer((_) => Future.value(1));
       when(database.push(Seller.stashTable, any))
           .thenAnswer((_) => Future.value(1));
-      // add customer setting combination
-      when(database.push(CustomerSettings.combinationTable, any))
-          .thenAnswer((_) => Future.value(2));
-      // get empty customer setting combination
-      when(database.query(
-        CustomerSettings.combinationTable,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([]));
       when(database.getLast(
         any,
         columns: anyNamed('columns'),
@@ -299,7 +295,6 @@ void main() {
       )).thenAnswer((_) => Future.value(null));
       await act(true);
       verify(database.push(Seller.stashTable, any));
-      verify(database.push(CustomerSettings.combinationTable, any));
       verify(database.getLast(
         Seller.stashTable,
         columns: anyNamed('columns'),
@@ -320,7 +315,7 @@ void main() {
       )).thenAnswer((_) => Future.value(getDbData()));
       await act(null);
 
-      verifyOderPoped();
+      verifyOrderPopped();
     });
 
     testWidgets('Stash', (tester) async {
@@ -339,15 +334,7 @@ void main() {
 
       when(database.count(any)).thenAnswer((_) => Future.value(1));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
-      when(database.query(
-        CustomerSettings.combinationTable,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: argThat(equals([',c-1:co-1,c-2:co-2,']), named: 'whereArgs'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([
-            {'id': 1}
-          ]));
+
       await act();
 
       expect(Cart.instance.isEmpty, isTrue);
@@ -356,7 +343,7 @@ void main() {
           argThat(predicate((data) =>
               data is Map &&
               data['createdAt'] != null &&
-              data['customerSettingCombinationId'] == 1 &&
+              data['encodedAttributes'] != null &&
               data['encodedProducts'] != null))));
     });
 

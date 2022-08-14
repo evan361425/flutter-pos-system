@@ -1,5 +1,4 @@
 import 'package:possystem/services/database.dart';
-import 'package:possystem/translator.dart';
 
 import '../model.dart';
 import '../objects/order_attribute_object.dart';
@@ -48,77 +47,16 @@ class CustomerSetting extends Model<OrderAttributeObject>
     );
   }
 
-  factory CustomerSetting.fromRow(
-    CustomerSetting? ori,
-    List<String> row, {
-    required int index,
-  }) {
-    final mode = str2mode(row[1]);
-    final status = ori == null
-        ? ModelStatus.staged
-        : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
-
-    return CustomerSetting(
-      id: ori?.id,
-      name: row[0],
-      index: index,
-      mode: mode,
-      status: status,
-    );
-  }
-
-  static OrderAttributeMode str2mode(String key) {
-    final possible = {
-      for (var e in OrderAttributeMode.values)
-        S.orderAttributeModeNames(e.name): e,
-    };
-
-    return possible[key] ?? OrderAttributeMode.statOnly;
-  }
-
-  CustomerSettingOption? get defaultOption {
-    try {
-      return items.firstWhere((option) => option.isDefault);
-    } catch (e) {
-      return null;
-    }
-  }
-
   @override
   CustomerSettings get repository => CustomerSettings.instance;
 
   @override
   set repository(repo) {}
 
-  bool get shouldHaveModeValue => mode != OrderAttributeMode.statOnly;
-
   @override
   Future<CustomerSettingOption> buildItem(Map<String, Object?> value) async {
     final object = OrderAttributeOptionObject.build(value);
     return CustomerSettingOption.fromObject(object);
-  }
-
-  Future<void> clearDefault() async {
-    final option = defaultOption;
-
-    // `modeValue` must be set, avoid setting it to null
-    await option?.update(OrderAttributeOptionObject(
-      isDefault: false,
-      modeValue: option.modeValue,
-    ));
-  }
-
-  Future<int> clearModeValues() {
-    for (final item in items) {
-      item.modeValue = null;
-    }
-
-    return Database.instance.update(
-      repoTableName,
-      int.parse(id),
-      {'modeValue': null},
-      keyName: 'customerSettingId',
-    );
   }
 
   @override
@@ -130,14 +68,6 @@ class CustomerSetting extends Model<OrderAttributeObject>
     );
   }
 
-  /// Update options' [modeValue] if [mode] changed
-  @override
-  Future<void> save(Map<String, Object?> data) async {
-    await super.save(data);
-
-    await clearModeValues();
-  }
-
   @override
   OrderAttributeObject toObject() => OrderAttributeObject(
         id: id,
@@ -146,7 +76,4 @@ class CustomerSetting extends Model<OrderAttributeObject>
         mode: mode,
         options: items.map((e) => e.toObject()),
       );
-
-  @override
-  Future<void> dropItems() => Future.value();
 }

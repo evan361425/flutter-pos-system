@@ -36,6 +36,16 @@ void main() {
       );
     }
 
+    test('cashier should handler error parsing', () async {
+      CurrencySetting.instance.unitList = [1];
+
+      await Cashier.instance.setCurrent([
+        {'unit': 0}
+      ]);
+
+      expect(Cashier.instance.currentUnits.first.unit, 1);
+    });
+
     testWidgets('should execute changer', (tester) async {
       await Cashier.instance.setCurrent(<Map<String, num>>[
         {'unit': 1, 'count': 10},
@@ -59,8 +69,9 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(Cashier.instance.at(0).count, equals(15));
-      expect(Cashier.instance.at(1).count, equals(4));
+      expect(Cashier.instance.at(0).count, 15);
+      expect(Cashier.instance.at(1).count, 4);
+      expect(Cashier.instance.favoriteItems().first.hashCode, 0);
     });
 
     testWidgets('should not show surplus if not initialized', (tester) async {

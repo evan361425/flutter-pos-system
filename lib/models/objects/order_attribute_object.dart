@@ -43,14 +43,19 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
 
   @override
   Map<String, Object?> diff(OrderAttribute model) {
+    final prefix = model.prefix;
     final result = <String, Object?>{};
     if (name != null && name != model.name) {
       model.name = name!;
-      result['name'] = name!;
+      result['$prefix.name'] = name!;
     }
     if (mode != null && mode != model.mode) {
       model.mode = mode!;
-      result['mode'] = mode!.index;
+      for (var option in model.items) {
+        option.modeValue = null;
+        result['${option.prefix}.modeValue'] = null;
+      }
+      result['$prefix.mode'] = mode!.index;
     }
     return result;
   }
@@ -107,18 +112,19 @@ class OrderAttributeOptionObject extends ModelObject<OrderAttributeOption> {
 
   @override
   Map<String, Object?> diff(OrderAttributeOption model) {
+    final prefix = model.prefix;
     final result = <String, Object?>{};
     if (name != null && name != model.name) {
       model.name = name!;
-      result['name'] = name!;
+      result['$prefix.name'] = name!;
     }
     if (isDefault != null && isDefault != model.isDefault) {
       model.isDefault = isDefault!;
-      result['isDefault'] = isDefault! ? 1 : 0;
+      result['$prefix.isDefault'] = isDefault!;
     }
     if (modeValue != model.modeValue) {
       model.modeValue = modeValue;
-      result['modeValue'] = modeValue;
+      result['$prefix.modeValue'] = modeValue;
     }
     return result;
   }

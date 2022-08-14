@@ -3,9 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -50,7 +51,7 @@ void main() {
           ChangeNotifierProvider.value(value: Menu()),
           ChangeNotifierProvider.value(value: Stock()),
           ChangeNotifierProvider.value(value: Quantities()),
-          ChangeNotifierProvider.value(value: CustomerSettings()),
+          ChangeNotifierProvider.value(value: OrderAttributes()),
           ChangeNotifierProvider.value(value: Cart()),
           ChangeNotifierProvider.value(value: Cashier()),
         ],
@@ -84,12 +85,24 @@ void main() {
 
       await navAndPop('home_setup.header.menu1', 'menu.add');
       await navAndPop('home_setup.header.menu2', 'menu.add');
-      await navAndPop('home_setup.menu', 'menu.add');
+      await navAndPop(
+          'home_setup.header.order_attrs', 'order_attributes.action');
+
+      // menu for pop to home
+      Menu.instance.replaceItems({'1': Catalog(id: '1')});
+      await navAndCheck('home_setup.menu', 'menu.add');
+
+      await tester.tap(find.byKey(const Key('catalog.1')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.clear_sharp));
+      await tester.pumpAndSettle();
+
+      // rest
       await navAndPop('home_setup.exporter', 'exporter.google_sheet');
       await navAndPop('home_setup.quantities', 'quantities.add');
-      await navAndPop('home_setup.customer', 'customer_settings.action');
+      await navAndPop('home_setup.order_attrs', 'order_attributes.action');
       await dragUp();
-      await navAndPop('home_setup.header.customer', 'customer_settings.action');
       await navAndPop('home_setup.feature_request', 'feature_request_please');
       await dragUp();
       await navAndPop('home_setup.setting', 'setting.theme');

@@ -37,7 +37,7 @@ class HomeSetupScreen extends StatelessWidget {
               title: S.exporterTitle,
             ),
             RouteTile(
-              key: const Key('home_setup.order_attribute'),
+              key: const Key('home_setup.order_attrs'),
               icon: Icons.assignment_ind_outlined,
               route: Routes.orderAttr,
               title: S.orderAttributeTitle,
@@ -147,7 +147,7 @@ class _HeaderInfoList extends StatelessWidget {
             route: Routes.menu,
           ),
           _HeaderInfo(
-            key: const Key('home_setup.header.attrs'),
+            key: const Key('home_setup.header.order_attrs'),
             title: attrs.length,
             subtitle: '顧客設定',
             route: Routes.orderAttr,

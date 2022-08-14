@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -14,7 +14,7 @@ import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -47,7 +47,7 @@ void main() {
         'q-1': Quantity(id: 'q-1', name: 'q-1'),
         'q-2': Quantity(id: 'q-2', name: 'q-2')
       });
-      final ingreidnet1 = ProductIngredient(
+      final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),
         amount: 5,
@@ -68,7 +68,7 @@ void main() {
           ),
         },
       );
-      final ingreidnet2 = ProductIngredient(
+      final ingredient2 = ProductIngredient(
         id: 'pi-2',
         ingredient: Stock.instance.getItem('i-2'),
         amount: 3,
@@ -83,8 +83,8 @@ void main() {
         },
       );
       final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-        'pi-1': ingreidnet1..prepareItem(),
-        'pi-2': ingreidnet2..prepareItem(),
+        'pi-1': ingredient1..prepareItem(),
+        'pi-2': ingredient2..prepareItem(),
       });
       Menu().replaceItems({
         'c-1': Catalog(
@@ -101,7 +101,7 @@ void main() {
         )..prepareItem(),
       });
 
-      CustomerSettings();
+      OrderAttributes();
       Seller();
 
       Cart.instance = Cart();
@@ -115,51 +115,51 @@ void main() {
       });
     }
 
-    void prepareCustomerSettings() {
-      final s1 = CustomerSetting(
+    void prepareOrderAttributes() {
+      final s1 = OrderAttribute(
         id: 'c-1',
         mode: OrderAttributeMode.changeDiscount,
         options: {
-          'co-1': CustomerSettingOption(
+          'co-1': OrderAttributeOption(
             id: 'co-1',
             isDefault: true,
             modeValue: 10,
           ),
-          'co-2': CustomerSettingOption(
+          'co-2': OrderAttributeOption(
             id: 'co-2',
             modeValue: 50,
           ),
         },
       );
-      final s2 = CustomerSetting(
+      final s2 = OrderAttribute(
         id: 'c-2',
         mode: OrderAttributeMode.changePrice,
         options: {
-          'co-3': CustomerSettingOption(
+          'co-3': OrderAttributeOption(
             id: 'co-3',
             modeValue: 10,
           ),
-          'co-4': CustomerSettingOption(
+          'co-4': OrderAttributeOption(
             id: 'co-4',
             isDefault: true,
             modeValue: -10,
           ),
         },
       );
-      final s3 = CustomerSetting(
+      final s3 = OrderAttribute(
         id: 'c-3',
-        options: {'co-5': CustomerSettingOption(id: 'co-5', isDefault: true)},
+        options: {'co-5': OrderAttributeOption(id: 'co-5', isDefault: true)},
       );
-      final s4 = CustomerSetting(
+      final s4 = OrderAttribute(
         id: 'c-4',
-        options: {'co-6': CustomerSettingOption(id: 'co-6')},
+        options: {'co-6': OrderAttributeOption(id: 'co-6')},
       );
-      CustomerSettings.instance.replaceItems({
+      OrderAttributes.instance.replaceItems({
         'c-1': s1..prepareItem(),
         'c-2': s2..prepareItem(),
         'c-3': s3..prepareItem(),
         'c-4': s4..prepareItem(),
-        'c-5': CustomerSetting(id: 'c-5'),
+        'c-5': OrderAttribute(id: 'c-5'),
       });
     }
 
@@ -179,7 +179,7 @@ void main() {
       expect(find.text(S.actSuccess), findsNothing);
     });
 
-    testWidgets('Order without customer setting', (tester) async {
+    testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
       tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
@@ -307,7 +307,7 @@ void main() {
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
-      // navigator poped
+      // navigator popped
       expect(sChange, findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
@@ -325,8 +325,8 @@ void main() {
       }))));
     });
 
-    testWidgets('With customer setting and history mode', (tester) async {
-      prepareCustomerSettings();
+    testWidgets('With attributes and history mode', (tester) async {
+      prepareOrderAttributes();
       Cart.instance.isHistoryMode = true;
 
       await tester.pumpWidget(
@@ -403,7 +403,7 @@ void main() {
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
-      // navigator poped
+      // navigator popped
       expect(find.byKey(const Key('cashier.order')), findsNothing);
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -33,8 +33,8 @@ void main() {
       Menu();
       Stock();
       Quantities();
-      CustomerSettings();
       Replenisher();
+      OrderAttributes();
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 

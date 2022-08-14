@@ -156,6 +156,10 @@
       }
     }
   },
+  "homeTabAnalysis": "統計",
+  "homeTabStock": "庫存",
+  "homeTabCashier": "收銀",
+  "homeTabSetting": "設定",
   "analysisTitle": "統計分析",
   "@analysisTitle": {
     "description": "首頁 analysis 後導入的頁面"

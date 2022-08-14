@@ -11,7 +11,7 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -43,7 +43,7 @@ void main() {
         'q-1': Quantity(id: 'q-1', name: 'q-1'),
         'q-2': Quantity(id: 'q-2', name: 'q-2')
       });
-      final ingreidnet1 = ProductIngredient(
+      final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),
         amount: 5,
@@ -64,7 +64,7 @@ void main() {
           ),
         },
       );
-      final ingreidnet2 = ProductIngredient(
+      final ingredient2 = ProductIngredient(
         id: 'pi-2',
         ingredient: Stock.instance.getItem('i-2'),
         amount: 3,
@@ -84,8 +84,8 @@ void main() {
         amount: 1,
       );
       final product1 = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-        'pi-1': ingreidnet1..prepareItem(),
-        'pi-2': ingreidnet2..prepareItem(),
+        'pi-1': ingredient1..prepareItem(),
+        'pi-2': ingredient2..prepareItem(),
       });
       final product2 = Product(id: 'p-2', name: 'p-2', price: 11);
       final product3 = Product(id: 'p-3', name: 'p-3', price: 0, ingredients: {
@@ -306,7 +306,7 @@ void main() {
             .controller!;
         // scroll to bottom
         expect(scrollController.position.maxScrollExtent, isNonZero);
-        expect(find.byKey(const Key('order.orientation.lanscape')),
+        expect(find.byKey(const Key('order.orientation.landscape')),
             findsOneWidget);
 
         // setup portrait env
@@ -316,7 +316,7 @@ void main() {
         expect(find.byKey(const Key('order.orientation.portrait')),
             findsOneWidget);
 
-        // resets the screen to its orinal size after the test end
+        // resets the screen to its original size after the test end
         tester.binding.window.clearPhysicalSizeTestValue();
       });
     });
@@ -420,7 +420,7 @@ void main() {
 
     testWidgets('Show different message by cashier status', (tester) async {
       late CashierUpdateStatus cashierStatus;
-      CustomerSettings();
+      OrderAttributes();
 
       await tester.pumpWidget(MaterialApp(
         routes: {

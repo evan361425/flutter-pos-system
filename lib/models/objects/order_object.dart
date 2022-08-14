@@ -28,7 +28,7 @@ class OrderObject {
   final List<String>? productNames;
   final List<String>? ingredientNames;
 
-  /// 顧客設定，鍵代表種類，值代表選項
+  /// 點餐屬性
   final Iterable<OrderSelectedAttributeObject> attributes;
 
   final Iterable<OrderProductObject> products;
@@ -102,7 +102,7 @@ class OrderObject {
       'usedIngredients': Database.join(usedIngredients),
       'encodedAttributes': jsonEncode(attributes
           .where((e) => e.isNotEmpty)
-          .map<Map<String, Object>>((e) => e.toMap())
+          .map<Map<String, Object?>>((e) => e.toMap())
           .toList()),
       'encodedProducts': jsonEncode(
         products.map<Map<String, Object?>>((e) => e.toMap()).toList(),
@@ -319,11 +319,8 @@ class OrderSelectedAttributeObject {
   });
 
   factory OrderSelectedAttributeObject.fromMap(Map<String, dynamic> data) {
-    final modeRaw = data['mode'] as String;
-    final mode = OrderAttributeMode.values.firstWhere(
-      (e) => e.name == modeRaw,
-      orElse: () => OrderAttributeMode.statOnly,
-    );
+    final modeRaw = data['mode'] as int? ?? 0;
+    final mode = OrderAttributeMode.values[modeRaw];
 
     return OrderSelectedAttributeObject(
       name: data['name'] as String,
@@ -333,7 +330,7 @@ class OrderSelectedAttributeObject {
     );
   }
 
-  factory OrderSelectedAttributeObject.fromId(id, optionId) {
+  factory OrderSelectedAttributeObject.fromId(String id, String optionId) {
     try {
       final attr = OrderAttributes.instance.items.firstWhere((e) => e.id == id);
       final option = attr.items.firstWhere((e) => e.id == optionId);
@@ -360,12 +357,12 @@ class OrderSelectedAttributeObject {
     }
   }
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'name': name!,
       'optionName': optionName!,
-      'mode': mode!,
-      'modeValue': modeValue!,
+      'mode': mode!.index,
+      'modeValue': modeValue,
     };
   }
 
