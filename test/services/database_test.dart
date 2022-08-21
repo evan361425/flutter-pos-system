@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -17,76 +12,6 @@ import 'database_test.mocks.dart';
 @GenerateMocks([sqflite.Database, sqflite.Batch])
 void main() {
   group('Database', () {
-    group('migration actions', () {
-      test('catch error', () async {
-        final db = Database.instance.db as MockDatabase;
-
-        when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-            .thenThrow(Error());
-
-        await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-      });
-
-      test('5 - set up cost on order', () async {
-        final db = Database.instance.db as MockDatabase;
-
-        Map<String, Object?> createOrder(int id, List<String> ids) {
-          return {
-            'id': id,
-            'encodedProducts': jsonEncode(ids
-                .map((pid) => {
-                      'productId': pid,
-                      'productName': pid,
-                      'count': 1,
-                      'singlePrice': 1,
-                      'originalPrice': 1,
-                      'isDiscount': true,
-                    })
-                .toList()),
-          };
-        }
-
-        void verifyIdExecuted(int id) {
-          verify(db.update(
-            any,
-            argThat(predicate((e) {
-              return e is Map && e['encodedProducts'].contains('"cost":1');
-            })),
-            where: anyNamed('where'),
-            whereArgs: argThat(contains(id), named: 'whereArgs'),
-          ));
-        }
-
-        Menu().replaceItems({
-          'c-1': Catalog(id: 'c-1', products: {
-            'p-1': Product(id: 'p-1', cost: 1),
-            'p-2': Product(id: 'p-2', cost: 1),
-          })
-        });
-
-        when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-            .thenAnswer((_) => Future.value([
-                  createOrder(1, ['p-1', 'p-3', 'p-2']),
-                  createOrder(2, ['p-1', 'p-1', 'p-3']),
-                ]));
-        when(db.query(any, limit: 100, offset: 100, orderBy: 'createdAt asc'))
-            .thenAnswer((_) => Future.value([
-                  createOrder(3, ['p-1', 'p-1', 'p-1']),
-                ]));
-        when(db.query(any, limit: 100, offset: 200, orderBy: 'createdAt asc'))
-            .thenAnswer((_) => Future.value([]));
-        when(db.update(any, any,
-                where: anyNamed('where'), whereArgs: anyNamed('whereArgs')))
-            .thenAnswer((_) => Future.value(0));
-
-        await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-
-        verifyIdExecuted(1);
-        verifyIdExecuted(2);
-        verifyIdExecuted(3);
-      });
-    });
-
     group('#initialize', () {
       // ignore: prefer_function_declarations_over_variables
       final DbOpener opener = (
@@ -346,8 +271,9 @@ void main() {
       );
 
       verify(db.rawQuery(
-        argThat(equals(
-            'SELECT a,b FROM `table` LEFT JOIN `guestTable` ON `hostTable`.hostKey = `guestTable`.guestKey WHERE a = ? GROUP BY b ORDER BY a desc LIMIT 3, 5')),
+        argThat(equals('SELECT a,b FROM `table` '
+            'LEFT JOIN `guestTable`  ON `hostTable`.hostKey = `guestTable`.guestKey '
+            'WHERE a = ? GROUP BY b ORDER BY a desc LIMIT 3, 5')),
         argThat(equals([1])),
       ));
     });

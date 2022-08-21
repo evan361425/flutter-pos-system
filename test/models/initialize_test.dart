@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -275,66 +275,48 @@ void main() {
       expect(r2.data.length, isZero);
     });
 
-    test('CustomerSettings', () async {
-      when(database.query(
-        CustomerSettings.table,
-        where: argThat(equals('isDelete = 0'), named: 'where'),
-      )).thenAnswer(
-        (_) => Future.value([
-          {
-            'id': 1,
+    test('OrderAttributes', () async {
+      when(storage.get(Stores.orderAttributes, argThat(isNull))).thenAnswer(
+        (_) => Future.value(<String, Map<String, Object?>>{
+          'c-1': {
             'name': 'c-1',
             'index': 1,
             'mode': 1,
+            'options': {
+              'co-1': {
+                'name': 'co-1',
+                'index': 1,
+                'isDefault': 1,
+                'modeValue': 1,
+              },
+              'co-2': {
+                'name': 'co-2',
+                'index': 2,
+                'isDefault': 0,
+                'modeValue': null,
+              }
+            },
           },
-          {
-            'id': 2,
+          'c-2': {
             'name': 'c-2',
             'index': 2,
             'mode': 0,
+            'options': <String, Object?>{},
           },
-          {
-            'id': 3,
+          'c-3': {
             'name': 1,
           },
-        ]),
+        }),
       );
-      when(database.query(
-        CustomerSettings.optionTable,
-        where: anyNamed('where'),
-        whereArgs: argThat(equals([1]), named: 'whereArgs'),
-      )).thenAnswer(
-        (_) => Future.value([
-          {
-            'id': 1,
-            'name': 'co-1',
-            'index': 1,
-            'isDefault': 1,
-            'modeValue': 1,
-          },
-          {
-            'id': 2,
-            'name': 'co-2',
-            'index': 2,
-            'isDefault': 0,
-            'modeValue': null,
-          },
-        ]),
-      );
-      when(database.query(
-        CustomerSettings.optionTable,
-        where: anyNamed('where'),
-        whereArgs: argThat(equals([2]), named: 'whereArgs'),
-      )).thenAnswer((_) => Future.error('error'));
 
-      await CustomerSettings().initialize();
+      await OrderAttributes().initialize();
 
-      final c1 = CustomerSettings.instance.getItem('1')!;
-      final c2 = CustomerSettings.instance.getItem('2')!;
+      final c1 = OrderAttributes.instance.getItem('c-1')!;
+      final c2 = OrderAttributes.instance.getItem('c-2')!;
       expect(c1.name, equals('c-1'));
       expect(c2.name, equals('c-2'));
       expect(c2.isEmpty, isTrue);
-      expect(CustomerSettings.instance.getItem('3'), isNull);
+      expect(OrderAttributes.instance.getItem('c-3'), isNull);
       expect(c1.itemList.first.modeValue, equals(1));
       expect(c1.itemList.last.modeValue, isNull);
     });

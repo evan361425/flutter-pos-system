@@ -41,7 +41,7 @@ class OrderByOrientation extends StatelessWidget {
 
   Widget _landscape() {
     return Row(
-      key: const Key('order.orientation.lanscape'),
+      key: const Key('order.orientation.landscape'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Flexible(

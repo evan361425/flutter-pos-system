@@ -4,6 +4,7 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
@@ -49,10 +50,12 @@ class OrderCashierModal extends StatelessWidget {
     );
 
     final body = OrderCashierProductList(
-      customerSettings: Cart.instance.selectedCustomerSettingOptions.toList(),
+      attributes: Cart.instance.selectedAttributeOptions
+          .map((e) => OrderSelectedAttributeObject.fromModel(e))
+          .toList(),
       products: Cart.instance.products
           .map((e) => OrderProductTileData(
-                ingredientNames: e.getIngredientNames(onlyQuantitied: false),
+                ingredientNames: e.getIngredientNames(onlyQuantified: false),
                 productName: e.name,
                 totalPrice: e.price,
                 totalCount: e.count,

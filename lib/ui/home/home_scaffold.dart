@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_screen.dart';
 import 'package:possystem/ui/cashier/cashier_screen.dart';
 import 'package:possystem/ui/home/home_setup_screen.dart';
@@ -40,26 +41,26 @@ class _HomeScaffoldState extends State<HomeScaffold>
         child: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
-          tabs: const [
+          tabs: [
             _CustomTab(
-              key: Key('home.analysis'),
+              key: const Key('home.analysis'),
               icon: Icons.equalizer_outlined,
-              text: '統計',
+              text: S.homeTabAnalysis,
             ),
             _CustomTab(
-              key: Key('home.stock'),
+              key: const Key('home.stock'),
               icon: Icons.store_outlined,
-              text: '庫存',
+              text: S.homeTabStock,
             ),
             _CustomTab(
-              key: Key('home.cashier'),
+              key: const Key('home.cashier'),
               icon: Icons.attach_money_outlined,
-              text: '收銀',
+              text: S.homeTabCashier,
             ),
             _CustomTab(
-              key: Key('home.setting'),
+              key: const Key('home.setting'),
               icon: Icons.settings_outlined,
-              text: '設定',
+              text: S.homeTabSetting,
             ),
           ],
         ),

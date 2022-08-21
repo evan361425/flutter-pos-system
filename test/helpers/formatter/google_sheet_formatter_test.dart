@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -316,13 +316,14 @@ void main() {
       });
     });
 
-    group('CustomerSettings', () {
+    group('OrderAttributes', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.customer);
+        final target =
+            GoogleSheetFormatter.getTarget(GoogleSheetAble.orderAttr);
         const c1Data = '- co1,true\n- co2,,5';
 
-        final items = formatter.format<CustomerSetting>(target, [
+        final items = formatter.format<OrderAttribute>(target, [
           ['c1', '折扣', c1Data],
           ['c1', '', '- co1,20'],
           ['c2'],
@@ -332,7 +333,7 @@ void main() {
         ]);
 
         // should not changed
-        expect(CustomerSettings.instance.getItem('c1')!.length, equals(1));
+        expect(OrderAttributes.instance.getItem('c1')!.length, equals(1));
 
         void verifyItem(
           int index,
@@ -358,13 +359,13 @@ void main() {
       });
 
       setUp(() {
-        final cs = CustomerSettings();
+        final attrs = OrderAttributes();
 
-        final c1 = CustomerSetting(id: 'c1', name: 'c1', options: {
-          'co1': CustomerSettingOption(id: 'co1', name: 'co1'),
+        final c1 = OrderAttribute(id: 'c1', name: 'c1', options: {
+          'co1': OrderAttributeOption(id: 'co1', name: 'co1'),
         });
-        final c2 = CustomerSetting(id: 'c2', name: 'c2');
-        cs.replaceItems({'c1': c1, 'c2': c2});
+        final c2 = OrderAttribute(id: 'c2', name: 'c2');
+        attrs.replaceItems({'c1': c1, 'c2': c2});
       });
     });
 

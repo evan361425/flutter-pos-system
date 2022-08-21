@@ -26,7 +26,7 @@ class Database {
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
-  static const latestVersion = 5;
+  static const latestVersion = 6;
 
   late sqflite.Database db;
 
@@ -230,6 +230,7 @@ class JoinQuery {
   final String guestTable;
   final String hostKey;
   final String guestKey;
+  final String? guestAlias;
   final String joinType;
 
   const JoinQuery({
@@ -237,11 +238,13 @@ class JoinQuery {
     required this.guestTable,
     required this.hostKey,
     required this.guestKey,
+    this.guestAlias,
     this.joinType = 'INNER',
   });
 
   @override
   String toString() {
-    return '$joinType JOIN `$guestTable` ON `$hostTable`.$hostKey = `$guestTable`.$guestKey';
+    final alias = guestAlias == null ? '' : 'AS $guestAlias';
+    return '$joinType JOIN `$guestTable` $alias ON `$hostTable`.$hostKey = `$guestTable`.$guestKey';
   }
 }

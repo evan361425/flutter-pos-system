@@ -3,39 +3,39 @@ import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class CustomerSettingOptionModal extends StatefulWidget {
-  final CustomerSetting setting;
+class OrderAttributeOptionModal extends StatefulWidget {
+  final OrderAttribute attribute;
 
-  final CustomerSettingOption? option;
+  final OrderAttributeOption? option;
 
   final bool isNew;
 
-  const CustomerSettingOptionModal({
+  const OrderAttributeOptionModal({
     Key? key,
-    required this.setting,
+    required this.attribute,
     this.option,
   })  : isNew = option == null,
         super(key: key);
 
   @override
-  _CustomerModalState createState() => _CustomerModalState();
+  _OrderAttributeModalState createState() => _OrderAttributeModalState();
 }
 
-class _CustomerModalState extends State<CustomerSettingOptionModal>
-    with ItemModal<CustomerSettingOptionModal> {
+class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
+    with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _modeValueController;
   late bool isDefault;
 
   @override
   Widget? get title => Text(widget.isNew
-      ? S.customerSettingOptionCreateTitle(widget.setting.name)
+      ? S.orderAttributeOptionCreateTitle(widget.attribute.name)
       : widget.option!.name);
 
   @override
@@ -51,7 +51,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
     _modeValueController = TextEditingController(
       text: widget.option?.modeValue == null
           ? ''
-          : widget.setting.mode == CustomerSettingOptionMode.changeDiscount
+          : widget.attribute.mode == OrderAttributeMode.changeDiscount
               ? widget.option!.modeValue!.toInt().toString()
               : widget.option!.modeValue!.toCurrency(),
     );
@@ -62,43 +62,42 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
   @override
   List<Widget> formFields() {
-    final label = S.customerSettingModeNames(widget.setting.mode);
-    final helper = S.customerSettingOptionsModeHelper(widget.setting.mode);
-    final hint = S.customerSettingOptionsModeHint(widget.setting.mode);
-    final validator =
-        widget.setting.mode == CustomerSettingOptionMode.changeDiscount
-            ? Validator.positiveInt(label, maximum: 1000, allowNull: true)
-            : Validator.isNumber(label, allowNull: true);
+    final label = S.orderAttributeModeNames(widget.attribute.mode);
+    final helper = S.orderAttributeOptionsModeHelper(widget.attribute.mode);
+    final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode);
+    final validator = widget.attribute.mode == OrderAttributeMode.changeDiscount
+        ? Validator.positiveInt(label, maximum: 1000, allowNull: true)
+        : Validator.isNumber(label, allowNull: true);
 
     return [
       TextFormField(
-        key: const Key('customer_setting_option.name'),
+        key: const Key('order_attribute_option.name'),
         controller: _nameController,
-        textInputAction: widget.setting.shouldHaveModeValue
+        textInputAction: widget.attribute.shouldHaveModeValue
             ? TextInputAction.next
             : TextInputAction.send,
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: S.customerSettingOptionNameLabel,
-          helperText: S.customerSettingOptionNameHelper,
+          labelText: S.orderAttributeOptionNameLabel,
+          helperText: S.orderAttributeOptionNameHelper,
           errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(S.customerSettingOptionNameLabel, 30),
+        validator: Validator.textLimit(S.orderAttributeOptionNameLabel, 30),
       ),
       CheckboxListTile(
-        key: const Key('customer_setting_option.isDefault'),
+        key: const Key('order_attribute_option.isDefault'),
         controlAffinity: ListTileControlAffinity.leading,
         value: isDefault,
         selected: isDefault,
         onChanged: toggledDefault,
-        title: Text(S.customerSettingOptionSetToDefault),
+        title: Text(S.orderAttributeOptionSetToDefault),
       ),
-      widget.setting.shouldHaveModeValue
+      widget.attribute.shouldHaveModeValue
           ? TextFormField(
-              key: const Key('customer_setting_option.modeValue'),
+              key: const Key('order_attribute_option.modeValue'),
               controller: _modeValueController,
               textInputAction: TextInputAction.send,
               keyboardType: TextInputType.number,
@@ -116,7 +115,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
   }
 
   void toggledDefault(bool? value) async {
-    final defaultOption = widget.setting.defaultOption;
+    final defaultOption = widget.attribute.defaultOption;
     // warn if default option is going to changed
     if (value == true &&
         defaultOption != null &&
@@ -124,8 +123,8 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
       final confirmed = await showDialog(
         context: context,
         builder: (_) => ConfirmDialog(
-          title: S.customerSettingOptionConfirmChangeDefaultTitle,
-          content: Text(S.customerSettingOptionConfirmChangeDefaultContent(
+          title: S.orderAttributeOptionConfirmChangeDefaultTitle,
+          content: Text(S.orderAttributeOptionConfirmChangeDefaultContent(
               defaultOption.name)),
         ),
       );
@@ -140,7 +139,7 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
   @override
   Future<void> updateItem() async {
-    final object = CustomerSettingOptionObject(
+    final object = OrderAttributeOptionObject(
       name: _nameController.text,
       modeValue: num.tryParse(_modeValueController.text),
       isDefault: isDefault,
@@ -148,13 +147,13 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
 
     // if turn to default or add default
     if (isDefault && widget.option?.isDefault != true) {
-      await widget.setting.clearDefault();
+      await widget.attribute.clearDefault();
     }
 
     if (widget.isNew) {
-      await widget.setting.addItem(CustomerSettingOption(
+      await widget.attribute.addItem(OrderAttributeOption(
         name: object.name!,
-        index: widget.setting.newIndex,
+        index: widget.attribute.newIndex,
         isDefault: isDefault,
         modeValue: object.modeValue,
       ));
@@ -169,8 +168,8 @@ class _CustomerModalState extends State<CustomerSettingOptionModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.option?.name != name && widget.setting.hasName(name)) {
-      return S.customerSettingOptionNameRepeatError;
+    if (widget.option?.name != name && widget.attribute.hasName(name)) {
+      return S.orderAttributeOptionNameRepeatError;
     }
 
     return null;

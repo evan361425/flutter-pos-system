@@ -9,11 +9,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/debug/setup_menu.dart';
 import 'package:possystem/firebase_compatible_options.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:provider/provider.dart';
 
 import 'models/repository/cashier.dart';
-import 'models/repository/customer_settings.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
@@ -57,11 +57,14 @@ void main() async {
 
       await Stock().initialize();
       await Quantities().initialize();
-      await CustomerSettings().initialize();
+      await OrderAttributes().initialize();
       await Replenisher().initialize();
       await Cashier().reset();
       // Last for setup ingredient and quantity
       await Menu().initialize();
+
+      // no need initialize
+      Seller();
 
       await Database.instance.tolerateMigration();
 
@@ -88,11 +91,11 @@ void main() async {
           ChangeNotifierProvider<Replenisher>(
             create: (_) => Replenisher.instance,
           ),
-          ChangeNotifierProvider<CustomerSettings>(
-            create: (_) => CustomerSettings.instance,
+          ChangeNotifierProvider<OrderAttributes>(
+            create: (_) => OrderAttributes.instance,
           ),
           ChangeNotifierProvider<Seller>(
-            create: (_) => Seller(),
+            create: (_) => Seller.instance,
           ),
           ChangeNotifierProvider<Cashier>(
             create: (_) => Cashier.instance,

@@ -64,7 +64,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
 
   @override
   Future<void> updateRemotely(CurrencyTypes data) {
-    return service.set<int>(key, value.index);
+    return service.set<int>(key, data.index);
   }
 
   void _setMetadata(CurrencyTypes value) {

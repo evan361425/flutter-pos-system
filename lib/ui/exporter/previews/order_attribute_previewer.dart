@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
+import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/previews/previewer_screen.dart';
 
-class CustomerSettingPreviewer extends PreviewerScreen<CustomerSetting> {
-  const CustomerSettingPreviewer({
+class OrderAttributePreviewer extends PreviewerScreen<OrderAttribute> {
+  const OrderAttributePreviewer({
     Key? key,
     required List<FormattedItem> items,
   }) : super(key: key, items: items);
 
   @override
-  Widget getItem(BuildContext context, CustomerSetting item) {
-    final mode = S.customerSettingModeNames(item.mode);
+  Widget getItem(BuildContext context, OrderAttribute item) {
+    final mode = S.orderAttributeModeNames(item.mode);
     final defaultName =
-        item.defaultOption?.name ?? S.customerSettingMetaNoDefault;
+        item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,
       ),
       subtitle: MetaBlock.withString(context, [
-        S.customerSettingMetaMode(mode),
-        S.customerSettingMetaDefault(defaultName),
+        S.orderAttributeMetaMode(mode),
+        S.orderAttributeMetaDefault(defaultName),
       ]),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         for (final option in item.stagedItems)
           ListTile(
             title: Text(option.name),
-            subtitle: option.modeValueName.isEmpty
-                ? null
-                : Text(option.modeValueName),
+            subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
             trailing: option.isDefault
-                ? OutlinedText(S.customerSettingOptionIsDefault)
+                ? OutlinedText(S.orderAttributeOptionIsDefault)
                 : null,
           ),
       ],

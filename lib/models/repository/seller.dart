@@ -8,14 +8,6 @@ class Seller extends ChangeNotifier {
 
   static const orderTable = 'order';
 
-  static const joinCombination = JoinQuery(
-    joinType: 'LEFT',
-    hostTable: orderTable,
-    guestTable: 'customer_setting_combinations',
-    hostKey: 'customerSettingCombinationId',
-    guestKey: 'id',
-  );
-
   static late Seller instance;
 
   Seller() {
@@ -25,21 +17,14 @@ class Seller extends ChangeNotifier {
   Future<OrderObject?> drop(int lastCount) async {
     final row = await Database.instance.getLast(
       stashTable,
-      join: const JoinQuery(
-        joinType: 'LEFT',
-        hostTable: stashTable,
-        guestTable: 'customer_setting_combinations',
-        hostKey: 'customerSettingCombinationId',
-        guestKey: 'id',
-      ),
       columns: const [
-        '`$stashTable`.id',
-        'encodedProducts',
-        'combination',
+        'id',
         'createdAt',
+        'encodedProducts',
+        'encodedAttributes',
       ],
       count: lastCount,
-      orderByKey: '`$stashTable`.id',
+      orderByKey: 'id',
     );
     if (row == null) return null;
 
@@ -104,16 +89,11 @@ class Seller extends ChangeNotifier {
   ]) async {
     final rows = await Database.instance.query(
       orderTable,
-      columns: const [
-        '`$orderTable`.*',
-        'customer_setting_combinations.combination',
-      ],
       where: 'createdAt BETWEEN ? AND ?',
       whereArgs: [
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
-      join: joinCombination,
       orderBy: 'createdAt desc',
       limit: 10,
       offset: offset,
@@ -131,18 +111,9 @@ class Seller extends ChangeNotifier {
   Future<OrderObject?> getTodayLast() async {
     final row = await Database.instance.getLast(
       orderTable,
-      columns: const [
-        '`$orderTable`.id',
-        'totalCount',
-        'totalPrice',
-        'encodedProducts',
-        'createdAt',
-        'combination',
-      ],
-      orderByKey: '`$orderTable`.id',
+      orderByKey: 'id',
       where: 'createdAt >= ?',
       whereArgs: [Util.toUTC(hour: 0)],
-      join: joinCombination,
     );
 
     return row == null ? null : OrderObject.fromMap(row);
@@ -157,14 +128,14 @@ class Seller extends ChangeNotifier {
 
   /// Save the order in to DB
   ///
-  /// It will not save customer setting.
+  /// It will also save the order attributes.
   Future<int> stash(OrderObject order) {
     final data = order.toMap();
 
     return Database.instance.push(stashTable, {
       'createdAt': data['createdAt'],
-      'customerSettingCombinationId': data['customerSettingCombinationId'],
       'encodedProducts': data['encodedProducts'],
+      'encodedAttributes': data['encodedAttributes'],
     });
   }
 

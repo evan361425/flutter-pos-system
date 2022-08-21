@@ -6,7 +6,7 @@ enum Formattable {
   stock,
   quantities,
   replenisher,
-  customer,
+  orderAttr,
 }
 
 abstract class Formatter<T> {

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderCashierProductList extends StatelessWidget {
-  final List<CustomerSettingOption> customerSettings;
+  final List<OrderSelectedAttributeObject> attributes;
   final List<OrderProductTileData> products;
   final num totalPrice;
   final num productsPrice;
-  final num customerPrice;
+  final num attributePrice;
   final num? productCost;
 
   /// 淨利，只需考慮總價和成本，不需考慮付額
@@ -20,13 +21,13 @@ class OrderCashierProductList extends StatelessWidget {
 
   const OrderCashierProductList({
     Key? key,
-    required this.customerSettings,
+    required this.attributes,
     required this.products,
     required this.totalPrice,
     required this.productsPrice,
     this.productCost,
     this.income,
-  })  : customerPrice = totalPrice - productsPrice,
+  })  : attributePrice = totalPrice - productsPrice,
         super(key: key);
 
   @override
@@ -49,25 +50,27 @@ class OrderCashierProductList extends StatelessWidget {
             trailing: Text(income!.toCurrency()),
           ),
         ListTile(
-          title: Text(S.orderCashierCustomerTotalPrice),
-          trailing: Text(customerPrice.toCurrency()),
+          title: Text(S.orderCashierAttributeTotalPrice),
+          trailing: Text(attributePrice.toCurrency()),
         ),
       ],
     );
 
-    final customerSettingWidget = customerSettings.isEmpty
-        ? Container()
+    final attrWidget = attributes.isEmpty
+        ? const SizedBox.shrink()
         : ExpansionTile(
-            title: Text(S.orderCashierCustomerInfoTitle),
+            key: const Key('order_cashier_product_list.attributes'),
+            title: Text(S.orderCashierAttributeInfoTitle),
             subtitle:
-                Text(S.orderCashierCustomerTotalCount(customerSettings.length)),
+                Text(S.orderCashierAttributeTotalCount(attributes.length)),
             children: <Widget>[
-              for (final option in customerSettings)
+              for (final attribute in attributes)
                 ListTile(
-                  title: Text(option.name),
-                  subtitle: option.modeValueName.isNotEmpty
-                      ? Text(option.modeValueName)
-                      : null,
+                  title: Text('${attribute.name} — ${attribute.optionName}'),
+                  subtitle: OrderAttributeValueWidget(
+                    attribute.mode,
+                    attribute.modeValue,
+                  ),
                   visualDensity:
                       const VisualDensity(horizontal: 0, vertical: -3),
                 ),
@@ -82,7 +85,7 @@ class OrderCashierProductList extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(children: [
         priceWidget,
-        customerSettingWidget,
+        attrWidget,
         TextDivider(label: S.orderCashierProductInfoTitle),
         HintText(S.orderCashierProductMetaCount(totalCount)),
         for (final product in products) _ProductTile(product),

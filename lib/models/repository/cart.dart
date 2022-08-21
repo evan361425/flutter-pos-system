@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
 import 'cashier.dart';
@@ -18,7 +18,7 @@ class Cart extends ChangeNotifier {
 
   final List<OrderProduct> products = [];
 
-  final Map<String, String> customerSettings = {};
+  final Map<String, String> attributes = {};
 
   bool isHistoryMode = false;
 
@@ -40,11 +40,11 @@ class Cart extends ChangeNotifier {
   Iterable<OrderProduct> get selected =>
       products.where((product) => product.isSelected);
 
-  Iterable<CustomerSettingOption> get selectedCustomerSettingOptions sync* {
-    for (var setting in CustomerSettings.instance.itemList) {
-      final optionId = customerSettings[setting.id];
+  Iterable<OrderAttributeOption> get selectedAttributeOptions sync* {
+    for (var attr in OrderAttributes.instance.itemList) {
+      final optionId = attributes[attr.id];
       final option =
-          optionId == null ? setting.defaultOption : setting.getItem(optionId);
+          optionId == null ? attr.defaultOption : attr.getItem(optionId);
 
       if (option != null) {
         yield option;
@@ -59,7 +59,7 @@ class Cart extends ChangeNotifier {
   num get totalPrice {
     var total = productsPrice;
 
-    for (var option in selectedCustomerSettingOptions) {
+    for (var option in selectedAttributeOptions) {
       total = option.calculatePrice(total);
     }
 
@@ -77,7 +77,7 @@ class Cart extends ChangeNotifier {
 
   void clear() {
     products.clear();
-    customerSettings.clear();
+    attributes.clear();
     isHistoryMode = false;
     _selectedChanged();
   }
@@ -85,7 +85,7 @@ class Cart extends ChangeNotifier {
   @override
   void dispose() {
     products.clear();
-    customerSettings.clear();
+    attributes.clear();
     super.dispose();
   }
 
@@ -142,11 +142,11 @@ class Cart extends ChangeNotifier {
       return Menu.instance.items
           .every((catalog) => !catalog.hasItem(product.id));
     });
-    // remove not exist customer
-    customerSettings.entries.toList().forEach((entry) {
-      final setting = CustomerSettings.instance.getItem(entry.key);
-      if (setting == null || !setting.hasItem(entry.value)) {
-        customerSettings.remove(entry.key);
+    // remove non exist attribute
+    attributes.entries.toList().forEach((entry) {
+      final attr = OrderAttributes.instance.getItem(entry.key);
+      if (attr == null || !attr.hasItem(entry.value)) {
+        attributes.remove(entry.key);
       }
     });
     // rebind product ingredient/quantity
@@ -163,17 +163,17 @@ class Cart extends ChangeNotifier {
   @visibleForTesting
   void replaceAll({
     List<OrderProduct>? products,
-    Map<String, String>? customerSettings,
+    Map<String, String>? attributes,
   }) {
     if (products != null) {
       this.products
         ..clear()
         ..addAll(products);
     }
-    if (customerSettings != null) {
-      this.customerSettings
+    if (attributes != null) {
+      this.attributes
         ..clear()
-        ..addAll(customerSettings);
+        ..addAll(attributes);
     }
   }
 
@@ -181,9 +181,9 @@ class Cart extends ChangeNotifier {
     products
       ..clear()
       ..addAll(object.parseToProduct());
-    customerSettings
+    attributes
       ..clear()
-      ..addAll(object.customerSettings);
+      ..addAll(object.parseToAttrId());
     _selectedChanged();
   }
 
@@ -221,13 +221,13 @@ class Cart extends ChangeNotifier {
     num? paid,
     OrderObject? object,
   }) async {
-    final combinationId = await _prepareCustomerSettingCombinationId();
     return OrderObject(
       id: object?.id,
       paid: paid,
       createdAt: object?.createdAt,
-      customerSettings: customerSettings,
-      customerSettingsCombinationId: combinationId,
+      attributes: attributes.entries
+          .map((e) => OrderSelectedAttributeObject.fromId(e.key, e.value))
+          .where((e) => e.isNotEmpty),
       totalPrice: totalPrice,
       totalCount: totalCount,
       productsPrice: productsPrice,
@@ -290,17 +290,6 @@ class Cart extends ChangeNotifier {
     final cashierResult = await Cashier.instance.paid(paid, price);
 
     return cashierResult;
-  }
-
-  Future<int> _prepareCustomerSettingCombinationId() async {
-    final settings = CustomerSettings.instance;
-    final data = {
-      for (final option in selectedCustomerSettingOptions)
-        option.setting.id: option.id
-    };
-
-    final id = await settings.getCombinationId(data);
-    return id ?? await settings.generateCombinationId(data);
   }
 
   void _selectedChanged() {

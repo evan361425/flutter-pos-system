@@ -5,10 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
@@ -106,8 +107,6 @@ void main() {
 
     testWidgets('should navigate to modal', (tester) async {
       final orderListState = GlobalKey<AnalysisOrderListState>();
-      final customerSettings = CustomerSettings();
-      final customerSetting = CustomerSetting();
       final product = OrderProductObject(
           singlePrice: 1,
           originalPrice: 2,
@@ -116,8 +115,8 @@ void main() {
           productId: 'p-1',
           productName: 'p-1',
           isDiscount: true,
-          ingredients: {
-            'i-1': OrderIngredientObject(
+          ingredients: [
+            OrderIngredientObject(
                 id: 'i-1',
                 name: 'i-1',
                 productIngredientId: 'pi-1',
@@ -127,19 +126,26 @@ void main() {
                 quantityId: 'q-1',
                 productQuantityId: 'pq-1',
                 quantityName: 'q-1'),
-            'i-2': OrderIngredientObject(
+            OrderIngredientObject(
                 id: 'i-2', name: 'i-2', productIngredientId: 'pi-1', amount: 0),
-          });
+          ]);
+
+      OrderAttributes().replaceItems({
+        '1': OrderAttribute(id: '1', name: 'Test attr')
+          ..replaceItems({'3': OrderAttributeOption(id: '3', name: 'Test opt')})
+          ..prepareItem(),
+        '2': OrderAttribute(id: '2', mode: OrderAttributeMode.changeDiscount)
+          ..replaceItems({'4': OrderAttributeOption(id: '4', modeValue: 10)})
+          ..prepareItem(),
+      });
+
       final order = OrderObject.fromMap({
         'id': 1,
         'encodedProducts': '[${jsonEncode(product.toMap())}]',
-        'combination': '1:2,2:3',
-      });
-
-      customerSetting.replaceItems({'3': CustomerSettingOption()});
-      customerSettings.replaceItems({
-        '1': CustomerSetting(),
-        '2': customerSetting,
+        'encodedAttributes': jsonEncode([
+          OrderSelectedAttributeObject.fromId('1', '3').toMap(),
+          OrderSelectedAttributeObject.fromId('2', '4').toMap(),
+        ]),
       });
 
       await tester.pumpWidget(buildApp(Material(
@@ -153,6 +159,11 @@ void main() {
 
       await tester.tap(find.byKey(const Key('analysis.order_list.1')));
       await tester.pumpAndSettle();
+      await tester
+          .tap(find.byKey(const Key('order_cashier_product_list.attributes')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test attr — Test opt'), findsOneWidget);
 
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();

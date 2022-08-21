@@ -1,13 +1,12 @@
-import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 
 import '../model.dart';
 import 'customer_setting.dart';
 
-class CustomerSettingOption extends Model<CustomerSettingOptionObject>
+class CustomerSettingOption extends Model<OrderAttributeOptionObject>
     with
-        ModelDB<CustomerSettingOptionObject>,
-        ModelOrderable<CustomerSettingOptionObject> {
+        ModelDB<OrderAttributeOptionObject>,
+        ModelOrderable<OrderAttributeOptionObject> {
   static const table = 'customer_setting_options';
 
   /// Connect to parent model
@@ -29,7 +28,7 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     this.index = index;
   }
 
-  factory CustomerSettingOption.fromObject(CustomerSettingOptionObject object) {
+  factory CustomerSettingOption.fromObject(OrderAttributeOptionObject object) {
     return CustomerSettingOption(
       id: object.id!,
       name: object.name!,
@@ -39,54 +38,8 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
     );
   }
 
-  factory CustomerSettingOption.fromRow(
-    CustomerSettingOption? ori,
-    List<String> row, {
-    required int index,
-  }) {
-    final isDefault = row.length > 1 ? row[1] == 'true' : false;
-    final modeValue = row.length > 2 ? num.tryParse(row[2]) : null;
-    final status = ori == null
-        ? ModelStatus.staged
-        : (isDefault == ori.isDefault && modeValue == ori.modeValue
-            ? ModelStatus.normal
-            : ModelStatus.updated);
-
-    return CustomerSettingOption(
-      id: ori?.id,
-      name: row[0],
-      isDefault: isDefault,
-      modeValue: modeValue,
-      index: index,
-      status: status,
-    );
-  }
-
   @override
   String get modelTableName => table;
-
-  String get modeValueName {
-    if (modeValue == null ||
-        setting.mode == CustomerSettingOptionMode.statOnly) {
-      return '';
-    }
-
-    if (setting.mode == CustomerSettingOptionMode.changeDiscount) {
-      final value = modeValue!.toInt();
-      return value == 0
-          ? '使訂單免費'
-          : value >= 100
-              ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
-              : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';
-    } else {
-      final value = modeValue!.toCurrency();
-      return modeValue! == 0
-          ? ''
-          : modeValue! > 0
-              ? '增加 $value 元'
-              : '減少 $value 元';
-    }
-  }
 
   @override
   CustomerSetting get repository => setting;
@@ -94,27 +47,12 @@ class CustomerSettingOption extends Model<CustomerSettingOptionObject>
   @override
   set repository(repo) => setting = repo as CustomerSetting;
 
-  /// Use [modeValue] to calculate correct final price in order.
-  num calculatePrice(num price) {
-    if (modeValue == null) return price;
-
-    switch (setting.mode) {
-      case CustomerSettingOptionMode.changeDiscount:
-        return price * modeValue! / 100;
-      case CustomerSettingOptionMode.changePrice:
-        return price + modeValue!;
-      default:
-        return price;
-    }
-  }
-
   @override
-  CustomerSettingOptionObject toObject() => CustomerSettingOptionObject(
+  OrderAttributeOptionObject toObject() => OrderAttributeOptionObject(
         id: id,
         name: name,
         index: index,
         isDefault: isDefault,
         modeValue: modeValue,
-        customerSettingId: int.parse(setting.id),
       );
 }

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
-import 'package:possystem/models/objects/customer_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/order_product.dart';
 
 void main() {
@@ -21,24 +21,28 @@ void main() {
       });
     });
 
-    group('Customer Setting', () {
+    group('Order Attribute', () {
+      test('Should not implement buildItem', () {
+        final attr = OrderAttribute();
+
+        expect(() => attr.buildItem('id', {}), throwsUnimplementedError);
+      });
+
       test('Option calculatePrice', () {
-        final s1 = CustomerSetting(options: {
-          'so-1': CustomerSettingOption(modeValue: 1),
+        final s1 = OrderAttribute(options: {
+          'so-1': OrderAttributeOption(modeValue: 1),
         })
           ..prepareItem();
-        final s2 = CustomerSetting(
-            mode: CustomerSettingOptionMode.changeDiscount,
-            options: {
-              'so-2': CustomerSettingOption(modeValue: 50),
-            })
-          ..prepareItem();
-        final s3 = CustomerSetting(
-            mode: CustomerSettingOptionMode.changePrice,
-            options: {
-              'so-2': CustomerSettingOption(modeValue: 5),
-            })
-          ..prepareItem();
+        final s2 =
+            OrderAttribute(mode: OrderAttributeMode.changeDiscount, options: {
+          'so-2': OrderAttributeOption(modeValue: 50),
+        })
+              ..prepareItem();
+        final s3 =
+            OrderAttribute(mode: OrderAttributeMode.changePrice, options: {
+          'so-2': OrderAttributeOption(modeValue: 5),
+        })
+              ..prepareItem();
         num price = 100;
 
         for (var option in s1.items) {

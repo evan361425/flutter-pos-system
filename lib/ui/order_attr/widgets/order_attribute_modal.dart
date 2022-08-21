@@ -3,57 +3,58 @@ import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/objects/customer_object.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 
-class CustomerModal extends StatefulWidget {
-  final CustomerSetting? setting;
+class OrderAttributeModal extends StatefulWidget {
+  final OrderAttribute? attribute;
 
   final bool isNew;
 
-  const CustomerModal({Key? key, this.setting})
-      : isNew = setting == null,
+  const OrderAttributeModal({Key? key, this.attribute})
+      : isNew = attribute == null,
         super(key: key);
 
   @override
-  _CustomerModalState createState() => _CustomerModalState();
+  _OrderAttributeModalState createState() => _OrderAttributeModalState();
 }
 
-class _CustomerModalModes extends StatefulWidget {
-  final CustomerSettingOptionMode selectedMode;
+class _ModalModes extends StatefulWidget {
+  final OrderAttributeMode selectedMode;
 
-  const _CustomerModalModes({
+  const _ModalModes({
     Key? key,
     required this.selectedMode,
   }) : super(key: key);
 
   @override
-  _CustomerModalModesState createState() => _CustomerModalModesState();
+  _OrderAttributeModalModesState createState() =>
+      _OrderAttributeModalModesState();
 }
 
-class _CustomerModalModesState extends State<_CustomerModalModes>
+class _OrderAttributeModalModesState extends State<_ModalModes>
     with TickerProviderStateMixin {
-  late CustomerSettingOptionMode selectedMode;
+  late OrderAttributeMode selectedMode;
 
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        for (final mode in CustomerSettingOptionMode.values)
+        for (final mode in OrderAttributeMode.values)
           Expanded(
             child: RadioText(
-              key: Key('customer_setting.modes.${mode.index}'),
+              key: Key('order_attribute.modes.${mode.index}'),
               margin: const EdgeInsets.symmetric(horizontal: 2.0),
               isSelected: selectedMode == mode,
               onChanged: (_) => setState(() => selectedMode = mode),
-              text: S.customerSettingModeNames(mode),
+              text: S.orderAttributeModeNames(mode),
             ),
           )
       ]),
       const SizedBox(height: 8.0),
-      Text(S.customerSettingModeDescriptions(selectedMode)),
+      Text(S.orderAttributeModeDescriptions(selectedMode)),
     ]);
   }
 
@@ -64,11 +65,11 @@ class _CustomerModalModesState extends State<_CustomerModalModes>
   }
 }
 
-class _CustomerModalState extends State<CustomerModal>
-    with ItemModal<CustomerModal> {
+class _OrderAttributeModalState extends State<OrderAttributeModal>
+    with ItemModal<OrderAttributeModal> {
   late TextEditingController _nameController;
 
-  late GlobalKey<_CustomerModalModesState> modesKey;
+  late GlobalKey<_OrderAttributeModalModesState> modesKey;
 
   @override
   void dispose() {
@@ -80,55 +81,53 @@ class _CustomerModalState extends State<CustomerModal>
   List<Widget> formFields() {
     return [
       TextFormField(
-        key: const Key('customer_setting.name'),
+        key: const Key('order_attribute.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
-          labelText: S.customerSettingNameLabel,
-          hintText: S.customerSettingNameHint,
+          labelText: S.orderAttributeNameLabel,
+          hintText: S.orderAttributeNameHint,
           errorText: errorMessage,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
-        validator: Validator.textLimit(S.customerSettingNameLabel, 30),
+        validator: Validator.textLimit(S.orderAttributeNameLabel, 30),
       ),
-      TextDivider(label: S.customerSettingModeTitle),
-      _CustomerModalModes(
+      TextDivider(label: S.orderAttributeModeTitle),
+      _ModalModes(
         key: modesKey,
-        selectedMode: widget.isNew
-            ? CustomerSettingOptionMode.statOnly
-            : widget.setting!.mode,
+        selectedMode:
+            widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
       ),
     ];
   }
 
   @override
   void initState() {
-    _nameController = TextEditingController(text: widget.setting?.name);
-    modesKey = GlobalKey<_CustomerModalModesState>();
+    _nameController = TextEditingController(text: widget.attribute?.name);
+    modesKey = GlobalKey<_OrderAttributeModalModesState>();
 
     super.initState();
   }
 
   @override
   Future<void> updateItem() async {
-    final object = CustomerSettingObject(
+    final object = OrderAttributeObject(
       name: _nameController.text,
-      mode: modesKey.currentState?.selectedMode ??
-          CustomerSettingOptionMode.statOnly,
+      mode: modesKey.currentState?.selectedMode ?? OrderAttributeMode.statOnly,
     );
 
     if (widget.isNew) {
-      await CustomerSettings.instance.addItem(CustomerSetting(
+      await OrderAttributes.instance.addItem(OrderAttribute(
         name: object.name!,
         mode: object.mode!,
-        index: CustomerSettings.instance.newIndex,
+        index: OrderAttributes.instance.newIndex,
       ));
     } else {
-      await widget.setting!.update(object);
+      await widget.attribute!.update(object);
     }
 
     Navigator.of(context).pop();
@@ -138,9 +137,9 @@ class _CustomerModalState extends State<CustomerModal>
   String? validate() {
     final name = _nameController.text;
 
-    if (widget.setting?.name != name &&
-        CustomerSettings.instance.hasName(name)) {
-      return S.customerSettingNameRepeatError;
+    if (widget.attribute?.name != name &&
+        OrderAttributes.instance.hasName(name)) {
+      return S.orderAttributeNameRepeatError;
     }
 
     return null;

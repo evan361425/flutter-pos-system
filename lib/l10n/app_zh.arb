@@ -156,6 +156,10 @@
       }
     }
   },
+  "homeTabAnalysis": "統計",
+  "homeTabStock": "庫存",
+  "homeTabCashier": "收銀",
+  "homeTabSetting": "設定",
   "analysisTitle": "統計分析",
   "@analysisTitle": {
     "description": "首頁 analysis 後導入的頁面"
@@ -633,12 +637,12 @@
   "@settingOrderAwakeningTitle": {
     "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
   },
-  "customerSettingTitle": "顧客設定",
-  "customerSettingCreate": "新增顧客設定",
-  "customerSettingUpdate": "編輯顧客設定",
-  "customerSettingReorder": "排序設定順序",
-  "customerSettingMetaMode": "種類：{mode}",
-  "@customerSettingMetaMode": {
+  "orderAttributeTitle": "顧客設定",
+  "orderAttributeCreate": "新增顧客設定",
+  "orderAttributeUpdate": "編輯顧客設定",
+  "orderAttributeReorder": "排序設定順序",
+  "orderAttributeMetaMode": "種類：{mode}",
+  "@orderAttributeMetaMode": {
     "description": "顧客設定列表的設定資訊之一",
     "placeholders": {
       "mode": {
@@ -646,9 +650,9 @@
       }
     }
   },
-  "customerSettingMetaNoDefault": "無",
-  "customerSettingMetaDefault": "預設：{name}",
-  "@customerSettingMetaDefault": {
+  "orderAttributeMetaNoDefault": "無",
+  "orderAttributeMetaDefault": "預設：{name}",
+  "@orderAttributeMetaDefault": {
     "description": "顧客設定列表的設定資訊之一",
     "placeholders": {
       "name": {
@@ -656,29 +660,29 @@
       }
     }
   },
-  "customerSettingModeNames": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}}",
-  "@customerSettingModeNames": {
+  "orderAttributeModeNames": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}}",
+  "@orderAttributeModeNames": {
     "description": "顧客設定種類名稱",
     "placeholders": {
       "mode": {}
     }
   },
-  "customerSettingModeDescriptions": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}}",
-  "@customerSettingModeDescriptions": {
+  "orderAttributeModeDescriptions": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}}",
+  "@orderAttributeModeDescriptions": {
     "description": "顧客設定種類名稱",
     "placeholders": {
       "mode": {}
     }
   },
-  "customerSettingNameLabel": "顧客設定名稱",
-  "customerSettingNameHint": "年齡",
-  "customerSettingNameRepeatError": "名稱不能重複",
-  "customerSettingModeTitle": "顧客設定種類",
-  "customerSettingOptionCreate": "新增顧客設定選項",
-  "customerSettingOptionIsDefault": "預設",
-  "customerSettingOptionIsReorder": "排序選項順序",
-  "customerSettingOptionCreateTitle": "新增{name}的選項",
-  "@customerSettingOptionCreateTitle": {
+  "orderAttributeNameLabel": "顧客設定名稱",
+  "orderAttributeNameHint": "年齡",
+  "orderAttributeNameRepeatError": "名稱不能重複",
+  "orderAttributeModeTitle": "顧客設定種類",
+  "orderAttributeOptionCreate": "新增選項",
+  "orderAttributeOptionIsDefault": "預設",
+  "orderAttributeOptionReorder": "排序選項順序",
+  "orderAttributeOptionCreateTitle": "新增{name}的選項",
+  "@orderAttributeOptionCreateTitle": {
     "description": "讓標題更清楚",
     "placeholders": {
       "name": {
@@ -686,27 +690,27 @@
       }
     }
   },
-  "customerSettingOptionNameLabel": "選項名稱",
-  "customerSettingOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
-  "customerSettingOptionNameRepeatError": "名稱不能重複",
-  "customerSettingOptionsModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價}}",
-  "@customerSettingOptionsModeHelper": {
+  "orderAttributeOptionNameLabel": "選項名稱",
+  "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
+  "orderAttributeOptionNameRepeatError": "名稱不能重複",
+  "orderAttributeOptionsModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價}}",
+  "@orderAttributeOptionsModeHelper": {
     "description": "模式的說明",
     "placeholders": {
       "mode": {}
     }
   },
-  "customerSettingOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
-  "@customerSettingOptionsModeHint": {
+  "orderAttributeOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
+  "@orderAttributeOptionsModeHint": {
     "description": "模式的提示",
     "placeholders": {
       "mode": {}
     }
   },
-  "customerSettingOptionSetToDefault": "設為預設",
-  "customerSettingOptionConfirmChangeDefaultTitle": "確定要覆蓋預設值嗎",
-  "customerSettingOptionConfirmChangeDefaultContent": "這麼做會讓「{name}」變成非預設值",
-  "@customerSettingOptionConfirmChangeDefaultContent": {
+  "orderAttributeOptionSetToDefault": "設為預設",
+  "orderAttributeOptionConfirmChangeDefaultTitle": "確定要覆蓋預設值嗎",
+  "orderAttributeOptionConfirmChangeDefaultContent": "這麼做會讓「{name}」變成非預設值",
+  "@orderAttributeOptionConfirmChangeDefaultContent": {
     "description": "為了確保使用者知道原先的預設值是什麼而做的提示",
     "placeholders": {
       "name": {
@@ -840,12 +844,12 @@
       }
     }
   },
-  "orderCustomerSettingTitle": "顧客設定",
-  "@orderCustomerSettingTitle": {
+  "orderSetAttributeTitle": "顧客設定",
+  "@orderSetAttributeTitle": {
     "description": "點完餐後的顧客設定頁面的標題"
   },
-  "orderCustomerSettingActionsDone": "下一步",
-  "@orderCustomerSettingActionsDone": {
+  "orderSetAttributeActionsDone": "下一步",
+  "@orderSetAttributeActionsDone": {
     "description": "設定完顧客後，需要前往收銀機"
   },
   "orderCashierTitle": "收銀機",
@@ -920,10 +924,10 @@
       }
     }
   },
-  "orderCashierCustomerInfoTitle": "顧客設定",
-  "orderCashierCustomerTotalPrice": "顧客設定總價",
-  "orderCashierCustomerTotalCount": "設定 {count} 項",
-  "@orderCashierCustomerTotalCount": {
+  "orderCashierAttributeInfoTitle": "顧客設定",
+  "orderCashierAttributeTotalPrice": "顧客設定總價",
+  "orderCashierAttributeTotalCount": "設定 {count} 項",
+  "@orderCashierAttributeTotalCount": {
     "description": "總共設定了幾項顧客設定",
     "placeholders": {
       "count": {
@@ -1018,7 +1022,7 @@
     }
   },
   "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} customer{顧客設定}}",
+  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定}}",
   "@exporterGSDefaultSheetName": {
     "description": "匯出 Google 試算表時預設的表單名稱",
     "placeholders": {
@@ -1027,7 +1031,7 @@
       }
     }
   },
-  "exporterGSProgressStatus": "{status, select, add_spreadsheet{新增試算表中..} add_sheets{新增表單中..} update_menu{更新菜單中..} update_stock{更新庫存中..} update_quantities{更新份量中..} update_replenisher{更新補貨中..} update_customer{更新顧客設定中..}}",
+  "exporterGSProgressStatus": "{status, select, add_spreadsheet{新增試算表中..} add_sheets{新增表單中..} update_menu{更新菜單中..} update_stock{更新庫存中..} update_quantities{更新份量中..} update_replenisher{更新補貨中..} update_orderAttr{更新顧客設定中..}}",
   "@exporterGSProgressStatus": {
     "description": "執行行為時的狀態說明",
     "placeholders": {
@@ -1038,10 +1042,10 @@
   },
   "exporterProductIngredientInfoTitle": "成份資訊",
   "exporterReplenishmentTitle": "補貨量",
-  "exporterCustomerSettingOptionTitle": "顧客設定選項",
+  "exporterOrderAttributeOptionTitle": "顧客設定選項",
   "exporterGSProductIngredientInfoNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
   "exporterGSReplenishmentNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
-  "exporterGSCustomerSettingOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
+  "exporterGSOrderAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
   "importerGSError": "{error, select, empty_spreadsheet{必須選擇試算表來匯入} empty_sheet{必須選擇指定的表單來匯入} empty_data{在表單中沒找到任何值}}",
   "@importerGSError": {
     "description": "匯入時會有的錯誤",

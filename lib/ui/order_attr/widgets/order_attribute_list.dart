@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/customer/customer_setting.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class CustomerSettingList extends StatelessWidget {
-  final List<CustomerSetting> settings;
+class OrderAttributeList extends StatelessWidget {
+  final List<OrderAttribute> attributes;
 
-  const CustomerSettingList(this.settings, {Key? key}) : super(key: key);
+  const OrderAttributeList(this.attributes, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +24,12 @@ class CustomerSettingList extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(kSpacing1),
-            child: HintText(S.totalCount(settings.length)),
+            child: HintText(S.totalCount(attributes.length)),
           ),
-          for (final setting in settings)
-            ChangeNotifierProvider<CustomerSetting>.value(
-              value: setting,
-              child: const _CustomerSettingCard(),
+          for (final attribute in attributes)
+            ChangeNotifierProvider<OrderAttribute>.value(
+              value: attribute,
+              child: const _OrderAttributeCard(),
             )
         ],
       ),
@@ -36,24 +37,24 @@ class CustomerSettingList extends StatelessWidget {
   }
 }
 
-class _CustomerSettingCard extends StatelessWidget {
-  const _CustomerSettingCard({Key? key}) : super(key: key);
+class _OrderAttributeCard extends StatelessWidget {
+  const _OrderAttributeCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final setting = context.watch<CustomerSetting>();
-    final mode = S.customerSettingModeNames(setting.mode);
+    final attr = context.watch<OrderAttribute>();
+    final mode = S.orderAttributeModeNames(attr.mode);
     final defaultName =
-        setting.defaultOption?.name ?? S.customerSettingMetaNoDefault;
-    final key = 'customer_settings.${setting.id}';
+        attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
+    final key = 'order_attributes.${attr.id}';
 
     return Card(
       child: ExpansionTile(
         key: Key(key),
-        title: Text(setting.name),
+        title: Text(attr.name),
         subtitle: MetaBlock.withString(context, [
-          S.customerSettingMetaMode(mode),
-          S.customerSettingMetaDefault(defaultName),
+          S.orderAttributeMetaMode(mode),
+          S.orderAttributeMetaDefault(defaultName),
         ]),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -65,66 +66,64 @@ class _CustomerSettingCard extends StatelessWidget {
                 ElevatedButton.icon(
                   key: Key('$key.add'),
                   onPressed: () => Navigator.of(context).pushNamed(
-                    Routes.customerSettingOption,
-                    arguments: setting,
+                    Routes.orderAttrOption,
+                    arguments: attr,
                   ),
                   icon: const Icon(KIcons.add),
-                  label: Text(S.customerSettingOptionCreate),
+                  label: Text(S.orderAttributeOptionCreate),
                 ),
                 IconButton(
                   key: Key('$key.more'),
-                  onPressed: () => showActions(context, setting),
+                  onPressed: () => showActions(context, attr),
                   enableFeedback: true,
                   icon: const Icon(KIcons.more),
                 )
               ],
             ),
           ),
-          for (final item in setting.itemList) _OptionTile(item),
+          for (final item in attr.itemList) _OptionTile(item),
         ],
       ),
     );
   }
 
-  void showActions(BuildContext context, CustomerSetting setting) {
+  void showActions(BuildContext context, OrderAttribute attr) {
     BottomSheetActions.withDelete<int>(
       context,
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(S.customerSettingUpdate),
+          title: Text(S.orderAttributeUpdate),
           leading: const Icon(Icons.text_fields_sharp),
-          navigateRoute: Routes.customerModal,
-          navigateArgument: setting,
+          navigateRoute: Routes.orderAttrModal,
+          navigateArgument: attr,
         ),
         BottomSheetAction(
-          title: Text(S.customerSettingOptionIsReorder),
+          title: Text(S.orderAttributeOptionReorder),
           leading: const Icon(Icons.reorder_sharp),
-          navigateRoute: Routes.customerSettingReorder,
-          navigateArgument: setting,
+          navigateRoute: Routes.orderAttrOptionReorder,
+          navigateArgument: attr,
         ),
       ],
-      warningContent: Text(S.dialogDeletionContent(setting.name, '')),
-      deleteCallback: () => setting.remove(),
+      warningContent: Text(S.dialogDeletionContent(attr.name, '')),
+      deleteCallback: () => attr.remove(),
     );
   }
 }
 
 class _OptionTile extends StatelessWidget {
-  final CustomerSettingOption option;
+  final OrderAttributeOption option;
 
   const _OptionTile(this.option);
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = option.modeValueName;
-
     return ListTile(
-      key: Key('customer_setting.${option.setting.id}.${option.id}'),
+      key: Key('order_attributes.${option.repository.id}.${option.id}'),
       title: Text(option.name),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle),
+      subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
       trailing: option.isDefault
-          ? OutlinedText(S.customerSettingOptionIsDefault)
+          ? OutlinedText(S.orderAttributeOptionIsDefault)
           : null,
       onLongPress: () => BottomSheetActions.withDelete<int>(
         context,
@@ -133,7 +132,7 @@ class _OptionTile extends StatelessWidget {
         deleteCallback: () => option.remove(),
       ),
       onTap: () => Navigator.of(context).pushNamed(
-        Routes.customerSettingOption,
+        Routes.orderAttrOption,
         arguments: option,
       ),
     );

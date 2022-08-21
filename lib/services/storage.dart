@@ -157,7 +157,7 @@ enum Stores {
   replenisher,
   quantities,
   cashier,
-  customers,
+  orderAttributes,
 }
 
 class _SanitizedValue {

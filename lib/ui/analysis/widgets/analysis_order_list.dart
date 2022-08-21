@@ -5,9 +5,7 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/models/customer/customer_setting_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -116,17 +114,6 @@ class _AnalysisOrderModal extends StatelessWidget {
 
   const _AnalysisOrderModal(this.order);
 
-  Iterable<CustomerSettingOption> get selectedCustomerSettingOptions sync* {
-    for (final entry in order.customerSettings.entries) {
-      final setting = CustomerSettings.instance.getItem(entry.key);
-      final option = setting?.getItem(entry.value);
-
-      if (option != null) {
-        yield option;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final createdAt = DateFormat.MEd(S.localeName).format(order.createdAt) +
@@ -142,11 +129,11 @@ class _AnalysisOrderModal extends StatelessWidget {
         ),
         Expanded(
           child: OrderCashierProductList(
-            customerSettings: selectedCustomerSettingOptions.toList(),
+            attributes: order.attributes.toList(),
             products: order.products
                 .map((product) => OrderProductTileData(
-                    ingredientNames: product.ingredients.values
-                        .map((e) => e.quantityName == null
+                    ingredientNames:
+                        product.ingredients.map((e) => e.quantityName == null
                             ? S.orderProductIngredientDefaultName(e.name)
                             : S.orderProductIngredientName(
                                 e.name,

@@ -5,8 +5,8 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/customer_settings.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -25,6 +25,7 @@ import 'widgets/order_catalog_list.dart';
 import 'widgets/order_product_list.dart';
 import 'widgets/order_product_state_selector.dart';
 
+/// TODO: add seller
 class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
 
@@ -111,14 +112,14 @@ class OrderScreenState extends State<OrderScreen> {
     if (SettingsProvider.of<OrderAwakeningSetting>().value) {
       Wakelock.enable();
     }
-    // rebind menu/customer_setting if changed
+    // rebind menu/attributes if changed
     Cart.instance.rebind();
     super.initState();
   }
 
   void _handleOrder() async {
-    final route = CustomerSettings.instance.hasSelectableSetting
-        ? Routes.orderCustomer
+    final route = OrderAttributes.instance.hasNotEmptyItems
+        ? Routes.orderAttribute
         : Routes.orderCalculator;
     var result = await Navigator.of(context).pushNamed(route);
     if (result is String) {

@@ -5,7 +5,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/previews/customer_setting_previewer.dart';
+import 'package:possystem/ui/exporter/previews/order_attribute_previewer.dart';
 import 'package:possystem/ui/exporter/previews/ingredient_previewer.dart';
 import 'package:possystem/ui/exporter/previews/product_previewer.dart';
 import 'package:possystem/ui/exporter/previews/quantity_previewer.dart';
@@ -31,8 +31,8 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
           switch (type) {
             case Formattable.menu:
               return ProductPreviewer(items: items);
-            case Formattable.customer:
-              return CustomerSettingPreviewer(items: items);
+            case Formattable.orderAttr:
+              return OrderAttributePreviewer(items: items);
             case Formattable.quantities:
               return QuantityPreviewer(items: items);
             case Formattable.stock:

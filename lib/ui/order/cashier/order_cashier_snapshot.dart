@@ -53,7 +53,7 @@ class OrderCashierSnapshot extends StatelessWidget {
       final change = value - totalPrice;
 
       if (change >= 0) {
-        selector.currentState?.setCustomMoney(value);
+        selector.currentState?.setAttributeCost(value);
         changeShower.currentState?.change(change);
       }
     }
@@ -120,12 +120,12 @@ class _PaidMoneySelector extends StatefulWidget {
 class _PaidMoneySelectorState extends State<_PaidMoneySelector> {
   late num selected;
 
-  num? customMoney;
+  num? attributeCost;
 
   @override
   Widget build(BuildContext context) {
     final data = <num>[
-      if (customMoney != null) customMoney!,
+      if (attributeCost != null) attributeCost!,
       ...widget.options,
     ];
 
@@ -159,9 +159,9 @@ class _PaidMoneySelectorState extends State<_PaidMoneySelector> {
     setState(() => selected = select);
   }
 
-  void setCustomMoney(num customMoney) {
-    widget.options.contains(customMoney)
-        ? setState(() => this.customMoney = null)
-        : setState(() => this.customMoney = customMoney);
+  void setAttributeCost(num attributeCost) {
+    widget.options.contains(attributeCost)
+        ? setState(() => this.attributeCost = null)
+        : setState(() => this.attributeCost = attributeCost);
   }
 }
