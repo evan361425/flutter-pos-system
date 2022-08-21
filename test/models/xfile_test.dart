@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:path_provider_platform_interface/src/method_channel_path_provider.dart';
 
 import '../test_helpers/file_mocker.dart';
 
@@ -10,9 +11,11 @@ void main() {
   group('XFile', () {
     testWidgets('#getRootPath', (tester) async {
       XFile.fs = const LocalFileSystem();
+      final provider = MethodChannelPathProvider();
+      PathProviderPlatform.instance = provider;
 
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        (PathProviderPlatform.instance as dynamic).methodChannel,
+        provider.methodChannel,
         (MethodCall methodCall) {
           expect(methodCall.method, 'getApplicationDocumentsDirectory');
           return Future.value('');
