@@ -59,7 +59,7 @@ class Stock extends ChangeNotifier
     final amounts = <String, num>{};
 
     for (var product in data.products) {
-      for (var ingredient in product.ingredients.values) {
+      for (var ingredient in product.ingredients) {
         amounts[ingredient.id] =
             (amounts[ingredient.id] ?? 0) - ingredient.amount;
       }
@@ -68,7 +68,7 @@ class Stock extends ChangeNotifier
     // if we need to update order, need to revert stock status
     if (oldData != null) {
       for (var product in oldData.products) {
-        for (var ingredient in product.ingredients.values) {
+        for (var ingredient in product.ingredients) {
           amounts[ingredient.id] =
               (amounts[ingredient.id] ?? 0) + ingredient.amount;
         }

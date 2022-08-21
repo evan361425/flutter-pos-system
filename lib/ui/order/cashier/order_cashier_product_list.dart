@@ -4,12 +4,12 @@ import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderCashierProductList extends StatelessWidget {
-  final List<OrderAttributeOption> options;
+  final List<OrderSelectedAttributeObject> attributes;
   final List<OrderProductTileData> products;
   final num totalPrice;
   final num productsPrice;
@@ -21,7 +21,7 @@ class OrderCashierProductList extends StatelessWidget {
 
   const OrderCashierProductList({
     Key? key,
-    required this.options,
+    required this.attributes,
     required this.products,
     required this.totalPrice,
     required this.productsPrice,
@@ -56,17 +56,21 @@ class OrderCashierProductList extends StatelessWidget {
       ],
     );
 
-    final attributeWidget = options.isEmpty
+    final attrWidget = attributes.isEmpty
         ? const SizedBox.shrink()
         : ExpansionTile(
             key: const Key('order_cashier_product_list.attributes'),
             title: Text(S.orderCashierAttributeInfoTitle),
-            subtitle: Text(S.orderCashierAttributeTotalCount(options.length)),
+            subtitle:
+                Text(S.orderCashierAttributeTotalCount(attributes.length)),
             children: <Widget>[
-              for (final option in options)
+              for (final attribute in attributes)
                 ListTile(
-                  title: Text(option.name),
-                  subtitle: OrderAttributeValueWidget(option),
+                  title: Text('${attribute.name} — ${attribute.optionName}'),
+                  subtitle: OrderAttributeValueWidget(
+                    attribute.mode,
+                    attribute.modeValue,
+                  ),
                   visualDensity:
                       const VisualDensity(horizontal: 0, vertical: -3),
                 ),
@@ -81,7 +85,7 @@ class OrderCashierProductList extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(children: [
         priceWidget,
-        attributeWidget,
+        attrWidget,
         TextDivider(label: S.orderCashierProductInfoTitle),
         HintText(S.orderCashierProductMetaCount(totalCount)),
         for (final product in products) _ProductTile(product),

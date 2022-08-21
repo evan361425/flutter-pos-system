@@ -60,7 +60,7 @@ class OrderObject {
         count: orderProduct.count,
         singlePrice: orderProduct.singlePrice,
         selectedQuantity: {
-          for (final item in orderProduct.ingredients.values)
+          for (final item in orderProduct.ingredients)
             item.productIngredientId: item.productQuantityId
         },
       );
@@ -85,7 +85,7 @@ class OrderObject {
     final usedIngredients = <String>[];
 
     for (var product in products) {
-      for (var ingredient in product.ingredients.values) {
+      for (var ingredient in product.ingredients) {
         usedIngredients.add(ingredient.name);
       }
     }
@@ -142,6 +142,7 @@ class OrderObject {
 
 class OrderProductObject {
   final String productId;
+
   final String productName;
 
   /// 購買數量
@@ -161,9 +162,9 @@ class OrderProductObject {
   /// 折扣差可以做 method，如果有需要的話
   final bool isDiscount;
 
-  final Map<String, OrderIngredientObject> ingredients;
+  final List<OrderIngredientObject> ingredients;
 
-  OrderProductObject({
+  const OrderProductObject({
     required this.productId,
     required this.productName,
     required this.count,
@@ -187,7 +188,7 @@ class OrderProductObject {
       'singlePrice': singlePrice,
       'originalPrice': originalPrice,
       'isDiscount': isDiscount,
-      'ingredients': ingredients.values
+      'ingredients': ingredients
           .map<Map<String, Object?>>(
             (e) => e.toMap(),
           )
@@ -207,10 +208,10 @@ class OrderProductObject {
       singlePrice: data['singlePrice'] as num,
       originalPrice: data['originalPrice'] as num,
       isDiscount: data['isDiscount'] as bool,
-      ingredients: {
+      ingredients: [
         for (Map<String, dynamic> ingredient in ingredients)
-          ingredient['id'] as String: OrderIngredientObject.input(ingredient)
-      },
+          OrderIngredientObject.input(ingredient)
+      ],
     );
   }
 }
@@ -344,6 +345,15 @@ class OrderSelectedAttributeObject {
     } on StateError {
       return const OrderSelectedAttributeObject();
     }
+  }
+
+  factory OrderSelectedAttributeObject.fromModel(OrderAttributeOption option) {
+    return OrderSelectedAttributeObject(
+      name: option.attribute.name,
+      optionName: option.name,
+      mode: option.mode,
+      modeValue: option.modeValue,
+    );
   }
 
   MapEntry<OrderAttribute, OrderAttributeOption>? toInstanceEntry() {

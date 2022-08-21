@@ -6,7 +6,11 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -39,7 +43,13 @@ void main() {
 
       expect(result.length, equals(10));
       expect(result.map((e) => e.totalCount).reduce((a, b) => a + b),
-          greaterThan(10));
+          greaterThanOrEqualTo(10));
+      expect(
+          result.fold<int>(
+              0,
+              (pre, e) =>
+                  e.attributes.where((ee) => ee.isNotEmpty).length + pre),
+          greaterThan(0));
     });
 
     testWidgets('change date and count', (tester) async {
@@ -80,6 +90,29 @@ void main() {
         'q-2': Quantity(id: 'q-2', name: 'q-2'),
         'q-3': Quantity(id: 'q-3', name: 'q-3'),
       });
+    // Order Attributes
+    final attrs = OrderAttributes();
+    attrs.replaceItems({
+      'at-1': OrderAttribute(id: 'at-1', name: 'at-1'),
+      'at-2': OrderAttribute(
+          id: 'at-2',
+          name: 'at-2',
+          mode: OrderAttributeMode.changePrice,
+          options: {
+            'o1': OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1),
+            'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 2),
+            'o3': OrderAttributeOption(id: 'o3', name: 'o3', modeValue: 3),
+            'o4': OrderAttributeOption(id: 'o4', name: 'o4', modeValue: 4),
+            'o5': OrderAttributeOption(id: 'o5', name: 'o5', modeValue: 5.0),
+            'o6': OrderAttributeOption(id: 'o6', name: 'o6', modeValue: 6.1),
+            'o7': OrderAttributeOption(id: 'o7', name: 'o7', modeValue: 7.2),
+            'o8': OrderAttributeOption(id: 'o8', name: 'o8', modeValue: 8),
+            'o9': OrderAttributeOption(id: 'o9', name: 'o9', modeValue: null),
+            'o0': OrderAttributeOption(id: 'o0', name: 'o0', modeValue: null),
+          })
+        ..prepareItem(),
+    });
+    // Menu
     final q1 = ProductQuantity(
       id: 'pq-1',
       quantity: qs.getItem('q-1'),

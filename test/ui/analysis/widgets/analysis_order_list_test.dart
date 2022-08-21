@@ -115,8 +115,8 @@ void main() {
           productId: 'p-1',
           productName: 'p-1',
           isDiscount: true,
-          ingredients: {
-            'i-1': OrderIngredientObject(
+          ingredients: [
+            OrderIngredientObject(
                 id: 'i-1',
                 name: 'i-1',
                 productIngredientId: 'pi-1',
@@ -126,12 +126,12 @@ void main() {
                 quantityId: 'q-1',
                 productQuantityId: 'pq-1',
                 quantityName: 'q-1'),
-            'i-2': OrderIngredientObject(
+            OrderIngredientObject(
                 id: 'i-2', name: 'i-2', productIngredientId: 'pi-1', amount: 0),
-          });
+          ]);
 
       OrderAttributes().replaceItems({
-        '1': OrderAttribute(id: '1')
+        '1': OrderAttribute(id: '1', name: 'Test attr')
           ..replaceItems({'3': OrderAttributeOption(id: '3', name: 'Test opt')})
           ..prepareItem(),
         '2': OrderAttribute(id: '2', mode: OrderAttributeMode.changeDiscount)
@@ -163,7 +163,7 @@ void main() {
           .tap(find.byKey(const Key('order_cashier_product_list.attributes')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Test opt'), findsOneWidget);
+      expect(find.text('Test attr — Test opt'), findsOneWidget);
 
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();

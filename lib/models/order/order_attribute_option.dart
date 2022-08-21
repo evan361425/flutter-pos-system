@@ -71,6 +71,8 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
   @override
   set repository(repo) => attribute = repo as OrderAttribute;
 
+  OrderAttributeMode get mode => attribute.mode;
+
   /// Use [modeValue] to calculate correct final price in order.
   num calculatePrice(num price) {
     if (modeValue == null) return price;

@@ -76,6 +76,18 @@ void main() {
       expect(deletionFired, isTrue);
     });
 
+    test('estimated child count should be same as items length', () {
+      final delegate = SlidableItemDelegate<String, int>(
+        items: ['A', 'B'],
+        deleteValue: 0,
+        tileBuilder: (ctx, idx, val, d) => const SizedBox.shrink(),
+        handleDelete: (val) => Future.value(),
+      );
+      final builder = SliverSlidableItemBuilder(delegate);
+
+      expect(builder.estimatedChildCount, 2);
+    });
+
     setUpAll(() {
       initializeTranslator();
     });

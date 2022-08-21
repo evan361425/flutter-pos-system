@@ -55,8 +55,8 @@ class OrderProduct extends ChangeNotifier {
 
   num get price => count * singlePrice;
 
-  Iterable<String> getIngredientNames({bool onlyQuantitied = true}) {
-    final entries = onlyQuantitied
+  Iterable<String> getIngredientNames({bool onlyQuantified = true}) {
+    final entries = onlyQuantified
         ? selectedQuantity.entries.where((entry) => entry.value != null)
         : selectedQuantity.entries;
 
@@ -96,7 +96,7 @@ class OrderProduct extends ChangeNotifier {
     singlePrice += getQuantityPrice(ingredientId, quantityId);
   }
 
-  /// if [checked] is defferent with current state
+  /// if [checked] is different with current state
   /// return false else true
   bool toggleSelected([bool? checked]) {
     checked ??= !isSelected;
@@ -113,15 +113,15 @@ class OrderProduct extends ChangeNotifier {
   }
 
   OrderProductObject toObject() {
-    final ingredients = <String, OrderIngredientObject>{
+    final ingredients = <OrderIngredientObject>[
       for (var entry in selectedQuantity.entries)
-        entry.key: OrderIngredientObject.fromModel(
+        OrderIngredientObject.fromModel(
           product.getItem(entry.key)!,
           entry.value,
         )
-    };
+    ];
     final originalPrice = product.price;
-    final cost = ingredients.values.fold<num>(
+    final cost = ingredients.fold<num>(
         product.cost, (cost, ing) => cost + (ing.additionalCost ?? 0));
 
     return OrderProductObject(

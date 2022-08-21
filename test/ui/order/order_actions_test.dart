@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
@@ -36,7 +37,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Order actions', () {
+  group('Order Actions', () {
     void prepareData() {
       SettingsProvider([
         CurrencySetting(),
@@ -127,6 +128,11 @@ void main() {
         'encodedAttributes': jsonEncode([
           OrderSelectedAttributeObject.fromId('oa-1', 'oao-1').toMap(),
           OrderSelectedAttributeObject.fromId('oa-2', 'oao-2').toMap(),
+          const OrderSelectedAttributeObject(
+            name: 'wrong',
+            optionName: 'wrong',
+            mode: OrderAttributeMode.statOnly,
+          ).toMap(),
         ]),
         'encodedProducts': jsonEncode([
           {

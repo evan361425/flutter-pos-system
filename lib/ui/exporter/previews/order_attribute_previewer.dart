@@ -32,7 +32,7 @@ class OrderAttributePreviewer extends PreviewerScreen<OrderAttribute> {
         for (final option in item.stagedItems)
           ListTile(
             title: Text(option.name),
-            subtitle: OrderAttributeValueWidget(option),
+            subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
             trailing: option.isDefault
                 ? OutlinedText(S.orderAttributeOptionIsDefault)
                 : null,

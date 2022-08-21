@@ -6,8 +6,11 @@ import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/validator.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:provider/provider.dart';
 
@@ -31,8 +34,21 @@ List<OrderObject> generateOrder({
     for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
   ]..sort();
 
+  OrderSelectedAttributeObject generateAttr(OrderAttribute attr) {
+    final optIdx = rng.nextInt(attr.length + 1);
+    if (optIdx == attr.length) return const OrderSelectedAttributeObject();
+
+    final opt = attr.itemList[optIdx];
+    return OrderSelectedAttributeObject(
+      name: attr.name,
+      optionName: opt.name,
+      mode: attr.mode,
+      modeValue: opt.modeValue,
+    );
+  }
+
   while (orderCount-- > 0) {
-    final ordered = <Map<String, Object>>[];
+    final ordered = <OrderProductObject>[];
     // 1~10
     var round = rng.nextInt(10) + 1;
     while (round-- != 0) {
@@ -40,10 +56,12 @@ List<OrderObject> generateOrder({
       final product = products[rng.nextInt(productCount)];
 
       // if already ordered that product, possibly increment the count
-      final possible = _allIndexIn(ordered, 'productId', product.id);
+      final possible = _selectExistedProduct(ordered, product.id);
       if (possible.isNotEmpty && rng.nextBool()) {
-        final o = ordered[possible[rng.nextInt(possible.length)]];
-        o['count'] = (o['count'] as int) + 1;
+        final idx = possible[rng.nextInt(possible.length)];
+        final map = ordered[idx].toMap();
+        map['count'] = (map['count'] as int) + 1;
+        ordered[idx] = OrderProductObject.fromMap(map);
       } else {
         // whether use ingredient?
         final v = product.itemList;
@@ -51,58 +69,64 @@ List<OrderObject> generateOrder({
         // whether use quantity?
         final w = i?.isNotEmpty == true && rng.nextBool() ? i!.itemList : null;
         final q = w == null ? null : w[rng.nextInt(w.length)];
-        ordered.add({
-          'singlePrice': product.price,
-          'originalPrice': product.price,
-          'count': 1,
-          'cost': product.cost,
-          'productId': product.id,
-          'productName': product.name,
-          'isDiscount': rng.nextBool(),
-          'ingredients': i == null
+        ordered.add(OrderProductObject(
+          productId: product.id,
+          productName: product.name,
+          count: 1,
+          cost: product.cost,
+          singlePrice: product.price,
+          originalPrice: product.price,
+          isDiscount: rng.nextBool(),
+          ingredients: i == null
               ? []
               : [
-                  {
-                    'id': i.ingredient.id,
-                    'name': i.name,
-                    'productIngredientId': i.id,
-                    'productQuantityId': q?.id,
-                    'additionalPrice': q?.additionalPrice,
-                    'additionalCost': q?.additionalCost,
-                    'amount': i.amount,
-                    'quantityId': q?.quantity.id,
-                    'quantityName': q?.quantity.name,
-                  }
+                  OrderIngredientObject(
+                    id: i.ingredient.id,
+                    name: i.name,
+                    productIngredientId: i.id,
+                    productQuantityId: q?.id,
+                    additionalPrice: q?.additionalPrice,
+                    additionalCost: q?.additionalCost,
+                    amount: i.amount,
+                    quantityId: q?.quantity.id,
+                    quantityName: q?.quantity.name,
+                  )
                 ],
-        });
+        ));
       }
     }
 
-    final price = ordered.fold<int>(
-        0, (p, e) => p + (e['singlePrice'] as int) * (e['count'] as int));
+    final attrs = [
+      for (var attr in OrderAttributes.instance.items) generateAttr(attr),
+    ];
+
+    final price = ordered.fold<num>(0, (p, e) => p + e.totalPrice);
+    final attrPrice = attrs
+        .where((attr) => attr.mode == OrderAttributeMode.changePrice)
+        .fold<num>(0, (p, e) => p + (e.modeValue ?? 0));
     result.add(OrderObject(
       createdAt: startFrom.add(Duration(minutes: createdList[orderCount])),
-      paid: price,
-      totalPrice: price,
-      totalCount: ordered.fold<int>(0, (p, e) => p + (e['count'] as int)),
+      paid: price + attrPrice,
+      totalPrice: price + attrPrice,
       productsPrice: price,
-      productNames: ordered.map((e) => e['productName'] as String).toList(),
+      totalCount: ordered.fold<int>(0, (p, e) => p + e.count),
+      productNames: ordered.map((e) => e.productName).toList(),
       ingredientNames: ordered
-          .expand((e) =>
-              (e['ingredients'] as List).map((i) => (i['name'] as String)))
+          .expand((e) => e.ingredients.map((i) => i.name))
           .toSet()
           .toList(),
-      products: ordered.map((product) => OrderProductObject.fromMap(product)),
+      attributes: attrs,
+      products: ordered,
     ));
   }
 
   return result;
 }
 
-List<int> _allIndexIn<T>(List<Map<String, Object>> data, String key, T needle) {
+List<int> _selectExistedProduct<T>(List<OrderProductObject> data, String id) {
   final result = <int>[];
   for (var i = 0, n = data.length; i < n; i++) {
-    if (data[i][key] == needle) {
+    if (data[i].productId == id) {
       result.add(i);
     }
   }

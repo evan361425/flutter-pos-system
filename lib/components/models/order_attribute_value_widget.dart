@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
 class OrderAttributeValueWidget extends StatelessWidget {
-  final OrderAttributeOption option;
+  final OrderAttributeMode? mode;
+  final num? value;
 
   const OrderAttributeValueWidget(
-    this.option, {
+    this.mode,
+    this.value, {
     Key? key,
   }) : super(key: key);
 
@@ -18,11 +19,10 @@ class OrderAttributeValueWidget extends StatelessWidget {
   }
 
   String getValueName() {
-    final mode = option.attribute.mode;
-    final modeValue = option.modeValue;
-    if (modeValue == null || mode == OrderAttributeMode.statOnly) {
+    if (value == null || mode == null || mode == OrderAttributeMode.statOnly) {
       return '';
     }
+    final modeValue = value!;
 
     if (mode == OrderAttributeMode.changeDiscount) {
       final value = modeValue.toInt();

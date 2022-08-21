@@ -121,7 +121,7 @@ class _OptionTile extends StatelessWidget {
     return ListTile(
       key: Key('order_attributes.${option.repository.id}.${option.id}'),
       title: Text(option.name),
-      subtitle: OrderAttributeValueWidget(option),
+      subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
       trailing: option.isDefault
           ? OutlinedText(S.orderAttributeOptionIsDefault)
           : null,
