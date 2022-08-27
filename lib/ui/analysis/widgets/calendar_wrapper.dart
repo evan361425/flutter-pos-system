@@ -49,7 +49,6 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<Seller>();
     return TableCalendar<int>(
       firstDay: DateTime(2021, 1),
       lastDay: DateTime.now(),
@@ -88,17 +87,19 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   @override
   void initState() {
     super.initState();
-    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
 
-    _loadedMonths.clear();
-    _loadedCounts.clear();
-    _searchCountInMonth(_selectedDay);
+    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    context.watch<Seller>();
+    _loadedMonths.clear();
+    _loadedCounts.clear();
     widget.handleDaySelected(_selectedDay);
+    _searchCountInMonth(_selectedDay);
   }
 
   Widget? _badgeBuilder(BuildContext context, DateTime day, List<int> value) {
@@ -136,7 +137,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   void _handlePageChange(DateTime day) {
-    // make calander page stay in current page
+    // make calender page stay in current page
     _focusedDay = day;
     if (!_loadedMonths.contains(_hashMonth(day))) {
       _searchCountInMonth(day);
