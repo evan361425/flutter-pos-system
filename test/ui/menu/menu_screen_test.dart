@@ -32,7 +32,7 @@ void main() {
       await tester.pumpAndSettle();
 
       mockImagePick(tester);
-      mockImageCropper(tester);
+      mockImageCropper();
       await tester.tap(find.byKey(const Key('modal.edit_image')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('modal.edit_image')), findsOneWidget);

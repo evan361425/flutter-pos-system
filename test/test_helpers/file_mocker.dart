@@ -1,7 +1,11 @@
 import 'package:file/memory.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:mockito/mockito.dart';
 import 'package:possystem/models/xfile.dart';
+
+import '../mocks/mock_helpers.dart';
 
 void initializeFileSystem() {
   XFile.fs = MemoryFileSystem();
@@ -22,19 +26,19 @@ void mockImagePick(WidgetTester tester, [bool canceled = false]) {
   );
 }
 
-void mockImageCropper(WidgetTester tester, [bool canceled = false]) {
-  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('plugins.hunghd.vn/image_cropper'),
-    (MethodCall methodCall) async {
-      if (canceled) return null;
+void mockImageCropper({bool canceled = false}) {
+  initializeImageCropper();
+  when(imageCropper.cropImage(
+    sourcePath: anyNamed('sourcePath'),
+    maxHeight: anyNamed('maxHeight'),
+    maxWidth: anyNamed('maxWidth'),
+    aspectRatio: anyNamed('aspectRatio'),
+    uiSettings: anyNamed('uiSettings'),
+  )).thenAnswer((_) async {
+    if (canceled) return null;
 
-      final tempDir = XFile.fs.systemTempDirectory.path;
-      final file = XFile('$tempDir/cropped-image');
-      await file.file.writeAsBytes(_examplePng);
-
-      return file.path;
-    },
-  );
+    return CroppedFile(await createImage('cropped-image'));
+  });
 }
 
 Future<String> createImage(String path) async {

@@ -122,7 +122,7 @@ class MockDatabase extends _i1.Mock implements _i3.Database {
                   <Map<String, Object?>>[]))
           as _i4.Future<List<Map<String, Object?>>>);
   @override
-  _i4.Future<void> tolerateMigration({int? newVersion = 5, int? oldVersion}) =>
+  _i4.Future<void> tolerateMigration({int? newVersion = 6, int? oldVersion}) =>
       (super.noSuchMethod(
           Invocation.method(#tolerateMigration, [],
               {#newVersion: newVersion, #oldVersion: oldVersion}),

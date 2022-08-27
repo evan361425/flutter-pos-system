@@ -77,7 +77,7 @@ void main() {
       await tester.pumpAndSettle();
 
       mockImagePick(tester);
-      mockImageCropper(tester, true);
+      mockImageCropper(canceled: true);
       await tester.tap(find.byIcon(KIcons.more));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.image_sharp));

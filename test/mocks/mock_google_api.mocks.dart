@@ -2,11 +2,11 @@
 // in possystem/test/mocks/mock_google_api.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
-import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as _i6;
+import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as _i5;
 import 'package:googleapis/drive/v3.dart' as _i2;
-import 'package:googleapis/shared.dart' as _i4;
+import 'package:googleapis/shared.dart' as _i6;
 import 'package:googleapis/sheets/v4.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -73,26 +73,30 @@ class _FakeSpreadsheet_19 extends _i1.Fake implements _i3.Spreadsheet {}
 class _FakeAppendValuesResponse_20 extends _i1.Fake
     implements _i3.AppendValuesResponse {}
 
-class _Fake$Response_21 extends _i1.Fake implements _i4.$Response {}
+class _FakeBatchClearValuesResponse_21 extends _i1.Fake
+    implements _i3.BatchClearValuesResponse {}
 
-class _FakeBatchGetValuesResponse_22 extends _i1.Fake
+class _FakeBatchClearValuesByDataFilterResponse_22 extends _i1.Fake
+    implements _i3.BatchClearValuesByDataFilterResponse {}
+
+class _FakeBatchGetValuesResponse_23 extends _i1.Fake
     implements _i3.BatchGetValuesResponse {}
 
-class _FakeBatchGetValuesByDataFilterResponse_23 extends _i1.Fake
+class _FakeBatchGetValuesByDataFilterResponse_24 extends _i1.Fake
     implements _i3.BatchGetValuesByDataFilterResponse {}
 
-class _FakeBatchUpdateValuesResponse_24 extends _i1.Fake
+class _FakeBatchUpdateValuesResponse_25 extends _i1.Fake
     implements _i3.BatchUpdateValuesResponse {}
 
-class _FakeBatchUpdateValuesByDataFilterResponse_25 extends _i1.Fake
+class _FakeBatchUpdateValuesByDataFilterResponse_26 extends _i1.Fake
     implements _i3.BatchUpdateValuesByDataFilterResponse {}
 
-class _FakeClearValuesResponse_26 extends _i1.Fake
+class _FakeClearValuesResponse_27 extends _i1.Fake
     implements _i3.ClearValuesResponse {}
 
-class _FakeValueRange_27 extends _i1.Fake implements _i3.ValueRange {}
+class _FakeValueRange_28 extends _i1.Fake implements _i3.ValueRange {}
 
-class _FakeUpdateValuesResponse_28 extends _i1.Fake
+class _FakeUpdateValuesResponse_29 extends _i1.Fake
     implements _i3.UpdateValuesResponse {}
 
 /// A class which mocks [DriveApi].
@@ -152,7 +156,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
   }
 
   @override
-  _i5.Future<_i2.File> copy(_i2.File? request, String? fileId,
+  _i4.Future<_i2.File> copy(_i2.File? request, String? fileId,
           {bool? enforceSingleParent,
           bool? ignoreDefaultVisibility,
           String? includePermissionsForView,
@@ -176,9 +180,9 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #$fields: $fields
               }),
               returnValue: Future<_i2.File>.value(_FakeFile_10()))
-          as _i5.Future<_i2.File>);
+          as _i4.Future<_i2.File>);
   @override
-  _i5.Future<_i2.File> create(_i2.File? request,
+  _i4.Future<_i2.File> create(_i2.File? request,
           {bool? enforceSingleParent,
           bool? ignoreDefaultVisibility,
           String? includePermissionsForView,
@@ -188,8 +192,8 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           bool? supportsTeamDrives,
           bool? useContentAsIndexableText,
           String? $fields,
-          _i6.UploadOptions? uploadOptions = _i6.UploadOptions.defaultOptions,
-          _i6.Media? uploadMedia}) =>
+          _i5.UploadOptions? uploadOptions = _i5.UploadOptions.defaultOptions,
+          _i5.Media? uploadMedia}) =>
       (super.noSuchMethod(
               Invocation.method(#create, [
                 request
@@ -207,9 +211,9 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #uploadMedia: uploadMedia
               }),
               returnValue: Future<_i2.File>.value(_FakeFile_10()))
-          as _i5.Future<_i2.File>);
+          as _i4.Future<_i2.File>);
   @override
-  _i5.Future<void> delete(String? fileId,
+  _i4.Future<void> delete(String? fileId,
           {bool? enforceSingleParent,
           bool? supportsAllDrives,
           bool? supportsTeamDrives,
@@ -224,25 +228,25 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
             #$fields: $fields
           }),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
-  _i5.Future<void> emptyTrash({bool? enforceSingleParent, String? $fields}) =>
+  _i4.Future<void> emptyTrash({bool? enforceSingleParent, String? $fields}) =>
       (super.noSuchMethod(
           Invocation.method(#emptyTrash, [],
               {#enforceSingleParent: enforceSingleParent, #$fields: $fields}),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
   @override
-  _i5.Future<_i6.Media?> export(String? fileId, String? mimeType,
+  _i4.Future<_i5.Media?> export(String? fileId, String? mimeType,
           {String? $fields,
-          _i6.DownloadOptions? downloadOptions =
-              _i6.DownloadOptions.metadata}) =>
+          _i5.DownloadOptions? downloadOptions =
+              _i5.DownloadOptions.metadata}) =>
       (super.noSuchMethod(
           Invocation.method(#export, [fileId, mimeType],
               {#$fields: $fields, #downloadOptions: downloadOptions}),
-          returnValue: Future<_i6.Media?>.value()) as _i5.Future<_i6.Media?>);
+          returnValue: Future<_i5.Media?>.value()) as _i4.Future<_i5.Media?>);
   @override
-  _i5.Future<_i2.GeneratedIds> generateIds(
+  _i4.Future<_i2.GeneratedIds> generateIds(
           {int? count, String? space, String? type, String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(#generateIds, [], {
@@ -253,16 +257,16 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
               }),
               returnValue:
                   Future<_i2.GeneratedIds>.value(_FakeGeneratedIds_11()))
-          as _i5.Future<_i2.GeneratedIds>);
+          as _i4.Future<_i2.GeneratedIds>);
   @override
-  _i5.Future<Object> get(String? fileId,
+  _i4.Future<Object> get(String? fileId,
           {bool? acknowledgeAbuse,
           String? includePermissionsForView,
           bool? supportsAllDrives,
           bool? supportsTeamDrives,
           String? $fields,
-          _i6.DownloadOptions? downloadOptions =
-              _i6.DownloadOptions.metadata}) =>
+          _i5.DownloadOptions? downloadOptions =
+              _i5.DownloadOptions.metadata}) =>
       (super.noSuchMethod(
               Invocation.method(#get, [
                 fileId
@@ -275,9 +279,9 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #downloadOptions: downloadOptions
               }),
               returnValue: Future<Object>.value(_FakeObject_12()))
-          as _i5.Future<Object>);
+          as _i4.Future<Object>);
   @override
-  _i5.Future<_i2.FileList> list(
+  _i4.Future<_i2.FileList> list(
           {String? corpora,
           String? corpus,
           String? driveId,
@@ -312,9 +316,9 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #$fields: $fields
               }),
               returnValue: Future<_i2.FileList>.value(_FakeFileList_13()))
-          as _i5.Future<_i2.FileList>);
+          as _i4.Future<_i2.FileList>);
   @override
-  _i5.Future<_i2.File> update(_i2.File? request, String? fileId,
+  _i4.Future<_i2.File> update(_i2.File? request, String? fileId,
           {String? addParents,
           bool? enforceSingleParent,
           String? includePermissionsForView,
@@ -325,8 +329,8 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           bool? supportsTeamDrives,
           bool? useContentAsIndexableText,
           String? $fields,
-          _i6.UploadOptions? uploadOptions = _i6.UploadOptions.defaultOptions,
-          _i6.Media? uploadMedia}) =>
+          _i5.UploadOptions? uploadOptions = _i5.UploadOptions.defaultOptions,
+          _i5.Media? uploadMedia}) =>
       (super.noSuchMethod(
               Invocation.method(#update, [
                 request,
@@ -346,16 +350,16 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #uploadMedia: uploadMedia
               }),
               returnValue: Future<_i2.File>.value(_FakeFile_10()))
-          as _i5.Future<_i2.File>);
+          as _i4.Future<_i2.File>);
   @override
-  _i5.Future<Object> watch(_i4.$Channel? request, String? fileId,
+  _i4.Future<Object> watch(_i6.$Channel? request, String? fileId,
           {bool? acknowledgeAbuse,
           String? includePermissionsForView,
           bool? supportsAllDrives,
           bool? supportsTeamDrives,
           String? $fields,
-          _i6.DownloadOptions? downloadOptions =
-              _i6.DownloadOptions.metadata}) =>
+          _i5.DownloadOptions? downloadOptions =
+              _i5.DownloadOptions.metadata}) =>
       (super.noSuchMethod(
               Invocation.method(#watch, [
                 request,
@@ -369,7 +373,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
                 #downloadOptions: downloadOptions
               }),
               returnValue: Future<Object>.value(_FakeObject_12()))
-          as _i5.Future<Object>);
+          as _i4.Future<Object>);
 }
 
 /// A class which mocks [SheetsApi].
@@ -411,7 +415,7 @@ class MockSpreadsheetsResource extends _i1.Mock
               returnValue: _FakeSpreadsheetsValuesResource_17())
           as _i3.SpreadsheetsValuesResource);
   @override
-  _i5.Future<_i3.BatchUpdateSpreadsheetResponse> batchUpdate(
+  _i4.Future<_i3.BatchUpdateSpreadsheetResponse> batchUpdate(
           _i3.BatchUpdateSpreadsheetRequest? request, String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
@@ -419,16 +423,16 @@ class MockSpreadsheetsResource extends _i1.Mock
                   #batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
               returnValue: Future<_i3.BatchUpdateSpreadsheetResponse>.value(
                   _FakeBatchUpdateSpreadsheetResponse_18()))
-          as _i5.Future<_i3.BatchUpdateSpreadsheetResponse>);
+          as _i4.Future<_i3.BatchUpdateSpreadsheetResponse>);
   @override
-  _i5.Future<_i3.Spreadsheet> create(_i3.Spreadsheet? request,
+  _i4.Future<_i3.Spreadsheet> create(_i3.Spreadsheet? request,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(#create, [request], {#$fields: $fields}),
               returnValue: Future<_i3.Spreadsheet>.value(_FakeSpreadsheet_19()))
-          as _i5.Future<_i3.Spreadsheet>);
+          as _i4.Future<_i3.Spreadsheet>);
   @override
-  _i5.Future<_i3.Spreadsheet> get(String? spreadsheetId,
+  _i4.Future<_i3.Spreadsheet> get(String? spreadsheetId,
           {bool? includeGridData, List<String>? ranges, String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(#get, [
@@ -439,16 +443,16 @@ class MockSpreadsheetsResource extends _i1.Mock
                 #$fields: $fields
               }),
               returnValue: Future<_i3.Spreadsheet>.value(_FakeSpreadsheet_19()))
-          as _i5.Future<_i3.Spreadsheet>);
+          as _i4.Future<_i3.Spreadsheet>);
   @override
-  _i5.Future<_i3.Spreadsheet> getByDataFilter(
+  _i4.Future<_i3.Spreadsheet> getByDataFilter(
           _i3.GetSpreadsheetByDataFilterRequest? request, String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(#getByDataFilter, [request, spreadsheetId],
                   {#$fields: $fields}),
               returnValue: Future<_i3.Spreadsheet>.value(_FakeSpreadsheet_19()))
-          as _i5.Future<_i3.Spreadsheet>);
+          as _i4.Future<_i3.Spreadsheet>);
 }
 
 /// A class which mocks [SpreadsheetsValuesResource].
@@ -461,7 +465,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
   }
 
   @override
-  _i5.Future<_i3.AppendValuesResponse> append(
+  _i4.Future<_i3.AppendValuesResponse> append(
           _i3.ValueRange? request, String? spreadsheetId, String? range,
           {bool? includeValuesInResponse,
           String? insertDataOption,
@@ -484,30 +488,30 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
               }),
               returnValue: Future<_i3.AppendValuesResponse>.value(
                   _FakeAppendValuesResponse_20()))
-          as _i5.Future<_i3.AppendValuesResponse>);
+          as _i4.Future<_i3.AppendValuesResponse>);
   @override
-  _i5.Future<_i4.$Response> batchClear(
+  _i4.Future<_i3.BatchClearValuesResponse> batchClear(
           _i3.BatchClearValuesRequest? request, String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #batchClear, [request, spreadsheetId], {#$fields: $fields}),
-              returnValue: Future<_i4.$Response>.value(_Fake$Response_21()))
-          as _i5.Future<_i4.$Response>);
+              returnValue: Future<_i3.BatchClearValuesResponse>.value(
+                  _FakeBatchClearValuesResponse_21()))
+          as _i4.Future<_i3.BatchClearValuesResponse>);
   @override
-  _i5.Future<_i4.$Response> batchClearByDataFilter(
+  _i4.Future<_i3.BatchClearValuesByDataFilterResponse> batchClearByDataFilter(
           _i3.BatchClearValuesByDataFilterRequest? request,
           String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
-              Invocation.method(
-                  #batchClearByDataFilter,
-                  [request, spreadsheetId],
-                  {#$fields: $fields}),
-              returnValue: Future<_i4.$Response>.value(_Fake$Response_21()))
-          as _i5.Future<_i4.$Response>);
+          Invocation.method(#batchClearByDataFilter, [request, spreadsheetId],
+              {#$fields: $fields}),
+          returnValue: Future<_i3.BatchClearValuesByDataFilterResponse>.value(
+              _FakeBatchClearValuesByDataFilterResponse_22())) as _i4
+          .Future<_i3.BatchClearValuesByDataFilterResponse>);
   @override
-  _i5.Future<_i3.BatchGetValuesResponse> batchGet(String? spreadsheetId,
+  _i4.Future<_i3.BatchGetValuesResponse> batchGet(String? spreadsheetId,
           {String? dateTimeRenderOption,
           String? majorDimension,
           List<String>? ranges,
@@ -524,30 +528,30 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
                 #$fields: $fields
               }),
               returnValue: Future<_i3.BatchGetValuesResponse>.value(
-                  _FakeBatchGetValuesResponse_22()))
-          as _i5.Future<_i3.BatchGetValuesResponse>);
+                  _FakeBatchGetValuesResponse_23()))
+          as _i4.Future<_i3.BatchGetValuesResponse>);
   @override
-  _i5.Future<_i3.BatchGetValuesByDataFilterResponse> batchGetByDataFilter(
+  _i4.Future<_i3.BatchGetValuesByDataFilterResponse> batchGetByDataFilter(
           _i3.BatchGetValuesByDataFilterRequest? request, String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(#batchGetByDataFilter, [request, spreadsheetId],
                   {#$fields: $fields}),
               returnValue: Future<_i3.BatchGetValuesByDataFilterResponse>.value(
-                  _FakeBatchGetValuesByDataFilterResponse_23()))
-          as _i5.Future<_i3.BatchGetValuesByDataFilterResponse>);
+                  _FakeBatchGetValuesByDataFilterResponse_24()))
+          as _i4.Future<_i3.BatchGetValuesByDataFilterResponse>);
   @override
-  _i5.Future<_i3.BatchUpdateValuesResponse> batchUpdate(
+  _i4.Future<_i3.BatchUpdateValuesResponse> batchUpdate(
           _i3.BatchUpdateValuesRequest? request, String? spreadsheetId,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
               returnValue: Future<_i3.BatchUpdateValuesResponse>.value(
-                  _FakeBatchUpdateValuesResponse_24()))
-          as _i5.Future<_i3.BatchUpdateValuesResponse>);
+                  _FakeBatchUpdateValuesResponse_25()))
+          as _i4.Future<_i3.BatchUpdateValuesResponse>);
   @override
-  _i5.Future<_i3.BatchUpdateValuesByDataFilterResponse> batchUpdateByDataFilter(
+  _i4.Future<_i3.BatchUpdateValuesByDataFilterResponse> batchUpdateByDataFilter(
           _i3.BatchUpdateValuesByDataFilterRequest? request,
           String? spreadsheetId,
           {String? $fields}) =>
@@ -555,20 +559,20 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           Invocation.method(#batchUpdateByDataFilter, [request, spreadsheetId],
               {#$fields: $fields}),
           returnValue: Future<_i3.BatchUpdateValuesByDataFilterResponse>.value(
-              _FakeBatchUpdateValuesByDataFilterResponse_25())) as _i5
+              _FakeBatchUpdateValuesByDataFilterResponse_26())) as _i4
           .Future<_i3.BatchUpdateValuesByDataFilterResponse>);
   @override
-  _i5.Future<_i3.ClearValuesResponse> clear(
-          _i4.$Empty? request, String? spreadsheetId, String? range,
+  _i4.Future<_i3.ClearValuesResponse> clear(
+          _i6.$Empty? request, String? spreadsheetId, String? range,
           {String? $fields}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #clear, [request, spreadsheetId, range], {#$fields: $fields}),
               returnValue: Future<_i3.ClearValuesResponse>.value(
-                  _FakeClearValuesResponse_26()))
-          as _i5.Future<_i3.ClearValuesResponse>);
+                  _FakeClearValuesResponse_27()))
+          as _i4.Future<_i3.ClearValuesResponse>);
   @override
-  _i5.Future<_i3.ValueRange> get(String? spreadsheetId, String? range,
+  _i4.Future<_i3.ValueRange> get(String? spreadsheetId, String? range,
           {String? dateTimeRenderOption,
           String? majorDimension,
           String? valueRenderOption,
@@ -583,10 +587,10 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
                 #valueRenderOption: valueRenderOption,
                 #$fields: $fields
               }),
-              returnValue: Future<_i3.ValueRange>.value(_FakeValueRange_27()))
-          as _i5.Future<_i3.ValueRange>);
+              returnValue: Future<_i3.ValueRange>.value(_FakeValueRange_28()))
+          as _i4.Future<_i3.ValueRange>);
   @override
-  _i5.Future<_i3.UpdateValuesResponse> update(
+  _i4.Future<_i3.UpdateValuesResponse> update(
           _i3.ValueRange? request, String? spreadsheetId, String? range,
           {bool? includeValuesInResponse,
           String? responseDateTimeRenderOption,
@@ -606,6 +610,6 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
                 #$fields: $fields
               }),
               returnValue: Future<_i3.UpdateValuesResponse>.value(
-                  _FakeUpdateValuesResponse_28()))
-          as _i5.Future<_i3.UpdateValuesResponse>);
+                  _FakeUpdateValuesResponse_29()))
+          as _i4.Future<_i3.UpdateValuesResponse>);
 }

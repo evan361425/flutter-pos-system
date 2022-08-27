@@ -33,7 +33,7 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(
-          find.byKey(const Key('sliber_image_app_bar.missed')), findsOneWidget);
+          find.byKey(const Key('sliver_image_app_bar.missed')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -114,7 +114,7 @@ void main() {
       await tester.pumpAndSettle();
 
       mockImagePick(tester);
-      mockImageCropper(tester);
+      mockImageCropper();
       await tester.tap(find.byKey(const Key('modal.edit_image')));
       await tester.pumpAndSettle();
 
@@ -233,7 +233,7 @@ void main() {
               MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
 
       mockImagePick(tester);
-      mockImageCropper(tester);
+      mockImageCropper();
       await tester.tap(find.byKey(const Key('item_more_action')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.image_sharp));

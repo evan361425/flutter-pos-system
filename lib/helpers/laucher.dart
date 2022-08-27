@@ -10,6 +10,6 @@ class Launcher {
       lastUrl = url;
       return true;
     }());
-    return l.launch(url);
+    return l.launchUrl(Uri.parse(url));
   }
 }

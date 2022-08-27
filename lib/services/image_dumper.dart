@@ -6,6 +6,8 @@ import 'package:possystem/models/xfile.dart';
 class ImageDumper {
   static ImageDumper instance = const ImageDumper._();
 
+  static ImageCropper cropper = ImageCropper();
+
   const ImageDumper._();
 
   /// After pick, it is always JPEG image
@@ -15,12 +17,12 @@ class ImageDumper {
 
     if (image == null) return null;
 
-    final result = await ImageCropper().cropImage(
+    final result = await cropper.cropImage(
       sourcePath: image.path,
       maxHeight: 512,
       maxWidth: 512,
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      androidUiSettings: const AndroidUiSettings(toolbarTitle: '裁切'),
+      uiSettings: [AndroidUiSettings(toolbarTitle: '裁切')],
     );
 
     return result == null ? null : XFile(result.path);
