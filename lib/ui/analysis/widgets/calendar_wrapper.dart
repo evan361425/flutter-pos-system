@@ -1,9 +1,11 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
@@ -47,6 +49,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<Seller>();
     return TableCalendar<int>(
       firstDay: DateTime(2021, 1),
       lastDay: DateTime.now(),

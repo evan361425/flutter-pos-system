@@ -163,7 +163,8 @@ void main() {
           .tap(find.byKey(const Key('order_cashier_product_list.attributes')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Test attr — Test opt'), findsOneWidget);
+      expect(find.text('Test attr'), findsOneWidget);
+      expect(find.text('Test opt'), findsOneWidget);
 
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();

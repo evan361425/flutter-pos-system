@@ -66,7 +66,10 @@ class OrderCashierProductList extends StatelessWidget {
             children: <Widget>[
               for (final attribute in attributes)
                 ListTile(
-                  title: Text('${attribute.name} — ${attribute.optionName}'),
+                  title: Row(children: [
+                    Text(attribute.name.toString()),
+                    OutlinedText(attribute.optionName.toString()),
+                  ]),
                   subtitle: OrderAttributeValueWidget(
                     attribute.mode,
                     attribute.modeValue,

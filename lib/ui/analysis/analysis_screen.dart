@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:provider/provider.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
@@ -17,8 +16,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<Seller>();
-
     return SafeArea(
       child: OrientationBuilder(
         key: const Key('analysis.builder'),
