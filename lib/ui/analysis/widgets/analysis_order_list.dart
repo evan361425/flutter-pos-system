@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -50,7 +54,8 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
           child: SmartRefresher(
             controller: _scrollController,
             enablePullUp: true,
-            enablePullDown: false,
+            enablePullDown: true,
+            onRefresh: () => _handleRefresh(),
             onLoading: () => _handleLoad(),
             footer: _buildFooter(),
             child: ListView.builder(
@@ -69,15 +74,16 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
     _scrollController = RefreshController();
   }
 
-  void reset(T params, {required num totalPrice, required int totalCount}) =>
-      setState(() {
-        this.totalPrice = totalPrice;
-        this.totalCount = totalCount;
-        _params = params;
-        _data.clear();
-        _isLoading = true;
-        _handleLoad();
-      });
+  void reset(T params, {required num totalPrice, required int totalCount}) {
+    setState(() {
+      this.totalPrice = totalPrice;
+      this.totalCount = totalCount;
+      _params = params;
+      _data.clear();
+      _isLoading = true;
+      _handleLoad();
+    });
+  }
 
   Widget _buildFooter() {
     return CustomFooter(
@@ -95,6 +101,12 @@ class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {
         }
       },
     );
+  }
+
+  void _handleRefresh() async {
+    _data.clear();
+    await _handleLoad();
+    _scrollController.refreshCompleted(resetFooterState: true);
   }
 
   Future<void> _handleLoad() async {
@@ -121,7 +133,17 @@ class _AnalysisOrderModal extends StatelessWidget {
         DateFormat.Hms(S.localeName).format(order.createdAt);
 
     return Scaffold(
-      appBar: AppBar(leading: const PopButton()),
+      appBar: AppBar(
+        leading: const PopButton(),
+        actions: [
+          IconButton(
+            key: const Key('analysis.more'),
+            onPressed: () => _showActions(context),
+            enableFeedback: true,
+            icon: const Icon(KIcons.more),
+          ),
+        ],
+      ),
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.all(4.0),
@@ -151,6 +173,23 @@ class _AnalysisOrderModal extends StatelessWidget {
           ),
         ),
       ]),
+    );
+  }
+
+  Future<void> _showActions(BuildContext context) async {
+    await BottomSheetActions.withDelete<_Action>(
+      context,
+      deleteCallback: () => showSnackbarWhenFailed(
+        Seller.instance.delete(order.id!),
+        context,
+        'analysis_delete_error',
+      ),
+      deleteValue: _Action.delete,
+      popAfterDeleted: true,
+      warningContent: Text(S.dialogDeletionContent(
+        DateFormat.Hm(S.localeName).format(order.createdAt) + '的訂單',
+        '',
+      )),
     );
   }
 }
@@ -193,4 +232,8 @@ class _OrderTile extends StatelessWidget {
       ),
     );
   }
+}
+
+enum _Action {
+  delete,
 }

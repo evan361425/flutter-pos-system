@@ -128,7 +128,7 @@ class _ProductTile extends StatelessWidget {
         S.orderCashierProductMetaCost(data.totalCost!),
     ]);
 
-    return data.ingredientNames.isEmpty
+    final widget = data.ingredientNames.isEmpty
         ? ListTile(
             title: title,
             subtitle: subtitle,
@@ -145,5 +145,7 @@ class _ProductTile extends StatelessWidget {
               const SizedBox(height: 8.0),
             ],
           );
+
+    return widget;
   }
 }

@@ -10,6 +10,7 @@ import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
@@ -17,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../mocks/mock_cache.dart';
+import '../../../mocks/mock_database.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
@@ -62,7 +64,7 @@ void main() {
       expect(loadCount, equals(1));
     });
 
-    testWidgets('should load more', (tester) async {
+    testWidgets('should load more and refresh', (tester) async {
       final orderListState = GlobalKey<AnalysisOrderListState>();
       final data = [
         OrderObject.fromMap({'id': 1}),
@@ -103,10 +105,14 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(loadCount, equals(3));
+
+      await tester.dragFrom(center, const Offset(0, 1000));
+      await tester.pumpAndSettle();
+
+      expect(loadCount, equals(4));
     });
 
-    testWidgets('should navigate to modal', (tester) async {
-      final orderListState = GlobalKey<AnalysisOrderListState>();
+    OrderObject getOrder() {
       final product = OrderProductObject(
           singlePrice: 1,
           originalPrice: 2,
@@ -139,7 +145,7 @@ void main() {
           ..prepareItem(),
       });
 
-      final order = OrderObject.fromMap({
+      return OrderObject.fromMap({
         'id': 1,
         'encodedProducts': '[${jsonEncode(product.toMap())}]',
         'encodedAttributes': jsonEncode([
@@ -147,6 +153,11 @@ void main() {
           OrderSelectedAttributeObject.fromId('2', '4').toMap(),
         ]),
       });
+    }
+
+    testWidgets('should navigate to modal', (tester) async {
+      final orderListState = GlobalKey<AnalysisOrderListState>();
+      final order = getOrder();
 
       await tester.pumpWidget(buildApp(Material(
         child: AnalysisOrderList(
@@ -170,9 +181,38 @@ void main() {
       await tester.pumpAndSettle();
     });
 
+    testWidgets('should delete order', (tester) async {
+      when(database.delete(any, 1)).thenAnswer((_) => Future.value());
+      final orderListState = GlobalKey<AnalysisOrderListState>();
+      final order = getOrder();
+
+      await tester.pumpWidget(buildApp(Material(
+        child: AnalysisOrderList(
+            key: orderListState,
+            handleLoad: (_, __) => Future.value(<OrderObject>[order])),
+      )));
+
+      orderListState.currentState?.reset({}, totalPrice: 0, totalCount: 0);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('analysis.order_list.1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('analysis.more')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('btn.delete')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      verify(database.delete(any, any));
+    });
+
     setUpAll(() {
       initializeCache();
       initializeTranslator();
+      initializeDatabase();
+      // init seller
+      Seller();
     });
   });
 }
