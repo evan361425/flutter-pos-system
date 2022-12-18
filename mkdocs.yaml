@@ -11,6 +11,7 @@ nav:
   - 架構: about/structure.md
   - 維運:
       - 部署流程: maintenance/deployment.md
+      - 本地端開發: maintenance/development.md
       - 升版相依套件: maintenance/bump-dependencies.md
   - 文件:
       - 開發公約: CODE_OF_CONDUCT.md

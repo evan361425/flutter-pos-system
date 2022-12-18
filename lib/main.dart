@@ -35,6 +35,7 @@ void main() async {
       FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
       await Firebase.initializeApp(
+        name: 'Flutter POS-System',
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
