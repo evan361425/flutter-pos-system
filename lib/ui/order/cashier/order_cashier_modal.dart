@@ -43,7 +43,7 @@ class OrderCashierModal extends StatelessWidget {
       ),
       child: OrderCashierCalculator(
         key: calculator,
-        onTextChanged: (value) => collapsed.paidChanged(num.tryParse(value)),
+        onTextChanged: (value) => collapsed.paidChanged(value),
         onSubmit: handleSubmit,
         totalPrice: totalPrice,
       ),

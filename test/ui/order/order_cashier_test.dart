@@ -163,6 +163,10 @@ void main() {
       });
     }
 
+    Finder fCKey(String key) {
+      return find.byKey(Key('cashier.calculator.$key'));
+    }
+
     testWidgets('Order without any product', (tester) async {
       Cart.instance = Cart();
 
@@ -209,7 +213,7 @@ void main() {
 
       verifyText(String key, String expectValue) {
         expect(
-          tester.widget<Text>(find.byKey(Key('cashier.calculator.$key'))).data,
+          tester.widget<Text>(fCKey(key)).data,
           equals(expectValue),
         );
       }
@@ -217,69 +221,79 @@ void main() {
       verifyText('paid', '30');
       verifyText('change', '2');
 
-      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.dot')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.1')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.2')));
+      await tester.tap(fCKey('clear'));
+      await tester.tap(fCKey('dot'));
+      await tester.tap(fCKey('1'));
+      await tester.tap(fCKey('2'));
       await tester.pumpAndSettle();
 
       verifyText('paid', '0.12');
       expect(
-        find.byKey(const Key('cashier.calculator.change.error')),
+        fCKey('change.error'),
         findsOneWidget,
       );
-      await tester.tap(find.byKey(const Key('cashier.calculator.submit')));
+      await tester.tap(fCKey('submit'));
       await tester.pump();
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.3')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.4')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.5')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.6')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.7')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.dot')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.8')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.ceil')));
+      await tester.tap(fCKey('clear'));
+      await tester.tap(fCKey('3'));
+      await tester.tap(fCKey('4'));
+      await tester.tap(fCKey('5'));
+      await tester.tap(fCKey('plus'));
       await tester.pumpAndSettle();
 
-      verifyText('paid', '34568');
-      verifyText('change', '34540');
+      verifyText('paid', '345+');
+      verifyText('change', '317');
 
-      await tester.tap(find.byKey(const Key('cashier.calculator.back')));
+      // drag to show the bellow button
+      await tester.drag(fCKey('6'), const Offset(0, -500));
       await tester.pumpAndSettle();
 
-      verifyText('paid', '3456');
-      verifyText('change', '3428');
+      await tester.tap(fCKey('6'));
+      await tester.tap(fCKey('7'));
+      await tester.tap(fCKey('dot'));
+      await tester.tap(fCKey('8'));
+      await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.calculator.clear')));
+      verifyText('paid', '345+67.8');
+      verifyText('change', '384.8');
+
+      await tester.tap(fCKey('ceil'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '413');
+      verifyText('change', '385');
+
+      await tester.tap(fCKey('minus'));
+      await tester.tap(fCKey('6'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '413-6');
+      verifyText('change', '379');
+
+      await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 
       expect(
-        tester
-            .widget<HintText>(
-                find.byKey(const Key('cashier.calculator.paid.hint')))
-            .text,
+        tester.widget<HintText>(fCKey('paid.hint')).text,
         equals('28'),
       );
       expect(
-        tester
-            .widget<HintText>(
-                find.byKey(const Key('cashier.calculator.change.hint')))
-            .text,
+        tester.widget<HintText>(fCKey('change.hint')).text,
         equals('0'),
       );
 
-      await tester.tap(find.byKey(const Key('cashier.calculator.9')));
-      await tester.tap(find.byKey(const Key('cashier.calculator.0')));
+      await tester.tap(fCKey('9'));
+      await tester.tap(fCKey('0'));
       await tester.pumpAndSettle();
 
       verifyText('paid', '90');
       verifyText('change', '62');
 
       await tester.drag(
-        find.byKey(const Key('cashier.calculator.paid')),
+        fCKey('paid'),
         const Offset(0, 500),
       );
       await tester.pumpAndSettle();

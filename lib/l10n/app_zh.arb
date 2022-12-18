@@ -870,7 +870,7 @@
   },
   "orderCashierCalculatorPaidLabel": "付額",
   "orderCashierCalculatorChangeLabel": "找錢",
-  "orderCashierCalculatorChangeNotEnough": "必須大於付額",
+  "orderCashierCalculatorChangeNotEnough": "必須大於訂單總價",
   "orderCashierSnapshotChangeField": "找錢：{price}",
   "@orderCashierSnapshotChangeField": {
     "description": "快照上說明的找錢資訊",

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -89,7 +91,8 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
     return SlidingUpPanel(
       controller: controller,
       minHeight: widget.minHeight,
-      maxHeight: widget.maxHeight,
+      // 88 for appBar
+      maxHeight: min(MediaQuery.of(context).size.height - 88, widget.maxHeight),
       backdropEnabled: widget.backdropEnabled,
       renderPanelSheet: widget.renderPanelSheet,
       borderRadius: BorderRadius.circular(widget.borderRadius),

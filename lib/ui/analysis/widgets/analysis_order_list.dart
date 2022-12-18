@@ -126,12 +126,13 @@ class _AnalysisOrderModal extends StatelessWidget {
 
   const _AnalysisOrderModal(this.order);
 
+  get createdAt =>
+      DateFormat.MEd(S.localeName).format(order.createdAt) +
+      ' ' +
+      DateFormat.Hms(S.localeName).format(order.createdAt);
+
   @override
   Widget build(BuildContext context) {
-    final createdAt = DateFormat.MEd(S.localeName).format(order.createdAt) +
-        ' ' +
-        DateFormat.Hms(S.localeName).format(order.createdAt);
-
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
@@ -186,10 +187,8 @@ class _AnalysisOrderModal extends StatelessWidget {
       ),
       deleteValue: _Action.delete,
       popAfterDeleted: true,
-      warningContent: Text(S.dialogDeletionContent(
-        DateFormat.Hm(S.localeName).format(order.createdAt) + '的訂單',
-        '',
-      )),
+      warningContent:
+          Text(S.dialogDeletionContent(createdAt + '的訂單', '庫存和收銀台的資料將不會調整回來且')),
     );
   }
 }
