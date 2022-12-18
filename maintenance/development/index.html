@@ -10,14 +10,14 @@
       
       
       
-        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/maintenance/bump-dependencies/">
+        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/maintenance/development/">
       
       <link rel="icon" href="../../images/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
-        <title>升版相依套件 - POS 系統</title>
+        <title>本地端開發 - POS 系統</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              升版相依套件
+              本地端開發
             
           </span>
         </div>
@@ -390,20 +390,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../development/" class="md-nav__link">
-        本地端開發
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -415,48 +401,24 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          升版相依套件
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
-        升版相依套件
+        本地端開發
       </a>
       
-        
+    </li>
+  
 
-<nav class="md-nav md-nav--secondary" aria-label="目錄">
+            
+          
+            
+              
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目錄
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    如何查找哪些套件需要更新
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    如何升級
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
+    <li class="md-nav__item">
+      <a href="../bump-dependencies/" class="md-nav__link">
+        升版相依套件
+      </a>
     </li>
   
 
@@ -564,28 +526,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目錄
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    如何查找哪些套件需要更新
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    如何升級
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -598,51 +538,74 @@
                 
                   
 
-  <a href="https://github.com/evan361425/flutter-pos-system/edit/master/maintenance/bump-dependencies.md" title="編輯此頁" class="md-content__button md-icon">
+  <a href="https://github.com/evan361425/flutter-pos-system/edit/master/maintenance/development.md" title="編輯此頁" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="_1">更新相依套件<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>分三種：</p>
-<ul>
-<li>dependencies，直接依賴的套件</li>
-<li>dev_dependencies，開發環境依賴的套件</li>
-<li>transitive，依賴套件的依賴套件</li>
-</ul>
-<h2 id="_2">如何查找哪些套件需要更新<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>$ flutter pub outdated --no-transitive --no-prereleases
-howing outdated packages.
-<span class="o">[</span>*<span class="o">]</span> indicates versions that are not the latest available.
-
-Package Name   Current   Upgradable  Resolvable  Latest
-
-direct dependencies:
-some_package   *3.2.0    *3.2.0      *3.2.0      <span class="m">4</span>.0.0
-
-dev_dependencies:
-dev_package    *1.0.0    *1.0.0      *1.1.0      <span class="m">1</span>.1.0
+<h1 id="_1">本地端開發<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>正常程式碼開發只需要：</p>
+<div class="highlight"><pre><span></span><code>pub get
 </code></pre></div>
-<p>但要注意幾件事：</p>
+<p>就可以安裝你需要的東西了，但如果你想要建置應用程式，你需要三個東西：</p>
 <ul>
-<li><code>Current</code> 代表現在的版本</li>
-<li><code>Upgradable</code> 代表依據<a href="https://dart.dev/tools/pub/dependencies#version-constraints">版本限制</a>所能升級的最高版本</li>
-<li><code>Resolvable</code> 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本</li>
-<li><code>Latest</code> 代表這個套件目前最新的版本</li>
+<li><code>/android/app/&lt;any-name&gt;.jks</code>，這是用來存放你的鑰匙的，確保你就是這個應用程式的擁有者，你可以這樣產生：</li>
 </ul>
-<h2 id="_3">如何升級<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>根據上面得到想要升級的版本後</p>
-<div class="highlight"><pre><span></span><code>flutter pub upgrade some_package
+<div class="highlight"><pre><span></span><code>$ keytool -genkey -v -keystore android/my-jks.jks -alias alias_name -keyalg RSA -keysize <span class="m">2048</span> -validity <span class="m">10000</span>
+Enter keystore password: &lt;輸入你的密碼&gt;
+Re-enter new password: &lt;輸入你的密碼&gt;
+What is your first and last name?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+What is the name of your organizational unit?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+What is the name of your organization?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+What is the name of your City or Locality?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+What is the name of your State or Province?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+What is the two-letter country code <span class="k">for</span> this unit?
+  <span class="o">[</span>Unknown<span class="o">]</span>:  
+Is <span class="nv">CN</span><span class="o">=</span>Unknown, <span class="nv">OU</span><span class="o">=</span>Unknown, <span class="nv">O</span><span class="o">=</span>Unknown, <span class="nv">L</span><span class="o">=</span>Unknown, <span class="nv">ST</span><span class="o">=</span>Unknown, <span class="nv">C</span><span class="o">=</span>Unknown correct?
+  <span class="o">[</span>no<span class="o">]</span>:  y
+
+Generating <span class="m">2</span>,048 bit RSA key pair and self-signed certificate <span class="o">(</span>SHA256withRSA<span class="o">)</span> with a validity of <span class="m">10</span>,000 days
+        <span class="k">for</span>: <span class="nv">CN</span><span class="o">=</span>Unknown, <span class="nv">OU</span><span class="o">=</span>Unknown, <span class="nv">O</span><span class="o">=</span>Unknown, <span class="nv">L</span><span class="o">=</span>Unknown, <span class="nv">ST</span><span class="o">=</span>Unknown, <span class="nv">C</span><span class="o">=</span>Unknown
+<span class="o">[</span>Storing android/app/my-jks.jks<span class="o">]</span>
 </code></pre></div>
-<p>這樣的方式可以同時升級 Transitive 的套件。</p>
+<div class="admonition info">
+<p class="admonition-title">位置</p>
+<p>產生的 keystore 請放在 <code>/android/app/</code> 資料夾底下！</p>
+</div>
+<ul>
+<li><code>/android/key.properties</code>，用來告訴建置應用程式時，你的鑰匙放哪裡，他裡面需要這些東西（依照上述產生範例）：<ul>
+<li><code>keyAlias=alias_name</code></li>
+<li><code>keyPassword=&lt;輸入你的密碼&gt;</code>，keyPassword 如果你沒特別設定，預設和 storePassword 一樣</li>
+<li><code>storeFile=my-jks.jks</code></li>
+<li><code>storePassword=&lt;輸入你的密碼&gt;</code></li>
+</ul>
+</li>
+<li><code>/android/app/google-services.json</code>，你可以到 <a href="https://console.firebase.google.com/">Firebase Console</a> 去產生，
+    但是記得要在 <em>專案設定</em> 裡面去設定剛剛產生的金鑰 SHA 憑證指紋，你可以這樣輸出：</li>
+</ul>
+<div class="highlight"><pre><span></span><code>$ keytool -list -keystore android/my-jks.jks -alias alias_name
+Enter keystore password:
+alias_name, Dec <span class="m">18</span>, <span class="m">2022</span>, PrivateKeyEntry, 
+Certificate fingerprint <span class="o">(</span>SHA-256<span class="o">)</span>: B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:01:39:2C:62:C7:6B:EB:2B:89:3D:48:63:4D:59:D8:A1:9C
+</code></pre></div>
+<ul>
+<li>最後請更改 <code>/lib/firebase_compatible_options.dart</code> 裡面最下面的 <code>androidDebug</code> ID。
+    你可以 <code>dart pub global activate flutterfire_cli</code> 安裝指令套件後 <code>flutterfire configure</code>，
+    然後把產生的檔案的設定資訊複製到 <code>firebase_compatible_options.dart</code> 中。</li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       最後更新:
-      2022-08-27
+      2022-12-18
     
   </small>
 </div>
@@ -668,7 +631,7 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      <span class="m">1</span>.1.0
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../development/" class="md-footer__link md-footer__link--prev" aria-label="上一頁: 本地端開發" rel="prev">
+        <a href="../deployment/" class="md-footer__link md-footer__link--prev" aria-label="上一頁: 部署流程" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -677,20 +640,20 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      <span class="m">1</span>.1.0
               <span class="md-footer__direction">
                 上一頁
               </span>
-              本地端開發
+              部署流程
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../CODE_OF_CONDUCT/" class="md-footer__link md-footer__link--next" aria-label="下一頁: 開發公約" rel="next">
+        <a href="../bump-dependencies/" class="md-footer__link md-footer__link--next" aria-label="下一頁: 升版相依套件" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 下一頁
               </span>
-              開發公約
+              升版相依套件
             </div>
           </div>
           <div class="md-footer__button md-icon">
