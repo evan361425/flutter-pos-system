@@ -54,3 +54,17 @@ Certificate fingerprint (SHA-256): B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:
 -   最後請更改 `/lib/firebase_compatible_options.dart` 裡面最下面的 `androidDebug` ID。
     你可以 `dart pub global activate flutterfire_cli` 安裝指令套件後 `flutterfire configure`，
     然後把產生的檔案的設定資訊複製到 `firebase_compatible_options.dart` 中。
+
+## 測試
+
+如果你想要測試，你可以
+
+    flutter test
+
+如果想要測試加上 coverage，你可以
+
+    flutter test --coverage
+
+最後產出 `./coverage/lconv.info` 後就可以
+
+    genhtml coverage/lcov.info -o coverage/html

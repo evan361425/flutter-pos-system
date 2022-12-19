@@ -58,22 +58,10 @@ class Stock extends ChangeNotifier
   Future<void> order(OrderObject data, {OrderObject? oldData}) async {
     final amounts = <String, num>{};
 
-    for (var product in data.products) {
-      for (var ingredient in product.ingredients) {
-        amounts[ingredient.id] =
-            (amounts[ingredient.id] ?? 0) - ingredient.amount;
-      }
-    }
+    data.fillIngredient(amounts, add: false);
 
     // if we need to update order, need to revert stock status
-    if (oldData != null) {
-      for (var product in oldData.products) {
-        for (var ingredient in product.ingredients) {
-          amounts[ingredient.id] =
-              (amounts[ingredient.id] ?? 0) + ingredient.amount;
-        }
-      }
-    }
+    oldData?.fillIngredient(amounts, add: true);
 
     return applyAmounts(amounts, onlyAmount: true);
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/database.dart';
 
 class Seller extends ChangeNotifier {
@@ -119,8 +122,17 @@ class Seller extends ChangeNotifier {
     return row == null ? null : OrderObject.fromMap(row);
   }
 
-  Future<void> delete(int id) async {
-    await Database.instance.delete(orderTable, id);
+  /// Should do backward with [Cart.instance.paid]
+  Future<void> delete(OrderObject order, bool withOther) async {
+    if (withOther) {
+      Log.ger('products: ${order.products.length}, price: ${order.totalPrice}',
+          'order_delete');
+
+      await Stock.instance.order(OrderObject(products: []), oldData: order);
+      await Cashier.instance.paid(0, 0, oldPrice: order.totalPrice);
+    }
+
+    await Database.instance.delete(orderTable, order.id);
 
     notifyListeners();
   }

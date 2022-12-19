@@ -180,45 +180,49 @@ class Cashier extends ChangeNotifier {
   /// [oldPrice] 是當在做編輯歷史訂單時需要考慮的
   Future<CashierUpdateStatus> paid(
     num given,
-    num price, [
-    num? oldPrice,
-  ]) async {
-    final deltas = <int, int>{};
+    num price, {
+    num oldPrice = 0,
+  }) async {
+    final amounts = <int, int>{};
 
-    CashierUpdateStatus _giveOrTakeByPrice(num price, bool isGiven) {
-      if (price == 0) return CashierUpdateStatus.ok;
+    smallChange(amounts, given);
+    final status = smallChange(amounts, given - price + oldPrice, add: false);
 
-      var index = unitLength - 1;
-      var status = CashierUpdateStatus.ok;
+    await update(amounts);
 
-      for (var item in _current.reversed) {
-        if (item.unit <= price) {
-          final d = deltas[index] ?? 0;
-          // 35 dollar should use 3 of 10 dollar
-          final shouldUse = (price / item.unit).floor();
-          // should use smaller than cashier have
-          final count = isGiven ? shouldUse : min(shouldUse, item.count + d);
-          if (count != shouldUse) {
-            status = CashierUpdateStatus.usingSmall;
-          }
+    return status;
+  }
 
-          deltas[index] = d + (isGiven ? count : -count);
-          price -= item.unit * count;
+  CashierUpdateStatus smallChange(
+    Map<int, int> amounts,
+    num price, {
+    bool add = true,
+  }) {
+    if (price == 0) return CashierUpdateStatus.ok;
 
-          if (price == 0) return status;
+    var index = unitLength - 1;
+    var status = CashierUpdateStatus.ok;
+
+    for (var item in _current.reversed) {
+      if (item.unit <= price) {
+        final willAdd = amounts[index] ?? 0;
+        // 35 dollar should use 3 of 10 dollar
+        final shouldUse = (price / item.unit).floor();
+        // should use smaller than cashier have
+        final count = add ? shouldUse : min(shouldUse, item.count + willAdd);
+        if (count != shouldUse) {
+          status = CashierUpdateStatus.usingSmall;
         }
-        index--;
-      }
 
-      return CashierUpdateStatus.notEnough;
+        amounts[index] = willAdd + (add ? count : -count);
+        price -= item.unit * count;
+
+        if (price == 0) return status;
+      }
+      index--;
     }
 
-    _giveOrTakeByPrice(given, true);
-    final result = _giveOrTakeByPrice(given - price + (oldPrice ?? 0), false);
-
-    await update(deltas);
-
-    return result;
+    return CashierUpdateStatus.notEnough;
   }
 
   /// Add [count] money of unit at [index] to cashier

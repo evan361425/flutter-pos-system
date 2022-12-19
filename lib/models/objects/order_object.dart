@@ -39,15 +39,24 @@ class OrderObject {
   OrderObject({
     this.id,
     this.paid,
-    required this.totalPrice,
-    required this.productsPrice,
-    required this.totalCount,
+    this.totalPrice = 0,
+    this.productsPrice = 0,
+    this.totalCount = 0,
     this.productNames,
     this.ingredientNames,
     this.attributes = const [],
     required this.products,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
+
+  void fillIngredient(Map<String, num> amounts, {required bool add}) {
+    for (final product in products) {
+      for (final ing in product.ingredients) {
+        amounts[ing.id] =
+            (amounts[ing.id] ?? 0) + (add ? ing.amount : -ing.amount);
+      }
+    }
+  }
 
   List<OrderProduct?> parseToProductWithNull() {
     return products.map<OrderProduct?>((orderProduct) {

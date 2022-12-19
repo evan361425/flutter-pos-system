@@ -107,7 +107,7 @@ class BottomSheetActions extends StatelessWidget {
   /// [deleteValue] - Action type
   /// [warningContent] - Content of warning in [DeleteDialog], `null` to disable confirm
   /// [deleteCallback] - Callback after confirmed
-  /// [popAfterDeleted] - Wheather `Navigator.of(context).pop` after deleted
+  /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
   static Future<T?> withDelete<T>(
     BuildContext context, {
     List<BottomSheetAction> actions = const [],

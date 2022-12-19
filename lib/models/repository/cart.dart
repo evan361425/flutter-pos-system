@@ -221,6 +221,15 @@ class Cart extends ChangeNotifier {
     num? paid,
     OrderObject? object,
   }) async {
+    for (final item in OrderAttributes.instance.notEmptyItems) {
+      if (!attributes.containsKey(item.id)) {
+        final option = item.defaultOption;
+        if (option != null) {
+          attributes[item.id] = option.id;
+        }
+      }
+    }
+
     return OrderObject(
       id: object?.id,
       paid: paid,
@@ -274,7 +283,7 @@ class Cart extends ChangeNotifier {
     final cashierResult = await Cashier.instance.paid(
       paid,
       price,
-      oldData?.totalPrice,
+      oldPrice: oldData?.totalPrice ?? 0,
     );
 
     return cashierResult;

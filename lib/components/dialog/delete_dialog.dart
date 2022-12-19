@@ -34,7 +34,7 @@ class DeleteDialog extends StatelessWidget {
   ///
   /// [warningContent] - Content of warning in [DeleteDialog], `null` to disable confirm
   /// [deleteCallback] - Callback after confirmed
-  /// [popAfterDeleted] - Wheather `Navigator.of(context).pop` after deleted
+  /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
   static Future<void> show(
     BuildContext context, {
     required Future<void> Function() deleteCallback,
