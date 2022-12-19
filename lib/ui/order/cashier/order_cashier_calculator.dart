@@ -25,6 +25,8 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   final paidState = GlobalKey<_SingleFieldState>();
   final changeState = GlobalKey<_SingleFieldState>();
 
+  bool isOperating = false;
+
   String get text => paidState.currentState?.text ?? '';
 
   set text(String value) {
@@ -44,6 +46,8 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(children: [
       Column(children: [
         _SingleField(
@@ -65,55 +69,73 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
       Expanded(
         child: Center(
           child: SingleChildScrollView(
-            child: Column(children: [
-              Row(mainAxisSize: MainAxisSize.min, children: [
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorPostfixAction(action: execPostfix, text: '1'),
+                _CalculatorPostfixAction(action: execPostfix, text: '4'),
+                _CalculatorPostfixAction(action: execPostfix, text: '7'),
+                _CalculatorPostfixAction(action: execPostfix, text: '00'),
+              ]),
+              Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorPostfixAction(action: execPostfix, text: '2'),
+                _CalculatorPostfixAction(action: execPostfix, text: '5'),
+                _CalculatorPostfixAction(action: execPostfix, text: '8'),
+                _CalculatorPostfixAction(action: execPostfix, text: '0'),
+              ]),
+              Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorPostfixAction(action: execPostfix, text: '3'),
+                _CalculatorPostfixAction(action: execPostfix, text: '6'),
+                _CalculatorPostfixAction(action: execPostfix, text: '9'),
+                _CalculatorAction(
+                  key: const Key('cashier.calculator.dot'),
+                  action: execDot,
+                  child: const Text('.'),
+                ),
+              ]),
+              Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorAction(
                   key: const Key('cashier.calculator.plus'),
-                  action: execPlus,
+                  action: () => addOperator('+'),
+                  color: theme.colorScheme.secondary,
                   child: const Icon(Icons.add_sharp),
                 ),
-              ]),
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: execPostfix, text: '4'),
-                _CalculatorPostfixAction(action: execPostfix, text: '5'),
-                _CalculatorPostfixAction(action: execPostfix, text: '6'),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.minus'),
-                  action: execMinus,
+                  action: () => addOperator('-'),
+                  color: theme.colorScheme.secondary,
                   child: const Icon(Icons.remove_sharp),
                 ),
-              ]),
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: execPostfix, text: '7'),
-                _CalculatorPostfixAction(action: execPostfix, text: '8'),
-                _CalculatorPostfixAction(action: execPostfix, text: '9'),
+                _CalculatorAction(
+                  key: const Key('cashier.calculator.times'),
+                  action: () => addOperator('x'),
+                  color: theme.colorScheme.secondary,
+                  child: const Icon(Icons.clear_sharp),
+                ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.ceil'),
                   action: execCeil,
+                  color: theme.colorScheme.secondary,
                   child: const Icon(Icons.merge_type_rounded),
                 ),
               ]),
-              Row(mainAxisSize: MainAxisSize.min, children: [
+              Column(mainAxisSize: MainAxisSize.min, children: [
+                _CalculatorAction(
+                  key: const Key('cashier.calculator.back'),
+                  action: execBack,
+                  color: theme.errorColor,
+                  child: const Icon(Icons.arrow_back_rounded),
+                ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.clear'),
                   action: execClear,
-                  child: const Icon(Icons.clear_sharp),
+                  color: theme.errorColor,
+                  child: const Icon(Icons.refresh_sharp),
                 ),
-                _CalculatorPostfixAction(action: execPostfix, text: '0'),
-                CurrencySetting.instance.isInt
-                    ? const SizedBox(width: 64, height: 64)
-                    : _CalculatorAction(
-                        key: const Key('cashier.calculator.dot'),
-                        action: execDot,
-                        child: const Text('.'),
-                      ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.submit'),
-                  action: widget.onSubmit,
-                  child: const Icon(Icons.done_rounded),
+                  action: execSubmit,
+                  height: 128,
+                  child: Text(isOperating ? '=' : S.orderCashierActionsOrder),
                 ),
               ]),
             ]),
@@ -123,15 +145,12 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     ]);
   }
 
-  void execPlus() {
+  void addOperator(String operator) {
     if (text.isNotEmpty) {
-      text = calc(text).toCurrency() + '+';
-    }
-  }
-
-  void execMinus() {
-    if (text.isNotEmpty) {
-      text = calc(text).toCurrency() + '-';
+      text = calc(text).toCurrency() + operator;
+      setState(() {
+        isOperating = true;
+      });
     }
   }
 
@@ -141,9 +160,26 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     text = ceilPrice.toCurrency();
   }
 
+  void execBack() {
+    if (text.isNotEmpty) {
+      text = text.substring(0, text.length - 1);
+    }
+  }
+
   void execClear() {
     if (text.isNotEmpty) {
       text = '';
+    }
+  }
+
+  void execSubmit() {
+    if (isOperating) {
+      setState(() {
+        isOperating = false;
+      });
+      text = calc(text).toCurrency();
+    } else {
+      widget.onSubmit();
     }
   }
 
@@ -164,15 +200,17 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   num calc(String val, [num other = 0]) {
     final fallback = num.tryParse(val) ?? other;
     try {
-      final deli = ['+', '-'].firstWhere((e) => val.contains(e));
-      final parts = val.split(deli).map((e) => num.tryParse(e) ?? 0).toList();
-      if (parts.length < 2) return fallback;
+      final deli = ['+', '-', 'x'].firstWhere((e) => val.contains(e));
+      final parts = val.split(deli).map((e) => num.tryParse(e)).toList();
+
       switch (deli) {
         case '+':
-          return parts[0] + parts[1];
+          return parts[0]! + (parts[1] ?? 0);
         case '-':
+          return parts[0]! - (parts[1] ?? 0);
+        case 'x':
         default:
-          return parts[0] - parts[1];
+          return parts[0]! * (parts[1] ?? 1);
       }
     } on StateError {
       return fallback;
@@ -183,17 +221,27 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
 class _CalculatorAction extends StatelessWidget {
   final VoidCallback action;
 
+  final double height;
+
+  final Color? color;
+
   final Widget child;
 
-  const _CalculatorAction({Key? key, required this.action, required this.child})
-      : super(key: key);
+  const _CalculatorAction({
+    Key? key,
+    required this.action,
+    required this.child,
+    this.height = 64,
+    this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 64,
-      height: 64,
+      height: height,
       child: OutlinedButton(
+        style: OutlinedButton.styleFrom(primary: color),
         onPressed: action,
         child: child,
       ),

@@ -185,7 +185,7 @@ void main() {
 
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
-      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
+      tester.binding.window.physicalSizeTestValue = const Size(1500, 3000);
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(
@@ -212,10 +212,7 @@ void main() {
       await tester.pumpAndSettle();
 
       verifyText(String key, String expectValue) {
-        expect(
-          tester.widget<Text>(fCKey(key)).data,
-          equals(expectValue),
-        );
+        expect(tester.widget<Text>(fCKey(key)).data, equals(expectValue));
       }
 
       verifyText('paid', '30');
@@ -234,56 +231,15 @@ void main() {
       );
       await tester.tap(fCKey('submit'));
       await tester.pump();
+
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
       await tester.pumpAndSettle();
 
       await tester.tap(fCKey('clear'));
-      await tester.tap(fCKey('3'));
-      await tester.tap(fCKey('4'));
-      await tester.tap(fCKey('5'));
-      await tester.tap(fCKey('plus'));
       await tester.pumpAndSettle();
 
-      verifyText('paid', '345+');
-      verifyText('change', '317');
-
-      // drag to show the bellow button
-      await tester.drag(fCKey('6'), const Offset(0, -500));
-      await tester.pumpAndSettle();
-
-      await tester.tap(fCKey('6'));
-      await tester.tap(fCKey('7'));
-      await tester.tap(fCKey('dot'));
-      await tester.tap(fCKey('8'));
-      await tester.pumpAndSettle();
-
-      verifyText('paid', '345+67.8');
-      verifyText('change', '384.8');
-
-      await tester.tap(fCKey('ceil'));
-      await tester.pumpAndSettle();
-
-      verifyText('paid', '413');
-      verifyText('change', '385');
-
-      await tester.tap(fCKey('minus'));
-      await tester.tap(fCKey('6'));
-      await tester.pumpAndSettle();
-
-      verifyText('paid', '413-6');
-      verifyText('change', '379');
-
-      await tester.tap(fCKey('clear'));
-      await tester.pumpAndSettle();
-
-      expect(
-        tester.widget<HintText>(fCKey('paid.hint')).text,
-        equals('28'),
-      );
-      expect(
-        tester.widget<HintText>(fCKey('change.hint')).text,
-        equals('0'),
-      );
+      expect(tester.widget<HintText>(fCKey('paid.hint')).text, equals('28'));
+      expect(tester.widget<HintText>(fCKey('change.hint')).text, equals('0'));
 
       await tester.tap(fCKey('9'));
       await tester.tap(fCKey('0'));
@@ -292,10 +248,7 @@ void main() {
       verifyText('paid', '90');
       verifyText('change', '62');
 
-      await tester.drag(
-        fCKey('paid'),
-        const Offset(0, 500),
-      );
+      await tester.drag(fCKey('paid'), const Offset(0, 500));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
@@ -315,8 +268,10 @@ void main() {
 
       await tester.tap(find.byKey(const Key('cashier.order')));
       // wait for error message disappear
+      await tester.pumpAndSettle();
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 1));
       await tester.pump(const Duration(seconds: 1));
       expect(find.text(S.actSuccess), findsOneWidget);
 
@@ -436,6 +391,100 @@ void main() {
             data['i-3.currentAmount'] == 105 &&
             data['i-3.updatedAt'] != null;
       }))));
+    });
+
+    testWidgets('Play with calculator', (tester) async {
+      CurrencySetting.instance.isInt = false;
+      tester.binding.window.physicalSizeTestValue = const Size(1500, 3000);
+      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+
+      await tester.pumpWidget(
+        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+      );
+
+      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
+      await tester.pumpAndSettle();
+
+      // Start testing calculator
+
+      verifyText(String key, String expectValue) {
+        expect(tester.widget<Text>(fCKey(key)).data, equals(expectValue));
+      }
+
+      await tester.tap(fCKey('3'));
+      await tester.tap(fCKey('4'));
+      await tester.tap(fCKey('5'));
+      await tester.tap(fCKey('plus'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '345+');
+      verifyText('change', '317');
+
+      // drag to show the bellow button
+      await tester.drag(fCKey('6'), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
+      await tester.tap(fCKey('6'));
+      await tester.tap(fCKey('7'));
+      await tester.tap(fCKey('dot'));
+      await tester.tap(fCKey('8'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '345+67.8');
+      verifyText('change', '384.8');
+
+      await tester.tap(fCKey('ceil'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '413');
+      verifyText('change', '385');
+
+      await tester.tap(fCKey('minus'));
+      await tester.tap(fCKey('6'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '413-6');
+      verifyText('change', '379');
+
+      await tester.tap(fCKey('clear'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(fCKey('minus'));
+      await tester.tap(fCKey('plus'));
+      await tester.tap(fCKey('times'));
+      await tester.pumpAndSettle();
+
+      expect(fCKey('paid'), findsNothing);
+
+      await tester.tap(fCKey('3'));
+      await tester.tap(fCKey('00'));
+      await tester.tap(fCKey('times'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '300x');
+      verifyText('change', '272');
+
+      await tester.tap(fCKey('2'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '300x2');
+      verifyText('change', '572');
+
+      await tester.tap(fCKey('submit'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '600');
+      verifyText('change', '572');
+      expect(find.text('='), findsNothing);
+
+      await tester.tap(fCKey('back'));
+      await tester.pumpAndSettle();
+
+      verifyText('paid', '60');
+      verifyText('change', '32');
     });
 
     setUp(() {
