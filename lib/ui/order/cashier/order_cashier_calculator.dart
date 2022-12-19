@@ -3,6 +3,8 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
+const _operators = ['+', '-', 'x'];
+
 class OrderCashierCalculator extends StatefulWidget {
   final void Function(num?) onTextChanged;
 
@@ -135,7 +137,9 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                   key: const Key('cashier.calculator.submit'),
                   action: execSubmit,
                   height: 128,
-                  child: Text(isOperating ? '=' : S.orderCashierActionsOrder),
+                  child: Text(
+                    isOperating ? '=' : '點\n餐',
+                  ),
                 ),
               ]),
             ]),
@@ -163,12 +167,18 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   void execBack() {
     if (text.isNotEmpty) {
       text = text.substring(0, text.length - 1);
+      setState(() {
+        isOperating = _operators.any((o) => text.contains(o));
+      });
     }
   }
 
   void execClear() {
     if (text.isNotEmpty) {
       text = '';
+      setState(() {
+        isOperating = false;
+      });
     }
   }
 
@@ -200,7 +210,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   num calc(String val, [num other = 0]) {
     final fallback = num.tryParse(val) ?? other;
     try {
-      final deli = ['+', '-', 'x'].firstWhere((e) => val.contains(e));
+      final deli = _operators.firstWhere((o) => val.contains(o));
       final parts = val.split(deli).map((e) => num.tryParse(e)).toList();
 
       switch (deli) {

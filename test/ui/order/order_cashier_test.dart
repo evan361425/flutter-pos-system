@@ -375,6 +375,77 @@ void main() {
       // navigator popped
       expect(find.byKey(const Key('cashier.order')), findsNothing);
 
+      verify(database.update(any, any, argThat(predicate((e) {
+        final deli = String.fromCharCode(13);
+        return e is Map &&
+            e['paid'] == 38 &&
+            e['totalPrice'] == 38 &&
+            e['totalCount'] == 2 &&
+            e['usedProducts'] == 'p-1${deli}p-2$deli' &&
+            e['usedIngredients'] == 'i-1${deli}i-2$deli' &&
+            e['encodedAttributes'] ==
+                jsonEncode([
+                  {
+                    "name": "order attribute",
+                    "optionName": "order attribute option",
+                    "mode": 1,
+                    "modeValue": 10
+                  },
+                  {
+                    "name": "order attribute",
+                    "optionName": "order attribute option",
+                    "mode": 0,
+                    "modeValue": null
+                  }
+                ]) &&
+            e['encodedProducts'] ==
+                jsonEncode([
+                  {
+                    "productId": "p-1",
+                    "productName": "p-1",
+                    "count": 1,
+                    "cost": 5,
+                    "singlePrice": 17,
+                    "originalPrice": 17,
+                    "isDiscount": false,
+                    "ingredients": [
+                      {
+                        "name": "i-1",
+                        "id": "i-1",
+                        "productIngredientId": "pi-1",
+                        "productQuantityId": "pq-1",
+                        "additionalPrice": 10,
+                        "additionalCost": 5,
+                        "amount": 10,
+                        "quantityId": "q-1",
+                        "quantityName": "q-1"
+                      },
+                      {
+                        "name": "i-2",
+                        "id": "i-2",
+                        "productIngredientId": "pi-2",
+                        "productQuantityId": null,
+                        "additionalPrice": null,
+                        "additionalCost": null,
+                        "amount": 3,
+                        "quantityId": null,
+                        "quantityName": null
+                      }
+                    ]
+                  },
+                  {
+                    "productId": "p-2",
+                    "productName": "p-2",
+                    "count": 1,
+                    "cost": 0,
+                    "singlePrice": 11,
+                    "originalPrice": 11,
+                    "isDiscount": false,
+                    "ingredients": []
+                  }
+                ]) &&
+            e['productsPrice'] == 28;
+      }))));
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 30 + 5 + 3
         return data is Map &&
@@ -448,9 +519,12 @@ void main() {
 
       verifyText('paid', '413-6');
       verifyText('change', '379');
+      expect(find.text('='), findsOneWidget);
 
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
+
+      expect(find.text('='), findsNothing);
 
       await tester.tap(fCKey('minus'));
       await tester.tap(fCKey('plus'));
