@@ -401,9 +401,40 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          本地端開發
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         本地端開發
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目錄">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目錄
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    測試
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -526,6 +557,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目錄
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    測試
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -599,13 +645,23 @@ Certificate fingerprint <span class="o">(</span>SHA-256<span class="o">)</span>:
     你可以 <code>dart pub global activate flutterfire_cli</code> 安裝指令套件後 <code>flutterfire configure</code>，
     然後把產生的檔案的設定資訊複製到 <code>firebase_compatible_options.dart</code> 中。</li>
 </ul>
+<h2 id="_2">測試<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>如果你想要測試，你可以</p>
+<div class="highlight"><pre><span></span><code>flutter test
+</code></pre></div>
+<p>如果想要測試加上 coverage，你可以</p>
+<div class="highlight"><pre><span></span><code>flutter test --coverage
+</code></pre></div>
+<p>最後產出 <code>./coverage/lconv.info</code> 後就可以</p>
+<div class="highlight"><pre><span></span><code>genhtml coverage/lcov.info -o coverage/html
+</code></pre></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       最後更新:
-      2022-12-18
+      2022-12-19
     
   </small>
 </div>
