@@ -147,15 +147,12 @@ class _MenuFormatter extends _Formatter<Menu, Product> {
     return target.products.map<List<GoogleSheetCellData>>((product) {
       final ingredientInfo = [
         for (var ingredient in product.items)
-          '- ${ingredient.name},${ingredient.amount}' +
-              ingredient.itemList
-                  .map((quantity) => <String>[
-                        '\n  + ${quantity.name}',
-                        quantity.amount.toString(),
-                        quantity.additionalPrice.toString(),
-                        quantity.additionalCost.toString(),
-                      ].join(','))
-                  .join('')
+          '- ${ingredient.name},${ingredient.amount}${ingredient.itemList.map((quantity) => <String>[
+                '\n  + ${quantity.name}',
+                quantity.amount.toString(),
+                quantity.additionalPrice.toString(),
+                quantity.additionalCost.toString(),
+              ].join(',')).join('')}'
       ].join('\n');
 
       return [
@@ -424,9 +421,7 @@ class _OAFormatter extends _Formatter<OrderAttributes, OrderAttribute> {
   List<GoogleSheetCellData> getHeader() {
     final note = OrderAttributeMode.values
         .map((e) =>
-            S.orderAttributeModeNames(e) +
-            ' - ' +
-            S.orderAttributeModeDescriptions(e))
+            '${S.orderAttributeModeNames(e)} -  ${S.orderAttributeModeDescriptions(e)}')
         .join('\n');
     return <GoogleSheetCellData>[
       _toCD(S.orderAttributeNameLabel),

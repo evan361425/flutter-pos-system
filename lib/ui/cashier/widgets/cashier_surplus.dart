@@ -41,6 +41,7 @@ class CashierSurplus extends StatelessWidget {
             key: const Key('cashier_surplus.confirm'),
             onPressed: () async {
               await Cashier.instance.surplus();
+              // ignore: use_build_context_synchronously
               Navigator.of(context).pop(true);
             },
             child: const Text('完成'),

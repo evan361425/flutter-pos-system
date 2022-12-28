@@ -235,8 +235,10 @@ class _SettingPageState extends State<_SettingPage> {
     );
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
+    // ignore: use_build_context_synchronously
     showSuccessSnackbar(context, '成功產生 ${result.length} 個訂單');
 
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 

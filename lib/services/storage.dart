@@ -32,7 +32,7 @@ class Storage {
     return {for (var item in list) item.key: item.value};
   }
 
-  Future<void> initialize({_Opener? opener}) async {
+  Future<void> initialize({StorageOpener? opener}) async {
     if (_initialized) return;
     _initialized = true;
 
@@ -56,7 +56,7 @@ class Storage {
   StorageSanitizedData sanitize(Map<String, Object?> data) {
     final sanitizedData = StorageSanitizedData();
     data.forEach(
-        (key, value) => sanitizedData.add(_SanitizedValue(key, value)));
+        (key, value) => sanitizedData.add(StorageSanitizedValue(key, value)));
     return sanitizedData;
   }
 
@@ -85,7 +85,7 @@ class Storage {
     final paths = (await XFile.getRootPath()).split('/')
       ..removeLast()
       ..add('databases');
-    return paths.join('/') + '/pos_system.sembast';
+    return '${paths.join('/')}/pos_system.sembast';
   }
 
   /// Get string map Store
@@ -98,7 +98,7 @@ class Storage {
 class StorageSanitizedData {
   final data = <String, Object?>{};
 
-  void add(_SanitizedValue value) {
+  void add(StorageSanitizedValue value) {
     // null will delete the record
     if (value.data == null) {
       data[value.id] = null;
@@ -160,11 +160,11 @@ enum Stores {
   orderAttributes,
 }
 
-class _SanitizedValue {
+class StorageSanitizedValue {
   late final String id;
   late final Object? data;
 
-  _SanitizedValue(String key, Object? value) {
+  StorageSanitizedValue(String key, Object? value) {
     final index = key.indexOf('.');
 
     // key without "." or postfix "."
@@ -178,7 +178,7 @@ class _SanitizedValue {
   }
 }
 
-typedef _Opener = Future<Database> Function(
+typedef StorageOpener = Future<Database> Function(
   String path, {
   int? version,
   Future<dynamic> Function(Database, int, int)? onVersionChanged,

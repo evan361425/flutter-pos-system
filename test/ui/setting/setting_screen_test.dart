@@ -176,6 +176,7 @@ void main() {
       initializeAuth();
 
       PackageInfo.setMockInitialValues(
+        installerStore: '',
         appName: 'a',
         packageName: 'b',
         version: 'c',

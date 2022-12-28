@@ -22,10 +22,10 @@ class ProductModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _ProductModalState createState() => _ProductModalState();
+  ProductModalState createState() => ProductModalState();
 }
 
-class _ProductModalState extends State<ProductModal>
+class ProductModalState extends State<ProductModal>
     with ItemModal<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
@@ -126,13 +126,15 @@ class _ProductModalState extends State<ProductModal>
     final product = await getProduct();
     await product.replaceImage(_image);
 
-    // go to product screen
-    widget.isNew
-        ? Navigator.of(context).popAndPushNamed(
-            Routes.menuProduct,
-            arguments: product,
-          )
-        : Navigator.of(context).pop();
+    if (mounted) {
+      // go to product screen
+      widget.isNew
+          ? Navigator.of(context).popAndPushNamed(
+              Routes.menuProduct,
+              arguments: product,
+            )
+          : Navigator.of(context).pop();
+    }
   }
 
   @override

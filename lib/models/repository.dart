@@ -133,7 +133,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   void replaceItems(Map<String, T> map) => _items = map;
 
-  Future<void> saveBatch(Iterable<_BatchData> data);
+  Future<void> saveBatch(Iterable<RepositoryBatchData> data);
 
   Future<void> saveItem(T item);
 
@@ -174,7 +174,7 @@ mixin RepositoryDB<T extends Model> on Repository<T> {
   }
 
   @override
-  Future<void> saveBatch(Iterable<_BatchData> data) {
+  Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
     return Database.instance.batchUpdate(
       repoTableName,
       data.map((e) => {e.key: e.value}).toList(),
@@ -221,8 +221,8 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
             return false;
           }
         })
-        .map<_BatchData>((item) =>
-            _BatchData(id: item.prefix, key: 'index', value: item.index))
+        .map<RepositoryBatchData>((item) => RepositoryBatchData(
+            id: item.prefix, key: 'index', value: item.index))
         .toList();
 
     if (data.isNotEmpty) {
@@ -288,7 +288,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
   }
 
   @override
-  Future<void> saveBatch(Iterable<_BatchData> data) {
+  Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
     return Storage.instance.set(storageStore, {
       for (final item in data) '${item.id}.${item.key}': item.value,
     });
@@ -317,9 +317,9 @@ enum RepositoryStorageType {
   repoModel,
 }
 
-class _BatchData {
+class RepositoryBatchData {
   final String id;
   final String key;
   final Object? value;
-  const _BatchData({required this.id, required this.key, this.value});
+  const RepositoryBatchData({required this.id, required this.key, this.value});
 }

@@ -9,10 +9,10 @@ class ChangerModal extends StatefulWidget {
   const ChangerModal({Key? key}) : super(key: key);
 
   @override
-  _ChangerModalState createState() => _ChangerModalState();
+  ChangerModalState createState() => ChangerModalState();
 }
 
-class _ChangerModalState extends State<ChangerModal>
+class ChangerModalState extends State<ChangerModal>
     with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerModalCustomState>();
@@ -77,7 +77,7 @@ class _ChangerModalState extends State<ChangerModal>
         ? await customState.currentState?.handleApply()
         : await favoriteState.currentState?.handleApply();
 
-    if (isValid == true) {
+    if (isValid == true && mounted) {
       Navigator.of(context).pop(true);
     }
   }

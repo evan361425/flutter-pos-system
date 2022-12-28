@@ -24,10 +24,10 @@ class OrderAttributeOptionModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _OrderAttributeModalState createState() => _OrderAttributeModalState();
+  OrderAttributeModalState createState() => OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
+class OrderAttributeModalState extends State<OrderAttributeOptionModal>
     with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _modeValueController;
@@ -161,7 +161,9 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
       await widget.option!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

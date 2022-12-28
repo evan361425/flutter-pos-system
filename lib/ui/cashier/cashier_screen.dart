@@ -69,6 +69,7 @@ class CashierScreen extends StatelessWidget {
 
     await Cashier.instance.setDefault();
 
+    // ignore: use_build_context_synchronously
     showSuccessSnackbar(context, S.actSuccess);
   }
 
@@ -79,6 +80,7 @@ class CashierScreen extends StatelessWidget {
 
     final result = await Navigator.of(context).pushNamed(Routes.cashierSurplus);
     if (result == true) {
+      // ignore: use_build_context_synchronously
       showSuccessSnackbar(context, S.actSuccess);
     }
   }

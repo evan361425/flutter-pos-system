@@ -29,10 +29,10 @@ class SingleTextDialog extends StatefulWidget {
   final Widget? header;
 
   @override
-  _SingleTextDialogState createState() => _SingleTextDialogState();
+  SingleTextDialogState createState() => SingleTextDialogState();
 }
 
-class _SingleTextDialogState extends State<SingleTextDialog> {
+class SingleTextDialogState extends State<SingleTextDialog> {
   late TextEditingController textController;
   final form = GlobalKey<FormState>();
 

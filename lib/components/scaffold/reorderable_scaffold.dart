@@ -29,6 +29,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
             key: const Key('reorder.save'),
             onPressed: () async {
               await handleSubmit(items);
+              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             },
             child: Text(S.btnSave),

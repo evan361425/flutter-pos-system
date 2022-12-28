@@ -18,7 +18,7 @@ class OrderAttributeModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _OrderAttributeModalState createState() => _OrderAttributeModalState();
+  OrderAttributeModalState createState() => OrderAttributeModalState();
 }
 
 class _ModalModes extends StatefulWidget {
@@ -30,11 +30,11 @@ class _ModalModes extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OrderAttributeModalModesState createState() =>
-      _OrderAttributeModalModesState();
+  OrderAttributeModalModesState createState() =>
+      OrderAttributeModalModesState();
 }
 
-class _OrderAttributeModalModesState extends State<_ModalModes>
+class OrderAttributeModalModesState extends State<_ModalModes>
     with TickerProviderStateMixin {
   late OrderAttributeMode selectedMode;
 
@@ -65,11 +65,11 @@ class _OrderAttributeModalModesState extends State<_ModalModes>
   }
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeModal>
+class OrderAttributeModalState extends State<OrderAttributeModal>
     with ItemModal<OrderAttributeModal> {
   late TextEditingController _nameController;
 
-  late GlobalKey<_OrderAttributeModalModesState> modesKey;
+  late GlobalKey<OrderAttributeModalModesState> modesKey;
 
   @override
   void dispose() {
@@ -108,7 +108,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
   @override
   void initState() {
     _nameController = TextEditingController(text: widget.attribute?.name);
-    modesKey = GlobalKey<_OrderAttributeModalModesState>();
+    modesKey = GlobalKey<OrderAttributeModalModesState>();
 
     super.initState();
   }
@@ -130,7 +130,9 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
       await widget.attribute!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

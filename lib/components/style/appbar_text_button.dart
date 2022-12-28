@@ -16,7 +16,7 @@ class AppbarTextButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final textButtonTheme = TextButton.styleFrom(
-      primary: colorScheme.brightness == Brightness.dark
+      foregroundColor: colorScheme.brightness == Brightness.dark
           ? colorScheme.onSurface
           : colorScheme.onPrimary,
     );

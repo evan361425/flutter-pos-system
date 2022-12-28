@@ -27,10 +27,10 @@ class ProductQuantityModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _ProductQuantityModalState createState() => _ProductQuantityModalState();
+  ProductQuantityModalState createState() => ProductQuantityModalState();
 }
 
-class _ProductQuantityModalState extends State<ProductQuantityModal>
+class ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
   late TextEditingController _priceController;
@@ -139,7 +139,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       await widget.quantity!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -211,6 +213,7 @@ class _ProductQuantitySearch extends StatelessWidget {
       onTap: () async {
         final quantity = Quantity(name: text);
         await Quantities.instance.addItem(quantity);
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop<Quantity>(quantity);
       },
     );

@@ -130,6 +130,7 @@ class BottomSheetActions extends StatelessWidget {
     ]);
 
     if (result == deleteValue) {
+      // ignore: use_build_context_synchronously
       await DeleteDialog.show(
         context,
         deleteCallback: deleteCallback,

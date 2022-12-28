@@ -122,7 +122,7 @@ class OrderScreenState extends State<OrderScreen> {
         ? Routes.orderAttribute
         : Routes.orderCalculator;
     var result = await Navigator.of(context).pushNamed(route);
-    if (result is String) {
+    if (result is String && mounted) {
       result = await Navigator.of(context).pushNamed(result);
     }
 

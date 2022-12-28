@@ -25,10 +25,10 @@ class IngredientModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _IngredientModalState createState() => _IngredientModalState();
+  IngredientModalState createState() => IngredientModalState();
 }
 
-class _IngredientModalState extends State<IngredientModal>
+class IngredientModalState extends State<IngredientModal>
     with ItemModal<IngredientModal> {
   late TextEditingController _nameController;
   late TextEditingController _amountController;
@@ -133,7 +133,9 @@ class _IngredientModalState extends State<IngredientModal>
       await widget.ingredient!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

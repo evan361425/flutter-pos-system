@@ -27,10 +27,10 @@ class ProductIngredientModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _ProductIngredientModalState createState() => _ProductIngredientModalState();
+  ProductIngredientModalState createState() => ProductIngredientModalState();
 }
 
-class _ProductIngredientModalState extends State<ProductIngredientModal>
+class ProductIngredientModalState extends State<ProductIngredientModal>
     with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
 
@@ -102,7 +102,9 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       await widget.ingredient!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -171,6 +173,7 @@ class _ProductIngredientSearch extends StatelessWidget {
       onTap: () async {
         final ingredient = Ingredient(name: text);
         await Stock.instance.addItem(ingredient);
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop<Ingredient>(ingredient);
       },
     );

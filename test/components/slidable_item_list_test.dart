@@ -50,15 +50,17 @@ void main() {
     testWidgets('should show alert when delete', (tester) async {
       var deletionFired = false;
       await tester.pumpWidget(MaterialApp(
-        home: SlidableItemList<String, int>(
-          delegate: SlidableItemDelegate(
-            groupTag: 'test',
-            items: const ['1', '2'],
-            deleteValue: 0,
-            tileBuilder: (_, int index, item, __) => Text(item),
-            warningContextBuilder: (_, __) => const Text('hi'),
-            handleTap: (_, __) => Future.value(),
-            handleDelete: (_) async => deletionFired = true,
+        home: Scaffold(
+          body: SlidableItemList<String, int>(
+            delegate: SlidableItemDelegate(
+              groupTag: 'test',
+              items: const ['1', '2'],
+              deleteValue: 0,
+              tileBuilder: (_, int index, item, __) => Text(item),
+              warningContextBuilder: (_, __) => const Text('hi'),
+              handleTap: (_, __) => Future.value(),
+              handleDelete: (_) async => deletionFired = true,
+            ),
           ),
         ),
       ));

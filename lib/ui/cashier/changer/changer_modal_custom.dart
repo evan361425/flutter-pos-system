@@ -152,7 +152,9 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
         ]));
 
     // close keyboard
-    FocusScope.of(context).unfocus();
+    if (mounted) {
+      FocusScope.of(context).unfocus();
+    }
 
     widget.afterFavoriteAdded();
   }

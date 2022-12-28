@@ -195,7 +195,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       await selectSheet();
     } else if (selected == _ActionTypes.clear) {
       await onSheetChanged(null);
-      showInfoSnackbar(context, S.actSuccess);
+      if (mounted) {
+        showInfoSnackbar(context, S.actSuccess);
+      }
     }
   }
 
@@ -229,7 +231,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     );
     if (result != null) {
       await onSheetChanged(result);
-      showInfoSnackbar(context, S.actSuccess);
+      if (mounted) {
+        showInfoSnackbar(context, S.actSuccess);
+      }
     }
 
     widget.finishLoading();
@@ -299,18 +303,20 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       );
     }
     Log.ger('export finish', 'gs_export');
-    showSuccessSnackbar(
-      context,
-      S.actSuccess,
-      SnackBarAction(
-        label: '開啟表單',
-        onPressed: () {
-          final link = spreadsheet!.toLink();
-          Log.ger('export launch', 'gs_export', link);
-          Launcher.launch(link).ignore();
-        },
-      ),
-    );
+    if (mounted) {
+      showSuccessSnackbar(
+        context,
+        S.actSuccess,
+        SnackBarAction(
+          label: '開啟表單',
+          onPressed: () {
+            final link = spreadsheet!.toLink();
+            Log.ger('export launch', 'gs_export', link);
+            Launcher.launch(link).ignore();
+          },
+        ),
+      );
+    }
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
@@ -357,7 +363,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     if (!hasSelect) {
       final newSpreadsheet = await _createSpreadsheet(names);
       if (newSpreadsheet == null) {
-        showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
+        if (mounted) {
+          showErrorSnackbar(context, S.exporterGSErrors('spreadsheet'));
+        }
         return null;
       }
       await onSheetChanged(newSpreadsheet);
@@ -366,7 +374,9 @@ class _ExporterScreenState extends State<_ExporterScreen> {
       spreadsheet!.sheets.addAll(sheets);
       final success = await _addSheets(names);
       if (!success) {
-        showErrorSnackbar(context, S.exporterGSErrors('sheet'));
+        if (mounted) {
+          showErrorSnackbar(context, S.exporterGSErrors('sheet'));
+        }
         return null;
       }
     }
@@ -544,7 +554,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     );
     if (result != null) {
       await changeSpreadsheet(result);
-      showInfoSnackbar(context, S.actSuccess);
+      if (mounted) {
+        showInfoSnackbar(context, S.actSuccess);
+      }
     }
 
     widget.finishLoading();
@@ -597,7 +609,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(refreshedSheets);
     }
-    showInfoSnackbar(context, S.actSuccess);
+    if (mounted) {
+      showInfoSnackbar(context, S.actSuccess);
+    }
   }
 
   Future<void> _importData(
@@ -613,7 +627,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
       Log.ger('ready', 'gs_import', sheet.title);
       final source = await _getSheetData(type, sheet);
       if (source == null) {
-        showErrorSnackbar(context, '找不到表單「${sheet.title}」的資料');
+        if (mounted) {
+          showErrorSnackbar(context, '找不到表單「${sheet.title}」的資料');
+        }
         return;
       }
 
@@ -635,7 +651,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
       await target.commitStaged();
     }
-    showSuccessSnackbar(context, S.actSuccess);
+    if (mounted) {
+      showSuccessSnackbar(context, S.actSuccess);
+    }
   }
 
   Future<bool?> _previewSheetData(
@@ -1051,6 +1069,7 @@ Future<GoogleSpreadsheet?> _selectSpreadsheet(
 
   final result = await exporter.getSpreadsheet(id);
   if (result == null) {
+    // ignore: use_build_context_synchronously
     showErrorSnackbar(context, '找不到該表單，是否沒開放權限讀取？');
   }
   return result;

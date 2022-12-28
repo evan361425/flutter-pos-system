@@ -7,36 +7,36 @@ import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
   static final List<BottomSheetAction> actions =
-      <BottomSheetAction<_ActionTypes>>[
+      <BottomSheetAction<CartActionTypes>>[
     BottomSheetAction(
       key: const Key('cart.action.discount'),
       leading: const Icon(Icons.loyalty_sharp),
       title: Text(S.orderCartActionsDiscount),
-      returnValue: _ActionTypes.discount,
+      returnValue: CartActionTypes.discount,
     ),
     BottomSheetAction(
       key: const Key('cart.action.price'),
       leading: const Icon(Icons.attach_money_sharp),
       title: Text(S.orderCartActionsChangePrice),
-      returnValue: _ActionTypes.price,
+      returnValue: CartActionTypes.price,
     ),
     BottomSheetAction(
       key: const Key('cart.action.count'),
       leading: const Icon(Icons.exposure_sharp),
       title: Text(S.orderCartActionsChangeCount),
-      returnValue: _ActionTypes.count,
+      returnValue: CartActionTypes.count,
     ),
     BottomSheetAction(
       key: const Key('cart.action.free'),
       leading: const Icon(Icons.free_breakfast_sharp),
       title: Text(S.orderCartActionsFree),
-      returnValue: _ActionTypes.free,
+      returnValue: CartActionTypes.free,
     ),
     BottomSheetAction(
       key: const Key('cart.action.delete'),
       leading: const Icon(Icons.delete_sharp),
       title: Text(S.orderCartActionsDelete),
-      returnValue: _ActionTypes.delete,
+      returnValue: CartActionTypes.delete,
     ),
   ];
 
@@ -51,10 +51,10 @@ class CartActions extends StatelessWidget {
     );
   }
 
-  static void actionHandler(BuildContext context, _ActionTypes type) async {
+  static void actionHandler(BuildContext context, CartActionTypes type) async {
     _DialogItem item;
     switch (type) {
-      case _ActionTypes.discount:
+      case CartActionTypes.discount:
         item = _DialogItem(
           validator: Validator.positiveInt(
             S.orderCartActionsDiscountLabel,
@@ -71,7 +71,7 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case _ActionTypes.price:
+      case CartActionTypes.price:
         item = _DialogItem(
           validator:
               Validator.positiveNumber(S.orderCartActionsChangePriceLabel),
@@ -84,7 +84,7 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case _ActionTypes.count:
+      case CartActionTypes.count:
         item = _DialogItem(
           validator: Validator.positiveInt(
             S.orderCartActionsChangeCountLabel,
@@ -101,9 +101,9 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case _ActionTypes.delete:
+      case CartActionTypes.delete:
         return Cart.instance.removeSelected();
-      case _ActionTypes.free:
+      case CartActionTypes.free:
         return Cart.instance.updateSelectedPrice(0);
     }
 
@@ -112,7 +112,6 @@ class CartActions extends StatelessWidget {
       builder: (BuildContext context) => SingleTextDialog(
         validator: item.validator,
         decoration: item.decoration,
-        initialValue: item.initialValue,
         keyboardType: TextInputType.number,
       ),
     );
@@ -121,18 +120,19 @@ class CartActions extends StatelessWidget {
   }
 
   static void showActions(BuildContext context) async {
-    final type = await showCircularBottomSheet<_ActionTypes>(
+    final type = await showCircularBottomSheet<CartActionTypes>(
       context,
       actions: actions,
     );
 
     if (type != null) {
+      // ignore: use_build_context_synchronously
       actionHandler(context, type);
     }
   }
 }
 
-enum _ActionTypes {
+enum CartActionTypes {
   discount,
   price,
   count,
@@ -143,13 +143,11 @@ enum _ActionTypes {
 class _DialogItem {
   final String? Function(String?) validator;
   final InputDecoration decoration;
-  final String? initialValue;
   final void Function(String) action;
 
   _DialogItem({
     required this.validator,
     required this.decoration,
     required this.action,
-    this.initialValue,
   });
 }

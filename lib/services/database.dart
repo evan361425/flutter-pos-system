@@ -215,7 +215,7 @@ class Database {
     final paths = (await XFile.getRootPath()).split('/')
       ..removeLast()
       ..add('databases');
-    return paths.join('/') + '/pos_system.sqlite';
+    return '${paths.join('/')}/pos_system.sqlite';
   }
 
   static String join(Iterable<String>? data) =>

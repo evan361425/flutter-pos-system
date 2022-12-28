@@ -21,7 +21,8 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.5.4+20504003
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  flutter: ^3.1.0-0
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -30,55 +31,55 @@ dependencies:
     sdk: flutter
 
   # core helper
-  provider: ^6.0.3
+  provider: ^6.0.5
   intl: ^0.17.0
-  firebase_core: ^1.17.1
-  firebase_analytics: ^9.1.9
-  firebase_auth: ^3.3.19
-  firebase_crashlytics: ^2.8.1
+  firebase_core: ^2.4.0
+  firebase_analytics: ^10.0.8
+  firebase_auth: ^4.2.3
+  firebase_crashlytics: ^3.0.8
 
   # services
-  sqflite: ^2.0.2+1
-  sembast: ^3.2.0
+  sqflite: ^2.2.2
+  sembast: ^3.3.1+1
   shared_preferences: ^2.0.15
   http: ^0.13.5
 
   # google services
-  googleapis: ^9.1.0
-  google_sign_in: ^5.4.1
+  googleapis: ^9.2.0
+  google_sign_in: ^5.4.2
   extension_google_sign_in_as_googleapis_auth: ^2.0.7
 
   # components
-  flutter_slidable: ^1.3.2
-  modal_bottom_sheet: ^2.0.1
+  flutter_slidable: ^2.0.0
+  modal_bottom_sheet: ^2.1.2
   sliding_up_panel: ^2.0.0+1
-  table_calendar: ^3.0.6
+  table_calendar: ^3.0.8
   pull_to_refresh: ^2.0.0
 
   # image
-  image: ^3.1.3
-  image_picker: ^0.8.5+3
-  image_cropper: ^3.0.0
+  image: ^3.2.2
+  image_picker: ^0.8.6
+  image_cropper: ^3.0.1
 
   # Make it easy to test
   file: ^6.1.4
 
   # tools
-  uuid: ^3.0.6
+  uuid: ^3.0.7
   wakelock: ^0.6.2
   path_provider: ^2.0.11
-  url_launcher: ^6.1.5
-  flutter_native_splash: ^2.1.6
-  package_info_plus: ^1.4.2
-  cached_network_image: ^3.2.0
-  flutter_svg: ^1.0.3
+  url_launcher: ^6.1.7
+  flutter_native_splash: ^2.2.16
+  package_info_plus: ^3.0.2
+  cached_network_image: ^3.2.3
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # code style
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1
 
   # mock object
   build_runner: ^2.1.11

@@ -242,7 +242,7 @@ class GoogleSpreadsheet {
         isOrigin: isOrigin,
       );
     } catch (error, stack) {
-      Log.err(error, _logCode + '_format_failed', stack);
+      Log.err(error, '${_logCode}_format_failed', stack);
       return null;
     }
   }

@@ -29,10 +29,10 @@ class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
   @override
-  _SettingScreenState createState() => _SettingScreenState();
+  SettingScreenState createState() => SettingScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class SettingScreenState extends State<SettingScreen> {
   final theme = SettingsProvider.of<ThemeSetting>();
   final language = SettingsProvider.of<LanguageSetting>();
   final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
@@ -59,7 +59,7 @@ class _SettingScreenState extends State<SettingScreen> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (info != null) Text('版本：' + info.version),
+                  if (info != null) Text('版本：${info.version}'),
                   const SizedBox(width: 8.0),
                   OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
                 ],

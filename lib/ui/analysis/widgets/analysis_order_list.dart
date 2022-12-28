@@ -324,7 +324,5 @@ enum _Action {
 }
 
 String _parseCreatedAt(DateTime t) {
-  return DateFormat.MEd(S.localeName).format(t) +
-      ' ' +
-      DateFormat.Hms(S.localeName).format(t);
+  return DateFormat('MEd Hms', S.localeName).format(t);
 }

@@ -20,10 +20,10 @@ class ReplenishmentModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _ReplenishmentModalState createState() => _ReplenishmentModalState();
+  ReplenishmentModalState createState() => ReplenishmentModalState();
 }
 
-class _ReplenishmentModalState extends State<ReplenishmentModal>
+class ReplenishmentModalState extends State<ReplenishmentModal>
     with ItemModal<ReplenishmentModal> {
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;
@@ -85,7 +85,9 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       await widget.replenishment!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

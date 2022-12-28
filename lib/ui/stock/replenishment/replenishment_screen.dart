@@ -106,6 +106,7 @@ class _ReplenishmentTile extends StatelessWidget {
     if (confirmed != true) return;
 
     await item.apply();
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop(true);
   }
 }

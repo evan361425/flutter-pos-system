@@ -12,8 +12,6 @@ import 'mocks/mock_cache.dart';
 import 'test_helpers/firebase_mocker.dart';
 
 void main() {
-  setupFirebaseAuthMocks();
-
   testWidgets('should bind model to menu', (tester) async {
     when(cache.get(any)).thenReturn(null);
     await Firebase.initializeApp();
@@ -35,6 +33,7 @@ void main() {
 
   setUpAll(() {
     initializeCache();
+    setupFirebaseAuthMocks();
   });
 }
 

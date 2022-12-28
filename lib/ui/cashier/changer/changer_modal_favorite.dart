@@ -80,7 +80,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
 
     final isValid = await Cashier.instance.applyFavorite(selected!.item);
 
-    if (!isValid) {
+    if (!isValid && mounted) {
       showInfoSnackbar(context, '${selected!.source.unit} 元不夠換');
     }
 

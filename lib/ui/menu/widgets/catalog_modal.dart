@@ -18,10 +18,10 @@ class CatalogModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _CatalogModalState createState() => _CatalogModalState();
+  CatalogModalState createState() => CatalogModalState();
 }
 
-class _CatalogModalState extends State<CatalogModal>
+class CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
 
@@ -89,13 +89,15 @@ class _CatalogModalState extends State<CatalogModal>
     final catalog = await createCatalog();
     await catalog.replaceImage(_image);
 
-    // go to catalog screen
-    widget.isNew
-        ? Navigator.of(context).popAndPushNamed(
-            Routes.menuCatalog,
-            arguments: catalog,
-          )
-        : Navigator.of(context).pop();
+    if (mounted) {
+      // go to catalog screen
+      widget.isNew
+          ? Navigator.of(context).popAndPushNamed(
+              Routes.menuCatalog,
+              arguments: catalog,
+            )
+          : Navigator.of(context).pop();
+    }
   }
 
   @override

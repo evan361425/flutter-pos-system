@@ -16,10 +16,10 @@ class QuantityModal extends StatefulWidget {
         super(key: key);
 
   @override
-  _QuantityModalState createState() => _QuantityModalState();
+  QuantityModalState createState() => QuantityModalState();
 }
 
-class _QuantityModalState extends State<QuantityModal>
+class QuantityModalState extends State<QuantityModal>
     with ItemModal<QuantityModal> {
   late TextEditingController _nameController;
   late TextEditingController _proportionController;
@@ -95,7 +95,9 @@ class _QuantityModalState extends State<QuantityModal>
       await widget.quantity!.update(object);
     }
 
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

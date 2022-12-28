@@ -196,7 +196,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   void execDot() {
     if (text.isNotEmpty) {
       if (!text.contains('.')) {
-        text = text + '.';
+        text = '$text.';
       }
     } else {
       text = '0.';
@@ -251,7 +251,7 @@ class _CalculatorAction extends StatelessWidget {
       width: 64,
       height: height,
       child: OutlinedButton(
-        style: OutlinedButton.styleFrom(primary: color),
+        style: OutlinedButton.styleFrom(foregroundColor: color),
         onPressed: action,
         child: child,
       ),

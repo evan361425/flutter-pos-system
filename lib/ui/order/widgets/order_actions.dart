@@ -10,14 +10,14 @@ import 'package:possystem/translator.dart';
 class OrderActions extends StatelessWidget {
   const OrderActions({Key? key}) : super(key: key);
 
-  List<BottomSheetAction<_Types>> get actions {
+  List<BottomSheetAction<OrderActionMode>> get actions {
     if (Cart.instance.isHistoryMode) {
       return [
         BottomSheetAction(
           key: const Key('order.action.leave_history'),
           title: Text(S.orderActionsLeaveHistoryMode),
           leading: const Icon(Icons.assignment_return_sharp),
-          returnValue: _Types.leaveHistory,
+          returnValue: OrderActionMode.leaveHistory,
         ),
       ];
     }
@@ -27,25 +27,25 @@ class OrderActions extends StatelessWidget {
         key: const Key('order.action.show_last'),
         title: Text(S.orderActionsShowLastOrder),
         leading: const Icon(Icons.history_sharp),
-        returnValue: _Types.showLast,
+        returnValue: OrderActionMode.showLast,
       ),
       BottomSheetAction(
         key: const Key('order.action.changer'),
         title: Text(S.orderActionsOpenChanger),
         leading: const Icon(Icons.change_circle_outlined),
-        returnValue: _Types.changer,
+        returnValue: OrderActionMode.changer,
       ),
       BottomSheetAction(
         key: const Key('order.action.stash'),
         title: Text(S.orderActionsStash),
         leading: const Icon(Icons.file_download),
-        returnValue: _Types.stash,
+        returnValue: OrderActionMode.stash,
       ),
       BottomSheetAction(
         key: const Key('order.action.drop_stash'),
         title: Text(S.orderActionsDropStash),
         leading: const Icon(Icons.file_upload),
-        returnValue: _Types.dropStash,
+        returnValue: OrderActionMode.dropStash,
       ),
     ];
   }
@@ -54,10 +54,11 @@ class OrderActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () async {
-        final result = await showCircularBottomSheet<_Types>(
+        final result = await showCircularBottomSheet<OrderActionMode>(
           context,
           actions: actions,
         );
+        // ignore: use_build_context_synchronously
         await exec(context, result);
       },
       enableFeedback: true,
@@ -65,11 +66,11 @@ class OrderActions extends StatelessWidget {
     );
   }
 
-  Future<void> exec(BuildContext context, _Types? action) async {
+  Future<void> exec(BuildContext context, OrderActionMode? action) async {
     switch (action) {
-      case _Types.leaveHistory:
+      case OrderActionMode.leaveHistory:
         return Cart.instance.clear();
-      case _Types.showLast:
+      case OrderActionMode.showLast:
         if (!await _confirmStashable(context)) return;
 
         if (!await Cart.instance.stash()) {
@@ -78,10 +79,12 @@ class OrderActions extends StatelessWidget {
 
         final success = await Cart.instance.popHistory();
         success
+            // ignore: use_build_context_synchronously
             ? showSuccessSnackbar(context, S.actSuccess)
+            // ignore: use_build_context_synchronously
             : showInfoSnackbar(context, S.orderActionsShowLastOrderNotFound);
         return;
-      case _Types.dropStash:
+      case OrderActionMode.dropStash:
         if (!await _confirmStashable(context)) return;
 
         final isEmpty = Cart.instance.isEmpty;
@@ -95,19 +98,22 @@ class OrderActions extends StatelessWidget {
 
         final success = await Cart.instance.drop(isEmpty ? 1 : 2);
         return success
+            // ignore: use_build_context_synchronously
             ? showSuccessSnackbar(context, S.actSuccess)
+            // ignore: use_build_context_synchronously
             : showInfoSnackbar(context, S.orderActionsDropStashNotFound);
-      case _Types.stash:
+      case OrderActionMode.stash:
         if (Cart.instance.isEmpty) return;
 
         return await Cart.instance.stash()
             ? showSuccessSnackbar(context, S.actSuccess)
             : showInfoSnackbar(context, S.orderActionsStashHitLimit);
-      case _Types.changer:
+      case OrderActionMode.changer:
         final success =
             await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
         if (success == true) {
+          // ignore: use_build_context_synchronously
           showSuccessSnackbar(context, S.actSuccess);
         }
         return;
@@ -128,7 +134,7 @@ class OrderActions extends StatelessWidget {
   }
 }
 
-enum _Types {
+enum OrderActionMode {
   showLast,
   changer,
   stash,
