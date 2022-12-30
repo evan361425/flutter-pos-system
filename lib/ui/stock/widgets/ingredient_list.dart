@@ -29,6 +29,7 @@ class IngredientList extends StatelessWidget {
         S.totalCount(ingredients.length),
       ].join(MetaBlock.string),
       delegate: SlidableItemDelegate(
+        groupTag: 'stock.ingredient',
         items: ingredients,
         deleteValue: 0,
         tileBuilder: (_, __, ingredient, ___) => _IngredientTile(ingredient),

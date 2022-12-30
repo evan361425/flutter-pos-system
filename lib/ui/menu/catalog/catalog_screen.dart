@@ -12,7 +12,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/product_slidable_delegate.dart';
+import 'widgets/product_slidable_list.dart';
 
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({Key? key}) : super(key: key);
@@ -63,8 +63,7 @@ class CatalogScreen extends StatelessWidget {
         SliverImageAppBar(title: catalog.name, image: catalog.image),
         metadata,
         aboveData,
-        if (catalog.isNotEmpty)
-          SliverList(delegate: getProductSlidableDelegate(catalog.itemList)),
+        if (catalog.isNotEmpty) ProductSlidableList(catalog: catalog),
       ]),
     );
   }

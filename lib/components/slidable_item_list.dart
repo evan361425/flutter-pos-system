@@ -40,13 +40,27 @@ class SlidableItemList<T, Action> extends StatelessWidget {
       const SizedBox(height: 4.0),
     ]);
 
-    if (!scrollable) return child;
+    final groupChild = delegate.groupTag == null
+        ? child
+        : SlidableAutoCloseBehavior(child: child);
 
-    final view = SingleChildScrollView(child: child);
+    return scrollable ? SingleChildScrollView(child: groupChild) : groupChild;
+  }
+}
 
-    return delegate.groupTag == null
-        ? view
-        : SlidableAutoCloseBehavior(child: view);
+class SliverListSlidableItemList<T, Action> extends StatelessWidget {
+  final SlidableItemDelegate<T, Action> delegate;
+
+  const SliverListSlidableItemList({
+    Key? key,
+    required this.delegate,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SlidableAutoCloseBehavior(
+      child: SliverList(delegate: SliverSlidableItemBuilder(delegate)),
+    );
   }
 }
 
