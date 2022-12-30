@@ -10,6 +10,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
@@ -152,6 +153,8 @@ class _AnalysisOrderModal extends StatelessWidget {
             attributes: order.attributes.toList(),
             products: order.products
                 .map((product) => OrderProductTileData(
+                    product: Menu.instance.getProduct(product.productId),
+                    productName: product.productName,
                     ingredientNames:
                         product.ingredients.map((e) => e.quantityName == null
                             ? S.orderProductIngredientDefaultName(e.name)
@@ -159,7 +162,6 @@ class _AnalysisOrderModal extends StatelessWidget {
                                 e.name,
                                 e.quantityName!,
                               )),
-                    productName: product.productName,
                     totalCount: product.count,
                     totalCost: product.totalCost,
                     totalPrice: product.totalPrice))

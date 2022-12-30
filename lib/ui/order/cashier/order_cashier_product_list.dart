@@ -4,6 +4,7 @@ import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
@@ -80,36 +81,37 @@ class OrderCashierProductList extends StatelessWidget {
             ],
           );
 
-    final totalCount = products.fold<int>(
-      0,
-      (value, data) => value + data.totalCount,
-    );
-
     return SingleChildScrollView(
       child: Column(children: [
         priceWidget,
         attrWidget,
         TextDivider(label: S.orderCashierProductInfoTitle),
-        HintText(S.orderCashierProductMetaCount(totalCount)),
+        HintText(S.orderCashierProductMetaCount(productCount)),
         for (final product in products) _ProductTile(product),
       ]),
     );
+  }
+
+  int get productCount {
+    return products.fold<int>(0, (v, p) => v + p.totalCount);
   }
 }
 
 class OrderProductTileData {
   final Iterable<String> ingredientNames;
   final String productName;
+  final Product? product;
   final num totalPrice;
   final num? totalCost;
   final int totalCount;
 
   OrderProductTileData({
-    required this.ingredientNames,
+    this.product,
     required this.productName,
+    required this.ingredientNames,
     required this.totalPrice,
-    this.totalCost,
     required this.totalCount,
+    this.totalCost,
   });
 }
 
@@ -120,32 +122,29 @@ class _ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = Text(data.productName);
-    final subtitle = MetaBlock.withString(context, <String>[
-      S.orderCashierProductMetaPrice(data.totalPrice),
-      S.orderCashierProductMetaCount(data.totalCount),
-      if (data.totalCost != null)
-        S.orderCashierProductMetaCost(data.totalCost!),
-    ]);
-
-    final widget = data.ingredientNames.isEmpty
-        ? ListTile(
-            title: title,
-            subtitle: subtitle,
-          )
-        : ExpansionTile(
-            title: title,
-            subtitle: subtitle,
-            expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(children: [
-                for (final ingredient in data.ingredientNames)
-                  OutlinedText(ingredient)
-              ]),
-              const SizedBox(height: 8.0),
-            ],
-          );
-
-    return widget;
+    return ExpansionTile(
+      title: Text(data.productName),
+      subtitle: MetaBlock.withString(context, <String>[
+        S.orderCashierProductMetaPrice(data.totalPrice),
+        S.orderCashierProductMetaCount(data.totalCount),
+        if (data.totalCost != null)
+          S.orderCashierProductMetaCost(data.totalCost!),
+      ]),
+      leading: data.product?.avator,
+      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      childrenPadding: const EdgeInsets.all(8.0),
+      children: [
+        if (data.product != null) ...[
+          Text('產品種類：${data.product!.catalog.name}'),
+          const SizedBox(height: 8.0),
+        ],
+        const Text('成分：'),
+        const SizedBox(height: 8.0),
+        Wrap(children: [
+          for (final ingredient in data.ingredientNames)
+            OutlinedText(ingredient)
+        ]),
+      ],
+    );
   }
 }

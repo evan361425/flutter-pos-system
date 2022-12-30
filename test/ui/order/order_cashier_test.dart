@@ -185,8 +185,6 @@ void main() {
 
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
-      tester.binding.window.physicalSizeTestValue = const Size(1500, 3000);
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(
         MaterialApp(routes: Routes.routes, home: const OrderScreen()),
@@ -194,6 +192,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
+
+      expect(find.text('p-1'), findsOneWidget);
 
       expect(Cart.instance.totalPrice, equals(28));
       expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);

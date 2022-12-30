@@ -55,8 +55,9 @@ class OrderCashierModal extends StatelessWidget {
           .toList(),
       products: Cart.instance.products
           .map((e) => OrderProductTileData(
-                ingredientNames: e.getIngredientNames(onlyQuantified: false),
+                product: e.product,
                 productName: e.name,
+                ingredientNames: e.getIngredientNames(onlyQuantified: false),
                 totalPrice: e.price,
                 totalCount: e.count,
               ))
