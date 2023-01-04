@@ -55,6 +55,8 @@ class SlidingUpOpener extends StatefulWidget {
 
   final double collapsedHorizontalMargin;
 
+  final bool catchPopScope;
+
   const SlidingUpOpener({
     Key? key,
     required this.panel,
@@ -66,6 +68,7 @@ class SlidingUpOpener extends StatefulWidget {
     this.maxHeight = 500.0,
     this.borderRadius = 16.0,
     this.backdropEnabled = true,
+    this.catchPopScope = true,
     this.clickToOpen = true,
     this.renderPanelSheet = true,
     this.defaultPanelState = PanelState.CLOSED,
@@ -88,7 +91,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
       child: widget.panel,
     );
 
-    return SlidingUpPanel(
+    Widget target = SlidingUpPanel(
       controller: controller,
       minHeight: widget.minHeight,
       // 88 for appBar
@@ -109,6 +112,22 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
         SizedBox(height: widget.minHeight + 80),
       ]),
     );
+
+    if (widget.catchPopScope) {
+      target = WillPopScope(
+        onWillPop: () async {
+          final isOpen = controller.isPanelOpen;
+          if (isOpen) {
+            close();
+          }
+
+          return !isOpen;
+        },
+        child: target,
+      );
+    }
+
+    return target;
   }
 
   Widget buildCollapsed() {

@@ -398,6 +398,14 @@ void main() {
       verifyProductList(0, count: 8, price: 0);
       expect(find.byKey(const Key('cart.product.1')), findsNothing);
       verifyMetadata(8, 0);
+
+      // close panel
+      final dynamic widgetsAppState = tester.state(find.byType(WidgetsApp));
+      await widgetsAppState.didPopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('cart_snapshot.price')).hitTestable(),
+          findsOneWidget);
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
