@@ -18,7 +18,7 @@ class OrderAttributeModal extends StatefulWidget {
         super(key: key);
 
   @override
-  OrderAttributeModalState createState() => OrderAttributeModalState();
+  State<OrderAttributeModal> createState() => _OrderAttributeModalState();
 }
 
 class _ModalModes extends StatefulWidget {
@@ -65,7 +65,7 @@ class OrderAttributeModalModesState extends State<_ModalModes>
   }
 }
 
-class OrderAttributeModalState extends State<OrderAttributeModal>
+class _OrderAttributeModalState extends State<OrderAttributeModal>
     with ItemModal<OrderAttributeModal> {
   late TextEditingController _nameController;
 

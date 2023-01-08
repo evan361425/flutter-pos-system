@@ -32,10 +32,10 @@ class SearchScaffold<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  SearchScaffoldState<T> createState() => SearchScaffoldState<T>();
+  State<SearchScaffold<T>> createState() => _SearchScaffoldState<T>();
 }
 
-class SearchScaffoldState<T> extends State<SearchScaffold<T>> {
+class _SearchScaffoldState<T> extends State<SearchScaffold<T>> {
   final GlobalKey<SearchBarState> searchBar = GlobalKey<SearchBarState>();
 
   final List<T> list = [];

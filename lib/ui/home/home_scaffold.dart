@@ -12,10 +12,10 @@ class HomeScaffold extends StatefulWidget {
   const HomeScaffold({Key? key}) : super(key: key);
 
   @override
-  HomeScaffoldState createState() => HomeScaffoldState();
+  State<HomeScaffold> createState() => _HomeScaffoldState();
 }
 
-class HomeScaffoldState extends State<HomeScaffold>
+class _HomeScaffoldState extends State<HomeScaffold>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

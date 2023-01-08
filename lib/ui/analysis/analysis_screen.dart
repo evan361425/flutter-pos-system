@@ -28,7 +28,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   Widget _buildCalendar({required bool isPortrait}) {
     return Tooltip(
-      message: '上下滑動可以顯上單週或單月，左右滑動調整日期',
+      message: '上下滑動可以調整週期單位，如月或週。\n左右滑動調整週期。',
       child: CalendarWrapper(
         isPortrait: isPortrait,
         handleDaySelected: _handleDaySelected,

@@ -18,10 +18,10 @@ class CatalogModal extends StatefulWidget {
         super(key: key);
 
   @override
-  CatalogModalState createState() => CatalogModalState();
+  State<CatalogModal> createState() => _CatalogModalState();
 }
 
-class CatalogModalState extends State<CatalogModal>
+class _CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
 

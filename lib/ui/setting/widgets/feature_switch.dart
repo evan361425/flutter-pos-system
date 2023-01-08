@@ -12,10 +12,10 @@ class FeatureSwitch extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  FeatureSwitchState createState() => FeatureSwitchState();
+  State<FeatureSwitch> createState() => _FeatureSwitchState();
 }
 
-class FeatureSwitchState extends State<FeatureSwitch> {
+class _FeatureSwitchState extends State<FeatureSwitch> {
   late bool isEnable;
 
   @override

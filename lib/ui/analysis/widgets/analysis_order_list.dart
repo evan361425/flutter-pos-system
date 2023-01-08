@@ -24,7 +24,7 @@ class AnalysisOrderList<T> extends StatefulWidget {
       : super(key: key);
 
   @override
-  AnalysisOrderListState<T> createState() => AnalysisOrderListState<T>();
+  State<AnalysisOrderList<T>> createState() => AnalysisOrderListState<T>();
 }
 
 class AnalysisOrderListState<T> extends State<AnalysisOrderList<T>> {

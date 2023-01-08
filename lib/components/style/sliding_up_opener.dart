@@ -76,7 +76,7 @@ class SlidingUpOpener extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  SlidingUpOpenerState createState() => SlidingUpOpenerState();
+  State<SlidingUpOpener> createState() => SlidingUpOpenerState();
 }
 
 class SlidingUpOpenerState extends State<SlidingUpOpener> {

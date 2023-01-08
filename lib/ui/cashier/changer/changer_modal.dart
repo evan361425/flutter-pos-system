@@ -9,10 +9,10 @@ class ChangerModal extends StatefulWidget {
   const ChangerModal({Key? key}) : super(key: key);
 
   @override
-  ChangerModalState createState() => ChangerModalState();
+  State<ChangerModal> createState() => _ChangerModalState();
 }
 
-class ChangerModalState extends State<ChangerModal>
+class _ChangerModalState extends State<ChangerModal>
     with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerModalCustomState>();

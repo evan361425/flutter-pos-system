@@ -30,7 +30,7 @@ class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => OrderScreenState();
+  State<OrderScreen> createState() => OrderScreenState();
 }
 
 class OrderScreenState extends State<OrderScreen> {

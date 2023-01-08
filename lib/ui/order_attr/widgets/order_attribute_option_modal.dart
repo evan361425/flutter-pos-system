@@ -24,10 +24,10 @@ class OrderAttributeOptionModal extends StatefulWidget {
         super(key: key);
 
   @override
-  OrderAttributeModalState createState() => OrderAttributeModalState();
+  State<OrderAttributeOptionModal> createState() => _OrderAttributeModalState();
 }
 
-class OrderAttributeModalState extends State<OrderAttributeOptionModal>
+class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
     with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _modeValueController;

@@ -74,7 +74,7 @@ class _ChangeShower extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChangeShowerState createState() => _ChangeShowerState();
+  State<_ChangeShower> createState() => _ChangeShowerState();
 }
 
 class _ChangeShowerState extends State<_ChangeShower> {
@@ -114,7 +114,7 @@ class _PaidMoneySelector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PaidMoneySelectorState createState() => _PaidMoneySelectorState();
+  State<_PaidMoneySelector> createState() => _PaidMoneySelectorState();
 }
 
 class _PaidMoneySelectorState extends State<_PaidMoneySelector> {

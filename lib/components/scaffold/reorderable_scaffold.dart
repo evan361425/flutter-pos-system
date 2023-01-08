@@ -65,7 +65,7 @@ class _OrderableList<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OrderableListState createState() => _OrderableListState();
+  State<_OrderableList> createState() => _OrderableListState();
 }
 
 class _OrderableListState extends State<_OrderableList> {
