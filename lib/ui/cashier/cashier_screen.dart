@@ -28,12 +28,15 @@ class CashierScreen extends StatelessWidget {
           ),
         ),
         const Expanded(
-          child: RouteCircularButton(
-            key: Key('cashier.changer'),
-            route: Routes.cashierChanger,
-            icon: Icons.sync_alt_outlined,
-            text: '換錢',
-            popTrueShowSuccess: true,
+          child: Tooltip(
+            message: '換錢，一百塊換成 10 個十塊之類。',
+            child: RouteCircularButton(
+              key: Key('cashier.changer'),
+              route: Routes.cashierChanger,
+              icon: Icons.sync_alt_outlined,
+              text: '換錢',
+              popTrueShowSuccess: true,
+            ),
           ),
         ),
         Expanded(

@@ -32,6 +32,7 @@ class IngredientModalState extends State<IngredientModal>
     with ItemModal<IngredientModal> {
   late TextEditingController _nameController;
   late TextEditingController _amountController;
+  late TextEditingController _totalAmountController;
 
   @override
   Widget body() {
@@ -74,6 +75,7 @@ class IngredientModalState extends State<IngredientModal>
   void dispose() {
     _nameController.dispose();
     _amountController.dispose();
+    _totalAmountController.dispose();
     super.dispose();
   }
 
@@ -101,11 +103,26 @@ class IngredientModalState extends State<IngredientModal>
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountLabel,
-            helperText: S.stockIngredientAmountHelper,
             filled: false,
           ),
           validator: Validator.positiveNumber(
             S.stockIngredientAmountLabel,
+            allowNull: true,
+          ),
+        ),
+        TextFormField(
+          key: const Key('stock.ingredient.totalAmount'),
+          controller: _totalAmountController,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: S.stockIngredientTotalAmountLabel,
+            helperText: S.stockIngredientTotalAmountHelper,
+            helperMaxLines: 5,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            S.stockIngredientTotalAmountLabel,
             allowNull: true,
           ),
         ),
@@ -116,8 +133,10 @@ class IngredientModalState extends State<IngredientModal>
     super.initState();
     _nameController = TextEditingController(text: widget.ingredient?.name);
 
-    final amount = widget.ingredient?.currentAmount?.toString() ?? '';
+    final amount = widget.ingredient?.currentAmount.toString() ?? '';
+    final totalAmount = widget.ingredient?.totalAmount?.toString() ?? '';
     _amountController = TextEditingController(text: amount);
+    _totalAmountController = TextEditingController(text: totalAmount);
   }
 
   @override
@@ -128,6 +147,7 @@ class IngredientModalState extends State<IngredientModal>
       await Stock.instance.addItem(Ingredient(
         name: object.name!,
         currentAmount: object.currentAmount!,
+        totalAmount: object.totalAmount,
       ));
     } else {
       await widget.ingredient!.update(object);
@@ -157,9 +177,13 @@ class IngredientModalState extends State<IngredientModal>
   }
 
   IngredientObject _parseObject() {
+    final amount = num.tryParse(_amountController.text) ?? 0;
     return IngredientObject(
       name: _nameController.text,
-      currentAmount: num.tryParse(_amountController.text) ?? 0,
+      lastAmount: amount,
+      currentAmount: amount,
+      totalAmount: num.tryParse(_totalAmountController.text),
+      fromModal: true,
     );
   }
 }

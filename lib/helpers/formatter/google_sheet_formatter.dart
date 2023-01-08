@@ -261,15 +261,15 @@ class _StockFormatter extends _Formatter<Stock, Ingredient> {
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
         _toCD(S.stockIngredientNameLabel),
         _toCD(S.stockIngredientAmountLabel),
+        _toCD(S.stockIngredientTotalAmountLabel),
       ];
 
   @override
   List<List<GoogleSheetCellData>> getRows() => target.itemList
       .map((ingredient) => [
             GoogleSheetCellData(stringValue: ingredient.name),
-            ingredient.currentAmount == null
-                ? GoogleSheetCellData(stringValue: '')
-                : GoogleSheetCellData(numberValue: ingredient.currentAmount),
+            GoogleSheetCellData(numberValue: ingredient.currentAmount),
+            GoogleSheetCellData(numberValue: ingredient.totalAmount),
           ])
       .toList();
 

@@ -62,6 +62,18 @@ void main() {
     });
 
     group('Cashier', () {
+      test('should handler error parsing', () async {
+        final cashier = Cashier();
+        CurrencySetting();
+        CurrencySetting.instance.unitList = [1];
+
+        await cashier.setCurrent([
+          {'unit': 0}
+        ]);
+
+        expect(cashier.currentUnits.first.unit, 1);
+      });
+
       test('#findPossibleChange', () async {
         CurrencySetting();
         final cashier = Cashier();
@@ -89,6 +101,18 @@ void main() {
 
         result = cashier.findPossibleChange(9, 10);
         expect(result, isNull);
+      });
+
+      test('#update', () async {
+        CurrencySetting();
+        final cashier = Cashier();
+        await cashier.setCurrent([
+          {'unit': 5, 'count': 3},
+        ]);
+
+        cashier.update({0: -5});
+
+        expect(cashier.at(0).count, equals(0));
       });
 
       test('#paid', () async {

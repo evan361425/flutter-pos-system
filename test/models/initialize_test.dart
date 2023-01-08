@@ -222,7 +222,8 @@ void main() {
       expect(i1.currentAmount, equals(10));
       expect(i1.updatedAt, isNotNull);
       expect(i2.name, equals('i-2'));
-      expect(i2.currentAmount, isNull);
+      expect(i2.currentAmount, 0);
+      expect(i2.totalAmount, isNull);
       expect(i2.updatedAt, isNull);
     });
 

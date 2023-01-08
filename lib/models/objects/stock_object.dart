@@ -9,21 +9,23 @@ class IngredientObject extends ModelObject<Ingredient> {
     this.id,
     this.name,
     this.currentAmount,
+    this.totalAmount,
     this.warningAmount,
     this.alertAmount,
     this.lastAmount,
-    this.lastAddAmount,
     this.updatedAt,
+    this.fromModal = false,
   });
 
   String? id;
   String? name;
   num? currentAmount;
+  num? totalAmount;
   num? warningAmount;
   num? alertAmount;
   num? lastAmount;
-  num? lastAddAmount;
   DateTime? updatedAt;
+  bool fromModal;
 
   @override
   Map<String, Object?> toMap() {
@@ -33,14 +35,14 @@ class IngredientObject extends ModelObject<Ingredient> {
       'warningAmount': warningAmount,
       'alertAmount': alertAmount,
       'lastAmount': lastAmount,
-      'lastAddAmount': lastAddAmount,
+      'totalAmount': totalAmount,
       'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
     };
   }
 
   @override
-  Map<String, Object> diff(Ingredient model) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(Ingredient model) {
+    final result = <String, Object?>{};
     final prefix = model.prefix;
 
     if (name != null && name != model.name) {
@@ -55,9 +57,10 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.lastAmount = lastAmount;
       result['$prefix.lastAmount'] = lastAmount!;
     }
-    if (lastAddAmount != null && lastAddAmount != model.lastAddAmount) {
-      model.lastAddAmount = lastAddAmount;
-      result['$prefix.lastAddAmount'] = lastAddAmount!;
+    if ((fromModal || totalAmount != null) &&
+        totalAmount != model.totalAmount) {
+      model.totalAmount = totalAmount;
+      result['$prefix.totalAmount'] = totalAmount;
     }
 
     if (result.isNotEmpty) {
@@ -76,7 +79,7 @@ class IngredientObject extends ModelObject<Ingredient> {
       warningAmount: data['warningAmount'] as num?,
       alertAmount: data['alertAmount'] as num?,
       lastAmount: data['lastAmount'] as num?,
-      lastAddAmount: data['lastAddAmount'] as num?,
+      totalAmount: data['totalAmount'] as num?,
       updatedAt: data['updatedAt'] == null
           ? null
           : DateTime.parse(data['updatedAt'] as String),

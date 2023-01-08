@@ -349,7 +349,7 @@ class GoogleSheetCellData {
 
   @override
   String toString() {
-    return value.stringValue ?? value.numberValue!.toString();
+    return value.stringValue ?? value.numberValue?.toString() ?? '';
   }
 }
 

@@ -43,6 +43,8 @@ void main() {
           find.byKey(const Key('stock.ingredient.amount')), '1');
       await tester.enterText(
           find.byKey(const Key('stock.ingredient.name')), 'i-1');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.totalAmount')), '50');
       await tester.tap(find.byKey(const Key('modal.save')));
       // wait for updating
       await tester.pumpAndSettle();
@@ -52,6 +54,7 @@ void main() {
       expect(stock.length, equals(1));
       expect(stock.items.first.name, equals('i-1'));
       expect(stock.items.first.currentAmount, equals(1));
+      expect(stock.items.first.totalAmount, equals(50));
     });
 
     testWidgets('replenishment apply successfully', (tester) async {
@@ -62,11 +65,11 @@ void main() {
       final ing1 = Ingredient(id: 'i-1', name: 'i-1');
       final ing2 = Ingredient(id: 'i-2', name: 'i-2', currentAmount: 4);
       final stock = Stock()..replaceItems({'i-1': ing1, 'i-2': ing2});
-      final repli = Replenisher()..replaceItems({'r-1': replenishment});
+      final repl = Replenisher()..replaceItems({'r-1': replenishment});
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
-        ChangeNotifierProvider<Replenisher>.value(value: repli),
+        ChangeNotifierProvider<Replenisher>.value(value: repl),
       ], child: buildApp()));
 
       await tester.tap(find.byKey(const Key('stock.replenisher')));
@@ -77,12 +80,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(ing1.currentAmount, equals(10));
-      expect(ing1.lastAddAmount, equals(10));
       expect(ing1.lastAmount, equals(10));
       expect(ing2.currentAmount, equals(0));
     });
 
-    Future<void> buildAppWithIngredients(WidgetTester tester) async {
+    Future<void> buildAppWithIngredients([WidgetTester? tester]) async {
       final ingredient = Ingredient(id: 'i-1', name: 'i-1');
       final stock = Stock()
         ..replaceItems({
@@ -104,6 +106,7 @@ void main() {
         }
       }
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
+      if (tester == null) return;
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
@@ -113,36 +116,63 @@ void main() {
     }
 
     testWidgets('edit amount of ingredient', (tester) async {
-      await buildAppWithIngredients(tester);
+      await buildAppWithIngredients();
+      Stock.instance.getItem('i-1')!.totalAmount = 54321;
+      Stock.instance.getItem('i-2')!.lastAmount = 900.56;
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+        ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
+      ], child: buildApp()));
 
       tapAndEnter(String key, String text) async {
         await tester.tap(find.byKey(Key(key)));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byKey(const Key('text_dialog.text')), text);
-        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
+        await tester.enterText(
+            find.byKey(const Key('slider_dialog.text')), text);
+        await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
         await tester.pumpAndSettle();
       }
 
-      final ingredient = Stock.instance.items.first;
-      await tapAndEnter('stock.i-1.plus', '10');
-      expect(ingredient.currentAmount, equals(10));
-      expect(ingredient.lastAddAmount, equals(10));
-      expect(ingredient.lastAmount, equals(10));
+      // correctly transform string
+      expect(find.text('5.4e+4'), findsOneWidget);
+      expect(find.text('900.6'), findsOneWidget);
 
-      await tapAndEnter('stock.i-1.minus', '4');
-      expect(ingredient.currentAmount, equals(6));
-      expect(ingredient.lastAddAmount, equals(10));
-      expect(ingredient.lastAmount, equals(10));
+      final ingredient = Stock.instance.items.first;
+
+      await tapAndEnter('stock.i-1', '10');
+      expect(ingredient.currentAmount, equals(10));
+
+      await tester.tap(find.byKey(const Key('stock.i-1')));
+      await tester.pumpAndSettle();
+
+      final w = find
+          .byKey(const Key('slider_dialog.text'))
+          .evaluate()
+          .single
+          .widget as TextFormField;
+      expect(w.controller!.text, equals('10.0'));
+
+      await tester.tap(find.byType(Slider));
+      expect(w.controller!.text, equals('27161'));
+
+      await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
+      await tester.pumpAndSettle();
+      expect(ingredient.currentAmount, equals(27161));
     });
 
     testWidgets('edit ingredient', (tester) async {
       await buildAppWithIngredients(tester);
+      Stock.instance.getItem('i-1')!.totalAmount = 500;
+
       // go to ingredient modal
-      await tester.tap(find.byKey(const Key('stock.i-1')));
+      await tester.tap(find.byKey(const Key('stock.i-1.edit')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
           find.byKey(const Key('stock.ingredient.amount')), '1');
+      await tester.enterText(
+          find.byKey(const Key('stock.ingredient.totalAmount')), '');
 
       // go to product
       await tester.tap(find.byKey(const Key('stock.ingredient.p-1')));
@@ -165,12 +195,15 @@ void main() {
       await tester.pumpAndSettle();
 
       // check name is changed
-      final w = find.byKey(const Key('stock.i-1')).evaluate().first.widget;
-      expect(((w as ListTile).title as Text).data, equals('i-3'));
+      final w = find.byKey(const Key('stock.i-1'));
+      expect(w, findsOneWidget);
+      expect(((w.evaluate().first.widget as ListTile).title as Text).data,
+          equals('i-3'));
 
       final ingredient = Stock.instance.items.first;
       expect(ingredient.name, equals('i-3'));
       expect(ingredient.currentAmount, equals(1));
+      expect(ingredient.totalAmount, isNull);
     });
 
     testWidgets('delete ingredient', (tester) async {

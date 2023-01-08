@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/dialog/single_text_dialog.dart';
+import 'package:possystem/components/dialog/slider_text_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/icon_filled_button.dart';
-import 'package:possystem/constants/constant.dart';
+import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -45,11 +44,25 @@ class IngredientList extends StatelessWidget {
     return Menu.instance.removeIngredients(ingredient.id);
   }
 
-  void _handleTap(BuildContext context, Ingredient ingredient) {
-    Navigator.of(context).pushNamed(
-      Routes.stockIngredient,
-      arguments: ingredient,
+  Future<void> _handleTap(BuildContext context, Ingredient ingredient) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => SliderTextDialog(
+        title: Text(ingredient.name),
+        value: ingredient.currentAmount.toDouble(),
+        max: ingredient.maxAmount,
+        decoration: InputDecoration(
+          label: Text(S.stockIngredientAmountLabel),
+          helperText: '若沒有設定最大庫存量，增加庫存會重設最大值。',
+          helperMaxLines: 3,
+        ),
+        validator: Validator.positiveNumber(S.stockIngredientAmountLabel),
+      ),
     );
+
+    if (result != null) {
+      await ingredient.setAmount(num.tryParse(result) ?? 0);
+    }
   }
 
   Widget _warningContextBuilder(BuildContext context, Ingredient ingredient) {
@@ -83,55 +96,15 @@ class _IngredientTile extends StatelessWidget {
     return ListTile(
       key: Key('stock.${ingredient.id}'),
       title: Text(ingredient.name),
-      subtitle: MetaBlock.withString(context, <String>[
-        '庫存：${ingredient.currentAmount ?? '無'}',
-        '紀錄：${ingredient.lastAmount ?? '無'}',
-      ]),
-      trailing: Wrap(
-        spacing: kSpacing1,
-        children: <Widget>[
-          IconFilledButton(
-            key: Key('stock.${ingredient.id}.plus'),
-            onPressed: () => _showTextDialog(
-              context,
-              initialValue: ingredient.lastAddAmount?.toString(),
-              title: S.stockIngredientDialogIncrementTitle(ingredient.name),
-            ).then((value) {
-              if (value != null) ingredient.addAmount(value);
-            }),
-            icon: KIcons.add,
-          ),
-          IconFilledButton(
-            key: Key('stock.${ingredient.id}.minus'),
-            onPressed: () => _showTextDialog(
-              context,
-              title: S.stockIngredientDialogDecrementTitle(ingredient.name),
-            ).then((value) {
-              if (value != null) ingredient.addAmount(-value);
-            }),
-            icon: KIcons.remove,
-          ),
-        ],
+      subtitle: PercentileBar(ingredient.currentAmount, ingredient.maxAmount),
+      trailing: IconButton(
+        key: Key('stock.${ingredient.id}.edit'),
+        onPressed: () => Navigator.of(context).pushNamed(
+          Routes.stockIngredient,
+          arguments: ingredient,
+        ),
+        icon: const Icon(KIcons.edit),
       ),
     );
-  }
-
-  Future<num?> _showTextDialog(
-    BuildContext context, {
-    String? initialValue,
-    required String title,
-  }) async {
-    final result = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => SingleTextDialog(
-        title: Text(title),
-        initialValue: initialValue ?? '0',
-        validator: Validator.positiveNumber(''),
-        selectAll: true,
-        keyboardType: TextInputType.number,
-      ),
-    );
-
-    return result == null ? null : num.tryParse(result);
   }
 }

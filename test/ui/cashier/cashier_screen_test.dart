@@ -36,16 +36,6 @@ void main() {
       );
     }
 
-    test('cashier should handler error parsing', () async {
-      CurrencySetting.instance.unitList = [1];
-
-      await Cashier.instance.setCurrent([
-        {'unit': 0}
-      ]);
-
-      expect(Cashier.instance.currentUnits.first.unit, 1);
-    });
-
     testWidgets('should execute changer', (tester) async {
       await Cashier.instance.setCurrent(<Map<String, num>>[
         {'unit': 1, 'count': 10},
@@ -127,39 +117,29 @@ void main() {
       await tester.pumpWidget(buildApp());
 
       action(
-        String type,
+        String unit,
         String number, [
         String action = 'confirm',
       ]) async {
-        await tester.tap(find.byKey(Key('cashier.$type')));
+        await tester.tap(find.text('幣值：$unit'));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextFormField), number);
-        await tester.tap(find.byKey(Key('text_dialog.$action')));
+        await tester.tap(find.byKey(Key('slider_dialog.$action')));
         await tester.pumpAndSettle();
       }
 
-      await action('1.plus', '3');
-      await action('5.minus', '7');
-      await action('5.plus', '5', 'cancel');
+      await action('1', '13');
+      expect(find.text('13'), findsOneWidget);
 
-      final w1 = find
-          .byKey(const Key('cashier.1.count'))
-          .evaluate()
-          .single
-          .widget as Text;
-      final w5 = find
-          .byKey(const Key('cashier.5.count'))
-          .evaluate()
-          .single
-          .widget as Text;
-      expect(w1.data, equals('數量：13'));
-      expect(w5.data, equals('數量：0'));
+      await action('5', '2');
+      await action('5', '5', 'cancel');
+      expect(find.text('2'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('cashier.defaulter')));
       await tester.pumpAndSettle();
 
       expect(Cashier.instance.at(0).count, equals(13));
-      expect(Cashier.instance.at(1).count, isZero);
+      expect(Cashier.instance.at(1).count, equals(2));
     });
 
     testWidgets('should show confirm if reset default', (tester) async {

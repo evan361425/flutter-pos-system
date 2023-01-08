@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/components/style/icon_filled_button.dart';
-import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/dialog/slider_text_dialog.dart';
+import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/helpers/validator.dart';
+import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:provider/provider.dart';
 
@@ -13,64 +12,47 @@ class CashierUnitList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cashier = context.watch<Cashier>();
+    int i = 0;
 
     return Column(children: [
-      for (final unit in cashier.currentUnits)
-        ListTile(
-          title: Text('幣值：${unit.unit}'),
-          subtitle: Text(
-            '數量：${unit.count}',
-            key: Key('cashier.${unit.unit}.count'),
-          ),
-          trailing: Wrap(
-            spacing: kSpacing1,
-            children: <Widget>[
-              IconFilledButton(
-                key: Key('cashier.${unit.unit}.plus'),
-                onPressed: () =>
-                    handlePlus(context, cashier.indexOf(unit.unit)),
-                icon: KIcons.add,
-                type: IconFilledButtonType.outlined,
-              ),
-              IconFilledButton(
-                key: Key('cashier.${unit.unit}.minus'),
-                onPressed: () =>
-                    handleMinus(context, cashier.indexOf(unit.unit)),
-                icon: KIcons.remove,
-                type: IconFilledButtonType.outlined,
-              ),
-            ],
-          ),
-        )
+      for (final item in cashier.currentUnits) _itemWidget(context, item, i++),
     ]);
   }
 
-  void handlePlus(BuildContext context, int index) async {
-    final count = await waitForInput(context, '欲新增的數量');
-    if (count != null) {
-      await Cashier.instance.plus(index, count);
-    }
+  Widget _itemWidget(BuildContext context, CashierUnitObject item, int index) {
+    final max = Cashier.instance.defaultAt(index)?.count ?? 0;
+    return Card(
+      shape: const RoundedRectangleBorder(),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      child: ListTile(
+        title: Text('幣值：${item.unit}'),
+        subtitle: PercentileBar(item.count, max),
+        onTap: () => _setUnitCount(context, item.unit, max, item.count),
+      ),
+    );
   }
 
-  void handleMinus(BuildContext context, int index) async {
-    final count = await waitForInput(context, '欲減少的數量');
-    if (count != null) {
-      await Cashier.instance.minus(index, count);
-    }
-  }
-
-  Future<int?> waitForInput(BuildContext context, String title) async {
+  Future<void> _setUnitCount(
+    BuildContext context,
+    num unit,
+    num max,
+    int value,
+  ) async {
     final result = await showDialog<String>(
       context: context,
-      builder: (BuildContext context) => SingleTextDialog(
-        title: Text(title),
+      builder: (BuildContext context) => SliderTextDialog(
+        value: value,
+        max: max.toDouble(),
+        title: Text('幣值：$unit'),
         validator: Validator.positiveInt('數量'),
-        initialValue: '1',
-        selectAll: true,
-        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(
+          label: Text('數量'),
+        ),
       ),
     );
 
-    return result == null ? null : int.tryParse(result);
+    if (result != null) {
+      await Cashier.instance.setUnitCount(unit, int.tryParse(result) ?? 0);
+    }
   }
 }

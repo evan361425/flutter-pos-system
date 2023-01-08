@@ -24,7 +24,7 @@ class Stock extends ChangeNotifier
     Map<String, num> amounts, {
     onlyAmount = false,
   }) async {
-    final updateData = <String, Object>{};
+    final updateData = <String, Object?>{};
 
     amounts.forEach((id, amount) {
       if (amount != 0) {

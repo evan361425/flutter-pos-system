@@ -18,7 +18,7 @@ class IngredientPreviewer extends PreviewerScreen<Ingredient> {
         status: item.statusName,
       ),
       subtitle: MetaBlock.withString(context, <String>[
-        '庫存：${item.currentAmount ?? '無'}',
+        '庫存：${item.currentAmount}',
       ]),
     );
   }

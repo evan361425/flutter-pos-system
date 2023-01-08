@@ -43,7 +43,7 @@ void main() {
           home: Navigator(
             onPopPage: (route, result) => route.didPop(result),
             pages: const [
-              MaterialPage(child: Text('hi', key: Key('poped'))),
+              MaterialPage(child: Text('hi', key: Key('popped'))),
               MaterialPage(child: ChangerModal()),
             ],
           ),
@@ -76,7 +76,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('poped')), findsNothing);
+      expect(find.byKey(const Key('popped')), findsNothing);
     });
 
     testWidgets('delete favorite item', (tester) async {
@@ -159,14 +159,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // should setup current data
-      expect(find.byKey(const Key('poped')), findsNothing);
+      expect(find.byKey(const Key('popped')), findsNothing);
 
-      await Cashier.instance.plus(2, 10);
+      await Cashier.instance.setUnitCount(10, 10);
 
       await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('poped')), findsOneWidget);
+      expect(find.byKey(const Key('popped')), findsOneWidget);
       expect(Cashier.instance.at(2).count, equals(6));
       expect(Cashier.instance.at(1).count, equals(7));
       expect(Cashier.instance.at(0).count, equals(5));

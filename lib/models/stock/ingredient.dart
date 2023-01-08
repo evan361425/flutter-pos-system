@@ -8,20 +8,20 @@ import 'package:possystem/services/storage.dart';
 
 class Ingredient extends Model<IngredientObject>
     with ModelStorage<IngredientObject>, ModelSearchable<IngredientObject> {
-  // current amount in stock
-  num? currentAmount;
+  /// current amount in stock
+  num currentAmount;
 
-  // warning threshold
+  /// total amount in stock
+  num? totalAmount;
+
+  /// warning threshold
   num? warningAmount;
 
-  // alert threshold
+  /// alert threshold
   num? alertAmount;
 
-  // amount after last replenishment
+  /// amount after last replenishment
   num? lastAmount;
-
-  // value of last added
-  num? lastAddAmount;
 
   DateTime? updatedAt;
 
@@ -32,11 +32,11 @@ class Ingredient extends Model<IngredientObject>
     String? id,
     ModelStatus? status,
     String name = 'ingredient',
-    this.currentAmount,
+    this.currentAmount = 0,
+    this.totalAmount,
     this.warningAmount,
     this.alertAmount,
     this.lastAmount,
-    this.lastAddAmount,
     this.updatedAt,
   }) : super(id, status) {
     this.name = name;
@@ -45,19 +45,20 @@ class Ingredient extends Model<IngredientObject>
   factory Ingredient.fromObject(IngredientObject object) => Ingredient(
         id: object.id,
         name: object.name ?? '',
-        currentAmount: object.currentAmount,
+        currentAmount: object.currentAmount ?? 0,
         warningAmount: object.warningAmount,
         alertAmount: object.alertAmount,
         lastAmount: object.lastAmount,
-        lastAddAmount: object.lastAddAmount,
+        totalAmount: object.totalAmount,
         updatedAt: object.updatedAt,
       );
 
   factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
-    final amount = row.length > 1 ? num.tryParse(row[1]) : null;
+    final amount = (row.length > 1 ? double.tryParse(row[1]) : null) ?? 0;
+    final total = row.length > 2 ? double.tryParse(row[2]) : null;
     final status = ori == null
         ? ModelStatus.staged
-        : (amount == ori.currentAmount
+        : (amount == ori.currentAmount && total == ori.totalAmount
             ? ModelStatus.normal
             : ModelStatus.updated);
 
@@ -65,9 +66,13 @@ class Ingredient extends Model<IngredientObject>
       id: ori?.id,
       name: row[0],
       currentAmount: amount,
+      totalAmount: total,
       status: status,
     );
   }
+
+  double get maxAmount =>
+      (totalAmount ?? lastAmount ?? currentAmount).toDouble();
 
   @override
   Stock get repository => Stock.instance;
@@ -75,15 +80,15 @@ class Ingredient extends Model<IngredientObject>
   @override
   set repository(Repository repo) {}
 
-  Future<void> addAmount(num amount) =>
-      Stock.instance.applyAmounts({id: amount});
+  Future<void> setAmount(num amount) =>
+      // only allow difference
+      Stock.instance.applyAmounts({id: amount - currentAmount});
 
   /// Add/minus [amount] of ingredient and return update data
-  Map<String, Object> getUpdateData(num amount, {onlyAmount = false}) {
-    final newAmount = (currentAmount ?? 0) + amount;
+  Map<String, Object?> getUpdateData(num amount, {onlyAmount = false}) {
+    final newAmount = currentAmount + amount;
     final object = amount > 0 && !onlyAmount
         ? IngredientObject(
-            lastAddAmount: amount,
             currentAmount: newAmount,
             lastAmount: newAmount,
           )
@@ -99,7 +104,7 @@ class Ingredient extends Model<IngredientObject>
         currentAmount: currentAmount,
         warningAmount: warningAmount,
         alertAmount: alertAmount,
-        lastAddAmount: lastAddAmount,
+        totalAmount: totalAmount,
         lastAmount: lastAmount,
         updatedAt: updatedAt,
       );

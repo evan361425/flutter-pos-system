@@ -518,7 +518,8 @@
   "stockIngredientNameHint": "起司",
   "stockIngredientNameRepeatError": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
-  "stockIngredientAmountHelper": "設定此值並不記錄為「補貨」。或要補貨，請從「庫存」頁設定。",
+  "stockIngredientTotalAmountLabel": "庫存最大值",
+  "stockIngredientTotalAmountHelper": "填空則重設。\n設定這個值可以幫助你一眼看出用了多少成份。\n不填寫則每次「增加庫存」會自動設定這值",
   "stockReplenishmentTitle": "採購列表",
   "stockReplenishmentSubtitle": "會影響 {count} 項成分",
   "@stockReplenishmentSubtitle": {

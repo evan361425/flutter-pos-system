@@ -72,6 +72,10 @@ class Cashier extends ChangeNotifier {
   /// Get current unit from [index]
   CashierUnitObject at(int index) => _current[index];
 
+  /// Get default unit from [index]
+  CashierUnitObject? defaultAt(int index) =>
+      index < _default.length ? _default[index] : null;
+
   Future<void> deleteFavorite(int index) async {
     try {
       _favorites.removeAt(index);
@@ -168,8 +172,12 @@ class Cashier extends ChangeNotifier {
     return _current.indexWhere((element) => element.unit == unit);
   }
 
-  /// Minus [count] money of unit at [index] to cashier
-  Future<void> minus(int index, int count) => update({index: -count});
+  /// Set the [count] of specific [unit] in cashier
+  Future<void> setUnitCount(num unit, int count) {
+    final index = indexOf(unit);
+    final diff = count - _current[index].count;
+    return update({index: diff});
+  }
 
   /// Customer [given] money for the [price] and update the cashier
   ///
@@ -224,9 +232,6 @@ class Cashier extends ChangeNotifier {
 
     return CashierUpdateStatus.notEnough;
   }
-
-  /// Add [count] money of unit at [index] to cashier
-  Future<void> plus(int index, int count) => update({index: count});
 
   /// When [Currency] changed, it must be fired
   Future<void> reset() async {
@@ -300,6 +305,7 @@ class Cashier extends ChangeNotifier {
     } catch (e, stack) {
       Log.err(e, 'cashier_fetch_default', stack);
     }
+    notifyListeners();
   }
 
   Future<void> setFavorite(Object? record) async {

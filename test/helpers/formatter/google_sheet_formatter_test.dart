@@ -193,7 +193,7 @@ void main() {
         final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.stock);
 
         final items = formatter.format<Ingredient>(target, [
-          ['i1', 2],
+          ['i1', 2, 3],
           ['i1'],
           [],
           ['i2'],
@@ -202,16 +202,17 @@ void main() {
 
         expect(Stock.instance.getItem('i1')!.currentAmount, equals(1));
 
-        void verifyItem(int index, String name, int? a, String status) {
+        void verifyItem(int index, String name, int a, int? t, String status) {
           final item = items[index].item!;
           expect(item.name, equals(name));
           expect(item.currentAmount, equals(a));
+          expect(item.totalAmount, equals(t));
           expect(item.statusName, equals(status));
         }
 
-        verifyItem(0, 'i1', 2, 'updated');
-        verifyItem(3, 'i2', null, 'normal');
-        verifyItem(4, 'i3', null, 'staged');
+        verifyItem(0, 'i1', 2, 3, 'updated');
+        verifyItem(3, 'i2', 0, null, 'normal');
+        verifyItem(4, 'i3', 0, null, 'staged');
 
         expect(items[1].hasError, isTrue);
         expect(items[2].hasError, isTrue);

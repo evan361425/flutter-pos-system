@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 /// https://github.com/rxlabz/panache
 class AppThemes {
   static final ThemeData lightTheme = ThemeData()
-    ..setGrandientColors(const [
+    ..setGradientColors(const [
       Colors.indigo,
       Colors.blue,
       Colors.green,
     ]);
 
   static final ThemeData darkTheme = ThemeData.dark()
-    ..setGrandientColors(const [
+    ..setGradientColors(const [
       Color(0xFF1F1B24),
       Color(0xFF2e2356),
     ]);
@@ -20,7 +20,7 @@ class AppThemes {
 extension GradientColorsTheme on ThemeData {
   static final Map<Brightness, List<Color>> _gradientColors = {};
 
-  void setGrandientColors(List<Color> colors) {
+  void setGradientColors(List<Color> colors) {
     _gradientColors[brightness] = colors;
   }
 
