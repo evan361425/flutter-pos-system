@@ -67,7 +67,9 @@ class HomeSetupScreen extends StatelessWidget {
               key: tutorialOrderAttr,
               id: 'home.order_attr',
               title: '顧客設定',
-              message: '這裡可以設定顧客資訊，例如：\n' '內用，加價一成、外帶等等。',
+              message: '這裡可以設定顧客資訊，例如：\n'
+                  '內用，加價一成；\n'
+                  '外帶，維持原價。',
               shape: TutorialShape.rect,
               child: RouteTile(
                 key: const Key('home_setup.order_attrs'),
