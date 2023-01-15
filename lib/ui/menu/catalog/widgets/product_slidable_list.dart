@@ -55,11 +55,20 @@ class ProductSlidableList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Product product, _) {
+  Widget _tileBuilder(
+    BuildContext context,
+    int index,
+    Product product,
+    VoidCallback showActions,
+  ) {
     return ListTile(
       key: Key('product.${product.id}'),
       leading: product.avator,
       title: Text(product.name),
+      trailing: IconButton(
+        onPressed: showActions,
+        icon: const Icon(Icons.more_vert_sharp),
+      ),
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),

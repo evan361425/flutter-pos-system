@@ -54,11 +54,20 @@ class CatalogList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Catalog catalog, _) {
+  Widget _tileBuilder(
+    BuildContext context,
+    int index,
+    Catalog catalog,
+    VoidCallback showActions,
+  ) {
     final child = ListTile(
       key: Key('catalog.${catalog.id}'),
       leading: catalog.avator,
       title: Text(catalog.name),
+      trailing: IconButton(
+        onPressed: showActions,
+        icon: const Icon(Icons.more_vert_sharp),
+      ),
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
