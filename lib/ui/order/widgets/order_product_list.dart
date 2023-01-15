@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -21,42 +22,29 @@ class OrderProductList extends StatefulWidget {
   State<OrderProductList> createState() => OrderProductListState();
 }
 
-class OrderProductListState extends State<OrderProductList> {
+class OrderProductListState extends State<OrderProductList> with TutorialChild {
   late List<Product> _products;
 
   late final int _crossAxisCount;
 
   @override
   Widget build(BuildContext context) {
-    final body = _crossAxisCount == 0
-        ? Wrap(children: [
-            for (final product in _products)
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: OutlinedButton(
-                  key: Key('order.product.${product.id}'),
-                  onPressed: () => _handleSelected(product),
-                  child: Text(product.name),
-                ),
-              )
-          ])
-        : GridView.count(
-            crossAxisCount: _crossAxisCount,
-            children: [
-              for (final product in _products)
-                _ImageCard(
-                  product: product,
-                  onTap: () => _handleSelected(product),
-                ),
-            ],
-          );
-
+    int i = 0;
     return Card(
       // Small top margin to avoid double size between catalogs
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       child: Padding(
         padding: const EdgeInsets.all(kSpacing1),
-        child: body,
+        child: _crossAxisCount == 0
+            ? Wrap(children: [
+                for (final product in _products) _buildItem(i++, product)
+              ])
+            : GridView.count(
+                crossAxisCount: _crossAxisCount,
+                children: [
+                  for (final product in _products) _buildItem(i++, product)
+                ],
+              ),
       ),
     );
   }
@@ -65,6 +53,7 @@ class OrderProductListState extends State<OrderProductList> {
   void initState() {
     _products = widget.products;
     _crossAxisCount = SettingsProvider.of<OrderProductAxisCountSetting>().value;
+    tutorials = [GlobalKey<State<Tutorial>>()];
     super.initState();
   }
 
@@ -77,6 +66,34 @@ class OrderProductListState extends State<OrderProductList> {
       ..add(product);
     // scroll to bottom
     widget.handleSelected(product);
+  }
+
+  Widget _buildItem(int index, Product product) {
+    final widget = _crossAxisCount == 0
+        ? Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: OutlinedButton(
+              key: Key('order.product.${product.id}'),
+              onPressed: () => _handleSelected(product),
+              child: Text(product.name),
+            ),
+          )
+        : _ImageCard(
+            product: product,
+            onTap: () => _handleSelected(product),
+          );
+
+    return index == 0
+        ? Tutorial(
+            id: 'order.menu_product',
+            key: tutorials[0],
+            title: '開始點餐！',
+            message: '透過圖片點餐更方便！\n'
+                '你也可以到「設定」頁面，\n'
+                '設定「每行顯示幾個產品」或僅使用文字點餐',
+            shape: TutorialShape.rect,
+            child: widget)
+        : widget;
   }
 }
 

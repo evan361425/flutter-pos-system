@@ -228,7 +228,10 @@ void main() {
     });
 
     setUp(() {
-      when(cache.get(any)).thenReturn(1);
+      // disable tutorial
+      when(cache.get(
+        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+      )).thenReturn(true);
     });
 
     setUpAll(() {

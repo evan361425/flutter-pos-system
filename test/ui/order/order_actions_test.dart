@@ -392,8 +392,12 @@ void main() {
     });
 
     setUp(() {
-      // disable and features
+      // disable any features
       when(cache.get(any)).thenReturn(null);
+      // disable tutorial
+      when(cache.get(
+        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+      )).thenReturn(true);
 
       prepareData();
     });

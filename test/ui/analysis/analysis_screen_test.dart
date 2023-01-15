@@ -15,7 +15,12 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   Widget buildAnalysisScreen({themeMode = ThemeMode.light}) {
+    // setup currency and cashier relation
     when(cache.get(any)).thenReturn(null);
+    // disable tutorial
+    when(cache.get(
+      argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+    )).thenReturn(true);
     final settings = SettingsProvider([
       LanguageSetting(),
       CurrencySetting(),

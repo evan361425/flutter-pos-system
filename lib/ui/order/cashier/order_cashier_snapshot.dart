@@ -52,6 +52,7 @@ class OrderCashierSnapshot extends StatelessWidget {
       selector.currentState?.select(value);
       final change = value - totalPrice;
 
+      // TODO: should also set if change smaller than zero
       if (change >= 0) {
         selector.currentState?.setAttributeCost(value);
         changeShower.currentState?.change(change);

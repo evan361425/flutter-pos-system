@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/route_tile.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -11,11 +12,18 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class HomeSetupScreen extends StatelessWidget {
-  const HomeSetupScreen({Key? key}) : super(key: key);
+  final TutorialInTab? tab;
+
+  const HomeSetupScreen({
+    Key? key,
+    this.tab,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
+    final tutorialOrderAttr = GlobalKey<State<Tutorial>>();
+    final tutorialExporter = GlobalKey<State<Tutorial>>();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -24,23 +32,49 @@ class HomeSetupScreen extends StatelessWidget {
           children: [
             const _HeaderInfoList(),
             if (!isProd) const Center(child: RandomGenerateOrderButton()),
-            RouteTile(
-              key: const Key('home_setup.menu'),
-              icon: Icons.collections_outlined,
-              route: Routes.menu,
-              title: S.menuTitle,
+            Tutorial(
+              id: 'home.menu',
+              message: '現在就趕緊來設定菜單吧！',
+              targets: [
+                tutorialOrderAttr,
+                tutorialExporter,
+                Tutorial.self,
+              ],
+              tab: tab,
+              shape: TutorialShape.rect,
+              disable: Menu.instance.isNotEmpty,
+              child: RouteTile(
+                key: const Key('home_setup.menu'),
+                icon: Icons.collections_outlined,
+                route: Routes.menu,
+                title: S.menuTitle,
+              ),
             ),
-            RouteTile(
-              key: const Key('home_setup.exporter'),
-              icon: Icons.upload_file_outlined,
-              route: Routes.exporter,
-              title: S.exporterTitle,
+            Tutorial(
+              key: tutorialExporter,
+              id: 'home.exporter',
+              title: '檔案匯出',
+              message: '這裡是用來匯出菜單、庫存等資訊的地方。',
+              shape: TutorialShape.rect,
+              child: RouteTile(
+                key: const Key('home_setup.exporter'),
+                icon: Icons.upload_file_outlined,
+                route: Routes.exporter,
+                title: S.exporterTitle,
+              ),
             ),
-            RouteTile(
-              key: const Key('home_setup.order_attrs'),
-              icon: Icons.assignment_ind_outlined,
-              route: Routes.orderAttr,
-              title: S.orderAttributeTitle,
+            Tutorial(
+              key: tutorialOrderAttr,
+              id: 'home.order_attr',
+              title: '顧客設定',
+              message: '這裡可以設定顧客資訊，例如：\n' '內用，加價一成、外帶等等。',
+              shape: TutorialShape.rect,
+              child: RouteTile(
+                key: const Key('home_setup.order_attrs'),
+                icon: Icons.assignment_ind_outlined,
+                route: Routes.orderAttr,
+                title: S.orderAttributeTitle,
+              ),
             ),
             RouteTile(
               key: const Key('home_setup.quantities'),

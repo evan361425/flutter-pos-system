@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
@@ -23,7 +24,8 @@ class OrderBySlidingPanel extends StatefulWidget {
   State<OrderBySlidingPanel> createState() => OrderBySlidingPanelState();
 }
 
-class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
+class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
+    with TutorialChild {
   final opener = GlobalKey<SlidingUpOpenerState>();
 
   @override
@@ -33,10 +35,17 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
     final panelHeight =
         mediaQuery.size.height - mediaQuery.padding.top - kToolbarHeight - 64.0;
 
-    final collapsed = Tooltip(
+    final collapsed = Tutorial(
+      id: 'order.sliding_collapsed',
+      key: tutorials[0],
+      title: '點餐介面',
       message: '為了讓點選產品可以更方便，\n'
-          '我們把點餐後的產品設定至於此面板，點選或滑動以查看。\n'
-          '如果需要一次顯示所有訊息的排版，可以至「設定」>「點餐的外觀」設定。',
+          '我們把點餐後的產品設定至於此面板。\n'
+          '如果需要一次顯示所有訊息的排版（適合大螢幕），\n'
+          '可以至「設定」>「點餐的外觀」調整。',
+      shape: TutorialShape.rect,
+      align: TutorialAlign.top,
+      paddingSize: 32,
       child: ChangeNotifierProvider.value(
         value: Cart.instance,
         builder: (_, __) => const Padding(
@@ -60,6 +69,12 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
         Expanded(child: widget.row2),
       ]),
     );
+  }
+
+  @override
+  void initState() {
+    tutorials = [GlobalKey<State<Tutorial>>()];
+    super.initState();
   }
 
   void reset() {

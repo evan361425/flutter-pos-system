@@ -29,8 +29,10 @@ void main() {
     testWidgets('should navigate correctly', (tester) async {
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
       when(cache.get(any)).thenReturn(null);
-      when(cache.get(argThat(predicate<String>((f) => f.startsWith('_tip')))))
-          .thenReturn(1);
+      // disable tutorial
+      when(cache.get(
+        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+      )).thenReturn(true);
       when(database.query(
         Seller.orderTable,
         columns: anyNamed('columns'),

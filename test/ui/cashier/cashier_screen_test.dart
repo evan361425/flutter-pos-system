@@ -17,6 +17,10 @@ void main() {
     Widget buildApp() {
       // setup currency and cashier relation
       when(cache.get(any)).thenReturn(null);
+      // disable tutorial
+      when(cache.get(
+        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+      )).thenReturn(true);
       when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
 
       final settings = SettingsProvider([CurrencySetting.instance]);
