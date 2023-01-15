@@ -33,7 +33,7 @@ for im in images:
     x_offset += im.size[0] + space
 
 draw = ImageDraw.Draw(new_im)
-font = ImageFont.truetype(pp("fonts/NotoSansTC-Bold.otf"), 50)
+font = ImageFont.truetype(pp("Tra-Chi.ttf"), 50)
 x_offset = space // 2
 for text, im in zip(textList, images):
     w, h = draw.textsize(text, font=font)
