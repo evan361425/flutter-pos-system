@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/maintenance/development/">
       
+      
+        <link rel="prev" href="../deployment/">
+      
+      
+        <link rel="next" href="../bump-dependencies/">
+      
       <link rel="icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.5">
     
     
       
@@ -21,11 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -126,8 +131,6 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          
-          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="黑夜降臨"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="黑夜降臨" for="__palette_2" hidden>
@@ -135,8 +138,6 @@
             </label>
           
         
-          
-          
           
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange"  aria-label="白日昇起"  type="radio" name="__palette" id="__palette_2">
           
@@ -177,7 +178,7 @@
           <div class="md-search-result__meta">
             正在初始化搜尋引擎
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -355,12 +356,13 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" tabindex="0" aria-expanded="true">
           維運
           <span class="md-nav__icon md-icon"></span>
         </label>
@@ -472,12 +474,13 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" tabindex="0" aria-expanded="false">
           文件
           <span class="md-nav__icon md-icon"></span>
         </label>
@@ -584,10 +587,9 @@
                 
                   
 
-  <a href="https://github.com/evan361425/flutter-pos-system/edit/master/maintenance/development.md" title="編輯此頁" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
+
 
 
 <h1 id="_1">本地端開發<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
@@ -598,27 +600,27 @@
 <ul>
 <li><code>/android/app/&lt;any-name&gt;.jks</code>，這是用來存放你的鑰匙的，確保你就是這個應用程式的擁有者，你可以這樣產生：</li>
 </ul>
-<div class="highlight"><pre><span></span><code>$ keytool -genkey -v -keystore android/my-jks.jks -alias alias_name -keyalg RSA -keysize <span class="m">2048</span> -validity <span class="m">10000</span>
-Enter keystore password: &lt;輸入你的密碼&gt;
-Re-enter new password: &lt;輸入你的密碼&gt;
-What is your first and last name?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-What is the name of your organizational unit?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-What is the name of your organization?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-What is the name of your City or Locality?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-What is the name of your State or Province?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-What is the two-letter country code <span class="k">for</span> this unit?
-  <span class="o">[</span>Unknown<span class="o">]</span>:  
-Is <span class="nv">CN</span><span class="o">=</span>Unknown, <span class="nv">OU</span><span class="o">=</span>Unknown, <span class="nv">O</span><span class="o">=</span>Unknown, <span class="nv">L</span><span class="o">=</span>Unknown, <span class="nv">ST</span><span class="o">=</span>Unknown, <span class="nv">C</span><span class="o">=</span>Unknown correct?
-  <span class="o">[</span>no<span class="o">]</span>:  y
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w"> </span>-keystore<span class="w"> </span>android/my-jks.jks<span class="w"> </span>-alias<span class="w"> </span>alias_name<span class="w"> </span>-keyalg<span class="w"> </span>RSA<span class="w"> </span>-keysize<span class="w"> </span><span class="m">2048</span><span class="w"> </span>-validity<span class="w"> </span><span class="m">10000</span>
+Enter<span class="w"> </span>keystore<span class="w"> </span>password:<span class="w"> </span>&lt;輸入你的密碼&gt;
+Re-enter<span class="w"> </span>new<span class="w"> </span>password:<span class="w"> </span>&lt;輸入你的密碼&gt;
+What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </span>first<span class="w"> </span>and<span class="w"> </span>last<span class="w"> </span>name?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+What<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>organizational<span class="w"> </span>unit?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+What<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>organization?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+What<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>City<span class="w"> </span>or<span class="w"> </span>Locality?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+What<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>State<span class="w"> </span>or<span class="w"> </span>Province?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+What<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>two-letter<span class="w"> </span>country<span class="w"> </span>code<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>unit?
+<span class="w">  </span><span class="o">[</span>Unknown<span class="o">]</span>:<span class="w">  </span>
+Is<span class="w"> </span><span class="nv">CN</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">OU</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">O</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">L</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">ST</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">C</span><span class="o">=</span>Unknown<span class="w"> </span>correct?
+<span class="w">  </span><span class="o">[</span>no<span class="o">]</span>:<span class="w">  </span>y
 
-Generating <span class="m">2</span>,048 bit RSA key pair and self-signed certificate <span class="o">(</span>SHA256withRSA<span class="o">)</span> with a validity of <span class="m">10</span>,000 days
-        <span class="k">for</span>: <span class="nv">CN</span><span class="o">=</span>Unknown, <span class="nv">OU</span><span class="o">=</span>Unknown, <span class="nv">O</span><span class="o">=</span>Unknown, <span class="nv">L</span><span class="o">=</span>Unknown, <span class="nv">ST</span><span class="o">=</span>Unknown, <span class="nv">C</span><span class="o">=</span>Unknown
-<span class="o">[</span>Storing android/app/my-jks.jks<span class="o">]</span>
+Generating<span class="w"> </span><span class="m">2</span>,048<span class="w"> </span>bit<span class="w"> </span>RSA<span class="w"> </span>key<span class="w"> </span>pair<span class="w"> </span>and<span class="w"> </span>self-signed<span class="w"> </span>certificate<span class="w"> </span><span class="o">(</span>SHA256withRSA<span class="o">)</span><span class="w"> </span>with<span class="w"> </span>a<span class="w"> </span>validity<span class="w"> </span>of<span class="w"> </span><span class="m">10</span>,000<span class="w"> </span>days
+<span class="w">        </span><span class="k">for</span>:<span class="w"> </span><span class="nv">CN</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">OU</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">O</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">L</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">ST</span><span class="o">=</span>Unknown,<span class="w"> </span><span class="nv">C</span><span class="o">=</span>Unknown
+<span class="o">[</span>Storing<span class="w"> </span>android/app/my-jks.jks<span class="o">]</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">位置</p>
@@ -635,10 +637,10 @@ Generating <span class="m">2</span>,048 bit RSA key pair and self-signed certifi
 <li><code>/android/app/google-services.json</code>，你可以到 <a href="https://console.firebase.google.com/">Firebase Console</a> 去產生，
     但是記得要在 <em>專案設定</em> 裡面去設定剛剛產生的金鑰 SHA 憑證指紋，你可以這樣輸出：</li>
 </ul>
-<div class="highlight"><pre><span></span><code>$ keytool -list -keystore android/my-jks.jks -alias alias_name
-Enter keystore password:
-alias_name, Dec <span class="m">18</span>, <span class="m">2022</span>, PrivateKeyEntry, 
-Certificate fingerprint <span class="o">(</span>SHA-256<span class="o">)</span>: B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:01:39:2C:62:C7:6B:EB:2B:89:3D:48:63:4D:59:D8:A1:9C
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>keytool<span class="w"> </span>-list<span class="w"> </span>-keystore<span class="w"> </span>android/my-jks.jks<span class="w"> </span>-alias<span class="w"> </span>alias_name
+Enter<span class="w"> </span>keystore<span class="w"> </span>password:
+alias_name,<span class="w"> </span>Dec<span class="w"> </span><span class="m">18</span>,<span class="w"> </span><span class="m">2022</span>,<span class="w"> </span>PrivateKeyEntry,<span class="w"> </span>
+Certificate<span class="w"> </span>fingerprint<span class="w"> </span><span class="o">(</span>SHA-256<span class="o">)</span>:<span class="w"> </span>B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:01:39:2C:62:C7:6B:EB:2B:89:3D:48:63:4D:59:D8:A1:9C
 </code></pre></div>
 <ul>
 <li>最後請更改 <code>/lib/firebase_compatible_options.dart</code> 裡面最下面的 <code>androidDebug</code> ID。
@@ -683,42 +685,6 @@ Certificate fingerprint <span class="o">(</span>SHA-256<span class="o">)</span>:
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../deployment/" class="md-footer__link md-footer__link--prev" aria-label="上一頁: 部署流程" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                上一頁
-              </span>
-              部署流程
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../bump-dependencies/" class="md-footer__link md-footer__link--next" aria-label="下一頁: 升版相依套件" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                下一頁
-              </span>
-              升版相依套件
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -740,12 +706,11 @@ Certificate fingerprint <span class="o">(</span>SHA-256<span class="o">)</span>:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u8907\u88fd", "clipboard.copy": "\u8907\u88fd", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e\uff1f\uff1b]+", "search.placeholder": "\u641c\u5c0b", "search.result.more.one": "\u6b64\u9801\u5c1a\u6709 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.more.other": "\u6b64\u9801\u5c1a\u6709 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.none": "\u6c92\u6709\u7b26\u5408\u7684\u9805\u76ee", "search.result.one": "\u627e\u5230 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.other": "\u627e\u5230 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.placeholder": "\u6253\u5b57\u9032\u884c\u641c\u5c0b", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "\u5df2\u8907\u88fd", "clipboard.copy": "\u8907\u88fd", "search.result.more.one": "\u6b64\u9801\u5c1a\u6709 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.more.other": "\u6b64\u9801\u5c1a\u6709 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.none": "\u6c92\u6709\u7b26\u5408\u7684\u9805\u76ee", "search.result.one": "\u627e\u5230 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.other": "\u627e\u5230 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.placeholder": "\u6253\u5b57\u9032\u884c\u641c\u5c0b", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
       
-    
     
   </body>
 </html>
