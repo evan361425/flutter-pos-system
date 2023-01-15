@@ -30,10 +30,10 @@ class CalendarWrapper extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  CalendarWrapperState createState() => CalendarWrapperState();
+  State<CalendarWrapper> createState() => _CalendarWrapperState();
 }
 
-class CalendarWrapperState extends State<CalendarWrapper> {
+class _CalendarWrapperState extends State<CalendarWrapper> {
   final List<int> _loadedMonths = <int>[];
 
   final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(

@@ -18,7 +18,7 @@ class ChangerModalFavorite extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  ChangerModalFavoriteState createState() => ChangerModalFavoriteState();
+  State<ChangerModalFavorite> createState() => ChangerModalFavoriteState();
 }
 
 class ChangerModalFavoriteState extends State<ChangerModalFavorite> {

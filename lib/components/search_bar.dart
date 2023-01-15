@@ -25,7 +25,7 @@ class SearchBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  SearchBarState createState() => SearchBarState();
+  State<SearchBar> createState() => SearchBarState();
 }
 
 class SearchBarState extends State<SearchBar> {

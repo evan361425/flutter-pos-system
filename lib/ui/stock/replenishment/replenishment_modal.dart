@@ -20,10 +20,10 @@ class ReplenishmentModal extends StatefulWidget {
         super(key: key);
 
   @override
-  ReplenishmentModalState createState() => ReplenishmentModalState();
+  State<ReplenishmentModal> createState() => _ReplenishmentModalState();
 }
 
-class ReplenishmentModalState extends State<ReplenishmentModal>
+class _ReplenishmentModalState extends State<ReplenishmentModal>
     with ItemModal<ReplenishmentModal> {
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;

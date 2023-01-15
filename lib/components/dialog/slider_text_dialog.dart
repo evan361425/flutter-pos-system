@@ -23,10 +23,10 @@ class SliderTextDialog extends StatefulWidget {
   final double max;
 
   @override
-  SliderTextDialogState createState() => SliderTextDialogState();
+  State<SliderTextDialog> createState() => _SliderTextDialogState();
 }
 
-class SliderTextDialogState extends State<SliderTextDialog> {
+class _SliderTextDialogState extends State<SliderTextDialog> {
   late TextEditingController textController;
   late double sliderValue;
   late final double sliderMax;

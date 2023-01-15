@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
@@ -12,10 +13,10 @@ class HomeScaffold extends StatefulWidget {
   const HomeScaffold({Key? key}) : super(key: key);
 
   @override
-  HomeScaffoldState createState() => HomeScaffoldState();
+  State<HomeScaffold> createState() => _HomeScaffoldState();
 }
 
-class HomeScaffoldState extends State<HomeScaffold>
+class _HomeScaffoldState extends State<HomeScaffold>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -67,11 +68,19 @@ class HomeScaffoldState extends State<HomeScaffold>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          AnalysisScreen(),
-          StockScreen(),
-          CashierScreen(),
-          HomeSetupScreen(),
+        children: [
+          AnalysisScreen(
+            tab: TutorialInTab(controller: _tabController, index: 0),
+          ),
+          StockScreen(
+            tab: TutorialInTab(controller: _tabController, index: 1),
+          ),
+          CashierScreen(
+            tab: TutorialInTab(controller: _tabController, index: 2),
+          ),
+          HomeSetupScreen(
+            tab: TutorialInTab(controller: _tabController, index: 3),
+          ),
         ],
       ),
     );

@@ -11,7 +11,7 @@ class CartProductList extends StatefulWidget {
   const CartProductList({Key? key}) : super(key: key);
 
   @override
-  CartProductListState createState() => CartProductListState();
+  State<CartProductList> createState() => CartProductListState();
 }
 
 class CartProductListState extends State<CartProductList> {

@@ -29,10 +29,10 @@ class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
   @override
-  SettingScreenState createState() => SettingScreenState();
+  State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class SettingScreenState extends State<SettingScreen> {
+class _SettingScreenState extends State<SettingScreen> {
   final theme = SettingsProvider.of<ThemeSetting>();
   final language = SettingsProvider.of<LanguageSetting>();
   final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();

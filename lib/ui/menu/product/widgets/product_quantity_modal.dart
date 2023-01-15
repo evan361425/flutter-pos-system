@@ -27,10 +27,10 @@ class ProductQuantityModal extends StatefulWidget {
         super(key: key);
 
   @override
-  ProductQuantityModalState createState() => ProductQuantityModalState();
+  State<ProductQuantityModal> createState() => _ProductQuantityModalState();
 }
 
-class ProductQuantityModalState extends State<ProductQuantityModal>
+class _ProductQuantityModalState extends State<ProductQuantityModal>
     with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
   late TextEditingController _priceController;

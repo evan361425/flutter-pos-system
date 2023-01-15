@@ -17,7 +17,7 @@ class OrderAttributeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final attrs = context.watch<OrderAttributes>();
 
-    goAddSetting() => Navigator.of(context).pushNamed(Routes.orderAttrModal);
+    goAddAttr() => Navigator.of(context).pushNamed(Routes.orderAttrModal);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,15 +33,17 @@ class OrderAttributeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: goAddSetting,
+        onPressed: goAddAttr,
         tooltip: S.orderAttributeCreate,
         child: const Icon(KIcons.add),
       ),
       body: attrs.isEmpty
           ? Center(
               child: EmptyBody(
-              onPressed: goAddSetting,
-              tooltip: '顧客設定可以幫助我們統計都是哪些人來買我們的產品\n例如：\n20-30歲、外帶、上班族。',
+              onPressed: goAddAttr,
+              tooltip: '顧客設定可以幫助我們統計都是哪些人來買我們的產品\n'
+                  '例如：\n'
+                  '20-30歲、外帶、上班族。',
             ))
           : OrderAttributeList(attrs.itemList),
     );

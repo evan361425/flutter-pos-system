@@ -80,7 +80,7 @@ class _OrderIngredientList extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OrderIngredientListState createState() => _OrderIngredientListState();
+  State<_OrderIngredientList> createState() => _OrderIngredientListState();
 }
 
 class _OrderIngredientListState extends State<_OrderIngredientList> {

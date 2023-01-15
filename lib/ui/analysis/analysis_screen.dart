@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/seller.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
 
 class AnalysisScreen extends StatefulWidget {
-  const AnalysisScreen({Key? key}) : super(key: key);
+  final TutorialInTab? tab;
+
+  const AnalysisScreen({
+    Key? key,
+    this.tab,
+  }) : super(key: key);
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -27,8 +33,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 
   Widget _buildCalendar({required bool isPortrait}) {
-    return Tooltip(
-      message: '上下滑動可以顯上單週或單月，左右滑動調整日期',
+    return Tutorial(
+      id: 'analysis.calendar',
+      title: '日曆格式',
+      message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
+      tab: widget.tab,
+      shape: TutorialShape.rect,
+      paddingSize: 0,
+      targets: const [Tutorial.self],
       child: CalendarWrapper(
         isPortrait: isPortrait,
         handleDaySelected: _handleDaySelected,

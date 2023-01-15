@@ -52,6 +52,7 @@ class OrderCashierSnapshot extends StatelessWidget {
       selector.currentState?.select(value);
       final change = value - totalPrice;
 
+      // TODO: should also set if change smaller than zero
       if (change >= 0) {
         selector.currentState?.setAttributeCost(value);
         changeShower.currentState?.change(change);
@@ -74,7 +75,7 @@ class _ChangeShower extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChangeShowerState createState() => _ChangeShowerState();
+  State<_ChangeShower> createState() => _ChangeShowerState();
 }
 
 class _ChangeShowerState extends State<_ChangeShower> {
@@ -114,7 +115,7 @@ class _PaidMoneySelector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PaidMoneySelectorState createState() => _PaidMoneySelectorState();
+  State<_PaidMoneySelector> createState() => _PaidMoneySelectorState();
 }
 
 class _PaidMoneySelectorState extends State<_PaidMoneySelector> {

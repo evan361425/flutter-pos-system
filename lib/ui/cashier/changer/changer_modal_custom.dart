@@ -17,7 +17,7 @@ class ChangerModalCustom extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  ChangerModalCustomState createState() => ChangerModalCustomState();
+  State<ChangerModalCustom> createState() => ChangerModalCustomState();
 }
 
 class ChangerModalCustomState extends State<ChangerModalCustom> {

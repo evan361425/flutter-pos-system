@@ -294,7 +294,7 @@ class _SingleField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SingleFieldState createState() => _SingleFieldState();
+  State<_SingleField> createState() => _SingleFieldState();
 }
 
 class _SingleFieldState extends State<_SingleField> {

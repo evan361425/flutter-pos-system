@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -9,16 +10,34 @@ import 'package:possystem/translator.dart';
 import 'widgets/cashier_unit_list.dart';
 
 class CashierScreen extends StatelessWidget {
-  const CashierScreen({Key? key}) : super(key: key);
+  final TutorialInTab? tab;
+
+  const CashierScreen({
+    Key? key,
+    this.tab,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final tutorialChange = GlobalKey<State<Tutorial>>();
+    final tutorialSurplus = GlobalKey<State<Tutorial>>();
+
     return ListView(children: [
       const SizedBox(height: 4.0),
       Flex(direction: Axis.horizontal, children: [
         Expanded(
-          child: Tooltip(
-            message: '設定完收銀機金額後，按這裡把設定後的金額設為「預設」',
+          child: Tutorial(
+            id: 'cashier.default',
+            tab: tab,
+            targets: [
+              tutorialSurplus,
+              tutorialChange,
+              Tutorial.self,
+            ],
+            title: '收銀機預設狀態',
+            message: '在下面設定完收銀機各幣值的數量後，\n'
+                '按這裡設定預設狀態！\n'
+                '設定好的數量就會是各個幣值狀態條的「最大值」。',
             child: RouteCircularButton(
               key: const Key('cashier.defaulter'),
               onTap: () => handleSetDefault(context),
@@ -27,10 +46,13 @@ class CashierScreen extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(
-          child: Tooltip(
-            message: '換錢，一百塊換成 10 個十塊之類。',
-            child: RouteCircularButton(
+        Expanded(
+          child: Tutorial(
+            key: tutorialChange,
+            id: 'cashier.change',
+            title: '收銀機換錢',
+            message: '一百塊換成 10 個十塊之類。\n' '幫助快速調整收銀機狀態。',
+            child: const RouteCircularButton(
               key: Key('cashier.changer'),
               route: Routes.cashierChanger,
               icon: Icons.sync_alt_outlined,
@@ -40,8 +62,11 @@ class CashierScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Tooltip(
-            message: '結餘可以幫助你在每天打烊時，計算現有的金額和預設的金額差異。',
+          child: Tutorial(
+            key: tutorialSurplus,
+            id: 'cashier.surplus',
+            title: '每日結餘',
+            message: '結餘可以幫助我們在每天打烊時，\n' '計算現有金額和預設金額的差異。',
             child: RouteCircularButton(
               key: const Key('cashier.surplus'),
               icon: Icons.coffee_outlined,

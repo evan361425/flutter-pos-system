@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -25,12 +26,11 @@ import 'widgets/order_catalog_list.dart';
 import 'widgets/order_product_list.dart';
 import 'widgets/order_product_state_selector.dart';
 
-/// TODO: add seller
 class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => OrderScreenState();
+  State<OrderScreen> createState() => OrderScreenState();
 }
 
 class OrderScreenState extends State<OrderScreen> {
@@ -47,13 +47,10 @@ class OrderScreenState extends State<OrderScreen> {
       handleSelected: (catalog) =>
           _orderProductList.currentState?.updateProducts(catalog),
     );
-    final menuProductRow = Tooltip(
-      message: '透過圖片點餐更方便！\n你也可以到「設定」頁面設定「每行顯示幾個產品」或僅使用文字點餐',
-      child: OrderProductList(
-        key: _orderProductList,
-        products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-        handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
-      ),
+    final menuProductRow = OrderProductList(
+      key: _orderProductList,
+      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
+      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
     );
     final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
@@ -85,18 +82,29 @@ class OrderScreenState extends State<OrderScreen> {
         ],
       ),
       body: outlook.value == OrderOutlookTypes.slidingPanel
-          ? OrderBySlidingPanel(
-              key: slidingPanel,
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: orderProductStateSelector,
+          ? TutorialWrapper(
+              targets: [
+                _orderProductList,
+                slidingPanel,
+              ],
+              child: OrderBySlidingPanel(
+                key: slidingPanel,
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: orderProductStateSelector,
+              ),
             )
-          : OrderByOrientation(
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: orderProductStateSelector,
+          : TutorialWrapper(
+              targets: [
+                _orderProductList,
+              ],
+              child: OrderByOrientation(
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: orderProductStateSelector,
+              ),
             ),
     );
   }
