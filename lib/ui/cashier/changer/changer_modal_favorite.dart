@@ -43,7 +43,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
       items: Cashier.instance.favoriteItems().toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),
-      tileBuilder: (context, index, item, delegate) =>
+      tileBuilder: (context, index, item, showActions) =>
           RadioListTile<FavoriteItem>(
         key: Key('cashier.changer.favorite.$index'),
         value: item,
@@ -54,7 +54,7 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
           textOverflow: TextOverflow.visible,
         ),
         secondary: IconButton(
-          onPressed: () => delegate.showActions(context, item),
+          onPressed: showActions,
           icon: const Icon(Icons.more_vert_sharp),
         ),
         groupValue: selected,

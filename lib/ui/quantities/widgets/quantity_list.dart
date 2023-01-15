@@ -37,11 +37,20 @@ class QuantityList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(BuildContext context, int index, Quantity quantity, _) {
+  Widget _tileBuilder(
+    BuildContext context,
+    int index,
+    Quantity quantity,
+    VoidCallback showActions,
+  ) {
     return ListTile(
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name),
       subtitle: Text(S.quantityMetaProportion(quantity.defaultProportion)),
+      trailing: IconButton(
+        onPressed: showActions,
+        icon: const Icon(Icons.more_vert_sharp),
+      ),
     );
   }
 

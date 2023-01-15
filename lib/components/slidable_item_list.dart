@@ -106,7 +106,7 @@ class SlidableItemDelegate<T, U> {
 
   final Future<void> Function(T) handleDelete;
 
-  final Widget Function(BuildContext, int, T, SlidableItemDelegate) tileBuilder;
+  final Widget Function(BuildContext, int, T, VoidCallback) tileBuilder;
 
   final Widget Function(BuildContext, T)? warningContextBuilder;
 
@@ -167,7 +167,8 @@ class SlidableItemDelegate<T, U> {
             }
           },
           onLongPress: () => showActions(context, item),
-          child: tileBuilder(context, index, item, this),
+          child: tileBuilder(
+              context, index, item, () => showActions(context, item)),
         ),
       ),
     );
