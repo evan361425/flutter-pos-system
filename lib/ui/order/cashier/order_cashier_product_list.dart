@@ -122,6 +122,14 @@ class _ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = <String>[
+      S.orderCashierProductMetaPrice(data.totalPrice),
+      S.orderCashierProductMetaCount(data.totalCount),
+      if (data.totalCost != null)
+        S.orderCashierProductMetaCost(data.totalCost!),
+      if (data.product != null) '產品種類：${data.product!.catalog.name}',
+      '成分：',
+    ];
     return ExpansionTile(
       title: Text(data.productName),
       subtitle: MetaBlock.withString(context, <String>[
@@ -134,12 +142,11 @@ class _ProductTile extends StatelessWidget {
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       childrenPadding: const EdgeInsets.all(8.0),
       children: [
-        if (data.product != null) ...[
-          Text('產品種類：${data.product!.catalog.name}'),
-          const SizedBox(height: 8.0),
-        ],
-        const Text('成分：'),
-        const SizedBox(height: 8.0),
+        for (final text in texts)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(text),
+          ),
         Wrap(children: [
           for (final ingredient in data.ingredientNames)
             OutlinedText(ingredient)
