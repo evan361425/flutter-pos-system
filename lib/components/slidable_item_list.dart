@@ -160,7 +160,7 @@ class SlidableItemDelegate<T, U> {
             ),
           ],
         ),
-        child: GestureDetector(
+        child: InkWell(
           onTap: () {
             if (handleTap != null) {
               handleTap!(context, item);
