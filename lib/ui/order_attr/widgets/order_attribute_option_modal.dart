@@ -62,9 +62,10 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
 
   @override
   List<Widget> formFields() {
-    final label = S.orderAttributeModeNames(widget.attribute.mode);
-    final helper = S.orderAttributeOptionsModeHelper(widget.attribute.mode);
-    final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode);
+    final label = S.orderAttributeModeNames(widget.attribute.mode.name);
+    final helper =
+        S.orderAttributeOptionsModeHelper(widget.attribute.mode.name);
+    final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode.name);
     final validator = widget.attribute.mode == OrderAttributeMode.changeDiscount
         ? Validator.positiveInt(label, maximum: 1000, allowNull: true)
         : Validator.isNumber(label, allowNull: true);

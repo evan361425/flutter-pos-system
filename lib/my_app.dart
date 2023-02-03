@@ -35,13 +35,9 @@ class MyApp extends StatelessWidget {
         builder: (_, __) {
           return MaterialApp(
             onGenerateTitle: (context) {
+              // According to document, it should followed when system changed language.
+              // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
               final localizations = AppLocalizations.of(context)!;
-              // TODO check if monitor device language changing
-              // final language = settings.getSetting<LanguageSetting>();
-              // final locale = language.parseLanguage(localizations.localeName)!;
-
-              // if user change language by system
-              // language.update(locale);
 
               S = localizations;
 

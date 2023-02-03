@@ -43,7 +43,7 @@ class _OrderAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
-    final mode = S.orderAttributeModeNames(attr.mode);
+    final mode = S.orderAttributeModeNames(attr.mode.name);
     final defaultName =
         attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     final key = 'order_attributes.${attr.id}';

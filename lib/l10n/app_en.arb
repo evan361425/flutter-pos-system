@@ -1,6 +1,6 @@
 {
   "appTitle": "POS System",
   "settingThemeTitle": "Platte",
-  "settingThemeTypes": "{type, select, dark{Dark Mode} light{Light Mode} system{Follow System}}",
+  "settingThemeTypes": "{type, select, dark{Dark Mode} light{Light Mode} system{Follow System} other{UNKNOWN}}",
   "settingLanguageTitle": "Language"
 }

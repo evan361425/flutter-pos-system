@@ -49,12 +49,12 @@ class OrderAttributeModalModesState extends State<_ModalModes>
               margin: const EdgeInsets.symmetric(horizontal: 2.0),
               isSelected: selectedMode == mode,
               onChanged: (_) => setState(() => selectedMode = mode),
-              text: S.orderAttributeModeNames(mode),
+              text: S.orderAttributeModeNames(mode.name),
             ),
           )
       ]),
       const SizedBox(height: 8.0),
-      Text(S.orderAttributeModeDescriptions(selectedMode)),
+      Text(S.orderAttributeModeDescriptions(selectedMode.name)),
     ]);
   }
 

@@ -269,7 +269,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     if (names.isEmpty) {
       return;
     } else if (names.values.toSet().length != names.length) {
-      showErrorSnackbar(context, S.exporterGSErrors('sheet_repeat'));
+      showErrorSnackbar(context, S.exporterGSErrors('sheetRepeat'));
       return;
     }
 
@@ -293,7 +293,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
       final label = entry.key.name;
-      widget.setProgressStatus(S.exporterGSProgressStatus('update_$label'));
+      widget.setProgressStatus(S.exporterGSUpdateModelStatus(label));
       await _setDefault(label, entry.value.title);
       await widget.exporter.updateSheet(
         spreadsheet!,
@@ -320,7 +320,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
-    widget.setProgressStatus(S.exporterGSProgressStatus('add_spreadsheet'));
+    widget.setProgressStatus(S.exporterGSProgressStatus('addSpreadsheet'));
 
     return widget.exporter.addSpreadsheet(
       S.exporterGSDefaultSpreadsheetName,
@@ -329,7 +329,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
   }
 
   Future<bool> _addSheets(List<String> requiredSheets) async {
-    widget.setProgressStatus(S.exporterGSProgressStatus('add_sheets'));
+    widget.setProgressStatus(S.exporterGSProgressStatus('addSheets'));
     final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
     final missing = requiredSheets.toSet().difference(exist);
 
@@ -578,7 +578,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
 
   Future<void> importData(GoogleSheetAble? type) async {
     if (!hasSelect) {
-      showErrorSnackbar(context, S.importerGSError('empty_spreadsheet'));
+      showErrorSnackbar(context, S.importerGSError('emptySpreadsheet'));
       return;
     }
 
@@ -588,7 +588,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
         .toList();
     if (selected.isEmpty) {
-      showErrorSnackbar(context, S.importerGSError('empty_sheet'));
+      showErrorSnackbar(context, S.importerGSError('emptySheet'));
       return;
     }
 
@@ -621,7 +621,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     for (final entry in data) {
       final type = entry.key;
       final sheet = entry.value;
-      final msg = S.exporterGSProgressStatus('update_${type.name}');
+      final msg = S.exporterGSUpdateModelStatus(type.name);
       widget.setProgressStatus(msg);
 
       Log.ger('ready', 'gs_import', sheet.title);

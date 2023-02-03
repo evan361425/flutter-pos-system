@@ -421,7 +421,7 @@ class _OAFormatter extends _Formatter<OrderAttributes, OrderAttribute> {
   List<GoogleSheetCellData> getHeader() {
     final note = OrderAttributeMode.values
         .map((e) =>
-            '${S.orderAttributeModeNames(e)} -  ${S.orderAttributeModeDescriptions(e)}')
+            '${S.orderAttributeModeNames(e.name)} -  ${S.orderAttributeModeDescriptions(e.name)}')
         .join('\n');
     return <GoogleSheetCellData>[
       _toCD(S.orderAttributeNameLabel),
@@ -434,7 +434,7 @@ class _OAFormatter extends _Formatter<OrderAttributes, OrderAttribute> {
   @override
   List<List<GoogleSheetCellData>> getRows() {
     final options = OrderAttributeMode.values
-        .map((e) => S.orderAttributeModeNames(e))
+        .map((e) => S.orderAttributeModeNames(e.name))
         .toList();
 
     return target.itemList.map((e) {
@@ -446,7 +446,7 @@ class _OAFormatter extends _Formatter<OrderAttributes, OrderAttribute> {
         GoogleSheetCellData(stringValue: e.name),
         GoogleSheetCellData(
           options: options,
-          stringValue: S.orderAttributeModeNames(e.mode),
+          stringValue: S.orderAttributeModeNames(e.mode.name),
         ),
         GoogleSheetCellData(stringValue: info),
       ];
