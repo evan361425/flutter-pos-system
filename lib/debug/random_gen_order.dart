@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -168,7 +167,7 @@ class _SettingPageState extends State<_SettingPage> {
       appBar: AppBar(
         leading: const PopButton(),
         actions: [
-          AppbarTextButton(
+          TextButton(
             onPressed: () => submit(context.read<Seller>()),
             child: const Text('OK'),
           )
@@ -235,11 +234,11 @@ class _SettingPageState extends State<_SettingPage> {
     );
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
-    // ignore: use_build_context_synchronously
-    showSuccessSnackbar(context, '成功產生 ${result.length} 個訂單');
+    if (context.mounted) {
+      showSuccessSnackbar(context, '成功產生 ${result.length} 個訂單');
 
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
   }
 
   @override

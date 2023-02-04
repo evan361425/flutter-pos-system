@@ -213,8 +213,9 @@ class _ProductQuantitySearch extends StatelessWidget {
       onTap: () async {
         final quantity = Quantity(name: text);
         await Quantities.instance.addItem(quantity);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pop<Quantity>(quantity);
+        if (context.mounted) {
+          Navigator.of(context).pop<Quantity>(quantity);
+        }
       },
     );
   }

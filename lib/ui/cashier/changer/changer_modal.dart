@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 
 import 'changer_modal_custom.dart';
@@ -49,7 +48,7 @@ class _ChangerModalState extends State<ChangerModal>
         leading: const PopButton(),
         title: const Text('換錢'),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('cashier.changer.apply'),
             onPressed: handleApply,
             child: const Text('套用'),

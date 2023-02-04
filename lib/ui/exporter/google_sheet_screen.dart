@@ -5,7 +5,6 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/sign_in_button.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -670,7 +669,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
           header: target.getFormattedHead(formatter),
           title: S.exporterGSDefaultSheetName(type.name),
           actions: [
-            AppbarTextButton(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(S.importPreviewerTitle),
             ),
@@ -1069,8 +1068,9 @@ Future<GoogleSpreadsheet?> _selectSpreadsheet(
 
   final result = await exporter.getSpreadsheet(id);
   if (result == null) {
-    // ignore: use_build_context_synchronously
-    showErrorSnackbar(context, '找不到該表單，是否沒開放權限讀取？');
+    if (context.mounted) {
+      showErrorSnackbar(context, '找不到該表單，是否沒開放權限讀取？');
+    }
   }
   return result;
 }

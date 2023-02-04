@@ -124,13 +124,13 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                 _CalculatorAction(
                   key: const Key('cashier.calculator.back'),
                   action: execBack,
-                  color: theme.errorColor,
+                  color: theme.colorScheme.error,
                   child: const Icon(Icons.arrow_back_rounded),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.clear'),
                   action: execClear,
-                  color: theme.errorColor,
+                  color: theme.colorScheme.error,
                   child: const Icon(Icons.refresh_sharp),
                 ),
                 _CalculatorAction(
@@ -314,7 +314,7 @@ class _SingleFieldState extends State<_SingleField> {
               : Text(
                   text!,
                   key: Key(widget.keyPrefix),
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
     ]);
   }

@@ -31,7 +31,6 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
       for (final catalog in widget.catalogs)
         ChoiceChip(
           key: Key('order.catalog.${catalog.id}'),
-          avatar: catalog.avator,
           onSelected: (isSelected) {
             if (isSelected) {
               setState(() => selectedId = catalog.id);
@@ -39,6 +38,7 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
             }
           },
           selected: catalog.id == selectedId,
+          tooltip: catalog.name,
           label: Text(catalog.name),
         ),
     ]);

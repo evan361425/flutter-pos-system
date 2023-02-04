@@ -97,7 +97,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
                       onPressed: () => setState(() {
                         targets.removeAt(entry.key);
                       }),
-                      color: theme.errorColor,
+                      color: theme.colorScheme.error,
                       icon: const Icon(Icons.remove_circle_sharp),
                     )),
         )

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -74,7 +73,7 @@ class OrderScreenState extends State<OrderScreen> {
         leading: const PopButton(),
         actions: [
           const OrderActions(key: Key('order.action.more')),
-          AppbarTextButton(
+          TextButton(
             key: const Key('order.cashier'),
             onPressed: () => _handleOrder(),
             child: Text(S.orderActionsOrderDone),

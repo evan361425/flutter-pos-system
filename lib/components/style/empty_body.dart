@@ -25,7 +25,7 @@ class EmptyBody extends StatelessWidget {
         children: [
           Text(
             title ?? S.emptyBodyContent,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           if (tooltip != null)
             Padding(

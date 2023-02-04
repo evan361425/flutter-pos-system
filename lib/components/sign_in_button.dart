@@ -140,7 +140,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Text(
               error!,
-              style: TextStyle(color: Theme.of(context).errorColor),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
       ],

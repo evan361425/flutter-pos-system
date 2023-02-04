@@ -51,7 +51,6 @@ dependencies:
 
   # components
   flutter_slidable: ^2.0.0
-  modal_bottom_sheet: ^2.1.2
   sliding_up_panel: ^2.0.0+1
   table_calendar: ^3.0.8
   pull_to_refresh: ^2.0.0

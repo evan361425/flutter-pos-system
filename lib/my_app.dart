@@ -31,43 +31,44 @@ class MyApp extends StatelessWidget {
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     return AnimatedBuilder(
-        animation: settings,
-        builder: (_, __) {
-          return MaterialApp(
-            onGenerateTitle: (context) {
-              // According to document, it should followed when system changed language.
-              // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
-              final localizations = AppLocalizations.of(context)!;
+      animation: settings,
+      builder: (_, __) {
+        return MaterialApp(
+          onGenerateTitle: (context) {
+            // According to document, it should followed when system changed language.
+            // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
+            final localizations = AppLocalizations.of(context)!;
 
-              S = localizations;
+            S = localizations;
 
-              FlutterNativeSplash.remove();
+            FlutterNativeSplash.remove();
 
-              return localizations.appTitle;
-            },
-            routes: Routes.routes,
-            debugShowCheckedModeBanner: false,
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-              routeObserver,
-            ],
+            return localizations.appTitle;
+          },
+          routes: Routes.routes,
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+            routeObserver,
+          ],
 
-            // Provide the generated AppLocalizations to the MaterialApp. This
-            // allows descendant Widgets to display the correct translations
-            // depending on the user's locale.
-            locale: settings.getSetting<LanguageSetting>().value,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+          // Provide the generated AppLocalizations to the MaterialApp. This
+          // allows descendant Widgets to display the correct translations
+          // depending on the user's locale.
+          locale: settings.getSetting<LanguageSetting>().value,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
 
-            // Define a light and dark color theme. Then, read the user's
-            // preferred ThemeMode (light, dark, or system default) from the
-            // SettingsController to display the correct theme.
-            theme: AppThemes.lightTheme,
-            darkTheme: AppThemes.darkTheme,
-            themeMode: settings.getSetting<ThemeSetting>().value,
+          // Define a light and dark color theme. Then, read the user's
+          // preferred ThemeMode (light, dark, or system default) from the
+          // SettingsController to display the correct theme.
+          theme: AppThemes.lightTheme,
+          darkTheme: AppThemes.darkTheme,
+          themeMode: settings.getSetting<ThemeSetting>().value,
 
-            home: child,
-          );
-        });
+          home: child,
+        );
+      },
+    );
   }
 }

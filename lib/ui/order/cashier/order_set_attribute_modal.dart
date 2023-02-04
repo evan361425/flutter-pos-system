@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/radio_text.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -20,7 +19,7 @@ class OderSetAttributeModal extends StatelessWidget {
         leading: const PopButton(),
         title: Text(S.orderSetAttributeTitle),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('set_attribute.next'),
             onPressed: () => Navigator.of(context).pop(Routes.orderCalculator),
             child: Text(S.orderSetAttributeActionsDone),
@@ -54,7 +53,10 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(widget.attribute.name, style: Theme.of(context).textTheme.headline5),
+      Text(
+        widget.attribute.name,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
       const SizedBox(height: kSpacing0),
       Card(
         margin: const EdgeInsets.only(bottom: kSpacing2),

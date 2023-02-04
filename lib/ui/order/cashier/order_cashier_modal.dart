@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -29,8 +28,20 @@ class OrderCashierModal extends StatelessWidget {
     );
 
     void handleSubmit() async {
-      if (await confirmChangeHistory(context)) {
-        this.handleSubmit(context, collapsed.selector.currentState?.selected);
+      // ignore: use_build_context_synchronously
+      if (await _confirmChangeHistory(context)) {
+        try {
+          final result = await Cart.instance
+              .paid(collapsed.selector.currentState?.selected);
+          // send success message
+          if (context.mounted) {
+            Navigator.of(context).pop(result);
+          }
+        } on PaidException {
+          if (context.mounted) {
+            showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
+          }
+        }
       }
     }
 
@@ -71,7 +82,7 @@ class OrderCashierModal extends StatelessWidget {
         leading: const PopButton(),
         title: Text(S.orderCashierTitle),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('cashier.order'),
             onPressed: handleSubmit,
             child: Text(S.orderCashierActionsOrder),
@@ -91,7 +102,7 @@ class OrderCashierModal extends StatelessWidget {
   }
 
   /// Confirm leaving history mode
-  Future<bool> confirmChangeHistory(BuildContext context) async {
+  Future<bool> _confirmChangeHistory(BuildContext context) async {
     if (!Cart.instance.isHistoryMode) return true;
 
     final result = await showDialog(
@@ -102,16 +113,5 @@ class OrderCashierModal extends StatelessWidget {
     );
 
     return result ?? false;
-  }
-
-  void handleSubmit(BuildContext context, num? paid) async {
-    try {
-      final result = await Cart.instance.paid(paid);
-      // send success message
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop(result);
-    } on PaidException {
-      showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
-    }
   }
 }

@@ -27,14 +27,14 @@ class LoadingWrapperState extends State<LoadingWrapper> {
       if (_isLoading)
         Positioned.fill(
           child: Container(
-            color: Theme.of(context).backgroundColor.withAlpha(30),
+            color: Theme.of(context).colorScheme.background.withAlpha(30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(),
                 if (_status != null)
                   DefaultTextStyle(
-                    style: Theme.of(context).textTheme.headline5!,
+                    style: Theme.of(context).textTheme.headlineSmall!,
                     child: Text(_status!),
                   ),
               ],

@@ -309,7 +309,7 @@ class _WarningContextState extends State<_WarningContext> {
     if (errorText != null) {
       yield Text(
         errorText,
-        style: TextStyle(color: Theme.of(context).errorColor),
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
       );
     }
   }

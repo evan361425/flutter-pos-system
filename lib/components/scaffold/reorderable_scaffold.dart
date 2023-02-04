@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -25,12 +24,13 @@ class ReorderableScaffold<T> extends StatelessWidget {
       appBar: AppBar(
         leading: const PopButton(),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('reorder.save'),
             onPressed: () async {
               await handleSubmit(items);
-              // ignore: use_build_context_synchronously
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
             child: Text(S.btnSave),
           ),

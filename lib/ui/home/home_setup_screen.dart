@@ -147,7 +147,7 @@ class _HeaderInfo extends StatelessWidget {
           children: [
             Text(
               title.toString(),
-              style: theme.textTheme.headline4,
+              style: theme.textTheme.headlineMedium,
             ),
             Text(subtitle),
           ],

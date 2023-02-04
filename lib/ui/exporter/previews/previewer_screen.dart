@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
@@ -52,7 +51,7 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
         title: Text(S.importPreviewerTitle),
         leading: const PopButton(icon: Icons.clear_sharp),
         actions: [
-          AppbarTextButton(
+          TextButton(
             onPressed: () => Navigator.of(context).pop(items.isNotEmpty),
             child: Text(S.btnSave),
           ),
@@ -148,7 +147,7 @@ class PreviewerErrorListTile extends StatelessWidget {
       ),
       subtitle: Text(
         error.message,
-        style: TextStyle(color: theme.errorColor),
+        style: TextStyle(color: theme.colorScheme.error),
       ),
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
     );

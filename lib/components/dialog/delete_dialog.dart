@@ -21,7 +21,7 @@ class DeleteDialog extends StatelessWidget {
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
-            backgroundColor: theme.errorColor,
+            backgroundColor: theme.colorScheme.error,
             foregroundColor: Colors.white,
           ),
           child: Text(S.btnDelete),
@@ -43,12 +43,14 @@ class DeleteDialog extends StatelessWidget {
   }) async {
     startDelete() async {
       await deleteCallback();
-      // ignore: use_build_context_synchronously
-      showSuccessSnackbar(context, S.actSuccess);
+      if (context.mounted) {
+        showSuccessSnackbar(context, S.actSuccess);
+      }
 
       if (popAfterDeleted) {
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pop();
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
       }
     }
 
