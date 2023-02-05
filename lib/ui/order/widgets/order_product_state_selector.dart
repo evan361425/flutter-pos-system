@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -52,12 +51,18 @@ class OrderProductStateSelector extends StatelessWidget {
       SingleRowWrap(
         key: Key('order.ingredient.$status'),
         children: <Widget>[
-          RadioText.empty(S.orderCartIngredientStatus(status)),
+          ChoiceChip(
+            selected: false,
+            label: Text(S.orderCartIngredientStatus(status)),
+          ),
         ],
       ),
       SingleRowWrap(
         children: <Widget>[
-          RadioText.empty(S.orderCartQuantityNotAble),
+          ChoiceChip(
+            selected: false,
+            label: Text(S.orderCartQuantityNotAble),
+          ),
         ],
       ),
     ]);
@@ -90,14 +95,16 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
   Widget build(BuildContext context) {
     return SingleRowWrap(children: <Widget>[
       for (final ingredient in CartIngredients.instance.itemList)
-        RadioText(
+        ChoiceChip(
           key: Key('order.ingredient.${ingredient.id}'),
-          isSelected: selectedId == ingredient.id,
-          onChanged: (_) {
-            setState(() => selectedId = ingredient.id);
-            widget.onSelected(ingredient);
+          selected: selectedId == ingredient.id,
+          onSelected: (selected) {
+            if (selected) {
+              setState(() => selectedId = ingredient.id);
+              widget.onSelected(ingredient);
+            }
           },
-          text: ingredient.name,
+          label: Text(ingredient.name),
         ),
     ]);
   }
@@ -123,18 +130,18 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
   Widget build(BuildContext context) {
     final ingredients = CartIngredients.instance;
     return SingleRowWrap(children: <Widget>[
-      RadioText(
+      ChoiceChip(
         key: const Key('order.quantity.default'),
-        onChanged: (_) => select(null),
-        isSelected: null == selectedId,
-        text: S.orderCartQuantityDefault(ingredients.selectedAmount),
+        onSelected: (_) => select(null),
+        selected: null == selectedId,
+        label: Text(S.orderCartQuantityDefault(ingredients.selectedAmount)),
       ),
       for (final quantity in ingredients.quantityList)
-        RadioText(
+        ChoiceChip(
           key: Key('order.quantity.${quantity.id}'),
-          onChanged: (_) => select(quantity.id),
-          isSelected: quantity.id == selectedId,
-          text: '${quantity.name}（${quantity.amount}）',
+          onSelected: (_) => select(quantity.id),
+          selected: quantity.id == selectedId,
+          label: Text('${quantity.name}（${quantity.amount}）'),
         ),
     ]);
   }

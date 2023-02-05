@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -134,16 +133,18 @@ class _PaidMoneySelectorState extends State<_PaidMoneySelector> {
       scrollDirection: Axis.horizontal,
       child: Row(children: <Widget>[
         for (final option in data)
-          Container(
-            key: Key('cashier.snapshot.$option'),
-            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: RadioText(
-              onChanged: (_) {
-                select(option);
-                widget.onChanged(option);
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ChoiceChip(
+              key: Key('cashier.snapshot.$option'),
+              onSelected: (selected) {
+                if (selected) {
+                  select(option);
+                  widget.onChanged(option);
+                }
               },
-              isSelected: selected == option,
-              text: option.toCurrency(),
+              selected: selected == option,
+              label: Text(option.toCurrency()),
             ),
           ),
       ]),

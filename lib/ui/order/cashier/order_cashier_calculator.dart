@@ -136,7 +136,7 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                 _CalculatorAction(
                   key: const Key('cashier.calculator.submit'),
                   action: execSubmit,
-                  height: 128,
+                  height: 124,
                   child: Text(
                     isOperating ? '=' : '點\n餐',
                   ),
@@ -241,14 +241,15 @@ class _CalculatorAction extends StatelessWidget {
     Key? key,
     required this.action,
     required this.child,
-    this.height = 64,
+    this.height = 60,
     this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 64,
+    return Container(
+      margin: const EdgeInsets.all(2),
+      width: 60,
       height: height,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(foregroundColor: color),
@@ -307,7 +308,7 @@ class _SingleFieldState extends State<_SingleField> {
       text == null
           ? HintText(widget.errorText, key: Key('${widget.keyPrefix}.error'))
           : text!.isEmpty
-              ? HintText(
+              ? Text(
                   widget.defaultText,
                   key: Key('${widget.keyPrefix}.hint'),
                 )

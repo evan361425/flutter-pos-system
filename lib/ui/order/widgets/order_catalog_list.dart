@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/catalog.dart';
 
@@ -24,12 +23,20 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
   @override
   Widget build(BuildContext context) {
     if (widget.catalogs.isEmpty) {
-      return SingleRowWrap(children: [RadioText.empty()]);
+      return const SingleRowWrap(children: [
+        ChoiceChip(
+          selected: false,
+          label: Text('尚未設定產品種類'),
+        ),
+      ]);
     }
 
     return SingleRowWrap(children: <Widget>[
       for (final catalog in widget.catalogs)
         ChoiceChip(
+          // TODO: should dynamic add this when it is select,
+          // wait to support the API.
+          // avatar: catalog.avator,
           key: Key('order.catalog.${catalog.id}'),
           onSelected: (isSelected) {
             if (isSelected) {

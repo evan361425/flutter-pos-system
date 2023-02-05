@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -64,15 +63,14 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
           padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
           child: Wrap(spacing: kSpacing0, children: [
             for (final option in widget.attribute.itemList)
-              RadioText(
+              ChoiceChip(
                 key: Key('set_attribute.${widget.attribute.id}.${option.id}'),
-                onChanged: (isSelected) {
-                  setState(() => selectedId = isSelected ? option.id : null);
-                  selectOption(option, isSelected);
+                onSelected: (selected) {
+                  setState(() => selectedId = selected ? option.id : null);
+                  selectOption(option, selected);
                 },
-                isTogglable: true,
-                isSelected: selectedId == option.id,
-                text: option.name,
+                selected: selectedId == option.id,
+                label: Text(option.name),
               )
           ]),
         ),

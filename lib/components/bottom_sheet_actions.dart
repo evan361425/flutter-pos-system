@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
@@ -11,11 +10,14 @@ Future<T?> showCircularBottomSheet<T>(
   bool useRootNavigator = true,
 }) {
   Feedback.forLongPress(context);
+  final size = MediaQuery.of(context).size;
 
   return showModalBottomSheet<T>(
     context: context,
     useRootNavigator: useRootNavigator,
     clipBehavior: Clip.hardEdge,
+    constraints: BoxConstraints(maxWidth: size.width - 24),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     useSafeArea: true,
     isScrollControlled: true,
     builder: (context) => SingleChildScrollView(
@@ -70,7 +72,7 @@ class BottomSheetActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      _title(context),
+      _heading(context),
       ...[for (final action in actions) action.toWidget(context)],
       _cancelAction(context),
     ]);
@@ -84,10 +86,15 @@ class BottomSheetActions extends StatelessWidget {
     );
   }
 
-  Widget _title(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kSpacing0),
-      child: Center(child: Text(S.bottomSheetActionsTitle)),
+  Widget _heading(BuildContext context) {
+    return Container(
+      height: 4.0,
+      width: 36.0,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceTint,
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      ),
     );
   }
 

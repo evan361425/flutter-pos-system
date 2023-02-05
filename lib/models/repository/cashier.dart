@@ -286,13 +286,15 @@ class Cashier extends ChangeNotifier {
   /// If [record] is null, it will use current currency
   Future<void> setDefault([Iterable? record]) async {
     if (record == null) {
+      Log.ger('changed', 'cashier_default');
       _default
         ..clear()
         ..addAll([
-          for (var item in _current)
+          for (final item in _current)
             CashierUnitObject(unit: item.unit, count: item.count)
         ]);
 
+      notifyListeners();
       return _updateDefaultStorage();
     }
     try {
