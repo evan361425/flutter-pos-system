@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -238,8 +237,8 @@ void main() {
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 
-      expect(tester.widget<HintText>(fCKey('paid.hint')).text, equals('28'));
-      expect(tester.widget<HintText>(fCKey('change.hint')).text, equals('0'));
+      expect(tester.widget<Text>(fCKey('paid.hint')).data, equals('28'));
+      expect(tester.widget<Text>(fCKey('change.hint')).data, equals('0'));
 
       await tester.tap(fCKey('9'));
       await tester.tap(fCKey('0'));
@@ -288,9 +287,9 @@ void main() {
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
             data['i-1.currentAmount'] == 90 &&
-            data['i-1.updatedAt'] != null &&
+            !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            data['i-2.updatedAt'] != null;
+            !data.containsKey('i-1.updatedAt');
       }))));
     });
 
@@ -456,11 +455,11 @@ void main() {
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
             data['i-1.currentAmount'] == 92 &&
-            data['i-1.updatedAt'] != null &&
+            !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            data['i-2.updatedAt'] != null &&
+            !data.containsKey('i-2.updatedAt') &&
             data['i-3.currentAmount'] == 105 &&
-            data['i-3.updatedAt'] != null;
+            !data.containsKey('i-3.updatedAt');
       }))));
     });
 
