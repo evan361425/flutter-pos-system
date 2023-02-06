@@ -13,6 +13,7 @@ import 'order_cashier_snapshot.dart';
 
 class OrderCashierModal extends StatelessWidget {
   final calculator = GlobalKey<OrderCashierCalculatorState>();
+  final opener = GlobalKey<SlidingUpOpenerState>();
 
   OrderCashierModal({Key? key}) : super(key: key);
 
@@ -27,24 +28,6 @@ class OrderCashierModal extends StatelessWidget {
           calculator.currentState?.text = value.toString(),
     );
 
-    void handleSubmit() async {
-      // ignore: use_build_context_synchronously
-      if (await _confirmChangeHistory(context)) {
-        try {
-          final result = await Cart.instance
-              .paid(collapsed.selector.currentState?.selected);
-          // send success message
-          if (context.mounted) {
-            Navigator.of(context).pop(result);
-          }
-        } on PaidException {
-          if (context.mounted) {
-            showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
-          }
-        }
-      }
-    }
-
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
@@ -55,7 +38,7 @@ class OrderCashierModal extends StatelessWidget {
       child: OrderCashierCalculator(
         key: calculator,
         onTextChanged: (value) => collapsed.paidChanged(value),
-        onSubmit: handleSubmit,
+        onSubmit: () => opener.currentState?.close(),
         totalPrice: totalPrice,
       ),
     );
@@ -77,6 +60,27 @@ class OrderCashierModal extends StatelessWidget {
       productsPrice: Cart.instance.productsPrice,
     );
 
+    void handleSubmit() async {
+      if (context.mounted) {
+        final f = _confirmChangeHistory(context);
+        if (await f) {
+          try {
+            final result = await Cart.instance
+                .paid(collapsed.selector.currentState?.selected);
+            // send success message
+            if (context.mounted) {
+              Navigator.of(context).pop(result);
+            }
+          } on PaidException {
+            if (context.mounted) {
+              showErrorSnackbar(
+                  context, S.orderCashierCalculatorChangeNotEnough);
+            }
+          }
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
@@ -90,6 +94,7 @@ class OrderCashierModal extends StatelessWidget {
         ],
       ),
       body: SlidingUpOpener(
+        key: opener,
         // 4 rows * 64 + 24 (insets) + 64 (collapse)
         maxHeight: 408,
         minHeight: 84,

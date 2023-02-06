@@ -137,9 +137,9 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                   key: const Key('cashier.calculator.submit'),
                   action: execSubmit,
                   height: 124,
-                  child: Text(
-                    isOperating ? '=' : '點\n餐',
-                  ),
+                  child: isOperating
+                      ? const Text('=')
+                      : const Icon(Icons.check_sharp),
                 ),
               ]),
             ]),

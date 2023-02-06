@@ -72,8 +72,8 @@ class OrderActions extends StatelessWidget {
       case OrderActionMode.leaveHistory:
         return Cart.instance.clear();
       case OrderActionMode.showLast:
-        // ignore: use_build_context_synchronously
-        if (!await _confirmAbleToStash(context)) return;
+        final f = _confirmAbleToStash(context);
+        if (!await f) return;
 
         if (!await Cart.instance.stash()) {
           if (context.mounted) {
@@ -90,8 +90,8 @@ class OrderActions extends StatelessWidget {
         }
         return;
       case OrderActionMode.dropStash:
-        // ignore: use_build_context_synchronously
-        if (!await _confirmAbleToStash(context)) return;
+        final f = _confirmAbleToStash(context);
+        if (!await f) return;
 
         final isEmpty = Cart.instance.isEmpty;
 

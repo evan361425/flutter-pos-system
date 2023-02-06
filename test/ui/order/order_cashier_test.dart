@@ -184,9 +184,14 @@ void main() {
 
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
+      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+        MaterialApp(
+          routes: Routes.routes,
+          scaffoldMessengerKey: scaffoldMessenger,
+          home: const OrderScreen(),
+        ),
       );
 
       await tester.tap(find.byKey(const Key('order.cashier')));
@@ -229,11 +234,17 @@ void main() {
         findsOneWidget,
       );
       await tester.tap(fCKey('submit'));
-      await tester.pump();
-
-      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
 
+      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
+      // make error message disappear
+      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
+      await tester.pumpAndSettle();
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 
@@ -266,12 +277,7 @@ void main() {
       await Cashier.instance.setCurrentByUnit(1, 5);
 
       await tester.tap(find.byKey(const Key('cashier.order')));
-      // wait for error message disappear
       await tester.pumpAndSettle();
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
