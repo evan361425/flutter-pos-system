@@ -374,7 +374,8 @@ void main() {
       // navigator popped
       expect(find.byKey(const Key('cashier.order')), findsNothing);
 
-      verify(database.update(any, any, argThat(predicate((e) {
+      verifyNever(database.push('order', any));
+      verify(database.update('order', 1, argThat(predicate((e) {
         final deli = String.fromCharCode(13);
         return e is Map &&
             e['paid'] == 38 &&
@@ -402,6 +403,7 @@ void main() {
                   {
                     "productId": "p-1",
                     "productName": "p-1",
+                    "catalogName": "c-1",
                     "count": 1,
                     "cost": 5,
                     "singlePrice": 17,
@@ -435,6 +437,7 @@ void main() {
                   {
                     "productId": "p-2",
                     "productName": "p-2",
+                    "catalogName": "c-2",
                     "count": 1,
                     "cost": 0,
                     "singlePrice": 11,
@@ -570,6 +573,7 @@ void main() {
 
       prepareData();
       Cashier().setCurrent(null);
+      reset(database);
     });
 
     setUpAll(() {

@@ -71,6 +71,7 @@ List<OrderObject> generateOrder({
         ordered.add(OrderProductObject(
           productId: product.id,
           productName: product.name,
+          catalogName: product.catalog.name,
           count: 1,
           cost: product.cost,
           singlePrice: product.price,
