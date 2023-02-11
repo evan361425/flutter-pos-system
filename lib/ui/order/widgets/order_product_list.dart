@@ -53,7 +53,7 @@ class OrderProductListState extends State<OrderProductList> with TutorialChild {
   void initState() {
     _products = widget.products;
     _crossAxisCount = SettingsProvider.of<OrderProductAxisCountSetting>().value;
-    tutorials = [GlobalKey<State<Tutorial>>()];
+    ants = [Tutorial.buildAnt()];
     super.initState();
   }
 
@@ -86,7 +86,7 @@ class OrderProductListState extends State<OrderProductList> with TutorialChild {
     return index == 0
         ? Tutorial(
             id: 'order.menu_product',
-            key: tutorials[0],
+            ant: ants[0],
             title: '開始點餐！',
             message: '透過圖片點餐更方便！\n'
                 '你也可以到「設定」頁面，\n'

@@ -82,7 +82,7 @@ class OrderScreenState extends State<OrderScreen> {
       ),
       body: outlook.value == OrderOutlookTypes.slidingPanel
           ? TutorialWrapper(
-              targets: [
+              tutorials: [
                 _orderProductList,
                 slidingPanel,
               ],
@@ -95,7 +95,7 @@ class OrderScreenState extends State<OrderScreen> {
               ),
             )
           : TutorialWrapper(
-              targets: [
+              tutorials: [
                 _orderProductList,
               ],
               child: OrderByOrientation(

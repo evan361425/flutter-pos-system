@@ -9,30 +9,36 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/cashier_unit_list.dart';
 
-class CashierScreen extends StatelessWidget {
+class CashierScreen extends StatefulWidget {
   final TutorialInTab? tab;
 
-  const CashierScreen({
-    Key? key,
-    this.tab,
-  }) : super(key: key);
+  const CashierScreen({Key? key, this.tab}) : super(key: key);
+
+  @override
+  State<CashierScreen> createState() => _CashierScreenState();
+}
+
+class _CashierScreenState extends State<CashierScreen> {
+  final antGaffer = Tutorial.buildAnt();
+
+  final antChange = Tutorial.buildAnt();
+
+  final antSurplus = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
-    final tutorialChange = GlobalKey<State<Tutorial>>();
-    final tutorialSurplus = GlobalKey<State<Tutorial>>();
-
     return ListView(children: [
       const SizedBox(height: 4.0),
       Flex(direction: Axis.horizontal, children: [
         Expanded(
           child: Tutorial(
             id: 'cashier.default',
-            tab: tab,
-            targets: [
-              tutorialSurplus,
-              tutorialChange,
-              Tutorial.self,
+            ant: antGaffer,
+            startNow: false,
+            ants: [
+              antSurplus,
+              antChange,
+              antGaffer,
             ],
             title: '收銀機預設狀態',
             message: '在下面設定完收銀機各幣值的數量後，\n'
@@ -48,7 +54,7 @@ class CashierScreen extends StatelessWidget {
         ),
         Expanded(
           child: Tutorial(
-            key: tutorialChange,
+            ant: antChange,
             id: 'cashier.change',
             title: '收銀機換錢',
             message: '一百塊換成 10 個十塊之類。\n' '幫助快速調整收銀機狀態。',
@@ -63,7 +69,7 @@ class CashierScreen extends StatelessWidget {
         ),
         Expanded(
           child: Tutorial(
-            key: tutorialSurplus,
+            ant: antSurplus,
             id: 'cashier.surplus',
             title: '每日結餘',
             message: '結餘可以幫助我們在每天打烊時，\n' '計算現有金額和預設金額的差異。',
@@ -113,5 +119,12 @@ class CashierScreen extends StatelessWidget {
         showSuccessSnackbar(context, S.actSuccess);
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.tab?.bindAnt(antGaffer);
   }
 }

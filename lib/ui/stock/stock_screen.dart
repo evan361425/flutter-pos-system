@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_list.dart';
 
-class StockScreen<T> extends StatelessWidget {
+class StockScreen<T> extends StatefulWidget {
   final TutorialInTab? tab;
 
   const StockScreen({
@@ -19,9 +19,16 @@ class StockScreen<T> extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<StockScreen<T>> createState() => _StockScreenState<T>();
+}
+
+class _StockScreenState<T> extends State<StockScreen<T>> {
+  final antAdd = Tutorial.buildAnt();
+  final gaffer = Tutorial.buildAnt();
+
+  @override
   Widget build(BuildContext context) {
     final stock = context.watch<Stock>();
-    final tutorialAdd = GlobalKey<State<Tutorial>>();
 
     if (stock.isEmpty) {
       return Center(
@@ -39,8 +46,9 @@ class StockScreen<T> extends StatelessWidget {
         Expanded(
           child: Tutorial(
             id: 'stock.replenishment',
-            tab: tab,
-            targets: [tutorialAdd, Tutorial.self],
+            ant: gaffer,
+            ants: [antAdd, gaffer],
+            startNow: false,
             title: '成份採購',
             message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
             child: const RouteCircularButton(
@@ -55,7 +63,7 @@ class StockScreen<T> extends StatelessWidget {
         const Spacer(flex: 2),
         Expanded(
           child: Tutorial(
-            key: tutorialAdd,
+            ant: antAdd,
             id: 'stock.add',
             disable: Stock.instance.isNotEmpty,
             title: '新增成份',
@@ -72,5 +80,12 @@ class StockScreen<T> extends StatelessWidget {
       const SizedBox(height: 4.0),
       IngredientList(ingredients: Stock.instance.itemList),
     ]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.tab?.bindAnt(gaffer);
   }
 }

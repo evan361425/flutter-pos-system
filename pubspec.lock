@@ -1074,6 +1074,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  spotlight_ant:
+    dependency: "direct main"
+    description:
+      name: spotlight_ant
+      sha256: cb7f78c1362cdc5841f8519dcfc4051d6a79aeb9b6339e4e95dcd343a472917a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   sqflite:
     dependency: "direct main"
     description:
@@ -1178,14 +1186,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  tutorial_coach_mark:
-    dependency: "direct main"
-    description:
-      name: tutorial_coach_mark
-      sha256: "6d1ac1b05a05004b5dc30fe56147b015517b15aa976d0ff0c760375d189f0a12"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
   typed_data:
     dependency: transitive
     description:

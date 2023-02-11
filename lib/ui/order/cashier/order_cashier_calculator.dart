@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -306,17 +305,10 @@ class _SingleFieldState extends State<_SingleField> {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text(widget.prefix),
       text == null
-          ? HintText(widget.errorText, key: Key('${widget.keyPrefix}.error'))
+          ? Text(widget.errorText, key: Key('${widget.keyPrefix}.error'))
           : text!.isEmpty
-              ? Text(
-                  widget.defaultText,
-                  key: Key('${widget.keyPrefix}.hint'),
-                )
-              : Text(
-                  text!,
-                  key: Key(widget.keyPrefix),
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+              ? Text(widget.defaultText, key: Key('${widget.keyPrefix}.hint'))
+              : Text(text!, key: Key(widget.keyPrefix)),
     ]);
   }
 

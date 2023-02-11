@@ -72,7 +72,7 @@ dependencies:
   package_info_plus: ^3.0.2
   cached_network_image: ^3.2.3
   flutter_svg: ^1.1.6
-  tutorial_coach_mark: ^1.2.4
+  spotlight_ant: ^0.4.0
 
 dev_dependencies:
   flutter_test:
