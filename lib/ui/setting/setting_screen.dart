@@ -75,13 +75,13 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.theme'),
             title: Text(S.settingThemeTitle),
-            subtitle: Text(S.settingThemeTypes(theme.value)),
+            subtitle: Text(S.settingThemeTypes(theme.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => theme.update(ThemeMode.values[index]),
               title: S.settingThemeTitle,
               items: ThemeMode.values
-                  .map<String>((e) => S.settingThemeTypes(e))
+                  .map<String>((e) => S.settingThemeTypes(e.name))
                   .toList(),
               selected: theme.value.index,
             ),
@@ -102,14 +102,14 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.outlook_order'),
             title: Text(S.settingOrderOutlookTitle),
-            subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value)),
+            subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
               title: S.settingOrderOutlookTitle,
               selected: orderOutlook.value.index,
               items: OrderOutlookTypes.values
-                  .map((e) => S.settingOrderOutlookTypes(e))
+                  .map((e) => S.settingOrderOutlookTypes(e.name))
                   .toList(),
               tips: [
                 '點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機',
@@ -120,7 +120,8 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.cashier_warning'),
             title: Text(S.settingCashierWarningTitle),
-            subtitle: Text(S.settingCashierWarningTypes(cashierWarning.value)),
+            subtitle:
+                Text(S.settingCashierWarningTypes(cashierWarning.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
               (index) =>
@@ -128,7 +129,7 @@ class _SettingScreenState extends State<SettingScreen> {
               title: S.settingCashierWarningTitle,
               selected: cashierWarning.value.index,
               items: CashierWarningTypes.values
-                  .map((e) => S.settingCashierWarningTypes(e))
+                  .map((e) => S.settingCashierWarningTypes(e.name))
                   .toList(),
               tips: [
                 '收銀機若使用小錢會出現提示，例如收銀機 5 塊錢不夠了並嘗試用 1 塊錢去找 5 塊錢',

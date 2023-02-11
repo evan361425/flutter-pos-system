@@ -176,7 +176,7 @@
   "@analysisCalendarTwoWeek": {
     "description": "分析頁的日曆週期轉換單位之一"
   },
-  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢} ready{下拉以載入更多}}",
+  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢} ready{下拉以載入更多} other{UNKNOWN}}",
   "@analysisOrderListStatus": {
     "description": "分析頁的點餐列表狀態",
     "placeholders": {
@@ -589,12 +589,12 @@
   "@settingThemeTitle": {
     "description": "設定頁面中主題的標題"
   },
-  "settingThemeTypes": "{type, select, dark{暗色模式} light{日光模式} system{跟隨系統}}",
+  "settingThemeTypes": "{type, select, dark{暗色模式} light{日光模式} system{跟隨系統} other{UNKNOWN}}",
   "@settingThemeTypes": {
     "description": "應用程式 theme 的類型",
     "placeholders": {
       "type": {
-        "type": "Object",
+        "type": "String",
         "description": "dark, light, system",
         "example": "system"
       }
@@ -608,12 +608,12 @@
   "@settingCashierWarningTitle": {
     "description": "設定頁面中是否顯示收銀機的提示的標題"
   },
-  "settingCashierWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏}}",
+  "settingCashierWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
   "@settingCashierWarningTypes": {
     "description": "是否顯示收銀機的提示",
     "placeholders": {
       "type": {
-        "type": "Object",
+        "type": "String",
         "description": "showAll, onlyNotEnough, hideAll",
         "example": "showAll"
       }
@@ -623,12 +623,12 @@
   "@settingOrderOutlookTitle": {
     "description": "設定頁面中點餐外觀的標題"
   },
-  "settingOrderOutlookTypes": "{type, select, slidingPanel{酷炫面板} singleView{經典模式}}",
+  "settingOrderOutlookTypes": "{type, select, slidingPanel{酷炫面板} singleView{經典模式} other{UNKNOWN}}",
   "@settingOrderOutlookTypes": {
     "description": "點餐時的外觀類型",
     "placeholders": {
       "type": {
-        "type": "Object",
+        "type": "String",
         "description": "slidingPanel, singleView",
         "example": "slidingPanel"
       }
@@ -661,14 +661,14 @@
       }
     }
   },
-  "orderAttributeModeNames": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣}}",
+  "orderAttributeModeNames": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{UNKNOWN}}",
   "@orderAttributeModeNames": {
     "description": "顧客設定種類名稱",
     "placeholders": {
       "mode": {}
     }
   },
-  "orderAttributeModeDescriptions": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。}}",
+  "orderAttributeModeDescriptions": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
   "@orderAttributeModeDescriptions": {
     "description": "顧客設定種類名稱",
     "placeholders": {
@@ -694,14 +694,14 @@
   "orderAttributeOptionNameLabel": "選項名稱",
   "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
   "orderAttributeOptionNameRepeatError": "名稱不能重複",
-  "orderAttributeOptionsModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價}}",
+  "orderAttributeOptionsModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價} other{UNKNOWN}}",
   "@orderAttributeOptionsModeHelper": {
     "description": "模式的說明",
     "placeholders": {
       "mode": {}
     }
   },
-  "orderAttributeOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」}}",
+  "orderAttributeOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」} other{UNKNOWN}}",
   "@orderAttributeOptionsModeHint": {
     "description": "模式的提示",
     "placeholders": {
@@ -821,7 +821,7 @@
       }
     }
   },
-  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成分} differentProducts{請選擇相同的產品來設定其成分} noNeedIngredient{這個產品沒有可以設定的成分}}",
+  "orderCartIngredientStatus": "{status, select, emptyCart{請選擇產品來設定其成分} differentProducts{請選擇相同的產品來設定其成分} noNeedIngredient{這個產品沒有可以設定的成分} other{UNKNOWN}}",
   "@orderCartIngredientStatus": {
     "description": "點餐時，若點選的產品不需要設定成分資訊，會需要提示給使用者",
     "placeholders": {
@@ -992,7 +992,7 @@
   "exporterDescription": "請選擇欲匯入匯出的方式",
   "exporterGSTitle": "Google 試算表",
   "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheet_repeat{表單名稱重複} non_exist_name{找不到試算表，是否已被刪除？}}",
+  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@exporterGSErrors": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
@@ -1023,7 +1023,7 @@
     }
   },
   "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定}}",
+  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
   "@exporterGSDefaultSheetName": {
     "description": "匯出 Google 試算表時預設的表單名稱",
     "placeholders": {
@@ -1032,11 +1032,20 @@
       }
     }
   },
-  "exporterGSProgressStatus": "{status, select, add_spreadsheet{新增試算表中..} add_sheets{新增表單中..} update_menu{更新菜單中..} update_stock{更新庫存中..} update_quantities{更新份量中..} update_replenisher{更新補貨中..} update_orderAttr{更新顧客設定中..}}",
+  "exporterGSProgressStatus": "{status, select, addSpreadsheet{新增試算表中..} addSheets{新增表單中..} other{{status}}}",
   "@exporterGSProgressStatus": {
     "description": "執行行為時的狀態說明",
     "placeholders": {
       "status": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} other{{model}}}",
+  "@exporterGSUpdateModelStatus": {
+    "description": "更新 Model 時的狀態說明",
+    "placeholders": {
+      "model": {
         "type": "String"
       }
     }
@@ -1047,7 +1056,7 @@
   "exporterGSProductIngredientInfoNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
   "exporterGSReplenishmentNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
   "exporterGSOrderAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
-  "importerGSError": "{error, select, empty_spreadsheet{必須選擇試算表來匯入} empty_sheet{必須選擇指定的表單來匯入} empty_data{在表單中沒找到任何值}}",
+  "importerGSError": "{error, select, emptySpreadsheet{必須選擇試算表來匯入} emptySheet{必須選擇指定的表單來匯入} emptyData{在表單中沒找到任何值} other{{error}}}",
   "@importerGSError": {
     "description": "匯入時會有的錯誤",
     "placeholders": {
@@ -1077,7 +1086,7 @@
       }
     }
   },
-  "importerColumnStatus": "{status, select, staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{}}",
+  "importerColumnStatus": "{status, select, staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
   "@importerColumnStatus": {
     "description": "顯示該資料的額外狀態",
     "placeholders": {

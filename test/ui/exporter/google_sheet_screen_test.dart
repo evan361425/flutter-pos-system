@@ -151,7 +151,7 @@ void main() {
           when(cache.get(eCacheKey + '.menu')).thenReturn('title');
           await tester.pumpWidget(buildApp());
           await tapBtn(tester);
-          expect(find.text(S.exporterGSErrors('sheet_repeat')), findsOneWidget);
+          expect(find.text(S.exporterGSErrors('sheetRepeat')), findsOneWidget);
         });
 
         testWidgets('spreadsheet create failed', (tester) async {
@@ -417,8 +417,8 @@ void main() {
           await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
-          expect(find.text(S.importerGSError('empty_spreadsheet')),
-              findsOneWidget);
+          expect(
+              find.text(S.importerGSError('emptySpreadsheet')), findsOneWidget);
         });
 
         testWidgets('sheet not selected', (tester) async {
@@ -426,7 +426,7 @@ void main() {
           await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
-          expect(find.text(S.importerGSError('empty_sheet')), findsOneWidget);
+          expect(find.text(S.importerGSError('emptySheet')), findsOneWidget);
         });
 
         testWidgets('empty data', (tester) async {

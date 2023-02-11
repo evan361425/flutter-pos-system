@@ -154,6 +154,8 @@ class OrderProductObject {
 
   final String productName;
 
+  final String catalogName;
+
   /// 購買數量
   final int count;
 
@@ -176,6 +178,7 @@ class OrderProductObject {
   const OrderProductObject({
     required this.productId,
     required this.productName,
+    required this.catalogName,
     required this.count,
     required this.cost,
     required this.singlePrice,
@@ -192,6 +195,7 @@ class OrderProductObject {
     return {
       'productId': productId,
       'productName': productName,
+      'catalogName': catalogName,
       'count': count,
       'cost': cost,
       'singlePrice': singlePrice,
@@ -212,6 +216,7 @@ class OrderProductObject {
     return OrderProductObject(
       productId: data['productId'] as String,
       productName: data['productName'] as String,
+      catalogName: data['catalogName'] as String? ?? '',
       count: data['count'] as int,
       cost: data['cost'] as num? ?? 0,
       singlePrice: data['singlePrice'] as num,

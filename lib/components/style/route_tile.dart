@@ -16,7 +16,7 @@ class RouteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.headline6;
+    final style = Theme.of(context).textTheme.titleLarge;
 
     return ListTile(
       leading: Column(

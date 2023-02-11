@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -14,6 +13,7 @@ import 'order_cashier_snapshot.dart';
 
 class OrderCashierModal extends StatelessWidget {
   final calculator = GlobalKey<OrderCashierCalculatorState>();
+  final opener = GlobalKey<SlidingUpOpenerState>();
 
   OrderCashierModal({Key? key}) : super(key: key);
 
@@ -28,12 +28,6 @@ class OrderCashierModal extends StatelessWidget {
           calculator.currentState?.text = value.toString(),
     );
 
-    void handleSubmit() async {
-      if (await confirmChangeHistory(context)) {
-        this.handleSubmit(context, collapsed.selector.currentState?.selected);
-      }
-    }
-
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
@@ -44,7 +38,7 @@ class OrderCashierModal extends StatelessWidget {
       child: OrderCashierCalculator(
         key: calculator,
         onTextChanged: (value) => collapsed.paidChanged(value),
-        onSubmit: handleSubmit,
+        onSubmit: () => opener.currentState?.close(),
         totalPrice: totalPrice,
       ),
     );
@@ -66,12 +60,33 @@ class OrderCashierModal extends StatelessWidget {
       productsPrice: Cart.instance.productsPrice,
     );
 
+    void handleSubmit() async {
+      if (context.mounted) {
+        final f = _confirmChangeHistory(context);
+        if (await f) {
+          try {
+            final result = await Cart.instance
+                .paid(collapsed.selector.currentState?.selected);
+            // send success message
+            if (context.mounted) {
+              Navigator.of(context).pop(result);
+            }
+          } on PaidException {
+            if (context.mounted) {
+              showErrorSnackbar(
+                  context, S.orderCashierCalculatorChangeNotEnough);
+            }
+          }
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
         title: Text(S.orderCashierTitle),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('cashier.order'),
             onPressed: handleSubmit,
             child: Text(S.orderCashierActionsOrder),
@@ -79,6 +94,7 @@ class OrderCashierModal extends StatelessWidget {
         ],
       ),
       body: SlidingUpOpener(
+        key: opener,
         // 4 rows * 64 + 24 (insets) + 64 (collapse)
         maxHeight: 408,
         minHeight: 84,
@@ -91,7 +107,7 @@ class OrderCashierModal extends StatelessWidget {
   }
 
   /// Confirm leaving history mode
-  Future<bool> confirmChangeHistory(BuildContext context) async {
+  Future<bool> _confirmChangeHistory(BuildContext context) async {
     if (!Cart.instance.isHistoryMode) return true;
 
     final result = await showDialog(
@@ -102,16 +118,5 @@ class OrderCashierModal extends StatelessWidget {
     );
 
     return result ?? false;
-  }
-
-  void handleSubmit(BuildContext context, num? paid) async {
-    try {
-      final result = await Cart.instance.paid(paid);
-      // send success message
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop(result);
-    } on PaidException {
-      showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
-    }
   }
 }

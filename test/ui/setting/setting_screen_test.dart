@@ -146,6 +146,7 @@ void main() {
     });
 
     testWidgets('switch awake_ordering', (tester) async {
+      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
       await buildApp(tester);
 
       await tester.tap(find.byKey(const Key('setting.awake_ordering')));

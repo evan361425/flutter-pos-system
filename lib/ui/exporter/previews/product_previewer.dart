@@ -44,7 +44,7 @@ class ProductPreviewer extends PreviewerScreen<Product> {
   Widget getItem(BuildContext context, Product item) {
     final textTheme = Theme.of(context).textTheme;
     final textStyle = textTheme.bodyMedium?.copyWith(
-      color: textTheme.caption?.color,
+      color: textTheme.bodySmall?.color,
     );
 
     return ExpansionTile(

@@ -148,7 +148,7 @@ class SlidableItemDelegate<T, U> {
             SlidableAction(
               key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
               label: S.btnDelete,
-              backgroundColor: theme.errorColor,
+              backgroundColor: theme.colorScheme.error,
               icon: KIcons.delete,
               onPressed: (_) => DeleteDialog.show(
                 context,

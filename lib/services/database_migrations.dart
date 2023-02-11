@@ -56,6 +56,7 @@ ON `order` (createdAt);
   ],
   7: <String>[
     'ALTER TABLE `order` DROP COLUMN `customerSettingCombinationId`;',
+    'ALTER TABLE `order` ADD COLUMN `catalogName` BLOB DEFAULT "";',
     'ALTER TABLE `order_stash` DROP COLUMN `customerSettingCombinationId`;',
     'DROP TABLE `customer_settings`;',
     'DROP TABLE `customer_setting_options`;',

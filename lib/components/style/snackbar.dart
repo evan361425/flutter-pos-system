@@ -65,19 +65,20 @@ void showErrorSnackbar(
     message,
     icon: Icon(
       Icons.error_outline,
-      color: Theme.of(context).errorColor,
+      color: Theme.of(context).colorScheme.error,
     ),
     action: action,
   );
 }
 
-Future<T> showSnackbarWhenFailed<T>(
-  Future<T> future,
+Future<T?> showSnackbarWhenFailed<T>(
+  Future<T?> future,
   BuildContext context,
   String code,
 ) {
   return future.catchError((err) {
     showErrorSnackbar(context, S.actError);
     Log.err(err, code, err is Error ? err.stackTrace : null);
+    return null;
   });
 }

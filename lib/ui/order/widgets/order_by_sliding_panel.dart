@@ -37,15 +37,14 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
 
     final collapsed = Tutorial(
       id: 'order.sliding_collapsed',
-      key: tutorials[0],
+      ant: ants[0],
+      padding: const EdgeInsets.fromLTRB(-4, 24, -4, 0),
       title: '點餐介面',
       message: '為了讓點選產品可以更方便，\n'
           '我們把點餐後的產品設定至於此面板。\n'
           '如果需要一次顯示所有訊息的排版（適合大螢幕），\n'
           '可以至「設定」>「點餐的外觀」調整。',
       shape: TutorialShape.rect,
-      align: TutorialAlign.top,
-      paddingSize: 32,
       child: ChangeNotifierProvider.value(
         value: Cart.instance,
         builder: (_, __) => const Padding(
@@ -73,7 +72,7 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
 
   @override
   void initState() {
-    tutorials = [GlobalKey<State<Tutorial>>()];
+    ants = [Tutorial.buildAnt()];
     super.initState();
   }
 

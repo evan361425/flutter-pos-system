@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/components/style/appbar_text_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -37,12 +36,13 @@ class CashierSurplus extends StatelessWidget {
         leading: const PopButton(),
         title: const Text('結餘'),
         actions: [
-          AppbarTextButton(
+          TextButton(
             key: const Key('cashier_surplus.confirm'),
             onPressed: () async {
               await Cashier.instance.surplus();
-              // ignore: use_build_context_synchronously
-              Navigator.of(context).pop(true);
+              if (context.mounted) {
+                Navigator.of(context).pop(true);
+              }
             },
             child: const Text('完成'),
           ),
@@ -134,7 +134,7 @@ class _DataWithLabel extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(children: [
-        Text(data, style: theme.textTheme.headline5),
+        Text(data, style: theme.textTheme.headlineSmall),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(label),
           if (helper != null)

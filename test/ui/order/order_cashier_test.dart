@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -185,9 +184,14 @@ void main() {
 
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
+      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+        MaterialApp(
+          routes: Routes.routes,
+          scaffoldMessengerKey: scaffoldMessenger,
+          home: const OrderScreen(),
+        ),
       );
 
       await tester.tap(find.byKey(const Key('order.cashier')));
@@ -230,16 +234,22 @@ void main() {
         findsOneWidget,
       );
       await tester.tap(fCKey('submit'));
-      await tester.pump();
-
-      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('cashier.order')));
       await tester.pumpAndSettle();
 
+      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
+      // make error message disappear
+      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
+      await tester.pumpAndSettle();
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 
-      expect(tester.widget<HintText>(fCKey('paid.hint')).text, equals('28'));
-      expect(tester.widget<HintText>(fCKey('change.hint')).text, equals('0'));
+      expect(tester.widget<Text>(fCKey('paid.hint')).data, equals('28'));
+      expect(tester.widget<Text>(fCKey('change.hint')).data, equals('0'));
 
       await tester.tap(fCKey('9'));
       await tester.tap(fCKey('0'));
@@ -267,12 +277,7 @@ void main() {
       await Cashier.instance.setCurrentByUnit(1, 5);
 
       await tester.tap(find.byKey(const Key('cashier.order')));
-      // wait for error message disappear
       await tester.pumpAndSettle();
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
@@ -288,9 +293,9 @@ void main() {
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
             data['i-1.currentAmount'] == 90 &&
-            data['i-1.updatedAt'] != null &&
+            !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            data['i-2.updatedAt'] != null;
+            !data.containsKey('i-1.updatedAt');
       }))));
     });
 
@@ -375,7 +380,8 @@ void main() {
       // navigator popped
       expect(find.byKey(const Key('cashier.order')), findsNothing);
 
-      verify(database.update(any, any, argThat(predicate((e) {
+      verifyNever(database.push('order', any));
+      verify(database.update('order', 1, argThat(predicate((e) {
         final deli = String.fromCharCode(13);
         return e is Map &&
             e['paid'] == 38 &&
@@ -403,6 +409,7 @@ void main() {
                   {
                     "productId": "p-1",
                     "productName": "p-1",
+                    "catalogName": "c-1",
                     "count": 1,
                     "cost": 5,
                     "singlePrice": 17,
@@ -436,6 +443,7 @@ void main() {
                   {
                     "productId": "p-2",
                     "productName": "p-2",
+                    "catalogName": "c-2",
                     "count": 1,
                     "cost": 0,
                     "singlePrice": 11,
@@ -456,11 +464,11 @@ void main() {
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
             data['i-1.currentAmount'] == 92 &&
-            data['i-1.updatedAt'] != null &&
+            !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            data['i-2.updatedAt'] != null &&
+            !data.containsKey('i-2.updatedAt') &&
             data['i-3.currentAmount'] == 105 &&
-            data['i-3.updatedAt'] != null;
+            !data.containsKey('i-3.updatedAt');
       }))));
     });
 
@@ -571,6 +579,7 @@ void main() {
 
       prepareData();
       Cashier().setCurrent(null);
+      reset(database);
     });
 
     setUpAll(() {

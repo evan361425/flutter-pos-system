@@ -12,7 +12,7 @@ import 'mocks/mock_cache.dart';
 import 'test_helpers/firebase_mocker.dart';
 
 void main() {
-  testWidgets('should bind model to menu', (tester) async {
+  testWidgets('should execute onGenerateTitle', (tester) async {
     when(cache.get(any)).thenReturn(null);
     await Firebase.initializeApp();
 
@@ -24,22 +24,16 @@ void main() {
       value: settings,
       builder: (_, __) => MyApp(
         settings: settings,
-        child: _TestChild(),
+        child: Container(),
       ),
     );
 
     await tester.pumpWidget(app);
+    await tester.pumpAndSettle();
   });
 
   setUpAll(() {
     initializeCache();
     setupFirebaseAuthMocks();
   });
-}
-
-class _TestChild extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
 }

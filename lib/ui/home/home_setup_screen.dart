@@ -11,7 +11,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class HomeSetupScreen extends StatelessWidget {
+class HomeSetupScreen extends StatefulWidget {
   final TutorialInTab? tab;
 
   const HomeSetupScreen({
@@ -20,10 +20,17 @@ class HomeSetupScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<HomeSetupScreen> createState() => _HomeSetupScreenState();
+}
+
+class _HomeSetupScreenState extends State<HomeSetupScreen> {
+  final antOrderAttr = Tutorial.buildAnt();
+  final antExporter = Tutorial.buildAnt();
+  final antGaffer = Tutorial.buildAnt();
+
+  @override
   Widget build(BuildContext context) {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
-    final tutorialOrderAttr = GlobalKey<State<Tutorial>>();
-    final tutorialExporter = GlobalKey<State<Tutorial>>();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -34,13 +41,14 @@ class HomeSetupScreen extends StatelessWidget {
             if (!isProd) const Center(child: RandomGenerateOrderButton()),
             Tutorial(
               id: 'home.menu',
+              ant: antGaffer,
+              startNow: false,
               message: '現在就趕緊來設定菜單吧！',
-              targets: [
-                tutorialOrderAttr,
-                tutorialExporter,
-                Tutorial.self,
+              ants: [
+                antOrderAttr,
+                antExporter,
+                antGaffer,
               ],
-              tab: tab,
               shape: TutorialShape.rect,
               disable: Menu.instance.isNotEmpty,
               child: RouteTile(
@@ -51,7 +59,7 @@ class HomeSetupScreen extends StatelessWidget {
               ),
             ),
             Tutorial(
-              key: tutorialExporter,
+              ant: antExporter,
               id: 'home.exporter',
               title: '檔案匯出',
               message: '這裡是用來匯出菜單、庫存等資訊的地方。',
@@ -64,7 +72,7 @@ class HomeSetupScreen extends StatelessWidget {
               ),
             ),
             Tutorial(
-              key: tutorialOrderAttr,
+              ant: antOrderAttr,
               id: 'home.order_attr',
               title: '顧客設定',
               message: '這裡可以設定顧客資訊，例如：\n'
@@ -107,6 +115,13 @@ class HomeSetupScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.tab?.bindAnt(antGaffer);
+  }
 }
 
 class _HeaderInfo extends StatelessWidget {
@@ -147,7 +162,7 @@ class _HeaderInfo extends StatelessWidget {
           children: [
             Text(
               title.toString(),
-              style: theme.textTheme.headline4,
+              style: theme.textTheme.headlineMedium,
             ),
             Text(subtitle),
           ],

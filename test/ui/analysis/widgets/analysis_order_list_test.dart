@@ -132,6 +132,7 @@ void main() {
           cost: 1,
           productId: 'p-1',
           productName: 'p-1',
+          catalogName: 'c-1',
           isDiscount: true,
           ingredients: [
             OrderIngredientObject(

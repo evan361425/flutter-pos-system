@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -12,6 +13,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/stock_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -62,8 +64,17 @@ void main() {
         'i-1': 10,
         'i-2': -5,
       });
-      final ing1 = Ingredient(id: 'i-1', name: 'i-1');
-      final ing2 = Ingredient(id: 'i-2', name: 'i-2', currentAmount: 4);
+      final ing1 = Ingredient(
+        id: 'i-1',
+        name: 'i-1',
+        updatedAt: DateTime(2020, 10, 10),
+      );
+      final ing2 = Ingredient(
+        id: 'i-2',
+        name: 'i-2',
+        currentAmount: 4,
+        updatedAt: DateTime(2020, 10, 11),
+      );
       final stock = Stock()..replaceItems({'i-1': ing1, 'i-2': ing2});
       final repl = Replenisher()..replaceItems({'r-1': replenishment});
 
@@ -71,6 +82,13 @@ void main() {
         ChangeNotifierProvider<Stock>.value(value: stock),
         ChangeNotifierProvider<Replenisher>.value(value: repl),
       ], child: buildApp()));
+
+      void verifyLastUpdated(DateTime dt) {
+        final s = S.stockUpdatedAt(dt);
+        expect(find.text('$s${MetaBlock.string}總共 2 項'), findsOneWidget);
+      }
+
+      verifyLastUpdated(DateTime(2020, 10, 11));
 
       await tester.tap(find.byKey(const Key('stock.replenisher')));
       await tester.pumpAndSettle();
@@ -82,6 +100,8 @@ void main() {
       expect(ing1.currentAmount, equals(10));
       expect(ing1.lastAmount, equals(10));
       expect(ing2.currentAmount, equals(0));
+
+      verifyLastUpdated(DateTime.now());
     });
 
     Future<void> buildAppWithIngredients([WidgetTester? tester]) async {

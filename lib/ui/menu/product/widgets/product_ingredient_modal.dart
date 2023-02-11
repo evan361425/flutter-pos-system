@@ -173,8 +173,9 @@ class _ProductIngredientSearch extends StatelessWidget {
       onTap: () async {
         final ingredient = Ingredient(name: text);
         await Stock.instance.addItem(ingredient);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pop<Ingredient>(ingredient);
+        if (context.mounted) {
+          Navigator.of(context).pop<Ingredient>(ingredient);
+        }
       },
     );
   }

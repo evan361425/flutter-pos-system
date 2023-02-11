@@ -3,9 +3,11 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 
 void main() {
   group('Model', () {
@@ -18,6 +20,17 @@ void main() {
         expect(() => catalog.buildItem('id', {}), throwsUnimplementedError);
         expect(() => product.buildItem('id', {}), throwsUnimplementedError);
         expect(() => ingredient.buildItem('id', {}), throwsUnimplementedError);
+      });
+    });
+
+    group('Stock', () {
+      test('only change current amount will not change update time', () {
+        final obj = IngredientObject(currentAmount: 15);
+        final ing = Ingredient(id: '1', name: '1', currentAmount: 10);
+
+        final diff = obj.diff(ing);
+
+        expect(diff, equals({'1.currentAmount': 15}));
       });
     });
 

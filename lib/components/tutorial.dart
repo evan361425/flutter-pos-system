@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/services/cache.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 class TutorialWrapper extends StatefulWidget {
-  final Iterable<GlobalKey<TutorialChild>> targets;
+  final Iterable<GlobalKey<TutorialChild>> tutorials;
 
   final Widget child;
 
@@ -17,7 +17,7 @@ class TutorialWrapper extends StatefulWidget {
 
   const TutorialWrapper({
     Key? key,
-    required this.targets,
+    required this.tutorials,
     required this.child,
     this.milliseconds = 50,
     this.iterMaximum = 100,
@@ -28,15 +28,19 @@ class TutorialWrapper extends StatefulWidget {
 }
 
 class _TutorialWrapperState extends State<TutorialWrapper> {
-  Iterable<GlobalKey<State<Tutorial>>>? tutorials;
+  List<GlobalKey<SpotlightAntState>>? ants;
+
+  final ant = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
-    return tutorials?.isNotEmpty == true
+    return ants?.isNotEmpty == true
         ? Tutorial(
+            ant: ant,
+            ants: ants,
             id: '',
             message: '',
-            targets: tutorials,
+            disable: true,
             child: widget.child,
           )
         : widget.child;
@@ -52,7 +56,7 @@ class _TutorialWrapperState extends State<TutorialWrapper> {
   void _prepareTargets() async {
     int counter = 0;
 
-    for (final target in widget.targets) {
+    for (final target in widget.tutorials) {
       await Future.doWhile(() {
         if (counter++ > widget.iterMaximum) {
           return false;
@@ -66,215 +70,101 @@ class _TutorialWrapperState extends State<TutorialWrapper> {
 
     if (counter < widget.iterMaximum) {
       setState(() {
-        tutorials = widget.targets.expand((e) => e.currentState!.tutorials);
+        ants = widget.tutorials.expand((e) => e.currentState!.ants).toList();
       });
     }
   }
 }
 
-class Tutorial extends StatefulWidget {
-  static const GlobalKey<State<Tutorial>>? self = null;
+class Tutorial extends StatelessWidget {
+  final GlobalKey<SpotlightAntState> ant;
 
-  /// Identity for each tutorial
+  final List<GlobalKey<SpotlightAntState>>? ants;
+
   final String id;
 
   final String? title;
 
   final String message;
 
-  /// StatefulWidget's key for targeting
-  final Iterable<GlobalKey<State<Tutorial>>?>? targets;
-
   final TutorialShape shape;
 
-  final TutorialAlign align;
-
-  /// focus target's padding
-  final double paddingSize;
-
-  final TutorialInTab? tab;
+  final EdgeInsets padding;
 
   /// force disabling tutorial
   final bool disable;
 
+  final bool startNow;
+
   final Widget child;
 
   @visibleForTesting
-  final Duration animationDuration;
+  final bool fast;
 
   const Tutorial({
     Key? key,
+    required this.ant,
+    this.ants,
     required this.id,
     this.title,
     required this.message,
-    this.targets,
     this.shape = TutorialShape.circle,
-    this.align = TutorialAlign.bottom,
-    this.paddingSize = 8,
-    this.tab,
+    this.padding = const EdgeInsets.all(8),
     this.disable = false,
+    this.startNow = true,
     required this.child,
-    this.animationDuration = const Duration(milliseconds: 600),
+    this.fast = false,
   }) : super(key: key);
 
-  @override
-  State<Tutorial> createState() => TutorialState();
-
-  ShapeLightFocus get realShape {
-    switch (shape) {
-      case TutorialShape.circle:
-        return ShapeLightFocus.Circle;
-      case TutorialShape.rect:
-        return ShapeLightFocus.RRect;
-    }
+  static GlobalKey<SpotlightAntState> buildAnt() {
+    return GlobalKey<SpotlightAntState>();
   }
-
-  ContentAlign get alignment {
-    switch (align) {
-      case TutorialAlign.top:
-        return ContentAlign.top;
-      case TutorialAlign.bottom:
-        return ContentAlign.bottom;
-    }
-  }
-}
-
-class TutorialState extends State<Tutorial> {
-  final key = GlobalKey<State<_TutorialTemp>>();
 
   @override
   Widget build(BuildContext context) {
-    return widget.targets == null
-        ? widget.child
-        : _TutorialTemp(key: key, child: widget.child);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.targets == null) {
-      return;
-    }
-
-    if (widget.tab == null) {
-      _scheduleFrameCallback();
-    } else {
-      widget.tab!.shouldNotShow
-          ? widget.tab!.controller.addListener(_handleTabChanged)
-          : _scheduleFrameCallback();
-    }
-  }
-
-  void _handleTabChanged() {
-    if (widget.tab!.shouldNotShow || !mounted) {
-      return;
-    }
-
-    // unregister first, avoid non-stop event handler
-    widget.tab?.controller.removeListener(_handleTabChanged);
-
-    _showTutorial();
-  }
-
-  void _scheduleFrameCallback() {
-    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-      _showTutorial();
-    });
-  }
-
-  void _showTutorial() async {
-    final targets = <TargetFocus>[];
-    final textTheme = Theme.of(context).textTheme;
-
-    for (final tutorial in widget.targets!) {
-      Tutorial? target;
-      GlobalKey<State<StatefulWidget>>? targetKey;
-      if (tutorial == Tutorial.self) {
-        target = widget;
-        targetKey = key;
-      } else if (true == tutorial!.currentState?.mounted) {
-        target = tutorial.currentState!.widget;
-        targetKey = tutorial;
-      }
-
-      // 1. not manually disable it
-      // 2. not mounted, user should try add another main tutorial
-      // 3. second time facing this tutorial
-      if (target?.disable != false ||
-          !mounted ||
-          (Cache.instance.get<bool>('tutorial.${target!.id}') ?? false)) {
-        continue;
-      }
-
-      targets.add(TargetFocus(
-        identify: target.id,
-        keyTarget: targetKey,
-        enableOverlayTab: true,
-        shape: target.realShape,
-        paddingFocus: target.paddingSize,
-        focusAnimationDuration: target.animationDuration,
-        contents: <TargetContent>[
-          TargetContent(
-            align: target.alignment,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (target.title != null)
-                  Text(
-                    target.title!,
-                    style: textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                Text(
-                  target.message,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+    return SpotlightAnt(
+      key: ant,
+      ants: ants,
+      enable: enabled,
+      showAfterInit: startNow,
+      actions: const [SpotlightAntAction.prev, SpotlightAntAction.next],
+      spotlightBuilder: shape == TutorialShape.circle
+          ? const SpotlightCircularBuilder()
+          : const SpotlightRectBuilder(),
+      spotlightPadding: padding,
+      bumpDuration: fast ? Duration.zero : const Duration(milliseconds: 400),
+      zoomInDuration: fast ? Duration.zero : const Duration(milliseconds: 600),
+      zoomOutDuration: fast ? Duration.zero : const Duration(milliseconds: 600),
+      contentFadeInDuration:
+          fast ? Duration.zero : const Duration(milliseconds: 300),
+      content: SpotlightContent(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+        child: Column(children: [
+          if (title != null)
+            Text(
+              title!,
+              style: const TextStyle(fontSize: 24),
             ),
-          ),
-        ],
-      ));
+          const SizedBox(height: 16),
+          Text(message, style: const TextStyle(fontSize: 18)),
+        ]),
+      ),
+      onDismiss: _onDismiss,
+      child: child,
+    );
+  }
+
+  bool get enabled {
+    if (disable) {
+      return false;
     }
 
-    if (targets.isNotEmpty) {
-      TutorialCoachMark(
-        targets: targets,
-        onClickOverlay: _onTutorialTap,
-        unFocusAnimationDuration: widget.animationDuration,
-        focusAnimationDuration: widget.animationDuration,
-        onClickTarget: _onTutorialTap,
-        hideSkip: true,
-      ).show(context: context);
-    }
+    return !(Cache.instance.get<bool>('tutorial.$id') ?? false);
   }
 
-  Future<void> _onTutorialTap(TargetFocus target) async {
-    await Cache.instance.set<bool>('tutorial.${target.identify}', true);
+  void _onDismiss() async {
+    await Cache.instance.set<bool>('tutorial.$id', true);
   }
-}
-
-class _TutorialTemp extends StatefulWidget {
-  final Widget child;
-
-  const _TutorialTemp({Key? key, required this.child}) : super(key: key);
-
-  @override
-  State<_TutorialTemp> createState() => _TutorialTempState();
-}
-
-class _TutorialTempState extends State<_TutorialTemp> {
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
-}
-
-mixin TutorialChild<T extends StatefulWidget> on State<T> {
-  late List<GlobalKey<State<Tutorial>>> tutorials;
 }
 
 class TutorialInTab {
@@ -289,14 +179,29 @@ class TutorialInTab {
   bool get shouldNotShow {
     return controller.indexIsChanging || index != controller.index;
   }
+
+  bindAnt(GlobalKey<SpotlightAntState> ant, {startNow = false}) {
+    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
+      void handler() {
+        if (!shouldNotShow) {
+          ant.currentState?.show();
+          controller.removeListener(handler);
+        }
+      }
+
+      controller.addListener(handler);
+      if (startNow) {
+        handler();
+      }
+    });
+  }
+}
+
+mixin TutorialChild<T extends StatefulWidget> on State<T> {
+  late List<GlobalKey<SpotlightAntState>> ants;
 }
 
 enum TutorialShape {
   rect,
   circle,
-}
-
-enum TutorialAlign {
-  top,
-  bottom,
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
@@ -41,20 +40,22 @@ class OrderAttributeModalModesState extends State<_ModalModes>
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
+      Wrap(spacing: 4, runSpacing: 4, children: [
         for (final mode in OrderAttributeMode.values)
-          Expanded(
-            child: RadioText(
-              key: Key('order_attribute.modes.${mode.index}'),
-              margin: const EdgeInsets.symmetric(horizontal: 2.0),
-              isSelected: selectedMode == mode,
-              onChanged: (_) => setState(() => selectedMode = mode),
-              text: S.orderAttributeModeNames(mode),
-            ),
-          )
+          ChoiceChip(
+            key: Key('order_attribute.modes.${mode.index}'),
+            selected: selectedMode == mode,
+            onSelected: (selected) {
+              if (selected) {
+                setState(() => selectedMode = mode);
+              }
+            },
+            label: Text(S.orderAttributeModeNames(mode.name)),
+          ),
       ]),
-      const SizedBox(height: 8.0),
-      Text(S.orderAttributeModeDescriptions(selectedMode)),
+      // infinity width to maximum the column width
+      const SizedBox(height: 8.0, width: double.infinity),
+      Text(S.orderAttributeModeDescriptions(selectedMode.name)),
     ]);
   }
 

@@ -133,7 +133,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         errorText: errorMessage,
         filled: false,
       ),
-      style: textTheme.headline6,
+      style: textTheme.titleLarge,
       autofocus: widget.isNew,
       maxLength: 30,
       validator: Validator.textLimit(S.stockReplenishmentNameLabel, 30),

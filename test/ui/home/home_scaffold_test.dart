@@ -67,8 +67,7 @@ void main() {
       ));
 
       Future<void> navAndCheck(String key, String check) async {
-        final finder = find.byKey(Key(key));
-        await tester.tap(finder);
+        await tester.tap(find.byKey(Key(key)), warnIfMissed: false);
         await tester.pumpAndSettle();
 
         expect(find.byKey(Key(check)), findsOneWidget);

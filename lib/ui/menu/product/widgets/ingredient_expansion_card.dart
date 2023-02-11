@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -23,26 +22,20 @@ class IngredientExpansionCard extends StatelessWidget {
         subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
         expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
-            child: Row(children: [
-              ElevatedButton.icon(
-                key: Key('$key.add'),
-                onPressed: () => Navigator.of(context).pushNamed(
-                  Routes.menuQuantity,
-                  arguments: ingredient,
-                ),
-                icon: const Icon(KIcons.add),
-                label: Text(S.menuQuantityCreate),
-              ),
-              IconButton(
+          ListTile(
+              key: Key('$key.add'),
+              leading: const CircleAvatar(child: Icon(KIcons.add)),
+              title: Text(S.menuQuantityCreate),
+              onTap: () => Navigator.of(context).pushNamed(
+                    Routes.menuQuantity,
+                    arguments: ingredient,
+                  ),
+              trailing: IconButton(
                 key: Key('$key.more'),
                 onPressed: () => showActions(context),
                 enableFeedback: true,
                 icon: const Icon(KIcons.more),
-              )
-            ]),
-          ),
+              )),
           for (final item in ingredient.items) _QuantityTile(item),
         ],
       ),

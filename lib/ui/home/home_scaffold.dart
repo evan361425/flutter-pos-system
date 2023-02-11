@@ -41,7 +41,6 @@ class _HomeScaffoldState extends State<HomeScaffold>
         ),
         child: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
           tabs: [
             _CustomTab(
               key: const Key('home.analysis'),

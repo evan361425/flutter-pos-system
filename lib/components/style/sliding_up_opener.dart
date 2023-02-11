@@ -184,11 +184,11 @@ class _CollapseWithDragger extends StatelessWidget {
     final theme = Theme.of(context);
 
     final dragger = Container(
-      height: 8.0,
-      width: 32.0,
+      height: 4.0,
+      width: 36.0,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
-        color: theme.shadowColor.withAlpha(176),
+        color: theme.colorScheme.surfaceTint,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
     );

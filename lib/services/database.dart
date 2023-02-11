@@ -26,7 +26,7 @@ class Database {
   // delimiter: https://stackoverflow.com/a/29811033/12089368
   static final String delimiter = String.fromCharCode(13);
 
-  static const latestVersion = 6;
+  static const latestVersion = 7;
 
   late sqflite.Database db;
 

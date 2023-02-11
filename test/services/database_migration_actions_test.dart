@@ -63,6 +63,7 @@ void main() {
               .map((pid) => {
                     'productId': pid,
                     'productName': pid,
+                    'catalogName': 'c-1',
                     'count': 1,
                     'singlePrice': 1,
                     'originalPrice': 1,
@@ -84,10 +85,11 @@ void main() {
       }
 
       Menu().replaceItems({
-        'c-1': Catalog(id: 'c-1', products: {
+        'c-1': Catalog(id: 'c-1', name: 'c-1', products: {
           'p-1': Product(id: 'p-1', cost: 1),
           'p-2': Product(id: 'p-2', cost: 1),
         })
+          ..prepareItem()
       });
 
       when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))

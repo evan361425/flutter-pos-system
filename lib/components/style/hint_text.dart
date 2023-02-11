@@ -17,7 +17,7 @@ class HintText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.caption!.copyWith(
+    final style = theme.textTheme.bodySmall!.copyWith(
       color: theme.hintColor,
       inherit: true,
     );
@@ -32,7 +32,7 @@ class HintText extends StatelessWidget {
 
   static TextSpan inSpan(BuildContext context, String text) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.caption!.copyWith(
+    final style = theme.textTheme.bodySmall!.copyWith(
       color: theme.hintColor,
       inherit: true,
     );

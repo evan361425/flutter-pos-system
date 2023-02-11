@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 /// Want to build your own theme?
 /// https://github.com/rxlabz/panache
 class AppThemes {
-  static final ThemeData lightTheme = ThemeData()
-    ..setGradientColors(const [
-      Colors.indigo,
-      Colors.blue,
-      Colors.green,
+  static final ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+    colorSchemeSeed: const Color(0xFF448AFF),
+  )..setGradientColors(const [
+      // Plum Plate
+      Color(0xFF6FD6FF),
+      Color(0xFFBFF098),
     ]);
 
-  static final ThemeData darkTheme = ThemeData.dark()
+  static final ThemeData darkTheme = ThemeData.dark(useMaterial3: true)
     ..setGradientColors(const [
       Color(0xFF1F1B24),
       Color(0xFF2e2356),

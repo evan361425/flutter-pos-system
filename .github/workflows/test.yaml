@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !startsWith(github.head_ref , 'refs/heads/ci/') }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Setup the flutter environment.
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.x"
+          flutter-version: "3.7.1"
           cache: true
           channel: "stable"
 
@@ -47,11 +47,11 @@ jobs:
       # Run widget tests for our flutter project.
       - name: Testing
         if: github.event_name == 'pull_request'
-        run: flutter test --no-pub --no-test-assets
+        run: flutter test
 
       - name: Testing with Coverage
         if: github.event_name != 'pull_request'
-        run: flutter test --coverage --no-pub --no-test-assets
+        run: flutter test --coverage
 
       - name: Coverage to codecov
         if: github.event_name != 'pull_request'

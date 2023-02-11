@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/radio_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -243,17 +242,18 @@ void main() {
         verifyProductList(1, selected: false);
         expect(
             tester
-                .widget<RadioText>(find.byKey(const Key('order.quantity.pq-2')))
-                .isSelected,
+                .widget<ChoiceChip>(
+                    find.byKey(const Key('order.quantity.pq-2')))
+                .selected,
             isTrue);
 
         await tester.tap(find.byKey(const Key('order.ingredient.pi-2')));
         await tester.pumpAndSettle();
         expect(
             tester
-                .widget<RadioText>(
+                .widget<ChoiceChip>(
                     find.byKey(const Key('order.quantity.default')))
-                .isSelected,
+                .selected,
             isTrue);
 
         // select all, toggle all
@@ -420,8 +420,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         tester
-            .widget<RadioText>(find.byKey(const Key('order.ingredient.pi-3')))
-            .isSelected,
+            .widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')))
+            .selected,
         isTrue,
       );
     });

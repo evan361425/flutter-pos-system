@@ -128,7 +128,7 @@ class _ProductTile extends StatelessWidget {
       if (data.totalCost != null)
         S.orderCashierProductMetaCost(data.totalCost!),
       if (data.product != null) '產品種類：${data.product!.catalog.name}',
-      '成分：',
+      if (data.ingredientNames.isNotEmpty) '成分：',
     ];
     return ExpansionTile(
       title: Text(data.productName),

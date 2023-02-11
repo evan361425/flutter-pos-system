@@ -64,8 +64,12 @@ class IngredientObject extends ModelObject<Ingredient> {
     }
 
     if (result.isNotEmpty) {
-      model.updatedAt = DateTime.now();
-      result['$prefix.updatedAt'] = model.updatedAt.toString();
+      // should not only change currentAmount
+      if (!(result.length == 1 &&
+          result.containsKey('$prefix.currentAmount'))) {
+        model.updatedAt = DateTime.now();
+        result['$prefix.updatedAt'] = model.updatedAt.toString();
+      }
     }
 
     return result;

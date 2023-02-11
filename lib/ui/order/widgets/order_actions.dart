@@ -58,8 +58,9 @@ class OrderActions extends StatelessWidget {
           context,
           actions: actions,
         );
-        // ignore: use_build_context_synchronously
-        await exec(context, result);
+        if (context.mounted) {
+          await exec(context, result);
+        }
       },
       enableFeedback: true,
       icon: const Icon(KIcons.more),
@@ -71,37 +72,43 @@ class OrderActions extends StatelessWidget {
       case OrderActionMode.leaveHistory:
         return Cart.instance.clear();
       case OrderActionMode.showLast:
-        if (!await _confirmStashable(context)) return;
+        final f = _confirmAbleToStash(context);
+        if (!await f) return;
 
         if (!await Cart.instance.stash()) {
-          return showInfoSnackbar(context, S.orderActionsStashHitLimit);
+          if (context.mounted) {
+            showInfoSnackbar(context, S.orderActionsStashHitLimit);
+          }
+          return;
         }
 
         final success = await Cart.instance.popHistory();
-        success
-            // ignore: use_build_context_synchronously
-            ? showSuccessSnackbar(context, S.actSuccess)
-            // ignore: use_build_context_synchronously
-            : showInfoSnackbar(context, S.orderActionsShowLastOrderNotFound);
+        if (context.mounted) {
+          success
+              ? showSuccessSnackbar(context, S.actSuccess)
+              : showInfoSnackbar(context, S.orderActionsShowLastOrderNotFound);
+        }
         return;
       case OrderActionMode.dropStash:
-        if (!await _confirmStashable(context)) return;
+        final f = _confirmAbleToStash(context);
+        if (!await f) return;
 
         final isEmpty = Cart.instance.isEmpty;
 
         if (!await Cart.instance.stash()) {
-          return showInfoSnackbar(
-            context,
-            S.orderActionsStashHitLimit,
-          );
+          if (context.mounted) {
+            showInfoSnackbar(context, S.orderActionsStashHitLimit);
+          }
+          return;
         }
 
         final success = await Cart.instance.drop(isEmpty ? 1 : 2);
-        return success
-            // ignore: use_build_context_synchronously
-            ? showSuccessSnackbar(context, S.actSuccess)
-            // ignore: use_build_context_synchronously
-            : showInfoSnackbar(context, S.orderActionsDropStashNotFound);
+        if (context.mounted) {
+          success
+              ? showSuccessSnackbar(context, S.actSuccess)
+              : showInfoSnackbar(context, S.orderActionsDropStashNotFound);
+        }
+        return;
       case OrderActionMode.stash:
         if (Cart.instance.isEmpty) return;
 
@@ -113,8 +120,9 @@ class OrderActions extends StatelessWidget {
             await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
         if (success == true) {
-          // ignore: use_build_context_synchronously
-          showSuccessSnackbar(context, S.actSuccess);
+          if (context.mounted) {
+            showSuccessSnackbar(context, S.actSuccess);
+          }
         }
         return;
       default:
@@ -122,7 +130,7 @@ class OrderActions extends StatelessWidget {
     }
   }
 
-  Future<bool> _confirmStashable(BuildContext context) async {
+  Future<bool> _confirmAbleToStash(BuildContext context) async {
     if (Cart.instance.isEmpty) return true;
 
     final result = await showDialog(

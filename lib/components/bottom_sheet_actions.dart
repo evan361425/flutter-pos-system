@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
@@ -8,24 +6,23 @@ import 'dialog/delete_dialog.dart';
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
-  List<BottomSheetAction>? actions,
+  required List<BottomSheetAction> actions,
   bool useRootNavigator = true,
-  WidgetBuilder? builder,
 }) {
-  assert(actions != null || builder != null);
-
   Feedback.forLongPress(context);
+  final size = MediaQuery.of(context).size;
 
-  return showMaterialModalBottomSheet<T>(
+  return showModalBottomSheet<T>(
     context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20),
-      ),
-    ),
-    clipBehavior: Clip.antiAliasWithSaveLayer,
     useRootNavigator: useRootNavigator,
-    builder: builder ?? (_) => BottomSheetActions(actions: actions!),
+    clipBehavior: Clip.hardEdge,
+    constraints: BoxConstraints(maxWidth: size.width - 24),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    useSafeArea: true,
+    isScrollControlled: true,
+    builder: (context) => SingleChildScrollView(
+      child: BottomSheetActions(actions: actions),
+    ),
   );
 }
 
@@ -74,16 +71,11 @@ class BottomSheetActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          _title(context),
-          ...[for (final action in actions) action.toWidget(context)],
-          _cancelAction(context),
-        ]),
-      ),
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      _heading(context),
+      ...[for (final action in actions) action.toWidget(context)],
+      _cancelAction(context),
+    ]);
   }
 
   Widget _cancelAction(BuildContext context) {
@@ -94,10 +86,15 @@ class BottomSheetActions extends StatelessWidget {
     );
   }
 
-  Widget _title(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kSpacing0),
-      child: Center(child: Text(S.bottomSheetActionsTitle)),
+  Widget _heading(BuildContext context) {
+    return Container(
+      height: 4.0,
+      width: 36.0,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceTint,
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      ),
     );
   }
 
@@ -123,20 +120,21 @@ class BottomSheetActions extends StatelessWidget {
         title: Text(S.btnDelete),
         leading: Icon(
           KIcons.delete,
-          color: Theme.of(context).errorColor,
+          color: Theme.of(context).colorScheme.error,
         ),
         returnValue: deleteValue,
       ),
     ]);
 
     if (result == deleteValue) {
-      // ignore: use_build_context_synchronously
-      await DeleteDialog.show(
-        context,
-        deleteCallback: deleteCallback,
-        warningContent: warningContent,
-        popAfterDeleted: popAfterDeleted,
-      );
+      if (context.mounted) {
+        await DeleteDialog.show(
+          context,
+          deleteCallback: deleteCallback,
+          warningContent: warningContent,
+          popAfterDeleted: popAfterDeleted,
+        );
+      }
 
       return null;
     }

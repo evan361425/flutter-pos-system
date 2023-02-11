@@ -15,7 +15,7 @@ class OrderAttributePreviewer extends PreviewerScreen<OrderAttribute> {
 
   @override
   Widget getItem(BuildContext context, OrderAttribute item) {
-    final mode = S.orderAttributeModeNames(item.mode);
+    final mode = S.orderAttributeModeNames(item.mode.name);
     final defaultName =
         item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(

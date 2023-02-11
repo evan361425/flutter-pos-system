@@ -27,6 +27,7 @@ class OrderProduct extends ChangeNotifier {
         selectedQuantity = selectedQuantity ??
             {for (final ingredient in product.items) ingredient.id: null};
 
+  /// Enter the order page again the source might changed from other pages.
   void rebind() {
     // check missing
     for (final ingredient in product.items) {
@@ -127,6 +128,7 @@ class OrderProduct extends ChangeNotifier {
     return OrderProductObject(
       productId: product.id,
       productName: product.name,
+      catalogName: product.catalog.name,
       count: count,
       cost: cost,
       singlePrice: singlePrice,

@@ -126,8 +126,9 @@ class CartActions extends StatelessWidget {
     );
 
     if (type != null) {
-      // ignore: use_build_context_synchronously
-      actionHandler(context, type);
+      if (context.mounted) {
+        actionHandler(context, type);
+      }
     }
   }
 }

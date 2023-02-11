@@ -8,10 +8,7 @@ import 'widgets/calendar_wrapper.dart';
 class AnalysisScreen extends StatefulWidget {
   final TutorialInTab? tab;
 
-  const AnalysisScreen({
-    Key? key,
-    this.tab,
-  }) : super(key: key);
+  const AnalysisScreen({Key? key, this.tab}) : super(key: key);
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -19,6 +16,7 @@ class AnalysisScreen extends StatefulWidget {
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
   final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
+  final ant = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +32,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   Widget _buildCalendar({required bool isPortrait}) {
     return Tutorial(
+      ant: ant,
+      startNow: false,
       id: 'analysis.calendar',
       title: '日曆格式',
       message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
-      tab: widget.tab,
       shape: TutorialShape.rect,
-      paddingSize: 0,
-      targets: const [Tutorial.self],
+      ants: [ant],
       child: CalendarWrapper(
         isPortrait: isPortrait,
         handleDaySelected: _handleDaySelected,
@@ -94,6 +92,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         DateTime(day.year, day.month).subtract(const Duration(days: 7));
 
     return Seller.instance.getCountBetween(start, end);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.tab?.bindAnt(ant, startNow: true);
   }
 }
 
