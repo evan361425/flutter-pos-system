@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/validator.dart';
 
@@ -6,12 +7,14 @@ import '../test_helpers/translator.dart';
 void main() {
   group('Validator', () {
     test('#positiveNumber', () {
-      final validator = Validator.positiveNumber('test');
+      final fn = MyFocusNode();
+      final validator = Validator.positiveNumber('test', focusNode: fn);
 
       expect(validator(null), isNotNull);
       expect(validator('abc'), isNotNull);
       expect(validator('-1.1'), isNotNull);
       expect(validator('1.2'), isNull);
+      expect(fn.focusCounter, equals(3));
 
       final maximum = Validator.positiveNumber('test', maximum: 5);
       expect(maximum('6.1'), isNotNull);
@@ -19,7 +22,8 @@ void main() {
     });
 
     test('#positiveInt', () {
-      final validator = Validator.positiveInt('test');
+      final fn = MyFocusNode();
+      final validator = Validator.positiveInt('test', focusNode: fn);
 
       expect(validator(null), isNotNull);
       expect(validator('abc'), isNotNull);
@@ -27,6 +31,7 @@ void main() {
       expect(validator('-1.1'), isNotNull);
       expect(validator('1.2'), isNotNull);
       expect(validator('1'), isNull);
+      expect(fn.focusCounter, equals(5));
 
       final maximum = Validator.positiveInt('test', maximum: 5, minimum: 3);
       expect(maximum('6.1'), isNotNull);
@@ -36,12 +41,14 @@ void main() {
     });
 
     test('#isNumber', () {
-      final validator = Validator.isNumber('test');
+      final fn = MyFocusNode();
+      final validator = Validator.isNumber('test', focusNode: fn);
 
       expect(validator(null), isNotNull);
       expect(validator('abc'), isNotNull);
       expect(validator('-1.1'), isNull);
       expect(validator('1.2'), isNull);
+      expect(fn.focusCounter, equals(2));
     });
 
     test('#textLimit', () {
@@ -62,4 +69,13 @@ void main() {
       initializeTranslator();
     });
   });
+}
+
+class MyFocusNode extends FocusNode {
+  int focusCounter = 0;
+
+  @override
+  void requestFocus([FocusNode? node]) {
+    focusCounter++;
+  }
 }

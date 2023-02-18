@@ -35,6 +35,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   late TextEditingController _amountController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
+  late FocusNode _amountFocusNode;
+  late FocusNode _priceFocusNode;
+  late FocusNode _costFocusNode;
 
   String quantityName = '';
   String quantityId = '';
@@ -44,22 +47,15 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
       Text(widget.isNew ? S.menuQuantityCreate : widget.quantity!.name);
 
   @override
-  void dispose() {
-    _amountController.dispose();
-    _priceController.dispose();
-    _costController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     return [
       SearchBarInline(
         key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: S.menuQuantitySearchLabel,
         hintText: S.menuQuantitySearchHint,
-        errorText: errorMessage,
+        autofocus: widget.isNew,
+        validator: _validateQuantity,
         helperText: S.menuQuantitySearchHelper,
         onTap: _selectQuantity,
       ),
@@ -68,17 +64,22 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         controller: _amountController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
+        focusNode: _amountFocusNode,
         decoration: InputDecoration(
           labelText: S.menuQuantityAmountLabel,
           filled: false,
         ),
-        validator: Validator.positiveNumber(S.menuQuantityAmountLabel),
+        validator: Validator.positiveNumber(
+          S.menuQuantityAmountLabel,
+          focusNode: _amountFocusNode,
+        ),
       ),
       TextFormField(
         key: const Key('product_quantity.price'),
         controller: _priceController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,
+        focusNode: _priceFocusNode,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.loyalty_sharp),
           labelText: S.menuQuantityAdditionalPriceLabel,
@@ -86,13 +87,17 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber(S.menuQuantityAdditionalPriceLabel),
+        validator: Validator.isNumber(
+          S.menuQuantityAdditionalPriceLabel,
+          focusNode: _priceFocusNode,
+        ),
       ),
       TextFormField(
         key: const Key('product_quantity.cost'),
         controller: _costController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
+        focusNode: _costFocusNode,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.attach_money_sharp),
@@ -101,7 +106,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.isNumber(S.menuQuantityAdditionalCostLabel),
+        validator: Validator.isNumber(
+          S.menuQuantityAdditionalCostLabel,
+          focusNode: _costFocusNode,
+        ),
       )
     ];
   }
@@ -117,11 +125,25 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         TextEditingController(text: q?.additionalPrice.toString() ?? '0');
     _costController =
         TextEditingController(text: q?.additionalCost.toString() ?? '0');
+    _amountFocusNode = FocusNode();
+    _priceFocusNode = FocusNode();
+    _costFocusNode = FocusNode();
 
     if (q != null) {
       quantityId = q.quantity.id;
       quantityName = q.name;
     }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _priceController.dispose();
+    _costController.dispose();
+    _amountFocusNode.dispose();
+    _priceFocusNode.dispose();
+    _costFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -144,19 +166,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     }
   }
 
-  @override
-  String? validate() {
-    if (quantityId.isEmpty) {
-      return S.menuQuantitySearchEmptyError;
-    }
-    if (widget.quantity?.quantity.id != quantityId &&
-        widget.ingredient.hasQuantity(quantityId)) {
-      return S.menuQuantityRepeatError;
-    }
-
-    return null;
-  }
-
   ProductQuantityObject _parseObject() {
     return ProductQuantityObject(
       quantityId: quantityId,
@@ -173,12 +182,23 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
 
     if (result is Quantity) {
       setState(() {
-        errorMessage = null;
         quantityId = result.id;
         quantityName = result.name;
         _updateByProportion(result.defaultProportion);
       });
     }
+  }
+
+  String? _validateQuantity(String? name) {
+    if (quantityId.isEmpty) {
+      return S.menuQuantitySearchEmptyError;
+    }
+    if (widget.quantity?.quantity.id != quantityId &&
+        widget.ingredient.hasQuantity(quantityId)) {
+      return S.menuQuantityRepeatError;
+    }
+
+    return null;
   }
 
   void _updateByProportion(num proportion) {

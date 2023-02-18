@@ -29,25 +29,44 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   final List<Ingredient> ingredients = Stock.instance.itemList;
 
   late TextEditingController _nameController;
+  late FocusNode _nameFocusNode;
 
   @override
-  Widget body() => form(formFields());
+  Widget buildBody() => buildForm(buildFormFields());
 
   @override
-  void dispose() {
-    _nameController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     final textTheme = Theme.of(context).textTheme;
 
     return <Widget>[
       Padding(
         padding: const EdgeInsets.all(kSpacing3),
-        child: _fieldName(textTheme),
+        child: TextFormField(
+          key: const Key('replenishment.name'),
+          controller: _nameController,
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.words,
+          focusNode: _nameFocusNode,
+          decoration: InputDecoration(
+            labelText: S.stockReplenishmentNameLabel,
+            hintText: S.stockReplenishmentNameHint,
+            filled: false,
+          ),
+          style: textTheme.titleLarge,
+          autofocus: widget.isNew,
+          maxLength: 30,
+          validator: Validator.textLimit(
+            S.stockReplenishmentNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.replenishment?.name != name &&
+                      Replenisher.instance.hasName(name)
+                  ? S.stockReplenishmentNameRepeatError
+                  : null;
+            },
+          ),
+        ),
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: kSpacing1),
@@ -57,7 +76,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
           child: ListView.builder(
-            itemBuilder: (_, index) => _fieldIngredient(ingredients[index]),
+            itemBuilder: (_, i) => _buildIngredientField(ingredients[i]),
             itemCount: Stock.instance.length,
           ),
         ),
@@ -70,6 +89,15 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
     super.initState();
 
     _nameController = TextEditingController(text: widget.replenishment?.name);
+    _nameFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nameFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -90,19 +118,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
     }
   }
 
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.replenishment?.name != name &&
-        Replenisher.instance.hasName(name)) {
-      return S.stockReplenishmentNameRepeatError;
-    }
-
-    return null;
-  }
-
-  Widget _fieldIngredient(Ingredient ingredient) {
+  Widget _buildIngredientField(Ingredient ingredient) {
     return TextFormField(
       key: Key('replenishment.ingredients.${ingredient.id}'),
       onSaved: (String? value) {
@@ -116,27 +132,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: ingredient.name,
-        hintText: S.stockReplenishmentNameHint,
+        hintText: S.stockReplenishmentIngredientAmountHint,
       ),
-    );
-  }
-
-  Widget _fieldName(TextTheme textTheme) {
-    return TextFormField(
-      key: const Key('replenishment.name'),
-      controller: _nameController,
-      textInputAction: TextInputAction.done,
-      textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        labelText: S.stockReplenishmentNameLabel,
-        hintText: S.stockReplenishmentNameHint,
-        errorText: errorMessage,
-        filled: false,
-      ),
-      style: textTheme.titleLarge,
-      autofocus: widget.isNew,
-      maxLength: 30,
-      validator: Validator.textLimit(S.stockReplenishmentNameLabel, 30),
     );
   }
 

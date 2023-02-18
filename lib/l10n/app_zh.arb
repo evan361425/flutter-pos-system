@@ -545,7 +545,7 @@
   "@stockReplenishmentApplyConfirmContent": {
     "description": "套用採購時的確認內文第一行"
   },
-  "stockReplenishmentIngredientListTitle": "點選以設定不同成分欲設定的量",
+  "stockReplenishmentIngredientListTitle": "點選以設定不同成分欲採購的量",
   "@stockReplenishmentIngredientListTitle": {
     "description": "設定採購時成分列表的標題"
   },

@@ -8,12 +8,10 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   bool isSaving = false;
 
-  String? errorMessage;
-
   Widget? get title => null;
 
-  Widget body() {
-    final fields = formFields()
+  Widget buildBody() {
+    final fields = buildFormFields()
         .expand((field) => [field, const SizedBox(height: kSpacing2)])
         .toList();
     fields.removeLast();
@@ -21,7 +19,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kSpacing3),
-        child: Center(child: form(fields)),
+        child: Center(child: buildForm(fields)),
       ),
     );
   }
@@ -40,11 +38,11 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
           ),
         ],
       ),
-      body: body(),
+      body: buildBody(),
     );
   }
 
-  Widget form(List<Widget> fields) {
+  Widget buildForm(List<Widget> fields) {
     return Form(
       key: formKey,
       child: Column(
@@ -54,31 +52,24 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   }
 
   /// Fields in form
-  List<Widget> formFields();
+  List<Widget> buildFormFields();
 
   /// Handle user submission
   Future<void> handleSubmit() async {
-    if (!_validate()) return;
+    if (isSaving || !_validate()) return;
 
     await updateItem();
   }
 
   Future<void> updateItem();
 
-  String? validate();
-
   bool _validate() {
-    if (isSaving || !formKey.currentState!.validate()) return false;
-
-    final error = validate();
-    if (error != null) {
-      setState(() => errorMessage = error);
+    if (formKey.currentState?.validate() != true) {
       return false;
     }
 
     setState(() {
       isSaving = true;
-      errorMessage = null;
     });
 
     return true;

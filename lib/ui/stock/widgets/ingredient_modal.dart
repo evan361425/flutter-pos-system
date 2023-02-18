@@ -33,9 +33,12 @@ class _IngredientModalState extends State<IngredientModal>
   late TextEditingController _nameController;
   late TextEditingController _amountController;
   late TextEditingController _totalAmountController;
+  late FocusNode _nameFocusNode;
+  late FocusNode _amountFocusNode;
+  late FocusNode _totalAmountFocusNode;
 
   @override
-  Widget body() {
+  Widget buildBody() {
     final ingredients = widget.isNew
         ? const <ProductIngredient>[]
         : Menu.instance.getIngredients(widget.ingredient!.id);
@@ -47,7 +50,7 @@ class _IngredientModalState extends State<IngredientModal>
         itemBuilder: (context, index) {
           switch (index) {
             case 0:
-              return super.body();
+              return super.buildBody();
             case 1:
               return Padding(
                 padding: const EdgeInsets.only(bottom: kSpacing2),
@@ -72,35 +75,38 @@ class _IngredientModalState extends State<IngredientModal>
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _amountController.dispose();
-    _totalAmountController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() => <Widget>[
+  List<Widget> buildFormFields() => <Widget>[
         TextFormField(
           key: const Key('stock.ingredient.name'),
           controller: _nameController,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
+          focusNode: _nameFocusNode,
           decoration: InputDecoration(
             labelText: S.stockIngredientNameLabel,
             hintText: S.stockIngredientNameHint,
-            errorText: errorMessage,
             filled: false,
           ),
           autofocus: widget.isNew,
           maxLength: 30,
-          validator: Validator.textLimit(S.stockIngredientNameLabel, 30),
+          validator: Validator.textLimit(
+            S.stockIngredientNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.ingredient?.name != name &&
+                      Stock.instance.hasName(name)
+                  ? S.stockIngredientNameRepeatError
+                  : null;
+            },
+          ),
         ),
         TextFormField(
           key: const Key('stock.ingredient.amount'),
           controller: _amountController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
+          focusNode: _amountFocusNode,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountLabel,
             filled: false,
@@ -108,6 +114,7 @@ class _IngredientModalState extends State<IngredientModal>
           validator: Validator.positiveNumber(
             S.stockIngredientAmountLabel,
             allowNull: true,
+            focusNode: _amountFocusNode,
           ),
         ),
         TextFormField(
@@ -115,6 +122,7 @@ class _IngredientModalState extends State<IngredientModal>
           controller: _totalAmountController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
+          focusNode: _totalAmountFocusNode,
           decoration: InputDecoration(
             labelText: S.stockIngredientTotalAmountLabel,
             helperText: S.stockIngredientTotalAmountHelper,
@@ -124,6 +132,7 @@ class _IngredientModalState extends State<IngredientModal>
           validator: Validator.positiveNumber(
             S.stockIngredientTotalAmountLabel,
             allowNull: true,
+            focusNode: _totalAmountFocusNode,
           ),
         ),
       ];
@@ -137,6 +146,21 @@ class _IngredientModalState extends State<IngredientModal>
     final totalAmount = widget.ingredient?.totalAmount?.toString() ?? '';
     _amountController = TextEditingController(text: amount);
     _totalAmountController = TextEditingController(text: totalAmount);
+
+    _nameFocusNode = FocusNode();
+    _amountFocusNode = FocusNode();
+    _totalAmountFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _amountController.dispose();
+    _totalAmountController.dispose();
+    _nameFocusNode.dispose();
+    _amountFocusNode.dispose();
+    _totalAmountFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,17 +180,6 @@ class _IngredientModalState extends State<IngredientModal>
     if (mounted) {
       Navigator.of(context).pop();
     }
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.ingredient?.name != name && Stock.instance.hasName(name)) {
-      return S.stockIngredientNameRepeatError;
-    }
-
-    return null;
   }
 
   void _handleTap(Product product) {
