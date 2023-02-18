@@ -33,6 +33,7 @@ class ProductIngredientModal extends StatefulWidget {
 class _ProductIngredientModalState extends State<ProductIngredientModal>
     with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
+  late FocusNode _amountFocusNode;
 
   String ingredientId = '';
   String ingredientName = '';
@@ -42,20 +43,15 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       Text(widget.isNew ? S.menuIngredientCreate : widget.ingredient!.name);
 
   @override
-  void dispose() {
-    _amountController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     return [
       SearchBarInline(
         key: const Key('product_ingredient.search'),
         text: ingredientName,
         labelText: S.menuIngredientSearchLabel,
         hintText: S.menuIngredientSearchHint,
-        errorText: errorMessage,
+        autofocus: widget.isNew,
+        validator: _validateIngredient,
         helperText: S.menuIngredientSearchHelper,
         onTap: _selectIngredient,
       ),
@@ -65,13 +61,17 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         textInputAction: TextInputAction.done,
         onFieldSubmitted: (_) => handleSubmit(),
         keyboardType: TextInputType.number,
+        focusNode: _amountFocusNode,
         decoration: InputDecoration(
           labelText: S.menuIngredientAmountLabel,
           helperText: S.menuIngredientAmountHelper,
           helperMaxLines: 10,
           filled: false,
         ),
-        validator: Validator.positiveNumber(S.menuIngredientAmountLabel),
+        validator: Validator.positiveNumber(
+          S.menuIngredientAmountLabel,
+          focusNode: _amountFocusNode,
+        ),
       ),
     ];
   }
@@ -83,10 +83,19 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     final i = widget.ingredient;
 
     _amountController = TextEditingController(text: i?.amount.toString());
+    _amountFocusNode = FocusNode();
+
     if (i != null) {
       ingredientId = i.ingredient.id;
       ingredientName = i.name;
     }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _amountFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -107,19 +116,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     }
   }
 
-  @override
-  String? validate() {
-    if (ingredientId.isEmpty) {
-      return S.menuIngredientSearchEmptyError;
-    }
-    if (widget.ingredient?.ingredient.id != ingredientId &&
-        widget.product.hasIngredient(ingredientId)) {
-      return S.menuIngredientRepeatError;
-    }
-
-    return null;
-  }
-
   ProductIngredientObject _parseObject() {
     return ProductIngredientObject(
       ingredientId: ingredientId,
@@ -136,11 +132,23 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       final ingredient = result;
 
       setState(() {
-        errorMessage = null;
         ingredientId = ingredient.id;
         ingredientName = ingredient.name;
       });
     }
+  }
+
+  String? _validateIngredient(String? name) {
+    if (ingredientId.isEmpty) {
+      return S.menuIngredientSearchEmptyError;
+    }
+
+    if (widget.ingredient?.ingredient.id != ingredientId &&
+        widget.product.hasIngredient(ingredientId)) {
+      return S.menuIngredientRepeatError;
+    }
+
+    return null;
   }
 }
 

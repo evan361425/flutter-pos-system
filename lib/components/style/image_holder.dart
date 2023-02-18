@@ -7,9 +7,12 @@ class ImageHolder extends StatelessWidget {
 
   final void Function(String) onSelected;
 
+  final FocusNode? focusNode;
+
   const ImageHolder({
     Key? key,
     this.path,
+    this.focusNode,
     required this.onSelected,
   }) : super(key: key);
 
@@ -20,9 +23,10 @@ class ImageHolder extends StatelessWidget {
         ? const AssetImage("assets/food_placeholder.png")
         : FileImage(XFile(path!).file);
 
-    return GestureDetector(
+    return InkWell(
       key: const Key('modal.edit_image'),
       onTap: onTap,
+      focusNode: focusNode,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [

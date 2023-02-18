@@ -30,7 +30,9 @@ class OrderAttributeOptionModal extends StatefulWidget {
 class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
     with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
-  late TextEditingController _modeValueController;
+  late TextEditingController _valueController;
+  late FocusNode _nameFocusNode;
+  late FocusNode _valueFocusNode;
   late bool isDefault;
 
   @override
@@ -39,36 +41,23 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
       : widget.option!.name);
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _modeValueController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    _nameController = TextEditingController(text: widget.option?.name);
-    _modeValueController = TextEditingController(
-      text: widget.option?.modeValue == null
-          ? ''
-          : widget.attribute.mode == OrderAttributeMode.changeDiscount
-              ? widget.option!.modeValue!.toInt().toString()
-              : widget.option!.modeValue!.toCurrency(),
-    );
-    isDefault = widget.option?.isDefault ?? false;
-
-    super.initState();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     final label = S.orderAttributeModeNames(widget.attribute.mode.name);
     final helper =
         S.orderAttributeOptionsModeHelper(widget.attribute.mode.name);
     final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode.name);
     final validator = widget.attribute.mode == OrderAttributeMode.changeDiscount
-        ? Validator.positiveInt(label, maximum: 1000, allowNull: true)
-        : Validator.isNumber(label, allowNull: true);
+        ? Validator.positiveInt(
+            label,
+            maximum: 1000,
+            allowNull: true,
+            focusNode: _valueFocusNode,
+          )
+        : Validator.isNumber(
+            label,
+            allowNull: true,
+            focusNode: _valueFocusNode,
+          );
 
     return [
       TextFormField(
@@ -79,29 +68,39 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
             : TextInputAction.send,
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
+        focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.orderAttributeOptionNameLabel,
           helperText: S.orderAttributeOptionNameHelper,
-          errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(S.orderAttributeOptionNameLabel, 30),
+        validator: Validator.textLimit(
+          S.orderAttributeOptionNameLabel,
+          30,
+          focusNode: _nameFocusNode,
+          validator: (name) {
+            return widget.option?.name != name && widget.attribute.hasName(name)
+                ? S.orderAttributeOptionNameRepeatError
+                : null;
+          },
+        ),
       ),
       CheckboxListTile(
         key: const Key('order_attribute_option.isDefault'),
         controlAffinity: ListTileControlAffinity.leading,
         value: isDefault,
         selected: isDefault,
-        onChanged: toggledDefault,
+        onChanged: _toggledDefault,
         title: Text(S.orderAttributeOptionSetToDefault),
       ),
       widget.attribute.shouldHaveModeValue
           ? TextFormField(
               key: const Key('order_attribute_option.modeValue'),
-              controller: _modeValueController,
+              controller: _valueController,
               textInputAction: TextInputAction.send,
               keyboardType: TextInputType.number,
+              focusNode: _valueFocusNode,
               decoration: InputDecoration(
                 labelText: label,
                 helperText: helper,
@@ -115,34 +114,38 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
     ];
   }
 
-  void toggledDefault(bool? value) async {
-    final defaultOption = widget.attribute.defaultOption;
-    // warn if default option is going to changed
-    if (value == true &&
-        defaultOption != null &&
-        defaultOption.id != widget.option?.id) {
-      final confirmed = await showDialog(
-        context: context,
-        builder: (_) => ConfirmDialog(
-          title: S.orderAttributeOptionConfirmChangeDefaultTitle,
-          content: Text(S.orderAttributeOptionConfirmChangeDefaultContent(
-              defaultOption.name)),
-        ),
-      );
+  @override
+  void initState() {
+    _nameController = TextEditingController(text: widget.option?.name);
+    _valueController = TextEditingController(
+      text: widget.option?.modeValue == null
+          ? ''
+          : widget.attribute.mode == OrderAttributeMode.changeDiscount
+              ? widget.option!.modeValue!.toInt().toString()
+              : widget.option!.modeValue!.toCurrency(),
+    );
+    _nameFocusNode = FocusNode();
+    _valueFocusNode = FocusNode();
 
-      if (confirmed == true) {
-        setState(() => isDefault = value!);
-      }
-    } else {
-      setState(() => isDefault = value!);
-    }
+    isDefault = widget.option?.isDefault ?? false;
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _valueController.dispose();
+    _nameFocusNode.dispose();
+    _valueFocusNode.dispose();
+    super.dispose();
   }
 
   @override
   Future<void> updateItem() async {
     final object = OrderAttributeOptionObject(
       name: _nameController.text,
-      modeValue: num.tryParse(_modeValueController.text),
+      modeValue: num.tryParse(_valueController.text),
       isDefault: isDefault,
     );
 
@@ -167,14 +170,26 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
     }
   }
 
-  @override
-  String? validate() {
-    final name = _nameController.text;
+  void _toggledDefault(bool? value) async {
+    final defaultOption = widget.attribute.defaultOption;
+    // warn if default option is going to changed
+    if (value == true &&
+        defaultOption != null &&
+        defaultOption.id != widget.option?.id) {
+      final confirmed = await showDialog(
+        context: context,
+        builder: (_) => ConfirmDialog(
+          title: S.orderAttributeOptionConfirmChangeDefaultTitle,
+          content: Text(S.orderAttributeOptionConfirmChangeDefaultContent(
+              defaultOption.name)),
+        ),
+      );
 
-    if (widget.option?.name != name && widget.attribute.hasName(name)) {
-      return S.orderAttributeOptionNameRepeatError;
+      if (confirmed == true) {
+        setState(() => isDefault = value!);
+      }
+    } else {
+      setState(() => isDefault = value!);
     }
-
-    return null;
   }
 }

@@ -20,21 +20,102 @@ class OrderAttributeModal extends StatefulWidget {
   State<OrderAttributeModal> createState() => _OrderAttributeModalState();
 }
 
-class _ModalModes extends StatefulWidget {
+class _OrderAttributeModalState extends State<OrderAttributeModal>
+    with ItemModal<OrderAttributeModal> {
+  late TextEditingController _nameController;
+  late FocusNode _nameFocusNode;
+
+  late GlobalKey<_ModeSelectorState> modesKey;
+
+  @override
+  List<Widget> buildFormFields() {
+    return [
+      TextFormField(
+        key: const Key('order_attribute.name'),
+        controller: _nameController,
+        textInputAction: TextInputAction.send,
+        textCapitalization: TextCapitalization.words,
+        autofocus: widget.isNew,
+        decoration: InputDecoration(
+          labelText: S.orderAttributeNameLabel,
+          hintText: S.orderAttributeNameHint,
+          filled: false,
+        ),
+        onFieldSubmitted: (_) => handleSubmit(),
+        maxLength: 30,
+        validator: Validator.textLimit(
+          S.orderAttributeNameLabel,
+          30,
+          focusNode: _nameFocusNode,
+          validator: (name) {
+            return widget.attribute?.name != name &&
+                    OrderAttributes.instance.hasName(name)
+                ? S.orderAttributeNameRepeatError
+                : null;
+          },
+        ),
+      ),
+      TextDivider(label: S.orderAttributeModeTitle),
+      _ModeSelector(
+        key: modesKey,
+        selectedMode:
+            widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
+      ),
+    ];
+  }
+
+  @override
+  void initState() {
+    _nameController = TextEditingController(text: widget.attribute?.name);
+    _nameFocusNode = FocusNode();
+    modesKey = GlobalKey<_ModeSelectorState>();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nameFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Future<void> updateItem() async {
+    final object = OrderAttributeObject(
+      name: _nameController.text,
+      mode: modesKey.currentState?.selectedMode ?? OrderAttributeMode.statOnly,
+    );
+
+    if (widget.isNew) {
+      await OrderAttributes.instance.addItem(OrderAttribute(
+        name: object.name!,
+        mode: object.mode!,
+        index: OrderAttributes.instance.newIndex,
+      ));
+    } else {
+      await widget.attribute!.update(object);
+    }
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+}
+
+class _ModeSelector extends StatefulWidget {
   final OrderAttributeMode selectedMode;
 
-  const _ModalModes({
+  const _ModeSelector({
     Key? key,
     required this.selectedMode,
   }) : super(key: key);
 
   @override
-  OrderAttributeModalModesState createState() =>
-      OrderAttributeModalModesState();
+  State<_ModeSelector> createState() => _ModeSelectorState();
 }
 
-class OrderAttributeModalModesState extends State<_ModalModes>
-    with TickerProviderStateMixin {
+class _ModeSelectorState extends State<_ModeSelector> {
   late OrderAttributeMode selectedMode;
 
   @override
@@ -63,88 +144,5 @@ class OrderAttributeModalModesState extends State<_ModalModes>
   void initState() {
     selectedMode = widget.selectedMode;
     super.initState();
-  }
-}
-
-class _OrderAttributeModalState extends State<OrderAttributeModal>
-    with ItemModal<OrderAttributeModal> {
-  late TextEditingController _nameController;
-
-  late GlobalKey<OrderAttributeModalModesState> modesKey;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
-    return [
-      TextFormField(
-        key: const Key('order_attribute.name'),
-        controller: _nameController,
-        textInputAction: TextInputAction.send,
-        textCapitalization: TextCapitalization.words,
-        autofocus: widget.isNew,
-        decoration: InputDecoration(
-          labelText: S.orderAttributeNameLabel,
-          hintText: S.orderAttributeNameHint,
-          errorText: errorMessage,
-          filled: false,
-        ),
-        onFieldSubmitted: (_) => handleSubmit(),
-        maxLength: 30,
-        validator: Validator.textLimit(S.orderAttributeNameLabel, 30),
-      ),
-      TextDivider(label: S.orderAttributeModeTitle),
-      _ModalModes(
-        key: modesKey,
-        selectedMode:
-            widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
-      ),
-    ];
-  }
-
-  @override
-  void initState() {
-    _nameController = TextEditingController(text: widget.attribute?.name);
-    modesKey = GlobalKey<OrderAttributeModalModesState>();
-
-    super.initState();
-  }
-
-  @override
-  Future<void> updateItem() async {
-    final object = OrderAttributeObject(
-      name: _nameController.text,
-      mode: modesKey.currentState?.selectedMode ?? OrderAttributeMode.statOnly,
-    );
-
-    if (widget.isNew) {
-      await OrderAttributes.instance.addItem(OrderAttribute(
-        name: object.name!,
-        mode: object.mode!,
-        index: OrderAttributes.instance.newIndex,
-      ));
-    } else {
-      await widget.attribute!.update(object);
-    }
-
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.attribute?.name != name &&
-        OrderAttributes.instance.hasName(name)) {
-      return S.orderAttributeNameRepeatError;
-    }
-
-    return null;
   }
 }

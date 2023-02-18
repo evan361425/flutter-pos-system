@@ -24,17 +24,12 @@ class CatalogModal extends StatefulWidget {
 class _CatalogModalState extends State<CatalogModal>
     with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
+  late FocusNode _nameFocusNode;
 
   String? _image;
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     return [
       ImageHolder(
         path: _image,
@@ -43,18 +38,27 @@ class _CatalogModalState extends State<CatalogModal>
       TextFormField(
         key: const Key('catalog.name'),
         controller: _nameController,
+        focusNode: _nameFocusNode,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: S.menuCatalogNameLabel,
           hintText: S.menuCatalogNameHint,
-          errorText: errorMessage,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
         maxLength: 30,
-        validator: Validator.textLimit(S.menuCatalogNameLabel, 30),
+        validator: Validator.textLimit(
+          S.menuCatalogNameLabel,
+          30,
+          focusNode: _nameFocusNode,
+          validator: (name) {
+            return widget.catalog?.name != name && Menu.instance.hasName(name)
+                ? S.menuCatalogNameRepeatError
+                : null;
+          },
+        ),
       ),
     ];
   }
@@ -82,6 +86,14 @@ class _CatalogModalState extends State<CatalogModal>
 
     _nameController = TextEditingController(text: widget.catalog?.name);
     _image = widget.catalog?.imagePath;
+    _nameFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nameFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,16 +110,5 @@ class _CatalogModalState extends State<CatalogModal>
             )
           : Navigator.of(context).pop();
     }
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.catalog?.name != name && Menu.instance.hasName(name)) {
-      return S.menuCatalogNameRepeatError;
-    }
-
-    return null;
   }
 }

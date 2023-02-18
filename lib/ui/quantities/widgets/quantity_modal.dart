@@ -23,17 +23,11 @@ class _QuantityModalState extends State<QuantityModal>
     with ItemModal<QuantityModal> {
   late TextEditingController _nameController;
   late TextEditingController _proportionController;
+  late FocusNode _nameFocusNode;
+  late FocusNode _proportionFocusNode;
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _proportionController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     return [
       TextFormField(
         key: const Key('quantity.name'),
@@ -43,18 +37,29 @@ class _QuantityModalState extends State<QuantityModal>
         decoration: InputDecoration(
           labelText: S.quantityNameLabel,
           hintText: S.quantityNameHint,
-          errorText: errorMessage,
           filled: false,
         ),
         autofocus: widget.isNew,
         maxLength: 30,
-        validator: Validator.textLimit(S.quantityNameLabel, 30),
+        focusNode: _nameFocusNode,
+        validator: Validator.textLimit(
+          S.quantityNameLabel,
+          30,
+          focusNode: _nameFocusNode,
+          validator: (name) {
+            return widget.quantity?.name != name &&
+                    Quantities.instance.hasName(name)
+                ? S.quantityNameRepeatError
+                : null;
+          },
+        ),
       ),
       TextFormField(
         key: const Key('quantity.proportion'),
         controller: _proportionController,
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
+        focusNode: _proportionFocusNode,
         onFieldSubmitted: (_) => handleSubmit(),
         decoration: InputDecoration(
           labelText: S.quantityProportionLabel,
@@ -67,6 +72,7 @@ class _QuantityModalState extends State<QuantityModal>
           S.quantityProportionLabel,
           maximum: 100,
           allowNull: true,
+          focusNode: _proportionFocusNode,
         ),
       )
     ];
@@ -76,10 +82,21 @@ class _QuantityModalState extends State<QuantityModal>
   void initState() {
     super.initState();
 
-    _nameController = TextEditingController(text: widget.quantity?.name);
-
     final pp = widget.quantity?.defaultProportion.toString() ?? '1';
+    _nameController = TextEditingController(text: widget.quantity?.name);
     _proportionController = TextEditingController(text: pp);
+    _nameFocusNode = FocusNode();
+    _proportionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _proportionController.dispose();
+    _nameFocusNode.dispose();
+    _proportionFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -98,17 +115,6 @@ class _QuantityModalState extends State<QuantityModal>
     if (mounted) {
       Navigator.of(context).pop();
     }
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.quantity?.name != name && Quantities.instance.hasName(name)) {
-      return S.quantityNameRepeatError;
-    }
-
-    return null;
   }
 
   QuantityObject _parseObject() {

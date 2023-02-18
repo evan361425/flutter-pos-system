@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:possystem/translator.dart';
 
 class Validator {
@@ -5,21 +6,27 @@ class Validator {
     String fieldName, {
     num? maximum,
     bool allowNull = false,
+    FocusNode? focusNode,
   }) {
     return (Object? value) {
       final number = num.tryParse('$value');
+      String? error;
 
       if (number == null) {
         if (!allowNull) {
-          return S.invalidNumberType(fieldName);
+          error = S.invalidNumberType(fieldName);
         }
       } else if (number < 0) {
-        return S.invalidPositiveNumber(fieldName);
+        error = S.invalidPositiveNumber(fieldName);
       } else if (maximum != null && maximum < number) {
-        return S.invalidNumberMaximum(fieldName, maximum);
+        error = S.invalidNumberMaximum(fieldName, maximum);
       }
 
-      return null;
+      if (error != null) {
+        focusNode?.requestFocus();
+      }
+
+      return error;
     };
   }
 
@@ -28,50 +35,77 @@ class Validator {
     int? maximum,
     int? minimum,
     bool allowNull = false,
+    FocusNode? focusNode,
   }) {
     return (String? value) {
       final number = int.tryParse(value ?? '');
+      String? error;
+
       if (number == null) {
         if (!allowNull) {
-          return S.invalidIntegerType(fieldName);
+          error = S.invalidIntegerType(fieldName);
         }
       } else if (number < 0) {
-        return S.invalidPositiveNumber(fieldName);
+        error = S.invalidPositiveNumber(fieldName);
       } else if (maximum != null && maximum < number) {
-        return S.invalidNumberMaximum(fieldName, maximum);
+        error = S.invalidNumberMaximum(fieldName, maximum);
       } else if (minimum != null && minimum > number) {
-        return S.invalidNumberMinimum(fieldName, minimum);
+        error = S.invalidNumberMinimum(fieldName, minimum);
       }
 
-      return null;
+      if (error != null) {
+        focusNode?.requestFocus();
+      }
+
+      return error;
     };
   }
 
   static String? Function(String?) isNumber(
     String fieldName, {
     bool allowNull = false,
+    FocusNode? focusNode,
   }) {
     return (String? value) {
       final number = num.tryParse(value ?? '');
+      String? error;
 
       if (number == null) {
         if (!allowNull) {
-          return S.invalidNumberType(fieldName);
+          error = S.invalidNumberType(fieldName);
         }
       }
-      return null;
+
+      if (error != null) {
+        focusNode?.requestFocus();
+      }
+
+      return error;
     };
   }
 
-  static String? Function(String?) textLimit(String fieldName, int limit) {
+  static String? Function(String?) textLimit(
+    String fieldName,
+    int limit, {
+    FocusNode? focusNode,
+    String? Function(String)? validator,
+  }) {
     return (String? value) {
+      String? error;
+
       if (value == null || value.isEmpty) {
-        return S.invalidEmptyString(fieldName);
+        error = S.invalidEmptyString(fieldName);
       } else if (value.length > limit) {
-        return S.invalidStringMaximum(fieldName, limit);
+        error = S.invalidStringMaximum(fieldName, limit);
+      } else if (validator != null) {
+        error = validator(value);
       }
 
-      return null;
+      if (error != null) {
+        focusNode?.requestFocus();
+      }
+
+      return error;
     };
   }
 }

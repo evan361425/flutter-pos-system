@@ -30,19 +30,14 @@ class _ProductModalState extends State<ProductModal>
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
+  late FocusNode _nameFocusNode;
+  late FocusNode _priceFocusNode;
+  late FocusNode _costFocusNode;
 
   String? _image;
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _priceController.dispose();
-    _costController.dispose();
-    super.dispose();
-  }
-
-  @override
-  List<Widget> formFields() {
+  List<Widget> buildFormFields() {
     return [
       ImageHolder(
         path: _image,
@@ -54,39 +49,57 @@ class _ProductModalState extends State<ProductModal>
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
         autofocus: widget.isNew,
+        focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductNameLabel,
           hintText: S.menuProductNameHint,
-          errorText: errorMessage,
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(S.menuProductNameLabel, 30),
+        validator: Validator.textLimit(
+          S.menuProductNameLabel,
+          30,
+          focusNode: _nameFocusNode,
+          validator: (name) {
+            return widget.product?.name != name &&
+                    Menu.instance.hasProductByName(name)
+                ? S.menuProductNameRepeatError
+                : null;
+          },
+        ),
       ),
       TextFormField(
         key: const Key('product.price'),
         controller: _priceController,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
+        focusNode: _priceFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductPriceLabel,
           hintText: S.menuProductPriceHint,
           filled: false,
         ),
-        validator: Validator.isNumber(S.menuProductPriceLabel),
+        validator: Validator.isNumber(
+          S.menuProductPriceLabel,
+          focusNode: _priceFocusNode,
+        ),
       ),
       TextFormField(
         key: const Key('product.cost'),
         controller: _costController,
         textInputAction: TextInputAction.done,
         keyboardType: TextInputType.number,
+        focusNode: _costFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductCostLabel,
           hintText: S.menuProductCostHint,
           filled: false,
         ),
         onFieldSubmitted: (_) => handleSubmit(),
-        validator: Validator.positiveNumber(S.menuProductCostLabel),
+        validator: Validator.positiveNumber(
+          S.menuProductCostLabel,
+          focusNode: _costFocusNode,
+        ),
       ),
     ];
   }
@@ -118,7 +131,21 @@ class _ProductModalState extends State<ProductModal>
     _nameController = TextEditingController(text: p?.name);
     _priceController = TextEditingController(text: p?.price.toString());
     _costController = TextEditingController(text: p?.cost.toString());
+    _nameFocusNode = FocusNode();
+    _priceFocusNode = FocusNode();
+    _costFocusNode = FocusNode();
     _image = widget.product?.imagePath;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    _costController.dispose();
+    _nameFocusNode.dispose();
+    _priceFocusNode.dispose();
+    _costFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -135,17 +162,6 @@ class _ProductModalState extends State<ProductModal>
             )
           : Navigator.of(context).pop();
     }
-  }
-
-  @override
-  String? validate() {
-    final name = _nameController.text;
-
-    if (widget.product?.name != name && Menu.instance.hasProductByName(name)) {
-      return S.menuProductNameRepeatError;
-    }
-
-    return null;
   }
 
   ProductObject _parseObject() {
