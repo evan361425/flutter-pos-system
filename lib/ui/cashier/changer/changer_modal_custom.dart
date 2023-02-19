@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -35,6 +34,9 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   late TextEditingController targetController;
 
   num? sourceUnit;
+
+  String errorMessage = '';
+  late FocusNode errorFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +117,20 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
               const TextDivider(label: '從收銀機中拿出'),
               sourceEntry,
               const TextDivider(label: '換'),
+              Focus(
+                focusNode: errorFocus,
+                child: Builder(builder: (context) {
+                  return Focus.of(context).hasFocus
+                      ? Center(
+                          child: Text(
+                            errorMessage,
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(color: theme.colorScheme.error),
+                          ),
+                        )
+                      : const SizedBox();
+                }),
+              ),
               ...targetEntries,
               // add bottom
               const SizedBox(height: kSpacing1),
@@ -132,9 +148,18 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    sourceCount = TextEditingController(text: '1');
+    targetController = TextEditingController();
+    errorFocus = FocusNode();
+  }
+
+  @override
   void dispose() {
     sourceCount.dispose();
     targetController.dispose();
+    errorFocus.dispose();
     super.dispose();
   }
 
@@ -175,7 +200,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
       });
       return true;
     } else {
-      showInfoSnackbar(context, '$sourceUnit 元不夠換');
+      _setError('$sourceUnit 元不夠換');
       return false;
     }
   }
@@ -190,13 +215,6 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
 
       _changeSource(int.tryParse(sourceCount.text));
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    sourceCount = TextEditingController(text: '1');
-    targetController = TextEditingController();
   }
 
   bool validate() {
@@ -222,7 +240,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
           msg += '\n- ${target.count} 個 ${target.unit} 元';
         }
       }
-      showInfoSnackbar(context, msg);
+      _setError(msg);
     }
 
     return false;
@@ -260,6 +278,13 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
       Flexible(flex: 1, child: b),
       if (c != null) c,
     ]);
+  }
+
+  void _setError(String msg) {
+    setState(() {
+      errorFocus.requestFocus();
+      errorMessage = msg;
+    });
   }
 
   static List<DropdownMenuItem<num>> _unitDropdownMenuItems() {

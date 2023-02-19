@@ -19,13 +19,9 @@ class _ChangerModalState extends State<ChangerModal>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     // tab widgets
     final tabBar = TabBar(
       controller: controller,
-      labelColor: theme.indicatorColor,
-      unselectedLabelColor: theme.hintColor,
       tabs: const [
         Tab(key: Key('cashier.changer.favorite'), text: '常用'),
         Tab(key: Key('cashier.changer.custom'), text: '手動'),
