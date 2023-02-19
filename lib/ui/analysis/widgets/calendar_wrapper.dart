@@ -65,6 +65,11 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       daysOfWeekHeight: 20.0,
       // header
       headerStyle: const HeaderStyle(formatButtonShowsNext: false),
+      calendarStyle: const CalendarStyle(
+        defaultDecoration: ShapeDecoration(
+          shape: CircleBorder(side: BorderSide()),
+        ),
+      ),
       availableCalendarFormats: {
         CalendarFormat.month: S.analysisCalendarMonth,
         CalendarFormat.twoWeeks: S.analysisCalendarTwoWeek,
@@ -106,25 +111,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     if (value.isEmpty) return null;
 
     final length = value.length;
-    final theme = Theme.of(context);
-    final fontColor = theme.colorScheme.brightness == Brightness.dark
-        ? theme.colorScheme.onSurface
-        : theme.colorScheme.onPrimary;
-
     return Positioned(
       right: 0,
-      bottom: 0,
-      child: Material(
-        shape: const CircleBorder(side: BorderSide.none),
-        color: theme.primaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Text(
-            length > 99 ? '99+' : length.toString(),
-            style: TextStyle(fontSize: 12.0, color: fontColor),
-          ),
-        ),
-      ),
+      top: 0,
+      child: Badge(label: Text(length > 99 ? '99+' : length.toString())),
     );
   }
 
