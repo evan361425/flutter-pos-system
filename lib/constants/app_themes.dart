@@ -8,8 +8,9 @@ class AppThemes {
     colorSchemeSeed: const Color(0xFF448AFF),
   )..setGradientColors(const [
       // Plum Plate
-      Color(0xFF6FD6FF),
-      Color(0xFFBFF098),
+      Color(0xFFB0CDFF),
+      Color(0xFFD8E5FB),
+      Color(0xFFC3F9FE),
     ]);
 
   static final ThemeData darkTheme = ThemeData.dark(useMaterial3: true)
