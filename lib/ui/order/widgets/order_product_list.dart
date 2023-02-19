@@ -134,11 +134,7 @@ class _ImageCardState extends State<_ImageCard>
           ],
         ),
       ),
-      child: Text(
-        widget.product.name,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 18.0),
-      ),
+      child: Text(widget.product.name, textAlign: TextAlign.center),
     );
 
     final card = Card(
