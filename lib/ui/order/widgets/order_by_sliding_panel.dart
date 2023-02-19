@@ -66,6 +66,8 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         widget.row1,
         Expanded(child: widget.row2),
+        // avoid ingredient overlapping it
+        const SizedBox(height: 40),
       ]),
     );
   }

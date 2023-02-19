@@ -67,16 +67,12 @@ class OrderCashierProductList extends StatelessWidget {
             children: <Widget>[
               for (final attribute in attributes)
                 ListTile(
-                  title: Row(children: [
-                    Text(attribute.name.toString()),
-                    OutlinedText(attribute.optionName.toString()),
-                  ]),
+                  title: Text(attribute.optionName.toString()),
                   subtitle: OrderAttributeValueWidget(
                     attribute.mode,
                     attribute.modeValue,
                   ),
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -3),
+                  trailing: OutlinedText(attribute.name.toString()),
                 ),
             ],
           );
@@ -88,6 +84,8 @@ class OrderCashierProductList extends StatelessWidget {
         TextDivider(label: S.orderCashierProductInfoTitle),
         HintText(S.orderCashierProductMetaCount(productCount)),
         for (final product in products) _ProductTile(product),
+        // avoid calculator overlapping it
+        const SizedBox(height: 36),
       ]),
     );
   }
@@ -147,9 +145,9 @@ class _ProductTile extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(text),
           ),
-        Wrap(children: [
+        Wrap(spacing: 4, runSpacing: 4, children: [
           for (final ingredient in data.ingredientNames)
-            OutlinedText(ingredient)
+            OutlinedText(ingredient),
         ]),
       ],
     );
