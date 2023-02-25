@@ -132,16 +132,16 @@ class OrderScreenState extends State<OrderScreen> {
 
     switch (status) {
       case CashierUpdateStatus.ok:
-        showSuccessSnackbar(context, S.actSuccess);
+        showSnackBar(context, S.actSuccess);
         break;
       case CashierUpdateStatus.notEnough:
-        showErrorSnackbar(context, '收銀機錢不夠找囉！');
+        showSnackBar(context, '收銀機錢不夠找囉！');
         break;
       case CashierUpdateStatus.usingSmall:
-        showInfoSnackbar(
+        showSnackBar(
           context,
           '收銀機使用小錢去找零！',
-          SnackBarAction(
+          action: SnackBarAction(
             key: const Key('order.cashierUsingSmallAction'),
             label: '說明',
             onPressed: () => showDialog(

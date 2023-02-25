@@ -85,7 +85,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           }
         } on PaidException {
           if (context.mounted) {
-            showErrorSnackbar(context, S.orderCashierCalculatorChangeNotEnough);
+            showSnackBar(context, S.orderCashierCalculatorChangeNotEnough);
           }
         }
       }

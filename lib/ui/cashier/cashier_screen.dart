@@ -104,19 +104,19 @@ class _CashierScreenState extends State<CashierScreen> {
     await Cashier.instance.setDefault();
 
     if (context.mounted) {
-      showSuccessSnackbar(context, S.actSuccess);
+      showSnackBar(context, S.actSuccess);
     }
   }
 
   void handleSurplus(BuildContext context) async {
     if (Cashier.instance.defaultNotSet) {
-      return showInfoSnackbar(context, '尚未設定，請點選右上角「設為預設」');
+      return showSnackBar(context, '尚未設定，請點選右上角「設為預設」');
     }
 
     final result = await Navigator.of(context).pushNamed(Routes.cashierSurplus);
     if (result == true) {
       if (context.mounted) {
-        showSuccessSnackbar(context, S.actSuccess);
+        showSnackBar(context, S.actSuccess);
       }
     }
   }
