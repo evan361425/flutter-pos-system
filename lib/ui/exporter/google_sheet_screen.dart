@@ -488,6 +488,14 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         child: Column(children: [
           SignInButton(signedInWidget: _signedInWidget),
           const Divider(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+            ),
+            onPressed: () => importData(null),
+            child: const Text('匯入全部'),
+          ),
+          const SizedBox(height: 8.0),
           for (final entry in sheets.entries)
             Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Expanded(
@@ -504,10 +512,6 @@ class _ImporterScreenState extends State<_ImporterScreen> {
                 icon: const Icon(Icons.download_for_offline_outlined),
               ),
             ]),
-          ElevatedButton(
-            onPressed: () => importData(null),
-            child: const Text('匯入所選'),
-          ),
         ]),
       ),
     );
