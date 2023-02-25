@@ -24,9 +24,9 @@ class OrderBySlidingPanel extends StatefulWidget {
   State<OrderBySlidingPanel> createState() => OrderBySlidingPanelState();
 }
 
-class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
-    with TutorialChild {
+class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
   final opener = GlobalKey<SlidingUpOpenerState>();
+  final ant = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,8 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
 
     final collapsed = Tutorial(
       id: 'order.sliding_collapsed',
-      ant: ants[0],
+      ant: ant,
+      ants: [ant],
       padding: const EdgeInsets.fromLTRB(-4, 24, -4, 0),
       title: '點餐介面',
       message: '為了讓點選產品可以更方便，\n'
@@ -70,12 +71,6 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel>
         const SizedBox(height: 40),
       ]),
     );
-  }
-
-  @override
-  void initState() {
-    ants = [Tutorial.buildAnt()];
-    super.initState();
   }
 
   void reset() {

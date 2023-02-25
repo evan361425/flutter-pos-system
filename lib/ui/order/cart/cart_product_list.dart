@@ -11,17 +11,22 @@ class CartProductList extends StatefulWidget {
   const CartProductList({Key? key}) : super(key: key);
 
   @override
-  State<CartProductList> createState() => CartProductListState();
+  State<CartProductList> createState() => _CartProductListState();
 }
 
-class CartProductListState extends State<CartProductList> {
+class _CartProductListState extends State<CartProductList> {
   late ScrollController scrollController;
+  int? productCount;
 
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
     var count = 0;
+    if (productCount != null && productCount != cart.products.length) {
+      scrollToBottom();
+    }
 
+    productCount = cart.products.length;
     return SingleChildScrollView(
       key: const Key('cart.product_list'),
       controller: scrollController,

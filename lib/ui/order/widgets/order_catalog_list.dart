@@ -5,12 +5,15 @@ import 'package:possystem/models/menu/catalog.dart';
 class OrderCatalogList extends StatefulWidget {
   final List<Catalog> catalogs;
 
-  final void Function(Catalog) handleSelected;
+  final void Function(int) onSelected;
+
+  final ValueNotifier<int> indexNotifier;
 
   const OrderCatalogList({
     Key? key,
     required this.catalogs,
-    required this.handleSelected,
+    required this.indexNotifier,
+    required this.onSelected,
   }) : super(key: key);
 
   @override
@@ -31,29 +34,37 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
       ]);
     }
 
+    var index = 0;
     return SingleRowWrap(children: <Widget>[
-      for (final catalog in widget.catalogs)
-        ChoiceChip(
-          // TODO: should dynamic add this when it is select,
-          // wait to support the API.
-          // avatar: catalog.avator,
-          key: Key('order.catalog.${catalog.id}'),
-          onSelected: (isSelected) {
-            if (isSelected) {
-              setState(() => selectedId = catalog.id);
-              widget.handleSelected(catalog);
-            }
-          },
-          selected: catalog.id == selectedId,
-          tooltip: catalog.name,
-          label: Text(catalog.name),
-        ),
+      for (final catalog in widget.catalogs) _buildChoiceChip(catalog, index++),
     ]);
+  }
+
+  ChoiceChip _buildChoiceChip(Catalog catalog, int index) {
+    return ChoiceChip(
+      // TODO: should dynamic add this when it is select,
+      // wait to support the API.
+      // avatar: catalog.avator,
+      key: Key('order.catalog.${catalog.id}'),
+      onSelected: (isSelected) {
+        if (isSelected) {
+          setState(() => selectedId = catalog.id);
+          widget.onSelected(index);
+        }
+      },
+      selected: catalog.id == selectedId,
+      tooltip: catalog.name,
+      label: Text(catalog.name),
+    );
   }
 
   @override
   void initState() {
     super.initState();
+    widget.indexNotifier.addListener(() => setState(() {
+          final index = widget.indexNotifier.value;
+          selectedId = widget.catalogs[index].id;
+        }));
     selectedId = widget.catalogs.isEmpty ? '' : widget.catalogs.first.id;
   }
 }

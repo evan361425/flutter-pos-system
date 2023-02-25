@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -16,7 +15,6 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
-import 'cart/cart_product_list.dart';
 import 'cart/cart_screen.dart';
 import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
@@ -33,9 +31,9 @@ class OrderScreen extends StatefulWidget {
 }
 
 class OrderScreenState extends State<OrderScreen> {
-  final _orderProductList = GlobalKey<OrderProductListState>();
-  final _cartProductList = GlobalKey<CartProductListState>();
-  final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+  late final GlobalKey<OrderBySlidingPanelState> slidingPanel;
+  late final PageController _pageController;
+  late final ValueNotifier<int> _catalogIndexNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +41,20 @@ class OrderScreenState extends State<OrderScreen> {
 
     final menuCatalogRow = OrderCatalogList(
       catalogs: catalogs,
-      handleSelected: (catalog) =>
-          _orderProductList.currentState?.updateProducts(catalog),
+      indexNotifier: _catalogIndexNotifier,
+      onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final menuProductRow = OrderProductList(
-      key: _orderProductList,
-      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+    final menuProductRow = PageView.builder(
+      controller: _pageController,
+      onPageChanged: (index) => _catalogIndexNotifier.value = index,
+      itemCount: catalogs.length,
+      itemBuilder: (context, index) {
+        return OrderProductList(products: catalogs[index].itemList);
+      },
     );
     final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
-      child: CartScreen(productsKey: _cartProductList),
+      child: const CartScreen(),
     );
     final orderProductStateSelector = MultiProvider(
       providers: [
@@ -81,29 +82,18 @@ class OrderScreenState extends State<OrderScreen> {
         ],
       ),
       body: outlook.value == OrderOutlookTypes.slidingPanel
-          ? TutorialWrapper(
-              tutorials: [
-                _orderProductList,
-                slidingPanel,
-              ],
-              child: OrderBySlidingPanel(
-                key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-              ),
+          ? OrderBySlidingPanel(
+              key: slidingPanel,
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
             )
-          : TutorialWrapper(
-              tutorials: [
-                _orderProductList,
-              ],
-              child: OrderByOrientation(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-              ),
+          : OrderByOrientation(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
             ),
     );
   }
@@ -111,6 +101,8 @@ class OrderScreenState extends State<OrderScreen> {
   @override
   void dispose() {
     Wakelock.disable();
+    _pageController.dispose();
+    _catalogIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -121,6 +113,10 @@ class OrderScreenState extends State<OrderScreen> {
     }
     // rebind menu/attributes if changed
     Cart.instance.rebind();
+
+    slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+    _pageController = PageController();
+    _catalogIndexNotifier = ValueNotifier<int>(0);
     super.initState();
   }
 

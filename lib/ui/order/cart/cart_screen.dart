@@ -9,9 +9,7 @@ import 'cart_actions.dart';
 import 'cart_product_list.dart';
 
 class CartScreen extends StatelessWidget {
-  final Key? productsKey;
-
-  const CartScreen({Key? key, this.productsKey}) : super(key: key);
+  const CartScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,7 @@ class CartScreen extends StatelessWidget {
             child: selector,
           ),
           // no padding here to show full width of tile
-          Expanded(child: CartProductList(key: productsKey)),
+          const Expanded(child: CartProductList()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: actions,
