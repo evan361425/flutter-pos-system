@@ -134,6 +134,21 @@ void main() {
         // normal tap
         await tester.tap(find.byKey(const Key('order.product.p-2')));
         await tester.pumpAndSettle();
+        // swipe left and right
+        await tester.drag(
+          find.byKey(const Key('order.product.p-2')),
+          const Offset(500.0, 0.0),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('order.product.p-1')), findsOneWidget);
+        await tester.drag(
+          find.byKey(const Key('order.product.p-1')),
+          const Offset(-500.0, 0.0),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('order.product.p-2')), findsOneWidget);
+
+        // go ordering
 
         verifySnapshot(List<List<String>> data, num price) {
           var count = 0;
@@ -432,7 +447,7 @@ void main() {
 
       await tester.pumpWidget(MaterialApp(
         routes: {
-          Routes.orderCalculator: (context) => Scaffold(
+          Routes.orderDetails: (context) => Scaffold(
                 body: TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(cashierStatus);
@@ -449,7 +464,7 @@ void main() {
         String? expectValue,
       ]) async {
         cashierStatus = value;
-        await tester.tap(find.byKey(const Key('order.cashier')));
+        await tester.tap(find.byKey(const Key('order.apply')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('test')));

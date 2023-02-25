@@ -170,6 +170,7 @@ class _AnalysisOrderModal extends StatelessWidget {
             totalPrice: order.totalPrice,
             productCost: order.cost,
             income: order.income,
+            paid: order.paid,
           ),
         ),
       ]),
@@ -358,5 +359,5 @@ enum _Action {
 }
 
 String _parseCreatedAt(DateTime t) {
-  return DateFormat('MEd Hms', S.localeName).format(t);
+  return DateFormat('MMMMd（E） H：m：s', S.localeName).format(t);
 }

@@ -4,6 +4,7 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 import 'package:possystem/ui/home/home_setup_feature_request.dart';
+import 'package:possystem/ui/order/cashier/order_details_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/menu/catalog.dart';
@@ -29,8 +30,6 @@ import 'ui/menu/product/widgets/product_ingredient_modal.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
-import 'ui/order/cashier/order_cashier_modal.dart';
-import 'ui/order/cashier/order_set_attribute_modal.dart';
 import 'ui/order/order_screen.dart';
 import 'ui/quantities/quantity_screen.dart';
 import 'ui/quantities/widgets/quantity_modal.dart';
@@ -64,8 +63,7 @@ class Routes {
   static const String menuProductReorder = 'menu/product/reorder';
   static const String menuIngredient = 'menu/ingredient';
   static const String menuQuantity = 'menu/quantity';
-  static const String orderAttribute = 'order/attribute';
-  static const String orderCalculator = 'order/calculator';
+  static const String orderDetails = 'order/details';
   static const String quantityModal = 'quantities/modal';
   static const String stockReplenishment = 'stock/replenishment';
   static const String stockReplenishmentModal = 'stock/replenishment/modal';
@@ -138,8 +136,7 @@ class Routes {
           : ProductQuantityModal(ingredient: arg as ProductIngredient);
     },
     // order
-    orderAttribute: (_) => const OderSetAttributeModal(),
-    orderCalculator: (_) => OrderCashierModal(),
+    orderDetails: (_) => const OrderDetailsScreen(),
     // quantities
     quantities: (_) => const QuantityScreen(),
     quantityModal: (ctx) => QuantityModal(_a<Quantity?>(ctx)),

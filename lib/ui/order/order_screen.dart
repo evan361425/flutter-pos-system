@@ -5,7 +5,6 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -75,8 +74,8 @@ class OrderScreenState extends State<OrderScreen> {
         actions: [
           const OrderActions(key: Key('order.action.more')),
           TextButton(
-            key: const Key('order.cashier'),
-            onPressed: () => _handleOrder(),
+            key: const Key('order.apply'),
+            onPressed: () => _onApply(),
             child: Text(S.orderActionsOrderDone),
           ),
         ],
@@ -120,15 +119,8 @@ class OrderScreenState extends State<OrderScreen> {
     super.initState();
   }
 
-  void _handleOrder() async {
-    final route = OrderAttributes.instance.hasNotEmptyItems
-        ? Routes.orderAttribute
-        : Routes.orderCalculator;
-    var result = await Navigator.of(context).pushNamed(route);
-    if (result is String && mounted) {
-      result = await Navigator.of(context).pushNamed(result);
-    }
-
+  void _onApply() async {
+    final result = await Navigator.of(context).pushNamed(Routes.orderDetails);
     if (result is CashierUpdateStatus) {
       _showCashierWarning(result);
       slidingPanel.currentState?.reset();

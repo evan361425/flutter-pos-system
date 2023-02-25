@@ -1,39 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/translator.dart';
 
 class OderSetAttributeModal extends StatelessWidget {
   const OderSetAttributeModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        title: Text(S.orderSetAttributeTitle),
-        actions: [
-          TextButton(
-            key: const Key('set_attribute.next'),
-            onPressed: () => Navigator.of(context).pop(Routes.orderCalculator),
-            child: Text(S.orderSetAttributeActionsDone),
-          ),
-        ],
-      ),
-      body: Padding(
-        // bottom for floating button
-        padding: const EdgeInsets.all(kSpacing2),
-        child: ListView(children: [
-          for (final item in OrderAttributes.instance.notEmptyItems)
-            _OrderAttributeGroup(item),
-        ]),
-      ),
-    );
+    return ListView(padding: const EdgeInsets.all(8.0), children: [
+      for (final item in OrderAttributes.instance.notEmptyItems)
+        _OrderAttributeGroup(item),
+    ]);
   }
 }
 
@@ -89,7 +69,8 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
     if (isSelected) {
       Cart.instance.attributes[widget.attribute.id] = option.id;
     } else {
-      // disable it
+      // Disable it.
+      // If remove it from map, it will choose default one not disabling
       Cart.instance.attributes[widget.attribute.id] = '';
     }
   }

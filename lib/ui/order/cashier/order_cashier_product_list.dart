@@ -20,6 +20,9 @@ class OrderCashierProductList extends StatelessWidget {
   /// 淨利，只需考慮總價和成本，不需考慮付額
   final num? income;
 
+  /// 付額
+  final num? paid;
+
   const OrderCashierProductList({
     Key? key,
     required this.attributes,
@@ -28,6 +31,7 @@ class OrderCashierProductList extends StatelessWidget {
     required this.productsPrice,
     this.productCost,
     this.income,
+    this.paid,
   })  : attributePrice = totalPrice - productsPrice,
         super(key: key);
 
@@ -36,6 +40,11 @@ class OrderCashierProductList extends StatelessWidget {
     final priceWidget = ExpansionTile(
       title: Text(S.orderCashierTotalPrice(totalPrice)),
       children: <Widget>[
+        if (paid != null)
+          ListTile(
+            title: const Text('付額'),
+            trailing: Text(paid!.toCurrency()),
+          ),
         ListTile(
           title: Text(S.orderCashierProductTotalPrice),
           trailing: Text(productsPrice.toCurrency()),
@@ -67,12 +76,12 @@ class OrderCashierProductList extends StatelessWidget {
             children: <Widget>[
               for (final attribute in attributes)
                 ListTile(
-                  title: Text(attribute.optionName.toString()),
+                  title: Text(attribute.name.toString()),
                   subtitle: OrderAttributeValueWidget(
                     attribute.mode,
                     attribute.modeValue,
                   ),
-                  trailing: OutlinedText(attribute.name.toString()),
+                  trailing: OutlinedText(attribute.optionName.toString()),
                 ),
             ],
           );

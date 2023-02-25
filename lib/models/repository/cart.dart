@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -20,6 +22,8 @@ class Cart extends ChangeNotifier {
 
   final Map<String, String> attributes = {};
 
+  ValueNotifier<num?> currentPaid = ValueNotifier(null);
+
   bool isHistoryMode = false;
 
   bool get isEmpty => products.isEmpty;
@@ -35,6 +39,10 @@ class Cart extends ChangeNotifier {
 
   num get productsPrice {
     return products.fold(0, (value, product) => value + product.price);
+  }
+
+  num get productsCost {
+    return products.fold(0, (value, product) => value + product.cost);
   }
 
   Iterable<OrderProduct> get selected =>
@@ -63,7 +71,7 @@ class Cart extends ChangeNotifier {
       total = option.calculatePrice(total);
     }
 
-    return total.toCurrencyNum();
+    return max(total.toCurrencyNum(), 0);
   }
 
   OrderProduct add(Product product) {
@@ -79,6 +87,8 @@ class Cart extends ChangeNotifier {
     products.clear();
     attributes.clear();
     isHistoryMode = false;
+    currentPaid.dispose();
+    currentPaid = ValueNotifier(null);
     _selectedChanged();
   }
 
@@ -102,14 +112,14 @@ class Cart extends ChangeNotifier {
   }
 
   /// Paid to the order
-  Future<CashierUpdateStatus?> paid(num? paid) async {
+  Future<CashierUpdateStatus?> checkout() async {
     if (totalCount == 0) {
       clear();
       return null;
     }
 
     final price = totalPrice;
-    paid ??= price;
+    final paid = currentPaid.value ?? price;
     Log.ger(isHistoryMode ? 'history' : 'normal', 'order_paid');
     if (paid < price) throw const PaidException('insufficient_amount');
 
@@ -184,6 +194,7 @@ class Cart extends ChangeNotifier {
     attributes
       ..clear()
       ..addAll(object.parseToAttrId());
+    currentPaid.value = object.paid;
     _selectedChanged();
   }
 

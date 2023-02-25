@@ -40,6 +40,8 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   num ceil(num data) {
     assert(data >= 0);
 
+    if (data == 0) return 0;
+
     // if it is double ceil to int first
     if (data != data.ceil()) return data.ceil();
 
@@ -54,6 +56,21 @@ class CurrencySetting extends Setting<CurrencyTypes> {
     }
 
     return data;
+  }
+
+  /// Get all possible value to currency maximum
+  ///
+  /// Ex. 63 => [65, 70, 100, 500, 1000]
+  Iterable<num> ceilToMaximum(num minimum) sync* {
+    yield minimum;
+
+    var value = minimum;
+    var ceiledValue = ceil(value);
+    while (ceiledValue != value) {
+      yield ceiledValue;
+      value = ceiledValue;
+      ceiledValue = CurrencySetting.instance.ceil(ceiledValue);
+    }
   }
 
   @override
