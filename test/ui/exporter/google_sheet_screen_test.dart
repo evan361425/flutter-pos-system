@@ -672,7 +672,7 @@ void main() {
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
-          await tester.tap(find.text('匯入所選'));
+          await tester.tap(find.byKey(const Key('gs_export.import_all')));
           await tester.pumpAndSettle();
           await tester.pumpAndSettle();
 

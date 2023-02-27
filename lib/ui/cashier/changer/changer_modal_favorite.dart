@@ -74,14 +74,14 @@ class ChangerModalFavoriteState extends State<ChangerModalFavorite> {
 
   Future<bool> handleApply() async {
     if (selected == null) {
-      showInfoSnackbar(context, '請選擇要套用的組合');
+      showSnackBar(context, '請選擇要套用的組合');
       return false;
     }
 
     final isValid = await Cashier.instance.applyFavorite(selected!.item);
 
     if (!isValid && mounted) {
-      showInfoSnackbar(context, '${selected!.source.unit} 元不夠換');
+      showSnackBar(context, '${selected!.source.unit} 元不夠換');
     }
 
     return isValid;

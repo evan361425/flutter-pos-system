@@ -188,7 +188,7 @@ class _CollapseWithDragger extends StatelessWidget {
       width: 36.0,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceTint,
+        color: theme.highlightColor,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
     );

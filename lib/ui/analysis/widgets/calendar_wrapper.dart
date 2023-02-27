@@ -76,7 +76,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
       // event handlers
       selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
       eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, 0),
-      calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder),
+      calendarBuilders: CalendarBuilders(
+        markerBuilder: _badgeBuilder,
+        defaultBuilder: _defaultBuilder,
+      ),
       onPageChanged: _handlePageChange,
       onFormatChanged: (format) => setState(() => _calendarFormat = format),
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
@@ -106,25 +109,26 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     if (value.isEmpty) return null;
 
     final length = value.length;
-    final theme = Theme.of(context);
-    final fontColor = theme.colorScheme.brightness == Brightness.dark
-        ? theme.colorScheme.onSurface
-        : theme.colorScheme.onPrimary;
-
     return Positioned(
       right: 0,
-      bottom: 0,
-      child: Material(
-        shape: const CircleBorder(side: BorderSide.none),
-        color: theme.primaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Text(
-            length > 99 ? '99+' : length.toString(),
-            style: TextStyle(fontSize: 12.0, color: fontColor),
-          ),
-        ),
-      ),
+      top: 0,
+      child: Badge(label: Text(length > 99 ? '99+' : length.toString())),
+    );
+  }
+
+  Widget _defaultBuilder(
+      BuildContext context, DateTime day, DateTime focusedDay) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      margin: const EdgeInsets.all(6.0),
+      padding: EdgeInsets.zero,
+      decoration: _loadedCounts.containsKey(day)
+          ? const ShapeDecoration(
+              shape: CircleBorder(side: BorderSide()),
+            )
+          : const BoxDecoration(shape: BoxShape.circle),
+      alignment: Alignment.center,
+      child: Text('${day.day}'),
     );
   }
 

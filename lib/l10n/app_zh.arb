@@ -64,10 +64,6 @@
       }
     }
   },
-  "bottomSheetActionsTitle": "執行動作",
-  "@bottomSheetActionsTitle": {
-    "description": "顯示於 BottomSheetActions 上的標題"
-  },
   "emptyBodyContent": "哎呀！這裡還是空的",
   "@emptyBodyContent": {
     "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目"
@@ -160,10 +156,6 @@
   "homeTabStock": "庫存",
   "homeTabCashier": "收銀",
   "homeTabSetting": "設定",
-  "analysisTitle": "統計分析",
-  "@analysisTitle": {
-    "description": "首頁 analysis 後導入的頁面"
-  },
   "analysisCalendarMonth": "單月",
   "@analysisCalendarMonth": {
     "description": "分析頁的日曆週期轉換單位之一"
@@ -304,7 +296,7 @@
   "@menuCatalogNameLabel": {
     "description": "產品種類名稱的標題"
   },
-  "menuCatalogNameHint": "漢堡",
+  "menuCatalogNameHint": "例如：漢堡",
   "@menuCatalogNameHint": {
     "description": "產品種類名稱的範例"
   },
@@ -347,12 +339,12 @@
   "menuProductReorder": "排序產品",
   "menuProductEmptyBody": "可以設定產品的成分囉！",
   "menuProductNameLabel": "產品名稱",
-  "menuProductNameHint": "起司漢堡",
+  "menuProductNameHint": "例如：起司漢堡",
   "menuProductNameRepeatError": "產品名稱重複",
   "menuProductPriceLabel": "產品價格",
-  "menuProductPriceHint": "給客人看的價錢，50",
+  "menuProductPriceHint": "給客人看的價錢，例如：50",
   "menuProductCostLabel": "產品成本",
-  "menuProductCostHint": "用來算出利潤，30",
+  "menuProductCostHint": "用來算出利潤，例如：30（理應小於價錢）",
   "menuIngredientMetaAmount": "使用量：{amount}",
   "@menuIngredientMetaAmount": {
     "placeholders": {
@@ -375,7 +367,7 @@
       }
     }
   },
-  "menuIngredientSearchHint": "起司",
+  "menuIngredientSearchHint": "搜尋成分，例如：起司",
   "menuIngredientSearchEmptyError": "必須設定成分，請點選以設定。",
   "menuIngredientSearchHelper": "新增成分後，可至「庫存」設定相關資訊。",
   "menuIngredientRepeatError": "成分不能重複選取。",
@@ -416,8 +408,7 @@
       }
     }
   },
-  "menuQuantityCreate": "新增份量",
-  "menuQuantityUpdate": "編輯份量",
+  "menuQuantityCreate": "新增份量，例如：少量",
   "menuQuantitySearchLabel": "份量",
   "menuQuantitySearchAdd": "新增份量「{name}」",
   "@menuQuantitySearchAdd": {
@@ -429,7 +420,7 @@
       }
     }
   },
-  "menuQuantitySearchHint": "少量、多量",
+  "menuQuantitySearchHint": "搜尋份量",
   "menuQuantitySearchEmptyError": "必須設定份量，請點選以設定。",
   "menuQuantitySearchHelper": "新增成分份量後，可至「份量」設定相關資訊。",
   "menuQuantityRepeatError": "份量不能重複選取。",
@@ -438,7 +429,6 @@
   "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantityAdditionalCostLabel": "額外成本",
   "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
-  "stockTitle": "庫存",
   "stockHasNotReplenishEver": "尚未補貨過",
   "@stockHasNotReplenishEver": {
     "description": "庫存頁面會顯示上次補貨時間，若未補貨過則設此文字"
@@ -454,48 +444,12 @@
     }
   },
   "stockIngredientCreate": "新增成分",
-  "stockIngredientDialogIncrementTitle": "增加 {name} 的庫存",
-  "@stockIngredientDialogIncrementTitle": {
-    "description": "新增庫存的對話匡標題",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "stockIngredientDialogDecrementTitle": "減少 {name} 的庫存",
-  "@stockIngredientDialogDecrementTitle": {
-    "description": "新增庫存的對話匡標題",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成分\n\n} other{將會一同刪除掉 {count} 個產品的成分\n\n}}",
   "@stockIngredientDialogDeletionContent": {
     "description": "刪除成分時會提示多少個產品受影響",
     "placeholders": {
       "count": {
         "description": "產品數量",
-        "type": "int"
-      }
-    }
-  },
-  "stockIngredientMetaCurrentAmount": "{count, plural, =0{庫存：無} other{庫存：{count}}}",
-  "@stockIngredientMetaCurrentAmount": {
-    "description": "成分庫存數量",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "stockIngredientMetaLastAmount": "{count, plural, =0{紀錄：無} other{紀錄：{count}}}",
-  "@stockIngredientMetaLastAmount": {
-    "description": "成分上次補貨後的庫存數量",
-    "placeholders": {
-      "count": {
         "type": "int"
       }
     }
@@ -515,7 +469,7 @@
     }
   },
   "stockIngredientNameLabel": "成分名稱",
-  "stockIngredientNameHint": "起司",
+  "stockIngredientNameHint": "例如：起司",
   "stockIngredientNameRepeatError": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientTotalAmountLabel": "庫存最大值",
@@ -551,11 +505,10 @@
   },
   "stockReplenishmentCreate": "新增採購種類",
   "stockReplenishmentNameLabel": "採購名稱",
-  "stockReplenishmentNameHint": "Costco 採購",
+  "stockReplenishmentNameHint": "例如：Costco 採購",
   "stockReplenishmentNameRepeatError": "採購名稱重複",
   "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
   "quantityTitle": "份量",
-  "quantityListTitle": "份量列表",
   "quantityMetaProportion": "預設比例：{proportion}",
   "@quantityMetaProportion": {
     "description": "份量列表中各個項目的子標題中，說明預設比例的文字",
@@ -579,7 +532,7 @@
   },
   "quantityCreate": "新增份量",
   "quantityNameLabel": "份量名稱",
-  "quantityNameHint": "少量、多量",
+  "quantityNameHint": "例如：少量或多量",
   "quantityNameRepeatError": "份量名稱重複",
   "quantityProportionLabel": "預設比例",
   "quantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（1.5 * 2）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
@@ -639,6 +592,7 @@
     "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
   },
   "orderAttributeTitle": "顧客設定",
+  "orderAttributeHint": "顧客設定可以幫助我們統計都是哪些人來買我們的產品\n例如：\n20-30歲、外帶、上班族。",
   "orderAttributeCreate": "新增顧客設定",
   "orderAttributeUpdate": "編輯顧客設定",
   "orderAttributeReorder": "排序設定順序",
@@ -676,7 +630,7 @@
     }
   },
   "orderAttributeNameLabel": "顧客設定名稱",
-  "orderAttributeNameHint": "年齡",
+  "orderAttributeNameHint": "例如：顧客年齡",
   "orderAttributeNameRepeatError": "名稱不能重複",
   "orderAttributeModeTitle": "顧客設定種類",
   "orderAttributeOptionCreate": "新增選項",
@@ -701,7 +655,7 @@
       "mode": {}
     }
   },
-  "orderAttributeOptionsModeHint": "{mode, select, statOnly{} changePrice{-30 代表減少三十塊} changeDiscount{80 代表「八折」} other{UNKNOWN}}",
+  "orderAttributeOptionsModeHint": "{mode, select, statOnly{} changePrice{例如：-30 代表減少三十塊} changeDiscount{例如：80 代表「八折」} other{UNKNOWN}}",
   "@orderAttributeOptionsModeHint": {
     "description": "模式的提示",
     "placeholders": {
@@ -742,8 +696,8 @@
       }
     }
   },
-  "orderActionsOrderDone": "結帳",
-  "@orderActionsOrderDone": {
+  "orderActionsCheckout": "結帳",
+  "@orderActionsCheckout": {
     "description": "確認好購物車裡的餐點後準備往下一步走"
   },
   "orderActionsOpenChanger": "換錢",
@@ -783,6 +737,9 @@
   "@orderActionsLeave": {
     "description": "退出點餐頁"
   },
+  "orderCartSnapshotTutorialTitle": "點餐介面",
+  "orderCartSnapshotTutorialMessage": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「點餐的外觀」調整。",
+  "orderCartSnapshotEmpty": "尚未點餐",
   "orderCartToggleSelection": "反選",
   "@orderCartToggleSelection": {
     "description": "點選的取消點選，未點選的則點選"
@@ -794,7 +751,7 @@
   },
   "orderCartActionsDiscount": "打折",
   "orderCartActionsDiscountLabel": "折扣",
-  "orderCartActionsDiscountHint": "每項產品的折扣，0~100",
+  "orderCartActionsDiscountHint": "例如：50，代表打五折（半價）",
   "orderCartActionsDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
   "orderCartActionsDiscountSuffix": "折",
   "orderCartActionsChangePrice": "變價",
@@ -807,6 +764,7 @@
   "orderCartActionsChangeCountSuffix": "個",
   "orderCartActionsFree": "招待",
   "orderCartActionsDelete": "刪除",
+  "orderCartEmptyCatalog": "尚未設定產品種類",
   "orderCartItemPrice": "{price, plural, =0{免費} other{{price}元}}",
   "@orderCartItemPrice": {
     "description": "產品的價格",
@@ -849,28 +807,25 @@
   "@orderSetAttributeTitle": {
     "description": "點完餐後的顧客設定頁面的標題"
   },
-  "orderSetAttributeActionsDone": "下一步",
-  "@orderSetAttributeActionsDone": {
-    "description": "設定完顧客後，需要前往收銀機"
-  },
   "orderCashierTitle": "收銀機",
   "@orderCashierTitle": {
     "description": "點完餐後的收銀機頁面的標題"
-  },
-  "orderCashierActionsOrder": "點餐",
-  "@orderCashierActionsOrder": {
-    "description": "設定完付帳和找零，點選本按鈕後即完成單次點餐"
   },
   "orderCashierPaidFailed": "糟糕，付額小於總價唷",
   "@orderCashierPaidFailed": {
     "description": "點餐後失敗的說明，目前僅有付額小於售價，未來新增需要改用 select"
   },
+  "orderCashierPaidNotEnough": "收銀機錢不夠找囉！",
+  "orderCashierPaidUsingSmallMoney": "收銀機使用小錢去找零",
+  "orderCashierPaidUsingSmallMoneyAction": "說明",
+  "orderCashierPaidUsingSmallMoneyHint1": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。",
+  "orderCashierPaidUsingSmallMoneyHint2": "怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到設定頁關閉收銀機的相關提示。",
   "orderCashierPaidConfirmLeaveHistoryMode": "確定要要變更上次的點餐紀錄嗎？",
   "@orderCashierPaidConfirmLeaveHistoryMode": {
     "description": "若本次點餐是更改上次的點餐紀錄，需要提示給使用者"
   },
-  "orderCashierCalculatorPaidLabel": "付額",
-  "orderCashierCalculatorChangeLabel": "找錢",
+  "orderCashierPaidLabel": "付額",
+  "orderCashierChangeLabel": "找錢",
   "orderCashierCalculatorChangeNotEnough": "必須大於訂單總價",
   "orderCashierSnapshotChangeField": "找錢：{price}",
   "@orderCashierSnapshotChangeField": {
@@ -901,9 +856,9 @@
       }
     }
   },
-  "orderCashierProductTotalPrice": "產品總價",
-  "orderCashierProductTotalCost": "產品成本",
-  "orderCashierIncome": "淨利",
+  "orderCashierProductTotalPriceLabel": "產品總價",
+  "orderCashierProductTotalCostLabel": "產品成本",
+  "orderCashierIncomeLabel": "淨利",
   "orderProductIngredientDefaultName": "{ingredient}（預設）",
   "@orderProductIngredientDefaultName": {
     "description": "點單時的產品列表中各項產品的成分資訊",
@@ -938,16 +893,6 @@
     }
   },
   "orderCashierProductInfoTitle": "產品資訊",
-  "orderCashierProductTotalCount": "產品總數：{count}",
-  "@orderCashierProductTotalCount": {
-    "description": "結帳時顯示的總數",
-    "placeholders": {
-      "count": {
-        "description": "總數",
-        "type": "int"
-      }
-    }
-  },
   "orderCashierProductMetaCount": "總數：{count}",
   "@orderCashierProductMetaCount": {
     "description": "結帳時會最終顯示產品列表，這是其總數",
@@ -988,6 +933,16 @@
       }
     }
   },
+  "orderCashierProductMetaCatalog": "產品種類：{name}",
+  "@orderCashierProductMetaCatalog": {
+    "description": "訂單列表的產品種類名稱",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCashierProductMetaIngredient": "成分：",
   "exporterTitle": "匯入匯出",
   "exporterDescription": "請選擇欲匯入匯出的方式",
   "exporterGSTitle": "Google 試算表",
@@ -1002,8 +957,6 @@
     }
   },
   "exporterGSSpreadsheetLabel": "試算表",
-  "exporterGSSpreadsheetHint": "點擊以選擇試算表",
-  "exporterGSSpreadsheetHelper": "若不選擇則會在匯出時建立新的試算表",
   "exporterGSSheetLabel": "{item}的表單標題",
   "@exporterGSSheetLabel": {
     "description": "表單標題的說明",
@@ -1065,18 +1018,7 @@
       }
     }
   },
-  "btnImporterRefresh": "重整試算表",
-  "btnImporterRefreshHelp": "重新整理可以幫助找到擁有的表單。",
   "importPreviewerTitle": "預覽結果",
-  "importerColumnsInvalid": "第 {index} 行的資料有錯",
-  "@importerColumnsInvalid": {
-    "description": "匯入時，特定欄位的資料有錯",
-    "placeholders": {
-      "index": {
-        "type": "int"
-      }
-    }
-  },
   "importerColumnsCountError": "資料量不足，需要 {columns} 個欄位",
   "@importerColumnsCountError": {
     "description": "匯入時需要的資料量不足",

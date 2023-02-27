@@ -173,9 +173,9 @@ void main() {
         MaterialApp(routes: Routes.routes, home: const OrderScreen()),
       );
 
-      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('order.action.more')), findsOneWidget);
@@ -194,7 +194,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
 
       expect(find.text('p-1'), findsOneWidget);
@@ -235,7 +235,7 @@ void main() {
       );
       await tester.tap(fCKey('submit'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
@@ -276,7 +276,7 @@ void main() {
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
       await Cashier.instance.setCurrentByUnit(1, 5);
 
-      await tester.tap(find.byKey(const Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
       expect(find.text(S.actSuccess), findsOneWidget);
 
@@ -300,23 +300,31 @@ void main() {
     });
 
     testWidgets('With attributes and history mode', (tester) async {
+      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
       prepareOrderAttributes();
       Cart.instance.isHistoryMode = true;
 
       await tester.pumpWidget(
         MaterialApp(
           routes: Routes.routes,
+          scaffoldMessengerKey: scaffoldMessenger,
           home: const OrderScreen(),
         ),
       );
 
-      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.pumpAndSettle();
+
+      // go to calculator because of attributes have set.
+      expect(find.byKey(const Key('set_attribute.c-1.co-1')), findsNothing);
+
+      await tester.tap(find.byKey(const Key('order.set_attr')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('set_attribute.c-1.co-1')));
       await tester.tap(find.byKey(const Key('set_attribute.c-2.co-3')));
 
-      await tester.tap(find.byKey(const Key('set_attribute.next')));
+      await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
 
       when(database.query(
@@ -363,22 +371,22 @@ void main() {
       when(database.update(Seller.orderTable, 1, any))
           .thenAnswer((_) => Future.value(1));
 
-      await tester.tap(find.byKey(const Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.cancel')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('cashier.order')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       // wait for error message disappear
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
-      await tester.pump(const Duration(seconds: 1));
+      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+      await tester.pumpAndSettle();
+
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator popped
-      expect(find.byKey(const Key('cashier.order')), findsNothing);
+      expect(find.byKey(const Key('order.checkout')), findsNothing);
 
       verifyNever(database.push('order', any));
       verify(database.update('order', 1, argThat(predicate((e) {
@@ -481,7 +489,7 @@ void main() {
         MaterialApp(routes: Routes.routes, home: const OrderScreen()),
       );
 
-      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('cashier.snapshot.change')));

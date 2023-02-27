@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -16,7 +14,6 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
-import 'cart/cart_product_list.dart';
 import 'cart/cart_screen.dart';
 import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
@@ -33,9 +30,9 @@ class OrderScreen extends StatefulWidget {
 }
 
 class OrderScreenState extends State<OrderScreen> {
-  final _orderProductList = GlobalKey<OrderProductListState>();
-  final _cartProductList = GlobalKey<CartProductListState>();
-  final slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+  late final GlobalKey<OrderBySlidingPanelState> slidingPanel;
+  late final PageController _pageController;
+  late final ValueNotifier<int> _catalogIndexNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +40,20 @@ class OrderScreenState extends State<OrderScreen> {
 
     final menuCatalogRow = OrderCatalogList(
       catalogs: catalogs,
-      handleSelected: (catalog) =>
-          _orderProductList.currentState?.updateProducts(catalog),
+      indexNotifier: _catalogIndexNotifier,
+      onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final menuProductRow = OrderProductList(
-      key: _orderProductList,
-      products: catalogs.isEmpty ? const [] : catalogs.first.itemList,
-      handleSelected: (_) => _cartProductList.currentState?.scrollToBottom(),
+    final menuProductRow = PageView.builder(
+      controller: _pageController,
+      onPageChanged: (index) => _catalogIndexNotifier.value = index,
+      itemCount: catalogs.length,
+      itemBuilder: (context, index) {
+        return OrderProductList(products: catalogs[index].itemList);
+      },
     );
     final cartProductRow = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
-      child: CartScreen(productsKey: _cartProductList),
+      child: const CartScreen(),
     );
     final orderProductStateSelector = MultiProvider(
       providers: [
@@ -74,36 +74,25 @@ class OrderScreenState extends State<OrderScreen> {
         actions: [
           const OrderActions(key: Key('order.action.more')),
           TextButton(
-            key: const Key('order.cashier'),
-            onPressed: () => _handleOrder(),
-            child: Text(S.orderActionsOrderDone),
+            key: const Key('order.apply'),
+            onPressed: () => _onApply(),
+            child: Text(S.orderActionsCheckout),
           ),
         ],
       ),
       body: outlook.value == OrderOutlookTypes.slidingPanel
-          ? TutorialWrapper(
-              tutorials: [
-                _orderProductList,
-                slidingPanel,
-              ],
-              child: OrderBySlidingPanel(
-                key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-              ),
+          ? OrderBySlidingPanel(
+              key: slidingPanel,
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
             )
-          : TutorialWrapper(
-              tutorials: [
-                _orderProductList,
-              ],
-              child: OrderByOrientation(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
-              ),
+          : OrderByOrientation(
+              row1: menuCatalogRow,
+              row2: menuProductRow,
+              row3: cartProductRow,
+              row4: orderProductStateSelector,
             ),
     );
   }
@@ -111,6 +100,8 @@ class OrderScreenState extends State<OrderScreen> {
   @override
   void dispose() {
     Wakelock.disable();
+    _pageController.dispose();
+    _catalogIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -121,18 +112,15 @@ class OrderScreenState extends State<OrderScreen> {
     }
     // rebind menu/attributes if changed
     Cart.instance.rebind();
+
+    slidingPanel = GlobalKey<OrderBySlidingPanelState>();
+    _pageController = PageController();
+    _catalogIndexNotifier = ValueNotifier<int>(0);
     super.initState();
   }
 
-  void _handleOrder() async {
-    final route = OrderAttributes.instance.hasNotEmptyItems
-        ? Routes.orderAttribute
-        : Routes.orderCalculator;
-    var result = await Navigator.of(context).pushNamed(route);
-    if (result is String && mounted) {
-      result = await Navigator.of(context).pushNamed(result);
-    }
-
+  void _onApply() async {
+    final result = await Navigator.of(context).pushNamed(Routes.orderDetails);
     if (result is CashierUpdateStatus) {
       _showCashierWarning(result);
       slidingPanel.currentState?.reset();
@@ -144,32 +132,28 @@ class OrderScreenState extends State<OrderScreen> {
 
     switch (status) {
       case CashierUpdateStatus.ok:
-        showSuccessSnackbar(context, S.actSuccess);
+        showSnackBar(context, S.actSuccess);
         break;
       case CashierUpdateStatus.notEnough:
-        showErrorSnackbar(context, '收銀機錢不夠找囉！');
+        showSnackBar(context, S.orderCashierPaidNotEnough);
         break;
       case CashierUpdateStatus.usingSmall:
-        showInfoSnackbar(
+        showSnackBar(
           context,
-          '收銀機使用小錢去找零！',
-          SnackBarAction(
+          S.orderCashierPaidUsingSmallMoney,
+          action: SnackBarAction(
             key: const Key('order.cashierUsingSmallAction'),
-            label: '說明',
+            label: S.orderCashierPaidUsingSmallMoneyAction,
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => const SimpleDialog(
-                key: Key('order.cashierUsingSmallAction.tip'),
-                title: Text('收銀機使用小錢去找零'),
-                contentPadding: EdgeInsets.fromLTRB(8, 12, 8, 16),
+              builder: (context) => SimpleDialog(
+                key: const Key('order.cashierUsingSmallAction.tip'),
+                title: Text(S.orderCashierPaidUsingSmallMoney),
+                contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
                 children: [
-                  Text('找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n'
-                      '例如，售價「65」，消費者支付「100」，此時應找「35」\n'
-                      '如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。'),
-                  SizedBox(height: 8.0),
-                  Text('怎麼避免本提示：\n'
-                      '• 到換錢頁面把各幣值補足。\n'
-                      '• 到設定頁關閉收銀機的相關提示。'),
+                  Text(S.orderCashierPaidUsingSmallMoneyHint1),
+                  const SizedBox(height: 8.0),
+                  Text(S.orderCashierPaidUsingSmallMoneyHint2),
                 ],
               ),
             ),

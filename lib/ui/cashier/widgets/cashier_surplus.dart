@@ -60,9 +60,12 @@ class CashierSurplus extends StatelessWidget {
           helper: '和收銀機最一開始的總額的差額\n這可以快速幫你了解今天收銀機多了多少錢唷。',
         ),
         const Divider(),
-        const HintText(
-          '若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
-          textAlign: TextAlign.center,
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: HintText(
+            '若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
+            textAlign: TextAlign.center,
+          ),
         ),
         Expanded(
           child: Padding(

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/settings/language_setting.dart';
 
@@ -8,9 +7,14 @@ void main() {
       final languageSetting = LanguageSetting();
 
       expect(languageSetting.parseLanguage(''), isNull);
-      expect(languageSetting.parseLanguage('zh'), equals(const Locale('zh')));
+      expect(languageSetting.parseLanguage('zh'),
+          equals(LanguageSetting.defaultLanguage));
       expect(languageSetting.parseLanguage('zh_TW'),
-          equals(const Locale('zh', 'TW')));
+          equals(LanguageSetting.defaultLanguage));
+      expect(languageSetting.parseLanguage('zh_Hant'),
+          equals(LanguageSetting.defaultLanguage));
+      expect(languageSetting.parseLanguage('zh_Hant_TW'),
+          equals(LanguageSetting.defaultLanguage));
     });
   });
 }

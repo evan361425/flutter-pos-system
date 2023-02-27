@@ -33,7 +33,7 @@ class RouteCircularButton extends StatelessWidget {
             final result = await Navigator.of(context).pushNamed(route!);
             if (result == true) {
               if (context.mounted) {
-                showSuccessSnackbar(context, S.actSuccess);
+                showSnackBar(context, S.actSuccess);
               }
             }
           },

@@ -7,11 +7,13 @@ on:
     paths:
       - "docs/**"
       - "!docs/untranslated.json"
+      - "!docs/unused.txt"
       - mkdocs.yaml
   pull_request:
     paths:
       - "docs/**"
       - "!docs/untranslated.json"
+      - "!docs/unused.txt"
       - mkdocs.yaml
   workflow_dispatch:
 

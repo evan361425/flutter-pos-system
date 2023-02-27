@@ -41,9 +41,7 @@ class OrderAttributeScreen extends StatelessWidget {
           ? Center(
               child: EmptyBody(
               onPressed: goAddAttr,
-              tooltip: '顧客設定可以幫助我們統計都是哪些人來買我們的產品\n'
-                  '例如：\n'
-                  '20-30歲、外帶、上班族。',
+              tooltip: S.orderAttributeHint,
             ))
           : OrderAttributeList(attrs.itemList),
     );

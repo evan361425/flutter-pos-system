@@ -82,11 +82,7 @@ class _GradientTitle extends StatelessWidget {
           ],
         ),
       ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 18.0),
-      ),
+      child: Text(text, textAlign: TextAlign.center),
     );
   }
 }

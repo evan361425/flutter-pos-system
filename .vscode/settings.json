@@ -9,6 +9,7 @@
     "googleapis",
     "Linkify",
     "loadmore",
+    "LTRB",
     "mockito",
     "possystem",
     "pubspec",
@@ -18,6 +19,8 @@
     "sqflite",
     "sublist",
     "upgrader",
+    "vsync",
+    "wakelock",
     "xfile"
   ],
   "files.associations": {
@@ -28,5 +31,10 @@
       "fileMatch": ["/lib/l10n/*.arb"],
       "url": "/.vscode/arb.schema.json"
     }
-  ]
+  ],
+  "json.format.enable": false,
+  "json.maxItemsComputed": 100,
+  "[json]": {
+    "editor.formatOnSave": false
+  }
 }

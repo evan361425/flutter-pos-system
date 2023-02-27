@@ -1,49 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 const _operators = ['+', '-', 'x'];
 
 class OrderCashierCalculator extends StatefulWidget {
-  final void Function(num?) onTextChanged;
-
   final VoidCallback onSubmit;
 
   final num totalPrice;
 
   const OrderCashierCalculator({
     Key? key,
-    required this.onTextChanged,
     required this.onSubmit,
     required this.totalPrice,
   }) : super(key: key);
 
   @override
-  State<OrderCashierCalculator> createState() => OrderCashierCalculatorState();
+  State<OrderCashierCalculator> createState() => _OrderCashierCalculatorState();
 }
 
-class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
+class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   final paidState = GlobalKey<_SingleFieldState>();
   final changeState = GlobalKey<_SingleFieldState>();
 
   bool isOperating = false;
-
-  String get text => paidState.currentState?.text ?? '';
-
-  set text(String value) {
-    paidState.currentState?.setText(value);
-
-    if (value.isEmpty) {
-      changeState.currentState?.setText('');
-      widget.onTextChanged(null);
-    } else {
-      final parsed = calc(value);
-      final change = parsed - widget.totalPrice;
-      widget.onTextChanged(parsed);
-      changeState.currentState
-          ?.setText(change < 0 ? null : change.toCurrency());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +34,16 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
       Column(children: [
         _SingleField(
           key: paidState,
-          keyPrefix: 'cashier.calculator.paid',
-          prefix: S.orderCashierCalculatorPaidLabel,
+          id: 'cashier.calculator.paid',
+          prefix: S.orderCashierPaidLabel,
           defaultText: widget.totalPrice.toCurrency(),
+          errorText: '',
         ),
         const Divider(),
         _SingleField(
           key: changeState,
-          keyPrefix: 'cashier.calculator.change',
-          prefix: S.orderCashierCalculatorChangeLabel,
+          id: 'cashier.calculator.change',
+          prefix: S.orderCashierChangeLabel,
           defaultText: '0',
           errorText: S.orderCashierCalculatorChangeNotEnough,
         ),
@@ -72,49 +54,49 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           child: SingleChildScrollView(
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: execPostfix, text: '1'),
-                _CalculatorPostfixAction(action: execPostfix, text: '4'),
-                _CalculatorPostfixAction(action: execPostfix, text: '7'),
-                _CalculatorPostfixAction(action: execPostfix, text: '00'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '1'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '4'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '7'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '00'),
               ]),
               Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: execPostfix, text: '2'),
-                _CalculatorPostfixAction(action: execPostfix, text: '5'),
-                _CalculatorPostfixAction(action: execPostfix, text: '8'),
-                _CalculatorPostfixAction(action: execPostfix, text: '0'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '2'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '5'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '8'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '0'),
               ]),
               Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: execPostfix, text: '3'),
-                _CalculatorPostfixAction(action: execPostfix, text: '6'),
-                _CalculatorPostfixAction(action: execPostfix, text: '9'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '3'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '6'),
+                _CalculatorPostfixAction(action: _execPostfix, text: '9'),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.dot'),
-                  action: execDot,
+                  action: _execDot,
                   child: const Text('.'),
                 ),
               ]),
               Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorAction(
                   key: const Key('cashier.calculator.plus'),
-                  action: () => addOperator('+'),
+                  action: () => _addOperator('+'),
                   color: theme.colorScheme.secondary,
                   child: const Icon(Icons.add_sharp),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.minus'),
-                  action: () => addOperator('-'),
+                  action: () => _addOperator('-'),
                   color: theme.colorScheme.secondary,
                   child: const Icon(Icons.remove_sharp),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.times'),
-                  action: () => addOperator('x'),
+                  action: () => _addOperator('x'),
                   color: theme.colorScheme.secondary,
                   child: const Icon(Icons.clear_sharp),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.ceil'),
-                  action: execCeil,
+                  action: _execCeil,
                   color: theme.colorScheme.secondary,
                   child: const Icon(Icons.merge_type_rounded),
                 ),
@@ -122,19 +104,19 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
               Column(mainAxisSize: MainAxisSize.min, children: [
                 _CalculatorAction(
                   key: const Key('cashier.calculator.back'),
-                  action: execBack,
+                  action: _execBack,
                   color: theme.colorScheme.error,
                   child: const Icon(Icons.arrow_back_rounded),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.clear'),
-                  action: execClear,
+                  action: _execClear,
                   color: theme.colorScheme.error,
                   child: const Icon(Icons.refresh_sharp),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.submit'),
-                  action: execSubmit,
+                  action: _execSubmit,
                   height: 124,
                   child: isOperating
                       ? const Text('=')
@@ -148,22 +130,53 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     ]);
   }
 
-  void addOperator(String operator) {
+  @override
+  void initState() {
+    super.initState();
+    Cart.instance.currentPaid.addListener(_onPaidChanged);
+  }
+
+  @override
+  void dispose() {
+    Cart.instance.currentPaid.removeListener(_onPaidChanged);
+    super.dispose();
+  }
+
+  String get text => paidState.currentState?.text ?? '';
+
+  set text(String value) {
+    String? changeText = '';
+
+    if (value.isNotEmpty) {
+      final paid = _calc(value);
+      final change = paid - widget.totalPrice;
+
+      changeText = change >= 0 ? change.toCurrency() : null;
+      Cart.instance.currentPaid.value = paid;
+    } else {
+      Cart.instance.currentPaid.value = null;
+    }
+
+    paidState.currentState?.text = value;
+    changeState.currentState?.text = changeText;
+  }
+
+  void _addOperator(String operator) {
     if (text.isNotEmpty) {
-      text = calc(text).toCurrency() + operator;
+      text = _calc(text).toCurrency() + operator;
       setState(() {
         isOperating = true;
       });
     }
   }
 
-  void execCeil() {
-    final price = calc(text, widget.totalPrice.toInt());
+  void _execCeil() {
+    final price = _calc(text, widget.totalPrice.toInt());
     final ceilPrice = CurrencySetting.instance.ceil(price);
     text = ceilPrice.toCurrency();
   }
 
-  void execBack() {
+  void _execBack() {
     if (text.isNotEmpty) {
       text = text.substring(0, text.length - 1);
       setState(() {
@@ -172,47 +185,46 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     }
   }
 
-  void execClear() {
-    if (text.isNotEmpty) {
-      text = '';
-      setState(() {
-        isOperating = false;
-      });
-    }
+  void _execClear() {
+    text = '';
+    setState(() {
+      isOperating = false;
+    });
   }
 
-  void execSubmit() {
+  void _execSubmit() {
     if (isOperating) {
       setState(() {
         isOperating = false;
       });
-      text = calc(text).toCurrency();
+      text = _calc(text).toCurrency();
     } else {
       widget.onSubmit();
     }
   }
 
-  void execDot() {
-    if (text.isNotEmpty) {
-      if (!text.contains('.')) {
-        text = '$text.';
-      }
-    } else {
+  void _execDot() {
+    if (text.isEmpty) {
       text = '0.';
+      return;
+    }
+
+    if (!text.contains('.')) {
+      text = '$text.';
     }
   }
 
-  void execPostfix(String postfix) {
+  void _execPostfix(String postfix) {
     text = text + postfix;
   }
 
-  num calc(String val, [num other = 0]) {
+  num _calc(String val, [num other = 0]) {
     final fallback = num.tryParse(val) ?? other;
     try {
-      final deli = _operators.firstWhere((o) => val.contains(o));
-      final parts = val.split(deli).map((e) => num.tryParse(e)).toList();
+      final operator = _operators.firstWhere((o) => val.contains(o));
+      final parts = val.split(operator).map((e) => num.tryParse(e)).toList();
 
-      switch (deli) {
+      switch (operator) {
         case '+':
           return parts[0]! + (parts[1] ?? 0);
         case '-':
@@ -224,6 +236,13 @@ class OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     } on StateError {
       return fallback;
     }
+  }
+
+  _onPaidChanged() {
+    final paid = Cart.instance.currentPaid.value;
+    paidState.currentState?.text = paid?.toCurrency() ?? '';
+    changeState.currentState?.text =
+        paid == null ? '' : (paid - widget.totalPrice).toCurrency();
   }
 }
 
@@ -283,14 +302,14 @@ class _SingleField extends StatefulWidget {
 
   final String errorText;
 
-  final String keyPrefix;
+  final String id;
 
   const _SingleField({
     Key? key,
-    required this.keyPrefix,
+    required this.id,
     required this.prefix,
     required this.defaultText,
-    this.errorText = '',
+    required this.errorText,
   }) : super(key: key);
 
   @override
@@ -298,21 +317,23 @@ class _SingleField extends StatefulWidget {
 }
 
 class _SingleFieldState extends State<_SingleField> {
-  String? text = '';
+  String? _text = '';
 
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text(widget.prefix),
-      text == null
-          ? Text(widget.errorText, key: Key('${widget.keyPrefix}.error'))
-          : text!.isEmpty
-              ? Text(widget.defaultText, key: Key('${widget.keyPrefix}.hint'))
-              : Text(text!, key: Key(widget.keyPrefix)),
+      _text == null
+          ? Text(widget.errorText, key: Key('${widget.id}.error'))
+          : _text!.isEmpty
+              ? Text(widget.defaultText, key: Key('${widget.id}.hint'))
+              : Text(_text!, key: Key(widget.id)),
     ]);
   }
 
-  void setText(String? value) {
-    setState(() => text = value);
+  String? get text => _text;
+
+  set text(String? value) {
+    setState(() => _text = value);
   }
 }

@@ -72,13 +72,13 @@ class BottomSheetActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      _heading(context),
+      _buildHeading(context),
       ...[for (final action in actions) action.toWidget(context)],
-      _cancelAction(context),
+      _buildCancelAction(context),
     ]);
   }
 
-  Widget _cancelAction(BuildContext context) {
+  Widget _buildCancelAction(BuildContext context) {
     return ListTile(
       title: Text(S.btnCancel),
       leading: const Icon(Icons.cancel_sharp),
@@ -86,13 +86,13 @@ class BottomSheetActions extends StatelessWidget {
     );
   }
 
-  Widget _heading(BuildContext context) {
+  Widget _buildHeading(BuildContext context) {
     return Container(
       height: 4.0,
       width: 36.0,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceTint,
+        color: Theme.of(context).highlightColor,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
     );

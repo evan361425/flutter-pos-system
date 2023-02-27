@@ -5,58 +5,96 @@ class OutlinedText extends StatelessWidget {
 
   final String? badge;
 
+  final EdgeInsets? margin;
+
   final double? textScaleFactor;
 
+  /// * `textStyle` - Theme.textTheme.labelLarge
+  /// * `backgroundColor` - transparent
+  /// * `foregroundColor`
+  ///   * disabled - Theme.colorScheme.onSurface(0.38)
+  ///   * others - Theme.colorScheme.primary
+  /// * `overlayColor`
+  ///   * hovered - Theme.colorScheme.primary(0.08)
+  ///   * focused or pressed - Theme.colorScheme.primary(0.12)
+  ///   * others - null
+  /// * `shadowColor` - null
+  /// * `surfaceTintColor` - null
+  /// * `elevation` - 0
+  /// * `padding`
+  ///   * `textScaleFactor <= 1` - horizontal(16)
+  ///   * `1 < textScaleFactor <= 2` - lerp(horizontal(16), horizontal(8))
+  ///   * `2 < textScaleFactor <= 3` - lerp(horizontal(8), horizontal(4))
+  ///   * `3 < textScaleFactor` - horizontal(4)
+  /// * `minimumSize` - Size(64, 40)
+  /// * `fixedSize` - null
+  /// * `maximumSize` - Size.infinite
+  /// * `side`
+  ///   * disabled - BorderSide(color: Theme.colorScheme.onSurface(0.12))
+  ///   * others - BorderSide(color: Theme.colorScheme.outline)
+  /// * `shape` - StadiumBorder()
+  /// * `mouseCursor`
+  ///   * disabled - SystemMouseCursors.basic
+  ///   * others - SystemMouseCursors.click
+  /// * `visualDensity` - theme.visualDensity
+  /// * `tapTargetSize` - theme.materialTapTargetSize
+  /// * `animationDuration` - kThemeChangeDuration
+  /// * `enableFeedback` - true
+  /// * `alignment` - Alignment.center
+  /// * `splashFactory` - Theme.splashFactory
   const OutlinedText(
     this.text, {
     Key? key,
     this.badge,
+    this.margin,
     this.textScaleFactor,
   }) : super(key: key);
 
   @override
+
+  /// Mainly copy from [ButtonStyleButton]
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final base = Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      padding: const EdgeInsets.fromLTRB(12, 6.0, 12, 6.0),
-      constraints: const BoxConstraints(minWidth: 64.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outline),
-        borderRadius: BorderRadius.circular(24.0),
+    final padding = ButtonStyleButton.scaledPadding(
+      const EdgeInsets.symmetric(horizontal: 16),
+      const EdgeInsets.symmetric(horizontal: 8),
+      const EdgeInsets.symmetric(horizontal: 4),
+      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
+    );
+
+    final base = Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 64, minHeight: 40),
+        child: Material(
+          textStyle: theme.textTheme.labelLarge!
+              .copyWith(color: theme.colorScheme.primary),
+          shape: StadiumBorder(
+            side: BorderSide(color: theme.colorScheme.outline),
+          ),
+          color: Colors.transparent,
+          type: MaterialType.button,
+          child: Padding(
+            padding: padding,
+            child: Align(
+              alignment: Alignment.center,
+              widthFactor: 1.0,
+              heightFactor: 1.0,
+              child: Text(text),
+            ),
+          ),
+        ),
       ),
-      child: Text(text, textAlign: TextAlign.center),
     );
 
     if (badge == null) {
       return base;
     }
 
-    return Stack(children: [
-      base,
-      Positioned(
-        right: 0,
-        top: 0,
-        child: Container(
-          height: theme.badgeTheme.largeSize ?? 16.0,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: theme.badgeTheme.backgroundColor ?? theme.colorScheme.error,
-            shape: const StadiumBorder(),
-          ),
-          padding: theme.badgeTheme.padding ??
-              const EdgeInsets.symmetric(horizontal: 4),
-          alignment: Alignment.center,
-          child: Text(
-            badge!,
-            style: theme.textTheme.labelSmall!.copyWith(
-              color: theme.colorScheme.onError,
-            ),
-            textAlign: TextAlign.center,
-            textScaleFactor: textScaleFactor,
-          ),
-        ),
-      )
-    ]);
+    return Badge(
+      alignment: const AlignmentDirectional(0, 0),
+      label: Text(badge!),
+      child: base,
+    );
   }
 }

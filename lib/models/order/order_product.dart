@@ -56,6 +56,8 @@ class OrderProduct extends ChangeNotifier {
 
   num get price => count * singlePrice;
 
+  num get cost => count * product.cost;
+
   Iterable<String> getIngredientNames({bool onlyQuantified = true}) {
     final entries = onlyQuantified
         ? selectedQuantity.entries.where((entry) => entry.value != null)

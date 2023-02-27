@@ -77,7 +77,7 @@ class OrderActions extends StatelessWidget {
 
         if (!await Cart.instance.stash()) {
           if (context.mounted) {
-            showInfoSnackbar(context, S.orderActionsStashHitLimit);
+            showSnackBar(context, S.orderActionsStashHitLimit);
           }
           return;
         }
@@ -85,8 +85,8 @@ class OrderActions extends StatelessWidget {
         final success = await Cart.instance.popHistory();
         if (context.mounted) {
           success
-              ? showSuccessSnackbar(context, S.actSuccess)
-              : showInfoSnackbar(context, S.orderActionsShowLastOrderNotFound);
+              ? showSnackBar(context, S.actSuccess)
+              : showSnackBar(context, S.orderActionsShowLastOrderNotFound);
         }
         return;
       case OrderActionMode.dropStash:
@@ -97,7 +97,7 @@ class OrderActions extends StatelessWidget {
 
         if (!await Cart.instance.stash()) {
           if (context.mounted) {
-            showInfoSnackbar(context, S.orderActionsStashHitLimit);
+            showSnackBar(context, S.orderActionsStashHitLimit);
           }
           return;
         }
@@ -105,23 +105,23 @@ class OrderActions extends StatelessWidget {
         final success = await Cart.instance.drop(isEmpty ? 1 : 2);
         if (context.mounted) {
           success
-              ? showSuccessSnackbar(context, S.actSuccess)
-              : showInfoSnackbar(context, S.orderActionsDropStashNotFound);
+              ? showSnackBar(context, S.actSuccess)
+              : showSnackBar(context, S.orderActionsDropStashNotFound);
         }
         return;
       case OrderActionMode.stash:
         if (Cart.instance.isEmpty) return;
 
         return await Cart.instance.stash()
-            ? showSuccessSnackbar(context, S.actSuccess)
-            : showInfoSnackbar(context, S.orderActionsStashHitLimit);
+            ? showSnackBar(context, S.actSuccess)
+            : showSnackBar(context, S.orderActionsStashHitLimit);
       case OrderActionMode.changer:
         final success =
             await Navigator.of(context).pushNamed(Routes.cashierChanger);
 
         if (success == true) {
           if (context.mounted) {
-            showSuccessSnackbar(context, S.actSuccess);
+            showSnackBar(context, S.actSuccess);
           }
         }
         return;

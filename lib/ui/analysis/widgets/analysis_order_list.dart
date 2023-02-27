@@ -170,6 +170,7 @@ class _AnalysisOrderModal extends StatelessWidget {
             totalPrice: order.totalPrice,
             productCost: order.cost,
             income: order.income,
+            paid: order.paid,
           ),
         ),
       ]),
@@ -197,21 +198,6 @@ class _OrderTile extends StatelessWidget {
 
   const _OrderTile(this.order);
 
-  Widget get leading {
-    return Padding(
-      padding: const EdgeInsets.only(top: kSpacing1),
-      child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
-    );
-  }
-
-  Widget get title {
-    final title = order.products.map<String>((e) {
-      final count = e.count > 1 ? ' * ${e.count}' : '';
-      return '${e.productName}$count';
-    }).join(MetaBlock.string);
-    return Text(title);
-  }
-
   @override
   Widget build(BuildContext context) {
     final subtitle = MetaBlock.withString(context, [
@@ -222,12 +208,59 @@ class _OrderTile extends StatelessWidget {
 
     return ListTile(
       key: Key('analysis.order_list.${order.id}'),
-      leading: leading,
-      title: title,
+      leading: buildLeading(),
+      title: buildTitle(context),
       subtitle: subtitle,
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => _AnalysisOrderModal(order)),
       ),
+    );
+  }
+
+  Widget buildLeading() {
+    return Padding(
+      padding: const EdgeInsets.only(top: kSpacing1),
+      child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
+    );
+  }
+
+  Widget buildTitle(BuildContext context) {
+    int index = 0;
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [
+        for (final product in order.products) ...[
+          if (index++ > 0) const Text(MetaBlock.string),
+          Stack(clipBehavior: Clip.none, children: [
+            Text(product.productName),
+            if (product.count > 1)
+              Positioned(
+                top: 0,
+                right: -8,
+                child: DefaultTextStyle(
+                  style: theme.textTheme.labelSmall!.copyWith(
+                    color: theme.colorScheme.onError,
+                  ),
+                  child: IntrinsicWidth(
+                    child: Container(
+                      height: 16,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: theme.colorScheme.error,
+                        shape: const StadiumBorder(),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      alignment: Alignment.center,
+                      child: Text(product.count.toString()),
+                    ),
+                  ),
+                ),
+              ),
+          ]),
+        ],
+        const SizedBox(width: 8),
+      ]),
     );
   }
 }
@@ -326,5 +359,5 @@ enum _Action {
 }
 
 String _parseCreatedAt(DateTime t) {
-  return DateFormat('MEd Hms', S.localeName).format(t);
+  return DateFormat('MMMMd（E） H：m：s', S.localeName).format(t);
 }

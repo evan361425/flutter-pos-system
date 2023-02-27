@@ -20,6 +20,9 @@ class OrderCashierProductList extends StatelessWidget {
   /// 淨利，只需考慮總價和成本，不需考慮付額
   final num? income;
 
+  /// 付額
+  final num? paid;
+
   const OrderCashierProductList({
     Key? key,
     required this.attributes,
@@ -28,6 +31,7 @@ class OrderCashierProductList extends StatelessWidget {
     required this.productsPrice,
     this.productCost,
     this.income,
+    this.paid,
   })  : attributePrice = totalPrice - productsPrice,
         super(key: key);
 
@@ -36,18 +40,23 @@ class OrderCashierProductList extends StatelessWidget {
     final priceWidget = ExpansionTile(
       title: Text(S.orderCashierTotalPrice(totalPrice)),
       children: <Widget>[
+        if (paid != null)
+          ListTile(
+            title: Text(S.orderCashierPaidLabel),
+            trailing: Text(paid!.toCurrency()),
+          ),
         ListTile(
-          title: Text(S.orderCashierProductTotalPrice),
+          title: Text(S.orderCashierProductTotalPriceLabel),
           trailing: Text(productsPrice.toCurrency()),
         ),
         if (productCost != null)
           ListTile(
-            title: Text(S.orderCashierProductTotalCost),
+            title: Text(S.orderCashierProductTotalCostLabel),
             trailing: Text(productCost!.toCurrency()),
           ),
         if (income != null)
           ListTile(
-            title: Text(S.orderCashierIncome),
+            title: Text(S.orderCashierIncomeLabel),
             trailing: Text(income!.toCurrency()),
           ),
         ListTile(
@@ -67,16 +76,12 @@ class OrderCashierProductList extends StatelessWidget {
             children: <Widget>[
               for (final attribute in attributes)
                 ListTile(
-                  title: Row(children: [
-                    Text(attribute.name.toString()),
-                    OutlinedText(attribute.optionName.toString()),
-                  ]),
+                  title: Text(attribute.name.toString()),
                   subtitle: OrderAttributeValueWidget(
                     attribute.mode,
                     attribute.modeValue,
                   ),
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -3),
+                  trailing: OutlinedText(attribute.optionName.toString()),
                 ),
             ],
           );
@@ -88,6 +93,8 @@ class OrderCashierProductList extends StatelessWidget {
         TextDivider(label: S.orderCashierProductInfoTitle),
         HintText(S.orderCashierProductMetaCount(productCount)),
         for (final product in products) _ProductTile(product),
+        // avoid calculator overlapping it
+        const SizedBox(height: 36),
       ]),
     );
   }
@@ -127,8 +134,9 @@ class _ProductTile extends StatelessWidget {
       S.orderCashierProductMetaCount(data.totalCount),
       if (data.totalCost != null)
         S.orderCashierProductMetaCost(data.totalCost!),
-      if (data.product != null) '產品種類：${data.product!.catalog.name}',
-      if (data.ingredientNames.isNotEmpty) '成分：',
+      if (data.product != null)
+        S.orderCashierProductMetaCatalog(data.product!.catalog.name),
+      if (data.ingredientNames.isNotEmpty) S.orderCashierProductMetaIngredient,
     ];
     return ExpansionTile(
       title: Text(data.productName),
@@ -147,9 +155,9 @@ class _ProductTile extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(text),
           ),
-        Wrap(children: [
+        Wrap(spacing: 4, runSpacing: 4, children: [
           for (final ingredient in data.ingredientNames)
-            OutlinedText(ingredient)
+            OutlinedText(ingredient),
         ]),
       ],
     );

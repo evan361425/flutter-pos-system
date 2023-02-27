@@ -44,7 +44,7 @@ class DeleteDialog extends StatelessWidget {
     startDelete() async {
       await deleteCallback();
       if (context.mounted) {
-        showSuccessSnackbar(context, S.actSuccess);
+        showSnackBar(context, S.actSuccess);
       }
 
       if (popAfterDeleted) {
