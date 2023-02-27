@@ -40,14 +40,13 @@ class OrderCashierProductList extends StatelessWidget {
     final priceWidget = ExpansionTile(
       title: Text(S.orderCashierTotalPrice(totalPrice)),
       children: <Widget>[
-        if (paid != null)
-          ListTile(
-            title: Text(S.orderCashierPaidLabel),
-            trailing: Text(paid!.toCurrency()),
-          ),
         ListTile(
           title: Text(S.orderCashierProductTotalPriceLabel),
           trailing: Text(productsPrice.toCurrency()),
+        ),
+        ListTile(
+          title: Text(S.orderCashierAttributeTotalPrice),
+          trailing: Text(attributePrice.toCurrency()),
         ),
         if (productCost != null)
           ListTile(
@@ -59,10 +58,11 @@ class OrderCashierProductList extends StatelessWidget {
             title: Text(S.orderCashierIncomeLabel),
             trailing: Text(income!.toCurrency()),
           ),
-        ListTile(
-          title: Text(S.orderCashierAttributeTotalPrice),
-          trailing: Text(attributePrice.toCurrency()),
-        ),
+        if (paid != null)
+          ListTile(
+            title: Text(S.orderCashierPaidLabel),
+            trailing: Text(paid!.toCurrency()),
+          ),
       ],
     );
 
