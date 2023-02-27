@@ -45,4 +45,4 @@ for text, im in zip(textList, images):
     )
     x_offset += im.size[0] + space
 
-new_im.save(os.path.join(pp("images/index-introduction.png")))
+new_im.save(os.path.join(pp("../docs/images/index-introduction.png")))
