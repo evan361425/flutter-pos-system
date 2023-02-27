@@ -23,45 +23,39 @@ class _HomeScaffoldState extends State<HomeScaffold>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        key: const Key('home.order'),
-        onPressed: () => Navigator.of(context).pushNamed(Routes.order),
-        tooltip: '點餐',
-        child: const Icon(Icons.local_grocery_store_outlined),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: Theme.of(context).gradientColors,
-            tileMode: TileMode.clamp,
+      appBar: AppBar(
+        title: Text(S.appTitle),
+        centerTitle: true,
+        shadowColor: Theme.of(context).colorScheme.shadow,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: Theme.of(context).gradientColors,
+              tileMode: TileMode.clamp,
+            ),
           ),
         ),
-        child: TabBar(
+        notificationPredicate: (ScrollNotification notification) {
+          return notification.depth == 1;
+        },
+        scrolledUnderElevation: 4.0,
+        actions: [
+          TextButton(
+            key: const Key('home.order'),
+            onPressed: () => Navigator.of(context).pushNamed(Routes.order),
+            child: const Text('點餐'),
+          )
+        ],
+        bottom: TabBar(
           controller: _tabController,
           tabs: [
             _CustomTab(
-              key: const Key('home.analysis'),
-              icon: Icons.equalizer_outlined,
-              text: S.homeTabAnalysis,
-            ),
-            _CustomTab(
-              key: const Key('home.stock'),
-              icon: Icons.store_outlined,
-              text: S.homeTabStock,
-            ),
-            _CustomTab(
-              key: const Key('home.cashier'),
-              icon: Icons.attach_money_outlined,
-              text: S.homeTabCashier,
-            ),
-            _CustomTab(
-              key: const Key('home.setting'),
-              icon: Icons.settings_outlined,
-              text: S.homeTabSetting,
-            ),
+                key: const Key('home.analysis'), text: S.homeTabAnalysis),
+            _CustomTab(key: const Key('home.stock'), text: S.homeTabStock),
+            _CustomTab(key: const Key('home.cashier'), text: S.homeTabCashier),
+            _CustomTab(key: const Key('home.setting'), text: S.homeTabSetting),
           ],
         ),
       ),
@@ -99,19 +93,15 @@ class _HomeScaffoldState extends State<HomeScaffold>
 class _CustomTab extends StatelessWidget {
   final String text;
 
-  final IconData icon;
-
   const _CustomTab({
     Key? key,
     required this.text,
-    required this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Tab(
       iconMargin: const EdgeInsets.only(bottom: 6),
-      icon: Icon(icon),
       child: Text(
         text,
         style: const TextStyle(fontSize: 14),

@@ -34,6 +34,7 @@ class _StockScreenState<T> extends State<StockScreen<T>> {
       return Center(
         key: const Key('stock.empty'),
         child: EmptyBody(
+          tooltip: '新增成份後，就可以開始追蹤這些成份的庫存囉！',
           onPressed: () => Navigator.of(context).pushNamed(
             Routes.stockIngredient,
           ),
@@ -86,6 +87,6 @@ class _StockScreenState<T> extends State<StockScreen<T>> {
   void initState() {
     super.initState();
 
-    widget.tab?.bindAnt(gaffer);
+    widget.tab?.bindAnt(gaffer, startNow: true);
   }
 }

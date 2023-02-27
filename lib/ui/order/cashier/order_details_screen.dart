@@ -25,23 +25,34 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
   @override
   Widget build(BuildContext context) {
     // tab widgets
-    final tabBar = TabBar(
-      controller: _controller,
-      tabs: [
-        if (hasAttr)
+    PreferredSizeWidget? tabBar;
+    Widget body = const OrderCashierModal();
+
+    if (hasAttr) {
+      tabBar = TabBar(
+        controller: _controller,
+        tabs: [
           Tab(key: const Key('order.set_attr'), text: S.orderSetAttributeTitle),
-        Tab(key: const Key('order.cashier'), text: S.orderCashierTitle),
-      ],
-    );
-    final tabBarView = TabBarView(controller: _controller, children: [
-      if (hasAttr) const OderSetAttributeModal(),
-      const OrderCashierModal(),
-    ]);
+          Tab(key: const Key('order.cashier'), text: S.orderCashierTitle),
+        ],
+      );
+
+      body = DefaultTabController(
+        length: 2,
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          Expanded(
+            child: TabBarView(controller: _controller, children: const [
+              OderSetAttributeModal(),
+              OrderCashierModal(),
+            ]),
+          ),
+        ]),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        title: tabBar,
         actions: [
           TextButton(
             key: const Key('order.checkout'),
@@ -49,13 +60,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
             child: Text(S.orderActionsCheckout),
           ),
         ],
+        bottom: tabBar,
       ),
-      body: DefaultTabController(
-        length: tabBar.tabs.length,
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Expanded(child: tabBarView),
-        ]),
-      ),
+      body: body,
     );
   }
 

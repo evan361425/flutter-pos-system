@@ -15,30 +15,28 @@ class IngredientExpansionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final key = 'product_ingredient.${ingredient.id}';
-    return Card(
-      child: ExpansionTile(
-        key: Key(key),
-        title: Text(ingredient.name),
-        subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
-        expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ListTile(
-              key: Key('$key.add'),
-              leading: const CircleAvatar(child: Icon(KIcons.add)),
-              title: Text(S.menuQuantityCreate),
-              onTap: () => Navigator.of(context).pushNamed(
-                    Routes.menuQuantity,
-                    arguments: ingredient,
-                  ),
-              trailing: IconButton(
-                key: Key('$key.more'),
-                onPressed: () => showActions(context),
-                enableFeedback: true,
-                icon: const Icon(KIcons.more),
-              )),
-          for (final item in ingredient.items) _QuantityTile(item),
-        ],
-      ),
+    return ExpansionTile(
+      key: Key(key),
+      title: Text(ingredient.name),
+      subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
+      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ListTile(
+            key: Key('$key.add'),
+            leading: const CircleAvatar(child: Icon(KIcons.add)),
+            title: Text(S.menuQuantityCreate),
+            onTap: () => Navigator.of(context).pushNamed(
+                  Routes.menuQuantity,
+                  arguments: ingredient,
+                ),
+            trailing: IconButton(
+              key: Key('$key.more'),
+              onPressed: () => showActions(context),
+              enableFeedback: true,
+              icon: const Icon(KIcons.more),
+            )),
+        for (final item in ingredient.items) _QuantityTile(item),
+      ],
     );
   }
 

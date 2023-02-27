@@ -120,7 +120,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   void initState() {
     super.initState();
 
-    widget.tab?.bindAnt(antGaffer);
+    widget.tab?.bindAnt(antGaffer, startNow: true);
   }
 }
 
