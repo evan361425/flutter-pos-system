@@ -3,8 +3,10 @@ arb-dir: lib/l10n
 template-arb-file: app_zh.arb
 output-localization-file: app_localizations.dart
 preferred-supported-locales:
-  - "zh"
+  - "zh_Hant_TW"
+  - "zh_Hant"
   - "zh_TW"
+  - "zh"
   - "en"
 use-deferred-loading: true
 untranslated-messages-file: docs/untranslated.json

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartSnapshot extends StatelessWidget {
@@ -12,7 +13,7 @@ class CartSnapshot extends StatelessWidget {
     final cart = context.watch<Cart>();
 
     if (cart.isEmpty) {
-      return const Center(child: HintText('尚未點餐'));
+      return Center(child: HintText(S.orderCartSnapshotEmpty));
     }
 
     var count = 0;

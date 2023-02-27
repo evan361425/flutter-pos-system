@@ -35,7 +35,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
         _SingleField(
           key: paidState,
           id: 'cashier.calculator.paid',
-          prefix: S.orderCashierCalculatorPaidLabel,
+          prefix: S.orderCashierPaidLabel,
           defaultText: widget.totalPrice.toCurrency(),
           errorText: '',
         ),
@@ -43,7 +43,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
         _SingleField(
           key: changeState,
           id: 'cashier.calculator.change',
-          prefix: S.orderCashierCalculatorChangeLabel,
+          prefix: S.orderCashierChangeLabel,
           defaultText: '0',
           errorText: S.orderCashierCalculatorChangeNotEnough,
         ),

@@ -76,7 +76,7 @@ class OrderScreenState extends State<OrderScreen> {
           TextButton(
             key: const Key('order.apply'),
             onPressed: () => _onApply(),
-            child: Text(S.orderActionsOrderDone),
+            child: Text(S.orderActionsCheckout),
           ),
         ],
       ),
@@ -135,29 +135,25 @@ class OrderScreenState extends State<OrderScreen> {
         showSnackBar(context, S.actSuccess);
         break;
       case CashierUpdateStatus.notEnough:
-        showSnackBar(context, '收銀機錢不夠找囉！');
+        showSnackBar(context, S.orderCashierPaidNotEnough);
         break;
       case CashierUpdateStatus.usingSmall:
         showSnackBar(
           context,
-          '收銀機使用小錢去找零！',
+          S.orderCashierPaidUsingSmallMoney,
           action: SnackBarAction(
             key: const Key('order.cashierUsingSmallAction'),
-            label: '說明',
+            label: S.orderCashierPaidUsingSmallMoneyAction,
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => const SimpleDialog(
-                key: Key('order.cashierUsingSmallAction.tip'),
-                title: Text('收銀機使用小錢去找零'),
-                contentPadding: EdgeInsets.fromLTRB(8, 12, 8, 16),
+              builder: (context) => SimpleDialog(
+                key: const Key('order.cashierUsingSmallAction.tip'),
+                title: Text(S.orderCashierPaidUsingSmallMoney),
+                contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
                 children: [
-                  Text('找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n'
-                      '例如，售價「65」，消費者支付「100」，此時應找「35」\n'
-                      '如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。'),
-                  SizedBox(height: 8.0),
-                  Text('怎麼避免本提示：\n'
-                      '• 到換錢頁面把各幣值補足。\n'
-                      '• 到設定頁關閉收銀機的相關提示。'),
+                  Text(S.orderCashierPaidUsingSmallMoneyHint1),
+                  const SizedBox(height: 8.0),
+                  Text(S.orderCashierPaidUsingSmallMoneyHint2),
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
 import 'package:possystem/models/menu/catalog.dart';
+import 'package:possystem/translator.dart';
 
 class OrderCatalogList extends StatefulWidget {
   final List<Catalog> catalogs;
@@ -26,10 +27,10 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
   @override
   Widget build(BuildContext context) {
     if (widget.catalogs.isEmpty) {
-      return const SingleRowWrap(children: [
+      return SingleRowWrap(children: [
         ChoiceChip(
           selected: false,
-          label: Text('尚未設定產品種類'),
+          label: Text(S.orderCartEmptyCatalog),
         ),
       ]);
     }

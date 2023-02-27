@@ -46,7 +46,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           TextButton(
             key: const Key('order.checkout'),
             onPressed: onCheckout,
-            child: const Text('結帳'),
+            child: Text(S.orderActionsCheckout),
           ),
         ],
       ),
@@ -85,7 +85,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           }
         } on PaidException {
           if (context.mounted) {
-            showSnackBar(context, S.orderCashierCalculatorChangeNotEnough);
+            showSnackBar(context, S.orderCashierPaidFailed);
           }
         }
       }

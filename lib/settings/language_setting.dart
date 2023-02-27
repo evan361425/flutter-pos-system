@@ -5,7 +5,17 @@ import 'package:possystem/settings/setting.dart';
 
 class LanguageSetting extends Setting<Locale> {
   // Make SettingsService a private variable so it is not used directly.
-  static const defaultLanguage = Locale('zh', 'TW');
+  static const defaultLanguage = Locale.fromSubtags(
+    languageCode: 'zh',
+    countryCode: 'TW',
+  );
+
+  static const supported = [
+    defaultLanguage,
+    Locale('en'),
+  ];
+
+  static const supportedNames = ['繁體中文', 'English'];
 
   @override
   final String key = 'language';
@@ -28,6 +38,9 @@ class LanguageSetting extends Setting<Locale> {
 
     final codes = value.split('_');
 
-    return Locale(codes[0], codes.length == 1 ? null : codes[1]);
+    return supported.firstWhere(
+      (e) => e.languageCode == codes[0],
+      orElse: () => defaultLanguage,
+    );
   }
 }

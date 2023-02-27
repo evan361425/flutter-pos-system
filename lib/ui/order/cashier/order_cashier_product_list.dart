@@ -42,21 +42,21 @@ class OrderCashierProductList extends StatelessWidget {
       children: <Widget>[
         if (paid != null)
           ListTile(
-            title: const Text('付額'),
+            title: Text(S.orderCashierPaidLabel),
             trailing: Text(paid!.toCurrency()),
           ),
         ListTile(
-          title: Text(S.orderCashierProductTotalPrice),
+          title: Text(S.orderCashierProductTotalPriceLabel),
           trailing: Text(productsPrice.toCurrency()),
         ),
         if (productCost != null)
           ListTile(
-            title: Text(S.orderCashierProductTotalCost),
+            title: Text(S.orderCashierProductTotalCostLabel),
             trailing: Text(productCost!.toCurrency()),
           ),
         if (income != null)
           ListTile(
-            title: Text(S.orderCashierIncome),
+            title: Text(S.orderCashierIncomeLabel),
             trailing: Text(income!.toCurrency()),
           ),
         ListTile(
@@ -134,8 +134,9 @@ class _ProductTile extends StatelessWidget {
       S.orderCashierProductMetaCount(data.totalCount),
       if (data.totalCost != null)
         S.orderCashierProductMetaCost(data.totalCost!),
-      if (data.product != null) '產品種類：${data.product!.catalog.name}',
-      if (data.ingredientNames.isNotEmpty) '成分：',
+      if (data.product != null)
+        S.orderCashierProductMetaCatalog(data.product!.catalog.name),
+      if (data.ingredientNames.isNotEmpty) S.orderCashierProductMetaIngredient,
     ];
     return ExpansionTile(
       title: Text(data.productName),

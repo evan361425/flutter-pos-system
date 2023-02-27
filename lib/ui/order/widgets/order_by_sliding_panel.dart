@@ -3,6 +3,7 @@ import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:provider/provider.dart';
 
@@ -40,11 +41,8 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
       ant: ant,
       ants: [ant],
       padding: const EdgeInsets.fromLTRB(-4, 24, -4, 0),
-      title: '點餐介面',
-      message: '為了讓點選產品可以更方便，\n'
-          '我們把點餐後的產品設定至於此面板。\n'
-          '如果需要一次顯示所有訊息的排版（適合大螢幕），\n'
-          '可以至「設定」>「點餐的外觀」調整。',
+      title: S.orderCartSnapshotTutorialTitle,
+      message: S.orderCartSnapshotTutorialMessage,
       shape: TutorialShape.rect,
       child: ChangeNotifierProvider.value(
         value: Cart.instance,

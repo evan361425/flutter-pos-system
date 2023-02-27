@@ -489,6 +489,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
           SignInButton(signedInWidget: _signedInWidget),
           const Divider(),
           ElevatedButton(
+            key: const Key('gs_export.import_all'),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),

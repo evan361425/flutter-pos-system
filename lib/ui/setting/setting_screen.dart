@@ -21,10 +21,6 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/setting/widgets/feature_slider.dart';
 import 'package:possystem/ui/setting/widgets/feature_switch.dart';
 
-const _languageNames = ['繁體中文', 'English'];
-
-const _supportedLanguages = ['zh', 'en'];
-
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
@@ -43,8 +39,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedLanguage =
-        _supportedLanguages.indexOf(language.value.languageCode);
+    final selectedLanguage = LanguageSetting.supported
+        .indexWhere((e) => e.languageCode == language.value.languageCode);
     const flavor = String.fromEnvironment('appFlavor');
 
     return Scaffold(
@@ -89,13 +85,13 @@ class _SettingScreenState extends State<SettingScreen> {
           CardTile(
             key: const Key('setting.language'),
             title: Text(S.settingLanguageTitle),
-            subtitle: Text(_languageNames[selectedLanguage]),
+            subtitle: Text(LanguageSetting.supportedNames[selectedLanguage]),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _navigateItemList(
-              (index) => language.update(Locale(_supportedLanguages[index])),
+              (index) => language.update(LanguageSetting.supported[index]),
               title: S.settingLanguageTitle,
               selected: selectedLanguage,
-              items: _languageNames,
+              items: LanguageSetting.supportedNames,
             ),
           ),
           const SizedBox(height: kSpacing2),
