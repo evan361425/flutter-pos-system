@@ -60,7 +60,9 @@ class OrderProduct extends ChangeNotifier {
 
   Iterable<String> getIngredientNames({bool onlyQuantified = true}) {
     final entries = onlyQuantified
-        ? selectedQuantity.entries.where((entry) => entry.value != null)
+        // if pop from stash, it will be empty string
+        ? selectedQuantity.entries
+            .where((entry) => entry.value != null && entry.value != '')
         : selectedQuantity.entries;
 
     return entries.map<String>((entry) {

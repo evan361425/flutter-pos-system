@@ -192,6 +192,7 @@ class _HeaderInfoList extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ElevatedButton(
+      key: Key('home_setup.header.$id'),
       style: const ButtonStyle(
         fixedSize: MaterialStatePropertyAll(Size.square(128)),
         padding: MaterialStatePropertyAll(EdgeInsets.zero),

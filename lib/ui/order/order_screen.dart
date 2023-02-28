@@ -14,13 +14,13 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
+import 'cart/cart_product_state_selector.dart';
 import 'cart/cart_screen.dart';
 import 'widgets/order_actions.dart';
 import 'widgets/order_by_orientation.dart';
 import 'widgets/order_by_sliding_panel.dart';
 import 'widgets/order_catalog_list.dart';
 import 'widgets/order_product_list.dart';
-import 'widgets/order_product_state_selector.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key}) : super(key: key);
@@ -61,7 +61,7 @@ class OrderScreenState extends State<OrderScreen> {
         ChangeNotifierProvider<CartIngredients>.value(
             value: CartIngredients.instance),
       ],
-      child: OrderProductStateSelector(),
+      child: CartProductStateSelector(),
     );
 
     final outlook = SettingsProvider.of<OrderOutlookSetting>();

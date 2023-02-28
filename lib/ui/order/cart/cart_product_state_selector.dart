@@ -6,12 +6,12 @@ import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class OrderProductStateSelector extends StatelessWidget {
-  final quantityListState = GlobalKey<_OrderQuantityListState>();
+class CartProductStateSelector extends StatelessWidget {
+  final quantityListState = GlobalKey<_QuantityListState>();
 
-  final ingredientListState = GlobalKey<_OrderIngredientListState>();
+  final ingredientListState = GlobalKey<_IngredientListState>();
 
-  OrderProductStateSelector({Key? key}) : super(key: key);
+  CartProductStateSelector({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class OrderProductStateSelector extends StatelessWidget {
     quantityListState.currentState?.selectedId = ingredients.selectedQuantityId;
 
     return _rowWrapper([
-      _OrderIngredientList(
+      _IngredientList(
         key: ingredientListState,
         onSelected: (ingredient) {
           ingredients.selectIngredient(ingredient);
@@ -42,7 +42,7 @@ class OrderProductStateSelector extends StatelessWidget {
               ?.update(ingredients.selectedQuantityId);
         },
       ),
-      _OrderQuantityList(key: quantityListState),
+      _QuantityList(key: quantityListState),
     ]);
   }
 
@@ -76,19 +76,19 @@ class OrderProductStateSelector extends StatelessWidget {
   }
 }
 
-class _OrderIngredientList extends StatefulWidget {
+class _IngredientList extends StatefulWidget {
   final void Function(ProductIngredient) onSelected;
 
-  const _OrderIngredientList({
+  const _IngredientList({
     Key? key,
     required this.onSelected,
   }) : super(key: key);
 
   @override
-  State<_OrderIngredientList> createState() => _OrderIngredientListState();
+  State<_IngredientList> createState() => _IngredientListState();
 }
 
-class _OrderIngredientListState extends State<_OrderIngredientList> {
+class _IngredientListState extends State<_IngredientList> {
   late String selectedId;
 
   @override
@@ -116,14 +116,14 @@ class _OrderIngredientListState extends State<_OrderIngredientList> {
   }
 }
 
-class _OrderQuantityList extends StatefulWidget {
-  const _OrderQuantityList({Key? key}) : super(key: key);
+class _QuantityList extends StatefulWidget {
+  const _QuantityList({Key? key}) : super(key: key);
 
   @override
-  State<_OrderQuantityList> createState() => _OrderQuantityListState();
+  State<_QuantityList> createState() => _QuantityListState();
 }
 
-class _OrderQuantityListState extends State<_OrderQuantityList> {
+class _QuantityListState extends State<_QuantityList> {
   String? selectedId;
 
   @override
@@ -133,7 +133,8 @@ class _OrderQuantityListState extends State<_OrderQuantityList> {
       ChoiceChip(
         key: const Key('order.quantity.default'),
         onSelected: (_) => select(null),
-        selected: null == selectedId,
+        // if pop from stash, it will be empty string
+        selected: null == selectedId || selectedId == '',
         label: Text(S.orderCartQuantityDefault(ingredients.selectedAmount)),
       ),
       for (final quantity in ingredients.quantityList)
