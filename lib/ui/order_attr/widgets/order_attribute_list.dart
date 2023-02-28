@@ -48,34 +48,32 @@ class _OrderAttributeCard extends StatelessWidget {
         attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     final key = 'order_attributes.${attr.id}';
 
-    return Card(
-      child: ExpansionTile(
-        key: Key(key),
-        title: Text(attr.name),
-        subtitle: MetaBlock.withString(context, [
-          S.orderAttributeMetaMode(mode),
-          S.orderAttributeMetaDefault(defaultName),
-        ]),
-        expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          ListTile(
-            key: Key('$key.add'),
-            leading: const CircleAvatar(child: Icon(KIcons.add)),
-            title: Text(S.orderAttributeOptionCreate),
-            onTap: () => Navigator.of(context).pushNamed(
-              Routes.orderAttrOption,
-              arguments: attr,
-            ),
-            trailing: IconButton(
-              key: Key('$key.more'),
-              onPressed: () => showActions(context, attr),
-              enableFeedback: true,
-              icon: const Icon(KIcons.more),
-            ),
+    return ExpansionTile(
+      key: Key(key),
+      title: Text(attr.name),
+      subtitle: MetaBlock.withString(context, [
+        S.orderAttributeMetaMode(mode),
+        S.orderAttributeMetaDefault(defaultName),
+      ]),
+      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        ListTile(
+          key: Key('$key.add'),
+          leading: const CircleAvatar(child: Icon(KIcons.add)),
+          title: Text(S.orderAttributeOptionCreate),
+          onTap: () => Navigator.of(context).pushNamed(
+            Routes.orderAttrOption,
+            arguments: attr,
           ),
-          for (final item in attr.itemList) _OptionTile(item),
-        ],
-      ),
+          trailing: IconButton(
+            key: Key('$key.more'),
+            onPressed: () => showActions(context, attr),
+            enableFeedback: true,
+            icon: const Icon(KIcons.more),
+          ),
+        ),
+        for (final item in attr.itemList) _OptionTile(item),
+      ],
     );
   }
 
