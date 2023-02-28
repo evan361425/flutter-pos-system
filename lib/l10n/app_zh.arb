@@ -342,9 +342,9 @@
   "menuProductNameHint": "例如：起司漢堡",
   "menuProductNameRepeatError": "產品名稱重複",
   "menuProductPriceLabel": "產品價格",
-  "menuProductPriceHint": "給客人看的價錢，例如：50",
+  "menuProductPriceHint": "給客人看的價錢",
   "menuProductCostLabel": "產品成本",
-  "menuProductCostHint": "用來算出利潤，例如：30（理應小於價錢）",
+  "menuProductCostHint": "用來算出利潤，理應小於價錢",
   "menuIngredientMetaAmount": "使用量：{amount}",
   "@menuIngredientMetaAmount": {
     "placeholders": {
@@ -408,7 +408,7 @@
       }
     }
   },
-  "menuQuantityCreate": "新增份量，例如：少量",
+  "menuQuantityCreate": "新增份量",
   "menuQuantitySearchLabel": "份量",
   "menuQuantitySearchAdd": "新增份量「{name}」",
   "@menuQuantitySearchAdd": {
