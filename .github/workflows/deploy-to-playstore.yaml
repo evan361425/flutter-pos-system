@@ -92,7 +92,7 @@ jobs:
               : ''.concat(${{ steps.build_code.outputs.value }} % 100);
 
   fastlane-deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: var
     steps:
       - name: Set up Flutter
