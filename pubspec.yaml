@@ -67,7 +67,7 @@ dependencies:
   uuid: ^3.0.7
   wakelock: ^0.6.2
   path_provider: ^2.0.11
-  url_launcher: ^6.1.7
+  url_launcher: ^6.1.10
   flutter_native_splash: ^2.2.16
   package_info_plus: ^3.0.2
   cached_network_image: ^3.2.3
