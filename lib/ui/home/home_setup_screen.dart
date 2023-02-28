@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/route_tile.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
@@ -51,8 +50,8 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
               ],
               shape: TutorialShape.rect,
               disable: Menu.instance.isNotEmpty,
-              child: RouteTile(
-                key: const Key('home_setup.menu'),
+              child: _buildRouteTile(
+                id: 'menu',
                 icon: Icons.collections_outlined,
                 route: Routes.menu,
                 title: S.menuTitle,
@@ -64,8 +63,8 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
               title: '檔案匯出',
               message: '這裡是用來匯出菜單、庫存等資訊的地方。',
               shape: TutorialShape.rect,
-              child: RouteTile(
-                key: const Key('home_setup.exporter'),
+              child: _buildRouteTile(
+                id: 'exporter',
                 icon: Icons.upload_file_outlined,
                 route: Routes.exporter,
                 title: S.exporterTitle,
@@ -79,27 +78,27 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
                   '內用，加價一成；\n'
                   '外帶，維持原價。',
               shape: TutorialShape.rect,
-              child: RouteTile(
-                key: const Key('home_setup.order_attrs'),
+              child: _buildRouteTile(
+                id: 'order_attrs',
                 icon: Icons.assignment_ind_outlined,
                 route: Routes.orderAttr,
                 title: S.orderAttributeTitle,
               ),
             ),
-            RouteTile(
-              key: const Key('home_setup.quantities'),
+            _buildRouteTile(
+              id: 'quantities',
               icon: Icons.exposure_outlined,
               route: Routes.quantities,
               title: S.quantityTitle,
             ),
-            RouteTile(
-              key: const Key('home_setup.feature_request'),
+            _buildRouteTile(
+              id: 'feature_request',
               icon: Icons.lightbulb_outlined,
               route: Routes.featureRequest,
               title: S.featureRequestTitle,
             ),
-            RouteTile(
-              key: const Key('home_setup.setting'),
+            _buildRouteTile(
+              id: 'setting',
               icon: Icons.settings_outlined,
               route: Routes.setting,
               title: S.settingTitle,
@@ -122,52 +121,19 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
 
     widget.tab?.bindAnt(antGaffer, startNow: true);
   }
-}
 
-class _HeaderInfo extends StatelessWidget {
-  final int title;
-
-  final String subtitle;
-
-  final String route;
-
-  const _HeaderInfo({
-    Key? key,
-    required this.title,
-    required this.subtitle,
-    required this.route,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      height: 128,
-      width: 128,
-      margin: const EdgeInsets.all(4.0),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        gradient: LinearGradient(
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          colors: theme.gradientColors,
-          tileMode: TileMode.clamp,
-        ),
-      ),
-      child: InkWell(
-        onTap: () => Navigator.of(context).pushNamed(route),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title.toString(),
-              style: theme.textTheme.headlineMedium,
-            ),
-            Text(subtitle),
-          ],
-        ),
-      ),
+  Widget _buildRouteTile({
+    required String id,
+    required IconData icon,
+    required String route,
+    required String title,
+  }) {
+    return ListTile(
+      key: Key('home_setup.$id'),
+      leading: Icon(icon),
+      trailing: const Icon(Icons.navigate_next_outlined),
+      onTap: () => Navigator.of(context).pushNamed(route),
+      title: Text(title),
     );
   }
 }
@@ -180,29 +146,77 @@ class _HeaderInfoList extends StatelessWidget {
     final menu = context.watch<Menu>();
     final attrs = context.watch<OrderAttributes>();
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0, 16.0),
-      child: SingleChildScrollView(
+    return SizedBox(
+      height: 152,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
         scrollDirection: Axis.horizontal,
-        child: Row(children: [
-          _HeaderInfo(
-            key: const Key('home_setup.header.menu1'),
+        shrinkWrap: true,
+        children: [
+          _buildItem(
+            id: 'menu1',
+            context: context,
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: '產品',
             route: Routes.menu,
           ),
-          _HeaderInfo(
-            key: const Key('home_setup.header.menu2'),
+          const SizedBox(width: 16),
+          _buildItem(
+            id: 'menu2',
+            context: context,
             title: menu.length,
             subtitle: '種類',
             route: Routes.menu,
           ),
-          _HeaderInfo(
-            key: const Key('home_setup.header.order_attrs'),
+          const SizedBox(width: 16),
+          _buildItem(
+            id: 'order_attrs',
+            context: context,
             title: attrs.length,
             subtitle: '顧客設定',
             route: Routes.orderAttr,
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem({
+    required String id,
+    required BuildContext context,
+    required int title,
+    required String subtitle,
+    required String route,
+  }) {
+    const borderRadius = BorderRadius.all(Radius.circular(20));
+    final theme = Theme.of(context);
+
+    return ElevatedButton(
+      style: const ButtonStyle(
+        fixedSize: MaterialStatePropertyAll(Size.square(128)),
+        padding: MaterialStatePropertyAll(EdgeInsets.zero),
+        // shadowColor: MaterialStatePropertyAll(Colors.transparent),
+        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+          borderRadius: borderRadius,
+          side: BorderSide(color: Colors.transparent),
+        )),
+      ),
+      onPressed: () => Navigator.of(context).pushNamed(route),
+      child: Ink(
+        width: 128,
+        height: 128,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            colors: theme.gradientColors,
+            tileMode: TileMode.clamp,
+          ),
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(title.toString(), style: theme.textTheme.headlineMedium),
+          Text(subtitle, style: theme.textTheme.bodyMedium),
         ]),
       ),
     );
