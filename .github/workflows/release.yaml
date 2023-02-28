@@ -108,5 +108,9 @@ jobs:
           git add --all
           git commit . -m "release(${{ needs.check-version.outputs.tag }}): ${{ needs.check-version.outputs.build_code }}"
           git push
-          git tag ${{ needs.check-version.outputs.tag }}
+
+      - name: Push tag if fired by dispatch
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        run: |
+          git tag ${{ github.event.inputs.tag }}
           git push origin --tags
