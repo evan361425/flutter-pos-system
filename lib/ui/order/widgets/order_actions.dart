@@ -133,12 +133,10 @@ class OrderActions extends StatelessWidget {
   Future<bool> _confirmAbleToStash(BuildContext context) async {
     if (Cart.instance.isEmpty) return true;
 
-    final result = await showDialog(
-      context: context,
-      builder: (_) => ConfirmDialog(title: S.orderActionsConfirmStashCurrent),
+    return await ConfirmDialog.show(
+      context,
+      title: S.orderActionsConfirmStashCurrent,
     );
-
-    return result ?? false;
   }
 }
 

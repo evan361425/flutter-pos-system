@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/sign_in_button.dart';
@@ -493,7 +494,17 @@ class _ImporterScreenState extends State<_ImporterScreen> {
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
-            onPressed: () => importData(null),
+            onPressed: () async {
+              final confirmed = await ConfirmDialog.show(
+                context,
+                title: '確定要匯入全部嗎？',
+                content: '匯入全部資料將會把所選的表單資料都覆蓋掉既有資料。',
+              );
+
+              if (confirmed) {
+                importData(null);
+              }
+            },
             child: const Text('匯入全部'),
           ),
           const SizedBox(height: 8.0),

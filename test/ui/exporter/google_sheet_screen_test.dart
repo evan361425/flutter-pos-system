@@ -674,6 +674,8 @@ void main() {
 
           await tester.tap(find.byKey(const Key('gs_export.import_all')));
           await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+          await tester.pumpAndSettle();
           await tester.pumpAndSettle();
 
           // should not reset old value

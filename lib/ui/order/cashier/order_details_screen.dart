@@ -103,13 +103,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
   Future<bool> _confirmChangeHistory(BuildContext context) async {
     if (!Cart.instance.isHistoryMode) return true;
 
-    final result = await showDialog(
-      context: context,
-      builder: (_) => ConfirmDialog(
-        title: S.orderCashierPaidConfirmLeaveHistoryMode,
-      ),
+    return await ConfirmDialog.show(
+      context,
+      title: S.orderCashierPaidConfirmLeaveHistoryMode,
     );
-
-    return result ?? false;
   }
 }

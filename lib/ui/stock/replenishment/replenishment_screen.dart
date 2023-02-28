@@ -79,35 +79,33 @@ class _ReplenishmentTile extends StatelessWidget {
   }
 
   Future<void> handleApply(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => ConfirmDialog(
-        title: S.stockReplenishmentApplyConfirmTitle(item.name),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(S.stockReplenishmentApplyConfirmContent),
-            const SizedBox(height: kSpacing1),
-            DataTable(columns: const [
-              DataColumn(label: Text('名稱')),
-              DataColumn(numeric: true, label: Text('數量'))
-            ], rows: <DataRow>[
-              for (final entry in item.ingredientData.entries)
-                DataRow(cells: [
-                  DataCell(Text(entry.key.name)),
-                  DataCell(Text(entry.value.toString())),
-                ])
-            ]),
-          ],
-        ),
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: S.stockReplenishmentApplyConfirmTitle(item.name),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(S.stockReplenishmentApplyConfirmContent),
+          const SizedBox(height: kSpacing1),
+          DataTable(columns: const [
+            DataColumn(label: Text('名稱')),
+            DataColumn(numeric: true, label: Text('數量'))
+          ], rows: <DataRow>[
+            for (final entry in item.ingredientData.entries)
+              DataRow(cells: [
+                DataCell(Text(entry.key.name)),
+                DataCell(Text(entry.value.toString())),
+              ])
+          ]),
+        ],
       ),
     );
 
-    if (confirmed != true) return;
-
-    await item.apply();
-    if (context.mounted) {
-      Navigator.of(context).pop(true);
+    if (confirmed) {
+      await item.apply();
+      if (context.mounted) {
+        Navigator.of(context).pop(true);
+      }
     }
   }
 }

@@ -176,16 +176,15 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
     if (value == true &&
         defaultOption != null &&
         defaultOption.id != widget.option?.id) {
-      final confirmed = await showDialog(
-        context: context,
-        builder: (_) => ConfirmDialog(
-          title: S.orderAttributeOptionConfirmChangeDefaultTitle,
-          content: Text(S.orderAttributeOptionConfirmChangeDefaultContent(
-              defaultOption.name)),
+      final confirmed = await ConfirmDialog.show(
+        context,
+        title: S.orderAttributeOptionConfirmChangeDefaultTitle,
+        content: S.orderAttributeOptionConfirmChangeDefaultContent(
+          defaultOption.name,
         ),
       );
 
-      if (confirmed == true) {
+      if (confirmed) {
         setState(() => isDefault = value!);
       }
     } else {

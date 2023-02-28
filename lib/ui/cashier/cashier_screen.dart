@@ -89,14 +89,13 @@ class _CashierScreenState extends State<CashierScreen> {
 
   void handleSetDefault(BuildContext context) async {
     if (!Cashier.instance.defaultNotSet) {
-      final result = await showDialog(
-          context: context,
-          builder: (_) => const ConfirmDialog(
-                title: '確認通知',
-                content: Text('將會覆蓋先前的設定\n此動作無法復原。'),
-              ));
+      final result = await ConfirmDialog.show(
+        context,
+        title: '確認通知',
+        content: '將會覆蓋先前的設定\n此動作無法復原。',
+      );
 
-      if (result != true) {
+      if (!result) {
         return;
       }
     }
