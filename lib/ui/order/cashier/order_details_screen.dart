@@ -57,7 +57,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           TextButton(
             key: const Key('order.checkout'),
             onPressed: onCheckout,
-            child: Text(S.orderActionsCheckout),
+            child: Text(S.orderCashierCheckout),
           ),
         ],
         bottom: tabBar,

@@ -880,6 +880,7 @@
       }
     }
   },
+  "orderCashierCheckout": "完成",
   "orderCashierAttributeInfoTitle": "顧客設定",
   "orderCashierAttributeTotalPrice": "顧客設定總價",
   "orderCashierAttributeTotalCount": "設定 {count} 項",
