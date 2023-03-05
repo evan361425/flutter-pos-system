@@ -102,7 +102,7 @@ class Database {
       whereArgs: whereArgs,
       join: join,
     );
-    return data.isEmpty ? null : data[count - 1];
+    return data.length >= count ? data[count - 1] : null;
   }
 
   Future<void> initialize({

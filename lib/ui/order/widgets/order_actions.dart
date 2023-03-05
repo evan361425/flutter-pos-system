@@ -102,6 +102,8 @@ class OrderActions extends StatelessWidget {
           return;
         }
 
+        /// 如果他本來沒有 Stash，在上面又 Stash 一個餐點，這時資料庫只有一次暫存資料。
+        /// 此時要避免傳入 2，但是在 database 的 getLast 中已經避免此事。
         final success = await Cart.instance.drop(isEmpty ? 1 : 2);
         if (context.mounted) {
           success
