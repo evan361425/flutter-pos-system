@@ -2,25 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
+class TutorialWrapper extends StatelessWidget {
+  final Widget child;
+
+  final bool startWhenReady;
+
+  const TutorialWrapper({
+    Key? key,
+    required this.child,
+    this.startWhenReady = true,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SpotlightShow(
+      startWhenReady: startWhenReady,
+      child: child,
+    );
+  }
+}
+
 class Tutorial extends StatelessWidget {
-  final GlobalKey<SpotlightAntState> ant;
-
-  final List<GlobalKey<SpotlightAntState>>? ants;
-
   final String id;
 
   final String? title;
 
+  final int? index;
+
   final String message;
 
-  final TutorialShape shape;
+  final SpotlightBuilder spotlightBuilder;
 
   final EdgeInsets padding;
 
   /// force disabling tutorial
   final bool disable;
 
-  final bool startNow;
+  final TutorialInTab? tab;
 
   final Widget child;
 
@@ -29,42 +47,36 @@ class Tutorial extends StatelessWidget {
 
   const Tutorial({
     Key? key,
-    required this.ant,
-    this.ants,
     required this.id,
     this.title,
     required this.message,
-    this.shape = TutorialShape.circle,
+    this.index,
+    this.tab,
+    this.spotlightBuilder = const SpotlightCircularBuilder(),
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
-    this.startNow = true,
     required this.child,
     this.fast = false,
   }) : super(key: key);
 
-  static GlobalKey<SpotlightAntState> buildAnt() {
-    return GlobalKey<SpotlightAntState>();
-  }
-
   @override
   Widget build(BuildContext context) {
+    if (!enabled) return child;
+
+    final m300 = fast ? Duration.zero : const Duration(milliseconds: 300);
+    final m600 = fast ? Duration.zero : const Duration(milliseconds: 600);
+    tab?.listenIndexChanging(context);
+
     return SpotlightAnt(
-      key: ant,
-      ants: ants,
-      enable: enabled,
-      showAfterInit: startNow,
       actions: const [SpotlightAntAction.prev, SpotlightAntAction.next],
-      spotlightBuilder: shape == TutorialShape.circle
-          ? const SpotlightCircularBuilder()
-          : const SpotlightRectBuilder(),
+      spotlightBuilder: spotlightBuilder,
+      index: index,
       spotlightPadding: padding,
-      bumpDuration: fast ? Duration.zero : const Duration(milliseconds: 400),
-      zoomInDuration: fast ? Duration.zero : const Duration(milliseconds: 600),
-      zoomOutDuration: fast ? Duration.zero : const Duration(milliseconds: 600),
-      contentFadeInDuration:
-          fast ? Duration.zero : const Duration(milliseconds: 300),
+      bumpDuration: m300,
+      zoomInDuration: m600,
+      zoomOutDuration: m600,
+      contentFadeInDuration: m300,
       content: SpotlightContent(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
         child: Column(children: [
           if (title != null)
             Text(
@@ -97,37 +109,31 @@ class TutorialInTab {
   final TabController controller;
   final int index;
 
-  const TutorialInTab({
+  bool hasRegistered = false;
+
+  TutorialInTab({
     required this.controller,
     required this.index,
   });
 
-  bool get shouldNotShow {
-    return controller.indexIsChanging || index != controller.index;
+  bool get shouldShow {
+    return index == controller.index && !controller.indexIsChanging;
   }
 
-  bindAnt(GlobalKey<SpotlightAntState> ant, {startNow = false}) {
-    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-      void handler() {
-        if (!shouldNotShow) {
-          ant.currentState?.show();
-          controller.removeListener(handler);
-        }
-      }
+  void listenIndexChanging(BuildContext context) {
+    if (hasRegistered) {
+      return;
+    }
 
-      controller.addListener(handler);
-      if (startNow) {
-        handler();
+    void handler() {
+      if (shouldShow) {
+        SpotlightShow.maybeOf(context)?.start();
+        controller.removeListener(handler);
       }
-    });
+    }
+
+    controller.addListener(handler);
+    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) => handler());
+    hasRegistered = true;
   }
-}
-
-mixin TutorialChild<T extends StatefulWidget> on State<T> {
-  late List<GlobalKey<SpotlightAntState>> ants;
-}
-
-enum TutorialShape {
-  rect,
-  circle,
 }

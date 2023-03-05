@@ -11,23 +11,20 @@ void main() {
       when(cache.get(any)).thenReturn(null);
       when(cache.set(any, true)).thenAnswer((_) => Future.value(true));
 
-      final t1 = Tutorial.buildAnt();
       final widgets = Column(
-        children: <Widget>[
+        children: const <Widget>[
           Tutorial(
             id: '1',
             title: 'title1',
             message: 'message1',
             fast: true,
-            ant: t1,
-            ants: [t1],
-            child: const Text('1'),
+            child: Text('1'),
           ),
         ],
       );
 
       await tester.pumpWidget(MaterialApp(
-        home: Scaffold(body: widgets),
+        home: TutorialWrapper(child: Scaffold(body: widgets)),
       ));
       await tester.pumpAndSettle();
 

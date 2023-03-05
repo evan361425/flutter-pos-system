@@ -10,21 +10,13 @@ import 'package:provider/provider.dart';
 
 import 'widgets/ingredient_list.dart';
 
-class StockScreen<T> extends StatefulWidget {
+class StockScreen<T> extends StatelessWidget {
   final TutorialInTab? tab;
 
   const StockScreen({
     Key? key,
     this.tab,
   }) : super(key: key);
-
-  @override
-  State<StockScreen<T>> createState() => _StockScreenState<T>();
-}
-
-class _StockScreenState<T> extends State<StockScreen<T>> {
-  final antAdd = Tutorial.buildAnt();
-  final gaffer = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
@@ -42,51 +34,46 @@ class _StockScreenState<T> extends State<StockScreen<T>> {
       );
     }
 
-    return ListView(children: [
-      Flex(direction: Axis.horizontal, children: [
-        Expanded(
-          child: Tutorial(
-            id: 'stock.replenishment',
-            ant: gaffer,
-            ants: [antAdd, gaffer],
-            startNow: false,
-            title: '成份採購',
-            message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
-            child: const RouteCircularButton(
-              key: Key('stock.replenisher'),
-              icon: Icons.shopping_basket_sharp,
-              route: Routes.stockReplenishment,
-              popTrueShowSuccess: true,
-              text: '採購',
+    return TutorialWrapper(
+      startWhenReady: false,
+      child: ListView(children: [
+        Flex(direction: Axis.horizontal, children: [
+          Expanded(
+            child: Tutorial(
+              id: 'stock.replenishment',
+              index: 1,
+              tab: tab,
+              title: '成份採購',
+              message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
+              child: const RouteCircularButton(
+                key: Key('stock.replenisher'),
+                icon: Icons.shopping_basket_sharp,
+                route: Routes.stockReplenishment,
+                popTrueShowSuccess: true,
+                text: '採購',
+              ),
             ),
           ),
-        ),
-        const Spacer(flex: 2),
-        Expanded(
-          child: Tutorial(
-            ant: antAdd,
-            id: 'stock.add',
-            disable: Stock.instance.isNotEmpty,
-            title: '新增成份',
-            message: '成份可以幫助我們確認相關產品的庫存！',
-            child: RouteCircularButton(
-              key: const Key('stock.add'),
-              route: Routes.stockIngredient,
-              icon: KIcons.add,
-              text: S.stockIngredientCreate,
+          const Spacer(flex: 2),
+          Expanded(
+            child: Tutorial(
+              id: 'stock.add',
+              index: 0,
+              disable: Stock.instance.isNotEmpty,
+              title: '新增成份',
+              message: '成份可以幫助我們確認相關產品的庫存！',
+              child: RouteCircularButton(
+                key: const Key('stock.add'),
+                route: Routes.stockIngredient,
+                icon: KIcons.add,
+                text: S.stockIngredientCreate,
+              ),
             ),
           ),
-        ),
+        ]),
+        const SizedBox(height: 4.0),
+        IngredientList(ingredients: Stock.instance.itemList),
       ]),
-      const SizedBox(height: 4.0),
-      IngredientList(ingredients: Stock.instance.itemList),
-    ]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    widget.tab?.bindAnt(gaffer, startNow: true);
+    );
   }
 }

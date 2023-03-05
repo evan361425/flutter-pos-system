@@ -35,7 +35,7 @@ void main() {
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller()),
         ],
-        builder: (_, __) => const Scaffold(body: AnalysisScreen()),
+        builder: (_, __) => Scaffold(body: AnalysisScreen()),
       ),
     );
   }

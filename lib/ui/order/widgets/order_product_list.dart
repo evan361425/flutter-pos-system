@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 class OrderProductList extends StatelessWidget {
   final List<Product> products;
@@ -16,6 +18,8 @@ class OrderProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = SettingsProvider.of<OrderProductAxisCountSetting>().value;
+    int index = 0;
+
     return Card(
       // Small top margin to avoid double size between catalogs
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -37,9 +41,19 @@ class OrderProductList extends StatelessWidget {
                 crossAxisCount: count,
                 children: [
                   for (final product in products)
-                    _ImageCard(
-                      product: product,
-                      onTap: () => _onSelected(product),
+                    Tutorial(
+                      id: 'order.menu_product',
+                      title: '開始點餐！',
+                      message: '透過圖片點餐更方便！\n'
+                          '你也可以到「設定」頁面，\n'
+                          '設定「每行顯示幾個產品」或僅使用文字點餐',
+                      spotlightBuilder:
+                          const SpotlightRectBuilder(borderRadius: 16),
+                      disable: index++ != 0,
+                      child: _ImageCard(
+                        product: product,
+                        onTap: () => _onSelected(product),
+                      ),
                     ),
                 ],
               ),

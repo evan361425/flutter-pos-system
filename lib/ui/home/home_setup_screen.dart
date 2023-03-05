@@ -9,8 +9,9 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
-class HomeSetupScreen extends StatefulWidget {
+class HomeSetupScreen extends StatelessWidget {
   final TutorialInTab? tab;
 
   const HomeSetupScreen({
@@ -19,19 +20,11 @@ class HomeSetupScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HomeSetupScreen> createState() => _HomeSetupScreenState();
-}
-
-class _HomeSetupScreenState extends State<HomeSetupScreen> {
-  final antOrderAttr = Tutorial.buildAnt();
-  final antExporter = Tutorial.buildAnt();
-  final antGaffer = Tutorial.buildAnt();
-
-  @override
   Widget build(BuildContext context) {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
-    return SafeArea(
+    return TutorialWrapper(
+      startWhenReady: false,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,17 +33,12 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
             if (!isProd) const Center(child: RandomGenerateOrderButton()),
             Tutorial(
               id: 'home.menu',
-              ant: antGaffer,
-              startNow: false,
+              index: 2,
               message: '現在就趕緊來設定菜單吧！',
-              ants: [
-                antOrderAttr,
-                antExporter,
-                antGaffer,
-              ],
-              shape: TutorialShape.rect,
+              spotlightBuilder: const SpotlightRectBuilder(),
               disable: Menu.instance.isNotEmpty,
               child: _buildRouteTile(
+                context,
                 id: 'menu',
                 icon: Icons.collections_outlined,
                 route: Routes.menu,
@@ -58,12 +46,13 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
               ),
             ),
             Tutorial(
-              ant: antExporter,
               id: 'home.exporter',
+              index: 1,
               title: '檔案匯出',
               message: '這裡是用來匯出菜單、庫存等資訊的地方。',
-              shape: TutorialShape.rect,
+              spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
+                context,
                 id: 'exporter',
                 icon: Icons.upload_file_outlined,
                 route: Routes.exporter,
@@ -71,14 +60,16 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
               ),
             ),
             Tutorial(
-              ant: antOrderAttr,
               id: 'home.order_attr',
+              index: 0,
+              tab: tab,
               title: '顧客設定',
               message: '這裡可以設定顧客資訊，例如：\n'
                   '內用，加價一成；\n'
                   '外帶，維持原價。',
-              shape: TutorialShape.rect,
+              spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
+                context,
                 id: 'order_attrs',
                 icon: Icons.assignment_ind_outlined,
                 route: Routes.orderAttr,
@@ -86,18 +77,21 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
               ),
             ),
             _buildRouteTile(
+              context,
               id: 'quantities',
               icon: Icons.exposure_outlined,
               route: Routes.quantities,
               title: S.quantityTitle,
             ),
             _buildRouteTile(
+              context,
               id: 'feature_request',
               icon: Icons.lightbulb_outlined,
               route: Routes.featureRequest,
               title: S.featureRequestTitle,
             ),
             _buildRouteTile(
+              context,
               id: 'setting',
               icon: Icons.settings_outlined,
               route: Routes.setting,
@@ -115,14 +109,8 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    widget.tab?.bindAnt(antGaffer, startNow: true);
-  }
-
-  Widget _buildRouteTile({
+  Widget _buildRouteTile(
+    BuildContext context, {
     required String id,
     required IconData icon,
     required String route,

@@ -6,6 +6,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:provider/provider.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 class OrderBySlidingPanel extends StatefulWidget {
   final Widget row1;
@@ -27,7 +28,6 @@ class OrderBySlidingPanel extends StatefulWidget {
 
 class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
   final opener = GlobalKey<SlidingUpOpenerState>();
-  final ant = Tutorial.buildAnt();
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +38,10 @@ class OrderBySlidingPanelState extends State<OrderBySlidingPanel> {
 
     final collapsed = Tutorial(
       id: 'order.sliding_collapsed',
-      ant: ant,
-      ants: [ant],
       padding: const EdgeInsets.fromLTRB(-4, 24, -4, 0),
       title: S.orderCartSnapshotTutorialTitle,
       message: S.orderCartSnapshotTutorialMessage,
-      shape: TutorialShape.rect,
+      spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
       child: ChangeNotifierProvider.value(
         value: Cart.instance,
         builder: (_, __) => const Padding(

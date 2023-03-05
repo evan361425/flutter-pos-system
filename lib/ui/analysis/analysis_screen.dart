@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_wrapper.dart';
 
-class AnalysisScreen extends StatefulWidget {
+class AnalysisScreen extends StatelessWidget {
   final TutorialInTab? tab;
 
-  const AnalysisScreen({Key? key, this.tab}) : super(key: key);
+  final orderList = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
 
-  @override
-  State<AnalysisScreen> createState() => _AnalysisScreenState();
-}
-
-class _AnalysisScreenState extends State<AnalysisScreen> {
-  final orderListState = GlobalKey<AnalysisOrderListState<_OrderListParams>>();
-  final ant = Tutorial.buildAnt();
+  AnalysisScreen({Key? key, this.tab}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return TutorialWrapper(
+      startWhenReady: false,
       child: OrientationBuilder(
         key: const Key('analysis.builder'),
         builder: (_, orientation) => orientation == Orientation.portrait
@@ -32,13 +28,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   Widget _buildCalendar({required bool isPortrait}) {
     return Tutorial(
-      ant: ant,
-      startNow: false,
       id: 'analysis.calendar',
       title: '日曆格式',
       message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
-      shape: TutorialShape.rect,
-      ants: [ant],
+      tab: tab,
+      spotlightBuilder: const SpotlightRectBuilder(),
       child: CalendarWrapper(
         isPortrait: isPortrait,
         handleDaySelected: _handleDaySelected,
@@ -57,19 +51,19 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
-  Widget _buildOrderList() {
-    return AnalysisOrderList<_OrderListParams>(
-      key: orderListState,
-      handleLoad: (_OrderListParams params, int offset) =>
-          Seller.instance.getOrderBetween(params.start, params.end, offset),
-    );
-  }
-
   Widget _buildPortrait() {
     return Column(children: [
       _buildCalendar(isPortrait: true),
       Expanded(child: _buildOrderList()),
     ]);
+  }
+
+  Widget _buildOrderList() {
+    return AnalysisOrderList<_OrderListParams>(
+      key: orderList,
+      handleLoad: (_OrderListParams params, int offset) =>
+          Seller.instance.getOrderBetween(params.start, params.end, offset),
+    );
   }
 
   void _handleDaySelected(DateTime day) async {
@@ -78,7 +72,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
     final result = await Seller.instance.getMetricBetween(start, end);
 
-    orderListState.currentState?.reset(
+    orderList.currentState?.reset(
       _OrderListParams(start: start, end: end),
       totalPrice: result['totalPrice'] as num,
       totalCount: result['count'] as int,
@@ -92,13 +86,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         DateTime(day.year, day.month).subtract(const Duration(days: 7));
 
     return Seller.instance.getCountBetween(start, end);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    widget.tab?.bindAnt(ant, startNow: true);
   }
 }
 

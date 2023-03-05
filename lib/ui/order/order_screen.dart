@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
@@ -66,34 +67,36 @@ class OrderScreenState extends State<OrderScreen> {
 
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
-    return Scaffold(
-      // avoid resize when keyboard(bottom inset) shows
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: const PopButton(),
-        actions: [
-          const OrderActions(key: Key('order.action.more')),
-          TextButton(
-            key: const Key('order.apply'),
-            onPressed: () => _onApply(),
-            child: Text(S.orderActionsCheckout),
-          ),
-        ],
-      ),
-      body: outlook.value == OrderOutlookTypes.slidingPanel
-          ? OrderBySlidingPanel(
-              key: slidingPanel,
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: orderProductStateSelector,
-            )
-          : OrderByOrientation(
-              row1: menuCatalogRow,
-              row2: menuProductRow,
-              row3: cartProductRow,
-              row4: orderProductStateSelector,
+    return TutorialWrapper(
+      child: Scaffold(
+        // avoid resize when keyboard(bottom inset) shows
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: const PopButton(),
+          actions: [
+            const OrderActions(key: Key('order.action.more')),
+            TextButton(
+              key: const Key('order.apply'),
+              onPressed: () => _onApply(),
+              child: Text(S.orderActionsCheckout),
             ),
+          ],
+        ),
+        body: outlook.value == OrderOutlookTypes.slidingPanel
+            ? OrderBySlidingPanel(
+                key: slidingPanel,
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: orderProductStateSelector,
+              )
+            : OrderByOrientation(
+                row1: menuCatalogRow,
+                row2: menuProductRow,
+                row3: cartProductRow,
+                row4: orderProductStateSelector,
+              ),
+      ),
     );
   }
 
