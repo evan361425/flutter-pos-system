@@ -62,10 +62,14 @@ class _OrderCatalogListState extends State<OrderCatalogList> {
   @override
   void initState() {
     super.initState();
-    widget.indexNotifier.addListener(() => setState(() {
+    widget.indexNotifier.addListener(() {
+      if (mounted) {
+        setState(() {
           final index = widget.indexNotifier.value;
           selectedId = widget.catalogs[index].id;
-        }));
+        });
+      }
+    });
     selectedId = widget.catalogs.isEmpty ? '' : widget.catalogs.first.id;
   }
 }
