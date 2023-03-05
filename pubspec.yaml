@@ -102,6 +102,7 @@ flutter:
     - assets/feature_request_please.gif
     - assets/google_signin_button.svg
 
+# flutter pub run flutter_native_splash:create
 flutter_native_splash:
   color: "#d8e5fb"
   fullscreen: true
