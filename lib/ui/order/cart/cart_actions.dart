@@ -44,7 +44,7 @@ class CartActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FilledButton(
       key: const Key('cart.action'),
       onPressed: () => showActions(context),
       child: Text(S.orderCartActionsBtn),

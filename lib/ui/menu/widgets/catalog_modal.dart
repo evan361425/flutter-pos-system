@@ -31,7 +31,7 @@ class _CatalogModalState extends State<CatalogModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      ImageHolder(
+      EditImageHolder(
         path: _image,
         onSelected: (image) => setState(() => _image = image),
       ),

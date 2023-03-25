@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -39,6 +40,8 @@ class OrderProductList extends StatelessWidget {
               ])
             : GridView.count(
                 crossAxisCount: count,
+                mainAxisSpacing: 12.0,
+                crossAxisSpacing: 8.0,
                 children: [
                   for (final product in products)
                     Tutorial(
@@ -50,9 +53,11 @@ class OrderProductList extends StatelessWidget {
                       spotlightBuilder:
                           const SpotlightRectBuilder(borderRadius: 16),
                       disable: index++ != 0,
-                      child: _ImageCard(
-                        product: product,
-                        onTap: () => _onSelected(product),
+                      child: ImageHolder(
+                        key: Key('order.product.${product.id}'),
+                        image: product.image,
+                        title: product.name,
+                        onPressed: () => _onSelected(product),
                       ),
                     ),
                 ],
@@ -65,98 +70,5 @@ class OrderProductList extends StatelessWidget {
     Cart.instance
       ..toggleAll(false)
       ..add(product);
-  }
-}
-
-class _ImageCard extends StatefulWidget {
-  final Product product;
-
-  final VoidCallback onTap;
-
-  const _ImageCard({
-    Key? key,
-    required this.product,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  State<_ImageCard> createState() => _ImageCardState();
-}
-
-class _ImageCardState extends State<_ImageCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  late TickerFuture _ticker;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).scaffoldBackgroundColor;
-    final title = Container(
-      padding: const EdgeInsets.fromLTRB(2, 8, 2, 4),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            color,
-            color.withAlpha(200),
-            color.withAlpha(0),
-          ],
-        ),
-      ),
-      child: Text(widget.product.name, textAlign: TextAlign.center),
-    );
-
-    final card = Card(
-      key: Key('order.product.${widget.product.id}'),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        fit: StackFit.expand,
-        children: [
-          Image(image: widget.product.image, fit: BoxFit.cover),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[Expanded(child: title)],
-          ),
-        ],
-      ),
-    );
-
-    return GestureDetector(
-      onTapDown: (_) {
-        _ticker = _controller.forward();
-      },
-      onTapUp: (_) {
-        _ticker.whenComplete(() => _controller.reverse());
-      },
-      onTapCancel: () {
-        _ticker.whenComplete(() => _controller.reverse());
-      },
-      onTap: widget.onTap,
-      child: Transform.scale(
-        scale: 1 - _controller.value,
-        child: card,
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-      lowerBound: 0,
-      upperBound: 0.05,
-    )..addListener(() {
-        setState(() {});
-      });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

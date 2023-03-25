@@ -33,9 +33,9 @@ void main() {
 
       mockImagePick(tester);
       mockImageCropper();
-      await tester.tap(find.byKey(const Key('modal.edit_image')));
+      await tester.tap(find.byKey(const Key('image_holder.edit')));
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('modal.edit_image')), findsOneWidget);
+      expect(find.byKey(const Key('image_holder.edit')), findsOneWidget);
 
       await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -97,9 +97,6 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
       await tester.pumpAndSettle();
-
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('image_holder.missed')), findsOneWidget);
 
       // save failed
       await tester.enterText(find.byKey(const Key('catalog.name')), 'c-2');
