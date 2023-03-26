@@ -1029,7 +1029,7 @@
       }
     }
   },
-  "importerColumnStatus": "{status, select, staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
+  "importerColumnStatus": "{status, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
   "@importerColumnStatus": {
     "description": "顯示該資料的額外狀態",
     "placeholders": {
