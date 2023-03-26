@@ -112,6 +112,7 @@ class _ProductModalState extends State<ProductModal>
           name: object.name!,
           price: object.price!,
           cost: object.cost!,
+          imagePath: _image,
         );
 
     if (widget.isNew) {
@@ -151,7 +152,6 @@ class _ProductModalState extends State<ProductModal>
   @override
   Future<void> updateItem() async {
     final product = await getProduct();
-    await product.replaceImage(_image);
 
     if (mounted) {
       // go to product screen
@@ -167,6 +167,7 @@ class _ProductModalState extends State<ProductModal>
   ProductObject _parseObject() {
     return ProductObject(
       name: _nameController.text,
+      imagePath: _image,
       price: num.tryParse(_priceController.text),
       cost: num.tryParse(_costController.text),
     );

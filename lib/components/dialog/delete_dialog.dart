@@ -39,11 +39,12 @@ class DeleteDialog extends StatelessWidget {
     BuildContext context, {
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
+    bool finishMessage = true,
     Widget? warningContent,
   }) async {
     startDelete() async {
       await deleteCallback();
-      if (context.mounted) {
+      if (context.mounted && finishMessage) {
         showSnackBar(context, S.actSuccess);
       }
 

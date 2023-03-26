@@ -11,7 +11,7 @@ void initializeFileSystem() {
   XFile.fs = MemoryFileSystem();
 }
 
-void mockImagePick(WidgetTester tester, [bool canceled = false]) {
+void mockImagePick(WidgetTester tester, {bool canceled = false}) {
   tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/image_picker'),
     (MethodCall methodCall) async {
@@ -41,9 +41,9 @@ void mockImageCropper({bool canceled = false}) {
   });
 }
 
-Future<String> createImage(String path) async {
-  final tempDir = XFile.fs.systemTempDirectory.path;
-  final file = XFile('$tempDir/$path');
+Future<String> createImage(String path, {String? parent}) async {
+  parent ??= XFile.fs.systemTempDirectory.path;
+  final file = XFile(XFile.fs.path.join(parent, path));
   await file.file.writeAsBytes(_examplePng);
 
   return file.path;

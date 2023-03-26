@@ -157,6 +157,7 @@ class Product extends Model<ProductObject>
         price: price,
         cost: cost,
         createdAt: createdAt,
+        imagePath: imagePath,
         ingredients: items.map((e) => e.toObject()).toList(),
       );
 }

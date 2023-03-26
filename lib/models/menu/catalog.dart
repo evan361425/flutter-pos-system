@@ -101,17 +101,12 @@ class Catalog extends Model<CatalogObject>
   }
 
   @override
-  Future<void> removeRemotely() async {
-    await super.removeRemotely();
-    await Future.wait(items.map((e) => e.deleteImage()));
-  }
-
-  @override
   CatalogObject toObject() => CatalogObject(
         id: id,
         index: index,
         name: name,
         createdAt: createdAt,
+        imagePath: imagePath,
         products: items.map((e) => e.toObject()).toList(),
       );
 }

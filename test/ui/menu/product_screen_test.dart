@@ -52,38 +52,8 @@ void main() {
       expect(find.text('go to product'), findsOneWidget);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
-      expect(XFile(imagePath).file.existsSync(), isFalse);
-      expect(XFile(avatorPath).file.existsSync(), isFalse);
-    });
-
-    testWidgets('Update product image', (WidgetTester tester) async {
-      final product = Product(id: 'p-1');
-      final catalog = Catalog(id: 'c-1', products: {'p-1': product});
-      Menu().replaceItems({'c-1': catalog..prepareItem()});
-
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ],
-        child: const MaterialApp(home: ProductScreen()),
-      ));
-
-      mockImagePick(tester, true);
-      await tester.tap(find.byIcon(KIcons.more));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-
-      mockImagePick(tester);
-      mockImageCropper(canceled: true);
-      await tester.tap(find.byIcon(KIcons.more));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-
-      verifyNever(storage.set(any, any));
+      expect(XFile(imagePath).file.existsSync(), isTrue);
+      expect(XFile(avatorPath).file.existsSync(), isTrue);
     });
 
     group('Product Ingredient', () {

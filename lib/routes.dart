@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/ui/cashier/widgets/cashier_surplus.dart';
-import 'package:possystem/ui/exporter/exporter_screen.dart';
-import 'package:possystem/ui/home/home_setup_feature_request.dart';
-import 'package:possystem/ui/order/cashier/order_details_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/menu/catalog.dart';
 import 'models/menu/product.dart';
 import 'models/menu/product_ingredient.dart';
 import 'models/menu/product_quantity.dart';
+import 'models/order/order_attribute.dart';
+import 'models/order/order_attribute_option.dart';
 import 'models/stock/ingredient.dart';
 import 'models/stock/quantity.dart';
 import 'models/stock/replenishment.dart';
 import 'ui/cashier/changer/changer_modal.dart';
-import 'ui/order_attr/order_attribute_screen.dart';
-import 'ui/order_attr/widgets/order_attribute_reorder.dart';
-import 'ui/order_attr/widgets/order_attribute_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
+import 'ui/cashier/widgets/cashier_surplus.dart';
+import 'ui/exporter/exporter_screen.dart';
+import 'ui/home/home_setup_feature_request.dart';
+import 'ui/image_gallery_screen.dart';
 import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
@@ -30,7 +25,13 @@ import 'ui/menu/product/widgets/product_ingredient_modal.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_orderable_list.dart';
+import 'ui/order/cashier/order_details_screen.dart';
 import 'ui/order/order_screen.dart';
+import 'ui/order_attr/order_attribute_screen.dart';
+import 'ui/order_attr/widgets/order_attribute_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
+import 'ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'ui/quantities/quantity_screen.dart';
 import 'ui/quantities/widgets/quantity_modal.dart';
 import 'ui/setting/setting_screen.dart';
@@ -46,6 +47,7 @@ class Routes {
   static const String order = 'order';
   static const String quantities = 'quantities';
   static const String setting = 'setting';
+  static const String imageGallery = 'image_gallery';
 
   // sub-route
   static const String cashierChanger = 'cashier/changer';
@@ -75,6 +77,7 @@ class Routes {
     menu: (_) => const MenuScreen(),
     order: (_) => const OrderScreen(),
     setting: (_) => const SettingScreen(),
+    imageGallery: (_) => const ImageGalleryScreen(),
     // sub-route
     // cashier
     cashierChanger: (_) => const ChangerModal(),

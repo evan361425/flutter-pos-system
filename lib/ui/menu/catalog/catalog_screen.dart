@@ -60,7 +60,7 @@ class CatalogScreen extends StatelessWidget {
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
-        SliverImageAppBar(title: catalog.name, image: catalog.image),
+        SliverImageAppBar(model: catalog),
         metadata,
         aboveData,
         if (catalog.isNotEmpty) ProductSlidableList(catalog: catalog),
@@ -96,8 +96,8 @@ class CatalogScreen extends StatelessWidget {
       ],
     );
 
-    if (result == _Action.changeImage) {
-      await catalog.pickImage();
+    if (result == _Action.changeImage && context.mounted) {
+      await catalog.pickImage(context);
     }
   }
 }

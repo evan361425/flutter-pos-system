@@ -63,7 +63,7 @@ class ProductScreen extends StatelessWidget {
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
-        SliverImageAppBar(title: product.name, image: product.image),
+        SliverImageAppBar(model: product),
         metadata,
         aboveData,
         SliverList(
@@ -98,8 +98,8 @@ class ProductScreen extends StatelessWidget {
       ],
     );
 
-    if (result == _Action.changeImage) {
-      await product.pickImage();
+    if (result == _Action.changeImage && context.mounted) {
+      await product.pickImage(context);
     }
   }
 }

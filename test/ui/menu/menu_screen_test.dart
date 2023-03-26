@@ -11,7 +11,6 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_screen.dart';
 import 'package:provider/provider.dart';
@@ -23,19 +22,32 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Menu Screen', () {
     testWidgets('Add catalog with image', (WidgetTester tester) async {
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Menu>.value(value: Menu()),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Menu>.value(value: Menu()),
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+        ],
+        child: MaterialApp(
+          routes: {
+            ...Routes.routes,
+            Routes.imageGallery: (context) {
+              return TextButton(
+                onPressed: () => Navigator.of(context).pop('test-image'),
+                child: const Text('tap me'),
+              );
+            }
+          },
+          home: const MenuScreen(),
+        ),
+      ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      mockImagePick(tester);
-      mockImageCropper();
       await tester.tap(find.byKey(const Key('image_holder.edit')));
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('image_holder.edit')), findsOneWidget);
+      await tester.tap(find.text('tap me'));
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -57,17 +69,9 @@ void main() {
             data['name'] == 'name' &&
             data['index'] == 1 &&
             data['createdAt'] > 0 &&
+            data['imagePath'] == 'test-image' &&
             (data['products'] as Map).isEmpty)),
       ));
-
-      final image = '/menu_image/${catalog.id}';
-      final prefix = '${catalog.id}.imagePath';
-      verify(storage.set(
-        any,
-        argThat(predicate((data) => data is Map && data[prefix] == image)),
-      ));
-      expect(XFile(image).file.existsSync(), isTrue);
-      expect(XFile('$image-avator').file.existsSync(), isTrue);
     });
 
     testWidgets('Navigate to catalog', (WidgetTester tester) async {
@@ -85,17 +89,38 @@ void main() {
     });
 
     testWidgets('Edit catalog', (WidgetTester tester) async {
+      final newImage = await createImage('test-image');
       final catalog1 = Catalog(id: 'c-1', name: 'c-1', imagePath: 'wrong-path');
       final catalog2 = Catalog(id: 'c-2', name: 'c-2');
       Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuScreen())));
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+        ],
+        child: MaterialApp(
+          routes: {
+            ...Routes.routes,
+            Routes.imageGallery: (BuildContext context) {
+              return TextButton(
+                onPressed: () => Navigator.of(context).pop(newImage),
+                child: const Text('tap me'),
+              );
+            }
+          },
+          home: const MenuScreen(),
+        ),
+      ));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.text_fields_sharp));
+      await tester.pumpAndSettle();
+
+      // edit image
+      await tester.tap(find.byKey(const Key('image_holder.edit')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('tap me'));
       await tester.pumpAndSettle();
 
       // save failed
@@ -111,8 +136,15 @@ void main() {
       // reset catalog name
       final w = find.byKey(const Key('catalog.c-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('new-name'));
+      expect(catalog1.imagePath, equals(newImage));
 
-      verify(storage.set(any, argThat(equals({'c-1.name': 'new-name'}))));
+      verify(storage.set(
+        any,
+        argThat(equals({
+          'c-1.name': 'new-name',
+          'c-1.imagePath': newImage,
+        })),
+      ));
     });
 
     testWidgets('Reorder catalog', (WidgetTester tester) async {
@@ -152,14 +184,14 @@ void main() {
 
     testWidgets('Delete catalog', (WidgetTester tester) async {
       final productImage = await createImage('product');
-      final productAvator = await createImage('product-avator');
       final catalogImage = await createImage('catalog');
-      final catalogAvator = await createImage('catalog-avator');
       final catalog1 = Catalog(id: 'c-1');
       final catalog2 = Catalog(id: 'c-2', imagePath: catalogImage, products: {
         'p-1': Product(id: 'p-1', imagePath: productImage),
       });
       Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
+      await createImage('product-avator');
+      await createImage('catalog-avator');
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
@@ -187,10 +219,6 @@ void main() {
       expect(find.byKey(const Key('catalog.c-2')), findsNothing);
       expect(Menu.instance.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({catalog2.prefix: null}))));
-      expect(XFile(productImage).file.existsSync(), isFalse);
-      expect(XFile(productAvator).file.existsSync(), isFalse);
-      expect(XFile(catalogImage).file.existsSync(), isFalse);
-      expect(XFile(catalogAvator).file.existsSync(), isFalse);
     });
 
     testWidgets('Search product', (WidgetTester tester) async {
@@ -283,5 +311,7 @@ void main() {
       initializeTranslator();
       initializeFileSystem();
     });
+
+    tearDown(() => reset(storage));
   });
 }
