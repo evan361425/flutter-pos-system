@@ -237,7 +237,7 @@ void main() {
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
     });
 
-    testWidgets('Update product image', (WidgetTester tester) async {
+    testWidgets('Update image', (WidgetTester tester) async {
       final newImage = await createImage('test-image');
       final catalog = Catalog(id: 'c');
       Menu().replaceItems({'c': catalog});
@@ -260,11 +260,9 @@ void main() {
       await tester.tap(find.text('tap me'));
       await tester.pumpAndSettle();
 
-      verify(storage.set(any, argThat(
-        predicate((data) {
-          return data is Map && data['c.imagePath'] == newImage;
-        }),
-      )));
+      verify(storage.set(any, argThat(predicate((data) {
+        return data is Map && data['c.imagePath'] == newImage;
+      }))));
       expect(catalog.imagePath, equals(newImage));
     });
 
