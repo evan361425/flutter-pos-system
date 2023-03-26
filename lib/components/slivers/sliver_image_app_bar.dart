@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/models/model.dart';
 
 class SliverImageAppBar extends StatelessWidget {
-  final String title;
-
-  final ImageProvider<Object> image;
+  final ModelImage model;
 
   const SliverImageAppBar({
     Key? key,
-    required this.title,
-    required this.image,
+    required this.model,
   }) : super(key: key);
 
   @override
@@ -21,16 +19,17 @@ class SliverImageAppBar extends StatelessWidget {
       leading: const PopButton(),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
-          title,
+          model.name,
           style: TextStyle(
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
         titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
         background: ImageHolder(
-          image: image,
+          image: model.image,
           padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
           title: '',
+          onImageError: () => model.saveImage(null),
         ),
       ),
       actions: const <Widget>[PopButton(toHome: true)],

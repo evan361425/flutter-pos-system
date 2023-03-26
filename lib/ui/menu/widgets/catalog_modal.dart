@@ -63,12 +63,13 @@ class _CatalogModalState extends State<CatalogModal>
     ];
   }
 
-  Future<Catalog> createCatalog() async {
-    final object = CatalogObject(name: _nameController.text);
+  Future<Catalog> getCatalog() async {
+    final object = CatalogObject(name: _nameController.text, imagePath: _image);
     final catalog = widget.catalog ??
         Catalog(
           name: object.name,
           index: Menu.instance.newIndex,
+          imagePath: _image,
         );
 
     if (widget.isNew) {
@@ -98,8 +99,7 @@ class _CatalogModalState extends State<CatalogModal>
 
   @override
   Future<void> updateItem() async {
-    final catalog = await createCatalog();
-    await catalog.replaceImage(_image);
+    final catalog = await getCatalog();
 
     if (mounted) {
       // go to catalog screen

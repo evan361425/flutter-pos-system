@@ -54,6 +54,10 @@ class CatalogObject extends ModelObject<Catalog> {
       model.name = name;
       result['$prefix.name'] = name;
     }
+    if (imagePath != null && imagePath != model.imagePath) {
+      model.imagePath = imagePath;
+      result['$prefix.imagePath'] = imagePath!;
+    }
     return result;
   }
 
@@ -209,6 +213,10 @@ class ProductObject extends ModelObject<Product> {
     if (searchedAt != null && searchedAt != model.searchedAt) {
       model.searchedAt = searchedAt;
       result['$prefix.searchedAt'] = Util.toUTC(now: searchedAt);
+    }
+    if (imagePath != null && imagePath != model.imagePath) {
+      model.imagePath = imagePath;
+      result['$prefix.imagePath'] = imagePath!;
     }
     return result;
   }

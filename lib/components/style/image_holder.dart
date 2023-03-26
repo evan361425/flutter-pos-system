@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
-import 'package:possystem/services/image_dumper.dart';
+import 'package:possystem/routes.dart';
 
-class ImageHolder extends StatefulWidget {
+class ImageHolder extends StatelessWidget {
   final ImageProvider image;
 
   final String title;
 
   final void Function()? onPressed;
+
+  final void Function()? onImageError;
 
   final FocusNode? focusNode;
 
@@ -19,16 +21,10 @@ class ImageHolder extends StatefulWidget {
     required this.image,
     required this.title,
     this.onPressed,
+    this.onImageError,
     this.focusNode,
     this.padding = const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
   }) : super(key: key);
-
-  @override
-  State<ImageHolder> createState() => _ImageHolderState();
-}
-
-class _ImageHolderState extends State<ImageHolder> {
-  late ImageProvider image;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +40,7 @@ class _ImageHolderState extends State<ImageHolder> {
         alignment: Alignment.bottomCenter,
         child: Container(
           width: double.infinity,
-          padding: widget.padding,
+          padding: padding,
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors[0])),
             gradient: LinearGradient(
@@ -53,15 +49,15 @@ class _ImageHolderState extends State<ImageHolder> {
               end: Alignment.topCenter,
             ),
           ),
-          child: Text(widget.title, textAlign: TextAlign.center),
+          child: Text(title, textAlign: TextAlign.center),
         ),
       ),
     );
 
-    if (widget.onPressed != null) {
+    if (onPressed != null) {
       body = InkWell(
-        onTap: widget.onPressed,
-        focusNode: widget.focusNode,
+        onTap: onPressed,
+        focusNode: focusNode,
         child: body,
       );
     }
@@ -70,13 +66,11 @@ class _ImageHolderState extends State<ImageHolder> {
       aspectRatio: 1,
       child: Ink.image(
         padding: EdgeInsets.zero,
-        image: widget.image,
+        image: image,
         fit: BoxFit.cover,
         onImageError: (error, stack) {
           Log.err(error, 'image_holder_error', stack);
-          setState(() {
-            image = const AssetImage("assets/food_placeholder.png");
-          });
+          onImageError?.call();
         },
         child: Material(
           type: MaterialType.transparency,
@@ -85,12 +79,6 @@ class _ImageHolderState extends State<ImageHolder> {
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    image = widget.image;
   }
 }
 
@@ -116,8 +104,8 @@ class EditImageHolder extends StatelessWidget {
       image: image,
       title: path == null ? '點選以新增圖片' : '點擊以更新圖片',
       onPressed: () async {
-        final image = await ImageDumper.instance.pick();
-        if (image != null) onSelected(image.path);
+        final file = await Navigator.of(context).pushNamed(Routes.imageGallery);
+        if (file != null && file is String) onSelected(file);
       },
     );
   }

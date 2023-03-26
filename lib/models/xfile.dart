@@ -18,7 +18,7 @@ class XFile {
   static Future<Directory> createDir(String folder) async {
     final directory = await getRootPath();
 
-    final path = '$directory/$folder';
+    final path = fs.path.join(directory, folder);
 
     return XFile(path).dir.create();
   }

@@ -17,6 +17,18 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
+  Map<String, Widget Function(BuildContext)> popImageRoutes(String path) {
+    return {
+      ...Routes.routes,
+      Routes.imageGallery: (BuildContext context) {
+        return TextButton(
+          onPressed: () => Navigator.of(context).pop(path),
+          child: const Text('tap me'),
+        );
+      }
+    };
+  }
+
   group('Catalog Screen', () {
     testWidgets('Add product', (WidgetTester tester) async {
       final catalog = Catalog(id: 'c-1', imagePath: 'some-non-exist');
@@ -31,6 +43,10 @@ void main() {
           child:
               MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
       await tester.pumpAndSettle();
+
+      verify(storage.set(any, argThat(predicate((data) {
+        return data is Map && data.values.first == null;
+      }))));
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -85,6 +101,7 @@ void main() {
     testWidgets('Edit product', (WidgetTester tester) async {
       final oldImage = await createImage('old');
       final oldAvator = await createImage('old-avator');
+      final newImage = await createImage('test-image');
       final product = Product(id: 'p-1', name: 'p-1', imagePath: oldImage);
       final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
         'p-1': product,
@@ -93,12 +110,15 @@ void main() {
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
       await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+        providers: [
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+        ],
+        child: MaterialApp(
+          routes: popImageRoutes(newImage),
+          home: const CatalogScreen(),
+        ),
+      ));
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
@@ -110,9 +130,9 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      mockImagePick(tester);
-      mockImageCropper();
       await tester.tap(find.byKey(const Key('image_holder.edit')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('tap me'));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
@@ -127,23 +147,18 @@ void main() {
       expect(((w as ListTile).title as Text).data, equals('new-name'));
       expect(product.cost, equals(1));
       expect(product.price, equals(1));
+      expect(product.imagePath, newImage);
 
       final prefix = product.prefix;
       verify(storage.set(any, argThat(predicate((data) {
         return data is Map &&
             data['$prefix.price'] == 1 &&
             data['$prefix.cost'] == 1 &&
-            data['$prefix.name'] == 'new-name';
+            data['$prefix.name'] == 'new-name' &&
+            data['$prefix.imagePath'] == newImage;
       }))));
-      verify(storage.set(
-        any,
-        argThat(
-          predicate((data) =>
-              data is Map && data['$prefix.imagePath'] == '/menu_image/p-1'),
-        ),
-      ));
-      expect(XFile(oldImage).file.existsSync(), isFalse);
-      expect(XFile(oldAvator).file.existsSync(), isFalse);
+      expect(XFile(oldImage).file.existsSync(), isTrue);
+      expect(XFile(oldAvator).file.existsSync(), isTrue);
     });
 
     testWidgets('Reorder product', (WidgetTester tester) async {
@@ -196,13 +211,18 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(
+      await tester.pumpWidget(
+        MultiProvider(
           providers: [
             ChangeNotifierProvider<Stock>.value(value: Stock()),
             ChangeNotifierProvider<Catalog>.value(value: catalog),
           ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+          child: MaterialApp(
+            routes: Routes.routes,
+            home: const CatalogScreen(),
+          ),
+        ),
+      );
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
@@ -217,40 +237,41 @@ void main() {
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
     });
 
-    testWidgets('Update product image', (WidgetTester tester) async {
+    testWidgets('Update image', (WidgetTester tester) async {
+      final newImage = await createImage('test-image');
       final catalog = Catalog(id: 'c');
       Menu().replaceItems({'c': catalog});
 
       await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-          ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+        providers: [
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
+        ],
+        child: MaterialApp(
+          routes: popImageRoutes(newImage),
+          home: const CatalogScreen(),
+        ),
+      ));
 
-      mockImagePick(tester);
-      mockImageCropper();
       await tester.tap(find.byKey(const Key('item_more_action')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.image_sharp));
       await tester.pumpAndSettle();
+      await tester.tap(find.text('tap me'));
+      await tester.pumpAndSettle();
 
-      const path = '/menu_image/c';
-      expect(catalog.imagePath, equals(path));
-      verify(storage.set(
-        any,
-        argThat(
-          predicate((data) => data is Map && data['c.imagePath'] == path),
-        ),
-      ));
-      expect(const XFile(path).file.existsSync(), isTrue);
-      expect(const XFile('$path-avator').file.existsSync(), isTrue);
+      verify(storage.set(any, argThat(predicate((data) {
+        return data is Map && data['c.imagePath'] == newImage;
+      }))));
+      expect(catalog.imagePath, equals(newImage));
     });
 
     setUpAll(() {
       initializeStorage();
       initializeTranslator();
+    });
+
+    setUp(() {
       initializeFileSystem();
     });
   });

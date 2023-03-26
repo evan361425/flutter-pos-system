@@ -23,6 +23,48 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Product Screen', () {
+    testWidgets('Update image', (WidgetTester tester) async {
+      final newImage = await createImage('test-image');
+      final product = Product(id: 'p-1');
+      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
+        'p-1': product,
+      })
+        ..prepareItem();
+      Menu().replaceItems({'c': catalog});
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+          ChangeNotifierProvider<Catalog>.value(value: catalog),
+          ChangeNotifierProvider<Product>.value(value: product),
+        ],
+        child: MaterialApp(
+          routes: {
+            Routes.imageGallery: (BuildContext context) {
+              return TextButton(
+                onPressed: () => Navigator.of(context).pop(newImage),
+                child: const Text('tap me'),
+              );
+            },
+          },
+          home: const ProductScreen(),
+        ),
+      ));
+
+      await tester.tap(find.byKey(const Key('item_more_action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('tap me'));
+      await tester.pumpAndSettle();
+
+      verify(storage.set(any, argThat(predicate((data) {
+        return data is Map && data['c-1.products.p-1.imagePath'] == newImage;
+      }))));
+      expect(product.imagePath, equals(newImage));
+    });
+
     testWidgets('Delete product', (WidgetTester tester) async {
       final imagePath = await createImage('old');
       final avatorPath = await createImage('old-avator');
@@ -52,38 +94,8 @@ void main() {
       expect(find.text('go to product'), findsOneWidget);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
-      expect(XFile(imagePath).file.existsSync(), isFalse);
-      expect(XFile(avatorPath).file.existsSync(), isFalse);
-    });
-
-    testWidgets('Update product image', (WidgetTester tester) async {
-      final product = Product(id: 'p-1');
-      final catalog = Catalog(id: 'c-1', products: {'p-1': product});
-      Menu().replaceItems({'c-1': catalog..prepareItem()});
-
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ],
-        child: const MaterialApp(home: ProductScreen()),
-      ));
-
-      mockImagePick(tester, true);
-      await tester.tap(find.byIcon(KIcons.more));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-
-      mockImagePick(tester);
-      mockImageCropper(canceled: true);
-      await tester.tap(find.byIcon(KIcons.more));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-
-      verifyNever(storage.set(any, any));
+      expect(XFile(imagePath).file.existsSync(), isTrue);
+      expect(XFile(avatorPath).file.existsSync(), isTrue);
     });
 
     group('Product Ingredient', () {
