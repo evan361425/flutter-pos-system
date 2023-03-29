@@ -10,18 +10,16 @@ class DeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return AlertDialog(
       title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(child: content),
       actions: <Widget>[
         PopButton(title: S.btnCancel),
-        ElevatedButton(
+        FilledButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.error,
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.red[800],
             foregroundColor: Colors.white,
           ),
           child: Text(S.btnDelete),

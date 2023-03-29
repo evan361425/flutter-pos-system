@@ -72,7 +72,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       ),
       actions: [
         PopButton(key: const Key('slider_dialog.cancel'), title: S.btnCancel),
-        ElevatedButton(
+        FilledButton(
           key: const Key('slider_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
           child: Text(S.btnConfirm),

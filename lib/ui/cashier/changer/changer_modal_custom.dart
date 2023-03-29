@@ -43,7 +43,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
     final theme = Theme.of(context);
 
     final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      ElevatedButton(
+      FilledButton(
         key: const Key('changer.custom.add_favorite'),
         onPressed: handleAddFavorite,
         child: const Text('新增常用'),

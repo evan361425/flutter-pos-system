@@ -15,16 +15,26 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final selector = Row(children: <Widget>[
       Expanded(
-        child: ElevatedButton(
+        child: OutlinedButton(
           key: const Key('cart.select_all'),
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
           onPressed: () => Cart.instance.toggleAll(true),
           child: Text(S.orderCartSelectAll),
         ),
       ),
       const SizedBox(width: 4.0),
       Expanded(
-        child: ElevatedButton(
+        child: OutlinedButton(
           key: const Key('cart.toggle_all'),
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
           onPressed: () => Cart.instance.toggleAll(null),
           child: Text(S.orderCartToggleSelection),
         ),

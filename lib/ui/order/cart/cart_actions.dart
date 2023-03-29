@@ -46,6 +46,11 @@ class CartActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton(
       key: const Key('cart.action'),
+      style: FilledButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
       onPressed: () => showActions(context),
       child: Text(S.orderCartActionsBtn),
     );

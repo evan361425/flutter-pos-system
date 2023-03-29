@@ -63,7 +63,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       ),
       actions: [
         PopButton(key: const Key('text_dialog.cancel'), title: S.btnCancel),
-        ElevatedButton(
+        FilledButton(
           key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
           child: Text(S.btnConfirm),

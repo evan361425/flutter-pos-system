@@ -407,7 +407,7 @@ class _ExporterScreenState extends State<_ExporterScreen> {
     return Column(children: [
       Row(children: [
         Expanded(
-          child: ElevatedButton(
+          child: FilledButton(
             onPressed: exportData,
             child: Text(exportLabel),
           ),
@@ -489,9 +489,9 @@ class _ImporterScreenState extends State<_ImporterScreen> {
         child: Column(children: [
           SignInButton(signedInWidget: _signedInWidget),
           const Divider(),
-          ElevatedButton(
+          FilledButton(
             key: const Key('gs_export.import_all'),
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
             onPressed: () async {
@@ -758,7 +758,7 @@ class _ImporterScreenState extends State<_ImporterScreen> {
     return Column(children: [
       Row(children: [
         Expanded(
-          child: ElevatedButton(
+          child: FilledButton(
             onPressed: () async {
               await (hasSelect ? refreshSheet() : selectSheet());
             },
