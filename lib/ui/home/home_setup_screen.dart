@@ -7,6 +7,7 @@ import 'package:possystem/debug/random_gen_order.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -30,7 +31,18 @@ class HomeSetupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _HeaderInfoList(),
-            if (!isProd) const Center(child: RandomGenerateOrderButton()),
+            if (!isProd)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(children: [
+                  const RandomGenerateOrderButton(),
+                  ElevatedButton.icon(
+                    onPressed: Cache.instance.reset,
+                    label: const Text('清除快取'),
+                    icon: const Icon(Icons.clear_all_sharp),
+                  ),
+                ]),
+              ),
             Tutorial(
               id: 'home.menu',
               index: 2,
