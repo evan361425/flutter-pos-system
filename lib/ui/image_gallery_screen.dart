@@ -7,7 +7,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/translator.dart';
@@ -172,6 +171,9 @@ class ImageGalleryScreenState extends State<ImageGalleryScreen> {
           .map((e) => e.path)
           .where((e) => !e.endsWith('-avator'))
           .toList();
+      // 因為照著時間產生的在最後面，但他應該在最前面，所以反序排列。
+      // 除此之外，最新的圖片應該在最上面。
+      imageList.sort((a, b) => a.compareTo(b) * -1);
       setState(() => images = imageList);
     }
   }
@@ -180,7 +182,16 @@ class ImageGalleryScreenState extends State<ImageGalleryScreen> {
     final image = await ImageDumper.instance.pick();
 
     if (image != null) {
-      final dst = XFile.fs.path.join(baseDir.path, Util.uuidV4());
+      // 2023-01-01T01:23:45.123
+      // G20230101T012345123
+      final name = DateTime.now()
+          .toIso8601String()
+          .replaceAll('-', '')
+          .replaceAll(':', '')
+          .replaceFirst('.', '');
+      // 原本檔名是 uuid v4 產生，前綴為 [0-9A-F]，
+      // 為了做區別而設計成這樣。
+      final dst = XFile.fs.path.join(baseDir.path, 'G$name');
       Log.ger('save_image', 'start', dst);
 
       // avator first, avoid different with origin one
@@ -212,11 +223,11 @@ class ImageGalleryScreenState extends State<ImageGalleryScreen> {
       if (context.mounted) {
         showSnackBar(context, S.actSuccess);
       }
-    } catch (e, stack) {
+    } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, e.toString());
+        showSnackBar(context, '有一個或多個圖片沒有刪成功。');
       }
-      Log.err(e, 'delete_image', stack);
+      Log.out(e.toString(), 'delete_image_error');
     } finally {
       prepareImages();
     }

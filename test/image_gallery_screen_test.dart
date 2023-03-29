@@ -39,7 +39,7 @@ void main() {
       await tester.tap(find.byKey(const Key('image_gallery.add')));
       await tester.pumpAndSettle();
 
-      expect(imagePath, startsWith('menu_image/'));
+      expect(imagePath, startsWith('menu_image/G20'));
       expect(XFile('$imagePath-avator').file.existsSync(), isTrue);
     });
 
@@ -87,10 +87,10 @@ void main() {
 
     testWidgets('delete selected', (tester) async {
       final gallery = GlobalKey<ImageGalleryScreenState>();
-      await createImageAt('0');
-      await createImageAt('1');
-      await createImageAt('1-avator');
-      await createImageAt('2');
+      await createImageAt('G20230102030405111');
+      await createImageAt('G20230102030405222');
+      await createImageAt('G20230102030405222-avator');
+      await createImageAt('G20230102030405333');
 
       await tester.pumpWidget(MaterialApp(
         home: ImageGalleryScreen(key: gallery),
@@ -143,7 +143,10 @@ void main() {
 
       expect(
         gallery.currentState!.images,
-        equals(['menu_image/0', 'menu_image/2']),
+        equals([
+          'menu_image/G20230102030405333',
+          'menu_image/G20230102030405111',
+        ]),
       );
 
       // empty avatar is fine
@@ -154,7 +157,10 @@ void main() {
       await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(gallery.currentState!.images, equals(['menu_image/0']));
+      expect(
+        gallery.currentState!.images,
+        equals(['menu_image/G20230102030405333']),
+      );
     });
 
     setUpAll(() {
