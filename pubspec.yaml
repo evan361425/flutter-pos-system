@@ -18,7 +18,7 @@ homepage: https://github.com/evan361425/flutter-pos-system
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # 2.6.3
-version: 2.6.3+20603002
+version: 2.6.3+20603003
 
 environment:
   flutter: "3.7.8"
