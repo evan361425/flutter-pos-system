@@ -13,6 +13,8 @@ class SlidingUpOpener extends StatefulWidget {
   /// The height of the sliding panel when fully open.
   final double maxHeight;
 
+  final double heightOffset;
+
   /// If non-null, shows a darkening shadow over the [body] as
   /// the panel slides open.
   final bool backdropEnabled;
@@ -67,6 +69,7 @@ class SlidingUpOpener extends StatefulWidget {
     this.minHeight = 160.0,
     this.maxHeight = 500.0,
     this.borderRadius = 16.0,
+    this.heightOffset = 0.0,
     this.backdropEnabled = true,
     this.catchPopScope = true,
     this.clickToOpen = true,
@@ -109,7 +112,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
       collapsed: buildCollapsed(),
       body: Column(children: [
         Expanded(child: widget.body),
-        SizedBox(height: widget.minHeight + 80),
+        SizedBox(height: widget.minHeight + widget.heightOffset + 80),
       ]),
     );
 

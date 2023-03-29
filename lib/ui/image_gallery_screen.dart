@@ -191,7 +191,7 @@ class ImageGalleryScreenState extends State<ImageGalleryScreen> {
           .replaceFirst('.', '');
       // 原本檔名是 uuid v4 產生，前綴為 [0-9A-F]，
       // 為了做區別而設計成這樣。
-      final dst = XFile.fs.path.join(baseDir.path, 'G$name');
+      final dst = XFile.fs.path.join(baseDir.path, 'g$name');
       Log.ger('save_image', 'start', dst);
 
       // avator first, avoid different with origin one

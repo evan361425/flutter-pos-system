@@ -60,6 +60,7 @@ class _OrderCashierModalState extends State<OrderCashierModal> {
       // 4 rows * 64 + 24 (insets) + 64 (collapse)
       maxHeight: 408,
       minHeight: 84,
+      heightOffset: 58,
       renderPanelSheet: false,
       body: body,
       panel: panel,

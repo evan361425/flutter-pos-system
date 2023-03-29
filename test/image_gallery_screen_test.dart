@@ -39,7 +39,8 @@ void main() {
       await tester.tap(find.byKey(const Key('image_gallery.add')));
       await tester.pumpAndSettle();
 
-      expect(imagePath, startsWith('menu_image/G20'));
+      final pattern = RegExp('menu_image/g[0-9]{8}T[0-9]{12}');
+      expect(pattern.hasMatch(imagePath!), isTrue);
       expect(XFile('$imagePath-avator').file.existsSync(), isTrue);
     });
 
@@ -87,10 +88,10 @@ void main() {
 
     testWidgets('delete selected', (tester) async {
       final gallery = GlobalKey<ImageGalleryScreenState>();
-      await createImageAt('G20230102030405111');
-      await createImageAt('G20230102030405222');
-      await createImageAt('G20230102030405222-avator');
-      await createImageAt('G20230102030405333');
+      await createImageAt('g20230102030405111');
+      await createImageAt('g20230102030405222');
+      await createImageAt('g20230102030405222-avator');
+      await createImageAt('g20230102030405333');
 
       await tester.pumpWidget(MaterialApp(
         home: ImageGalleryScreen(key: gallery),
@@ -144,8 +145,8 @@ void main() {
       expect(
         gallery.currentState!.images,
         equals([
-          'menu_image/G20230102030405333',
-          'menu_image/G20230102030405111',
+          'menu_image/g20230102030405333',
+          'menu_image/g20230102030405111',
         ]),
       );
 
@@ -159,7 +160,7 @@ void main() {
 
       expect(
         gallery.currentState!.images,
-        equals(['menu_image/G20230102030405333']),
+        equals(['menu_image/g20230102030405333']),
       );
     });
 
