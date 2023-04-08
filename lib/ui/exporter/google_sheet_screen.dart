@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/material.dart';
+import 'package:info_popup/info_popup.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
@@ -957,6 +958,7 @@ class _SheetPreviewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const style = TextStyle(fontWeight: FontWeight.bold);
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -969,19 +971,18 @@ class _SheetPreviewer extends StatelessWidget {
             for (final cell in header)
               DataColumn(
                 label: cell.note == null
-                    ? Text(
-                        cell.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      )
+                    ? Text(cell.toString(), style: style)
                     : Row(children: [
-                        Text(
-                          cell.toString(),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        Text(cell.toString(), style: style),
                         const SizedBox(width: 4),
-                        const Icon(Icons.info_outline),
+                        InfoPopupWidget(
+                          contentTitle: cell.note,
+                          contentTheme: const InfoPopupContentTheme(
+                            infoTextAlign: TextAlign.start,
+                          ),
+                          child: const Icon(Icons.help_outline_sharp),
+                        ),
                       ]),
-                tooltip: cell.note,
               ),
           ],
           source: source,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:info_popup/info_popup.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
@@ -141,9 +142,8 @@ class _DataWithLabel extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(label),
           if (helper != null)
-            Tooltip(
-              message: helper!,
-              padding: const EdgeInsets.all(12.0),
+            InfoPopupWidget(
+              contentTitle: helper!,
               child: const Icon(Icons.help_outline_sharp, size: 16.0),
             ),
         ]),

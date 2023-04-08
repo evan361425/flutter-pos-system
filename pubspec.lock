@@ -637,6 +637,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.2"
+  info_popup:
+    dependency: "direct main"
+    description:
+      name: info_popup
+      sha256: f1b34ec4cb159838a1282b3879d05073622e9b96828cb99e38bc968b067a215a
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   intl:
     dependency: "direct main"
     description:
