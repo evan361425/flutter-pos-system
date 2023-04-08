@@ -27,23 +27,25 @@ class SearchBarInline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      readOnly: true,
-      enableInteractiveSelection: false,
-      controller: textController,
-      onTap: () => onTap(context),
-      textInputAction: TextInputAction.search,
-      validator: validator,
-      autofocus: autofocus,
-      decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        border: const OutlineInputBorder(borderSide: BorderSide()),
-        isDense: true,
-        labelText: labelText,
-        hintText: hintText,
-        helperText: helperText,
-        focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-        prefixIcon: const Icon(KIcons.search),
+    return Material(
+      child: TextFormField(
+        readOnly: true,
+        enableInteractiveSelection: false,
+        controller: textController,
+        onTap: () => onTap(context),
+        textInputAction: TextInputAction.search,
+        validator: validator,
+        autofocus: autofocus,
+        decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          border: const OutlineInputBorder(borderSide: BorderSide()),
+          isDense: true,
+          labelText: labelText,
+          hintText: hintText,
+          helperText: helperText,
+          focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+          prefixIcon: const Icon(KIcons.search),
+        ),
       ),
     );
   }

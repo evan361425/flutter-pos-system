@@ -8,6 +8,7 @@ import 'package:possystem/translator.dart';
 class SearchScaffold<T> extends StatefulWidget {
   final Future<Iterable<T>> Function(String) handleChanged;
   final int maxLength;
+  final String? heroTag;
   final String text;
   final String helperText;
   final String hintText;
@@ -23,6 +24,7 @@ class SearchScaffold<T> extends StatefulWidget {
     required this.itemBuilder,
     required this.emptyBuilder,
     required this.initialData,
+    this.heroTag,
     this.text = '',
     this.hintText = '',
     this.labelText = '',
@@ -48,30 +50,33 @@ class _SearchScaffoldState<T> extends State<SearchScaffold<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final searchBarWidget = SearchBar(
+      key: searchBar,
+      onChanged: (text) {
+        setState(() {
+          list.clear();
+          isSearching = true;
+        });
+        _handleChanged(text);
+      },
+      text: widget.text,
+      hintText: widget.hintText,
+      labelText: widget.labelText,
+      helperText: widget.helperText,
+      maxLength: widget.maxLength,
+      textCapitalization: widget.textCapitalization,
+      cursorColor: Theme.of(context).textTheme.bodyMedium!.color,
+    );
 
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        title: SearchBar(
-          key: searchBar,
-          onChanged: (text) {
-            setState(() {
-              list.clear();
-              isSearching = true;
-            });
-            _handleChanged(text);
-          },
-          text: widget.text,
-          hintText: widget.hintText,
-          labelText: widget.labelText,
-          helperText: widget.helperText,
-          maxLength: widget.maxLength,
-          textCapitalization: widget.textCapitalization,
-          cursorColor: colorScheme.brightness == Brightness.dark
-              ? colorScheme.onSurface
-              : colorScheme.onPrimary,
-        ),
+        title: widget.heroTag == null
+            ? searchBarWidget
+            : Hero(
+                tag: widget.heroTag!,
+                child: searchBarWidget,
+              ),
       ),
       body: isSearching ? const CircularLoading() : _body(context),
     );

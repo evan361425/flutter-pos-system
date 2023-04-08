@@ -40,7 +40,8 @@ class SearchBarState extends State<SearchBar> {
     final focusedBorder = widget.cursorColor == null
         ? null
         : UnderlineInputBorder(
-            borderSide: BorderSide(color: widget.cursorColor!));
+            borderSide: BorderSide(color: widget.cursorColor!),
+          );
 
     final suffix = isEmpty
         ? null
@@ -52,22 +53,24 @@ class SearchBarState extends State<SearchBar> {
             child: const Icon(KIcons.clear, size: 16.0),
           );
 
-    return TextField(
-      controller: controller,
-      maxLength: widget.maxLength,
-      autofocus: true,
-      onChanged: _onChanged,
-      textCapitalization: widget.textCapitalization,
-      textInputAction: TextInputAction.done,
-      onSubmitted: _onChanged,
-      cursorColor: widget.cursorColor,
-      decoration: InputDecoration(
-        isDense: true,
-        focusedBorder: focusedBorder,
-        suffix: suffix,
-        hintText: widget.hintText,
-        counterText: '',
-        contentPadding: const EdgeInsets.symmetric(horizontal: kSpacing1),
+    return Material(
+      child: TextField(
+        controller: controller,
+        maxLength: widget.maxLength,
+        autofocus: true,
+        onChanged: _onChanged,
+        textCapitalization: widget.textCapitalization,
+        textInputAction: TextInputAction.done,
+        onSubmitted: _onChanged,
+        cursorColor: widget.cursorColor,
+        decoration: InputDecoration(
+          isDense: true,
+          focusedBorder: focusedBorder,
+          suffix: suffix,
+          hintText: widget.hintText,
+          counterText: '',
+          contentPadding: const EdgeInsets.symmetric(horizontal: kSpacing1),
+        ),
       ),
     );
   }

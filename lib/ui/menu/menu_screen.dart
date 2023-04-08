@@ -8,6 +8,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/menu/menu_search.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/catalog_list.dart';
@@ -77,10 +78,14 @@ class _MenuBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchBar = Padding(
       padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
-      child: SearchBarInline(
-        key: const Key('menu.search'),
-        hintText: S.menuSearchProductHint,
-        onTap: (context) => Navigator.of(context).pushNamed(Routes.menuSearch),
+      child: Hero(
+        tag: MenuSearch.heroTag,
+        child: SearchBarInline(
+          key: const Key('menu.search'),
+          hintText: S.menuSearchProductHint,
+          onTap: (context) =>
+              Navigator.of(context).pushNamed(Routes.menuSearch),
+        ),
       ),
     );
 

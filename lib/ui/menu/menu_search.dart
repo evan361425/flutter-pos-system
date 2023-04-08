@@ -7,6 +7,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class MenuSearch extends StatelessWidget {
+  static const heroTag = 'menu_search_screen';
+
   const MenuSearch({Key? key}) : super(key: key);
 
   @override
@@ -18,6 +20,7 @@ class MenuSearch extends StatelessWidget {
       initialData: Menu.instance.searchProducts().toList(),
       hintText: S.menuSearchProductHint,
       textCapitalization: TextCapitalization.words,
+      heroTag: heroTag,
     );
   }
 
