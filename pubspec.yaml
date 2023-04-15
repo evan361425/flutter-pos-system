@@ -21,8 +21,8 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.6.3+20603003
 
 environment:
-  flutter: "3.7.8"
-  sdk: "2.19.5"
+  flutter: "3.7.11"
+  sdk: "2.19.6"
 
 dependencies:
   flutter:
