@@ -23,7 +23,7 @@ Future<T?> showSnackbarWhenFailed<T>(
   String code,
 ) {
   return future.catchError((err) {
-    showSnackBar(context, S.actError);
+    showSnackBar(context, '${S.actError}：$err');
     Log.err(err, code, err is Error ? err.stackTrace : null);
     return null;
   });
