@@ -29,7 +29,7 @@ class Storage {
 
     final list = await getStore(storeId).find(db);
 
-    return {for (var item in list) item.key: item.value};
+    return {for (var item in list) item.key as String: item.value};
   }
 
   Future<void> initialize({StorageOpener? opener}) async {

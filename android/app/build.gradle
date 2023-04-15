@@ -38,7 +38,8 @@ if (keystorePropertiesFile.exists()) {
 def buildNumber = System.getenv("BUILD_NUMBER") ?: "0"
 
 android {
-  compileSdkVersion 31
+  compileSdkVersion flutter.compileSdkVersion
+  ndkVersion flutter.ndkVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -57,7 +58,7 @@ android {
     applicationId "com.evanlu.possystem"
     // https://github.com/FirebaseExtended/flutterfire/issues/1401
     minSdkVersion 21
-    targetSdkVersion 31
+    targetSdkVersion flutter.targetSdkVersion
     multiDexEnabled true
     versionCode flutterVersionCode.toInteger()
     versionName flutterVersionName

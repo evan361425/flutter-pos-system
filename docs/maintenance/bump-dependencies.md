@@ -46,12 +46,3 @@ flutter pub upgrade some_package
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
-
-### Android
-
-如有必要，需要更新 Gradle Lockfile：
-
-1. 移除 `buildscript-gradle.lockfile`
-2. `gradle tasks`，這通常會需要十分鐘。
-
-接著他會更新（如有必要）所有 `project-*.lockfile` 的檔案。

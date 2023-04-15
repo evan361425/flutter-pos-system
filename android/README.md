@@ -1,6 +1,7 @@
 # Android
 
-How to upgrade?
+How to build?
 
-1. delete `buildscript-gradle.lockfile`
-2. `gradle tasks`
+```bash
+flutter build -v apk --release --flavor dev
+```
