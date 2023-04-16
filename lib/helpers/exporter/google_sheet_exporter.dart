@@ -2,7 +2,9 @@ import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
 
-class GoogleSheetExporter {
+import 'data_exporter.dart';
+
+class GoogleSheetExporter extends DataExporter {
   GoogleSheetExporter({
     gs.SheetsApi? sheetsApi,
     List<String> scopes = const [],

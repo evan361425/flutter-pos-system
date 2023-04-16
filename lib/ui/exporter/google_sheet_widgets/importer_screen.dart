@@ -18,20 +18,14 @@ import 'sheet_previewer.dart';
 import 'sheet_selector.dart';
 
 class ImporterScreen extends StatefulWidget {
-  final void Function() startLoading;
-
-  final void Function() finishLoading;
-
-  final void Function(String status) setProgressStatus;
+  final ValueNotifier<String> notifier;
 
   final GoogleSheetExporter exporter;
 
   const ImporterScreen({
     Key? key,
     required this.exporter,
-    required this.startLoading,
-    required this.finishLoading,
-    required this.setProgressStatus,
+    required this.notifier,
   }) : super(key: key);
 
   @override
@@ -138,7 +132,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
   }
 
   Future<void> selectSheet() async {
-    widget.startLoading();
+    widget.notifier.value = '_start';
 
     final result = await showSnackbarWhenFailed(
       selectSpreadsheet(context, spreadsheet, widget.exporter),
@@ -152,13 +146,13 @@ class _ImporterScreenState extends State<ImporterScreen> {
       }
     }
 
-    widget.finishLoading();
+    widget.notifier.value = '_finish';
   }
 
   Future<void> refreshSheet() async {
     assert(hasSelect);
 
-    widget.startLoading();
+    widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
       _refreshSheet(spreadsheet!),
@@ -166,7 +160,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
       errorCodeRefresh,
     );
 
-    widget.finishLoading();
+    widget.notifier.value = '_finish';
   }
 
   Future<void> importData(GoogleSheetAble? type) async {
@@ -185,7 +179,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
       return;
     }
 
-    widget.startLoading();
+    widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
       _importData(selected),
@@ -193,7 +187,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
       errorCodeImport,
     );
 
-    widget.finishLoading();
+    widget.notifier.value = '_finish';
   }
 
   Future<void> _refreshSheet(GoogleSpreadsheet spreadsheet) async {
@@ -215,7 +209,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
       final type = entry.key;
       final sheet = entry.value;
       final msg = S.exporterGSUpdateModelStatus(type.name);
-      widget.setProgressStatus(msg);
+      widget.notifier.value = msg;
 
       Log.ger('ready', 'gs_import', sheet.title);
       final source = await _getSheetData(type, sheet);
@@ -297,7 +291,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
     GoogleSheetAble type,
     GoogleSheetProperties sheet,
   ) async {
-    widget.setProgressStatus('驗證身份中');
+    widget.notifier.value = '驗證身份中';
     await widget.exporter.auth();
 
     const formatter = GoogleSheetFormatter();

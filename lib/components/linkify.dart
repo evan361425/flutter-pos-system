@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/laucher.dart';
+import 'package:possystem/helpers/launcher.dart';
 
 final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/[^\)]+)\)');
 

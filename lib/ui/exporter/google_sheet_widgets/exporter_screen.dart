@@ -6,7 +6,7 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
-import 'package:possystem/helpers/laucher.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
@@ -16,20 +16,14 @@ import 'sheet_namer.dart';
 import 'sheet_previewer.dart';
 
 class ExporterScreen extends StatefulWidget {
-  final void Function() startLoading;
-
-  final void Function() finishLoading;
-
-  final void Function(String status) setProgressStatus;
+  final ValueNotifier<String>? notifier;
 
   final GoogleSheetExporter exporter;
 
   const ExporterScreen({
     Key? key,
     required this.exporter,
-    required this.startLoading,
-    required this.finishLoading,
-    required this.setProgressStatus,
+    this.notifier,
   }) : super(key: key);
 
   @override
@@ -136,7 +130,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
   }
 
   Future<void> selectSheet() async {
-    widget.startLoading();
+    widget.notifier?.value = '_start';
 
     final result = await showSnackbarWhenFailed(
       selectSpreadsheet(context, spreadsheet, widget.exporter),
@@ -150,7 +144,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
       }
     }
 
-    widget.finishLoading();
+    widget.notifier?.value = '_finish';
   }
 
   void previewTarget(GoogleSheetAble able) {
@@ -187,7 +181,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
       return;
     }
 
-    widget.startLoading();
+    widget.notifier?.value = '_start';
 
     await showSnackbarWhenFailed(
       _exportData(names),
@@ -195,7 +189,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
       errorCodeExport,
     );
 
-    widget.finishLoading();
+    widget.notifier?.value = '_finish';
   }
 
   Future<void> _exportData(Map<GoogleSheetAble, String> names) async {
@@ -207,7 +201,8 @@ class _ExporterScreenState extends State<ExporterScreen> {
     for (final entry in prepared.entries) {
       final target = GoogleSheetFormatter.getTarget(entry.key);
       final label = entry.key.name;
-      widget.setProgressStatus(S.exporterGSUpdateModelStatus(label));
+      widget.notifier?.value = S.exporterGSUpdateModelStatus(label);
+
       await _setDefault(label, entry.value.title);
       await widget.exporter.updateSheet(
         spreadsheet!,
@@ -216,6 +211,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
         target.getFormattedHead(formatter),
       );
     }
+
     Log.ger('export finish', 'gs_export');
     if (mounted) {
       showSnackBar(
@@ -234,7 +230,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
-    widget.setProgressStatus(S.exporterGSProgressStatus('addSpreadsheet'));
+    widget.notifier?.value = S.exporterGSProgressStatus('addSpreadsheet');
 
     return widget.exporter.addSpreadsheet(
       S.exporterGSDefaultSpreadsheetName,
@@ -243,10 +239,10 @@ class _ExporterScreenState extends State<ExporterScreen> {
   }
 
   Future<bool> _addSheets(List<String> requiredSheets) async {
-    widget.setProgressStatus(S.exporterGSProgressStatus('addSheets'));
+    widget.notifier?.value = S.exporterGSProgressStatus('addSheets');
+
     final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
     final missing = requiredSheets.toSet().difference(exist);
-
     if (missing.isEmpty) {
       return true;
     }
@@ -270,7 +266,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
   Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet(
     Map<GoogleSheetAble, String> requireSheets,
   ) async {
-    widget.setProgressStatus('驗證身份中');
+    widget.notifier?.value = '驗證身份中';
     await widget.exporter.auth();
 
     final names = requireSheets.values.toList();

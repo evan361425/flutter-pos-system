@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/google_sheet_screen.dart';
+import 'package:possystem/ui/exporter/exporter_routes.dart';
 
 class ExporterScreen extends StatelessWidget {
   const ExporterScreen({Key? key}) : super(key: key);
@@ -29,27 +29,26 @@ class ExporterScreen extends StatelessWidget {
             ),
             title: Text(S.exporterGSTitle),
             subtitle: Text(S.exporterGSDescription),
-            onTap: () => _navTo(context, _Pages.googleSheet),
+            onTap: () => _navTo(context, ExporterRoutes.googleSheet),
+          ),
+          ListTile(
+            key: const Key('exporter.plain_text'),
+            leading: const CircleAvatar(
+              radius: 24,
+              child: Text('Text'),
+            ),
+            title: const Text('純文字'),
+            subtitle: const Text('有些人就愛這味。就像資料分析師說的那樣：請給我生魚片，不要煮過的。'),
+            onTap: () => _navTo(context, ExporterRoutes.plainText),
           ),
         ]),
       ),
     );
   }
 
-  void _navTo(BuildContext context, _Pages name) {
+  void _navTo(BuildContext context, String name) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) {
-          switch (name) {
-            case _Pages.googleSheet:
-              return const GoogleSheetScreen();
-          }
-        },
-      ),
+      MaterialPageRoute(builder: ExporterRoutes.routes[name]!),
     );
   }
-}
-
-enum _Pages {
-  googleSheet,
 }
