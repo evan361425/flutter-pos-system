@@ -1,1 +1,3 @@
-abstract class DataExporter {}
+abstract class DataExporter {
+  const DataExporter();
+}

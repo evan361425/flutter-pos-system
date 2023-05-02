@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/services/database.dart';
@@ -73,14 +72,6 @@ mixin Repository<T extends Model> on ChangeNotifier {
     _stagedItems.clear();
 
     notifyItems();
-  }
-
-  List<Format> getFormattedHead<Format>(Formatter<Format> formatter) {
-    return formatter.getHeader(this);
-  }
-
-  List<List<Format>> getFormattedItems<Format>(Formatter<Format> formatter) {
-    return formatter.getRows(this);
   }
 
   T? getItem(String id) => _items[id];

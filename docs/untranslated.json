@@ -168,7 +168,8 @@
     "exporterGSOrderAttributeOptionNote",
     "importerGSError",
     "importerColumnsCountError",
-    "importerColumnStatus"
+    "importerColumnStatus",
+    "exporterPTRepoName"
   ],
 
   "zh_Hant": [
@@ -416,7 +417,8 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus"
+    "importerColumnStatus",
+    "exporterPTRepoName"
   ],
 
   "zh_Hant_TW": [
@@ -664,7 +666,8 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus"
+    "importerColumnStatus",
+    "exporterPTRepoName"
   ],
 
   "zh_TW": [
@@ -912,6 +915,7 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus"
+    "importerColumnStatus",
+    "exporterPTRepoName"
   ]
 }

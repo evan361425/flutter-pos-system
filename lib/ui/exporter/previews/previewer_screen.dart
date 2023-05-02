@@ -18,16 +18,16 @@ abstract class PreviewerScreen<T extends Model> extends StatelessWidget {
     required this.items,
   }) : super(key: key);
 
-  static Future<bool?> navByTarget(
+  static Future<bool?> navByAble(
     BuildContext context,
-    Formattable type,
+    Formattable able,
     List<FormattedItem> items,
   ) {
     return Navigator.of(context).push<bool>(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) {
-          switch (type) {
+          switch (able) {
             case Formattable.menu:
               return ProductPreviewer(items: items);
             case Formattable.orderAttr:

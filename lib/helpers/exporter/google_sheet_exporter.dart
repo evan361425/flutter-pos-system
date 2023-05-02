@@ -6,20 +6,19 @@ import 'data_exporter.dart';
 
 class GoogleSheetExporter extends DataExporter {
   GoogleSheetExporter({
-    gs.SheetsApi? sheetsApi,
-    List<String> scopes = const [],
-  })  : _sheetsApi = sheetsApi,
-        _scopes = scopes;
+    this.sheetsApi,
+    this.scopes = const [],
+  });
 
-  gs.SheetsApi? _sheetsApi;
+  gs.SheetsApi? sheetsApi;
 
-  List<String> _scopes;
+  final List<String> scopes;
 
   Future<gs.SheetsApi?> getSheetsApi(bool isOrigin) {
     final scopes = isOrigin
         ? const [gs.SheetsApi.driveFileScope]
         : const [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
-    return _setApiClient(scopes).then((_) => _sheetsApi);
+    return _setApiClient(scopes).then((_) => sheetsApi);
   }
 
   gs.SheetProperties getNewSheetProperties(String title) => gs.SheetProperties(
@@ -196,17 +195,17 @@ class GoogleSheetExporter extends DataExporter {
   Future<void> auth() => _setApiClient();
 
   Future<void> _setApiClient([List<String> scopes = const []]) async {
-    final exist = _scopes.toSet();
+    final exist = scopes.toSet();
     final wanted = scopes.toSet();
-    if (_sheetsApi != null && wanted.difference(exist).isEmpty) {
+    if (sheetsApi != null && wanted.difference(exist).isEmpty) {
       return;
     }
 
     final client = await Auth.instance.getAuthenticatedClient(scopes: scopes);
 
     if (client != null) {
-      _sheetsApi = gs.SheetsApi(client);
-      _scopes = exist.union(wanted).toList();
+      sheetsApi = gs.SheetsApi(client);
+      scopes = exist.union(wanted).toList();
     }
   }
 }

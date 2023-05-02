@@ -5,6 +5,7 @@ import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -31,12 +32,12 @@ class ExporterScreen extends StatefulWidget {
 }
 
 class _ExporterScreenState extends State<ExporterScreen> {
-  final sheets = <GoogleSheetAble, GlobalKey<SheetNamerState>>{
-    GoogleSheetAble.menu: GlobalKey<SheetNamerState>(),
-    GoogleSheetAble.stock: GlobalKey<SheetNamerState>(),
-    GoogleSheetAble.quantities: GlobalKey<SheetNamerState>(),
-    GoogleSheetAble.replenisher: GlobalKey<SheetNamerState>(),
-    GoogleSheetAble.orderAttr: GlobalKey<SheetNamerState>(),
+  final sheets = <Formattable, GlobalKey<SheetNamerState>>{
+    Formattable.menu: GlobalKey<SheetNamerState>(),
+    Formattable.stock: GlobalKey<SheetNamerState>(),
+    Formattable.quantities: GlobalKey<SheetNamerState>(),
+    Formattable.replenisher: GlobalKey<SheetNamerState>(),
+    Formattable.orderAttr: GlobalKey<SheetNamerState>(),
   };
 
   GoogleSpreadsheet? spreadsheet;
@@ -50,36 +51,32 @@ class _ExporterScreenState extends State<ExporterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(children: [
-        SignInButton(signedInWidget: _signedInWidget),
-        const Divider(),
-        for (final entry in sheets.entries)
-          Row(children: [
-            Expanded(
-              child: SheetNamer(
-                key: entry.value,
-                label: entry.key.name,
-                sheets: spreadsheet?.sheets,
-                initialValue: _getDefault(entry.key.name),
-                initialChecked:
-                    GoogleSheetFormatter.getTarget(entry.key).isNotEmpty,
-              ),
+    return Column(children: [
+      SignInButton(signedInWidget: _signedInWidget),
+      const Divider(),
+      for (final entry in sheets.entries)
+        Row(children: [
+          Expanded(
+            child: SheetNamer(
+              key: entry.value,
+              label: entry.key.name,
+              sheets: spreadsheet?.sheets,
+              initialValue: _getDefault(entry.key.name),
+              initialChecked: Formatter.getTarget(entry.key).isNotEmpty,
             ),
-            const SizedBox(width: 8.0),
-            IconButton(
-              key: Key('gs_export.${entry.key.name}.preview'),
-              constraints: const BoxConstraints(maxHeight: 24),
-              icon: const Icon(Icons.remove_red_eye_sharp),
-              tooltip: S.exporterGSPreviewerTitle(
-                S.exporterGSDefaultSheetName(entry.key.name),
-              ),
-              onPressed: () => previewTarget(entry.key),
+          ),
+          const SizedBox(width: 8.0),
+          IconButton(
+            key: Key('gs_export.${entry.key.name}.preview'),
+            constraints: const BoxConstraints(maxHeight: 24),
+            icon: const Icon(Icons.remove_red_eye_sharp),
+            tooltip: S.exporterGSPreviewerTitle(
+              S.exporterGSDefaultSheetName(entry.key.name),
             ),
-          ]),
-      ]),
-    );
+            onPressed: () => previewTarget(entry.key),
+          ),
+        ]),
+    ]);
   }
 
   Future<void> showActions() async {
@@ -147,16 +144,13 @@ class _ExporterScreenState extends State<ExporterScreen> {
     widget.notifier?.value = '_finish';
   }
 
-  void previewTarget(GoogleSheetAble able) {
+  void previewTarget(Formattable able) {
     const formatter = GoogleSheetFormatter();
-    final target = GoogleSheetFormatter.getTarget(able);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SheetPreviewer(
-          source: SheetPreviewerDataTableSource(
-            target.getFormattedItems(formatter),
-          ),
-          header: target.getFormattedHead(formatter),
+          source: SheetPreviewerDataTableSource(formatter.getRows(able)),
+          header: formatter.getHeader(able),
           title: S.exporterGSDefaultSheetName(able.name),
         ),
       ),
@@ -192,14 +186,13 @@ class _ExporterScreenState extends State<ExporterScreen> {
     widget.notifier?.value = '_finish';
   }
 
-  Future<void> _exportData(Map<GoogleSheetAble, String> names) async {
+  Future<void> _exportData(Map<Formattable, String> names) async {
     final prepared = await _getSpreadsheet(names);
     if (prepared == null) return;
 
     Log.ger('export ready', 'gs_export', spreadsheet!.id);
     const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
-      final target = GoogleSheetFormatter.getTarget(entry.key);
       final label = entry.key.name;
       widget.notifier?.value = S.exporterGSUpdateModelStatus(label);
 
@@ -207,8 +200,8 @@ class _ExporterScreenState extends State<ExporterScreen> {
       await widget.exporter.updateSheet(
         spreadsheet!,
         entry.value,
-        target.getFormattedItems(formatter),
-        target.getFormattedHead(formatter),
+        formatter.getRows(entry.key),
+        formatter.getHeader(entry.key),
       );
     }
 
@@ -263,8 +256,8 @@ class _ExporterScreenState extends State<ExporterScreen> {
   /// 準備好試算表
   ///
   /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<GoogleSheetAble, GoogleSheetProperties>?> _getSpreadsheet(
-    Map<GoogleSheetAble, String> requireSheets,
+  Future<Map<Formattable, GoogleSheetProperties>?> _getSpreadsheet(
+    Map<Formattable, String> requireSheets,
   ) async {
     widget.notifier?.value = '驗證身份中';
     await widget.exporter.auth();

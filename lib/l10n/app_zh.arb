@@ -1037,5 +1037,14 @@
         "type": "String"
       }
     }
+  },
+  "exporterPTRepoName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
+  "@exporterPTRepoName": {
+    "description": "匯出純文字時的 Repository 名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
   }
 }

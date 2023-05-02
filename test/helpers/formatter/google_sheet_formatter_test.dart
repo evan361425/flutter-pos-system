@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -35,9 +36,8 @@ void main() {
 - i5
   + q1,1,1,1
 ''';
-        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.menu);
 
-        final items = formatter.format<Product>(target, [
+        final items = formatter.format<Product>(Formattable.menu, [
           ['A', 'pB', 1, 1, '- i0'],
           ['B', 'pA', 1, 1, 'from-format\n +\n-i'],
           ['C', 'pA', 1, 1],
@@ -190,9 +190,8 @@ void main() {
     group('Stock', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target = GoogleSheetFormatter.getTarget(GoogleSheetAble.stock);
 
-        final items = formatter.format<Ingredient>(target, [
+        final items = formatter.format<Ingredient>(Formattable.stock, [
           ['i1', 2, 3],
           ['i1'],
           [],
@@ -230,10 +229,8 @@ void main() {
     group('Quantities', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target =
-            GoogleSheetFormatter.getTarget(GoogleSheetAble.quantities);
 
-        final items = formatter.format<Quantity>(target, [
+        final items = formatter.format<Quantity>(Formattable.quantities, [
           ['q1', 2],
           ['q1'],
           [],
@@ -271,11 +268,9 @@ void main() {
     group('Replenisher', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target =
-            GoogleSheetFormatter.getTarget(GoogleSheetAble.replenisher);
         const r1Data = '- i1,20\n- i2,-5';
 
-        final items = formatter.format<Replenishment>(target, [
+        final items = formatter.format<Replenishment>(Formattable.replenisher, [
           ['r1', r1Data],
           ['r1'],
           [],
@@ -320,11 +315,9 @@ void main() {
     group('OrderAttributes', () {
       test('format', () {
         const formatter = GoogleSheetFormatter();
-        final target =
-            GoogleSheetFormatter.getTarget(GoogleSheetAble.orderAttr);
         const c1Data = '- co1,true\n- co2,,5';
 
-        final items = formatter.format<OrderAttribute>(target, [
+        final items = formatter.format<OrderAttribute>(Formattable.orderAttr, [
           ['c1', '折扣', c1Data],
           ['c1', '', '- co1,20'],
           ['c2'],
@@ -368,11 +361,6 @@ void main() {
         final c2 = OrderAttribute(id: 'c2', name: 'c2');
         attrs.replaceItems({'c1': c1, 'c2': c2});
       });
-    });
-
-    test('throw error if not supported', () {
-      const formatter = GoogleSheetFormatter();
-      expect(() => formatter.getRows(Catalog(id: 'c1')), throwsArgumentError);
     });
 
     setUpAll(() {

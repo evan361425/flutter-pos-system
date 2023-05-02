@@ -36,14 +36,14 @@ class ExporterRoutes {
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return pt.ExporterScreen();
+    return pt.ExporterScreen(exporter: exporter as PlainTextExporter);
   }
 
   static Widget ptImportScreen(
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return pt.ImporterScreen();
+    return pt.ImporterScreen(exporter: exporter as PlainTextExporter);
   }
 
   static final routes = <String, WidgetBuilder>{
@@ -53,7 +53,7 @@ class ExporterRoutes {
           exportScreenBuilder: gsExportScreen,
           importScreenBuilder: gsImportScreen,
         ),
-    plainText: (_) => ExporterStation(
+    plainText: (_) => const ExporterStation(
           title: '純文字',
           exporter: PlainTextExporter(),
           exportScreenBuilder: ptExportScreen,
@@ -86,34 +86,48 @@ class ExporterStation extends StatefulWidget {
   State<ExporterStation> createState() => _ExporterStationState();
 }
 
-class _ExporterStationState extends State<ExporterStation> {
+class _ExporterStationState extends State<ExporterStation>
+    with TickerProviderStateMixin {
   final loading = GlobalKey<LoadingWrapperState>();
 
   late final ValueNotifier<String> stateNotifier;
 
+  late final TabController tabController;
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: LoadingWrapper(
-        key: loading,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-            leading: const PopButton(),
-            bottom: TabBar(
-              tabs: [
-                Tab(text: S.btnExport),
-                Tab(text: S.btnImport),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              widget.exportScreenBuilder(widget.exporter, stateNotifier),
-              widget.importScreenBuilder(widget.exporter, stateNotifier),
+    return LoadingWrapper(
+      key: loading,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+          leading: const PopButton(),
+          bottom: TabBar(
+            controller: tabController,
+            tabs: [
+              Tab(text: S.btnExport),
+              Tab(text: S.btnImport),
             ],
           ),
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.exportScreenBuilder(
+                widget.exporter,
+                stateNotifier,
+              ),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.importScreenBuilder(
+                widget.exporter,
+                stateNotifier,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -121,6 +135,13 @@ class _ExporterStationState extends State<ExporterStation> {
 
   @override
   void initState() {
+    tabController = TabController(length: 2, vsync: this);
+    tabController.addListener(() {
+      if (!tabController.indexIsChanging) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    });
+
     stateNotifier = widget.notifier ?? ValueNotifier('');
     stateNotifier.addListener(() {
       switch (stateNotifier.value) {
