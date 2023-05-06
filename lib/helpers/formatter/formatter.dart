@@ -412,8 +412,7 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
 
     if (row.length >= 3) {
       for (var option in _formatOptions(ori, row[2])) {
-        attr.addStaged(option);
-        option.repository = attr;
+        attr.addItem(option, save: false);
       }
     }
 

@@ -1,4 +1,3 @@
-import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -8,7 +7,8 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 
 const _reDig = r'-?\d+\.?\d*';
-const _rePre = '^';
+const _rePre = r'^';
+const _rePost = r'$';
 
 class PlainTextFormatter extends Formatter<String> {
   const PlainTextFormatter();
@@ -207,9 +207,8 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 class _StockTransformer extends ModelTransformer<Stock> {
   const _StockTransformer(Stock target) : super(target);
 
-  static const ingredientTmp = r'第%num個成份叫做 %name，'
-      '庫存現有 %amount 個，'
-      '最大量有 %max 個。';
+  static const baseTmp = r'第%num個成份叫做 %name，庫存現有 %amount 個';
+  static const maxTmp = r'最大量有 %max 個。';
 
   @override
   List<String> getHeader() => ['${target.length} 種成份'];
@@ -220,13 +219,15 @@ class _StockTransformer extends ModelTransformer<Stock> {
     return [
       ['本庫存共有 ${target.length} 種成份'],
       ...target.itemList.map((ingredient) {
+        final max = ingredient.totalAmount;
+        final maxStr = max == null ? '' : '，${maxTmp.f({'max': max})}';
         return [
-          ingredientTmp.f({
-            'num': counter++,
-            'name': ingredient.name,
-            'amount': ingredient.currentAmount,
-            'max': ingredient.maxAmount,
-          }),
+          baseTmp.f({
+                'num': counter++,
+                'name': ingredient.name,
+                'amount': ingredient.currentAmount,
+              }) +
+              maxStr,
         ];
       })
     ];
@@ -234,22 +235,23 @@ class _StockTransformer extends ModelTransformer<Stock> {
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    final re = RegExp(_rePre +
-        ingredientTmp.f({
+    final reBase = RegExp(_rePre +
+        baseTmp.f({
           'num': r'\d+',
           'name': r'(?<name>[^，]+?)',
           'amount': '(?<amount>$_reDig)',
-          'max': '(?<max>$_reDig)',
         }));
+    final reMax = RegExp(maxTmp.f({'max': '(?<max>$_reDig)'}) + _rePost);
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
-      final match = re.firstMatch(line.toString());
-      if (match != null) {
+      final base = reBase.firstMatch(line.toString());
+      final max = reMax.firstMatch(line.toString());
+      if (base != null) {
         result.add([
-          match.namedGroup('name')!,
-          match.namedGroup('amount')!,
-          match.namedGroup('max')!,
+          base.namedGroup('name')!,
+          base.namedGroup('amount')!,
+          max?.namedGroup('max') ?? '',
         ]);
       }
     }
@@ -261,7 +263,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
 class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   const _QuantitiesTransformer(Quantities target) : super(target);
 
-  static const quantityTmp = r'第%num種份量叫做 %name，'
+  static const baseTmp = r'第%num種份量叫做 %name，'
       '預設會讓成分的份量乘以 %prop 倍。';
 
   @override
@@ -274,7 +276,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
       ['共設定 ${target.length} 種份量'],
       ...target.itemList.map((quantity) {
         return [
-          quantityTmp.f({
+          baseTmp.f({
             'num': counter++,
             'name': quantity.name,
             'prop': quantity.defaultProportion,
@@ -287,7 +289,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final re = RegExp(_rePre +
-        quantityTmp.f({
+        baseTmp.f({
           'num': r'\d+',
           'name': r'(?<name>[^，]+?)',
           'prop': '(?<prop>$_reDig)',
@@ -311,8 +313,8 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
 class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   const _ReplenisherTransformer(Replenisher target) : super(target);
 
-  static const replenishTmp = r'第%num種方式叫做 %name，';
-  static const ingredientTmp = r'%amount 個 %name';
+  static const baseTmp = r'第%num種方式叫做 %name，';
+  static const ingredientTmp = r'%name（%amount 個）';
 
   @override
   List<String> getHeader() => ['${target.length} 種補貨方式'];
@@ -324,10 +326,10 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
       ['共設定 ${target.length} 種補貨方式'],
       ...target.itemList.map((repl) {
         final data = repl.ingredientData;
-        final base = replenishTmp.f({'num': counter++, 'name': repl.name});
+        final base = baseTmp.f({'num': counter++, 'name': repl.name});
 
         if (data.isEmpty) {
-          return ['$base它並沒有設定成份。'];
+          return ['$base它並不會調整庫存。'];
         }
         final ing = data.entries
             .map((e) => ingredientTmp.f({
@@ -335,32 +337,33 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
                   'amount': e.value,
                 }))
             .join('、');
-        return ['$base它會設定${data.length}種成份：$ing。'];
+        return ['$base它會調整${data.length}種成份的庫存：$ing。'];
       })
     ];
   }
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    final reReplenish = RegExp(_rePre +
-        replenishTmp.f({
+    final reBase = RegExp(_rePre +
+        baseTmp.f({
           'num': r'\d+',
           'name': r'(?<name>[^，]+?)',
         }));
     final reIngredient = RegExp(_rePre +
         ingredientTmp.f({
           'amount': '(?<amount>$_reDig)',
-          'name': r'(?<name>.+?)$',
+          'name': r'(?<name>[^（]+?)',
         }));
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final lineSplit = line.toString().split('：');
-      final replenishMatch = reReplenish.firstMatch(lineSplit[0]);
+      final replenishMatch = reBase.firstMatch(lineSplit[0]);
       if (replenishMatch != null) {
         String ingredients = '';
         if (lineSplit.length > 1) {
-          for (final ing in lineSplit[1].split('、')) {
+          final lineIng = lineSplit[1].replaceFirst(RegExp(r'。?$'), '');
+          for (final ing in lineIng.split('、')) {
             final match = reIngredient.firstMatch(ing);
             if (match != null) {
               ingredients = '$ingredients\n- ${match.namedGroup('name')!},'
@@ -380,7 +383,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
 class _OATransformer extends ModelTransformer<OrderAttributes> {
   const _OATransformer(OrderAttributes target) : super(target);
 
-  static const oaTmp = r'第%num種屬性叫做 %name，屬於 %mode 類型。';
+  static const baseTmp = r'第%num種屬性叫做 %name，屬於 %mode 類型。';
 
   @override
   List<String> getHeader() => ['${target.length} 種顧客屬性'];
@@ -391,7 +394,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
     return [
       ['共設定 ${target.length} 種顧客屬性'],
       ...target.itemList.map((attr) {
-        final base = oaTmp.f({
+        final base = baseTmp.f({
           'num': counter++,
           'name': attr.name,
           'mode': S.orderAttributeModeNames(attr.mode.name),
@@ -401,10 +404,10 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
         }
 
         final attrs = attr.itemList.map((e) {
-          final v = OrderAttributeValueWidget.getValueName(e.mode, e.modeValue);
-          final info = [e.isDefault ? '預設' : '', v.isEmpty ? '' : '會使訂單價錢$v']
-              .where((e) => e.isNotEmpty)
-              .join('，');
+          final info = [
+            e.isDefault ? '預設' : '',
+            e.modeValue == null ? '' : '選項的值為 ${e.modeValue}',
+          ].where((e) => e.isNotEmpty).join('，');
           return info.isEmpty ? e.name : '${e.name}（$info）';
         }).join('、');
 
@@ -416,7 +419,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reOA = RegExp(_rePre +
-        oaTmp.f({
+        baseTmp.f({
           'num': r'\d+',
           'name': r'(?<name>[^，]+?)',
           'mode': r'(?<mode>[^ ]+?)',
@@ -434,13 +437,11 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
             final name = infoIdx == -1 ? opt : opt.substring(0, infoIdx);
             String info = 'false';
             if (infoIdx != -1) {
-              final infoStr = opt.substring(infoIdx + 1);
+              final infoStr = opt.substring(infoIdx + 1, opt.length - 1);
               if (infoStr.startsWith('預設')) {
                 info = 'true';
               }
-              final v = infoStr.endsWith('免費')
-                  ? '0'
-                  : RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
+              final v = RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
               info = '$info,$v';
             }
             options = '$options\n- $name,$info';

@@ -655,7 +655,6 @@ void main() {
 
           verify(storage.reset(Stores.orderAttributes)).called(1);
           verify(storage.add(Stores.orderAttributes, any, any)).called(2);
-          verify(storage.set(Stores.orderAttributes, any)).called(2);
 
           expect(OrderAttributes.instance.length, equals(2));
 
@@ -699,6 +698,7 @@ void main() {
         });
 
         setUp(() {
+          reset(storage);
           when(cache.get(iCacheKey)).thenReturn('id:true:name');
           when(cache.get(iCacheKey + '.menu')).thenReturn('title 1');
           when(storage.add(any, any, any)).thenAnswer((_) => Future.value());

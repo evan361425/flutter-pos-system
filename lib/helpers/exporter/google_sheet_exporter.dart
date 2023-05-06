@@ -12,7 +12,7 @@ class GoogleSheetExporter extends DataExporter {
 
   gs.SheetsApi? sheetsApi;
 
-  final List<String> scopes;
+  List<String> scopes;
 
   Future<gs.SheetsApi?> getSheetsApi(bool isOrigin) {
     final scopes = isOrigin
@@ -195,7 +195,7 @@ class GoogleSheetExporter extends DataExporter {
   Future<void> auth() => _setApiClient();
 
   Future<void> _setApiClient([List<String> scopes = const []]) async {
-    final exist = scopes.toSet();
+    final exist = this.scopes.toSet();
     final wanted = scopes.toSet();
     if (sheetsApi != null && wanted.difference(exist).isEmpty) {
       return;
@@ -205,7 +205,7 @@ class GoogleSheetExporter extends DataExporter {
 
     if (client != null) {
       sheetsApi = gs.SheetsApi(client);
-      scopes = exist.union(wanted).toList();
+      this.scopes = exist.union(wanted).toList();
     }
   }
 }

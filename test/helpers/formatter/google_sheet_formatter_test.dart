@@ -339,12 +339,12 @@ void main() {
           final item = items[index].item!;
           expect(item.name, equals(name));
           expect(item.mode.name, equals(mode));
-          expect(item.stagedItems.length, equals(l));
+          expect(item.items.length, equals(l));
           expect(item.statusName, equals(status));
         }
 
         verifyItem(0, 'c1', 'changeDiscount', 2, 'updated');
-        expect(items[0].item!.getStaged('co1'), isNotNull);
+        expect(items[0].item!.getItem('co1'), isNotNull);
         expect(items[1].hasError, isTrue);
         expect(items[2].hasError, isTrue);
         expect(items[3].hasError, isTrue);

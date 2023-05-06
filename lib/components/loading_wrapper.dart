@@ -44,8 +44,6 @@ class LoadingWrapperState extends State<LoadingWrapper> {
     ]);
   }
 
-  bool get isLoading => _isLoading;
-
   void startLoading([String? status]) {
     setState(() {
       _status = status;

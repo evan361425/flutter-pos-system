@@ -32,7 +32,7 @@ class Ingredient extends Model<IngredientObject>
     String? id,
     ModelStatus? status,
     String name = 'ingredient',
-    this.currentAmount = 0,
+    this.currentAmount = 0.0,
     this.totalAmount,
     this.warningAmount,
     this.alertAmount,
