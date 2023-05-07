@@ -4,16 +4,19 @@ import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/ui/exporter/previews/previewer_screen.dart';
 
-class ImporterScreen extends StatefulWidget {
+class ImportBasicScreen extends StatefulWidget {
   final PlainTextExporter exporter;
 
-  const ImporterScreen({Key? key, required this.exporter}) : super(key: key);
+  const ImportBasicScreen({
+    Key? key,
+    required this.exporter,
+  }) : super(key: key);
 
   @override
-  State<ImporterScreen> createState() => _ImporterScreenState();
+  State<ImportBasicScreen> createState() => _ImportBasicScreenState();
 }
 
-class _ImporterScreenState extends State<ImporterScreen>
+class _ImportBasicScreenState extends State<ImportBasicScreen>
     with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
 

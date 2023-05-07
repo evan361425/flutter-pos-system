@@ -5,10 +5,13 @@ import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/translator.dart';
 
-class ExporterScreen extends StatelessWidget {
+class ExportBasicScreen extends StatelessWidget {
   final PlainTextExporter exporter;
 
-  const ExporterScreen({Key? key, required this.exporter}) : super(key: key);
+  const ExportBasicScreen({
+    Key? key,
+    required this.exporter,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

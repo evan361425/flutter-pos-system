@@ -27,6 +27,7 @@ void main() {
       return const MaterialApp(
         home: ExporterStation(
           title: '',
+          info: ExporterInfoType.basic,
           exporter: PlainTextExporter(),
           exportScreenBuilder: ExporterRoutes.ptExportScreen,
           importScreenBuilder: ExporterRoutes.ptImportScreen,

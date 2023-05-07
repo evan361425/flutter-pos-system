@@ -16,22 +16,22 @@ import 'common.dart';
 import 'sheet_namer.dart';
 import 'sheet_previewer.dart';
 
-class ExporterScreen extends StatefulWidget {
+class ExportBasicScreen extends StatefulWidget {
   final ValueNotifier<String>? notifier;
 
   final GoogleSheetExporter exporter;
 
-  const ExporterScreen({
+  const ExportBasicScreen({
     Key? key,
     required this.exporter,
     this.notifier,
   }) : super(key: key);
 
   @override
-  State<ExporterScreen> createState() => _ExporterScreenState();
+  State<ExportBasicScreen> createState() => _ExportBasicScreenState();
 }
 
-class _ExporterScreenState extends State<ExporterScreen> {
+class _ExportBasicScreenState extends State<ExportBasicScreen> {
   final sheets = <Formattable, GlobalKey<SheetNamerState>>{
     Formattable.menu: GlobalKey<SheetNamerState>(),
     Formattable.stock: GlobalKey<SheetNamerState>(),

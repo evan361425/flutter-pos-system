@@ -45,6 +45,7 @@ void main() {
       return MaterialApp(
         home: ExporterStation(
           title: '',
+          info: ExporterInfoType.basic,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
             scopes: gsExporterScopes,
@@ -145,6 +146,7 @@ void main() {
             MaterialApp(
               home: ExporterStation(
                 title: '',
+                info: ExporterInfoType.basic,
                 notifier: notifier,
                 exporter: GoogleSheetExporter(),
                 exportScreenBuilder: ExporterRoutes.gsExportScreen,
@@ -462,6 +464,7 @@ void main() {
           await tester.pumpWidget(MaterialApp(
             home: ExporterStation(
               title: '',
+              info: ExporterInfoType.basic,
               notifier: notifier,
               exporter: GoogleSheetExporter(
                 sheetsApi: sheetsApi,

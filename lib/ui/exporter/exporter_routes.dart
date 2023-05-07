@@ -8,6 +8,11 @@ import 'package:possystem/ui/exporter/google_sheet_widgets/screens.dart' as gs;
 import 'package:possystem/ui/exporter/plain_text_widgets/screens.dart' as pt;
 import 'package:possystem/translator.dart';
 
+enum ExporterInfoType {
+  basic,
+  order,
+}
+
 class ExporterRoutes {
   static const googleSheet = 'googleSheet';
   static const plainText = 'plainText';
@@ -16,7 +21,7 @@ class ExporterRoutes {
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return gs.ExporterScreen(
+    return gs.ExportBasicScreen(
       exporter: exporter as GoogleSheetExporter,
       notifier: notifier,
     );
@@ -26,7 +31,7 @@ class ExporterRoutes {
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return gs.ImporterScreen(
+    return gs.ImportBasicScreen(
       exporter: exporter as GoogleSheetExporter,
       notifier: notifier,
     );
@@ -36,26 +41,28 @@ class ExporterRoutes {
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return pt.ExporterScreen(exporter: exporter as PlainTextExporter);
+    return pt.ExportBasicScreen(exporter: exporter as PlainTextExporter);
   }
 
   static Widget ptImportScreen(
     DataExporter exporter,
     ValueNotifier<String> notifier,
   ) {
-    return pt.ImporterScreen(exporter: exporter as PlainTextExporter);
+    return pt.ImportBasicScreen(exporter: exporter as PlainTextExporter);
   }
 
   static final routes = <String, WidgetBuilder>{
-    googleSheet: (_) => ExporterStation(
+    googleSheet: (context) => ExporterStation(
           title: S.exporterGSTitle,
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfo,
           exporter: GoogleSheetExporter(),
           exportScreenBuilder: gsExportScreen,
           importScreenBuilder: gsImportScreen,
         ),
-    plainText: (_) => const ExporterStation(
+    plainText: (context) => ExporterStation(
           title: '純文字',
-          exporter: PlainTextExporter(),
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfo,
+          exporter: const PlainTextExporter(),
           exportScreenBuilder: ptExportScreen,
           importScreenBuilder: ptImportScreen,
         ),
@@ -64,6 +71,8 @@ class ExporterRoutes {
 
 class ExporterStation extends StatefulWidget {
   final String title;
+
+  final ExporterInfo info;
 
   final DataExporter exporter;
 
@@ -77,6 +86,7 @@ class ExporterStation extends StatefulWidget {
     Key? key,
     required this.title,
     required this.exporter,
+    required this.info,
     this.notifier,
     required this.exportScreenBuilder,
     required this.importScreenBuilder,
@@ -164,6 +174,20 @@ class _ExporterStationState extends State<ExporterStation>
     stateNotifier.dispose();
     super.dispose();
   }
+}
+
+class ExporterInfo {
+  final ExporterInfoType type;
+
+  final DateTime? startDate;
+
+  final DateTime? endDate;
+
+  const ExporterInfo({
+    required this.type,
+    this.startDate,
+    this.endDate,
+  });
 }
 
 typedef ExporterBuilder = Widget Function(

@@ -19,6 +19,7 @@ class IngredientPreviewer extends PreviewerScreen<Ingredient> {
       ),
       subtitle: MetaBlock.withString(context, <String>[
         '庫存：${item.currentAmount}',
+        '最大值：${item.totalAmount ?? '未設定'}',
       ]),
     );
   }

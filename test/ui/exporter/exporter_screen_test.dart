@@ -19,7 +19,7 @@ void main() {
 
       when(cache.get(any)).thenReturn(null);
 
-      await tester.pumpWidget(const MaterialApp(home: ExporterScreen()));
+      await tester.pumpWidget(MaterialApp(home: ExporterScreen()));
 
       for (var key in keys) {
         await tester.tap(find.byKey(Key(key)));

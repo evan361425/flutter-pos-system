@@ -17,22 +17,22 @@ import 'common.dart';
 import 'sheet_previewer.dart';
 import 'sheet_selector.dart';
 
-class ImporterScreen extends StatefulWidget {
+class ImportBasicScreen extends StatefulWidget {
   final ValueNotifier<String> notifier;
 
   final GoogleSheetExporter exporter;
 
-  const ImporterScreen({
+  const ImportBasicScreen({
     Key? key,
     required this.exporter,
     required this.notifier,
   }) : super(key: key);
 
   @override
-  State<ImporterScreen> createState() => _ImporterScreenState();
+  State<ImportBasicScreen> createState() => _ImportBasicScreenState();
 }
 
-class _ImporterScreenState extends State<ImporterScreen> {
+class _ImportBasicScreenState extends State<ImportBasicScreen> {
   final sheets = <Formattable, GlobalKey<SheetSelectorState>>{
     Formattable.menu: GlobalKey<SheetSelectorState>(),
     Formattable.stock: GlobalKey<SheetSelectorState>(),
