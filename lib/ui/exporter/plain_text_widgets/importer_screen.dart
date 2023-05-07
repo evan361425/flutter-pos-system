@@ -38,7 +38,7 @@ class _ImporterScreenState extends State<ImporterScreen>
       FilledButton(
         key: const Key('import_btn'),
         onPressed: importData,
-        child: const Text('匯入'),
+        child: const Text('預覽結果'),
       ),
     ]);
   }

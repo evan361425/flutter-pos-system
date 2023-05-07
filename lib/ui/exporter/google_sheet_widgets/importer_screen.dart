@@ -87,7 +87,7 @@ class _ImporterScreenState extends State<ImporterScreen> {
             const SizedBox(width: 8.0),
             OutlinedButton.icon(
               onPressed: () => importData(entry.key),
-              label: const Text('匯入'),
+              label: const Text('預覽結果'),
               icon: const Icon(Icons.download_for_offline_outlined),
             ),
           ]),
