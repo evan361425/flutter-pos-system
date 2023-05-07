@@ -12,6 +12,7 @@ on:
       - "scripts/**"
       - "android/fastlane/**"
       - "pubspec.yaml"
+      - "pubspec.lock"
       - "mkdocs.yaml"
       - ".github/**"
   pull_request:
