@@ -14,20 +14,20 @@ class OrderAttributeValueWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = getValueName();
+    final name = getValueName(mode, value);
     return name == '' ? const SizedBox.shrink() : Text(name);
   }
 
-  String getValueName() {
+  static String getValueName(OrderAttributeMode? mode, num? value) {
     if (value == null || mode == null || mode == OrderAttributeMode.statOnly) {
       return '';
     }
-    final modeValue = value!;
 
+    final modeValue = value;
     if (mode == OrderAttributeMode.changeDiscount) {
       final value = modeValue.toInt();
       return value == 0
-          ? '使訂單免費'
+          ? '免費'
           : value >= 100
               ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
               : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';

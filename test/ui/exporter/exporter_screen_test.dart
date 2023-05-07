@@ -15,7 +15,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Exporter Screen', () {
     testWidgets('nav', (tester) async {
-      const keys = ['exporter.google_sheet'];
+      const keys = ['exporter.google_sheet', 'exporter.plain_text'];
 
       when(cache.get(any)).thenReturn(null);
 

@@ -66,6 +66,7 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
       'name': name!,
       'index': index!,
       'mode': mode!.index,
+      'options': {for (var option in options) option.id: option.toMap()},
     };
   }
 }

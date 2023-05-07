@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/helpers/laucher.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -22,7 +22,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/google_sheet_screen.dart';
+import 'package:possystem/ui/exporter/exporter_routes.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
@@ -43,11 +43,14 @@ void main() {
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
-        home: GoogleSheetScreen(
+        home: ExporterStation(
+          title: '',
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
             scopes: gsExporterScopes,
           ),
+          exportScreenBuilder: ExporterRoutes.gsExportScreen,
+          importScreenBuilder: ExporterRoutes.gsImportScreen,
         ),
       );
     }
@@ -136,14 +139,22 @@ void main() {
         }
 
         testWidgets('empty checked', (tester) async {
-          final screen = GlobalKey<GoogleSheetScreenState>();
+          final notifier = ValueNotifier<String>('');
           Stock.instance.replaceItems({});
           await tester.pumpWidget(
-            MaterialApp(home: GoogleSheetScreen(key: screen)),
+            MaterialApp(
+              home: ExporterStation(
+                title: '',
+                notifier: notifier,
+                exporter: GoogleSheetExporter(),
+                exportScreenBuilder: ExporterRoutes.gsExportScreen,
+                importScreenBuilder: ExporterRoutes.gsImportScreen,
+              ),
+            ),
           );
           await tapBtn(tester);
           // no repo checked, do nothing
-          expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
+          expect(notifier.value, equals(''));
         });
 
         testWidgets('repeat name', (tester) async {
@@ -442,30 +453,33 @@ void main() {
         testWidgets('pop preview source', (tester) async {
           const ing = '- i1,1\n  + q1,1,1,1\n  + q2';
           final sheetsApi = getMockSheetsApi();
-          final screen = GlobalKey<GoogleSheetScreenState>();
+          final notifier = ValueNotifier<String>('');
           mockSheetData(sheetsApi, [
             ['c1', 'p1', 1, 1],
             ['c1', 'p2', 2, 2, ing],
           ]);
 
           await tester.pumpWidget(MaterialApp(
-            home: GoogleSheetScreen(
-              key: screen,
+            home: ExporterStation(
+              title: '',
+              notifier: notifier,
               exporter: GoogleSheetExporter(
                 sheetsApi: sheetsApi,
                 scopes: gsExporterScopes,
               ),
+              exportScreenBuilder: ExporterRoutes.gsExportScreen,
+              importScreenBuilder: ExporterRoutes.gsImportScreen,
             ),
           ));
           await tapBtn(tester);
 
           expect(find.text(ing), findsOneWidget);
-          expect(screen.currentState?.loading.currentState?.isLoading, isTrue);
+          expect(notifier.value, equals('驗證身份中'));
 
           await tester.tap(find.byIcon(Icons.arrow_back_ios_sharp));
           await tester.pumpAndSettle();
 
-          expect(screen.currentState?.loading.currentState?.isLoading, isFalse);
+          expect(notifier.value, equals('_finish'));
         });
 
         testWidgets('menu(commit)', (tester) async {
@@ -641,7 +655,6 @@ void main() {
 
           verify(storage.reset(Stores.orderAttributes)).called(1);
           verify(storage.add(Stores.orderAttributes, any, any)).called(2);
-          verify(storage.set(Stores.orderAttributes, any)).called(2);
 
           expect(OrderAttributes.instance.length, equals(2));
 
@@ -685,6 +698,7 @@ void main() {
         });
 
         setUp(() {
+          reset(storage);
           when(cache.get(iCacheKey)).thenReturn('id:true:name');
           when(cache.get(iCacheKey + '.menu')).thenReturn('title 1');
           when(storage.add(any, any, any)).thenAnswer((_) => Future.value());

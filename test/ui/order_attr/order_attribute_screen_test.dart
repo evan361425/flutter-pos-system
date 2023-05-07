@@ -51,7 +51,12 @@ void main() {
       verify(storage.add(
         Stores.orderAttributes,
         argThat(equals(id)),
-        argThat(equals({'name': 'attr-1', 'index': 1, 'mode': 0})),
+        argThat(equals({
+          'name': 'attr-1',
+          'index': 1,
+          'mode': 0,
+          'options': {},
+        })),
       ));
     });
 
