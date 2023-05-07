@@ -15,43 +15,50 @@ class ExporterScreen extends StatelessWidget {
     return Column(children: [
       for (final able in Formattable.values)
         ExpansionTile(
+          key: Key('expansion_tile.${able.name}'),
           title: Text(S.exporterPTRepoName(able.name)),
           subtitle: MetaBlock.withString(
             context,
             exporter.formatter.getHeader(able),
           ),
           expandedCrossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            for (final row in exporter.formatter.getRows(able))
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final col in row)
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(col),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            if (exporter.formatter.getRows(able).isNotEmpty)
-              FilledButton.icon(
-                onPressed: () {
-                  showSnackbarWhenFailed(
-                    exporter.export(able),
-                    context,
-                    'pt_export_failed',
-                  ).then((value) => showSnackBar(context, '複製成功'));
-                },
-                icon: const Icon(Icons.copy_outlined),
-                label: const Text('複製文字'),
-              )
-          ],
+          children: createRowsByAble(context, able),
         ),
     ]);
+  }
+
+  List<Widget> createRowsByAble(BuildContext context, Formattable able) {
+    final rows = exporter.formatter.getRows(able);
+    return [
+      for (final row in rows)
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final col in row)
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(col),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      if (rows.length > 1)
+        FilledButton.icon(
+          key: Key('export_btn.${able.name}'),
+          onPressed: () {
+            showSnackbarWhenFailed(
+              exporter.export(able),
+              context,
+              'pt_export_failed',
+            ).then((value) => showSnackBar(context, '複製成功'));
+          },
+          icon: const Icon(Icons.copy_outlined),
+          label: const Text('複製文字'),
+        )
+    ];
   }
 }

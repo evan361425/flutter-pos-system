@@ -32,9 +32,9 @@ void main() {
           formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
       expect(text, equals(expected));
 
-      final guessed = formatter.whichFormattable(text);
       final lines = text.trim().split('\n');
-      lines.removeAt(0);
+
+      final guessed = formatter.whichFormattable(lines.removeAt(0));
       return formatter.format<T>(guessed!, [lines]);
     }
 

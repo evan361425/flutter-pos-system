@@ -37,7 +37,7 @@ class PlainTextFormatter extends Formatter<String> {
     } else if (line.endsWith('種份量')) {
       return Formattable.quantities;
     } else if (line.endsWith('種補貨方式')) {
-      return Formattable.quantities;
+      return Formattable.replenisher;
     } else if (line.endsWith('種顧客屬性')) {
       return Formattable.orderAttr;
     }
@@ -358,8 +358,8 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final lineSplit = line.toString().split('：');
-      final replenishMatch = reBase.firstMatch(lineSplit[0]);
-      if (replenishMatch != null) {
+      final baseMatch = reBase.firstMatch(lineSplit[0]);
+      if (baseMatch != null) {
         String ingredients = '';
         if (lineSplit.length > 1) {
           final lineIng = lineSplit[1].replaceFirst(RegExp(r'。?$'), '');
@@ -372,7 +372,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
           }
         }
 
-        result.add([replenishMatch.namedGroup('name')!, ingredients]);
+        result.add([baseMatch.namedGroup('name')!, ingredients]);
       }
     }
 

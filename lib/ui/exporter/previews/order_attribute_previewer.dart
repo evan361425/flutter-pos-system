@@ -29,7 +29,7 @@ class OrderAttributePreviewer extends PreviewerScreen<OrderAttribute> {
       ]),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        for (final option in item.stagedItems)
+        for (final option in item.items)
           ListTile(
             title: Text(option.name),
             subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),

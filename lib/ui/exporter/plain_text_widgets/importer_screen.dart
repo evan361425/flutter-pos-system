@@ -22,6 +22,7 @@ class _ImporterScreenState extends State<ImporterScreen>
     super.build(context);
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       TextField(
+        key: const Key('import_text'),
         controller: controller,
         keyboardType: TextInputType.multiline,
         minLines: 3,
@@ -34,7 +35,11 @@ class _ImporterScreenState extends State<ImporterScreen>
         ),
       ),
       const SizedBox(height: 8),
-      FilledButton(onPressed: importData, child: const Text('匯入')),
+      FilledButton(
+        key: const Key('import_btn'),
+        onPressed: importData,
+        child: const Text('匯入'),
+      ),
     ]);
   }
 
