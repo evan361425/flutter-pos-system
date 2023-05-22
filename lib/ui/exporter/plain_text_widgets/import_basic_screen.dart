@@ -9,7 +9,7 @@ class ImportBasicScreen extends StatefulWidget {
 
   const ImportBasicScreen({
     Key? key,
-    required this.exporter,
+    this.exporter = const PlainTextExporter(),
   }) : super(key: key);
 
   @override

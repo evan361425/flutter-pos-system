@@ -10,7 +10,7 @@ class ExportBasicScreen extends StatelessWidget {
 
   const ExportBasicScreen({
     Key? key,
-    required this.exporter,
+    this.exporter = const PlainTextExporter(),
   }) : super(key: key);
 
   @override

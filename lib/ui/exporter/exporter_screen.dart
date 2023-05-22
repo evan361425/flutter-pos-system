@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/exporter_routes.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ExporterScreen extends StatefulWidget {
   const ExporterScreen({Key? key}) : super(key: key);
@@ -17,9 +16,8 @@ class ExporterScreen extends StatefulWidget {
 class _ExporterScreenState extends State<ExporterScreen> {
   final format = DateFormat.MMMd(S.localeName);
 
-  ExporterInfoType type = ExporterInfoType.order;
-  late DateTime startDate;
-  late DateTime endDate;
+  ExporterInfoType infoType = ExporterInfoType.order;
+  late DateTimeRange range;
 
   late final TextEditingController startDateController;
   late final TextEditingController endDateController;
@@ -39,7 +37,13 @@ class _ExporterScreenState extends State<ExporterScreen> {
             const SizedBox(height: 8),
             _buildDropdown(),
           ]),
-          if (type == ExporterInfoType.order) _buildTimeRange(),
+          Visibility(
+            visible: infoType == ExporterInfoType.order,
+            child: Column(children: [
+              const Center(child: HintText('選擇訂單日期區間')),
+              _buildTimeRange(),
+            ]),
+          ),
           const Divider(),
           Center(child: HintText(S.exporterDescription)),
           ListTile(
@@ -51,7 +55,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
             ),
             title: Text(S.exporterGSTitle),
             subtitle: Text(S.exporterGSDescription),
-            onTap: () => _navTo(context, ExporterRoutes.googleSheet),
+            onTap: () => _navTo(context, ExportMethod.googleSheet),
           ),
           ListTile(
             key: const Key('exporter.plain_text'),
@@ -61,7 +65,7 @@ class _ExporterScreenState extends State<ExporterScreen> {
             ),
             title: const Text('純文字'),
             subtitle: const Text('有些人就愛這味。就像資料分析師說的那樣：請給我生魚片，不要煮過的。'),
-            onTap: () => _navTo(context, ExporterRoutes.plainText),
+            onTap: () => _navTo(context, ExportMethod.plainText),
           ),
         ]),
       ),
@@ -72,10 +76,13 @@ class _ExporterScreenState extends State<ExporterScreen> {
   void initState() {
     super.initState();
 
-    endDate = DateTime.now();
-    startDate = endDate.subtract(const Duration(days: 1));
-    startDateController = TextEditingController(text: format.format(startDate));
-    endDateController = TextEditingController(text: format.format(endDate));
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    range = DateTimeRange(start: today, end: today);
+    startDateController = TextEditingController(
+      text: format.format(range.start),
+    );
+    endDateController = TextEditingController(text: format.format(range.end));
   }
 
   @override
@@ -91,11 +98,11 @@ class _ExporterScreenState extends State<ExporterScreen> {
         DropdownMenuItem(value: ExporterInfoType.basic, child: Text('商家資訊')),
         DropdownMenuItem(value: ExporterInfoType.order, child: Text('訂單記錄')),
       ],
-      value: type,
+      value: infoType,
       onChanged: (type) {
         if (type != null) {
           setState(() {
-            this.type = type;
+            infoType = type;
           });
         }
       },
@@ -103,70 +110,73 @@ class _ExporterScreenState extends State<ExporterScreen> {
   }
 
   Widget _buildTimeRange() {
-    return Column(
+    return ExpansionTile(
+      trailing: const SizedBox.shrink(),
+      title: Row(children: [
+        Flexible(
+          child: TextField(
+            readOnly: true,
+            enabled: false,
+            controller: startDateController,
+            decoration: const InputDecoration(
+              label: Text('起於'),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: TextField(
+            readOnly: true,
+            enabled: false,
+            controller: endDateController,
+            decoration: const InputDecoration(
+              label: Text('迄至'),
+            ),
+          ),
+        ),
+      ]),
       children: [
-        const Center(child: HintText('選擇訂單日期區間')),
-        Row(children: [
-          Flexible(
-            child: TextFormField(
-              readOnly: true,
-              controller: startDateController,
-              onTap: _pickDateRange,
-              decoration: const InputDecoration(
-                label: Text('起於'),
-                helperText: '含這天的資料',
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: TextFormField(
-              readOnly: true,
-              controller: endDateController,
-              onTap: _pickDateRange,
-              decoration: const InputDecoration(
-                label: Text('迄至'),
-                helperText: '不會包含這天的資料',
-              ),
-            ),
-          ),
-        ]),
+        const Center(child: Text('垂直滑動以調整月份')),
+        SfDateRangePicker(
+          selectionMode: DateRangePickerSelectionMode.range,
+          initialSelectedRange: PickerDateRange(range.start, range.end),
+          allowViewNavigation: false, // only accept month
+          navigationMode: DateRangePickerNavigationMode.scroll,
+          navigationDirection: DateRangePickerNavigationDirection.vertical,
+          maxDate: DateTime.now(),
+          onSelectionChanged: (args) {
+            final range = (args.value as PickerDateRange);
+            final start = range.startDate ?? DateTime.now();
+            _resetDates(start, range.endDate ?? start);
+          },
+        ),
       ],
     );
   }
 
-  void _navTo(BuildContext context, String name) {
+  void _navTo(BuildContext context, ExportMethod exporterType) {
+    // 對人類來說 5/1~5/2 代表兩天
+    // 對機器來說 5/1~5/2 代表一天（5/1 0:0 ~ 5/2 0:0）
+    final rangeForProgram = DateTimeRange(
+      start: range.start,
+      end: range.end.add(const Duration(days: 1)),
+    );
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: ExporterRoutes.routes[name]!,
+        builder: ExporterRoutes.routes[exporterType]!,
         settings: RouteSettings(
           arguments: ExporterInfo(
-            type: type,
-            startDate: startDate,
-            endDate: endDate,
+            type: infoType,
+            range: rangeForProgram,
           ),
         ),
       ),
     );
   }
 
-  void _pickDateRange() async {
-    final range = await showDateRangePicker(
-      context: context,
-      initialDateRange: DateTimeRange(start: startDate, end: endDate),
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      locale: SettingsProvider.of<LanguageSetting>().value,
-      firstDate: DateTime(2021, 1),
-      lastDate: DateTime.now().add(const Duration(days: 1)),
-    );
-
-    if (range != null) {
-      startDate = range.start;
-      endDate = range.end;
-      setState(() {
-        startDateController.text = format.format(startDate);
-        endDateController.text = format.format(endDate);
-      });
-    }
+  void _resetDates(DateTime start, DateTime end) {
+    range = DateTimeRange(start: start, end: end);
+    startDateController.text = format.format(start);
+    endDateController.text = format.format(end);
   }
 }

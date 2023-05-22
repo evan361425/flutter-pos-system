@@ -61,8 +61,13 @@ class AnalysisScreen extends StatelessWidget {
   Widget _buildOrderList() {
     return AnalysisOrderList<_OrderListParams>(
       key: orderList,
-      handleLoad: (_OrderListParams params, int offset) =>
-          Seller.instance.getOrderBetween(params.start, params.end, offset),
+      handleLoad: (_OrderListParams params, int offset) {
+        return Seller.instance.getOrderBetween(
+          params.start,
+          params.end,
+          offset: offset,
+        );
+      },
     );
   }
 

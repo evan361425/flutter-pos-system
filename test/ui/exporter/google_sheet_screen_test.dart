@@ -45,13 +45,12 @@ void main() {
       return MaterialApp(
         home: ExporterStation(
           title: '',
-          info: ExporterInfoType.basic,
+          info: const ExporterInfo(type: ExporterInfoType.basic),
+          method: ExportMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
             scopes: gsExporterScopes,
           ),
-          exportScreenBuilder: ExporterRoutes.gsExportScreen,
-          importScreenBuilder: ExporterRoutes.gsImportScreen,
         ),
       );
     }
@@ -146,11 +145,10 @@ void main() {
             MaterialApp(
               home: ExporterStation(
                 title: '',
-                info: ExporterInfoType.basic,
+                info: const ExporterInfo(type: ExporterInfoType.basic),
+                method: ExportMethod.googleSheet,
                 notifier: notifier,
                 exporter: GoogleSheetExporter(),
-                exportScreenBuilder: ExporterRoutes.gsExportScreen,
-                importScreenBuilder: ExporterRoutes.gsImportScreen,
               ),
             ),
           );
@@ -464,14 +462,13 @@ void main() {
           await tester.pumpWidget(MaterialApp(
             home: ExporterStation(
               title: '',
-              info: ExporterInfoType.basic,
+              info: const ExporterInfo(type: ExporterInfoType.basic),
               notifier: notifier,
               exporter: GoogleSheetExporter(
                 sheetsApi: sheetsApi,
                 scopes: gsExporterScopes,
               ),
-              exportScreenBuilder: ExporterRoutes.gsExportScreen,
-              importScreenBuilder: ExporterRoutes.gsImportScreen,
+              method: ExportMethod.googleSheet,
             ),
           ));
           await tapBtn(tester);

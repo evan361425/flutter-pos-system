@@ -17,14 +17,14 @@ import 'sheet_namer.dart';
 import 'sheet_previewer.dart';
 
 class ExportBasicScreen extends StatefulWidget {
-  final ValueNotifier<String>? notifier;
+  final ValueNotifier<String> notifier;
 
   final GoogleSheetExporter exporter;
 
   const ExportBasicScreen({
     Key? key,
     required this.exporter,
-    this.notifier,
+    required this.notifier,
   }) : super(key: key);
 
   @override
@@ -127,7 +127,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   Future<void> selectSheet() async {
-    widget.notifier?.value = '_start';
+    widget.notifier.value = '_start';
 
     final result = await showSnackbarWhenFailed(
       selectSpreadsheet(context, spreadsheet, widget.exporter),
@@ -141,7 +141,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
       }
     }
 
-    widget.notifier?.value = '_finish';
+    widget.notifier.value = '_finish';
   }
 
   void previewTarget(Formattable able) {
@@ -175,7 +175,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
       return;
     }
 
-    widget.notifier?.value = '_start';
+    widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
       _exportData(names),
@@ -183,7 +183,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
       errorCodeExport,
     );
 
-    widget.notifier?.value = '_finish';
+    widget.notifier.value = '_finish';
   }
 
   Future<void> _exportData(Map<Formattable, String> names) async {
@@ -194,7 +194,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
       final label = entry.key.name;
-      widget.notifier?.value = S.exporterGSUpdateModelStatus(label);
+      widget.notifier.value = S.exporterGSUpdateModelStatus(label);
 
       await _setDefault(label, entry.value.title);
       await widget.exporter.updateSheet(
@@ -223,7 +223,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
-    widget.notifier?.value = S.exporterGSProgressStatus('addSpreadsheet');
+    widget.notifier.value = S.exporterGSProgressStatus('addSpreadsheet');
 
     return widget.exporter.addSpreadsheet(
       S.exporterGSDefaultSpreadsheetName,
@@ -232,7 +232,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   Future<bool> _addSheets(List<String> requiredSheets) async {
-    widget.notifier?.value = S.exporterGSProgressStatus('addSheets');
+    widget.notifier.value = S.exporterGSProgressStatus('addSheets');
 
     final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
     final missing = requiredSheets.toSet().difference(exist);
@@ -259,7 +259,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   Future<Map<Formattable, GoogleSheetProperties>?> _getSpreadsheet(
     Map<Formattable, String> requireSheets,
   ) async {
-    widget.notifier?.value = '驗證身份中';
+    widget.notifier.value = '驗證身份中';
     await widget.exporter.auth();
 
     final names = requireSheets.values.toList();
