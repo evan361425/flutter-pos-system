@@ -132,14 +132,8 @@ class _ExporterStationState extends State<ExporterStation>
         return TabBarView(
           controller: tabController,
           children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
-              child: _buildScreen(_Combination.exportBasic),
-            ),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
-              child: _buildScreen(_Combination.importBasic),
-            ),
+            _buildScreen(_Combination.exportBasic),
+            _buildScreen(_Combination.importBasic),
           ],
         );
       case ExporterInfoType.order:

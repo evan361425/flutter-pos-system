@@ -12,6 +12,10 @@ class PlainTextExporter extends DataExporter {
   Future<void> export(Formattable able) {
     final text =
         formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
+    return exportToClipboard(text);
+  }
+
+  Future<void> exportToClipboard(String text) {
     return Clipboard.setData(ClipboardData(text: text));
   }
 }

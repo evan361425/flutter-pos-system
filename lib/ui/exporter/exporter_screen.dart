@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/exporter_routes.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -13,12 +14,14 @@ class ExporterScreen extends StatefulWidget {
   State<ExporterScreen> createState() => _ExporterScreenState();
 }
 
-class _ExporterScreenState extends State<ExporterScreen> {
+class _ExporterScreenState extends State<ExporterScreen>
+    with SingleTickerProviderStateMixin {
   final format = DateFormat.MMMd(S.localeName);
 
   ExporterInfoType infoType = ExporterInfoType.order;
   late DateTimeRange range;
 
+  late final TabController _tabController;
   late final TextEditingController startDateController;
   late final TextEditingController endDateController;
 
@@ -28,46 +31,35 @@ class _ExporterScreenState extends State<ExporterScreen> {
       appBar: AppBar(
         title: Text(S.exporterTitle),
         leading: const PopButton(),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              key: Key('export.order'),
+              icon: Icon(Icons.file_present_sharp),
+              text: '訂單記錄',
+            ),
+            Tab(
+                key: Key('export.menu'),
+                icon: Icon(Icons.store_outlined),
+                text: '商家資訊'),
+          ],
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text('選擇欲匯入匯出的資訊：'),
-            const SizedBox(height: 8),
-            _buildDropdown(),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          ListView(children: [
+            const TextDivider(label: '請選擇訂單日期區間'),
+            _buildTimeRange(),
+            TextDivider(label: S.exporterDescription),
+            ..._buildExporterList(),
           ]),
-          Visibility(
-            visible: infoType == ExporterInfoType.order,
-            child: Column(children: [
-              const Center(child: HintText('選擇訂單日期區間')),
-              _buildTimeRange(),
-            ]),
-          ),
-          const Divider(),
-          Center(child: HintText(S.exporterDescription)),
-          ListTile(
-            key: const Key('exporter.google_sheet'),
-            leading: CircleAvatar(
-              backgroundImage: const AssetImage('assets/google_sheet_icon.png'),
-              backgroundColor: Theme.of(context).focusColor,
-              radius: 24,
-            ),
-            title: Text(S.exporterGSTitle),
-            subtitle: Text(S.exporterGSDescription),
-            onTap: () => _navTo(context, ExportMethod.googleSheet),
-          ),
-          ListTile(
-            key: const Key('exporter.plain_text'),
-            leading: const CircleAvatar(
-              radius: 24,
-              child: Text('Text'),
-            ),
-            title: const Text('純文字'),
-            subtitle: const Text('有些人就愛這味。就像資料分析師說的那樣：請給我生魚片，不要煮過的。'),
-            onTap: () => _navTo(context, ExportMethod.plainText),
-          ),
-        ]),
+          ListView(children: [
+            TextDivider(label: S.exporterDescription),
+            ..._buildExporterList(),
+          ]),
+        ],
       ),
     );
   }
@@ -79,10 +71,10 @@ class _ExporterScreenState extends State<ExporterScreen> {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     range = DateTimeRange(start: today, end: today);
-    startDateController = TextEditingController(
-      text: format.format(range.start),
-    );
+    startDateController =
+        TextEditingController(text: format.format(range.start));
     endDateController = TextEditingController(text: format.format(range.end));
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -92,26 +84,34 @@ class _ExporterScreenState extends State<ExporterScreen> {
     super.dispose();
   }
 
-  Widget _buildDropdown() {
-    return DropdownButton<ExporterInfoType>(
-      items: const [
-        DropdownMenuItem(value: ExporterInfoType.basic, child: Text('商家資訊')),
-        DropdownMenuItem(value: ExporterInfoType.order, child: Text('訂單記錄')),
-      ],
-      value: infoType,
-      onChanged: (type) {
-        if (type != null) {
-          setState(() {
-            infoType = type;
-          });
-        }
-      },
-    );
+  List<Widget> _buildExporterList() {
+    return [
+      ListTile(
+        key: const Key('exporter.google_sheet'),
+        leading: CircleAvatar(
+          backgroundImage: const AssetImage('assets/google_sheet_icon.png'),
+          backgroundColor: Theme.of(context).focusColor,
+          radius: 24,
+        ),
+        title: Text(S.exporterGSTitle),
+        subtitle: Text(S.exporterGSDescription),
+        onTap: () => _navTo(context, ExportMethod.googleSheet),
+      ),
+      ListTile(
+        key: const Key('exporter.plain_text'),
+        leading: const CircleAvatar(
+          radius: 24,
+          child: Text('Text'),
+        ),
+        title: const Text('純文字'),
+        subtitle: const Text('有些人就愛這味。就像資料分析師說的那樣：請給我生魚片，不要煮過的。'),
+        onTap: () => _navTo(context, ExportMethod.plainText),
+      ),
+    ];
   }
 
   Widget _buildTimeRange() {
     return ExpansionTile(
-      trailing: const SizedBox.shrink(),
       title: Row(children: [
         Flexible(
           child: TextField(

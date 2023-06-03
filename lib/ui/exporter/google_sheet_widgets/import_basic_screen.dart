@@ -52,46 +52,49 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SignInButton(signedInWidget: _signedInWidget),
-        const Divider(),
-        FilledButton(
-          key: const Key('gs_export.import_all'),
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(40),
-          ),
-          onPressed: () async {
-            final confirmed = await ConfirmDialog.show(
-              context,
-              title: '確定要匯入全部嗎？',
-              content: '匯入全部資料將會把所選的表單資料都覆蓋掉既有資料。',
-            );
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+        children: [
+          SignInButton(signedInWidget: _signedInWidget),
+          const Divider(),
+          ElevatedButton(
+            key: const Key('gs_export.import_all'),
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+            ),
+            onPressed: () async {
+              final confirmed = await ConfirmDialog.show(
+                context,
+                title: '確定要匯入全部嗎？',
+                content: '匯入全部資料將會把所選的表單資料都覆蓋掉既有資料。',
+              );
 
-            if (confirmed) {
-              importData(null);
-            }
-          },
-          child: const Text('匯入全部'),
-        ),
-        const SizedBox(height: 8.0),
-        for (final entry in sheets.entries)
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Expanded(
-              child: SheetSelector(
-                key: entry.value,
-                label: entry.key.name,
-                defaultValue: _getDefault(entry.key.name),
+              if (confirmed) {
+                importData(null);
+              }
+            },
+            child: const Text('匯入全部'),
+          ),
+          const SizedBox(height: 8.0),
+          for (final entry in sheets.entries)
+            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Expanded(
+                child: SheetSelector(
+                  key: entry.value,
+                  label: entry.key.name,
+                  defaultValue: _getDefault(entry.key.name),
+                ),
               ),
-            ),
-            const SizedBox(width: 8.0),
-            OutlinedButton.icon(
-              onPressed: () => importData(entry.key),
-              label: const Text('預覽結果'),
-              icon: const Icon(Icons.download_for_offline_outlined),
-            ),
-          ]),
-      ],
+              const SizedBox(width: 8.0),
+              OutlinedButton.icon(
+                onPressed: () => importData(entry.key),
+                label: const Text('預覽結果'),
+                icon: const Icon(Icons.download_for_offline_outlined),
+              ),
+            ]),
+        ],
+      ),
     );
   }
 
@@ -311,7 +314,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     return Column(children: [
       Row(children: [
         Expanded(
-          child: FilledButton(
+          child: ElevatedButton(
             onPressed: () async {
               await (hasSelect ? refreshSheet() : selectSheet());
             },

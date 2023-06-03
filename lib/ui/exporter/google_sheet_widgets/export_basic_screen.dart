@@ -51,32 +51,35 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      SignInButton(signedInWidget: _signedInWidget),
-      const Divider(),
-      for (final entry in sheets.entries)
-        Row(children: [
-          Expanded(
-            child: SheetNamer(
-              key: entry.value,
-              label: entry.key.name,
-              sheets: spreadsheet?.sheets,
-              initialValue: _getDefault(entry.key.name),
-              initialChecked: Formatter.getTarget(entry.key).isNotEmpty,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(children: [
+        SignInButton(signedInWidget: _signedInWidget),
+        const Divider(),
+        for (final entry in sheets.entries)
+          Row(children: [
+            Expanded(
+              child: SheetNamer(
+                key: entry.value,
+                label: entry.key.name,
+                sheets: spreadsheet?.sheets,
+                initialValue: _getDefault(entry.key.name),
+                initialChecked: Formatter.getTarget(entry.key).isNotEmpty,
+              ),
             ),
-          ),
-          const SizedBox(width: 8.0),
-          IconButton(
-            key: Key('gs_export.${entry.key.name}.preview'),
-            constraints: const BoxConstraints(maxHeight: 24),
-            icon: const Icon(Icons.remove_red_eye_sharp),
-            tooltip: S.exporterGSPreviewerTitle(
-              S.exporterGSDefaultSheetName(entry.key.name),
+            const SizedBox(width: 8.0),
+            IconButton(
+              key: Key('gs_export.${entry.key.name}.preview'),
+              constraints: const BoxConstraints(maxHeight: 24),
+              icon: const Icon(Icons.remove_red_eye_sharp),
+              tooltip: S.exporterGSPreviewerTitle(
+                S.exporterGSDefaultSheetName(entry.key.name),
+              ),
+              onPressed: () => previewTarget(entry.key),
             ),
-            onPressed: () => previewTarget(entry.key),
-          ),
-        ]),
-    ]);
+          ]),
+      ]),
+    );
   }
 
   Future<void> showActions() async {
@@ -310,7 +313,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     return Column(children: [
       Row(children: [
         Expanded(
-          child: FilledButton(
+          child: ElevatedButton(
             onPressed: exportData,
             child: Text(exportLabel),
           ),

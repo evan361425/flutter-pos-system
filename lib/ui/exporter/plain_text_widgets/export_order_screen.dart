@@ -3,9 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -19,24 +20,41 @@ class ExporterOrderScreen extends StatefulWidget {
 
   @override
   State<ExporterOrderScreen> createState() => _ExporterOrderScreenState();
+
+  String rangeLabel() {
+    final format = DateFormat.yMMMd(S.localeName);
+    return '${format.format(range.start)} - ${format.format(range.end)}';
+  }
 }
 
 class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
   late final RefreshController _scrollController;
 
   final List<OrderObject> _data = [];
-  DateTime? usingDate;
   int? totalCount;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Center(
-          child: MetaBlock.withString(context, [
-            '搜尋 ${widget.range.duration.inDays} 天的資料',
+        ListTile(
+          title: Text(widget.rangeLabel()),
+          subtitle: MetaBlock.withString(context, [
+            '${widget.range.duration.inDays} 天的資料',
             if (totalCount != null) '共 ${totalCount!} 個訂單',
           ]),
+          trailing: ElevatedButton.icon(
+            key: const Key('export_btn'),
+            onPressed: () {
+              showSnackbarWhenFailed(
+                _export(),
+                context,
+                'pt_export_failed',
+              ).then((value) => showSnackBar(context, '複製成功'));
+            },
+            icon: const Icon(Icons.copy_outlined),
+            label: const Text('複製文字'),
+          ),
         ),
         Expanded(
           child: SmartRefresher(
@@ -46,7 +64,7 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
             onLoading: _loadData,
             footer: _buildFooter(),
             child: ListView.builder(
-              itemBuilder: (context, index) => _buildOrder(_data[index]),
+              itemBuilder: (context, index) => _buildOrder(_data[index], index),
               itemCount: _data.length,
             ),
           ),
@@ -56,8 +74,10 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _scrollController = RefreshController();
+
     showSnackbarWhenFailed(
       Seller.instance
           .getMetricBetween(widget.range.start, widget.range.end)
@@ -67,12 +87,7 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
       context,
       'export_load_order_count',
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = RefreshController();
+    _loadData();
   }
 
   @override
@@ -81,65 +96,50 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
     super.dispose();
   }
 
+  Future<void> _export() {
+    const exporter = PlainTextExporter();
+    return exporter.exportToClipboard(_data
+        .map((o) => [
+              _formatCreatedAt(o),
+              _formatHeader(o),
+              _formatBody(o),
+            ].join('\n'))
+        .join('\n\n'));
+  }
+
   void _loadData() {
-    final future = Seller.instance.getOrderBetween(
+    final future = Seller.instance
+        .getOrderBetween(
       widget.range.start,
       widget.range.end,
-    );
-    future.then((data) {
-      _data.addAll(data);
+      offset: _data.length,
+      desc: false,
+    )
+        .then((data) {
       if (data.length != 10) {
         _scrollController.loadNoData();
       } else {
         _scrollController.loadComplete();
       }
+      setState(() {
+        _data.addAll(data);
+      });
     });
     showSnackbarWhenFailed(future, context, 'export_load_order');
   }
 
-  Widget _buildOrder(OrderObject order) {
-    final child = Card(child: Text(_format(order)));
-    return _changeUsedDate(order.createdAt)
-        ? Column(children: [
-            TextDivider(
-              label: DateFormat.MMMEd(S.localeName).format(order.createdAt),
-            ),
-            child,
-          ])
-        : child;
-  }
-
-  bool _changeUsedDate(DateTime dt) {
-    if (usingDate != null && dt.difference(usingDate!).inDays == 0) {
-      return false;
-    }
-    usingDate = DateTime(dt.year, dt.month, dt.day);
-    return true;
-  }
-
-  String _format(OrderObject order) {
-    final createdAt = DateFormat.Hm(S.localeName).format(order.createdAt);
-    final attributes =
-        order.attributes.map((a) => '${a.name}為${a.optionName}').join('、');
-    final products = order.products.map((p) {
-      final ing = p.ingredients.map((i) {
-        final amount = i.amount == 0 ? '' : '，使用 ${i.amount} 份';
-        return '${i.name}（${i.quantityName ?? '預設'}$amount）';
-      }).join('、');
-      return '${p.productName}（${p.catalogName}）'
-          '點了 ${p.count} 份共 ${p.totalPrice} 元'
-          '（每份 ${p.singlePrice} 元），'
-          '成份包括$ing';
-    }).join('；');
-    return [
-      '$createdAt 點了 ${order.totalCount} 份餐點（${order.products.length} 種）',
-      '共 ${order.totalPrice} 元。',
-      if (order.productsPrice != order.totalPrice)
-        '（其中的 ${order.productsPrice} 元是扣掉顧客選項後的產品價錢）',
-      '。',
-      if (attributes != '') '顧客的$attributes。',
-      '餐點包括$products',
-    ].join('');
+  Widget? _buildOrder(OrderObject order, int index) {
+    return ExpansionTile(
+      leading: CircleAvatar(child: Text((index + 1).toString())),
+      title: Text(_formatCreatedAt(order)),
+      subtitle: Text(_formatHeader(order)),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(_formatBody(order)),
+        ),
+      ],
+    );
   }
 
   Widget _buildFooter() {
@@ -159,5 +159,47 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
         }
       },
     );
+  }
+
+  String _formatCreatedAt(OrderObject order) {
+    return '${DateFormat.yMMMd(S.localeName).format(order.createdAt)}'
+        ' '
+        '${DateFormat.Hm(S.localeName).format(order.createdAt)}';
+  }
+
+  String _formatHeader(OrderObject order) {
+    return [
+      '${order.totalCount} 份餐點',
+      '共 ${order.totalPrice.toCurrency()} 元',
+    ].join(MetaBlock.string);
+  }
+
+  String _formatBody(OrderObject order) {
+    final attributes = order.attributes.map((a) {
+      return '${a.name}為${a.optionName}';
+    }).join('、');
+    final products = order.products.map((p) {
+      final ing = p.ingredients.map((i) {
+        final amount = i.amount == 0 ? '' : '，使用 ${i.amount} 個';
+        return '${i.name}（${i.quantityName ?? '預設份量'}$amount）';
+      }).join('、 ');
+      return [
+        '點了 ${p.count} 份 ${p.productName}（${p.catalogName}）',
+        '共 ${p.totalPrice.toCurrency()} 元',
+        ing == '' ? '沒有設定成分' : '成份包括 $ing',
+      ].join('');
+    }).join('；\n');
+    final pl = order.products.length;
+    final tc = order.totalCount;
+
+    return [
+      if (order.productsPrice != order.totalPrice)
+        '${order.totalPrice.toCurrency()} 元'
+            '中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
+      if (attributes != '') '顧客的$attributes。\n',
+      '餐點有 $tc 份',
+      if (pl != tc) '（$pl 種）',
+      '包括：\n$products',
+    ].join('');
   }
 }
