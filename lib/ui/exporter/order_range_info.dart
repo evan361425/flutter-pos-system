@@ -5,19 +5,19 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 
-class RangeOrderInfo extends StatefulWidget {
+class OrderRangeInfo extends StatefulWidget {
   final DateTimeRange range;
 
   final Widget? trailing;
 
-  const RangeOrderInfo({
+  const OrderRangeInfo({
     Key? key,
     required this.range,
     this.trailing,
   }) : super(key: key);
 
   @override
-  State<RangeOrderInfo> createState() => _RangeOrderInfoState();
+  State<OrderRangeInfo> createState() => _OrderRangeInfoState();
 
   static String rangeLabel(DateTimeRange range) {
     final format = DateFormat.yMMMd(S.localeName);
@@ -25,13 +25,13 @@ class RangeOrderInfo extends StatefulWidget {
   }
 }
 
-class _RangeOrderInfoState extends State<RangeOrderInfo> {
+class _OrderRangeInfoState extends State<OrderRangeInfo> {
   int? totalCount;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(RangeOrderInfo.rangeLabel(widget.range)),
+      title: Text(OrderRangeInfo.rangeLabel(widget.range)),
       subtitle: MetaBlock.withString(context, [
         '${widget.range.duration.inDays} 天的資料',
         if (totalCount != null) '共 ${totalCount!} 個訂單',

@@ -7,7 +7,9 @@ class SheetNamer extends StatefulWidget {
 
   final String label;
 
-  final bool initialChecked;
+  final String? labelText;
+
+  final bool? initialChecked;
 
   final List<GoogleSheetProperties>? sheets;
 
@@ -15,12 +17,19 @@ class SheetNamer extends StatefulWidget {
     Key? key,
     required this.initialValue,
     required this.label,
-    required this.initialChecked,
+    this.initialChecked,
+    this.labelText,
     this.sheets,
   }) : super(key: key);
 
   @override
   State<SheetNamer> createState() => SheetNamerState();
+
+  String getLabelText() {
+    return S.exporterGSSheetLabel(
+      labelText ?? S.exporterGSDefaultSheetName(label),
+    );
+  }
 }
 
 class SheetNamerState extends State<SheetNamer> {
@@ -28,7 +37,7 @@ class SheetNamerState extends State<SheetNamer> {
 
   late TextEditingController _controller;
 
-  late bool checked;
+  bool? checked;
 
   String? get name => _controller.text.isEmpty ? null : _controller.text;
 
@@ -39,19 +48,19 @@ class SheetNamerState extends State<SheetNamer> {
       controller: _controller,
       autofillHints: autofillHints,
       decoration: InputDecoration(
-        prefix: SizedBox(
-          height: 14,
-          child: Checkbox(
-            key: Key('gs_export.${widget.label}.checkbox'),
-            value: checked,
-            visualDensity: VisualDensity.compact,
-            splashRadius: 0,
-            onChanged: (newValue) => setState(() => checked = newValue!),
-          ),
-        ),
-        labelText: S.exporterGSSheetLabel(
-          S.exporterGSDefaultSheetName(widget.label),
-        ),
+        prefix: checked == null
+            ? null
+            : SizedBox(
+                height: 14,
+                child: Checkbox(
+                  key: Key('gs_export.${widget.label}.checkbox'),
+                  value: checked,
+                  visualDensity: VisualDensity.compact,
+                  splashRadius: 0,
+                  onChanged: (newValue) => setState(() => checked = newValue!),
+                ),
+              ),
+        labelText: widget.getLabelText(),
         hintText: widget.initialValue,
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
