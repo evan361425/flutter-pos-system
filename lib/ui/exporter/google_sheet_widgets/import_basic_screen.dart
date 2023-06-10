@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/sign_in_button.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
@@ -11,11 +8,13 @@ import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 import 'package:possystem/ui/exporter/previews/previewer_screen.dart';
 
-import 'common.dart';
 import 'sheet_previewer.dart';
 import 'sheet_selector.dart';
+
+const _cacheKey = 'importer_google_sheet';
 
 class ImportBasicScreen extends StatefulWidget {
   final ValueNotifier<String> notifier;
@@ -41,14 +40,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     Formattable.orderAttr: GlobalKey<SheetSelectorState>(),
   };
 
-  GoogleSpreadsheet? spreadsheet;
-
-  bool get hasSelect => spreadsheet != null;
-
-  String get prepareLabel => hasSelect ? '檢查所選的試算表' : '選擇試算表';
-
-  String get hint =>
-      hasSelect ? '將於「${spreadsheet?.name}」匯入' : '你尚未選擇試算表，將無法匯入';
+  final selector = GlobalKey<SpreadsheetSelectorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +48,21 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
-          SignInButton(signedInWidget: _signedInWidget),
+          SignInButton(
+            signedInWidget: SpreadsheetSelector(
+              key: selector,
+              forceExist: true,
+              exporter: widget.exporter,
+              notifier: widget.notifier,
+              cacheKey: _cacheKey,
+              existLabel: '檢查試算表',
+              existHint: '將匯入於「%name」',
+              emptyLabel: '選擇試算表',
+              emptyHint: '開始選擇試算表後，方能匯入資料',
+              onUpdate: _handleSpreadsheetUpdate,
+              onExecute: reloadSheets,
+            ),
+          ),
           const Divider(),
           ElevatedButton(
             key: const Key('gs_export.import_all'),
@@ -83,7 +89,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
                 child: SheetSelector(
                   key: entry.value,
                   label: entry.key.name,
-                  defaultValue: _getDefault(entry.key.name),
+                  defaultValue: _getSheetName(entry.key.name),
                 ),
               ),
               const SizedBox(width: 8.0),
@@ -98,70 +104,41 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     );
   }
 
-  Future<void> showActions() async {
-    final selected = await showCircularBottomSheet<_ActionTypes>(
-      context,
-      actions: const <BottomSheetAction<_ActionTypes>>[
-        BottomSheetAction(
-          title: Text('選擇試算表'),
-          leading: Icon(Icons.list_alt_sharp),
-          returnValue: _ActionTypes.select,
-        ),
-      ],
-    );
-
-    if (selected == _ActionTypes.select) {
-      await selectSheet();
-    }
-  }
-
-  Future<void> changeSpreadsheet(GoogleSpreadsheet newSpreadsheet) async {
-    Log.ger('change start', 'gs_import', newSpreadsheet.toString());
-
-    setState(() => spreadsheet = newSpreadsheet);
+  @override
+  void dispose() {
     for (var sheet in sheets.values) {
-      sheet.currentState?.setSheets(newSpreadsheet.sheets);
+      sheet.currentState?.dispose();
     }
-
-    await Cache.instance
-        .set<String>(importerCacheKey, newSpreadsheet.toString());
-    Log.ger('change finish', 'gs_import');
+    super.dispose();
   }
 
-  Future<void> selectSheet() async {
-    widget.notifier.value = '_start';
-
-    final result = await showSnackbarWhenFailed(
-      selectSpreadsheet(context, spreadsheet, widget.exporter),
-      context,
-      errorCodeSelect,
-    );
-    if (result != null) {
-      await changeSpreadsheet(result);
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
-    }
-
-    widget.notifier.value = '_finish';
-  }
-
-  Future<void> refreshSheet() async {
-    assert(hasSelect);
-
+  /// 重新讀取試算表的表單名稱
+  Future<void> reloadSheets(GoogleSpreadsheet? ss) async {
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      _refreshSheet(spreadsheet!),
+      _reloadSheets(ss!),
       context,
-      errorCodeRefresh,
+      'gs_refresh_failed',
     );
 
     widget.notifier.value = '_finish';
   }
 
+  Future<void> _reloadSheets(GoogleSpreadsheet ss) async {
+    final exist = await widget.exporter.getSheets(ss);
+
+    for (var sheet in sheets.values) {
+      sheet.currentState?.setSheets(exist);
+    }
+    if (mounted) {
+      showSnackBar(context, S.actSuccess);
+    }
+  }
+
   Future<void> importData(Formattable? type) async {
-    if (!hasSelect) {
+    final ss = selector.currentState?.spreadsheet;
+    if (ss == null) {
       showSnackBar(context, S.importerGSError('emptySpreadsheet'));
       return;
     }
@@ -179,37 +156,32 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      _importData(selected),
+      _importData(ss, selected),
       context,
-      errorCodeImport,
+      'gs_import_failed',
     );
 
     widget.notifier.value = '_finish';
   }
 
-  Future<void> _refreshSheet(GoogleSpreadsheet spreadsheet) async {
-    final refreshedSheets = await widget.exporter.getSheets(spreadsheet);
-
-    for (var sheet in sheets.values) {
-      sheet.currentState?.setSheets(refreshedSheets);
-    }
-    if (mounted) {
-      showSnackBar(context, S.actSuccess);
-    }
-  }
-
+  /// 檢查基礎資料後，真正開始匯入。
+  ///
+  /// 1. 取得資料
+  /// 2. 快取（如果可能的話，預覽）
+  /// 3. 解析資料並匯入
   Future<void> _importData(
-    List<MapEntry<Formattable, GoogleSheetProperties>> data,
+    GoogleSpreadsheet ss,
+    List<MapEntry<Formattable, GoogleSheetProperties>> ableSheets,
   ) async {
-    final allowPreview = data.length == 1;
-    for (final entry in data) {
+    final allowPreview = ableSheets.length == 1;
+    for (final entry in ableSheets) {
       final able = entry.key;
       final sheet = entry.value;
-      final msg = S.exporterGSUpdateModelStatus(able.name);
-      widget.notifier.value = msg;
+      widget.notifier.value = S.exporterGSUpdateModelStatus(able.name);
 
+      // step 1
       Log.ger('ready', 'gs_import', sheet.title);
-      final source = await _getSheetData(able, sheet);
+      final source = await _requestData(able, ss, sheet);
       if (source == null) {
         if (mounted) {
           showSnackBar(context, '找不到表單「${sheet.title}」的資料');
@@ -217,14 +189,16 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
         return;
       }
 
+      // step 2
       Log.ger('received', 'gs_import', source.length.toString());
-      await _setDefault(able.name, sheet);
+      await _cacheSheetName(able.name, sheet);
 
       if (allowPreview) {
-        final allowPreviewFormed = await _previewSheetData(able, source);
-        if (allowPreviewFormed != true) return;
+        final approved = await _previewSheetData(able, source);
+        if (approved != true) return;
       }
 
+      // step 3
       Log.ger('parsing', 'gs_import', able.name);
       final allowSave = await _parsedData(able, source, preview: allowPreview);
       await Formatter.finishFormat(able, allowSave);
@@ -232,6 +206,38 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     if (mounted) {
       showSnackBar(context, S.actSuccess);
     }
+  }
+
+  Future<void> _handleSpreadsheetUpdate(GoogleSpreadsheet? other) async {
+    for (var sheet in sheets.values) {
+      sheet.currentState?.setSheets(other!.sheets);
+    }
+  }
+
+  /// 請求表單的資料
+  Future<List<List<Object?>>?> _requestData(
+    Formattable able,
+    GoogleSpreadsheet ss,
+    GoogleSheetProperties sheet,
+  ) async {
+    widget.notifier.value = '驗證身份中';
+    await widget.exporter.auth();
+
+    const formatter = GoogleSheetFormatter();
+    final neededColumns = formatter.getHeader(able).length;
+    final sheetData = await widget.exporter.getSheetData(
+      ss,
+      sheet.title,
+      neededColumns: neededColumns,
+    );
+
+    // remove header
+    final data = sheetData?.sublist(1);
+    if (data?.isEmpty != false) {
+      return null;
+    }
+
+    return data;
   }
 
   Future<bool?> _previewSheetData(
@@ -272,80 +278,17 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
         : Future.value(true);
   }
 
-  Future<List<List<Object?>>?> _getSheetData(
-    Formattable able,
-    GoogleSheetProperties sheet,
-  ) async {
-    widget.notifier.value = '驗證身份中';
-    await widget.exporter.auth();
-
-    const formatter = GoogleSheetFormatter();
-    final neededColumns = formatter.getHeader(able).length;
-
-    final sheetData = await widget.exporter.getSheetData(
-      spreadsheet!,
-      sheet.title,
-      neededColumns: neededColumns,
-    );
-
-    // remove header
-    final data = sheetData?.sublist(1);
-    if (data?.isEmpty != false) {
-      return null;
-    }
-
-    return data;
-  }
-
-  Future<void> _setDefault(String label, GoogleSheetProperties sheet) async {
-    final key = '$importerCacheKey.$label';
-    if (sheet.toCacheValue() != Cache.instance.get<String>(key)) {
-      await Cache.instance.set<String>(key, sheet.toCacheValue());
-    }
-  }
-
-  GoogleSheetProperties? _getDefault(String label) {
-    final nameId = Cache.instance.get<String>('$importerCacheKey.$label');
+  GoogleSheetProperties? _getSheetName(String label) {
+    final nameId = Cache.instance.get<String>('$_cacheKey.$label');
 
     return GoogleSheetProperties.fromCacheValue(nameId);
   }
 
-  Widget _signedInWidget(User user) {
-    return Column(children: [
-      Row(children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () async {
-              await (hasSelect ? refreshSheet() : selectSheet());
-            },
-            child: Text(prepareLabel),
-          ),
-        ),
-        IconButton(
-          onPressed: showActions,
-          icon: const Icon(Icons.more_vert_sharp),
-        ),
-      ]),
-      HintText(hint),
-    ]);
-  }
-
-  @override
-  void initState() {
-    final value = Cache.instance.get<String>(importerCacheKey);
-    if (value != null) {
-      spreadsheet = GoogleSpreadsheet.fromString(value);
+  Future<void> _cacheSheetName(
+      String label, GoogleSheetProperties sheet) async {
+    final key = '$_cacheKey.$label';
+    if (sheet.toCacheValue() != Cache.instance.get<String>(key)) {
+      await Cache.instance.set<String>(key, sheet.toCacheValue());
     }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.dispose();
-    }
-    super.dispose();
   }
 }
-
-enum _ActionTypes { select }

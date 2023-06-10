@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -65,7 +64,21 @@ class _SettingScreenState extends State<SettingScreen> {
           const SizedBox(height: 8.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: SignInButton(signedInWidget: signedInWidget),
+            child: SignInButton(
+              signedInWidgetBuilder: (user) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('HI，${user.displayName}'),
+                  OutlinedButton(
+                    key: const Key('setting.sign_out'),
+                    onPressed: () async {
+                      await Auth.instance.signOut();
+                    },
+                    child: const Text('登出'),
+                  ),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 8.0),
           CardTile(
@@ -164,19 +177,6 @@ class _SettingScreenState extends State<SettingScreen> {
         ],
       ),
     );
-  }
-
-  Widget signedInWidget(User user) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text('HI，${user.displayName}'),
-      OutlinedButton(
-        key: const Key('setting.sign_out'),
-        onPressed: () async {
-          await Auth.instance.signOut();
-        },
-        child: const Text('登出'),
-      ),
-    ]);
   }
 
   void _navigateItemList(

@@ -22,6 +22,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [

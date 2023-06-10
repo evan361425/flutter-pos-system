@@ -8,6 +8,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/range_order_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ExporterOrderScreen extends StatefulWidget {
@@ -20,29 +21,19 @@ class ExporterOrderScreen extends StatefulWidget {
 
   @override
   State<ExporterOrderScreen> createState() => _ExporterOrderScreenState();
-
-  String rangeLabel() {
-    final format = DateFormat.yMMMd(S.localeName);
-    return '${format.format(range.start)} - ${format.format(range.end)}';
-  }
 }
 
 class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
   late final RefreshController _scrollController;
 
   final List<OrderObject> _data = [];
-  int? totalCount;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title: Text(widget.rangeLabel()),
-          subtitle: MetaBlock.withString(context, [
-            '${widget.range.duration.inDays} 天的資料',
-            if (totalCount != null) '共 ${totalCount!} 個訂單',
-          ]),
+        RangeOrderInfo(
+          range: widget.range,
           trailing: ElevatedButton.icon(
             key: const Key('export_btn'),
             onPressed: () {
@@ -76,17 +67,8 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController = RefreshController();
 
-    showSnackbarWhenFailed(
-      Seller.instance
-          .getMetricBetween(widget.range.start, widget.range.end)
-          .then((value) {
-        setState(() => totalCount = value['count']!.toInt());
-      }),
-      context,
-      'export_load_order_count',
-    );
+    _scrollController = RefreshController();
     _loadData();
   }
 
@@ -153,7 +135,7 @@ class _ExporterOrderScreenState extends State<ExporterOrderScreen> {
           case LoadStatus.loading:
             return const CircularLoading();
           case LoadStatus.noMore:
-            return Center(child: Text('共 ${totalCount ?? '?'} 個訂單'));
+            return const Center(child: Text('讀取完畢'));
           default:
             return const SizedBox.shrink();
         }

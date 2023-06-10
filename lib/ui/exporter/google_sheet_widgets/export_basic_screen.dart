@@ -1,8 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/sign_in_button.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
@@ -11,10 +8,13 @@ import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 
-import 'common.dart';
 import 'sheet_namer.dart';
 import 'sheet_previewer.dart';
+
+const _cacheKey = 'exporter_google_sheet';
+const _importKey = 'importer_google_sheet';
 
 class ExportBasicScreen extends StatefulWidget {
   final ValueNotifier<String> notifier;
@@ -40,21 +40,38 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     Formattable.orderAttr: GlobalKey<SheetNamerState>(),
   };
 
-  GoogleSpreadsheet? spreadsheet;
+  final selector = GlobalKey<SpreadsheetSelectorState>();
 
-  bool get hasSelect => spreadsheet != null;
+  GoogleSpreadsheet? get spreadsheet {
+    if (selector.currentState == null) {
+      final cached = Cache.instance.get<String>(_cacheKey);
+      if (cached != null) {
+        return GoogleSpreadsheet.fromString(cached);
+      }
+    }
 
-  String get exportLabel => hasSelect ? '匯出於指定表單' : '匯出後建立試算單';
-
-  String get hint =>
-      hasSelect ? '將匯出於「${spreadsheet?.name}」' : '你尚未選擇試算表，匯出時將建立新的';
+    return selector.currentState?.spreadsheet;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(children: [
-        SignInButton(signedInWidget: _signedInWidget),
+        SignInButton(
+          signedInWidget: SpreadsheetSelector(
+            key: selector,
+            exporter: widget.exporter,
+            notifier: widget.notifier,
+            cacheKey: _cacheKey,
+            existLabel: '匯出於指定表單',
+            existHint: '將匯出於「%name」',
+            emptyLabel: '匯出後建立試算單',
+            emptyHint: '你尚未選擇試算表，匯出時將建立新的',
+            onUpdate: _handleSpreadsheetUpdate,
+            onExecute: exportData,
+          ),
+        ),
         const Divider(),
         for (final entry in sheets.entries)
           Row(children: [
@@ -63,7 +80,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
                 key: entry.value,
                 label: entry.key.name,
                 sheets: spreadsheet?.sheets,
-                initialValue: _getDefault(entry.key.name),
+                initialValue: _getSheetName(entry.key.name),
                 initialChecked: Formatter.getTarget(entry.key).isNotEmpty,
               ),
             ),
@@ -75,79 +92,22 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
               tooltip: S.exporterGSPreviewerTitle(
                 S.exporterGSDefaultSheetName(entry.key.name),
               ),
-              onPressed: () => previewTarget(entry.key),
+              onPressed: () => previewData(entry.key),
             ),
           ]),
       ]),
     );
   }
 
-  Future<void> showActions() async {
-    final selected = await showCircularBottomSheet<_ActionTypes>(
-      context,
-      actions: const <BottomSheetAction<_ActionTypes>>[
-        BottomSheetAction(
-          title: Text('選擇試算表'),
-          leading: Icon(Icons.list_alt_sharp),
-          returnValue: _ActionTypes.select,
-        ),
-        BottomSheetAction(
-          title: Text('清除所選並於匯出時建立試算表'),
-          leading: Icon(Icons.add_box_outlined),
-          returnValue: _ActionTypes.clear,
-        ),
-      ],
-    );
-
-    if (selected == _ActionTypes.select) {
-      await selectSheet();
-    } else if (selected == _ActionTypes.clear) {
-      await onSheetChanged(null);
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
-    }
-  }
-
-  Future<void> onSheetChanged(GoogleSpreadsheet? newSpreadsheet) async {
-    Log.ger('change start', 'gs_export', newSpreadsheet?.toString());
-    setState(() => spreadsheet = newSpreadsheet);
+  @override
+  void dispose() {
     for (var sheet in sheets.values) {
-      sheet.currentState?.setHints(newSpreadsheet?.sheets);
+      sheet.currentState?.dispose();
     }
-
-    if (newSpreadsheet == null) {
-      Log.ger('change clear', 'gs_export');
-      return;
-    }
-
-    final value = newSpreadsheet.toString();
-    await Cache.instance.set<String>(exporterCacheKey, value);
-    if (Cache.instance.get<String>(importerCacheKey) == null) {
-      Log.ger('change success', 'gs_export');
-      await Cache.instance.set(importerCacheKey, value);
-    }
+    super.dispose();
   }
 
-  Future<void> selectSheet() async {
-    widget.notifier.value = '_start';
-
-    final result = await showSnackbarWhenFailed(
-      selectSpreadsheet(context, spreadsheet, widget.exporter),
-      context,
-      errorCodeSelect,
-    );
-    if (result != null) {
-      await onSheetChanged(result);
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
-    }
-
-    widget.notifier.value = '_finish';
-  }
-
-  void previewTarget(Formattable able) {
+  void previewData(Formattable able) {
     const formatter = GoogleSheetFormatter();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -160,7 +120,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     );
   }
 
-  Future<void> exportData() async {
+  Future<void> exportData(GoogleSpreadsheet? spreadsheet) async {
     // avoid showing keyboard
     FocusScope.of(context).unfocus();
 
@@ -183,31 +143,40 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     await showSnackbarWhenFailed(
       _exportData(names),
       context,
-      errorCodeExport,
+      'gs_export_failed',
     );
 
     widget.notifier.value = '_finish';
   }
 
-  Future<void> _exportData(Map<Formattable, String> names) async {
-    final prepared = await _getSpreadsheet(names);
+  /// 檢查基礎資料後，真正開始匯出。
+  ///
+  /// 1. 準備好表單
+  /// 2. 一個一個更新表單
+  /// 3. 告知完成
+  Future<void> _exportData(Map<Formattable, String> requiredSheets) async {
+    // step 1
+    final prepared = await _prepareSheets(requiredSheets);
     if (prepared == null) return;
 
-    Log.ger('export ready', 'gs_export', spreadsheet!.id);
+    // step 2
+    final ss = spreadsheet!;
+    Log.ger('export ready', 'gs_export', ss.id);
     const formatter = GoogleSheetFormatter();
     for (final entry in prepared.entries) {
       final label = entry.key.name;
       widget.notifier.value = S.exporterGSUpdateModelStatus(label);
 
-      await _setDefault(label, entry.value.title);
+      await _cacheSheetName(label, entry.value.title);
       await widget.exporter.updateSheet(
-        spreadsheet!,
+        ss,
         entry.value,
         formatter.getRows(entry.key),
         formatter.getHeader(entry.key),
       );
     }
 
+    // step 3
     Log.ger('export finish', 'gs_export');
     if (mounted) {
       showSnackBar(
@@ -216,7 +185,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
         action: SnackBarAction(
           label: '開啟表單',
           onPressed: () {
-            final link = spreadsheet!.toLink();
+            final link = ss.toLink();
             Log.ger('export launch', 'gs_export', link);
             Launcher.launch(link).ignore();
           },
@@ -225,60 +194,41 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     }
   }
 
-  Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
-    widget.notifier.value = S.exporterGSProgressStatus('addSpreadsheet');
-
-    return widget.exporter.addSpreadsheet(
-      S.exporterGSDefaultSpreadsheetName,
-      names,
-    );
-  }
-
-  Future<bool> _addSheets(List<String> requiredSheets) async {
-    widget.notifier.value = S.exporterGSProgressStatus('addSheets');
-
-    final exist = spreadsheet!.sheets.map((e) => e.title).toSet();
-    final missing = requiredSheets.toSet().difference(exist);
-    if (missing.isEmpty) {
-      return true;
+  Future<void> _handleSpreadsheetUpdate(GoogleSpreadsheet? other) async {
+    for (var sheet in sheets.values) {
+      sheet.currentState?.setHints(other?.sheets);
     }
 
-    final newSheets = await widget.exporter.addSheets(
-      spreadsheet!,
-      missing.toList(),
-    );
-
-    if (newSheets != null) {
-      spreadsheet!.sheets.addAll(newSheets);
-      return true;
+    if (other != null && Cache.instance.get<String>(_importKey) == null) {
+      await Cache.instance.set(_importKey, other.toString());
     }
-
-    return false;
   }
 
-  /// 準備好試算表
+  /// 準備好試算表裡的表單
   ///
   /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<Formattable, GoogleSheetProperties>?> _getSpreadsheet(
+  Future<Map<Formattable, GoogleSheetProperties>?> _prepareSheets(
     Map<Formattable, String> requireSheets,
   ) async {
     widget.notifier.value = '驗證身份中';
     await widget.exporter.auth();
 
     final names = requireSheets.values.toList();
-    if (!hasSelect) {
-      final newSpreadsheet = await _createSpreadsheet(names);
-      if (newSpreadsheet == null) {
+    final ss = spreadsheet;
+    if (ss == null) {
+      final other = await _createSpreadsheet(names);
+      if (other == null) {
         if (mounted) {
           showSnackBar(context, S.exporterGSErrors('spreadsheet'));
         }
         return null;
       }
-      await onSheetChanged(newSpreadsheet);
+
+      await selector.currentState?.update(other);
     } else {
-      final sheets = await widget.exporter.getSheets(spreadsheet!);
-      spreadsheet!.sheets.addAll(sheets);
-      final success = await _addSheets(names);
+      final existSheets = await widget.exporter.getSheets(ss);
+      ss.sheets.addAll(existSheets);
+      final success = await _fulfillSheets(ss, names);
       if (!success) {
         if (mounted) {
           showSnackBar(context, S.exporterGSErrors('sheet'));
@@ -297,52 +247,44 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     };
   }
 
-  String _getDefault(String label) {
-    return Cache.instance.get<String>('$exporterCacheKey.$label') ??
+  /// 建立試算表
+  Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
+    widget.notifier.value = S.exporterGSProgressStatus('addSpreadsheet');
+
+    return widget.exporter.addSpreadsheet(
+      S.exporterGSDefaultSpreadsheetName,
+      names,
+    );
+  }
+
+  /// 補足該試算表的表單
+  Future<bool> _fulfillSheets(GoogleSpreadsheet ss, List<String> names) async {
+    widget.notifier.value = S.exporterGSProgressStatus('addSheets');
+
+    final exist = ss.sheets.map((e) => e.title).toSet();
+    final missing = names.toSet().difference(exist);
+    if (missing.isEmpty) {
+      return true;
+    }
+
+    final added = await widget.exporter.addSheets(ss, missing.toList());
+    if (added != null) {
+      ss.sheets.addAll(added);
+      return true;
+    }
+
+    return false;
+  }
+
+  String _getSheetName(String label) {
+    return Cache.instance.get<String>('$_cacheKey.$label') ??
         S.exporterGSDefaultSheetName(label);
   }
 
-  Future<void> _setDefault(String label, String title) async {
-    final key = '$exporterCacheKey.$label';
+  Future<void> _cacheSheetName(String label, String title) async {
+    final key = '$_cacheKey.$label';
     if (title != Cache.instance.get<String>(key)) {
       await Cache.instance.set<String>(key, title);
     }
   }
-
-  Widget _signedInWidget(User user) {
-    return Column(children: [
-      Row(children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: exportData,
-            child: Text(exportLabel),
-          ),
-        ),
-        IconButton(
-          onPressed: showActions,
-          icon: const Icon(Icons.more_vert_sharp),
-        ),
-      ]),
-      HintText(hint),
-    ]);
-  }
-
-  @override
-  void initState() {
-    final cached = Cache.instance.get<String>(exporterCacheKey);
-    if (cached != null) {
-      spreadsheet = GoogleSpreadsheet.fromString(cached);
-    }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.dispose();
-    }
-    super.dispose();
-  }
 }
-
-enum _ActionTypes { select, clear }
