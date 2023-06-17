@@ -68,8 +68,9 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
             existHint: '將匯出於「%name」',
             emptyLabel: '匯出後建立試算單',
             emptyHint: '你尚未選擇試算表，匯出時將建立新的',
-            onUpdate: _handleSpreadsheetUpdate,
-            onExecute: exportData,
+            sheetsToCreate: sheetsToCreate,
+            onUpdate: onSpreadsheetUpdate,
+            onPrepared: exportData,
           ),
         ),
         const Divider(),
@@ -99,14 +100,6 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.dispose();
-    }
-    super.dispose();
-  }
-
   void previewData(Formattable able) {
     const formatter = GoogleSheetFormatter();
     Navigator.of(context).push(
@@ -120,27 +113,59 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     );
   }
 
-  Future<void> exportData(GoogleSpreadsheet? spreadsheet) async {
+  /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
+  Map<Formattable, String> sheetsToCreate() {
     // avoid showing keyboard
     FocusScope.of(context).unfocus();
 
     final usedSheets = sheets.entries
         .where((entry) => entry.value.currentState?.isUsable == true);
-    final names = {
+
+    return {
       for (var sheet in usedSheets) sheet.key: sheet.value.currentState!.name,
     };
+  }
 
-    if (names.isEmpty) {
-      return;
-    } else if (names.values.toSet().length != names.length) {
-      showSnackBar(context, S.exporterGSErrors('sheetRepeat'));
-      return;
+  /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
+  Future<void> exportData(
+    GoogleSpreadsheet ss,
+    Map<Formattable, GoogleSheetProperties> prepared,
+  ) async {
+    /// 一個一個更新表單
+    Future<void> exportOneByOne() async {
+      Log.ger('export ready', 'gs_export', ss.id);
+      const formatter = GoogleSheetFormatter();
+      for (final entry in prepared.entries) {
+        final label = entry.key.name;
+        widget.notifier.value = S.exporterGSUpdateModelStatus(label);
+
+        await _cacheSheetName(label, entry.value.title);
+        await widget.exporter.updateSheet(
+          ss,
+          entry.value,
+          formatter.getRows(entry.key),
+          formatter.getHeader(entry.key),
+        );
+      }
+
+      Log.ger('export finish', 'gs_export');
+      if (mounted) {
+        showSnackBar(
+          context,
+          S.actSuccess,
+          action: LauncherSnackbarAction(
+            label: '開啟表單',
+            link: ss.toLink(),
+            logCode: 'gs_export',
+          ),
+        );
+      }
     }
 
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      _exportData(names),
+      exportOneByOne(),
       context,
       'gs_export_failed',
     );
@@ -148,128 +173,15 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     widget.notifier.value = '_finish';
   }
 
-  /// 檢查基礎資料後，真正開始匯出。
-  ///
-  /// 1. 準備好表單
-  /// 2. 一個一個更新表單
-  /// 3. 告知完成
-  Future<void> _exportData(Map<Formattable, String> requiredSheets) async {
-    // step 1
-    final prepared = await _prepareSheets(requiredSheets);
-    if (prepared == null) return;
-
-    // step 2
-    final ss = spreadsheet!;
-    Log.ger('export ready', 'gs_export', ss.id);
-    const formatter = GoogleSheetFormatter();
-    for (final entry in prepared.entries) {
-      final label = entry.key.name;
-      widget.notifier.value = S.exporterGSUpdateModelStatus(label);
-
-      await _cacheSheetName(label, entry.value.title);
-      await widget.exporter.updateSheet(
-        ss,
-        entry.value,
-        formatter.getRows(entry.key),
-        formatter.getHeader(entry.key),
-      );
-    }
-
-    // step 3
-    Log.ger('export finish', 'gs_export');
-    if (mounted) {
-      showSnackBar(
-        context,
-        S.actSuccess,
-        action: LauncherSnackbarAction(
-          label: '開啟表單',
-          link: ss.toLink(),
-          logCode: 'gs_export',
-        ),
-      );
-    }
-  }
-
-  Future<void> _handleSpreadsheetUpdate(GoogleSpreadsheet? other) async {
+  Future<void> onSpreadsheetUpdate(GoogleSpreadsheet? other) async {
     for (var sheet in sheets.values) {
       sheet.currentState?.setHints(other?.sheets);
     }
 
+    // 同時更新用作 import 的試算表
     if (other != null && Cache.instance.get<String>(_importKey) == null) {
       await Cache.instance.set(_importKey, other.toString());
     }
-  }
-
-  /// 準備好試算表裡的表單
-  ///
-  /// 若沒有試算表則建立，若沒有需要的表單（例如菜單表單）也會建立好
-  Future<Map<Formattable, GoogleSheetProperties>?> _prepareSheets(
-    Map<Formattable, String> requireSheets,
-  ) async {
-    widget.notifier.value = '驗證身份中';
-    await widget.exporter.auth();
-
-    final names = requireSheets.values.toList();
-    final ss = spreadsheet;
-    if (ss == null) {
-      final other = await _createSpreadsheet(names);
-      if (other == null) {
-        if (mounted) {
-          showSnackBar(context, S.exporterGSErrors('spreadsheet'));
-        }
-        return null;
-      }
-
-      await selector.currentState?.update(other);
-    } else {
-      final existSheets = await widget.exporter.getSheets(ss);
-      ss.sheets.addAll(existSheets);
-      final success = await _fulfillSheets(ss, names);
-      if (!success) {
-        if (mounted) {
-          showSnackBar(context, S.exporterGSErrors('sheet'));
-        }
-        return null;
-      }
-    }
-
-    return {
-      for (var e in requireSheets.entries)
-        e.key: GoogleSheetProperties(
-          spreadsheet!.sheets.firstWhere((sheet) => sheet.title == e.value).id,
-          e.value,
-          typeName: e.key.name,
-        )
-    };
-  }
-
-  /// 建立試算表
-  Future<GoogleSpreadsheet?> _createSpreadsheet(List<String> names) async {
-    widget.notifier.value = S.exporterGSProgressStatus('addSpreadsheet');
-
-    return widget.exporter.addSpreadsheet(
-      S.exporterGSDefaultSpreadsheetName,
-      names,
-    );
-  }
-
-  /// 補足該試算表的表單
-  Future<bool> _fulfillSheets(GoogleSpreadsheet ss, List<String> names) async {
-    widget.notifier.value = S.exporterGSProgressStatus('addSheets');
-
-    final exist = ss.sheets.map((e) => e.title).toSet();
-    final missing = names.toSet().difference(exist);
-    if (missing.isEmpty) {
-      return true;
-    }
-
-    final added = await widget.exporter.addSheets(ss, missing.toList());
-    if (added != null) {
-      ss.sheets.addAll(added);
-      return true;
-    }
-
-    return false;
   }
 
   String _getSheetName(String label) {

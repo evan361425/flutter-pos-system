@@ -948,7 +948,7 @@
   "exporterDescription": "請選擇欲匯入匯出的方式",
   "exporterGSTitle": "Google 試算表",
   "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
+  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@exporterGSErrors": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
@@ -995,7 +995,7 @@
       }
     }
   },
-  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} other{{model}}}",
+  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} other{{model}}}",
   "@exporterGSUpdateModelStatus": {
     "description": "更新 Model 時的狀態說明",
     "placeholders": {

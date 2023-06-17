@@ -51,7 +51,6 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
           SignInButton(
             signedInWidget: SpreadsheetSelector(
               key: selector,
-              forceExist: true,
               exporter: widget.exporter,
               notifier: widget.notifier,
               cacheKey: _cacheKey,
@@ -59,8 +58,8 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
               existHint: '將匯入於「%name」',
               emptyLabel: '選擇試算表',
               emptyHint: '開始選擇試算表後，方能匯入資料',
-              onUpdate: _handleSpreadsheetUpdate,
-              onExecute: reloadSheets,
+              onUpdate: reloadSheetHints,
+              onChoose: reloadSheets,
             ),
           ),
           const Divider(),
@@ -113,27 +112,27 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
   }
 
   /// 重新讀取試算表的表單名稱
-  Future<void> reloadSheets(GoogleSpreadsheet? ss) async {
+  Future<void> reloadSheets(GoogleSpreadsheet ss) async {
+    Future<void> reload() async {
+      final exist = await widget.exporter.getSheets(ss);
+
+      for (var sheet in sheets.values) {
+        sheet.currentState?.setSheets(exist);
+      }
+      if (mounted) {
+        showSnackBar(context, S.actSuccess);
+      }
+    }
+
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      _reloadSheets(ss!),
+      reload(),
       context,
       'gs_refresh_failed',
     );
 
     widget.notifier.value = '_finish';
-  }
-
-  Future<void> _reloadSheets(GoogleSpreadsheet ss) async {
-    final exist = await widget.exporter.getSheets(ss);
-
-    for (var sheet in sheets.values) {
-      sheet.currentState?.setSheets(exist);
-    }
-    if (mounted) {
-      showSnackBar(context, S.actSuccess);
-    }
   }
 
   Future<void> importData(Formattable? type) async {
@@ -208,7 +207,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
     }
   }
 
-  Future<void> _handleSpreadsheetUpdate(GoogleSpreadsheet? other) async {
+  Future<void> reloadSheetHints(GoogleSpreadsheet? other) async {
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(other!.sheets);
     }

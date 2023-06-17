@@ -118,7 +118,7 @@ class OrderSpreadsheetProperties {
       final name = Cache.instance.get<String>(key);
       final isRequired = Cache.instance.get<bool>('$key.required') ?? true;
       sheets[type] = OrderSheetProperties(
-        name ?? prefix + S.exporterGSDefaultSheetName(type.name),
+        name ?? '$prefix ${S.exporterGSDefaultSheetName(type.name)}',
         isRequired,
       );
     }
@@ -126,9 +126,9 @@ class OrderSpreadsheetProperties {
     return OrderSpreadsheetProperties(sheets: sheets);
   }
 
-  // int get length => sheets.values.where((e) => e.isRequired).length;
-
-  Iterable<String> get names => sheets.values.map((e) => e.name);
+  Map<SheetType, String> get names => Map.fromEntries(sheets.entries
+      .where((e) => e.value.isRequired)
+      .map((e) => MapEntry(e.key, e.value.name)));
 }
 
 class OrderSheetProperties {

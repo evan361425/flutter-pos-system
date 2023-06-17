@@ -14,13 +14,10 @@ final _sheetIdRegex = RegExp(r'^([a-zA-Z0-9-_]{15,})$');
 const _sheetTutorial =
     "https://raw.githubusercontent.com/evan361425/flutter-pos-system/master/assets/web/tutorial-gs-copy-url.gif";
 
-class SpreadsheetSelector extends StatefulWidget {
+class SpreadsheetSelector<T extends Enum> extends StatefulWidget {
   final GoogleSheetExporter exporter;
 
   final ValueNotifier<String>? notifier;
-
-  /// 是否要求必須要選擇一個試算表
-  final bool forceExist;
 
   /// 快取的鍵
   final String cacheKey;
@@ -41,8 +38,17 @@ class SpreadsheetSelector extends StatefulWidget {
   /// 試算表被更新了
   final Future<void> Function(GoogleSpreadsheet? spreadsheet)? onUpdate;
 
-  /// 根據選擇好（或沒選）的試算表去執行某些行為，例如匯出或匯入
-  final Future<void> Function(GoogleSpreadsheet? spreadsheet) onExecute;
+  /// 根據選擇好的試算表去執行某些行為，例如匯入
+  final Future<void> Function(GoogleSpreadsheet spreadsheet)? onChoose;
+
+  /// 根據選擇好的試算表並且準備好 [sheetsToCreate] 的表單後，去執行某些行為，例如匯出
+  final Future<void> Function(
+    GoogleSpreadsheet spreadsheet,
+    Map<T, GoogleSheetProperties> sheets,
+  )? onPrepared;
+
+  /// 若設定此值，代表允許建立試算表，並準備好回傳的表單名稱
+  final Map<T, String> Function()? sheetsToCreate;
 
   const SpreadsheetSelector({
     Key? key,
@@ -52,9 +58,10 @@ class SpreadsheetSelector extends StatefulWidget {
     required this.emptyLabel,
     required this.existHint,
     required this.emptyHint,
-    required this.onExecute,
+    this.onChoose,
+    this.onPrepared,
     this.onUpdate,
-    this.forceExist = false,
+    this.sheetsToCreate,
     this.notifier,
   }) : super(key: key);
 
@@ -71,7 +78,8 @@ class SpreadsheetSelector extends StatefulWidget {
   }
 }
 
-class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
+class SpreadsheetSelectorState<T extends Enum>
+    extends State<SpreadsheetSelector<T>> {
   GoogleSpreadsheet? spreadsheet;
 
   bool get isExist => spreadsheet != null;
@@ -88,7 +96,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       Row(children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () => widget.onExecute(spreadsheet),
+            onPressed: execute,
             child: Text(label),
           ),
         ),
@@ -116,7 +124,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           leading: Icon(Icons.list_alt_sharp),
           returnValue: _ActionTypes.request,
         ),
-        if (!widget.forceExist)
+        if (widget.sheetsToCreate != null)
           const BottomSheetAction(
             title: Text('建立試算表'),
             leading: Icon(Icons.add_box_outlined),
@@ -132,6 +140,29 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       if (mounted) {
         showSnackBar(context, S.actSuccess);
       }
+    }
+  }
+
+  void execute() async {
+    final sheetsToCreate = widget.sheetsToCreate;
+    final onChoose = widget.onChoose;
+    final onPrepared = widget.onPrepared;
+    if (sheetsToCreate == null) {
+      // 沒有，就去要一個
+      if (!isExist) {
+        await request();
+      }
+
+      // 剛剛有成功要到或者本來就有
+      if (isExist && onChoose != null) {
+        onChoose(spreadsheet!);
+      }
+      return;
+    }
+
+    final sheets = await _prepareSheets(spreadsheet, sheetsToCreate());
+    if (sheets != null && onPrepared != null) {
+      onPrepared(spreadsheet!, sheets);
     }
   }
 
@@ -209,6 +240,87 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     }
 
     return result;
+  }
+
+  /// 準備好試算表裡的表單
+  ///
+  /// 若沒有試算表則建立，並建立所有可能的表單。
+  /// 若有則把需要的表單準備好。
+  Future<Map<T, GoogleSheetProperties>?> _prepareSheets(
+    GoogleSpreadsheet? ss,
+    Map<T, String> sheets,
+  ) async {
+    if (sheets.isEmpty) {
+      showSnackBar(context, S.exporterGSErrors('sheetEmpty'));
+      return null;
+    }
+
+    if (sheets.values.toSet().length != sheets.length) {
+      showSnackBar(context, S.exporterGSErrors('sheetRepeat'));
+      return null;
+    }
+
+    _notify('驗證身份中');
+
+    await widget.exporter.auth();
+
+    final names = sheets.values.toList();
+    if (ss == null) {
+      _notify(S.exporterGSProgressStatus('addSpreadsheet'));
+
+      final other = await widget.exporter.addSpreadsheet(
+        S.exporterGSDefaultSpreadsheetName,
+        names,
+      );
+      if (other == null) {
+        if (mounted) {
+          showSnackBar(context, S.exporterGSErrors('spreadsheet'));
+        }
+        return null;
+      }
+
+      await update(other);
+      ss = other;
+    } else {
+      final existSheets = await widget.exporter.getSheets(ss);
+      ss.sheets.addAll(existSheets);
+
+      final success = await _fulfillSheets(ss, names);
+      if (!success) {
+        if (mounted) {
+          showSnackBar(context, S.exporterGSErrors('sheet'));
+        }
+        return null;
+      }
+    }
+
+    return {
+      for (var e in sheets.entries)
+        e.key: GoogleSheetProperties(
+          ss.sheets.firstWhere((sheet) => sheet.title == e.value).id,
+          e.value,
+          typeName: e.key.name,
+        )
+    };
+  }
+
+  /// 補足該試算表的表單
+  Future<bool> _fulfillSheets(GoogleSpreadsheet ss, List<String> names) async {
+    _notify(S.exporterGSProgressStatus('addSheets'));
+
+    final exist = ss.sheets.map((e) => e.title).toSet();
+    final missing = names.toSet().difference(exist);
+    if (missing.isEmpty) {
+      return true;
+    }
+
+    final added = await widget.exporter.addSheets(ss, missing.toList());
+    if (added != null) {
+      ss.sheets.addAll(added);
+      return true;
+    }
+
+    return false;
   }
 }
 
