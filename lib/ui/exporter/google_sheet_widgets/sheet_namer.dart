@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/translator.dart';
 
 class SheetNamer extends StatefulWidget {
@@ -7,9 +8,7 @@ class SheetNamer extends StatefulWidget {
 
   final String label;
 
-  final String? labelText;
-
-  final bool? initialChecked;
+  final bool initialChecked;
 
   final List<GoogleSheetProperties>? sheets;
 
@@ -17,8 +16,7 @@ class SheetNamer extends StatefulWidget {
     Key? key,
     required this.initialValue,
     required this.label,
-    this.initialChecked,
-    this.labelText,
+    required this.initialChecked,
     this.sheets,
   }) : super(key: key);
 
@@ -26,9 +24,7 @@ class SheetNamer extends StatefulWidget {
   State<SheetNamer> createState() => SheetNamerState();
 
   String getLabelText() {
-    return S.exporterGSSheetLabel(
-      labelText ?? S.exporterGSDefaultSheetName(label),
-    );
+    return S.exporterGSSheetLabel(S.exporterGSDefaultSheetName(label));
   }
 }
 
@@ -37,29 +33,32 @@ class SheetNamerState extends State<SheetNamer> {
 
   late TextEditingController _controller;
 
-  bool? checked;
+  late bool checked;
 
-  String? get name => _controller.text.isEmpty ? null : _controller.text;
+  bool get isUsable => checked && _controller.text.isNotEmpty;
+
+  String get name => _controller.text;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       key: Key('gs_export.${widget.label}.sheet_namer'),
       controller: _controller,
       autofillHints: autofillHints,
+      keyboardType: TextInputType.name,
+      maxLength: 30,
+      validator: Validator.textLimit(widget.getLabelText(), 30),
       decoration: InputDecoration(
-        prefix: checked == null
-            ? null
-            : SizedBox(
-                height: 14,
-                child: Checkbox(
-                  key: Key('gs_export.${widget.label}.checkbox'),
-                  value: checked,
-                  visualDensity: VisualDensity.compact,
-                  splashRadius: 0,
-                  onChanged: (newValue) => setState(() => checked = newValue!),
-                ),
-              ),
+        prefix: SizedBox(
+          height: 14,
+          child: Checkbox(
+            key: Key('gs_export.${widget.label}.checkbox'),
+            value: checked,
+            visualDensity: VisualDensity.compact,
+            splashRadius: 0,
+            onChanged: (newValue) => setState(() => checked = newValue!),
+          ),
+        ),
         labelText: widget.getLabelText(),
         hintText: widget.initialValue,
         floatingLabelBehavior: FloatingLabelBehavior.always,

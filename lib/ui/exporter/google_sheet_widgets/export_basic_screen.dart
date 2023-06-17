@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/style/launcher_snackbar_action.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
-import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
@@ -124,11 +124,10 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     // avoid showing keyboard
     FocusScope.of(context).unfocus();
 
-    final usedSheets = sheets.entries.where((entry) =>
-        entry.value.currentState?.checked == true &&
-        entry.value.currentState?.name != null);
+    final usedSheets = sheets.entries
+        .where((entry) => entry.value.currentState?.isUsable == true);
     final names = {
-      for (var sheet in usedSheets) sheet.key: sheet.value.currentState!.name!,
+      for (var sheet in usedSheets) sheet.key: sheet.value.currentState!.name,
     };
 
     if (names.isEmpty) {
@@ -182,13 +181,10 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
       showSnackBar(
         context,
         S.actSuccess,
-        action: SnackBarAction(
+        action: LauncherSnackbarAction(
           label: '開啟表單',
-          onPressed: () {
-            final link = ss.toLink();
-            Log.ger('export launch', 'gs_export', link);
-            Launcher.launch(link).ignore();
-          },
+          link: ss.toLink(),
+          logCode: 'gs_export',
         ),
       );
     }

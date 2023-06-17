@@ -312,6 +312,7 @@ class GoogleSheetCellData {
 
   final String? note;
 
+  // 讓資料變成選擇性的欄位，例如顧客設定的類別只能有哪幾種。
   final List<String>? options;
 
   GoogleSheetCellData({

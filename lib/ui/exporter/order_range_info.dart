@@ -18,11 +18,6 @@ class OrderRangeInfo extends StatefulWidget {
 
   @override
   State<OrderRangeInfo> createState() => _OrderRangeInfoState();
-
-  static String rangeLabel(DateTimeRange range) {
-    final format = DateFormat.yMMMd(S.localeName);
-    return '${format.format(range.start)} - ${format.format(range.end)}';
-  }
 }
 
 class _OrderRangeInfoState extends State<OrderRangeInfo> {
@@ -31,9 +26,9 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(OrderRangeInfo.rangeLabel(widget.range)),
+      title: Text(widget.range.format()),
       subtitle: MetaBlock.withString(context, [
-        '${widget.range.duration.inDays} 天的資料',
+        '${widget.range.duration.inDays + 1} 天的資料',
         if (totalCount != null) '共 ${totalCount!} 個訂單',
       ]),
       trailing: widget.trailing,
@@ -52,5 +47,12 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
       context,
       'export_load_order_count',
     );
+  }
+}
+
+extension DateTimeRangeFormat on DateTimeRange {
+  String format() {
+    final f = DateFormat.yMMMd(S.localeName);
+    return '${f.format(start)} 到 ${f.format(end)}';
   }
 }

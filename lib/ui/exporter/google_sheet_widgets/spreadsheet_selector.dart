@@ -39,7 +39,7 @@ class SpreadsheetSelector extends StatefulWidget {
   final String emptyHint;
 
   /// 試算表被更新了
-  final Future<void> Function(GoogleSpreadsheet? spreadsheet) onUpdate;
+  final Future<void> Function(GoogleSpreadsheet? spreadsheet)? onUpdate;
 
   /// 根據選擇好（或沒選）的試算表去執行某些行為，例如匯出或匯入
   final Future<void> Function(GoogleSpreadsheet? spreadsheet) onExecute;
@@ -52,8 +52,8 @@ class SpreadsheetSelector extends StatefulWidget {
     required this.emptyLabel,
     required this.existHint,
     required this.emptyHint,
-    required this.onUpdate,
     required this.onExecute,
+    this.onUpdate,
     this.forceExist = false,
     this.notifier,
   }) : super(key: key);
@@ -156,7 +156,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   Future<void> update(GoogleSpreadsheet? other) async {
     Log.ger('change start', 'gs_export', other?.toString());
     setState(() => spreadsheet = other);
-    await widget.onUpdate(other);
+    await widget.onUpdate?.call(other);
 
     if (other == null) {
       Log.ger('change clear', 'gs_export');

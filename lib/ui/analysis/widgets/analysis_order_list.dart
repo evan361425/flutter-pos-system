@@ -359,7 +359,5 @@ enum _Action {
 }
 
 String _parseCreatedAt(DateTime t) {
-  return DateFormat.MMMEd(S.localeName).format(t) +
-      MetaBlock.string +
-      DateFormat.jms(S.localeName).format(t);
+  return DateFormat('MMMEd${MetaBlock.string}jms', S.localeName).format(t);
 }

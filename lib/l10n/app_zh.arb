@@ -977,7 +977,7 @@
     }
   },
   "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
+  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} other{UNKNOWN}}",
   "@exporterGSDefaultSheetName": {
     "description": "匯出 Google 試算表時預設的表單名稱",
     "placeholders": {
