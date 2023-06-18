@@ -24,7 +24,7 @@ class OrderLoader extends StatefulWidget {
   State<OrderLoader> createState() => OrderLoaderState();
 
   static String formatCreatedAt(OrderObject order) {
-    return DateFormat('yMMMd Hm', S.localeName).format(order.createdAt);
+    return '${DateFormat.MMMd(S.localeName).format(order.createdAt)} ${DateFormat.Hms(S.localeName).format(order.createdAt)}';
   }
 
   static String formatHeader(OrderObject order) {

@@ -82,7 +82,7 @@ class ExporterOrderScreen extends StatelessWidget {
       if (order.productsPrice != order.totalPrice)
         '${order.totalPrice.toCurrency()} 元'
             '中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
-      '付額 ${order.paid?.toCurrency() ?? 0} 元、',
+      '付額 ${order.paid.toCurrency()} 元、',
       '成分 ${order.cost.toCurrency()} 元\n',
       if (attributes != '') '顧客的$attributes。\n',
       '餐點有 $tc 份',

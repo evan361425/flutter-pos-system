@@ -14,7 +14,7 @@ class OrderObject {
   final int? id;
 
   /// 付額
-  final num? paid;
+  final num paid;
 
   /// 總價，產品價錢+顧客設定價錢
   final num totalPrice;
@@ -38,7 +38,7 @@ class OrderObject {
 
   OrderObject({
     this.id,
-    this.paid,
+    this.paid = 0,
     this.totalPrice = 0,
     this.productsPrice = 0,
     this.totalCount = 0,

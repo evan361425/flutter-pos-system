@@ -26,7 +26,7 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.range.format()),
+      title: Text(title),
       subtitle: MetaBlock.withString(context, [
         '${widget.range.duration.inDays + 1} 天的資料',
         if (totalCount != null) '共 ${totalCount!} 個訂單',
@@ -48,11 +48,9 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
       'export_load_order_count',
     );
   }
-}
 
-extension DateTimeRangeFormat on DateTimeRange {
-  String format() {
-    final f = DateFormat.yMMMd(S.localeName);
-    return '${f.format(start)} 到 ${f.format(end)}';
+  String get title {
+    final f = DateFormat.MMMd(S.localeName);
+    return '${f.format(widget.range.start)} 到 ${f.format(widget.range.end)}';
   }
 }

@@ -153,9 +153,10 @@ class _ExporterStationState extends State<ExporterStation>
               notifier: stateNotifier,
             );
           case _Combination.exportOrder:
-            return gs.ExportBasicScreen(
+            return gs.ExportOrderScreen(
               exporter: exporter,
               notifier: stateNotifier,
+              range: widget.info.range!,
             );
           case _Combination.importBasic:
             return gs.ImportBasicScreen(

@@ -202,7 +202,7 @@ class _OrderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final subtitle = MetaBlock.withString(context, [
       S.analysisOrderListItemMetaPrice(order.totalPrice),
-      S.analysisOrderListItemMetaPaid(order.paid!),
+      S.analysisOrderListItemMetaPaid(order.paid),
       S.analysisOrderListItemMetaIncome(order.income),
     ]);
 
@@ -359,5 +359,7 @@ enum _Action {
 }
 
 String _parseCreatedAt(DateTime t) {
-  return DateFormat('MMMEd${MetaBlock.string}jms', S.localeName).format(t);
+  return DateFormat.MMMEd(S.localeName).format(t) +
+      MetaBlock.string +
+      DateFormat.jms(S.localeName).format(t);
 }

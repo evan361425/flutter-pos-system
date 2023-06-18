@@ -977,7 +977,7 @@
     }
   },
   "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} other{UNKNOWN}}",
+  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
   "@exporterGSDefaultSheetName": {
     "description": "匯出 Google 試算表時預設的表單名稱",
     "placeholders": {
@@ -995,7 +995,7 @@
       }
     }
   },
-  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} other{{model}}}",
+  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成份細項中..} other{{model}}}",
   "@exporterGSUpdateModelStatus": {
     "description": "更新 Model 時的狀態說明",
     "placeholders": {
