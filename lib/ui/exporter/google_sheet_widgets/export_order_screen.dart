@@ -7,6 +7,7 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 import 'package:possystem/ui/exporter/order_range_info.dart';
@@ -101,39 +102,33 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
     Future<void> exportOneByOne() async {
-      final orders = orderLoader.currentState?.orders;
-      if (orders != null) {
-        Log.ger('ready', 'gs_export_order', ss.id);
-        for (final entry in prepared.entries) {
-          final label = entry.key.name;
-          widget.notifier.value = S.exporterGSUpdateModelStatus(label);
+      Log.ger('ready', 'gs_export_order', ss.id);
 
-          await widget.exporter.updateSheet(
-            ss,
-            entry.value,
-            orders.map((e) {
-              return OrderFormatter.formatOrder(e).map((o) {
-                return o is String
-                    ? GoogleSheetCellData(stringValue: o)
-                    : GoogleSheetCellData(numberValue: o as num);
-              }).toList();
-            }).toList(),
-            [], //TODO
-          );
-        }
+      final data = prepared.keys
+          .map((key) => _format(key))
+          .where((e) => e != null)
+          .cast<Iterable<Iterable<GoogleSheetCellData>>>();
+      final future = properties.isOverwrite
+          ? widget.exporter.updateSheet(
+              ss,
+              prepared.values,
+              data,
+              prepared.keys.map((key) => _chooseHeaders(key)
+                  .map((e) => GoogleSheetCellData(stringValue: e))),
+            )
+          : widget.exporter.appendSheet(ss, prepared.values, data);
 
-        Log.ger('export finish', 'gs_export');
-        if (mounted) {
-          showSnackBar(
-            context,
-            S.actSuccess,
-            action: LauncherSnackbarAction(
-              label: '開啟表單',
-              link: ss.toLink(),
-              logCode: 'gs_export',
-            ),
-          );
-        }
+      Log.ger('export finish', 'gs_export');
+      if (mounted) {
+        showSnackBar(
+          context,
+          S.actSuccess,
+          action: LauncherSnackbarAction(
+            label: '開啟表單',
+            link: ss.toLink(),
+            logCode: 'gs_export',
+          ),
+        );
       }
     }
 
@@ -162,6 +157,45 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
       setState(() {
         properties = other;
       });
+    }
+  }
+
+  Iterable<Iterable<GoogleSheetCellData>>? _format(SheetType type) {
+    final orders = orderLoader.currentState?.orders;
+    final method = _chooseFormatter(type);
+
+    if (orders != null) {
+      return orders.map((e) => method(e).map((o) => o is String
+          ? GoogleSheetCellData(stringValue: o)
+          : GoogleSheetCellData(numberValue: o as num)));
+    }
+
+    return null;
+  }
+
+  List<Object> Function(OrderObject) _chooseFormatter(SheetType type) {
+    switch (type) {
+      case SheetType.order:
+        return OrderFormatter.formatOrder;
+      case SheetType.orderSetAttr:
+        return OrderFormatter.formatOrderSetAttr;
+      case SheetType.orderProduct:
+        return OrderFormatter.formatOrderProduct;
+      case SheetType.orderIngredient:
+        return OrderFormatter.formatOrderIngredient;
+    }
+  }
+
+  List<String> _chooseHeaders(SheetType type) {
+    switch (type) {
+      case SheetType.order:
+        return OrderFormatter.orderHeaders;
+      case SheetType.orderSetAttr:
+        return OrderFormatter.orderSetAttrHeaders;
+      case SheetType.orderProduct:
+        return OrderFormatter.orderProductHeaders;
+      case SheetType.orderIngredient:
+        return OrderFormatter.orderIngredientHeaders;
     }
   }
 }

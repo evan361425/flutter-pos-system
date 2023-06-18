@@ -131,22 +131,22 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     GoogleSpreadsheet ss,
     Map<Formattable, GoogleSheetProperties> prepared,
   ) async {
-    /// 一個一個更新表單
-    Future<void> exportOneByOne() async {
+    Future<void> export() async {
       Log.ger('export ready', 'gs_export', ss.id);
       const formatter = GoogleSheetFormatter();
-      for (final entry in prepared.entries) {
-        final label = entry.key.name;
-        widget.notifier.value = S.exporterGSUpdateModelStatus(label);
 
-        await _cacheSheetName(label, entry.value.title);
-        await widget.exporter.updateSheet(
-          ss,
-          entry.value,
-          formatter.getRows(entry.key),
-          formatter.getHeader(entry.key),
-        );
+      // cache the sheet names
+      for (final e in prepared.entries) {
+        await _cacheSheetName(e.key.name, e.value.title);
       }
+
+      // go
+      await widget.exporter.updateSheet(
+        ss,
+        prepared.values,
+        prepared.keys.map((key) => formatter.getRows(key)),
+        prepared.keys.map((key) => formatter.getHeader(key)),
+      );
 
       Log.ger('export finish', 'gs_export');
       if (mounted) {
@@ -165,7 +165,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      exportOneByOne(),
+      export(),
       context,
       'gs_export_failed',
     );

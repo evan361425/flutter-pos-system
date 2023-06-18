@@ -132,22 +132,24 @@ class GoogleSheetExporter extends DataExporter {
   }
 
   /// 更新表單
-  ///
-  /// [hiddenColumnIndex] 1-index
   Future<void> updateSheet(
     GoogleSpreadsheet spreadsheet,
-    GoogleSheetProperties sheet,
-    List<List<GoogleSheetCellData>> data,
-    List<GoogleSheetCellData> header,
+    Iterable<GoogleSheetProperties> sheets,
+    Iterable<Iterable<Iterable<GoogleSheetCellData>>> data,
+    Iterable<Iterable<GoogleSheetCellData>> headers,
   ) async {
-    final requests = [
-      gs.Request(
+    final hi = headers.iterator;
+    final di = data.iterator;
+    final requests = sheets.map((sheet) {
+      hi.moveNext();
+      di.moveNext();
+      return gs.Request(
         updateCells: gs.UpdateCellsRequest(
           rows: [
             gs.RowData(values: [
-              for (final cell in header) cell.toGoogleFormat(),
+              for (final cell in hi.current) cell.toGoogleFormat(),
             ]),
-            for (final row in data)
+            for (final row in di.current)
               gs.RowData(values: [
                 for (final cell in row) cell.toGoogleFormat(),
               ])
@@ -159,11 +161,44 @@ class GoogleSheetExporter extends DataExporter {
             sheetId: sheet.id,
           ),
         ),
-      ),
-    ];
+      );
+    }).toList();
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('update_sheet ${sheet.typeName}', _logCode);
+    final types = sheets.map((e) => e.typeName).join(' ');
+    Log.ger('update_sheet $types', _logCode);
+    await sheetsApi?.spreadsheets.batchUpdate(
+      gs.BatchUpdateSpreadsheetRequest(requests: requests),
+      spreadsheet.id,
+      $fields: 'spreadsheetId',
+    );
+  }
+
+  /// 附加進表單
+  Future<void> appendSheet(
+    GoogleSpreadsheet spreadsheet,
+    Iterable<GoogleSheetProperties> sheets,
+    Iterable<Iterable<Iterable<GoogleSheetCellData>>> data,
+  ) async {
+    final it = data.iterator;
+    final requests = sheets.map((sheet) {
+      it.moveNext();
+      return gs.Request(
+        appendCells: gs.AppendCellsRequest(
+          rows: [
+            for (final row in it.current)
+              gs.RowData(values: [
+                for (final cell in row) cell.toGoogleFormat(),
+              ])
+          ],
+          fields: 'userEnteredValue,userEnteredFormat,dataValidation,note',
+          sheetId: sheet.id,
+        ),
+      );
+    }).toList();
+
+    final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
+    Log.ger('update_sheets order', _logCode);
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,
