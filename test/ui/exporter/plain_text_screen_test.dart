@@ -42,7 +42,7 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('expansion_tile.quantities')));
+      await tester.tap(find.byKey(const Key('tab.quantities')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('export_btn.quantities')));
       await tester.pumpAndSettle();

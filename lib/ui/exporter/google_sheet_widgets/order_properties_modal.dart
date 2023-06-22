@@ -3,7 +3,8 @@ import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/google_sheet_widgets/sheet_namer.dart';
+
+import 'sheet_namer.dart';
 
 const _cacheKey = 'exporter_google_sheet';
 
@@ -24,11 +25,11 @@ class OrderPropertiesModal extends StatefulWidget {
 
 class _OrderPropertiesModalState extends State<OrderPropertiesModal>
     with ItemModal<OrderPropertiesModal> {
-  final namers = <SheetType, GlobalKey<SheetNamerState>>{
-    SheetType.order: GlobalKey<SheetNamerState>(),
-    SheetType.orderSetAttr: GlobalKey<SheetNamerState>(),
-    SheetType.orderProduct: GlobalKey<SheetNamerState>(),
-    SheetType.orderIngredient: GlobalKey<SheetNamerState>(),
+  final namers = <OrderSheetType, GlobalKey<SheetNamerState>>{
+    OrderSheetType.order: GlobalKey<SheetNamerState>(),
+    OrderSheetType.orderSetAttr: GlobalKey<SheetNamerState>(),
+    OrderSheetType.orderProduct: GlobalKey<SheetNamerState>(),
+    OrderSheetType.orderIngredient: GlobalKey<SheetNamerState>(),
   };
 
   late bool isOverwrite;
@@ -80,8 +81,8 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
 
   @override
   Future<void> updateItem() async {
-    final sheets = <SheetType, OrderSheetProperties>{};
-    for (final type in SheetType.values) {
+    final sheets = <OrderSheetType, OrderSheetProperties>{};
+    for (final type in OrderSheetType.values) {
       final key = '$_cacheKey.${type.name}';
       final namer = namers[type]?.currentState;
       if (namer != null) {
@@ -112,7 +113,7 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
 }
 
 class OrderSpreadsheetProperties {
-  final Map<SheetType, OrderSheetProperties> sheets;
+  final Map<OrderSheetType, OrderSheetProperties> sheets;
 
   final bool isOverwrite;
 
@@ -125,8 +126,8 @@ class OrderSpreadsheetProperties {
   });
 
   factory OrderSpreadsheetProperties.fromCache() {
-    final sheets = <SheetType, OrderSheetProperties>{};
-    for (final type in SheetType.values) {
+    final sheets = <OrderSheetType, OrderSheetProperties>{};
+    for (final type in OrderSheetType.values) {
       final key = '$_cacheKey.${type.name}';
       final name = Cache.instance.get<String>(key);
       final isRequired = Cache.instance.get<bool>('$key.required') ?? true;
@@ -148,7 +149,7 @@ class OrderSpreadsheetProperties {
   Iterable<String> get names =>
       sheets.values.where((e) => e.isRequired).map((e) => e.name);
 
-  Map<SheetType, String> sheetNames(String prefix) {
+  Map<OrderSheetType, String> sheetNames(String prefix) {
     prefix = withPrefix ? prefix : '';
     return Map.fromEntries(sheets.entries
         .where((e) => e.value.isRequired)
@@ -164,7 +165,7 @@ class OrderSheetProperties {
   const OrderSheetProperties(this.name, this.isRequired);
 }
 
-enum SheetType {
+enum OrderSheetType {
   order,
   orderSetAttr,
   orderProduct,

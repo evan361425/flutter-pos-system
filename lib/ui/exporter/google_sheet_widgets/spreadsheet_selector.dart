@@ -14,7 +14,7 @@ final _sheetIdRegex = RegExp(r'^([a-zA-Z0-9-_]{15,})$');
 const _sheetTutorial =
     "https://raw.githubusercontent.com/evan361425/flutter-pos-system/master/assets/web/tutorial-gs-copy-url.gif";
 
-class SpreadsheetSelector<T extends Enum> extends StatefulWidget {
+class SpreadsheetSelector extends StatefulWidget {
   final GoogleSheetExporter exporter;
 
   final ValueNotifier<String>? notifier;
@@ -44,11 +44,11 @@ class SpreadsheetSelector<T extends Enum> extends StatefulWidget {
   /// 根據選擇好的試算表並且準備好 [sheetsToCreate] 的表單後，去執行某些行為，例如匯出
   final Future<void> Function(
     GoogleSpreadsheet spreadsheet,
-    Map<T, GoogleSheetProperties> sheets,
+    Map<SheetType, GoogleSheetProperties> sheets,
   )? onPrepared;
 
   /// 若設定此值，代表允許建立試算表，並準備好回傳的表單名稱
-  final Map<T, String> Function()? sheetsToCreate;
+  final Map<SheetType, String> Function()? sheetsToCreate;
 
   const SpreadsheetSelector({
     Key? key,
@@ -78,8 +78,7 @@ class SpreadsheetSelector<T extends Enum> extends StatefulWidget {
   }
 }
 
-class SpreadsheetSelectorState<T extends Enum>
-    extends State<SpreadsheetSelector<T>> {
+class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   GoogleSpreadsheet? spreadsheet;
 
   bool get isExist => spreadsheet != null;
@@ -133,68 +132,48 @@ class SpreadsheetSelectorState<T extends Enum>
       ],
     );
 
-    if (selected == _ActionTypes.request) {
-      await request();
-    } else if (selected == _ActionTypes.create) {
-      await update(null);
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
+    if (selected != null) {
+      switch (selected) {
+        case _ActionTypes.request:
+          await request();
+          break;
+        case _ActionTypes.create:
+          await clear();
+          break;
       }
     }
   }
 
   void execute() async {
-    final sheetsToCreate = widget.sheetsToCreate;
-    final onChoose = widget.onChoose;
-    final onPrepared = widget.onPrepared;
-    if (sheetsToCreate == null) {
-      // 沒有，就去要一個
-      if (!isExist) {
-        await request();
-      }
+    _notify('_start');
 
-      // 剛剛有成功要到或者本來就有
-      if (isExist && onChoose != null) {
-        onChoose(spreadsheet!);
-      }
-      return;
-    }
+    await showSnackbarWhenFailed(
+      _execute(),
+      context,
+      '${widget.cacheKey}_failed',
+    );
 
-    final sheets = await _prepareSheets(spreadsheet, sheetsToCreate());
-    if (sheets != null && onPrepared != null) {
-      onPrepared(spreadsheet!, sheets);
-    }
+    _notify('_finish');
   }
 
   Future<void> request() async {
     _notify('_start');
 
-    final result = await showSnackbarWhenFailed(
-      _requestByDialog(),
+    await showSnackbarWhenFailed(
+      _request(),
       context,
-      'gs_select_failed',
+      'gs_select_request_failed',
     );
-    if (result != null) {
-      await update(result);
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
-    }
 
     _notify('_finish');
   }
 
-  Future<void> update(GoogleSpreadsheet? other) async {
-    Log.ger('change start', 'gs_export', other?.toString());
-    setState(() => spreadsheet = other);
-    await widget.onUpdate?.call(other);
+  Future<void> clear() async {
+    await _update(null);
 
-    if (other == null) {
-      Log.ger('change clear', 'gs_export');
-      return;
+    if (mounted) {
+      showSnackBar(context, S.actSuccess);
     }
-
-    await Cache.instance.set<String>(widget.cacheKey, other.toString());
   }
 
   void _notify(String signal) {
@@ -203,7 +182,29 @@ class SpreadsheetSelectorState<T extends Enum>
     }
   }
 
-  Future<GoogleSpreadsheet?> _requestByDialog() async {
+  Future<void> _execute() async {
+    final sheetsToCreate = widget.sheetsToCreate;
+    // 如果不能建立，就再去跟使用者要一次
+    if (sheetsToCreate == null) {
+      if (!isExist) {
+        await _request();
+      }
+
+      // 剛剛有成功要到或者本來就有
+      if (isExist) {
+        await widget.onChoose?.call(spreadsheet!);
+      }
+      return;
+    }
+
+    // 建立並且回應
+    final sheets = await _prepareSheets(spreadsheet, sheetsToCreate());
+    if (sheets != null) {
+      await widget.onPrepared?.call(spreadsheet!, sheets);
+    }
+  }
+
+  Future<void> _request() async {
     final id = await showDialog<String>(
       context: context,
       builder: (context) {
@@ -229,26 +230,38 @@ class SpreadsheetSelectorState<T extends Enum>
         );
       },
     );
-
-    if (id == null) return null;
+    if (id == null) return;
 
     final result = await widget.exporter.getSpreadsheet(id);
-    if (result == null) {
-      if (context.mounted) {
-        showSnackBar(context, '找不到該表單，是否沒開放權限讀取？');
-      }
+
+    String message = '找不到該表單，是否沒開放權限讀取？';
+    if (result != null) {
+      await _update(result);
+      message = S.actSuccess;
     }
 
-    return result;
+    if (mounted) {
+      showSnackBar(context, message);
+    }
+  }
+
+  Future<void> _update(GoogleSpreadsheet? other) async {
+    Log.ger('change start', 'gs_export', other.toString());
+    setState(() => spreadsheet = other);
+    await widget.onUpdate?.call(other);
+
+    if (other != null) {
+      await Cache.instance.set<String>(widget.cacheKey, other.toString());
+    }
   }
 
   /// 準備好試算表裡的表單
   ///
   /// 若沒有試算表則建立，並建立所有可能的表單。
   /// 若有則把需要的表單準備好。
-  Future<Map<T, GoogleSheetProperties>?> _prepareSheets(
+  Future<Map<SheetType, GoogleSheetProperties>?> _prepareSheets(
     GoogleSpreadsheet? ss,
-    Map<T, String> sheets,
+    Map<SheetType, String> sheets,
   ) async {
     if (sheets.isEmpty) {
       showSnackBar(context, S.exporterGSErrors('sheetEmpty'));
@@ -279,7 +292,7 @@ class SpreadsheetSelectorState<T extends Enum>
         return null;
       }
 
-      await update(other);
+      await _update(other);
       ss = other;
     } else {
       final existSheets = await widget.exporter.getSheets(ss);
@@ -306,14 +319,13 @@ class SpreadsheetSelectorState<T extends Enum>
 
   /// 補足該試算表的表單
   Future<bool> _fulfillSheets(GoogleSpreadsheet ss, List<String> names) async {
-    _notify(S.exporterGSProgressStatus('addSheets'));
-
     final exist = ss.sheets.map((e) => e.title).toSet();
     final missing = names.toSet().difference(exist);
     if (missing.isEmpty) {
       return true;
     }
 
+    _notify(S.exporterGSProgressStatus('addSheets'));
     final added = await widget.exporter.addSheets(ss, missing.toList());
     if (added != null) {
       ss.sheets.addAll(added);
@@ -327,7 +339,7 @@ class SpreadsheetSelectorState<T extends Enum>
 String? _spreadsheetValidator(String? text) {
   if (text == null || text.isEmpty) return '不能為空';
 
-  if (!_sheetUrlRegex.hasMatch(text) || !_sheetIdRegex.hasMatch(text)) {
+  if (!_sheetUrlRegex.hasMatch(text) && !_sheetIdRegex.hasMatch(text)) {
     return '不合法的文字，必須包含：\n'
         '/spreadsheets/d/<ID>/\n'
         '或者直接給 ID（英文+數字+底線+減號的組合）';
@@ -348,3 +360,15 @@ String? _spreadsheetFormatter(String? text) {
 }
 
 enum _ActionTypes { request, create }
+
+enum SheetType {
+  menu,
+  stock,
+  quantities,
+  replenisher,
+  orderAttr,
+  order,
+  orderSetAttr,
+  orderProduct,
+  orderIngredient,
+}

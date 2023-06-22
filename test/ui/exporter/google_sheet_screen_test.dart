@@ -23,6 +23,7 @@ import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/exporter_routes.dart';
+import 'package:possystem/ui/exporter/google_sheet_widgets/sheet_namer.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
@@ -153,8 +154,8 @@ void main() {
             ),
           );
           await tapBtn(tester);
-          // no repo checked, do nothing
-          expect(notifier.value, equals(''));
+          // no repo checked, but still run the notifier process
+          expect(notifier.value, equals('_finish'));
         });
 
         testWidgets('repeat name', (tester) async {
@@ -260,12 +261,14 @@ void main() {
           await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester);
 
-          verifyNever(cache.set(eCacheKey + '.stock', 'title'));
+          verifyNever(cache.set(eCacheKey + '.stock', any));
           verify(sheetsApi.spreadsheets.batchUpdate(
-            any,
+            argThat(predicate((e) =>
+                e is gs.BatchUpdateSpreadsheetRequest &&
+                e.requests?.length == 5)),
             any,
             $fields: anyNamed('\$fields'),
-          )).called(5);
+          ));
 
           // which also verify button exist!
           await tester.tap(find.text('開啟表單'));
@@ -331,7 +334,7 @@ void main() {
     group('Importer', () {
       group('#refresh -', () {
         Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
-          await tester.tap(find.text(selected ? '檢查所選的試算表' : '選擇試算表'));
+          await tester.tap(find.text(selected ? '檢查試算表' : '選擇試算表'));
           await tester.pump();
         }
 
@@ -498,7 +501,7 @@ void main() {
           )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
                 gs.Sheet(properties: sheet),
               ])));
-          await tester.tap(find.text('檢查所選的試算表'));
+          await tester.tap(find.text('檢查試算表'));
           await tester.pumpAndSettle();
           final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
           await tester.tap(menu);
@@ -729,14 +732,6 @@ void main() {
             .widget as DropdownButtonFormField<GoogleSheetProperties?>;
       }
 
-      TextField getNamer(String label) {
-        return find
-            .byKey(Key('gs_export.$label.sheet_namer'))
-            .evaluate()
-            .single
-            .widget as TextField;
-      }
-
       void mockPick(CustomMockSheetsApi sheetsApi, String id, String sheet) {
         final sheet1 = gs.SheetProperties(title: sheet, sheetId: 1);
 
@@ -790,12 +785,18 @@ void main() {
       });
 
       testWidgets('exporter pick success', (tester) async {
+        SheetNamerState? getNamer() {
+          return tester
+              .element(find.byKey(const Key('gs_export.menu.sheet_namer')))
+              .findAncestorStateOfType<SheetNamerState>();
+        }
+
         final sheetsApi = getMockSheetsApi();
         mockPick(sheetsApi, spreadsheetId, 'some-sheet');
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
-        expect(getNamer('menu').autofillHints, isNull);
+        expect(getNamer()!.autofillHints, isNull);
 
         await action(tester);
 
@@ -807,11 +808,19 @@ void main() {
         await tester.tap(find.byKey(const Key('text_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        expect(getNamer('menu').autofillHints, equals(['some-sheet']));
+        expect(getNamer()!.autofillHints, equals(['some-sheet']));
         verify(cache.set(eCacheKey, '$spreadsheetId:false:title'));
       });
 
       testWidgets('export cancel old', (tester) async {
+        TextFormField getNamer() {
+          return find
+              .byKey(const Key('gs_export.menu.sheet_namer'))
+              .evaluate()
+              .single
+              .widget as TextFormField;
+        }
+
         clearInteractions(cache);
         when(cache.get(eCacheKey)).thenReturn('id:true:name');
         when(cache.get(eCacheKey + '.menu')).thenReturn('menu');
@@ -819,13 +828,13 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tester.pumpAndSettle();
 
-        expect(getNamer('menu').controller?.text, equals('menu'));
+        expect(getNamer().controller?.text, equals('menu'));
 
         await action(tester, Icons.add_box_outlined);
         await tester.pumpAndSettle();
 
         // should not change
-        expect(getNamer('menu').controller?.text, equals('menu'));
+        expect(getNamer().controller?.text, equals('menu'));
         // should not cache
         verifyNever(cache.set(any, any));
       });

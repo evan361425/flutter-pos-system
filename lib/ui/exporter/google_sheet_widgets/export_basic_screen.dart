@@ -114,11 +114,16 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
-  Map<Formattable, String> sheetsToCreate() {
+  Map<SheetType, String> sheetsToCreate() {
     // avoid showing keyboard
     FocusScope.of(context).unfocus();
 
-    final usedSheets = sheets.entries
+    final usedSheets = sheets
+        .map((key, value) => MapEntry(
+              SheetType.values.firstWhere((e) => e.name == key.name),
+              value,
+            ))
+        .entries
         .where((entry) => entry.value.currentState?.isUsable == true);
 
     return {
@@ -129,48 +134,40 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
   Future<void> exportData(
     GoogleSpreadsheet ss,
-    Map<Formattable, GoogleSheetProperties> prepared,
+    Map<SheetType, GoogleSheetProperties> kv,
   ) async {
-    Future<void> export() async {
-      Log.ger('export ready', 'gs_export', ss.id);
-      const formatter = GoogleSheetFormatter();
+    Log.ger('export ready', 'gs_export', ss.id);
+    const formatter = GoogleSheetFormatter();
 
-      // cache the sheet names
-      for (final e in prepared.entries) {
-        await _cacheSheetName(e.key.name, e.value.title);
-      }
-
-      // go
-      await widget.exporter.updateSheet(
-        ss,
-        prepared.values,
-        prepared.keys.map((key) => formatter.getRows(key)),
-        prepared.keys.map((key) => formatter.getHeader(key)),
-      );
-
-      Log.ger('export finish', 'gs_export');
-      if (mounted) {
-        showSnackBar(
-          context,
-          S.actSuccess,
-          action: LauncherSnackbarAction(
-            label: '開啟表單',
-            link: ss.toLink(),
-            logCode: 'gs_export',
-          ),
-        );
-      }
+    // cache the sheet names
+    final prepared = kv.map((key, value) => MapEntry(
+          Formattable.values.firstWhere((e) => e.name == key.name),
+          value,
+        ));
+    for (final e in prepared.entries) {
+      await _cacheSheetName(e.key.name, e.value.title);
     }
 
-    widget.notifier.value = '_start';
-
-    await showSnackbarWhenFailed(
-      export(),
-      context,
-      'gs_export_failed',
+    // go
+    await widget.exporter.updateSheet(
+      ss,
+      prepared.values,
+      prepared.keys.map((key) => formatter.getRows(key)),
+      prepared.keys.map((key) => formatter.getHeader(key)),
     );
 
-    widget.notifier.value = '_finish';
+    Log.ger('export finish', 'gs_export');
+    if (mounted) {
+      showSnackBar(
+        context,
+        S.actSuccess,
+        action: LauncherSnackbarAction(
+          label: '開啟表單',
+          link: ss.toLink(),
+          logCode: 'gs_export',
+        ),
+      );
+    }
   }
 
   Future<void> onSpreadsheetUpdate(GoogleSpreadsheet? other) async {

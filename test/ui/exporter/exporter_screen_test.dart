@@ -5,6 +5,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 
@@ -35,6 +36,7 @@ void main() {
       Quantities();
       Replenisher();
       OrderAttributes();
+      Seller();
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 

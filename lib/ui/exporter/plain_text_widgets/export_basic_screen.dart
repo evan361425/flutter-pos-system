@@ -28,7 +28,10 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
         isScrollable: true,
         tabs: [
           for (final able in Formattable.values)
-            Tab(text: S.exporterPTRepoName(able.name))
+            Tab(
+              key: Key('tab.${able.name}'),
+              text: S.exporterPTRepoName(able.name),
+            )
         ],
       ),
       Expanded(
@@ -61,7 +64,6 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
   Widget _buildTabBarView(BuildContext context, Formattable able) {
     return Column(children: [
       ListTile(
-        key: Key('expansion_tile.${able.name}'),
         title: Text(S.exporterPTRepoName(able.name)),
         subtitle: MetaBlock.withString(
           context,

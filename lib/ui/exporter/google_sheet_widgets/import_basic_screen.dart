@@ -113,26 +113,15 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
 
   /// 重新讀取試算表的表單名稱
   Future<void> reloadSheets(GoogleSpreadsheet ss) async {
-    Future<void> reload() async {
-      final exist = await widget.exporter.getSheets(ss);
+    final exist = await widget.exporter.getSheets(ss);
 
-      for (var sheet in sheets.values) {
-        sheet.currentState?.setSheets(exist);
-      }
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
+    for (var sheet in sheets.values) {
+      sheet.currentState?.setSheets(exist);
     }
 
-    widget.notifier.value = '_start';
-
-    await showSnackbarWhenFailed(
-      reload(),
-      context,
-      'gs_refresh_failed',
-    );
-
-    widget.notifier.value = '_finish';
+    if (mounted) {
+      showSnackBar(context, S.actSuccess);
+    }
   }
 
   Future<void> importData(Formattable? type) async {

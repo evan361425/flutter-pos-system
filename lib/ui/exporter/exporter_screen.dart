@@ -156,6 +156,7 @@ class _ExporterScreenState extends State<ExporterScreen>
   void _navTo(BuildContext context, ExportMethod exporterType) {
     // 對人類來說 5/1~5/2 代表兩天
     // 對機器來說 5/1~5/2 代表一天（5/1 0:0 ~ 5/2 0:0）
+    // 所以 range.end 需要 add day 1
     final rangeForProgram = DateTimeRange(
       start: range.start,
       end: range.end.add(const Duration(days: 1)),

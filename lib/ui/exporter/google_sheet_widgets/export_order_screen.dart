@@ -48,7 +48,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     return Column(
       children: [
         SignInButton(
-          signedInWidget: SpreadsheetSelector<SheetType>(
+          signedInWidget: SpreadsheetSelector(
             key: selector,
             exporter: widget.exporter,
             cacheKey: _cacheKey,
@@ -87,7 +87,10 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
   Map<SheetType, String> sheetsToCreate() {
     final f = DateFormat('MMdd', S.localeName);
     final p = '${f.format(widget.range.start)}-${f.format(widget.range.end)} ';
-    return properties.sheetNames(p);
+    return properties.sheetNames(p).map((key, value) => MapEntry(
+          SheetType.values.firstWhere((e) => e.name == key.name),
+          value,
+        ));
   }
 
   @override
@@ -108,7 +111,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
           .map((key) => _format(key))
           .where((e) => e != null)
           .cast<Iterable<Iterable<GoogleSheetCellData>>>();
-      final future = properties.isOverwrite
+      await (properties.isOverwrite
           ? widget.exporter.updateSheet(
               ss,
               prepared.values,
@@ -116,7 +119,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
               prepared.keys.map((key) => _chooseHeaders(key)
                   .map((e) => GoogleSheetCellData(stringValue: e))),
             )
-          : widget.exporter.appendSheet(ss, prepared.values, data);
+          : widget.exporter.appendSheet(ss, prepared.values, data));
 
       Log.ger('export finish', 'gs_export');
       if (mounted) {
@@ -175,27 +178,27 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
 
   List<Object> Function(OrderObject) _chooseFormatter(SheetType type) {
     switch (type) {
-      case SheetType.order:
-        return OrderFormatter.formatOrder;
       case SheetType.orderSetAttr:
         return OrderFormatter.formatOrderSetAttr;
       case SheetType.orderProduct:
         return OrderFormatter.formatOrderProduct;
       case SheetType.orderIngredient:
         return OrderFormatter.formatOrderIngredient;
+      default:
+        return OrderFormatter.formatOrder;
     }
   }
 
   List<String> _chooseHeaders(SheetType type) {
     switch (type) {
-      case SheetType.order:
-        return OrderFormatter.orderHeaders;
       case SheetType.orderSetAttr:
         return OrderFormatter.orderSetAttrHeaders;
       case SheetType.orderProduct:
         return OrderFormatter.orderProductHeaders;
       case SheetType.orderIngredient:
         return OrderFormatter.orderIngredientHeaders;
+      default:
+        return OrderFormatter.orderHeaders;
     }
   }
 }

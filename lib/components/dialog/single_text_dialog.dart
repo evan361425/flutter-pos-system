@@ -74,9 +74,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
 
   void onSubmit(String? value) {
     if (form.currentState!.validate()) {
-      Navigator.of(context).pop(
-        widget.formatter != null ? widget.formatter!(value) : value,
-      );
+      Navigator.of(context).pop(widget.formatter?.call(value) ?? value);
     }
   }
 
