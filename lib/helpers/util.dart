@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -24,5 +25,13 @@ class Util {
     }
 
     return now;
+  }
+
+  static DateTimeRange getDateRange({DateTime? now, int days = 1}) {
+    now ??= DateTime.now();
+    final start = DateTime(now.year, now.month, now.day);
+    final end = start.add(Duration(days: days));
+
+    return DateTimeRange(start: start, end: end);
   }
 }

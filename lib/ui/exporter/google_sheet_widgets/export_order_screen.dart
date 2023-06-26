@@ -11,7 +11,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 import 'package:possystem/ui/exporter/order_range_info.dart';
-import 'package:possystem/ui/exporter/order_loader.dart';
+import 'package:possystem/ui/exporter/export_order_loader.dart';
 
 import 'order_formatter.dart';
 import 'order_properties_modal.dart';
@@ -20,16 +20,16 @@ import 'order_table.dart';
 const _cacheKey = 'exporter_google_sheet';
 
 class ExportOrderScreen extends StatefulWidget {
-  final DateTimeRange range;
+  final ValueNotifier<DateTimeRange> rangeNotifier;
 
-  final ValueNotifier<String> notifier;
+  final ValueNotifier<String> statusNotifier;
 
   final GoogleSheetExporter exporter;
 
   const ExportOrderScreen({
     Key? key,
-    required this.range,
-    required this.notifier,
+    required this.rangeNotifier,
+    required this.statusNotifier,
     required this.exporter,
   }) : super(key: key);
 
@@ -39,7 +39,7 @@ class ExportOrderScreen extends StatefulWidget {
 
 class _ExportOrderScreenState extends State<ExportOrderScreen> {
   final selector = GlobalKey<SpreadsheetSelectorState>();
-  final orderLoader = GlobalKey<OrderLoaderState>();
+  final orderLoader = GlobalKey<ExportOrderLoaderState>();
   late OrderSpreadsheetProperties properties;
 
   @override
@@ -60,23 +60,24 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
             onPrepared: exportData,
           ),
         ),
-        OrderRangeInfo(range: widget.range),
+        OrderRangeInfo(notifier: widget.rangeNotifier),
         ListTile(
           title: Text('將匯出至$names'),
           subtitle: MetaBlock.withString(context, [
             '${properties.isOverwrite ? '會' : '不會'}覆寫',
             '${properties.withPrefix ? '有' : '沒有'}日期前綴',
           ]),
-          onTap: editSheets,
           trailing: IconButton(
             icon: const Icon(KIcons.edit),
             onPressed: editSheets,
           ),
+          onTap: editSheets,
         ),
+        const Divider(),
         Expanded(
-          child: OrderLoader(
+          child: ExportOrderLoader(
             key: orderLoader,
-            range: widget.range,
+            notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
           ),
         ),
@@ -86,7 +87,8 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
 
   Map<SheetType, String> sheetsToCreate() {
     final f = DateFormat('MMdd', S.localeName);
-    final p = '${f.format(widget.range.start)}-${f.format(widget.range.end)} ';
+    final p =
+        '${f.format(widget.rangeNotifier.value.start)}-${f.format(widget.rangeNotifier.value.end)} ';
     return properties.sheetNames(p).map((key, value) => MapEntry(
           SheetType.values.firstWhere((e) => e.name == key.name),
           value,
@@ -135,7 +137,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
       }
     }
 
-    widget.notifier.value = '_start';
+    widget.statusNotifier.value = '_start';
 
     await showSnackbarWhenFailed(
       exportOneByOne(),
@@ -143,7 +145,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
       'gs_export_failed',
     );
 
-    widget.notifier.value = '_finish';
+    widget.statusNotifier.value = '_finish';
   }
 
   void editSheets() async {

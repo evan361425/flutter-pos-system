@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/choice_chip_with_help.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -22,10 +23,10 @@ class OrderAttributeModal extends StatefulWidget {
 
 class _OrderAttributeModalState extends State<OrderAttributeModal>
     with ItemModal<OrderAttributeModal> {
-  late TextEditingController _nameController;
-  late FocusNode _nameFocusNode;
+  late final TextEditingController _nameController;
 
-  late GlobalKey<_ModeSelectorState> modesKey;
+  final FocusNode _nameFocusNode = FocusNode();
+  final modeSelector = GlobalKey<ChoiceChipWithHelpState<OrderAttributeMode>>();
 
   @override
   List<Widget> buildFormFields() {
@@ -56,10 +57,16 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
         ),
       ),
       TextDivider(label: S.orderAttributeModeTitle),
-      _ModeSelector(
-        key: modesKey,
-        selectedMode:
+      ChoiceChipWithHelp(
+        key: modeSelector,
+        values: OrderAttributeMode.values,
+        selected:
             widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
+        labels: OrderAttributeMode.values
+            .map((e) => S.orderAttributeModeNames(e.name)),
+        helpTexts: OrderAttributeMode.values
+            .map((e) => S.orderAttributeModeDescriptions(e.name))
+            .toList(),
       ),
     ];
   }
@@ -67,9 +74,6 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
   @override
   void initState() {
     _nameController = TextEditingController(text: widget.attribute?.name);
-    _nameFocusNode = FocusNode();
-    modesKey = GlobalKey<_ModeSelectorState>();
-
     super.initState();
   }
 
@@ -84,7 +88,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
   Future<void> updateItem() async {
     final object = OrderAttributeObject(
       name: _nameController.text,
-      mode: modesKey.currentState?.selectedMode ?? OrderAttributeMode.statOnly,
+      mode: modeSelector.currentState?.selected ?? OrderAttributeMode.statOnly,
     );
 
     if (widget.isNew) {
@@ -100,49 +104,5 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
     if (mounted) {
       Navigator.of(context).pop();
     }
-  }
-}
-
-class _ModeSelector extends StatefulWidget {
-  final OrderAttributeMode selectedMode;
-
-  const _ModeSelector({
-    Key? key,
-    required this.selectedMode,
-  }) : super(key: key);
-
-  @override
-  State<_ModeSelector> createState() => _ModeSelectorState();
-}
-
-class _ModeSelectorState extends State<_ModeSelector> {
-  late OrderAttributeMode selectedMode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Wrap(spacing: 4, runSpacing: 4, children: [
-        for (final mode in OrderAttributeMode.values)
-          ChoiceChip(
-            key: Key('order_attribute.modes.${mode.index}'),
-            selected: selectedMode == mode,
-            onSelected: (selected) {
-              if (selected) {
-                setState(() => selectedMode = mode);
-              }
-            },
-            label: Text(S.orderAttributeModeNames(mode.name)),
-          ),
-      ]),
-      // infinity width to maximum the column width
-      const SizedBox(height: 8.0, width: double.infinity),
-      Text(S.orderAttributeModeDescriptions(selectedMode.name)),
-    ]);
-  }
-
-  @override
-  void initState() {
-    selectedMode = widget.selectedMode;
-    super.initState();
   }
 }

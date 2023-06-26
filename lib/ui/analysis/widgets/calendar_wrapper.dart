@@ -12,21 +12,17 @@ int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
 int _hashMonth(DateTime e) => e.month + e.year * 100;
 
 class CalendarWrapper extends StatefulWidget {
-  final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
+  final ValueNotifier<DateTime> notifier;
 
-  final void Function(DateTime month) handleDaySelected;
+  final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
 
   final bool isPortrait;
 
-  /// default: DateTime.now()
-  final DateTime? initialDate;
-
   const CalendarWrapper({
     Key? key,
-    required this.searchCountInMonth,
-    required this.handleDaySelected,
+    required this.notifier,
     required this.isPortrait,
-    this.initialDate,
+    required this.searchCountInMonth,
   }) : super(key: key);
 
   @override
@@ -80,10 +76,10 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
         markerBuilder: _badgeBuilder,
         defaultBuilder: _defaultBuilder,
       ),
-      onPageChanged: _handlePageChange,
+      onPageChanged: _searchPageData,
       onFormatChanged: (format) => setState(() => _calendarFormat = format),
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
-          _handleDaySelected(selectedDay),
+          _onDaySelected(selectedDay),
     );
   }
 
@@ -91,7 +87,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   void initState() {
     super.initState();
 
-    _focusedDay = _selectedDay = widget.initialDate ?? DateTime.now();
+    _focusedDay = _selectedDay = widget.notifier.value;
   }
 
   @override
@@ -101,7 +97,6 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     context.watch<Seller>();
     _loadedMonths.clear();
     _loadedCounts.clear();
-    widget.handleDaySelected(_selectedDay);
     _searchCountInMonth(_selectedDay);
   }
 
@@ -132,15 +127,14 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     );
   }
 
-  void _handleDaySelected(DateTime day) {
-    widget.handleDaySelected(day);
+  void _onDaySelected(DateTime day) {
+    widget.notifier.value = day;
     setState(() {
-      _selectedDay = day;
-      _focusedDay = day;
+      _selectedDay = _focusedDay = day;
     });
   }
 
-  void _handlePageChange(DateTime day) {
+  void _searchPageData(DateTime day) {
     // make calender page stay in current page
     _focusedDay = day;
     if (!_loadedMonths.contains(_hashMonth(day))) {

@@ -133,8 +133,8 @@ void main() {
 
       await tester.enterText(
           find.byKey(const Key('order_attribute.name')), 'new');
-      await tester.tap(find.byKey(const Key('order_attribute.modes.1')));
-      await tester.tap(find.byKey(const Key('order_attribute.modes.2')));
+      await tester.tap(find.byKey(const Key('choice_chip.1')));
+      await tester.tap(find.byKey(const Key('choice_chip.2')));
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 

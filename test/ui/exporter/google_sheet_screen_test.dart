@@ -46,7 +46,7 @@ void main() {
       return MaterialApp(
         home: ExporterStation(
           title: '',
-          info: const ExporterInfo(type: ExporterInfoType.basic),
+          info: ExporterInfoType.basic,
           method: ExportMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -146,7 +146,7 @@ void main() {
             MaterialApp(
               home: ExporterStation(
                 title: '',
-                info: const ExporterInfo(type: ExporterInfoType.basic),
+                info: ExporterInfoType.basic,
                 method: ExportMethod.googleSheet,
                 notifier: notifier,
                 exporter: GoogleSheetExporter(),
@@ -465,7 +465,7 @@ void main() {
           await tester.pumpWidget(MaterialApp(
             home: ExporterStation(
               title: '',
-              info: const ExporterInfo(type: ExporterInfoType.basic),
+              info: ExporterInfoType.basic,
               notifier: notifier,
               exporter: GoogleSheetExporter(
                 sheetsApi: sheetsApi,

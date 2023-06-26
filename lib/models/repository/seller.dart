@@ -89,7 +89,6 @@ class Seller extends ChangeNotifier {
     DateTime end, {
     int offset = 0,
     int? limit = 10,
-    bool desc = true,
   }) async {
     final rows = await Database.instance.query(
       orderTable,
@@ -98,7 +97,7 @@ class Seller extends ChangeNotifier {
         Util.toUTC(now: start),
         Util.toUTC(now: end),
       ],
-      orderBy: 'createdAt ${desc ? 'desc' : 'asc'}',
+      orderBy: 'createdAt desc',
       limit: limit,
       offset: offset,
     );

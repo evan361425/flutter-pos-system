@@ -168,15 +168,6 @@
   "@analysisCalendarTwoWeek": {
     "description": "分析頁的日曆週期轉換單位之一"
   },
-  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢} ready{下拉以載入更多} other{UNKNOWN}}",
-  "@analysisOrderListStatus": {
-    "description": "分析頁的點餐列表狀態",
-    "placeholders": {
-      "status": {
-        "type": "String"
-      }
-    }
-  },
   "analysisOrderListItemMetaPrice": "售價：{price}",
   "@analysisOrderListItemMetaPrice": {
     "description": "分析頁的點餐列表中，每次點餐的售價值",
@@ -219,8 +210,9 @@
       }
     }
   },
-  "analysisOrderListMetaPrice": "總營收：{price}",
-  "@analysisOrderListMetaPrice": {
+  "orderListEmpty": "查無點餐紀錄",
+  "orderListMetaPrice": "總營收：{price}",
+  "@orderListMetaPrice": {
     "description": "分析頁的點餐列表中，單日點餐的營收",
     "placeholders": {
       "price": {
@@ -233,8 +225,8 @@
       }
     }
   },
-  "analysisOrderListMetaCount": "總單數：{count}",
-  "@analysisOrderListMetaCount": {
+  "orderListMetaCount": "總單數：{count}",
+  "@orderListMetaCount": {
     "description": "分析頁的點餐列表中，單日點餐的數量",
     "placeholders": {
       "count": {

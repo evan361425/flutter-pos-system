@@ -4,24 +4,26 @@ import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/exporter/order_range_info.dart';
-import 'package:possystem/ui/exporter/order_loader.dart';
+import 'package:possystem/ui/exporter/export_order_loader.dart';
 
 class ExporterOrderScreen extends StatelessWidget {
-  final DateTimeRange range;
+  final ValueNotifier<DateTimeRange> notifier;
 
-  final orderLoader = GlobalKey<OrderLoaderState>();
+  final orderLoader = GlobalKey<ExportOrderLoaderState>();
 
   ExporterOrderScreen({
     Key? key,
-    required this.range,
+    required this.notifier,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        OrderRangeInfo(
-          range: range,
+        OrderRangeInfo(notifier: notifier),
+        ListTile(
+          title: const Text('約 3KB 的大小'),
+          subtitle: const Text('複製過大的文字可能會造成系統的崩潰。'),
           trailing: ElevatedButton.icon(
             key: const Key('export_btn'),
             onPressed: () {
@@ -36,9 +38,9 @@ class ExporterOrderScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: OrderLoader(
+          child: ExportOrderLoader(
             key: orderLoader,
-            range: range,
+            notifier: notifier,
             formatOrder: (order) => Text(formatOrder(order)),
           ),
         ),
@@ -47,13 +49,13 @@ class ExporterOrderScreen extends StatelessWidget {
   }
 
   Future<void> export() async {
-    final state = orderLoader.currentState;
-    if (state != null) {
+    final orders = orderLoader.currentState?.orders;
+    if (orders != null) {
       const exporter = PlainTextExporter();
-      await exporter.exportToClipboard(state.orders
+      await exporter.exportToClipboard(orders
           .map((o) => [
-                OrderLoader.formatCreatedAt(o),
-                OrderLoader.formatHeader(o),
+                ExportOrderLoader.formatCreatedAt(o),
+                ExportOrderLoader.formatHeader(o),
                 formatOrder(o),
               ].join('\n'))
           .join('\n\n'));

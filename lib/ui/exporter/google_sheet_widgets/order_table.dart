@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/objects/order_object.dart';
 
@@ -17,10 +18,6 @@ class OrderTable extends StatefulWidget {
 }
 
 class _OrderTableState extends State<OrderTable> {
-  bool showSetAttr = false;
-  bool showProduct = false;
-  bool showIngredient = false;
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -28,44 +25,27 @@ class _OrderTableState extends State<OrderTable> {
         SimpleTable(
           headers: OrderFormatter.orderHeaders,
           data: [OrderFormatter.formatOrder(widget.order)],
-          expandableCallbacks: {
-            OrderFormatter.orderSetAttrIndex: showSetAttr
-                ? null
-                : () => setState(() {
-                      showSetAttr = true;
-                    }),
-            OrderFormatter.orderProductIndex: showProduct
-                ? null
-                : () => setState(() {
-                      showProduct = true;
-                    }),
-          },
+          expandableIndexes: const [
+            OrderFormatter.orderSetAttrIndex,
+            OrderFormatter.orderProductIndex,
+          ],
         ),
-        if (showSetAttr) const TextDivider(label: '訂單顧客設定'),
-        if (showSetAttr)
-          SimpleTable(
-            headers: OrderFormatter.orderSetAttrHeaders,
-            data: OrderFormatter.formatOrderSetAttr(widget.order),
-          ),
-        if (showProduct) const TextDivider(label: '訂單產品細項'),
-        if (showProduct)
-          SimpleTable(
-            headers: OrderFormatter.orderProductHeaders,
-            data: OrderFormatter.formatOrderProduct(widget.order),
-            expandableCallbacks: {
-              OrderFormatter.orderIngredientIndex: showIngredient
-                  ? null
-                  : () => setState(() {
-                        showIngredient = true;
-                      }),
-            },
-          ),
-        if (showIngredient) const TextDivider(label: '訂單成份細項'),
-        if (showIngredient)
-          SimpleTable(
-            headers: OrderFormatter.orderIngredientHeaders,
-            data: OrderFormatter.formatOrderIngredient(widget.order),
-          ),
+        const TextDivider(label: '訂單顧客設定'),
+        SimpleTable(
+          headers: OrderFormatter.orderSetAttrHeaders,
+          data: OrderFormatter.formatOrderSetAttr(widget.order),
+        ),
+        const TextDivider(label: '訂單產品細項'),
+        SimpleTable(
+          headers: OrderFormatter.orderProductHeaders,
+          data: OrderFormatter.formatOrderProduct(widget.order),
+          expandableIndexes: const [OrderFormatter.orderIngredientIndex],
+        ),
+        const TextDivider(label: '訂單成份細項'),
+        SimpleTable(
+          headers: OrderFormatter.orderIngredientHeaders,
+          data: OrderFormatter.formatOrderIngredient(widget.order),
+        ),
       ]),
     );
   }
@@ -76,13 +56,13 @@ class SimpleTable extends StatelessWidget {
 
   final Iterable<Iterable<Object>> data;
 
-  final Map<int, void Function()?> expandableCallbacks;
+  final List<int> expandableIndexes;
 
   const SimpleTable({
     Key? key,
     required this.headers,
     required this.data,
-    this.expandableCallbacks = const {},
+    this.expandableIndexes = const [],
   }) : super(key: key);
 
   @override
@@ -116,23 +96,11 @@ class SimpleTable extends StatelessWidget {
   Iterable<Widget> _rowWidgets(Iterable<Object> row) sync* {
     int index = 0;
     for (final cell in row) {
-      final hasCallback = expandableCallbacks.containsKey(index++);
+      final idxOf = expandableIndexes.indexOf(index++);
       yield Padding(
         padding: const EdgeInsets.all(4.0),
-        child: hasCallback
-            ? OutlinedButton(
-                style: ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                  padding: const MaterialStatePropertyAll(
-                    EdgeInsets.all(2.0),
-                  ),
-                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.0),
-                  )),
-                ),
-                onPressed: expandableCallbacks[index - 1],
-                child: const Text('展開'),
-              )
+        child: idxOf != -1
+            ? const HintText('詳見下欄')
             : Text(
                 cell.toString(),
                 textAlign: cell is String ? TextAlign.end : TextAlign.start,

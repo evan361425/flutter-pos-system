@@ -53,7 +53,6 @@ dependencies:
   flutter_slidable: ^3.0.0
   sliding_up_panel: ^2.0.0+1
   table_calendar: ^3.0.8
-  pull_to_refresh: ^2.0.0
 
   # image
   image: ^4.0.15
@@ -74,7 +73,6 @@ dependencies:
   flutter_svg: ^2.0.5
   spotlight_ant: ^0.5.0
   info_popup: ^3.0.0
-  syncfusion_flutter_datepicker: ^21.2.3
 
 dev_dependencies:
   flutter_test:

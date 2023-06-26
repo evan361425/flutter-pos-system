@@ -28,7 +28,7 @@ void main() {
         home: ExporterStation(
           title: '',
           exporter: PlainTextExporter(),
-          info: ExporterInfo(type: ExporterInfoType.basic),
+          info: ExporterInfoType.basic,
           method: ExportMethod.plainText,
         ),
       );

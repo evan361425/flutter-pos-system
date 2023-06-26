@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/settings/language_setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 
 class OrderRangeInfo extends StatefulWidget {
-  final DateTimeRange range;
-
-  final Widget? trailing;
+  final ValueNotifier<DateTimeRange> notifier;
 
   const OrderRangeInfo({
     Key? key,
-    required this.range,
-    this.trailing,
+    required this.notifier,
   }) : super(key: key);
 
   @override
@@ -21,36 +17,55 @@ class OrderRangeInfo extends StatefulWidget {
 }
 
 class _OrderRangeInfoState extends State<OrderRangeInfo> {
-  int? totalCount;
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
-      subtitle: MetaBlock.withString(context, [
-        '${widget.range.duration.inDays + 1} 天的資料',
-        if (totalCount != null) '共 ${totalCount!} 個訂單',
-      ]),
-      trailing: widget.trailing,
+      title: Text(_title),
+      subtitle: Text('${range.duration.inDays} 天的資料'),
+      trailing: ElevatedButton.icon(
+        key: const Key('edit_range_btn'),
+        onPressed: pickRange,
+        icon: const Icon(Icons.date_range_sharp),
+        label: const Text('調整日期'),
+      ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    showSnackbarWhenFailed(
-      Seller.instance
-          .getMetricBetween(widget.range.start, widget.range.end)
-          .then((value) {
-        setState(() => totalCount = value['count']!.toInt());
-      }),
-      context,
-      'export_load_order_count',
+  DateTimeRange get range => widget.notifier.value;
+
+  /// 對人類來說 5/1~5/2 代表兩天
+  /// 對機器來說 5/1~5/2 代表一天（5/1 0:0 ~ 5/2 0:0）
+  /// 需要注意對機器和對人之間的轉換
+  void pickRange() async {
+    final result = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(
+        start: range.start,
+        end: range.end.subtract(const Duration(days: 1)),
+      ),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      firstDate: DateTime(2021, 1),
+      lastDate: DateTime.now(),
+      locale: SettingsProvider.of<LanguageSetting>().value,
     );
+
+    if (result != null) {
+      _updateRange(result.start, result.end.add(const Duration(days: 1)));
+    }
   }
 
-  String get title {
+  void _updateRange(DateTime start, DateTime end) {
+    setState(() {
+      widget.notifier.value = DateTimeRange(start: start, end: end);
+    });
+  }
+
+  String get _title {
     final f = DateFormat.MMMd(S.localeName);
-    return '${f.format(widget.range.start)} 到 ${f.format(widget.range.end)}';
+    final duration = range.duration.inDays == 1
+        ? f.format(range.start)
+        : '${f.format(range.start)} - ${f.format(range.end.subtract(const Duration(days: 1)))}';
+
+    return '$duration 的訂單';
   }
 }

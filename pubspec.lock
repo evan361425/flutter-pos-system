@@ -909,14 +909,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  pull_to_refresh:
-    dependency: "direct main"
-    description:
-      name: pull_to_refresh
-      sha256: bbadd5a931837b57739cf08736bea63167e284e71fb23b218c8c9a6e042aad12
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   quiver:
     dependency: transitive
     description:
@@ -1122,22 +1114,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  syncfusion_flutter_core:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_core
-      sha256: dfd138a0cea87d6b1c624513b4b620f06515d884d65f1fa5fb93345266c7592c
-      url: "https://pub.dev"
-    source: hosted
-    version: "21.2.4"
-  syncfusion_flutter_datepicker:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_datepicker
-      sha256: cdc7f12804d609935400262f8d05d9eda8a1f3dbdfef363fb837f09b1f35023d
-      url: "https://pub.dev"
-    source: hosted
-    version: "21.2.3"
   synchronized:
     dependency: transitive
     description:

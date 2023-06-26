@@ -3,13 +3,14 @@ import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/exporter/data_exporter.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/ui/exporter/google_sheet_widgets/screens.dart' as gs;
 import 'package:possystem/ui/exporter/plain_text_widgets/screens.dart' as pt;
 import 'package:possystem/translator.dart';
 
 enum ExporterInfoType {
-  basic,
   order,
+  basic,
 }
 
 enum ExportMethod { googleSheet, plainText }
@@ -18,12 +19,12 @@ class ExporterRoutes {
   static final routes = <ExportMethod, WidgetBuilder>{
     ExportMethod.googleSheet: (context) => ExporterStation(
           title: S.exporterGSTitle,
-          info: ModalRoute.of(context)!.settings.arguments as ExporterInfo,
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
           method: ExportMethod.googleSheet,
         ),
     ExportMethod.plainText: (context) => ExporterStation(
           title: '純文字',
-          info: ModalRoute.of(context)!.settings.arguments as ExporterInfo,
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
           method: ExportMethod.plainText,
         ),
   };
@@ -34,7 +35,7 @@ class ExporterStation extends StatefulWidget {
 
   final ExportMethod method;
 
-  final ExporterInfo info;
+  final ExporterInfoType info;
 
   @visibleForTesting
   final ValueNotifier<String>? notifier;
@@ -112,7 +113,7 @@ class _ExporterStationState extends State<ExporterStation>
   }
 
   PreferredSizeWidget? _buildAppBarBottom() {
-    switch (widget.info.type) {
+    switch (widget.info) {
       case ExporterInfoType.basic:
         return TabBar(
           controller: tabController,
@@ -127,7 +128,7 @@ class _ExporterStationState extends State<ExporterStation>
   }
 
   Widget _buildBody() {
-    switch (widget.info.type) {
+    switch (widget.info) {
       case ExporterInfoType.basic:
         return TabBarView(
           controller: tabController,
@@ -155,8 +156,8 @@ class _ExporterStationState extends State<ExporterStation>
           case _Combination.exportOrder:
             return gs.ExportOrderScreen(
               exporter: exporter,
-              notifier: stateNotifier,
-              range: widget.info.range!,
+              statusNotifier: stateNotifier,
+              rangeNotifier: ValueNotifier(Util.getDateRange()),
             );
           case _Combination.importBasic:
             return gs.ImportBasicScreen(
@@ -169,23 +170,14 @@ class _ExporterStationState extends State<ExporterStation>
           case _Combination.exportBasic:
             return const pt.ExportBasicScreen();
           case _Combination.exportOrder:
-            return pt.ExporterOrderScreen(range: widget.info.range!);
+            return pt.ExporterOrderScreen(
+              notifier: ValueNotifier(Util.getDateRange()),
+            );
           case _Combination.importBasic:
             return const pt.ImportBasicScreen();
         }
     }
   }
-}
-
-class ExporterInfo {
-  final ExporterInfoType type;
-
-  final DateTimeRange? range;
-
-  const ExporterInfo({
-    required this.type,
-    this.range,
-  });
 }
 
 enum _Combination { exportBasic, importBasic, exportOrder }
