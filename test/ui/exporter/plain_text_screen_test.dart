@@ -11,6 +11,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/exporter_routes.dart';
+import 'package:possystem/ui/exporter/plain_text_widgets/screens.dart' as pt;
 
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
@@ -35,6 +36,12 @@ void main() {
     }
 
     const message = '共設定 1 種份量\n\n第1種份量叫做 q1，預設會讓成分的份量乘以 1 倍。';
+
+    test('test key attribute exist', () {
+      var i = 1;
+      pt.ExportBasicScreen(key: Key('test.${i++}'));
+      pt.ImportBasicScreen(key: Key('test.${i++}'));
+    });
 
     testWidgets('export', (tester) async {
       Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});

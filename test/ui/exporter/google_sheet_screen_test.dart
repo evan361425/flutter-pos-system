@@ -135,7 +135,7 @@ void main() {
       group('#export', () {
         Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
           await tester.pumpAndSettle();
-          await tester.tap(find.text(selected ? '匯出於指定表單' : '匯出後建立試算單'));
+          await tester.tap(find.text(selected ? '匯出於指定試算表' : '匯出後建立試算單'));
           await tester.pumpAndSettle();
         }
 

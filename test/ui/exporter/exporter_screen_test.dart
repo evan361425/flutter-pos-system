@@ -7,6 +7,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 
 import '../../mocks/mock_auth.dart';
@@ -37,6 +38,7 @@ void main() {
       Replenisher();
       OrderAttributes();
       Seller();
+      CurrencySetting().isInt = true;
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 

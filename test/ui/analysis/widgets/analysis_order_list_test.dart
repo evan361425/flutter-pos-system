@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,47 +83,43 @@ void main() {
     });
 
     testWidgets('should load more and refresh', (tester) async {
-      final data = [
-        {'id': 1},
-        {'id': 2},
-      ];
+      final data = List<Map<String, int>>.generate(21, (i) => {"id": i});
       final notifier = ValueNotifier(DateTime.now());
       var loadCount = 0;
 
-      setLoader(() {
-        return Future.value(
-          loadCount == data.length ? [] : data.sublist(loadCount++, loadCount),
-        );
-      });
+      setLoader(() => Future.value(loadCount * 10 > data.length
+          ? <Map<String, int>>[]
+          : data.sublist(
+              loadCount++ * 10,
+              min(loadCount * 10, data.length),
+            )));
 
       await tester.pumpWidget(buildApp(
         Material(child: AnalysisOrderList(notifier: notifier)),
       ));
       await tester.pumpAndSettle();
 
-      expect(loadCount, equals(1));
+      expect(loadCount, equals(2));
 
       final center = tester.getCenter(find.byKey(const Key('item_loader')));
 
-      await tester.dragFrom(center, const Offset(0, -300));
-      await tester.pumpAndSettle();
-
-      expect(loadCount, equals(2));
-
-      await tester.dragFrom(center, const Offset(0, -300));
+      await tester.dragFrom(center, const Offset(0, -1000));
       await tester.pumpAndSettle();
 
       expect(loadCount, equals(3));
 
-      await tester.dragFrom(center, const Offset(0, -300));
+      // touch limit and finish loading
+      await tester.dragFrom(center, const Offset(0, -1000));
       await tester.pumpAndSettle();
 
       expect(loadCount, equals(3));
 
+      // reset range
+      loadCount = 0;
       notifier.value = DateTime.now();
       await tester.pumpAndSettle();
 
-      expect(loadCount, equals(4));
+      expect(loadCount, equals(2));
     });
 
     OrderObject getOrder() {
@@ -182,8 +179,37 @@ void main() {
       });
     }
 
+    Map<String, Object?> getOrderMap() {
+      final map = getOrder().toMap();
+      map['id'] = 1;
+      return map;
+    }
+
     testWidgets('should navigate to modal', (tester) async {
-      setLoader(() => Future.value([getOrder().toMap()]));
+      setLoader(() {
+        final o = getOrder();
+        final products = o.products.toList();
+        products.add(const OrderProductObject(
+          productId: 'p-2',
+          productName: 'p-2',
+          catalogName: 'c-2',
+          count: 1,
+          cost: 10,
+          singlePrice: 20,
+          originalPrice: 30,
+          isDiscount: false,
+          ingredients: [],
+        ));
+        final order = OrderObject(
+          products: products,
+          totalPrice: 47,
+          totalCount: 2,
+          attributes: o.attributes,
+        );
+        final map = order.toMap();
+        map['id'] = 1;
+        return Future.value([map]);
+      });
 
       await tester.pumpWidget(buildApp(Material(
         child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
@@ -201,11 +227,13 @@ void main() {
 
       await tester.tap(find.byIcon(KIcons.back));
       await tester.pumpAndSettle();
+
+      expect(find.text('p-2'), findsOneWidget);
     });
 
     testWidgets('should delete order', (tester) async {
       when(database.delete(any, 1)).thenAnswer((_) => Future.value());
-      setLoader(() => Future.value([getOrder().toMap()]));
+      setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
         child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
@@ -237,7 +265,7 @@ void main() {
       ]);
 
       // order
-      setLoader(() => Future.value([getOrder().toMap()]));
+      setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
         child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),

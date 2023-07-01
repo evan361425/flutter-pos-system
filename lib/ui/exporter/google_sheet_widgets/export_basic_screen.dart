@@ -64,7 +64,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
             exporter: widget.exporter,
             notifier: widget.notifier,
             cacheKey: _cacheKey,
-            existLabel: '匯出於指定表單',
+            existLabel: '匯出於指定試算表',
             existHint: '將匯出於「%name」',
             emptyLabel: '匯出後建立試算單',
             emptyHint: '你尚未選擇試算表，匯出時將建立新的',
