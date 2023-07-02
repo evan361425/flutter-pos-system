@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/tutorial.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/exporter_routes.dart';
@@ -11,8 +10,8 @@ import 'package:spotlight_ant/spotlight_ant.dart';
 
 import 'analysis_order_modal.dart';
 
-class AnalysisOrderList extends StatefulWidget {
-  final ValueNotifier<DateTime> notifier;
+class AnalysisOrderList extends StatelessWidget {
+  final ValueNotifier<DateTimeRange> notifier;
 
   final TutorialInTab? tab;
 
@@ -23,32 +22,24 @@ class AnalysisOrderList extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AnalysisOrderList> createState() => _AnalysisOrderListState();
-}
-
-class _AnalysisOrderListState extends State<AnalysisOrderList> {
-  final loaderKey = OrderLoader.createKey();
-  late DateTimeRange range;
-
-  @override
   Widget build(BuildContext context) {
     return OrderLoader(
       trailing: Tutorial(
         id: 'analysis.export',
         title: '訂單資料匯出',
         message: '把訂單匯出到外部，讓你可以做進一步分析或保存。',
-        tab: widget.tab,
+        tab: tab,
         spotlightBuilder: const SpotlightRectBuilder(),
-        child: _buildDropdown(),
+        child: _buildDropdown(context),
       ),
-      loaderKey: loaderKey,
-      ranger: () => range,
       builder: _buildOrder,
+      ranger: notifier,
     );
   }
 
-  Widget _buildDropdown() {
+  Widget _buildDropdown(BuildContext context) {
     final dropdown = DropdownButton<ExportMethod>(
+      key: const Key('analysis.export'),
       value: null,
       isDense: true,
       hint: const Text('匯出'),
@@ -66,7 +57,7 @@ class _AnalysisOrderListState extends State<AnalysisOrderList> {
               return ExporterStation(
                 info: ExporterInfoType.order,
                 method: value,
-                range: range,
+                range: notifier.value,
               );
             }),
           );
@@ -83,25 +74,7 @@ class _AnalysisOrderListState extends State<AnalysisOrderList> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    widget.notifier.addListener(_onRangeChanged);
-    range = Util.getDateRange(now: widget.notifier.value);
-  }
-
-  @override
-  void dispose() {
-    widget.notifier.removeListener(_onRangeChanged);
-    super.dispose();
-  }
-
-  void _onRangeChanged() {
-    range = Util.getDateRange(now: widget.notifier.value);
-    loaderKey.currentState?.reset();
-  }
-
-  Widget _buildOrder(OrderObject order) {
+  Widget _buildOrder(BuildContext context, OrderObject order) {
     final subtitle = MetaBlock.withString(context, [
       S.analysisOrderListItemMetaPrice(order.totalPrice),
       S.analysisOrderListItemMetaPaid(order.paid),
@@ -114,7 +87,7 @@ class _AnalysisOrderListState extends State<AnalysisOrderList> {
         padding: const EdgeInsets.only(top: 8.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
       ),
-      title: _buildOrderTitle(order),
+      title: _buildOrderTitle(context, order),
       subtitle: subtitle,
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => AnalysisOrderModal(order)),
@@ -122,7 +95,7 @@ class _AnalysisOrderListState extends State<AnalysisOrderList> {
     );
   }
 
-  Widget _buildOrderTitle(OrderObject order) {
+  Widget _buildOrderTitle(BuildContext context, OrderObject order) {
     final theme = Theme.of(context);
     final products = order.products
         .map((product) => product.count == 1

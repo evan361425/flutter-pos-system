@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -9,7 +10,7 @@ import 'widgets/calendar_wrapper.dart';
 class AnalysisScreen extends StatelessWidget {
   final TutorialInTab? tab;
 
-  final notifier = ValueNotifier(DateTime.now());
+  final notifier = ValueNotifier<DateTimeRange>(Util.getDateRange());
 
   AnalysisScreen({Key? key, this.tab}) : super(key: key);
 

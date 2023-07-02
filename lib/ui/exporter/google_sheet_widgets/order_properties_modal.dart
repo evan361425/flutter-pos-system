@@ -6,7 +6,7 @@ import 'package:possystem/translator.dart';
 
 import 'sheet_namer.dart';
 
-const _cacheKey = 'exporter_google_sheet';
+const _cacheKey = 'exporter_order_google_sheet';
 
 class OrderPropertiesModal extends StatefulWidget {
   final OrderSpreadsheetProperties properties;
@@ -92,8 +92,8 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
       }
     }
 
-    await Cache.instance.set<bool>('$_cacheKey._orderIsOverwrite', isOverwrite);
-    await Cache.instance.set<bool>('$_cacheKey._orderWithPrefix', withPrefix);
+    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
+    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
 
     if (context.mounted) {
       Navigator.of(context).pop(OrderSpreadsheetProperties(
@@ -115,8 +115,10 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
 class OrderSpreadsheetProperties {
   final Map<OrderSheetType, OrderSheetProperties> sheets;
 
+  // 是否覆蓋表單的資料，預設是 true
   final bool isOverwrite;
 
+  // 表單名稱是否前綴日期，預設是 true
   final bool withPrefix;
 
   const OrderSpreadsheetProperties({
@@ -139,10 +141,8 @@ class OrderSpreadsheetProperties {
 
     return OrderSpreadsheetProperties(
       sheets: sheets,
-      isOverwrite:
-          Cache.instance.get<bool>('$_cacheKey._orderIsOverwrite') ?? true,
-      withPrefix:
-          Cache.instance.get<bool>('$_cacheKey._orderWithPrefix') ?? true,
+      isOverwrite: Cache.instance.get<bool>('$_cacheKey.isOverwrite') ?? true,
+      withPrefix: Cache.instance.get<bool>('$_cacheKey.withPrefix') ?? true,
     );
   }
 

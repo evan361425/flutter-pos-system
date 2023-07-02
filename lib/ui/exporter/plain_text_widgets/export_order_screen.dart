@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -7,12 +8,10 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/exporter/order_range_info.dart';
 import 'package:possystem/ui/exporter/export_order_loader.dart';
 
-class ExporterOrderScreen extends StatelessWidget {
+class ExportOrderScreen extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  final orderLoader = GlobalKey<ExportOrderLoaderState>();
-
-  ExporterOrderScreen({
+  const ExportOrderScreen({
     Key? key,
     required this.notifier,
   }) : super(key: key);
@@ -37,9 +36,10 @@ class ExporterOrderScreen extends StatelessWidget {
         ),
         Expanded(
           child: ExportOrderLoader(
-            key: orderLoader,
             notifier: notifier,
-            formatOrder: (order) => Text(formatOrder(order)),
+            formatOrder: (order) {
+              return Text(formatOrder(order));
+            },
           ),
         ),
       ],
@@ -56,8 +56,7 @@ class ExporterOrderScreen extends StatelessWidget {
     const exporter = PlainTextExporter();
     await exporter.exportToClipboard(orders
         .map((o) => [
-              ExportOrderLoader.formatCreatedAt(o),
-              ExportOrderLoader.formatHeader(o),
+              DateFormat('M月d日 HH:mm:ss').format(o.createdAt),
               formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
@@ -73,8 +72,8 @@ class ExporterOrderScreen extends StatelessWidget {
         return '${i.name}（${i.quantityName ?? '預設份量'}$amount）';
       }).join('、 ');
       return [
-        '點了 ${p.count} 份 ${p.productName}（${p.catalogName}）',
-        '共 ${p.totalPrice.toCurrency()} 元',
+        '${p.productName}（${p.catalogName}）',
+        '${p.count} 份共 ${p.totalPrice.toCurrency()} 元',
         ing == '' ? '沒有設定成分' : '成份包括 $ing',
       ].join('');
     }).join('；\n');
@@ -82,9 +81,10 @@ class ExporterOrderScreen extends StatelessWidget {
     final tc = order.totalCount;
 
     return [
-      if (order.productsPrice != order.totalPrice)
-        '${order.totalPrice.toCurrency()} 元'
-            '中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
+      '共 ${order.totalPrice.toCurrency()} 元',
+      order.productsPrice == order.totalPrice
+          ? '\n'
+          : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
       '付額 ${order.paid.toCurrency()} 元、',
       '成分 ${order.cost.toCurrency()} 元\n',
       if (attributes != '') '顧客的$attributes。\n',

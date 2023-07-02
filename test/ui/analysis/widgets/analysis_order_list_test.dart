@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
@@ -19,6 +20,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +69,7 @@ void main() {
       });
 
       await tester.pumpWidget(buildApp(
-        AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
+        AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       ));
       await tester.pump(const Duration(milliseconds: 10));
 
@@ -84,7 +86,7 @@ void main() {
 
     testWidgets('should load more and refresh', (tester) async {
       final data = List<Map<String, int>>.generate(21, (i) => {"id": i});
-      final notifier = ValueNotifier(DateTime.now());
+      final notifier = ValueNotifier(Util.getDateRange());
       var loadCount = 0;
 
       setLoader(() => Future.value(loadCount * 10 > data.length
@@ -116,7 +118,7 @@ void main() {
 
       // reset range
       loadCount = 0;
-      notifier.value = DateTime.now();
+      notifier.value = Util.getDateRange(days: 2);
       await tester.pumpAndSettle();
 
       expect(loadCount, equals(2));
@@ -212,7 +214,7 @@ void main() {
       });
 
       await tester.pumpWidget(buildApp(Material(
-        child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -236,7 +238,7 @@ void main() {
       setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
-        child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -268,7 +270,7 @@ void main() {
       setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
-        child: AnalysisOrderList(notifier: ValueNotifier(DateTime.now())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -322,6 +324,23 @@ void main() {
 
       verify(storage.set(Stores.stock, any));
       verify(storage.set(Stores.cashier, any));
+    });
+
+    testWidgets('should navigate to exporter', (tester) async {
+      setLoader(() => Future.value([getOrderMap()]));
+
+      await tester.pumpWidget(buildApp(Material(
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
+      )));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('analysis.export')));
+      await tester.pumpAndSettle();
+      // dropdown have multiple child for items
+      await tester.tap(find.text(S.exporterTypes('plainText')).last);
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.exporterTypes('plainText')), findsOneWidget);
     });
 
     setUpAll(() {

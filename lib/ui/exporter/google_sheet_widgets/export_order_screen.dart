@@ -18,7 +18,7 @@ import 'order_formatter.dart';
 import 'order_properties_modal.dart';
 import 'order_table.dart';
 
-const _cacheKey = 'exporter_google_sheet';
+const _cacheKey = 'exporter_order_google_sheet';
 
 class ExportOrderScreen extends StatefulWidget {
   final ValueNotifier<DateTimeRange> rangeNotifier;
@@ -40,7 +40,6 @@ class ExportOrderScreen extends StatefulWidget {
 
 class _ExportOrderScreenState extends State<ExportOrderScreen> {
   final selector = GlobalKey<SpreadsheetSelectorState>();
-  final orderLoader = GlobalKey<ExportOrderLoaderState>();
   late OrderSpreadsheetProperties properties;
 
   @override
@@ -52,6 +51,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
             key: selector,
             exporter: widget.exporter,
             cacheKey: _cacheKey,
+            fallbackCacheKey: 'exporter_google_sheet',
             existLabel: '匯出於指定試算表',
             existHint: '將匯出於「%name」',
             emptyLabel: '匯出後建立試算單',
@@ -79,7 +79,6 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
         ),
         Expanded(
           child: ExportOrderLoader(
-            key: orderLoader,
             notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
           ),
@@ -89,9 +88,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
   }
 
   Map<SheetType, String> sheetsToCreate() {
-    final f = DateFormat('MMdd', S.localeName);
-    final p =
-        '${f.format(widget.rangeNotifier.value.start)}-${f.format(widget.rangeNotifier.value.end)} ';
+    final p = widget.rangeNotifier.value.format(DateFormat('MMdd '));
     return properties.sheetNames(p).map((key, value) => MapEntry(
           SheetType.values.firstWhere((e) => e.name == key.name),
           value,
@@ -116,10 +113,17 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     );
     Log.ger('ready', 'gs_export_order', ss.id);
 
-    final data = prepared.keys.map(_chooseFormatter).map((method) => orders.map(
-        (e) => method(e).map((o) => o is String
-            ? GoogleSheetCellData(stringValue: o)
-            : GoogleSheetCellData(numberValue: o as num))));
+    final data = prepared.keys.map(_chooseFormatter).map(
+          (method) => orders.expand(
+            (order) => method(order).map(
+              (row) => row.map(
+                (o) => o is String
+                    ? GoogleSheetCellData(stringValue: o)
+                    : GoogleSheetCellData(numberValue: o as num),
+              ),
+            ),
+          ),
+        );
     await (properties.isOverwrite
         ? widget.exporter.updateSheet(
             ss,
@@ -161,7 +165,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     }
   }
 
-  List<Object> Function(OrderObject) _chooseFormatter(SheetType type) {
+  List<List<Object>> Function(OrderObject) _chooseFormatter(SheetType type) {
     switch (type) {
       case SheetType.orderSetAttr:
         return OrderFormatter.formatOrderSetAttr;

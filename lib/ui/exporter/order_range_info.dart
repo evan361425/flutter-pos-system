@@ -21,7 +21,7 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   Widget build(BuildContext context) {
     return ListTile(
       key: const Key('edit_range_btn'),
-      title: Text(_title),
+      title: Text('${range.format(DateFormat.MMMd(S.localeName))} 的訂單'),
       subtitle: Text('${range.duration.inDays} 天的資料'),
       onTap: pickRange,
       trailing: const Icon(Icons.date_range_sharp),
@@ -67,13 +67,12 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
       widget.notifier.value = DateTimeRange(start: start, end: end);
     });
   }
+}
 
-  String get _title {
-    final f = DateFormat.MMMd(S.localeName);
-    final duration = range.duration.inDays == 1
-        ? f.format(range.start)
-        : '${f.format(range.start)} - ${f.format(range.end.subtract(const Duration(days: 1)))}';
-
-    return '$duration 的訂單';
+extension RangeFormat on DateTimeRange {
+  String format(DateFormat f) {
+    return duration.inDays == 1
+        ? f.format(start)
+        : '${f.format(start)}-${f.format(end.subtract(const Duration(days: 1)))}';
   }
 }

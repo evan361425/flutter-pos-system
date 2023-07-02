@@ -2,26 +2,30 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
 class OrderFormatter {
-  static List<Object> formatOrder(OrderObject order) {
+  static List<List<Object>> formatOrder(OrderObject order) {
     return [
-      order.createdAt.millisecondsSinceEpoch ~/ 1000,
-      order.createdAt.toIso8601String(),
-      order.totalPrice,
-      order.productsPrice,
-      order.paid,
-      order.cost,
-      order.totalCount,
-      order.products.length,
-      order.attributes.map((a) => [a.name, a.optionName].join(':')).join('\n'),
-      order.products
-          .map((p) => [
-                p.productName,
-                p.catalogName,
-                p.count,
-                p.totalPrice.toCurrencyNum(),
-                p.cost.toCurrencyNum(),
-              ].join(','))
-          .join('\n'),
+      [
+        order.createdAt.millisecondsSinceEpoch ~/ 1000,
+        order.createdAt.toIso8601String(),
+        order.totalPrice,
+        order.productsPrice,
+        order.paid,
+        order.cost,
+        order.totalCount,
+        order.products.length,
+        order.attributes
+            .map((a) => [a.name, a.optionName].join(':'))
+            .join('\n'),
+        order.products
+            .map((p) => [
+                  p.productName,
+                  p.catalogName,
+                  p.count,
+                  p.totalPrice.toCurrencyNum(),
+                  p.cost.toCurrencyNum(),
+                ].join(','))
+            .join('\n'),
+      ]
     ];
   }
 

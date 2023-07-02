@@ -22,6 +22,9 @@ class SpreadsheetSelector extends StatefulWidget {
   /// 快取的鍵
   final String cacheKey;
 
+  // 允許設定一個預設的表單
+  final String fallbackCacheKey;
+
   /// 試算表存在的話，按鈕的文字
   final String existLabel;
 
@@ -58,6 +61,7 @@ class SpreadsheetSelector extends StatefulWidget {
     required this.emptyLabel,
     required this.existHint,
     required this.emptyHint,
+    this.fallbackCacheKey = '_',
     this.onChoose,
     this.onPrepared,
     this.onUpdate,
@@ -69,7 +73,8 @@ class SpreadsheetSelector extends StatefulWidget {
   State<SpreadsheetSelector> createState() => SpreadsheetSelectorState();
 
   GoogleSpreadsheet? get defaultSpreadsheet {
-    final cached = Cache.instance.get<String>(cacheKey);
+    final cached = Cache.instance.get<String>(cacheKey) ??
+        Cache.instance.get<String>(fallbackCacheKey);
     if (cached != null) {
       return GoogleSpreadsheet.fromString(cached);
     }

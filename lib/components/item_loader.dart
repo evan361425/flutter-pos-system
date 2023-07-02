@@ -3,17 +3,19 @@ import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/components/style/snackbar.dart';
 
 class ItemLoader<T, U> extends StatefulWidget {
-  final Widget Function(T) builder;
+  final Widget Function(BuildContext, T) builder;
 
-  final Future<Iterable<T>> Function() loader;
+  final Future<Iterable<T>> Function(int offset) loader;
+
+  final Widget prototypeItem;
+
+  final int itemLoadSize;
 
   final Future<U> Function() metricsLoader;
 
   final Widget Function(U) metricsBuilder;
 
-  final Widget prototypeItem;
-
-  final int itemLoadSize;
+  final ValueNotifier? notifier;
 
   final Widget emptyChild;
 
@@ -25,14 +27,15 @@ class ItemLoader<T, U> extends StatefulWidget {
     this.itemLoadSize = 10,
     required this.metricsLoader,
     required this.metricsBuilder,
+    this.notifier,
     this.emptyChild = const SizedBox.shrink(),
   }) : super(key: key);
 
   @override
-  State<ItemLoader<T, U>> createState() => ItemLoaderState<T, U>();
+  State<ItemLoader<T, U>> createState() => _ItemLoaderState<T, U>();
 }
 
-class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
+class _ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
   final items = <T>[];
 
   U? metrics;
@@ -66,7 +69,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
               return null;
             }
 
-            return widget.builder(items[index]);
+            return widget.builder(context, items[index]);
           },
         ),
       ),
@@ -76,28 +79,21 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
   @override
   void initState() {
     super.initState();
+    widget.notifier?.addListener(reset);
     loadData();
     loadMetrics();
   }
 
-  int get length => items.length;
-
-  void reset() {
-    if (mounted) {
-      setState(() {
-        items.clear();
-        metrics = null;
-        isFinish = false;
-        loadData();
-        loadMetrics();
-      });
-    }
+  @override
+  void dispose() {
+    widget.notifier?.removeListener(reset);
+    super.dispose();
   }
 
   void loadData() {
     if (!isFinish) {
       showSnackbarWhenFailed(
-        widget.loader().then((data) {
+        widget.loader(items.length).then((data) {
           setState(() {
             isFinish = data.length != widget.itemLoadSize;
             items.addAll(data);
@@ -120,6 +116,18 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
         context,
         'metrics_loader_failed',
       );
+    }
+  }
+
+  void reset() {
+    if (mounted) {
+      setState(() {
+        items.clear();
+        metrics = null;
+        isFinish = false;
+        loadData();
+        loadMetrics();
+      });
     }
   }
 }

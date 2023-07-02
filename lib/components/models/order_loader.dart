@@ -9,13 +9,11 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 
 class OrderLoader extends StatelessWidget {
-  final DateTimeRange Function() ranger;
+  final ValueNotifier<DateTimeRange> ranger;
 
-  final Widget Function(OrderObject) builder;
+  final Widget Function(BuildContext, OrderObject) builder;
 
   final bool calculateMemory;
-
-  final GlobalKey<ItemLoaderState<OrderObject, OrderLoaderMetrics>> loaderKey;
 
   final Widget? trailing;
 
@@ -23,20 +21,15 @@ class OrderLoader extends StatelessWidget {
     Key? key,
     required this.ranger,
     required this.builder,
-    required this.loaderKey,
     this.calculateMemory = false,
     this.trailing,
   }) : super(key: key);
 
-  static GlobalKey<ItemLoaderState<OrderObject, OrderLoaderMetrics>>
-      createKey() =>
-          GlobalKey<ItemLoaderState<OrderObject, OrderLoaderMetrics>>();
-
   @override
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderLoaderMetrics>(
-      key: loaderKey,
-      prototypeItem: builder(OrderObject(products: const [])),
+      prototypeItem: builder(context, OrderObject(products: const [])),
+      notifier: ranger,
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
       builder: builder,
@@ -59,10 +52,9 @@ class OrderLoader extends StatelessWidget {
   }
 
   Future<OrderLoaderMetrics> _loadMetrics() async {
-    final range = ranger();
     final result = await Seller.instance.getMetricBetween(
-      range.start,
-      range.end,
+      ranger.value.start,
+      ranger.value.end,
     );
 
     return OrderLoaderMetrics(
@@ -73,12 +65,11 @@ class OrderLoader extends StatelessWidget {
     );
   }
 
-  Future<List<OrderObject>> _loadOrders() {
-    final range = ranger();
+  Future<List<OrderObject>> _loadOrders(int offset) {
     return Seller.instance.getOrderBetween(
-      range.start,
-      range.end,
-      offset: loaderKey.currentState?.length ?? 0,
+      ranger.value.start,
+      ranger.value.end,
+      offset: offset,
     );
   }
 }
@@ -110,7 +101,7 @@ class OrderLoaderMetrics {
   /// | 83775 | 200 | 100 | 39771 | 38 |
   String get memorySize {
     final size = productSize * 0.435 + attrSize * 0.8 + 30 * count;
-    var depth = (math.log(size) / math.log(1024)).floor();
+    var depth = size == 0 ? 0 : (math.log(size) / math.log(1024)).floor();
 
     String unit = 'MB';
     switch (depth) {

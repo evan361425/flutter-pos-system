@@ -169,7 +169,7 @@ class _ExporterStationState extends State<ExporterStation>
           case _Combination.exportBasic:
             return const pt.ExportBasicScreen();
           case _Combination.exportOrder:
-            return pt.ExporterOrderScreen(
+            return pt.ExportOrderScreen(
               notifier: ValueNotifier(widget.range ?? Util.getDateRange()),
             );
           case _Combination.importBasic:

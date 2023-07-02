@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
@@ -12,7 +13,7 @@ int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
 int _hashMonth(DateTime e) => e.month + e.year * 100;
 
 class CalendarWrapper extends StatefulWidget {
-  final ValueNotifier<DateTime> notifier;
+  final ValueNotifier<DateTimeRange> notifier;
 
   final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
 
@@ -87,7 +88,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   void initState() {
     super.initState();
 
-    _focusedDay = _selectedDay = widget.notifier.value;
+    _focusedDay = _selectedDay = widget.notifier.value.start;
   }
 
   @override
@@ -128,7 +129,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   void _onDaySelected(DateTime day) {
-    widget.notifier.value = day;
+    widget.notifier.value = Util.getDateRange(now: day);
     setState(() {
       _selectedDay = _focusedDay = day;
     });

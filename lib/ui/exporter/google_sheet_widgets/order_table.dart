@@ -24,7 +24,7 @@ class _OrderTableState extends State<OrderTable> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SimpleTable(
           headers: OrderFormatter.orderHeaders,
-          data: [OrderFormatter.formatOrder(widget.order)],
+          data: OrderFormatter.formatOrder(widget.order),
           expandableIndexes: const [
             OrderFormatter.orderSetAttrIndex,
             OrderFormatter.orderProductIndex,
