@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/exporter_routes.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 import 'analysis_order_modal.dart';
 
 class AnalysisOrderList extends StatefulWidget {
   final ValueNotifier<DateTime> notifier;
 
+  final TutorialInTab? tab;
+
   const AnalysisOrderList({
     Key? key,
     required this.notifier,
+    this.tab,
   }) : super(key: key);
 
   @override
@@ -27,9 +33,53 @@ class _AnalysisOrderListState extends State<AnalysisOrderList> {
   @override
   Widget build(BuildContext context) {
     return OrderLoader(
+      trailing: Tutorial(
+        id: 'analysis.export',
+        title: '訂單資料匯出',
+        message: '把訂單匯出到外部，讓你可以做進一步分析或保存。',
+        tab: widget.tab,
+        spotlightBuilder: const SpotlightRectBuilder(),
+        child: _buildDropdown(),
+      ),
       loaderKey: loaderKey,
       ranger: () => range,
       builder: _buildOrder,
+    );
+  }
+
+  Widget _buildDropdown() {
+    final dropdown = DropdownButton<ExportMethod>(
+      value: null,
+      isDense: true,
+      hint: const Text('匯出'),
+      underline: const SizedBox.shrink(),
+      items: ExportMethod.values.map((ExportMethod value) {
+        return DropdownMenuItem<ExportMethod>(
+          value: value,
+          child: Text(S.exporterTypes(value.name)),
+        );
+      }).toList(),
+      onChanged: (value) {
+        if (value != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) {
+              return ExporterStation(
+                info: ExporterInfoType.order,
+                method: value,
+                range: range,
+              );
+            }),
+          );
+        }
+      },
+    );
+
+    final theme = Theme.of(context);
+
+    // let dropdown look like button
+    return Theme(
+      data: ThemeData(hintColor: theme.textTheme.bodyMedium?.color),
+      child: dropdown,
     );
   }
 

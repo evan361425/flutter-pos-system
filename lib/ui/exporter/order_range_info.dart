@@ -20,14 +20,11 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      key: const Key('edit_range_btn'),
       title: Text(_title),
       subtitle: Text('${range.duration.inDays} 天的資料'),
-      trailing: ElevatedButton.icon(
-        key: const Key('edit_range_btn'),
-        onPressed: pickRange,
-        icon: const Icon(Icons.date_range_sharp),
-        label: const Text('調整日期'),
-      ),
+      onTap: pickRange,
+      trailing: const Icon(Icons.date_range_sharp),
     );
   }
 
@@ -38,16 +35,27 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   /// 需要注意對機器和對人之間的轉換
   void pickRange() async {
     final result = await showDateRangePicker(
-      context: context,
-      initialDateRange: DateTimeRange(
-        start: range.start,
-        end: range.end.subtract(const Duration(days: 1)),
-      ),
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      firstDate: DateTime(2021, 1),
-      lastDate: DateTime.now(),
-      locale: SettingsProvider.of<LanguageSetting>().value,
-    );
+        context: context,
+        initialDateRange: DateTimeRange(
+          start: range.start,
+          end: range.end.subtract(const Duration(days: 1)),
+        ),
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        firstDate: DateTime(2021, 1),
+        lastDate: DateTime.now(),
+        locale: SettingsProvider.of<LanguageSetting>().value,
+        // 另外包裝設計，因為選擇日期時，背景會使用有點半透明的 primary color
+        // 這個會讓本來預期的對比降低，將會看不清楚，所以調整 onPrimary 的顏色。
+        builder: (context, dialog) {
+          final theme = Theme.of(context);
+          final colorScheme = theme.colorScheme.copyWith(
+            onPrimary: theme.textTheme.bodyMedium?.color,
+          );
+          return Theme(
+            data: theme.copyWith(colorScheme: colorScheme),
+            child: dialog ?? const SizedBox.shrink(),
+          );
+        });
 
     if (result != null) {
       _updateRange(result.start, result.end.add(const Duration(days: 1)));

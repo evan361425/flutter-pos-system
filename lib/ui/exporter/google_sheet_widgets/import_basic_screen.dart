@@ -72,7 +72,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
               final confirmed = await ConfirmDialog.show(
                 context,
                 title: '確定要匯入全部嗎？',
-                content: '匯入全部資料將會把所選的表單資料都覆蓋掉既有資料。',
+                content: '將會把所選的資料「都覆蓋掉」，請確認是否執行。',
               );
 
               if (confirmed) {

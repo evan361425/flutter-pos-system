@@ -938,7 +938,15 @@
   "orderCashierProductMetaIngredient": "成分：",
   "exporterTitle": "匯入匯出",
   "exporterDescription": "請選擇欲匯入匯出的方式",
-  "exporterGSTitle": "Google 試算表",
+  "exporterTypes": "{label, select, googleSheet{Google 試算表} plainText{純文字} other{}}",
+  "@exporterTypes": {
+    "description": "匯出種類名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
   "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@exporterGSErrors": {

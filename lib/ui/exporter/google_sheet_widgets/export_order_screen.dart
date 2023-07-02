@@ -8,6 +8,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 import 'package:possystem/ui/exporter/order_range_info.dart';
@@ -44,7 +45,6 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final names = properties.names.map((e) => '「$e」').join('、');
     return Column(
       children: [
         SignInButton(
@@ -62,18 +62,21 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
         ),
         OrderRangeInfo(notifier: widget.rangeNotifier),
         ListTile(
-          title: Text('將匯出至$names'),
-          subtitle: MetaBlock.withString(context, [
-            '${properties.isOverwrite ? '會' : '不會'}覆寫',
-            '${properties.withPrefix ? '有' : '沒有'}日期前綴',
-          ]),
-          trailing: IconButton(
-            icon: const Icon(KIcons.edit),
-            onPressed: editSheets,
+          title: const Text('表單設定'),
+          subtitle: MetaBlock.withString(
+            context,
+            [
+              '${properties.isOverwrite ? '會' : '不會'}覆寫',
+              '${properties.withPrefix ? '有' : '沒有'}日期前綴',
+              // 這個資訊可能突破兩行的限制，所以放最後
+              properties.names.join('、'),
+            ],
+            maxLines: 2,
           ),
+          isThreeLine: true,
+          trailing: const Icon(KIcons.edit),
           onTap: editSheets,
         ),
-        const Divider(),
         Expanded(
           child: ExportOrderLoader(
             key: orderLoader,
@@ -106,46 +109,39 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
-    Future<void> exportOneByOne() async {
-      Log.ger('ready', 'gs_export_order', ss.id);
-
-      final data = prepared.keys
-          .map((key) => _format(key))
-          .where((e) => e != null)
-          .cast<Iterable<Iterable<GoogleSheetCellData>>>();
-      await (properties.isOverwrite
-          ? widget.exporter.updateSheet(
-              ss,
-              prepared.values,
-              data,
-              prepared.keys.map((key) => _chooseHeaders(key)
-                  .map((e) => GoogleSheetCellData(stringValue: e))),
-            )
-          : widget.exporter.appendSheet(ss, prepared.values, data));
-
-      Log.ger('export finish', 'gs_export');
-      if (mounted) {
-        showSnackBar(
-          context,
-          S.actSuccess,
-          action: LauncherSnackbarAction(
-            label: '開啟表單',
-            link: ss.toLink(),
-            logCode: 'gs_export',
-          ),
-        );
-      }
-    }
-
-    widget.statusNotifier.value = '_start';
-
-    await showSnackbarWhenFailed(
-      exportOneByOne(),
-      context,
-      'gs_export_failed',
+    final orders = await Seller.instance.getOrderBetween(
+      widget.rangeNotifier.value.start,
+      widget.rangeNotifier.value.end,
+      limit: null,
     );
+    Log.ger('ready', 'gs_export_order', ss.id);
 
-    widget.statusNotifier.value = '_finish';
+    final data = prepared.keys.map(_chooseFormatter).map((method) => orders.map(
+        (e) => method(e).map((o) => o is String
+            ? GoogleSheetCellData(stringValue: o)
+            : GoogleSheetCellData(numberValue: o as num))));
+    await (properties.isOverwrite
+        ? widget.exporter.updateSheet(
+            ss,
+            prepared.values,
+            data,
+            prepared.keys.map((key) => _chooseHeaders(key)
+                .map((e) => GoogleSheetCellData(stringValue: e))),
+          )
+        : widget.exporter.appendSheet(ss, prepared.values, data));
+
+    Log.ger('export finish', 'gs_export');
+    if (mounted) {
+      showSnackBar(
+        context,
+        S.actSuccess,
+        action: LauncherSnackbarAction(
+          label: '開啟表單',
+          link: ss.toLink(),
+          logCode: 'gs_export',
+        ),
+      );
+    }
   }
 
   void editSheets() async {
@@ -163,19 +159,6 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
         properties = other;
       });
     }
-  }
-
-  Iterable<Iterable<GoogleSheetCellData>>? _format(SheetType type) {
-    final orders = orderLoader.currentState?.orders;
-    final method = _chooseFormatter(type);
-
-    if (orders != null) {
-      return orders.map((e) => method(e).map((o) => o is String
-          ? GoogleSheetCellData(stringValue: o)
-          : GoogleSheetCellData(numberValue: o as num)));
-    }
-
-    return null;
   }
 
   List<Object> Function(OrderObject) _chooseFormatter(SheetType type) {

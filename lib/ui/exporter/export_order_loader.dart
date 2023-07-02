@@ -38,6 +38,7 @@ class ExportOrderLoaderState extends State<ExportOrderLoader> {
   @override
   Widget build(BuildContext context) {
     return OrderLoader(
+      calculateMemory: true,
       loaderKey: loaderKey,
       ranger: () => widget.notifier.value,
       builder: _buildOrder,
@@ -59,8 +60,6 @@ class ExportOrderLoaderState extends State<ExportOrderLoader> {
   void _onRangeChanged() {
     loaderKey.currentState?.reset();
   }
-
-  List<OrderObject>? get orders => loaderKey.currentState?.items;
 
   Widget _buildOrder(OrderObject order) {
     return ListTile(

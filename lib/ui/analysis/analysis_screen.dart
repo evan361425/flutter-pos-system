@@ -42,7 +42,10 @@ class AnalysisScreen extends StatelessWidget {
   }
 
   Widget _buildOrderList() {
-    return AnalysisOrderList(notifier: notifier);
+    return AnalysisOrderList(
+      notifier: notifier,
+      tab: tab,
+    );
   }
 
   Widget _buildLandscape() {

@@ -63,6 +63,7 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
         key: const Key('changer.custom.source.unit'),
         value: sourceUnit,
         hint: const Text('幣值'),
+        isDense: true,
         validator: Validator.positiveNumber('幣值'),
         onChanged: handleUnitChanged,
         items: _unitDropdownMenuItems(),

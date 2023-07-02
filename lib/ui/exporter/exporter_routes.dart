@@ -18,12 +18,10 @@ enum ExportMethod { googleSheet, plainText }
 class ExporterRoutes {
   static final routes = <ExportMethod, WidgetBuilder>{
     ExportMethod.googleSheet: (context) => ExporterStation(
-          title: S.exporterGSTitle,
           info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
           method: ExportMethod.googleSheet,
         ),
     ExportMethod.plainText: (context) => ExporterStation(
-          title: '純文字',
           info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
           method: ExportMethod.plainText,
         ),
@@ -31,11 +29,11 @@ class ExporterRoutes {
 }
 
 class ExporterStation extends StatefulWidget {
-  final String title;
-
   final ExportMethod method;
 
   final ExporterInfoType info;
+
+  final DateTimeRange? range;
 
   @visibleForTesting
   final ValueNotifier<String>? notifier;
@@ -45,11 +43,11 @@ class ExporterStation extends StatefulWidget {
 
   const ExporterStation({
     Key? key,
-    required this.title,
     required this.info,
     required this.method,
     this.exporter,
     this.notifier,
+    this.range,
   }) : super(key: key);
 
   @override
@@ -60,6 +58,7 @@ class _ExporterStationState extends State<ExporterStation>
     with TickerProviderStateMixin {
   final loading = GlobalKey<LoadingWrapperState>();
 
+  /// 這個是用來顯示「正在執行中」的資訊，避免匯出時被中斷。
   late final ValueNotifier<String> stateNotifier;
 
   late final TabController tabController;
@@ -70,7 +69,7 @@ class _ExporterStationState extends State<ExporterStation>
       key: loading,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(S.exporterTypes(widget.method.name)),
           leading: const PopButton(),
           bottom: _buildAppBarBottom(),
         ),
@@ -157,7 +156,7 @@ class _ExporterStationState extends State<ExporterStation>
             return gs.ExportOrderScreen(
               exporter: exporter,
               statusNotifier: stateNotifier,
-              rangeNotifier: ValueNotifier(Util.getDateRange()),
+              rangeNotifier: ValueNotifier(widget.range ?? Util.getDateRange()),
             );
           case _Combination.importBasic:
             return gs.ImportBasicScreen(
@@ -171,7 +170,7 @@ class _ExporterStationState extends State<ExporterStation>
             return const pt.ExportBasicScreen();
           case _Combination.exportOrder:
             return pt.ExporterOrderScreen(
-              notifier: ValueNotifier(Util.getDateRange()),
+              notifier: ValueNotifier(widget.range ?? Util.getDateRange()),
             );
           case _Combination.importBasic:
             return const pt.ImportBasicScreen();

@@ -47,6 +47,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
 
     return Column(children: [
       widget.metricsBuilder(metrics as U),
+      const Divider(),
       Expanded(
         child: ListView.builder(
           key: const Key('item_loader'),

@@ -37,7 +37,7 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
     hashCode: _hashDate,
   );
 
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.week;
 
   late DateTime _selectedDay;
 

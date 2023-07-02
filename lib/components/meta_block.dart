@@ -16,6 +16,7 @@ class MetaBlock {
     Iterable<String> data, {
     TextStyle? textStyle,
     String? emptyText,
+    int? maxLines,
     TextOverflow textOverflow = TextOverflow.ellipsis,
   }) {
     if (data.isNotEmpty) {
@@ -30,6 +31,7 @@ class MetaBlock {
 
       return RichText(
         overflow: textOverflow,
+        maxLines: maxLines,
         text: TextSpan(
           children: children,
           // disable parent text style
