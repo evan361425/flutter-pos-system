@@ -86,6 +86,10 @@ abstract class Formatter<T> {
 
   ModelTransformer getTransformer(Formattable able);
 
+  static Formattable nameToFormattable(String name) {
+    return Formattable.values.firstWhere((e) => e.name == name);
+  }
+
   static Repository getTarget(Formattable able) {
     switch (able) {
       case Formattable.menu:

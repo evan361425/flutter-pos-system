@@ -343,7 +343,7 @@ class GoogleSheetProperties {
 class GoogleSheetCellData {
   final gs.ExtendedValue value;
 
-  final gs.CellFormat format;
+  final gs.CellFormat? format;
 
   final String? note;
 
@@ -362,9 +362,9 @@ class GoogleSheetCellData {
           numberValue: numberValue?.toDouble(),
           stringValue: stringValue,
         ),
-        format = gs.CellFormat(
-          textFormat: isBold ? gs.TextFormat(bold: true) : null,
-        );
+        format = isBold
+            ? gs.CellFormat(textFormat: gs.TextFormat(bold: true))
+            : null;
 
   gs.CellData toGoogleFormat() {
     return gs.CellData(

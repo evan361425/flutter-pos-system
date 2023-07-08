@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/launcher_snackbar_action.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -81,10 +82,18 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
           child: ExportOrderLoader(
             notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
+            memoryPredictor: memoryPredictor,
+            warningUrl: 'https://developers.google.com/sheets/api/limits#quota',
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    properties = OrderSpreadsheetProperties.fromCache();
   }
 
   Map<SheetType, String> sheetsToCreate() {
@@ -93,12 +102,6 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
           SheetType.values.firstWhere((e) => e.name == key.name),
           value,
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    properties = OrderSpreadsheetProperties.fromCache();
   }
 
   /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
@@ -113,7 +116,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     );
     Log.ger('ready', 'gs_export_order', ss.id);
 
-    final data = prepared.keys.map(_chooseFormatter).map(
+    final data = prepared.keys.map(chooseFormatter).map(
           (method) => orders.expand(
             (order) => method(order).map(
               (row) => row.map(
@@ -129,7 +132,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
             ss,
             prepared.values,
             data,
-            prepared.keys.map((key) => _chooseHeaders(key)
+            prepared.keys.map((key) => chooseHeaders(key)
                 .map((e) => GoogleSheetCellData(stringValue: e))),
           )
         : widget.exporter.appendSheet(ss, prepared.values, data));
@@ -165,7 +168,8 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     }
   }
 
-  List<List<Object>> Function(OrderObject) _chooseFormatter(SheetType type) {
+  static List<List<Object>> Function(OrderObject) chooseFormatter(
+      SheetType type) {
     switch (type) {
       case SheetType.orderSetAttr:
         return OrderFormatter.formatOrderSetAttr;
@@ -178,7 +182,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     }
   }
 
-  List<String> _chooseHeaders(SheetType type) {
+  static List<String> chooseHeaders(SheetType type) {
     switch (type) {
       case SheetType.orderSetAttr:
         return OrderFormatter.orderSetAttrHeaders;
@@ -189,5 +193,9 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
       default:
         return OrderFormatter.orderHeaders;
     }
+  }
+
+  static int memoryPredictor(OrderLoaderMetrics m) {
+    return (m.productSize * 0.435 + m.attrSize * 0.3 + 30 * m.count).toInt();
   }
 }

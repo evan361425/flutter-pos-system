@@ -947,6 +947,17 @@
       }
     }
   },
+  "exporterPreviewerTitle": "預覽輸出結果",
+  "exporterFileTitle": "POS System 資料",
+  "exporterTypeName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
+  "@exporterTypeName": {
+    "description": "各種匯出資料的名稱，這會變成預設的表單名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
   "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@exporterGSErrors": {
@@ -963,25 +974,6 @@
     "description": "表單標題的說明",
     "placeholders": {
       "item": {
-        "type": "String"
-      }
-    }
-  },
-  "exporterGSPreviewerTitle": "預覽{title}輸出結果",
-  "@exporterGSPreviewerTitle": {
-    "description": "預覽標題",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
-  "@exporterGSDefaultSheetName": {
-    "description": "匯出 Google 試算表時預設的表單名稱",
-    "placeholders": {
-      "label": {
         "type": "String"
       }
     }
@@ -1034,15 +1026,6 @@
     "description": "顯示該資料的額外狀態",
     "placeholders": {
       "status": {
-        "type": "String"
-      }
-    }
-  },
-  "exporterPTRepoName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
-  "@exporterPTRepoName": {
-    "description": "匯出純文字時的 Repository 名稱",
-    "placeholders": {
-      "label": {
         "type": "String"
       }
     }

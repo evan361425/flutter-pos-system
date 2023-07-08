@@ -287,7 +287,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       _notify(S.exporterGSProgressStatus('addSpreadsheet'));
 
       final other = await widget.exporter.addSpreadsheet(
-        S.exporterGSDefaultSpreadsheetName,
+        S.exporterFileTitle,
         names,
       );
       if (other == null) {

@@ -190,7 +190,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        final title = S.exporterGSDefaultSpreadsheetName;
+        final title = S.exporterFileTitle;
         verify(cache.set(eCacheKey, 'abc:true:' + title));
         verify(cache.set(iCacheKey, 'abc:true:' + title));
       });

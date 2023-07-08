@@ -156,12 +156,13 @@
     "orderCashierProductMetaIngredient",
     "exporterDescription",
     "exporterTypes",
+    "exporterPreviewerTitle",
+    "exporterFileTitle",
+    "exporterTypeName",
     "exporterGSDescription",
     "exporterGSErrors",
     "exporterGSSpreadsheetLabel",
     "exporterGSSheetLabel",
-    "exporterGSDefaultSpreadsheetName",
-    "exporterGSDefaultSheetName",
     "exporterGSProgressStatus",
     "exporterGSUpdateModelStatus",
     "exporterGSProductIngredientInfoNote",
@@ -169,8 +170,7 @@
     "exporterGSOrderAttributeOptionNote",
     "importerGSError",
     "importerColumnsCountError",
-    "importerColumnStatus",
-    "exporterPTRepoName"
+    "importerColumnStatus"
   ],
 
   "zh_Hant": [
@@ -400,13 +400,13 @@
     "exporterTitle",
     "exporterDescription",
     "exporterTypes",
+    "exporterPreviewerTitle",
+    "exporterFileTitle",
+    "exporterTypeName",
     "exporterGSDescription",
     "exporterGSErrors",
     "exporterGSSpreadsheetLabel",
     "exporterGSSheetLabel",
-    "exporterGSPreviewerTitle",
-    "exporterGSDefaultSpreadsheetName",
-    "exporterGSDefaultSheetName",
     "exporterGSProgressStatus",
     "exporterGSUpdateModelStatus",
     "exporterProductIngredientInfoTitle",
@@ -418,8 +418,7 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus",
-    "exporterPTRepoName"
+    "importerColumnStatus"
   ],
 
   "zh_Hant_TW": [
@@ -649,13 +648,13 @@
     "exporterTitle",
     "exporterDescription",
     "exporterTypes",
+    "exporterPreviewerTitle",
+    "exporterFileTitle",
+    "exporterTypeName",
     "exporterGSDescription",
     "exporterGSErrors",
     "exporterGSSpreadsheetLabel",
     "exporterGSSheetLabel",
-    "exporterGSPreviewerTitle",
-    "exporterGSDefaultSpreadsheetName",
-    "exporterGSDefaultSheetName",
     "exporterGSProgressStatus",
     "exporterGSUpdateModelStatus",
     "exporterProductIngredientInfoTitle",
@@ -667,8 +666,7 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus",
-    "exporterPTRepoName"
+    "importerColumnStatus"
   ],
 
   "zh_TW": [
@@ -898,13 +896,13 @@
     "exporterTitle",
     "exporterDescription",
     "exporterTypes",
+    "exporterPreviewerTitle",
+    "exporterFileTitle",
+    "exporterTypeName",
     "exporterGSDescription",
     "exporterGSErrors",
     "exporterGSSpreadsheetLabel",
     "exporterGSSheetLabel",
-    "exporterGSPreviewerTitle",
-    "exporterGSDefaultSpreadsheetName",
-    "exporterGSDefaultSheetName",
     "exporterGSProgressStatus",
     "exporterGSUpdateModelStatus",
     "exporterProductIngredientInfoTitle",
@@ -916,7 +914,6 @@
     "importerGSError",
     "importPreviewerTitle",
     "importerColumnsCountError",
-    "importerColumnStatus",
-    "exporterPTRepoName"
+    "importerColumnStatus"
   ]
 }

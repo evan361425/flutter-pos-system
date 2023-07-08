@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -37,9 +38,8 @@ class ExportOrderScreen extends StatelessWidget {
         Expanded(
           child: ExportOrderLoader(
             notifier: notifier,
-            formatOrder: (order) {
-              return Text(formatOrder(order));
-            },
+            formatOrder: (order) => Text(formatOrder(order)),
+            memoryPredictor: memoryPredictor,
           ),
         ),
       ],
@@ -60,6 +60,19 @@ class ExportOrderScreen extends StatelessWidget {
               formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
+  }
+
+  /// 產品文字較多。
+  ///
+  /// 這裡是一些實測的大小對應值：
+  /// | productSize | attrSize | count | bytes |
+  /// | - | - | - | - |
+  /// | 13195 | 34 | 17 | 6439 | 6.1KB |
+  /// | 39672 | 92 | 46 | 18758 | 18KB |
+  /// | 61751 | 142 | 71 | 29043 | 28KB |
+  /// | 83775 | 200 | 100 | 39771 | 38KB |
+  static int memoryPredictor(OrderLoaderMetrics m) {
+    return (m.productSize * 0.435 + m.attrSize * 0.3 + 30 * m.count).toInt();
   }
 
   static String formatOrder(OrderObject order) {
@@ -90,7 +103,7 @@ class ExportOrderScreen extends StatelessWidget {
       if (attributes != '') '顧客的$attributes。\n',
       '餐點有 $tc 份',
       if (pl != tc) '（$pl 種）',
-      '包括：\n$products',
+      '包括：\n$products。',
     ].join('');
   }
 }

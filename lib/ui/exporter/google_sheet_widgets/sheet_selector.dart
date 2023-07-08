@@ -29,7 +29,7 @@ class SheetSelectorState extends State<SheetSelector> {
       value: selected,
       decoration: InputDecoration(
         label: Text(S.exporterGSSheetLabel(
-          S.exporterGSDefaultSheetName(widget.label),
+          S.exporterTypeName(widget.label),
         )),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),

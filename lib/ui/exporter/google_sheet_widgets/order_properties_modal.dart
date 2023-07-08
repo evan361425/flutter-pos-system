@@ -3,6 +3,7 @@ import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/exporter/google_sheet_widgets/spreadsheet_selector.dart';
 
 import 'sheet_namer.dart';
 
@@ -25,12 +26,7 @@ class OrderPropertiesModal extends StatefulWidget {
 
 class _OrderPropertiesModalState extends State<OrderPropertiesModal>
     with ItemModal<OrderPropertiesModal> {
-  final namers = <OrderSheetType, GlobalKey<SheetNamerState>>{
-    OrderSheetType.order: GlobalKey<SheetNamerState>(),
-    OrderSheetType.orderSetAttr: GlobalKey<SheetNamerState>(),
-    OrderSheetType.orderProduct: GlobalKey<SheetNamerState>(),
-    OrderSheetType.orderIngredient: GlobalKey<SheetNamerState>(),
-  };
+  late final List<SheetNamerProperties> namers;
 
   late bool isOverwrite;
 
@@ -68,28 +64,22 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
           }
         },
       ),
-      for (final prop in widget.properties.sheets.entries)
-        SheetNamer(
-          key: namers[prop.key],
-          label: prop.key.name,
-          initialValue: prop.value.name,
-          initialChecked: prop.value.isRequired,
-          sheets: widget.sheets,
-        ),
+      for (final namer in namers) SheetNamer(prop: namer),
     ];
   }
 
   @override
   Future<void> updateItem() async {
-    final sheets = <OrderSheetType, OrderSheetProperties>{};
-    for (final type in OrderSheetType.values) {
-      final key = '$_cacheKey.${type.name}';
-      final namer = namers[type]?.currentState;
-      if (namer != null) {
-        await Cache.instance.set<String>(key, namer.name);
-        await Cache.instance.set<bool>('$key.required', namer.checked);
-        sheets[type] = OrderSheetProperties(namer.name, namer.checked);
-      }
+    final sheets = <OrderSheetProperties>[];
+    for (final namer in namers) {
+      final key = '$_cacheKey.${namer.type.name}';
+      await Cache.instance.set<String>(key, namer.name);
+      await Cache.instance.set<bool>('$key.required', namer.checked);
+      sheets.add(OrderSheetProperties(
+        OrderSheetType.values.firstWhere((e) => e.name == namer.type.name),
+        namer.name,
+        namer.checked,
+      ));
     }
 
     await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
@@ -109,11 +99,19 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
     super.initState();
     isOverwrite = widget.properties.isOverwrite;
     withPrefix = widget.properties.withPrefix;
+    namers = widget.properties.sheets.map((sheet) {
+      return SheetNamerProperties(
+        SheetType.values.firstWhere((e) => e.name == sheet.type.name),
+        name: sheet.name,
+        checked: sheet.isRequired,
+        hints: widget.sheets?.map((e) => e.title),
+      );
+    }).toList();
   }
 }
 
 class OrderSpreadsheetProperties {
-  final Map<OrderSheetType, OrderSheetProperties> sheets;
+  final List<OrderSheetProperties> sheets;
 
   // 是否覆蓋表單的資料，預設是 true
   final bool isOverwrite;
@@ -128,15 +126,16 @@ class OrderSpreadsheetProperties {
   });
 
   factory OrderSpreadsheetProperties.fromCache() {
-    final sheets = <OrderSheetType, OrderSheetProperties>{};
+    final sheets = <OrderSheetProperties>[];
     for (final type in OrderSheetType.values) {
       final key = '$_cacheKey.${type.name}';
       final name = Cache.instance.get<String>(key);
       final isRequired = Cache.instance.get<bool>('$key.required') ?? true;
-      sheets[type] = OrderSheetProperties(
-        name ?? S.exporterGSDefaultSheetName(type.name),
+      sheets.add(OrderSheetProperties(
+        type,
+        name ?? S.exporterTypeName(type.name),
         isRequired,
-      );
+      ));
     }
 
     return OrderSpreadsheetProperties(
@@ -147,22 +146,26 @@ class OrderSpreadsheetProperties {
   }
 
   Iterable<String> get names =>
-      sheets.values.where((e) => e.isRequired).map((e) => e.name);
+      sheets.where((e) => e.isRequired).map((e) => e.name);
 
   Map<OrderSheetType, String> sheetNames(String prefix) {
     prefix = withPrefix ? prefix : '';
-    return Map.fromEntries(sheets.entries
-        .where((e) => e.value.isRequired)
-        .map((e) => MapEntry(e.key, '$prefix${e.value.name}')));
+    return Map.fromEntries(sheets
+        .where((e) => e.isRequired)
+        .map((e) => MapEntry(e.type, '$prefix${e.name}')));
   }
 }
 
 class OrderSheetProperties {
+  final OrderSheetType type;
+
   final String name;
 
   final bool isRequired;
 
-  const OrderSheetProperties(this.name, this.isRequired);
+  const OrderSheetProperties(this.type, this.name, this.isRequired);
+
+  get sheetType => OrderSheetType.values.firstWhere((e) => e.name == type.name);
 }
 
 enum OrderSheetType {

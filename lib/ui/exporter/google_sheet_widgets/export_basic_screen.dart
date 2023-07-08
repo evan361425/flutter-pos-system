@@ -32,26 +32,9 @@ class ExportBasicScreen extends StatefulWidget {
 }
 
 class _ExportBasicScreenState extends State<ExportBasicScreen> {
-  final sheets = <Formattable, GlobalKey<SheetNamerState>>{
-    Formattable.menu: GlobalKey<SheetNamerState>(),
-    Formattable.stock: GlobalKey<SheetNamerState>(),
-    Formattable.quantities: GlobalKey<SheetNamerState>(),
-    Formattable.replenisher: GlobalKey<SheetNamerState>(),
-    Formattable.orderAttr: GlobalKey<SheetNamerState>(),
-  };
+  late final List<SheetNamerProperties> sheets;
 
   final selector = GlobalKey<SpreadsheetSelectorState>();
-
-  GoogleSpreadsheet? get spreadsheet {
-    if (selector.currentState == null) {
-      final cached = Cache.instance.get<String>(_cacheKey);
-      if (cached != null) {
-        return GoogleSpreadsheet.fromString(cached);
-      }
-    }
-
-    return selector.currentState?.spreadsheet;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,62 +57,70 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
           ),
         ),
         const Divider(),
-        for (final entry in sheets.entries)
-          Row(children: [
-            Expanded(
-              child: SheetNamer(
-                key: entry.value,
-                label: entry.key.name,
-                sheets: spreadsheet?.sheets,
-                initialValue: _getSheetName(entry.key.name),
-                initialChecked: Formatter.getTarget(entry.key).isNotEmpty,
-              ),
-            ),
-            const SizedBox(width: 8.0),
-            IconButton(
-              key: Key('gs_export.${entry.key.name}.preview'),
-              constraints: const BoxConstraints(maxHeight: 24),
-              icon: const Icon(Icons.remove_red_eye_sharp),
-              tooltip: S.exporterGSPreviewerTitle(
-                S.exporterGSDefaultSheetName(entry.key.name),
-              ),
-              onPressed: () => previewData(entry.key),
-            ),
-          ]),
+        for (final sheet in sheets)
+          SheetNamer(
+            prop: sheet,
+            action: (prop) => previewData(prop.type),
+            actionIcon: Icons.remove_red_eye_sharp,
+            actionTitle: AutofillHints.addressCity,
+          ),
       ]),
     );
   }
 
-  void previewData(Formattable able) {
+  @override
+  void initState() {
+    super.initState();
+    sheets = [
+      SheetType.menu,
+      SheetType.stock,
+      SheetType.quantities,
+      SheetType.replenisher,
+      SheetType.orderAttr,
+    ].map((e) {
+      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ??
+          S.exporterTypeName(e.name);
+      final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
+
+      return SheetNamerProperties(
+        e,
+        name: name,
+        checked: data.isNotEmpty,
+        hints: spreadsheet?.sheets.map((e) => e.title),
+      );
+    }).toList();
+  }
+
+  GoogleSpreadsheet? get spreadsheet {
+    if (selector.currentState == null) {
+      final cached = Cache.instance.get<String>(_cacheKey);
+      if (cached != null) {
+        return GoogleSpreadsheet.fromString(cached);
+      }
+    }
+
+    return selector.currentState?.spreadsheet;
+  }
+
+  void previewData(SheetType type) {
     const formatter = GoogleSheetFormatter();
+    final able = Formatter.nameToFormattable(type.name);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SheetPreviewer(
           source: SheetPreviewerDataTableSource(formatter.getRows(able)),
           header: formatter.getHeader(able),
-          title: S.exporterGSDefaultSheetName(able.name),
+          title: S.exporterTypeName(able.name),
         ),
       ),
     );
   }
 
   /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
-  Map<SheetType, String> sheetsToCreate() {
-    // avoid showing keyboard
-    FocusScope.of(context).unfocus();
-
-    final usedSheets = sheets
-        .map((key, value) => MapEntry(
-              SheetType.values.firstWhere((e) => e.name == key.name),
-              value,
-            ))
-        .entries
-        .where((entry) => entry.value.currentState?.isUsable == true);
-
-    return {
-      for (var sheet in usedSheets) sheet.key: sheet.value.currentState!.name,
-    };
-  }
+  Map<SheetType, String> sheetsToCreate() => {
+        for (var sheet in sheets.where((sheet) => sheet.checked))
+          sheet.type: sheet.name,
+      };
 
   /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
   Future<void> exportData(
@@ -171,19 +162,14 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   Future<void> onSpreadsheetUpdate(GoogleSpreadsheet? other) async {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.setHints(other?.sheets);
+    for (final sheet in sheets) {
+      sheet.hints = other?.sheets.map((e) => e.title);
     }
 
     // 同時更新用作 import 的試算表
     if (other != null && Cache.instance.get<String>(_importKey) == null) {
       await Cache.instance.set(_importKey, other.toString());
     }
-  }
-
-  String _getSheetName(String label) {
-    return Cache.instance.get<String>('$_cacheKey.$label') ??
-        S.exporterGSDefaultSheetName(label);
   }
 
   Future<void> _cacheSheetName(String label, String title) async {

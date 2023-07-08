@@ -119,7 +119,7 @@ void main() {
     testWidgets('exporter pick success', (tester) async {
       SheetNamerState? getNamer() {
         return tester
-            .element(find.byKey(const Key('gs_export.menu.sheet_namer')))
+            .element(find.byKey(const Key('sheet_namer.menu')))
             .findAncestorStateOfType<SheetNamerState>();
       }
 
@@ -128,7 +128,7 @@ void main() {
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await tester.pumpAndSettle();
-      expect(getNamer()!.autofillHints, isNull);
+      expect(getNamer()!.widget.prop.hints, isNull);
 
       await action(tester);
 
@@ -140,7 +140,7 @@ void main() {
       await tester.tap(find.byKey(const Key('text_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(getNamer()!.autofillHints, equals(['some-sheet']));
+      expect(getNamer()!.widget.prop.hints, equals(['some-sheet']));
       verify(cache.set(eCacheKey, '$spreadsheetId:false:title'));
     });
 

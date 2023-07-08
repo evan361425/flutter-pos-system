@@ -30,7 +30,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
           for (final able in Formattable.values)
             Tab(
               key: Key('tab.${able.name}'),
-              text: S.exporterPTRepoName(able.name),
+              text: S.exporterTypeName(able.name),
             )
         ],
       ),
@@ -64,22 +64,16 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
   Widget _buildTabBarView(BuildContext context, Formattable able) {
     return Column(children: [
       ListTile(
-        title: Text(S.exporterPTRepoName(able.name)),
+        key: Key('export_btn.${able.name}'),
+        title: const Text('複製文字'),
         subtitle: MetaBlock.withString(
           context,
           widget.exporter.formatter.getHeader(able),
         ),
-        trailing: ElevatedButton.icon(
-          key: Key('export_btn.${able.name}'),
-          onPressed: () {
-            showSnackbarWhenFailed(
-              widget.exporter.export(able),
-              context,
-              'pt_export_failed',
-            ).then((value) => showSnackBar(context, '複製成功'));
-          },
-          icon: const Icon(Icons.copy_outlined),
-          label: const Text('複製文字'),
+        onTap: () => _copy(able),
+        trailing: const Icon(
+          Icons.copy_outlined,
+          semanticLabel: '複製文字',
         ),
       ),
       Expanded(child: _buildItemsView(widget.exporter.formatter.getRows(able))),
@@ -103,5 +97,13 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
         );
       },
     );
+  }
+
+  void _copy(Formattable able) {
+    showSnackbarWhenFailed(
+      widget.exporter.export(able),
+      context,
+      'pt_export_failed',
+    ).then((value) => showSnackBar(context, '複製成功'));
   }
 }

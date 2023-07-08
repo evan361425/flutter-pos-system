@@ -171,7 +171,7 @@ void main() {
                 return gs.Sheet(
                   properties: gs.SheetProperties(
                     sheetId: e.index,
-                    title: '$today ${S.exporterGSDefaultSheetName(e.name)}',
+                    title: '$today ${S.exporterTypeName(e.name)}',
                   ),
                 );
               }).toList(),
@@ -187,7 +187,7 @@ void main() {
         await tester.tap(find.text('匯出後建立試算單'));
         await tester.pumpAndSettle();
 
-        final title = S.exporterGSDefaultSpreadsheetName;
+        final title = S.exporterFileTitle;
         verify(cache.set(cacheKey, 'abc:true:' + title));
 
         final expected = [
@@ -232,6 +232,17 @@ void main() {
           any,
           $fields: anyNamed('\$fields'),
         ));
+      });
+
+      testWidgets('edit sheets name and append', (tester) async {
+        // TODO
+        // tap edit sheets
+        // disable prefix and overwrite
+      });
+
+      testWidgets('calculate size', (tester) async {
+        // TODO
+        // MB and GB
       });
     });
 

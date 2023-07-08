@@ -7,9 +7,11 @@ class SingleTextDialog extends StatefulWidget {
     Key? key,
     this.validator,
     this.formatter,
+    this.hints,
     this.decoration,
     this.initialValue,
     this.keyboardType,
+    this.maxLength,
     this.selectAll = false,
     this.autofocus = true,
     this.header,
@@ -18,10 +20,12 @@ class SingleTextDialog extends StatefulWidget {
 
   final String? Function(String?)? validator;
   final String? Function(String?)? formatter;
+  final Iterable<String>? hints;
   final Widget? title;
   final InputDecoration? decoration;
   final String? initialValue;
   final TextInputType? keyboardType;
+  final int? maxLength;
   final bool selectAll;
   final bool autofocus;
 
@@ -42,11 +46,13 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       key: const Key('text_dialog.text'),
       controller: textController,
       autofocus: widget.autofocus,
+      autofillHints: widget.hints,
       onSaved: onSubmit,
       onFieldSubmitted: onSubmit,
       keyboardType: widget.keyboardType,
       validator: widget.validator,
       decoration: widget.decoration,
+      maxLength: widget.maxLength,
       textInputAction: TextInputAction.done,
     );
 

@@ -27,7 +27,7 @@ class AnalysisOrderList extends StatelessWidget {
       trailing: Tutorial(
         id: 'analysis.export',
         title: '訂單資料匯出',
-        message: '把訂單匯出到外部，讓你可以做進一步分析或保存。',
+        message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
         tab: tab,
         spotlightBuilder: const SpotlightRectBuilder(),
         child: _buildDropdown(context),

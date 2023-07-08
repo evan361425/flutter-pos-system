@@ -239,7 +239,7 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
         builder: (context) => SheetPreviewer(
           source: SheetPreviewerDataTableSource(source),
           header: formatter.getHeader(able),
-          title: S.exporterGSDefaultSheetName(able.name),
+          title: S.exporterTypeName(able.name),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
