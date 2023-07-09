@@ -52,7 +52,7 @@ void main() {
     group('Importer', () {
       group('#refresh -', () {
         Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
-          await tester.tap(find.text(selected ? '檢查試算表' : '選擇試算表'));
+          await tester.tap(find.text(selected ? '確認表單名稱' : '選擇試算表'));
           await tester.pump();
         }
 
@@ -114,7 +114,7 @@ void main() {
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
-          final btn = find.byIcon(Icons.download_for_offline_outlined);
+          final btn = find.byIcon(Icons.remove_red_eye_sharp);
           await tester.tap(btn.at(index));
           await tester.pumpAndSettle();
         }
@@ -218,7 +218,7 @@ void main() {
           )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
                 gs.Sheet(properties: sheet),
               ])));
-          await tester.tap(find.text('檢查試算表'));
+          await tester.tap(find.text('確認表單名稱'));
           await tester.pumpAndSettle();
           final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
           await tester.tap(menu);
@@ -234,7 +234,7 @@ void main() {
           ]);
           when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
-          final btn = find.byIcon(Icons.download_for_offline_outlined);
+          final btn = find.byIcon(Icons.remove_red_eye_sharp);
           await tester.tap(btn.first);
           await tester.pumpAndSettle();
 

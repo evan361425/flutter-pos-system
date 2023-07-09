@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
@@ -33,7 +34,12 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
   late bool withPrefix;
 
   @override
-  Widget? get title => const Text('匯出訂單設定');
+  Widget? get title => const Text('訂單匯出設定');
+
+  @override
+  Widget buildBody() {
+    return SingleChildScrollView(child: buildForm(buildFormFields()));
+  }
 
   @override
   List<Widget> buildFormFields() {
@@ -63,6 +69,9 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
             });
           }
         },
+      ),
+      const TextDivider(
+        label: '拆分表單可以讓你更彈性的去分析資料，\n例如分析來店顧客的年齡層比例（前提是你有設定這個顧客選項）。',
       ),
       for (final namer in namers) SheetNamer(prop: namer),
     ];

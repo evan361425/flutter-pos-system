@@ -72,13 +72,12 @@ class _MenuTransformer extends ModelTransformer<Menu> {
         return [
           '${catalogTmp.f({'num': catalogCount++, 'name': catalog.name})}，$v。',
           ...catalog.itemList.map<String>((product) {
-            String base = (productCount > 1 ? '\n' : '') +
-                productTmp.f({
-                  'num': productCount++,
-                  'name': product.name,
-                  'price': product.price,
-                  'cost': product.cost,
-                });
+            String base = productTmp.f({
+              'num': productCount++,
+              'name': product.name,
+              'price': product.price,
+              'cost': product.cost,
+            });
             if (product.isEmpty) {
               return '$base，它沒有設定任何成份。';
             }

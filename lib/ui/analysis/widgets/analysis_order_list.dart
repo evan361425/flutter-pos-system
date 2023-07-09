@@ -43,6 +43,7 @@ class AnalysisOrderList extends StatelessWidget {
       value: null,
       isDense: true,
       hint: const Text('匯出'),
+      style: Theme.of(context).textTheme.bodyMedium,
       underline: const SizedBox.shrink(),
       items: ExportMethod.values.map((ExportMethod value) {
         return DropdownMenuItem<ExportMethod>(

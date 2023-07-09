@@ -6,7 +6,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 
-class OrderLoader extends StatelessWidget {
+class OrderLoader extends StatefulWidget {
   final ValueNotifier<DateTimeRange> ranger;
 
   final Widget Function(BuildContext, OrderObject) builder;
@@ -26,13 +26,18 @@ class OrderLoader extends StatelessWidget {
         super(key: key);
 
   @override
+  State<OrderLoader> createState() => _OrderLoaderState();
+}
+
+class _OrderLoaderState extends State<OrderLoader> {
+  @override
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderLoaderMetrics>(
-      prototypeItem: builder(context, OrderObject(products: const [])),
-      notifier: ranger,
+      prototypeItem: widget.builder(context, OrderObject(products: const [])),
+      notifier: widget.ranger,
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
-      builder: builder,
+      builder: widget.builder,
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
           S.orderListMetaPrice(metrics.price),
@@ -40,9 +45,9 @@ class OrderLoader extends StatelessWidget {
         ])!;
         return Row(children: [
           Expanded(child: Center(child: meta)),
-          trailingBuilder != null
-              ? trailingBuilder!.call(context, metrics)
-              : trailing!,
+          widget.trailingBuilder != null
+              ? widget.trailingBuilder!.call(context, metrics)
+              : widget.trailing!,
           const SizedBox(width: 8.0),
         ]);
       },
@@ -50,10 +55,31 @@ class OrderLoader extends StatelessWidget {
     );
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Seller.instance.addListener(_reloadOrders);
+  }
+
+  @override
+  void dispose() {
+    Seller.instance.removeListener(_reloadOrders);
+    super.dispose();
+  }
+
+  void _reloadOrders() {
+    final start = widget.ranger.value.start;
+    widget.ranger.value = DateTimeRange(
+      // add/minus one second, 00:00:00 -> 00:00:01; 00:00:59 -> 00:00:58
+      start: start.add(Duration(seconds: 1 - (start.second % 2) * 2)),
+      end: widget.ranger.value.end,
+    );
+  }
+
   Future<OrderLoaderMetrics> _loadMetrics() async {
     final result = await Seller.instance.getMetricBetween(
-      ranger.value.start,
-      ranger.value.end,
+      widget.ranger.value.start,
+      widget.ranger.value.end,
     );
 
     return OrderLoaderMetrics(
@@ -66,8 +92,8 @@ class OrderLoader extends StatelessWidget {
 
   Future<List<OrderObject>> _loadOrders(int offset) {
     return Seller.instance.getOrderBetween(
-      ranger.value.start,
-      ranger.value.end,
+      widget.ranger.value.start,
+      widget.ranger.value.end,
       offset: offset,
     );
   }

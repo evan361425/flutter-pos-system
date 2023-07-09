@@ -948,7 +948,8 @@
     }
   },
   "exporterPreviewerTitle": "預覽輸出結果",
-  "exporterFileTitle": "POS System 資料",
+  "exporterBasicTitle": "POS System 資料",
+  "exporterOrderTitle": "訂單資料",
   "exporterTypeName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
   "@exporterTypeName": {
     "description": "各種匯出資料的名稱，這會變成預設的表單名稱",

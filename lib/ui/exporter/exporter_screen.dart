@@ -48,7 +48,7 @@ class ExporterScreen extends StatelessWidget {
             child: Text('Text'),
           ),
           title: Text(S.exporterTypes(ExportMethod.plainText.name)),
-          subtitle: const Text('有些人就愛這味。就像資料分析師說的那樣：請給我生魚片，不要煮過的。'),
+          subtitle: const Text('快速檢查、快速分享。'),
           onTap: () => _navTo(context, ExportMethod.plainText),
         ),
       ]),

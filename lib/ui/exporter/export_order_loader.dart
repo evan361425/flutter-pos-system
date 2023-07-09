@@ -40,28 +40,28 @@ class ExportOrderLoader extends StatelessWidget {
     showMemoryInfo() => showDialog(
           context: context,
           builder: (context) {
-            return SimpleDialog(title: const Text('容量告警'), children: [
-              Padding(
-                key: const Key('order_memory_info'),
-                padding: const EdgeInsets.all(8.0),
-                child: Column(children: [
-                  Text('預估容量為：${getMemoryWithUnit(size)}'),
-                  const Divider(),
-                  Linkify.fromString([
+            return SimpleDialog(children: [
+              Column(children: [
+                Text('預估容量為：${getMemoryWithUnit(size)}'),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Linkify.fromString([
                     '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
-                    if (warningUrl != null) '詳細容量限制說明可以參考[本文件]($warningUrl)。',
-                  ].join())
-                ]),
-              ),
+                    if (warningUrl != null) '\n詳細容量限制說明可以參考[本文件]($warningUrl)。',
+                  ].join()),
+                )
+              ]),
             ]);
           },
         );
 
     // 500KB
     if (size < 500000) {
-      return FilledButton.icon(
+      return IconButton(
         icon: const Icon(Icons.check_outlined),
-        label: const Text('漂亮'),
+        iconSize: 16.0,
+        tooltip: '容量剛好',
         style: FilledButton.styleFrom(
           backgroundColor: Colors.green[800],
           foregroundColor: Colors.white,
@@ -72,9 +72,10 @@ class ExportOrderLoader extends StatelessWidget {
 
     // 1MB
     if (size < 1000000) {
-      return FilledButton.icon(
+      return IconButton(
         icon: const Icon(Icons.warning_amber_outlined),
-        label: const Text('警告'),
+        iconSize: 16.0,
+        tooltip: '容量警告',
         style: FilledButton.styleFrom(
           backgroundColor: Colors.yellow,
           foregroundColor: Colors.black,
@@ -83,9 +84,10 @@ class ExportOrderLoader extends StatelessWidget {
       );
     }
 
-    return FilledButton.icon(
+    return IconButton(
       icon: const Icon(Icons.dangerous_outlined),
-      label: const Text('危險'),
+      iconSize: 16.0,
+      tooltip: '容量危險',
       style: FilledButton.styleFrom(
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,

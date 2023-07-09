@@ -113,6 +113,13 @@ void main() {
       // find by OrderTile key
       expect(find.byKey(const Key('analysis.order_list.1')), findsOneWidget);
       expect(find.byKey(const Key('analysis.order_list.2')), findsOneWidget);
+
+      // should reload if seller updated
+      Seller.instance.notifyListeners();
+      await tester.pumpAndSettle();
+
+      verify(mockGetOrderBetween()).called(2);
+      verify(mockGetCountBetween()).called(2);
     });
 
     testWidgets('load count when page changed in landscape', (tester) async {

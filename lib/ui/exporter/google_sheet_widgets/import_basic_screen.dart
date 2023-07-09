@@ -54,34 +54,31 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
               exporter: widget.exporter,
               notifier: widget.notifier,
               cacheKey: _cacheKey,
-              existLabel: '檢查試算表',
-              existHint: '將匯入於「%name」',
+              existLabel: '確認表單名稱',
+              existHint: '從試算表中取得所有表單的名稱，並進行匯入',
               emptyLabel: '選擇試算表',
-              emptyHint: '開始選擇試算表後，方能匯入資料',
-              onUpdate: reloadSheetHints,
-              onChoose: reloadSheets,
+              emptyHint: '選擇要匯入的試算表後，就能開始匯入資料',
+              onUpdated: reloadSheetHints,
+              onChosen: reloadSheets,
             ),
           ),
-          const Divider(),
-          ElevatedButton(
+          ListTile(
             key: const Key('gs_export.import_all'),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
-            ),
-            onPressed: () async {
+            title: const Text('匯入全部'),
+            subtitle: const Text('不會有任何預覽畫面，直接匯入全部的資料。'),
+            onTap: () async {
               final confirmed = await ConfirmDialog.show(
                 context,
                 title: '確定要匯入全部嗎？',
-                content: '將會把所選的資料「都覆蓋掉」，請確認是否執行。',
+                content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。',
               );
 
               if (confirmed) {
                 importData(null);
               }
             },
-            child: const Text('匯入全部'),
           ),
-          const SizedBox(height: 8.0),
+          const Divider(),
           for (final entry in sheets.entries)
             Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Expanded(
@@ -92,10 +89,10 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
                 ),
               ),
               const SizedBox(width: 8.0),
-              OutlinedButton.icon(
+              IconButton(
+                tooltip: '預覽結果',
+                icon: const Icon(Icons.remove_red_eye_sharp),
                 onPressed: () => importData(entry.key),
-                label: const Text('預覽結果'),
-                icon: const Icon(Icons.download_for_offline_outlined),
               ),
             ]),
         ],

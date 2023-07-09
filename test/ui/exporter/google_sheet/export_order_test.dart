@@ -243,10 +243,10 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('匯出後建立試算單'));
+        await tester.tap(find.text('建立匯出'));
         await tester.pumpAndSettle();
 
-        final title = S.exporterFileTitle;
+        final title = S.exporterOrderTitle;
         verify(cache.set(cacheKey, 'abc:true:' + title));
 
         final expected = [
@@ -345,7 +345,7 @@ void main() {
         verify(cache.set(cacheKey + '.order.required', false));
 
         // export
-        await tester.tap(find.text('匯出於指定試算表'));
+        await tester.tap(find.text('指定匯出'));
         await tester.pumpAndSettle();
 
         final expected = [

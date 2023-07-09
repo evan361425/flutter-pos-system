@@ -38,34 +38,35 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(children: [
-        SignInButton(
+    return ListView(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+        child: SignInButton(
           signedInWidget: SpreadsheetSelector(
             key: selector,
             exporter: widget.exporter,
             notifier: widget.notifier,
             cacheKey: _cacheKey,
-            existLabel: '匯出於指定試算表',
-            existHint: '將匯出於「%name」',
-            emptyLabel: '匯出後建立試算單',
-            emptyHint: '你尚未選擇試算表，匯出時將建立新的',
-            sheetsToCreate: sheetsToCreate,
-            onUpdate: onSpreadsheetUpdate,
+            existLabel: '指定匯出',
+            existHint: '將把資料匯出至「%name」',
+            emptyLabel: '建立匯出',
+            emptyHint: '將建立新的試算表「${S.exporterBasicTitle}」，並把資料匯出至此',
+            defaultName: S.exporterBasicTitle,
+            requiredSheetTitles: requiredSheetTitles,
+            onUpdated: onSpreadsheetUpdate,
             onPrepared: exportData,
           ),
         ),
-        const Divider(),
-        for (final sheet in sheets)
-          SheetNamer(
-            prop: sheet,
-            action: (prop) => previewData(prop.type),
-            actionIcon: Icons.remove_red_eye_sharp,
-            actionTitle: AutofillHints.addressCity,
-          ),
-      ]),
-    );
+      ),
+      const Divider(),
+      for (final sheet in sheets)
+        SheetNamer(
+          prop: sheet,
+          action: (prop) => previewData(prop.type),
+          actionIcon: Icons.remove_red_eye_sharp,
+          actionTitle: S.exporterPreviewerTitle,
+        ),
+    ]);
   }
 
   @override
@@ -117,7 +118,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
   }
 
   /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
-  Map<SheetType, String> sheetsToCreate() => {
+  Map<SheetType, String> requiredSheetTitles() => {
         for (var sheet in sheets.where((sheet) => sheet.checked))
           sheet.type: sheet.name,
       };

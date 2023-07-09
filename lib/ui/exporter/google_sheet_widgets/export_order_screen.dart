@@ -47,18 +47,22 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SignInButton(
-          signedInWidget: SpreadsheetSelector(
-            key: selector,
-            exporter: widget.exporter,
-            cacheKey: _cacheKey,
-            fallbackCacheKey: 'exporter_google_sheet',
-            existLabel: '匯出於指定試算表',
-            existHint: '將匯出於「%name」',
-            emptyLabel: '匯出後建立試算單',
-            emptyHint: '你尚未選擇試算表，匯出時將建立新的',
-            sheetsToCreate: sheetsToCreate,
-            onPrepared: exportData,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+          child: SignInButton(
+            signedInWidget: SpreadsheetSelector(
+              key: selector,
+              exporter: widget.exporter,
+              cacheKey: _cacheKey,
+              fallbackCacheKey: 'exporter_google_sheet',
+              existLabel: '指定匯出',
+              existHint: '將把訂單匯出至「%name」',
+              emptyLabel: '建立匯出',
+              emptyHint: '將建立新的試算表「${S.exporterBasicTitle}」，並把資料匯出至此',
+              defaultName: S.exporterOrderTitle,
+              requiredSheetTitles: requiredSheetTitles,
+              onPrepared: exportData,
+            ),
           ),
         ),
         OrderRangeInfo(notifier: widget.rangeNotifier),
@@ -97,7 +101,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     properties = OrderSpreadsheetProperties.fromCache();
   }
 
-  Map<SheetType, String> sheetsToCreate() {
+  Map<SheetType, String> requiredSheetTitles() {
     final prefix = properties.withPrefix
         ? widget.rangeNotifier.value.format(DateFormat('MMdd '))
         : '';

@@ -25,6 +25,9 @@ class SpreadsheetSelector extends StatefulWidget {
   // 允許設定一個預設的表單
   final String fallbackCacheKey;
 
+  // 預設的試算表名稱
+  final String defaultName;
+
   /// 試算表存在的話，按鈕的文字
   final String existLabel;
 
@@ -39,10 +42,10 @@ class SpreadsheetSelector extends StatefulWidget {
   final String emptyHint;
 
   /// 試算表被更新了
-  final Future<void> Function(GoogleSpreadsheet? spreadsheet)? onUpdate;
+  final Future<void> Function(GoogleSpreadsheet? spreadsheet)? onUpdated;
 
   /// 根據選擇好的試算表去執行某些行為，例如匯入
-  final Future<void> Function(GoogleSpreadsheet spreadsheet)? onChoose;
+  final Future<void> Function(GoogleSpreadsheet spreadsheet)? onChosen;
 
   /// 根據選擇好的試算表並且準備好 [sheetsToCreate] 的表單後，去執行某些行為，例如匯出
   final Future<void> Function(
@@ -50,8 +53,8 @@ class SpreadsheetSelector extends StatefulWidget {
     Map<SheetType, GoogleSheetProperties> sheets,
   )? onPrepared;
 
-  /// 若設定此值，代表允許建立試算表，並準備好回傳的表單名稱
-  final Map<SheetType, String> Function()? sheetsToCreate;
+  /// 若設定此值，代表允許建立試算表，並同時準備好該試算表的部分表單
+  final Map<SheetType, String> Function()? requiredSheetTitles;
 
   const SpreadsheetSelector({
     Key? key,
@@ -62,10 +65,11 @@ class SpreadsheetSelector extends StatefulWidget {
     required this.existHint,
     required this.emptyHint,
     this.fallbackCacheKey = '_',
-    this.onChoose,
+    this.defaultName = '',
+    this.onChosen,
     this.onPrepared,
-    this.onUpdate,
-    this.sheetsToCreate,
+    this.onUpdated,
+    this.requiredSheetTitles,
     this.notifier,
   }) : super(key: key);
 
@@ -125,30 +129,31 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       actions: <BottomSheetAction<_ActionTypes>>[
         const BottomSheetAction(
           title: Text('選擇試算表'),
-          leading: Icon(Icons.list_alt_sharp),
-          returnValue: _ActionTypes.request,
+          leading: Icon(Icons.file_open_outlined),
+          returnValue: _ActionTypes.choose,
         ),
-        if (widget.sheetsToCreate != null)
+        if (widget.requiredSheetTitles != null)
           const BottomSheetAction(
-            title: Text('建立試算表'),
-            leading: Icon(Icons.add_box_outlined),
-            returnValue: _ActionTypes.create,
+            title: Text('清除所選'),
+            leading: Icon(Icons.cleaning_services_outlined),
+            returnValue: _ActionTypes.clear,
           ),
       ],
     );
 
     if (selected != null) {
       switch (selected) {
-        case _ActionTypes.request:
-          await request();
+        case _ActionTypes.choose:
+          await choose();
           break;
-        case _ActionTypes.create:
+        case _ActionTypes.clear:
           await clear();
           break;
       }
     }
   }
 
+  // 執行要求的函式
   void execute() async {
     _notify('_start');
 
@@ -161,11 +166,12 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     _notify('_finish');
   }
 
-  Future<void> request() async {
+  // 選擇試算表
+  Future<void> choose() async {
     _notify('_start');
 
     await showSnackbarWhenFailed(
-      _request(),
+      _choose(),
       context,
       'gs_select_request_failed',
     );
@@ -173,6 +179,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     _notify('_finish');
   }
 
+  // 清除所選的試算表
   Future<void> clear() async {
     await _update(null);
 
@@ -188,28 +195,28 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   }
 
   Future<void> _execute() async {
-    final sheetsToCreate = widget.sheetsToCreate;
+    final requiredSheetTitles = widget.requiredSheetTitles;
     // 如果不能建立，就再去跟使用者要一次
-    if (sheetsToCreate == null) {
+    if (requiredSheetTitles == null) {
       if (!isExist) {
-        await _request();
+        await _choose();
       }
 
       // 剛剛有成功要到或者本來就有
       if (isExist) {
-        await widget.onChoose?.call(spreadsheet!);
+        await widget.onChosen?.call(spreadsheet!);
       }
       return;
     }
 
     // 建立並且回應
-    final sheets = await _prepareSheets(spreadsheet, sheetsToCreate());
+    final sheets = await _prepare(spreadsheet, requiredSheetTitles());
     if (sheets != null) {
       await widget.onPrepared?.call(spreadsheet!, sheets);
     }
   }
 
-  Future<void> _request() async {
+  Future<void> _choose() async {
     final id = await showDialog<String>(
       context: context,
       builder: (context) {
@@ -253,7 +260,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   Future<void> _update(GoogleSpreadsheet? other) async {
     Log.ger('change start', 'gs_export', other.toString());
     setState(() => spreadsheet = other);
-    await widget.onUpdate?.call(other);
+    await widget.onUpdated?.call(other);
 
     if (other != null) {
       await Cache.instance.set<String>(widget.cacheKey, other.toString());
@@ -264,7 +271,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   ///
   /// 若沒有試算表則建立，並建立所有可能的表單。
   /// 若有則把需要的表單準備好。
-  Future<Map<SheetType, GoogleSheetProperties>?> _prepareSheets(
+  Future<Map<SheetType, GoogleSheetProperties>?> _prepare(
     GoogleSpreadsheet? ss,
     Map<SheetType, String> sheets,
   ) async {
@@ -287,7 +294,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       _notify(S.exporterGSProgressStatus('addSpreadsheet'));
 
       final other = await widget.exporter.addSpreadsheet(
-        S.exporterFileTitle,
+        widget.defaultName,
         names,
       );
       if (other == null) {
@@ -364,7 +371,7 @@ String? _spreadsheetFormatter(String? text) {
   return _sheetIdRegex.firstMatch(text)?.group(0);
 }
 
-enum _ActionTypes { request, create }
+enum _ActionTypes { choose, clear }
 
 enum SheetType {
   menu,

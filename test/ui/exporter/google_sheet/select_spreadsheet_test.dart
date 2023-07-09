@@ -45,7 +45,7 @@ void main() {
 
     Future<void> action(
       WidgetTester tester, [
-      IconData icon = Icons.list_alt_sharp,
+      IconData icon = Icons.file_open_outlined,
     ]) async {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.more_vert_sharp));
@@ -154,7 +154,7 @@ void main() {
 
       expect(find.text('menu'), findsOneWidget);
 
-      await action(tester, Icons.add_box_outlined);
+      await action(tester, Icons.cleaning_services_outlined);
       await tester.pumpAndSettle();
 
       // should not change

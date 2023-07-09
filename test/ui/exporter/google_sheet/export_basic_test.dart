@@ -131,7 +131,7 @@ void main() {
     group('#export', () {
       Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
         await tester.pumpAndSettle();
-        await tester.tap(find.text(selected ? '匯出於指定試算表' : '匯出後建立試算單'));
+        await tester.tap(find.text(selected ? '指定匯出' : '建立匯出'));
         await tester.pumpAndSettle();
       }
 
@@ -192,7 +192,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        final title = S.exporterFileTitle;
+        final title = S.exporterBasicTitle;
         verify(cache.set(eCacheKey, 'abc:true:' + title));
         verify(cache.set(iCacheKey, 'abc:true:' + title));
       });

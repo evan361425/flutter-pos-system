@@ -76,23 +76,21 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
           semanticLabel: '複製文字',
         ),
       ),
-      Expanded(child: _buildItemsView(widget.exporter.formatter.getRows(able))),
+      Expanded(
+        child: _buildItemsView(able, widget.exporter.formatter.getRows(able)),
+      ),
     ]);
   }
 
-  ListView _buildItemsView(List<List<String>> items) {
-    return ListView.separated(
+  ListView _buildItemsView(Formattable able, List<List<String>> items) {
+    return ListView.builder(
       itemCount: items.length,
-      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final item in items[index])
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(item),
-              ),
+            for (final item in items[index]) Text(item),
+            const SizedBox(height: 16.0),
           ],
         );
       },

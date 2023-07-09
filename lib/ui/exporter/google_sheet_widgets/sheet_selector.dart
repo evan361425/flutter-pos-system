@@ -27,6 +27,7 @@ class SheetSelectorState extends State<SheetSelector> {
     return DropdownButtonFormField<GoogleSheetProperties?>(
       key: Key('gs_export.${widget.label}.sheet_selector'),
       value: selected,
+      style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         label: Text(S.exporterGSSheetLabel(
           S.exporterTypeName(widget.label),
