@@ -88,9 +88,9 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      Checkbox checkbox(String key) =>
-          find.byKey(Key('gs_export.$key.checkbox')).evaluate().single.widget
-              as Checkbox;
+      CheckboxListTile checkbox(String key) =>
+          find.byKey(Key('sheet_namer.$key')).evaluate().single.widget
+              as CheckboxListTile;
       bool isChecked(String key) => checkbox(key).value == true;
 
       // only non-empty will check default
@@ -110,7 +110,9 @@ void main() {
       prepareData();
 
       Future<void> checkPreview(String key, Iterable<String> values) async {
-        await tester.tap(find.byKey(Key('gs_export.$key.preview')));
+        await tester.tap(find.byKey(Key('sheet_namer.$key.more')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('btn.custom')));
         await tester.pumpAndSettle();
         for (var value in values) {
           expect(find.text(value), findsOneWidget);
@@ -300,8 +302,14 @@ void main() {
         await tester.pumpAndSettle();
 
         // change sheet name
-        final stock = find.byKey(const Key('gs_export.stock.sheet_namer'));
-        await tester.enterText(stock, 'new-sheet');
+        await tester.tap(find.byKey(const Key('sheet_namer.stock.more')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('btn.edit')));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+            find.byKey(const Key('text_dialog.text')), 'new-sheet');
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('text_dialog.confirm')));
 
         await tapBtn(tester);
 

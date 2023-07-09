@@ -65,7 +65,7 @@ class ExportOrderScreen extends StatelessWidget {
   /// 產品文字較多。
   ///
   /// 這裡是一些實測的大小對應值：
-  /// | productSize | attrSize | count | bytes |
+  /// | productSize | attrSize | count | bytes | actual |
   /// | - | - | - | - |
   /// | 13195 | 34 | 17 | 6439 | 6.1KB |
   /// | 39672 | 92 | 46 | 18758 | 18KB |

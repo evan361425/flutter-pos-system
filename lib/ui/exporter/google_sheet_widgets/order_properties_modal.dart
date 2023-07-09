@@ -39,7 +39,7 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
   List<Widget> buildFormFields() {
     return [
       CheckboxListTile(
-        key: const Key('gs_export.is_overwrite'),
+        key: const Key('is_overwrite'),
         value: isOverwrite,
         title: const Text('是否覆寫表單'),
         subtitle: const Text('覆寫表單之後，將會從第一行開始匯出'),
@@ -52,7 +52,7 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
         },
       ),
       CheckboxListTile(
-        key: const Key('gs_export.with_prefix'),
+        key: const Key('with_prefix'),
         value: withPrefix,
         title: const Text('加上日期前綴'),
         subtitle: const Text('表單名稱前面加上日期前綴，例如：0101-0131 表單名稱'),
@@ -70,27 +70,22 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
 
   @override
   Future<void> updateItem() async {
-    final sheets = <OrderSheetProperties>[];
-    for (final namer in namers) {
-      final key = '$_cacheKey.${namer.type.name}';
-      await Cache.instance.set<String>(key, namer.name);
-      await Cache.instance.set<bool>('$key.required', namer.checked);
-      sheets.add(OrderSheetProperties(
-        OrderSheetType.values.firstWhere((e) => e.name == namer.type.name),
-        namer.name,
-        namer.checked,
-      ));
-    }
-
-    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
-    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
+    final properties = OrderSpreadsheetProperties(
+      sheets: namers
+          .map((namer) => OrderSheetProperties(
+                OrderSheetType.values
+                    .firstWhere((e) => e.name == namer.type.name),
+                namer.name,
+                namer.checked,
+              ))
+          .toList(),
+      isOverwrite: isOverwrite,
+      withPrefix: withPrefix,
+    );
+    await properties.cache();
 
     if (context.mounted) {
-      Navigator.of(context).pop(OrderSpreadsheetProperties(
-        sheets: sheets,
-        isOverwrite: isOverwrite,
-        withPrefix: withPrefix,
-      ));
+      Navigator.of(context).pop(properties);
     }
   }
 
@@ -145,14 +140,18 @@ class OrderSpreadsheetProperties {
     );
   }
 
-  Iterable<String> get names =>
-      sheets.where((e) => e.isRequired).map((e) => e.name);
+  Iterable<OrderSheetProperties> get requiredSheets =>
+      sheets.where((e) => e.isRequired);
 
-  Map<OrderSheetType, String> sheetNames(String prefix) {
-    prefix = withPrefix ? prefix : '';
-    return Map.fromEntries(sheets
-        .where((e) => e.isRequired)
-        .map((e) => MapEntry(e.type, '$prefix${e.name}')));
+  Future<void> cache() async {
+    for (var sheet in sheets) {
+      final key = '$_cacheKey.${sheet.type.name}';
+      await Cache.instance.set<String>(key, sheet.name);
+      await Cache.instance.set<bool>('$key.required', sheet.isRequired);
+    }
+
+    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
+    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
   }
 }
 
@@ -164,8 +163,6 @@ class OrderSheetProperties {
   final bool isRequired;
 
   const OrderSheetProperties(this.type, this.name, this.isRequired);
-
-  get sheetType => OrderSheetType.values.firstWhere((e) => e.name == type.name);
 }
 
 enum OrderSheetType {

@@ -42,12 +42,16 @@ class ExportOrderLoader extends StatelessWidget {
           builder: (context) {
             return SimpleDialog(title: const Text('容量告警'), children: [
               Padding(
+                key: const Key('order_memory_info'),
                 padding: const EdgeInsets.all(8.0),
-                child: Linkify.fromString([
-                  '預估容量為：${getMemoryWithUnit(size)}\n\n',
-                  '過高的容量可能會讓執行錯誤，建議分次執行匯出，不要一次匯出太多筆。',
-                  if (warningUrl != null) '\n\n詳細容量限制說明可以參考[本文件]($warningUrl)。',
-                ].join()),
+                child: Column(children: [
+                  Text('預估容量為：${getMemoryWithUnit(size)}'),
+                  const Divider(),
+                  Linkify.fromString([
+                    '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
+                    if (warningUrl != null) '詳細容量限制說明可以參考[本文件]($warningUrl)。',
+                  ].join())
+                ]),
               ),
             ]);
           },

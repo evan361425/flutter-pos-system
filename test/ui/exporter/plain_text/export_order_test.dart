@@ -138,12 +138,12 @@ void main() {
           '顧客的Test attr為Test opt、order attribute為order attribute option。\n'
           '餐點有 0 份（2 種）包括：\n'
           'p-1（c-1）3 份共 3 元成份包括 i-1（q-1，使用 3 個）、 i-2（預設份量）、 i-3（預設份量，使用 -5 個）；\n'
-          'p-2（c-2）1 份共 20 元沒有設定成分';
+          'p-2（c-2）1 份共 20 元沒有設定成分。';
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('細節'));
+      await tester.tap(find.byIcon(Icons.expand_outlined));
       await tester.pumpAndSettle();
       expect(find.text(message), findsOneWidget);
 
@@ -162,7 +162,7 @@ void main() {
     test('format', () {
       const expected = '共 0 元\n'
           '付額 0 元、成分 0 元\n'
-          '餐點有 0 份包括：\n';
+          '餐點有 0 份包括：\n。';
 
       final actual = ExportOrderScreen.formatOrder(OrderObject(products: []));
 

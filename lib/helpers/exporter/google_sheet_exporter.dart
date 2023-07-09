@@ -191,14 +191,15 @@ class GoogleSheetExporter extends DataExporter {
                 for (final cell in row) cell.toGoogleFormat(),
               ])
           ],
-          fields: 'userEnteredValue,userEnteredFormat,dataValidation,note',
+          fields: 'userEnteredValue,userEnteredFormat,dataValidation',
           sheetId: sheet.id,
         ),
       );
     }).toList();
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('update_sheets order', _logCode);
+    final types = sheets.map((e) => e.typeName).join(' ');
+    Log.ger('append_sheets $types', _logCode);
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,

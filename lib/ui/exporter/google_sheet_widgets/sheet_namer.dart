@@ -37,6 +37,7 @@ class SheetNamerState extends State<SheetNamer> {
             onPressed: editSheetName,
           )
         : IconButton(
+            key: Key('sheet_namer.${widget.prop.type.name}.more'),
             icon: const Icon(KIcons.more),
             onPressed: showActions,
           );

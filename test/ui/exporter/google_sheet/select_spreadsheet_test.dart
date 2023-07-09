@@ -145,14 +145,6 @@ void main() {
     });
 
     testWidgets('export cancel old', (tester) async {
-      TextFormField getNamer() {
-        return find
-            .byKey(const Key('gs_export.menu.sheet_namer'))
-            .evaluate()
-            .single
-            .widget as TextFormField;
-      }
-
       clearInteractions(cache);
       when(cache.get(eCacheKey)).thenReturn('id:true:name');
       when(cache.get(eCacheKey + '.menu')).thenReturn('menu');
@@ -160,13 +152,13 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      expect(getNamer().controller?.text, equals('menu'));
+      expect(find.text('menu'), findsOneWidget);
 
       await action(tester, Icons.add_box_outlined);
       await tester.pumpAndSettle();
 
       // should not change
-      expect(getNamer().controller?.text, equals('menu'));
+      expect(find.text('menu'), findsOneWidget);
       // should not cache
       verifyNever(cache.set(any, any));
     });

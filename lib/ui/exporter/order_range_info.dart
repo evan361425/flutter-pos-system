@@ -20,7 +20,7 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      key: const Key('edit_range_btn'),
+      key: const Key('btn.edit_range'),
       title: Text('${range.format(DateFormat.MMMd(S.localeName))} 的訂單'),
       subtitle: Text('${range.duration.inDays} 天的資料'),
       onTap: pickRange,
@@ -44,6 +44,7 @@ class _OrderRangeInfoState extends State<OrderRangeInfo> {
         firstDate: DateTime(2021, 1),
         lastDate: DateTime.now(),
         locale: SettingsProvider.of<LanguageSetting>().value,
+        // TODO: 應該會修掉這個 bug，需要注意
         // 另外包裝設計，因為選擇日期時，背景會使用有點半透明的 primary color
         // 這個會讓本來預期的對比降低，將會看不清楚，所以調整 onPrimary 的顏色。
         builder: (context, dialog) {

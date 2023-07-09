@@ -63,6 +63,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
         ),
         OrderRangeInfo(notifier: widget.rangeNotifier),
         ListTile(
+          key: const Key('edit_sheets'),
           title: const Text('表單設定'),
           subtitle: MetaBlock.withString(
             context,
@@ -70,7 +71,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
               '${properties.isOverwrite ? '會' : '不會'}覆寫',
               '${properties.withPrefix ? '有' : '沒有'}日期前綴',
               // 這個資訊可能突破兩行的限制，所以放最後
-              properties.names.join('、'),
+              properties.requiredSheets.map((e) => e.name).join('、'),
             ],
             maxLines: 2,
           ),
@@ -97,11 +98,15 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
   }
 
   Map<SheetType, String> sheetsToCreate() {
-    final p = widget.rangeNotifier.value.format(DateFormat('MMdd '));
-    return properties.sheetNames(p).map((key, value) => MapEntry(
-          SheetType.values.firstWhere((e) => e.name == key.name),
-          value,
-        ));
+    final prefix = properties.withPrefix
+        ? widget.rangeNotifier.value.format(DateFormat('MMdd '))
+        : '';
+
+    return {
+      for (final sheet in properties.requiredSheets)
+        SheetType.values.firstWhere((e) => e.name == sheet.type.name):
+            '$prefix${sheet.name}',
+    };
   }
 
   /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
@@ -195,7 +200,14 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     }
   }
 
+  /// 這裡是一些實測的大小對應值：
+  /// | productSize | attrSize | count | bytes | actual |
+  /// | - | - | - | - |
+  /// | 13195 | 34 | 17 | 6439 | 38.5KB |
+  /// | 39672 | 92 | 46 | 18758 | 114KB |
+  /// | 61751 | 142 | 71 | 29043 | 177KB |
+  /// | 83775 | 200 | 100 | 39771 | 240K |
   static int memoryPredictor(OrderLoaderMetrics m) {
-    return (m.productSize * 0.435 + m.attrSize * 0.3 + 30 * m.count).toInt();
+    return (m.productSize * 2.8 + m.attrSize * 2.8).toInt();
   }
 }
