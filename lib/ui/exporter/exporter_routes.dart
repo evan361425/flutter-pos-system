@@ -3,83 +3,51 @@ import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/exporter/data_exporter.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/ui/exporter/google_sheet_widgets/screens.dart' as gs;
 import 'package:possystem/ui/exporter/plain_text_widgets/screens.dart' as pt;
 import 'package:possystem/translator.dart';
 
+enum ExporterInfoType {
+  order,
+  basic,
+}
+
+enum ExportMethod { googleSheet, plainText }
+
 class ExporterRoutes {
-  static const googleSheet = 'googleSheet';
-  static const plainText = 'plainText';
-
-  static Widget gsExportScreen(
-    DataExporter exporter,
-    ValueNotifier<String> notifier,
-  ) {
-    return gs.ExporterScreen(
-      exporter: exporter as GoogleSheetExporter,
-      notifier: notifier,
-    );
-  }
-
-  static Widget gsImportScreen(
-    DataExporter exporter,
-    ValueNotifier<String> notifier,
-  ) {
-    return gs.ImporterScreen(
-      exporter: exporter as GoogleSheetExporter,
-      notifier: notifier,
-    );
-  }
-
-  static Widget ptExportScreen(
-    DataExporter exporter,
-    ValueNotifier<String> notifier,
-  ) {
-    return pt.ExporterScreen(exporter: exporter as PlainTextExporter);
-  }
-
-  static Widget ptImportScreen(
-    DataExporter exporter,
-    ValueNotifier<String> notifier,
-  ) {
-    return pt.ImporterScreen(exporter: exporter as PlainTextExporter);
-  }
-
-  static final routes = <String, WidgetBuilder>{
-    googleSheet: (_) => ExporterStation(
-          title: S.exporterGSTitle,
-          exporter: GoogleSheetExporter(),
-          exportScreenBuilder: gsExportScreen,
-          importScreenBuilder: gsImportScreen,
+  static final routes = <ExportMethod, WidgetBuilder>{
+    ExportMethod.googleSheet: (context) => ExporterStation(
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
+          method: ExportMethod.googleSheet,
         ),
-    plainText: (_) => const ExporterStation(
-          title: '純文字',
-          exporter: PlainTextExporter(),
-          exportScreenBuilder: ptExportScreen,
-          importScreenBuilder: ptImportScreen,
+    ExportMethod.plainText: (context) => ExporterStation(
+          info: ModalRoute.of(context)!.settings.arguments as ExporterInfoType,
+          method: ExportMethod.plainText,
         ),
   };
 }
 
 class ExporterStation extends StatefulWidget {
-  final String title;
+  final ExportMethod method;
 
-  final DataExporter exporter;
+  final ExporterInfoType info;
 
-  final ExporterBuilder exportScreenBuilder;
+  final DateTimeRange? range;
 
-  final ExporterBuilder importScreenBuilder;
-
+  @visibleForTesting
   final ValueNotifier<String>? notifier;
+
+  @visibleForTesting
+  final DataExporter? exporter;
 
   const ExporterStation({
     Key? key,
-    required this.title,
-    required this.exporter,
+    required this.info,
+    required this.method,
+    this.exporter,
     this.notifier,
-    required this.exportScreenBuilder,
-    required this.importScreenBuilder,
+    this.range,
   }) : super(key: key);
 
   @override
@@ -90,6 +58,7 @@ class _ExporterStationState extends State<ExporterStation>
     with TickerProviderStateMixin {
   final loading = GlobalKey<LoadingWrapperState>();
 
+  /// 這個是用來顯示「正在執行中」的資訊，避免匯出時被中斷。
   late final ValueNotifier<String> stateNotifier;
 
   late final TabController tabController;
@@ -100,35 +69,11 @@ class _ExporterStationState extends State<ExporterStation>
       key: loading,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(S.exporterTypes(widget.method.name)),
           leading: const PopButton(),
-          bottom: TabBar(
-            controller: tabController,
-            tabs: [
-              Tab(text: S.btnExport),
-              Tab(text: S.btnImport),
-            ],
-          ),
+          bottom: _buildAppBarBottom(),
         ),
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
-              child: widget.exportScreenBuilder(
-                widget.exporter,
-                stateNotifier,
-              ),
-            ),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
-              child: widget.importScreenBuilder(
-                widget.exporter,
-                stateNotifier,
-              ),
-            ),
-          ],
-        ),
+        body: _buildBody(),
       ),
     );
   }
@@ -155,6 +100,7 @@ class _ExporterStationState extends State<ExporterStation>
           loading.currentState?.setStatus(stateNotifier.value);
       }
     });
+
     super.initState();
   }
 
@@ -164,9 +110,73 @@ class _ExporterStationState extends State<ExporterStation>
     stateNotifier.dispose();
     super.dispose();
   }
+
+  PreferredSizeWidget? _buildAppBarBottom() {
+    switch (widget.info) {
+      case ExporterInfoType.basic:
+        return TabBar(
+          controller: tabController,
+          tabs: [
+            Tab(text: S.btnExport),
+            Tab(text: S.btnImport),
+          ],
+        );
+      default:
+        return null;
+    }
+  }
+
+  Widget _buildBody() {
+    switch (widget.info) {
+      case ExporterInfoType.basic:
+        return TabBarView(
+          controller: tabController,
+          children: [
+            _buildScreen(_Combination.exportBasic),
+            _buildScreen(_Combination.importBasic),
+          ],
+        );
+      case ExporterInfoType.order:
+        return _buildScreen(_Combination.exportOrder);
+    }
+  }
+
+  Widget _buildScreen(_Combination combination) {
+    switch (widget.method) {
+      case ExportMethod.googleSheet:
+        final exporter =
+            (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
+        switch (combination) {
+          case _Combination.exportBasic:
+            return gs.ExportBasicScreen(
+              exporter: exporter,
+              notifier: stateNotifier,
+            );
+          case _Combination.exportOrder:
+            return gs.ExportOrderScreen(
+              exporter: exporter,
+              statusNotifier: stateNotifier,
+              rangeNotifier: ValueNotifier(widget.range ?? Util.getDateRange()),
+            );
+          case _Combination.importBasic:
+            return gs.ImportBasicScreen(
+              exporter: exporter,
+              notifier: stateNotifier,
+            );
+        }
+      case ExportMethod.plainText:
+        switch (combination) {
+          case _Combination.exportBasic:
+            return const pt.ExportBasicScreen();
+          case _Combination.exportOrder:
+            return pt.ExportOrderScreen(
+              notifier: ValueNotifier(widget.range ?? Util.getDateRange()),
+            );
+          case _Combination.importBasic:
+            return const pt.ImportBasicScreen();
+        }
+    }
+  }
 }
 
-typedef ExporterBuilder = Widget Function(
-  DataExporter exporter,
-  ValueNotifier<String> notifier,
-);
+enum _Combination { exportBasic, importBasic, exportOrder }

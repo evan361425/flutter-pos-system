@@ -72,7 +72,7 @@ void main() {
       columns: argThat(
         predicate((data) =>
             data is List &&
-            data.length == 2 &&
+            data.length == 4 &&
             data[1] == 'SUM(totalPrice) totalPrice'),
         named: 'columns',
       ),
@@ -106,10 +106,6 @@ void main() {
 
       expect(find.text('99+'), findsOneWidget);
 
-      // change format
-      await tester.tap(find.text(S.analysisCalendarMonth));
-      await tester.pumpAndSettle();
-
       // select date
       await tester.tap(find.text(now.day.toString()));
       await tester.pumpAndSettle();
@@ -137,6 +133,10 @@ void main() {
       addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
 
       await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));
+      await tester.pumpAndSettle();
+
+      // change format
+      await tester.tap(find.text(S.analysisCalendarWeek));
       await tester.pumpAndSettle();
 
       expect(find.text('50'), findsOneWidget);

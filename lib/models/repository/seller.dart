@@ -40,9 +40,8 @@ class Seller extends ChangeNotifier {
 
   Future<Map<DateTime, int>> getCountBetween(
     DateTime start,
-    DateTime end, {
-    range = '%d',
-  }) async {
+    DateTime end,
+  ) async {
     final rows = await Database.instance.query(
       orderTable,
       columns: ['createdAt'],
@@ -72,24 +71,34 @@ class Seller extends ChangeNotifier {
     final begin = start == null ? Util.toUTC(hour: 0) : Util.toUTC(now: start);
     final finish = end == null ? 9999999999 : Util.toUTC(now: end);
 
-    final result = await Database.instance.query(orderTable,
-        columns: ['COUNT(*) count', 'SUM(totalPrice) totalPrice'],
-        where: 'createdAt BETWEEN ? AND ?',
-        whereArgs: [begin, finish]);
+    final result = await Database.instance.query(
+      orderTable,
+      columns: [
+        'COUNT(*) count',
+        'SUM(totalPrice) totalPrice',
+        'SUM(length(encodedProducts)) productSize',
+        'SUM(length(encodedAttributes)) attrSize',
+      ],
+      where: 'createdAt BETWEEN ? AND ?',
+      whereArgs: [begin, finish],
+    );
 
     final row = result.isEmpty ? <String, Object?>{} : result[0];
 
     return {
       'totalPrice': row['totalPrice'] as num? ?? 0,
       'count': row['count'] as num? ?? 0,
+      'productSize': row['productSize'] as int? ?? 0,
+      'attrSize': row['attrSize'] as int? ?? 0,
     };
   }
 
   Future<List<OrderObject>> getOrderBetween(
     DateTime start,
-    DateTime end, [
+    DateTime end, {
     int offset = 0,
-  ]) async {
+    int? limit = 10,
+  }) async {
     final rows = await Database.instance.query(
       orderTable,
       where: 'createdAt BETWEEN ? AND ?',
@@ -98,7 +107,7 @@ class Seller extends ChangeNotifier {
         Util.toUTC(now: end),
       ],
       orderBy: 'createdAt desc',
-      limit: 10,
+      limit: limit,
       offset: offset,
     );
 

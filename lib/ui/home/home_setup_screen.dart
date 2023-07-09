@@ -61,7 +61,7 @@ class HomeSetupScreen extends StatelessWidget {
               id: 'home.exporter',
               index: 1,
               title: '檔案匯出',
-              message: '這裡是用來匯出菜單、庫存等資訊的地方。',
+              message: '這裡是用來匯出菜單、庫存、訂單記錄等資訊的地方。',
               spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
                 context,

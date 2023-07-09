@@ -97,7 +97,7 @@ class Routes {
     },
     orderAttrOptionReorder: (ctx) =>
         OrderAttributeOptionReorder(attribute: _a<OrderAttribute>(ctx)),
-    exporter: (_) => const ExporterScreen(),
+    exporter: (_) => ExporterScreen(),
     // menu
     menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(

@@ -243,7 +243,7 @@ class Cart extends ChangeNotifier {
 
     return OrderObject(
       id: object?.id,
-      paid: paid,
+      paid: paid ?? 0,
       createdAt: object?.createdAt,
       attributes: attributes.entries
           .map((e) => OrderSelectedAttributeObject.fromId(e.key, e.value))

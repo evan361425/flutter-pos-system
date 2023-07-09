@@ -168,15 +168,6 @@
   "@analysisCalendarTwoWeek": {
     "description": "分析頁的日曆週期轉換單位之一"
   },
-  "analysisOrderListStatus": "{status, select, empty{本日無點餐紀錄} unset{點擊日期來查看紀錄} allLoaded{讀取完畢} ready{下拉以載入更多} other{UNKNOWN}}",
-  "@analysisOrderListStatus": {
-    "description": "分析頁的點餐列表狀態",
-    "placeholders": {
-      "status": {
-        "type": "String"
-      }
-    }
-  },
   "analysisOrderListItemMetaPrice": "售價：{price}",
   "@analysisOrderListItemMetaPrice": {
     "description": "分析頁的點餐列表中，每次點餐的售價值",
@@ -219,8 +210,9 @@
       }
     }
   },
-  "analysisOrderListMetaPrice": "總營收：{price}",
-  "@analysisOrderListMetaPrice": {
+  "orderListEmpty": "查無點餐紀錄",
+  "orderListMetaPrice": "總營收：{price}",
+  "@orderListMetaPrice": {
     "description": "分析頁的點餐列表中，單日點餐的營收",
     "placeholders": {
       "price": {
@@ -233,8 +225,8 @@
       }
     }
   },
-  "analysisOrderListMetaCount": "總單數：{count}",
-  "@analysisOrderListMetaCount": {
+  "orderListMetaCount": "總單數：{count}",
+  "@orderListMetaCount": {
     "description": "分析頁的點餐列表中，單日點餐的數量",
     "placeholders": {
       "count": {
@@ -946,9 +938,28 @@
   "orderCashierProductMetaIngredient": "成分：",
   "exporterTitle": "匯入匯出",
   "exporterDescription": "請選擇欲匯入匯出的方式",
-  "exporterGSTitle": "Google 試算表",
+  "exporterTypes": "{label, select, googleSheet{Google 試算表} plainText{純文字} other{}}",
+  "@exporterTypes": {
+    "description": "匯出種類名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "exporterPreviewerTitle": "預覽輸出結果",
+  "exporterFileTitle": "POS System 資料",
+  "exporterTypeName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
+  "@exporterTypeName": {
+    "description": "各種匯出資料的名稱，這會變成預設的表單名稱",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
+  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@exporterGSErrors": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
@@ -967,25 +978,6 @@
       }
     }
   },
-  "exporterGSPreviewerTitle": "預覽{title}輸出結果",
-  "@exporterGSPreviewerTitle": {
-    "description": "預覽標題",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "exporterGSDefaultSpreadsheetName": "POS System 資料",
-  "exporterGSDefaultSheetName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
-  "@exporterGSDefaultSheetName": {
-    "description": "匯出 Google 試算表時預設的表單名稱",
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
   "exporterGSProgressStatus": "{status, select, addSpreadsheet{新增試算表中..} addSheets{新增表單中..} other{{status}}}",
   "@exporterGSProgressStatus": {
     "description": "執行行為時的狀態說明",
@@ -995,7 +987,7 @@
       }
     }
   },
-  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} other{{model}}}",
+  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成份細項中..} other{{model}}}",
   "@exporterGSUpdateModelStatus": {
     "description": "更新 Model 時的狀態說明",
     "placeholders": {
@@ -1034,15 +1026,6 @@
     "description": "顯示該資料的額外狀態",
     "placeholders": {
       "status": {
-        "type": "String"
-      }
-    }
-  },
-  "exporterPTRepoName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",
-  "@exporterPTRepoName": {
-    "description": "匯出純文字時的 Repository 名稱",
-    "placeholders": {
-      "label": {
         "type": "String"
       }
     }

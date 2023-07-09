@@ -10,11 +10,14 @@ const _googleWhite = Color(0xffffffff);
 const _googleDark = Color(0xff757575);
 
 class SignInButton extends StatelessWidget {
-  final Widget Function(User) signedInWidget;
+  final Widget? signedInWidget;
+
+  final Widget Function(User user)? signedInWidgetBuilder;
 
   const SignInButton({
     Key? key,
-    required this.signedInWidget,
+    this.signedInWidget,
+    this.signedInWidgetBuilder,
   }) : super(key: key);
 
   @override
@@ -29,7 +32,7 @@ class SignInButton extends StatelessWidget {
         }
 
         // Render widget if authenticated
-        return signedInWidget(user);
+        return signedInWidget ?? signedInWidgetBuilder!.call(user);
       },
     );
   }

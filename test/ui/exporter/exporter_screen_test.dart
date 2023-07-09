@@ -5,7 +5,9 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/exporter/exporter_screen.dart';
 
 import '../../mocks/mock_auth.dart';
@@ -19,7 +21,7 @@ void main() {
 
       when(cache.get(any)).thenReturn(null);
 
-      await tester.pumpWidget(const MaterialApp(home: ExporterScreen()));
+      await tester.pumpWidget(MaterialApp(home: ExporterScreen()));
 
       for (var key in keys) {
         await tester.tap(find.byKey(Key(key)));
@@ -35,6 +37,8 @@ void main() {
       Quantities();
       Replenisher();
       OrderAttributes();
+      Seller();
+      CurrencySetting().isInt = true;
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
     });
 

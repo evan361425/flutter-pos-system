@@ -40,7 +40,8 @@ class _HomeScaffoldState extends State<HomeScaffold>
         notificationPredicate: (ScrollNotification notification) {
           return notification.depth == 1;
         },
-        scrolledUnderElevation: 4.0,
+        // disable shadow after scrolled
+        scrolledUnderElevation: 0,
         actions: [
           TextButton(
             key: const Key('home.order'),
