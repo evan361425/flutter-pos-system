@@ -41,19 +41,26 @@ class SheetNamerState extends State<SheetNamer> {
             icon: const Icon(KIcons.more),
             onPressed: showActions,
           );
-    return CheckboxListTile(
-      key: Key('sheet_namer.${widget.prop.type.name}'),
-      controlAffinity: ListTileControlAffinity.leading,
-      value: widget.prop.checked,
-      secondary: secondary,
-      title: Text(widget.prop.name),
-      onChanged: (value) {
-        if (value != null) {
-          setState(() {
-            widget.prop.checked = value;
-          });
-        }
-      },
+
+    return GestureDetector(
+      onLongPress: Feedback.wrapForLongPress(
+        widget.action == null ? editSheetName : showActions,
+        context,
+      ),
+      child: CheckboxListTile(
+        key: Key('sheet_namer.${widget.prop.type.name}'),
+        controlAffinity: ListTileControlAffinity.leading,
+        value: widget.prop.checked,
+        secondary: secondary,
+        title: Text(widget.prop.name),
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              widget.prop.checked = value;
+            });
+          }
+        },
+      ),
     );
   }
 

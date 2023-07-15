@@ -25,15 +25,9 @@ class _ImportBasicScreenState extends State<ImportBasicScreen>
     super.build(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        ElevatedButton(
-          key: const Key('import_btn'),
-          onPressed: importData,
-          child: const Text('預覽結果'),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: TextField(
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          TextField(
             key: const Key('import_text'),
             controller: controller,
             keyboardType: TextInputType.multiline,
@@ -44,10 +38,18 @@ class _ImportBasicScreenState extends State<ImportBasicScreen>
                 borderSide: BorderSide(width: 5.0),
               ),
               hintText: '請貼上複製而來的文字',
+              helperText: '貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。',
+              helperMaxLines: 2,
             ),
           ),
-        ),
-      ]),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            key: const Key('import_btn'),
+            onPressed: importData,
+            child: const Text('預覽結果'),
+          ),
+        ]),
+      ),
     );
   }
 

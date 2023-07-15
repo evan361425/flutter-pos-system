@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/services/cache.dart';
@@ -61,7 +62,7 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
         key: const Key('with_prefix'),
         value: withPrefix,
         title: const Text('加上日期前綴'),
-        subtitle: const Text('表單名稱前面加上日期前綴，例如：0101-0131 表單名稱'),
+        subtitle: const Text('表單名稱前面加上日期前綴，例如：「0101-0131 訂單資料」'),
         onChanged: (value) {
           if (value != null) {
             setState(() {
@@ -70,8 +71,9 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
           }
         },
       ),
-      const TextDivider(
-        label: '拆分表單可以讓你更彈性的去分析資料，\n例如分析來店顧客的年齡層比例（前提是你有設定這個顧客選項）。',
+      const TextDivider(label: '表單名稱'),
+      const CardInfoText(
+        child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
       ),
       for (final namer in namers) SheetNamer(prop: namer),
     ];

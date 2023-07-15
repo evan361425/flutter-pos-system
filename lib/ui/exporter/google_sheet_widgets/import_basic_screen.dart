@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/sign_in_button.dart';
+import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
@@ -44,11 +46,11 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(
-        children: [
-          SignInButton(
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SignInButton(
             signedInWidget: SpreadsheetSelector(
               key: selector,
               exporter: widget.exporter,
@@ -62,25 +64,32 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
               onChosen: reloadSheets,
             ),
           ),
-          ListTile(
-            key: const Key('gs_export.import_all'),
-            title: const Text('匯入全部'),
-            subtitle: const Text('不會有任何預覽畫面，直接匯入全部的資料。'),
-            onTap: () async {
-              final confirmed = await ConfirmDialog.show(
-                context,
-                title: '確定要匯入全部嗎？',
-                content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。',
-              );
+        ),
+        ListTile(
+          key: const Key('gs_export.import_all'),
+          title: const Text('匯入全部'),
+          subtitle: const Text('不會有任何預覽畫面，直接覆寫全部的資料。'),
+          trailing: const Icon(Icons.download_for_offline_sharp),
+          onTap: () async {
+            final confirmed = await ConfirmDialog.show(
+              context,
+              title: '確定要匯入全部嗎？',
+              content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。',
+            );
 
-              if (confirmed) {
-                importData(null);
-              }
-            },
-          ),
-          const Divider(),
-          for (final entry in sheets.entries)
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            if (confirmed) {
+              importData(null);
+            }
+          },
+        ),
+        const TextDivider(label: '選擇欲匯入表單'),
+        const CardInfoText(
+          child: Text('選擇試算表並「確認表單名稱」後，就可以開始選擇表單匯入。'),
+        ),
+        for (final entry in sheets.entries)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Expanded(
                 child: SheetSelector(
                   key: entry.value,
@@ -90,13 +99,13 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
               ),
               const SizedBox(width: 8.0),
               IconButton(
-                tooltip: '預覽結果',
+                tooltip: '預覽結果並匯入',
                 icon: const Icon(Icons.remove_red_eye_sharp),
                 onPressed: () => importData(entry.key),
               ),
             ]),
-        ],
-      ),
+          ),
+      ],
     );
   }
 

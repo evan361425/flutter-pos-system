@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
@@ -77,21 +78,49 @@ class _ExportBasicScreenState extends State<ExportBasicScreen>
         ),
       ),
       Expanded(
-        child: _buildItemsView(able, widget.exporter.formatter.getRows(able)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildItemsView(
+            able,
+            widget.exporter.formatter.getRows(able),
+          ),
+        ),
       ),
     ]);
   }
 
   ListView _buildItemsView(Formattable able, List<List<String>> items) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(height: 8.0),
       itemCount: items.length,
       itemBuilder: (context, index) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final item in items[index]) Text(item),
-            const SizedBox(height: 16.0),
-          ],
+        if (index == 0) {
+          // this should be the title
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final item in items[index]) Text(item),
+            ],
+          );
+        }
+        return Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 100),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final item in items[index]) Text(item),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );

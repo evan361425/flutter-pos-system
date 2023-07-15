@@ -12,6 +12,9 @@ class SingleRowWrap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(

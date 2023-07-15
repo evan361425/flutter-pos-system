@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/launcher_snackbar_action.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
@@ -48,9 +49,9 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
             notifier: widget.notifier,
             cacheKey: _cacheKey,
             existLabel: '指定匯出',
-            existHint: '將把資料匯出至「%name」',
+            existHint: '匯出至試算表「%name」',
             emptyLabel: '建立匯出',
-            emptyHint: '將建立新的試算表「${S.exporterBasicTitle}」，並把資料匯出至此',
+            emptyHint: '建立新的試算表「${S.exporterBasicTitle}」，並把資料匯出至此',
             defaultName: S.exporterBasicTitle,
             requiredSheetTitles: requiredSheetTitles,
             onUpdated: onSpreadsheetUpdate,
@@ -58,7 +59,7 @@ class _ExportBasicScreenState extends State<ExportBasicScreen> {
           ),
         ),
       ),
-      const Divider(),
+      const TextDivider(label: '選擇欲匯出的種類'),
       for (final sheet in sheets)
         SheetNamer(
           prop: sheet,

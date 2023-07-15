@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/card_info_text.dart';
 
 class ChoiceChipWithHelp<T> extends StatefulWidget {
   final List<T> values;
@@ -59,19 +60,7 @@ class ChoiceChipWithHelpState<T> extends State<ChoiceChipWithHelp<T>> {
               ),
             ),
           ),
-          Card(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Theme.of(context).colorScheme.outline),
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 100),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text(widget.helpTexts[selectedIndex])),
-              ),
-            ),
-          )
+          CardInfoText(child: Text(widget.helpTexts[selectedIndex])),
         ],
       ),
     );

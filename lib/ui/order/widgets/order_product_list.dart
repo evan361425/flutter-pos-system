@@ -21,48 +21,51 @@ class OrderProductList extends StatelessWidget {
     final count = SettingsProvider.of<OrderProductAxisCountSetting>().value;
     int index = 0;
 
-    return Card(
-      // Small top margin to avoid double size between catalogs
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Padding(
-        padding: const EdgeInsets.all(kSpacing1),
-        child: count == 0
-            ? Wrap(children: [
-                for (final product in products)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: OutlinedButton(
-                      key: Key('order.product.${product.id}'),
-                      onPressed: () => _onSelected(product),
-                      child: Text(product.name),
-                    ),
+    return Padding(
+      padding: const EdgeInsets.all(kSpacing1),
+      child: count == 0
+          ? Wrap(children: [
+              for (final product in products)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: OutlinedButton(
+                    key: Key('order.product.${product.id}'),
+                    onPressed: () => _onSelected(product),
+                    child: Text(product.name),
                   ),
-              ])
-            : GridView.count(
-                crossAxisCount: count,
-                mainAxisSpacing: 12.0,
-                crossAxisSpacing: 8.0,
-                children: [
-                  for (final product in products)
-                    Tutorial(
-                      id: 'order.menu_product',
-                      title: '開始點餐！',
-                      message: '透過圖片點餐更方便！\n'
-                          '你也可以到「設定」頁面，\n'
-                          '設定「每行顯示幾個產品」或僅使用文字點餐',
-                      spotlightBuilder:
-                          const SpotlightRectBuilder(borderRadius: 16),
-                      disable: index++ != 0,
-                      child: ImageHolder(
-                        key: Key('order.product.${product.id}'),
-                        image: product.image,
-                        title: product.name,
-                        onPressed: () => _onSelected(product),
-                      ),
-                    ),
-                ],
-              ),
-      ),
+                ),
+            ])
+          : GridView.count(
+              crossAxisCount: count,
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 8.0,
+              children: [
+                for (final product in products)
+                  index++ == 0
+                      ? Tutorial(
+                          id: 'order.menu_product',
+                          title: '開始點餐！',
+                          message: '透過圖片點餐更方便！\n'
+                              '你也可以到「設定」頁面，\n'
+                              '設定「每行顯示幾個產品」或僅使用文字點餐',
+                          spotlightBuilder:
+                              const SpotlightRectBuilder(borderRadius: 16),
+                          disable: index++ != 0,
+                          child: ImageHolder(
+                            key: Key('order.product.${product.id}'),
+                            image: product.image,
+                            title: product.name,
+                            onPressed: () => _onSelected(product),
+                          ),
+                        )
+                      : ImageHolder(
+                          key: Key('order.product.${product.id}'),
+                          image: product.image,
+                          title: product.name,
+                          onPressed: () => _onSelected(product),
+                        ),
+              ],
+            ),
     );
   }
 

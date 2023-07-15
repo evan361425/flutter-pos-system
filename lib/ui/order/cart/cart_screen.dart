@@ -47,19 +47,37 @@ class CartScreen extends StatelessWidget {
       Expanded(child: _CartMetadata()),
     ]);
 
+    final colorScheme = Theme.of(context).colorScheme;
+    final cardColor = ElevationOverlay.applySurfaceTint(
+      colorScheme.surface,
+      colorScheme.surfaceTint,
+      1,
+    );
     return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      ),
+      color: cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: selector,
+          Material(
+            elevation: 10,
+            color: cardColor,
+            shadowColor: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: selector,
+            ),
           ),
           // no padding here to show full width of tile
           const Expanded(child: CartProductList()),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: actions,
+          ColoredBox(
+            color: cardColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: actions,
+            ),
           ),
         ],
       ),

@@ -59,7 +59,13 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
           .value
           .toString(),
       // chinese will be hidden if using default value
-      daysOfWeekHeight: 20.0,
+      // daysOfWeekHeight: 20.0,
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: Theme.of(context)
+            .textTheme
+            .bodySmall!
+            .copyWith(color: const Color(0xFF4F4F4F)),
+      ),
       // header
       headerStyle: const HeaderStyle(formatButtonShowsNext: false),
       availableCalendarFormats: {

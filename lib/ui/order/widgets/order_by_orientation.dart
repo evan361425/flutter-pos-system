@@ -21,17 +21,22 @@ class OrderByOrientation extends StatelessWidget {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) {
-        return orientation == Orientation.portrait ? _portrait() : _landscape();
+        return orientation == Orientation.portrait
+            ? _portrait(context)
+            : _landscape(context);
       },
     );
   }
 
-  Widget _portrait() {
+  Widget _portrait(BuildContext context) {
     return Column(
       key: const Key('order.orientation.portrait'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        row1,
+        ColoredBox(
+          color: Theme.of(context).colorScheme.background,
+          child: row1,
+        ),
         Expanded(child: row2),
         Expanded(flex: 3, child: row3),
         row4,
@@ -39,7 +44,7 @@ class OrderByOrientation extends StatelessWidget {
     );
   }
 
-  Widget _landscape() {
+  Widget _landscape(BuildContext context) {
     return Row(
       key: const Key('order.orientation.landscape'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,7 +64,10 @@ class OrderByOrientation extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              row1,
+              ColoredBox(
+                color: Theme.of(context).colorScheme.background,
+                child: row1,
+              ),
               Expanded(child: row2),
             ],
           ),

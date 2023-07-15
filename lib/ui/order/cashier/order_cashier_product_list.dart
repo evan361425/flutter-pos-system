@@ -94,7 +94,7 @@ class OrderCashierProductList extends StatelessWidget {
         HintText(S.orderCashierProductMetaCount(productCount)),
         for (final product in products) _ProductTile(product),
         // avoid calculator overlapping it
-        const SizedBox(height: 36),
+        // const SizedBox(height: 36),
       ]),
     );
   }

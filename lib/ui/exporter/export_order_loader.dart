@@ -37,27 +37,19 @@ class ExportOrderLoader extends StatelessWidget {
   /// 因為匯出時過大的資訊量會導致服務崩潰，所以先盡可能的計算大小。
   Widget _buildMemoryInfo(BuildContext context, OrderLoaderMetrics metrics) {
     final size = memoryPredictor(metrics);
+    final level = size < 500000 // 500KB
+        ? 0
+        : size < 1000000 // 1MB
+            ? 1
+            : 2;
     showMemoryInfo() => showDialog(
           context: context,
           builder: (context) {
-            return SimpleDialog(children: [
-              Column(children: [
-                Text('預估容量為：${getMemoryWithUnit(size)}'),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Linkify.fromString([
-                    '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
-                    if (warningUrl != null) '\n詳細容量限制說明可以參考[本文件]($warningUrl)。',
-                  ].join()),
-                )
-              ]),
-            ]);
+            return _buildWarningDialog(context, size, level);
           },
         );
 
-    // 500KB
-    if (size < 500000) {
+    if (level == 0) {
       return IconButton(
         icon: const Icon(Icons.check_outlined),
         iconSize: 16.0,
@@ -70,8 +62,7 @@ class ExportOrderLoader extends StatelessWidget {
       );
     }
 
-    // 1MB
-    if (size < 1000000) {
+    if (level == 1) {
       return IconButton(
         icon: const Icon(Icons.warning_amber_outlined),
         iconSize: 16.0,
@@ -122,6 +113,49 @@ class ExportOrderLoader extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _buildWarningDialog(BuildContext context, int size, int level) {
+    const style = TextStyle(fontWeight: FontWeight.bold);
+    return SimpleDialog(children: [
+      Column(children: [
+        Text('預估容量為：${getMemoryWithUnit(size)}'),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(
+              Icons.check_outlined,
+              weight: level == 0 ? 24.0 : null,
+            ),
+            Icon(
+              Icons.warning_amber_outlined,
+              weight: level == 0 ? 24.0 : null,
+            ),
+            Icon(
+              Icons.dangerous_outlined,
+              weight: level == 0 ? 24.0 : null,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text('<500KB', style: level == 0 ? style : null),
+            Text('<1MB', style: level == 1 ? style : null),
+            Text('≥1MB', style: level == 2 ? style : null),
+          ],
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Linkify.fromString([
+            '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
+            if (warningUrl != null) '\n詳細容量限制說明可以參考[本文件]($warningUrl)。',
+          ].join()),
+        )
+      ]),
+    ]);
   }
 
   static String getMemoryWithUnit(int size) {

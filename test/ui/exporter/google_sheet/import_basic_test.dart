@@ -114,6 +114,13 @@ void main() {
           await tester.pumpAndSettle();
           await go2Importer(tester);
 
+          // scroll down
+          await tester.drag(
+            find.byIcon(Icons.remove_red_eye_sharp).first,
+            const Offset(0, -1000),
+          );
+          await tester.pumpAndSettle();
+
           final btn = find.byIcon(Icons.remove_red_eye_sharp);
           await tester.tap(btn.at(index));
           await tester.pumpAndSettle();
