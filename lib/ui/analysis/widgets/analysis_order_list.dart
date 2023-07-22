@@ -38,12 +38,13 @@ class AnalysisOrderList extends StatelessWidget {
   }
 
   Widget _buildDropdown(BuildContext context) {
+    final theme = Theme.of(context);
     final dropdown = DropdownButton<ExportMethod>(
       key: const Key('analysis.export'),
       value: null,
       isDense: true,
       hint: const Text('匯出'),
-      style: Theme.of(context).textTheme.bodyMedium,
+      style: theme.textTheme.bodyMedium!,
       underline: const SizedBox.shrink(),
       items: ExportMethod.values.map((ExportMethod value) {
         return DropdownMenuItem<ExportMethod>(
@@ -66,11 +67,9 @@ class AnalysisOrderList extends StatelessWidget {
       },
     );
 
-    final theme = Theme.of(context);
-
     // let dropdown look like button
     return Theme(
-      data: ThemeData(hintColor: theme.textTheme.bodyMedium?.color),
+      data: theme.copyWith(hintColor: theme.textTheme.bodyMedium!.color),
       child: dropdown,
     );
   }

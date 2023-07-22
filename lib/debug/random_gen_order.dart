@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -211,17 +212,21 @@ class _SettingPageState extends State<_SettingPage> {
   }
 
   Future<void> selectDates() async {
+    const oneDay = Duration(days: 1);
     final selected = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
-      initialDateRange: DateTimeRange(start: startFrom, end: endTo),
+      lastDate: DateUtils.dateOnly(DateTime.now()),
+      initialDateRange: DateTimeRange(
+        start: startFrom,
+        end: endTo.subtract(oneDay),
+      ),
     );
 
     if (selected != null) {
       setState(() {
         startFrom = selected.start;
-        endTo = selected.end;
+        endTo = selected.end.add(oneDay);
       });
     }
   }
@@ -244,8 +249,9 @@ class _SettingPageState extends State<_SettingPage> {
 
   @override
   void initState() {
-    endTo = DateTime.now();
-    startFrom = endTo.subtract(const Duration(days: 1));
+    final r = Util.getDateRange();
+    startFrom = r.start;
+    endTo = r.end;
     super.initState();
   }
 }

@@ -143,7 +143,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // change format
-      await tester.tap(find.text(S.analysisCalendarWeek));
+      await tester.tap(find.text(S.analysisCalendarMonth));
       await tester.pumpAndSettle();
 
       expect(find.text('50'), findsOneWidget);

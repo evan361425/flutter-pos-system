@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/my_app.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -17,6 +18,7 @@ class TutorialWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return SpotlightShow(
       startWhenReady: startWhenReady,
+      routeObserver: MyApp.routeObserver,
       child: child,
     );
   }

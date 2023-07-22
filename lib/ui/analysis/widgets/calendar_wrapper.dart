@@ -46,47 +46,46 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return TableCalendar<int>(
-      firstDay: DateTime(2021, 1),
-      lastDay: DateTime.now(),
-      focusedDay: _focusedDay,
-      calendarFormat: _calendarFormat,
-      shouldFillViewport: widget.isPortrait ? false : true,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      rangeSelectionMode: RangeSelectionMode.disabled,
-      locale: SettingsProvider.instance
-          .getSetting<LanguageSetting>()
-          .value
-          .toString(),
-      // chinese will be hidden if using default value
-      // daysOfWeekHeight: 20.0,
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekdayStyle: Theme.of(context)
-            .textTheme
-            .bodySmall!
-            .copyWith(color: const Color(0xFF4F4F4F)),
+    return MediaQuery(
+      // text being too large will cause overlay
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: TableCalendar<int>(
+        firstDay: DateTime(2021, 1),
+        lastDay: DateTime.now(),
+        focusedDay: _focusedDay,
+        calendarFormat: _calendarFormat,
+        shouldFillViewport: widget.isPortrait ? false : true,
+        startingDayOfWeek: StartingDayOfWeek.monday,
+        rangeSelectionMode: RangeSelectionMode.disabled,
+        locale: SettingsProvider.instance
+            .getSetting<LanguageSetting>()
+            .value
+            .toString(),
+        // header
+        // chinese will be hidden if using default value
+        daysOfWeekHeight: 20.0,
+        headerStyle: const HeaderStyle(formatButtonShowsNext: false),
+        // show next format
+        availableCalendarFormats: {
+          CalendarFormat.month: S.analysisCalendarTwoWeek,
+          CalendarFormat.twoWeeks: S.analysisCalendarWeek,
+          CalendarFormat.week: S.analysisCalendarMonth,
+        },
+        // no need holiday/weekend days
+        holidayPredicate: (day) => false,
+        weekendDays: const [],
+        // event handlers
+        selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
+        eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, 0),
+        calendarBuilders: CalendarBuilders(
+          markerBuilder: _badgeBuilder,
+          defaultBuilder: _defaultBuilder,
+        ),
+        onPageChanged: _searchPageData,
+        onFormatChanged: (format) => setState(() => _calendarFormat = format),
+        onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
+            _onDaySelected(selectedDay),
       ),
-      // header
-      headerStyle: const HeaderStyle(formatButtonShowsNext: false),
-      availableCalendarFormats: {
-        CalendarFormat.month: S.analysisCalendarMonth,
-        CalendarFormat.twoWeeks: S.analysisCalendarTwoWeek,
-        CalendarFormat.week: S.analysisCalendarWeek,
-      },
-      // no need holiday/weekend days
-      holidayPredicate: (day) => false,
-      weekendDays: const [],
-      // event handlers
-      selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
-      eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, 0),
-      calendarBuilders: CalendarBuilders(
-        markerBuilder: _badgeBuilder,
-        defaultBuilder: _defaultBuilder,
-      ),
-      onPageChanged: _searchPageData,
-      onFormatChanged: (format) => setState(() => _calendarFormat = format),
-      onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
-          _onDaySelected(selectedDay),
     );
   }
 
@@ -119,41 +118,50 @@ class _CalendarWrapperState extends State<CalendarWrapper> {
   }
 
   Widget _defaultBuilder(
-      BuildContext context, DateTime day, DateTime focusedDay) {
+    BuildContext context,
+    DateTime day,
+    DateTime focusedDay,
+  ) {
+    final local = day.toLocal();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       margin: const EdgeInsets.all(6.0),
       padding: EdgeInsets.zero,
-      decoration: _loadedCounts.containsKey(day)
+      decoration: _loadedCounts.containsKey(local)
           ? const ShapeDecoration(
               shape: CircleBorder(side: BorderSide()),
             )
           : const BoxDecoration(shape: BoxShape.circle),
       alignment: Alignment.center,
-      child: Text('${day.day}'),
+      child: Text('${local.day}'),
     );
   }
 
+  /// the day is UTC!!!
   void _onDaySelected(DateTime day) {
-    widget.notifier.value = Util.getDateRange(now: day);
+    widget.notifier.value = Util.getDateRange(now: day.toLocal());
     setState(() {
       _selectedDay = _focusedDay = day;
     });
   }
 
+  /// the [day] is UTC!!!
   void _searchPageData(DateTime day) {
     // make calender page stay in current page
     _focusedDay = day;
-    if (!_loadedMonths.contains(_hashMonth(day))) {
-      _searchCountInMonth(day);
+    final local = day.toLocal();
+    if (!_loadedMonths.contains(_hashMonth(local))) {
+      _searchCountInMonth(local);
     }
   }
 
+  /// the [day] is UTC!!!
   void _searchCountInMonth(DateTime day) async {
-    final counts = await widget.searchCountInMonth(day);
+    final local = day.toLocal();
+    final counts = await widget.searchCountInMonth(local);
 
     setState(() {
-      _loadedMonths.add(_hashMonth(day));
+      _loadedMonths.add(_hashMonth(local));
       _loadedCounts.addAll(counts);
     });
   }
