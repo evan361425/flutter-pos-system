@@ -44,7 +44,7 @@ jobs:
         run: flutter analyze .
 
       - name: Format
-        run: flutter format --set-exit-if-changed --dry-run .
+        run: dart format --set-exit-if-changed --show none .
 
       # Run widget tests for our flutter project.
       - name: Testing
