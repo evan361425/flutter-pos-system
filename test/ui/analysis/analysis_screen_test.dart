@@ -96,10 +96,10 @@ void main() {
           ]));
 
       // setup portrait env
-      tester.binding.window.physicalSizeTestValue = const Size(1000, 2000);
+      tester.view.physicalSize = const Size(1000, 2000);
 
       // resets the screen to its original size after the test end
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(buildAnalysisScreen());
       await tester.pumpAndSettle();
@@ -134,10 +134,10 @@ void main() {
       when(mockGetOrderBetween()).thenAnswer((_) => Future.value([]));
 
       // setup landscape env
-      tester.binding.window.physicalSizeTestValue = const Size(2000, 1000);
+      tester.view.physicalSize = const Size(2000, 1000);
 
       // resets the screen to its original size after the test end
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();

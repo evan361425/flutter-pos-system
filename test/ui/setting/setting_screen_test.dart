@@ -146,7 +146,8 @@ void main() {
     });
 
     testWidgets('switch awake_ordering', (tester) async {
-      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
+      tester.view.physicalSize = const Size(1000, 3000);
+      addTearDown(tester.view.resetPhysicalSize);
       await buildApp(tester);
 
       await tester.tap(find.byKey(const Key('setting.awake_ordering')));
@@ -156,7 +157,8 @@ void main() {
     });
 
     testWidgets('switch collect_events', (tester) async {
-      tester.binding.window.physicalSizeTestValue = const Size(1000, 3000);
+      tester.view.physicalSize = const Size(1000, 3000);
+      addTearDown(tester.view.resetPhysicalSize);
       await buildApp(tester);
 
       await tester.tap(find.byKey(const Key('setting.collect_events')));

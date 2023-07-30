@@ -20,7 +20,9 @@ MockCrashlytics setupFirebaseCrashlyticsMocks() {
   final crashlytics = MockCrashlytics();
   TestFirebaseCoreHostApi.setup(crashlytics);
 
-  MethodChannelFirebaseCrashlytics.channel.setMockMethodCallHandler((c) async {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(MethodChannelFirebaseCrashlytics.channel,
+          (c) async {
     crashlytics.methodCalls.add(c.method);
     return null;
   });
@@ -35,7 +37,9 @@ Map<String, List<String>> setupFirebaseAnalyticsMocks() {
   setupFirebaseCoreMocks();
 
   final record = <String, List<String>>{'methods': []};
-  MethodChannelFirebaseAnalytics.channel.setMockMethodCallHandler((c) async {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(MethodChannelFirebaseAnalytics.channel,
+          (c) async {
     record['methods']!.add(c.method);
     return false;
   });

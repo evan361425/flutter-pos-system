@@ -274,21 +274,21 @@ void main() {
       expect(y1, greaterThan(y2));
 
       // enter non-matched products
-      await tester.enterText(find.byType(TextField), 'empty');
-      await tester.pump();
+      await tester.enterText(find.byType(TextField).last, 'empty');
+      await tester.pumpAndSettle();
 
       expect(find.text('搜尋不到相關資訊，打錯字了嗎？'), findsOneWidget);
 
       // enter match products (including ingredient)
-      await tester.enterText(find.byType(TextField), '2');
-      await tester.pump();
+      await tester.enterText(find.byType(TextField).last, '2');
+      await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('search.p-1')), findsOneWidget);
       expect(find.byKey(const Key('search.p-2')), findsOneWidget);
 
       // should match specific quantity
-      await tester.enterText(find.byType(TextField), 'q-1');
-      await tester.pump();
+      await tester.enterText(find.byType(TextField).last, 'q-1');
+      await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('search.p-1')), findsOneWidget);
       expect(find.byKey(const Key('search.p-2')), findsNothing);

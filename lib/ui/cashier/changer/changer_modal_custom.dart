@@ -137,11 +137,12 @@ class ChangerModalCustomState extends State<ChangerModalCustom> {
               ...targetEntries,
               // add bottom
               const SizedBox(height: kSpacing1),
-              OutlinedButton(
+              OutlinedButton.icon(
                 onPressed: () => setState(() {
                   targets.add(CashierChangeEntryObject());
                 }),
-                child: const Icon(KIcons.add),
+                icon: const Icon(KIcons.add),
+                label: const Text('新增幣種'),
               )
             ],
           ),

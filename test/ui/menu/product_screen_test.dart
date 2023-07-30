@@ -128,7 +128,7 @@ void main() {
         // add new ingredient
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), 'new-ingredient');
+        await tester.enterText(find.byType(TextField).last, 'new-ingredient');
         await tester.pumpAndSettle();
         await tester
             .tap(find.byKey(const Key('product_ingredient.add_ingredient')));
@@ -208,7 +208,7 @@ void main() {
         // search for ingredient2
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), '2');
+        await tester.enterText(find.byType(TextField).last, '2');
         await tester.pumpAndSettle();
 
         // go into modal and edit ingredient2 name
@@ -221,6 +221,8 @@ void main() {
         await tester.pumpAndSettle();
 
         // select new name
+        await tester.tap(find.byKey(const Key('product_ingredient.search')));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('i-2-n'));
         await tester.pumpAndSettle();
 
@@ -236,11 +238,11 @@ void main() {
         // search for ingredient3
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), 'abc');
+        await tester.enterText(find.byType(TextField).last, 'abc');
         await tester.pumpAndSettle();
 
         // prefix-i-3 should be smaller similarity
-        await tester.enterText(find.byType(TextField), 'i-');
+        await tester.enterText(find.byType(TextField).last, 'i-');
         await tester.pumpAndSettle();
         expect(
             tester
@@ -252,7 +254,7 @@ void main() {
                     find.byKey(const Key('product_ingredient.search.i-3')))
                 .dy));
 
-        await tester.enterText(find.byType(TextField), '3');
+        await tester.enterText(find.byType(TextField).last, '3');
         await tester.pumpAndSettle();
         await tester
             .tap(find.byKey(const Key('product_ingredient.search.i-3')));
@@ -370,7 +372,7 @@ void main() {
         // add new quantity
         await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), 'new-quantity');
+        await tester.enterText(find.byType(TextField).last, 'new-quantity');
         await tester.pumpAndSettle();
         await tester
             .tap(find.byKey(const Key('product_quantity.add_quantity')));
@@ -433,7 +435,7 @@ void main() {
         // search for quantity2
         await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), '2');
+        await tester.enterText(find.byType(TextField).last, '2');
         await tester.pumpAndSettle();
 
         // go into modal and edit quantity2 name
@@ -445,6 +447,8 @@ void main() {
         await tester.pumpAndSettle();
 
         // select new name
+        await tester.tap(find.byKey(const Key('product_quantity.search')));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('q-2-n'));
         await tester.pumpAndSettle();
 
@@ -462,9 +466,9 @@ void main() {
         // search for quantity3
         await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), 'abc');
+        await tester.enterText(find.byType(TextField).last, '=' * 40);
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), '3');
+        await tester.enterText(find.byType(TextField).last, '3');
         await tester.pumpAndSettle();
         await tester.tap(find.text('q-3'));
         await tester.pumpAndSettle();

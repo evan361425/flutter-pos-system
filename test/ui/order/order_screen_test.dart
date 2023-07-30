@@ -325,14 +325,12 @@ void main() {
             findsOneWidget);
 
         // setup portrait env
-        tester.binding.window.physicalSizeTestValue = const Size(1000, 2000);
+        tester.view.physicalSize = const Size(1000, 2000);
+        addTearDown(tester.view.resetPhysicalSize);
 
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('order.orientation.portrait')),
             findsOneWidget);
-
-        // resets the screen to its original size after the test end
-        tester.binding.window.clearPhysicalSizeTestValue();
       });
     });
 

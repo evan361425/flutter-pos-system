@@ -3,12 +3,10 @@ import 'package:possystem/constants/icons.dart';
 
 class SearchBarInline extends StatelessWidget {
   final String? text;
-  final String? Function(String?)? validator;
   final String? labelText;
   final String? hintText;
-  final String? helperText;
-  final bool autofocus;
-  final void Function(BuildContext) onTap;
+  final String? Function(String?)? validator;
+  final void Function() onTap;
 
   /// using controller for dynamically change the initialValue
   final TextEditingController textController;
@@ -19,8 +17,6 @@ class SearchBarInline extends StatelessWidget {
     this.validator,
     this.labelText,
     this.hintText,
-    this.helperText,
-    this.autofocus = false,
     required this.onTap,
   })  : textController = TextEditingController(text: text),
         super(key: key);
@@ -32,17 +28,14 @@ class SearchBarInline extends StatelessWidget {
         readOnly: true,
         enableInteractiveSelection: false,
         controller: textController,
-        onTap: () => onTap(context),
-        textInputAction: TextInputAction.search,
+        onTap: onTap,
         validator: validator,
-        autofocus: autofocus,
         decoration: InputDecoration(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: const OutlineInputBorder(borderSide: BorderSide()),
           isDense: true,
           labelText: labelText,
           hintText: hintText,
-          helperText: helperText,
           focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
           prefixIcon: const Icon(KIcons.search),
         ),

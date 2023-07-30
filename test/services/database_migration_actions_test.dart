@@ -14,7 +14,7 @@ import 'package:possystem/services/database.dart';
 import 'package:possystem/services/database_migration_actions.dart';
 import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' show databaseFactoryFfi;
 
 import '../mocks/mock_storage.dart';
 import 'database_test.mocks.dart';

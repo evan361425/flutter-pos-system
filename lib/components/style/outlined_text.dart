@@ -92,7 +92,7 @@ class OutlinedText extends StatelessWidget {
     }
 
     return Badge(
-      alignment: const AlignmentDirectional(0, 0),
+      alignment: AlignmentDirectional.topEnd,
       label: Text(badge!),
       child: base,
     );

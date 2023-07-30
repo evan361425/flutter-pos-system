@@ -4,7 +4,8 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'
+    show databaseFactoryFfi, sqfliteFfiInit;
 
 import '../test_helpers/file_mocker.dart';
 import 'database_test.mocks.dart';

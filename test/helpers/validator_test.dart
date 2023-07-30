@@ -59,10 +59,10 @@ void main() {
       expect(validator('abc'), isNotNull);
       expect(validator('1.2'), isNotNull);
       expect(validator('長度三'), isNotNull);
-      expect(validator('😂😂'), isNotNull);
+      expect(validator('😂😂😂'), isNotNull);
       expect(validator('ab'), isNull);
       expect(validator('二長'), isNull);
-      expect(validator('😂'), isNull);
+      expect(validator('😂😂'), isNull);
     });
 
     setUpAll(() {

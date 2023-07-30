@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/scaffold/search_scaffold.dart';
-import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -11,7 +9,6 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
-import 'package:provider/provider.dart';
 
 class ProductIngredientModal extends StatefulWidget {
   final ProductIngredient? ingredient;
@@ -45,15 +42,18 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      SearchBarInline(
+      SearchBarWrapper(
         key: const Key('product_ingredient.search'),
         text: ingredientName,
         labelText: S.menuIngredientSearchLabel,
         hintText: S.menuIngredientSearchHint,
-        autofocus: widget.isNew,
-        validator: _validateIngredient,
-        helperText: S.menuIngredientSearchHelper,
-        onTap: _selectIngredient,
+        // TODO: merge into one validator, and custom [initData]
+        validator: Validator.textLimit(S.menuIngredientSearchLabel, 30),
+        formValidator: _validateIngredient,
+        initData: Stock.instance.itemList,
+        search: (text) async => Stock.instance.sortBySimilarity(text),
+        itemBuilder: _searchItemBuilder,
+        emptyBuilder: _searchEmptyBuilder,
       ),
       TextFormField(
         key: const Key('product_ingredient.amount'),
@@ -123,21 +123,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     );
   }
 
-  Future<void> _selectIngredient(BuildContext context) async {
-    final result = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => _ProductIngredientSearch(text: ingredientName),
-    ));
-
-    if (result is Ingredient) {
-      final ingredient = result;
-
-      setState(() {
-        ingredientId = ingredient.id;
-        ingredientName = ingredient.name;
-      });
-    }
-  }
-
   String? _validateIngredient(String? name) {
     if (ingredientId.isEmpty) {
       return S.menuIngredientSearchEmptyError;
@@ -150,50 +135,29 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
 
     return null;
   }
-}
 
-class _ProductIngredientSearch extends StatelessWidget {
-  final String? text;
-
-  const _ProductIngredientSearch({Key? key, this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final stock = context.watch<Stock>();
-
-    return SearchScaffold<Ingredient>(
-      handleChanged: (text) async {
-        return stock.sortBySimilarity(text);
-      },
-      itemBuilder: itemBuilder,
-      emptyBuilder: emptyBuilder,
-      initialData: stock.itemList,
-      text: text ?? '',
-      hintText: S.menuIngredientSearchLabel,
-      textCapitalization: TextCapitalization.words,
-    );
-  }
-
-  Widget emptyBuilder(BuildContext context, String text) {
-    return CardTile(
+  Widget _searchEmptyBuilder(BuildContext context, String text) {
+    return ListTile(
       key: const Key('product_ingredient.add_ingredient'),
       title: Text(S.menuIngredientSearchAdd(text)),
+      subtitle: Text(S.menuIngredientSearchHelper),
       onTap: () async {
         final ingredient = Ingredient(name: text);
         await Stock.instance.addItem(ingredient);
         if (context.mounted) {
-          Navigator.of(context).pop<Ingredient>(ingredient);
+          _updateIngredient(context, ingredient);
         }
       },
     );
   }
 
-  Widget itemBuilder(BuildContext context, Ingredient ingredient) {
-    return CardTile(
+  Widget _searchItemBuilder(BuildContext context, Ingredient ingredient) {
+    return ListTile(
       key: Key('product_ingredient.search.${ingredient.id}'),
       title: Text(ingredient.name),
       trailing: IconButton(
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => IngredientModal(
               ingredient: ingredient,
@@ -203,9 +167,15 @@ class _ProductIngredientSearch extends StatelessWidget {
         },
         icon: const Icon(Icons.open_in_new_sharp),
       ),
-      onTap: () {
-        Navigator.of(context).pop(ingredient);
-      },
+      onTap: () => _updateIngredient(context, ingredient),
     );
+  }
+
+  void _updateIngredient(BuildContext context, Ingredient ingredient) {
+    setState(() {
+      ingredientId = ingredient.id;
+      ingredientName = ingredient.name;
+    });
+    Navigator.of(context).pop();
   }
 }

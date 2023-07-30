@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/sign_in_button.dart';
-import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -83,12 +82,9 @@ class _ImportBasicScreenState extends State<ImportBasicScreen> {
           },
         ),
         const TextDivider(label: '選擇欲匯入表單'),
-        const CardInfoText(
-          child: Text('選擇試算表並「確認表單名稱」後，就可以開始選擇表單匯入。'),
-        ),
         for (final entry in sheets.entries)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.all(12.0),
             child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Expanded(
                 child: SheetSelector(

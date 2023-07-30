@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/search_bar_inline.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/menu_search.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/catalog_list.dart';
@@ -18,7 +17,6 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.watch<T>() === Provider.of<T>(context, listen: true)
     final menu = context.watch<Menu>();
 
     goAddCatalog() => Navigator.of(context).pushNamed(Routes.menuCatalogModal);
@@ -51,7 +49,23 @@ class MenuScreen extends StatelessWidget {
                   '「塑膠袋」、「環保杯」整合進「其他」',
               onPressed: goAddCatalog,
             ))
-          : _MenuBody(menu),
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SearchBarWrapper(
+                    key: const Key('menu.search'),
+                    hintText: S.menuSearchProductHint,
+                    initData: Menu.instance.searchProducts(),
+                    search: (text) async =>
+                        Menu.instance.searchProducts(text: text),
+                    itemBuilder: _itemBuilder,
+                    emptyBuilder: _emptyBuilder,
+                  ),
+                ),
+                Expanded(child: CatalogList(menu.itemList)),
+              ],
+            ),
     );
   }
 
@@ -67,33 +81,26 @@ class MenuScreen extends StatelessWidget {
       ],
     );
   }
-}
 
-class _MenuBody extends StatelessWidget {
-  final Menu menu;
-
-  const _MenuBody(this.menu);
-
-  @override
-  Widget build(BuildContext context) {
-    final searchBar = Padding(
-      padding: const EdgeInsets.fromLTRB(kSpacing1, kSpacing1, kSpacing1, 0),
-      child: Hero(
-        tag: MenuSearch.heroTag,
-        child: SearchBarInline(
-          key: const Key('menu.search'),
-          hintText: S.menuSearchProductHint,
-          onTap: (context) =>
-              Navigator.of(context).pushNamed(Routes.menuSearch),
-        ),
-      ),
+  Widget _itemBuilder(BuildContext context, Product item) {
+    return ListTile(
+      key: Key('search.${item.id}'),
+      title: Text(item.name),
+      onTap: () {
+        // NOTE: using pushReplacement will hide the search bar...
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(
+          Routes.menuProduct,
+          arguments: item..searched(),
+        );
+      },
     );
+  }
 
-    return Column(
-      children: [
-        searchBar,
-        Expanded(child: CatalogList(menu.itemList)),
-      ],
+  Widget _emptyBuilder(BuildContext context, String text) {
+    return ListTile(
+      title: Text(S.menuSearchProductNotFound),
+      leading: const Icon(Icons.warning_amber_sharp),
     );
   }
 }

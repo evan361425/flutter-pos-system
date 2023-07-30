@@ -95,7 +95,7 @@ class Validator {
 
       if (value == null || value.isEmpty) {
         error = S.invalidEmptyString(fieldName);
-      } else if (value.length > limit) {
+      } else if (value.characters.length > limit) {
         error = S.invalidStringMaximum(fieldName, limit);
       } else if (validator != null) {
         error = validator(value);

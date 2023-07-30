@@ -39,7 +39,7 @@ class SheetSelectorState extends State<SheetSelector> {
         DropdownMenuItem<GoogleSheetProperties?>(
           value: null,
           child: Text(
-            '確認表單名稱後選擇',
+            '請先確認試算表',
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),

@@ -482,8 +482,8 @@ void main() {
 
     testWidgets('Play with calculator', (tester) async {
       CurrencySetting.instance.isInt = false;
-      tester.binding.window.physicalSizeTestValue = const Size(1500, 3000);
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      tester.view.physicalSize = const Size(1500, 3000);
+      addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(
         MaterialApp(routes: Routes.routes, home: const OrderScreen()),

@@ -31,7 +31,7 @@ jobs:
       # Setup the flutter environment.
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.7.x"
+          flutter-version: "3.10.x"
           cache: true
           channel: "stable"
 

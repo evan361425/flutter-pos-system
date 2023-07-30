@@ -12,8 +12,8 @@ void main() {
       when(cache.get(any)).thenReturn(null);
       when(cache.set(any, true)).thenAnswer((_) => Future.value(true));
 
-      final widgets = Column(
-        children: const <Widget>[
+      const widgets = Column(
+        children: <Widget>[
           Tutorial(
             id: '1',
             title: 'title1',
@@ -24,7 +24,7 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: TutorialWrapper(child: Scaffold(body: widgets)),
       ));
       await tester.pumpAndSettle();

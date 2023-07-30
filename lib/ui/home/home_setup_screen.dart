@@ -110,7 +110,7 @@ class HomeSetupScreen extends StatelessWidget {
               title: S.settingTitle,
             ),
             const Divider(),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Linkify([LinkifyData('Privacy Policy', _privacyPolicy)]),
               Text(MetaBlock.string),
               Linkify([LinkifyData('License', _license)]),

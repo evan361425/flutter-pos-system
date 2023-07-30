@@ -19,7 +19,6 @@ import 'ui/menu/catalog/catalog_screen.dart';
 import 'ui/menu/catalog/widgets/product_modal.dart';
 import 'ui/menu/catalog/widgets/product_orderable_list.dart';
 import 'ui/menu/menu_screen.dart';
-import 'ui/menu/menu_search.dart';
 import 'ui/menu/product/product_screen.dart';
 import 'ui/menu/product/widgets/product_ingredient_modal.dart';
 import 'ui/menu/product/widgets/product_quantity_modal.dart';
@@ -99,7 +98,6 @@ class Routes {
         OrderAttributeOptionReorder(attribute: _a<OrderAttribute>(ctx)),
     exporter: (_) => ExporterScreen(),
     // menu
-    menuSearch: (_) => const MenuSearch(),
     menuCatalog: (context) => ChangeNotifierProvider.value(
           value: _a<Catalog>(context),
           builder: (_, __) => const CatalogScreen(),

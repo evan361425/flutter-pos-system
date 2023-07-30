@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/scaffold/search_scaffold.dart';
-import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -11,7 +9,6 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/quantities/widgets/quantity_modal.dart';
-import 'package:provider/provider.dart';
 
 class ProductQuantityModal extends StatefulWidget {
   final ProductQuantity? quantity;
@@ -49,15 +46,17 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      SearchBarInline(
+      SearchBarWrapper(
         key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: S.menuQuantitySearchLabel,
         hintText: S.menuQuantitySearchHint,
-        autofocus: widget.isNew,
-        validator: _validateQuantity,
-        helperText: S.menuQuantitySearchHelper,
-        onTap: _selectQuantity,
+        validator: Validator.textLimit(S.menuQuantitySearchLabel, 30),
+        formValidator: _validateQuantity,
+        initData: Quantities.instance.itemList,
+        search: (text) async => Quantities.instance.sortBySimilarity(text),
+        itemBuilder: _searchItemBuilder,
+        emptyBuilder: _searchEmptyBuilder,
       ),
       TextFormField(
         key: const Key('product_quantity.amount'),
@@ -175,20 +174,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     );
   }
 
-  Future<void> _selectQuantity(BuildContext context) async {
-    final result = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => _ProductQuantitySearch(quantityName),
-    ));
-
-    if (result is Quantity) {
-      setState(() {
-        quantityId = result.id;
-        quantityName = result.name;
-        _updateByProportion(result.defaultProportion);
-      });
-    }
-  }
-
   String? _validateQuantity(String? name) {
     if (quantityId.isEmpty) {
       return S.menuQuantitySearchEmptyError;
@@ -201,56 +186,44 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     return null;
   }
 
-  void _updateByProportion(num proportion) {
-    _amountController.text = (widget.ingredient.amount * proportion).toString();
-  }
-}
-
-class _ProductQuantitySearch extends StatelessWidget {
-  final String? text;
-
-  const _ProductQuantitySearch(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    final quantities = context.watch<Quantities>();
-
-    return SearchScaffold<Quantity>(
-      handleChanged: (text) async => quantities.sortBySimilarity(text),
-      itemBuilder: itemBuilder,
-      emptyBuilder: emptyBuilder,
-      initialData: quantities.itemList,
-      text: text ?? '',
-      hintText: S.menuQuantitySearchLabel,
-      textCapitalization: TextCapitalization.words,
-    );
-  }
-
-  Widget emptyBuilder(BuildContext context, String text) {
-    return CardTile(
+  Widget _searchEmptyBuilder(BuildContext context, String text) {
+    return ListTile(
       key: const Key('product_quantity.add_quantity'),
       title: Text(S.menuQuantitySearchAdd(text)),
+      subtitle: Text(S.menuQuantitySearchHelper),
       onTap: () async {
         final quantity = Quantity(name: text);
         await Quantities.instance.addItem(quantity);
         if (context.mounted) {
-          Navigator.of(context).pop<Quantity>(quantity);
+          _updateQuantity(quantity);
         }
       },
     );
   }
 
-  Widget itemBuilder(BuildContext context, Quantity quantity) {
-    return CardTile(
+  Widget _searchItemBuilder(BuildContext context, Quantity quantity) {
+    return ListTile(
       title: Text(quantity.name),
       trailing: IconButton(
-        onPressed: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => QuantityModal(quantity))),
+        onPressed: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => QuantityModal(quantity),
+          ));
+        },
         icon: const Icon(Icons.open_in_new_sharp),
       ),
-      onTap: () {
-        Navigator.of(context).pop<Quantity>(quantity);
-      },
+      onTap: () => _updateQuantity(quantity),
     );
+  }
+
+  void _updateQuantity(Quantity quantity) {
+    setState(() {
+      quantityId = quantity.id;
+      quantityName = quantity.name;
+      _amountController.text =
+          (widget.ingredient.amount * quantity.defaultProportion).toString();
+    });
+    Navigator.of(context).pop();
   }
 }
