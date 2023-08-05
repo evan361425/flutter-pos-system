@@ -6,20 +6,25 @@ import 'package:spotlight_ant/spotlight_ant.dart';
 class TutorialWrapper extends StatelessWidget {
   final Widget child;
 
-  final bool startWhenReady;
+  final TutorialInTab? tab;
 
   const TutorialWrapper({
     Key? key,
     required this.child,
-    this.startWhenReady = true,
+    this.tab,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SpotlightShow(
-      startWhenReady: startWhenReady,
       routeObserver: MyApp.routeObserver,
-      child: child,
+      startWhenReady: tab == null, // start if no tab passed
+      child: Builder(
+        builder: (context) {
+          tab?.listenIndexChanging(context);
+          return child;
+        },
+      ),
     );
   }
 }
@@ -40,12 +45,12 @@ class Tutorial extends StatelessWidget {
   /// force disabling tutorial
   final bool disable;
 
-  final TutorialInTab? tab;
-
   final Widget child;
 
-  @visibleForTesting
-  final bool fast;
+  final Duration bumpDuration;
+  final Duration zoomInDuration;
+  final Duration zoomOutDuration;
+  final Duration contentFadeInDuration;
 
   const Tutorial({
     Key? key,
@@ -53,31 +58,27 @@ class Tutorial extends StatelessWidget {
     this.title,
     required this.message,
     this.index,
-    this.tab,
     this.spotlightBuilder = const SpotlightCircularBuilder(),
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
     required this.child,
-    this.fast = false,
+    this.bumpDuration = const Duration(milliseconds: 500),
+    this.zoomInDuration = const Duration(milliseconds: 600),
+    this.zoomOutDuration = const Duration(milliseconds: 600),
+    this.contentFadeInDuration = const Duration(milliseconds: 200),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (!enabled) return child;
-
-    final m300 = fast ? Duration.zero : const Duration(milliseconds: 300);
-    final m600 = fast ? Duration.zero : const Duration(milliseconds: 600);
-    tab?.listenIndexChanging(context);
-
     return SpotlightAnt(
       actions: const [SpotlightAntAction.prev, SpotlightAntAction.next],
       spotlightBuilder: spotlightBuilder,
       index: index,
       spotlightPadding: padding,
-      bumpDuration: m300,
-      zoomInDuration: m600,
-      zoomOutDuration: m600,
-      contentFadeInDuration: m300,
+      bumpDuration: bumpDuration,
+      zoomInDuration: zoomInDuration,
+      zoomOutDuration: zoomOutDuration,
+      contentFadeInDuration: contentFadeInDuration,
       content: SpotlightContent(
         child: Column(children: [
           if (title != null)
@@ -90,6 +91,7 @@ class Tutorial extends StatelessWidget {
         ]),
       ),
       onDismiss: _onDismiss,
+      enable: enabled,
       child: child,
     );
   }

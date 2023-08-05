@@ -9,6 +9,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/quantities/widgets/quantity_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductQuantityModal extends StatefulWidget {
   final ProductQuantity? quantity;
@@ -111,6 +112,18 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         ),
       )
     ];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final repo = context.watch<Quantities>();
+    final qua = repo.getItem(quantityId);
+    if (qua != null && mounted) {
+      setState(() {
+        quantityName = qua.name;
+      });
+    }
   }
 
   @override

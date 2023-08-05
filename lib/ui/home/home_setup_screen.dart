@@ -25,7 +25,7 @@ class HomeSetupScreen extends StatelessWidget {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
     return TutorialWrapper(
-      startWhenReady: false,
+      tab: tab,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,6 @@ class HomeSetupScreen extends StatelessWidget {
             Tutorial(
               id: 'home.order_attr',
               index: 0,
-              tab: tab,
               title: '顧客設定',
               message: '這裡可以設定顧客資訊，例如：\n'
                   '內用，加價一成；\n'

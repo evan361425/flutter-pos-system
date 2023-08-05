@@ -41,29 +41,22 @@ class OrderProductList extends StatelessWidget {
               crossAxisSpacing: 8.0,
               children: [
                 for (final product in products)
-                  index++ == 0
-                      ? Tutorial(
-                          id: 'order.menu_product',
-                          title: '開始點餐！',
-                          message: '透過圖片點餐更方便！\n'
-                              '你也可以到「設定」頁面，\n'
-                              '設定「每行顯示幾個產品」或僅使用文字點餐',
-                          spotlightBuilder:
-                              const SpotlightRectBuilder(borderRadius: 16),
-                          disable: index++ != 0,
-                          child: ImageHolder(
-                            key: Key('order.product.${product.id}'),
-                            image: product.image,
-                            title: product.name,
-                            onPressed: () => _onSelected(product),
-                          ),
-                        )
-                      : ImageHolder(
-                          key: Key('order.product.${product.id}'),
-                          image: product.image,
-                          title: product.name,
-                          onPressed: () => _onSelected(product),
-                        ),
+                  Tutorial(
+                    id: 'order.menu_product',
+                    title: '開始點餐！',
+                    message: '透過圖片點餐更方便！\n'
+                        '你也可以到「設定」頁面，\n'
+                        '設定「每行顯示幾個產品」或僅使用文字點餐',
+                    spotlightBuilder:
+                        const SpotlightRectBuilder(borderRadius: 16),
+                    disable: index++ != 0,
+                    child: ImageHolder(
+                      key: Key('order.product.${product.id}'),
+                      image: product.image,
+                      title: product.name,
+                      onPressed: () => _onSelected(product),
+                    ),
+                  )
               ],
             ),
     );

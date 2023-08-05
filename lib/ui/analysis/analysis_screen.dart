@@ -17,7 +17,7 @@ class AnalysisScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TutorialWrapper(
-      startWhenReady: false,
+      tab: tab,
       child: OrientationBuilder(
         key: const Key('analysis.builder'),
         builder: (context, orientation) => orientation == Orientation.portrait
@@ -32,7 +32,6 @@ class AnalysisScreen extends StatelessWidget {
       id: 'analysis.calendar',
       title: '日曆格式',
       message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
-      tab: tab,
       spotlightBuilder: const SpotlightRectBuilder(),
       child: CalendarWrapper(
         isPortrait: isPortrait,
@@ -43,10 +42,7 @@ class AnalysisScreen extends StatelessWidget {
   }
 
   Widget _buildOrderList() {
-    return AnalysisOrderList(
-      notifier: notifier,
-      tab: tab,
-    );
+    return AnalysisOrderList(notifier: notifier);
   }
 
   Widget _buildLandscape() {

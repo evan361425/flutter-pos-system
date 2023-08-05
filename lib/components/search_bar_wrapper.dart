@@ -74,16 +74,18 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
                 final error = widget.validator?.call(controller.text);
                 // [Column] widget minimum children height
                 if (error != null) {
-                  return SizedBox.shrink(
-                    child: ListTile(
+                  return buildSingle(
+                    context,
+                    ListTile(
                       title: Text(error),
                       leading: const Icon(Icons.warning_amber_sharp),
                     ),
                   );
                 }
 
-                return SizedBox.shrink(
-                  child: widget.emptyBuilder(context, controller.text),
+                return buildSingle(
+                  context,
+                  widget.emptyBuilder(context, controller.text),
                 );
               }
 
@@ -113,6 +115,17 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
           context,
           items.elementAt(index),
         ),
+      ),
+    );
+  }
+
+  Widget buildSingle(BuildContext context, Widget child) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (context, index) => child,
       ),
     );
   }

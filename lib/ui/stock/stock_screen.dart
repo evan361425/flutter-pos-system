@@ -35,17 +35,16 @@ class StockScreen<T> extends StatelessWidget {
     }
 
     return TutorialWrapper(
-      startWhenReady: false,
+      tab: tab,
       child: ListView(children: [
         Flex(direction: Axis.horizontal, children: [
-          Expanded(
+          const Expanded(
             child: Tutorial(
               id: 'stock.replenishment',
               index: 1,
-              tab: tab,
               title: '成份採購',
               message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
-              child: const RouteCircularButton(
+              child: RouteCircularButton(
                 key: Key('stock.replenisher'),
                 icon: Icons.shopping_basket_sharp,
                 route: Routes.stockReplenishment,

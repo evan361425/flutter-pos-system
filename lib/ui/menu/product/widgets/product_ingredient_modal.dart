@@ -9,6 +9,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/ingredient_modal.dart';
+import 'package:provider/provider.dart';
 
 class ProductIngredientModal extends StatefulWidget {
   final ProductIngredient? ingredient;
@@ -74,6 +75,18 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         ),
       ),
     ];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final stock = context.watch<Stock>();
+    final ing = stock.getItem(ingredientId);
+    if (ing != null && mounted) {
+      setState(() {
+        ingredientName = ing.name;
+      });
+    }
   }
 
   @override

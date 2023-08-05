@@ -17,7 +17,7 @@ class CashierScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TutorialWrapper(
-      startWhenReady: false,
+      tab: tab,
       child: ListView(children: [
         const SizedBox(height: 4.0),
         Flex(direction: Axis.horizontal, children: [
@@ -25,7 +25,6 @@ class CashierScreen extends StatelessWidget {
             child: Tutorial(
               id: 'cashier.default',
               index: 2,
-              tab: tab,
               title: '收銀機預設狀態',
               message: '在下面設定完收銀機各幣值的數量後，\n'
                   '按這裡設定預設狀態！\n'

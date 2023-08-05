@@ -13,12 +13,9 @@ import 'analysis_order_modal.dart';
 class AnalysisOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  final TutorialInTab? tab;
-
   const AnalysisOrderList({
     Key? key,
     required this.notifier,
-    this.tab,
   }) : super(key: key);
 
   @override
@@ -28,8 +25,7 @@ class AnalysisOrderList extends StatelessWidget {
         id: 'analysis.export',
         title: '訂單資料匯出',
         message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
-        tab: tab,
-        spotlightBuilder: const SpotlightRectBuilder(),
+        spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
         child: _buildDropdown(context),
       ),
       builder: _buildOrder,
