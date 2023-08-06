@@ -689,10 +689,10 @@ packages:
     dependency: "direct main"
     description:
       name: info_popup
-      sha256: "594810031fc2b02afa62c154c51dd02a5f06eda6f330b1edbaa5847f20a83c2e"
+      sha256: db06c8e5c7820fa7bb0d329face69fa4bff9d326899f6b9b9f5e471569f1a90f
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.5"
   intl:
     dependency: "direct main"
     description:
@@ -1094,10 +1094,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotlight_ant
-      sha256: "288c402637d8c6e624f8d49f2feeb3930fc0d362eb7d1265aea1753a34aabca4"
+      sha256: b9cd70a985e6dfd501535768dffcb40d86cfc4ea28b8528306b59b21d1603cfd
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.0"
+    version: "0.9.0"
   sqflite:
     dependency: "direct main"
     description:
