@@ -48,7 +48,7 @@ void main() {
       IconData icon = Icons.file_open_outlined,
     ]) async {
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.more_vert_sharp));
+      await tester.tap(find.byIcon(Icons.more_horiz_sharp).first);
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(icon));
       await tester.pump();
