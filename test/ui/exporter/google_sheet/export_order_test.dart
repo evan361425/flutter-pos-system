@@ -235,11 +235,11 @@ void main() {
                 );
               }).toList(),
             )));
-        when(sheetsApi.spreadsheets.batchUpdate(
+        when(sheetsApi.spreadsheets.values.batchUpdate(
           any,
           any,
           $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+        )).thenAnswer((_) => Future.value(gs.BatchUpdateValuesResponse()));
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
@@ -267,18 +267,14 @@ void main() {
             ...OrderFormatter.formatOrderIngredient(order),
           ],
         ];
-        verify(sheetsApi.spreadsheets.batchUpdate(
-          argThat(predicate<gs.BatchUpdateSpreadsheetRequest?>((batch) {
+        verify(sheetsApi.spreadsheets.values.batchUpdate(
+          argThat(predicate<gs.BatchUpdateValuesRequest?>((batch) {
             for (var e1 in expected) {
-              final req = batch?.requests?.removeAt(0);
+              final req = batch?.data?.removeAt(0);
               for (var e2 in e1) {
-                final row = req?.updateCells?.rows?.removeAt(0);
-                final cells = row?.values
-                    ?.map((cell) => cell.userEnteredValue)
-                    .map((cell) => cell?.stringValue ?? cell?.numberValue)
-                    .toList();
+                final row = req?.values?.removeAt(0);
                 for (var e3 in e2) {
-                  final cell = cells?.removeAt(0);
+                  final cell = row?.removeAt(0);
                   if (cell != e3) {
                     return false;
                   }
@@ -289,7 +285,7 @@ void main() {
           })),
           any,
           $fields: anyNamed('\$fields'),
-        ));
+        )).called(1);
       });
 
       testWidgets('edit sheet name and append', (tester) async {
@@ -319,11 +315,15 @@ void main() {
                               title: '$e title', sheetId: 1)))
                       .toList()),
             ));
-        when(sheetsApi.spreadsheets.batchUpdate(
+        when(sheetsApi.spreadsheets.values.append(
           any,
           any,
+          any,
+          includeValuesInResponse: anyNamed('includeValuesInResponse'),
+          insertDataOption: anyNamed('insertDataOption'),
+          valueInputOption: anyNamed('valueInputOption'),
           $fields: anyNamed('\$fields'),
-        )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+        )).thenAnswer((_) => Future.value(gs.AppendValuesResponse()));
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
@@ -348,34 +348,34 @@ void main() {
         await tester.tap(find.text('指定匯出'));
         await tester.pumpAndSettle();
 
-        final expected = [
-          OrderFormatter.formatOrderSetAttr(order),
-          OrderFormatter.formatOrderProduct(order),
-          OrderFormatter.formatOrderIngredient(order),
-        ];
-        verify(sheetsApi.spreadsheets.batchUpdate(
-          argThat(predicate<gs.BatchUpdateSpreadsheetRequest?>((batch) {
-            for (var e1 in expected) {
-              final req = batch?.requests?.removeAt(0);
-              for (var e2 in e1) {
-                final row = req?.appendCells?.rows?.removeAt(0);
-                final cells = row?.values
-                    ?.map((cell) => cell.userEnteredValue)
-                    .map((cell) => cell?.stringValue ?? cell?.numberValue)
-                    .toList();
-                for (var e3 in e2) {
-                  final cell = cells?.removeAt(0);
-                  if (cell != e3) {
+        final expected = {
+          'os title': OrderFormatter.formatOrderSetAttr(order),
+          'op title': OrderFormatter.formatOrderProduct(order),
+          'oi title': OrderFormatter.formatOrderIngredient(order),
+        };
+        for (final e in expected.entries) {
+          verify(sheetsApi.spreadsheets.values.append(
+            argThat(predicate<gs.ValueRange?>((vr) {
+              if (vr?.range != e.key) return false;
+              for (var e1 in e.value) {
+                final row = vr?.values?.removeAt(0);
+                for (var e2 in e1) {
+                  final cell = row?.removeAt(0);
+                  if (cell != e2) {
                     return false;
                   }
                 }
               }
-            }
-            return true;
-          })),
-          any,
-          $fields: anyNamed('\$fields'),
-        ));
+              return true;
+            })),
+            any,
+            e.key,
+            includeValuesInResponse: anyNamed('includeValuesInResponse'),
+            insertDataOption: anyNamed('insertDataOption'),
+            valueInputOption: anyNamed('valueInputOption'),
+            $fields: anyNamed('\$fields'),
+          ));
+        }
       });
     });
 

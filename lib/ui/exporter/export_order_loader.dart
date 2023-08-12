@@ -15,14 +15,14 @@ class ExportOrderLoader extends StatelessWidget {
 
   final int Function(OrderLoaderMetrics) memoryPredictor;
 
-  final String? warningUrl;
+  final String? warning;
 
   const ExportOrderLoader({
     Key? key,
     required this.notifier,
     required this.formatOrder,
     required this.memoryPredictor,
-    this.warningUrl,
+    this.warning,
   }) : super(key: key);
 
   @override
@@ -151,7 +151,7 @@ class ExportOrderLoader extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Linkify.fromString([
             '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
-            if (warningUrl != null) '\n詳細容量限制說明可以參考[本文件]($warningUrl)。',
+            if (warning != null) '\n$warning',
           ].join()),
         )
       ]),

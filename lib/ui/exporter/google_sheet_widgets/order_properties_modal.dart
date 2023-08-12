@@ -72,8 +72,11 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
         },
       ),
       const TextDivider(label: '表單名稱'),
-      const CardInfoText(
-        child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: CardInfoText(
+          child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
+        ),
       ),
       for (final namer in namers) SheetNamer(prop: namer),
     ];

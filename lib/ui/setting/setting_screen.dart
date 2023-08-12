@@ -68,7 +68,7 @@ class _SettingScreenState extends State<SettingScreen> {
               signedInWidgetBuilder: (user) => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('HI，${user.displayName}'),
+                  Text('HI，${user?.displayName}'),
                   OutlinedButton(
                     key: const Key('setting.sign_out'),
                     onPressed: () async {

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart'
     show User, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
 
@@ -12,7 +13,8 @@ const _googleDark = Color(0xff757575);
 class SignInButton extends StatelessWidget {
   final Widget? signedInWidget;
 
-  final Widget Function(User user)? signedInWidgetBuilder;
+  // if we are in local test it might be null, but it should be fine.
+  final Widget Function(User? user)? signedInWidgetBuilder;
 
   const SignInButton({
     Key? key,
@@ -27,7 +29,7 @@ class SignInButton extends StatelessWidget {
       builder: (context, snapshot) {
         final user = snapshot.data;
         // User is not signed in
-        if (user == null) {
+        if (user == null && !isLocalTest) {
           return const _GoogleSignInButton(key: Key('google_sign_in'));
         }
 

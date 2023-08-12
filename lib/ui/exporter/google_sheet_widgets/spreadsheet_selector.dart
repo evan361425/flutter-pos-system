@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
@@ -100,21 +101,20 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Row(children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: execute,
-            child: Text(label),
-          ),
+    return Card(
+      child: ListTile(
+        title: Text(label),
+        subtitle: Text(hint),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
-        IconButton(
+        onTap: execute,
+        trailing: IconButton(
           onPressed: showActions,
-          icon: const Icon(Icons.more_vert_sharp),
+          icon: const Icon(KIcons.more),
         ),
-      ]),
-      HintText(hint),
-    ]);
+      ),
+    );
   }
 
   @override
@@ -246,14 +246,23 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
     final result = await widget.exporter.getSpreadsheet(id);
 
-    String message = '找不到該表單，是否沒開放權限讀取？';
     if (result != null) {
       await _update(result);
-      message = S.actSuccess;
-    }
-
-    if (mounted) {
-      showSnackBar(context, message);
+      if (mounted) {
+        showSnackBar(context, S.actSuccess);
+      }
+    } else if (mounted) {
+      showMoreInfoSnackBar(
+        context,
+        '找不到表單',
+        MetaBlock.withString(context, [
+          '別擔心，通常都可以簡單解決！可能的原因有：\n',
+          '網路狀況不穩；\n',
+          '該表單被限制存取了，請打開權限；\n',
+          '打錯了，請嘗試複製整個網址後貼上；\n',
+          '該表單被刪除了。',
+        ])!,
+      );
     }
   }
 

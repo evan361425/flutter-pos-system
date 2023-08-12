@@ -43,10 +43,11 @@ class _ImportBasicScreenState extends State<ImportBasicScreen>
             ),
           ),
           const SizedBox(height: 8),
-          ElevatedButton(
+          FilledButton.icon(
             key: const Key('import_btn'),
             onPressed: importData,
-            child: const Text('預覽結果'),
+            label: const Text('預覽結果'),
+            icon: const Icon(Icons.remove_red_eye_sharp),
           ),
         ]),
       ),

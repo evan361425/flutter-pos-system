@@ -15,6 +15,7 @@ class GoogleSheetExporter extends DataExporter {
   List<String> scopes;
 
   Future<gs.SheetsApi?> getSheetsApi(bool isOrigin) {
+    // TODO: should use gRPC
     final scopes = isOrigin
         ? const [gs.SheetsApi.driveFileScope]
         : const [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
@@ -174,35 +175,58 @@ class GoogleSheetExporter extends DataExporter {
     );
   }
 
-  /// 附加進表單
-  Future<void> appendSheet(
+  /// 值的修改，批次做
+  Future<void> updateSheetValues(
     GoogleSpreadsheet spreadsheet,
     Iterable<GoogleSheetProperties> sheets,
-    Iterable<Iterable<Iterable<GoogleSheetCellData>>> data,
+    Iterable<Iterable<List<Object>>> data,
+    Iterable<Iterable<Object>> headers,
   ) async {
-    final it = data.iterator;
-    final requests = sheets.map((sheet) {
-      it.moveNext();
-      return gs.Request(
-        appendCells: gs.AppendCellsRequest(
-          rows: [
-            for (final row in it.current)
-              gs.RowData(values: [
-                for (final cell in row) cell.toGoogleFormat(),
-              ])
-          ],
-          fields: 'userEnteredValue,userEnteredFormat,dataValidation',
-          sheetId: sheet.id,
-        ),
+    final hi = headers.iterator;
+    final di = data.iterator;
+    final values = sheets.map((sheet) {
+      hi.moveNext();
+      di.moveNext();
+      return gs.ValueRange(
+        majorDimension: 'ROWS',
+        range: sheet.title,
+        values: [hi.current.toList(), ...di.current],
       );
-    }).toList();
+    });
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     final types = sheets.map((e) => e.typeName).join(' ');
-    Log.ger('append_sheets $types', _logCode);
-    await sheetsApi?.spreadsheets.batchUpdate(
-      gs.BatchUpdateSpreadsheetRequest(requests: requests),
+    Log.ger('append_values $types', _logCode);
+    await sheetsApi?.spreadsheets.values.batchUpdate(
+      gs.BatchUpdateValuesRequest(
+        includeValuesInResponse: false,
+        valueInputOption: "USER_ENTERED",
+        data: values.toList(),
+      ),
       spreadsheet.id,
+      $fields: 'spreadsheetId',
+    );
+  }
+
+  /// 僅作值的附加
+  Future<void> appendSheetValues(
+    GoogleSpreadsheet spreadsheet,
+    GoogleSheetProperties sheet,
+    Iterable<List<Object>> data,
+  ) async {
+    final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
+    Log.ger('append_values ${sheet.typeName}', _logCode);
+    await sheetsApi?.spreadsheets.values.append(
+      gs.ValueRange(
+        majorDimension: 'ROWS',
+        range: sheet.title,
+        values: data.toList(),
+      ),
+      spreadsheet.id,
+      sheet.title,
+      includeValuesInResponse: false,
+      insertDataOption: 'INSERT_ROWS',
+      valueInputOption: "USER_ENTERED",
       $fields: 'spreadsheetId',
     );
   }

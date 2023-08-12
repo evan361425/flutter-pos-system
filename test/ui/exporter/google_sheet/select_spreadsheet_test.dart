@@ -113,7 +113,7 @@ void main() {
       await tester.tap(find.byKey(const Key('text_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.text('找不到該表單，是否沒開放權限讀取？'), findsOneWidget);
+      expect(find.text('找不到表單'), findsOneWidget);
     });
 
     testWidgets('exporter pick success', (tester) async {

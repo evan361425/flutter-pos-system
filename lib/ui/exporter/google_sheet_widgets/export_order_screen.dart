@@ -48,10 +48,11 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+          padding: const EdgeInsets.all(8.0),
           child: SignInButton(
             signedInWidget: SpreadsheetSelector(
               key: selector,
+              notifier: widget.statusNotifier,
               exporter: widget.exporter,
               cacheKey: _cacheKey,
               fallbackCacheKey: 'exporter_google_sheet',
@@ -88,7 +89,9 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
             notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
             memoryPredictor: memoryPredictor,
-            warningUrl: 'https://developers.google.com/sheets/api/limits#quota',
+            warning: '這裡的容量代表網路傳輸所消耗的量，'
+                '實際佔用的雲端記憶體可能是此值的百分之一而已。'
+                '詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。',
           ),
         ),
       ],
@@ -118,6 +121,7 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
+    widget.statusNotifier.value = '取得本地資料';
     final orders = await Seller.instance.getOrderBetween(
       widget.rangeNotifier.value.start,
       widget.rangeNotifier.value.end,
@@ -125,26 +129,27 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     );
     Log.ger('ready', 'gs_export_order', ss.id);
 
-    final data = prepared.keys.map(chooseFormatter).map(
-          (method) => orders.expand(
-            (order) => method(order).map(
-              (row) => row.map(
-                (o) => o is String
-                    ? GoogleSheetCellData(stringValue: o)
-                    : GoogleSheetCellData(numberValue: o as num),
-              ),
-            ),
-          ),
-        );
-    await (properties.isOverwrite
-        ? widget.exporter.updateSheet(
-            ss,
-            prepared.values,
-            data,
-            prepared.keys.map((key) => chooseHeaders(key)
-                .map((e) => GoogleSheetCellData(stringValue: e))),
-          )
-        : widget.exporter.appendSheet(ss, prepared.values, data));
+    final data = prepared.keys
+        .map(chooseFormatter)
+        .map((method) => orders.expand((order) => method(order)));
+
+    if (properties.isOverwrite) {
+      widget.statusNotifier.value = '覆寫訂單資料';
+      await widget.exporter.updateSheetValues(
+        ss,
+        prepared.values,
+        data,
+        prepared.keys.map((key) => chooseHeaders(key)),
+      );
+    } else {
+      final it = data.iterator;
+      for (final entry in prepared.entries) {
+        it.moveNext();
+        final name = S.exporterTypeName(entry.key.name);
+        widget.statusNotifier.value = '附加進 $name';
+        await widget.exporter.appendSheetValues(ss, entry.value, it.current);
+      }
+    }
 
     Log.ger('export finish', 'gs_export');
     if (mounted) {
@@ -204,14 +209,16 @@ class _ExportOrderScreenState extends State<ExportOrderScreen> {
     }
   }
 
-  /// 這裡是一些實測的大小對應值：
+  /// 這裡是一些實測的大小對應值（尚未考慮 gzip）：
+  ///
   /// | productSize | attrSize | count | bytes | actual |
   /// | - | - | - | - |
-  /// | 13195 | 34 | 17 | 6439 | 38.5KB |
-  /// | 39672 | 92 | 46 | 18758 | 114KB |
-  /// | 61751 | 142 | 71 | 29043 | 177KB |
-  /// | 83775 | 200 | 100 | 39771 | 240K |
+  /// | 30037 | 74 | 37 | 14767 | 14767 |
+  /// | 62988 | 134 | 67 | 29302 | 29302 |
+  /// | 93391 | 200 | 100 | 43442 | 43442 |
+  ///
+  /// 後來考慮壓縮之後，上述的值應該再乘以 0.45：2.8 -> 1.25
   static int memoryPredictor(OrderLoaderMetrics m) {
-    return (m.productSize * 2.8 + m.attrSize * 2.8).toInt();
+    return (m.productSize * 0.465 + m.attrSize * 0.465).toInt();
   }
 }

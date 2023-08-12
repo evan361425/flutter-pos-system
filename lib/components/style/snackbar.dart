@@ -30,3 +30,29 @@ Future<T?> showSnackbarWhenFailed<T>(
     return null;
   });
 }
+
+void showMoreInfoSnackBar(
+  BuildContext context,
+  String message,
+  Widget content,
+) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    showCloseIcon: true,
+    // make floating button below
+    behavior: SnackBarBehavior.floating,
+    content: Text(message),
+    action: SnackBarAction(
+      // TODO: is this correct?
+      label: MaterialLocalizations.of(context).moreButtonTooltip,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: Text(message),
+            children: [content],
+          ),
+        );
+      },
+    ),
+  ));
+}

@@ -45,7 +45,7 @@ void main() {
         notifier: ValueNotifier(range),
         formatOrder: (o) => const Text('hi'),
         memoryPredictor: (m) => m.productSize,
-        warningUrl: 'https://my-test-url.com',
+        warning: 'hi there',
       );
 
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));
