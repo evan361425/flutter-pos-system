@@ -37,6 +37,7 @@ dependencies:
   firebase_analytics: ^10.4.4
   firebase_auth: ^4.7.1
   firebase_crashlytics: ^3.3.4
+  firebase_in_app_messaging: ^0.7.3+4
 
   # services
   sqflite: ^2.3.0 # 23, 07-26
