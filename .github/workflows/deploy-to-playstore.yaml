@@ -8,6 +8,10 @@ on:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
         required: true
         default: "internal"
+      tag:
+        description: "GitHub tag"
+        required: true
+        default: "latest"
   workflow_run:
     workflows:
       - Add Artifacts for Release
@@ -39,13 +43,31 @@ jobs:
     steps:
       - name: Get latest tag
         id: tag
-        run: |
-          tag=$(curl -s "https://api.github.com/repos/evan361425/flutter-pos-system/tags" | jq -r '.[0].name')
-          echo "::set-output name=value::$tag"
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            if (context.eventName === 'release') {
+              return context.payload.release.tag_name;
+            }
+
+            if (context.eventName === 'workflow_dispatch') {
+              if (context.payload.inputs.tag !== 'latest') {
+                return context.payload.inputs.tag;
+              }
+            }
+
+            const tags = await github.rest.repos.listTags({
+              owner: 'evan361425',
+              repo: 'flutter-pos-system',
+              per_page: 1,
+            });
+
+            return tags[0].name;
 
       - name: Extract lane
         id: lane
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
@@ -53,7 +75,7 @@ jobs:
               ? '${{ github.event.inputs.lane }}'
               : context.eventName === 'release'
                 ? 'promote_to_production'
-                : '${{ steps.tag.outputs.value }}'.includes('-rc')
+                : '${{ steps.tag.outputs.result }}'.includes('-rc')
                   ? 'internal'
                   : 'beta';
 
@@ -83,11 +105,11 @@ jobs:
 
       - name: Extract build number
         id: dev_build_number
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
-            const ref = '${{ steps.tag.outputs.value }}';
+            const ref = '${{ steps.tag.outputs.result }}';
             return ref.includes('-rc')
               ? ref.substr(ref.indexOf('-rc') + 3)
               : ''.concat(${{ steps.build_code.outputs.value }} % 100);
