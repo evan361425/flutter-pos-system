@@ -19,7 +19,7 @@ jobs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Load pubspec version
         id: pubspec
@@ -38,7 +38,7 @@ jobs:
 
       - name: Get tag that trigger this workflow
         id: tag
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
@@ -95,7 +95,7 @@ jobs:
       - check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "master"
 

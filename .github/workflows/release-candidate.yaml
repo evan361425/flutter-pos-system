@@ -24,7 +24,7 @@ jobs:
       tag_version: ${{ steps.pubspec_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Load pubspec version
         id: pubspec
@@ -37,7 +37,7 @@ jobs:
       - name: Extract tag version name
         if: ${{ github.event_name != 'workflow_dispatch' }}
         id: tag_version
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
@@ -49,7 +49,7 @@ jobs:
       # v1.2.3-rc1, v1.2.3-rc1
       - name: Extract tag name
         id: tag
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
@@ -78,7 +78,7 @@ jobs:
     needs: check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build Changelog
         id: build_changelog
@@ -124,7 +124,7 @@ jobs:
 
       # Checkout code.
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Recreate missing files, and get packages.
       - name: Build dependencies
