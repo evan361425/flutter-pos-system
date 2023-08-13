@@ -14,10 +14,11 @@ on:
       - Add Artifacts for Release Candidate
     types: [completed]
   release:
-    # published: both pre-release and release will trigger
-    # released: only public release published
-    # prereleased: only pre release published
-    types: [released]
+    # The prereleased type will not trigger for pre-releases published from
+    # draft releases, but the published type will trigger. If you want a
+    # workflow to run when stable and pre-releases publish, subscribe to
+    # published instead of released and prereleased.
+    types: [published]
 
 jobs:
   # Extract some useful variable
