@@ -71,13 +71,10 @@ class _OrderPropertiesModalState extends State<OrderPropertiesModal>
           }
         },
       ),
-      if (!isOverwrite && !withPrefix)
-        const CardInfoText(
-          child: Row(children: [
-            Icon(Icons.warning_amber_sharp),
-            SizedBox(width: 8.0),
-            Text('不覆寫而改用附加的時候，建議標單名稱「不要」加上日期前綴'),
-          ]),
+      if (!isOverwrite && withPrefix)
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴'),
         ),
       const TextDivider(label: '表單名稱'),
       const Padding(
