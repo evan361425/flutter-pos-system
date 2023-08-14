@@ -57,13 +57,14 @@ jobs:
               }
             }
 
-            const tags = await github.rest.repos.listTags({
+            const res = await github.rest.repos.listTags({
               owner: 'evan361425',
               repo: 'flutter-pos-system',
               per_page: 1,
             });
+            console.log(res)
 
-            return tags[0].name;
+            return res.tags[0].name;
 
       - name: Extract lane
         id: lane
