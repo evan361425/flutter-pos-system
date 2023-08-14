@@ -28,7 +28,7 @@ jobs:
 
       - name: Load pubspec version
         id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        uses: CumulusDS/get-yaml-paths-action@v1.0.1
         with:
           file: pubspec.yaml
           version: version
@@ -83,7 +83,7 @@ jobs:
       - name: Build Changelog
         id: build_changelog
         if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
-        uses: mikepenz/release-changelog-builder-action@v1
+        uses: mikepenz/release-changelog-builder-action@v4
         with:
           configuration: "release.config.json"
         env:
@@ -91,10 +91,10 @@ jobs:
 
       - name: Draft release with changelog
         if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
+          name: v${{ needs.check-version.outputs.tag_version }}
           tag_name: ${{ needs.check-version.outputs.tag }}
-          release_name: v${{ needs.check-version.outputs.tag_version }}
           body: ${{ steps.build_changelog.outputs.changelog }}
           draft: true
         env:
@@ -170,6 +170,7 @@ jobs:
       # Upload the build.
       - name: Add packaged build to release
         id: upload_release_asset
+        # TODO: this is archived and should use other package.
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

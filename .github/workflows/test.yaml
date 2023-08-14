@@ -57,6 +57,6 @@ jobs:
 
       - name: Coverage to codecov
         if: github.event_name != 'pull_request'
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           file: coverage/lcov.info

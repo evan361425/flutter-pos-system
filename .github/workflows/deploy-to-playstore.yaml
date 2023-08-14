@@ -94,7 +94,7 @@ jobs:
 
       - name: Load pubspec version
         id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        uses: CumulusDS/get-yaml-paths-action@v1.0.1
         with:
           file: pubspec.yaml
           version: version
