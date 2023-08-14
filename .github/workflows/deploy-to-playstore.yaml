@@ -62,9 +62,8 @@ jobs:
               repo: 'flutter-pos-system',
               per_page: 1,
             });
-            console.log(res)
 
-            return res.tags[0].name;
+            return res.data[0].name;
 
       - name: Extract lane
         id: lane
