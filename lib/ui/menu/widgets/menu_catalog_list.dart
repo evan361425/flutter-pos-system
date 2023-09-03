@@ -6,12 +6,12 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class CatalogListView extends StatelessWidget {
+class MenuCatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
   final void Function(Catalog) onSelected;
 
-  const CatalogListView(
+  const MenuCatalogList(
     this.catalogs, {
     Key? key,
     required this.onSelected,

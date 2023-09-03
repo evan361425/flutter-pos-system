@@ -4,7 +4,7 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-import 'widgets/analysis_order_list_view.dart';
+import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_view.dart';
 
 class AnalysisView extends StatelessWidget {
@@ -42,7 +42,7 @@ class AnalysisView extends StatelessWidget {
   }
 
   Widget _buildOrderList() {
-    return AnalysisOrderListView(notifier: notifier);
+    return AnalysisOrderList(notifier: notifier);
   }
 
   Widget _buildLandscape() {

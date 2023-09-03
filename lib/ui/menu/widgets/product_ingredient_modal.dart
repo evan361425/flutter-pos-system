@@ -12,13 +12,13 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class ProductIngredientModalPage extends StatefulWidget {
+class ProductIngredientModal extends StatefulWidget {
   final ProductIngredient? ingredient;
   final Product product;
 
   final bool isNew;
 
-  const ProductIngredientModalPage({
+  const ProductIngredientModal({
     Key? key,
     this.ingredient,
     required this.product,
@@ -26,12 +26,11 @@ class ProductIngredientModalPage extends StatefulWidget {
         super(key: key);
 
   @override
-  State<ProductIngredientModalPage> createState() =>
-      _ProductIngredientModalPageState();
+  State<ProductIngredientModal> createState() => _ProductIngredientModalState();
 }
 
-class _ProductIngredientModalPageState extends State<ProductIngredientModalPage>
-    with ItemModal<ProductIngredientModalPage> {
+class _ProductIngredientModalState extends State<ProductIngredientModal>
+    with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
   late FocusNode _amountFocusNode;
 

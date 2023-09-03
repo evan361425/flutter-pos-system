@@ -9,7 +9,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/order_attribute_list_view.dart';
+import 'widgets/order_attribute_list.dart';
 
 class OrderAttributePage extends StatelessWidget {
   const OrderAttributePage({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class OrderAttributePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final attrs = context.watch<OrderAttributes>();
 
-    handleCreate() => context.pushNamed(Routes.orderAttrModal);
+    handleCreate() => context.pushNamed(Routes.orderAttrNew);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +44,7 @@ class OrderAttributePage extends StatelessWidget {
               onPressed: handleCreate,
               tooltip: S.orderAttributeHint,
             ))
-          : OrderAttributeListView(attrs.itemList),
+          : OrderAttributeList(attrs.itemList),
     );
   }
 

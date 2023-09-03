@@ -8,7 +8,7 @@ import 'models/repository/order_attributes.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/stock.dart';
-import 'ui/analysis/widgets/analysis_order_modal_page.dart';
+import 'ui/analysis/widgets/analysis_order_modal.dart';
 import 'ui/cashier/changer_page.dart';
 import 'ui/cashier/surplus_page.dart';
 import 'ui/home/feature_request_page.dart';
@@ -16,24 +16,24 @@ import 'ui/home/features_page.dart';
 import 'ui/home/home_page.dart';
 import 'ui/image_gallery_page.dart';
 import 'ui/menu/menu_page.dart';
-import 'ui/menu/product/product_page.dart';
-import 'ui/menu/product/widgets/product_ingredient_modal_page.dart';
-import 'ui/menu/product/widgets/product_quantity_modal_page.dart';
-import 'ui/menu/widgets/catalog_modal_page.dart';
-import 'ui/menu/widgets/catalog_reorder_page.dart';
-import 'ui/menu/widgets/product_modal_page.dart';
-import 'ui/menu/widgets/product_reorder_page.dart';
+import 'ui/menu/product_page.dart';
+import 'ui/menu/widgets/product_ingredient_modal.dart';
+import 'ui/menu/widgets/product_quantity_modal.dart';
+import 'ui/menu/widgets/catalog_modal.dart';
+import 'ui/menu/widgets/catalog_reorder.dart';
+import 'ui/menu/widgets/product_modal.dart';
+import 'ui/menu/widgets/product_reorder.dart';
 import 'ui/order/cashier/order_details_screen.dart';
 import 'ui/order/order_page.dart';
 import 'ui/order_attr/order_attribute_page.dart';
-import 'ui/order_attr/widgets/order_attribute_modal_page.dart';
-import 'ui/order_attr/widgets/option_modal_page.dart';
-import 'ui/order_attr/widgets/option_reorder_page.dart';
-import 'ui/order_attr/widgets/order_attribute_reorder_page.dart';
-import 'ui/quantities/quantity_page.dart';
-import 'ui/quantities/widgets/quantity_modal_page.dart';
-import 'ui/stock/ingredient_page.dart';
-import 'ui/stock/widgets/replenishment_modal_page.dart';
+import 'ui/order_attr/widgets/order_attribute_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
+import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
+import 'ui/order_attr/widgets/order_attribute_reorder.dart';
+import 'ui/stock/quantity_page.dart';
+import 'ui/stock/widgets/stock_quantity_modal.dart';
+import 'ui/stock/widgets/stock_ingredient_modal.dart';
+import 'ui/stock/widgets/replenishment_modal.dart';
 import 'ui/stock/replenishment_page.dart';
 import 'ui/transit/transit_page.dart';
 import 'ui/transit/transit_station.dart';
@@ -105,7 +105,7 @@ class Routes {
         },
         builder: (ctx, state) {
           // TODO: use id
-          return AnalysisOrderModalPage(state.extra as OrderObject);
+          return AnalysisOrderModal(state.extra as OrderObject);
         },
       ),
       GoRoute(
@@ -119,8 +119,8 @@ class Routes {
         builder: (ctx, state) => const CashierSurplus(),
       ),
       GoRoute(
-        name: quantities,
-        path: 'quantities',
+        name: quantity,
+        path: 'quantity',
         builder: (ctx, state) => const QuantityPage(),
         routes: [
           GoRoute(
@@ -128,7 +128,7 @@ class Routes {
             path: 'q/:id/modal',
             builder: (ctx, state) {
               final id = state.pathParameters['id'] ?? '';
-              return QuantityModalPage(
+              return StockQuantityModal(
                   quantity: Quantities.instance.getItem(id));
             },
           ),
@@ -139,7 +139,7 @@ class Routes {
         path: 'stock/i/:id/modal',
         builder: (ctx, state) {
           final id = state.pathParameters['id'] ?? '';
-          return IngredientPage(ingredient: Stock.instance.getItem(id));
+          return StockIngredientModal(ingredient: Stock.instance.getItem(id));
         },
       ),
       GoRoute(
@@ -152,7 +152,7 @@ class Routes {
             path: 'r/:id/modal',
             builder: (ctx, state) {
               final id = state.pathParameters['id'] ?? '';
-              return ReplenishmentModalPage(
+              return ReplenishmentModal(
                 replenishment: Replenisher.instance.getItem(id),
               );
             },
@@ -228,20 +228,20 @@ class Routes {
           final c = id == null ? null : Menu.instance.getItem(id);
 
           if (c == null) {
-            return const CatalogModalPage();
+            return const CatalogModal();
           }
-          return ProductModalPage(catalog: c);
+          return ProductModal(catalog: c);
         },
       ),
       GoRoute(
         name: menuReorder,
         path: 'reorder',
-        builder: (ctx, state) => const CatalogReorderPage(),
+        builder: (ctx, state) => const CatalogReorder(),
       ),
       GoRoute(
         name: menuCatalogModal,
         path: 'c/:id/modal',
-        builder: (ctx, state) => CatalogModalPage(
+        builder: (ctx, state) => CatalogModal(
           catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
         ),
       ),
@@ -252,7 +252,7 @@ class Routes {
           path: menu,
           hasItem: (id) => Menu.instance.hasItem(id),
         ),
-        builder: (ctx, state) => ProductReorderPage(
+        builder: (ctx, state) => ProductReorder(
           Menu.instance.getItem(state.pathParameters['id']!)!,
         ),
       ),
@@ -273,7 +273,7 @@ class Routes {
             builder: (ctx, state) {
               // verified for parent
               final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
-              return ProductModalPage(product: p, catalog: p.catalog);
+              return ProductModal(product: p, catalog: p.catalog);
             },
           ),
           GoRoute(
@@ -285,10 +285,10 @@ class Routes {
               final ing = p.getItem(state.uri.queryParameters['iid'] ?? '');
               final qid = state.uri.queryParameters['qid'];
               if (ing == null || qid == null) {
-                return ProductIngredientModalPage(product: p, ingredient: ing);
+                return ProductIngredientModal(product: p, ingredient: ing);
               }
 
-              return ProductQuantityModalPage(
+              return ProductQuantityModal(
                 quantity: ing.getItem(qid),
                 ingredient: ing,
               );
@@ -305,6 +305,19 @@ class Routes {
     builder: (ctx, state) => const OrderAttributePage(),
     routes: [
       GoRoute(
+        name: orderAttrNew,
+        path: 'new',
+        builder: (ctx, state) {
+          final id = state.uri.queryParameters['id'];
+          final oa = id == null ? null : OrderAttributes.instance.getItem(id);
+
+          if (oa == null) {
+            return const OrderAttributeModal();
+          }
+          return OrderAttributeOptionModal(oa);
+        },
+      ),
+      GoRoute(
         name: orderAttrModal,
         path: 'a/:id/modal',
         builder: (ctx, state) {
@@ -314,12 +327,9 @@ class Routes {
 
           if (oid == null || oa == null) {
             // edit or new oa
-            return OrderAttributeModalPage(attribute: oa);
+            return OrderAttributeModal(attribute: oa);
           }
-          return OptionModalPage(
-            attribute: oa,
-            option: oa.getItem(oid),
-          );
+          return OrderAttributeOptionModal(oa, option: oa.getItem(oid));
         },
       ),
       GoRoute(
@@ -330,7 +340,7 @@ class Routes {
           hasItem: (id) => OrderAttributes.instance.hasItem(id),
         ),
         builder: (ctx, state) {
-          return OptionReorderPage(
+          return OrderAttributeOptionReorder(
             attribute: OrderAttributes.instance.getItem(
               state.pathParameters['id']!,
             )!,
@@ -340,7 +350,7 @@ class Routes {
       GoRoute(
         name: orderAttrReorder,
         path: 'reorder',
-        builder: (ctx, state) => const OrderAttributeReorderPage(),
+        builder: (ctx, state) => const OrderAttributeReorder(),
       ),
     ],
   );
@@ -357,10 +367,8 @@ class Routes {
 
   static const analOrderModal = '/analysis/order/modal';
 
-  static const quantities = '/quantities';
-  static const quantityModal = '/quantities/modal';
-
   static const orderAttr = '/oa';
+  static const orderAttrNew = '/oa/new';
   static const orderAttrModal = '/oa/modal';
   static const orderAttrReorder = '/oa/reorder';
   static const orderAttrOptionReorder = '/oa/option/reorder';
@@ -368,6 +376,8 @@ class Routes {
   static const replenishment = '/stock/repl';
   static const replenishmentModal = '/stock/repl/modal';
   static const ingredientModal = '/stock/ingredient/modal';
+  static const quantity = '/stock/quantity';
+  static const quantityModal = '/stock/quantity/modal';
 
   static const cashierChanger = '/cashier/changer';
   static const cashierSurplus = '/cashier/surplus';

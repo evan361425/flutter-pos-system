@@ -14,21 +14,21 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class IngredientPage extends StatefulWidget {
+class StockIngredientModal extends StatefulWidget {
   final Ingredient? ingredient;
 
   final bool isNew;
 
-  const IngredientPage({Key? key, this.ingredient})
+  const StockIngredientModal({Key? key, this.ingredient})
       : isNew = ingredient == null,
         super(key: key);
 
   @override
-  State<IngredientPage> createState() => _IngredientPageState();
+  State<StockIngredientModal> createState() => _StockIngredientModalState();
 }
 
-class _IngredientPageState extends State<IngredientPage>
-    with ItemModal<IngredientPage> {
+class _StockIngredientModalState extends State<StockIngredientModal>
+    with ItemModal<StockIngredientModal> {
   late TextEditingController _nameController;
   late TextEditingController _amountController;
   late TextEditingController _totalAmountController;

@@ -4,10 +4,10 @@ import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/translator.dart';
 
-class OptionReorderPage extends StatelessWidget {
+class OrderAttributeOptionReorder extends StatelessWidget {
   final OrderAttribute attribute;
 
-  const OptionReorderPage({
+  const OrderAttributeOptionReorder({
     Key? key,
     required this.attribute,
   }) : super(key: key);

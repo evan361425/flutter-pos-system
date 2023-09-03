@@ -11,8 +11,8 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/order_range_view.dart';
-import 'package:possystem/ui/transit/order_list_view.dart';
+import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/transit_order_list.dart';
 
 import 'spreadsheet_selector.dart';
 import 'order_formatter.dart';
@@ -66,7 +66,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
             ),
           ),
         ),
-        OrderRangeView(notifier: widget.rangeNotifier),
+        TransitOrderRange(notifier: widget.rangeNotifier),
         ListTile(
           key: const Key('edit_sheets'),
           title: const Text('表單設定'),
@@ -85,7 +85,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
           onTap: editSheets,
         ),
         Expanded(
-          child: OrderListView(
+          child: TransitOrderList(
             notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
             memoryPredictor: memoryPredictor,

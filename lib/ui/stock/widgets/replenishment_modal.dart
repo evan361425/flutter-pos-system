@@ -11,21 +11,21 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
 
-class ReplenishmentModalPage extends StatefulWidget {
+class ReplenishmentModal extends StatefulWidget {
   final Replenishment? replenishment;
 
   final bool isNew;
 
-  const ReplenishmentModalPage({Key? key, this.replenishment})
+  const ReplenishmentModal({Key? key, this.replenishment})
       : isNew = replenishment == null,
         super(key: key);
 
   @override
-  State<ReplenishmentModalPage> createState() => _ReplenishmentModalPageState();
+  State<ReplenishmentModal> createState() => _ReplenishmentModalState();
 }
 
-class _ReplenishmentModalPageState extends State<ReplenishmentModalPage>
-    with ItemModal<ReplenishmentModalPage> {
+class _ReplenishmentModalState extends State<ReplenishmentModal>
+    with ItemModal<ReplenishmentModal> {
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;
 

@@ -7,21 +7,21 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
-class QuantityModalPage extends StatefulWidget {
+class StockQuantityModal extends StatefulWidget {
   final Quantity? quantity;
 
   final bool isNew;
 
-  const QuantityModalPage({Key? key, this.quantity})
+  const StockQuantityModal({Key? key, this.quantity})
       : isNew = quantity == null,
         super(key: key);
 
   @override
-  State<QuantityModalPage> createState() => _QuantityModalPageState();
+  State<StockQuantityModal> createState() => _StockQuantityModalState();
 }
 
-class _QuantityModalPageState extends State<QuantityModalPage>
-    with ItemModal<QuantityModalPage> {
+class _StockQuantityModalState extends State<StockQuantityModal>
+    with ItemModal<StockQuantityModal> {
   late TextEditingController _nameController;
   late TextEditingController _proportionController;
   late FocusNode _nameFocusNode;

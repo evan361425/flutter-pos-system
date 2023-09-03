@@ -90,9 +90,9 @@ class SettingView extends StatelessWidget {
             ),
             _buildRouteTile(
               context,
-              id: 'quantities',
+              id: 'quantity',
               icon: Icons.exposure_outlined,
-              route: Routes.quantities,
+              route: Routes.quantity,
               title: S.quantityTitle,
             ),
             _buildRouteTile(

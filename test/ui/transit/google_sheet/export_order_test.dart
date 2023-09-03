@@ -24,7 +24,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:possystem/ui/transit/google_sheet/order_formatter.dart';
 import 'package:possystem/ui/transit/google_sheet/order_setting_page.dart';
-import 'package:possystem/ui/transit/order_range_view.dart';
+import 'package:possystem/ui/transit/transit_order_range.dart';
 import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_auth.dart';

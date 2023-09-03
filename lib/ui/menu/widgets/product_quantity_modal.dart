@@ -12,13 +12,13 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class ProductQuantityModalPage extends StatefulWidget {
+class ProductQuantityModal extends StatefulWidget {
   final ProductQuantity? quantity;
   final ProductIngredient ingredient;
 
   final bool isNew;
 
-  const ProductQuantityModalPage({
+  const ProductQuantityModal({
     Key? key,
     this.quantity,
     required this.ingredient,
@@ -26,12 +26,11 @@ class ProductQuantityModalPage extends StatefulWidget {
         super(key: key);
 
   @override
-  State<ProductQuantityModalPage> createState() =>
-      _ProductQuantityModalPageState();
+  State<ProductQuantityModal> createState() => _ProductQuantityModalState();
 }
 
-class _ProductQuantityModalPageState extends State<ProductQuantityModalPage>
-    with ItemModal<ProductQuantityModalPage> {
+class _ProductQuantityModalState extends State<ProductQuantityModal>
+    with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
   late TextEditingController _priceController;
   late TextEditingController _costController;

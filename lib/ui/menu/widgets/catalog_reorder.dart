@@ -4,8 +4,8 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/translator.dart';
 
-class CatalogReorderPage extends StatelessWidget {
-  const CatalogReorderPage({Key? key}) : super(key: key);
+class CatalogReorder extends StatelessWidget {
+  const CatalogReorder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

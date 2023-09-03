@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/ui/transit/order_list_view.dart';
+import 'package:possystem/ui/transit/transit_order_list.dart';
 
 import '../../mocks/mock_database.dart';
 import '../../test_helpers/translator.dart';
@@ -41,7 +41,7 @@ void main() {
     Future<void> showDialog(WidgetTester tester, IconData icon) async {
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
       final range = DateTimeRange(start: yesterday, end: DateTime.now());
-      final widget = OrderListView(
+      final widget = TransitOrderList(
         notifier: ValueNotifier(range),
         formatOrder: (o) => const Text('hi'),
         memoryPredictor: (m) => m.productSize,

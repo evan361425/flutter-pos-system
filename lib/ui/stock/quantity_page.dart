@@ -8,7 +8,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/quantity_list_view.dart';
+import 'widgets/stock_quantity_list.dart';
 
 class QuantityPage extends StatelessWidget {
   const QuantityPage({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class QuantityPage extends StatelessWidget {
 
     final body = quantities.isEmpty
         ? Center(child: EmptyBody(onPressed: handleCreate))
-        : QuantityListView(quantities: quantities.itemList);
+        : StockQuantityList(quantities: quantities.itemList);
 
     return Scaffold(
       appBar: AppBar(

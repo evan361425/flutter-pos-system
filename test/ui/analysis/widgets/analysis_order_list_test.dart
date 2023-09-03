@@ -21,7 +21,7 @@ import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_order_list_view.dart';
+import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
 import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_cache.dart';
@@ -69,7 +69,7 @@ void main() {
       });
 
       await tester.pumpWidget(buildApp(
-        AnalysisOrderListView(notifier: ValueNotifier(Util.getDateRange())),
+        AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       ));
       await tester.pump(const Duration(milliseconds: 10));
 
@@ -97,7 +97,7 @@ void main() {
             )));
 
       await tester.pumpWidget(buildApp(
-        Material(child: AnalysisOrderListView(notifier: notifier)),
+        Material(child: AnalysisOrderList(notifier: notifier)),
       ));
       await tester.pumpAndSettle();
 
@@ -214,8 +214,7 @@ void main() {
       });
 
       await tester.pumpWidget(buildApp(Material(
-        child:
-            AnalysisOrderListView(notifier: ValueNotifier(Util.getDateRange())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -239,8 +238,7 @@ void main() {
       setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
-        child:
-            AnalysisOrderListView(notifier: ValueNotifier(Util.getDateRange())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -272,8 +270,7 @@ void main() {
       setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
-        child:
-            AnalysisOrderListView(notifier: ValueNotifier(Util.getDateRange())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 
@@ -333,8 +330,7 @@ void main() {
       setLoader(() => Future.value([getOrderMap()]));
 
       await tester.pumpWidget(buildApp(Material(
-        child:
-            AnalysisOrderListView(notifier: ValueNotifier(Util.getDateRange())),
+        child: AnalysisOrderList(notifier: ValueNotifier(Util.getDateRange())),
       )));
       await tester.pumpAndSettle();
 

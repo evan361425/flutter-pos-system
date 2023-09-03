@@ -9,7 +9,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/ingredient_list_view.dart';
+import 'widgets/stock_ingredient_list.dart';
 
 class StockScreen<T> extends StatelessWidget {
   final TutorialInTab? tab;
@@ -70,7 +70,7 @@ class StockScreen<T> extends StatelessWidget {
           ),
         ]),
         const SizedBox(height: 4.0),
-        IngredientListView(ingredients: Stock.instance.itemList),
+        StockIngredientList(ingredients: Stock.instance.itemList),
       ]),
     );
   }

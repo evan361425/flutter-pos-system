@@ -13,7 +13,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/ingredient_expansion_card.dart';
+import 'widgets/product_ingredient_view.dart';
 
 class ProductPage extends StatefulWidget {
   final Product product;
@@ -57,11 +57,14 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget get metadata {
     return SliverToBoxAdapter(
-      child: MetaBlock.withString(context, <String>[
-        S.menuProductMetaTitle,
-        S.menuProductMetaPrice(widget.product.price),
-        S.menuProductMetaCost(widget.product.cost),
-      ])!,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: MetaBlock.withString(context, <String>[
+          S.menuProductMetaTitle,
+          S.menuProductMetaPrice(widget.product.price),
+          S.menuProductMetaCost(widget.product.cost),
+        ])!,
+      ),
     );
   }
 
@@ -85,7 +88,7 @@ class _ProductPageState extends State<ProductPage> {
       ),
       SliverList(
         delegate: SliverChildBuilderDelegate(
-          (_, int index) => IngredientExpansionCard(items[index]),
+          (_, int index) => ProductIngredientView(items[index]),
           childCount: items.length,
         ),
       ),
@@ -94,12 +97,18 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   void didChangeDependencies() {
-    widget.product.addListener(() => setState(() {}));
+    widget.product.addListener(_reload);
     // if change ingredient in product_ingredient_search
     context.watch<Stock>();
     // if change quantity in product_quantity_search
     context.watch<Quantities>();
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    widget.product.removeListener(_reload);
+    super.dispose();
   }
 
   void _showActions() async {
@@ -127,6 +136,10 @@ class _ProductPageState extends State<ProductPage> {
     if (result == _Action.changeImage && context.mounted) {
       await widget.product.pickImage(context);
     }
+  }
+
+  void _reload() {
+    setState(() {});
   }
 
   void _handleCreateIng() {

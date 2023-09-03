@@ -8,10 +8,10 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class IngredientExpansionCard extends StatelessWidget {
+class ProductIngredientView extends StatelessWidget {
   final ProductIngredient ingredient;
 
-  const IngredientExpansionCard(
+  const ProductIngredientView(
     this.ingredient, {
     Key? key,
   }) : super(key: key);

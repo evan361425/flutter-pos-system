@@ -10,12 +10,12 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class ProductModalPage extends StatefulWidget {
+class ProductModal extends StatefulWidget {
   final Product? product;
   final Catalog catalog;
   final bool isNew;
 
-  const ProductModalPage({
+  const ProductModal({
     Key? key,
     this.product,
     required this.catalog,
@@ -23,11 +23,11 @@ class ProductModalPage extends StatefulWidget {
         super(key: key);
 
   @override
-  State<ProductModalPage> createState() => _ProductModalPageState();
+  State<ProductModal> createState() => _ProductModalState();
 }
 
-class _ProductModalPageState extends State<ProductModalPage>
-    with ItemModal<ProductModalPage> {
+class _ProductModalState extends State<ProductModal>
+    with ItemModal<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;

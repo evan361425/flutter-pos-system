@@ -127,10 +127,7 @@ class BottomSheetActions extends StatelessWidget {
       BottomSheetAction(
         key: const Key('btn.delete'),
         title: Text(S.btnDelete),
-        leading: Icon(
-          KIcons.delete,
-          color: Theme.of(context).colorScheme.error,
-        ),
+        leading: const Icon(KIcons.delete),
         returnValue: deleteValue,
       ),
     ]);

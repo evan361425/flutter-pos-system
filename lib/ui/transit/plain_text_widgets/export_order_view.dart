@@ -6,8 +6,8 @@ import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/ui/transit/order_range_view.dart';
-import 'package:possystem/ui/transit/order_list_view.dart';
+import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/transit_order_list.dart';
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
@@ -21,7 +21,7 @@ class ExportOrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        OrderRangeView(notifier: notifier),
+        TransitOrderRange(notifier: notifier),
         ListTile(
           key: const Key('export_btn'),
           title: const Text('複製文字'),
@@ -36,7 +36,7 @@ class ExportOrderView extends StatelessWidget {
           },
         ),
         Expanded(
-          child: OrderListView(
+          child: TransitOrderList(
             notifier: notifier,
             formatOrder: (order) => Text(formatOrder(order)),
             memoryPredictor: memoryPredictor,

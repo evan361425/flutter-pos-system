@@ -10,10 +10,10 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-class AnalysisOrderListView extends StatelessWidget {
+class AnalysisOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  const AnalysisOrderListView({
+  const AnalysisOrderList({
     Key? key,
     required this.notifier,
   }) : super(key: key);

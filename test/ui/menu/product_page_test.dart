@@ -14,7 +14,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/menu/product/product_page.dart';
+import 'package:possystem/ui/menu/product_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';

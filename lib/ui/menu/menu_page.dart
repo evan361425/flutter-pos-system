@@ -10,8 +10,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/catalog_list_view.dart';
-import 'widgets/product_list_view.dart';
+import 'widgets/menu_catalog_list.dart';
+import 'widgets/menu_product_list.dart';
 
 class MenuPage extends StatefulWidget {
   final Catalog? catalog;
@@ -111,12 +111,12 @@ class _MenuPageState extends State<MenuPage> {
   Widget get catalogListView {
     if (widget.productOnly) {
       return const SingleChildScrollView(
-        child: ProductListView(catalog: null),
+        child: MenuProductList(catalog: null),
       );
     }
 
     return SingleChildScrollView(
-      child: CatalogListView(
+      child: MenuCatalogList(
         Menu.instance.itemList, // put it here to handle reload
         onSelected: _handleSelected,
       ),
@@ -126,7 +126,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget get productListView {
     if (selected?.isNotEmpty == true) {
       return SingleChildScrollView(
-        child: ProductListView(catalog: selected),
+        child: MenuProductList(catalog: selected),
       );
     }
 

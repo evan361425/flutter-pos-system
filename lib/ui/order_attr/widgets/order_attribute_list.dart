@@ -13,10 +13,10 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class OrderAttributeListView extends StatelessWidget {
+class OrderAttributeList extends StatelessWidget {
   final List<OrderAttribute> attributes;
 
-  const OrderAttributeListView(this.attributes, {Key? key}) : super(key: key);
+  const OrderAttributeList(this.attributes, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +63,8 @@ class _OrderAttributeCard extends StatelessWidget {
           leading: const CircleAvatar(child: Icon(KIcons.add)),
           title: Text(S.orderAttributeOptionCreate),
           onTap: () => context.pushNamed(
-            Routes.orderAttrModal,
-            pathParameters: {'id': attr.id},
+            Routes.orderAttrNew,
+            queryParameters: {'id': attr.id},
           ),
           trailing: IconButton(
             key: Key('$key.more'),

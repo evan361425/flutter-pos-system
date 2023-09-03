@@ -14,10 +14,10 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_product_list.dart';
 
-class AnalysisOrderModalPage extends StatelessWidget {
+class AnalysisOrderModal extends StatelessWidget {
   final OrderObject order;
 
-  const AnalysisOrderModalPage(this.order, {super.key});
+  const AnalysisOrderModal(this.order, {super.key});
 
   @override
   Widget build(BuildContext context) {

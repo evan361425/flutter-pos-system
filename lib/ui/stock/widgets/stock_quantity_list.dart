@@ -6,10 +6,10 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class QuantityListView extends StatelessWidget {
+class StockQuantityList extends StatelessWidget {
   final List<Quantity> quantities;
 
-  const QuantityListView({Key? key, required this.quantities})
+  const StockQuantityList({Key? key, required this.quantities})
       : super(key: key);
 
   @override

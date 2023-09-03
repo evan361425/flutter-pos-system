@@ -11,10 +11,10 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class IngredientListView extends StatelessWidget {
+class StockIngredientList extends StatelessWidget {
   final List<Ingredient> ingredients;
 
-  const IngredientListView({Key? key, required this.ingredients})
+  const StockIngredientList({Key? key, required this.ingredients})
       : super(key: key);
 
   @override

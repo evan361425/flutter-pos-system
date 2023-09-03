@@ -130,7 +130,7 @@ class TutorialInTab {
     }
 
     void handler() {
-      if (shouldShow) {
+      if (shouldShow && context.mounted) {
         SpotlightShow.maybeOf(context)?.start();
         controller.removeListener(handler);
       }

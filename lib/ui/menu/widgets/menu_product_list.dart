@@ -9,17 +9,17 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class ProductListView extends StatelessWidget {
+class MenuProductList extends StatelessWidget {
   final Catalog? catalog;
 
-  const ProductListView({
+  const MenuProductList({
     Key? key,
     required this.catalog,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SliverListSlidableItemList(
+    return SlidableItemList(
       delegate: SlidableItemDelegate<Product, int>(
         groupTag: 'menu.product',
         items: catalog?.itemList ?? Menu.instance.products.toList(),

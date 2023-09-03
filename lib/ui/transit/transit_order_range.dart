@@ -4,19 +4,19 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 
-class OrderRangeView extends StatefulWidget {
+class TransitOrderRange extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  const OrderRangeView({
+  const TransitOrderRange({
     Key? key,
     required this.notifier,
   }) : super(key: key);
 
   @override
-  State<OrderRangeView> createState() => _OrderRangeViewState();
+  State<TransitOrderRange> createState() => _TransitOrderRangeState();
 }
 
-class _OrderRangeViewState extends State<OrderRangeView> {
+class _TransitOrderRangeState extends State<TransitOrderRange> {
   @override
   Widget build(BuildContext context) {
     return ListTile(

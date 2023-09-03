@@ -33,10 +33,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
         ),
       ),
       for (final item in delegate.items)
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 2.0),
-          child: delegate.build(context, item, index: index++, theme: theme),
-        ),
+        delegate.build(context, item, index: index++, theme: theme),
       const SizedBox(height: 4.0),
     ]);
 
@@ -149,6 +146,7 @@ class SlidableItemDelegate<T, U> {
               key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
               label: S.btnDelete,
               backgroundColor: theme.colorScheme.error,
+              foregroundColor: theme.colorScheme.onError,
               icon: KIcons.delete,
               onPressed: (_) => DeleteDialog.show(
                 context,

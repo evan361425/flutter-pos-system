@@ -8,7 +8,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class OrderListView extends StatelessWidget {
+class TransitOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   final Widget Function(OrderObject) formatOrder;
@@ -17,7 +17,7 @@ class OrderListView extends StatelessWidget {
 
   final String? warning;
 
-  const OrderListView({
+  const TransitOrderList({
     Key? key,
     required this.notifier,
     required this.formatOrder,

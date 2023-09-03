@@ -10,26 +10,26 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class OptionModalPage extends StatefulWidget {
+class OrderAttributeOptionModal extends StatefulWidget {
   final OrderAttribute attribute;
 
   final OrderAttributeOption? option;
 
   final bool isNew;
 
-  const OptionModalPage({
+  const OrderAttributeOptionModal(
+    this.attribute, {
     Key? key,
-    required this.attribute,
     this.option,
   })  : isNew = option == null,
         super(key: key);
 
   @override
-  State<OptionModalPage> createState() => _OrderAttributeModalState();
+  State<OrderAttributeOptionModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OptionModalPage>
-    with ItemModal<OptionModalPage> {
+class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
+    with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _valueController;
   late FocusNode _nameFocusNode;

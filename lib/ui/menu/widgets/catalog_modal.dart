@@ -9,21 +9,21 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class CatalogModalPage extends StatefulWidget {
+class CatalogModal extends StatefulWidget {
   final Catalog? catalog;
 
   final bool isNew;
 
-  const CatalogModalPage({Key? key, this.catalog})
+  const CatalogModal({Key? key, this.catalog})
       : isNew = catalog == null,
         super(key: key);
 
   @override
-  State<CatalogModalPage> createState() => _CatalogModalPageState();
+  State<CatalogModal> createState() => _CatalogModalState();
 }
 
-class _CatalogModalPageState extends State<CatalogModalPage>
-    with ItemModal<CatalogModalPage> {
+class _CatalogModalState extends State<CatalogModal>
+    with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
   late FocusNode _nameFocusNode;
 

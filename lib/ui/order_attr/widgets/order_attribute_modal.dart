@@ -8,22 +8,21 @@ import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 
-class OrderAttributeModalPage extends StatefulWidget {
+class OrderAttributeModal extends StatefulWidget {
   final OrderAttribute? attribute;
 
   final bool isNew;
 
-  const OrderAttributeModalPage({Key? key, this.attribute})
+  const OrderAttributeModal({Key? key, this.attribute})
       : isNew = attribute == null,
         super(key: key);
 
   @override
-  State<OrderAttributeModalPage> createState() =>
-      _OrderAttributeModalPageState();
+  State<OrderAttributeModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalPageState extends State<OrderAttributeModalPage>
-    with ItemModal<OrderAttributeModalPage> {
+class _OrderAttributeModalState extends State<OrderAttributeModal>
+    with ItemModal<OrderAttributeModal> {
   late final TextEditingController _nameController;
 
   final FocusNode _nameFocusNode = FocusNode();
