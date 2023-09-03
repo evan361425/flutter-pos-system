@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/translator.dart';
 
@@ -30,7 +31,7 @@ class RouteCircularButton extends StatelessWidget {
       splashColor: Colors.transparent,
       onTap: onTap ??
           () async {
-            final result = await Navigator.of(context).pushNamed(route!);
+            final result = await context.pushNamed(route!);
             if (result == true) {
               if (context.mounted) {
                 showSnackBar(context, S.actSuccess);

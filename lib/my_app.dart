@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:go_router/go_router.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -13,14 +14,11 @@ import 'translator.dart';
 class MyApp extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  final Widget child;
-
   final SettingsProvider settings;
 
   const MyApp({
     Key? key,
     required this.settings,
-    required this.child,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -33,7 +31,16 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: settings,
       builder: (_, __) {
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: GoRouter(
+            routes: [Routes.route],
+            debugLogDiagnostics: true,
+            observers: [
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+              routeObserver,
+            ],
+          ),
+
           onGenerateTitle: (context) {
             // According to document, it should followed when system changed language.
             // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
@@ -45,12 +52,7 @@ class MyApp extends StatelessWidget {
 
             return localizations.appTitle;
           },
-          routes: Routes.routes,
           debugShowCheckedModeBanner: false,
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-            routeObserver,
-          ],
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -65,8 +67,6 @@ class MyApp extends StatelessWidget {
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
           themeMode: settings.getSetting<ThemeSetting>().value,
-
-          home: child,
         );
       },
     );

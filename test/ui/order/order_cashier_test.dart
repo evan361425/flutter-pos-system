@@ -25,7 +25,7 @@ import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/order/order_page.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -170,7 +170,7 @@ void main() {
       Cart.instance = Cart();
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+        MaterialApp(routes: Routes.routes, home: const OrderPage()),
       );
 
       await tester.tap(find.byKey(const Key('order.apply')));
@@ -190,7 +190,7 @@ void main() {
         MaterialApp(
           routes: Routes.routes,
           scaffoldMessengerKey: scaffoldMessenger,
-          home: const OrderScreen(),
+          home: const OrderPage(),
         ),
       );
 
@@ -308,7 +308,7 @@ void main() {
         MaterialApp(
           routes: Routes.routes,
           scaffoldMessengerKey: scaffoldMessenger,
-          home: const OrderScreen(),
+          home: const OrderPage(),
         ),
       );
 
@@ -486,7 +486,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+        MaterialApp(routes: Routes.routes, home: const OrderPage()),
       );
 
       await tester.tap(find.byKey(const Key('order.apply')));

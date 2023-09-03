@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
@@ -33,20 +34,26 @@ class BottomSheetAction<T> {
 
   final T? returnValue;
 
-  final String? navigateRoute;
-
-  final dynamic navigateArgument;
+  final String? route;
 
   final Key? key;
+
+  final Map<String, String> routePathParameters;
+
+  final Map<String, dynamic> routeQueryParameters;
+
+  final Object? routeExtra;
 
   const BottomSheetAction({
     required this.title,
     this.key,
     this.leading,
     this.returnValue,
-    this.navigateRoute,
-    this.navigateArgument,
-  }) : assert(returnValue != null || navigateRoute != null);
+    this.route,
+    this.routePathParameters = const <String, String>{},
+    this.routeQueryParameters = const <String, dynamic>{},
+    this.routeExtra,
+  }) : assert(returnValue != null || route != null);
 
   Widget toWidget(BuildContext context) {
     return ListTile(
@@ -54,11 +61,13 @@ class BottomSheetAction<T> {
       enableFeedback: true,
       leading: leading,
       title: title,
-      onTap: () => navigateRoute == null
-          ? Navigator.of(context).pop(returnValue)
-          : Navigator.of(context).pushReplacementNamed(
-              navigateRoute!,
-              arguments: navigateArgument,
+      onTap: () => route == null
+          ? context.pop(returnValue)
+          : context.pushNamed(
+              route!,
+              pathParameters: routePathParameters,
+              queryParameters: routeQueryParameters,
+              extra: routeExtra,
             ),
     );
   }

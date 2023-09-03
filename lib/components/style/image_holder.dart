@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
@@ -104,7 +105,7 @@ class EditImageHolder extends StatelessWidget {
       image: image,
       title: path == null ? '點選以新增圖片' : '點擊以更新圖片',
       onPressed: () async {
-        final file = await Navigator.of(context).pushNamed(Routes.imageGallery);
+        final file = await context.pushNamed(Routes.imageGallery);
         if (file != null && file is String) onSelected(file);
       },
     );

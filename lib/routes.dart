@@ -1,153 +1,384 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
-import 'models/menu/catalog.dart';
-import 'models/menu/product.dart';
-import 'models/menu/product_ingredient.dart';
-import 'models/menu/product_quantity.dart';
-import 'models/order/order_attribute.dart';
-import 'models/order/order_attribute_option.dart';
-import 'models/stock/ingredient.dart';
-import 'models/stock/quantity.dart';
-import 'models/stock/replenishment.dart';
-import 'ui/cashier/changer/changer_modal.dart';
-import 'ui/cashier/widgets/cashier_surplus.dart';
-import 'ui/exporter/exporter_screen.dart';
-import 'ui/home/home_setup_feature_request.dart';
-import 'ui/image_gallery_screen.dart';
-import 'ui/menu/catalog/catalog_screen.dart';
-import 'ui/menu/catalog/widgets/product_modal.dart';
-import 'ui/menu/catalog/widgets/product_orderable_list.dart';
-import 'ui/menu/menu_screen.dart';
-import 'ui/menu/product/product_screen.dart';
-import 'ui/menu/product/widgets/product_ingredient_modal.dart';
-import 'ui/menu/product/widgets/product_quantity_modal.dart';
-import 'ui/menu/widgets/catalog_modal.dart';
-import 'ui/menu/widgets/catalog_orderable_list.dart';
+import 'models/objects/order_object.dart';
+import 'models/repository/menu.dart';
+import 'models/repository/order_attributes.dart';
+import 'models/repository/quantities.dart';
+import 'models/repository/replenisher.dart';
+import 'models/repository/stock.dart';
+import 'ui/analysis/widgets/analysis_order_modal_page.dart';
+import 'ui/cashier/changer_page.dart';
+import 'ui/cashier/surplus_page.dart';
+import 'ui/home/feature_request_page.dart';
+import 'ui/home/features_page.dart';
+import 'ui/home/home_page.dart';
+import 'ui/image_gallery_page.dart';
+import 'ui/menu/menu_page.dart';
+import 'ui/menu/product/product_page.dart';
+import 'ui/menu/product/widgets/product_ingredient_modal_page.dart';
+import 'ui/menu/product/widgets/product_quantity_modal_page.dart';
+import 'ui/menu/widgets/catalog_modal_page.dart';
+import 'ui/menu/widgets/catalog_reorder_page.dart';
+import 'ui/menu/widgets/product_modal_page.dart';
+import 'ui/menu/widgets/product_reorder_page.dart';
 import 'ui/order/cashier/order_details_screen.dart';
-import 'ui/order/order_screen.dart';
-import 'ui/order_attr/order_attribute_screen.dart';
-import 'ui/order_attr/widgets/order_attribute_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
-import 'ui/order_attr/widgets/order_attribute_reorder.dart';
-import 'ui/quantities/quantity_screen.dart';
-import 'ui/quantities/widgets/quantity_modal.dart';
-import 'ui/setting/setting_screen.dart';
-import 'ui/stock/replenishment/replenishment_modal.dart';
-import 'ui/stock/replenishment/replenishment_screen.dart';
-import 'ui/stock/widgets/ingredient_modal.dart';
+import 'ui/order/order_page.dart';
+import 'ui/order_attr/order_attribute_page.dart';
+import 'ui/order_attr/widgets/order_attribute_modal_page.dart';
+import 'ui/order_attr/widgets/option_modal_page.dart';
+import 'ui/order_attr/widgets/option_reorder_page.dart';
+import 'ui/order_attr/widgets/order_attribute_reorder_page.dart';
+import 'ui/quantities/quantity_page.dart';
+import 'ui/quantities/widgets/quantity_modal_page.dart';
+import 'ui/stock/ingredient_page.dart';
+import 'ui/stock/widgets/replenishment_modal_page.dart';
+import 'ui/stock/replenishment_page.dart';
+import 'ui/transit/transit_page.dart';
+import 'ui/transit/transit_station.dart';
+
+// TODO: test
+String serializeRange(DateTimeRange range) {
+  final f = DateFormat('y-M-d');
+  return "${f.format(range.start)}-${f.format(range.end)}";
+}
+
+T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {
+  return values.firstWhere((e) => e.name == path, orElse: () => other);
+}
+
+DateTimeRange? _parseRange(String? val) {
+  try {
+    final ss = val?.split('-') ?? const <String>[];
+    return DateTimeRange(
+      start: DateTime(int.parse(ss[0]), int.parse(ss[1]), int.parse(ss[2])),
+      end: DateTime(int.parse(ss[3]), int.parse(ss[4]), int.parse(ss[5])),
+    );
+  } catch (e) {
+    return null;
+  }
+}
+
+String? Function(BuildContext, GoRouterState) _redirectIfMissed({
+  required String path,
+  required bool Function(String id) hasItem,
+}) {
+  return (ctx, state) {
+    final id = state.pathParameters['id'];
+    return id == null || !hasItem(id) ? ctx.namedLocation(path) : null;
+  };
+}
 
 class Routes {
-  static const String orderAttr = 'order_attr';
-  static const String exporter = 'exporter';
-  static const String featureRequest = 'feature_request';
-  static const String menu = 'menu';
-  static const String order = 'order';
-  static const String quantities = 'quantities';
-  static const String setting = 'setting';
-  static const String imageGallery = 'image_gallery';
-
-  // sub-route
-  static const String cashierChanger = 'cashier/changer';
-  static const String cashierSurplus = 'cashier/surplus';
-  static const String orderAttrModal = 'order_attr/modal';
-  static const String orderAttrReorder = 'order_attr/reorder';
-  static const String orderAttrOption = 'order_attr/option';
-  static const String orderAttrOptionReorder = 'order_attr/option/reorder';
-  static const String menuSearch = 'menu/search';
-  static const String menuCatalog = 'menu/catalog';
-  static const String menuCatalogModal = 'menu/catalog/modal';
-  static const String menuCatalogReorder = 'menu/catalog/reorder';
-  static const String menuProduct = 'menu/product';
-  static const String menuProductModal = 'menu/product/modal';
-  static const String menuProductReorder = 'menu/product/reorder';
-  static const String menuIngredient = 'menu/ingredient';
-  static const String menuQuantity = 'menu/quantity';
-  static const String orderDetails = 'order/details';
-  static const String quantityModal = 'quantities/modal';
-  static const String stockReplenishment = 'stock/replenishment';
-  static const String stockReplenishmentModal = 'stock/replenishment/modal';
-  static const String stockIngredient = 'stock/ingredient';
-
-  static final routes = <String, WidgetBuilder>{
-    orderAttr: (_) => const OrderAttributeScreen(),
-    featureRequest: (_) => const HomeSetupFeatureRequestScreen(),
-    menu: (_) => const MenuScreen(),
-    order: (_) => const OrderScreen(),
-    setting: (_) => const SettingScreen(),
-    imageGallery: (_) => const ImageGalleryScreen(),
-    // sub-route
-    // cashier
-    cashierChanger: (_) => const ChangerModal(),
-    cashierSurplus: (_) => const CashierSurplus(),
-    // order_attribute
-    orderAttrModal: (ctx) =>
-        OrderAttributeModal(attribute: _a<OrderAttribute?>(ctx)),
-    orderAttrReorder: (_) => const OrderAttributeReorder(),
-    orderAttrOption: (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is OrderAttributeOption
-          ? OrderAttributeOptionModal(
-              option: arg,
-              attribute: arg.attribute,
-            )
-          : OrderAttributeOptionModal(attribute: arg as OrderAttribute);
+  static final route = GoRoute(
+    name: 'home',
+    path: '/',
+    builder: (ctx, state) {
+      final tab = _findEnum(
+        HomeTab.values,
+        state.uri.queryParameters['tab'],
+        Menu.instance.isEmpty ? HomeTab.setting : HomeTab.analysis,
+      );
+      return HomePage(tab: tab);
     },
-    orderAttrOptionReorder: (ctx) =>
-        OrderAttributeOptionReorder(attribute: _a<OrderAttribute>(ctx)),
-    exporter: (_) => ExporterScreen(),
-    // menu
-    menuCatalog: (context) => ChangeNotifierProvider.value(
-          value: _a<Catalog>(context),
-          builder: (_, __) => const CatalogScreen(),
+    routes: [
+      _menuRoute,
+      _orderAttrRoute,
+      GoRoute(
+        name: order,
+        path: 'order',
+        builder: (ctx, state) => const OrderPage(),
+        routes: [
+          GoRoute(
+            name: orderDetails,
+            path: 'details',
+            builder: (ctx, state) => const OrderDetailsScreen(),
+          ),
+        ],
+      ),
+      GoRoute(
+        name: analOrderModal,
+        path: 'analysis/order/modal',
+        redirect: (ctx, state) {
+          return state.extra is OrderObject ? null : '/?tab=analysis';
+        },
+        builder: (ctx, state) {
+          // TODO: use id
+          return AnalysisOrderModalPage(state.extra as OrderObject);
+        },
+      ),
+      GoRoute(
+        name: cashierChanger,
+        path: 'cashier/changer',
+        builder: (ctx, state) => const ChangerModal(),
+      ),
+      GoRoute(
+        name: cashierSurplus,
+        path: 'cashier/surplus',
+        builder: (ctx, state) => const CashierSurplus(),
+      ),
+      GoRoute(
+        name: quantities,
+        path: 'quantities',
+        builder: (ctx, state) => const QuantityPage(),
+        routes: [
+          GoRoute(
+            name: quantityModal,
+            path: 'q/:id/modal',
+            builder: (ctx, state) {
+              final id = state.pathParameters['id'] ?? '';
+              return QuantityModalPage(
+                  quantity: Quantities.instance.getItem(id));
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        name: ingredientModal,
+        path: 'stock/i/:id/modal',
+        builder: (ctx, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return IngredientPage(ingredient: Stock.instance.getItem(id));
+        },
+      ),
+      GoRoute(
+        name: replenishment,
+        path: 'stock/repl',
+        builder: (ctx, state) => const ReplenishmentPage(),
+        routes: [
+          GoRoute(
+            name: replenishmentModal,
+            path: 'r/:id/modal',
+            builder: (ctx, state) {
+              final id = state.pathParameters['id'] ?? '';
+              return ReplenishmentModalPage(
+                replenishment: Replenisher.instance.getItem(id),
+              );
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        name: transit,
+        path: 'transit',
+        builder: (ctx, state) => const TransitPage(),
+        routes: [
+          GoRoute(
+            name: transitStation,
+            path: 's/:method/:type',
+            builder: (ctx, state) {
+              final method = _findEnum(
+                TransitMethod.values,
+                state.pathParameters['method'],
+                TransitMethod.plainText,
+              );
+              final type = _findEnum(
+                TransitType.values,
+                state.pathParameters['type'],
+                TransitType.basic,
+              );
+              final range = _parseRange(state.uri.queryParameters['range']);
+
+              return TransitStation(
+                method: method,
+                type: type,
+                range: range,
+              );
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        name: featureRequest,
+        path: 'feature_request',
+        builder: (ctx, state) => const FeatureRequestPage(),
+      ),
+      GoRoute(
+        name: imageGallery,
+        path: 'image_gallery',
+        builder: (ctx, state) => const ImageGalleryPage(),
+      ),
+      GoRoute(
+        name: features,
+        path: 'features',
+        builder: (ctx, state) => const FeaturesPage(),
+      ),
+    ],
+  );
+
+  static final _menuRoute = GoRoute(
+    name: menu,
+    path: 'menu',
+    builder: (ctx, state) {
+      final id = state.uri.queryParameters['id'];
+      final mode = state.uri.queryParameters['mode'];
+      final catalog = id != null ? Menu.instance.getItem(id) : null;
+      return MenuPage(
+        catalog: catalog,
+        productOnly: mode == 'products',
+      );
+    },
+    routes: [
+      GoRoute(
+        name: menuNew,
+        path: 'new',
+        builder: (ctx, state) {
+          final id = state.uri.queryParameters['id'];
+          final c = id == null ? null : Menu.instance.getItem(id);
+
+          if (c == null) {
+            return const CatalogModalPage();
+          }
+          return ProductModalPage(catalog: c);
+        },
+      ),
+      GoRoute(
+        name: menuReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const CatalogReorderPage(),
+      ),
+      GoRoute(
+        name: menuCatalogModal,
+        path: 'c/:id/modal',
+        builder: (ctx, state) => CatalogModalPage(
+          catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
         ),
-    menuCatalogModal: (context) => CatalogModal(catalog: _a<Catalog?>(context)),
-    menuCatalogReorder: (context) => const CatalogOrderableList(),
-    menuProduct: (context) => ChangeNotifierProvider.value(
-          value: _a<Product>(context),
-          builder: (_, __) => const ProductScreen(),
+      ),
+      GoRoute(
+        name: menuCatalogReorder,
+        path: 'c/:id/reorder',
+        redirect: _redirectIfMissed(
+          path: menu,
+          hasItem: (id) => Menu.instance.hasItem(id),
         ),
-    menuProductModal: (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is Product
-          ? ProductModal(
-              product: arg,
-              catalog: arg.catalog,
-            )
-          : ProductModal(catalog: arg as Catalog);
-    },
-    menuProductReorder: (ctx) => ProductOrderableList(_a<Catalog>(ctx)),
-    menuIngredient: (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is ProductIngredient
-          ? ProductIngredientModal(
-              ingredient: arg,
-              product: arg.product,
-            )
-          : ProductIngredientModal(product: arg as Product);
-    },
-    menuQuantity: (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      return arg is ProductQuantity
-          ? ProductQuantityModal(
-              quantity: arg,
-              ingredient: arg.ingredient,
-            )
-          : ProductQuantityModal(ingredient: arg as ProductIngredient);
-    },
-    // order
-    orderDetails: (_) => const OrderDetailsScreen(),
-    // quantities
-    quantities: (_) => const QuantityScreen(),
-    quantityModal: (ctx) => QuantityModal(_a<Quantity?>(ctx)),
-    // stock
-    stockIngredient: (ctx) => IngredientModal(ingredient: _a<Ingredient?>(ctx)),
-    stockReplenishment: (_) => const ReplenishmentScreen(),
-    stockReplenishmentModal: (ctx) =>
-        ReplenishmentModal(_a<Replenishment?>(ctx)),
-  };
+        builder: (ctx, state) => ProductReorderPage(
+          Menu.instance.getItem(state.pathParameters['id']!)!,
+        ),
+      ),
+      GoRoute(
+        name: menuProduct,
+        path: 'p/:id',
+        redirect: _redirectIfMissed(
+          path: menu,
+          hasItem: (id) => Menu.instance.getProduct(id) != null,
+        ),
+        builder: (ctx, state) => ProductPage(
+          product: Menu.instance.getProduct(state.pathParameters['id']!)!,
+        ),
+        routes: [
+          GoRoute(
+            name: menuProductModal,
+            path: 'modal',
+            builder: (ctx, state) {
+              // verified for parent
+              final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
+              return ProductModalPage(product: p, catalog: p.catalog);
+            },
+          ),
+          GoRoute(
+            name: menuProductDetails,
+            path: 'details',
+            builder: (ctx, state) {
+              // verified for parent
+              final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
+              final ing = p.getItem(state.uri.queryParameters['iid'] ?? '');
+              final qid = state.uri.queryParameters['qid'];
+              if (ing == null || qid == null) {
+                return ProductIngredientModalPage(product: p, ingredient: ing);
+              }
 
-  static T _a<T>(BuildContext context) =>
-      ModalRoute.of(context)!.settings.arguments as T;
+              return ProductQuantityModalPage(
+                quantity: ing.getItem(qid),
+                ingredient: ing,
+              );
+            },
+          ),
+        ],
+      ),
+    ],
+  );
+
+  static final _orderAttrRoute = GoRoute(
+    name: orderAttr,
+    path: 'oa',
+    builder: (ctx, state) => const OrderAttributePage(),
+    routes: [
+      GoRoute(
+        name: orderAttrModal,
+        path: 'a/:id/modal',
+        builder: (ctx, state) {
+          final id = state.pathParameters['id'];
+          final oid = state.uri.queryParameters['oid'];
+          final oa = id == null ? null : OrderAttributes.instance.getItem(id);
+
+          if (oid == null || oa == null) {
+            // edit or new oa
+            return OrderAttributeModalPage(attribute: oa);
+          }
+          return OptionModalPage(
+            attribute: oa,
+            option: oa.getItem(oid),
+          );
+        },
+      ),
+      GoRoute(
+        name: orderAttrOptionReorder,
+        path: 'a/:id/reorder',
+        redirect: _redirectIfMissed(
+          path: orderAttr,
+          hasItem: (id) => OrderAttributes.instance.hasItem(id),
+        ),
+        builder: (ctx, state) {
+          return OptionReorderPage(
+            attribute: OrderAttributes.instance.getItem(
+              state.pathParameters['id']!,
+            )!,
+          );
+        },
+      ),
+      GoRoute(
+        name: orderAttrReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const OrderAttributeReorderPage(),
+      ),
+    ],
+  );
+
+  static const menu = '/menu';
+  static const menuNew = '/menu/new';
+  static const menuSearch = '/menu/search';
+  static const menuReorder = '/menu/reorder';
+  static const menuCatalogModal = '/menu/catalog/modal';
+  static const menuCatalogReorder = '/menu/catalog/reorder';
+  static const menuProduct = '/menu/product';
+  static const menuProductModal = '/menu/product/modal';
+  static const menuProductDetails = '/menu/product/details';
+
+  static const analOrderModal = '/analysis/order/modal';
+
+  static const quantities = '/quantities';
+  static const quantityModal = '/quantities/modal';
+
+  static const orderAttr = '/oa';
+  static const orderAttrModal = '/oa/modal';
+  static const orderAttrReorder = '/oa/reorder';
+  static const orderAttrOptionReorder = '/oa/option/reorder';
+
+  static const replenishment = '/stock/repl';
+  static const replenishmentModal = '/stock/repl/modal';
+  static const ingredientModal = '/stock/ingredient/modal';
+
+  static const cashierChanger = '/cashier/changer';
+  static const cashierSurplus = '/cashier/surplus';
+
+  static const order = '/order';
+  static const orderDetails = '/order/details';
+
+  static const transit = '/transit';
+  static const transitStation = '/transit/station';
+
+  static const featureRequest = '/feature_request';
+  static const imageGallery = '/image_gallery';
+  static const features = '/features';
 }

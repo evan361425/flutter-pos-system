@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -20,36 +21,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
-  late bool hasAttr;
+  late final bool hasAttr;
 
   @override
   Widget build(BuildContext context) {
-    // tab widgets
-    PreferredSizeWidget? tabBar;
-    Widget body = const OrderCashierModal();
-
-    if (hasAttr) {
-      tabBar = TabBar(
-        controller: _controller,
-        tabs: [
-          Tab(key: const Key('order.set_attr'), text: S.orderSetAttributeTitle),
-          Tab(key: const Key('order.cashier'), text: S.orderCashierTitle),
-        ],
-      );
-
-      body = DefaultTabController(
-        length: 2,
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Expanded(
-            child: TabBarView(controller: _controller, children: const [
-              OderSetAttributeModal(),
-              OrderCashierModal(),
-            ]),
-          ),
-        ]),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
@@ -60,9 +35,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
             child: Text(S.orderCashierCheckout),
           ),
         ],
-        bottom: tabBar,
+        // disable shadow after scrolled
+        scrolledUnderElevation: 0,
+        bottom: TabBar(
+          controller: _controller,
+          tabs: [
+            if (hasAttr)
+              Tab(
+                  key: const Key('order.set_attr'),
+                  text: S.orderSetAttributeTitle),
+            Tab(key: const Key('order.cashier'), text: S.orderCashierTitle),
+          ],
+        ),
       ),
-      body: body,
+      body: TabBarView(controller: _controller, children: [
+        if (hasAttr) const OderSetAttributeModal(),
+        const OrderCashierModal(),
+      ]),
     );
   }
 
@@ -87,8 +76,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
         try {
           final result = await Cart.instance.checkout();
           // send success message
-          if (context.mounted) {
-            Navigator.of(context).pop(result);
+          if (context.mounted && context.canPop()) {
+            context.pop(result);
           }
         } on PaidException {
           if (context.mounted) {

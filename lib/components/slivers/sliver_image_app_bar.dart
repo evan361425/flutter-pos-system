@@ -6,9 +6,12 @@ import 'package:possystem/models/model.dart';
 class SliverImageAppBar extends StatelessWidget {
   final ModelImage model;
 
+  final List<Widget>? actions;
+
   const SliverImageAppBar({
     Key? key,
     required this.model,
+    this.actions,
   }) : super(key: key);
 
   @override
@@ -32,7 +35,7 @@ class SliverImageAppBar extends StatelessWidget {
           onImageError: () => model.saveImage(null),
         ),
       ),
-      actions: const <Widget>[PopButton(toHome: true)],
+      actions: actions,
     );
   }
 }

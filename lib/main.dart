@@ -7,15 +7,14 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:possystem/debug/setup_menu.dart';
-import 'package:possystem/firebase_compatible_options.dart';
-import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:provider/provider.dart';
 
+import 'debug/setup_menu.dart';
+import 'firebase_compatible_options.dart';
+import 'helpers/logger.dart';
 import 'models/repository/cashier.dart';
 import 'models/repository/menu.dart';
+import 'models/repository/order_attributes.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/seller.dart';
@@ -24,8 +23,8 @@ import 'my_app.dart';
 import 'services/cache.dart';
 import 'services/database.dart';
 import 'services/storage.dart';
+import 'settings/collect_events_setting.dart';
 import 'settings/settings_provider.dart';
-import 'ui/home/home_scaffold.dart';
 
 void main() async {
   // Not all errors are caught by Flutter. Sometimes, errors are instead caught by Zones.
@@ -103,10 +102,7 @@ void main() async {
             create: (_) => Cashier.instance,
           ),
         ],
-        child: MyApp(
-          settings: settings,
-          child: const HomeScaffold(),
-        ),
+        child: MyApp(settings: settings),
       ));
     },
     (error, stack) =>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
@@ -10,7 +11,10 @@ import 'package:possystem/translator.dart';
 class IngredientExpansionCard extends StatelessWidget {
   final ProductIngredient ingredient;
 
-  const IngredientExpansionCard(this.ingredient, {Key? key}) : super(key: key);
+  const IngredientExpansionCard(
+    this.ingredient, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +26,21 @@ class IngredientExpansionCard extends StatelessWidget {
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ListTile(
-            key: Key('$key.add'),
-            leading: const CircleAvatar(child: Icon(KIcons.add)),
-            title: Text(S.menuQuantityCreate),
-            onTap: () => Navigator.of(context).pushNamed(
-                  Routes.menuQuantity,
-                  arguments: ingredient,
-                ),
-            trailing: IconButton(
-              key: Key('$key.more'),
-              onPressed: () => showActions(context),
-              enableFeedback: true,
-              icon: const Icon(KIcons.more),
-            )),
+          key: Key('$key.add'),
+          leading: const CircleAvatar(child: Icon(KIcons.add)),
+          title: Text(S.menuQuantityCreate),
+          onTap: () => context.pushNamed(
+            Routes.menuProductDetails,
+            pathParameters: {'id': ingredient.product.id},
+            queryParameters: {'iid': ingredient.id, 'qid': ''},
+          ),
+          trailing: IconButton(
+            key: Key('$key.more'),
+            onPressed: () => showActions(context),
+            enableFeedback: true,
+            icon: const Icon(KIcons.more),
+          ),
+        ),
         for (final item in ingredient.items) _QuantityTile(item),
       ],
     );
@@ -48,8 +54,9 @@ class IngredientExpansionCard extends StatelessWidget {
         BottomSheetAction(
           title: Text(S.menuIngredientUpdate),
           leading: const Icon(Icons.text_fields_sharp),
-          navigateRoute: Routes.menuIngredient,
-          navigateArgument: ingredient,
+          route: Routes.menuProductDetails,
+          routePathParameters: {'id': ingredient.product.id},
+          routeQueryParameters: {'iid': ingredient.id, 'qid': ''},
         ),
       ],
       warningContent: Text(S.dialogDeletionContent(ingredient.name, '')),
@@ -79,9 +86,13 @@ class _QuantityTile extends StatelessWidget {
         warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
         deleteCallback: quantity.remove,
       ),
-      onTap: () => Navigator.of(context).pushNamed(
-        Routes.menuQuantity,
-        arguments: quantity,
+      onTap: () => context.pushNamed(
+        Routes.menuProductDetails,
+        pathParameters: {'id': quantity.ingredient.product.id},
+        queryParameters: {
+          'iid': quantity.ingredient.id,
+          'qid': quantity.id,
+        },
       ),
     );
   }

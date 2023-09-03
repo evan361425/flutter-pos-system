@@ -28,7 +28,7 @@ import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -192,7 +192,7 @@ void main() {
     testWidgets('Leave history mode', (tester) async {
       Cart.instance.isHistoryMode = true;
 
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderPage()));
 
       expect(find.byKey(const Key('cart_snapshot.0')), findsOneWidget);
       await tester.tap(find.byKey(const Key('order.action.more')));
@@ -205,7 +205,7 @@ void main() {
     });
 
     testWidgets('Show last order', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderPage()));
 
       act(bool? confirm) async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -266,7 +266,7 @@ void main() {
     });
 
     testWidgets('Drop stashed', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderPage()));
 
       act(bool? confirm) async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -325,7 +325,7 @@ void main() {
     });
 
     testWidgets('Stash', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(const MaterialApp(home: OrderPage()));
 
       act() async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -373,7 +373,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: cashier,
-        child: MaterialApp(routes: Routes.routes, home: const OrderScreen()),
+        child: MaterialApp(routes: Routes.routes, home: const OrderPage()),
       ));
 
       await tester.tap(find.byKey(const Key('order.action.more')));
