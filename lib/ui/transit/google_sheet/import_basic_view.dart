@@ -129,7 +129,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   Future<void> importData(Formattable? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
-      showSnackBar(context, S.transitGSErrors('emptySpreadsheet'));
+      showSnackBar(context, S.transitGSErrors('spreadsheetEmpty'));
       return;
     }
 

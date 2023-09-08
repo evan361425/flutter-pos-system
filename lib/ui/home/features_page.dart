@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/sign_in_button.dart';
-import 'package:possystem/components/style/card_tile.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/cashier_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
@@ -80,9 +78,9 @@ class _FeaturesPageState extends State<FeaturesPage> {
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
-          CardTile(
+          ListTile(
             key: const Key('setting.theme'),
+            leading: const Icon(Icons.palette_outlined),
             title: Text(S.settingThemeTitle),
             subtitle: Text(S.settingThemeTypes(theme.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
@@ -95,8 +93,9 @@ class _FeaturesPageState extends State<FeaturesPage> {
               selected: theme.value.index,
             ),
           ),
-          CardTile(
+          ListTile(
             key: const Key('setting.language'),
+            leading: const Icon(Icons.language_outlined),
             title: Text(S.settingLanguageTitle),
             subtitle: Text(LanguageSetting.supportedNames[selectedLanguage]),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
@@ -107,9 +106,10 @@ class _FeaturesPageState extends State<FeaturesPage> {
               items: LanguageSetting.supportedNames,
             ),
           ),
-          const SizedBox(height: kSpacing2),
-          CardTile(
+          const Divider(),
+          ListTile(
             key: const Key('setting.outlook_order'),
+            leading: const Icon(Icons.library_books_outlined),
             title: Text(S.settingOrderOutlookTitle),
             subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
@@ -126,8 +126,9 @@ class _FeaturesPageState extends State<FeaturesPage> {
               ],
             ),
           ),
-          CardTile(
+          ListTile(
             key: const Key('setting.cashier_warning'),
+            leading: const Icon(Icons.store_mall_directory_outlined),
             title: Text(S.settingCashierWarningTitle),
             subtitle:
                 Text(S.settingCashierWarningTypes(cashierWarning.value.name)),
@@ -156,8 +157,10 @@ class _FeaturesPageState extends State<FeaturesPage> {
             hintText: '設定「零」則點餐時僅會以文字顯示',
             onChanged: (value) => orderCount.update(value),
           ),
-          CardTile(
+          ListTile(
+            leading: const Icon(Icons.remove_red_eye_outlined),
             title: Text(S.settingOrderAwakeningTitle),
+            subtitle: const Text('是否根據系統設定時間關閉螢幕'),
             trailing: FeatureSwitch(
               key: const Key('setting.awake_ordering'),
               value: orderAwakening.value,
@@ -165,7 +168,8 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           const Divider(),
-          CardTile(
+          ListTile(
+            leading: const Icon(Icons.report_outlined),
             title: const Text('收集錯誤訊息和事件'),
             subtitle: const Text('當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長'),
             trailing: FeatureSwitch(

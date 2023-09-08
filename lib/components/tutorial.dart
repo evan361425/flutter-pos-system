@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -17,7 +16,6 @@ class TutorialWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpotlightShow(
-      routeObserver: MyApp.routeObserver,
       startWhenReady: tab == null, // start if no tab passed
       child: Builder(
         builder: (context) {
@@ -45,12 +43,11 @@ class Tutorial extends StatelessWidget {
   /// force disabling tutorial
   final bool disable;
 
+  final bool monitorVisibility;
+
   final Widget child;
 
-  final Duration bumpDuration;
-  final Duration zoomInDuration;
-  final Duration zoomOutDuration;
-  final Duration contentFadeInDuration;
+  final SpotlightDurationConfig duration;
 
   const Tutorial({
     Key? key,
@@ -61,24 +58,31 @@ class Tutorial extends StatelessWidget {
     this.spotlightBuilder = const SpotlightCircularBuilder(),
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
+    this.monitorVisibility = false,
     required this.child,
-    this.bumpDuration = const Duration(milliseconds: 500),
-    this.zoomInDuration = const Duration(milliseconds: 600),
-    this.zoomOutDuration = const Duration(milliseconds: 600),
-    this.contentFadeInDuration = const Duration(milliseconds: 200),
+    this.duration = const SpotlightDurationConfig(
+      bump: Duration(milliseconds: 500),
+      zoomIn: Duration(milliseconds: 600),
+      zoomOut: Duration(milliseconds: 600),
+      contentFadeIn: Duration(milliseconds: 200),
+    ),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SpotlightAnt(
-      actions: const [SpotlightAntAction.prev, SpotlightAntAction.next],
-      spotlightBuilder: spotlightBuilder,
+      enable: enabled,
       index: index,
-      spotlightPadding: padding,
-      bumpDuration: bumpDuration,
-      zoomInDuration: zoomInDuration,
-      zoomOutDuration: zoomOutDuration,
-      contentFadeInDuration: contentFadeInDuration,
+      duration: duration,
+      monitorId: monitorVisibility ? 'tutorial.$id' : null,
+      onDismiss: _onDismiss,
+      spotlight: SpotlightConfig(
+        builder: spotlightBuilder,
+        padding: padding,
+      ),
+      action: const SpotlightActionConfig(
+        enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
+      ),
       content: SpotlightContent(
         child: Column(children: [
           if (title != null)
@@ -90,8 +94,6 @@ class Tutorial extends StatelessWidget {
           Text(message, style: const TextStyle(fontSize: 18)),
         ]),
       ),
-      onDismiss: _onDismiss,
-      enable: enabled,
       child: child,
     );
   }

@@ -15,7 +15,7 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     final selector = Row(children: <Widget>[
       Expanded(
-        child: OutlinedButton(
+        child: ElevatedButton(
           key: const Key('cart.select_all'),
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -28,7 +28,7 @@ class CartView extends StatelessWidget {
       ),
       const SizedBox(width: 4.0),
       Expanded(
-        child: OutlinedButton(
+        child: ElevatedButton(
           key: const Key('cart.toggle_all'),
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -61,23 +61,15 @@ class CartView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Material(
-            elevation: 10,
-            color: cardColor,
-            shadowColor: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: selector,
-            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: selector,
           ),
           // no padding here to show full width of tile
           const Expanded(child: CartProductList()),
-          ColoredBox(
-            color: cardColor,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: actions,
-            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: actions,
           ),
         ],
       ),

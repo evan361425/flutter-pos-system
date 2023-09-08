@@ -21,14 +21,10 @@ class UnitListView extends StatelessWidget {
 
   Widget _itemWidget(BuildContext context, CashierUnitObject item, int index) {
     final max = Cashier.instance.defaultAt(index)?.count ?? 0;
-    return Card(
-      shape: const RoundedRectangleBorder(),
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      child: ListTile(
-        title: Text('幣值：${item.unit}'),
-        subtitle: PercentileBar(item.count, max),
-        onTap: () => _setUnitCount(context, item.unit, max, item.count),
-      ),
+    return ListTile(
+      title: Text('幣值：${item.unit}'),
+      subtitle: PercentileBar(item.count, max),
+      onTap: () => _setUnitCount(context, item.unit, max, item.count),
     );
   }
 

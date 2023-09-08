@@ -17,10 +17,14 @@ class QuantityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final quantities = context.watch<Quantities>();
 
-    handleCreate() => context.pushNamed(Routes.quantityModal);
+    handleCreate() => context.pushNamed(Routes.quantityNew);
 
     final body = quantities.isEmpty
-        ? Center(child: EmptyBody(onPressed: handleCreate))
+        ? Center(
+            child: EmptyBody(
+            tooltip: '份量可以快速調整成分的量，例如：\n半糖、微糖。',
+            onPressed: handleCreate,
+          ))
         : StockQuantityList(quantities: quantities.itemList);
 
     return Scaffold(

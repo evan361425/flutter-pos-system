@@ -217,18 +217,19 @@ class _StockTransformer extends ModelTransformer<Stock> {
     int counter = 1;
     return [
       ['本庫存共有 ${target.length} 種成份'],
-      [
-        ...target.itemList.map((ingredient) {
-          final max = ingredient.totalAmount;
-          final maxStr = max == null ? '' : '，${maxTmp.f({'max': max})}';
-          return baseTmp.f({
-                'num': counter++,
-                'name': ingredient.name,
-                'amount': ingredient.currentAmount,
-              }) +
-              maxStr;
-        }),
-      ],
+      if (target.isNotEmpty)
+        [
+          ...target.itemList.map((ingredient) {
+            final max = ingredient.totalAmount;
+            final maxStr = max == null ? '' : '，${maxTmp.f({'max': max})}';
+            return baseTmp.f({
+                  'num': counter++,
+                  'name': ingredient.name,
+                  'amount': ingredient.currentAmount,
+                }) +
+                maxStr;
+          }),
+        ],
     ];
   }
 
@@ -273,15 +274,16 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
     int counter = 1;
     return [
       ['共設定 ${target.length} 種份量'],
-      [
-        ...target.itemList.map((quantity) {
-          return baseTmp.f({
-            'num': counter++,
-            'name': quantity.name,
-            'prop': quantity.defaultProportion,
-          });
-        }),
-      ],
+      if (target.isNotEmpty)
+        [
+          ...target.itemList.map((quantity) {
+            return baseTmp.f({
+              'num': counter++,
+              'name': quantity.name,
+              'prop': quantity.defaultProportion,
+            });
+          }),
+        ],
     ];
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
@@ -178,18 +179,25 @@ void main() {
 }
 
 Widget createAppWidget(void Function(String?) cb) {
-  return MaterialApp(
-    routes: Routes.routes,
-    home: Scaffold(body: Builder(builder: (context) {
-      return TextButton(
-        onPressed: () async {
-          final result = await Navigator.of(context).pushNamed(
-            Routes.imageGallery,
-          );
-          cb(result as String?);
+  return MaterialApp.router(
+    routerConfig: GoRouter(routes: [
+      GoRoute(
+        path: '/',
+        routes: Routes.routes,
+        builder: (ctx, state) {
+          return Scaffold(body: Builder(builder: (context) {
+            return TextButton(
+              onPressed: () async {
+                final result = await Navigator.of(context).pushNamed(
+                  Routes.imageGallery,
+                );
+                cb(result as String?);
+              },
+              child: const Text('go'),
+            );
+          }));
         },
-        child: const Text('go'),
-      );
-    })),
+      )
+    ]),
   );
 }

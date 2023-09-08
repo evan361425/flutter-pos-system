@@ -133,41 +133,37 @@ class SlidableItemDelegate<T, U> {
     required int index,
     required ThemeData theme,
   }) {
-    return Card(
-      shape: const RoundedRectangleBorder(),
-      margin: const EdgeInsets.all(0),
-      child: Slidable(
-        groupTag: groupTag,
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 0.25,
-          children: [
-            SlidableAction(
-              key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
-              label: S.btnDelete,
-              backgroundColor: theme.colorScheme.error,
-              foregroundColor: theme.colorScheme.onError,
-              icon: KIcons.delete,
-              onPressed: (_) => DeleteDialog.show(
-                context,
-                deleteCallback: () => handleDelete(item),
-                warningContent: warningContextBuilder == null
-                    ? null
-                    : warningContextBuilder!(context, item),
-              ),
+    return Slidable(
+      groupTag: groupTag,
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
+            label: S.btnDelete,
+            backgroundColor: theme.colorScheme.error,
+            foregroundColor: theme.colorScheme.onError,
+            icon: KIcons.delete,
+            onPressed: (_) => DeleteDialog.show(
+              context,
+              deleteCallback: () => handleDelete(item),
+              warningContent: warningContextBuilder == null
+                  ? null
+                  : warningContextBuilder!(context, item),
             ),
-          ],
-        ),
-        child: InkWell(
-          onTap: () {
-            if (handleTap != null) {
-              handleTap!(context, item);
-            }
-          },
-          onLongPress: () => showActions(context, item),
-          child: tileBuilder(
-              context, index, item, () => showActions(context, item)),
-        ),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          if (handleTap != null) {
+            handleTap!(context, item);
+          }
+        },
+        onLongPress: () => showActions(context, item),
+        child:
+            tileBuilder(context, index, item, () => showActions(context, item)),
       ),
     );
   }

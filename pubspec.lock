@@ -1110,10 +1110,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotlight_ant
-      sha256: "7fd686165c728620cf709d1f67219afc9dc79488d8bccba6ef5be370e1560914"
+      sha256: "022e389f00c0c0b548d2c65935e96ae310f553132c2ea425494c9fd38bcc8026"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.1"
+    version: "1.0.0"
   sqflite:
     dependency: "direct main"
     description:
@@ -1338,6 +1338,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   wakelock:
     dependency: "direct main"
     description:

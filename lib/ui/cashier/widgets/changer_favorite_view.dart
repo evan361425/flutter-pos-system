@@ -35,7 +35,10 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   @override
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
-      return EmptyBody(onPressed: widget.emptyAction);
+      return EmptyBody(
+        tooltip: '可以幫助你快速轉換不同幣值',
+        onPressed: widget.emptyAction,
+      );
     }
 
     final delegate = SlidableItemDelegate<FavoriteItem, int>(

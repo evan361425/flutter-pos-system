@@ -56,13 +56,14 @@ class SettingView extends StatelessWidget {
                 icon: Icons.collections_outlined,
                 route: Routes.menu,
                 title: S.menuTitle,
+                subtitle: '產品種類、產品',
               ),
             ),
             Tutorial(
               id: 'home.exporter',
               index: 1,
-              title: '檔案匯出',
-              message: '這裡是用來匯出菜單、庫存、訂單記錄等資訊的地方。',
+              title: '資料轉移',
+              message: '這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。',
               spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
                 context,
@@ -70,6 +71,7 @@ class SettingView extends StatelessWidget {
                 icon: Icons.upload_file_outlined,
                 route: Routes.transit,
                 title: S.transitTitle,
+                subtitle: '匯入、匯出資料',
               ),
             ),
             Tutorial(
@@ -86,6 +88,7 @@ class SettingView extends StatelessWidget {
                 icon: Icons.assignment_ind_outlined,
                 route: Routes.orderAttr,
                 title: S.orderAttributeTitle,
+                subtitle: '內用、外帶等等',
               ),
             ),
             _buildRouteTile(
@@ -94,6 +97,7 @@ class SettingView extends StatelessWidget {
               icon: Icons.exposure_outlined,
               route: Routes.quantity,
               title: S.quantityTitle,
+              subtitle: '半糖、微糖等等',
             ),
             _buildRouteTile(
               context,
@@ -101,6 +105,7 @@ class SettingView extends StatelessWidget {
               icon: Icons.lightbulb_outlined,
               route: Routes.featureRequest,
               title: S.featureRequestTitle,
+              subtitle: '使用 Google 表單提供回饋',
             ),
             _buildRouteTile(
               context,
@@ -108,6 +113,7 @@ class SettingView extends StatelessWidget {
               icon: Icons.settings_outlined,
               route: Routes.features,
               title: S.settingTitle,
+              subtitle: '外觀、語言、提示',
             ),
             const Divider(),
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -127,6 +133,7 @@ class SettingView extends StatelessWidget {
     required IconData icon,
     required String route,
     required String title,
+    required String subtitle,
   }) {
     return ListTile(
       key: Key('home_setup.$id'),
@@ -134,6 +141,7 @@ class SettingView extends StatelessWidget {
       trailing: const Icon(Icons.navigate_next_outlined),
       onTap: () => context.pushNamed(route),
       title: Text(title),
+      subtitle: Text(subtitle),
     );
   }
 }

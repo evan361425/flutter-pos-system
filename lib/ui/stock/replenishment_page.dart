@@ -20,7 +20,7 @@ class ReplenishmentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final replenisher = context.watch<Replenisher>();
 
-    void handleCreate() => context.pushNamed(Routes.replenishmentModal);
+    void handleCreate() => context.pushNamed(Routes.replenishmentNew);
 
     final body = replenisher.isEmpty
         ? Center(

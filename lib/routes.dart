@@ -23,7 +23,7 @@ import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_reorder.dart';
 import 'ui/menu/widgets/product_modal.dart';
 import 'ui/menu/widgets/product_reorder.dart';
-import 'ui/order/cashier/order_details_screen.dart';
+import 'ui/order/cashier/order_details_page.dart';
 import 'ui/order/order_page.dart';
 import 'ui/order_attr/order_attribute_page.dart';
 import 'ui/order_attr/widgets/order_attribute_modal.dart';
@@ -71,7 +71,7 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 }
 
 class Routes {
-  static final route = GoRoute(
+  static final home = GoRoute(
     name: 'home',
     path: '/',
     builder: (ctx, state) {
@@ -82,130 +82,92 @@ class Routes {
       );
       return HomePage(tab: tab);
     },
-    routes: [
-      _menuRoute,
-      _orderAttrRoute,
-      GoRoute(
-        name: order,
-        path: 'order',
-        builder: (ctx, state) => const OrderPage(),
-        routes: [
-          GoRoute(
-            name: orderDetails,
-            path: 'details',
-            builder: (ctx, state) => const OrderDetailsScreen(),
-          ),
-        ],
-      ),
-      GoRoute(
-        name: analOrderModal,
-        path: 'analysis/order/modal',
-        redirect: (ctx, state) {
-          return state.extra is OrderObject ? null : '/?tab=analysis';
-        },
-        builder: (ctx, state) {
-          // TODO: use id
-          return AnalysisOrderModal(state.extra as OrderObject);
-        },
-      ),
-      GoRoute(
-        name: cashierChanger,
-        path: 'cashier/changer',
-        builder: (ctx, state) => const ChangerModal(),
-      ),
-      GoRoute(
-        name: cashierSurplus,
-        path: 'cashier/surplus',
-        builder: (ctx, state) => const CashierSurplus(),
-      ),
-      GoRoute(
-        name: quantity,
-        path: 'quantity',
-        builder: (ctx, state) => const QuantityPage(),
-        routes: [
-          GoRoute(
-            name: quantityModal,
-            path: 'q/:id/modal',
-            builder: (ctx, state) {
-              final id = state.pathParameters['id'] ?? '';
-              return StockQuantityModal(
-                  quantity: Quantities.instance.getItem(id));
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: ingredientModal,
-        path: 'stock/i/:id/modal',
-        builder: (ctx, state) {
-          final id = state.pathParameters['id'] ?? '';
-          return StockIngredientModal(ingredient: Stock.instance.getItem(id));
-        },
-      ),
-      GoRoute(
-        name: replenishment,
-        path: 'stock/repl',
-        builder: (ctx, state) => const ReplenishmentPage(),
-        routes: [
-          GoRoute(
-            name: replenishmentModal,
-            path: 'r/:id/modal',
-            builder: (ctx, state) {
-              final id = state.pathParameters['id'] ?? '';
-              return ReplenishmentModal(
-                replenishment: Replenisher.instance.getItem(id),
-              );
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: transit,
-        path: 'transit',
-        builder: (ctx, state) => const TransitPage(),
-        routes: [
-          GoRoute(
-            name: transitStation,
-            path: 's/:method/:type',
-            builder: (ctx, state) {
-              final method = _findEnum(
-                TransitMethod.values,
-                state.pathParameters['method'],
-                TransitMethod.plainText,
-              );
-              final type = _findEnum(
-                TransitType.values,
-                state.pathParameters['type'],
-                TransitType.basic,
-              );
-              final range = _parseRange(state.uri.queryParameters['range']);
-
-              return TransitStation(
-                method: method,
-                type: type,
-                range: range,
-              );
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: featureRequest,
-        path: 'feature_request',
-        builder: (ctx, state) => const FeatureRequestPage(),
-      ),
-      GoRoute(
-        name: imageGallery,
-        path: 'image_gallery',
-        builder: (ctx, state) => const ImageGalleryPage(),
-      ),
-      GoRoute(
-        name: features,
-        path: 'features',
-        builder: (ctx, state) => const FeaturesPage(),
-      ),
-    ],
+    routes: routes,
   );
+
+  static final routes = [
+    _menuRoute,
+    _stockRoute,
+    _orderAttrRoute,
+    GoRoute(
+      name: order,
+      path: 'order',
+      builder: (ctx, state) => const OrderPage(),
+      routes: [
+        GoRoute(
+          name: orderDetails,
+          path: 'details',
+          builder: (ctx, state) => const OrderDetailsPage(),
+        ),
+      ],
+    ),
+    GoRoute(
+      name: analOrderModal,
+      path: 'analysis/order/modal',
+      redirect: (ctx, state) {
+        return state.extra is OrderObject ? null : '/?tab=analysis';
+      },
+      builder: (ctx, state) {
+        // TODO: use id
+        return AnalysisOrderModal(state.extra as OrderObject);
+      },
+    ),
+    GoRoute(
+      name: cashierChanger,
+      path: 'cashier/changer',
+      builder: (ctx, state) => const ChangerModal(),
+    ),
+    GoRoute(
+      name: cashierSurplus,
+      path: 'cashier/surplus',
+      builder: (ctx, state) => const CashierSurplus(),
+    ),
+    GoRoute(
+      name: transit,
+      path: 'transit',
+      builder: (ctx, state) => const TransitPage(),
+      routes: [
+        GoRoute(
+          name: transitStation,
+          path: 's/:method/:type',
+          builder: (ctx, state) {
+            final method = _findEnum(
+              TransitMethod.values,
+              state.pathParameters['method'],
+              TransitMethod.plainText,
+            );
+            final type = _findEnum(
+              TransitType.values,
+              state.pathParameters['type'],
+              TransitType.basic,
+            );
+            final range = _parseRange(state.uri.queryParameters['range']);
+
+            return TransitStation(
+              method: method,
+              type: type,
+              range: range,
+            );
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      name: featureRequest,
+      path: 'feature_request',
+      builder: (ctx, state) => const FeatureRequestPage(),
+    ),
+    GoRoute(
+      name: imageGallery,
+      path: 'image_gallery',
+      builder: (ctx, state) => const ImageGalleryPage(),
+    ),
+    GoRoute(
+      name: features,
+      path: 'features',
+      builder: (ctx, state) => const FeaturesPage(),
+    ),
+  ];
 
   static final _menuRoute = GoRoute(
     name: menu,
@@ -299,6 +261,69 @@ class Routes {
     ],
   );
 
+  static final _stockRoute = GoRoute(
+    path: 'stock',
+    redirect: (ctx, state) => state.path == '/stock' ? '/' : null,
+    routes: [
+      GoRoute(
+        name: ingredientNew,
+        path: 'new',
+        builder: (ctx, state) => const StockIngredientModal(),
+      ),
+      GoRoute(
+        name: ingredientModal,
+        path: 'i/:id/modal',
+        builder: (ctx, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return StockIngredientModal(ingredient: Stock.instance.getItem(id));
+        },
+      ),
+      GoRoute(
+        name: quantity,
+        path: 'quantities',
+        builder: (ctx, state) => const QuantityPage(),
+        routes: [
+          GoRoute(
+            name: quantityNew,
+            path: 'new',
+            builder: (ctx, state) => const StockQuantityModal(),
+          ),
+          GoRoute(
+            name: quantityModal,
+            path: 'q/:id/modal',
+            builder: (ctx, state) {
+              final id = state.pathParameters['id'] ?? '';
+              return StockQuantityModal(
+                  quantity: Quantities.instance.getItem(id));
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        name: replenishment,
+        path: 'repl',
+        builder: (ctx, state) => const ReplenishmentPage(),
+        routes: [
+          GoRoute(
+            name: replenishmentNew,
+            path: 'new',
+            builder: (ctx, state) => const ReplenishmentModal(),
+          ),
+          GoRoute(
+            name: replenishmentModal,
+            path: 'r/:id/modal',
+            builder: (ctx, state) {
+              final id = state.pathParameters['id'] ?? '';
+              return ReplenishmentModal(
+                replenishment: Replenisher.instance.getItem(id),
+              );
+            },
+          ),
+        ],
+      ),
+    ],
+  );
+
   static final _orderAttrRoute = GoRoute(
     name: orderAttr,
     path: 'oa',
@@ -373,11 +398,14 @@ class Routes {
   static const orderAttrReorder = '/oa/reorder';
   static const orderAttrOptionReorder = '/oa/option/reorder';
 
-  static const replenishment = '/stock/repl';
-  static const replenishmentModal = '/stock/repl/modal';
+  static const ingredientNew = '/stock/new';
   static const ingredientModal = '/stock/ingredient/modal';
-  static const quantity = '/stock/quantity';
+  static const quantity = '/stock/quantities';
+  static const quantityNew = '/stock/quantity/new';
   static const quantityModal = '/stock/quantity/modal';
+  static const replenishment = '/stock/repl';
+  static const replenishmentNew = '/stock/repl/new';
+  static const replenishmentModal = '/stock/repl/modal';
 
   static const cashierChanger = '/cashier/changer';
   static const cashierSurplus = '/cashier/surplus';

@@ -7,17 +7,17 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 
-import 'order_cashier_modal.dart';
-import 'order_set_attribute_modal.dart';
+import 'order_cashier_view.dart';
+import 'order_setting_view.dart';
 
-class OrderDetailsScreen extends StatefulWidget {
-  const OrderDetailsScreen({Key? key}) : super(key: key);
+class OrderDetailsPage extends StatefulWidget {
+  const OrderDetailsPage({Key? key}) : super(key: key);
 
   @override
-  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen>
+class _OrderDetailsPageState extends State<OrderDetailsPage>
     with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
@@ -49,8 +49,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
         ),
       ),
       body: TabBarView(controller: _controller, children: [
-        if (hasAttr) const OderSetAttributeModal(),
-        const OrderCashierModal(),
+        if (hasAttr) const OderSettingView(),
+        const OrderCashierView(),
       ]),
     );
   }

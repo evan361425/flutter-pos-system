@@ -157,7 +157,7 @@ class _ProductModalState extends State<ProductModal>
     if (mounted) {
       // go to product screen
       widget.isNew
-          ? context.pushNamed(Routes.menuProduct, pathParameters: {
+          ? context.replaceNamed(Routes.menuProduct, pathParameters: {
               'id': product.id,
             })
           : context.pop();

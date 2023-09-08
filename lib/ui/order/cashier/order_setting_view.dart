@@ -5,8 +5,8 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 
-class OderSetAttributeModal extends StatelessWidget {
-  const OderSetAttributeModal({Key? key}) : super(key: key);
+class OderSettingView extends StatelessWidget {
+  const OderSettingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

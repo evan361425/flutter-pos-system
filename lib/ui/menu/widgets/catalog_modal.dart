@@ -6,7 +6,6 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class CatalogModal extends StatefulWidget {
@@ -104,12 +103,7 @@ class _CatalogModalState extends State<CatalogModal>
 
     if (mounted) {
       // go to catalog screen
-      widget.isNew
-          ? context.pushNamed(
-              Routes.menu,
-              queryParameters: {'id': catalog.id},
-            )
-          : context.pop();
+      widget.isNew ? context.pop(catalog.id) : context.pop();
     }
   }
 }

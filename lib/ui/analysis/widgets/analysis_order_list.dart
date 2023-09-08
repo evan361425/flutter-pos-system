@@ -26,6 +26,7 @@ class AnalysisOrderList extends StatelessWidget {
         title: '訂單資料匯出',
         message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
         spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
+        monitorVisibility: true,
         child: _buildDropdown(context),
       ),
       builder: _buildOrder,

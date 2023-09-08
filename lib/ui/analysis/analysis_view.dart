@@ -7,24 +7,41 @@ import 'package:spotlight_ant/spotlight_ant.dart';
 import 'widgets/analysis_order_list.dart';
 import 'widgets/calendar_view.dart';
 
-class AnalysisView extends StatelessWidget {
+class AnalysisView extends StatefulWidget {
   final TutorialInTab? tab;
 
-  final notifier = ValueNotifier<DateTimeRange>(Util.getDateRange());
+  const AnalysisView({Key? key, this.tab}) : super(key: key);
 
-  AnalysisView({Key? key, this.tab}) : super(key: key);
+  @override
+  State<AnalysisView> createState() => _AnalysisViewState();
+}
+
+class _AnalysisViewState extends State<AnalysisView> {
+  late final ValueNotifier<DateTimeRange> notifier;
 
   @override
   Widget build(BuildContext context) {
     return TutorialWrapper(
-      tab: tab,
+      tab: widget.tab,
       child: OrientationBuilder(
         key: const Key('analysis.builder'),
         builder: (context, orientation) => orientation == Orientation.portrait
-            ? _buildPortrait(context)
+            ? _buildPortrait()
             : _buildLandscape(),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    notifier = ValueNotifier<DateTimeRange>(Util.getDateRange());
+  }
+
+  @override
+  void dispose() {
+    notifier.dispose();
+    super.dispose();
   }
 
   Widget _buildCalendar({required bool isPortrait}) {
@@ -55,7 +72,7 @@ class AnalysisView extends StatelessWidget {
     );
   }
 
-  Widget _buildPortrait(BuildContext context) {
+  Widget _buildPortrait() {
     return Column(children: [
       PhysicalModel(
         elevation: 5,

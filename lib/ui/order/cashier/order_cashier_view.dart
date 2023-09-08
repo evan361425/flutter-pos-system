@@ -7,14 +7,14 @@ import 'order_cashier_calculator.dart';
 import 'order_cashier_product_list.dart';
 import 'order_cashier_snapshot.dart';
 
-class OrderCashierModal extends StatefulWidget {
-  const OrderCashierModal({Key? key}) : super(key: key);
+class OrderCashierView extends StatefulWidget {
+  const OrderCashierView({Key? key}) : super(key: key);
 
   @override
-  State<OrderCashierModal> createState() => _OrderCashierModalState();
+  State<OrderCashierView> createState() => _OrderCashierViewState();
 }
 
-class _OrderCashierModalState extends State<OrderCashierModal> {
+class _OrderCashierViewState extends State<OrderCashierView> {
   final opener = GlobalKey<SlidingUpOpenerState>();
 
   @override

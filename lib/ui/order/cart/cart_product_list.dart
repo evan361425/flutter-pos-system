@@ -30,6 +30,7 @@ class _CartProductListState extends State<CartProductList> {
     return SingleChildScrollView(
       key: const Key('cart.product_list'),
       controller: scrollController,
+      clipBehavior: Clip.hardEdge,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -100,24 +101,30 @@ class _CartProductListTile extends StatelessWidget {
     return MergeSemantics(
       child: ListTileTheme.merge(
         selectedColor: DefaultTextStyle.of(context).style.color,
-        child: ListTile(
-          key: Key('cart.product.$index'),
-          leading: leading,
-          title: Text(product.name, overflow: TextOverflow.ellipsis),
-          subtitle: product.isEmpty
-              ? null
-              : MetaBlock.withString(
-                  context,
-                  product.getIngredientNames(),
-                ),
-          trailing: trailing,
-          onTap: () => Cart.instance.toggleAll(false, except: product),
-          onLongPress: () {
-            Cart.instance.toggleAll(false, except: product);
-            CartActions.showActions(context);
-          },
-          selected: product.isSelected,
-          selectedTileColor: theme.primaryColorLight,
+        child: ColoredBox(
+          color:
+              product.isSelected ? theme.primaryColorLight : Colors.transparent,
+          child: ListTile(
+            key: Key('cart.product.$index'),
+            leading: leading,
+            title: Text(product.name, overflow: TextOverflow.ellipsis),
+            subtitle: product.isEmpty
+                ? null
+                : MetaBlock.withString(
+                    context,
+                    product.getIngredientNames(),
+                  ),
+            trailing: trailing,
+            onTap: () => Cart.instance.toggleAll(false, except: product),
+            onLongPress: () {
+              Cart.instance.toggleAll(false, except: product);
+              CartActions.showActions(context);
+            },
+            // TODO: using selected color will not clip overflow
+            // see https://stackoverflow.com/q/75266394/12089368
+            // selected: product.isSelected,
+            // selectedTileColor: theme.primaryColorLight,
+          ),
         ),
       ),
     );

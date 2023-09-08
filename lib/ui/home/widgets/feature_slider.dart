@@ -48,35 +48,31 @@ class _FeatureSliderState extends State<FeatureSlider> {
             ? widget.maxLabel
             : null;
 
-    return Card(
-      shape: const RoundedRectangleBorder(),
-      margin: const EdgeInsets.all(0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Text(widget.title, style: const TextStyle(fontSize: 16.0)),
-        ),
-        Slider(
-          key: widget.sliderKey,
-          value: value.toDouble(),
-          min: widget.min.toDouble(),
-          max: widget.max.toDouble(),
-          divisions: widget.max - widget.min,
-          label: label ?? value.toString(),
-          onChanged: (value) {
-            setState(() => this.value = value.toInt());
-          },
-          onChangeEnd: (value) => widget.onChanged(value.toInt()),
-        ),
-        if (widget.hintText != null)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: HintText(widget.hintText!),
-            ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        child: Text(widget.title, style: const TextStyle(fontSize: 16.0)),
+      ),
+      Slider(
+        key: widget.sliderKey,
+        value: value.toDouble(),
+        min: widget.min.toDouble(),
+        max: widget.max.toDouble(),
+        divisions: widget.max - widget.min,
+        label: label ?? value.toString(),
+        onChanged: (value) {
+          setState(() => this.value = value.toInt());
+        },
+        onChangeEnd: (value) => widget.onChanged(value.toInt()),
+      ),
+      if (widget.hintText != null)
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: HintText(widget.hintText!),
           ),
-      ]),
-    );
+        ),
+    ]);
   }
 
   @override

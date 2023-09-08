@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -13,6 +14,21 @@ import 'translator.dart';
 
 class MyApp extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
+
+  // singleton be avoid recreate after hot reload.
+  static final router = GoRouter(
+    initialLocation: '/',
+    routes: [Routes.home],
+    // By default, go_router comes with default error screens for both
+    // MaterialApp and CupertinoApp as well as a default error screen in
+    // the case that none is used.
+    // onException: (context, state, route) => context.go('/'),
+    debugLogDiagnostics: kDebugMode,
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      routeObserver,
+    ],
+  );
 
   final SettingsProvider settings;
 
@@ -32,15 +48,7 @@ class MyApp extends StatelessWidget {
       animation: settings,
       builder: (_, __) {
         return MaterialApp.router(
-          routerConfig: GoRouter(
-            routes: [Routes.route],
-            debugLogDiagnostics: true,
-            observers: [
-              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-              routeObserver,
-            ],
-          ),
-
+          routerConfig: router,
           onGenerateTitle: (context) {
             // According to document, it should followed when system changed language.
             // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter

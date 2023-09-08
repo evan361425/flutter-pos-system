@@ -60,12 +60,14 @@ class _MenuPageState extends State<MenuPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          key: const Key('menu.add'),
-          onPressed: _handleCreate,
-          tooltip: S.menuCatalogCreate,
-          child: const Icon(KIcons.add),
-        ),
+        floatingActionButton: widget.productOnly
+            ? null
+            : FloatingActionButton(
+                key: const Key('menu.add'),
+                onPressed: _handleCreate,
+                tooltip: S.menuCatalogCreate,
+                child: const Icon(KIcons.add),
+              ),
         body: body,
       ),
     );
@@ -87,12 +89,17 @@ class _MenuPageState extends State<MenuPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Widget get body {
     if (Menu.instance.isEmpty) {
       return Center(
           child: EmptyBody(
-        tooltip: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便。\n'
-            '例如：\n'
+        tooltip: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
             '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
             '「塑膠袋」、「環保杯」整合進「其他」',
         onPressed: _handleCreate,
@@ -103,7 +110,7 @@ class _MenuPageState extends State<MenuPage> {
       controller: controller,
       children: [
         catalogListView,
-        productListView,
+        if (selected != null) productListView,
       ],
     );
   }
@@ -134,13 +141,9 @@ class _MenuPageState extends State<MenuPage> {
     return Center(
       child: EmptyBody(
         title: S.menuCatalogEmptyBody,
-        tooltip: '「產品」是菜單裡的基本單位，你可以在產品中設定成分等資訊。\n'
-            '例如：\n'
-            '「起司漢堡」有「起司」、「麵包」等成分',
-        onPressed: () => context.pushNamed(
-          Routes.menuNew,
-          queryParameters: {'id': selected?.id},
-        ),
+        tooltip: '「產品」是菜單裡的基本單位，例如：\n'
+            '「起司漢堡」、「可樂」',
+        onPressed: _handleCreate,
       ),
     );
   }
@@ -148,7 +151,7 @@ class _MenuPageState extends State<MenuPage> {
   void _handleSelected(Catalog catalog) {
     controller.animateToPage(
       1,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 440),
       curve: Curves.ease,
     );
     setState(() {
@@ -182,12 +185,22 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  void _handleCreate() {
-    context.pushNamed(Routes.menuNew);
+  void _handleCreate() async {
+    // only catalog modal will return ID
+    final catalogId = await context.pushNamed(
+      Routes.menuNew,
+      queryParameters: {'id': selected?.id},
+    );
+
+    if (catalogId is String) {
+      final catalog = Menu.instance.getItem(catalogId);
+      if (catalog != null) _handleSelected(catalog);
+    }
   }
 
   Future<bool> _willPop() async {
-    if (controller.page == 0) {
+    // if has no clients, it means menu is empty(build without PageView)
+    if (!controller.hasClients || controller.page == 0) {
       return true;
     }
 
@@ -196,6 +209,9 @@ class _MenuPageState extends State<MenuPage> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeIn,
     );
+    setState(() {
+      selected = null;
+    });
     return false;
   }
 }

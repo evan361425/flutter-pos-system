@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/style/card_tile.dart';
-import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/constants/constant.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -51,18 +49,15 @@ class _StockIngredientModalState extends State<StockIngredientModal>
             case 0:
               return super.buildBody();
             case 1:
-              return Padding(
-                padding: const EdgeInsets.only(bottom: kSpacing2),
-                child: Center(
-                  child: HintText(S.stockIngredientConnectedProductsCount(
-                    length - 2,
-                    widget.ingredient!.name,
-                  )),
+              return TextDivider(
+                label: S.stockIngredientConnectedProductsCount(
+                  length - 2,
+                  widget.ingredient!.name,
                 ),
               );
             default:
               final product = ingredients[index - 2].product;
-              return CardTile(
+              return ListTile(
                 key: Key('stock.ingredient.${product.id}'),
                 title: Text(
                   '${product.catalog.name} - ${product.name}',

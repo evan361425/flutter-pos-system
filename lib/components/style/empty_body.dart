@@ -32,7 +32,7 @@ class EmptyBody extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(tooltip!, textAlign: TextAlign.center),
             ),
-          OutlinedButton(
+          TextButton(
             key: const Key('empty_body'),
             onPressed: onPressed,
             child: const Text('立即設定'),

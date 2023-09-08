@@ -123,7 +123,6 @@ class Cart extends ChangeNotifier {
     Log.ger(isHistoryMode ? 'history' : 'normal', 'order_paid');
     if (paid < price) throw const PaidException('insufficient_amount');
 
-    Log.ger('verified', 'order_paid');
     // if history mode update data
     final result = isHistoryMode
         ? await _finishHistoryMode(paid, price)

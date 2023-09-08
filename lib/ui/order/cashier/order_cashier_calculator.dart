@@ -80,25 +80,25 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                   key: const Key('cashier.calculator.plus'),
                   action: () => _addOperator('+'),
                   color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.add_sharp),
+                  child: const Icon(Icons.add_sharp, size: 24),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.minus'),
                   action: () => _addOperator('-'),
                   color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.remove_sharp),
+                  child: const Icon(Icons.remove_sharp, size: 24),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.times'),
                   action: () => _addOperator('x'),
                   color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.clear_sharp),
+                  child: const Icon(Icons.clear_sharp, size: 24),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.ceil'),
                   action: _execCeil,
                   color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.merge_type_rounded),
+                  child: const Icon(Icons.merge_type_rounded, size: 24),
                 ),
               ]),
               Column(mainAxisSize: MainAxisSize.min, children: [
@@ -106,13 +106,13 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                   key: const Key('cashier.calculator.back'),
                   action: _execBack,
                   color: theme.colorScheme.error,
-                  child: const Icon(Icons.arrow_back_rounded),
+                  child: const Icon(Icons.arrow_back_rounded, size: 24),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.clear'),
                   action: _execClear,
                   color: theme.colorScheme.error,
-                  child: const Icon(Icons.refresh_sharp),
+                  child: const Icon(Icons.refresh_sharp, size: 24),
                 ),
                 _CalculatorAction(
                   key: const Key('cashier.calculator.submit'),
@@ -120,7 +120,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
                   height: 124,
                   child: isOperating
                       ? const Text('=')
-                      : const Icon(Icons.check_sharp),
+                      : const Icon(Icons.check_sharp, size: 24),
                 ),
               ]),
             ]),
@@ -265,14 +265,19 @@ class _CalculatorAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(2),
-      width: 60,
-      height: height,
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(foregroundColor: color),
-        onPressed: action,
-        child: child,
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: SizedBox(
+        width: 60,
+        height: height,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: color,
+            padding: EdgeInsets.zero,
+          ),
+          onPressed: action,
+          child: child,
+        ),
       ),
     );
   }

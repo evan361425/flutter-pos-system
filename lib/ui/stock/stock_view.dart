@@ -28,7 +28,7 @@ class StockScreen<T> extends StatelessWidget {
         key: const Key('stock.empty'),
         child: EmptyBody(
           tooltip: '新增成份後，就可以開始追蹤這些成份的庫存囉！',
-          onPressed: () => context.pushNamed(Routes.ingredientModal),
+          onPressed: () => context.pushNamed(Routes.ingredientNew),
         ),
       );
     }
@@ -62,7 +62,7 @@ class StockScreen<T> extends StatelessWidget {
               message: '成份可以幫助我們確認相關產品的庫存！',
               child: RouteCircularButton(
                 key: const Key('stock.add'),
-                route: Routes.ingredientModal,
+                route: Routes.ingredientNew,
                 icon: KIcons.add,
                 text: S.stockIngredientCreate,
               ),

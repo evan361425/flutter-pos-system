@@ -349,7 +349,7 @@
   "menuIngredientCreate": "新增成分",
   "menuIngredientUpdate": "編輯成分",
   "menuIngredientSearchLabel": "成分",
-  "menuIngredientSearchAdd": "新增成分份量「{name}」",
+  "menuIngredientSearchAdd": "新增成分「{name}」",
   "@menuIngredientSearchAdd": {
     "description": "當搜尋不到成分時，需要新增成分",
     "placeholders": {
@@ -584,7 +584,7 @@
     "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
   },
   "orderAttributeTitle": "顧客設定",
-  "orderAttributeHint": "顧客設定可以幫助我們統計都是哪些人來買我們的產品\n例如：\n20-30歲、外帶、上班族。",
+  "orderAttributeHint": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。",
   "orderAttributeCreate": "新增顧客設定",
   "orderAttributeUpdate": "編輯顧客設定",
   "orderAttributeReorder": "排序設定順序",
@@ -960,7 +960,7 @@
     }
   },
   "transitGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "transitGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
+  "transitGSErrors": "{error, select, spreadsheet{無法建立試算表} spreadsheetEmpty{請先選擇試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
   "@transitGSErrors": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
