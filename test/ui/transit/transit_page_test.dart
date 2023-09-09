@@ -21,7 +21,7 @@ void main() {
 
       when(cache.get(any)).thenReturn(null);
 
-      await tester.pumpWidget(MaterialApp(home: TransitPage()));
+      await tester.pumpWidget(const MaterialApp(home: TransitPage()));
 
       for (var key in keys) {
         await tester.tap(find.byKey(Key(key)));

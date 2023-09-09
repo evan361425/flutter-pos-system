@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -24,8 +25,15 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: attrs,
-        child: MaterialApp(
-            routes: Routes.routes, home: const OrderAttributePage()),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const OrderAttributePage(),
+            )
+          ]),
+        ),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -106,11 +114,17 @@ void main() {
           ChangeNotifierProvider.value(value: attrs),
           ChangeNotifierProvider.value(value: SettingsProvider([currency])),
         ],
-        child: MaterialApp(
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            routes: Routes.routes,
-            home: const OrderAttributePage()),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const OrderAttributePage(),
+            )
+          ]),
+          darkTheme: ThemeData.dark(),
+          themeMode: ThemeMode.dark,
+        ),
       ));
     }
 

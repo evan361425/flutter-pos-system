@@ -158,7 +158,7 @@ void main() {
         when(cache.get(eCacheKey + '.menu')).thenReturn('title');
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
-        expect(find.text(S.exporterGSErrors('sheetRepeat')), findsOneWidget);
+        expect(find.text(S.transitGSErrors('sheetRepeat')), findsOneWidget);
       });
 
       testWidgets('spreadsheet create failed', (tester) async {
@@ -175,7 +175,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        expect(find.text(S.exporterGSErrors('spreadsheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrors('spreadsheet')), findsOneWidget);
       });
 
       testWidgets('spreadsheet create success', (tester) async {
@@ -192,7 +192,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        final title = S.exporterBasicTitle;
+        final title = S.transitBasicTitle;
         verify(cache.set(eCacheKey, 'abc:true:' + title));
         verify(cache.set(iCacheKey, 'abc:true:' + title));
       });
@@ -215,7 +215,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester);
 
-        expect(find.text(S.exporterGSErrors('sheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrors('sheet')), findsOneWidget);
       });
 
       testWidgets('export without new sheets', (tester) async {

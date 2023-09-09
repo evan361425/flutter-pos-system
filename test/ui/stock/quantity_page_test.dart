@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -29,9 +30,14 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const QuantityPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const QuantityPage(),
+            )
+          ]),
         ),
       ));
 
@@ -62,9 +68,14 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const QuantityPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const QuantityPage(),
+            )
+          ]),
         ),
       ));
 
@@ -121,9 +132,14 @@ void main() {
           ChangeNotifierProvider<Menu>.value(value: menu),
           ChangeNotifierProvider<Quantities>.value(value: quantities),
         ],
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const QuantityPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const QuantityPage(),
+            )
+          ]),
         ),
       ));
 

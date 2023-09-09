@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -22,7 +23,38 @@ import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Product Screen', () {
+  Widget buildApp(Product product, {String? popImage, WidgetBuilder? home}) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+        ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
+      ],
+      child: MaterialApp.router(
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.dark,
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            routes: [
+              GoRoute(
+                name: Routes.imageGallery,
+                path: 'image_gallery',
+                builder: (context, __) => TextButton(
+                  onPressed: () => context.pop(popImage),
+                  child: const Text('tap me'),
+                ),
+              ),
+              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
+            ],
+            builder: (context, __) =>
+                home?.call(context) ?? ProductPage(product: product),
+          )
+        ]),
+      ),
+    );
+  }
+
+  group('Product Page', () {
     testWidgets('Update image', (WidgetTester tester) async {
       final newImage = await createImage('test-image');
       final product = Product(id: 'p-1');
@@ -31,26 +63,10 @@ void main() {
       })
         ..prepareItem();
       Menu().replaceItems({'c': catalog});
+      Stock();
+      Quantities();
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-          ChangeNotifierProvider<Product>.value(value: product),
-        ],
-        child: MaterialApp(
-          routes: {
-            Routes.imageGallery: (BuildContext context) {
-              return TextButton(
-                onPressed: () => Navigator.of(context).pop(newImage),
-                child: const Text('tap me'),
-              );
-            },
-          },
-          home: const ProductPage(),
-        ),
-      ));
+      await tester.pumpWidget(buildApp(product, popImage: newImage));
 
       await tester.tap(find.byKey(const Key('item_more_action')));
       await tester.pumpAndSettle();
@@ -71,14 +87,19 @@ void main() {
       final product = Product(id: 'p-1', imagePath: imagePath);
       final catalog = Catalog(id: 'c-1', products: {'p-1': product});
       Menu().replaceItems({'c-1': catalog..prepareItem()});
+      Stock();
+      Quantities();
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Product>.value(value: product),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ],
-        child: MaterialApp(home: _Nav2Product()),
+      await tester.pumpWidget(buildApp(
+        product,
+        home: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => ProductPage(product: product)),
+            ),
+            child: const Text('go to product'),
+          ),
+        ),
       ));
 
       await tester.tap(find.text('go to product'));
@@ -103,15 +124,10 @@ void main() {
         final product = Product(id: 'p-1');
         final catalog = Catalog(id: 'c-1', products: {'p-1': product});
         Menu().replaceItems({'c-1': catalog..prepareItem()});
+        Stock();
+        Quantities();
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock()),
-              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         await tester.tap(find.byKey(const Key('empty_body')));
         await tester.pumpAndSettle();
@@ -188,14 +204,7 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         const key = 'product_ingredient.pi-1';
         await tester.tap(find.byKey(const Key(key)));
@@ -291,14 +300,7 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-              ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
@@ -344,15 +346,7 @@ void main() {
         prepareData();
         final product = Menu.instance.items.first.items.first;
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-              ChangeNotifierProvider<Quantities>.value(
-                  value: Quantities.instance),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
@@ -417,15 +411,7 @@ void main() {
         final product = Menu.instance.items.first.items.first;
         final quantity = product.items.first.items.first;
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-              ChangeNotifierProvider<Quantities>.value(
-                  value: Quantities.instance),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         await tester.tap(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
@@ -512,15 +498,7 @@ void main() {
         final ingredient = product.items.first;
         final quantity = ingredient.items.first;
 
-        await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Product>.value(value: product),
-              ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-              ChangeNotifierProvider<Quantities>.value(
-                  value: Quantities.instance),
-            ],
-            child:
-                MaterialApp(routes: Routes.routes, home: const ProductPage())));
+        await tester.pumpWidget(buildApp(product));
 
         await tester
             .longPress(find.byKey(const Key('product_ingredient.pi-1')));
@@ -548,18 +526,4 @@ void main() {
       initializeFileSystem();
     });
   });
-}
-
-class _Nav2Product extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: TextButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const ProductPage()),
-        ),
-        child: const Text('go to product'),
-      ),
-    );
-  }
 }

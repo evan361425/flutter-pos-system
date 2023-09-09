@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage>
           StockScreen(
             tab: TutorialInTab(controller: _tabController, index: 1),
           ),
-          CashierScreen(
+          CashierView(
             tab: TutorialInTab(controller: _tabController, index: 2),
           ),
           SettingView(

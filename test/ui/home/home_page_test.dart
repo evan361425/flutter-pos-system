@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/icons.dart';
@@ -57,12 +58,18 @@ void main() {
           ChangeNotifierProvider.value(value: Cart()),
           ChangeNotifierProvider.value(value: Cashier()),
         ],
-        child: MaterialApp(
-          routes: Routes.routes,
-          navigatorObservers: [MyApp.routeObserver],
+        child: MaterialApp.router(
+          routerConfig: GoRouter(observers: [
+            MyApp.routeObserver
+          ], routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const HomePage(tab: HomeTab.setting),
+            )
+          ]),
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          home: const HomePage(),
         ),
       ));
 

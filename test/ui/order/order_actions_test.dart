@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -373,7 +374,15 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: cashier,
-        child: MaterialApp(routes: Routes.routes, home: const OrderPage()),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const OrderPage(),
+            )
+          ]),
+        ),
       ));
 
       await tester.tap(find.byKey(const Key('order.action.more')));

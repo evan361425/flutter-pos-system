@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -9,7 +10,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/menu/catalog/catalog_screen.dart';
+import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../test_helpers/file_mocker.dart';
@@ -17,16 +18,37 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  Map<String, Widget Function(BuildContext)> popImageRoutes(String path) {
-    return {
-      ...Routes.routes,
-      Routes.imageGallery: (BuildContext context) {
-        return TextButton(
-          onPressed: () => Navigator.of(context).pop(path),
-          child: const Text('tap me'),
-        );
-      }
-    };
+  Widget buildApp({String? popImage}) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Stock>.value(value: Stock()),
+        ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+      ],
+      child: MaterialApp.router(
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            routes: [
+              GoRoute(
+                name: Routes.imageGallery,
+                path: 'image_gallery',
+                builder: (context, __) => TextButton(
+                  onPressed: () => context.pop(popImage),
+                  child: const Text('tap me'),
+                ),
+              ),
+              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
+            ],
+            builder: (_, __) => const MenuPage(),
+          )
+        ]),
+      ),
+    );
+  }
+
+  Future<void> moveTo(WidgetTester tester, Catalog catalog) async {
+    await tester.tap(find.byKey(Key('catalog.${catalog.id}')));
+    await tester.pumpAndSettle();
   }
 
   group('Catalog Screen', () {
@@ -34,15 +56,10 @@ void main() {
       final catalog = Catalog(id: 'c-1', imagePath: 'some-non-exist');
       Menu().replaceItems({'c-1': catalog});
 
-      await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-          ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+      await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
+
+      await moveTo(tester, catalog);
 
       verify(storage.set(any, argThat(predicate((data) {
         return data is Map && data.values.first == null;
@@ -83,14 +100,10 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-          ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await moveTo(tester, catalog);
 
       await tester.tap(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
@@ -109,16 +122,10 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ],
-        child: MaterialApp(
-          routes: popImageRoutes(newImage),
-          home: const CatalogScreen(),
-        ),
-      ));
+      await tester.pumpWidget(buildApp(popImage: newImage));
+      await tester.pumpAndSettle();
+
+      await moveTo(tester, catalog);
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
@@ -171,13 +178,10 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ],
-          child:
-              MaterialApp(routes: Routes.routes, home: const CatalogScreen())));
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await moveTo(tester, catalog);
 
       await tester.tap(find.byIcon(KIcons.more));
       await tester.pumpAndSettle();
@@ -211,18 +215,10 @@ void main() {
       });
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ChangeNotifierProvider<Catalog>.value(value: catalog),
-          ],
-          child: MaterialApp(
-            routes: Routes.routes,
-            home: const CatalogScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await moveTo(tester, catalog);
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
@@ -235,35 +231,6 @@ void main() {
       expect(find.byKey(const Key('product.p-1')), findsNothing);
       expect(catalog.isEmpty, isTrue);
       verify(storage.set(any, argThat(equals({product.prefix: null}))));
-    });
-
-    testWidgets('Update image', (WidgetTester tester) async {
-      final newImage = await createImage('test-image');
-      final catalog = Catalog(id: 'c');
-      Menu().replaceItems({'c': catalog});
-
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Catalog>.value(value: catalog),
-        ],
-        child: MaterialApp(
-          routes: popImageRoutes(newImage),
-          home: const CatalogScreen(),
-        ),
-      ));
-
-      await tester.tap(find.byKey(const Key('item_more_action')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('tap me'));
-      await tester.pumpAndSettle();
-
-      verify(storage.set(any, argThat(predicate((data) {
-        return data is Map && data['c.imagePath'] == newImage;
-      }))));
-      expect(catalog.imagePath, equals(newImage));
     });
 
     setUpAll(() {

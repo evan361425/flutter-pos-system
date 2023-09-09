@@ -10,10 +10,10 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/unit_list_view.dart';
 
-class CashierScreen extends StatelessWidget {
+class CashierView extends StatelessWidget {
   final TutorialInTab? tab;
 
-  const CashierScreen({Key? key, this.tab}) : super(key: key);
+  const CashierView({Key? key, this.tab}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

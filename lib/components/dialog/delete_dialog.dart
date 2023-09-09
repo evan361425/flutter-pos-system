@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/translator.dart';
@@ -47,8 +48,8 @@ class DeleteDialog extends StatelessWidget {
       }
 
       if (popAfterDeleted) {
-        if (context.mounted) {
-          Navigator.of(context).pop();
+        if (context.mounted && context.canPop()) {
+          context.pop();
         }
       }
     }

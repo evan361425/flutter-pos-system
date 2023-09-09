@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -34,9 +35,14 @@ void main() {
           ChangeNotifierProvider<Stock>.value(value: stock),
           ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const ReplenishmentPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const ReplenishmentPage(),
+            )
+          ]),
         ),
       ));
 
@@ -80,9 +86,14 @@ void main() {
           ChangeNotifierProvider<Stock>.value(value: stock),
           ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const ReplenishmentPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const ReplenishmentPage(),
+            )
+          ]),
         ),
       ));
 
@@ -120,9 +131,14 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider<Replenisher>.value(
         value: replenisher,
-        builder: (_, __) => MaterialApp(
-          routes: Routes.routes,
-          home: const ReplenishmentPage(),
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const ReplenishmentPage(),
+            )
+          ]),
         ),
       ));
 

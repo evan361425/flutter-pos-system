@@ -337,10 +337,10 @@ void main() {
       await tester.tap(find.byKey(const Key('analysis.export')));
       await tester.pumpAndSettle();
       // dropdown have multiple child for items
-      await tester.tap(find.text(S.exporterTypes('plainText')).last);
+      await tester.tap(find.text(S.transitMethod('plainText')).last);
       await tester.pumpAndSettle();
 
-      expect(find.text(S.exporterTypes('plainText')), findsOneWidget);
+      expect(find.text(S.transitMethod('plainText')), findsOneWidget);
     });
 
     setUpAll(() {

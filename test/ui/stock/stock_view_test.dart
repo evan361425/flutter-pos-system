@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
@@ -24,9 +25,14 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Stock Screen', () {
     Widget buildApp() {
-      return MaterialApp(
-        routes: Routes.routes,
-        home: const Scaffold(body: StockScreen()),
+      return MaterialApp.router(
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            routes: Routes.routes,
+            builder: (_, __) => const Scaffold(body: StockScreen()),
+          )
+        ]),
       );
     }
 

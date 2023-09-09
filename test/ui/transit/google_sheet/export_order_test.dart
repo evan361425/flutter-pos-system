@@ -230,7 +230,7 @@ void main() {
                 return gs.Sheet(
                   properties: gs.SheetProperties(
                     sheetId: e.index,
-                    title: '$today ${S.exporterTypeName(e.name)}',
+                    title: '$today ${S.transitType(e.name)}',
                   ),
                 );
               }).toList(),
@@ -246,7 +246,7 @@ void main() {
         await tester.tap(find.text('建立匯出'));
         await tester.pumpAndSettle();
 
-        final title = S.exporterOrderTitle;
+        final title = S.transitOrderTitle;
         verify(cache.set(cacheKey, 'abc:true:' + title));
 
         final expected = [

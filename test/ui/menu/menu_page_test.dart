@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -20,25 +21,38 @@ import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Menu Screen', () {
+  Widget buildApp([String? popImage]) {
+    return MaterialApp.router(
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      routerConfig: GoRouter(routes: [
+        GoRoute(
+          path: '/',
+          routes: [
+            GoRoute(
+              name: Routes.imageGallery,
+              path: 'image_gallery',
+              builder: (context, __) => TextButton(
+                onPressed: () => context.pop(popImage),
+                child: const Text('tap me'),
+              ),
+            ),
+            ...Routes.routes.where((e) => e.name != Routes.imageGallery),
+          ],
+          builder: (_, __) => const MenuPage(),
+        )
+      ]),
+    );
+  }
+
+  group('Menu Page', () {
     testWidgets('Add catalog with image', (WidgetTester tester) async {
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider<Menu>.value(value: Menu()),
           ChangeNotifierProvider<Stock>.value(value: Stock()),
         ],
-        child: MaterialApp(
-          routes: {
-            ...Routes.routes,
-            Routes.imageGallery: (context) {
-              return TextButton(
-                onPressed: () => Navigator.of(context).pop('test-image'),
-                child: const Text('tap me'),
-              );
-            }
-          },
-          home: const MenuPage(),
-        ),
+        child: buildApp('test-image'),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -80,7 +94,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
         ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuPage())));
+      ], child: buildApp()));
 
       await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -98,18 +112,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<Menu>.value(value: Menu.instance),
         ],
-        child: MaterialApp(
-          routes: {
-            ...Routes.routes,
-            Routes.imageGallery: (BuildContext context) {
-              return TextButton(
-                onPressed: () => Navigator.of(context).pop(newImage),
-                child: const Text('tap me'),
-              );
-            }
-          },
-          home: const MenuPage(),
-        ),
+        child: buildApp(newImage),
       ));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
@@ -155,7 +158,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuPage())));
+      ], child: buildApp()));
 
       await tester.tap(find.byKey(const Key('menu.more')));
       await tester.pumpAndSettle();
@@ -195,7 +198,7 @@ void main() {
 
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: MaterialApp(routes: Routes.routes, home: const MenuPage())));
+      ], child: buildApp()));
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -254,17 +257,13 @@ void main() {
       });
 
       await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-          ],
-          child: MaterialApp(
-            routes: Routes.routes,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            home: const MenuPage(),
-          )));
+        providers: [
+          ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+        ],
+        child: buildApp(),
+      ));
       await tester.tap(find.byKey(const Key('menu.search')));
       await tester.pumpAndSettle();
 

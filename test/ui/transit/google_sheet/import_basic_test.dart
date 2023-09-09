@@ -146,7 +146,7 @@ void main() {
 
         void findText(String text, String status) => expect(
             find.text(
-              text + S.importerColumnStatus(status),
+              text + S.transitImportColumnStatus(status),
               findRichText: true,
             ),
             findsOneWidget);
@@ -156,8 +156,8 @@ void main() {
           await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
-          expect(
-              find.text(S.importerGSError('emptySpreadsheet')), findsOneWidget);
+          expect(find.text(S.transitGSImportError('emptySpreadsheet')),
+              findsOneWidget);
         });
 
         testWidgets('sheet not selected', (tester) async {
@@ -165,7 +165,8 @@ void main() {
           await tester.pumpWidget(buildApp());
           await tapBtn(tester);
 
-          expect(find.text(S.importerGSError('emptySheet')), findsOneWidget);
+          expect(
+              find.text(S.transitGSImportError('emptySheet')), findsOneWidget);
         });
 
         testWidgets('empty data', (tester) async {
@@ -247,7 +248,7 @@ void main() {
 
           verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
-          await tester.tap(find.text(S.importPreviewerTitle));
+          await tester.tap(find.text(S.transitPreviewImportTitle));
           await tester.pumpAndSettle();
 
           for (var e in ['p1', 'p2', 'p3', 'c1', 'c2']) {
@@ -289,7 +290,7 @@ void main() {
 
           await tester.pumpWidget(buildApp(sheetsApi));
           await tapBtn(tester, index);
-          await tester.tap(find.text(S.importPreviewerTitle));
+          await tester.tap(find.text(S.transitPreviewImportTitle));
           await tester.pumpAndSettle();
 
           if (names == null) {
