@@ -75,9 +75,21 @@ void main() {
       await tester.tap(find.text('tap me'));
       await tester.pumpAndSettle();
 
-      verify(storage.set(any, argThat(predicate((data) {
-        return data is Map && data['c-1.products.p-1.imagePath'] == newImage;
-      }))));
+      // wait to failed loading image
+      await tester.pump(const Duration(milliseconds: 500));
+      final captured = verify(storage.set(any, captureAny)).captured;
+      expect(captured.length, equals(2));
+      expect(
+        captured[0],
+        predicate((data) =>
+            data is Map && data['c-1.products.p-1.imagePath'] == null),
+      );
+      expect(
+        captured[1],
+        predicate((data) =>
+            data is Map && data['c-1.products.p-1.imagePath'] == newImage),
+      );
+
       expect(product.imagePath, equals(newImage));
     });
 
