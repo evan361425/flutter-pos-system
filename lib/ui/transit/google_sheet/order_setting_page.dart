@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
