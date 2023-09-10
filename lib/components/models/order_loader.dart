@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/item_loader.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
@@ -57,8 +56,8 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     Seller.instance.addListener(_reloadOrders);
   }
 
@@ -69,7 +68,6 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   void _reloadOrders() {
-    Log.ger("reload", "order_loader");
     final start = widget.ranger.value.start;
     widget.ranger.value = DateTimeRange(
       // add/minus one second, 00:00:00 -> 00:00:01; 00:00:59 -> 00:00:58

@@ -3,37 +3,37 @@ import 'package:flutter/material.dart';
 class PopButton extends StatelessWidget {
   final String? title;
 
-  final bool toHome;
-
   final IconData? icon;
+
+  final VoidCallback? onPressed;
 
   const PopButton({
     Key? key,
     this.title,
-    this.toHome = false,
     this.icon,
+    this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    maybePop() => Navigator.of(context).maybePop();
+
     if (title != null) {
       return TextButton(
-        onPressed: () => pop(context),
+        onPressed: maybePop,
         child: Text(title!),
       );
     }
 
-    final ic =
-        icon ?? (toHome ? Icons.clear_sharp : Icons.arrow_back_ios_sharp);
-    return IconButton(
-      onPressed: () => pop(context),
-      icon: Icon(ic),
-    );
-  }
-
-  void pop(BuildContext context) {
-    toHome
-        ? Navigator.of(context).popUntil((route) => route.isFirst)
-        : Navigator.of(context).pop();
+    return icon == null
+        ? BackButton(
+            key: const Key('pop'),
+            onPressed: onPressed,
+          )
+        : IconButton(
+            key: const Key('pop'),
+            onPressed: maybePop,
+            icon: Icon(icon),
+          );
   }
 }

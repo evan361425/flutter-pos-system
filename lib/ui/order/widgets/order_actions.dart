@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -118,8 +119,7 @@ class OrderActions extends StatelessWidget {
             ? showSnackBar(context, S.actSuccess)
             : showSnackBar(context, S.orderActionsStashHitLimit);
       case OrderActionMode.changer:
-        final success =
-            await Navigator.of(context).pushNamed(Routes.cashierChanger);
+        final success = await context.pushNamed(Routes.cashierChanger);
 
         if (success == true) {
           if (context.mounted) {

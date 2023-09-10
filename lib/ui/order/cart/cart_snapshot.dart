@@ -35,8 +35,8 @@ class CartSnapshot extends StatelessWidget {
     return Row(children: <Widget>[
       Expanded(child: products),
       const SizedBox(width: 4.0),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
           cart.productsPrice.toString(),
           key: const Key('cart_snapshot.price'),

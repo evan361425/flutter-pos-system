@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/exporter/exporter_routes.dart';
+import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
-
-import 'analysis_order_modal.dart';
 
 class AnalysisOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
@@ -26,6 +26,7 @@ class AnalysisOrderList extends StatelessWidget {
         title: '訂單資料匯出',
         message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
         spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
+        monitorVisibility: true,
         child: _buildDropdown(context),
       ),
       builder: _buildOrder,
@@ -35,30 +36,27 @@ class AnalysisOrderList extends StatelessWidget {
 
   Widget _buildDropdown(BuildContext context) {
     final theme = Theme.of(context);
-    final dropdown = DropdownButton<ExportMethod>(
+    final dropdown = DropdownButton<TransitMethod>(
       key: const Key('analysis.export'),
       value: null,
       isDense: true,
       hint: const Text('匯出'),
       style: theme.textTheme.bodyMedium!,
       underline: const SizedBox.shrink(),
-      items: ExportMethod.values.map((ExportMethod value) {
-        return DropdownMenuItem<ExportMethod>(
+      items: TransitMethod.values.map((TransitMethod value) {
+        return DropdownMenuItem<TransitMethod>(
           value: value,
-          child: Text(S.exporterTypes(value.name)),
+          child: Text(S.transitMethod(value.name)),
         );
       }).toList(),
       onChanged: (value) {
         if (value != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) {
-              return ExporterStation(
-                info: ExporterInfoType.order,
-                method: value,
-                range: notifier.value,
-              );
-            }),
-          );
+          context.pushNamed(Routes.transitStation, pathParameters: {
+            'method': value.name,
+            'type': 'order',
+          }, queryParameters: {
+            'range': serializeRange(notifier.value)
+          });
         }
       },
     );
@@ -85,9 +83,7 @@ class AnalysisOrderList extends StatelessWidget {
       ),
       title: _buildOrderTitle(context, order),
       subtitle: subtitle,
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => AnalysisOrderModal(order)),
-      ),
+      onTap: () => context.pushNamed(Routes.analOrderModal, extra: order),
     );
   }
 

@@ -33,10 +33,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
         ),
       ),
       for (final item in delegate.items)
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 2.0),
-          child: delegate.build(context, item, index: index++, theme: theme),
-        ),
+        delegate.build(context, item, index: index++, theme: theme),
       const SizedBox(height: 4.0),
     ]);
 
@@ -46,56 +43,6 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
     return scrollable ? SingleChildScrollView(child: groupChild) : groupChild;
   }
-}
-
-class SliverListSlidableItemList<T, Action> extends StatelessWidget {
-  final SlidableItemDelegate<T, Action> delegate;
-
-  const SliverListSlidableItemList({
-    Key? key,
-    required this.delegate,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SlidableAutoCloseBehavior(
-      child: SliverList(delegate: SliverSlidableItemBuilder(delegate)),
-    );
-  }
-}
-
-class SliverSlidableItemBuilder extends SliverChildDelegate {
-  final SlidableItemDelegate delegate;
-
-  const SliverSlidableItemBuilder(this.delegate);
-
-  @override
-  Widget? build(BuildContext context, int index) {
-    if (index < 0 || index >= delegate.items.length) return null;
-
-    final item = delegate.items[index];
-    final theme = Theme.of(context);
-
-    return KeyedSubtree(
-      child: AutomaticKeepAlive(
-        child: IndexedSemantics(
-          index: index,
-          child: RepaintBoundary(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 2.0),
-              child: delegate.build(context, item, index: index, theme: theme),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant SliverChildDelegate oldDelegate) => true;
-
-  @override
-  int? get estimatedChildCount => delegate.items.length;
 }
 
 class SlidableItemDelegate<T, U> {
@@ -136,40 +83,37 @@ class SlidableItemDelegate<T, U> {
     required int index,
     required ThemeData theme,
   }) {
-    return Card(
-      shape: const RoundedRectangleBorder(),
-      margin: const EdgeInsets.all(0),
-      child: Slidable(
-        groupTag: groupTag,
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 0.25,
-          children: [
-            SlidableAction(
-              key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
-              label: S.btnDelete,
-              backgroundColor: theme.colorScheme.error,
-              icon: KIcons.delete,
-              onPressed: (_) => DeleteDialog.show(
-                context,
-                deleteCallback: () => handleDelete(item),
-                warningContent: warningContextBuilder == null
-                    ? null
-                    : warningContextBuilder!(context, item),
-              ),
+    return Slidable(
+      groupTag: groupTag,
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
+            label: S.btnDelete,
+            backgroundColor: theme.colorScheme.error,
+            foregroundColor: theme.colorScheme.onError,
+            icon: KIcons.delete,
+            onPressed: (_) => DeleteDialog.show(
+              context,
+              deleteCallback: () => handleDelete(item),
+              warningContent: warningContextBuilder == null
+                  ? null
+                  : warningContextBuilder!(context, item),
             ),
-          ],
-        ),
-        child: InkWell(
-          onTap: () {
-            if (handleTap != null) {
-              handleTap!(context, item);
-            }
-          },
-          onLongPress: () => showActions(context, item),
-          child: tileBuilder(
-              context, index, item, () => showActions(context, item)),
-        ),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          if (handleTap != null) {
+            handleTap!(context, item);
+          }
+        },
+        onLongPress: () => showActions(context, item),
+        child:
+            tileBuilder(context, index, item, () => showActions(context, item)),
       ),
     );
   }

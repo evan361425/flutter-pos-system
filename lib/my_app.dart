@@ -1,7 +1,9 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:go_router/go_router.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -13,14 +15,26 @@ import 'translator.dart';
 class MyApp extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  final Widget child;
+  // singleton be avoid recreate after hot reload.
+  static final router = GoRouter(
+    initialLocation: '/',
+    routes: [Routes.home],
+    // By default, go_router comes with default error screens for both
+    // MaterialApp and CupertinoApp as well as a default error screen in
+    // the case that none is used.
+    // onException: (context, state, route) => context.go('/'),
+    debugLogDiagnostics: kDebugMode,
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      routeObserver,
+    ],
+  );
 
   final SettingsProvider settings;
 
   const MyApp({
     Key? key,
     required this.settings,
-    required this.child,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -33,7 +47,8 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: settings,
       builder: (_, __) {
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: router,
           onGenerateTitle: (context) {
             // According to document, it should followed when system changed language.
             // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
@@ -45,12 +60,7 @@ class MyApp extends StatelessWidget {
 
             return localizations.appTitle;
           },
-          routes: Routes.routes,
           debugShowCheckedModeBanner: false,
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-            routeObserver,
-          ],
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -65,8 +75,6 @@ class MyApp extends StatelessWidget {
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
           themeMode: settings.getSetting<ThemeSetting>().value,
-
-          home: child,
         );
       },
     );

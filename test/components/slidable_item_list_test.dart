@@ -11,16 +11,18 @@ void main() {
     testWidgets('should not handle tap when sliding', (tester) async {
       var tapCount = 0;
       await tester.pumpWidget(MaterialApp(
-        home: SlidableAutoCloseBehavior(
-          child: SlidableItemList<String, int>(
-            delegate: SlidableItemDelegate(
-              groupTag: 'test',
-              items: const ['1', '2'],
-              deleteValue: 0,
-              tileBuilder: (_, int index, item, __) => Text(item),
-              warningContextBuilder: (_, __) => const Text('hi'),
-              handleTap: (_, __) => Future.value(tapCount++),
-              handleDelete: (_) => Future.value(),
+        home: Scaffold(
+          body: SlidableAutoCloseBehavior(
+            child: SlidableItemList<String, int>(
+              delegate: SlidableItemDelegate(
+                groupTag: 'test',
+                items: const ['1', '2'],
+                deleteValue: 0,
+                tileBuilder: (_, int index, item, __) => Text(item),
+                warningContextBuilder: (_, __) => const Text('hi'),
+                handleTap: (_, __) => Future.value(tapCount++),
+                handleDelete: (_) => Future.value(),
+              ),
             ),
           ),
         ),
@@ -76,18 +78,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(deletionFired, isTrue);
-    });
-
-    test('estimated child count should be same as items length', () {
-      final delegate = SlidableItemDelegate<String, int>(
-        items: ['A', 'B'],
-        deleteValue: 0,
-        tileBuilder: (ctx, idx, val, d) => const SizedBox.shrink(),
-        handleDelete: (val) => Future.value(),
-      );
-      final builder = SliverSlidableItemBuilder(delegate);
-
-      expect(builder.estimatedChildCount, 2);
     });
 
     setUpAll(() {

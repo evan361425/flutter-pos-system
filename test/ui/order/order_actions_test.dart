@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -28,7 +29,7 @@ import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -189,10 +190,22 @@ void main() {
       );
     }
 
+    Widget buildApp<T>() {
+      return MaterialApp.router(
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, __) => const OrderPage(),
+            routes: Routes.routes,
+          ),
+        ]),
+      );
+    }
+
     testWidgets('Leave history mode', (tester) async {
       Cart.instance.isHistoryMode = true;
 
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(buildApp());
 
       expect(find.byKey(const Key('cart_snapshot.0')), findsOneWidget);
       await tester.tap(find.byKey(const Key('order.action.more')));
@@ -205,7 +218,7 @@ void main() {
     });
 
     testWidgets('Show last order', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(buildApp());
 
       act(bool? confirm) async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -266,7 +279,7 @@ void main() {
     });
 
     testWidgets('Drop stashed', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(buildApp());
 
       act(bool? confirm) async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -325,7 +338,7 @@ void main() {
     });
 
     testWidgets('Stash', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: OrderScreen()));
+      await tester.pumpWidget(buildApp());
 
       act() async {
         await tester.tap(find.byKey(const Key('order.action.more')));
@@ -354,7 +367,11 @@ void main() {
     });
 
     testWidgets('Changer', (tester) async {
-      final cashier = Cashier();
+      final app = ChangeNotifierProvider.value(
+        value: Cashier(),
+        child: buildApp(),
+      );
+
       when(storage.get(any, any)).thenAnswer((_) => Future.value({
             'current': [
               {'unit': 1, 'count': 0},
@@ -369,12 +386,9 @@ void main() {
               },
             ]
           }));
-      await cashier.reset();
+      await Cashier.instance.reset();
 
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: cashier,
-        child: MaterialApp(routes: Routes.routes, home: const OrderScreen()),
-      ));
+      await tester.pumpWidget(app);
 
       await tester.tap(find.byKey(const Key('order.action.more')));
       await tester.pumpAndSettle();
@@ -387,8 +401,8 @@ void main() {
 
       // should go back
       expect(find.byKey(const Key('order.action.more')), findsOneWidget);
-      expect(cashier.at(0).count, equals(5));
-      expect(cashier.at(1).count, isZero);
+      expect(Cashier.instance.at(0).count, equals(5));
+      expect(Cashier.instance.at(1).count, isZero);
     });
 
     setUp(() {

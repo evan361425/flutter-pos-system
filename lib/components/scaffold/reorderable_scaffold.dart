@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
 class ReorderableScaffold<T> extends StatelessWidget {
@@ -127,7 +128,7 @@ class _ReorderableListItem extends StatelessWidget {
           index: index!,
           child: const Padding(
             padding: EdgeInsets.only(right: kSpacing3),
-            child: Center(child: Icon(Icons.reorder_sharp)),
+            child: Center(child: Icon(KIcons.reorder)),
           ),
         ),
       ]),

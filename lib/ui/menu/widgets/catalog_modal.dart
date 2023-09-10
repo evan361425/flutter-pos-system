@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class CatalogModal extends StatefulWidget {
@@ -103,12 +103,7 @@ class _CatalogModalState extends State<CatalogModal>
 
     if (mounted) {
       // go to catalog screen
-      widget.isNew
-          ? Navigator.of(context).popAndPushNamed(
-              Routes.menuCatalog,
-              arguments: catalog,
-            )
-          : Navigator.of(context).pop();
+      widget.isNew ? context.pop(catalog) : context.pop();
     }
   }
 }

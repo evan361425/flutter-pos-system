@@ -9,6 +9,7 @@ abstract class Setting<T> extends ChangeNotifier {
 
   String get logKey => key.replaceAll('.', '_');
 
+  // 設定異動時，是否重建 app
   bool get registryForApp => false;
 
   Cache get service => Cache.instance;

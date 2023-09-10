@@ -37,8 +37,8 @@ class _MenuTransformer extends ModelTransformer<Menu> {
         _toCD(S.menuProductNameLabel),
         _toCD(S.menuProductPriceLabel),
         _toCD(S.menuProductCostLabel),
-        _toCD(S.exporterProductIngredientInfoTitle,
-            S.exporterGSProductIngredientInfoNote),
+        _toCD(S.transitProductIngredientInfoTitle,
+            S.transitProductIngredientInfoGSNote),
       ];
 
   @override
@@ -109,7 +109,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
         _toCD(S.stockReplenishmentNameLabel),
-        _toCD(S.exporterReplenishmentTitle, S.exporterGSReplenishmentNote)
+        _toCD(S.transitReplenishmentTitle, S.transitReplenishmentGSNote)
       ];
 
   @override
@@ -137,8 +137,8 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
     return <GoogleSheetCellData>[
       _toCD(S.orderAttributeNameLabel),
       _toCD(S.orderAttributeModeTitle, note),
-      _toCD(S.exporterOrderAttributeOptionTitle,
-          S.exporterGSOrderAttributeOptionNote),
+      _toCD(S.transitOrderAttributeOptionTitle,
+          S.transitOrderAttributeOptionGSNote),
     ];
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
@@ -34,7 +35,7 @@ class CartActions extends StatelessWidget {
     ),
     BottomSheetAction(
       key: const Key('cart.action.delete'),
-      leading: const Icon(Icons.delete_sharp),
+      leading: const Icon(KIcons.delete),
       title: Text(S.orderCartActionsDelete),
       returnValue: CartActionTypes.delete,
     ),

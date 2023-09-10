@@ -78,8 +78,9 @@ dependencies:
   package_info_plus: ^4.0.2 # 23, 05-29
   cached_network_image: ^3.2.3 # 22, 11-25
   flutter_svg: ^2.0.7 # 23, 06-12
-  spotlight_ant: ^0.9.1
+  spotlight_ant: ^1.0.2
   info_popup: ^3.0.5 # 23, 08-03
+  go_router: ^10.0.0
 
 dev_dependencies:
   flutter_test:

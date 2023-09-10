@@ -18,10 +18,7 @@ void main() {
             id: '1',
             title: 'title1',
             message: 'message1',
-            bumpDuration: Duration.zero,
-            zoomInDuration: Duration.zero,
-            zoomOutDuration: Duration.zero,
-            contentFadeInDuration: Duration.zero,
+            duration: SpotlightDurationConfig.zero,
             child: Text('1'),
           ),
         ],
@@ -60,16 +57,20 @@ void main() {
 
       // go to tab 2
       await tester.tap(find.byKey(const Key('t2')));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
       verify(cache.get('tutorial.2'));
 
+      // show spotlight
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
       await tester.tapAt(const Offset(100, 100));
       await tester.pump(const Duration(milliseconds: 5));
       verify(cache.set('tutorial.2', true));
 
       // go back to tab 1
       await tester.tap(find.byKey(const Key('t1')));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
 
       // should not fire again
       expect(show.currentState, isNull);
@@ -110,10 +111,7 @@ class _ScaffoldState extends State<_Scaffold> with TickerProviderStateMixin {
               id: '1',
               title: 'title1',
               message: 'message1',
-              bumpDuration: Duration.zero,
-              zoomInDuration: Duration.zero,
-              zoomOutDuration: Duration.zero,
-              contentFadeInDuration: Duration.zero,
+              duration: SpotlightDurationConfig.zero,
               child: Text('1'),
             ),
           ),
@@ -123,10 +121,7 @@ class _ScaffoldState extends State<_Scaffold> with TickerProviderStateMixin {
               id: '2',
               title: 'title2',
               message: 'message2',
-              bumpDuration: Duration.zero,
-              zoomInDuration: Duration.zero,
-              zoomOutDuration: Duration.zero,
-              contentFadeInDuration: Duration.zero,
+              duration: SpotlightDurationConfig.zero,
               child: Text('2'),
             ),
           ),

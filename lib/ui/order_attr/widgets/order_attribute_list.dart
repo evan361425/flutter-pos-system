@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
@@ -61,9 +62,9 @@ class _OrderAttributeCard extends StatelessWidget {
           key: Key('$key.add'),
           leading: const CircleAvatar(child: Icon(KIcons.add)),
           title: Text(S.orderAttributeOptionCreate),
-          onTap: () => Navigator.of(context).pushNamed(
-            Routes.orderAttrOption,
-            arguments: attr,
+          onTap: () => context.pushNamed(
+            Routes.orderAttrNew,
+            queryParameters: {'id': attr.id},
           ),
           trailing: IconButton(
             key: Key('$key.more'),
@@ -84,15 +85,15 @@ class _OrderAttributeCard extends StatelessWidget {
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
           title: Text(S.orderAttributeUpdate),
-          leading: const Icon(Icons.text_fields_sharp),
-          navigateRoute: Routes.orderAttrModal,
-          navigateArgument: attr,
+          leading: const Icon(KIcons.modal),
+          route: Routes.orderAttrModal,
+          routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
           title: Text(S.orderAttributeOptionReorder),
-          leading: const Icon(Icons.reorder_sharp),
-          navigateRoute: Routes.orderAttrOptionReorder,
-          navigateArgument: attr,
+          leading: const Icon(KIcons.reorder),
+          route: Routes.orderAttrOptionReorder,
+          routePathParameters: {'id': attr.id},
         ),
       ],
       warningContent: Text(S.dialogDeletionContent(attr.name, '')),
@@ -121,9 +122,10 @@ class _OptionTile extends StatelessWidget {
         warningContent: Text(S.dialogDeletionContent(option.name, '')),
         deleteCallback: () => option.remove(),
       ),
-      onTap: () => Navigator.of(context).pushNamed(
-        Routes.orderAttrOption,
-        arguments: option,
+      onTap: () => context.pushNamed(
+        Routes.orderAttrModal,
+        pathParameters: {'id': option.attribute.id},
+        queryParameters: {'oid': option.id},
       ),
     );
   }

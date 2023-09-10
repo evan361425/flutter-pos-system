@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchBarWrapper<T> extends StatefulWidget {
   final String? text;
@@ -38,21 +39,28 @@ class SearchBarWrapper<T> extends StatefulWidget {
 }
 
 class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
-  final searchController = SearchController();
+  late final SearchController searchController;
 
   @override
   Widget build(BuildContext context) {
     return SearchAnchor(
       searchController: searchController,
-      builder: (BuildContext context, SearchController controller) {
-        return SearchBarInline(
-          text: widget.text,
-          hintText: widget.hintText,
-          labelText: widget.labelText,
-          validator: widget.formValidator,
-          onTap: () => controller.openView(),
-        );
-      },
+      builder: widget.text == null
+          ? (BuildContext context, SearchController controller) {
+              return IconButton(
+                icon: const Icon(KIcons.search),
+                onPressed: () => controller.openView(),
+              );
+            }
+          : (BuildContext context, SearchController controller) {
+              return SearchBarInline(
+                text: widget.text,
+                hintText: widget.hintText,
+                labelText: widget.labelText,
+                validator: widget.formValidator,
+                onTap: () => controller.openView(),
+              );
+            },
       viewHintText: widget.hintText,
       viewBuilder: (suggestions) => suggestions.first,
       suggestionsBuilder: (context, controller) {
@@ -78,7 +86,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
                     context,
                     ListTile(
                       title: Text(error),
-                      leading: const Icon(Icons.warning_amber_sharp),
+                      leading: const Icon(KIcons.warn),
                     ),
                   );
                 }
@@ -99,10 +107,17 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
 
   @override
   void initState() {
+    searchController = SearchController();
     if (widget.text != null) {
       searchController.text = widget.text!;
     }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   Widget buildItems(BuildContext context, Iterable<T> items) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -16,9 +17,9 @@ class OrderAttributeOptionModal extends StatefulWidget {
 
   final bool isNew;
 
-  const OrderAttributeOptionModal({
+  const OrderAttributeOptionModal(
+    this.attribute, {
     Key? key,
-    required this.attribute,
     this.option,
   })  : isNew = option == null,
         super(key: key);
@@ -165,8 +166,8 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
       await widget.option!.update(object);
     }
 
-    if (mounted) {
-      Navigator.of(context).pop();
+    if (mounted && context.canPop()) {
+      context.pop();
     }
   }
 

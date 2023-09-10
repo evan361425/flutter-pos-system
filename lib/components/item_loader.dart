@@ -32,10 +32,10 @@ class ItemLoader<T, U> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ItemLoader<T, U>> createState() => _ItemLoaderState<T, U>();
+  State<ItemLoader<T, U>> createState() => ItemLoaderState<T, U>();
 }
 
-class _ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
+class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
   final items = <T>[];
 
   U? metrics;

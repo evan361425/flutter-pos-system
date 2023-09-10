@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
@@ -25,7 +26,7 @@ import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/order_screen.dart';
+import 'package:possystem/ui/order/order_page.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -162,16 +163,28 @@ void main() {
       });
     }
 
+    /// syntax for finding calculator key
     Finder fCKey(String key) {
       return find.byKey(Key('cashier.calculator.$key'));
+    }
+
+    Widget buildApp<T>({GlobalKey<ScaffoldMessengerState>? messenger}) {
+      return MaterialApp.router(
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, __) => const OrderPage(),
+            routes: Routes.routes,
+          ),
+        ]),
+        scaffoldMessengerKey: messenger,
+      );
     }
 
     testWidgets('Order without any product', (tester) async {
       Cart.instance = Cart();
 
-      await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
-      );
+      await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
@@ -186,13 +199,7 @@ void main() {
       CurrencySetting.instance.isInt = false;
       final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          routes: Routes.routes,
-          scaffoldMessengerKey: scaffoldMessenger,
-          home: const OrderScreen(),
-        ),
-      );
+      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
 
       await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
@@ -304,13 +311,7 @@ void main() {
       prepareOrderAttributes();
       Cart.instance.isHistoryMode = true;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          routes: Routes.routes,
-          scaffoldMessengerKey: scaffoldMessenger,
-          home: const OrderScreen(),
-        ),
-      );
+      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
 
       await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
@@ -485,9 +486,7 @@ void main() {
       tester.view.physicalSize = const Size(1500, 3000);
       addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        MaterialApp(routes: Routes.routes, home: const OrderScreen()),
-      );
+      await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();

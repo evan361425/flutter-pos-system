@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/model_object.dart';
@@ -122,7 +123,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
   String get _avatorPath => '$imagePath-avator';
 
   Future<void> pickImage(BuildContext context) async {
-    final image = await Navigator.of(context).pushNamed(Routes.imageGallery);
+    final image = await context.pushNamed(Routes.imageGallery);
     if (image != null && image is String && image != imagePath) {
       saveImage(image);
     }

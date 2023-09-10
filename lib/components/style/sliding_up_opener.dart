@@ -118,19 +118,19 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
 
     if (widget.catchPopScope) {
       target = WillPopScope(
-        onWillPop: () async {
-          final isOpen = controller.isPanelOpen;
-          if (isOpen) {
-            close();
-          }
-
-          return !isOpen;
-        },
+        onWillPop: handlePrePop,
         child: target,
       );
     }
 
     return target;
+  }
+
+  @override
+  void initState() {
+    isOpen = widget.defaultPanelState == PanelState.OPEN;
+    controller = widget.controller ?? PanelController();
+    super.initState();
   }
 
   Widget buildCollapsed() {
@@ -155,14 +155,16 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
     );
   }
 
-  void close() => controller.close();
+  Future<bool> handlePrePop() async {
+    final isOpen = controller.isPanelOpen;
+    if (isOpen) {
+      close();
+    }
 
-  @override
-  void initState() {
-    isOpen = widget.defaultPanelState == PanelState.OPEN;
-    controller = widget.controller ?? PanelController();
-    super.initState();
+    return !isOpen;
   }
+
+  void close() => controller.close();
 }
 
 class _CollapseWithDragger extends StatelessWidget {

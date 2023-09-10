@@ -349,7 +349,7 @@
   "menuIngredientCreate": "新增成分",
   "menuIngredientUpdate": "編輯成分",
   "menuIngredientSearchLabel": "成分",
-  "menuIngredientSearchAdd": "新增成分份量「{name}」",
+  "menuIngredientSearchAdd": "新增成分「{name}」",
   "@menuIngredientSearchAdd": {
     "description": "當搜尋不到成分時，需要新增成分",
     "placeholders": {
@@ -584,7 +584,7 @@
     "description": "設定頁面中是否啟動在點餐過程中，即使閒置仍不關閉螢幕這項功能"
   },
   "orderAttributeTitle": "顧客設定",
-  "orderAttributeHint": "顧客設定可以幫助我們統計都是哪些人來買我們的產品\n例如：\n20-30歲、外帶、上班族。",
+  "orderAttributeHint": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。",
   "orderAttributeCreate": "新增顧客設定",
   "orderAttributeUpdate": "編輯顧客設定",
   "orderAttributeReorder": "排序設定順序",
@@ -936,22 +936,22 @@
     }
   },
   "orderCashierProductMetaIngredient": "成分：",
-  "exporterTitle": "匯入匯出",
-  "exporterDescription": "請選擇欲匯入匯出的方式",
-  "exporterTypes": "{label, select, googleSheet{Google 試算表} plainText{純文字} other{}}",
-  "@exporterTypes": {
-    "description": "匯出種類名稱",
+  "transitTitle": "資料轉移",
+  "transitDescription": "請選擇欲轉移的方式",
+  "transitMethod": "{label, select, googleSheet{Google 試算表} plainText{純文字} other{}}",
+  "@transitMethod": {
+    "description": "會出方法",
     "placeholders": {
       "label": {
         "type": "String"
       }
     }
   },
-  "exporterPreviewerTitle": "預覽輸出結果",
-  "exporterBasicTitle": "POS System 資料",
-  "exporterOrderTitle": "訂單資料",
-  "exporterTypeName": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
-  "@exporterTypeName": {
+  "transitPreviewExportTitle": "預覽輸出結果",
+  "transitBasicTitle": "POS System 資料",
+  "transitOrderTitle": "訂單資料",
+  "transitType": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
+  "@transitType": {
     "description": "各種匯出資料的名稱，這會變成預設的表單名稱",
     "placeholders": {
       "label": {
@@ -959,9 +959,9 @@
       }
     }
   },
-  "exporterGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "exporterGSErrors": "{error, select, spreadsheet{無法建立 Google 試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
-  "@exporterGSErrors": {
+  "transitGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
+  "transitGSErrors": "{error, select, spreadsheet{無法建立試算表} spreadsheetEmpty{請先選擇試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{{error}}}",
+  "@transitGSErrors": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
       "error": {
@@ -969,9 +969,9 @@
       }
     }
   },
-  "exporterGSSpreadsheetLabel": "試算表",
-  "exporterGSSheetLabel": "{item}的表單標題",
-  "@exporterGSSheetLabel": {
+  "transitGSSpreadsheetLabel": "試算表",
+  "transitGSSheetLabel": "{item}的表單標題",
+  "@transitGSSheetLabel": {
     "description": "表單標題的說明",
     "placeholders": {
       "item": {
@@ -979,8 +979,8 @@
       }
     }
   },
-  "exporterGSProgressStatus": "{status, select, addSpreadsheet{新增試算表中..} addSheets{新增表單中..} other{{status}}}",
-  "@exporterGSProgressStatus": {
+  "transitGSProgressStatus": "{status, select, addSpreadsheet{新增試算表中..} addSheets{新增表單中..} other{{status}}}",
+  "@transitGSProgressStatus": {
     "description": "執行行為時的狀態說明",
     "placeholders": {
       "status": {
@@ -988,8 +988,8 @@
       }
     }
   },
-  "exporterGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成份細項中..} other{{model}}}",
-  "@exporterGSUpdateModelStatus": {
+  "transitGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成份細項中..} other{{model}}}",
+  "@transitGSUpdateModelStatus": {
     "description": "更新 Model 時的狀態說明",
     "placeholders": {
       "model": {
@@ -997,14 +997,14 @@
       }
     }
   },
-  "exporterProductIngredientInfoTitle": "成份資訊",
-  "exporterReplenishmentTitle": "補貨量",
-  "exporterOrderAttributeOptionTitle": "顧客設定選項",
-  "exporterGSProductIngredientInfoNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
-  "exporterGSReplenishmentNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
-  "exporterGSOrderAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
-  "importerGSError": "{error, select, emptySpreadsheet{必須選擇試算表來匯入} emptySheet{必須選擇指定的表單來匯入} emptyData{在表單中沒找到任何值} other{{error}}}",
-  "@importerGSError": {
+  "transitProductIngredientInfoTitle": "成份資訊",
+  "transitReplenishmentTitle": "補貨量",
+  "transitOrderAttributeOptionTitle": "顧客設定選項",
+  "transitProductIngredientInfoGSNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
+  "transitReplenishmentGSNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
+  "transitOrderAttributeOptionGSNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
+  "transitGSImportError": "{error, select, emptySpreadsheet{必須選擇試算表來匯入} emptySheet{必須選擇指定的表單來匯入} emptyData{在表單中沒找到任何值} other{{error}}}",
+  "@transitGSImportError": {
     "description": "匯入時會有的錯誤",
     "placeholders": {
       "error": {
@@ -1012,9 +1012,9 @@
       }
     }
   },
-  "importPreviewerTitle": "預覽結果",
-  "importerColumnsCountError": "資料量不足，需要 {columns} 個欄位",
-  "@importerColumnsCountError": {
+  "transitPreviewImportTitle": "預覽結果",
+  "transitImportColumnsCountError": "資料量不足，需要 {columns} 個欄位",
+  "@transitImportColumnsCountError": {
     "description": "匯入時需要的資料量不足",
     "placeholders": {
       "columns": {
@@ -1022,8 +1022,8 @@
       }
     }
   },
-  "importerColumnStatus": "{status, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
-  "@importerColumnStatus": {
+  "transitImportColumnStatus": "{status, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
+  "@transitImportColumnStatus": {
     "description": "顯示該資料的額外狀態",
     "placeholders": {
       "status": {

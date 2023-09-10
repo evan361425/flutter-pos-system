@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
@@ -30,6 +31,7 @@ class _CartProductListState extends State<CartProductList> {
     return SingleChildScrollView(
       key: const Key('cart.product_list'),
       controller: scrollController,
+      clipBehavior: Clip.hardEdge,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -71,8 +73,10 @@ class _CartProductListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final product = context.watch<OrderProduct>();
+    final color = product.isSelected
+        ? Theme.of(context).primaryColorLight
+        : Colors.transparent;
 
     final leading = Checkbox(
       key: Key('cart.product.$index.select'),
@@ -87,7 +91,7 @@ class _CartProductListTile extends StatelessWidget {
         Text(product.count.toString(), key: Key('cart.product.$index.count')),
         IconButton(
           key: Key('cart.product.$index.add'),
-          icon: const Icon(Icons.add_circle_outline_sharp),
+          icon: const Icon(KIcons.entryAdd),
           onPressed: () => product.increment(),
         ),
         Text(
@@ -100,24 +104,27 @@ class _CartProductListTile extends StatelessWidget {
     return MergeSemantics(
       child: ListTileTheme.merge(
         selectedColor: DefaultTextStyle.of(context).style.color,
-        child: ListTile(
-          key: Key('cart.product.$index'),
-          leading: leading,
-          title: Text(product.name, overflow: TextOverflow.ellipsis),
-          subtitle: product.isEmpty
-              ? null
-              : MetaBlock.withString(
-                  context,
-                  product.getIngredientNames(),
-                ),
-          trailing: trailing,
-          onTap: () => Cart.instance.toggleAll(false, except: product),
-          onLongPress: () {
-            Cart.instance.toggleAll(false, except: product);
-            CartActions.showActions(context);
-          },
-          selected: product.isSelected,
-          selectedTileColor: theme.primaryColorLight,
+        child: ColoredBox(
+          color: color,
+          child: ListTile(
+            key: Key('cart.product.$index'),
+            leading: leading,
+            title: Text(product.name, overflow: TextOverflow.ellipsis),
+            subtitle: product.isEmpty
+                ? null
+                : MetaBlock.withString(
+                    context,
+                    product.getIngredientNames(),
+                  ),
+            trailing: trailing,
+            onTap: () => Cart.instance.toggleAll(false, except: product),
+            onLongPress: () {
+              Cart.instance.toggleAll(false, except: product);
+              CartActions.showActions(context);
+            },
+            selected: product.isSelected,
+            selectedTileColor: Colors.transparent,
+          ),
         ),
       ),
     );

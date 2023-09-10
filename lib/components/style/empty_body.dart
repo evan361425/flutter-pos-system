@@ -6,13 +6,13 @@ class EmptyBody extends StatelessWidget {
 
   final String? title;
 
-  final String? tooltip;
+  final String? helperText;
 
   const EmptyBody({
     Key? key,
     this.title,
     required this.onPressed,
-    this.tooltip,
+    this.helperText,
   }) : super(key: key);
 
   @override
@@ -27,12 +27,12 @@ class EmptyBody extends StatelessWidget {
             title ?? S.emptyBodyContent,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          if (tooltip != null)
+          if (helperText != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(tooltip!, textAlign: TextAlign.center),
+              child: Text(helperText!, textAlign: TextAlign.center),
             ),
-          OutlinedButton(
+          TextButton(
             key: const Key('empty_body'),
             onPressed: onPressed,
             child: const Text('立即設定'),
