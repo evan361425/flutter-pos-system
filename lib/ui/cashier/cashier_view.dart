@@ -33,7 +33,7 @@ class CashierView extends StatelessWidget {
               child: RouteCircularButton(
                 key: const Key('cashier.defaulter'),
                 onTap: () => handleSetDefault(context),
-                icon: Icons.upload_outlined,
+                icon: Icons.upload_sharp,
                 text: '設為預設',
               ),
             ),
@@ -47,7 +47,7 @@ class CashierView extends StatelessWidget {
               child: RouteCircularButton(
                 key: Key('cashier.changer'),
                 route: Routes.cashierChanger,
-                icon: Icons.sync_alt_outlined,
+                icon: Icons.sync_alt_sharp,
                 text: '換錢',
                 popTrueShowSuccess: true,
               ),
@@ -61,7 +61,7 @@ class CashierView extends StatelessWidget {
               message: '結餘可以幫助我們在每天打烊時，\n' '計算現有金額和預設金額的差異。',
               child: RouteCircularButton(
                 key: const Key('cashier.surplus'),
-                icon: Icons.coffee_outlined,
+                icon: Icons.coffee_sharp,
                 text: '結餘',
                 popTrueShowSuccess: true,
                 onTap: () => handleSurplus(context),

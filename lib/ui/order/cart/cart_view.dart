@@ -15,7 +15,7 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     final selector = Row(children: <Widget>[
       Expanded(
-        child: ElevatedButton(
+        child: OutlinedButton(
           key: const Key('cart.select_all'),
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -28,7 +28,7 @@ class CartView extends StatelessWidget {
       ),
       const SizedBox(width: 4.0),
       Expanded(
-        child: ElevatedButton(
+        child: OutlinedButton(
           key: const Key('cart.toggle_all'),
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -47,17 +47,11 @@ class CartView extends StatelessWidget {
       Expanded(child: _CartMetadata()),
     ]);
 
-    final colorScheme = Theme.of(context).colorScheme;
-    final cardColor = ElevationOverlay.applySurfaceTint(
-      colorScheme.surface,
-      colorScheme.surfaceTint,
-      1,
-    );
     return Card(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6.0)),
       ),
-      color: cardColor,
+      color: Theme.of(context).colorScheme.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

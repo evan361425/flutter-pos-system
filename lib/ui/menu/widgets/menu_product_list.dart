@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -37,13 +38,13 @@ class MenuProductList extends StatelessWidget {
     return <BottomSheetAction<int>>[
       BottomSheetAction(
         title: Text(S.menuProductUpdate),
-        leading: const Icon(Icons.text_fields_sharp),
+        leading: const Icon(KIcons.modal),
         route: Routes.menuProductModal,
         routePathParameters: {'id': product.id},
       ),
       BottomSheetAction(
         title: Text(S.menuProductReorder),
-        leading: const Icon(Icons.reorder_sharp),
+        leading: const Icon(KIcons.reorder),
         route: Routes.menuCatalogReorder,
         routePathParameters: {'id': product.catalog.id},
       ),
@@ -69,7 +70,7 @@ class MenuProductList extends StatelessWidget {
       title: Text(product.name),
       trailing: IconButton(
         onPressed: showActions,
-        icon: const Icon(Icons.more_vert_sharp),
+        icon: const Icon(KIcons.entryMore),
       ),
       subtitle: MetaBlock.withString(
         context,

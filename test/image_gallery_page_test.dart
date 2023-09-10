@@ -9,14 +9,36 @@ import 'test_helpers/file_mocker.dart';
 import 'test_helpers/translator.dart';
 
 void main() {
-  group('Image Gallery Screen', () {
+  Widget createApp(void Function(String?) cb) {
+    return MaterialApp.router(
+      routerConfig: GoRouter(routes: [
+        GoRoute(
+          path: '/',
+          routes: Routes.routes,
+          builder: (ctx, state) {
+            return Scaffold(body: Builder(builder: (context) {
+              return TextButton(
+                onPressed: () async {
+                  final result = await context.pushNamed(Routes.imageGallery);
+                  cb(result as String?);
+                },
+                child: const Text('go'),
+              );
+            }));
+          },
+        )
+      ]),
+    );
+  }
+
+  group('Image Gallery Page', () {
     Future<String> createImageAt(String name) async {
       return createImage(name, parent: 'menu_image');
     }
 
     testWidgets('create', (tester) async {
       String? imagePath;
-      await tester.pumpWidget(createAppWidget((v) => imagePath = v));
+      await tester.pumpWidget(createApp((v) => imagePath = v));
 
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();
@@ -49,7 +71,7 @@ void main() {
       String? result;
       await createImageAt('0');
 
-      await tester.pumpWidget(createAppWidget((v) => result = v));
+      await tester.pumpWidget(createApp((v) => result = v));
 
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();
@@ -59,13 +81,13 @@ void main() {
       expect(find.text('刪除所選'), findsOneWidget);
 
       // disable selecting
-      final dynamic widgetsAppState = tester.state(find.byType(WidgetsApp));
-      await widgetsAppState.didPopRoute();
+      await tester.tap(find.byKey(const Key('image_gallery.cancel')));
       await tester.pumpAndSettle();
       expect(find.text('刪除所選'), findsNothing);
+      expect(find.text('go'), findsNothing);
 
       // leave
-      await widgetsAppState.didPopRoute();
+      await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
       expect(find.text('go'), findsOneWidget);
       expect(result, isNull);
@@ -75,7 +97,7 @@ void main() {
       String? result;
       final newImage = await createImageAt('0');
 
-      await tester.pumpWidget(createAppWidget((v) => result = v));
+      await tester.pumpWidget(createApp((v) => result = v));
 
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();
@@ -176,28 +198,4 @@ void main() {
       await XFile.createDir('menu_image');
     });
   });
-}
-
-Widget createAppWidget(void Function(String?) cb) {
-  return MaterialApp.router(
-    routerConfig: GoRouter(routes: [
-      GoRoute(
-        path: '/',
-        routes: Routes.routes,
-        builder: (ctx, state) {
-          return Scaffold(body: Builder(builder: (context) {
-            return TextButton(
-              onPressed: () async {
-                final result = await Navigator.of(context).pushNamed(
-                  Routes.imageGallery,
-                );
-                cb(result as String?);
-              },
-              child: const Text('go'),
-            );
-          }));
-        },
-      )
-    ]),
-  );
 }

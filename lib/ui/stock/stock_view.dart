@@ -27,7 +27,7 @@ class StockScreen<T> extends StatelessWidget {
       return Center(
         key: const Key('stock.empty'),
         child: EmptyBody(
-          tooltip: '新增成份後，就可以開始追蹤這些成份的庫存囉！',
+          helperText: '新增成份後，就可以開始追蹤這些成份的庫存囉！',
           onPressed: () => context.pushNamed(Routes.ingredientNew),
         ),
       );

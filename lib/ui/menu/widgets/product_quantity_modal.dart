@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -227,7 +228,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
             pathParameters: {'id': quantity.id},
           );
         },
-        icon: const Icon(Icons.open_in_new_sharp),
+        icon: const Icon(KIcons.navTo),
       ),
       onTap: () => _updateQuantity(quantity),
     );

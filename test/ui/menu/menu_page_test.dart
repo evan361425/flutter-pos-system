@@ -21,31 +21,31 @@ import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  Widget buildApp([String? popImage]) {
-    return MaterialApp.router(
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.dark,
-      routerConfig: GoRouter(routes: [
-        GoRoute(
-          path: '/',
-          routes: [
-            GoRoute(
-              name: Routes.imageGallery,
-              path: 'image_gallery',
-              builder: (context, __) => TextButton(
-                onPressed: () => context.pop(popImage),
-                child: const Text('tap me'),
-              ),
-            ),
-            ...Routes.routes.where((e) => e.name != Routes.imageGallery),
-          ],
-          builder: (_, __) => const MenuPage(),
-        )
-      ]),
-    );
-  }
-
   group('Menu Page', () {
+    Widget buildApp([String? popImage]) {
+      return MaterialApp.router(
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.dark,
+        routerConfig: GoRouter(routes: [
+          GoRoute(
+            path: '/',
+            routes: [
+              GoRoute(
+                name: Routes.imageGallery,
+                path: 'image_gallery',
+                builder: (context, __) => TextButton(
+                  onPressed: () => context.pop(popImage),
+                  child: const Text('tap me'),
+                ),
+              ),
+              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
+            ],
+            builder: (_, __) => const MenuPage(),
+          )
+        ]),
+      );
+    }
+
     testWidgets('Add catalog with image', (WidgetTester tester) async {
       await tester.pumpWidget(MultiProvider(
         providers: [
@@ -68,8 +68,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      // navigate to catalog screen
-      expect(find.byKey(const Key('catalog.add')), findsOneWidget);
+      // catalog view
+      expect(find.byKey(const Key('catalog.empty')), findsOneWidget);
 
       final catalog = Menu.instance.items.first;
       expect(catalog.name, equals('name'));
@@ -99,7 +99,7 @@ void main() {
       await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('catalog.add')), findsOneWidget);
+      expect(find.byKey(const Key('catalog.empty')), findsOneWidget);
     });
 
     testWidgets('Edit catalog', (WidgetTester tester) async {
@@ -160,7 +160,7 @@ void main() {
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
       ], child: buildApp()));
 
-      await tester.tap(find.byKey(const Key('menu.more')));
+      await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();
@@ -303,6 +303,42 @@ void main() {
       verify(storage.set(any, argThat(predicate((data) {
         return data is Map && data['${product.prefix}.searchedAt'] > 0;
       }))));
+    });
+
+    testWidgets('Pop back to catalog list', (WidgetTester tester) async {
+      Menu().replaceItems({'c-1': Catalog(id: 'c-1', name: 'c-1')});
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+        ],
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                routes: Routes.routes,
+                builder: (context, __) => TextButton(
+                  onPressed: () => context.goNamed(
+                    Routes.menu,
+                    queryParameters: {'id': 'c-1'},
+                  ),
+                  child: const Text('go'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('go'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('pop')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('catalog.c-1')), findsOneWidget);
     });
 
     setUpAll(() {

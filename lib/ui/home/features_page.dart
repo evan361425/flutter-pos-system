@@ -68,7 +68,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
                 children: [
                   Text('HI，${user?.displayName}'),
                   OutlinedButton(
-                    key: const Key('setting.sign_out'),
+                    key: const Key('feature.sign_out'),
                     onPressed: () async {
                       await Auth.instance.signOut();
                     },
@@ -79,7 +79,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           ListTile(
-            key: const Key('setting.theme'),
+            key: const Key('feature.theme'),
             leading: const Icon(Icons.palette_outlined),
             title: Text(S.settingThemeTitle),
             subtitle: Text(S.settingThemeTypes(theme.value.name)),
@@ -94,7 +94,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           ListTile(
-            key: const Key('setting.language'),
+            key: const Key('feature.language'),
             leading: const Icon(Icons.language_outlined),
             title: Text(S.settingLanguageTitle),
             subtitle: Text(LanguageSetting.supportedNames[selectedLanguage]),
@@ -108,7 +108,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
           ),
           const Divider(),
           ListTile(
-            key: const Key('setting.outlook_order'),
+            key: const Key('feature.outlook_order'),
             leading: const Icon(Icons.library_books_outlined),
             title: Text(S.settingOrderOutlookTitle),
             subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value.name)),
@@ -127,7 +127,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           ListTile(
-            key: const Key('setting.cashier_warning'),
+            key: const Key('feature.cashier_warning'),
             leading: const Icon(Icons.store_mall_directory_outlined),
             title: Text(S.settingCashierWarningTitle),
             subtitle:
@@ -149,7 +149,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           FeatureSlider(
-            sliderKey: const Key('setting.order_product_count'),
+            sliderKey: const Key('feature.order_product_count'),
             title: '點餐時每行顯示幾個產品',
             value: orderCount.value,
             max: 5,
@@ -162,7 +162,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: Text(S.settingOrderAwakeningTitle),
             subtitle: const Text('是否根據系統設定時間關閉螢幕'),
             trailing: FeatureSwitch(
-              key: const Key('setting.awake_ordering'),
+              key: const Key('feature.awake_ordering'),
               value: orderAwakening.value,
               onChanged: (value) => orderAwakening.update(value),
             ),
@@ -173,7 +173,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: const Text('收集錯誤訊息和事件'),
             subtitle: const Text('當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長'),
             trailing: FeatureSwitch(
-              key: const Key('setting.collect_events'),
+              key: const Key('feature.collect_events'),
               value: collectEvents.value,
               onChanged: (value) => collectEvents.update(value),
             ),

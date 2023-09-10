@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
@@ -50,7 +51,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.transitPreviewImportTitle),
-        leading: const PopButton(icon: Icons.clear_sharp),
+        leading: const PopButton(icon: KIcons.close),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(items.isNotEmpty),

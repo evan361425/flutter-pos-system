@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
@@ -51,7 +52,7 @@ class StockQuantityList extends StatelessWidget {
       subtitle: Text(S.quantityMetaProportion(quantity.defaultProportion)),
       trailing: IconButton(
         onPressed: showActions,
-        icon: const Icon(Icons.more_vert_sharp),
+        icon: const Icon(KIcons.entryMore),
       ),
     );
   }

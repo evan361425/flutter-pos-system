@@ -14,7 +14,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Replenishment Screen', () {
+  group('Replenishment Page', () {
     testWidgets('Edit replenishment', (tester) async {
       final replenishment = Replenishment(id: 'r-1', name: 'r-1', data: {
         'i-1': 1,

@@ -103,7 +103,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                         targets.removeAt(entry.key);
                       }),
                       color: theme.colorScheme.error,
-                      icon: const Icon(Icons.remove_circle_sharp),
+                      icon: const Icon(KIcons.entryRemove),
                     )),
         )
     ];

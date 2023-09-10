@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -39,15 +40,14 @@ class _MenuPageState extends State<MenuPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(selected?.name ?? S.menuTitle),
-          leading: IconButton(
+          leading: PopButton(
             onPressed: () async {
               if (await _willPop()) {
-                if (context.mounted) {
+                if (context.mounted && context.canPop()) {
                   context.pop();
                 }
               }
             },
-            icon: const Icon(Icons.arrow_back_ios_sharp),
           ),
           actions: [
             SearchBarWrapper(
@@ -68,7 +68,13 @@ class _MenuPageState extends State<MenuPage> {
                 tooltip: S.menuCatalogCreate,
                 child: const Icon(KIcons.add),
               ),
-        body: body,
+        body: PageView(
+          controller: controller,
+          children: [
+            firstView,
+            secondView,
+          ],
+        ),
       ),
     );
   }
@@ -95,27 +101,17 @@ class _MenuPageState extends State<MenuPage> {
     super.dispose();
   }
 
-  Widget get body {
+  Widget get firstView {
     if (Menu.instance.isEmpty) {
       return Center(
           child: EmptyBody(
-        tooltip: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
+        helperText: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
             '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
             '「塑膠袋」、「環保杯」整合進「其他」',
         onPressed: _handleCreate,
       ));
     }
 
-    return PageView(
-      controller: controller,
-      children: [
-        catalogListView,
-        if (selected != null) productListView,
-      ],
-    );
-  }
-
-  Widget get catalogListView {
     if (widget.productOnly) {
       return const SingleChildScrollView(
         child: MenuProductList(catalog: null),
@@ -130,7 +126,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget get productListView {
+  Widget get secondView {
     if (selected?.isNotEmpty == true) {
       return SingleChildScrollView(
         child: MenuProductList(catalog: selected),
@@ -140,8 +136,9 @@ class _MenuPageState extends State<MenuPage> {
     // empty or not exist
     return Center(
       child: EmptyBody(
+        key: const Key('catalog.empty'),
         title: S.menuCatalogEmptyBody,
-        tooltip: '「產品」是菜單裡的基本單位，例如：\n'
+        helperText: '「產品」是菜單裡的基本單位，例如：\n'
             '「起司漢堡」、「可樂」',
         onPressed: _handleCreate,
       ),
@@ -149,14 +146,14 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _handleSelected(Catalog catalog) {
-    controller.animateToPage(
-      1,
-      duration: const Duration(milliseconds: 440),
-      curve: Curves.ease,
-    );
     setState(() {
       selected = catalog;
     });
+    controller.animateToPage(
+      1,
+      duration: const Duration(milliseconds: 440),
+      curve: Curves.easeOut,
+    );
   }
 
   Widget _searchItemBuilder(BuildContext context, Product item) {
@@ -181,20 +178,19 @@ class _MenuPageState extends State<MenuPage> {
   Widget _searchEmptyBuilder(BuildContext context, String text) {
     return ListTile(
       title: Text(S.menuSearchProductNotFound),
-      leading: const Icon(Icons.warning_amber_sharp),
+      leading: const Icon(KIcons.warn),
     );
   }
 
   void _handleCreate() async {
     // only catalog modal will return ID
-    final catalogId = await context.pushNamed(
+    final catalog = await context.pushNamed(
       Routes.menuNew,
       queryParameters: {'id': selected?.id},
     );
 
-    if (catalogId is String) {
-      final catalog = Menu.instance.getItem(catalogId);
-      if (catalog != null) _handleSelected(catalog);
+    if (catalog is Catalog) {
+      _handleSelected(catalog);
     }
   }
 

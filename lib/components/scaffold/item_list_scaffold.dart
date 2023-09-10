@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/icons.dart';
 
 class ItemListScaffold extends StatelessWidget {
   final String title;
@@ -35,7 +36,7 @@ class ItemListScaffold extends StatelessWidget {
           }
           return ListTile(
             title: Text(items[index]),
-            trailing: selected == index ? const Icon(Icons.check_sharp) : null,
+            trailing: selected == index ? const Icon(KIcons.check) : null,
             subtitle: tips != null && tips![index] != null
                 ? Text(tips![index]!, style: hintStyle)
                 : null,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/cashier/changer_page.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +14,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Changer', () {
+  group('Changer Page', () {
     num getUnitValue(Finder finder) {
       final w = finder.evaluate().single.widget as DropdownButtonFormField;
       return w.initialValue;
@@ -27,7 +29,7 @@ void main() {
       return find.byKey(Key('changer.custom.$key'));
     }
 
-    Future<void> buildApp(WidgetTester tester) {
+    Widget buildApp({withRoutes = false}) {
       // setup currency and cashier relation
       when(cache.get(any)).thenReturn(null);
       when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
@@ -35,24 +37,35 @@ void main() {
       CurrencySetting.instance.initialize();
       Cashier.instance.setCurrent(null);
 
-      return tester.pumpWidget(MultiProvider(
+      return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Cashier.instance),
         ],
-        builder: (_, __) => MaterialApp(
-          home: Navigator(
-            onPopPage: (route, result) => route.didPop(result),
-            pages: const [
-              MaterialPage(child: Text('hi', key: Key('popped'))),
-              MaterialPage(child: ChangerModal()),
-            ],
-          ),
-        ),
-      ));
+        builder: (_, __) => withRoutes
+            ? MaterialApp.router(
+                routerConfig: GoRouter(routes: [
+                  GoRoute(
+                    path: '/',
+                    builder: (context, __) {
+                      return TextButton(
+                        onPressed: () =>
+                            context.pushNamed(Routes.cashierChanger),
+                        child: const Text('go to changer'),
+                      );
+                    },
+                    routes: Routes.routes,
+                  ),
+                ]),
+              )
+            : const MaterialApp(home: ChangerModal()),
+      );
     }
 
     testWidgets('add favorite and failed if not enough', (tester) async {
-      await buildApp(tester);
+      await tester.pumpWidget(buildApp(withRoutes: true));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('go to changer'));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -76,7 +89,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('popped')), findsNothing);
+      expect(find.text('go to changer'), findsNothing);
     });
 
     testWidgets('delete favorite item', (tester) async {
@@ -89,7 +102,7 @@ void main() {
         },
       ]);
 
-      await buildApp(tester);
+      await tester.pumpWidget(buildApp());
 
       expect(
           find.byKey(const Key('cashier.changer.favorite.0')), findsOneWidget);
@@ -103,8 +116,11 @@ void main() {
     });
 
     testWidgets('apply custom', (tester) async {
-      await buildApp(tester);
+      await tester.pumpWidget(buildApp(withRoutes: true));
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('go to changer'));
+      await tester.pumpAndSettle();
 
       setCountUnit(String key, {String? unit, String? count}) async {
         if (count != null) {
@@ -159,14 +175,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // should setup current data
-      expect(find.byKey(const Key('popped')), findsNothing);
+      expect(find.text('go to changer'), findsNothing);
 
       await Cashier.instance.setUnitCount(10, 10);
 
       await tester.tap(find.byKey(const Key('cashier.changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('popped')), findsOneWidget);
+      expect(find.text('go to changer'), findsOneWidget);
       expect(Cashier.instance.at(2).count, equals(6));
       expect(Cashier.instance.at(1).count, equals(7));
       expect(Cashier.instance.at(0).count, equals(5));

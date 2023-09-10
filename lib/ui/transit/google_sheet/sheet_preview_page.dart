@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:info_popup/info_popup.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 
 class SheetPreviewPage extends StatelessWidget {
@@ -44,7 +45,7 @@ class SheetPreviewPage extends StatelessWidget {
                           contentTheme: const InfoPopupContentTheme(
                             infoTextAlign: TextAlign.start,
                           ),
-                          child: const Icon(Icons.help_outline_sharp),
+                          child: const Icon(KIcons.help),
                         ),
                       ]),
               ),

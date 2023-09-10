@@ -68,12 +68,17 @@ class _IngredientTile extends StatelessWidget {
       onTap: () => editAmount(context),
       trailing: IconButton(
         key: Key('stock.${ingredient.id}.edit'),
-        onPressed: () => context.pushNamed(
-          Routes.ingredientModal,
-          pathParameters: {'id': ingredient.id},
-        ),
+        tooltip: '編輯成分',
+        onPressed: () => editIngredient(context),
         icon: const Icon(KIcons.edit),
       ),
+    );
+  }
+
+  void editIngredient(BuildContext context) {
+    context.pushNamed(
+      Routes.ingredientModal,
+      pathParameters: {'id': ingredient.id},
     );
   }
 
@@ -86,6 +91,15 @@ class _IngredientTile extends StatelessWidget {
       deleteValue: 0,
       warningContent: Text(S.dialogDeletionContent(ingredient.name, more)),
       deleteCallback: delete,
+      actions: [
+        BottomSheetAction(
+          key: const Key('btn.edit'),
+          title: const Text('編輯成分'),
+          leading: const Icon(KIcons.edit),
+          route: Routes.ingredientModal,
+          routePathParameters: {'id': ingredient.id},
+        ),
+      ],
     );
   }
 

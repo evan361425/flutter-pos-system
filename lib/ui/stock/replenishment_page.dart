@@ -26,7 +26,7 @@ class ReplenishmentPage extends StatelessWidget {
         ? Center(
             child: EmptyBody(
             onPressed: handleCreate,
-            tooltip: '採購可以幫你快速調整成分的庫存',
+            helperText: '採購可以幫你快速調整成分的庫存',
           ))
         : SlidableItemList<Replenishment, int>(
             delegate: SlidableItemDelegate(

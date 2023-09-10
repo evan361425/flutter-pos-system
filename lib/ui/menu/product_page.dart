@@ -74,7 +74,7 @@ class _ProductPageState extends State<ProductPage> {
         SliverToBoxAdapter(
           child: EmptyBody(
             title: S.menuProductEmptyBody,
-            tooltip: '你可以在產品中設定成分等資訊，例如：\n'
+            helperText: '你可以在產品中設定成分等資訊，例如：\n'
                 '「起司漢堡」有「起司」、「麵包」等成分',
             onPressed: _handleCreateIng,
           ),
@@ -123,13 +123,13 @@ class _ProductPageState extends State<ProductPage> {
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
           title: Text(S.menuProductUpdate),
-          leading: const Icon(Icons.text_fields_sharp),
+          leading: const Icon(KIcons.modal),
           route: Routes.menuProductModal,
           routePathParameters: {'id': widget.product.id},
         ),
         const BottomSheetAction(
           title: Text('更新照片'),
-          leading: Icon(Icons.image_sharp),
+          leading: Icon(KIcons.image),
           returnValue: _Action.changeImage,
         ),
       ],

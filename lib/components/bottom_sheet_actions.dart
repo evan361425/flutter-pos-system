@@ -97,7 +97,7 @@ class BottomSheetActions extends StatelessWidget {
   Widget _buildCancelAction(BuildContext context) {
     return ListTile(
       title: Text(S.btnCancel),
-      leading: const Icon(Icons.cancel_sharp),
+      leading: const Icon(KIcons.cancel),
       onTap: () => Navigator.of(context).pop(),
     );
   }

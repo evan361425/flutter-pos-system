@@ -53,7 +53,7 @@ class SettingView extends StatelessWidget {
               child: _buildRouteTile(
                 context,
                 id: 'menu',
-                icon: Icons.collections_outlined,
+                icon: Icons.collections_sharp,
                 route: Routes.menu,
                 title: S.menuTitle,
                 subtitle: '產品種類、產品',
@@ -68,7 +68,7 @@ class SettingView extends StatelessWidget {
               child: _buildRouteTile(
                 context,
                 id: 'exporter',
-                icon: Icons.upload_file_outlined,
+                icon: Icons.upload_file_sharp,
                 route: Routes.transit,
                 title: S.transitTitle,
                 subtitle: '匯入、匯出資料',
@@ -85,7 +85,7 @@ class SettingView extends StatelessWidget {
               child: _buildRouteTile(
                 context,
                 id: 'order_attrs',
-                icon: Icons.assignment_ind_outlined,
+                icon: Icons.assignment_ind_sharp,
                 route: Routes.orderAttr,
                 title: S.orderAttributeTitle,
                 subtitle: '內用、外帶等等',
@@ -94,7 +94,7 @@ class SettingView extends StatelessWidget {
             _buildRouteTile(
               context,
               id: 'quantity',
-              icon: Icons.exposure_outlined,
+              icon: Icons.exposure_sharp,
               route: Routes.quantity,
               title: S.quantityTitle,
               subtitle: '半糖、微糖等等',
@@ -102,7 +102,7 @@ class SettingView extends StatelessWidget {
             _buildRouteTile(
               context,
               id: 'feature_request',
-              icon: Icons.lightbulb_outlined,
+              icon: Icons.lightbulb_sharp,
               route: Routes.featureRequest,
               title: S.featureRequestTitle,
               subtitle: '使用 Google 表單提供回饋',
@@ -110,7 +110,7 @@ class SettingView extends StatelessWidget {
             _buildRouteTile(
               context,
               id: 'setting',
-              icon: Icons.settings_outlined,
+              icon: Icons.settings_sharp,
               route: Routes.features,
               title: S.settingTitle,
               subtitle: '外觀、語言、提示',
@@ -136,7 +136,7 @@ class SettingView extends StatelessWidget {
     required String subtitle,
   }) {
     return ListTile(
-      key: Key('home_setup.$id'),
+      key: Key('setting.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
       onTap: () => context.pushNamed(route),
@@ -202,7 +202,7 @@ class _HeaderInfoList extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ElevatedButton(
-      key: Key('home_setup.header.$id'),
+      key: Key('setting_header.$id'),
       style: const ButtonStyle(
         fixedSize: MaterialStatePropertyAll(Size.square(128)),
         padding: MaterialStatePropertyAll(EdgeInsets.zero),

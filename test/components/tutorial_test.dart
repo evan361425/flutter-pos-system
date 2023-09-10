@@ -57,16 +57,20 @@ void main() {
 
       // go to tab 2
       await tester.tap(find.byKey(const Key('t2')));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
       verify(cache.get('tutorial.2'));
 
+      // show spotlight
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
       await tester.tapAt(const Offset(100, 100));
       await tester.pump(const Duration(milliseconds: 5));
       verify(cache.set('tutorial.2', true));
 
       // go back to tab 1
       await tester.tap(find.byKey(const Key('t1')));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
 
       // should not fire again
       expect(show.currentState, isNull);

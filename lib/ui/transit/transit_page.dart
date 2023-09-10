@@ -38,7 +38,7 @@ class _TransitPageState extends State<TransitPage> {
         ),
         TextDivider(label: S.transitDescription),
         ListTile(
-          key: const Key('exporter.google_sheet'),
+          key: const Key('transit.google_sheet'),
           leading: CircleAvatar(
             backgroundImage: const AssetImage('assets/google_sheet_icon.png'),
             backgroundColor: Theme.of(context).focusColor,
@@ -49,7 +49,7 @@ class _TransitPageState extends State<TransitPage> {
           onTap: () => _goToStation(context, TransitMethod.googleSheet),
         ),
         ListTile(
-          key: const Key('exporter.plain_text'),
+          key: const Key('transit.plain_text'),
           leading: const CircleAvatar(
             radius: 24,
             child: Text('Text'),

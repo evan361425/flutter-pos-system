@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/outlined_text.dart';
+import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -29,7 +31,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Order Screen', () {
+  group('Order Page', () {
     void prepareData() {
       SettingsProvider(SettingsProvider.allSettings);
 
@@ -110,17 +112,38 @@ void main() {
       Cart.instance = Cart();
     }
 
-    Widget orderScreenWidget([Key? key]) {
+    Widget buildApp<T>({Key? key, T Function()? popResult}) {
       return ChangeNotifierProvider.value(
         value: Seller(),
-        child: OrderPage(key: key),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => OrderPage(key: key),
+              routes: [
+                GoRoute(
+                    name: Routes.orderDetails,
+                    path: 'test',
+                    builder: (context, __) {
+                      return Scaffold(
+                        body: TextButton(
+                          onPressed: () => context.pop(popResult?.call()),
+                          child: const Text('hi', key: Key('test')),
+                        ),
+                      );
+                    }),
+                ...Routes.routes.where((e) => e.name != Routes.order),
+              ],
+            ),
+          ]),
+        ),
       );
     }
 
     group('Slidable Panel', () {
       testWidgets('Selecting change state', (tester) async {
         final key = GlobalKey<OrderPageState>();
-        await tester.pumpWidget(MaterialApp(home: orderScreenWidget(key)));
+        await tester.pumpWidget(buildApp(key: key));
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -301,7 +324,7 @@ void main() {
 
         prepareData();
 
-        await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
+        await tester.pumpWidget(buildApp());
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -340,7 +363,7 @@ void main() {
         OrderProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
       ]);
 
-      await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
+      await tester.pumpWidget(buildApp());
       await tester.tap(find.byKey(const Key('cart.collapsed')));
       await tester.pumpAndSettle();
 
@@ -413,8 +436,9 @@ void main() {
       verifyMetadata(8, 0);
 
       // close panel
-      final dynamic widgetsAppState = tester.state(find.byType(WidgetsApp));
-      await widgetsAppState.didPopRoute();
+      final opener =
+          tester.state(find.byType(SlidingUpOpener)) as SlidingUpOpenerState;
+      await opener.handlePrePop();
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cart_snapshot.price')).hitTestable(),
@@ -422,7 +446,7 @@ void main() {
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
-      await tester.pumpWidget(MaterialApp(home: orderScreenWidget()));
+      await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.product.p-1')));
       await tester.pumpAndSettle();
@@ -443,20 +467,7 @@ void main() {
       late CashierUpdateStatus cashierStatus;
       OrderAttributes();
 
-      await tester.pumpWidget(MaterialApp(
-        routes: {
-          Routes.orderDetails: (context) => Scaffold(
-                body: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(cashierStatus);
-                  },
-                  child: const Text('hi', key: Key('test')),
-                ),
-              ),
-        },
-        home: orderScreenWidget(),
-      ));
-
+      await tester.pumpWidget(buildApp(popResult: () => cashierStatus));
       Future<void> tapWithCheck(
         CashierUpdateStatus value, [
         String? expectValue,

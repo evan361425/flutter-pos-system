@@ -53,10 +53,10 @@ class ProductIngredientView extends StatelessWidget {
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
           title: Text(S.menuIngredientUpdate),
-          leading: const Icon(Icons.text_fields_sharp),
+          leading: const Icon(KIcons.modal),
           route: Routes.menuProductDetails,
           routePathParameters: {'id': ingredient.product.id},
-          routeQueryParameters: {'iid': ingredient.id, 'qid': ''},
+          routeQueryParameters: {'iid': ingredient.id},
         ),
       ],
       warningContent: Text(S.dialogDeletionContent(ingredient.name, '')),

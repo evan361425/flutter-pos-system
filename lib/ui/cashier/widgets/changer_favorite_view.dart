@@ -5,6 +5,7 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +37,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
-        tooltip: '可以幫助你快速轉換不同幣值',
+        helperText: '可以幫助你快速轉換不同幣值',
         onPressed: widget.emptyAction,
       );
     }
@@ -58,7 +59,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
         ),
         secondary: IconButton(
           onPressed: showActions,
-          icon: const Icon(Icons.more_vert_sharp),
+          icon: const Icon(KIcons.entryMore),
         ),
         groupValue: selected,
         selected: selected == item,

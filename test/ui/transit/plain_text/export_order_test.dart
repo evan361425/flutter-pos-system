@@ -23,7 +23,7 @@ import '../../../test_helpers/translator.dart';
 import 'export_basic_test.dart';
 
 void main() {
-  group('Plain Text Export Export Basic', () {
+  group('Transit - Plain Text - Export Order', () {
     final mockClipboard = MockClipboard();
     TestWidgetsFlutterBinding.ensureInitialized()
         .defaultBinaryMessenger

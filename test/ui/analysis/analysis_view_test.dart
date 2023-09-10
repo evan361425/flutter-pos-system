@@ -14,7 +14,7 @@ import '../../mocks/mock_database.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  Widget buildAnalysisScreen({themeMode = ThemeMode.light}) {
+  Widget buildApp({themeMode = ThemeMode.light}) {
     // setup currency and cashier relation
     when(cache.get(any)).thenReturn(null);
     // disable tutorial
@@ -81,7 +81,7 @@ void main() {
     );
   }
 
-  group('Analysis Screen', () {
+  group('Analysis View', () {
     testWidgets('select date and show order list in portrait', (tester) async {
       final now = DateTime.now();
       final nowS = now.millisecondsSinceEpoch ~/ 1000;
@@ -101,7 +101,7 @@ void main() {
       // resets the screen to its original size after the test end
       addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(buildAnalysisScreen());
+      await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('99+'), findsOneWidget);
@@ -139,7 +139,7 @@ void main() {
       // resets the screen to its original size after the test end
       addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(buildAnalysisScreen(themeMode: ThemeMode.dark));
+      await tester.pumpWidget(buildApp(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();
 
       // change format

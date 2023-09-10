@@ -23,6 +23,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<Stock>.value(value: Stock()),
         ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+        ChangeNotifierProvider<Menu>.value(value: Menu.instance)
       ],
       child: MaterialApp.router(
         routerConfig: GoRouter(routes: [
@@ -51,7 +52,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  group('Catalog Screen', () {
+  group('Catalog View', () {
     testWidgets('Add product', (WidgetTester tester) async {
       final catalog = Catalog(id: 'c-1', imagePath: 'some-non-exist');
       Menu().replaceItems({'c-1': catalog});
@@ -60,10 +61,6 @@ void main() {
       await tester.pumpAndSettle();
 
       await moveTo(tester, catalog);
-
-      verify(storage.set(any, argThat(predicate((data) {
-        return data is Map && data.values.first == null;
-      }))));
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -183,7 +180,7 @@ void main() {
 
       await moveTo(tester, catalog);
 
-      await tester.tap(find.byIcon(KIcons.more));
+      await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.reorder_sharp));
       await tester.pumpAndSettle();

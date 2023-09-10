@@ -15,7 +15,7 @@ import '../../../mocks/mock_storage.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
-  group('Plain Text Export Export Basic', () {
+  group('Transit - Plain Text - Export Basic', () {
     final MockClipboard mockClipboard = MockClipboard();
     TestWidgetsFlutterBinding.ensureInitialized()
         .defaultBinaryMessenger

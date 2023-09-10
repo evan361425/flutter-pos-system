@@ -4,6 +4,7 @@ import 'package:info_popup/info_popup.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -145,7 +146,7 @@ class _DataWithLabel extends StatelessWidget {
           if (helper != null)
             InfoPopupWidget(
               contentTitle: helper!,
-              child: const Icon(Icons.help_outline_sharp, size: 16.0),
+              child: const Icon(KIcons.help, size: 16.0),
             ),
         ]),
       ]),

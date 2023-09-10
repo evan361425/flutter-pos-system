@@ -42,7 +42,7 @@ class OrderAttributePage extends StatelessWidget {
           ? Center(
               child: EmptyBody(
               onPressed: handleCreate,
-              tooltip: S.orderAttributeHint,
+              helperText: S.orderAttributeHint,
             ))
           : OrderAttributeList(attrs.itemList),
     );
@@ -52,7 +52,7 @@ class OrderAttributePage extends StatelessWidget {
     await showCircularBottomSheet(context, actions: [
       BottomSheetAction(
         title: Text(S.orderAttributeReorder),
-        leading: const Icon(Icons.reorder_sharp),
+        leading: const Icon(KIcons.reorder),
         route: Routes.orderAttrReorder,
       ),
     ]);

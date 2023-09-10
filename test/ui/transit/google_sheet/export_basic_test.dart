@@ -30,7 +30,7 @@ import '../../../services/auth_test.mocks.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
-  group('Google Sheet Exporter Export', () {
+  group('Transit - Google Sheet - Basic', () {
     const eCacheKey = 'exporter_google_sheet';
     const iCacheKey = 'importer_google_sheet';
     const gsExporterScopes = [
@@ -117,7 +117,7 @@ void main() {
         for (var value in values) {
           expect(find.text(value), findsOneWidget);
         }
-        await tester.tap(find.byIcon(Icons.arrow_back_ios_sharp));
+        await tester.tap(find.byKey(const Key('pop')));
         await tester.pumpAndSettle();
       }
 

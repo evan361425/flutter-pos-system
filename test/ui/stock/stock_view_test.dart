@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -23,7 +22,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Stock Screen', () {
+  group('Stock View', () {
     Widget buildApp() {
       return MaterialApp.router(
         routerConfig: GoRouter(routes: [
@@ -203,7 +202,7 @@ void main() {
       // go to product
       await tester.tap(find.byKey(const Key('stock.ingredient.p-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.back));
+      await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
 
       // validate failed

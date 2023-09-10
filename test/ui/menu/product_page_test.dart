@@ -57,7 +57,7 @@ void main() {
   group('Product Page', () {
     testWidgets('Update image', (WidgetTester tester) async {
       final newImage = await createImage('test-image');
-      final product = Product(id: 'p-1');
+      final product = Product(id: 'p-1', imagePath: 'wrong-path');
       final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
         'p-1': product,
       })
@@ -201,6 +201,8 @@ void main() {
 
       testWidgets('Edit', (WidgetTester tester) async {
         prepareData();
+        Quantities();
+
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
@@ -211,7 +213,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('$key.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byIcon(Icons.text_fields_sharp));
+        await tester.tap(find.byIcon(KIcons.modal));
         await tester.pumpAndSettle();
 
         // search for ingredient2

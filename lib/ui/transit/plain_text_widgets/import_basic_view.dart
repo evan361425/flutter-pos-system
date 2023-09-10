@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
@@ -47,7 +48,7 @@ class _ImportBasicViewState extends State<ImportBasicView>
             key: const Key('import_btn'),
             onPressed: importData,
             label: const Text('預覽結果'),
-            icon: const Icon(Icons.remove_red_eye_sharp),
+            icon: const Icon(KIcons.preview),
           ),
         ]),
       ),

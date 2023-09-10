@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -30,13 +30,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (isSelecting) {
-          cancelSelecting();
-          return false;
-        }
-        return true;
-      },
+      onWillPop: safelyPop,
       child: SafeArea(
         child: isSelecting ? buildSelectingScaffold() : buildScaffold(),
       ),
@@ -54,8 +48,8 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       appBar: AppBar(
         leading: IconButton(
           key: const Key('image_gallery.cancel'),
-          onPressed: cancelSelecting,
-          icon: const Icon(Icons.close_sharp),
+          onPressed: safelyPop,
+          icon: const Icon(KIcons.close),
         ),
         actions: [
           TextButton(
@@ -81,7 +75,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   Widget buildScaffold() {
     return Scaffold(
       appBar: AppBar(
-        leading: const PopButton(),
+        leading: const BackButton(),
         title: const Text('圖片管理'),
       ),
       floatingActionButton: FloatingActionButton(
@@ -102,7 +96,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       return Center(
         child: EmptyBody(
           onPressed: createImage,
-          tooltip: '點擊開始匯入你的第一張照片！',
+          helperText: '點擊開始匯入你的第一張照片！',
         ),
       );
     }
@@ -206,7 +200,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   void pickImage(String? image) {
     if (context.mounted) {
-      Navigator.of(context).pop(image);
+      context.pop(image);
     }
   }
 
@@ -231,6 +225,14 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     } finally {
       prepareImages();
     }
+  }
+
+  Future<bool> safelyPop() async {
+    if (isSelecting) {
+      cancelSelecting();
+      return false;
+    }
+    return true;
   }
 
   void cancelSelecting({reloadImages = false}) {

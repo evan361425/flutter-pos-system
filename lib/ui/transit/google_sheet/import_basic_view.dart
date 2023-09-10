@@ -3,6 +3,7 @@ import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
@@ -96,7 +97,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
               const SizedBox(width: 8.0),
               IconButton(
                 tooltip: '預覽結果並匯入',
-                icon: const Icon(Icons.remove_red_eye_sharp),
+                icon: const Icon(KIcons.preview),
                 onPressed: () => importData(entry.key),
               ),
             ]),
@@ -129,7 +130,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   Future<void> importData(Formattable? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
-      showSnackBar(context, S.transitGSErrors('spreadsheetEmpty'));
+      showSnackBar(context, S.transitGSImportError('emptySpreadsheet'));
       return;
     }
 
@@ -139,7 +140,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
         .toList();
     if (selected.isEmpty) {
-      showSnackBar(context, S.transitGSErrors('emptySheet'));
+      showSnackBar(context, S.transitGSImportError('emptySheet'));
       return;
     }
 

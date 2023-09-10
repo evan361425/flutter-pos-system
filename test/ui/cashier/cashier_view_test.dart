@@ -14,7 +14,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Cashier Screen', () {
+  group('Cashier View', () {
     Widget buildApp() {
       // setup currency and cashier relation
       when(cache.get(any)).thenReturn(null);

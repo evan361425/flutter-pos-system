@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/app_themes.dart';
-import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -26,7 +24,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Home Scaffold', () {
+  group('Home Page', () {
     testWidgets('should navigate correctly', (tester) async {
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
       when(cache.get(any)).thenReturn(null);
@@ -83,7 +81,7 @@ void main() {
       Future<void> navAndPop(String key, String check) async {
         await navAndCheck(key, check);
 
-        await tester.tap(find.byIcon(KIcons.back));
+        await tester.tap(find.byKey(const Key('pop')));
         await tester.pumpAndSettle();
       }
 
@@ -91,29 +89,19 @@ void main() {
         return tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
       }
 
-      await navAndPop('home_setup.header.menu1', 'menu.add');
-      await navAndPop('home_setup.header.menu2', 'menu.add');
-      await navAndPop(
-          'home_setup.header.order_attrs', 'order_attributes.action');
-
-      // menu for pop to home
-      Menu.instance.replaceItems({'1': Catalog(id: '1')});
-      await navAndCheck('home_setup.menu', 'menu.add');
-
-      await tester.tap(find.byKey(const Key('catalog.1')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.clear_sharp));
-      await tester.pumpAndSettle();
+      await navAndPop('setting_header.menu1', 'menu.search');
+      await navAndPop('setting_header.menu2', 'menu.search');
+      await navAndPop('setting_header.order_attrs', 'order_attributes.action');
 
       // rest
-      await navAndPop('home_setup.exporter', 'exporter.google_sheet');
-      await navAndPop('home_setup.quantities', 'quantities.add');
-      await navAndPop('home_setup.order_attrs', 'order_attributes.action');
+      await navAndPop('setting.menu', 'menu.search');
+      await navAndPop('setting.exporter', 'transit.google_sheet');
+      await navAndPop('setting.quantity', 'quantity.add');
+      await navAndPop('setting.order_attrs', 'order_attributes.action');
       await dragUp();
-      await navAndPop('home_setup.feature_request', 'feature_request_please');
+      await navAndPop('setting.feature_request', 'feature_request_please');
       await dragUp();
-      await navAndPop('home_setup.setting', 'setting.theme');
+      await navAndPop('setting.setting', 'feature.theme');
       await navAndPop('home.order', 'order.action.more');
       await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');

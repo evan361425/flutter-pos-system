@@ -18,7 +18,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Quantity Screen', () {
+  group('Quantity Page', () {
     testWidgets('Edit quantity', (tester) async {
       final quantity = Quantity(id: 'q-1', name: 'q-1');
       final quantities = Quantities()
@@ -79,7 +79,7 @@ void main() {
         ),
       ));
 
-      await tester.tap(find.byKey(const Key('quantities.add')));
+      await tester.tap(find.byKey(const Key('quantity.add')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-1');

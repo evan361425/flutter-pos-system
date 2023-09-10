@@ -22,7 +22,7 @@ class QuantityPage extends StatelessWidget {
     final body = quantities.isEmpty
         ? Center(
             child: EmptyBody(
-            tooltip: '份量可以快速調整成分的量，例如：\n半糖、微糖。',
+            helperText: '份量可以快速調整成分的量，例如：\n半糖、微糖。',
             onPressed: handleCreate,
           ))
         : StockQuantityList(quantities: quantities.itemList);
@@ -33,7 +33,7 @@ class QuantityPage extends StatelessWidget {
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
-        key: const Key('quantities.add'),
+        key: const Key('quantity.add'),
         onPressed: handleCreate,
         tooltip: S.menuQuantityCreate,
         child: const Icon(KIcons.add),

@@ -3,6 +3,7 @@ import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/launcher_snackbar_action.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
@@ -64,7 +65,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         SheetNamer(
           prop: sheet,
           action: (prop) => previewData(prop.type),
-          actionIcon: Icons.remove_red_eye_sharp,
+          actionIcon: KIcons.preview,
           actionTitle: S.transitPreviewExportTitle,
         ),
     ]);

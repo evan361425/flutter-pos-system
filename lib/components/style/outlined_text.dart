@@ -92,7 +92,8 @@ class OutlinedText extends StatelessWidget {
     }
 
     return Badge(
-      alignment: AlignmentDirectional.topEnd,
+      // too high will causing overlapping on top of scrollable view
+      alignment: const AlignmentDirectional(1.0, -0.6),
       label: Text(badge!),
       child: base,
     );

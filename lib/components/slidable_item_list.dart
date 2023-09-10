@@ -45,56 +45,6 @@ class SlidableItemList<T, Action> extends StatelessWidget {
   }
 }
 
-class SliverListSlidableItemList<T, Action> extends StatelessWidget {
-  final SlidableItemDelegate<T, Action> delegate;
-
-  const SliverListSlidableItemList({
-    Key? key,
-    required this.delegate,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SlidableAutoCloseBehavior(
-      child: SliverList(delegate: SliverSlidableItemBuilder(delegate)),
-    );
-  }
-}
-
-class SliverSlidableItemBuilder extends SliverChildDelegate {
-  final SlidableItemDelegate delegate;
-
-  const SliverSlidableItemBuilder(this.delegate);
-
-  @override
-  Widget? build(BuildContext context, int index) {
-    if (index < 0 || index >= delegate.items.length) return null;
-
-    final item = delegate.items[index];
-    final theme = Theme.of(context);
-
-    return KeyedSubtree(
-      child: AutomaticKeepAlive(
-        child: IndexedSemantics(
-          index: index,
-          child: RepaintBoundary(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 2.0),
-              child: delegate.build(context, item, index: index, theme: theme),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant SliverChildDelegate oldDelegate) => true;
-
-  @override
-  int? get estimatedChildCount => delegate.items.length;
-}
-
 class SlidableItemDelegate<T, U> {
   final List<T> items;
 

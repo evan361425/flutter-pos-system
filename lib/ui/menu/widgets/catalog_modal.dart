@@ -103,7 +103,7 @@ class _CatalogModalState extends State<CatalogModal>
 
     if (mounted) {
       // go to catalog screen
-      widget.isNew ? context.pop(catalog.id) : context.pop();
+      widget.isNew ? context.pop(catalog) : context.pop();
     }
   }
 }

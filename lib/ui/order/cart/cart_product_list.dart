@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
@@ -72,8 +73,10 @@ class _CartProductListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final product = context.watch<OrderProduct>();
+    final color = product.isSelected
+        ? Theme.of(context).primaryColorLight
+        : Colors.transparent;
 
     final leading = Checkbox(
       key: Key('cart.product.$index.select'),
@@ -88,7 +91,7 @@ class _CartProductListTile extends StatelessWidget {
         Text(product.count.toString(), key: Key('cart.product.$index.count')),
         IconButton(
           key: Key('cart.product.$index.add'),
-          icon: const Icon(Icons.add_circle_outline_sharp),
+          icon: const Icon(KIcons.entryAdd),
           onPressed: () => product.increment(),
         ),
         Text(
@@ -102,8 +105,7 @@ class _CartProductListTile extends StatelessWidget {
       child: ListTileTheme.merge(
         selectedColor: DefaultTextStyle.of(context).style.color,
         child: ColoredBox(
-          color:
-              product.isSelected ? theme.primaryColorLight : Colors.transparent,
+          color: color,
           child: ListTile(
             key: Key('cart.product.$index'),
             leading: leading,
@@ -120,10 +122,8 @@ class _CartProductListTile extends StatelessWidget {
               Cart.instance.toggleAll(false, except: product);
               CartActions.showActions(context);
             },
-            // TODO: using selected color will not clip overflow
-            // see https://stackoverflow.com/q/75266394/12089368
-            // selected: product.isSelected,
-            // selectedTileColor: theme.primaryColorLight,
+            selected: product.isSelected,
+            selectedTileColor: Colors.transparent,
           ),
         ),
       ),

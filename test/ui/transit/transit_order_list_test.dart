@@ -10,7 +10,7 @@ import '../../mocks/mock_database.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Export Order Loader Memory Info', () {
+  group('Transit Order List', () {
     void setLoader(int memory) {
       final map = OrderObject(products: []).toMap();
       map['id'] = 1;
@@ -55,7 +55,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('show ok', (tester) async {
+    testWidgets('memory usage show ok', (tester) async {
       setLoader(0);
 
       await showDialog(tester, Icons.check_outlined);
@@ -63,7 +63,7 @@ void main() {
       expect(find.text('預估容量為：<1KB'), findsOneWidget);
     });
 
-    testWidgets('show warning', (tester) async {
+    testWidgets('memory usage show warning', (tester) async {
       setLoader(700 * 1024);
 
       await showDialog(tester, Icons.warning_amber_outlined);
@@ -71,7 +71,7 @@ void main() {
       expect(find.text('預估容量為：700KB'), findsOneWidget);
     });
 
-    testWidgets('show danger', (tester) async {
+    testWidgets('memory usage show danger', (tester) async {
       setLoader((1.5 * 1024 * 1024).toInt());
 
       await showDialog(tester, Icons.dangerous_outlined);

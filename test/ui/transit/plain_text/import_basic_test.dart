@@ -14,7 +14,7 @@ import '../../../mocks/mock_storage.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
-  group('Plain Text Export Import Basic', () {
+  group('Transit - Plain Text - Import Basic', () {
     Widget buildApp() {
       return const MaterialApp(
         home: TransitStation(

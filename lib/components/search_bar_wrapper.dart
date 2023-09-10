@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/search_bar_inline.dart';
+import 'package:possystem/constants/icons.dart';
 
 class SearchBarWrapper<T> extends StatefulWidget {
   final String? text;
@@ -47,7 +48,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
       builder: widget.text == null
           ? (BuildContext context, SearchController controller) {
               return IconButton(
-                icon: const Icon(Icons.search),
+                icon: const Icon(KIcons.search),
                 onPressed: () => controller.openView(),
               );
             }
@@ -85,7 +86,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
                     context,
                     ListTile(
                       title: Text(error),
-                      leading: const Icon(Icons.warning_amber_sharp),
+                      leading: const Icon(KIcons.warn),
                     ),
                   );
                 }

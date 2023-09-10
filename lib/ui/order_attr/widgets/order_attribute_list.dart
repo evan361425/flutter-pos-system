@@ -85,13 +85,13 @@ class _OrderAttributeCard extends StatelessWidget {
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
           title: Text(S.orderAttributeUpdate),
-          leading: const Icon(Icons.text_fields_sharp),
+          leading: const Icon(KIcons.modal),
           route: Routes.orderAttrModal,
           routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
           title: Text(S.orderAttributeOptionReorder),
-          leading: const Icon(Icons.reorder_sharp),
+          leading: const Icon(KIcons.reorder),
           route: Routes.orderAttrOptionReorder,
           routePathParameters: {'id': attr.id},
         ),

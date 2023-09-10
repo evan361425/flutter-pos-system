@@ -19,7 +19,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Order Attribute Screen', () {
+  group('Order Attribute Page', () {
     testWidgets('Add attribute', (tester) async {
       final attrs = OrderAttributes()..replaceItems({});
 
@@ -244,7 +244,7 @@ void main() {
               .controller
               ?.text,
           equals('-10'));
-      await tester.tap(find.byIcon(KIcons.back));
+      await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.add')));
       await tester.pumpAndSettle();
@@ -297,7 +297,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.3.add')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.back));
+      await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('order_attributes.2')));
