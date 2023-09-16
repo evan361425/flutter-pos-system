@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
@@ -62,10 +63,7 @@ class MenuCatalogList extends StatelessWidget {
       key: Key('catalog.${catalog.id}'),
       leading: catalog.avator,
       title: Text(catalog.name),
-      trailing: IconButton(
-        onPressed: showActions,
-        icon: const Icon(KIcons.entryMore),
-      ),
+      trailing: EntryMoreButton(onPressed: showActions),
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),

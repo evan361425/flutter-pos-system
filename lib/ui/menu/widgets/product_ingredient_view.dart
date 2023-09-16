@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -34,11 +35,9 @@ class ProductIngredientView extends StatelessWidget {
             pathParameters: {'id': ingredient.product.id},
             queryParameters: {'iid': ingredient.id, 'qid': ''},
           ),
-          trailing: IconButton(
+          trailing: EntryMoreButton(
             key: Key('$key.more'),
             onPressed: () => showActions(context),
-            enableFeedback: true,
-            icon: const Icon(KIcons.more),
           ),
         ),
         for (final item in ingredient.items) _QuantityTile(item),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -25,11 +26,9 @@ class OrderAttributePage extends StatelessWidget {
         title: Text(S.orderAttributeTitle),
         leading: const PopButton(),
         actions: [
-          IconButton(
+          MoreButton(
             key: const Key('order_attributes.action'),
             onPressed: () => _showActions(context),
-            enableFeedback: true,
-            icon: const Icon(KIcons.more),
           ),
         ],
       ),

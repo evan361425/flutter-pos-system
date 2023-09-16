@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -219,7 +219,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   Widget _searchItemBuilder(BuildContext context, Quantity quantity) {
     return ListTile(
       title: Text(quantity.name),
-      trailing: IconButton(
+      trailing: NavToButton(
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
@@ -228,7 +228,6 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
             pathParameters: {'id': quantity.id},
           );
         },
-        icon: const Icon(KIcons.navTo),
       ),
       onTap: () => _updateQuantity(quantity),
     );

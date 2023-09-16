@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -170,7 +170,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
     return ListTile(
       key: Key('product_ingredient.search.${ingredient.id}'),
       title: Text(ingredient.name),
-      trailing: IconButton(
+      trailing: NavToButton(
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
@@ -179,7 +179,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
             pathParameters: {'id': ingredient.id},
           );
         },
-        icon: const Icon(KIcons.navTo),
       ),
       onTap: () => _updateIngredient(context, ingredient),
     );

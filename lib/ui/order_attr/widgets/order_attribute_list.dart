@@ -4,6 +4,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -66,11 +67,9 @@ class _OrderAttributeCard extends StatelessWidget {
             Routes.orderAttrNew,
             queryParameters: {'id': attr.id},
           ),
-          trailing: IconButton(
+          trailing: EntryMoreButton(
             key: Key('$key.more'),
             onPressed: () => showActions(context, attr),
-            enableFeedback: true,
-            icon: const Icon(KIcons.more),
           ),
         ),
         for (final item in attr.itemList) _OptionTile(item),
