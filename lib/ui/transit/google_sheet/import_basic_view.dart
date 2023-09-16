@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
@@ -198,7 +199,17 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     final source = await _requestData(able, ss, sheet);
     if (source == null) {
       if (mounted) {
-        showSnackBar(context, '找不到表單「${sheet.title}」的資料');
+        showMoreInfoSnackBar(
+          context,
+          '找不到表單「${sheet.title}」的資料',
+          MetaBlock.withString(context, [
+            '別擔心，通常都可以簡單解決！可能的原因有：\n',
+            '網路狀況不穩；\n',
+            '尚未進行授權；\n',
+            '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
+            '該表單被刪除了。',
+          ])!,
+        );
       }
       return false;
     }
@@ -213,6 +224,9 @@ class _ImportBasicViewState extends State<ImportBasicView> {
       if (approved != true) return false;
 
       approved = await _previewBeforeMerge(able, source);
+    } else {
+      // merge to stage only (without preview)
+      const GoogleSheetFormatter().format(able, source);
     }
 
     // step 3
