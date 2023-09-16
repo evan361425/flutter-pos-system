@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -155,8 +156,6 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   // 執行要求的函式
   void execute() async {
-    _notify('_start');
-
     await showSnackbarWhenFailed(
       _execute(),
       context,
@@ -198,6 +197,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     final requiredSheetTitles = widget.requiredSheetTitles;
     // 如果不能建立，就再去跟使用者要一次
     if (requiredSheetTitles == null) {
+      _notify('_start');
       if (!isExist) {
         await _choose();
       }
@@ -209,10 +209,19 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       return;
     }
 
-    // 建立並且回應
-    final sheets = await _prepare(spreadsheet, requiredSheetTitles());
-    if (sheets != null) {
-      await widget.onPrepared?.call(spreadsheet!, sheets);
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: '確認執行$label嗎？',
+      content: '將會$hint',
+    );
+
+    if (confirmed) {
+      _notify('_start');
+      // 建立並且回應
+      final sheets = await _prepare(spreadsheet, requiredSheetTitles());
+      if (sheets != null) {
+        await widget.onPrepared?.call(spreadsheet!, sheets);
+      }
     }
   }
 

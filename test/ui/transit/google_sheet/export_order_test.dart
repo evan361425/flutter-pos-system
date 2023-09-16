@@ -245,6 +245,8 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text('建立匯出'));
         await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+        await tester.pumpAndSettle();
 
         final title = S.transitOrderTitle;
         verify(cache.set(cacheKey, 'abc:true:' + title));
@@ -346,6 +348,8 @@ void main() {
 
         // export
         await tester.tap(find.text('指定匯出'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
 
         final expected = {

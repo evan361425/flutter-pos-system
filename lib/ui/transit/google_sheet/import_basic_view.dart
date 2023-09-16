@@ -209,17 +209,17 @@ class _ImportBasicViewState extends State<ImportBasicView> {
 
     bool? approved = true;
     if (needPreview) {
-      var approved = await _previewSheetData(able, source);
+      approved = await _previewSheetData(able, source);
       if (approved != true) return false;
 
-      approved = (await _previewBeforeMerge(able, source)) ?? false;
+      approved = await _previewBeforeMerge(able, source);
     }
 
     // step 3
     Log.ger('parsing', 'gs_import', able.name);
     await Formatter.finishFormat(able, approved);
 
-    return approved;
+    return approved ?? false;
   }
 
   /// 請求表單的資料

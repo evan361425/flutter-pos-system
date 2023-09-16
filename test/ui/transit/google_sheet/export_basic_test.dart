@@ -129,9 +129,14 @@ void main() {
     });
 
     group('#export', () {
-      Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
+      Future<void> tapBtn(
+        WidgetTester tester, {
+        bool selected = true,
+      }) async {
         await tester.pumpAndSettle();
         await tester.tap(find.text(selected ? '指定匯出' : '建立匯出'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
       }
 

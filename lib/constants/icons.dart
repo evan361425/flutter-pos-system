@@ -12,7 +12,6 @@ class KIcons {
   static const entryMore = Icons.more_vert_sharp;
   static const entryAdd = Icons.add_circle_outline_sharp;
 
-  static const close = Icons.close_sharp;
   static const more = Icons.more_horiz_sharp;
   static const check = Icons.check_sharp;
   static const edit = Icons.edit_sharp;

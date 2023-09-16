@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -303,7 +302,7 @@ void main() {
         }
 
         await tester
-            .tap(commit ? find.text(S.btnSave) : find.byIcon(KIcons.close));
+            .tap(commit ? find.text(S.btnSave) : find.byIcon(Icons.close));
         await tester.pumpAndSettle();
       }
 
