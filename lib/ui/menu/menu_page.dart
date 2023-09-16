@@ -70,6 +70,8 @@ class _MenuPageState extends State<MenuPage> {
               ),
         body: PageView(
           controller: controller,
+          // disable scrolling, only control by program
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             firstView,
             secondView,
@@ -149,11 +151,7 @@ class _MenuPageState extends State<MenuPage> {
     setState(() {
       selected = catalog;
     });
-    controller.animateToPage(
-      1,
-      duration: const Duration(milliseconds: 440),
-      curve: Curves.easeOut,
-    );
+    _goTo(1);
   }
 
   Widget _searchItemBuilder(BuildContext context, Product item) {
@@ -200,14 +198,18 @@ class _MenuPageState extends State<MenuPage> {
       return true;
     }
 
-    controller.animateToPage(
-      0,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeIn,
-    );
+    _goTo(0);
     setState(() {
       selected = null;
     });
     return false;
+  }
+
+  void _goTo(int index) {
+    controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
   }
 }
