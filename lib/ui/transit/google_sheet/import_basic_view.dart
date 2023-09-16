@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
@@ -78,7 +79,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
             );
 
             if (confirmed) {
-              importData(null);
+              import(null);
             }
           },
         ),
@@ -98,7 +99,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
               IconButton(
                 tooltip: '預覽結果並匯入',
                 icon: const Icon(KIcons.preview),
-                onPressed: () => importData(entry.key),
+                onPressed: () => import(entry.key),
               ),
             ]),
           ),
@@ -127,7 +128,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
   }
 
-  Future<void> importData(Formattable? type) async {
+  Future<void> import(Formattable? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
       showSnackBar(context, S.transitGSImportError('emptySpreadsheet'));
@@ -147,7 +148,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     widget.notifier.value = '_start';
 
     await showSnackbarWhenFailed(
-      _importData(ss, selected),
+      _importSheets(ss, selected),
       context,
       'gs_import_failed',
     );
@@ -156,44 +157,21 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   }
 
   /// 檢查基礎資料後，真正開始匯入。
-  ///
-  /// 1. 取得資料
-  /// 2. 快取（如果可能的話，預覽）
-  /// 3. 解析資料並匯入
-  Future<void> _importData(
+  Future<void> _importSheets(
     GoogleSpreadsheet ss,
     List<MapEntry<Formattable, GoogleSheetProperties>> ableSheets,
   ) async {
-    final allowPreview = ableSheets.length == 1;
+    final needPreview = ableSheets.length == 1;
     for (final entry in ableSheets) {
       final able = entry.key;
       final sheet = entry.value;
       widget.notifier.value = S.transitGSUpdateModelStatus(able.name);
 
-      // step 1
-      Log.ger('ready', 'gs_import', sheet.title);
-      final source = await _requestData(able, ss, sheet);
-      if (source == null) {
-        if (mounted) {
-          showSnackBar(context, '找不到表單「${sheet.title}」的資料');
-        }
+      if (!await _importData(ss, able, sheet, needPreview)) {
         return;
       }
-
-      // step 2
-      Log.ger('received', 'gs_import', source.length.toString());
-      await _cacheSheetName(able.name, sheet);
-
-      if (allowPreview) {
-        final approved = await _previewSheetData(able, source);
-        if (approved != true) return;
-      }
-
-      // step 3
-      Log.ger('parsing', 'gs_import', able.name);
-      final allowSave = await _parsedData(able, source, preview: allowPreview);
-      await Formatter.finishFormat(able, allowSave);
     }
+
     if (mounted) {
       showSnackBar(context, S.actSuccess);
     }
@@ -203,6 +181,59 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     for (var sheet in sheets.values) {
       sheet.currentState?.setSheets(other!.sheets);
     }
+  }
+
+  /// 匯入指定表單。
+  ///
+  /// 1. 取得資料
+  /// 2. 快取（如果可能的話，預覽）
+  /// 3. 解析資料並匯入
+  Future<bool> _importData(
+    GoogleSpreadsheet ss,
+    Formattable able,
+    GoogleSheetProperties sheet,
+    bool needPreview,
+  ) async {
+    // step 1
+    Log.ger('ready', 'gs_import', sheet.title);
+    final source = await _requestData(able, ss, sheet);
+    if (source == null) {
+      if (mounted) {
+        showMoreInfoSnackBar(
+          context,
+          '找不到表單「${sheet.title}」的資料',
+          MetaBlock.withString(context, [
+            '別擔心，通常都可以簡單解決！可能的原因有：\n',
+            '網路狀況不穩；\n',
+            '尚未進行授權；\n',
+            '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
+            '該表單被刪除了。',
+          ])!,
+        );
+      }
+      return false;
+    }
+
+    // step 2
+    Log.ger('received', 'gs_import', source.length.toString());
+    await _cacheSheetName(able.name, sheet);
+
+    bool? approved = true;
+    if (needPreview) {
+      approved = await _previewSheetData(able, source);
+      if (approved != true) return false;
+
+      approved = await _previewBeforeMerge(able, source);
+    } else {
+      // merge to stage only (without preview)
+      const GoogleSheetFormatter().format(able, source);
+    }
+
+    // step 3
+    Log.ger('parsing', 'gs_import', able.name);
+    await Formatter.finishFormat(able, approved);
+
+    return approved ?? false;
   }
 
   /// 請求表單的資料
@@ -256,17 +287,14 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     return result;
   }
 
-  Future<bool?> _parsedData(
+  Future<bool?> _previewBeforeMerge(
     Formattable able,
-    List<List<Object?>> source, {
-    required bool preview,
-  }) {
+    List<List<Object?>> source,
+  ) {
     const formatter = GoogleSheetFormatter();
     final formatted = formatter.format(able, source);
 
-    return preview
-        ? PreviewPage.show(context, able, formatted)
-        : Future.value(true);
+    return PreviewPage.show(context, able, formatted);
   }
 
   GoogleSheetProperties? _getSheetName(String label) {

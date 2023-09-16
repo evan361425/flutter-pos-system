@@ -81,7 +81,10 @@ class _ExportOrderViewState extends State<ExportOrderView> {
             maxLines: 2,
           ),
           isThreeLine: true,
-          trailing: const Icon(KIcons.edit),
+          trailing: const SizedBox(
+            height: double.infinity,
+            child: Icon(KIcons.edit),
+          ),
           onTap: editSheets,
         ),
         Expanded(

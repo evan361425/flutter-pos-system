@@ -3,6 +3,7 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 
 class ImportBasicView extends StatefulWidget {
@@ -71,5 +72,9 @@ class _ImportBasicViewState extends State<ImportBasicView>
     final formatted = widget.exporter.formatter.format(able, [lines]);
     final allow = await PreviewPage.show(context, able, formatted);
     await Formatter.finishFormat(able, allow);
+
+    if (mounted && allow == true) {
+      showSnackBar(context, S.actSuccess);
+    }
   }
 }

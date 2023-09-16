@@ -97,7 +97,9 @@ void main() {
 
       await tester.tap(find.byKey(const Key('stock.replenisher')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('replenisher.r-1.apply')));
+      await tester.longPress(find.byKey(const Key('replenisher.r-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('apply')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
@@ -150,25 +152,23 @@ void main() {
         ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
       ], child: buildApp()));
 
-      tapAndEnter(String key, String text) async {
-        await tester.tap(find.byKey(Key(key)));
-        await tester.pumpAndSettle();
-        await tester.enterText(
-            find.byKey(const Key('slider_dialog.text')), text);
-        await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
-        await tester.pumpAndSettle();
-      }
-
       // correctly transform string
       expect(find.text('5.4e+4'), findsOneWidget);
       expect(find.text('900.6'), findsOneWidget);
 
       final ingredient = Stock.instance.items.first;
 
-      await tapAndEnter('stock.i-1', '10');
+      // tap and text
+      await tester.tap(find.byKey(const Key('stock.i-1')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('slider_dialog.text')), '10');
+      await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
+      await tester.pumpAndSettle();
       expect(ingredient.currentAmount, equals(10));
 
-      await tester.tap(find.byKey(const Key('stock.i-1')));
+      await tester.longPress(find.byKey(const Key('stock.i-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.edit_square));
       await tester.pumpAndSettle();
 
       final w = find

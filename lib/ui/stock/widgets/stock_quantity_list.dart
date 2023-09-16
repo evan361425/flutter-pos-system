@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -24,6 +26,15 @@ class StockQuantityList extends StatelessWidget {
         warningContextBuilder: _warningContextBuilder,
         handleDelete: _handleDelete,
         handleTap: _handleTap,
+        actionBuilder: (quantity) => [
+          BottomSheetAction(
+            key: const Key('btn.edit'),
+            title: const Text('編輯份量'),
+            leading: const Icon(KIcons.edit),
+            route: Routes.quantityModal,
+            routePathParameters: {'id': quantity.id},
+          ),
+        ],
       ),
     );
   }
@@ -50,10 +61,7 @@ class StockQuantityList extends StatelessWidget {
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name),
       subtitle: Text(S.quantityMetaProportion(quantity.defaultProportion)),
-      trailing: IconButton(
-        onPressed: showActions,
-        icon: const Icon(KIcons.entryMore),
-      ),
+      trailing: EntryMoreButton(onPressed: showActions),
     );
   }
 

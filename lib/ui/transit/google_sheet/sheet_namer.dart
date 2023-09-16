@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/translator.dart';
@@ -37,9 +38,8 @@ class SheetNamerState extends State<SheetNamer> {
             tooltip: '修改標題',
             onPressed: editSheetName,
           )
-        : IconButton(
+        : EntryMoreButton(
             key: Key('sheet_namer.${widget.prop.type.name}.more'),
-            icon: const Icon(KIcons.more),
             onPressed: showActions,
           );
 

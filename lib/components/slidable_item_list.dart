@@ -61,7 +61,7 @@ class SlidableItemDelegate<T, U> {
 
   final void Function(BuildContext, T)? handleTap;
 
-  final void Function(U? action)? handleAction;
+  final void Function(T item, U action)? handleAction;
 
   final Object? groupTag;
 
@@ -123,7 +123,7 @@ class SlidableItemDelegate<T, U> {
         ? const <BottomSheetAction>[]
         : actionBuilder!(item).toList();
 
-    await BottomSheetActions.withDelete<U>(
+    final result = await BottomSheetActions.withDelete<U>(
       context,
       actions: customActions.toList(),
       deleteValue: deleteValue,
@@ -132,5 +132,9 @@ class SlidableItemDelegate<T, U> {
           : warningContextBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
+
+    if (result != null) {
+      handleAction?.call(item, result);
+    }
   }
 }

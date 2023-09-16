@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -53,7 +53,7 @@ class OrderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return MoreButton(
       onPressed: () async {
         final result = await showCircularBottomSheet<OrderActionMode>(
           context,
@@ -63,8 +63,6 @@ class OrderActions extends StatelessWidget {
           await exec(context, result);
         }
       },
-      enableFeedback: true,
-      icon: const Icon(KIcons.more),
     );
   }
 

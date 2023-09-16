@@ -104,6 +104,8 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                       }),
                       color: theme.colorScheme.error,
                       icon: const Icon(KIcons.entryRemove),
+                      tooltip:
+                          MaterialLocalizations.of(context).deleteButtonTooltip,
                     )),
         )
     ];

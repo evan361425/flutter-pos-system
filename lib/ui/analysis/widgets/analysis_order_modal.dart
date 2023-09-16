@@ -4,8 +4,8 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -25,11 +25,9 @@ class AnalysisOrderModal extends StatelessWidget {
       appBar: AppBar(
         leading: const PopButton(),
         actions: [
-          IconButton(
+          MoreButton(
             key: const Key('analysis.more'),
             onPressed: () => _showActions(context),
-            enableFeedback: true,
-            icon: const Icon(KIcons.more),
           ),
         ],
       ),

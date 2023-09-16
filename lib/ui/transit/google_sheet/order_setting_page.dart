@@ -72,9 +72,12 @@ class _OrderSettingPageState extends State<OrderSettingPage>
         },
       ),
       if (!isOverwrite && withPrefix)
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴'),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            '不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
         ),
       const TextDivider(label: '表單名稱'),
       const Padding(

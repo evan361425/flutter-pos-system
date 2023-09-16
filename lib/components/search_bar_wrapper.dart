@@ -49,6 +49,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
           ? (BuildContext context, SearchController controller) {
               return IconButton(
                 icon: const Icon(KIcons.search),
+                tooltip: MaterialLocalizations.of(context).searchFieldLabel,
                 onPressed: () => controller.openView(),
               );
             }

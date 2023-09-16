@@ -82,16 +82,21 @@ class _IngredientTile extends StatelessWidget {
     );
   }
 
-  void showActions(BuildContext context) {
+  void showActions(BuildContext context) async {
     final count = Menu.instance.getIngredients(ingredient.id).length;
     final more = S.stockIngredientDialogDeletionContent(count);
 
-    BottomSheetActions.withDelete(
+    final result = await BottomSheetActions.withDelete<_Actions>(
       context,
-      deleteValue: 0,
+      deleteValue: _Actions.delete,
       warningContent: Text(S.dialogDeletionContent(ingredient.name, more)),
       deleteCallback: delete,
       actions: [
+        const BottomSheetAction(
+          title: Text('編輯庫存'),
+          leading: Icon(Icons.edit_square),
+          returnValue: _Actions.edit,
+        ),
         BottomSheetAction(
           key: const Key('btn.edit'),
           title: const Text('編輯成分'),
@@ -101,6 +106,10 @@ class _IngredientTile extends StatelessWidget {
         ),
       ],
     );
+
+    if (result == _Actions.edit && context.mounted) {
+      editAmount(context);
+    }
   }
 
   Future<void> delete() async {
@@ -128,4 +137,9 @@ class _IngredientTile extends StatelessWidget {
       await ingredient.setAmount(num.tryParse(result) ?? 0);
     }
   }
+}
+
+enum _Actions {
+  delete,
+  edit,
 }

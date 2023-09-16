@@ -46,10 +46,9 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   Widget buildSelectingScaffold() {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: CloseButton(
           key: const Key('image_gallery.cancel'),
           onPressed: safelyPop,
-          icon: const Icon(KIcons.close),
         ),
         actions: [
           TextButton(

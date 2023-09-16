@@ -3,9 +3,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:provider/provider.dart';
@@ -57,10 +57,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
           item.targets.map<String>((e) => '${e.count} 個 ${e.unit} 元'),
           textOverflow: TextOverflow.visible,
         ),
-        secondary: IconButton(
-          onPressed: showActions,
-          icon: const Icon(KIcons.entryMore),
-        ),
+        secondary: EntryMoreButton(onPressed: showActions),
         groupValue: selected,
         selected: selected == item,
         onChanged: (item) => setState(() => selected = item),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -48,7 +49,7 @@ void main() {
       IconData icon = Icons.file_open_outlined,
     ]) async {
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.more_horiz_sharp).first);
+      await tester.tap(find.byIcon(KIcons.entryMore).first);
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(icon));
       await tester.pump();

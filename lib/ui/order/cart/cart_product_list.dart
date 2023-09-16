@@ -92,6 +92,7 @@ class _CartProductListTile extends StatelessWidget {
         IconButton(
           key: Key('cart.product.$index.add'),
           icon: const Icon(KIcons.entryAdd),
+          tooltip: '數量加一',
           onPressed: () => product.increment(),
         ),
         Text(
