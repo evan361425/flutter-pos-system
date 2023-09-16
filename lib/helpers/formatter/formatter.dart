@@ -105,12 +105,12 @@ abstract class Formatter<T> {
     }
   }
 
-  static Future<void> finishFormat(Formattable able, [bool? allowSave]) async {
+  static Future<void> finishFormat(Formattable able, [bool? willCommit]) async {
     final target = getTarget(able);
-    if (allowSave != true) {
-      target.abortStaged();
-    } else {
+    if (willCommit == true) {
       await target.commitStaged();
+    } else {
+      target.abortStaged();
     }
   }
 }
