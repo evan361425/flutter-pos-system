@@ -168,14 +168,12 @@ jobs:
           echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
 
       # Upload the build.
-      - name: Add packaged build to release
+      - name: Upload built package to release
         id: upload_release_asset
-        # TODO: this is archived and should use other package.
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: svenstaro/upload-release-action@v2
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./pos_system.apk
-          asset_name: pos_system.dev.${{ needs.check-version.outputs.build_code }}.apk
-          asset_content_type: application/vnd.android.package-archive
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./pos_system.apk
+          asset_name: pos_system.dev.apk
+          tag: ${{ needs.check-version.outputs.tag_version }}
+          overwrite: true
