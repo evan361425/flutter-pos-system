@@ -157,16 +157,6 @@ jobs:
           mv build/app/outputs/flutter-apk/app-dev-release.apk \
             $GITHUB_WORKSPACE/pos_system.apk
 
-      - name: Get upload URL
-        id: get_release
-        run: |
-          release=$(curl -s \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H 'Accept: application/vnd.github.v3+json' \
-            https://api.github.com/repos/evan361425/flutter-pos-system/releases \
-            | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag_version }}"))')
-          echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
-
       # Upload the build.
       - name: Upload built package to release
         id: upload_release_asset
@@ -175,5 +165,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./pos_system.apk
           asset_name: pos_system.dev.apk
-          tag: ${{ needs.check-version.outputs.tag_version }}
+          tag: v${{ needs.check-version.outputs.tag_version }}
           overwrite: true
