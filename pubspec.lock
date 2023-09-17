@@ -1110,10 +1110,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotlight_ant
-      sha256: "71f1241535e40f66bff567c04a66d51b2d61bf998ef27f23c4ea541742974968"
+      sha256: "6a3581d367f5e2e96a5044e842e911a2fc30aca2c2301e3e2a3928091b448f47"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   sqflite:
     dependency: "direct main"
     description:
