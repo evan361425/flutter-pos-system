@@ -39,7 +39,7 @@ platform :android do
       track: 'internal',
       rollout: '1',
       aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab',
-      skip_upload_screenshots: true,
+      # skip_upload_screenshots: true,
       json_key_data: ENV['PLAY_STORE_CONFIG_JSON'],
     )
   end
