@@ -136,7 +136,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2"
+          ruby-version: "2.7"
           bundler-cache: true
           working-directory: android
 
@@ -174,9 +174,9 @@ jobs:
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
       - name: Fastlane building
-        # bundle exec fastlane ${{ needs.var.outputs.lane }}
         run: |
           bundle exec fastlane --version
+          bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
           BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
