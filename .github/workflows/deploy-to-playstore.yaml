@@ -178,6 +178,7 @@ jobs:
           bundle exec fastlane --version
           bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
+          SUPPLY_UPLOAD_MAX_RETRIES: 5
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
           BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
           VERSION_CODE: ${{ needs.var.outputs.build_code }}
