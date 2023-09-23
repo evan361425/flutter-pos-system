@@ -419,11 +419,11 @@ void main() {
       await tester.tap(find.byKey(const Key('cart.product.1.select')));
       await tester.pumpAndSettle();
 
-      // discount will use original price.
+      // discount will use original price, 17 -> 9, 11 -> 6
       await tapAction('discount', text: '50');
-      verifyProductList(0, count: 8, price: 15 * 8);
+      verifyProductList(0, count: 8, price: 9 * 8);
       verifyProductList(1, count: 20, price: 6 * 20);
-      verifyMetadata(28, 15 * 8 + 6 * 20);
+      verifyMetadata(28, 9 * 8 + 6 * 20);
 
       await tapAction('free');
       verifyProductList(0, count: 8, price: 0);

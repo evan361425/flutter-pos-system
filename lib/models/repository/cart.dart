@@ -263,11 +263,12 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// use original price to calculate the discounted price
   void updateSelectedDiscount(int? discount) {
     if (discount == null) return;
 
     for (var e in selected) {
-      final price = e.singlePrice * discount / 100;
+      final price = e.product.price * discount / 100;
       e.singlePrice = price.toCurrencyNum();
     }
     notifyListeners();
