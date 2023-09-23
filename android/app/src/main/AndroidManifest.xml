@@ -43,8 +43,10 @@
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data
-          android:scheme="https"
-          android:host="possystem.lu-shueh-chou.com" />
+          android:scheme="http"
+          android:host="evan361425.github.io"
+          android:pathPrefix="/pos" />
+        <data android:scheme="https" />
       </intent-filter>
     </activity>
     <!-- Don't delete the meta-data below.

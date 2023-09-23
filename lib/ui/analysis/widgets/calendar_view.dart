@@ -160,9 +160,11 @@ class _CalendarViewState extends State<CalendarView> {
     final local = day.toLocal();
     final counts = await widget.searchCountInMonth(local);
 
-    setState(() {
-      _loadedMonths.add(_hashMonth(local));
-      _loadedCounts.addAll(counts);
-    });
+    if (mounted) {
+      setState(() {
+        _loadedMonths.add(_hashMonth(local));
+        _loadedCounts.addAll(counts);
+      });
+    }
   }
 }
