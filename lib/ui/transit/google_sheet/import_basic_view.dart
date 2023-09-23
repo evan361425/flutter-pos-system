@@ -202,13 +202,16 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         showMoreInfoSnackBar(
           context,
           '找不到表單「${sheet.title}」的資料',
-          MetaBlock.withString(context, [
-            '別擔心，通常都可以簡單解決！可能的原因有：\n',
-            '網路狀況不穩；\n',
-            '尚未進行授權；\n',
-            '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
-            '該表單被刪除了。',
-          ])!,
+          MetaBlock.withString(
+              context,
+              [
+                '別擔心，通常都可以簡單解決！\n可能的原因有：\n',
+                '網路狀況不穩；\n',
+                '尚未進行授權；\n',
+                '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
+                '該表單被刪除了。',
+              ],
+              textOverflow: TextOverflow.visible)!,
         );
       }
       return false;

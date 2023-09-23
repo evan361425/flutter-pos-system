@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/replenisher.dart';
@@ -36,54 +35,37 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   String get title => widget.replenishment?.name ?? S.stockReplenishmentCreate;
 
   @override
-  Widget buildBody() => buildForm(buildFormFields());
-
-  @override
   List<Widget> buildFormFields() {
     final textTheme = Theme.of(context).textTheme;
 
     return <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(kSpacing3),
-        child: TextFormField(
-          key: const Key('replenishment.name'),
-          controller: _nameController,
-          textInputAction: TextInputAction.done,
-          textCapitalization: TextCapitalization.words,
+      TextFormField(
+        key: const Key('replenishment.name'),
+        controller: _nameController,
+        textInputAction: TextInputAction.done,
+        textCapitalization: TextCapitalization.words,
+        focusNode: _nameFocusNode,
+        decoration: InputDecoration(
+          labelText: S.stockReplenishmentNameLabel,
+          hintText: S.stockReplenishmentNameHint,
+          filled: false,
+        ),
+        style: textTheme.titleLarge,
+        maxLength: 30,
+        validator: Validator.textLimit(
+          S.stockReplenishmentNameLabel,
+          30,
           focusNode: _nameFocusNode,
-          decoration: InputDecoration(
-            labelText: S.stockReplenishmentNameLabel,
-            hintText: S.stockReplenishmentNameHint,
-            filled: false,
-          ),
-          style: textTheme.titleLarge,
-          maxLength: 30,
-          validator: Validator.textLimit(
-            S.stockReplenishmentNameLabel,
-            30,
-            focusNode: _nameFocusNode,
-            validator: (name) {
-              return widget.replenishment?.name != name &&
-                      Replenisher.instance.hasName(name)
-                  ? S.stockReplenishmentNameRepeatError
-                  : null;
-            },
-          ),
+          validator: (name) {
+            return widget.replenishment?.name != name &&
+                    Replenisher.instance.hasName(name)
+                ? S.stockReplenishmentNameRepeatError
+                : null;
+          },
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: kSpacing1),
-        child: HintText(S.stockReplenishmentIngredientListTitle),
-      ),
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
-          child: ListView.builder(
-            itemBuilder: (_, i) => _buildIngredientField(ingredients[i]),
-            itemCount: Stock.instance.length,
-          ),
-        ),
-      ),
+      HintText(S.stockReplenishmentIngredientListTitle),
+      for (final ing in Stock.instance.itemList) _buildIngredientField(ing),
     ];
   }
 

@@ -35,7 +35,7 @@ void showMoreInfoSnackBar(
   BuildContext context,
   String message,
   Widget content, {
-  String label = '怎麼辦',
+  String label = '說明',
 }) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     // make floating button below
@@ -48,8 +48,6 @@ void showMoreInfoSnackBar(
           context: context,
           builder: (context) => SimpleDialog(
             title: Text(message),
-            // although it say the content padding exist,
-            // still can't see this on device.
             contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
             children: [content],
           ),

@@ -146,7 +146,6 @@ class OrderPageState extends State<OrderPage> {
           context,
           S.orderCashierPaidUsingSmallMoney,
           Text(S.orderCashierPaidUsingSmallMoneyHint),
-          label: S.orderCashierPaidUsingSmallMoneyAction,
         );
         break;
     }

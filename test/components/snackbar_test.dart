@@ -10,7 +10,8 @@ void main() {
           body: Builder(builder: (context) {
             return TextButton(
                 onPressed: () {
-                  showMoreInfoSnackBar(context, 'message', const Text('info'));
+                  showMoreInfoSnackBar(context, 'message', const Text('info'),
+                      label: 'test');
                 },
                 child: const Text('btn'));
           }),
@@ -23,7 +24,7 @@ void main() {
 
       expect(find.text('message'), findsOneWidget);
 
-      await tester.tap(find.text('怎麼辦'));
+      await tester.tap(find.text('test'));
       await tester.pumpAndSettle();
 
       expect(find.text('info'), findsOneWidget);
