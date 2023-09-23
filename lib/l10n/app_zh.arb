@@ -810,8 +810,7 @@
   "orderCashierPaidNotEnough": "收銀機錢不夠找囉！",
   "orderCashierPaidUsingSmallMoney": "收銀機使用小錢去找零",
   "orderCashierPaidUsingSmallMoneyAction": "說明",
-  "orderCashierPaidUsingSmallMoneyHint1": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。",
-  "orderCashierPaidUsingSmallMoneyHint2": "怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到設定頁關閉收銀機的相關提示。",
+  "orderCashierPaidUsingSmallMoneyHint": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。\n\n怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到設定頁關閉收銀機的相關提示。",
   "orderCashierPaidConfirmLeaveHistoryMode": "確定要要變更上次的點餐紀錄嗎？",
   "@orderCashierPaidConfirmLeaveHistoryMode": {
     "description": "若本次點餐是更改上次的點餐紀錄，需要提示給使用者"

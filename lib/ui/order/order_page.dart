@@ -142,26 +142,11 @@ class OrderPageState extends State<OrderPage> {
         showSnackBar(context, S.orderCashierPaidNotEnough);
         break;
       case CashierUpdateStatus.usingSmall:
-        showSnackBar(
+        showMoreInfoSnackBar(
           context,
           S.orderCashierPaidUsingSmallMoney,
-          action: SnackBarAction(
-            key: const Key('order.cashierUsingSmallAction'),
-            label: S.orderCashierPaidUsingSmallMoneyAction,
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => SimpleDialog(
-                key: const Key('order.cashierUsingSmallAction.tip'),
-                title: Text(S.orderCashierPaidUsingSmallMoney),
-                contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
-                children: [
-                  Text(S.orderCashierPaidUsingSmallMoneyHint1),
-                  const SizedBox(height: 8.0),
-                  Text(S.orderCashierPaidUsingSmallMoneyHint2),
-                ],
-              ),
-            ),
-          ),
+          Text(S.orderCashierPaidUsingSmallMoneyHint),
+          label: S.orderCashierPaidUsingSmallMoneyAction,
         );
         break;
     }

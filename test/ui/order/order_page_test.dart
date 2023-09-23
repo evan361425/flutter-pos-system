@@ -504,8 +504,7 @@ void main() {
       // show tip
       await tester.tap(find.byKey(const Key('order.cashierUsingSmallAction')));
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('order.cashierUsingSmallAction.tip')),
-          findsOneWidget);
+      expect(find.text(S.orderCashierPaidUsingSmallMoneyHint), findsOneWidget);
       await tester.tapAt(Offset.zero);
     });
 

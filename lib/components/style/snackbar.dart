@@ -34,21 +34,23 @@ Future<T?> showSnackbarWhenFailed<T>(
 void showMoreInfoSnackBar(
   BuildContext context,
   String message,
-  Widget content,
-) {
+  Widget content, {
+  String label = '怎麼辦',
+}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    showCloseIcon: true,
     // make floating button below
     behavior: SnackBarBehavior.floating,
     content: Text(message),
     action: SnackBarAction(
-      // TODO: is this correct?
-      label: MaterialLocalizations.of(context).moreButtonTooltip,
+      label: label,
       onPressed: () {
         showDialog(
           context: context,
           builder: (context) => SimpleDialog(
             title: Text(message),
+            // although it say the content padding exist,
+            // still can't see this on device.
+            contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
             children: [content],
           ),
         );
