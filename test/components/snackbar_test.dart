@@ -23,7 +23,7 @@ void main() {
 
       expect(find.text('message'), findsOneWidget);
 
-      await tester.tap(find.text('More'));
+      await tester.tap(find.text('怎麼辦'));
       await tester.pumpAndSettle();
 
       expect(find.text('info'), findsOneWidget);

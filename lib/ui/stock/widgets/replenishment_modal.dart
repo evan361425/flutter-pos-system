@@ -33,6 +33,9 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   late FocusNode _nameFocusNode;
 
   @override
+  String get title => widget.replenishment?.name ?? S.stockReplenishmentCreate;
+
+  @override
   Widget buildBody() => buildForm(buildFormFields());
 
   @override
@@ -54,7 +57,6 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
             filled: false,
           ),
           style: textTheme.titleLarge,
-          autofocus: widget.isNew,
           maxLength: 30,
           validator: Validator.textLimit(
             S.stockReplenishmentNameLabel,

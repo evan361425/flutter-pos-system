@@ -35,6 +35,9 @@ class _StockIngredientModalState extends State<StockIngredientModal>
   late FocusNode _totalAmountFocusNode;
 
   @override
+  String get title => widget.ingredient?.name ?? S.stockIngredientCreate;
+
+  @override
   Widget buildBody() {
     final ingredients = widget.isNew
         ? const <ProductIngredient>[]
@@ -81,7 +84,6 @@ class _StockIngredientModalState extends State<StockIngredientModal>
             hintText: S.stockIngredientNameHint,
             filled: false,
           ),
-          autofocus: widget.isNew,
           maxLength: 30,
           validator: Validator.textLimit(
             S.stockIngredientNameLabel,

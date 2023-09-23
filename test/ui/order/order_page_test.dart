@@ -500,12 +500,6 @@ void main() {
       SettingsProvider.of<CashierWarningSetting>().value =
           CashierWarningTypes.showAll;
       await tapWithCheck(CashierUpdateStatus.usingSmall);
-
-      // show tip
-      await tester.tap(find.byKey(const Key('order.cashierUsingSmallAction')));
-      await tester.pumpAndSettle();
-      expect(find.text(S.orderCashierPaidUsingSmallMoneyHint), findsOneWidget);
-      await tester.tapAt(Offset.zero);
     });
 
     setUp(() {

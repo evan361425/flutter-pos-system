@@ -28,6 +28,9 @@ class _StockQuantityModalState extends State<StockQuantityModal>
   late FocusNode _proportionFocusNode;
 
   @override
+  String get title => widget.quantity?.name ?? S.quantityCreate;
+
+  @override
   List<Widget> buildFormFields() {
     return [
       TextFormField(
@@ -40,7 +43,6 @@ class _StockQuantityModalState extends State<StockQuantityModal>
           hintText: S.quantityNameHint,
           filled: false,
         ),
-        autofocus: widget.isNew,
         maxLength: 30,
         focusNode: _nameFocusNode,
         validator: Validator.textLimit(

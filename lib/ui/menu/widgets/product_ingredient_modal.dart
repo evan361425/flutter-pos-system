@@ -39,8 +39,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   String ingredientName = '';
 
   @override
-  Widget? get title =>
-      Text(widget.isNew ? S.menuIngredientCreate : widget.ingredient!.name);
+  String get title => widget.ingredient?.name ?? S.menuIngredientCreate;
 
   @override
   List<Widget> buildFormFields() {

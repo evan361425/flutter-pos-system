@@ -38,6 +38,9 @@ class _ProductModalState extends State<ProductModal>
   String? _image;
 
   @override
+  String get title => widget.product?.name ?? S.menuProductCreate;
+
+  @override
   List<Widget> buildFormFields() {
     return [
       EditImageHolder(
@@ -49,7 +52,6 @@ class _ProductModalState extends State<ProductModal>
         controller: _nameController,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
-        autofocus: widget.isNew,
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductNameLabel,

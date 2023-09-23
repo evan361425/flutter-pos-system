@@ -35,7 +35,7 @@ class _OrderSettingPageState extends State<OrderSettingPage>
   late bool withPrefix;
 
   @override
-  Widget? get title => const Text('訂單匯出設定');
+  String get title => '訂單匯出設定';
 
   @override
   Widget buildBody() {

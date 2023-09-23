@@ -43,8 +43,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   String quantityId = '';
 
   @override
-  Widget? get title =>
-      Text(widget.isNew ? S.menuQuantityCreate : widget.quantity!.name);
+  String get title => widget.quantity?.name ?? S.menuQuantityCreate;
 
   @override
   List<Widget> buildFormFields() {

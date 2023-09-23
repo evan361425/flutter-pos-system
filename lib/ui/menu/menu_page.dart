@@ -106,12 +106,13 @@ class _MenuPageState extends State<MenuPage> {
   Widget get firstView {
     if (Menu.instance.isEmpty) {
       return Center(
-          child: EmptyBody(
-        helperText: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
-            '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
-            '「塑膠袋」、「環保杯」整合進「其他」',
-        onPressed: _handleCreate,
-      ));
+        child: EmptyBody(
+          helperText: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
+              '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
+              '「塑膠袋」、「環保杯」整合進「其他」',
+          onPressed: _handleCreate,
+        ),
+      );
     }
 
     if (widget.productOnly) {

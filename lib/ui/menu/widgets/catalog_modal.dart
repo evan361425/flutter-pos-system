@@ -29,6 +29,9 @@ class _CatalogModalState extends State<CatalogModal>
   String? _image;
 
   @override
+  String get title => widget.catalog?.name ?? S.menuCatalogCreate;
+
+  @override
   List<Widget> buildFormFields() {
     return [
       EditImageHolder(
@@ -41,7 +44,6 @@ class _CatalogModalState extends State<CatalogModal>
         focusNode: _nameFocusNode,
         textInputAction: TextInputAction.send,
         textCapitalization: TextCapitalization.words,
-        autofocus: widget.isNew,
         decoration: InputDecoration(
           labelText: S.menuCatalogNameLabel,
           hintText: S.menuCatalogNameHint,

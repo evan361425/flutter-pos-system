@@ -8,7 +8,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   bool isSaving = false;
 
-  Widget? get title => null;
+  String get title;
 
   Widget buildBody() {
     final fields = buildFormFields()
@@ -29,7 +29,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        title: title,
+        title: Text(title),
         actions: [
           TextButton(
             key: const Key('modal.save'),

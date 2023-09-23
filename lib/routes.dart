@@ -38,7 +38,6 @@ import 'ui/stock/replenishment_page.dart';
 import 'ui/transit/transit_page.dart';
 import 'ui/transit/transit_station.dart';
 
-// TODO: test
 String serializeRange(DateTimeRange range) {
   final f = DateFormat('y-M-d');
   return "${f.format(range.start)}-${f.format(range.end)}";

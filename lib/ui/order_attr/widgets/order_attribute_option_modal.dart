@@ -37,9 +37,9 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
   late bool isDefault;
 
   @override
-  Widget? get title => Text(widget.isNew
-      ? S.orderAttributeOptionCreateTitle(widget.attribute.name)
-      : widget.option!.name);
+  String get title =>
+      widget.option?.name ??
+      S.orderAttributeOptionCreateTitle(widget.attribute.name);
 
   @override
   List<Widget> buildFormFields() {
@@ -68,7 +68,6 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
             ? TextInputAction.next
             : TextInputAction.send,
         textCapitalization: TextCapitalization.words,
-        autofocus: widget.isNew,
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.orderAttributeOptionNameLabel,
