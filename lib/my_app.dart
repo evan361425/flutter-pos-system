@@ -17,12 +17,12 @@ class MyApp extends StatelessWidget {
 
   // singleton be avoid recreate after hot reload.
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/pos',
     routes: [Routes.home],
     // By default, go_router comes with default error screens for both
     // MaterialApp and CupertinoApp as well as a default error screen in
     // the case that none is used.
-    // onException: (context, state, route) => context.go('/'),
+    // onException: (context, state, route) => context.go('/pos'),
     debugLogDiagnostics: kDebugMode,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),

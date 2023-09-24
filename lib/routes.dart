@@ -72,7 +72,7 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 class Routes {
   static final home = GoRoute(
     name: 'home',
-    path: '/',
+    path: '/pos',
     builder: (ctx, state) {
       final tab = _findEnum(
         HomeTab.values,
