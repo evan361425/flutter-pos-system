@@ -21,7 +21,7 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.7.2+20702005
 
 environment:
-  flutter: "3.10.6"
+  flutter: "3.13.5"
   sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
@@ -31,68 +31,70 @@ dependencies:
     sdk: flutter
 
   # core helper
-  provider: ^6.0.5 # 23, 12-14
-  intl: ^0.18.0 # 23, 04-18
-  firebase_core: ^2.15.0
-  firebase_analytics: ^10.4.4
-  firebase_auth: ^4.7.1
-  firebase_crashlytics: ^3.3.4
-  firebase_in_app_messaging: ^0.7.3+4
+  provider: ^6.0.5 # 22, 12-14
+  intl: ^0.18.1 # 23, 04-18
+  firebase_core: ^2.16.0
+  firebase_analytics: ^10.5.0
+  firebase_auth: ^4.10.0
+  firebase_crashlytics: ^3.3.6
+  firebase_in_app_messaging: ^0.7.3+6
 
   # services
   sqflite: ^2.3.0 # 23, 07-26
   sembast: ^3.5.0+1 # 23, 07-21
-  shared_preferences: ^2.2.0 # 23, 06-30
+  shared_preferences: ^2.2.1 # 23, 08-30
   http: ^1.1.0 # 23, 06-26
 
   # google services
-  googleapis: ^11.3.0
-  google_sign_in: ^6.1.4
-  extension_google_sign_in_as_googleapis_auth: ^2.0.10
+  googleapis: ^11.4.0
+  google_sign_in: ^6.1.5
+  extension_google_sign_in_as_googleapis_auth: ^2.0.11
 
   # components
   flutter_slidable: ^3.0.0 # 23, 04-14
-  sliding_up_panel: ^2.0.0+1 #⚠️ 21, 04-27
+  # TODO: remove this package as two years unchanged
+  sliding_up_panel: ^2.0.0+1 # 21, 04-27
   table_calendar: ^3.0.9 # 23, 01-06
 
   # image
-  image: ^4.0.17 # 23, 05-07
-  image_picker: ^1.0.1 # 23, 07-12
+  image: ^4.1.0 # 23, 09-22
+  image_picker: ^1.0.4 # 23, 08-30
   image_cropper: ^5.0.0 # 23, 06-10
 
   # Make it easy to test
   # TODO: wait shared_preferences to support ^7.0.0
-  file: ^6.0.0 # 23, 05-19
+  file: ^6.1.4 # 23, 05-19
 
   # tools
-  uuid: ^3.0.7 # 22, 11-13
+  uuid: ^4.0.0 # 23, 08-30
   wakelock:
     git:
       url: https://github.com/evan361425/wakelock
       path: wakelock/
       ref: main
   characters: ^1.3.0 # 23, 02-17
-  path_provider: ^2.0.15 # 23, 05-08
-  url_launcher: ^6.1.12 # 23, 07-08
-  flutter_native_splash: ^2.3.1 # 23, 06-04
-  package_info_plus: ^4.0.2 # 23, 05-29
+  path_provider: ^2.1.1 # 23, 08-30
+  url_launcher: ^6.1.14 # 23, 08-31
+  flutter_native_splash: ^2.3.2 # 23, 08-13
+  package_info_plus: ^4.1.0 # 23, 08-02
   cached_network_image: ^3.2.3 # 22, 11-25
   flutter_svg: ^2.0.7 # 23, 06-12
   spotlight_ant: ^1.0.3
-  info_popup: ^3.0.5 # 23, 08-03
-  go_router: ^10.0.0
+  # TODO: remove this as it is not useful
+  info_popup: ^3.0.6 # 23, 08-29
+  go_router: ^11.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # code style
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
 
   # mock object
   build_runner: ^2.4.6
   mockito: ^5.4.2
-  sqflite_common_ffi: ^2.2.5
+  sqflite_common_ffi: ^2.3.0+2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
