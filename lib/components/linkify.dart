@@ -51,9 +51,7 @@ class LinkifyData {
 
   final String? link;
 
-  final bool asButton;
-
-  const LinkifyData(this.text, [this.link, this.asButton = false]);
+  const LinkifyData(this.text, [this.link]);
 
   bool get linkable => link != null;
 

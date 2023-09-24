@@ -57,7 +57,11 @@ Certificate fingerprint (SHA-256): B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:
 
 ## 測試
 
-如果你想要測試，你可以
+在開始執行測試之前，你可以先把 mock 檔案準備好：
+
+    flutter pub run build_runner build --delete-conflicting-outputs
+
+當想要開始測試，你可以
 
     flutter test
 

@@ -46,7 +46,7 @@
 -   說明你使用的手機型號和版本。
 -   一隻害蟲一個 issue，若你發現兩個問題，請發兩個 issue。
 -   就算你不知道該怎麼解決這些問題，幫助其他人重現問題可以加速問題的發現。
--   若你發現任何安全性的問題，請不要發 issue，相對的，請發信到 evanlu361425@gmail.com，會有人來專門處理。
+-   若你發現任何安全性的問題，請不要發 issue，相對的，請發信到 <evanlu361425@gmail.com>，會有人來專門處理。
 
 ## 提出新功能或改善功能
 
@@ -101,12 +101,11 @@
 
 ## 如何準備本地端環境
 
-套件安裝：`flutter pub get`。
-工具安裝：`flutter run build_runner build`。
+詳見[本地端開發](../maintenance/development.md)。
 
 ## 如何進行測試
 
-`flutter test`。
+詳見[本地端開發](../maintenance/development.md)。
 
 ## Code of conduct
 
