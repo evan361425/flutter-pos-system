@@ -45,6 +45,9 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
   Widget build(BuildContext context) {
     return SearchAnchor(
       searchController: searchController,
+      // default using [MaterialTapTargetSize.shrinkWrap] button, which has bad
+      // accessibility (too small tap region)
+      viewLeading: const BackButton(),
       builder: widget.text == null
           ? (BuildContext context, SearchController controller) {
               return IconButton(
@@ -63,45 +66,38 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
               );
             },
       viewHintText: widget.hintText,
-      viewBuilder: (suggestions) => suggestions.first,
-      suggestionsBuilder: (context, controller) {
+      viewBuilder: (suggestions) => suggestions.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : suggestions.first,
+      suggestionsBuilder: (context, controller) async {
         if (controller.text.isEmpty) {
           return [buildItems(context, widget.initData)];
         }
 
-        return [
-          FutureBuilder<Iterable<T>>(
-            future: widget.search(controller.text),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                // TODO: error handler
-                return const Center(child: CircularProgressIndicator());
-              }
+        final data = await widget.search(controller.text);
 
-              final data = snapshot.data;
-              if (data == null || data.isEmpty) {
-                final error = widget.validator?.call(controller.text);
-                // [Column] widget minimum children height
-                if (error != null) {
-                  return buildSingle(
-                    context,
-                    ListTile(
-                      title: Text(error),
-                      leading: const Icon(KIcons.warn),
-                    ),
-                  );
-                }
+        if (data.isNotEmpty && context.mounted) {
+          return [buildItems(context, data)];
+        }
 
-                return buildSingle(
+        final error = widget.validator?.call(controller.text);
+        Widget w = const SizedBox.shrink();
+        if (context.mounted) {
+          w = error == null
+              ? buildSingle(
                   context,
                   widget.emptyBuilder(context, controller.text),
+                )
+              : buildSingle(
+                  context,
+                  ListTile(
+                    title: Text(error),
+                    leading: const Icon(KIcons.warn),
+                  ),
                 );
-              }
+        }
 
-              return buildItems(context, data);
-            },
-          )
-        ];
+        return [w];
       },
     );
   }

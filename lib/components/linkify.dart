@@ -32,7 +32,7 @@ class Linkify extends StatelessWidget {
                       text: element.text,
                       style: linkStyle,
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => Launcher.launch(element.link!).ignore(),
+                        ..onTap = element.launch,
                     )
                   : TextSpan(
                       text: element.text,
@@ -51,9 +51,13 @@ class LinkifyData {
 
   final String? link;
 
-  const LinkifyData(this.text, [this.link]);
+  final bool asButton;
+
+  const LinkifyData(this.text, [this.link, this.asButton = false]);
 
   bool get linkable => link != null;
+
+  void launch() => Launcher.launch(link!).ignore();
 }
 
 Iterable<LinkifyData> _parseText(String text) sync* {

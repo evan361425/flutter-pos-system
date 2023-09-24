@@ -55,7 +55,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
   /// follow https://developers.google.com/identity/branding-guidelines#top_of_page
   @override
   Widget build(BuildContext context) {
-    const size = 19.0;
+    const size = 21.0;
     const padding = size * 1.33 / 2;
     const margin = (size + padding * 2) / 10;
     const height = size + padding * 2;

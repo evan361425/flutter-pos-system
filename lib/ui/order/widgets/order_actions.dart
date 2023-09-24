@@ -71,8 +71,8 @@ class OrderActions extends StatelessWidget {
       case OrderActionMode.leaveHistory:
         return Cart.instance.clear();
       case OrderActionMode.showLast:
-        final f = _confirmAbleToStash(context);
-        if (!await f) return;
+        final confirmed = await _confirmAbleToStash(context);
+        if (!confirmed) return;
 
         if (!await Cart.instance.stash()) {
           if (context.mounted) {
@@ -89,8 +89,9 @@ class OrderActions extends StatelessWidget {
         }
         return;
       case OrderActionMode.dropStash:
-        final f = _confirmAbleToStash(context);
-        if (!await f) return;
+        bool confirmed = false;
+        if (context.mounted) confirmed = await _confirmAbleToStash(context);
+        if (!confirmed) return;
 
         final isEmpty = Cart.instance.isEmpty;
 
@@ -113,11 +114,18 @@ class OrderActions extends StatelessWidget {
       case OrderActionMode.stash:
         if (Cart.instance.isEmpty) return;
 
-        return await Cart.instance.stash()
-            ? showSnackBar(context, S.actSuccess)
-            : showSnackBar(context, S.orderActionsStashHitLimit);
+        final success = await Cart.instance.stash();
+        if (context.mounted) {
+          success
+              ? showSnackBar(context, S.actSuccess)
+              : showSnackBar(context, S.orderActionsStashHitLimit);
+        }
+        return;
       case OrderActionMode.changer:
-        final success = await context.pushNamed(Routes.cashierChanger);
+        bool? success;
+        if (context.mounted) {
+          success = await context.pushNamed(Routes.cashierChanger);
+        }
 
         if (success == true) {
           if (context.mounted) {

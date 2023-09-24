@@ -115,11 +115,16 @@ class SettingView extends StatelessWidget {
               title: S.settingTitle,
               subtitle: '外觀、語言、提示',
             ),
-            const Divider(),
-            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Linkify([LinkifyData('Privacy Policy', _privacyPolicy)]),
-              Text(MetaBlock.string),
-              Linkify([LinkifyData('License', _license)]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              TextButton(
+                onPressed: _bottomLinks[0].launch,
+                child: Text(_bottomLinks[0].text),
+              ),
+              const Text(MetaBlock.string),
+              TextButton(
+                onPressed: _bottomLinks[1].launch,
+                child: Text(_bottomLinks[1].text),
+              ),
             ])
           ],
         ),
@@ -234,6 +239,9 @@ class _HeaderInfoList extends StatelessWidget {
   }
 }
 
-const _privacyPolicy =
-    'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/';
-const _license = 'https://evan361425.github.io/flutter-pos-system/LICENSE/';
+const _bottomLinks = <LinkifyData>[
+  LinkifyData('Privacy Policy',
+      'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/'),
+  LinkifyData(
+      'License', 'https://evan361425.github.io/flutter-pos-system/LICENSE/'),
+];
