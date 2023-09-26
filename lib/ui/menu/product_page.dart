@@ -140,7 +140,9 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _reload() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _handleCreateIng() {
