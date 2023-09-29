@@ -11,19 +11,14 @@ class OrderLoader extends StatefulWidget {
 
   final Widget Function(BuildContext, OrderObject) builder;
 
-  final Widget? trailing;
-
   final Widget Function(BuildContext, OrderLoaderMetrics)? trailingBuilder;
 
   const OrderLoader({
     Key? key,
     required this.ranger,
     required this.builder,
-    this.trailing,
     this.trailingBuilder,
-  })  : assert(trailing != null || trailingBuilder != null,
-            "trailing is required"),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<OrderLoader> createState() => _OrderLoaderState();
@@ -45,10 +40,7 @@ class _OrderLoaderState extends State<OrderLoader> {
         ])!;
         return Row(children: [
           Expanded(child: Center(child: meta)),
-          widget.trailingBuilder != null
-              ? widget.trailingBuilder!.call(context, metrics)
-              : widget.trailing!,
-          const SizedBox(width: 8.0),
+          if (widget.trailingBuilder != null) buildTrailing(metrics),
         ]);
       },
       emptyChild: HintText(S.orderListEmpty),
@@ -65,6 +57,13 @@ class _OrderLoaderState extends State<OrderLoader> {
   void dispose() {
     Seller.instance.removeListener(_reloadOrders);
     super.dispose();
+  }
+
+  Widget buildTrailing(OrderLoaderMetrics metrics) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: widget.trailingBuilder!.call(context, metrics),
+    );
   }
 
   void _reloadOrders() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/ui/analysis/analysis_calendar_page.dart';
 
 import 'models/objects/order_object.dart';
 import 'models/repository/menu.dart';
@@ -70,9 +71,11 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 }
 
 class Routes {
+  static const base = '/pos';
+
   static final home = GoRoute(
     name: 'home',
-    path: '/pos',
+    path: base,
     builder: (ctx, state) {
       final tab = _findEnum(
         HomeTab.values,
@@ -101,10 +104,17 @@ class Routes {
       ],
     ),
     GoRoute(
+      name: analCalendar,
+      path: 'analysis/calendar',
+      builder: (ctx, state) {
+        return const AnalysisCalendarPage();
+      },
+    ),
+    GoRoute(
       name: analOrderModal,
-      path: 'analysis/order/modal',
+      path: 'analysis/calendar/order/modal',
       redirect: (ctx, state) {
-        return state.extra is OrderObject ? null : '/?tab=analysis';
+        return state.extra is OrderObject ? null : '$base?tab=analysis';
       },
       builder: (ctx, state) {
         // TODO: use id
@@ -262,7 +272,7 @@ class Routes {
 
   static final _stockRoute = GoRoute(
     path: 'stock',
-    redirect: (ctx, state) => state.path == '/stock' ? '/' : null,
+    redirect: (ctx, state) => state.path == '$base/stock' ? base : null,
     routes: [
       GoRoute(
         name: ingredientNew,
@@ -389,7 +399,8 @@ class Routes {
   static const menuProductModal = '/menu/product/modal';
   static const menuProductDetails = '/menu/product/details';
 
-  static const analOrderModal = '/analysis/order/modal';
+  static const analCalendar = '/analysis/calendar';
+  static const analOrderModal = '/analysis/calendar/order/modal';
 
   static const orderAttr = '/oa';
   static const orderAttrNew = '/oa/new';

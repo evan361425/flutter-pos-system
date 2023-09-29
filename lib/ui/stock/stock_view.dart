@@ -36,36 +36,32 @@ class StockScreen<T> extends StatelessWidget {
     return TutorialWrapper(
       tab: tab,
       child: ListView(children: [
-        Flex(direction: Axis.horizontal, children: [
-          const Expanded(
-            child: Tutorial(
-              id: 'stock.replenishment',
-              index: 1,
-              title: '成份採購',
-              message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
-              child: RouteCircularButton(
-                key: Key('stock.replenisher'),
-                icon: Icons.shopping_basket_sharp,
-                route: Routes.replenishment,
-                popTrueShowSuccess: true,
-                text: '採購',
-              ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          const Tutorial(
+            id: 'stock.replenishment',
+            index: 1,
+            title: '成份採購',
+            message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
+            child: RouteCircularButton(
+              key: Key('stock.replenisher'),
+              icon: Icons.shopping_basket_sharp,
+              route: Routes.replenishment,
+              popTrueShowSuccess: true,
+              text: '採購',
             ),
           ),
-          const Spacer(flex: 2),
-          Expanded(
-            child: Tutorial(
-              id: 'stock.add',
-              index: 0,
-              disable: Stock.instance.isNotEmpty,
-              title: '新增成份',
-              message: '成份可以幫助我們確認相關產品的庫存！',
-              child: RouteCircularButton(
-                key: const Key('stock.add'),
-                route: Routes.ingredientNew,
-                icon: KIcons.add,
-                text: S.stockIngredientCreate,
-              ),
+          const SizedBox.square(dimension: 96.0),
+          Tutorial(
+            id: 'stock.add',
+            index: 0,
+            disable: Stock.instance.isNotEmpty,
+            title: '新增成份',
+            message: '成份可以幫助我們確認相關產品的庫存！',
+            child: RouteCircularButton(
+              key: const Key('stock.add'),
+              route: Routes.ingredientNew,
+              icon: KIcons.add,
+              text: S.stockIngredientCreate,
             ),
           ),
         ]),
