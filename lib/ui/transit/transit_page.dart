@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/choice_chip_with_help.dart';
 import 'package:possystem/components/style/pop_button.dart';
@@ -40,9 +41,11 @@ class _TransitPageState extends State<TransitPage> {
         ListTile(
           key: const Key('transit.google_sheet'),
           leading: CircleAvatar(
-            backgroundImage: const AssetImage('assets/google_sheet_icon.png'),
-            backgroundColor: Theme.of(context).focusColor,
             radius: 24,
+            child: SvgPicture.asset(
+              'assets/google_sheet_icon.svg',
+              width: 24,
+            ),
           ),
           title: Text(S.transitMethod(TransitMethod.googleSheet.name)),
           subtitle: Text(S.transitGSDescription),
