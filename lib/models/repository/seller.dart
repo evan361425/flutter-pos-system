@@ -76,6 +76,7 @@ class Seller extends ChangeNotifier {
       columns: [
         'COUNT(*) count',
         'SUM(totalPrice) totalPrice',
+        'SUM(cost) cost',
         'SUM(length(encodedProducts)) productSize',
         'SUM(length(encodedAttributes)) attrSize',
       ],
@@ -86,6 +87,7 @@ class Seller extends ChangeNotifier {
     final row = result.isEmpty ? <String, Object?>{} : result[0];
 
     return {
+      'cost': row['cost'] as num? ?? 0,
       'totalPrice': row['totalPrice'] as num? ?? 0,
       'count': row['count'] as num? ?? 0,
       'productSize': row['productSize'] as int? ?? 0,

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/models/order_loader.dart';
+import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_metrics_header.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/ui/analysis/widgets/analysis_card.dart';
 
 class AnalysisView extends StatelessWidget {
   final TutorialInTab? tab;
@@ -13,8 +19,8 @@ class AnalysisView extends StatelessWidget {
   Widget build(BuildContext context) {
     return TutorialWrapper(
       tab: tab,
-      child: ListView(children: const [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      child: ListView(children: [
+        const Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           RouteCircularButton(
             key: Key('anal.order'),
             icon: Icons.store_sharp,
@@ -29,9 +35,36 @@ class AnalysisView extends StatelessWidget {
             text: '紀錄',
           ),
         ]),
-        SizedBox(height: 4.0),
-        AnalysisMetricsHeader(),
+        const SizedBox(height: 4.0),
+        metricsCard,
+        // TODO: 折線圖、圓餅圖
       ]),
+    );
+  }
+
+  Widget get metricsCard {
+    return AnalysisCard<OrderLoaderMetrics>(
+      builder: (context, metric) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('銷售', style: Theme.of(context).textTheme.headlineSmall),
+          // TODO: add target
+          PercentileBar(metric.price, 0),
+          const SizedBox(height: 8.0),
+          MetaBlock.withString(context, [
+            '成本：${metric.cost.toCurrency()}',
+            '盈利：${(metric.price - metric.cost).toCurrency()}',
+          ])!,
+        ]);
+      },
+      loader: () async {
+        final range = Util.getDateRange();
+        final result = await Seller.instance.getMetricBetween(
+          range.start,
+          range.end,
+        );
+
+        return OrderLoaderMetrics.fromMap(result);
+      },
     );
   }
 }

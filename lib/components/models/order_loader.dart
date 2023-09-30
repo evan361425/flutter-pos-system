@@ -81,12 +81,7 @@ class _OrderLoaderState extends State<OrderLoader> {
       widget.ranger.value.end,
     );
 
-    return OrderLoaderMetrics(
-      price: result['totalPrice'] as num,
-      count: result['count'] as int,
-      productSize: result['productSize'] as int,
-      attrSize: result['attrSize'] as int,
-    );
+    return OrderLoaderMetrics.fromMap(result);
   }
 
   Future<List<OrderObject>> _loadOrders(int offset) {
@@ -99,6 +94,8 @@ class _OrderLoaderState extends State<OrderLoader> {
 }
 
 class OrderLoaderMetrics {
+  final num cost;
+
   final num price;
 
   final int count;
@@ -108,9 +105,20 @@ class OrderLoaderMetrics {
   final int attrSize;
 
   const OrderLoaderMetrics({
+    required this.cost,
     required this.price,
     required this.count,
     required this.productSize,
     required this.attrSize,
   });
+
+  factory OrderLoaderMetrics.fromMap(Map<String, num> map) {
+    return OrderLoaderMetrics(
+      cost: map['cost'] as num,
+      price: map['totalPrice'] as num,
+      count: map['count'] as int,
+      productSize: map['productSize'] as int,
+      attrSize: map['attrSize'] as int,
+    );
+  }
 }
