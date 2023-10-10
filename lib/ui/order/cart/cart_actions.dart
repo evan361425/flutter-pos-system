@@ -73,7 +73,7 @@ class CartActions extends StatelessWidget {
             suffix: Text(S.orderCartActionsDiscountSuffix),
           ),
           action: (result) {
-            Cart.instance.updateSelectedDiscount(int.tryParse(result));
+            Cart.instance.selectedUpdateDiscount(int.tryParse(result));
           },
         );
         break;
@@ -86,7 +86,7 @@ class CartActions extends StatelessWidget {
             suffix: Text(S.orderCartActionsChangePriceSuffix),
           ),
           action: (result) {
-            Cart.instance.updateSelectedPrice(num.tryParse(result));
+            Cart.instance.selectedUpdatePrice(num.tryParse(result));
           },
         );
         break;
@@ -103,14 +103,14 @@ class CartActions extends StatelessWidget {
             suffix: Text(S.orderCartActionsChangeCountSuffix),
           ),
           action: (result) {
-            Cart.instance.updateSelectedCount(int.tryParse(result));
+            Cart.instance.selectedUpdateCount(int.tryParse(result));
           },
         );
         break;
       case CartActionTypes.delete:
-        return Cart.instance.removeSelected();
+        return Cart.instance.selectedRemove();
       case CartActionTypes.free:
-        return Cart.instance.updateSelectedPrice(0);
+        return Cart.instance.selectedUpdatePrice(0);
     }
 
     final result = await showDialog<String>(

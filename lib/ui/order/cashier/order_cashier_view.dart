@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
-import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
 
 import 'order_cashier_calculator.dart';
-import 'order_cashier_product_list.dart';
+import '../widgets/order_object_view.dart';
 import 'order_cashier_snapshot.dart';
 
 class OrderCashierView extends StatefulWidget {
@@ -20,9 +19,9 @@ class _OrderCashierViewState extends State<OrderCashierView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final totalPrice = Cart.instance.totalPrice;
+    final price = Cart.instance.price;
 
-    final collapsed = OrderCashierSnapshot(totalPrice: totalPrice);
+    final collapsed = OrderCashierSnapshot(price: price);
 
     final panel = Container(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
@@ -33,27 +32,11 @@ class _OrderCashierViewState extends State<OrderCashierView> {
       ),
       child: OrderCashierCalculator(
         onSubmit: () => opener.currentState?.close(),
-        totalPrice: totalPrice,
+        totalPrice: price,
       ),
     );
 
-    final body = OrderCashierProductList(
-      attributes: Cart.instance.selectedAttributeOptions
-          .map((e) => OrderSelectedAttributeObject.fromModel(e))
-          .toList(),
-      products: Cart.instance.products
-          .map((e) => OrderProductTileData(
-                product: e.product,
-                productName: e.name,
-                ingredientNames: e.getIngredientNames(onlyQuantified: false),
-                totalPrice: e.price,
-                totalCount: e.count,
-              ))
-          .toList(),
-      totalPrice: totalPrice,
-      productsPrice: Cart.instance.productsPrice,
-      productCost: Cart.instance.productsCost,
-    );
+    final body = OrderObjectView(order: Cart.instance.toObject());
 
     return SlidingUpOpener(
       key: opener,

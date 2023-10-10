@@ -7,11 +7,11 @@ class OrderFormatter {
       [
         order.createdAt.millisecondsSinceEpoch ~/ 1000,
         order.createdAt.toIso8601String(),
-        order.totalPrice,
+        order.price,
         order.productsPrice,
         order.paid,
         order.cost,
-        order.totalCount,
+        order.productsCount,
         order.products.length,
         order.attributes
             .map((a) => [a.name, a.optionName].join(':'))
@@ -22,7 +22,7 @@ class OrderFormatter {
                   p.catalogName,
                   p.count,
                   p.totalPrice.toCurrencyNum(),
-                  p.cost.toCurrencyNum(),
+                  p.totalCost.toCurrencyNum(),
                 ].join(','))
             .join('\n'),
       ]
@@ -33,12 +33,11 @@ class OrderFormatter {
     final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final attr in order.attributes)
-        if (attr.isNotEmpty)
-          [
-            createdAt,
-            attr.name!,
-            attr.optionName!,
-          ],
+        [
+          createdAt,
+          attr.name,
+          attr.optionName,
+        ],
     ];
   }
 
@@ -52,11 +51,11 @@ class OrderFormatter {
           product.catalogName,
           product.count,
           product.singlePrice.toCurrencyNum(),
-          product.cost.toCurrencyNum(),
+          product.singleCost.toCurrencyNum(),
           product.ingredients
               .map(
                 (i) => [
-                  i.name,
+                  i.ingredientName,
                   i.quantityName ?? '',
                   i.amount,
                 ].join(','),
@@ -73,7 +72,7 @@ class OrderFormatter {
         for (final ing in product.ingredients)
           [
             createdAt,
-            ing.name,
+            ing.ingredientName,
             ing.quantityName ?? '',
             ing.amount,
           ],

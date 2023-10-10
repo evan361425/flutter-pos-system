@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -47,7 +46,7 @@ class ExportOrderView extends StatelessWidget {
   }
 
   Future<void> export() async {
-    final orders = await Seller.instance.getOrderBetween(
+    final orders = await Seller.instance.getOrders(
       notifier.value.start,
       notifier.value.end,
       limit: null,
@@ -71,8 +70,9 @@ class ExportOrderView extends StatelessWidget {
   /// | 39672 | 92 | 46 | 18758 | 18KB |
   /// | 61751 | 142 | 71 | 29043 | 28KB |
   /// | 83775 | 200 | 100 | 39771 | 38KB |
-  static int memoryPredictor(OrderLoaderMetrics m) {
-    return (m.productSize * 0.435 + m.attrSize * 0.3 + 30 * m.count).toInt();
+  static int memoryPredictor(OrderMetrics m) {
+    return (m.productCount! * 0.435 + m.attrCount! * 0.3 + 30 * m.count)
+        .toInt();
   }
 
   static String formatOrder(OrderObject order) {
@@ -82,7 +82,7 @@ class ExportOrderView extends StatelessWidget {
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
         final amount = i.amount == 0 ? '' : '，使用 ${i.amount} 個';
-        return '${i.name}（${i.quantityName ?? '預設份量'}$amount）';
+        return '${i.ingredientName}（${i.isDefaultQuantity ? '預設份量' : i.quantityName}$amount）';
       }).join('、 ');
       return [
         '${p.productName}（${p.catalogName}）',
@@ -91,11 +91,11 @@ class ExportOrderView extends StatelessWidget {
       ].join('');
     }).join('；\n');
     final pl = order.products.length;
-    final tc = order.totalCount;
+    final tc = order.productsCount;
 
     return [
-      '共 ${order.totalPrice.toCurrency()} 元',
-      order.productsPrice == order.totalPrice
+      '共 ${order.price.toCurrency()} 元',
+      order.productsPrice == order.price
           ? '\n'
           : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
       '付額 ${order.paid.toCurrency()} 元、',

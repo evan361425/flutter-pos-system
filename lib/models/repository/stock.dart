@@ -55,13 +55,10 @@ class Stock extends ChangeNotifier
   }
 
   /// [oldData] is helpful when reverting order
-  Future<void> order(OrderObject data, {OrderObject? oldData}) async {
+  Future<void> order(OrderObject data) async {
     final amounts = <String, num>{};
 
-    data.fillIngredient(amounts, add: false);
-
-    // if we need to update order, need to revert stock status
-    oldData?.fillIngredient(amounts, add: true);
+    data.applyToStock(amounts, add: false);
 
     return applyAmounts(amounts, onlyAmount: true);
   }

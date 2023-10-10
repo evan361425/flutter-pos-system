@@ -5,6 +5,7 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -13,7 +14,7 @@ class TransitOrderList extends StatelessWidget {
 
   final Widget Function(OrderObject) formatOrder;
 
-  final int Function(OrderLoaderMetrics) memoryPredictor;
+  final int Function(OrderMetrics) memoryPredictor;
 
   final String? warning;
 
@@ -35,7 +36,7 @@ class TransitOrderList extends StatelessWidget {
   }
 
   /// 因為匯出時過大的資訊量會導致服務崩潰，所以先盡可能的計算大小。
-  Widget _buildMemoryInfo(BuildContext context, OrderLoaderMetrics metrics) {
+  Widget _buildMemoryInfo(BuildContext context, OrderMetrics metrics) {
     final size = memoryPredictor(metrics);
     final level = size < 500000 // 500KB
         ? 0
@@ -95,8 +96,8 @@ class TransitOrderList extends StatelessWidget {
       ),
       title: Text(DateFormat('M月d日 HH:mm:ss').format(order.createdAt)),
       subtitle: Text([
-        '${order.totalCount} 份餐點',
-        '共 ${order.totalPrice.toCurrency()} 元',
+        '${order.productsCount} 份餐點',
+        '共 ${order.price.toCurrency()} 元',
       ].join(MetaBlock.string)),
       trailing: const Icon(Icons.expand_outlined),
       onTap: () {

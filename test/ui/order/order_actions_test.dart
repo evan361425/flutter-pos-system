@@ -12,7 +12,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -113,8 +113,8 @@ void main() {
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
-        OrderProduct(Menu.instance.getProduct('p-1')!),
-        OrderProduct(Menu.instance.getProduct('p-2')!),
+        CartProduct(Menu.instance.getProduct('p-1')!),
+        CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
         'oa-1': 'oao-1',
         'oa-2': 'oao-2'
@@ -174,7 +174,7 @@ void main() {
       expect(Cart.instance.products.length, equals(1));
       final product = Cart.instance.products.first;
       expect(product.id, equals('p-1'));
-      expect(product.isEmpty, isFalse);
+      expect(product.isNormal, isFalse);
 
       expect(find.byKey(const Key('cart_snapshot.0')), findsOneWidget);
 

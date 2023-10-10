@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/ui/analysis/analysis_calendar_page.dart';
+import 'package:possystem/ui/analysis/history_page.dart';
 
-import 'models/objects/order_object.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/order_attributes.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/stock.dart';
-import 'ui/analysis/widgets/analysis_order_modal.dart';
+import 'ui/analysis/widgets/history_order_modal.dart';
 import 'ui/cashier/changer_page.dart';
 import 'ui/cashier/surplus_page.dart';
 import 'ui/home/feature_request_page.dart';
@@ -104,22 +103,16 @@ class Routes {
       ],
     ),
     GoRoute(
-      name: analCalendar,
-      path: 'analysis/calendar',
-      builder: (ctx, state) {
-        return const AnalysisCalendarPage();
-      },
+      name: history,
+      path: 'history/o',
+      builder: (ctx, state) => const HistoryPage(),
     ),
     GoRoute(
-      name: analOrderModal,
-      path: 'analysis/calendar/order/modal',
-      redirect: (ctx, state) {
-        return state.extra is OrderObject ? null : '$base?tab=analysis';
-      },
-      builder: (ctx, state) {
-        // TODO: use id
-        return AnalysisOrderModal(state.extra as OrderObject);
-      },
+      name: historyModal,
+      path: 'history/o/:id/modal',
+      builder: (ctx, state) => HistoryOrderModal(
+        int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+      ),
     ),
     GoRoute(
       name: cashierChanger,
@@ -399,8 +392,8 @@ class Routes {
   static const menuProductModal = '/menu/product/modal';
   static const menuProductDetails = '/menu/product/details';
 
-  static const analCalendar = '/analysis/calendar';
-  static const analOrderModal = '/analysis/calendar/order/modal';
+  static const history = '/history/order';
+  static const historyModal = '/history/order/modal';
 
   static const orderAttr = '/oa';
   static const orderAttrNew = '/oa/new';

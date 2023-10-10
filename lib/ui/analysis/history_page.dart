@@ -9,17 +9,17 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-import 'widgets/analysis_order_list.dart';
+import 'widgets/history_order_list.dart';
 import 'widgets/calendar_view.dart';
 
-class AnalysisCalendarPage extends StatefulWidget {
-  const AnalysisCalendarPage({Key? key}) : super(key: key);
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({Key? key}) : super(key: key);
 
   @override
-  State<AnalysisCalendarPage> createState() => _AnalysisCalendarPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _AnalysisCalendarPageState extends State<AnalysisCalendarPage> {
+class _HistoryPageState extends State<HistoryPage> {
   late final ValueNotifier<DateTimeRange> notifier;
 
   @override
@@ -93,7 +93,7 @@ class _AnalysisCalendarPageState extends State<AnalysisCalendarPage> {
   }
 
   Widget _buildOrderList() {
-    return AnalysisOrderList(notifier: notifier);
+    return HistoryOrderList(notifier: notifier);
   }
 
   Widget _buildLandscape() {
@@ -124,6 +124,6 @@ class _AnalysisCalendarPageState extends State<AnalysisCalendarPage> {
     final start =
         DateTime(day.year, day.month).subtract(const Duration(days: 7));
 
-    return Seller.instance.getCountBetween(start, end);
+    return Seller.instance.getCountPerDay(start, end);
   }
 }

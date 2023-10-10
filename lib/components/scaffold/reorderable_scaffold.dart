@@ -33,7 +33,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
                 Navigator.of(context).pop();
               }
             },
-            child: Text(S.btnSave),
+            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
           ),
         ],
         title: title == null ? null : Text(title!),

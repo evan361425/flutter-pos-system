@@ -67,8 +67,6 @@ void main() async {
       // no need initialize
       Seller();
 
-      await Database.instance.tolerateMigration();
-
       if (kDebugMode) {
         await debugSetupMenu();
       }

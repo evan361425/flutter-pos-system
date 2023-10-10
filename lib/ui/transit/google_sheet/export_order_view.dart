@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/launcher_snackbar_action.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -125,7 +124,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
     widget.statusNotifier.value = '取得本地資料';
-    final orders = await Seller.instance.getOrderBetween(
+    final orders = await Seller.instance.getOrders(
       widget.rangeNotifier.value.start,
       widget.rangeNotifier.value.end,
       limit: null,
@@ -221,7 +220,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   /// | 93391 | 200 | 100 | 43442 | 43442 |
   ///
   /// 後來考慮壓縮之後，上述的值應該再乘以 0.45：2.8 -> 1.25
-  static int memoryPredictor(OrderLoaderMetrics m) {
-    return (m.productSize * 0.465 + m.attrSize * 0.465).toInt();
+  static int memoryPredictor(OrderMetrics m) {
+    return (m.productCount! * 0.465 + m.attrCount! * 0.465).toInt();
   }
 }

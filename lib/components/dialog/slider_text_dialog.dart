@@ -71,7 +71,10 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
         ),
       ),
       actions: [
-        PopButton(key: const Key('slider_dialog.cancel'), title: S.btnCancel),
+        PopButton(
+          key: const Key('slider_dialog.cancel'),
+          title: MaterialLocalizations.of(context).cancelButtonLabel,
+        ),
         FilledButton(
           key: const Key('slider_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),

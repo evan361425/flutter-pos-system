@@ -4,6 +4,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderLoader extends StatefulWidget {
@@ -11,7 +12,7 @@ class OrderLoader extends StatefulWidget {
 
   final Widget Function(BuildContext, OrderObject) builder;
 
-  final Widget Function(BuildContext, OrderLoaderMetrics)? trailingBuilder;
+  final Widget Function(BuildContext, OrderMetrics)? trailingBuilder;
 
   const OrderLoader({
     Key? key,
@@ -27,8 +28,11 @@ class OrderLoader extends StatefulWidget {
 class _OrderLoaderState extends State<OrderLoader> {
   @override
   Widget build(BuildContext context) {
-    return ItemLoader<OrderObject, OrderLoaderMetrics>(
-      prototypeItem: widget.builder(context, OrderObject(products: const [])),
+    return ItemLoader<OrderObject, OrderMetrics>(
+      prototypeItem: widget.builder(
+        context,
+        OrderObject(createdAt: DateTime.now()),
+      ),
       notifier: widget.ranger,
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
@@ -36,6 +40,7 @@ class _OrderLoaderState extends State<OrderLoader> {
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
           S.orderListMetaPrice(metrics.price),
+          '總成本：${metrics.cost.toCurrency()}',
           S.orderListMetaCount(metrics.count),
         ])!;
         return Row(children: [
@@ -59,7 +64,7 @@ class _OrderLoaderState extends State<OrderLoader> {
     super.dispose();
   }
 
-  Widget buildTrailing(OrderLoaderMetrics metrics) {
+  Widget buildTrailing(OrderMetrics metrics) {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: widget.trailingBuilder!.call(context, metrics),
@@ -75,50 +80,18 @@ class _OrderLoaderState extends State<OrderLoader> {
     );
   }
 
-  Future<OrderLoaderMetrics> _loadMetrics() async {
-    final result = await Seller.instance.getMetricBetween(
+  Future<OrderMetrics> _loadMetrics() {
+    return Seller.instance.getMetrics(
       widget.ranger.value.start,
       widget.ranger.value.end,
     );
-
-    return OrderLoaderMetrics.fromMap(result);
   }
 
   Future<List<OrderObject>> _loadOrders(int offset) {
-    return Seller.instance.getOrderBetween(
+    return Seller.instance.getOrders(
       widget.ranger.value.start,
       widget.ranger.value.end,
       offset: offset,
-    );
-  }
-}
-
-class OrderLoaderMetrics {
-  final num cost;
-
-  final num price;
-
-  final int count;
-
-  final int productSize;
-
-  final int attrSize;
-
-  const OrderLoaderMetrics({
-    required this.cost,
-    required this.price,
-    required this.count,
-    required this.productSize,
-    required this.attrSize,
-  });
-
-  factory OrderLoaderMetrics.fromMap(Map<String, num> map) {
-    return OrderLoaderMetrics(
-      cost: map['cost'] as num,
-      price: map['totalPrice'] as num,
-      count: map['count'] as int,
-      productSize: map['productSize'] as int,
-      attrSize: map['attrSize'] as int,
     );
   }
 }

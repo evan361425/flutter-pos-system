@@ -15,7 +15,7 @@ class DeleteDialog extends StatelessWidget {
       title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(title: S.btnCancel),
+        PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
         FilledButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),

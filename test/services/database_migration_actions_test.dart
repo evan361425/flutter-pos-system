@@ -1,14 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/database_migration_actions.dart';
@@ -43,76 +37,6 @@ void main() {
 
       return db;
     }
-
-    test('catch error', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-          .thenThrow(Error());
-
-      await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-    });
-
-    test('5 - set up cost on order', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      Map<String, Object?> createOrder(int id, List<String> ids) {
-        return {
-          'id': id,
-          'encodedProducts': jsonEncode(ids
-              .map((pid) => {
-                    'productId': pid,
-                    'productName': pid,
-                    'catalogName': 'c-1',
-                    'count': 1,
-                    'singlePrice': 1,
-                    'originalPrice': 1,
-                    'isDiscount': true,
-                  })
-              .toList()),
-        };
-      }
-
-      void verifyIdExecuted(int id) {
-        verify(db.update(
-          any,
-          argThat(predicate((e) {
-            return e is Map && e['encodedProducts'].contains('"cost":1');
-          })),
-          where: anyNamed('where'),
-          whereArgs: argThat(contains(id), named: 'whereArgs'),
-        ));
-      }
-
-      Menu().replaceItems({
-        'c-1': Catalog(id: 'c-1', name: 'c-1', products: {
-          'p-1': Product(id: 'p-1', cost: 1),
-          'p-2': Product(id: 'p-2', cost: 1),
-        })
-          ..prepareItem()
-      });
-
-      when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([
-                createOrder(1, ['p-1', 'p-3', 'p-2']),
-                createOrder(2, ['p-1', 'p-1', 'p-3']),
-              ]));
-      when(db.query(any, limit: 100, offset: 100, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([
-                createOrder(3, ['p-1', 'p-1', 'p-1']),
-              ]));
-      when(db.query(any, limit: 100, offset: 200, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([]));
-      when(db.update(any, any,
-              where: anyNamed('where'), whereArgs: anyNamed('whereArgs')))
-          .thenAnswer((_) => Future.value(0));
-
-      await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-
-      verifyIdExecuted(1);
-      verifyIdExecuted(2);
-      verifyIdExecuted(3);
-    });
 
     test('6 - customer_setting to order_attribute', () async {
       const testVersion = 6;

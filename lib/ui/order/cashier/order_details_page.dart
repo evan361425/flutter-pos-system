@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -71,30 +70,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
   void onCheckout() async {
     if (context.mounted) {
-      final confirmed = await _confirmChangeHistory(context);
-      if (confirmed) {
-        try {
-          final result = await Cart.instance.checkout();
-          // send success message
-          if (context.mounted && context.canPop()) {
-            context.pop(result);
-          }
-        } on PaidException {
-          if (context.mounted) {
-            showSnackBar(context, S.orderCashierPaidFailed);
-          }
+      try {
+        final result = await Cart.instance.checkout();
+        // send success message
+        if (context.mounted && context.canPop()) {
+          context.pop(result);
+        }
+      } on PaidException {
+        if (context.mounted) {
+          showSnackBar(context, S.orderCashierPaidFailed);
         }
       }
     }
-  }
-
-  /// Confirm leaving history mode
-  Future<bool> _confirmChangeHistory(BuildContext context) async {
-    if (!Cart.instance.isHistoryMode) return true;
-
-    return await ConfirmDialog.show(
-      context,
-      title: S.orderCashierPaidConfirmLeaveHistoryMode,
-    );
   }
 }

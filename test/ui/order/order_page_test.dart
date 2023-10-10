@@ -9,7 +9,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -359,8 +359,8 @@ void main() {
 
     testWidgets('Cart actions', (tester) async {
       Cart.instance.replaceAll(products: [
-        OrderProduct(Menu.instance.getProduct('p-1')!, count: 8),
-        OrderProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
+        CartProduct(Menu.instance.getProduct('p-1')!, count: 8),
+        CartProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
       ]);
 
       await tester.pumpWidget(buildApp());

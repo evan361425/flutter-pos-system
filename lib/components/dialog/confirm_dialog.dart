@@ -35,7 +35,10 @@ class ConfirmDialog extends StatelessWidget {
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(key: const Key('confirm_dialog.cancel'), title: S.btnCancel),
+        PopButton(
+          key: const Key('confirm_dialog.cancel'),
+          title: MaterialLocalizations.of(context).cancelButtonLabel,
+        ),
         FilledButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),

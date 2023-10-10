@@ -62,40 +62,40 @@ class OutlinedText extends StatelessWidget {
       MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
     );
 
-    final base = Padding(
-      padding: margin ?? EdgeInsets.zero,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 64, minHeight: 40),
-        child: Material(
-          textStyle: theme.textTheme.labelLarge!
-              .copyWith(color: theme.colorScheme.primary),
-          shape: StadiumBorder(
-            side: BorderSide(color: theme.colorScheme.outline),
-          ),
-          color: Colors.transparent,
-          type: MaterialType.button,
-          child: Padding(
-            padding: padding,
-            child: Align(
-              alignment: Alignment.center,
-              widthFactor: 1.0,
-              heightFactor: 1.0,
-              child: Text(text),
-            ),
+    final base = ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 64, minHeight: 40),
+      child: Material(
+        textStyle: theme.textTheme.labelLarge!
+            .copyWith(color: theme.colorScheme.primary),
+        shape: StadiumBorder(
+          side: BorderSide(color: theme.colorScheme.outline),
+        ),
+        color: Colors.transparent,
+        type: MaterialType.button,
+        child: Padding(
+          padding: padding,
+          child: Align(
+            alignment: Alignment.center,
+            widthFactor: 1.0,
+            heightFactor: 1.0,
+            child: Text(text),
           ),
         ),
       ),
     );
 
     if (badge == null) {
-      return base;
+      return Padding(padding: margin ?? EdgeInsets.zero, child: base);
     }
 
-    return Badge(
-      // too high will causing overlapping on top of scrollable view
-      alignment: const AlignmentDirectional(1.0, -0.6),
-      label: Text(badge!),
-      child: base,
+    return Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: Badge(
+        // too high will causing overlapping on top of scrollable view
+        alignment: const AlignmentDirectional(1.0, -0.6),
+        label: Text(badge!),
+        child: base,
+      ),
     );
   }
 }

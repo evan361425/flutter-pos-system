@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -17,17 +17,13 @@ class CartProductList extends StatefulWidget {
 
 class _CartProductListState extends State<CartProductList> {
   late ScrollController scrollController;
-  int? productCount;
+  int lastLength = 0;
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<Cart>();
-    var count = 0;
-    if (productCount != null && productCount != cart.products.length) {
-      scrollToBottom();
-    }
+    // if product length changed, rebuild it.
+    final length = context.select<Cart, int>((cart) => cart.products.length);
 
-    productCount = cart.products.length;
     return SingleChildScrollView(
       key: const Key('cart.product_list'),
       controller: scrollController,
@@ -35,10 +31,10 @@ class _CartProductListState extends State<CartProductList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final product in cart.products)
-            ChangeNotifierProvider<OrderProduct>.value(
-              value: product,
-              child: _CartProductListTile(count++),
+          for (var i = 0; i < length; i++)
+            ChangeNotifierProvider<CartProduct>.value(
+              value: Cart.instance.products[i],
+              child: _CartProductListTile(i),
             )
         ],
       ),
@@ -48,6 +44,7 @@ class _CartProductListState extends State<CartProductList> {
   @override
   void dispose() {
     scrollController.dispose();
+    Cart.instance.removeListener(scrollToBottomIfAdded);
     super.dispose();
   }
 
@@ -55,14 +52,19 @@ class _CartProductListState extends State<CartProductList> {
   void initState() {
     super.initState();
     scrollController = ScrollController();
+    Cart.instance.addListener(scrollToBottomIfAdded);
   }
 
-  Future<void> scrollToBottom() {
-    return scrollController.animateTo(
-      scrollController.position.maxScrollExtent + 80,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+  Future<void> scrollToBottomIfAdded() async {
+    final length = Cart.instance.products.length;
+    if (lastLength < length && mounted) {
+      lastLength = length;
+      await scrollController.animateTo(
+        scrollController.position.maxScrollExtent + 80,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 }
 
@@ -73,7 +75,7 @@ class _CartProductListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = context.watch<OrderProduct>();
+    final product = context.watch<CartProduct>();
     final color = product.isSelected
         ? Theme.of(context).primaryColorLight
         : Colors.transparent;
@@ -81,7 +83,10 @@ class _CartProductListTile extends StatelessWidget {
     final leading = Checkbox(
       key: Key('cart.product.$index.select'),
       value: product.isSelected,
-      onChanged: (checked) => product.toggleSelected(checked),
+      onChanged: (checked) {
+        product.toggleSelected(checked);
+        Cart.instance.updateSelection();
+      },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
 
@@ -93,14 +98,22 @@ class _CartProductListTile extends StatelessWidget {
           key: Key('cart.product.$index.add'),
           icon: const Icon(KIcons.entryAdd),
           tooltip: '數量加一',
-          onPressed: () => product.increment(),
+          onPressed: () {
+            product.increment();
+            Cart.instance.priceChanged();
+          },
         ),
         Text(
-          S.orderCartItemPrice(product.price),
+          S.orderCartItemPrice(product.totalPrice),
           key: Key('cart.product.$index.price'),
         ),
       ],
     );
+
+    final subtitle = product.quantities.map((e) => S.orderProductIngredientName(
+          e.ingredient.name,
+          e.name,
+        ));
 
     return MergeSemantics(
       child: ListTileTheme.merge(
@@ -111,12 +124,11 @@ class _CartProductListTile extends StatelessWidget {
             key: Key('cart.product.$index'),
             leading: leading,
             title: Text(product.name, overflow: TextOverflow.ellipsis),
-            subtitle: product.isEmpty
-                ? null
-                : MetaBlock.withString(
-                    context,
-                    product.getIngredientNames(),
-                  ),
+            subtitle: MetaBlock.withString(
+              context,
+              subtitle,
+              textOverflow: TextOverflow.visible,
+            ),
             trailing: trailing,
             onTap: () => Cart.instance.toggleAll(false, except: product),
             onLongPress: () {

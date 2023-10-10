@@ -22,7 +22,7 @@ import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_order_list.dart';
+import 'package:possystem/ui/analysis/widgets/history_order_list.dart';
 import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_cache.dart';
@@ -44,7 +44,7 @@ void main() {
                 path: '/',
                 builder: (_, __) {
                   return Material(
-                    child: AnalysisOrderList(notifier: notifier),
+                    child: HistoryOrderList(notifier: notifier),
                   );
                 },
                 routes: Routes.routes,
@@ -147,7 +147,7 @@ void main() {
           singlePrice: 1,
           originalPrice: 2,
           count: 3,
-          cost: 1,
+          singleCost: 1,
           productId: 'p-1',
           productName: 'p-1',
           catalogName: 'c-1',
@@ -208,7 +208,7 @@ void main() {
           productName: 'p-2',
           catalogName: 'c-2',
           count: 1,
-          cost: 10,
+          singleCost: 10,
           singlePrice: 20,
           originalPrice: 30,
           isDiscount: false,

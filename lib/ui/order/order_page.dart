@@ -4,7 +4,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/models/repository/cart_ingredients.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
@@ -40,12 +39,12 @@ class OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     final catalogs = Menu.instance.notEmptyItems;
 
-    final menuCatalogRow = OrderCatalogListView(
+    final orderCatalogListView = OrderCatalogListView(
       catalogs: catalogs,
       indexNotifier: _catalogIndexNotifier,
       onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final menuProductRow = PageView.builder(
+    final orderProductListView = PageView.builder(
       controller: _pageController,
       onPageChanged: (index) => _catalogIndexNotifier.value = index,
       itemCount: catalogs.length,
@@ -53,18 +52,11 @@ class OrderPageState extends State<OrderPage> {
         return OrderProductListView(products: catalogs[index].itemList);
       },
     );
-    final cartProductRow = ChangeNotifierProvider<Cart>.value(
+    final cartView = ChangeNotifierProvider<Cart>.value(
       value: Cart.instance,
       child: const CartView(),
     );
-    final orderProductStateSelector = MultiProvider(
-      providers: [
-        ChangeNotifierProvider<Cart>.value(value: Cart.instance),
-        ChangeNotifierProvider<CartIngredients>.value(
-            value: CartIngredients.instance),
-      ],
-      child: CartProductStateSelector(),
-    );
+    const cartProductStateSelector = CartProductStateSelector();
 
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
@@ -86,16 +78,16 @@ class OrderPageState extends State<OrderPage> {
         body: outlook.value == OrderOutlookTypes.slidingPanel
             ? SlidingPanelView(
                 key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3: cartView,
+                row4: cartProductStateSelector,
               )
             : OrientatedView(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3: cartView,
+                row4: cartProductStateSelector,
               ),
       ),
     );

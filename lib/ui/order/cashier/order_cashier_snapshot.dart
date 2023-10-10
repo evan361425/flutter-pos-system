@@ -4,11 +4,11 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderCashierSnapshot extends StatefulWidget {
-  final num totalPrice;
+  final num price;
 
   const OrderCashierSnapshot({
     Key? key,
-    required this.totalPrice,
+    required this.price,
   }) : super(key: key);
 
   @override
@@ -63,7 +63,7 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
   @override
   void initState() {
     super.initState();
-    currentPaid = widget.totalPrice;
+    currentPaid = widget.price;
     currentChange = 0;
     paidOptions = CurrencySetting.instance.ceilToMaximum(currentPaid).toList();
     Cart.instance.currentPaid.addListener(_onPaidChanged);
@@ -76,7 +76,7 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
   }
 
   void _changePaid(num value) {
-    final change = value - widget.totalPrice;
+    final change = value - widget.price;
     if (currentPaid != value && change >= 0) {
       Cart.instance.currentPaid.value = value;
     }
@@ -84,8 +84,8 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
 
   void _onPaidChanged() {
     setState(() {
-      final paid = Cart.instance.currentPaid.value ?? widget.totalPrice;
-      currentChange = paid - widget.totalPrice;
+      final paid = Cart.instance.currentPaid.value ?? widget.price;
+      currentChange = paid - widget.price;
       currentPaid = paid;
       if (!paidOptions.contains(paid)) {
         customValue = paid;

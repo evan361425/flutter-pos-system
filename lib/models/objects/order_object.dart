@@ -1,302 +1,366 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/services/database.dart';
+import 'package:possystem/models/repository/seller.dart';
 
-class OrderObject {
+/// Order in object mode, helps I/O in DB.
+class OrderObject extends _Object {
+  /// ID of database row
   final int? id;
 
-  /// 付額
+  /// Money paid from customer.
   final num paid;
 
-  /// 總價，產品價錢+顧客設定價錢
-  final num totalPrice;
+  /// The cost of order.
+  final num cost;
 
-  /// 產品價錢
+  /// The price of order, all products' price and order attribute's price.
+  final num price;
+
+  /// The count of products.
+  final int productsCount;
+
+  /// All products' price.
   final num productsPrice;
 
-  /// 產品總數
-  final int totalCount;
+  /// Attributes details of the order.
+  final List<OrderSelectedAttributeObject> attributes;
 
-  final List<String>? productNames;
-  final List<String>? ingredientNames;
+  /// All product details.
+  final List<OrderProductObject> products;
 
-  /// 點餐屬性
-  final Iterable<OrderSelectedAttributeObject> attributes;
-
-  final Iterable<OrderProductObject> products;
-
-  /// 點餐時間
+  /// Order created time, important property to sort.
   final DateTime createdAt;
 
-  OrderObject({
+  /// Should not use the default value which only for help on test.
+  const OrderObject({
     this.id,
     this.paid = 0,
-    this.totalPrice = 0,
+    this.cost = 0,
+    this.price = 0,
+    this.productsCount = 0,
     this.productsPrice = 0,
-    this.totalCount = 0,
-    this.productNames,
-    this.ingredientNames,
     this.attributes = const [],
-    required this.products,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+    this.products = const [],
+    required this.createdAt,
+  });
 
-  void fillIngredient(Map<String, num> amounts, {required bool add}) {
-    for (final product in products) {
-      for (final ing in product.ingredients) {
-        amounts[ing.id] =
-            (amounts[ing.id] ?? 0) + (add ? ing.amount : -ing.amount);
-      }
-    }
-  }
+  /// Revenue, [price] minus [cost].
+  num get revenue => price - cost;
 
-  List<OrderProduct?> parseToProductWithNull() {
-    return products.map<OrderProduct?>((orderProduct) {
-      final product = Menu.instance.getProduct(orderProduct.productId);
+  /// Price that cause by order attributes, [price] minus [productsPrice].
+  num get attributesPrice => price - productsPrice;
 
-      if (product == null) return null;
+  /// Get [products] as [CartProduct].
+  ///
+  /// Help to restore from stash.
+  Iterable<CartProduct> get productModels sync* {
+    for (final object in products) {
+      final product = Menu.instance.getProduct(object.productId);
 
-      return OrderProduct(
+      if (product == null) continue;
+
+      yield CartProduct(
         product,
-        count: orderProduct.count,
-        singlePrice: orderProduct.singlePrice,
-        selectedQuantity: {
-          for (final item in orderProduct.ingredients)
+        count: object.count,
+        singlePrice: object.singlePrice,
+        quantities: {
+          for (final item in object.ingredients)
             item.productIngredientId: item.productQuantityId
         },
       );
-    }).toList();
+    }
   }
 
-  List<OrderProduct> parseToProduct() {
-    return parseToProductWithNull()
-        .where((item) => item != null)
-        .cast<OrderProduct>()
-        .toList();
-  }
+  /// Get [attributes] as map.
+  ///
+  /// Help to restore from stash.
+  Map<String, String> get selectedAttributes => {
+        for (final attr in attributes) attr.attributeId: attr.optionId,
+      };
 
-  Map<String, String> parseToAttrId() {
-    return {
-      for (final entry in attributes.map((e) => e.toInstanceEntry()))
-        if (entry != null) entry.key.id: entry.value.id,
-    };
-  }
-
-  Map<String, Object?> toMap() {
-    final usedIngredients = <String>[];
-
-    for (var product in products) {
-      for (var ingredient in product.ingredients) {
-        usedIngredients.add(ingredient.name);
+  /// Update the amounts of stock by the ordered ingredients.
+  void applyToStock(Map<String, num> amounts, {required bool add}) {
+    for (final product in products) {
+      for (final ing in product.ingredients) {
+        final val = add ? ing.amount : -ing.amount;
+        amounts[ing.ingredientId] = (amounts[ing.ingredientId] ?? 0) + val;
       }
     }
+  }
 
+  @override
+  Map<String, Object?> toMap() {
     return {
       'paid': paid,
-      'totalPrice': totalPrice,
-      'totalCount': totalCount,
+      'price': price,
+      'cost': cost,
+      'revenue': revenue,
       'productsPrice': productsPrice,
+      'productsCount': productsCount,
+      'attributesPrice': attributesPrice,
       'createdAt': Util.toUTC(now: createdAt),
-      'usedProducts': Database.join(
-        products.map<String>((e) => e.productName),
-      ),
-      'usedIngredients': Database.join(usedIngredients),
-      'encodedAttributes': jsonEncode(attributes
-          .where((e) => e.isNotEmpty)
-          .map<Map<String, Object?>>((e) => e.toMap())
-          .toList()),
-      'encodedProducts': jsonEncode(
-        products.map<Map<String, Object?>>((e) => e.toMap()).toList(),
-      ),
     };
   }
 
-  num get cost =>
-      products.fold<num>(0.0, (total, product) => total + product.totalCost);
+  @override
+  Map<String, Object?> toStashMap() {
+    return {
+      'encodedProducts':
+          jsonEncode(products.map((e) => e.toStashMap()).toList()),
+      'encodedAttributes':
+          jsonEncode(attributes.map((e) => e.toStashMap()).toList()),
+      'createdAt': Util.toUTC(),
+    };
+  }
 
-  /// 淨利
-  num get income => totalPrice - cost;
+  /// Create object from DB format.
+  factory OrderObject.fromMap(
+    Map<String, Object?> order,
+    Iterable<Map<String, Object?>> products, [
+    List<Map<String, Object?>> ingredients = const [],
+    List<Map<String, Object?>> attributes = const [],
+  ]) {
+    return OrderObject(
+      id: order['id'] as int,
+      paid: order['paid'] as num,
+      cost: order['cost'] as num,
+      price: order['price'] as num,
+      productsCount: order['productsCount'] as int,
+      productsPrice: order['productsPrice'] as num,
+      products: [
+        for (Map<String, dynamic> product in products)
+          OrderProductObject.fromMap(product, ingredients),
+      ],
+      attributes: [
+        for (Map<String, dynamic> attr in attributes)
+          OrderSelectedAttributeObject.fromMap(attr),
+      ],
+      createdAt: Util.fromUTC(order['createdAt'] as int),
+    );
+  }
 
-  factory OrderObject.fromMap(Map<String, Object?> data) {
+  /// Create object from DB format.
+  factory OrderObject.fromStashMap(Map<String, Object?> data) {
     final products = _safeParseList(data['encodedProducts'] as String?);
     final attributes = _safeParseList(data['encodedAttributes'] as String?);
-    final createdAt = data['createdAt'] == null
-        ? null
-        : Util.fromUTC(data['createdAt'] as int);
-    final totalPrice = data['totalPrice'] as num? ?? 0;
 
     return OrderObject(
-      createdAt: createdAt,
-      id: data['id'] as int,
-      paid: data['paid'] as num? ?? 0,
-      totalPrice: totalPrice,
-      totalCount: data['totalCount'] as int? ?? 0,
-      productsPrice: data['productsPrice'] as num? ?? totalPrice,
-      productNames: Database.split(data['usedProducts'] as String?),
-      ingredientNames: Database.split(data['usedIngredients'] as String?),
-      attributes:
-          attributes.map((e) => OrderSelectedAttributeObject.fromMap(e)),
-      products: products.map((product) => OrderProductObject.fromMap(product)),
+      attributes: attributes
+          .map((e) => OrderSelectedAttributeObject.fromStashMap(e))
+          .toList(),
+      products:
+          products.map((e) => OrderProductObject.fromStashMap(e)).toList(),
+      createdAt: Util.fromUTC(data['createdAt'] as int? ?? 0),
     );
   }
 }
 
-class OrderProductObject {
+/// Single product set of the order in object mode, helps I/O in DB.
+class OrderProductObject extends _Object {
+  /// ID of database row
+  final int id;
+
+  /// ID help to recover from stashed.
   final String productId;
 
+  /// [Menu] product's name
   final String productName;
 
+  /// [Menu] catalog's name
   final String catalogName;
 
-  /// 購買數量
+  /// Count of products
   final int count;
 
-  /// 單一成本，含份量的異動
-  final num cost;
+  /// Single cost of product, after updated by [Menu] quantity.
+  final num singleCost;
 
-  /// 單一價格，含折扣的價格
+  /// Single price of product, after updated by discount.
   final num singlePrice;
 
-  /// 單一原始價格
+  /// Single price of product, original from [Menu].
   final num originalPrice;
 
-  /// 是否有折扣
-  ///
-  /// 折扣差可以做 method，如果有需要的話
+  /// Whether it is discount by user.
   final bool isDiscount;
 
+  /// Ingredients details including default quantity which will have null
+  /// quantity properties.
   final List<OrderIngredientObject> ingredients;
 
+  /// product may have multiple count.
   const OrderProductObject({
-    required this.productId,
-    required this.productName,
-    required this.catalogName,
-    required this.count,
-    required this.cost,
-    required this.singlePrice,
-    required this.originalPrice,
-    required this.isDiscount,
-    required this.ingredients,
+    this.id = 0,
+    this.productId = '',
+    this.productName = '',
+    this.catalogName = '',
+    this.count = 0,
+    this.singleCost = 0,
+    this.singlePrice = 0,
+    this.originalPrice = 0,
+    this.isDiscount = false,
+    this.ingredients = const [],
   });
 
+  /// Total price of the products, after updated by discount.
   num get totalPrice => count * singlePrice;
 
-  num get totalCost => count * cost;
+  /// Total cost of the products, after updated by ingredient.
+  num get totalCost => count * singleCost;
 
+  @override
   Map<String, Object?> toMap() {
     return {
-      'productId': productId,
       'productName': productName,
       'catalogName': catalogName,
       'count': count,
-      'cost': cost,
+      'singleCost': singleCost,
       'singlePrice': singlePrice,
       'originalPrice': originalPrice,
-      'isDiscount': isDiscount,
-      'ingredients': ingredients
-          .map<Map<String, Object?>>(
-            (e) => e.toMap(),
-          )
-          .toList(),
+      'isDiscount': isDiscount ? 1 : 0,
     };
   }
 
-  factory OrderProductObject.fromMap(Map<String, dynamic> data) {
-    final ingredients =
-        (data['ingredients'] ?? const Iterable.empty()) as Iterable<dynamic>;
+  @override
+  Map<String, Object?> toStashMap() {
+    return {
+      'productId': productId,
+      'count': count,
+      'singlePrice': singlePrice,
+      'ingredients': ingredients.map((e) => e.toStashMap()).toList(),
+    };
+  }
 
+  /// Create object from DB format.
+  ///
+  /// All property make it to optional for easy fetching metadata.
+  /// See detailed in [Seller.getOrders].
+  factory OrderProductObject.fromMap(
+    Map<String, dynamic> data,
+    Iterable<Map<String, Object?>> ingredients,
+  ) {
+    final id = data['id'] ?? 0;
     return OrderProductObject(
-      productId: data['productId'] as String,
-      productName: data['productName'] as String,
-      catalogName: data['catalogName'] as String? ?? '',
-      count: data['count'] as int,
-      cost: data['cost'] as num? ?? 0,
-      singlePrice: data['singlePrice'] as num,
-      originalPrice: data['originalPrice'] as num,
-      isDiscount: data['isDiscount'] as bool,
+      id: id,
+      productName: data['productName'] ?? '',
+      catalogName: data['catalogName'] ?? '',
+      count: data['count'] as int? ?? 0,
+      singleCost: data['singleCost'] as num? ?? 0,
+      singlePrice: data['singlePrice'] as num? ?? 0,
+      originalPrice: data['originalPrice'] as num? ?? 0,
+      isDiscount: data['isDiscount'] == 1,
+      ingredients: ingredients
+          .where((Map<String, dynamic> e) => e['orderProductId'] == id)
+          .map((e) => OrderIngredientObject.fromMap(e))
+          .toList(),
+    );
+  }
+
+  /// Create object from DB format.
+  factory OrderProductObject.fromStashMap(Map<String, dynamic> data) {
+    return OrderProductObject(
+      productId: data['productId'],
+      count: data['count'],
+      singlePrice: data['singlePrice'],
       ingredients: [
-        for (Map<String, dynamic> ingredient in ingredients)
-          OrderIngredientObject.input(ingredient)
+        for (final ing in data['ingredients'])
+          OrderIngredientObject.fromStashMap(ing),
       ],
     );
   }
 }
 
-class OrderIngredientObject {
-  /// 對應 stock 的 ID
-  final String id;
+/// Product single ingredient details in object mode, helps I/O in DB.
+class OrderIngredientObject extends _Object {
+  /// ID of database row
+  final int id;
 
-  /// 對應產品的成分 ID
+  /// Ingredient's name.
+  final String ingredientName;
+
+  /// Quantity's name. Default to null means using default quantity.
+  final String? quantityName;
+
+  /// Price addition by this ingredient and quantity.
+  final num additionalPrice;
+
+  /// Cost addition by this ingredient and quantity.
+  final num additionalCost;
+
+  /// The amount of ingredient which will reduce the stock amount after ordered.
+  final num amount;
+
+  /// Ingredient ID mapping to stock, help to calculate stock amounts.
+  final String ingredientId;
+
+  /// Ingredient ID mapping to product, help to restore from stash,
   final String productIngredientId;
 
-  /// 成份名稱
-  final String name;
+  /// Quantity ID mapping to product, help to restore from stash.
+  final String productQuantityId;
 
-  /// 對應 quantities 的 ID
-  String? quantityId;
-
-  /// 對應產品的份量 ID
-  String? productQuantityId;
-  String? quantityName;
-
-  /// 因為份量影響的價錢
-  num? additionalPrice;
-
-  /// 因為份量影響的成本
-  num? additionalCost;
-
-  /// 成分最終數量，含份量的異動
-  num amount;
-
-  OrderIngredientObject({
-    required this.id,
-    required this.productIngredientId,
-    required this.name,
-    this.additionalPrice,
-    this.additionalCost,
-    required this.amount,
-    this.productQuantityId,
-    this.quantityId,
+  const OrderIngredientObject({
+    this.id = 0,
+    this.ingredientName = '',
     this.quantityName,
+    this.additionalPrice = 0,
+    this.additionalCost = 0,
+    this.amount = 0,
+    this.ingredientId = '',
+    this.productIngredientId = '',
+    this.productQuantityId = '',
   });
 
+  /// If this using default quantity.
+  bool get isDefaultQuantity => quantityName == null;
+
+  @override
   Map<String, Object?> toMap() {
     return {
-      'name': name,
-      'id': id,
-      'productIngredientId': productIngredientId,
-      'productQuantityId': productQuantityId,
+      'ingredientName': ingredientName,
+      'quantityName': quantityName,
       'additionalPrice': additionalPrice,
       'additionalCost': additionalCost,
       'amount': amount,
-      'quantityId': quantityId,
-      'quantityName': quantityName,
     };
   }
 
-  factory OrderIngredientObject.input(Map<String, dynamic> data) {
+  @override
+  Map<String, Object?> toStashMap() {
+    return {
+      'productIngredientId': productIngredientId,
+      'productQuantityId': productQuantityId,
+    };
+  }
+
+  /// Create object from DB format.
+  factory OrderIngredientObject.fromMap(Map<String, dynamic> data) {
     return OrderIngredientObject(
-      name: data['name'] as String,
-      id: data['id'] as String,
-      // back compatible
-      productIngredientId: data['productIngredientId'] ?? '',
-      productQuantityId: data['productQuantityId'] ?? '',
+      id: data['id'],
+      ingredientName: data['ingredientName'],
+      quantityName: data['quantityName'],
       additionalPrice: data['additionalPrice'],
       additionalCost: data['additionalCost'],
-      amount: data['amount'] ?? 0,
-      quantityId: data['quantityId'],
-      quantityName: data['quantityName'],
+      amount: data['amount'],
     );
   }
 
+  /// Create object from DB format.
+  factory OrderIngredientObject.fromStashMap(Map<String, dynamic> data) {
+    return OrderIngredientObject(
+      productIngredientId: data['productIngredientId'],
+      productQuantityId: data['productQuantityId'],
+    );
+  }
+
+  /// Create object from model.
   factory OrderIngredientObject.fromModel(
     ProductIngredient ingredient,
     String? quantityId,
@@ -304,63 +368,94 @@ class OrderIngredientObject {
     final quantity = quantityId == null ? null : ingredient.getItem(quantityId);
 
     return OrderIngredientObject(
-      id: ingredient.ingredient.id,
-      name: ingredient.name,
-      productIngredientId: ingredient.id,
-      productQuantityId: quantity?.id,
-      amount: ingredient.amount + (quantity?.amount ?? 0),
-      quantityId: quantity?.quantity.id,
+      ingredientName: ingredient.name,
       quantityName: quantity?.name,
-      additionalCost: quantity?.additionalCost,
-      additionalPrice: quantity?.additionalPrice,
+      amount: quantity?.amount ?? ingredient.amount,
+      additionalPrice: quantity?.additionalPrice ?? 0,
+      additionalCost: quantity?.additionalCost ?? 0,
+      ingredientId: ingredient.id,
     );
   }
 }
 
-class OrderSelectedAttributeObject {
-  final String? name;
+/// Attribute helps get more info on the order.
+class OrderSelectedAttributeObject extends _Object {
+  /// ID of database row
+  final int id;
 
-  final String? optionName;
+  /// The attribute name, for example: age.
+  final String name;
 
-  final OrderAttributeMode? mode;
+  /// The attribute's option name, for example: bellow 18.
+  final String optionName;
 
+  /// The attribute mode which help to identify this attribute usage.
+  final OrderAttributeMode mode;
+
+  /// The mode value, for example decrease order price 10 dollars.
   final num? modeValue;
 
+  /// ID of attribute, help restore data from stashed.
+  final String attributeId;
+
+  /// ID of attribute's option, help restore data from stashed.
+  final String optionId;
+
+  /// Should not use the default value which only for help on test.
   const OrderSelectedAttributeObject({
-    this.name,
-    this.optionName,
-    this.mode,
+    this.id = 0,
+    this.name = '',
+    this.optionName = '',
+    this.mode = OrderAttributeMode.statOnly,
     this.modeValue,
+    this.attributeId = '',
+    this.optionId = '',
   });
 
+  @override
+  Map<String, Object?> toMap() {
+    return {
+      'name': name,
+      'optionName': optionName,
+      'mode': mode.index,
+      'modeValue': modeValue,
+    };
+  }
+
+  @override
+  Map<String, Object?> toStashMap() {
+    return {
+      'attributeId': attributeId,
+      'optionId': optionId,
+    };
+  }
+
+  /// Create object from map.
   factory OrderSelectedAttributeObject.fromMap(Map<String, dynamic> data) {
-    final modeRaw = data['mode'] as int? ?? 0;
-    final mode = OrderAttributeMode.values[modeRaw];
+    final modeIndex = min(
+      data['mode'] as int? ?? 0,
+      OrderAttributeMode.values.length - 1,
+    );
+    final mode = OrderAttributeMode.values[max(modeIndex, 0)];
 
     return OrderSelectedAttributeObject(
-      name: data['name'] as String,
-      optionName: data['optionName'] as String,
+      id: data['id'],
+      name: data['name'],
+      optionName: data['optionName'],
       mode: mode,
-      modeValue: data['modeValue'] as num?,
+      modeValue: data['modeValue'],
     );
   }
 
-  factory OrderSelectedAttributeObject.fromId(String id, String optionId) {
-    try {
-      final attr = OrderAttributes.instance.items.firstWhere((e) => e.id == id);
-      final option = attr.items.firstWhere((e) => e.id == optionId);
-
-      return OrderSelectedAttributeObject(
-        name: attr.name,
-        optionName: option.name,
-        mode: attr.mode,
-        modeValue: option.modeValue,
-      );
-    } on StateError {
-      return const OrderSelectedAttributeObject();
-    }
+  /// Create object from DB format.
+  factory OrderSelectedAttributeObject.fromStashMap(Map<String, dynamic> data) {
+    return OrderSelectedAttributeObject(
+      attributeId: data['attributeId'],
+      optionId: data['optionId'],
+    );
   }
 
+  /// Create object from model.
   factory OrderSelectedAttributeObject.fromModel(OrderAttributeOption option) {
     return OrderSelectedAttributeObject(
       name: option.attribute.name,
@@ -369,28 +464,6 @@ class OrderSelectedAttributeObject {
       modeValue: option.modeValue,
     );
   }
-
-  MapEntry<OrderAttribute, OrderAttributeOption>? toInstanceEntry() {
-    try {
-      final attr =
-          OrderAttributes.instance.items.firstWhere((e) => e.name == name);
-      final option = attr.items.firstWhere((e) => e.name == optionName);
-      return MapEntry(attr, option);
-    } on StateError {
-      return null;
-    }
-  }
-
-  Map<String, Object?> toMap() {
-    return {
-      'name': name!,
-      'optionName': optionName!,
-      'mode': mode!.index,
-      'modeValue': modeValue,
-    };
-  }
-
-  bool get isNotEmpty => name != null;
 }
 
 List<dynamic> _safeParseList(String? source) {
@@ -399,4 +472,16 @@ List<dynamic> _safeParseList(String? source) {
   } catch (e) {
     return const [];
   }
+}
+
+/// Base class for all order object.
+abstract class _Object {
+  /// Object can dump in two format, history and stash.
+  const _Object();
+
+  /// To map format for DB I/O.
+  Map<String, Object?> toMap();
+
+  /// To map format for stash and drop.
+  Map<String, Object?> toStashMap();
 }

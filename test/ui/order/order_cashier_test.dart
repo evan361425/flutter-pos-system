@@ -11,7 +11,7 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -106,9 +106,9 @@ void main() {
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
-        OrderProduct(Menu.instance.getProduct('p-1')!,
-            selectedQuantity: {'pi-1': 'pq-1', 'pi-2': null}),
-        OrderProduct(Menu.instance.getProduct('p-2')!),
+        CartProduct(Menu.instance.getProduct('p-1')!,
+            quantities: {'pi-1': 'pq-1', 'pi-2': null}),
+        CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
         'c-1': 'co-1',
         'c-2': 'co-2'

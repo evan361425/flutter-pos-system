@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -29,9 +28,9 @@ class AnalysisView extends StatelessWidget {
           ),
           SizedBox.square(dimension: 96.0),
           RouteCircularButton(
-            key: Key('anal.calendar'),
+            key: Key('anal.history'),
             icon: Icons.calendar_month_sharp,
-            route: Routes.analCalendar,
+            route: Routes.history,
             text: '紀錄',
           ),
         ]),
@@ -43,7 +42,7 @@ class AnalysisView extends StatelessWidget {
   }
 
   Widget get metricsCard {
-    return AnalysisCard<OrderLoaderMetrics>(
+    return AnalysisCard<OrderMetrics>(
       builder: (context, metric) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('銷售', style: Theme.of(context).textTheme.headlineSmall),
@@ -56,14 +55,12 @@ class AnalysisView extends StatelessWidget {
           ])!,
         ]);
       },
-      loader: () async {
+      loader: () {
         final range = Util.getDateRange();
-        final result = await Seller.instance.getMetricBetween(
+        return Seller.instance.getMetrics(
           range.start,
           range.end,
         );
-
-        return OrderLoaderMetrics.fromMap(result);
       },
     );
   }
