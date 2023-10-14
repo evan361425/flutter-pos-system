@@ -188,53 +188,6 @@ void main() {
       ));
     });
 
-    test('#getLast', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      // get last 3
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([
-            {},
-            {},
-            {'a': 'b'}
-          ]));
-
-      var result = await Database.instance.getLast(
-        'table',
-        orderByKey: 'a',
-        columns: ['a'],
-        where: 'a = b',
-        whereArgs: [1],
-        count: 3,
-      );
-
-      expect(result, equals({'a': 'b'}));
-      verify(db.rawQuery(
-        'SELECT a FROM `table`  WHERE a = b  ORDER BY a DESC LIMIT 0, 3',
-        argThat(equals([1])),
-      ));
-
-      // get last
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([
-            {'a': 'b'}
-          ]));
-
-      result = await Database.instance.getLast('table');
-
-      expect(result, equals({'a': 'b'}));
-      verify(db.rawQuery(
-          'SELECT * FROM `table`    ORDER BY id DESC LIMIT 0, 1', any));
-
-      // get empty
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([]));
-
-      result = await Database.instance.getLast('table', where: 'a = b');
-
-      expect(result, isNull);
-      verify(db.rawQuery(
-          'SELECT * FROM `table`  WHERE a = b  ORDER BY id DESC LIMIT 0, 1',
-          any));
-    });
-
     test('#push', () async {
       final db = Database.instance.db as MockDatabase;
       when(db.insert(any, any)).thenAnswer((_) => Future.value(1));

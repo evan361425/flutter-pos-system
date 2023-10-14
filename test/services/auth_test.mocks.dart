@@ -132,22 +132,26 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         Invocation.getter(#signInOption),
         returnValue: _i6.SignInOption.standard,
       ) as _i6.SignInOption);
+
   @override
   List<String> get scopes => (super.noSuchMethod(
         Invocation.getter(#scopes),
         returnValue: <String>[],
       ) as List<String>);
+
   @override
   bool get forceCodeForRefreshToken => (super.noSuchMethod(
         Invocation.getter(#forceCodeForRefreshToken),
         returnValue: false,
       ) as bool);
+
   @override
   _i7.Stream<_i5.GoogleSignInAccount?> get onCurrentUserChanged =>
       (super.noSuchMethod(
         Invocation.getter(#onCurrentUserChanged),
         returnValue: _i7.Stream<_i5.GoogleSignInAccount?>.empty(),
       ) as _i7.Stream<_i5.GoogleSignInAccount?>);
+
   @override
   _i7.Future<_i5.GoogleSignInAccount?> signInSilently({
     bool? suppressErrors = true,
@@ -164,6 +168,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<_i5.GoogleSignInAccount?>.value(),
       ) as _i7.Future<_i5.GoogleSignInAccount?>);
+
   @override
   _i7.Future<bool> isSignedIn() => (super.noSuchMethod(
         Invocation.method(
@@ -172,6 +177,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<bool>.value(false),
       ) as _i7.Future<bool>);
+
   @override
   _i7.Future<_i5.GoogleSignInAccount?> signIn() => (super.noSuchMethod(
         Invocation.method(
@@ -180,6 +186,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<_i5.GoogleSignInAccount?>.value(),
       ) as _i7.Future<_i5.GoogleSignInAccount?>);
+
   @override
   _i7.Future<_i5.GoogleSignInAccount?> signOut() => (super.noSuchMethod(
         Invocation.method(
@@ -188,6 +195,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<_i5.GoogleSignInAccount?>.value(),
       ) as _i7.Future<_i5.GoogleSignInAccount?>);
+
   @override
   _i7.Future<_i5.GoogleSignInAccount?> disconnect() => (super.noSuchMethod(
         Invocation.method(
@@ -196,6 +204,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<_i5.GoogleSignInAccount?>.value(),
       ) as _i7.Future<_i5.GoogleSignInAccount?>);
+
   @override
   _i7.Future<bool> requestScopes(List<String>? scopes) => (super.noSuchMethod(
         Invocation.method(
@@ -204,6 +213,7 @@ class MockGoogleSignIn extends _i1.Mock implements _i5.GoogleSignIn {
         ),
         returnValue: _i7.Future<bool>.value(false),
       ) as _i7.Future<bool>);
+
   @override
   _i7.Future<bool> canAccessScopes(
     List<String>? scopes, {
@@ -235,6 +245,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           Invocation.getter(#app),
         ),
       ) as _i2.FirebaseApp);
+
   @override
   set app(_i2.FirebaseApp? _app) => super.noSuchMethod(
         Invocation.setter(
@@ -243,6 +254,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   set tenantId(String? tenantId) => super.noSuchMethod(
         Invocation.setter(
@@ -251,11 +263,13 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   Map<dynamic, dynamic> get pluginConstants => (super.noSuchMethod(
         Invocation.getter(#pluginConstants),
         returnValue: <dynamic, dynamic>{},
       ) as Map<dynamic, dynamic>);
+
   @override
   _i7.Future<void> useEmulator(String? origin) => (super.noSuchMethod(
         Invocation.method(
@@ -265,6 +279,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> useAuthEmulator(
     String? host,
@@ -281,6 +296,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> applyActionCode(String? code) => (super.noSuchMethod(
         Invocation.method(
@@ -290,6 +306,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i3.ActionCodeInfo> checkActionCode(String? code) =>
       (super.noSuchMethod(
@@ -305,6 +322,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i3.ActionCodeInfo>);
+
   @override
   _i7.Future<void> confirmPasswordReset({
     required String? code,
@@ -322,6 +340,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i4.UserCredential> createUserWithEmailAndPassword({
     required String? email,
@@ -348,6 +367,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<List<String>> fetchSignInMethodsForEmail(String? email) =>
       (super.noSuchMethod(
@@ -357,6 +377,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: _i7.Future<List<String>>.value(<String>[]),
       ) as _i7.Future<List<String>>);
+
   @override
   _i7.Future<_i4.UserCredential> getRedirectResult() => (super.noSuchMethod(
         Invocation.method(
@@ -371,6 +392,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   bool isSignInWithEmailLink(String? emailLink) => (super.noSuchMethod(
         Invocation.method(
@@ -379,6 +401,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: false,
       ) as bool);
+
   @override
   _i7.Stream<_i4.User?> authStateChanges() => (super.noSuchMethod(
         Invocation.method(
@@ -387,6 +410,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: _i7.Stream<_i4.User?>.empty(),
       ) as _i7.Stream<_i4.User?>);
+
   @override
   _i7.Stream<_i4.User?> idTokenChanges() => (super.noSuchMethod(
         Invocation.method(
@@ -395,6 +419,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: _i7.Stream<_i4.User?>.empty(),
       ) as _i7.Stream<_i4.User?>);
+
   @override
   _i7.Stream<_i4.User?> userChanges() => (super.noSuchMethod(
         Invocation.method(
@@ -403,6 +428,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: _i7.Stream<_i4.User?>.empty(),
       ) as _i7.Stream<_i4.User?>);
+
   @override
   _i7.Future<void> sendPasswordResetEmail({
     required String? email,
@@ -420,6 +446,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> sendSignInLinkToEmail({
     required String? email,
@@ -437,6 +464,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> setLanguageCode(String? languageCode) => (super.noSuchMethod(
         Invocation.method(
@@ -446,6 +474,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> setSettings({
     bool? appVerificationDisabledForTesting = false,
@@ -470,6 +499,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> setPersistence(_i3.Persistence? persistence) =>
       (super.noSuchMethod(
@@ -480,6 +510,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i4.UserCredential> signInAnonymously() => (super.noSuchMethod(
         Invocation.method(
@@ -494,6 +525,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithCredential(
           _i3.AuthCredential? credential) =>
@@ -510,6 +542,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithCustomToken(String? token) =>
       (super.noSuchMethod(
@@ -525,6 +558,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithEmailAndPassword({
     required String? email,
@@ -551,6 +585,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithEmailLink({
     required String? email,
@@ -577,6 +612,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithAuthProvider(
           _i3.AuthProvider? provider) =>
@@ -593,6 +629,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithProvider(
           _i3.AuthProvider? provider) =>
@@ -609,6 +646,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.ConfirmationResult> signInWithPhoneNumber(
     String? phoneNumber, [
@@ -634,6 +672,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.ConfirmationResult>);
+
   @override
   _i7.Future<_i4.UserCredential> signInWithPopup(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -649,6 +688,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<void> signInWithRedirect(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -659,6 +699,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> signOut() => (super.noSuchMethod(
         Invocation.method(
@@ -668,6 +709,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<String> verifyPasswordResetCode(String? code) =>
       (super.noSuchMethod(
@@ -677,6 +719,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         ),
         returnValue: _i7.Future<String>.value(''),
       ) as _i7.Future<String>);
+
   @override
   _i7.Future<void> verifyPhoneNumber({
     String? phoneNumber,
@@ -710,6 +753,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> revokeTokenWithAuthorizationCode(
           String? authorizationCode) =>
@@ -738,11 +782,13 @@ class MockGoogleSignInAccount extends _i1.Mock
         Invocation.getter(#email),
         returnValue: '',
       ) as String);
+
   @override
   String get id => (super.noSuchMethod(
         Invocation.getter(#id),
         returnValue: '',
       ) as String);
+
   @override
   _i7.Future<_i5.GoogleSignInAuthentication> get authentication =>
       (super.noSuchMethod(
@@ -753,11 +799,13 @@ class MockGoogleSignInAccount extends _i1.Mock
           Invocation.getter(#authentication),
         )),
       ) as _i7.Future<_i5.GoogleSignInAuthentication>);
+
   @override
   _i7.Future<Map<String, String>> get authHeaders => (super.noSuchMethod(
         Invocation.getter(#authHeaders),
         returnValue: _i7.Future<Map<String, String>>.value(<String, String>{}),
       ) as _i7.Future<Map<String, String>>);
+
   @override
   _i7.Future<void> clearAuthCache() => (super.noSuchMethod(
         Invocation.method(
@@ -792,11 +840,13 @@ class MockUser extends _i1.Mock implements _i4.User {
         Invocation.getter(#emailVerified),
         returnValue: false,
       ) as bool);
+
   @override
   bool get isAnonymous => (super.noSuchMethod(
         Invocation.getter(#isAnonymous),
         returnValue: false,
       ) as bool);
+
   @override
   _i3.UserMetadata get metadata => (super.noSuchMethod(
         Invocation.getter(#metadata),
@@ -805,16 +855,19 @@ class MockUser extends _i1.Mock implements _i4.User {
           Invocation.getter(#metadata),
         ),
       ) as _i3.UserMetadata);
+
   @override
   List<_i3.UserInfo> get providerData => (super.noSuchMethod(
         Invocation.getter(#providerData),
         returnValue: <_i3.UserInfo>[],
       ) as List<_i3.UserInfo>);
+
   @override
   String get uid => (super.noSuchMethod(
         Invocation.getter(#uid),
         returnValue: '',
       ) as String);
+
   @override
   _i4.MultiFactor get multiFactor => (super.noSuchMethod(
         Invocation.getter(#multiFactor),
@@ -823,6 +876,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           Invocation.getter(#multiFactor),
         ),
       ) as _i4.MultiFactor);
+
   @override
   _i7.Future<void> delete() => (super.noSuchMethod(
         Invocation.method(
@@ -832,6 +886,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<String?> getIdToken([bool? forceRefresh = false]) =>
       (super.noSuchMethod(
@@ -841,6 +896,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         ),
         returnValue: _i7.Future<String?>.value(),
       ) as _i7.Future<String?>);
+
   @override
   _i7.Future<_i3.IdTokenResult> getIdTokenResult(
           [bool? forceRefresh = false]) =>
@@ -857,6 +913,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i3.IdTokenResult>);
+
   @override
   _i7.Future<_i4.UserCredential> linkWithCredential(
           _i3.AuthCredential? credential) =>
@@ -873,6 +930,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> linkWithProvider(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -888,6 +946,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> reauthenticateWithProvider(
           _i3.AuthProvider? provider) =>
@@ -904,6 +963,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<_i4.UserCredential> reauthenticateWithPopup(
           _i3.AuthProvider? provider) =>
@@ -920,6 +980,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<void> reauthenticateWithRedirect(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -930,6 +991,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i4.UserCredential> linkWithPopup(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -945,6 +1007,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<void> linkWithRedirect(_i3.AuthProvider? provider) =>
       (super.noSuchMethod(
@@ -955,6 +1018,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i4.ConfirmationResult> linkWithPhoneNumber(
     String? phoneNumber, [
@@ -980,6 +1044,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.ConfirmationResult>);
+
   @override
   _i7.Future<_i4.UserCredential> reauthenticateWithCredential(
           _i3.AuthCredential? credential) =>
@@ -996,6 +1061,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.UserCredential>);
+
   @override
   _i7.Future<void> reload() => (super.noSuchMethod(
         Invocation.method(
@@ -1005,6 +1071,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> sendEmailVerification(
           [_i3.ActionCodeSettings? actionCodeSettings]) =>
@@ -1016,6 +1083,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<_i4.User> unlink(String? providerId) => (super.noSuchMethod(
         Invocation.method(
@@ -1030,6 +1098,7 @@ class MockUser extends _i1.Mock implements _i4.User {
           ),
         )),
       ) as _i7.Future<_i4.User>);
+
   @override
   _i7.Future<void> updateEmail(String? newEmail) => (super.noSuchMethod(
         Invocation.method(
@@ -1039,6 +1108,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> updatePassword(String? newPassword) => (super.noSuchMethod(
         Invocation.method(
@@ -1048,6 +1118,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> updatePhoneNumber(
           _i3.PhoneAuthCredential? phoneCredential) =>
@@ -1059,6 +1130,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> updateDisplayName(String? displayName) =>
       (super.noSuchMethod(
@@ -1069,6 +1141,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> updatePhotoURL(String? photoURL) => (super.noSuchMethod(
         Invocation.method(
@@ -1078,6 +1151,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> updateProfile({
     String? displayName,
@@ -1095,6 +1169,7 @@ class MockUser extends _i1.Mock implements _i4.User {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
   @override
   _i7.Future<void> verifyBeforeUpdateEmail(
     String? newEmail, [

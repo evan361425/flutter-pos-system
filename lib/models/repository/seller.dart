@@ -18,34 +18,34 @@ class Seller extends ChangeNotifier {
 
   static late Seller instance;
 
+  /// Create to set the singleton [instance].
   Seller() {
     instance = this;
   }
 
+  /// Get the count of orders per day.
   Future<Map<DateTime, int>> getCountPerDay(
     DateTime start,
     DateTime end,
   ) async {
+    final begin = Util.toUTC(now: start);
+    final cease = Util.toUTC(now: end);
+    // using UTC to calculate the count but use user's timezone when returned.
     final rows = await Database.instance.query(
-      orderTable,
-      columns: ['createdAt'],
-      where: 'createdAt BETWEEN ? AND ?',
-      whereArgs: [
-        Util.toUTC(now: start),
-        Util.toUTC(now: end),
-      ],
+      '(SELECT CAST((createdAt - $begin) / 86400 AS INT) day FROM $orderTable'
+      'WHERE createdAt BETWEEN $begin AND $cease) t',
+      columns: ['t.day', 'COUNT(*) c'],
+      groupBy: "t.day",
+      escapeTable: false,
     );
 
-    final result = <DateTime, int>{};
-    for (final row in rows) {
-      final c = Util.fromUTC(row['createdAt'] as int);
-      final d = DateTime(c.year, c.month, c.day);
-      result[d] = (result[d] ?? 0) + 1;
-    }
-
-    return result;
+    return <DateTime, int>{
+      for (final row in rows)
+        Util.fromUTC(begin + (row['day'] as int)): row['c'] as int
+    };
   }
 
+  /// Get the metrics of orders from time range.
   Future<OrderMetrics> getMetrics(
     DateTime start,
     DateTime end, {
@@ -122,7 +122,7 @@ class Seller extends ChangeNotifier {
     DateTime start,
     DateTime end, {
     int offset = 0,
-    int? limit = 10,
+    int limit = 10,
   }) async {
     final rows = await Database.instance.query(
       orderTable,
@@ -149,8 +149,8 @@ class Seller extends ChangeNotifier {
     );
 
     return rows.map((row) {
-      final pn = (row['pn'] as String).split(Database.delimiter);
-      final pc = (row['pc'] as String).split(Database.delimiter);
+      final pn = (row['pn'] as String? ?? '').split(Database.delimiter);
+      final pc = (row['pc'] as String? ?? '').split(Database.delimiter);
 
       return OrderObject.fromMap(
         row,
@@ -161,16 +161,68 @@ class Seller extends ChangeNotifier {
     }).toList();
   }
 
+  /// Get orders in all detailed set.
+  ///
+  /// This is used to export orders.
+  Future<List<OrderObject>> getDetailedOrders(
+      DateTime start, DateTime end) async {
+    final r = await Database.instance.transaction((txn) async {
+      final batch = txn.batch();
+      queryTable(String t) {
+        batch.query(
+          t,
+          where: 'createdAt BETWEEN ? AND ?',
+          whereArgs: [
+            Util.toUTC(now: start),
+            Util.toUTC(now: end),
+          ],
+          orderBy: 'createdAt asc',
+        );
+      }
+
+      queryTable(orderTable);
+      queryTable(productTable);
+      queryTable(ingredientTable);
+      queryTable(attributeTable);
+
+      return (await batch.commit()).cast<List<Map<String, Object?>>>();
+    });
+
+    return r[0].map((order) {
+      final id = order['id'];
+      final pi = _getSizeBelongsToOrder(r[1], id);
+      final ii = _getSizeBelongsToOrder(r[2], id);
+      final ai = _getSizeBelongsToOrder(r[3], id);
+      final o = OrderObject.fromMap(
+        order,
+        r[1].sublist(0, pi),
+        r[2].sublist(0, ii),
+        r[3].sublist(0, ai),
+      );
+      r[1] = r[1].sublist(pi);
+      r[2] = r[2].sublist(ii);
+      r[3] = r[3].sublist(ai);
+
+      return o;
+    }).toList();
+  }
+
+  /// Get the specific order by id and return null if not exist.
   Future<OrderObject?> getOrder(int id) async {
     final rows = await Database.instance.query(orderTable, where: 'id = $id');
     if (rows.isEmpty) return null;
 
     final w = 'orderId = $id';
-    final prods = await Database.instance.query(productTable, where: w);
-    final ins = await Database.instance.query(ingredientTable, where: w);
-    final attrs = await Database.instance.query(attributeTable, where: w);
+    final r = await Database.instance.transaction((txn) async {
+      final batch = txn.batch();
+      batch.query(productTable, where: w);
+      batch.query(ingredientTable, where: w);
+      batch.query(attributeTable, where: w);
 
-    return OrderObject.fromMap(rows[0], prods, ins, attrs);
+      return (await batch.commit()).cast<List<Map<String, Object?>>>();
+    });
+
+    return OrderObject.fromMap(rows[0], r[0], r[1], r[2]);
   }
 
   /// Push order to the DB.
@@ -211,30 +263,10 @@ class Seller extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Update order and all the other artifacts.
-  Future<void> update(OrderObject order) async {
-    await Database.instance.transaction((txn) async {
-      await txn.update(orderTable, order.toMap(), where: 'id = ${order.id}');
-
-      for (final p in order.products) {
-        await txn.update(productTable, p.toMap(), where: 'id = ${p.id}');
-        for (final i in p.ingredients) {
-          await txn.update(ingredientTable, i.toMap(), where: 'id = ${i.id}');
-        }
-      }
-
-      for (final a in order.attributes) {
-        await txn.update(attributeTable, a.toMap(), where: 'id = ${a.id}');
-      }
-    });
-
-    notifyListeners();
-  }
-
   /// Delete order and all the other artifacts.
   Future<void> delete(int id) async {
     await Database.instance.transaction((txn) async {
-      await txn.delete(orderTable, where: 'id = ?', whereArgs: [id]);
+      await txn.delete(orderTable, where: 'id = $id');
 
       final w = 'orderId = $id';
       await txn.delete(productTable, where: w);
@@ -252,6 +284,7 @@ class Seller extends ChangeNotifier {
     return Database.instance.push(stashTable, order.toStashMap());
   }
 
+  /// Get the stashed orders.
   Future<List<OrderObject>> getStashedOrders({
     int offset = 0,
     int? limit = 10,
@@ -266,7 +299,8 @@ class Seller extends ChangeNotifier {
     return rows.map((e) => OrderObject.fromStashMap(e)).toList();
   }
 
-  Future<OrderObject?> getStashedOrder(int id) async {
+  /// Get specific stashed order by id and delete that entry.
+  Future<OrderObject?> dropStashedOrder(int id) async {
     final rows = await Database.instance.query(stashTable, where: 'id = $id');
     if (rows.isEmpty) return null;
 
@@ -275,6 +309,15 @@ class Seller extends ChangeNotifier {
     await Database.instance.delete(stashTable, id);
 
     return object;
+  }
+
+  int _getSizeBelongsToOrder(List<Map<String, Object?>> items, Object? id) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i]['orderId'] != id) {
+        return i;
+      }
+    }
+    return items.length;
   }
 }
 
@@ -301,7 +344,9 @@ class OrderMetrics {
   /// How many rows in the table of order attributes.
   final int? attrCount;
 
-  /// All required.
+  /// Different mode may have optional attributes.
+  ///
+  /// see detailed in [Seller.getMetrics].
   const OrderMetrics._({
     required this.cost,
     required this.price,

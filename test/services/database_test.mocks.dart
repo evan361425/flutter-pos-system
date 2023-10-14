@@ -74,11 +74,13 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         Invocation.getter(#path),
         returnValue: '',
       ) as String);
+
   @override
   bool get isOpen => (super.noSuchMethod(
         Invocation.getter(#isOpen),
         returnValue: false,
       ) as bool);
+
   @override
   _i2.Database get database => (super.noSuchMethod(
         Invocation.getter(#database),
@@ -87,6 +89,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
           Invocation.getter(#database),
         ),
       ) as _i2.Database);
+
   @override
   _i3.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
@@ -96,6 +99,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+
   @override
   _i3.Future<T> transaction<T>(
     _i3.Future<T> Function(_i2.Transaction)? action, {
@@ -127,6 +131,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
               ),
             ),
       ) as _i3.Future<T>);
+
   @override
   _i3.Future<T> devInvokeMethod<T>(
     String? method, [
@@ -164,6 +169,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
               ),
             ),
       ) as _i3.Future<T>);
+
   @override
   _i3.Future<T> devInvokeSqlMethod<T>(
     String? method,
@@ -205,6 +211,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
               ),
             ),
       ) as _i3.Future<T>);
+
   @override
   _i3.Future<void> execute(
     String? sql, [
@@ -221,6 +228,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+
   @override
   _i3.Future<int> rawInsert(
     String? sql, [
@@ -236,6 +244,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i3.Future<int> insert(
     String? table,
@@ -257,6 +266,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i3.Future<List<Map<String, Object?>>> query(
     String? table, {
@@ -289,6 +299,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         returnValue: _i3.Future<List<Map<String, Object?>>>.value(
             <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
+
   @override
   _i3.Future<List<Map<String, Object?>>> rawQuery(
     String? sql, [
@@ -305,6 +316,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         returnValue: _i3.Future<List<Map<String, Object?>>>.value(
             <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
+
   @override
   _i3.Future<_i2.QueryCursor> rawQueryCursor(
     String? sql,
@@ -332,6 +344,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
           ),
         )),
       ) as _i3.Future<_i2.QueryCursor>);
+
   @override
   _i3.Future<_i2.QueryCursor> queryCursor(
     String? table, {
@@ -383,6 +396,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
           ),
         )),
       ) as _i3.Future<_i2.QueryCursor>);
+
   @override
   _i3.Future<int> rawUpdate(
     String? sql, [
@@ -398,6 +412,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i3.Future<int> update(
     String? table,
@@ -421,6 +436,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i3.Future<int> rawDelete(
     String? sql, [
@@ -436,6 +452,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i3.Future<int> delete(
     String? table, {
@@ -453,6 +470,7 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+
   @override
   _i2.Batch batch() => (super.noSuchMethod(
         Invocation.method(
@@ -482,6 +500,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         Invocation.getter(#length),
         returnValue: 0,
       ) as int);
+
   @override
   _i3.Future<List<Object?>> commit({
     bool? exclusive,
@@ -500,6 +519,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValue: _i3.Future<List<Object?>>.value(<Object?>[]),
       ) as _i3.Future<List<Object?>>);
+
   @override
   _i3.Future<List<Object?>> apply({
     bool? noResult,
@@ -516,6 +536,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValue: _i3.Future<List<Object?>>.value(<Object?>[]),
       ) as _i3.Future<List<Object?>>);
+
   @override
   void rawInsert(
     String? sql, [
@@ -531,6 +552,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void insert(
     String? table,
@@ -552,6 +574,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void rawUpdate(
     String? sql, [
@@ -567,6 +590,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void update(
     String? table,
@@ -590,6 +614,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void rawDelete(
     String? sql, [
@@ -605,6 +630,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void delete(
     String? table, {
@@ -622,6 +648,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void execute(
     String? sql, [
@@ -637,6 +664,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void query(
     String? table, {
@@ -668,6 +696,7 @@ class MockBatch extends _i1.Mock implements _i2.Batch {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   void rawQuery(
     String? sql, [

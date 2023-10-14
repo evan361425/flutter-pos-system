@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -31,12 +30,12 @@ class _HistoryPageState extends State<HistoryPage> {
           title: const Text('訂單記錄'),
           actions: [
             Tutorial(
-              id: 'analysis.export',
+              id: 'history.export',
               title: '訂單資料匯出',
               message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
               child: PopupMenuButton<TransitMethod>(
-                key: const Key('analysis.export'),
+                key: const Key('history.export'),
                 icon: const Icon(Icons.upload_file_sharp),
                 tooltip: '匯出',
                 itemBuilder: (context) => TransitMethod.values
@@ -80,14 +79,13 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildCalendar({required bool isPortrait}) {
     return Tutorial(
-      id: 'analysis.calendar',
+      id: 'history.calendar',
       title: '日曆格式',
       message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
       spotlightBuilder: const SpotlightRectBuilder(),
       child: CalendarView(
         isPortrait: isPortrait,
         notifier: notifier,
-        searchCountInMonth: _searchCountInMonth,
       ),
     );
   }
@@ -116,14 +114,5 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       Expanded(child: _buildOrderList()),
     ]);
-  }
-
-  Future<Map<DateTime, int>> _searchCountInMonth(DateTime day) {
-    // add/sub 7 days for first/last few days on next/last month
-    final end = DateTime(day.year, day.month + 1, 7);
-    final start =
-        DateTime(day.year, day.month).subtract(const Duration(days: 7));
-
-    return Seller.instance.getCountPerDay(start, end);
   }
 }

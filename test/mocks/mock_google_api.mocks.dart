@@ -391,6 +391,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#about),
         ),
       ) as _i2.AboutResource);
+
   @override
   _i2.ChangesResource get changes => (super.noSuchMethod(
         Invocation.getter(#changes),
@@ -399,6 +400,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#changes),
         ),
       ) as _i2.ChangesResource);
+
   @override
   _i2.ChannelsResource get channels => (super.noSuchMethod(
         Invocation.getter(#channels),
@@ -407,6 +409,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#channels),
         ),
       ) as _i2.ChannelsResource);
+
   @override
   _i2.CommentsResource get comments => (super.noSuchMethod(
         Invocation.getter(#comments),
@@ -415,6 +418,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#comments),
         ),
       ) as _i2.CommentsResource);
+
   @override
   _i2.DrivesResource get drives => (super.noSuchMethod(
         Invocation.getter(#drives),
@@ -423,6 +427,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#drives),
         ),
       ) as _i2.DrivesResource);
+
   @override
   _i2.FilesResource get files => (super.noSuchMethod(
         Invocation.getter(#files),
@@ -431,6 +436,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#files),
         ),
       ) as _i2.FilesResource);
+
   @override
   _i2.PermissionsResource get permissions => (super.noSuchMethod(
         Invocation.getter(#permissions),
@@ -439,6 +445,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#permissions),
         ),
       ) as _i2.PermissionsResource);
+
   @override
   _i2.RepliesResource get replies => (super.noSuchMethod(
         Invocation.getter(#replies),
@@ -447,6 +454,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#replies),
         ),
       ) as _i2.RepliesResource);
+
   @override
   _i2.RevisionsResource get revisions => (super.noSuchMethod(
         Invocation.getter(#revisions),
@@ -455,6 +463,7 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
           Invocation.getter(#revisions),
         ),
       ) as _i2.RevisionsResource);
+
   @override
   _i2.TeamdrivesResource get teamdrives => (super.noSuchMethod(
         Invocation.getter(#teamdrives),
@@ -528,6 +537,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.File>);
+
   @override
   _i5.Future<_i2.File> create(
     _i2.File? request, {
@@ -585,6 +595,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.File>);
+
   @override
   _i5.Future<void> delete(
     String? fileId, {
@@ -607,6 +618,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
   @override
   _i5.Future<void> emptyTrash({
     String? driveId,
@@ -626,6 +638,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
   @override
   _i5.Future<_i6.Media?> export(
     String? fileId,
@@ -647,6 +660,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
         ),
         returnValue: _i5.Future<_i6.Media?>.value(),
       ) as _i5.Future<_i6.Media?>);
+
   @override
   _i5.Future<_i2.GeneratedIds> generateIds({
     int? count,
@@ -679,6 +693,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.GeneratedIds>);
+
   @override
   _i5.Future<Object> get(
     String? fileId, {
@@ -721,6 +736,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<Object>);
+
   @override
   _i5.Future<_i2.FileList> list({
     String? corpora,
@@ -789,6 +805,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.FileList>);
+
   @override
   _i5.Future<_i2.LabelList> listLabels(
     String? fileId, {
@@ -819,6 +836,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.LabelList>);
+
   @override
   _i5.Future<_i2.ModifyLabelsResponse> modifyLabels(
     _i2.ModifyLabelsRequest? request,
@@ -847,6 +865,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.ModifyLabelsResponse>);
+
   @override
   _i5.Future<_i2.File> update(
     _i2.File? request,
@@ -914,6 +933,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ),
         )),
       ) as _i5.Future<_i2.File>);
+
   @override
   _i5.Future<_i3.$Channel01> watch(
     _i3.$Channel01? request,
@@ -998,6 +1018,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           Invocation.getter(#developerMetadata),
         ),
       ) as _i4.SpreadsheetsDeveloperMetadataResource);
+
   @override
   _i4.SpreadsheetsSheetsResource get sheets => (super.noSuchMethod(
         Invocation.getter(#sheets),
@@ -1006,6 +1027,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           Invocation.getter(#sheets),
         ),
       ) as _i4.SpreadsheetsSheetsResource);
+
   @override
   _i4.SpreadsheetsValuesResource get values => (super.noSuchMethod(
         Invocation.getter(#values),
@@ -1014,6 +1036,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           Invocation.getter(#values),
         ),
       ) as _i4.SpreadsheetsValuesResource);
+
   @override
   _i5.Future<_i4.BatchUpdateSpreadsheetResponse> batchUpdate(
     _i4.BatchUpdateSpreadsheetRequest? request,
@@ -1042,6 +1065,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchUpdateSpreadsheetResponse>);
+
   @override
   _i5.Future<_i4.Spreadsheet> create(
     _i4.Spreadsheet? request, {
@@ -1062,6 +1086,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.Spreadsheet>);
+
   @override
   _i5.Future<_i4.Spreadsheet> get(
     String? spreadsheetId, {
@@ -1092,6 +1117,7 @@ class MockSpreadsheetsResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.Spreadsheet>);
+
   @override
   _i5.Future<_i4.Spreadsheet> getByDataFilter(
     _i4.GetSpreadsheetByDataFilterRequest? request,
@@ -1180,6 +1206,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.AppendValuesResponse>);
+
   @override
   _i5.Future<_i4.BatchClearValuesResponse> batchClear(
     _i4.BatchClearValuesRequest? request,
@@ -1208,6 +1235,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchClearValuesResponse>);
+
   @override
   _i5.Future<_i4.BatchClearValuesByDataFilterResponse> batchClearByDataFilter(
     _i4.BatchClearValuesByDataFilterRequest? request,
@@ -1236,6 +1264,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchClearValuesByDataFilterResponse>);
+
   @override
   _i5.Future<_i4.BatchGetValuesResponse> batchGet(
     String? spreadsheetId, {
@@ -1273,6 +1302,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchGetValuesResponse>);
+
   @override
   _i5.Future<_i4.BatchGetValuesByDataFilterResponse> batchGetByDataFilter(
     _i4.BatchGetValuesByDataFilterRequest? request,
@@ -1301,6 +1331,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchGetValuesByDataFilterResponse>);
+
   @override
   _i5.Future<_i4.BatchUpdateValuesResponse> batchUpdate(
     _i4.BatchUpdateValuesRequest? request,
@@ -1329,6 +1360,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchUpdateValuesResponse>);
+
   @override
   _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse> batchUpdateByDataFilter(
     _i4.BatchUpdateValuesByDataFilterRequest? request,
@@ -1358,6 +1390,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>);
+
   @override
   _i5.Future<_i4.ClearValuesResponse> clear(
     _i3.$Empty? request,
@@ -1389,6 +1422,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.ClearValuesResponse>);
+
   @override
   _i5.Future<_i4.ValueRange> get(
     String? spreadsheetId,
@@ -1429,6 +1463,7 @@ class MockSpreadsheetsValuesResource extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i4.ValueRange>);
+
   @override
   _i5.Future<_i4.UpdateValuesResponse> update(
     _i4.ValueRange? request,

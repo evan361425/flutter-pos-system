@@ -154,7 +154,7 @@ class CartProduct extends ChangeNotifier {
       originalPrice: product.price,
       isDiscount: _singlePrice < product.price,
       ingredients: product.items
-          .map((e) => OrderIngredientObject.fromModel(e, _quantities[e.id]))
+          .map((e) => OrderIngredientObject.fromModel(e, getQuantityId(e.id)))
           .toList(),
     );
   }

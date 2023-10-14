@@ -57,6 +57,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
           Invocation.getter(#db),
         ),
       ) as _i2.Database);
+
   @override
   set db(_i2.Database? _db) => super.noSuchMethod(
         Invocation.setter(
@@ -65,6 +66,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   _i4.Future<void> add(
     _i3.Stores? storeId,
@@ -83,6 +85,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<Map<String, Object?>> get(
     _i3.Stores? storeId, [
@@ -99,6 +102,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         returnValue:
             _i4.Future<Map<String, Object?>>.value(<String, Object?>{}),
       ) as _i4.Future<Map<String, Object?>>);
+
   @override
   _i4.Future<void> initialize({_i3.StorageOpener? opener}) =>
       (super.noSuchMethod(
@@ -110,6 +114,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<void> reset(
     _i3.Stores? storeId, [
@@ -126,6 +131,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) =>
       (super.noSuchMethod(
@@ -141,6 +147,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
           ),
         ),
       ) as _i3.StorageSanitizedData);
+
   @override
   _i4.Future<void> set(
     _i3.Stores? storeId,
@@ -157,6 +164,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<void> setAll(
     _i3.Stores? storeId,

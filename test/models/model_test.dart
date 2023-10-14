@@ -81,15 +81,15 @@ void main() {
       });
       final order = CartProduct(product, quantities: {
         'pi-1': 'pq-1',
-        'pi-3': null,
       });
+
+      expect(order.quantities.isEmpty, isTrue);
+      expect(order.getQuantityId('pi-1'), equals('pq-1'));
 
       order.rebind();
 
-      expect(
-        order.selectedQuantity,
-        equals({'pi-1': null, 'pi-2': null}),
-      );
+      expect(order.quantities.isEmpty, isTrue);
+      expect(order.getQuantityId('pi-1'), isNull);
     });
   });
 }

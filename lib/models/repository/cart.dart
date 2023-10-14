@@ -146,7 +146,7 @@ class Cart extends ChangeNotifier {
   Future<bool> restore(int id) async {
     Log.ger('start', 'order_cart_restore');
 
-    final order = await Seller.instance.getStashedOrder(id);
+    final order = await Seller.instance.dropStashedOrder(id);
     if (order == null) return false;
 
     _replaceByObject(order);

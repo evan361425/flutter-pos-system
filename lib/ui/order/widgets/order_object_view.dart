@@ -48,7 +48,7 @@ class OrderObjectView extends StatelessWidget {
     final attrWidget = order.attributes.isEmpty
         ? const SizedBox.shrink()
         : ExpansionTile(
-            key: const Key('order_cashier_product_list.attributes'),
+            key: const Key('order.attributes'),
             title: Text(S.orderObjectAttributeTitle),
             subtitle: Text(
               S.orderObjectAttributeCount(order.attributes.length),

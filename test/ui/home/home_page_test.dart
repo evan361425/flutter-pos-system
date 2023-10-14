@@ -37,11 +37,6 @@ void main() {
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
-        join: anyNamed('join'),
-        groupBy: anyNamed('groupBy'),
-        orderBy: anyNamed('orderBy'),
-        limit: anyNamed('limit'),
-        offset: anyNamed('offset'),
       )).thenAnswer((_) => Future.value([]));
       final settings = SettingsProvider(SettingsProvider.allSettings);
 
@@ -105,7 +100,7 @@ void main() {
       await navAndPop('home.order', 'order.action.more');
       await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');
-      await navAndCheck('home.analysis', 'analysis.builder');
+      await navAndCheck('home.analysis', 'anal.order');
     });
 
     setUp(() {

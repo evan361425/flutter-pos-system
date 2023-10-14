@@ -31,7 +31,7 @@ class HistoryOrderList extends StatelessWidget {
     ]);
 
     return ListTile(
-      key: Key('analysis.order_list.${order.id}'),
+      key: Key('history.order.${order.id}'),
       leading: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),

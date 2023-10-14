@@ -124,10 +124,9 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
     widget.statusNotifier.value = '取得本地資料';
-    final orders = await Seller.instance.getOrders(
+    final orders = await Seller.instance.getDetailedOrders(
       widget.rangeNotifier.value.start,
       widget.rangeNotifier.value.end,
-      limit: null,
     );
     Log.ger('ready', 'gs_export_order', ss.id);
 

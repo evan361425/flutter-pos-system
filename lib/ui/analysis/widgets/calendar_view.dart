@@ -15,15 +15,12 @@ int _hashMonth(DateTime e) => e.month + e.year * 100;
 class CalendarView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  final Future<Map<DateTime, int>> Function(DateTime month) searchCountInMonth;
-
   final bool isPortrait;
 
   const CalendarView({
     Key? key,
     required this.notifier,
     required this.isPortrait,
-    required this.searchCountInMonth,
   }) : super(key: key);
 
   @override
@@ -49,7 +46,7 @@ class _CalendarViewState extends State<CalendarView> {
     return MediaQuery(
       // text being too large will cause overlay
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: TableCalendar<int>(
+      child: TableCalendar<void>(
         firstDay: DateTime(2021, 1),
         lastDay: DateTime.now(),
         focusedDay: _focusedDay,
@@ -76,7 +73,8 @@ class _CalendarViewState extends State<CalendarView> {
         weekendDays: const [],
         // event handlers
         selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
-        eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, 0),
+        eventLoader: (DateTime day) =>
+            List.filled(_loadedCounts[day] ?? 0, null),
         calendarBuilders: CalendarBuilders(
           markerBuilder: _badgeBuilder,
           defaultBuilder: _defaultBuilder,
@@ -106,7 +104,7 @@ class _CalendarViewState extends State<CalendarView> {
     _searchCountInMonth(_selectedDay);
   }
 
-  Widget? _badgeBuilder(BuildContext context, DateTime day, List<int> value) {
+  Widget? _badgeBuilder(BuildContext context, DateTime day, List<void> value) {
     if (value.isEmpty) return null;
 
     final length = value.length;
@@ -158,7 +156,12 @@ class _CalendarViewState extends State<CalendarView> {
   /// the [day] is UTC!!!
   void _searchCountInMonth(DateTime day) async {
     final local = day.toLocal();
-    final counts = await widget.searchCountInMonth(local);
+    // add/sub 7 days for first/last few days on next/last month
+    final end = DateTime(local.year, local.month + 1, 7);
+    final start =
+        DateTime(local.year, local.month).subtract(const Duration(days: 7));
+
+    final counts = await Seller.instance.getCountPerDay(start, end);
 
     if (mounted) {
       setState(() {

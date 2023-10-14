@@ -32,7 +32,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         leading: const PopButton(),
         actions: [
           MoreButton(
-            key: const Key('analysis.more'),
+            key: const Key('order_modal.more'),
             onPressed: _showActions,
           ),
         ],

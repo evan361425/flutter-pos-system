@@ -65,7 +65,7 @@ List<OrderObject> generateOrder({
           originalPrice: product.price,
           isDiscount: isDiscount,
           ingredients: product.items.map((e) {
-            final qIdx = rng.nextInt(e.length * 2);
+            final qIdx = e.isEmpty ? 0 : rng.nextInt(e.length * 2);
             final q = qIdx < e.length ? e.items.toList()[qIdx] : null;
             return OrderIngredientObject(
               ingredientName: e.name,
@@ -81,7 +81,8 @@ List<OrderObject> generateOrder({
       }
     }
 
-    final attrs = OrderAttributes.instance.items.map((e) {
+    final attrs =
+        OrderAttributes.instance.items.where((e) => e.isNotEmpty).map((e) {
       final idx = rng.nextInt(e.length);
       final opt = e.items.toList()[idx];
 

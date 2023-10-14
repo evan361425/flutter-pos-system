@@ -30,6 +30,7 @@ class TransitOrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return OrderLoader(
       ranger: notifier,
+      countingAll: true,
       trailingBuilder: _buildMemoryInfo,
       builder: _buildOrder,
     );
@@ -100,18 +101,21 @@ class TransitOrderList extends StatelessWidget {
         '共 ${order.price.toCurrency()} 元',
       ].join(MetaBlock.string)),
       trailing: const Icon(Icons.expand_outlined),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return SimpleDialog(title: const Text('訂單細節'), children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: formatOrder(order),
-              ),
-            ]);
-          },
-        );
+      onTap: () async {
+        final detailedOrder = await Seller.instance.getOrder(order.id!);
+        if (detailedOrder != null && context.mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleDialog(title: const Text('訂單細節'), children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: formatOrder(detailedOrder),
+                ),
+              ]);
+            },
+          );
+        }
       },
     );
   }

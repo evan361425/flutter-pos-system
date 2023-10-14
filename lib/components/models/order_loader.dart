@@ -14,11 +14,14 @@ class OrderLoader extends StatefulWidget {
 
   final Widget Function(BuildContext, OrderMetrics)? trailingBuilder;
 
+  final bool countingAll;
+
   const OrderLoader({
     Key? key,
     required this.ranger,
     required this.builder,
     this.trailingBuilder,
+    this.countingAll = false,
   }) : super(key: key);
 
   @override
@@ -84,6 +87,7 @@ class _OrderLoaderState extends State<OrderLoader> {
     return Seller.instance.getMetrics(
       widget.ranger.value.start,
       widget.ranger.value.end,
+      countingAll: widget.countingAll,
     );
   }
 

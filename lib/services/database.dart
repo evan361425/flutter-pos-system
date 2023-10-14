@@ -131,7 +131,9 @@ class Database {
     String? orderBy,
     int? limit,
     int offset = 0,
+    bool escapeTable = true,
   }) async {
+    if (escapeTable) table = "`$table`";
     final selectQuery = columns?.join(',') ?? '*';
     final whereQuery = where == null ? '' : 'WHERE $where';
     final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
@@ -141,7 +143,7 @@ class Database {
 
     try {
       return await db.rawQuery(
-        'SELECT $selectQuery FROM `$table` $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
+        'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
         whereArgs,
       );
     } catch (e, stack) {

@@ -2,12 +2,13 @@
 
 import 'package:mockito/annotations.dart';
 import 'package:possystem/services/database.dart';
+import 'package:sqflite/sqflite.dart' show DatabaseExecutor, Batch;
 
 import 'mock_database.mocks.dart';
 
 final database = MockDatabase();
 
-@GenerateMocks([Database])
+@GenerateMocks([Database, DatabaseExecutor, Batch])
 void _initialize() {
   Database.instance = database;
   _finished = true;

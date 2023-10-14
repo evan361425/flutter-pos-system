@@ -5,6 +5,7 @@ import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_order_range.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 
@@ -46,10 +47,9 @@ class ExportOrderView extends StatelessWidget {
   }
 
   Future<void> export() async {
-    final orders = await Seller.instance.getOrders(
+    final orders = await Seller.instance.getDetailedOrders(
       notifier.value.start,
       notifier.value.end,
-      limit: null,
     );
 
     const exporter = PlainTextExporter();
@@ -77,13 +77,16 @@ class ExportOrderView extends StatelessWidget {
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes.map((a) {
-      return '${a.name}為${a.optionName}';
+      return '${a.name} 為 ${a.optionName}';
     }).join('、');
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
         final amount = i.amount == 0 ? '' : '，使用 ${i.amount} 個';
-        return '${i.ingredientName}（${i.isDefaultQuantity ? '預設份量' : i.quantityName}$amount）';
-      }).join('、 ');
+        return S.orderProductIngredientName(
+          i.ingredientName,
+          (i.quantityName ?? '預設份量') + amount,
+        );
+      }).join('、');
       return [
         '${p.productName}（${p.catalogName}）',
         '${p.count} 份共 ${p.totalPrice.toCurrency()} 元',
@@ -96,11 +99,11 @@ class ExportOrderView extends StatelessWidget {
     return [
       '共 ${order.price.toCurrency()} 元',
       order.productsPrice == order.price
-          ? '\n'
+          ? '。\n'
           : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
       '付額 ${order.paid.toCurrency()} 元、',
-      '成分 ${order.cost.toCurrency()} 元\n',
-      if (attributes != '') '顧客的$attributes。\n',
+      '成分 ${order.cost.toCurrency()} 元。\n',
+      if (attributes != '') '顧客的 $attributes。\n',
       '餐點有 $tc 份',
       if (pl != tc) '（$pl 種）',
       '包括：\n$products。',

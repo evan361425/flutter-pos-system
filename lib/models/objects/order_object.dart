@@ -127,13 +127,14 @@ class OrderObject extends _Object {
     List<Map<String, Object?>> ingredients = const [],
     List<Map<String, Object?>> attributes = const [],
   ]) {
+    // null-safety to make test easy
     return OrderObject(
-      id: order['id'] as int,
-      paid: order['paid'] as num,
-      cost: order['cost'] as num,
-      price: order['price'] as num,
-      productsCount: order['productsCount'] as int,
-      productsPrice: order['productsPrice'] as num,
+      id: order['id'] as int? ?? 0,
+      paid: order['paid'] as num? ?? 0,
+      cost: order['cost'] as num? ?? 0,
+      price: order['price'] as num? ?? 0,
+      productsCount: order['productsCount'] as int? ?? 0,
+      productsPrice: order['productsPrice'] as num? ?? 0,
       products: [
         for (Map<String, dynamic> product in products)
           OrderProductObject.fromMap(product, ingredients),
@@ -142,7 +143,7 @@ class OrderObject extends _Object {
         for (Map<String, dynamic> attr in attributes)
           OrderSelectedAttributeObject.fromMap(attr),
       ],
-      createdAt: Util.fromUTC(order['createdAt'] as int),
+      createdAt: Util.fromUTC(order['createdAt'] as int? ?? 0),
     );
   }
 
@@ -247,6 +248,7 @@ class OrderProductObject extends _Object {
     Iterable<Map<String, Object?>> ingredients,
   ) {
     final id = data['id'] ?? 0;
+    // null-safety to make test easy
     return OrderProductObject(
       id: id,
       productName: data['productName'] ?? '',
@@ -342,13 +344,14 @@ class OrderIngredientObject extends _Object {
 
   /// Create object from DB format.
   factory OrderIngredientObject.fromMap(Map<String, dynamic> data) {
+    // null-safety to make test easy
     return OrderIngredientObject(
-      id: data['id'],
-      ingredientName: data['ingredientName'],
-      quantityName: data['quantityName'],
-      additionalPrice: data['additionalPrice'],
-      additionalCost: data['additionalCost'],
-      amount: data['amount'],
+      id: data['id'] as int? ?? 0,
+      ingredientName: data['ingredientName'] as String? ?? '',
+      quantityName: data['quantityName'] as String?,
+      additionalPrice: data['additionalPrice'] as num? ?? 0,
+      additionalCost: data['additionalCost'] as num? ?? 0,
+      amount: data['amount'] as num? ?? 0,
     );
   }
 
@@ -438,10 +441,11 @@ class OrderSelectedAttributeObject extends _Object {
     );
     final mode = OrderAttributeMode.values[max(modeIndex, 0)];
 
+    // null-safety to make test easy
     return OrderSelectedAttributeObject(
-      id: data['id'],
-      name: data['name'],
-      optionName: data['optionName'],
+      id: data['id'] as int? ?? 0,
+      name: data['name'] as String? ?? '',
+      optionName: data['optionName'] as String? ?? '',
       mode: mode,
       modeValue: data['modeValue'],
     );
