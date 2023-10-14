@@ -455,12 +455,16 @@ void main() {
 
       await tester.tap(find.byKey(const Key('cart.collapsed')));
       await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')))
-            .selected,
-        isTrue,
-      );
+
+      final chip = tester
+          .widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')));
+      expect(chip.selected, isTrue);
+
+      await tester.tap(find.byKey(const Key('cart.product.1.select')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.orderCartIngredientStatus('differentProducts')),
+          findsOneWidget);
     });
 
     testWidgets('Show different message by cashier status', (tester) async {
