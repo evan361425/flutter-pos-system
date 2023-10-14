@@ -212,7 +212,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
 
   /// 這裡是一些實測的大小對應值（尚未考慮 gzip）：
   ///
-  /// | productSize | attrSize | count | bytes | actual |
+  /// | productCount | attrCount | count | bytes | actual |
   /// | - | - | - | - |
   /// | 30037 | 74 | 37 | 14767 | 14767 |
   /// | 62988 | 134 | 67 | 29302 | 29302 |

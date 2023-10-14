@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart'
     show databaseFactoryFfi, sqfliteFfiInit;
 
+import '../mocks/mock_database.mocks.dart' show MockDatabaseExecutor;
 import '../test_helpers/file_mocker.dart';
 import 'database_test.mocks.dart';
 
@@ -260,6 +261,21 @@ void main() {
       verify(db.delete('table'));
 
       await Database.instance.reset(null, databaseFactoryFfi.deleteDatabase);
+    });
+
+    test('#transaction', () async {
+      final db = Database.instance.db as MockDatabase;
+      final txn = MockDatabaseExecutor();
+      when(db.transaction(any))
+          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+
+      var fired = false;
+
+      await Database.instance.transaction((txn) async {
+        fired = true;
+      });
+
+      expect(fired, isTrue);
     });
 
     setUpAll(() {

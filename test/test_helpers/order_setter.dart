@@ -19,9 +19,9 @@ class OrderSetter {
       cost: 30,
       productsPrice: 20,
       productsCount: 10,
-      createdAt: DateTime(2023, 3, 4, 5, 6, 7, 8, 9),
-      products: const [
-        OrderProductObject(
+      createdAt: DateTime(2023, 3, 4, 5, 6, 7, 0, 0),
+      products: [
+        const OrderProductObject(
           id: 1,
           productName: 'p-1',
           catalogName: 'c-1',
@@ -43,7 +43,7 @@ class OrderSetter {
             OrderIngredientObject(id: 3, ingredientName: 'i-3', amount: -5),
           ],
         ),
-        OrderProductObject(
+        const OrderProductObject(
           id: 2,
           productName: 'p-2',
           catalogName: 'c-2',

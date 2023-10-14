@@ -324,9 +324,6 @@ class OrderIngredientObject extends _Object {
     this.productQuantityId,
   });
 
-  /// If this using default quantity.
-  bool get isDefaultQuantity => quantityName == null;
-
   @override
   Map<String, Object?> toMap() {
     return {

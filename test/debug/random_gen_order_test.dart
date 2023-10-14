@@ -20,6 +20,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 import '../mocks/mock_database.dart';
+import '../mocks/mock_database.mocks.dart';
 
 void main() {
   group('Random Generate Order', () {
@@ -50,7 +51,18 @@ void main() {
     });
 
     testWidgets('change date and count', (tester) async {
-      when(database.push(any, any)).thenAnswer((_) => Future.value(1));
+      final txn = MockDatabaseExecutor();
+      final batch = MockBatch();
+
+      when(database.transaction(any))
+          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+      when(txn.batch()).thenReturn(batch);
+      when(txn.insert(Seller.orderTable, any))
+          .thenAnswer((_) => Future.value(1));
+      when(txn.insert(Seller.productTable, any))
+          .thenAnswer((_) => Future.value(1));
+      when(batch.commit(noResult: anyNamed('noResult')))
+          .thenAnswer((_) => Future.value([]));
 
       const btn = Key('test');
       await tester.pumpWidget(ChangeNotifierProvider.value(
@@ -70,7 +82,7 @@ void main() {
       await tester.tap(find.text('OK'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      verify(database.push(any, any)).called(15);
+      verify(txn.insert(Seller.orderTable, any)).called(15);
     });
   });
 

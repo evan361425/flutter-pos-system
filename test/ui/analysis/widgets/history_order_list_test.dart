@@ -6,11 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/circular_loading.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/history_order_list.dart';
 import 'package:provider/provider.dart';
 
@@ -131,6 +133,8 @@ void main() {
 
     testWidgets('should navigate to modal', (tester) async {
       final order = OrderSetter.sample();
+      // test showing product name without count
+      order.products.add(const OrderProductObject(count: 1));
       OrderSetter.setMetrics([order]);
       OrderSetter.setOrders([order]);
       OrderSetter.setOrder(order);
@@ -147,6 +151,8 @@ void main() {
       expect(find.text('oao-1'), findsOneWidget);
       expect(find.text('p-2'), findsOneWidget);
 
+      await tester.tap(find.text(S.orderObjectTotalPrice('40')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
 

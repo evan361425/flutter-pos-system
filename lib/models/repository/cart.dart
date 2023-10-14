@@ -173,6 +173,7 @@ class Cart extends ChangeNotifier {
   void updateSelection() {
     final selected = this.selected;
     if (selected.isEmpty) {
+      // TODO: testing
       selectedProduct.value = null;
       return;
     }

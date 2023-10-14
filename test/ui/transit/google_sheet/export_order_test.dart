@@ -121,7 +121,7 @@ void main() {
         final order = OrderSetter.sample();
         OrderSetter.setMetrics([order], countingAll: true);
         OrderSetter.setOrders([order]);
-        OrderSetter.setOrder(order);
+        OrderSetter.setDetailedOrders([order]);
 
         final sheetsApi = getMockSheetsApi();
         final today = DateFormat('MMdd').format(DateTime.now());
@@ -199,7 +199,7 @@ void main() {
         final order = OrderSetter.sample();
         OrderSetter.setMetrics([order], countingAll: true);
         OrderSetter.setOrders([order]);
-        OrderSetter.setOrder(order);
+        OrderSetter.setDetailedOrders([order]);
 
         final sheetsApi = getMockSheetsApi();
 

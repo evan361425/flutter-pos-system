@@ -94,9 +94,11 @@ class _ProductTile extends StatelessWidget {
         '${S.orderObjectProductCost}：${data.totalCost.toCurrency()}',
       ]),
       leading: Menu.instance.getProductByName(data.productName)?.avator ??
-          CircleAvatar(
-            child: Text(data.productName.characters.first.toUpperCase()),
-          ),
+          (data.productName != ''
+              ? CircleAvatar(
+                  child: Text(data.productName.characters.first.toUpperCase()),
+                )
+              : null),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       childrenPadding: const EdgeInsets.all(8.0),
       children: [

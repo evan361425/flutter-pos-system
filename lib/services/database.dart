@@ -198,12 +198,6 @@ class Database {
       ..add('databases');
     return '${paths.join('/')}/pos_system.sqlite';
   }
-
-  static String join(Iterable<String>? data) =>
-      (data?.join(delimiter) ?? '') + delimiter;
-
-  static List<String> split(String? value) =>
-      value?.trim().split(delimiter) ?? [];
 }
 
 class JoinQuery {
