@@ -70,7 +70,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   Widget buildTrailing(OrderMetrics metrics) {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: widget.trailingBuilder!.call(context, metrics),
+      child: widget.trailingBuilder!(context, metrics),
     );
   }
 

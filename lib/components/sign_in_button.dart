@@ -34,7 +34,7 @@ class SignInButton extends StatelessWidget {
         }
 
         // Render widget if authenticated
-        return signedInWidget ?? signedInWidgetBuilder!.call(user);
+        return signedInWidget ?? signedInWidgetBuilder!(user);
       },
     );
   }

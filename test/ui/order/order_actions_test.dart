@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -108,7 +109,10 @@ void main() {
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
-        CartProduct(Menu.instance.getProduct('p-1')!),
+        CartProduct(
+          Menu.instance.getProduct('p-1')!,
+          quantities: {'pi-1': 'pq-1', 'wrong-1': 'a-1'},
+        ),
         CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
         'oa-1': 'oao-1',
@@ -130,32 +134,55 @@ void main() {
     }
 
     testWidgets('Stash', (tester) async {
+      final now = DateTime.now();
+      final order = OrderObject(
+        createdAt: now,
+        products: const [
+          OrderProductObject(
+            productId: "p-1",
+            count: 1,
+            singlePrice: 17,
+            ingredients: [
+              OrderIngredientObject(
+                productIngredientId: "pi-1",
+                productQuantityId: "pq-1",
+              ),
+            ],
+          ),
+          OrderProductObject(
+            productId: "p-2",
+            count: 1,
+            singlePrice: 11,
+          ),
+        ],
+        attributes: const [
+          OrderSelectedAttributeObject(attributeId: 'oa-1', optionId: 'oao-1'),
+          OrderSelectedAttributeObject(attributeId: 'oa-2', optionId: 'oao-2'),
+        ],
+      );
+      Cart.timer = () => now;
+
       await tester.pumpWidget(buildApp());
 
-      act() async {
-        await tester.tap(find.byKey(const Key('order.action.more')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('order.action.stash')));
-        await tester.pumpAndSettle();
-      }
-
-      // failed to stash
-      when(database.count(any)).thenAnswer((_) => Future.value(5));
-      await act();
-
-      when(database.count(any)).thenAnswer((_) => Future.value(1));
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
 
-      await act();
+      await tester.tap(find.byKey(const Key('order.action.more')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.action.stash')));
+      await tester.pumpAndSettle();
 
       expect(Cart.instance.isEmpty, isTrue);
+
+      // empty cart will not trigger stash which will verify later.
+      await tester.tap(find.byKey(const Key('order.action.more')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.action.stash')));
+      await tester.pumpAndSettle();
+
       verify(database.push(
-          Seller.stashTable,
-          argThat(predicate((data) =>
-              data is Map &&
-              data['createdAt'] != null &&
-              data['encodedAttributes'] != null &&
-              data['encodedProducts'] != null))));
+        Seller.stashTable,
+        argThat(equals(order.toStashMap())),
+      )).called(1);
     });
 
     testWidgets('Changer', (tester) async {

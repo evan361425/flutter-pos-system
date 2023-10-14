@@ -110,56 +110,70 @@ void main() {
             quantities: {'pi-1': 'pq-1'}),
         CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
-        'c-1': 'co-1',
-        'c-2': 'co-2'
+        'oa-1': 'oao-1',
+        'oa-2': 'oao-2'
       });
     }
 
     void prepareOrderAttributes() {
       final s1 = OrderAttribute(
-        id: 'c-1',
+        id: 'oa-1',
+        name: 'oa-1',
         mode: OrderAttributeMode.changeDiscount,
         options: {
-          'co-1': OrderAttributeOption(
-            id: 'co-1',
+          'oao-1': OrderAttributeOption(
+            id: 'oao-1',
+            name: 'oao-1',
             isDefault: true,
             modeValue: 10,
           ),
-          'co-2': OrderAttributeOption(
-            id: 'co-2',
+          'oao-2': OrderAttributeOption(
+            id: 'oao-2',
+            name: 'oao-2',
             modeValue: 50,
           ),
         },
       );
       final s2 = OrderAttribute(
-        id: 'c-2',
+        id: 'oa-2',
+        name: 'oa-2',
         mode: OrderAttributeMode.changePrice,
         options: {
-          'co-3': OrderAttributeOption(
-            id: 'co-3',
+          'oao-3': OrderAttributeOption(
+            id: 'oao-3',
+            name: 'oao-3',
             modeValue: 10,
           ),
-          'co-4': OrderAttributeOption(
-            id: 'co-4',
+          'oao-4': OrderAttributeOption(
+            id: 'oao-4',
+            name: 'oao-4',
             isDefault: true,
             modeValue: -10,
           ),
         },
       );
       final s3 = OrderAttribute(
-        id: 'c-3',
-        options: {'co-5': OrderAttributeOption(id: 'co-5', isDefault: true)},
+        id: 'oa-3',
+        name: 'oa-3',
+        options: {
+          'oao-5': OrderAttributeOption(
+            id: 'oao-5',
+            name: 'oao-5',
+            isDefault: true,
+          )
+        },
       );
       final s4 = OrderAttribute(
-        id: 'c-4',
-        options: {'co-6': OrderAttributeOption(id: 'co-6')},
+        id: 'oa-4',
+        name: 'oa-4',
+        options: {'oao-6': OrderAttributeOption(id: 'oao-6', name: 'oao-6')},
       );
       OrderAttributes.instance.replaceItems({
-        'c-1': s1..prepareItem(),
-        'c-2': s2..prepareItem(),
-        'c-3': s3..prepareItem(),
-        'c-4': s4..prepareItem(),
-        'c-5': OrderAttribute(id: 'c-5'),
+        'oa-1': s1..prepareItem(),
+        'oa-2': s2..prepareItem(),
+        'oa-3': s3..prepareItem(),
+        'oa-4': s4..prepareItem(),
+        'oa-5': OrderAttribute(id: 'oa-5', name: 'oa-5'),
       });
     }
 
@@ -236,10 +250,7 @@ void main() {
       await tester.pumpAndSettle();
 
       verifyText('paid', '0.12');
-      expect(
-        fCKey('change.error'),
-        findsOneWidget,
-      );
+      expect(fCKey('change.error'), findsOneWidget);
       await tester.tap(fCKey('submit'));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.checkout')));
@@ -273,7 +284,55 @@ void main() {
 
       await Cashier.instance.setCurrentByUnit(1, 5);
 
-      final c = OrderSetter.setPushed(OrderObject(createdAt: DateTime.now()));
+      final now = DateTime.now();
+      Cart.timer = () => now;
+      final checkers = OrderSetter.setPushed(OrderObject(
+        id: 1,
+        paid: 90,
+        price: 28,
+        cost: 5,
+        productsPrice: 28,
+        productsCount: 2,
+        createdAt: now,
+        products: const [
+          OrderProductObject(
+            id: 1,
+            productName: "p-1",
+            catalogName: "c-1",
+            count: 1,
+            singleCost: 5,
+            singlePrice: 17,
+            originalPrice: 17,
+            isDiscount: false,
+            ingredients: [
+              OrderIngredientObject(
+                ingredientName: 'i-1',
+                quantityName: 'q-1',
+                additionalPrice: 10,
+                additionalCost: 5,
+                amount: 5,
+              ),
+              OrderIngredientObject(
+                ingredientName: 'i-2',
+                quantityName: null,
+                additionalPrice: 0,
+                additionalCost: 0,
+                amount: 3,
+              ),
+            ],
+          ),
+          OrderProductObject(
+            id: 1,
+            productName: "p-2",
+            catalogName: "c-2",
+            count: 1,
+            singleCost: 0,
+            singlePrice: 11,
+            originalPrice: 11,
+            isDiscount: false,
+          ),
+        ],
+      ));
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
       expect(find.text(S.actSuccess), findsOneWidget);
@@ -282,7 +341,7 @@ void main() {
       // navigator popped
       expect(sChange, findsNothing);
 
-      for (final checker in c) {
+      for (final checker in checkers) {
         checker();
       }
 
@@ -294,10 +353,10 @@ void main() {
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
-            data['i-1.currentAmount'] == 90 &&
+            data['i-1.currentAmount'] == 95 &&
             !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-1.updatedAt');
+            !data.containsKey('i-2.updatedAt');
       }))));
     });
 
@@ -311,26 +370,30 @@ void main() {
       await tester.pumpAndSettle();
 
       // go to calculator because of attributes have set.
-      expect(find.byKey(const Key('set_attribute.c-1.co-1')), findsNothing);
+      expect(find.byKey(const Key('set_attribute.oa-1.oao-1')), findsNothing);
 
       await tester.tap(find.byKey(const Key('order.set_attr')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('set_attribute.c-1.co-1')));
-      await tester.tap(find.byKey(const Key('set_attribute.c-2.co-3')));
+      await tester.tap(find.byKey(const Key('set_attribute.oa-1.oao-1')));
+      await tester.tap(find.byKey(const Key('set_attribute.oa-2.oao-3')));
 
       await tester.tap(find.byKey(const Key('order.cashier')));
       await tester.pumpAndSettle();
 
-      final c = OrderSetter.setPushed(OrderObject(
+      final now = DateTime.now();
+      Cart.timer = () => now;
+      final checkers = OrderSetter.setPushed(OrderObject(
+        id: 1,
         paid: 38,
         price: 38,
-        cost: 20,
-        productsCount: 2,
+        cost: 5,
         productsPrice: 28,
-        createdAt: DateTime.now(),
+        productsCount: 2,
+        createdAt: now,
         products: const [
           OrderProductObject(
+            id: 1,
             productName: "p-1",
             catalogName: "c-1",
             count: 1,
@@ -344,7 +407,7 @@ void main() {
                 quantityName: "q-1",
                 additionalPrice: 10,
                 additionalCost: 5,
-                amount: 10,
+                amount: 5,
               ),
               OrderIngredientObject(
                 ingredientName: "i-2",
@@ -353,6 +416,7 @@ void main() {
             ],
           ),
           OrderProductObject(
+            id: 2,
             productName: "p-2",
             catalogName: "c-2",
             count: 1,
@@ -364,14 +428,14 @@ void main() {
         ],
         attributes: const [
           OrderSelectedAttributeObject(
-            name: 'order attribute',
-            optionName: 'order attribute option',
+            name: 'oa-2',
+            optionName: 'oao-3',
             mode: OrderAttributeMode.changePrice,
             modeValue: 10,
           ),
           OrderSelectedAttributeObject(
-            name: 'order attribute',
-            optionName: 'order attribute option',
+            name: 'oa-3',
+            optionName: 'oao-5',
             mode: OrderAttributeMode.statOnly,
           ),
         ],
@@ -379,17 +443,9 @@ void main() {
 
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
-      // wait for error message disappear
-      scaffoldMessenger.currentState?.hideCurrentSnackBar();
       await tester.pumpAndSettle();
 
-      expect(find.text(S.actSuccess), findsOneWidget);
-
-      expect(Cart.instance.isEmpty, isTrue);
-      // navigator popped
-      expect(find.byKey(const Key('order.checkout')), findsNothing);
-
-      for (final checker in c) {
+      for (final checker in checkers) {
         checker();
       }
 
@@ -402,13 +458,15 @@ void main() {
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
-            data['i-1.currentAmount'] == 92 &&
+            data['i-1.currentAmount'] == 95 &&
             !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-2.updatedAt') &&
-            data['i-3.currentAmount'] == 105 &&
-            !data.containsKey('i-3.updatedAt');
+            !data.containsKey('i-2.updatedAt');
       }))));
+
+      expect(find.text(S.actSuccess), findsOneWidget);
+      expect(Cart.instance.isEmpty, isTrue);
+      expect(find.byKey(const Key('order.checkout')), findsNothing);
     });
 
     testWidgets('Play with calculator', (tester) async {

@@ -72,7 +72,8 @@ class OrderObject extends _Object {
         singlePrice: object.singlePrice,
         quantities: {
           for (final item in object.ingredients)
-            item.productIngredientId: item.productQuantityId
+            if (item.productQuantityId != null)
+              item.productIngredientId: item.productQuantityId!
         },
       );
     }
@@ -235,7 +236,10 @@ class OrderProductObject extends _Object {
       'productId': productId,
       'count': count,
       'singlePrice': singlePrice,
-      'ingredients': ingredients.map((e) => e.toStashMap()).toList(),
+      'ingredients': ingredients
+          .map((e) => e.productQuantityId == null ? null : e.toStashMap())
+          .where((e) => e != null)
+          .toList(),
     };
   }
 
@@ -306,7 +310,7 @@ class OrderIngredientObject extends _Object {
   final String productIngredientId;
 
   /// Quantity ID mapping to product, help to restore from stash.
-  final String productQuantityId;
+  final String? productQuantityId;
 
   const OrderIngredientObject({
     this.id = 0,
@@ -317,7 +321,7 @@ class OrderIngredientObject extends _Object {
     this.amount = 0,
     this.ingredientId = '',
     this.productIngredientId = '',
-    this.productQuantityId = '',
+    this.productQuantityId,
   });
 
   /// If this using default quantity.
@@ -376,7 +380,9 @@ class OrderIngredientObject extends _Object {
       amount: quantity?.amount ?? ingredient.amount,
       additionalPrice: quantity?.additionalPrice ?? 0,
       additionalCost: quantity?.additionalCost ?? 0,
-      ingredientId: ingredient.id,
+      ingredientId: ingredient.ingredient.id,
+      productIngredientId: ingredient.id,
+      productQuantityId: quantity?.id,
     );
   }
 }
@@ -466,6 +472,8 @@ class OrderSelectedAttributeObject extends _Object {
       optionName: option.name,
       mode: option.mode,
       modeValue: option.modeValue,
+      attributeId: option.attribute.id,
+      optionId: option.id,
     );
   }
 }

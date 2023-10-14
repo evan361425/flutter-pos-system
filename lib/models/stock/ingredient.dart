@@ -85,6 +85,8 @@ class Ingredient extends Model<IngredientObject>
       Stock.instance.applyAmounts({id: amount - currentAmount});
 
   /// Add/minus [amount] of ingredient and return update data
+  ///
+  /// If [onlyAmount] is true, update current amount without any side effect.
   Map<String, Object?> getUpdateData(num amount, {onlyAmount = false}) {
     final newAmount = currentAmount + amount;
     final object = amount > 0 && !onlyAmount

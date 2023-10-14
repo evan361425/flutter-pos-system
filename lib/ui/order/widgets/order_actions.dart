@@ -10,25 +10,25 @@ import 'package:possystem/translator.dart';
 class OrderActions extends StatelessWidget {
   const OrderActions({Key? key}) : super(key: key);
 
-  List<BottomSheetAction<OrderActionMode>> get actions {
+  List<BottomSheetAction<OrderAction>> get actions {
     return [
       BottomSheetAction(
         key: const Key('order.action.changer'),
         title: Text(S.orderActionsOpenChanger),
         leading: const Icon(Icons.change_circle_sharp),
-        returnValue: OrderActionMode.changer,
+        returnValue: const OrderAction(route: Routes.cashierChanger),
       ),
       BottomSheetAction(
         key: const Key('order.action.stash'),
         title: Text(S.orderActionsStash),
         leading: const Icon(Icons.file_download_sharp),
-        returnValue: OrderActionMode.stash,
+        returnValue: OrderAction(action: _stash),
       ),
       const BottomSheetAction(
         key: Key('order.action.history'),
         title: Text('訂單記錄'),
         leading: Icon(Icons.history_sharp),
-        returnValue: OrderActionMode.history,
+        returnValue: OrderAction(route: Routes.history),
       ),
     ];
   }
@@ -37,13 +37,13 @@ class OrderActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return MoreButton(
       onPressed: () async {
-        final result = await showCircularBottomSheet<OrderActionMode>(
+        final result = await showCircularBottomSheet<OrderAction>(
           context,
           actions: actions,
         );
 
-        if (context.mounted) {
-          final success = await exec(context, result);
+        if (context.mounted && result != null) {
+          final success = await result.exec(context);
 
           if (success == true && context.mounted) {
             showSnackBar(context, S.actSuccess);
@@ -53,22 +53,19 @@ class OrderActions extends StatelessWidget {
     );
   }
 
-  Future<bool?> exec(BuildContext context, OrderActionMode? action) async {
-    switch (action) {
-      case OrderActionMode.stash:
-        return Cart.instance.stash();
-      case OrderActionMode.changer:
-        return context.pushNamed(Routes.cashierChanger);
-      case OrderActionMode.history:
-        return context.pushNamed(Routes.history);
-      default:
-        return false;
-    }
+  Future<bool?> _stash() {
+    return Cart.instance.stash();
   }
 }
 
-enum OrderActionMode {
-  changer,
-  stash,
-  history,
+class OrderAction {
+  final Future<bool?> Function()? action;
+
+  final String? route;
+
+  const OrderAction({this.action, this.route});
+
+  Future<bool?> exec(BuildContext context) {
+    return route == null ? action!() : context.pushNamed(route!);
+  }
 }

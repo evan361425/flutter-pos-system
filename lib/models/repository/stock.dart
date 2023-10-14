@@ -54,7 +54,7 @@ class Stock extends ChangeNotifier
     );
   }
 
-  /// [oldData] is helpful when reverting order
+  /// Update amounts by order.
   Future<void> order(OrderObject data) async {
     final amounts = <String, num>{};
 

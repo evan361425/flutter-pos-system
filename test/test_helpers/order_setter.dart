@@ -242,6 +242,7 @@ class OrderSetter {
   static List<void Function()> setPushed(OrderObject order) {
     final txn = MockDatabaseExecutor();
     final checkers = <void Function()>[];
+    final batches = <MockBatch>[];
 
     when(database.transaction(any))
         .thenAnswer((inv) => inv.positionalArguments[0](txn));
@@ -249,37 +250,39 @@ class OrderSetter {
     final om = order.toMap();
     when(txn.insert(Seller.orderTable, om)).thenAnswer((_) => Future.value(1));
 
-    for (var i = 1; i < order.products.length; i++) {
+    for (var i = 0; i < order.products.length; i++) {
       final p = order.products[i];
       final m = p.toMap();
       m['orderId'] = order.id;
       m['createdAt'] = om['createdAt'];
       when(txn.insert(Seller.productTable, m))
-          .thenAnswer((_) => Future.value(i));
+          .thenAnswer((_) => Future.value(i + 1));
 
       final batch = MockBatch();
-      when(txn.batch()).thenReturn(batch);
+      batches.add(batch);
       for (final ing in p.ingredients) {
         final m = ing.toMap();
         m['orderId'] = order.id;
-        m['orderProductId'] = i;
+        m['orderProductId'] = i + 1;
         m['createdAt'] = om['createdAt'];
         checkers.add(() => verify(batch.insert(Seller.ingredientTable, m)));
       }
-      when(batch.commit(noResult: argThat(isTrue, named: 'noResult')))
-          .thenAnswer((_) => Future.value([]));
     }
 
     final batch = MockBatch();
-    when(txn.batch()).thenReturn(batch);
+    batches.add(batch);
     for (final attr in order.attributes) {
       final m = attr.toMap();
       m['orderId'] = order.id;
       m['createdAt'] = om['createdAt'];
       checkers.add(() => verify(batch.insert(Seller.attributeTable, m)));
     }
-    when(batch.commit(noResult: argThat(isTrue, named: 'noResult')))
-        .thenAnswer((_) => Future.value([]));
+
+    when(txn.batch()).thenReturnInOrder(batches);
+    for (final b in batches) {
+      when(b.commit(noResult: argThat(isTrue, named: 'noResult')))
+          .thenAnswer((_) => Future.value([]));
+    }
 
     return checkers;
   }

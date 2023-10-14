@@ -21,6 +21,10 @@ class Cart extends ChangeNotifier {
   /// Singleton on [Cart].
   static Cart instance = Cart();
 
+  /// Timer for order creation.
+  @visibleForTesting
+  static DateTime Function() timer = () => DateTime.now();
+
   /// Current ordered products.
   final List<CartProduct> products = [];
 
@@ -286,7 +290,7 @@ class Cart extends ChangeNotifier {
       attributes: selectedAttributeOptions
           .map((e) => OrderSelectedAttributeObject.fromModel(e))
           .toList(),
-      createdAt: DateTime.now(),
+      createdAt: timer(),
     );
   }
 }

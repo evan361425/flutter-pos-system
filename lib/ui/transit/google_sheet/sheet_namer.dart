@@ -86,7 +86,7 @@ class SheetNamerState extends State<SheetNamer> {
         editSheetName();
         break;
       case 1:
-        widget.action!.call(widget.prop);
+        widget.action!(widget.prop);
         break;
     }
   }
