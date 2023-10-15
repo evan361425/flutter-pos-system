@@ -6,21 +6,30 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 
 class OderSettingView extends StatelessWidget {
-  const OderSettingView({Key? key}) : super(key: key);
+  final ValueNotifier<num> price;
+
+  const OderSettingView({
+    Key? key,
+    required this.price,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView(padding: const EdgeInsets.all(8.0), children: [
       for (final item in OrderAttributes.instance.notEmptyItems)
-        _OrderAttributeGroup(item),
+        _OrderAttributeGroup(item, price),
+      // avoid calculator overlapping it
+      const SizedBox(height: 36),
     ]);
   }
 }
 
 class _OrderAttributeGroup extends StatefulWidget {
+  final ValueNotifier<num> price;
+
   final OrderAttribute attribute;
 
-  const _OrderAttributeGroup(this.attribute);
+  const _OrderAttributeGroup(this.attribute, this.price);
 
   @override
   State<_OrderAttributeGroup> createState() => _OrderAttributeGroupState();
@@ -37,23 +46,20 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
         style: Theme.of(context).textTheme.headlineSmall,
       ),
       const SizedBox(height: kSpacing0),
-      Card(
-        margin: const EdgeInsets.only(bottom: kSpacing2),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
-          child: Wrap(spacing: kSpacing0, children: [
-            for (final option in widget.attribute.itemList)
-              ChoiceChip(
-                key: Key('set_attribute.${widget.attribute.id}.${option.id}'),
-                onSelected: (selected) {
-                  setState(() => selectedId = selected ? option.id : null);
-                  selectOption(option, selected);
-                },
-                selected: selectedId == option.id,
-                label: Text(option.name),
-              )
-          ]),
-        ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 14.0),
+        child: Wrap(spacing: kSpacing0, children: [
+          for (final option in widget.attribute.itemList)
+            ChoiceChip(
+              key: Key('set_attribute.${widget.attribute.id}.${option.id}'),
+              onSelected: (selected) {
+                setState(() => selectedId = selected ? option.id : null);
+                selectOption(option, selected);
+              },
+              selected: selectedId == option.id,
+              label: Text(option.name),
+            )
+        ]),
       ),
     ]);
   }
@@ -66,12 +72,11 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
   }
 
   void selectOption(OrderAttributeOption option, bool isSelected) {
-    if (isSelected) {
-      Cart.instance.attributes[widget.attribute.id] = option.id;
-    } else {
-      // Disable it.
-      // If remove it from map, it will choose default one not disabling
-      Cart.instance.attributes[widget.attribute.id] = '';
-    }
+    Cart.instance.chooseAttribute(
+      widget.attribute.id,
+      isSelected ? option.id : '',
+    );
+
+    widget.price.value = Cart.instance.price;
   }
 }

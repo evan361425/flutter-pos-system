@@ -299,16 +299,19 @@ class Seller extends ChangeNotifier {
     return rows.map((e) => OrderObject.fromStashMap(e)).toList();
   }
 
+  /// Get the stashed orders.
+  Future<OrderMetrics> getStashedMetrics() async {
+    final rows = await Database.instance.query(
+      stashTable,
+      columns: ['COUNT(*) count'],
+    );
+
+    return OrderMetrics.fromMap(rows.isEmpty ? {} : rows[0]);
+  }
+
   /// Get specific stashed order by id and delete that entry.
-  Future<OrderObject?> dropStashedOrder(int id) async {
-    final rows = await Database.instance.query(stashTable, where: 'id = $id');
-    if (rows.isEmpty) return null;
-
-    final object = OrderObject.fromStashMap(rows[0]);
-
-    await Database.instance.delete(stashTable, id);
-
-    return object;
+  Future<void> deleteStashedOrder(int id) {
+    return Database.instance.delete(stashTable, id);
   }
 
   int _getSizeBelongsToOrder(List<Map<String, Object?>> items, Object? id) {

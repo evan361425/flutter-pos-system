@@ -31,9 +31,6 @@ class Cart extends ChangeNotifier {
   /// Current select attributes.
   final Map<String, String> attributes = {};
 
-  /// Current paid money.
-  ValueNotifier<num?> currentPaid = ValueNotifier(null);
-
   /// Current selected product if and only if all selected products are same.
   final ValueNotifier<CartProduct?> selectedProduct = ValueNotifier(null);
 
@@ -93,12 +90,19 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update [attributes] by setting the entry.
+  ///
+  /// If you want to disable the specific attribute, try passing empty string,
+  /// because remove it will choose default one after checkout.
+  void chooseAttribute(String attrId, String optionId) {
+    attributes[attrId] = optionId;
+  }
+
   /// Finish the order and get paid.
-  Future<CashierUpdateStatus?> checkout() async {
+  Future<CashierUpdateStatus?> checkout(num price, [num? paid]) async {
     if (isEmpty) return null;
 
-    final price = this.price;
-    final paid = currentPaid.value ?? price;
+    paid ??= price;
     if (paid < price) throw const PaidException('insufficient_amount');
 
     Log.ger('start', 'order_paid');
@@ -147,15 +151,18 @@ class Cart extends ChangeNotifier {
   }
 
   /// Restore the order.
-  Future<bool> restore(int id) async {
+  void restore(OrderObject order) {
     Log.ger('start', 'order_cart_restore');
 
-    final order = await Seller.instance.dropStashedOrder(id);
-    if (order == null) return false;
+    products
+      ..clear()
+      ..addAll(order.productModels);
+    attributes
+      ..clear()
+      ..addAll(order.selectedAttributes);
+    selectedProduct.value = null;
 
-    _replaceByObject(order);
-
-    return true;
+    notifyListeners();
   }
 
   /// Toggle all selection of products.
@@ -229,26 +236,10 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Replace current status from [object].
-  void _replaceByObject(OrderObject object) {
-    products
-      ..clear()
-      ..addAll(object.productModels);
-    attributes
-      ..clear()
-      ..addAll(object.selectedAttributes);
-    currentPaid.value = null;
-    selectedProduct.value = null;
-
-    notifyListeners();
-  }
-
   /// Clear all the status.
   void clear() {
     products.clear();
     attributes.clear();
-    currentPaid.dispose();
-    currentPaid = ValueNotifier(null);
     selectedProduct.value = null;
 
     notifyListeners();

@@ -12,7 +12,6 @@ import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
@@ -52,11 +51,6 @@ class OrderPageState extends State<OrderPage> {
         return OrderProductListView(products: catalogs[index].itemList);
       },
     );
-    final cartView = ChangeNotifierProvider<Cart>.value(
-      value: Cart.instance,
-      child: const CartView(),
-    );
-    const cartProductStateSelector = CartProductStateSelector();
 
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
@@ -80,14 +74,14 @@ class OrderPageState extends State<OrderPage> {
                 key: slidingPanel,
                 row1: orderCatalogListView,
                 row2: orderProductListView,
-                row3: cartView,
-                row4: cartProductStateSelector,
+                row3: const CartView(),
+                row4: const CartProductStateSelector(),
               )
             : OrientatedView(
                 row1: orderCatalogListView,
                 row2: orderProductListView,
-                row3: cartView,
-                row4: cartProductStateSelector,
+                row3: const CartView(),
+                row4: const CartProductStateSelector(),
               ),
       ),
     );
