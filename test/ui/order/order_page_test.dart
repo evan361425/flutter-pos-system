@@ -20,7 +20,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
@@ -113,8 +113,11 @@ void main() {
     }
 
     Widget buildApp<T>({Key? key, T Function()? popResult}) {
-      return ChangeNotifierProvider.value(
-        value: Seller(),
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: Seller()),
+          ChangeNotifierProvider.value(value: Cart.instance),
+        ],
         child: MaterialApp.router(
           routerConfig: GoRouter(routes: [
             GoRoute(
@@ -468,15 +471,15 @@ void main() {
     });
 
     testWidgets('Show different message by cashier status', (tester) async {
-      late CashierUpdateStatus cashierStatus;
+      late CheckoutStatus status;
       OrderAttributes();
 
-      await tester.pumpWidget(buildApp(popResult: () => cashierStatus));
+      await tester.pumpWidget(buildApp(popResult: () => status));
       Future<void> tapWithCheck(
-        CashierUpdateStatus value, [
+        CheckoutStatus value, [
         String? expectValue,
       ]) async {
-        cashierStatus = value;
+        status = value;
         await tester.tap(find.byKey(const Key('order.apply')));
         await tester.pumpAndSettle();
 
@@ -485,25 +488,35 @@ void main() {
 
         if (expectValue != null) {
           expect(find.text(expectValue), findsOneWidget);
-          await tester.pump(const Duration(seconds: 3));
         }
       }
 
       // hide all
-      SettingsProvider.of<CashierWarningSetting>().value =
-          CashierWarningTypes.hideAll;
-      await tapWithCheck(CashierUpdateStatus.ok, S.actSuccess);
-      await tapWithCheck(CashierUpdateStatus.notEnough, S.actSuccess);
-      await tapWithCheck(CashierUpdateStatus.usingSmall, S.actSuccess);
+      SettingsProvider.of<CheckoutWarningSetting>().value =
+          CheckoutWarningTypes.hideAll;
+      await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
+      await tapWithCheck(
+        CheckoutStatus.fromCashier(CashierUpdateStatus.notEnough),
+        S.actSuccess,
+      );
+      await tapWithCheck(
+        CheckoutStatus.fromCashier(CashierUpdateStatus.usingSmall),
+        S.actSuccess,
+      );
+      await tapWithCheck(CheckoutStatus.nothingHappened);
+
       // only not enough
-      SettingsProvider.of<CashierWarningSetting>().value =
-          CashierWarningTypes.onlyNotEnough;
-      await tapWithCheck(CashierUpdateStatus.notEnough, '收銀機錢不夠找囉！');
-      await tapWithCheck(CashierUpdateStatus.usingSmall, S.actSuccess);
+      SettingsProvider.of<CheckoutWarningSetting>().value =
+          CheckoutWarningTypes.onlyNotEnough;
+      await tapWithCheck(
+          CheckoutStatus.cashierNotEnough, S.orderCashierPaidNotEnough);
+      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
+
       // show all
-      SettingsProvider.of<CashierWarningSetting>().value =
-          CashierWarningTypes.showAll;
-      await tapWithCheck(CashierUpdateStatus.usingSmall);
+      SettingsProvider.of<CheckoutWarningSetting>().value =
+          CheckoutWarningTypes.showAll;
+      await tapWithCheck(
+          CheckoutStatus.cashierUsingSmall, S.orderCashierPaidUsingSmallMoney);
     });
 
     setUp(() {

@@ -7,6 +7,7 @@ void showSnackBar(
   String message, {
   SnackBarAction? action,
 }) {
+  ScaffoldMessenger.of(context).clearSnackBars();
   // If want to add a "close" button, should consider taking root context, which is hard to handle.
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     showCloseIcon: true,
@@ -37,6 +38,7 @@ void showMoreInfoSnackBar(
   Widget content, {
   String label = '說明',
 }) {
+  ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     // make floating button below
     behavior: SnackBarBehavior.floating,

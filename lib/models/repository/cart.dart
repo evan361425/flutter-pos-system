@@ -99,22 +99,21 @@ class Cart extends ChangeNotifier {
   }
 
   /// Finish the order and get paid.
-  Future<CashierUpdateStatus?> checkout(num price, [num? paid]) async {
-    if (isEmpty) return null;
+  Future<CheckoutStatus> checkout(num price, num paid) async {
+    if (isEmpty) return CheckoutStatus.nothingHappened;
 
-    paid ??= price;
-    if (paid < price) throw const PaidException('insufficient_amount');
+    if (paid < price) return CheckoutStatus.paidNotEnough;
 
     Log.ger('start', 'order_paid');
 
     final data = toObject(paid: paid);
     await Seller.instance.push(data);
     await Stock.instance.order(data);
-    final result = await Cashier.instance.paid(paid, price);
+    final status = await Cashier.instance.paid(paid, price);
 
     clear();
 
-    return result;
+    return CheckoutStatus.fromCashier(status);
   }
 
   /// When start ordering, the properties should rebind to avoid legacy data.
@@ -286,8 +285,36 @@ class Cart extends ChangeNotifier {
   }
 }
 
-class PaidException implements Exception {
-  final String cause;
+/// Status of cart after checkout.
+enum CheckoutStatus {
+  /// The paid is not enough, checkout process has suspend.
+  paidNotEnough,
 
-  const PaidException(this.cause);
+  /// The money is not enough for the change.
+  cashierNotEnough,
+
+  /// Cashier is trying to use small money to paid the change.
+  ///
+  /// For example, need $35 to return but use two $10 and three $5 not three $10
+  /// one $5.
+  ///
+  /// If cashier is unable to return fully, it will get [CheckoutStatus.cashierUsingSmall].
+  cashierUsingSmall,
+
+  /// Cart is empty, checkout has no other side effect.
+  nothingHappened,
+
+  /// All fine.
+  ok;
+
+  factory CheckoutStatus.fromCashier(CashierUpdateStatus status) {
+    switch (status) {
+      case CashierUpdateStatus.notEnough:
+        return CheckoutStatus.cashierNotEnough;
+      case CashierUpdateStatus.usingSmall:
+        return CheckoutStatus.cashierUsingSmall;
+      case CashierUpdateStatus.ok:
+        return CheckoutStatus.ok;
+    }
+  }
 }

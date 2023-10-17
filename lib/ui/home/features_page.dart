@@ -6,7 +6,7 @@ import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/services/auth.dart';
-import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
@@ -31,7 +31,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
   final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
   final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
   final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
-  final cashierWarning = SettingsProvider.of<CashierWarningSetting>();
+  final checkoutWarning = SettingsProvider.of<CheckoutWarningSetting>();
   final collectEvents = SettingsProvider.of<CollectEventsSetting>();
 
   @override
@@ -127,19 +127,19 @@ class _FeaturesPageState extends State<FeaturesPage> {
             ),
           ),
           ListTile(
-            key: const Key('feature.cashier_warning'),
+            key: const Key('feature.checkout_warning'),
             leading: const Icon(Icons.store_mall_directory_outlined),
-            title: Text(S.settingCashierWarningTitle),
+            title: Text(S.settingCheckoutWarningTitle),
             subtitle:
-                Text(S.settingCashierWarningTypes(cashierWarning.value.name)),
+                Text(S.settingCheckoutWarningTypes(checkoutWarning.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _buildChoiceList(
               (index) =>
-                  cashierWarning.update(CashierWarningTypes.values[index]),
-              title: S.settingCashierWarningTitle,
-              selected: cashierWarning.value.index,
-              items: CashierWarningTypes.values
-                  .map((e) => S.settingCashierWarningTypes(e.name))
+                  checkoutWarning.update(CheckoutWarningTypes.values[index]),
+              title: S.settingCheckoutWarningTitle,
+              selected: checkoutWarning.value.index,
+              items: CheckoutWarningTypes.values
+                  .map((e) => S.settingCheckoutWarningTypes(e.name))
                   .toList(),
               tips: [
                 '收銀機若使用小錢會出現提示，例如收銀機 5 塊錢不夠了並嘗試用 1 塊錢去找 5 塊錢',

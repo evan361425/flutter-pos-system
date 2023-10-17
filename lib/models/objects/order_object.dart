@@ -152,7 +152,6 @@ class OrderObject extends _Object {
   factory OrderObject.fromStashMap(Map<String, Object?> data) {
     final products = _safeParseList(data['encodedProducts'] as String?);
     final attributes = _safeParseList(data['encodedAttributes'] as String?);
-    print(data);
 
     return OrderObject(
       id: data['id'] as int?,

@@ -4,10 +4,9 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
@@ -110,30 +109,31 @@ class OrderPageState extends State<OrderPage> {
   }
 
   void _onApply() async {
-    final result = await context.pushNamed(Routes.orderDetails);
-    if (result is CashierUpdateStatus) {
-      _showCashierWarning(result);
+    final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
+    if (status != null && context.mounted) {
+      _showCashierWarning(status);
       slidingPanel.currentState?.reset();
     }
   }
 
-  void _showCashierWarning(CashierUpdateStatus status) {
-    status = SettingsProvider.of<CashierWarningSetting>().shouldShow(status);
+  void _showCashierWarning(CheckoutStatus status) {
+    status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
 
     switch (status) {
-      case CashierUpdateStatus.ok:
+      case CheckoutStatus.ok:
         showSnackBar(context, S.actSuccess);
         break;
-      case CashierUpdateStatus.notEnough:
+      case CheckoutStatus.cashierNotEnough:
         showSnackBar(context, S.orderCashierPaidNotEnough);
         break;
-      case CashierUpdateStatus.usingSmall:
+      case CheckoutStatus.cashierUsingSmall:
         showMoreInfoSnackBar(
           context,
           S.orderCashierPaidUsingSmallMoney,
           Text(S.orderCashierPaidUsingSmallMoneyHint),
         );
         break;
+      default:
     }
   }
 }

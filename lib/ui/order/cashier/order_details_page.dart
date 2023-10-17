@@ -57,7 +57,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     final tabBarView = TabBarView(controller: _controller, children: [
       if (hasAttr) OderSettingView(price: price),
       OrderObjectView(order: Cart.instance.toObject()),
-      const StashedOrderListView(),
+      StashedOrderListView(handleCheckout: _handleCheckout),
     ]);
 
     return Scaffold(
@@ -66,7 +66,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         actions: [
           TextButton(
             key: const Key('order.checkout'),
-            onPressed: onCheckout,
+            onPressed: () async {
+              _handleCheckout(await Cart.instance.checkout(
+                price.value,
+                paid.value,
+              ));
+            },
             child: Text(S.orderCashierCheckout),
           ),
         ],
@@ -100,10 +105,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     price.addListener(() => paid.value = price.value);
 
     hasAttr = OrderAttributes.instance.hasNotEmptyItems;
-    final setBefore = hasAttr && Cart.instance.attributes.isNotEmpty;
 
     _controller = TabController(
-      initialIndex: setBefore ? 1 : 0,
+      initialIndex: 0,
       length: hasAttr ? 3 : 2,
       vsync: this,
     );
@@ -124,21 +128,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     super.dispose();
   }
 
-  void onCheckout() async {
+  void _handleCheckout(CheckoutStatus status) {
+    // send success message
     if (context.mounted) {
-      try {
-        final result = await Cart.instance.checkout(
-          price.value,
-          paid.value,
-        );
-        // send success message
-        if (context.mounted && context.canPop()) {
-          context.pop(result);
-        }
-      } on PaidException {
-        if (context.mounted) {
-          showSnackBar(context, S.orderCashierPaidFailed);
-        }
+      if (status == CheckoutStatus.paidNotEnough) {
+        showSnackBar(context, S.orderCashierPaidFailed);
+      } else if (context.canPop()) {
+        context.pop(status);
       }
     }
   }

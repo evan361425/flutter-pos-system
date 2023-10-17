@@ -26,6 +26,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -182,16 +183,19 @@ void main() {
       return find.byKey(Key('cashier.calculator.$key'));
     }
 
-    Widget buildApp<T>({GlobalKey<ScaffoldMessengerState>? messenger}) {
-      return MaterialApp.router(
-        routerConfig: GoRouter(routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const OrderPage(),
-            routes: Routes.routes,
-          ),
-        ]),
-        scaffoldMessengerKey: messenger,
+    Widget buildApp<T>([GlobalKey<ScaffoldMessengerState>? messenger]) {
+      return ChangeNotifierProvider.value(
+        value: Cart.instance,
+        child: MaterialApp.router(
+          scaffoldMessengerKey: messenger,
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const OrderPage(),
+              routes: Routes.routes,
+            ),
+          ]),
+        ),
       );
     }
 
@@ -212,8 +216,7 @@ void main() {
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
       final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
-
-      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
+      await tester.pumpWidget(buildApp(scaffoldMessenger));
 
       await tester.tap(find.byKey(const Key('order.apply')));
       await tester.pumpAndSettle();
@@ -257,8 +260,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
-      // make error message disappear
-      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+      scaffoldMessenger.currentState?.removeCurrentSnackBar();
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
@@ -361,18 +363,11 @@ void main() {
     });
 
     testWidgets('Order with attributes', (tester) async {
-      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
       prepareOrderAttributes();
 
-      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
+      await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.apply')));
-      await tester.pumpAndSettle();
-
-      // go to calculator because of attributes have set.
-      expect(find.byKey(const Key('set_attribute.oa-1.oao-1')), findsNothing);
-
-      await tester.tap(find.byKey(const Key('order.set_attr')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('set_attribute.oa-1.oao-1')));

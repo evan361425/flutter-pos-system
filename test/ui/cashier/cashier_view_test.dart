@@ -77,7 +77,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.surplus')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('尚未設定，請點選右上角「設為預設」'), findsOneWidget);
     });
 
     testWidgets('should execute surplus', (tester) async {

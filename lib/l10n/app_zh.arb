@@ -541,12 +541,12 @@
   "@settingLanguageTitle": {
     "description": "設定頁面中語言的標題"
   },
-  "settingCashierWarningTitle": "收銀機提示",
-  "@settingCashierWarningTitle": {
+  "settingCheckoutWarningTitle": "收銀機提示",
+  "@settingCheckoutWarningTitle": {
     "description": "設定頁面中是否顯示收銀機的提示的標題"
   },
-  "settingCashierWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
-  "@settingCashierWarningTypes": {
+  "settingCheckoutWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
+  "@settingCheckoutWarningTypes": {
     "description": "是否顯示收銀機的提示",
     "placeholders": {
       "type": {

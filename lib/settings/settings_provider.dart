@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
 
 import 'currency_setting.dart';
@@ -20,7 +20,7 @@ class SettingsProvider extends ChangeNotifier {
     OrderAwakeningSetting(),
     OrderOutlookSetting(),
     OrderProductAxisCountSetting(),
-    CashierWarningSetting(),
+    CheckoutWarningSetting(),
     CollectEventsSetting(),
   ], growable: false);
 
