@@ -117,7 +117,7 @@ class OrderObject extends _Object {
           jsonEncode(products.map((e) => e.toStashMap()).toList()),
       'encodedAttributes':
           jsonEncode(attributes.map((e) => e.toStashMap()).toList()),
-      'createdAt': Util.toUTC(),
+      'createdAt': Util.toUTC(now: createdAt),
     };
   }
 

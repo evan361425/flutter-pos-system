@@ -15,7 +15,7 @@ class ItemLoader<T, U> extends StatefulWidget {
 
   final Widget Function(U) metricsBuilder;
 
-  final ValueNotifier? notifier;
+  final ChangeNotifier? notifier;
 
   final Widget emptyChild;
 
@@ -49,8 +49,9 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
     }
 
     return Column(children: [
+      const SizedBox(height: 4.0),
       widget.metricsBuilder(metrics as U),
-      const Divider(),
+      const SizedBox(height: 4.0),
       Expanded(
         child: ListView.builder(
           key: const Key('item_loader'),

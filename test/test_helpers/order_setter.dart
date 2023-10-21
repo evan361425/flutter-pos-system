@@ -239,7 +239,7 @@ class OrderSetter {
     when(batch.commit()).thenAnswer((_) => Future.value([om, op, oi, oa]));
   }
 
-  static List<void Function()> setPushed(OrderObject order) {
+  static void Function() setPushed(OrderObject order) {
     final txn = MockDatabaseExecutor();
     final checkers = <void Function()>[];
     final batches = <MockBatch>[];
@@ -284,6 +284,10 @@ class OrderSetter {
           .thenAnswer((_) => Future.value([]));
     }
 
-    return checkers;
+    return () {
+      for (final checker in checkers) {
+        checker();
+      }
+    };
   }
 }

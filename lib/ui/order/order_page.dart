@@ -60,10 +60,10 @@ class OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           leading: const PopButton(),
           actions: [
-            const OrderActions(key: Key('order.action.more')),
+            const OrderActions(key: Key('order.more')),
             TextButton(
-              key: const Key('order.apply'),
-              onPressed: () => _onApply(),
+              key: const Key('order.checkout'),
+              onPressed: () => _handleCheckout(),
               child: Text(S.orderActionsCheckout),
             ),
           ],
@@ -108,19 +108,21 @@ class OrderPageState extends State<OrderPage> {
     super.initState();
   }
 
-  void _onApply() async {
+  void _handleCheckout() async {
     final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
     if (status != null && context.mounted) {
-      _showCashierWarning(status);
+      _handleCheckoutStatus(status);
       slidingPanel.currentState?.reset();
     }
   }
 
-  void _showCashierWarning(CheckoutStatus status) {
+  void _handleCheckoutStatus(CheckoutStatus status) {
     status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
 
     switch (status) {
       case CheckoutStatus.ok:
+      case CheckoutStatus.stash:
+      case CheckoutStatus.restore:
         showSnackBar(context, S.actSuccess);
         break;
       case CheckoutStatus.cashierNotEnough:

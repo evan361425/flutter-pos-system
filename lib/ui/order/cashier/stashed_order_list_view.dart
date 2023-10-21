@@ -1,47 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/item_loader.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
 
 class StashedOrderListView extends StatelessWidget {
-  final void Function(CheckoutStatus status) handleCheckout;
-
-  const StashedOrderListView({
-    Key? key,
-    required this.handleCheckout,
-  }) : super(key: key);
+  const StashedOrderListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ItemLoader<OrderObject, OrderMetrics>(
+    return ItemLoader<OrderObject, StashedOrderMetrics>(
       builder: _buildTile,
+      notifier: StashedOrders.instance,
       loader: (int offset) {
-        return Seller.instance.getStashedOrders(offset: offset);
+        return StashedOrders.instance.getItems(offset: offset);
       },
       prototypeItem: _buildTile(
         context,
         OrderObject(createdAt: DateTime.now()),
       ),
-      metricsLoader: Seller.instance.getStashedMetrics,
+      metricsLoader: StashedOrders.instance.getMetrics,
       metricsBuilder: (metrics) {
         return Center(child: Text(S.orderListMetaCount(metrics.count)));
       },
+      emptyChild: const Center(child: HintText('目前無任何暫存餐點。')),
     );
   }
 
   Widget _buildTile(BuildContext context, OrderObject order) {
     final n = DateTime.now();
     final title = order.createdAt.isBefore(DateTime(n.year, n.month, n.day))
-        ? DateFormat.MMMEd(S.localeName).format(order.createdAt) +
+        ? DateFormat.MMMd(S.localeName).format(order.createdAt) +
             MetaBlock.string +
             DateFormat.Hms(S.localeName).format(order.createdAt)
         : DateFormat.Hms(S.localeName).format(order.createdAt);
@@ -56,6 +56,7 @@ class StashedOrderListView extends StatelessWidget {
         .cast<String>();
 
     return ListTile(
+      key: Key('stashed_order.${order.id}'),
       title: Text(title),
       subtitle: MetaBlock.withString(context, products, emptyText: '沒有任何產品'),
       trailing: MoreButton(onPressed: () => _showActions(context, order)),
@@ -105,32 +106,71 @@ class StashedOrderListView extends StatelessWidget {
 
         if (ok) {
           Cart.instance.restore(order);
-          await Seller.instance.deleteStashedOrder(order.id ?? 0);
-        }
-        break;
-      case _Action.checkout:
-        if (context.mounted) {
-          final cart = Cart()..restore(order);
-          final price = ValueNotifier<num>(cart.price);
-          final paid = ValueNotifier<num>(price.value);
-          final confirmed = await showDialog<bool>(
-            context: context,
-            builder: (context) => SimpleDialog(children: [
-              OrderCashierCalculator(
-                onSubmit: () => Navigator.of(context).pop(true),
-                price: price,
-                paid: paid,
-              ),
-            ]),
-          );
+          await StashedOrders.instance.delete(order.id ?? 0);
 
-          if (confirmed == true) {
-            handleCheckout(await cart.checkout(price.value, paid.value));
+          if (context.mounted && context.canPop()) {
+            context.pop(CheckoutStatus.restore);
           }
         }
         break;
+      case _Action.checkout:
+        // ignore: use_build_context_synchronously
+        await _checkout(context, order);
+        break;
       case _Action.delete:
-        await Seller.instance.deleteStashedOrder(order.id ?? 0);
+        await StashedOrders.instance.delete(order.id ?? 0);
+        if (context.mounted) {
+          showSnackBar(context, S.orderCashierPaidFailed);
+        }
+    }
+  }
+
+  Future<void> _checkout(
+    BuildContext context,
+    OrderObject order,
+  ) async {
+    final cart = Cart(name: 'stashed')..restore(order);
+    final price = ValueNotifier<num>(cart.price);
+    final paid = ValueNotifier<num>(price.value);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 4.0,
+          vertical: 24.0,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+          horizontal: 8.0,
+        ),
+        semanticLabel: '結帳計算機',
+        children: [
+          SizedBox(
+            height: 360.0,
+            child: OrderCashierCalculator(
+              onSubmit: () => Navigator.of(context).pop(true),
+              price: price,
+              paid: paid,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final status = await cart.checkout(price.value, paid.value);
+      if (status == CheckoutStatus.paidNotEnough) {
+        if (context.mounted) {
+          showSnackBar(context, S.orderCashierPaidFailed);
+        }
+        return;
+      }
+
+      await StashedOrders.instance.delete(order.id ?? 0);
+
+      if (context.mounted && context.canPop()) {
+        context.pop(status);
+      }
     }
   }
 }

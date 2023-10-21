@@ -57,7 +57,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     final tabBarView = TabBarView(controller: _controller, children: [
       if (hasAttr) OderSettingView(price: price),
       OrderObjectView(order: Cart.instance.toObject()),
-      StashedOrderListView(handleCheckout: _handleCheckout),
+      const StashedOrderListView(),
     ]);
 
     return Scaffold(
@@ -65,14 +65,24 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         leading: const PopButton(),
         actions: [
           TextButton(
-            key: const Key('order.checkout'),
+            key: const Key('order.details.stash'),
+            style: ButtonStyle(
+              foregroundColor: MaterialStatePropertyAll(
+                theme.textTheme.bodyMedium!.color,
+              ),
+            ),
+            onPressed: _stash,
+            child: const Text('暫存'),
+          ),
+          TextButton(
+            key: const Key('order.details.confirm'),
             onPressed: () async {
-              _handleCheckout(await Cart.instance.checkout(
+              _confirmedCheckout(await Cart.instance.checkout(
                 price.value,
                 paid.value,
               ));
             },
-            child: Text(S.orderCashierCheckout),
+            child: Text(S.orderDetailsConfirm),
           ),
         ],
         // disable shadow after scrolled
@@ -96,6 +106,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     );
   }
 
+  Future<void> _stash() async {
+    final ok = await Cart.instance.stash();
+    if (context.mounted && ok && context.canPop()) {
+      context.pop(CheckoutStatus.stash);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,9 +131,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
     tabs = [
       if (hasAttr)
-        Tab(key: const Key('order.set_attr'), text: S.orderSetAttributeTitle),
-      Tab(key: const Key('order.cashier'), text: S.orderCashierTitle),
-      const Tab(key: Key('order.stashed'), text: '暫存訂單'),
+        Tab(
+            key: const Key('order.details.attr'),
+            text: S.orderSetAttributeTitle),
+      Tab(key: const Key('order.details.order'), text: S.orderCashierTitle),
+      const Tab(key: Key('order.details.stashed'), text: '暫存訂單'),
     ];
   }
 
@@ -128,7 +147,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     super.dispose();
   }
 
-  void _handleCheckout(CheckoutStatus status) {
+  void _confirmedCheckout(CheckoutStatus status) {
     // send success message
     if (context.mounted) {
       if (status == CheckoutStatus.paidNotEnough) {

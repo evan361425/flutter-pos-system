@@ -51,7 +51,7 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
         child: Wrap(spacing: kSpacing0, children: [
           for (final option in widget.attribute.itemList)
             ChoiceChip(
-              key: Key('set_attribute.${widget.attribute.id}.${option.id}'),
+              key: Key('order.attr.${widget.attribute.id}.${option.id}'),
               onSelected: (selected) {
                 setState(() => selectedId = selected ? option.id : null);
                 selectOption(option, selected);

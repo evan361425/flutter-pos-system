@@ -829,7 +829,7 @@
       }
     }
   },
-  "orderCashierCheckout": "完成",
+  "orderDetailsConfirm": "完成",
   "orderObjectChange": "找錢",
   "orderObjectTotalPrice": "訂單總價：{price}",
   "@orderObjectTotalPrice": {

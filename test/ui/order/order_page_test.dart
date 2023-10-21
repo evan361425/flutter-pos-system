@@ -480,7 +480,7 @@ void main() {
         String? expectValue,
       ]) async {
         status = value;
-        await tester.tap(find.byKey(const Key('order.apply')));
+        await tester.tap(find.byKey(const Key('order.checkout')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('test')));
@@ -495,6 +495,8 @@ void main() {
       SettingsProvider.of<CheckoutWarningSetting>().value =
           CheckoutWarningTypes.hideAll;
       await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
+      await tapWithCheck(CheckoutStatus.restore, S.actSuccess);
+      await tapWithCheck(CheckoutStatus.stash, S.actSuccess);
       await tapWithCheck(
         CheckoutStatus.fromCashier(CashierUpdateStatus.notEnough),
         S.actSuccess,

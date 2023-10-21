@@ -6,8 +6,6 @@ import 'package:possystem/services/database.dart';
 
 /// Help I/O from order DB.
 class Seller extends ChangeNotifier {
-  static const stashTable = 'order_stash';
-
   static const orderTable = 'order_records';
 
   static const productTable = 'order_products';
@@ -275,43 +273,6 @@ class Seller extends ChangeNotifier {
     });
 
     notifyListeners();
-  }
-
-  /// Stash the order to recover later.
-  ///
-  /// It will also save the order attributes.
-  Future<int> stash(OrderObject order) {
-    return Database.instance.push(stashTable, order.toStashMap());
-  }
-
-  /// Get the stashed orders.
-  Future<List<OrderObject>> getStashedOrders({
-    int offset = 0,
-    int? limit = 10,
-  }) async {
-    final rows = await Database.instance.query(
-      stashTable,
-      orderBy: 'createdAt desc',
-      limit: limit,
-      offset: offset,
-    );
-
-    return rows.map((e) => OrderObject.fromStashMap(e)).toList();
-  }
-
-  /// Get the stashed orders.
-  Future<OrderMetrics> getStashedMetrics() async {
-    final rows = await Database.instance.query(
-      stashTable,
-      columns: ['COUNT(*) count'],
-    );
-
-    return OrderMetrics.fromMap(rows.isEmpty ? {} : rows[0]);
-  }
-
-  /// Get specific stashed order by id and delete that entry.
-  Future<void> deleteStashedOrder(int id) {
-    return Database.instance.delete(stashTable, id);
   }
 
   int _getSizeBelongsToOrder(List<Map<String, Object?>> items, Object? id) {

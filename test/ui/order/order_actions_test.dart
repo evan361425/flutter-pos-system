@@ -16,6 +16,7 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -122,14 +123,17 @@ void main() {
     }
 
     Widget buildApp<T>() {
-      return MaterialApp.router(
-        routerConfig: GoRouter(routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const OrderPage(),
-            routes: Routes.routes,
-          ),
-        ]),
+      return ChangeNotifierProvider.value(
+        value: Cart.instance,
+        child: MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const OrderPage(),
+              routes: Routes.routes,
+            ),
+          ]),
+        ),
       );
     }
 
@@ -166,7 +170,7 @@ void main() {
 
       when(database.push(any, any)).thenAnswer((_) => Future.value(1));
 
-      await tester.tap(find.byKey(const Key('order.action.more')));
+      await tester.tap(find.byKey(const Key('order.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.action.stash')));
       await tester.pumpAndSettle();
@@ -174,13 +178,13 @@ void main() {
       expect(Cart.instance.isEmpty, isTrue);
 
       // empty cart will not trigger stash which will verify later.
-      await tester.tap(find.byKey(const Key('order.action.more')));
+      await tester.tap(find.byKey(const Key('order.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.action.stash')));
       await tester.pumpAndSettle();
 
       verify(database.push(
-        Seller.stashTable,
+        StashedOrders.table,
         argThat(equals(order.toStashMap())),
       )).called(1);
     });
@@ -209,7 +213,7 @@ void main() {
 
       await tester.pumpWidget(app);
 
-      await tester.tap(find.byKey(const Key('order.action.more')));
+      await tester.tap(find.byKey(const Key('order.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.action.changer')));
       await tester.pumpAndSettle();
@@ -219,7 +223,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // should go back
-      expect(find.byKey(const Key('order.action.more')), findsOneWidget);
+      expect(find.byKey(const Key('order.more')), findsOneWidget);
       expect(Cashier.instance.at(0).count, equals(5));
       expect(Cashier.instance.at(1).count, isZero);
     });

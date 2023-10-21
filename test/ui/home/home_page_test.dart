@@ -97,7 +97,7 @@ void main() {
       await navAndPop('setting.feature_request', 'feature_request_please');
       await dragUp();
       await navAndPop('setting.setting', 'feature.theme');
-      await navAndPop('home.order', 'order.action.more');
+      await navAndPop('home.order', 'order.more');
       await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');
       await navAndCheck('home.analysis', 'anal.order');

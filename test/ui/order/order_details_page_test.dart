@@ -17,6 +17,7 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -200,16 +201,14 @@ void main() {
     }
 
     testWidgets('Order without any product', (tester) async {
-      Cart.instance = Cart();
-
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.apply')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
+      await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('order.action.more')), findsOneWidget);
+      expect(find.byKey(const Key('order.more')), findsOneWidget);
       expect(find.text(S.actSuccess), findsNothing);
     });
 
@@ -218,7 +217,7 @@ void main() {
       final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
       await tester.pumpWidget(buildApp(scaffoldMessenger));
 
-      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       expect(find.text('p-1'), findsOneWidget);
@@ -256,7 +255,7 @@ void main() {
       expect(fCKey('change.error'), findsOneWidget);
       await tester.tap(fCKey('submit'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
       await tester.pumpAndSettle();
 
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
@@ -288,7 +287,7 @@ void main() {
 
       final now = DateTime.now();
       Cart.timer = () => now;
-      final checkers = OrderSetter.setPushed(OrderObject(
+      final checker = OrderSetter.setPushed(OrderObject(
         id: 1,
         paid: 90,
         price: 28,
@@ -335,7 +334,7 @@ void main() {
           ),
         ],
       ));
-      await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
       await tester.pumpAndSettle();
       expect(find.text(S.actSuccess), findsOneWidget);
 
@@ -343,9 +342,7 @@ void main() {
       // navigator popped
       expect(sChange, findsNothing);
 
-      for (final checker in checkers) {
-        checker();
-      }
+      checker();
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 95 - 62
@@ -367,18 +364,18 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('set_attribute.oa-1.oao-1')));
-      await tester.tap(find.byKey(const Key('set_attribute.oa-2.oao-3')));
+      await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
+      await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
 
-      await tester.tap(find.byKey(const Key('order.cashier')));
+      await tester.tap(find.byKey(const Key('order.details.order')));
       await tester.pumpAndSettle();
 
       final now = DateTime.now();
       Cart.timer = () => now;
-      final checkers = OrderSetter.setPushed(OrderObject(
+      final checker = OrderSetter.setPushed(OrderObject(
         id: 1,
         paid: 38,
         price: 38,
@@ -436,13 +433,11 @@ void main() {
         ],
       ));
 
-      await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      for (final checker in checkers) {
-        checker();
-      }
+      checker();
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 30 + 5 + 3
@@ -461,7 +456,7 @@ void main() {
 
       expect(find.text(S.actSuccess), findsOneWidget);
       expect(Cart.instance.isEmpty, isTrue);
-      expect(find.byKey(const Key('order.checkout')), findsNothing);
+      expect(find.byKey(const Key('order.details.confirm')), findsNothing);
     });
 
     testWidgets('Play with calculator', (tester) async {
@@ -471,7 +466,7 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
@@ -557,6 +552,22 @@ void main() {
 
       verifyText('paid', '60');
       verifyText('change', '32');
+    });
+
+    testWidgets('is able to stash the order', (tester) async {
+      // only test available and actual function was test by other test case.
+      when(database.push(StashedOrders.table, any))
+          .thenAnswer((_) => Future.value(1));
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.details.stash')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.actSuccess), findsOneWidget);
     });
 
     setUp(() {

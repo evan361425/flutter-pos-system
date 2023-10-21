@@ -8,6 +8,7 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
 import 'cashier.dart';
@@ -21,9 +22,14 @@ class Cart extends ChangeNotifier {
   /// Singleton on [Cart].
   static Cart instance = Cart();
 
+  Cart({this.name = 'cart'});
+
   /// Timer for order creation.
   @visibleForTesting
   static DateTime Function() timer = () => DateTime.now();
+
+  /// Help analysis checkout is from stashed or actual cart.
+  final String name;
 
   /// Current ordered products.
   final List<CartProduct> products = [];
@@ -104,7 +110,7 @@ class Cart extends ChangeNotifier {
 
     if (paid < price) return CheckoutStatus.paidNotEnough;
 
-    Log.ger('start', 'order_paid');
+    Log.ger(name, 'order_paid');
 
     final data = toObject(paid: paid);
     await Seller.instance.push(data);
@@ -138,15 +144,17 @@ class Cart extends ChangeNotifier {
 
   /// Stash order to restore later.
   Future<bool> stash() async {
-    if (isEmpty) return false;
+    final able = !Cart.instance.isEmpty;
 
-    Log.ger('start', 'order_cart_stash');
+    if (able) {
+      Log.ger('start', 'order_stash');
 
-    await Seller.instance.stash(toObject());
+      await StashedOrders.instance.stash(toObject());
 
-    clear();
+      clear();
+    }
 
-    return true;
+    return able;
   }
 
   /// Restore the order.
@@ -303,6 +311,12 @@ enum CheckoutStatus {
 
   /// Cart is empty, checkout has no other side effect.
   nothingHappened,
+
+  /// Stash the order.
+  stash,
+
+  /// Restore from stashed.
+  restore,
 
   /// All fine.
   ok;
