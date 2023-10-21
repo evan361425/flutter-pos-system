@@ -66,7 +66,7 @@ void main() {
 
       const btn = Key('test');
       await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Seller(),
+        value: Seller.instance,
         child: const MaterialApp(home: RandomGenerateOrderButton(key: btn)),
       ));
 

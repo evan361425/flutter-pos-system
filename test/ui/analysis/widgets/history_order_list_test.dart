@@ -206,8 +206,6 @@ void main() {
       initializeTranslator();
       initializeDatabase();
       initializeStorage();
-      // init seller
-      Seller();
       // Use menu to get product avator.
       Menu();
     });

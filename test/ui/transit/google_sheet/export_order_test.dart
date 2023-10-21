@@ -5,7 +5,6 @@ import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
@@ -301,7 +300,6 @@ void main() {
       initializeAuth();
       // init dependencies
       CurrencySetting().isInt = true;
-      Seller();
     });
   });
 }

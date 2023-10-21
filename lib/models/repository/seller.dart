@@ -14,12 +14,10 @@ class Seller extends ChangeNotifier {
 
   static const attributeTable = 'order_attributes';
 
-  static late Seller instance;
+  /// Singleton object.
+  static Seller instance = Seller._();
 
-  /// Create to set the singleton [instance].
-  Seller() {
-    instance = this;
-  }
+  Seller._();
 
   /// Get the count of orders per day.
   Future<Map<DateTime, int>> getCountPerDay(
@@ -186,20 +184,22 @@ class Seller extends ChangeNotifier {
       return (await batch.commit()).cast<List<Map<String, Object?>>>();
     });
 
+    final rr = [r[1], r[2], r[3]];
+
     return r[0].map((order) {
       final id = order['id'];
-      final pi = _getSizeBelongsToOrder(r[1], id);
-      final ii = _getSizeBelongsToOrder(r[2], id);
-      final ai = _getSizeBelongsToOrder(r[3], id);
+      final pi = _getSizeBelongsToOrder(rr[0], id);
+      final ii = _getSizeBelongsToOrder(rr[1], id);
+      final ai = _getSizeBelongsToOrder(rr[2], id);
       final o = OrderObject.fromMap(
         order,
-        r[1].sublist(0, pi),
-        r[2].sublist(0, ii),
-        r[3].sublist(0, ai),
+        rr[0].sublist(0, pi),
+        rr[1].sublist(0, ii),
+        rr[2].sublist(0, ai),
       );
-      r[1] = r[1].sublist(pi);
-      r[2] = r[2].sublist(ii);
-      r[3] = r[3].sublist(ai);
+      rr[0] = rr[0].sublist(pi);
+      rr[1] = rr[1].sublist(ii);
+      rr[2] = rr[2].sublist(ai);
 
       return o;
     }).toList();

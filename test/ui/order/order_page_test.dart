@@ -108,14 +108,13 @@ void main() {
       });
 
       // setup model
-      Seller();
       Cart.instance = Cart();
     }
 
     Widget buildApp<T>({Key? key, T Function()? popResult}) {
       return MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: Seller()),
+          ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
         ],
         child: MaterialApp.router(

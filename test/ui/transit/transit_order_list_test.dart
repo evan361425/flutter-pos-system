@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 
@@ -62,7 +61,6 @@ void main() {
       initializeTranslator();
 
       CurrencySetting().isInt = true;
-      Seller();
     });
   });
 }

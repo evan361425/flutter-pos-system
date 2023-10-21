@@ -109,7 +109,6 @@ void main() {
       CurrencySetting().initialize();
 
       // setup seller
-      Seller();
       when(database.query(
         any,
         columns: anyNamed('columns'),

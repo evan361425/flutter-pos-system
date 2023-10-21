@@ -15,7 +15,6 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -119,7 +118,6 @@ void main() {
         'oa-1': 'oao-1',
         'oa-2': 'oao-2'
       });
-      Seller();
     }
 
     Widget buildApp<T>() {

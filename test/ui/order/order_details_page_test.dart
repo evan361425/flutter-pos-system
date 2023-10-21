@@ -16,7 +16,6 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -104,7 +103,6 @@ void main() {
       });
 
       OrderAttributes();
-      Seller();
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
@@ -201,6 +199,8 @@ void main() {
     }
 
     testWidgets('Order without any product', (tester) async {
+      Cart.instance = Cart();
+
       await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.checkout')));

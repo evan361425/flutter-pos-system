@@ -5,11 +5,11 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
+import 'package:possystem/debug/rerun_migration.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
-import 'package:possystem/services/database.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -43,16 +43,7 @@ class SettingView extends StatelessWidget {
                     label: const Text('清除快取'),
                     icon: const Icon(Icons.clear_all_sharp),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      await Database.execMigrationAction(
-                        Database.instance.db,
-                        Database.latestVersion,
-                      );
-                    },
-                    label: const Text('重新執行 Migration'),
-                    icon: const Icon(Icons.clear_all_sharp),
-                  ),
+                  const RerunMigration(),
                 ]),
               ),
             Tutorial(

@@ -65,9 +65,6 @@ void main() async {
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
-      // no need initialize
-      Seller();
-
       if (kDebugMode) {
         await debugSetupMenu();
       }

@@ -33,7 +33,7 @@ void main() {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
-          ChangeNotifierProvider.value(value: Seller()),
+          ChangeNotifierProvider.value(value: Seller.instance),
         ],
         builder: (_, __) => MaterialApp.router(
           themeMode: themeMode,

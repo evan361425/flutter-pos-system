@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/util.dart';
 
@@ -29,6 +30,17 @@ void main() {
       expect(date.hour, equals(2));
       expect(date.minute, equals(59));
       expect(date.second, equals(33));
+    });
+
+    testWidgets('#handleSnapshot error', (WidgetTester tester) async {
+      final f = Util.handleSnapshot((context, data) => const SizedBox.shrink());
+      const err = AsyncSnapshot<String>.withError(ConnectionState.done, 'test');
+
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(builder: (BuildContext context) => f(context, err)),
+      ));
+
+      expect(find.text('test'), findsOneWidget);
     });
   });
 }

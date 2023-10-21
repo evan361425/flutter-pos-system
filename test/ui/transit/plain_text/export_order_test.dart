@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:possystem/ui/transit/plain_text_widgets/views.dart';
@@ -84,7 +83,6 @@ void main() {
       initializeStorage();
       // init dependencies
       CurrencySetting().isInt = true;
-      Seller();
     });
   });
 }
