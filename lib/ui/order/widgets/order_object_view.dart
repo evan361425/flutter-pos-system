@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
+import 'package:possystem/components/style/head_tail_tile.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
@@ -22,23 +23,23 @@ class OrderObjectView extends StatelessWidget {
     final priceWidget = ExpansionTile(
       title: Text(S.orderObjectTotalPrice(order.price.toCurrency())),
       children: <Widget>[
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductsPrice,
           tail: order.productsPrice.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectAttributesPrice,
           tail: order.attributesPrice.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductsCost,
           tail: order.cost.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectRevenue,
           tail: order.revenue.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectPaid,
           tail: order.paid.toCurrency(),
         ),
@@ -102,32 +103,32 @@ class _ProductTile extends StatelessWidget {
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       childrenPadding: const EdgeInsets.all(8.0),
       children: [
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductPrice,
           tail: data.totalPrice.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductCost,
           tail: data.totalCost.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductCount,
           tail: data.count.toString(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductSinglePrice,
           tail: data.singlePrice.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductOriginalPrice,
           tail: data.originalPrice.toCurrency(),
         ),
-        _HeadTailTile(
+        HeadTailTile(
           head: S.orderObjectProductCatalog,
           tail: data.catalogName,
         ),
         if (data.ingredients.isNotEmpty)
-          _HeadTailTile(
+          HeadTailTile(
             head: S.orderObjectProductIngredient,
             tail: '',
             subtitle: MetaBlock.withString(
@@ -144,39 +145,6 @@ class _ProductTile extends StatelessWidget {
             )!,
           ),
       ],
-    );
-  }
-}
-
-class _HeadTailTile extends StatelessWidget {
-  final String head;
-
-  final String tail;
-
-  final Widget? subtitle;
-
-  const _HeadTailTile({
-    Key? key,
-    required this.head,
-    required this.tail,
-    this.subtitle,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final child =
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(head),
-      Text(tail),
-    ]);
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(
-        start: 16.0,
-        end: 24.0,
-        top: 8.0,
-        bottom: 8.0,
-      ),
-      child: subtitle == null ? child : Column(children: [child, subtitle!]),
     );
   }
 }

@@ -100,7 +100,7 @@ void main() {
       await navAndPop('home.order', 'order.more');
       await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');
-      await navAndCheck('home.analysis', 'anal.order');
+      await navAndCheck('home.analysis', 'anal.history');
     });
 
     setUp(() {

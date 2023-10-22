@@ -111,31 +111,31 @@ class OrderPageState extends State<OrderPage> {
   void _handleCheckout() async {
     final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
     if (status != null && context.mounted) {
-      _handleCheckoutStatus(status);
+      handleCheckoutStatus(context, status);
       slidingPanel.currentState?.reset();
     }
   }
+}
 
-  void _handleCheckoutStatus(CheckoutStatus status) {
-    status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
+void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
+  status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
 
-    switch (status) {
-      case CheckoutStatus.ok:
-      case CheckoutStatus.stash:
-      case CheckoutStatus.restore:
-        showSnackBar(context, S.actSuccess);
-        break;
-      case CheckoutStatus.cashierNotEnough:
-        showSnackBar(context, S.orderCashierPaidNotEnough);
-        break;
-      case CheckoutStatus.cashierUsingSmall:
-        showMoreInfoSnackBar(
-          context,
-          S.orderCashierPaidUsingSmallMoney,
-          Text(S.orderCashierPaidUsingSmallMoneyHint),
-        );
-        break;
-      default:
-    }
+  switch (status) {
+    case CheckoutStatus.ok:
+    case CheckoutStatus.stash:
+    case CheckoutStatus.restore:
+      showSnackBar(context, S.actSuccess);
+      break;
+    case CheckoutStatus.cashierNotEnough:
+      showSnackBar(context, S.orderCashierPaidNotEnough);
+      break;
+    case CheckoutStatus.cashierUsingSmall:
+      showMoreInfoSnackBar(
+        context,
+        S.orderCashierPaidUsingSmallMoney,
+        Text(S.orderCashierPaidUsingSmallMoneyHint),
+      );
+      break;
+    default:
   }
 }

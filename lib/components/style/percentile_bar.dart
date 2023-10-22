@@ -34,13 +34,15 @@ class _PercentileBarState extends State<PercentileBar>
           ],
         ),
         AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) => LinearProgressIndicator(
-            value: _curveAnimation.value,
-            valueColor: _colorAnimation,
-            backgroundColor: _colorAnimation.value?.withOpacity(0.2),
-            semanticsLabel: '目前佔總數的 ${_curveAnimation.value}',
-          ),
+          animation: _curveAnimation,
+          builder: (context, child) {
+            return LinearProgressIndicator(
+              value: _controller.value,
+              valueColor: _colorAnimation,
+              backgroundColor: _colorAnimation.value?.withOpacity(0.2),
+              semanticsLabel: '目前佔總數的 ${_curveAnimation.value}',
+            );
+          },
         ),
       ],
     );
@@ -55,17 +57,26 @@ class _PercentileBarState extends State<PercentileBar>
       vsync: this,
     );
 
-    var colorTween = TweenSequence([
+    final colorTween = TweenSequence([
       TweenSequenceItem(
-        tween: ColorTween(begin: Colors.red, end: Colors.orange),
+        tween: ColorTween(
+          begin: const Color(0xffff834c),
+          end: const Color(0xffeebc01),
+        ),
         weight: 1,
       ),
       TweenSequenceItem(
-        tween: ColorTween(begin: Colors.orange, end: Colors.yellow),
+        tween: ColorTween(
+          begin: const Color(0xff7fca2b),
+          end: const Color(0xff81c9de),
+        ),
         weight: 1,
       ),
       TweenSequenceItem(
-        tween: ColorTween(begin: Colors.yellow, end: Colors.green),
+        tween: ColorTween(
+          begin: const Color(0xff3d88df),
+          end: const Color(0xff8b6abc),
+        ),
         weight: 1,
       ),
     ]);
@@ -77,7 +88,9 @@ class _PercentileBarState extends State<PercentileBar>
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.animateTo(widget.total == 0 ? 1.0 : widget.at / widget.total);
+    if (oldWidget.at != widget.at) {
+      _controller.animateTo(widget.total == 0 ? 1.0 : widget.at / widget.total);
+    }
   }
 
   @override

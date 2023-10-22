@@ -22,8 +22,6 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage>
     with SingleTickerProviderStateMixin {
-  final opener = GlobalKey<SlidingUpOpenerState>();
-
   late final ValueNotifier<num> paid;
 
   late final ValueNotifier<num> price;
@@ -48,19 +46,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         borderRadius: const BorderRadius.all(Radius.circular(18.0)),
       ),
       child: OrderCashierCalculator(
-        onSubmit: () => opener.currentState?.close(),
+        onSubmit: _checkout,
         price: price,
         paid: paid,
       ),
     );
 
-    final tabBarView = TabBarView(controller: _controller, children: [
-      if (hasAttr) OderSettingView(price: price),
-      OrderObjectView(order: Cart.instance.toObject()),
-      const StashedOrderListView(),
-    ]);
-
-    return Scaffold(
+    final body = Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
         actions: [
@@ -76,12 +68,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
           ),
           TextButton(
             key: const Key('order.details.confirm'),
-            onPressed: () async {
-              _confirmedCheckout(await Cart.instance.checkout(
-                price.value,
-                paid.value,
-              ));
-            },
+            onPressed: _checkout,
             child: Text(S.orderDetailsConfirm),
           ),
         ],
@@ -92,14 +79,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
           tabs: tabs,
         ),
       ),
-      body: SlidingUpOpener(
-        key: opener,
+      body: TabBarView(controller: _controller, children: [
+        if (hasAttr) OderSettingView(price: price),
+        OrderObjectView(order: Cart.instance.toObject()),
+        const StashedOrderListView(),
+      ]),
+    );
+
+    return Material(
+      child: SlidingUpOpener(
         // 4 rows * 64 + 24 (insets) + 64 (collapse)
         maxHeight: 408,
         minHeight: 84,
-        heightOffset: 12.0,
         renderPanelSheet: false,
-        body: tabBarView,
+        body: body,
         panel: panel,
         collapsed: collapsed,
       ),
@@ -147,7 +140,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     super.dispose();
   }
 
-  void _confirmedCheckout(CheckoutStatus status) {
+  void _checkout() async {
+    final status = await Cart.instance.checkout(price.value, paid.value);
+
     // send success message
     if (context.mounted) {
       if (status == CheckoutStatus.paidNotEnough) {

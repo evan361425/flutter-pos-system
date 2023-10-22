@@ -18,8 +18,6 @@ class OderSettingView extends StatelessWidget {
     return ListView(padding: const EdgeInsets.all(8.0), children: [
       for (final item in OrderAttributes.instance.notEmptyItems)
         _OrderAttributeGroup(item, price),
-      // avoid calculator overlapping it
-      const SizedBox(height: 36),
     ]);
   }
 }

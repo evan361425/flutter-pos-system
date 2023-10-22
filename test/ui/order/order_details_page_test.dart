@@ -255,15 +255,11 @@ void main() {
       expect(fCKey('change.error'), findsOneWidget);
       await tester.tap(fCKey('submit'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.details.confirm')));
-      await tester.pumpAndSettle();
 
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
       scaffoldMessenger.currentState?.removeCurrentSnackBar();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
-      await tester.pumpAndSettle();
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 

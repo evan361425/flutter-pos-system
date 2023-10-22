@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/percentile_bar.dart';
+import 'package:possystem/components/style/head_tail_tile.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/util.dart';
@@ -43,16 +42,17 @@ class AnalysisView extends StatelessWidget {
 
   Widget get metricsCard {
     return AnalysisCard<OrderMetrics>(
+      id: 'summarize',
+      notifier: Seller.instance,
       builder: (context, metric) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('銷售', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 4.0),
           // TODO: add target
-          PercentileBar(metric.price, 0),
-          const SizedBox(height: 8.0),
-          MetaBlock.withString(context, [
-            '成本：${metric.cost.toCurrency()}',
-            '盈利：${(metric.price - metric.cost).toCurrency()}',
-          ])!,
+          HeadTailTile(head: '訂單數', tail: metric.count.toString()),
+          HeadTailTile(head: '營收', tail: metric.price.toCurrency()),
+          HeadTailTile(head: '成本', tail: metric.cost.toCurrency()),
+          HeadTailTile(head: '利潤', tail: metric.revenue.toCurrency()),
         ]);
       },
       loader: () {

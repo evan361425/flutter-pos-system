@@ -14,6 +14,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
+import 'package:possystem/ui/order/order_page.dart';
 
 class StashedOrderListView extends StatelessWidget {
   const StashedOrderListView({Key? key}) : super(key: key);
@@ -168,8 +169,8 @@ class StashedOrderListView extends StatelessWidget {
 
       await StashedOrders.instance.delete(order.id ?? 0);
 
-      if (context.mounted && context.canPop()) {
-        context.pop(status);
+      if (context.mounted) {
+        handleCheckoutStatus(context, status);
       }
     }
   }

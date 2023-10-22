@@ -21,7 +21,7 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.7.3+20703002
 
 environment:
-  flutter: "3.13.5"
+  flutter: ">=3.13.0 <3.14.0"
   sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
@@ -85,6 +85,7 @@ dependencies:
   url_launcher: ^6.1.14 # 23, 08-31
   flutter_native_splash: ^2.3.2 # 23, 08-13
   package_info_plus: ^4.1.0 # 23, 08-02
+  visibility_detector: ^0.4.0+2 # 23, 03-09
   # TODO: remove this as it is not useful
   info_popup: ^3.0.6 # 23, 08-29
 

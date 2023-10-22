@@ -112,7 +112,7 @@ class SlidingUpOpenerState extends State<SlidingUpOpener> {
       collapsed: buildCollapsed(),
       body: Column(children: [
         Expanded(child: widget.body),
-        SizedBox(height: widget.minHeight + widget.heightOffset + 80),
+        SizedBox(height: widget.minHeight),
       ]),
     );
 

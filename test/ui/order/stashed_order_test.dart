@@ -14,9 +14,11 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cashier/stashed_order_list_view.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
@@ -226,7 +228,13 @@ void main() {
       expect(latest.isEmpty, isTrue);
     });
 
+    setUp(() {
+      when(cache.get(any)).thenReturn(null);
+      SettingsProvider(SettingsProvider.allSettings);
+    });
+
     setUpAll(() {
+      initializeCache();
       initializeDatabase();
       initializeTranslator();
       OrderAttributes();
