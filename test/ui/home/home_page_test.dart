@@ -37,11 +37,6 @@ void main() {
         columns: anyNamed('columns'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
-        join: anyNamed('join'),
-        groupBy: anyNamed('groupBy'),
-        orderBy: anyNamed('orderBy'),
-        limit: anyNamed('limit'),
-        offset: anyNamed('offset'),
       )).thenAnswer((_) => Future.value([]));
       final settings = SettingsProvider(SettingsProvider.allSettings);
 
@@ -102,10 +97,10 @@ void main() {
       await navAndPop('setting.feature_request', 'feature_request_please');
       await dragUp();
       await navAndPop('setting.setting', 'feature.theme');
-      await navAndPop('home.order', 'order.action.more');
+      await navAndPop('home.order', 'order.more');
       await navAndCheck('home.stock', 'stock.empty');
       await navAndCheck('home.cashier', 'cashier.changer');
-      await navAndCheck('home.analysis', 'analysis.builder');
+      await navAndCheck('home.analysis', 'anal.history');
     });
 
     setUp(() {
@@ -114,7 +109,6 @@ void main() {
       CurrencySetting().initialize();
 
       // setup seller
-      Seller();
       when(database.query(
         any,
         columns: anyNamed('columns'),

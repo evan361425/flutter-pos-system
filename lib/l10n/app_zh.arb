@@ -8,10 +8,6 @@
   "@actError": {
     "description": "當發生錯誤時，會顯示在 SnackBar 上的文字"
   },
-  "btnCancel": "取消",
-  "@btnCancel": {
-    "description": "取消按鈕"
-  },
   "btnConfirm": "確認",
   "@btnConfirm": {
     "description": "確認按鈕"
@@ -19,10 +15,6 @@
   "btnDelete": "刪除",
   "@btnDelete": {
     "description": "刪除按鈕"
-  },
-  "btnSave": "儲存",
-  "@btnSave": {
-    "description": "儲存按鈕"
   },
   "btnImport": "匯入",
   "btnExport": "匯出",
@@ -549,12 +541,12 @@
   "@settingLanguageTitle": {
     "description": "設定頁面中語言的標題"
   },
-  "settingCashierWarningTitle": "收銀機提示",
-  "@settingCashierWarningTitle": {
+  "settingCheckoutWarningTitle": "收銀機提示",
+  "@settingCheckoutWarningTitle": {
     "description": "設定頁面中是否顯示收銀機的提示的標題"
   },
-  "settingCashierWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
-  "@settingCashierWarningTypes": {
+  "settingCheckoutWarningTypes": "{type, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
+  "@settingCheckoutWarningTypes": {
     "description": "是否顯示收銀機的提示",
     "placeholders": {
       "type": {
@@ -701,10 +693,6 @@
   "@orderActionsShowLastOrder": {
     "description": "顯示當日最後一次的單點"
   },
-  "orderActionsConfirmStashCurrent": "要暫存本次點餐並顯示舊的單嗎？",
-  "@orderActionsConfirmStashCurrent": {
-    "description": "若需要「顯示最後一次點餐」而購物車仍有餐點時，會跳出本確認提示"
-  },
   "orderActionsShowLastOrderNotFound": "找不到當日上一次的紀錄\n可以去點單紀錄查詢更久的紀錄",
   "@orderActionsShowLastOrderNotFound": {
     "description": "在資料庫中找不到任何一筆當日點餐紀錄"
@@ -712,18 +700,6 @@
   "orderActionsStash": "暫存本次點餐",
   "@orderActionsStash": {
     "description": "暫存購物車裡的餐點"
-  },
-  "orderActionsStashHitLimit": "暫存檔案的次數超出上限",
-  "@orderActionsStashHitLimit": {
-    "description": "暫存次數超出上限"
-  },
-  "orderActionsDropStash": "拉出暫存餐點",
-  "@orderActionsDropStash": {
-    "description": "從資料庫中拉出最後一次暫存的餐點"
-  },
-  "orderActionsDropStashNotFound": "目前沒有暫存的紀錄唷",
-  "@orderActionsDropStashNotFound": {
-    "description": "資料庫中找不到任何一筆暫存資料"
   },
   "orderActionsLeave": "離開點餐頁面",
   "@orderActionsLeave": {
@@ -832,24 +808,6 @@
       }
     }
   },
-  "orderCashierTotalPrice": "訂單總價：{price}",
-  "@orderCashierTotalPrice": {
-    "description": "結帳時顯示的總價",
-    "placeholders": {
-      "price": {
-        "description": "總價",
-        "type": "num",
-        "format": "currency",
-        "optionalParameters": {
-          "decimalDigits": 0,
-          "symbol": ""
-        }
-      }
-    }
-  },
-  "orderCashierProductTotalPriceLabel": "產品總價",
-  "orderCashierProductTotalCostLabel": "產品成本",
-  "orderCashierIncomeLabel": "淨利",
   "orderProductIngredientDefaultName": "{ingredient}（預設）",
   "@orderProductIngredientDefaultName": {
     "description": "點單時的產品列表中各項產品的成分資訊",
@@ -871,11 +829,25 @@
       }
     }
   },
-  "orderCashierCheckout": "完成",
-  "orderCashierAttributeInfoTitle": "顧客設定",
-  "orderCashierAttributeTotalPrice": "顧客設定總價",
-  "orderCashierAttributeTotalCount": "設定 {count} 項",
-  "@orderCashierAttributeTotalCount": {
+  "orderDetailsConfirm": "完成",
+  "orderObjectChange": "找錢",
+  "orderObjectTotalPrice": "訂單總價：{price}",
+  "@orderObjectTotalPrice": {
+    "description": "點餐後的總價資訊",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "orderObjectProductsPrice": "產品總價",
+  "orderObjectAttributesPrice": "顧客設定總價",
+  "orderObjectProductsCost": "產品成本",
+  "orderObjectRevenue": "淨利",
+  "orderObjectPaid": "付額",
+  "orderObjectAttributeTitle": "顧客設定",
+  "orderObjectAttributeCount": "設定 {count} 項",
+  "@orderObjectAttributeCount": {
     "description": "總共設定了幾項顧客設定",
     "placeholders": {
       "count": {
@@ -884,57 +856,24 @@
       }
     }
   },
-  "orderCashierProductInfoTitle": "產品資訊",
-  "orderCashierProductMetaCount": "總數：{count}",
-  "@orderCashierProductMetaCount": {
-    "description": "結帳時會最終顯示產品列表，這是其總數",
+  "orderObjectProductsCount": "設定 {count} 項",
+  "@orderObjectProductsCount": {
+    "description": "總共點了幾個產品",
     "placeholders": {
       "count": {
-        "description": "單一餐點的總數",
+        "description": "數量",
         "type": "int"
       }
     }
   },
-  "orderCashierProductMetaPrice": "總價：{price}",
-  "@orderCashierProductMetaPrice": {
-    "description": "訂單列表的單一餐點的價錢",
-    "placeholders": {
-      "price": {
-        "description": "單一餐點的總價",
-        "type": "num",
-        "format": "currency",
-        "optionalParameters": {
-          "decimalDigits": 0,
-          "symbol": ""
-        }
-      }
-    }
-  },
-  "orderCashierProductMetaCost": "成本：{cost}",
-  "@orderCashierProductMetaCost": {
-    "description": "訂單列表的單一餐點的成本",
-    "placeholders": {
-      "cost": {
-        "description": "單一餐點的成本",
-        "type": "num",
-        "format": "currency",
-        "optionalParameters": {
-          "decimalDigits": 0,
-          "symbol": ""
-        }
-      }
-    }
-  },
-  "orderCashierProductMetaCatalog": "產品種類：{name}",
-  "@orderCashierProductMetaCatalog": {
-    "description": "訂單列表的產品種類名稱",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "orderCashierProductMetaIngredient": "成分：",
+  "orderObjectProductTitle": "產品資訊",
+  "orderObjectProductPrice": "總價",
+  "orderObjectProductCost": "總成本",
+  "orderObjectProductCount": "總數",
+  "orderObjectProductSinglePrice": "單價",
+  "orderObjectProductOriginalPrice": "折扣前單價",
+  "orderObjectProductCatalog": "產品種類",
+  "orderObjectProductIngredient": "成分",
   "transitTitle": "資料轉移",
   "transitDescription": "請選擇欲轉移的方式",
   "transitMethod": "{label, select, googleSheet{Google 試算表} plainText{純文字} other{}}",

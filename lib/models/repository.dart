@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
-import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 
 mixin Repository<T extends Model> on ChangeNotifier {
@@ -126,65 +125,6 @@ mixin Repository<T extends Model> on ChangeNotifier {
   Future<void> saveItem(T item);
 
   Future<void> dropItems();
-}
-
-mixin RepositoryDB<T extends Model> on Repository<T> {
-  String get idName => 'id';
-
-  String get repoTableName;
-
-  Future<T> buildItem(Map<String, Object?> value);
-
-  Future<List<Map<String, Object?>>> fetchItems() {
-    return Database.instance.query(
-      repoTableName,
-      where: 'isDelete = 0',
-    );
-  }
-
-  Future<void> initialize() async {
-    try {
-      final items = await fetchItems();
-
-      for (final itemData in items) {
-        try {
-          final item = await buildItem(itemData);
-          _items[item.id] = item;
-        } catch (e, stack) {
-          Log.err(e, 'db_${repoTableName}_parse_error', stack);
-        }
-      }
-
-      prepareItem();
-    } catch (e, stack) {
-      Log.err(e, 'db_${repoTableName}_fetch_error', stack);
-    }
-  }
-
-  @override
-  Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
-    return Database.instance.batchUpdate(
-      repoTableName,
-      data.map((e) => {e.key: e.value}).toList(),
-      where: '$idName = ?',
-      whereArgs: data.map((e) => [e.id]).toList(),
-    );
-  }
-
-  @override
-  Future<void> saveItem(T item) async {
-    Log.ger('add start', repoTableName, item.toString());
-
-    final id = await Database.instance.push(
-      repoTableName,
-      item.toObject().toMap(),
-    );
-
-    item.id = id.toString();
-  }
-
-  @override
-  Future<void> dropItems() => Database.instance.reset(repoTableName);
 }
 
 mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {

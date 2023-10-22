@@ -63,8 +63,6 @@ class OrderProductListView extends StatelessWidget {
   }
 
   void _onSelected(Product product) {
-    Cart.instance
-      ..toggleAll(false)
-      ..add(product);
+    Cart.instance.add(product);
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database_migration_actions.dart';
@@ -24,13 +23,14 @@ class Database {
   static Database instance = Database();
 
   // delimiter: https://stackoverflow.com/a/29811033/12089368
-  static final String delimiter = String.fromCharCode(13);
+  static final delimiter = String.fromCharCode(29);
 
-  static const latestVersion = 7;
+  // delimiter for blob.
+  static const queryDelimiter = 'char(29)';
+
+  static const latestVersion = 8;
 
   late sqflite.Database db;
-
-  int _oldVersion = latestVersion;
 
   bool _initialized = false;
 
@@ -84,27 +84,6 @@ class Database {
     return db.delete(table, where: '$keyName = ?', whereArgs: [id]);
   }
 
-  Future<Map<String, Object?>?> getLast(
-    String table, {
-    String orderByKey = 'id',
-    List<String>? columns,
-    String? where,
-    List<Object?>? whereArgs,
-    JoinQuery? join,
-    int count = 1,
-  }) async {
-    final data = await query(
-      table,
-      columns: columns,
-      orderBy: '$orderByKey DESC',
-      limit: count,
-      where: where,
-      whereArgs: whereArgs,
-      join: join,
-    );
-    return data.length >= count ? data[count - 1] : null;
-  }
-
   Future<void> initialize({
     String? path,
     DbOpener opener = sqflite.openDatabase,
@@ -125,9 +104,9 @@ class Database {
       },
       onUpgrade: (db, oldVer, newVer) async {
         Log.ger('$oldVer $newVer', 'db_initialize');
-        _oldVersion = oldVer;
         for (var ver = oldVer + 1; ver <= newVer; ver++) {
           await execMigration(db, ver);
+          await execMigrationAction(db, ver);
         }
       },
     );
@@ -135,6 +114,11 @@ class Database {
 
   Future<int> push(String table, Map<String, Object?> data) {
     return db.insert(table, data);
+  }
+
+  Future<T> transaction<T>(
+      Future<T> Function(sqflite.DatabaseExecutor txn) action) {
+    return db.transaction<T>(action);
   }
 
   Future<List<Map<String, Object?>>> query(
@@ -147,7 +131,9 @@ class Database {
     String? orderBy,
     int? limit,
     int offset = 0,
+    bool escapeTable = true,
   }) async {
+    if (escapeTable) table = "`$table`";
     final selectQuery = columns?.join(',') ?? '*';
     final whereQuery = where == null ? '' : 'WHERE $where';
     final groupByQuery = groupBy == null ? '' : 'GROUP BY $groupBy';
@@ -157,30 +143,12 @@ class Database {
 
     try {
       return await db.rawQuery(
-        'SELECT $selectQuery FROM `$table` $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
+        'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
         whereArgs,
       );
     } catch (e, stack) {
       Log.err(e, 'db_query_error', stack);
       return [];
-    }
-  }
-
-  Future<void> tolerateMigration({
-    @visibleForTesting int newVersion = latestVersion,
-    @visibleForTesting int? oldVersion,
-  }) async {
-    int version = (oldVersion ?? _oldVersion) + 1;
-    for (; version <= newVersion; version++) {
-      final action = dbMigrationActions[version];
-      if (action != null) {
-        Log.ger('start $version', 'db_migration');
-        try {
-          await action(db);
-        } catch (e, stack) {
-          Log.err(e, 'db_migration', stack);
-        }
-      }
     }
   }
 
@@ -211,18 +179,25 @@ class Database {
     }
   }
 
+  static Future<void> execMigrationAction(sqflite.Database db, int ver) async {
+    final action = dbMigrationActions[ver];
+
+    if (action != null) {
+      Log.ger('start $ver', 'db_migration');
+      try {
+        await action(db);
+      } catch (e, stack) {
+        Log.err(e, 'db_migration', stack);
+      }
+    }
+  }
+
   static Future<String> getRootPath() async {
     final paths = (await XFile.getRootPath()).split('/')
       ..removeLast()
       ..add('databases');
     return '${paths.join('/')}/pos_system.sqlite';
   }
-
-  static String join(Iterable<String>? data) =>
-      (data?.join(delimiter) ?? '') + delimiter;
-
-  static List<String> split(String? value) =>
-      value?.trim().split(delimiter) ?? [];
 }
 
 class JoinQuery {

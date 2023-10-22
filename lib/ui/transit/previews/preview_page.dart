@@ -55,7 +55,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(items.isNotEmpty);
             },
-            child: Text(S.btnSave),
+            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
           ),
         ],
       ),

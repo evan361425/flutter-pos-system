@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderCashierSnapshot extends StatefulWidget {
-  final num totalPrice;
+  final ValueNotifier<num> price;
+
+  final ValueNotifier<num> paid;
 
   const OrderCashierSnapshot({
     Key? key,
-    required this.totalPrice,
+    required this.price,
+    required this.paid,
   }) : super(key: key);
 
   @override
@@ -16,10 +18,9 @@ class OrderCashierSnapshot extends StatefulWidget {
 }
 
 class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
-  late num currentChange;
-  late num currentPaid;
   num? customValue;
-  late final List<num> paidOptions;
+  late num change;
+  late List<num> paidOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: ChoiceChip(
                   key: Key('cashier.snapshot.$option'),
-                  selected: currentPaid == option,
+                  selected: widget.paid.value == option,
                   onSelected: (selected) {
                     if (selected) {
                       _changePaid(option);
@@ -50,7 +51,7 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
-          S.orderCashierSnapshotChangeField(currentChange),
+          S.orderCashierSnapshotChangeField(change),
           key: const Key('cashier.snapshot.change'),
         ),
       ),
@@ -63,35 +64,36 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
   @override
   void initState() {
     super.initState();
-    currentPaid = widget.totalPrice;
-    currentChange = 0;
-    paidOptions = CurrencySetting.instance.ceilToMaximum(currentPaid).toList();
-    Cart.instance.currentPaid.addListener(_onPaidChanged);
+    _reload();
+    widget.paid.addListener(_onNotify);
   }
 
   @override
   void dispose() {
-    Cart.instance.currentPaid.removeListener(_onPaidChanged);
+    widget.paid.removeListener(_onNotify);
     super.dispose();
   }
 
   void _changePaid(num value) {
-    final change = value - widget.totalPrice;
-    if (currentPaid != value && change >= 0) {
-      Cart.instance.currentPaid.value = value;
+    final change = value - widget.price.value;
+    if (change >= 0) {
+      // this will trigger reload.
+      widget.paid.value = value;
     }
   }
 
-  void _onPaidChanged() {
-    setState(() {
-      final paid = Cart.instance.currentPaid.value ?? widget.totalPrice;
-      currentChange = paid - widget.totalPrice;
-      currentPaid = paid;
-      if (!paidOptions.contains(paid)) {
-        customValue = paid;
-      } else if (Cart.instance.currentPaid.value == null) {
-        customValue = null;
-      }
-    });
+  void _reload() {
+    final price = widget.price.value;
+    final paid = widget.paid.value;
+    change = paid - price;
+    paidOptions = CurrencySetting.instance.ceilToMaximum(price).toList();
+
+    if (!paidOptions.contains(paid)) {
+      customValue = paid;
+    }
+  }
+
+  void _onNotify() {
+    setState(() => _reload());
   }
 }

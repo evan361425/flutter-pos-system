@@ -47,6 +47,7 @@ class MockCache extends _i1.Mock implements _i3.Cache {
           Invocation.getter(#service),
         ),
       ) as _i2.SharedPreferences);
+
   @override
   set service(_i2.SharedPreferences? _service) => super.noSuchMethod(
         Invocation.setter(
@@ -55,11 +56,13 @@ class MockCache extends _i1.Mock implements _i3.Cache {
         ),
         returnValueForMissingStub: null,
       );
+
   @override
   T? get<T>(String? name) => (super.noSuchMethod(Invocation.method(
         #get,
         [name],
       )) as T?);
+
   @override
   _i4.Future<void> initialize() => (super.noSuchMethod(
         Invocation.method(
@@ -69,6 +72,7 @@ class MockCache extends _i1.Mock implements _i3.Cache {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<void> reset() => (super.noSuchMethod(
         Invocation.method(
@@ -78,6 +82,7 @@ class MockCache extends _i1.Mock implements _i3.Cache {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<bool> set<T>(
     String? key,

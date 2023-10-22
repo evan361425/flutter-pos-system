@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -14,7 +14,7 @@ void main() {
     group('Disposable', () {
       test('Cart', () {
         final cart = Cart();
-        cart.products.add(OrderProduct(Product()));
+        cart.products.add(CartProduct(Product()));
         expect(cart.isEmpty, isFalse);
         cart.dispose();
         expect(cart.isEmpty, isTrue);
@@ -36,7 +36,7 @@ void main() {
 
     group('Should catch error', () {
       test('Cart', () {
-        expect(() => Cart().toggleAll(null, except: OrderProduct(Product())),
+        expect(() => Cart().toggleAll(null, except: CartProduct(Product())),
             throwsAssertionError);
       });
 

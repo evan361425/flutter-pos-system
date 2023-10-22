@@ -79,7 +79,7 @@ class _CartMetadata extends StatelessWidget {
     return Container(
       key: const Key('cart.metadata'),
       child: MetaBlock.withString(context, <String>[
-        S.orderMetaTotalCount(cart.totalCount),
+        S.orderMetaTotalCount(cart.productCount),
         S.orderMetaTotalPrice(cart.productsPrice),
       ]),
     );

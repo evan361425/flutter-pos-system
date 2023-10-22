@@ -8,44 +8,30 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
+/// Generate order records each record have total 1~10 products. For example,
+/// 1 product might have 10 count or 10 different products or 2 same product but
+/// each have different ingredients.
 List<OrderObject> generateOrder({
   required int orderCount,
   required DateTime startFrom,
   required DateTime endTo,
 }) {
   final rng = Random();
-  final products = Menu.instance.items
-      .map((catalog) => catalog.items)
-      .expand((e) => e)
-      .toList();
-  final productCount = products.length;
+  final products = Menu.instance.products.toList();
   final result = <OrderObject>[];
 
   final interval = endTo.difference(startFrom).inMinutes;
-  if (interval == 0 || productCount == 0) return const [];
+  if (interval == 0 || products.isEmpty) return const [];
 
   final createdList = [
     for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
   ]..sort();
-
-  OrderSelectedAttributeObject generateAttr(OrderAttribute attr) {
-    final optIdx = rng.nextInt(attr.length + 1);
-    if (optIdx == attr.length) return const OrderSelectedAttributeObject();
-
-    final opt = attr.itemList[optIdx];
-    return OrderSelectedAttributeObject(
-      name: attr.name,
-      optionName: opt.name,
-      mode: attr.mode,
-      modeValue: opt.modeValue,
-    );
-  }
 
   while (orderCount-- > 0) {
     final ordered = <OrderProductObject>[];
@@ -53,7 +39,7 @@ List<OrderObject> generateOrder({
     var round = rng.nextInt(10) + 1;
     while (round-- != 0) {
       // random choose product
-      final product = products[rng.nextInt(productCount)];
+      final product = products[rng.nextInt(products.length)];
 
       // if already ordered that product, possibly increment the count
       final possible = _selectExistedProduct(ordered, product.id);
@@ -61,61 +47,61 @@ List<OrderObject> generateOrder({
         final idx = possible[rng.nextInt(possible.length)];
         final map = ordered[idx].toMap();
         map['count'] = (map['count'] as int) + 1;
-        ordered[idx] = OrderProductObject.fromMap(map);
+        ordered[idx] = OrderProductObject.fromMap(
+          map,
+          ordered[idx].ingredients.map((e) => e.toMap()),
+        );
       } else {
-        // whether use ingredient?
-        final v = product.itemList;
-        final i = v.isEmpty || rng.nextBool() ? null : v[rng.nextInt(v.length)];
-        // whether use quantity?
-        final w = i?.isNotEmpty == true && rng.nextBool() ? i!.itemList : null;
-        final q = w == null ? null : w[rng.nextInt(w.length)];
+        final isDiscount = rng.nextInt(5) == 0;
         ordered.add(OrderProductObject(
           productId: product.id,
           productName: product.name,
           catalogName: product.catalog.name,
           count: 1,
-          cost: product.cost,
-          singlePrice: product.price,
+          singleCost: product.cost,
+          singlePrice: isDiscount
+              ? (product.price * rng.nextDouble()).toCurrencyNum()
+              : product.price,
           originalPrice: product.price,
-          isDiscount: rng.nextBool(),
-          ingredients: i == null
-              ? []
-              : [
-                  OrderIngredientObject(
-                    id: i.ingredient.id,
-                    name: i.name,
-                    productIngredientId: i.id,
-                    productQuantityId: q?.id,
-                    additionalPrice: q?.additionalPrice,
-                    additionalCost: q?.additionalCost,
-                    amount: i.amount,
-                    quantityId: q?.quantity.id,
-                    quantityName: q?.quantity.name,
-                  )
-                ],
+          isDiscount: isDiscount,
+          ingredients: product.items.map((e) {
+            final qIdx = e.isEmpty ? 0 : rng.nextInt(e.length * 2);
+            final q = qIdx < e.length ? e.items.toList()[qIdx] : null;
+            return OrderIngredientObject(
+              ingredientName: e.name,
+              quantityName: q?.name,
+              additionalPrice: q?.additionalPrice ?? 0,
+              additionalCost: q?.additionalCost ?? 0,
+              amount: q?.amount ?? e.amount,
+              ingredientId: e.ingredient.id,
+              productIngredientId: e.id,
+            );
+          }).toList(),
         ));
       }
     }
 
-    final attrs = [
-      for (var attr in OrderAttributes.instance.items) generateAttr(attr),
-    ];
+    final attrs =
+        OrderAttributes.instance.items.where((e) => e.isNotEmpty).map((e) {
+      final idx = rng.nextInt(e.length);
+      final opt = e.items.toList()[idx];
 
-    final price = ordered.fold<num>(0, (p, e) => p + e.totalPrice);
-    final attrPrice = attrs
+      return OrderSelectedAttributeObject.fromModel(opt);
+    }).toList();
+
+    final originalPrice = ordered.fold<num>(0, (p, e) => p + e.totalPrice);
+    // only change price when mode is changePrice.
+    final price = attrs
         .where((attr) => attr.mode == OrderAttributeMode.changePrice)
-        .fold<num>(0, (p, e) => p + (e.modeValue ?? 0));
+        .fold<num>(originalPrice, (p, e) => p + (e.modeValue ?? 0));
+
     result.add(OrderObject(
       createdAt: startFrom.add(Duration(minutes: createdList[orderCount])),
-      paid: price + attrPrice,
-      totalPrice: price + attrPrice,
-      productsPrice: price,
-      totalCount: ordered.fold<int>(0, (p, e) => p + e.count),
-      productNames: ordered.map((e) => e.productName).toList(),
-      ingredientNames: ordered
-          .expand((e) => e.ingredients.map((i) => i.name))
-          .toSet()
-          .toList(),
+      paid: price + rng.nextInt(100),
+      cost: ordered.fold<num>(0, (p, e) => p + e.totalCost),
+      price: price,
+      productsCount: ordered.fold<int>(0, (p, e) => p + e.count),
+      productsPrice: originalPrice,
       attributes: attrs,
       products: ordered,
     ));

@@ -7,6 +7,7 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
 import 'debug/setup_menu.dart';
@@ -64,11 +65,6 @@ void main() async {
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
-      // no need initialize
-      Seller();
-
-      await Database.instance.tolerateMigration();
-
       if (kDebugMode) {
         await debugSetupMenu();
       }
@@ -100,6 +96,9 @@ void main() async {
           ),
           ChangeNotifierProvider<Cashier>(
             create: (_) => Cashier.instance,
+          ),
+          ChangeNotifierProvider<Cart>(
+            create: (_) => Cart.instance,
           ),
         ],
         child: MyApp(settings: settings),

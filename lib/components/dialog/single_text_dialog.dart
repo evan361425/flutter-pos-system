@@ -68,7 +68,10 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         ]),
       ),
       actions: [
-        PopButton(key: const Key('text_dialog.cancel'), title: S.btnCancel),
+        PopButton(
+          key: const Key('text_dialog.cancel'),
+          title: MaterialLocalizations.of(context).cancelButtonLabel,
+        ),
         FilledButton(
           key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),

@@ -261,7 +261,7 @@ void main() {
         findText('q1', 'stagedQua');
         findText('q2', 'stagedQua');
 
-        await tester.tap(find.text(S.btnSave));
+        await tester.tap(find.text('Save'));
         await tester.pumpAndSettle();
 
         expect(Stock.instance.length, equals(1));
@@ -301,8 +301,7 @@ void main() {
           }
         }
 
-        await tester
-            .tap(commit ? find.text(S.btnSave) : find.byIcon(Icons.close));
+        await tester.tap(commit ? find.text('Save') : find.byIcon(Icons.close));
         await tester.pumpAndSettle();
       }
 

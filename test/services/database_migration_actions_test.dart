@@ -1,15 +1,6 @@
-import 'dart:convert';
-
+import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/database.dart';
 import 'package:possystem/services/database_migration_actions.dart';
 import 'package:possystem/services/database_migrations.dart';
@@ -44,198 +35,130 @@ void main() {
       return db;
     }
 
-    test('catch error', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-          .thenThrow(Error());
-
-      await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-    });
-
-    test('5 - set up cost on order', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      Map<String, Object?> createOrder(int id, List<String> ids) {
-        return {
-          'id': id,
-          'encodedProducts': jsonEncode(ids
-              .map((pid) => {
-                    'productId': pid,
-                    'productName': pid,
-                    'catalogName': 'c-1',
-                    'count': 1,
-                    'singlePrice': 1,
-                    'originalPrice': 1,
-                    'isDiscount': true,
-                  })
-              .toList()),
-        };
-      }
-
-      void verifyIdExecuted(int id) {
-        verify(db.update(
-          any,
-          argThat(predicate((e) {
-            return e is Map && e['encodedProducts'].contains('"cost":1');
-          })),
-          where: anyNamed('where'),
-          whereArgs: argThat(contains(id), named: 'whereArgs'),
-        ));
-      }
-
-      Menu().replaceItems({
-        'c-1': Catalog(id: 'c-1', name: 'c-1', products: {
-          'p-1': Product(id: 'p-1', cost: 1),
-          'p-2': Product(id: 'p-2', cost: 1),
-        })
-          ..prepareItem()
-      });
-
-      when(db.query(any, limit: 100, offset: 0, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([
-                createOrder(1, ['p-1', 'p-3', 'p-2']),
-                createOrder(2, ['p-1', 'p-1', 'p-3']),
-              ]));
-      when(db.query(any, limit: 100, offset: 100, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([
-                createOrder(3, ['p-1', 'p-1', 'p-1']),
-              ]));
-      when(db.query(any, limit: 100, offset: 200, orderBy: 'createdAt asc'))
-          .thenAnswer((_) => Future.value([]));
-      when(db.update(any, any,
-              where: anyNamed('where'), whereArgs: anyNamed('whereArgs')))
-          .thenAnswer((_) => Future.value(0));
-
-      await Database.instance.tolerateMigration(newVersion: 5, oldVersion: 4);
-
-      verifyIdExecuted(1);
-      verifyIdExecuted(2);
-      verifyIdExecuted(3);
-    });
-
-    test('6 - customer_setting to order_attribute', () async {
-      const testVersion = 6;
-      final action = dbMigrationActions[testVersion] as Future<void> Function(
-        sqflite.Database db, {
-        int step,
-        bool withLegacy,
-        bool withOrder,
-      });
+    test('8 - make order more easy to analysis', () async {
+      const testVersion = 8;
+      final action = dbMigrationActions[testVersion] as Function;
       final db = await createDb(testVersion);
 
-      OrderAttributes();
+      // legacy table
+      await db.execute('''CREATE TABLE `order` (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  paid REAL DEFAULT NULL,
+  totalPrice REAL DEFAULT NULL,
+  totalCount INTEGER  DEFAULT NULL,
+  productsPrice REAL DEFAULT 0,
+  `cost` INTEGER DEFAULT 0,
+  createdAt INTEGER DEFAULT NULL,
+  usedProducts TEXT DEFAULT NULL,
+  usedIngredients TEXT DEFAULT NULL,
+  encodedProducts BLOB DEFAULT "",
+  `encodedAttributes` BLOB DEFAULT "",
+  `catalogName` BLOB DEFAULT ""
+);''');
 
-      testCS2Attr() async {
-        // preparation
-        await db.execute('INSERT INTO `customer_settings` '
-            '(id, name, `index`, mode, isDelete) VALUES '
-            '(1, "c-1", 1, 1, 0),'
-            '(2, "c-2", 2, 0, 0),'
-            '(3, "c-3", 3, 2, 0),'
-            '(4, "c-4", 1, 100, 0),'
-            '(5, "c-5", 1, 2, 1);');
-        await db.execute('INSERT INTO `customer_setting_options` '
-            '(id, customerSettingId, name, `index`, isDefault, modeValue, isDelete) VALUES '
-            '(1, 1, "co-1", 1, 1, 1, 0),'
-            '(2, 1, "co-2", 2, 0, null, 0),'
-            '(3, 2, "co-3", 0, 0, null, 0),'
-            '(4, 2, "co-4", 1, 0, 1, 0),'
-            '(5, 2, "co-5", 2, 0, null, 1);');
+      // ===== prepare rows =====
+      // wrong data should able to catch and go on.
+      await db.insert('order', {
+        'createdAt': 1000,
+        'encodedProducts': '[{"cost":""}]',
+      });
+      await db.insert('order', {'createdAt': 1001, 'encodedProducts': '{[]}'});
+      // version 1 format
+      await db.insert('order', {
+        'paid': 666,
+        'totalPrice': 666,
+        'totalCount': 666,
+        'createdAt': 1002,
+        'usedProducts': 'This column will not be used',
+        'usedIngredients': 'This column will not be used',
+        'encodedProducts': '''[{"_":"test fully empty"}, {
+          "_": "really legacy format",
+          "productName": "p-1",
+          "count": 555,
+          "singlePrice": 555,
+          "originalPrice": 555,
+          "isDiscount": true
+        }]''',
+      });
+      // version 4 format, add column `customerSettingCombinationId` and `productsPrice`
+      await db.insert('order', {
+        'createdAt': 2000,
+        "paid": 666,
+        "totalPrice": 666,
+        "productsPrice": 555,
+        "totalCount": 666
+      });
+      // version 5 format, add column `cost`
+      await db.insert('order', {
+        'createdAt': 3000,
+        "paid": 666,
+        "cost": 111,
+        "totalPrice": 666,
+        "productsPrice": 555,
+        "totalCount": 666
+      });
+      // version 6 format, add column `encodedAttributes`
+      await db.insert('order', {
+        'createdAt': 4000,
+        "paid": 666,
+        "cost": 111,
+        "totalPrice": 666,
+        "productsPrice": 555,
+        "totalCount": 666,
+        "encodedProducts": '''[{
+          "productName": "p-1",
+          "catalogName": "c-1",
+          "count": 555,
+          "cost": 555,
+          "singlePrice": 555,
+          "originalPrice": 555,
+          "isDiscount": "1",
+          "ingredients": [
+            {"_": "test fully empty"},
+            {"_": "no quantity","name": "i-1","amount":444},
+            {
+              "name": "i-1",
+              "quantityName": "q-1",
+              "additionalPrice": 444,
+              "additionalCost": 444,
+              "amount": 444
+            }
+          ]
+        }]''',
+        "encodedAttributes": '''[{}, {
+          "_": "wrong mode",
+          "name": "a-1",
+          "optionName": "ao-1",
+          "mode": 4
+        }, {
+          "_": "null mode value",
+          "name": "a-2",
+          "optionName": "ao-2",
+          "mode": 1
+        }, {
+          "name": "a-3",
+          "optionName": "ao-3",
+          "mode": 1,
+          "modeValue": 2.22
+        }]''',
+      });
 
-        await action(db, withOrder: false);
+      await action(db, limit: 2);
 
-        verifyAttr(OrderAttribute a, int id, OrderAttributeMode mode) {
-          expect(a.id, id.toString());
-          expect(a.name, 'c-$id');
-          expect(a.index, id);
-          expect(a.mode, mode);
-        }
+      // Assertion
+      final orders = await Seller.instance.getDetailedOrders(
+        DateTime.fromMillisecondsSinceEpoch(0),
+        DateTime.fromMillisecondsSinceEpoch(5000 * 1000),
+      );
 
-        verifyOpt(OrderAttributeOption opt, int id, bool isDefault, num? val) {
-          expect(opt.id, id.toString());
-          expect(opt.name, 'co-$id');
-          expect(opt.isDefault, isDefault);
-          expect(opt.modeValue, val);
-        }
-
-        final items = OrderAttributes.instance.itemList;
-        expect(items.length, 3);
-        verifyAttr(items[0], 1, OrderAttributeMode.changePrice);
-        verifyAttr(items[1], 2, OrderAttributeMode.statOnly);
-        verifyAttr(items[2], 3, OrderAttributeMode.changeDiscount);
-
-        final opt1 = items[0].itemList;
-        expect(opt1.length, 2);
-        verifyOpt(opt1[0], 1, true, 1);
-        verifyOpt(opt1[1], 2, false, null);
-
-        final opt2 = items[1].itemList;
-        expect(opt2.length, 2);
-        verifyOpt(opt2[0], 3, false, null);
-        verifyOpt(opt2[1], 4, false, 1);
-
-        expect(items[2].length, 0);
+      const expected = [1001, 1002, 2000, 3000, 4000];
+      for (final it in IterableZip(
+          [orders.map((e) => e.createdAt.millisecondsSinceEpoch), expected])) {
+        expect(it[0], equals(it[1] * 1000));
       }
-
-      testOrder() async {
-        // preparation
-        const defaultOrder = '1,2,3,4,"p1,p2","i1,i2","some-txt",5';
-        await db.execute('INSERT INTO `order` '
-            '(paid, totalPrice, totalCount, createdAt, usedProducts, usedIngredients, encodedProducts, productsPrice, customerSettingCombinationId) VALUES '
-            '($defaultOrder, 1),'
-            '($defaultOrder, 2),'
-            '($defaultOrder, 3),'
-            '($defaultOrder, 4),'
-            '($defaultOrder, 5),'
-            '($defaultOrder, 6),'
-            '($defaultOrder, 7),'
-            '($defaultOrder, 8);');
-        // supported pairs are: 1:1~2, 2:3~4
-        await db.execute('INSERT INTO `customer_setting_combinations` '
-            '(id, combination) VALUES '
-            '(1, "1:1"), '
-            '(2, "1:1,2:3"), '
-            '(3, "1:1,2:4"), '
-            '(4, "1:2"), '
-            '(5, "1:2,2:3"), '
-            '(6, "1:2,2:4"), '
-            '(7, "2:3"), '
-            '(8, "2:4");');
-        await db.execute('INSERT INTO `order_stash` '
-            '(createdAt, encodedProducts, customerSettingCombinationId) VALUES '
-            '(1, "some-txt", 1);');
-
-        await action(db, step: 3, withLegacy: false);
-
-        final orders =
-            (await db.query('order', columns: ['id', 'encodedAttributes']))
-                .map((e) => OrderObject.fromMap(e))
-                .toList();
-        const expected = <String>[
-          'c-1:co-1',
-          'c-1:co-1,c-2:co-3',
-          'c-1:co-1,c-2:co-4',
-          'c-1:co-2',
-          'c-1:co-2,c-2:co-3',
-          'c-1:co-2,c-2:co-4',
-          'c-2:co-3',
-          'c-2:co-4',
-        ];
-        var idx = 0;
-        for (var val in expected) {
-          expect(
-            val,
-            orders[idx++]
-                .attributes
-                .map((e) => '${e.name}:${e.optionName}')
-                .join(','),
-          );
-        }
-      }
-
-      await testCS2Attr();
-      await testOrder();
+      final order = orders[4];
+      expect(order.products.isNotEmpty, isTrue);
+      expect(order.attributes.isNotEmpty, isTrue);
     });
 
     setUpAll(() {

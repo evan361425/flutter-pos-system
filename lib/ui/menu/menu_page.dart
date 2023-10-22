@@ -50,6 +50,7 @@ class _MenuPageState extends State<MenuPage> {
             },
           ),
           actions: [
+            // TODO: put reorder inside here
             SearchBarWrapper(
               key: const Key('menu.search'),
               hintText: S.menuSearchProductHint,

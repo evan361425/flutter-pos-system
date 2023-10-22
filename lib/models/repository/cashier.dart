@@ -184,17 +184,11 @@ class Cashier extends ChangeNotifier {
   /// Example:
   /// 給一百元來支付六十五元的商品，並更新收銀機的錢
   /// 以此為例則是增加一張百元鈔，減少三十五塊的現金來找錢
-  ///
-  /// [oldPrice] 是當在做編輯歷史訂單時需要考慮的
-  Future<CashierUpdateStatus> paid(
-    num given,
-    num price, {
-    num oldPrice = 0,
-  }) async {
+  Future<CashierUpdateStatus> paid(num given, num price) async {
     final amounts = <int, int>{};
 
-    smallChange(amounts, given);
-    final status = smallChange(amounts, given - price + oldPrice, add: false);
+    smallChange(amounts, given, add: true);
+    final status = smallChange(amounts, given - price, add: false);
 
     await update(amounts);
 

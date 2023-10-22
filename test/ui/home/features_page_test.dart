@@ -112,20 +112,20 @@ void main() {
       verify(cache.set(any, 1));
     });
 
-    testWidgets('select cashier_warning', (tester) async {
+    testWidgets('select checkout_warning', (tester) async {
       await tester.pumpWidget(buildApp());
 
       expect(
-          find.text(S.settingCashierWarningTypes('showAll')), findsOneWidget);
+          find.text(S.settingCheckoutWarningTypes('showAll')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('feature.cashier_warning')));
+      await tester.tap(find.byKey(const Key('feature.checkout_warning')));
       await tester.pumpAndSettle();
 
       await tester
-          .tap(find.text(S.settingCashierWarningTypes('onlyNotEnough')));
+          .tap(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.settingCashierWarningTypes('onlyNotEnough')),
+      expect(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')),
           findsOneWidget);
       verify(cache.set(any, 1));
     });

@@ -6,7 +6,6 @@ import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/database.dart';
 import 'package:possystem/services/storage.dart';
 
 enum ModelStatus {
@@ -70,25 +69,6 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
     await save(updateData);
 
     notifyItem();
-  }
-}
-
-mixin ModelDB<T extends ModelObject> on Model<T> {
-  @override
-  String get logName => modelTableName;
-
-  String get modelTableName;
-
-  @override
-  Future<void> removeRemotely() {
-    return Database.instance.update(modelTableName, int.parse(id), {
-      'isDelete': 1,
-    });
-  }
-
-  @override
-  Future<void> save(Map<String, Object?> data) {
-    return Database.instance.update(modelTableName, int.parse(id), data);
   }
 }
 

@@ -4,16 +4,13 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/models/repository/cart_ingredients.dart';
-import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/cashier_warning.dart';
+import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
@@ -40,30 +37,18 @@ class OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     final catalogs = Menu.instance.notEmptyItems;
 
-    final menuCatalogRow = OrderCatalogListView(
+    final orderCatalogListView = OrderCatalogListView(
       catalogs: catalogs,
       indexNotifier: _catalogIndexNotifier,
       onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final menuProductRow = PageView.builder(
+    final orderProductListView = PageView.builder(
       controller: _pageController,
       onPageChanged: (index) => _catalogIndexNotifier.value = index,
       itemCount: catalogs.length,
       itemBuilder: (context, index) {
         return OrderProductListView(products: catalogs[index].itemList);
       },
-    );
-    final cartProductRow = ChangeNotifierProvider<Cart>.value(
-      value: Cart.instance,
-      child: const CartView(),
-    );
-    final orderProductStateSelector = MultiProvider(
-      providers: [
-        ChangeNotifierProvider<Cart>.value(value: Cart.instance),
-        ChangeNotifierProvider<CartIngredients>.value(
-            value: CartIngredients.instance),
-      ],
-      child: CartProductStateSelector(),
     );
 
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
@@ -75,10 +60,10 @@ class OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           leading: const PopButton(),
           actions: [
-            const OrderActions(key: Key('order.action.more')),
+            const OrderActions(key: Key('order.more')),
             TextButton(
-              key: const Key('order.apply'),
-              onPressed: () => _onApply(),
+              key: const Key('order.checkout'),
+              onPressed: () => _handleCheckout(),
               child: Text(S.orderActionsCheckout),
             ),
           ],
@@ -86,16 +71,16 @@ class OrderPageState extends State<OrderPage> {
         body: outlook.value == OrderOutlookTypes.slidingPanel
             ? SlidingPanelView(
                 key: slidingPanel,
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3: const CartView(),
+                row4: const CartProductStateSelector(),
               )
             : OrientatedView(
-                row1: menuCatalogRow,
-                row2: menuProductRow,
-                row3: cartProductRow,
-                row4: orderProductStateSelector,
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3: const CartView(),
+                row4: const CartProductStateSelector(),
               ),
       ),
     );
@@ -123,31 +108,34 @@ class OrderPageState extends State<OrderPage> {
     super.initState();
   }
 
-  void _onApply() async {
-    final result = await context.pushNamed(Routes.orderDetails);
-    if (result is CashierUpdateStatus) {
-      _showCashierWarning(result);
+  void _handleCheckout() async {
+    final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
+    if (status != null && context.mounted) {
+      handleCheckoutStatus(context, status);
       slidingPanel.currentState?.reset();
     }
   }
+}
 
-  void _showCashierWarning(CashierUpdateStatus status) {
-    status = SettingsProvider.of<CashierWarningSetting>().shouldShow(status);
+void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
+  status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
 
-    switch (status) {
-      case CashierUpdateStatus.ok:
-        showSnackBar(context, S.actSuccess);
-        break;
-      case CashierUpdateStatus.notEnough:
-        showSnackBar(context, S.orderCashierPaidNotEnough);
-        break;
-      case CashierUpdateStatus.usingSmall:
-        showMoreInfoSnackBar(
-          context,
-          S.orderCashierPaidUsingSmallMoney,
-          Text(S.orderCashierPaidUsingSmallMoneyHint),
-        );
-        break;
-    }
+  switch (status) {
+    case CheckoutStatus.ok:
+    case CheckoutStatus.stash:
+    case CheckoutStatus.restore:
+      showSnackBar(context, S.actSuccess);
+      break;
+    case CheckoutStatus.cashierNotEnough:
+      showSnackBar(context, S.orderCashierPaidNotEnough);
+      break;
+    case CheckoutStatus.cashierUsingSmall:
+      showMoreInfoSnackBar(
+        context,
+        S.orderCashierPaidUsingSmallMoney,
+        Text(S.orderCashierPaidUsingSmallMoneyHint),
+      );
+      break;
+    default:
   }
 }

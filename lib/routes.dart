@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/ui/analysis/history_page.dart';
 
-import 'models/objects/order_object.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/order_attributes.dart';
 import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/stock.dart';
-import 'ui/analysis/widgets/analysis_order_modal.dart';
+import 'ui/analysis/widgets/history_order_modal.dart';
 import 'ui/cashier/changer_page.dart';
 import 'ui/cashier/surplus_page.dart';
 import 'ui/home/feature_request_page.dart';
@@ -70,9 +70,11 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 }
 
 class Routes {
+  static const base = '/pos';
+
   static final home = GoRoute(
     name: 'home',
-    path: '/pos',
+    path: base,
     builder: (ctx, state) {
       final tab = _findEnum(
         HomeTab.values,
@@ -101,15 +103,16 @@ class Routes {
       ],
     ),
     GoRoute(
-      name: analOrderModal,
-      path: 'analysis/order/modal',
-      redirect: (ctx, state) {
-        return state.extra is OrderObject ? null : '/?tab=analysis';
-      },
-      builder: (ctx, state) {
-        // TODO: use id
-        return AnalysisOrderModal(state.extra as OrderObject);
-      },
+      name: history,
+      path: 'history/o',
+      builder: (ctx, state) => const HistoryPage(),
+    ),
+    GoRoute(
+      name: historyModal,
+      path: 'history/o/:id/modal',
+      builder: (ctx, state) => HistoryOrderModal(
+        int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+      ),
     ),
     GoRoute(
       name: cashierChanger,
@@ -262,7 +265,7 @@ class Routes {
 
   static final _stockRoute = GoRoute(
     path: 'stock',
-    redirect: (ctx, state) => state.path == '/stock' ? '/' : null,
+    redirect: (ctx, state) => state.path == '$base/stock' ? base : null,
     routes: [
       GoRoute(
         name: ingredientNew,
@@ -389,7 +392,8 @@ class Routes {
   static const menuProductModal = '/menu/product/modal';
   static const menuProductDetails = '/menu/product/details';
 
-  static const analOrderModal = '/analysis/order/modal';
+  static const history = '/history/order';
+  static const historyModal = '/history/order/modal';
 
   static const orderAttr = '/oa';
   static const orderAttrNew = '/oa/new';

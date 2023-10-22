@@ -6,7 +6,7 @@ import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 
 void main() {
@@ -79,17 +79,17 @@ void main() {
         'pi-1': ProductIngredient(id: 'pi-1'),
         'pi-2': ProductIngredient(id: 'pi-2'),
       });
-      final order = OrderProduct(product, selectedQuantity: {
+      final order = CartProduct(product, quantities: {
         'pi-1': 'pq-1',
-        'pi-3': null,
       });
+
+      expect(order.quantities.isEmpty, isTrue);
+      expect(order.getQuantityId('pi-1'), equals('pq-1'));
 
       order.rebind();
 
-      expect(
-        order.selectedQuantity,
-        equals({'pi-1': null, 'pi-2': null}),
-      );
+      expect(order.quantities.isEmpty, isTrue);
+      expect(order.getQuantityId('pi-1'), isNull);
     });
   });
 }

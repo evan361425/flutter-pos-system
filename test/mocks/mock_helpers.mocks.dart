@@ -65,6 +65,7 @@ class MockImageCropper extends _i1.Mock implements _i2.ImageCropper {
         ),
         returnValue: _i3.Future<_i4.CroppedFile?>.value(),
       ) as _i3.Future<_i4.CroppedFile?>);
+
   @override
   _i3.Future<_i4.CroppedFile?> recoverImage() => (super.noSuchMethod(
         Invocation.method(

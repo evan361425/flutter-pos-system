@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart'
     show databaseFactoryFfi, sqfliteFfiInit;
 
+import '../mocks/mock_database.mocks.dart' show MockDatabaseExecutor;
 import '../test_helpers/file_mocker.dart';
 import 'database_test.mocks.dart';
 
@@ -188,53 +189,6 @@ void main() {
       ));
     });
 
-    test('#getLast', () async {
-      final db = Database.instance.db as MockDatabase;
-
-      // get last 3
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([
-            {},
-            {},
-            {'a': 'b'}
-          ]));
-
-      var result = await Database.instance.getLast(
-        'table',
-        orderByKey: 'a',
-        columns: ['a'],
-        where: 'a = b',
-        whereArgs: [1],
-        count: 3,
-      );
-
-      expect(result, equals({'a': 'b'}));
-      verify(db.rawQuery(
-        'SELECT a FROM `table`  WHERE a = b  ORDER BY a DESC LIMIT 0, 3',
-        argThat(equals([1])),
-      ));
-
-      // get last
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([
-            {'a': 'b'}
-          ]));
-
-      result = await Database.instance.getLast('table');
-
-      expect(result, equals({'a': 'b'}));
-      verify(db.rawQuery(
-          'SELECT * FROM `table`    ORDER BY id DESC LIMIT 0, 1', any));
-
-      // get empty
-      when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([]));
-
-      result = await Database.instance.getLast('table', where: 'a = b');
-
-      expect(result, isNull);
-      verify(db.rawQuery(
-          'SELECT * FROM `table`  WHERE a = b  ORDER BY id DESC LIMIT 0, 1',
-          any));
-    });
-
     test('#push', () async {
       final db = Database.instance.db as MockDatabase;
       when(db.insert(any, any)).thenAnswer((_) => Future.value(1));
@@ -307,6 +261,21 @@ void main() {
       verify(db.delete('table'));
 
       await Database.instance.reset(null, databaseFactoryFfi.deleteDatabase);
+    });
+
+    test('#transaction', () async {
+      final db = Database.instance.db as MockDatabase;
+      final txn = MockDatabaseExecutor();
+      when(db.transaction(any))
+          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+
+      var fired = false;
+
+      await Database.instance.transaction((txn) async {
+        fired = true;
+      });
+
+      expect(fired, isTrue);
     });
 
     setUpAll(() {

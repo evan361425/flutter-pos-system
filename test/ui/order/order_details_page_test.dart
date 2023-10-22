@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -11,13 +10,13 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/order/order_product.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/quantities.dart';
-import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -27,10 +26,12 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -102,64 +103,77 @@ void main() {
       });
 
       OrderAttributes();
-      Seller();
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
-        OrderProduct(Menu.instance.getProduct('p-1')!,
-            selectedQuantity: {'pi-1': 'pq-1', 'pi-2': null}),
-        OrderProduct(Menu.instance.getProduct('p-2')!),
+        CartProduct(Menu.instance.getProduct('p-1')!,
+            quantities: {'pi-1': 'pq-1'}),
+        CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
-        'c-1': 'co-1',
-        'c-2': 'co-2'
+        'oa-1': 'oao-1',
+        'oa-2': 'oao-2'
       });
     }
 
     void prepareOrderAttributes() {
       final s1 = OrderAttribute(
-        id: 'c-1',
+        id: 'oa-1',
+        name: 'oa-1',
         mode: OrderAttributeMode.changeDiscount,
         options: {
-          'co-1': OrderAttributeOption(
-            id: 'co-1',
+          'oao-1': OrderAttributeOption(
+            id: 'oao-1',
+            name: 'oao-1',
             isDefault: true,
             modeValue: 10,
           ),
-          'co-2': OrderAttributeOption(
-            id: 'co-2',
+          'oao-2': OrderAttributeOption(
+            id: 'oao-2',
+            name: 'oao-2',
             modeValue: 50,
           ),
         },
       );
       final s2 = OrderAttribute(
-        id: 'c-2',
+        id: 'oa-2',
+        name: 'oa-2',
         mode: OrderAttributeMode.changePrice,
         options: {
-          'co-3': OrderAttributeOption(
-            id: 'co-3',
+          'oao-3': OrderAttributeOption(
+            id: 'oao-3',
+            name: 'oao-3',
             modeValue: 10,
           ),
-          'co-4': OrderAttributeOption(
-            id: 'co-4',
+          'oao-4': OrderAttributeOption(
+            id: 'oao-4',
+            name: 'oao-4',
             isDefault: true,
             modeValue: -10,
           ),
         },
       );
       final s3 = OrderAttribute(
-        id: 'c-3',
-        options: {'co-5': OrderAttributeOption(id: 'co-5', isDefault: true)},
+        id: 'oa-3',
+        name: 'oa-3',
+        options: {
+          'oao-5': OrderAttributeOption(
+            id: 'oao-5',
+            name: 'oao-5',
+            isDefault: true,
+          )
+        },
       );
       final s4 = OrderAttribute(
-        id: 'c-4',
-        options: {'co-6': OrderAttributeOption(id: 'co-6')},
+        id: 'oa-4',
+        name: 'oa-4',
+        options: {'oao-6': OrderAttributeOption(id: 'oao-6', name: 'oao-6')},
       );
       OrderAttributes.instance.replaceItems({
-        'c-1': s1..prepareItem(),
-        'c-2': s2..prepareItem(),
-        'c-3': s3..prepareItem(),
-        'c-4': s4..prepareItem(),
-        'c-5': OrderAttribute(id: 'c-5'),
+        'oa-1': s1..prepareItem(),
+        'oa-2': s2..prepareItem(),
+        'oa-3': s3..prepareItem(),
+        'oa-4': s4..prepareItem(),
+        'oa-5': OrderAttribute(id: 'oa-5', name: 'oa-5'),
       });
     }
 
@@ -168,16 +182,19 @@ void main() {
       return find.byKey(Key('cashier.calculator.$key'));
     }
 
-    Widget buildApp<T>({GlobalKey<ScaffoldMessengerState>? messenger}) {
-      return MaterialApp.router(
-        routerConfig: GoRouter(routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const OrderPage(),
-            routes: Routes.routes,
-          ),
-        ]),
-        scaffoldMessengerKey: messenger,
+    Widget buildApp<T>([GlobalKey<ScaffoldMessengerState>? messenger]) {
+      return ChangeNotifierProvider.value(
+        value: Cart.instance,
+        child: MaterialApp.router(
+          scaffoldMessengerKey: messenger,
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const OrderPage(),
+              routes: Routes.routes,
+            ),
+          ]),
+        ),
       );
     }
 
@@ -186,27 +203,26 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.apply')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
+      await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('order.action.more')), findsOneWidget);
+      expect(find.byKey(const Key('order.more')), findsOneWidget);
       expect(find.text(S.actSuccess), findsNothing);
     });
 
     testWidgets('Order without attributes', (tester) async {
       CurrencySetting.instance.isInt = false;
       final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
+      await tester.pumpWidget(buildApp(scaffoldMessenger));
 
-      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
-
-      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       expect(find.text('p-1'), findsOneWidget);
 
-      expect(Cart.instance.totalPrice, equals(28));
+      expect(Cart.instance.price, equals(28));
       expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);
       expect(find.byKey(const Key('cashier.snapshot.50')), findsOneWidget);
       expect(find.byKey(const Key('cashier.snapshot.100')), findsOneWidget);
@@ -236,22 +252,14 @@ void main() {
       await tester.pumpAndSettle();
 
       verifyText('paid', '0.12');
-      expect(
-        fCKey('change.error'),
-        findsOneWidget,
-      );
+      expect(fCKey('change.error'), findsOneWidget);
       await tester.tap(fCKey('submit'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
-      // make error message disappear
-      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+      scaffoldMessenger.currentState?.removeCurrentSnackBar();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
-      await tester.pumpAndSettle();
       await tester.tap(fCKey('clear'));
       await tester.pumpAndSettle();
 
@@ -271,25 +279,66 @@ void main() {
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
       expect(tester.widget<Text>(sChange).data, equals('找錢：62'));
 
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([
-            {'id': 1}
-          ]));
-      when(database.push(any, any)).thenAnswer((_) => Future.value(1));
       await Cashier.instance.setCurrentByUnit(1, 5);
 
-      await tester.tap(find.byKey(const Key('order.checkout')));
+      final now = DateTime.now();
+      Cart.timer = () => now;
+      final checker = OrderSetter.setPushed(OrderObject(
+        id: 1,
+        paid: 90,
+        price: 28,
+        cost: 5,
+        productsPrice: 28,
+        productsCount: 2,
+        createdAt: now,
+        products: const [
+          OrderProductObject(
+            id: 1,
+            productName: "p-1",
+            catalogName: "c-1",
+            count: 1,
+            singleCost: 5,
+            singlePrice: 17,
+            originalPrice: 17,
+            isDiscount: false,
+            ingredients: [
+              OrderIngredientObject(
+                ingredientName: 'i-1',
+                quantityName: 'q-1',
+                additionalPrice: 10,
+                additionalCost: 5,
+                amount: 5,
+              ),
+              OrderIngredientObject(
+                ingredientName: 'i-2',
+                quantityName: null,
+                additionalPrice: 0,
+                additionalCost: 0,
+                amount: 3,
+              ),
+            ],
+          ),
+          OrderProductObject(
+            id: 1,
+            productName: "p-2",
+            catalogName: "c-2",
+            count: 1,
+            singleCost: 0,
+            singlePrice: 11,
+            originalPrice: 11,
+            isDiscount: false,
+          ),
+        ],
+      ));
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
       await tester.pumpAndSettle();
       expect(find.text(S.actSuccess), findsOneWidget);
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator popped
       expect(sChange, findsNothing);
+
+      checker();
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 95 - 62
@@ -299,170 +348,93 @@ void main() {
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
-            data['i-1.currentAmount'] == 90 &&
+            data['i-1.currentAmount'] == 95 &&
             !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-1.updatedAt');
+            !data.containsKey('i-2.updatedAt');
       }))));
     });
 
-    testWidgets('With attributes and history mode', (tester) async {
-      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
+    testWidgets('Order with attributes', (tester) async {
       prepareOrderAttributes();
-      Cart.instance.isHistoryMode = true;
 
-      await tester.pumpWidget(buildApp(messenger: scaffoldMessenger));
-
-      await tester.tap(find.byKey(const Key('order.apply')));
-      await tester.pumpAndSettle();
-
-      // go to calculator because of attributes have set.
-      expect(find.byKey(const Key('set_attribute.c-1.co-1')), findsNothing);
-
-      await tester.tap(find.byKey(const Key('order.set_attr')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('set_attribute.c-1.co-1')));
-      await tester.tap(find.byKey(const Key('set_attribute.c-2.co-3')));
-
-      await tester.tap(find.byKey(const Key('order.cashier')));
-      await tester.pumpAndSettle();
-
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: argThat(equals([',c-2:co-3,c-3:co-5,']), named: 'whereArgs'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([
-            {'id': 1}
-          ]));
-      when(database.getLast(
-        Seller.orderTable,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        join: anyNamed('join'),
-        orderByKey: anyNamed('orderByKey'),
-      )).thenAnswer((_) => Future.value({
-            'id': 1,
-            'encodedProducts': jsonEncode([
-              {
-                'singlePrice': 10,
-                'originalPrice': 10,
-                'count': 1,
-                'productId': 'p-1',
-                'productName': 'p-1',
-                'isDiscount': false,
-                'ingredients': [
-                  {
-                    'name': 'i-1',
-                    'id': 'i-1',
-                    'amount': 2,
-                  },
-                  {
-                    'name': 'i-3',
-                    'id': 'i-3',
-                    'amount': 5,
-                  },
-                ]
-              },
-            ]),
-          }));
-      when(database.update(Seller.orderTable, 1, any))
-          .thenAnswer((_) => Future.value(1));
+      await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('confirm_dialog.cancel')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.checkout')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
-      // wait for error message disappear
-      scaffoldMessenger.currentState?.hideCurrentSnackBar();
+
+      await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
+      await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
+
+      await tester.tap(find.byKey(const Key('order.details.order')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.actSuccess), findsOneWidget);
+      final now = DateTime.now();
+      Cart.timer = () => now;
+      final checker = OrderSetter.setPushed(OrderObject(
+        id: 1,
+        paid: 38,
+        price: 38,
+        cost: 5,
+        productsPrice: 28,
+        productsCount: 2,
+        createdAt: now,
+        products: const [
+          OrderProductObject(
+            id: 1,
+            productName: "p-1",
+            catalogName: "c-1",
+            count: 1,
+            singleCost: 5,
+            singlePrice: 17,
+            originalPrice: 17,
+            isDiscount: false,
+            ingredients: [
+              OrderIngredientObject(
+                ingredientName: "i-1",
+                quantityName: "q-1",
+                additionalPrice: 10,
+                additionalCost: 5,
+                amount: 5,
+              ),
+              OrderIngredientObject(
+                ingredientName: "i-2",
+                amount: 3,
+              ),
+            ],
+          ),
+          OrderProductObject(
+            id: 2,
+            productName: "p-2",
+            catalogName: "c-2",
+            count: 1,
+            singleCost: 0,
+            singlePrice: 11,
+            originalPrice: 11,
+            isDiscount: false,
+          ),
+        ],
+        attributes: const [
+          OrderSelectedAttributeObject(
+            name: 'oa-2',
+            optionName: 'oao-3',
+            mode: OrderAttributeMode.changePrice,
+            modeValue: 10,
+          ),
+          OrderSelectedAttributeObject(
+            name: 'oa-3',
+            optionName: 'oao-5',
+            mode: OrderAttributeMode.statOnly,
+          ),
+        ],
+      ));
 
-      expect(Cart.instance.isEmpty, isTrue);
-      // navigator popped
-      expect(find.byKey(const Key('order.checkout')), findsNothing);
+      await tester.tap(find.byKey(const Key('order.details.confirm')));
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-      verifyNever(database.push('order', any));
-      verify(database.update('order', 1, argThat(predicate((e) {
-        final deli = String.fromCharCode(13);
-        return e is Map &&
-            e['paid'] == 38 &&
-            e['totalPrice'] == 38 &&
-            e['totalCount'] == 2 &&
-            e['usedProducts'] == 'p-1${deli}p-2$deli' &&
-            e['usedIngredients'] == 'i-1${deli}i-2$deli' &&
-            e['encodedAttributes'] ==
-                jsonEncode([
-                  {
-                    "name": "order attribute",
-                    "optionName": "order attribute option",
-                    "mode": 1,
-                    "modeValue": 10
-                  },
-                  {
-                    "name": "order attribute",
-                    "optionName": "order attribute option",
-                    "mode": 0,
-                    "modeValue": null
-                  }
-                ]) &&
-            e['encodedProducts'] ==
-                jsonEncode([
-                  {
-                    "productId": "p-1",
-                    "productName": "p-1",
-                    "catalogName": "c-1",
-                    "count": 1,
-                    "cost": 5,
-                    "singlePrice": 17,
-                    "originalPrice": 17,
-                    "isDiscount": false,
-                    "ingredients": [
-                      {
-                        "name": "i-1",
-                        "id": "i-1",
-                        "productIngredientId": "pi-1",
-                        "productQuantityId": "pq-1",
-                        "additionalPrice": 10,
-                        "additionalCost": 5,
-                        "amount": 10,
-                        "quantityId": "q-1",
-                        "quantityName": "q-1"
-                      },
-                      {
-                        "name": "i-2",
-                        "id": "i-2",
-                        "productIngredientId": "pi-2",
-                        "productQuantityId": null,
-                        "additionalPrice": null,
-                        "additionalCost": null,
-                        "amount": 3,
-                        "quantityId": null,
-                        "quantityName": null
-                      }
-                    ]
-                  },
-                  {
-                    "productId": "p-2",
-                    "productName": "p-2",
-                    "catalogName": "c-2",
-                    "count": 1,
-                    "cost": 0,
-                    "singlePrice": 11,
-                    "originalPrice": 11,
-                    "isDiscount": false,
-                    "ingredients": []
-                  }
-                ]) &&
-            e['productsPrice'] == 28;
-      }))));
+      checker();
+
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 30 + 5 + 3
         return data is Map &&
@@ -472,13 +444,15 @@ void main() {
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
-            data['i-1.currentAmount'] == 92 &&
+            data['i-1.currentAmount'] == 95 &&
             !data.containsKey('i-1.updatedAt') &&
             data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-2.updatedAt') &&
-            data['i-3.currentAmount'] == 105 &&
-            !data.containsKey('i-3.updatedAt');
+            !data.containsKey('i-2.updatedAt');
       }))));
+
+      expect(find.text(S.actSuccess), findsOneWidget);
+      expect(Cart.instance.isEmpty, isTrue);
+      expect(find.byKey(const Key('order.details.confirm')), findsNothing);
     });
 
     testWidgets('Play with calculator', (tester) async {
@@ -488,7 +462,7 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.apply')));
+      await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
@@ -574,6 +548,22 @@ void main() {
 
       verifyText('paid', '60');
       verifyText('change', '32');
+    });
+
+    testWidgets('is able to stash the order', (tester) async {
+      // only test available and actual function was test by other test case.
+      when(database.push(StashedOrders.table, any))
+          .thenAnswer((_) => Future.value(1));
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.details.stash')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.actSuccess), findsOneWidget);
     });
 
     setUp(() {

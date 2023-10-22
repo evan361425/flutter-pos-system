@@ -97,8 +97,13 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     widget.product.addListener(_reload);
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
     // if change ingredient in product_ingredient_search
     context.watch<Stock>();
     // if change quantity in product_quantity_search

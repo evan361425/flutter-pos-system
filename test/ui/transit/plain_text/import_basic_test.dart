@@ -58,7 +58,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // allow import
-      await tester.tap(find.text(S.btnSave));
+      await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
       // quantities won't reset to avoid changing menu settings.

@@ -21,7 +21,7 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.7.3+20703002
 
 environment:
-  flutter: "3.13.5"
+  flutter: ">=3.13.0 <3.14.0"
   sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
@@ -31,8 +31,10 @@ dependencies:
     sdk: flutter
 
   # core helper
+  go_router: ^11.1.2
   provider: ^6.0.5 # 22, 12-14
   intl: ^0.18.1 # 23, 04-18
+  collection: ^1.17.2
   firebase_core: ^2.16.0
   firebase_analytics: ^10.5.0
   firebase_auth: ^4.10.0
@@ -53,20 +55,26 @@ dependencies:
   # components
   flutter_slidable: ^3.0.0 # 23, 04-14
   # TODO: remove this package as two years unchanged
+  # maybe: https://github.com/fluttercommunity/backdrop
+  # or: https://pub.dev/packages/wolt_modal_sheet
   sliding_up_panel: ^2.0.0+1 # 21, 04-27
   table_calendar: ^3.0.9 # 23, 01-06
+  fl_chart: ^0.63.0 # 23, 06-10
+  spotlight_ant: ^1.0.3
 
   # image
-  image: ^4.1.0 # 23, 09-22
+  image: ^4.1.3 # 23, 09-25
   image_picker: ^1.0.4 # 23, 08-30
   image_cropper: ^5.0.0 # 23, 06-10
+  cached_network_image: ^3.3.0 # 23, 09-25
+  flutter_svg: ^2.0.7 # 23, 06-12
 
   # Make it easy to test
   # TODO: wait shared_preferences to support ^7.0.0
   file: ^6.1.4 # 23, 05-19
 
   # tools
-  uuid: ^4.0.0 # 23, 08-30
+  uuid: ^4.1.0 # 23, 09-25
   wakelock:
     git:
       url: https://github.com/evan361425/wakelock
@@ -77,12 +85,9 @@ dependencies:
   url_launcher: ^6.1.14 # 23, 08-31
   flutter_native_splash: ^2.3.2 # 23, 08-13
   package_info_plus: ^4.1.0 # 23, 08-02
-  cached_network_image: ^3.2.3 # 22, 11-25
-  flutter_svg: ^2.0.7 # 23, 06-12
-  spotlight_ant: ^1.0.3
+  visibility_detector: ^0.4.0+2 # 23, 03-09
   # TODO: remove this as it is not useful
   info_popup: ^3.0.6 # 23, 08-29
-  go_router: ^11.0.0
 
 dev_dependencies:
   flutter_test:
@@ -108,7 +113,7 @@ flutter:
 
   assets:
     - assets/food_placeholder.png
-    - assets/google_sheet_icon.png
+    - assets/google_sheet_icon.svg
     - assets/feature_request_please.gif
     - assets/google_signin_button.svg
 

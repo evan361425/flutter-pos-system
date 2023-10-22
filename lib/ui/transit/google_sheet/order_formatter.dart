@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
@@ -5,63 +6,41 @@ class OrderFormatter {
   static List<List<Object>> formatOrder(OrderObject order) {
     return [
       [
-        order.createdAt.millisecondsSinceEpoch ~/ 1000,
+        Util.toUTC(now: order.createdAt),
         order.createdAt.toIso8601String(),
-        order.totalPrice,
+        order.price,
         order.productsPrice,
         order.paid,
         order.cost,
-        order.totalCount,
+        order.revenue,
+        order.productsCount,
         order.products.length,
-        order.attributes
-            .map((a) => [a.name, a.optionName].join(':'))
-            .join('\n'),
-        order.products
-            .map((p) => [
-                  p.productName,
-                  p.catalogName,
-                  p.count,
-                  p.totalPrice.toCurrencyNum(),
-                  p.cost.toCurrencyNum(),
-                ].join(','))
-            .join('\n'),
       ]
     ];
   }
 
   static List<List<Object>> formatOrderSetAttr(OrderObject order) {
-    final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final attr in order.attributes)
-        if (attr.isNotEmpty)
-          [
-            createdAt,
-            attr.name!,
-            attr.optionName!,
-          ],
+        [
+          Util.toUTC(now: order.createdAt),
+          attr.name,
+          attr.optionName,
+        ],
     ];
   }
 
   static List<List<Object>> formatOrderProduct(OrderObject order) {
-    final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final product in order.products)
         [
-          createdAt,
+          Util.toUTC(now: order.createdAt),
           product.productName,
           product.catalogName,
           product.count,
           product.singlePrice.toCurrencyNum(),
-          product.cost.toCurrencyNum(),
-          product.ingredients
-              .map(
-                (i) => [
-                  i.name,
-                  i.quantityName ?? '',
-                  i.amount,
-                ].join(','),
-              )
-              .join('\n'),
+          product.singleCost.toCurrencyNum(),
+          product.originalPrice.toCurrencyNum(),
         ],
     ];
   }
@@ -73,7 +52,7 @@ class OrderFormatter {
         for (final ing in product.ingredients)
           [
             createdAt,
-            ing.name,
+            ing.ingredientName,
             ing.quantityName ?? '',
             ing.amount,
           ],
@@ -87,10 +66,9 @@ class OrderFormatter {
     '產品價錢',
     '付額',
     '成本',
-    '總數',
-    '總類',
-    '顧客設定',
-    '產品細項',
+    '收入',
+    '產品總數',
+    '產品種類',
   ];
 
   /// 顧客設定位於第幾個欄位，0-index
@@ -112,7 +90,7 @@ class OrderFormatter {
     '數量',
     '單一售價',
     '單一成本',
-    '成份',
+    '單一原價',
   ];
 
   /// 成份位於第幾個欄位，0-index

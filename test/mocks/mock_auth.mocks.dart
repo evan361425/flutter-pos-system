@@ -61,6 +61,7 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
         ),
         returnValue: _i4.Stream<_i5.User?>.empty(),
       ) as _i4.Stream<_i5.User?>);
+
   @override
   _i4.Future<_i2.Client?> getAuthenticatedClient({
     List<String>? scopes = const [],
@@ -77,6 +78,7 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
         ),
         returnValue: _i4.Future<_i2.Client?>.value(),
       ) as _i4.Future<_i2.Client?>);
+
   @override
   _i4.Future<void> signOut() => (super.noSuchMethod(
         Invocation.method(
@@ -86,6 +88,7 @@ class MockAuth extends _i1.Mock implements _i3.Auth {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<bool> signIn() => (super.noSuchMethod(
         Invocation.method(
@@ -124,6 +127,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<_i2.Response> get(
     Uri? url, {
@@ -144,6 +148,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<_i2.Response> post(
     Uri? url, {
@@ -174,6 +179,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<_i2.Response> put(
     Uri? url, {
@@ -204,6 +210,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<_i2.Response> patch(
     Uri? url, {
@@ -234,6 +241,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<_i2.Response> delete(
     Uri? url, {
@@ -264,6 +272,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.Response>);
+
   @override
   _i4.Future<String> read(
     Uri? url, {
@@ -277,6 +286,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
         ),
         returnValue: _i4.Future<String>.value(''),
       ) as _i4.Future<String>);
+
   @override
   _i4.Future<_i8.Uint8List> readBytes(
     Uri? url, {
@@ -290,6 +300,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
         ),
         returnValue: _i4.Future<_i8.Uint8List>.value(_i8.Uint8List(0)),
       ) as _i4.Future<_i8.Uint8List>);
+
   @override
   _i4.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(
@@ -306,6 +317,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           ),
         )),
       ) as _i4.Future<_i2.StreamedResponse>);
+
   @override
   void close() => super.noSuchMethod(
         Invocation.method(

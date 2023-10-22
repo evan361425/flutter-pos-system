@@ -1,7 +1,3 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
-
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,14 +5,6 @@ import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
@@ -32,6 +20,7 @@ import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_database.dart';
 import '../../../mocks/mock_google_api.dart';
 import '../../../services/auth_test.mocks.dart';
+import '../../../test_helpers/order_setter.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
@@ -55,99 +44,11 @@ void main() {
       );
     }
 
-    void setLoader(Future<List<Map<String, Object?>>> Function() cb) {
-      when(database.query(
-        any,
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        orderBy: anyNamed('orderBy'),
-        limit: anyNamed('limit'),
-        offset: anyNamed('offset'),
-      )).thenAnswer((_) => cb());
-
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value([{}]));
-    }
-
-    OrderObject getOrder() {
-      final stock = Stock();
-      stock.replaceItems({
-        'i-1': Ingredient(id: 'i-1', name: 'i-1'),
-        'i-2': Ingredient(id: 'i-2', name: 'i-2'),
-        'i-3': Ingredient(id: 'i-3', name: 'i-3'),
-      });
-      final p1 = OrderProductObject(
-          singlePrice: 1,
-          originalPrice: 2,
-          count: 3,
-          cost: 1,
-          productId: 'p-1',
-          productName: 'p-1',
-          catalogName: 'c-1',
-          isDiscount: true,
-          ingredients: [
-            OrderIngredientObject(
-                id: 'i-1',
-                name: 'i-1',
-                productIngredientId: 'pi-1',
-                additionalPrice: 2,
-                additionalCost: 1,
-                amount: 3,
-                quantityId: 'q-1',
-                productQuantityId: 'pq-1',
-                quantityName: 'q-1'),
-            OrderIngredientObject(
-                id: 'i-2', name: 'i-2', productIngredientId: 'pi-1', amount: 0),
-            OrderIngredientObject(
-              id: 'i-3',
-              name: 'i-3',
-              productIngredientId: 'pi-1',
-              amount: -5,
-            ),
-          ]);
-      const p2 = OrderProductObject(
-        productId: 'p-2',
-        productName: 'p-2',
-        catalogName: 'c-2',
-        count: 1,
-        cost: 10,
-        singlePrice: 20,
-        originalPrice: 30,
-        isDiscount: false,
-        ingredients: [],
-      );
-
-      OrderAttributes().replaceItems({
-        '1': OrderAttribute(id: '1', name: 'Test attr')
-          ..replaceItems({'3': OrderAttributeOption(id: '3', name: 'Test opt')})
-          ..prepareItem(),
-        '2': OrderAttribute(id: '2', mode: OrderAttributeMode.changeDiscount)
-          ..replaceItems({'4': OrderAttributeOption(id: '4', modeValue: 10)})
-          ..prepareItem(),
-      });
-
-      return OrderObject.fromMap({
-        'id': 1,
-        'totalPrice': 47,
-        'productsPrice': 20,
-        'createdAt':
-            DateTime(2023, 3, 4, 5, 6, 7, 8, 9).millisecondsSinceEpoch ~/ 1000,
-        'encodedProducts': jsonEncode([p1.toMap(), p2.toMap()]),
-        'encodedAttributes': jsonEncode([
-          OrderSelectedAttributeObject.fromId('1', '3').toMap(),
-          OrderSelectedAttributeObject.fromId('2', '4').toMap(),
-        ]),
-      });
-    }
-
     testWidgets('#preview', (tester) async {
-      setLoader(() => Future.value([
-            getOrder().toMap()..addAll({'id': 1})
-          ]));
+      final order = OrderSetter.sample();
+      OrderSetter.setMetrics([order], countingAll: true);
+      OrderSetter.setOrders([order]);
+      OrderSetter.setOrder(order);
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -159,7 +60,9 @@ void main() {
     });
 
     testWidgets('#pick_range', (tester) async {
-      setLoader(() => Future.value([]));
+      OrderSetter.setMetrics([], countingAll: true);
+      OrderSetter.setOrders([]);
+
       final lang = LanguageSetting();
       final settings = SettingsProvider([lang]);
       lang.value = const Locale('en', 'US');
@@ -214,12 +117,13 @@ void main() {
 
     group('#export', () {
       testWidgets('create and overwrite', (tester) async {
-        final order = getOrder();
+        final order = OrderSetter.sample();
+        OrderSetter.setMetrics([order], countingAll: true);
+        OrderSetter.setOrders([order]);
+        OrderSetter.setDetailedOrders([order]);
+
         final sheetsApi = getMockSheetsApi();
         final today = DateFormat('MMdd').format(DateTime.now());
-        setLoader(() => Future.value([
-              order.toMap()..addAll({'id': 1})
-            ]));
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
         when(sheetsApi.spreadsheets.create(
           any,
@@ -249,7 +153,7 @@ void main() {
         await tester.pumpAndSettle();
 
         final title = S.transitOrderTitle;
-        verify(cache.set(cacheKey, 'abc:true:' + title));
+        verify(cache.set(cacheKey, 'abc:true:$title'));
 
         final expected = [
           [
@@ -291,20 +195,21 @@ void main() {
       });
 
       testWidgets('edit sheet name and append', (tester) async {
-        final order = getOrder();
+        final order = OrderSetter.sample();
+        OrderSetter.setMetrics([order], countingAll: true);
+        OrderSetter.setOrders([order]);
+        OrderSetter.setDetailedOrders([order]);
+
         final sheetsApi = getMockSheetsApi();
-        setLoader(() => Future.value([
-              order.toMap()..addAll({'id': 1})
-            ]));
 
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
         // exist spreadsheet
         when(cache.get(cacheKey)).thenReturn('id:true:name');
-        when(cache.get(cacheKey + '.order')).thenReturn('o title');
-        when(cache.get(cacheKey + '.orderSetAttr')).thenReturn('os title');
-        when(cache.get(cacheKey + '.orderProduct')).thenReturn('op title');
-        when(cache.get(cacheKey + '.orderIngredient')).thenReturn('oi title');
-        when(cache.get(cacheKey + '.order.required')).thenReturn(false);
+        when(cache.get('$cacheKey.order')).thenReturn('o title');
+        when(cache.get('$cacheKey.orderSetAttr')).thenReturn('os title');
+        when(cache.get('$cacheKey.orderProduct')).thenReturn('op title');
+        when(cache.get('$cacheKey.orderIngredient')).thenReturn('oi title');
+        when(cache.get('$cacheKey.order.required')).thenReturn(false);
         when(sheetsApi.spreadsheets.get(
           any,
           $fields: anyNamed('\$fields'),
@@ -341,10 +246,10 @@ void main() {
         await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
 
-        verify(cache.set(cacheKey + '.isOverwrite', false));
-        verify(cache.set(cacheKey + '.withPrefix', false));
-        verify(cache.set(cacheKey + '.order', 'o title'));
-        verify(cache.set(cacheKey + '.order.required', false));
+        verify(cache.set('$cacheKey.isOverwrite', false));
+        verify(cache.set('$cacheKey.withPrefix', false));
+        verify(cache.set('$cacheKey.order', 'o title'));
+        verify(cache.set('$cacheKey.order.required', false));
 
         // export
         await tester.tap(find.text('指定匯出'));
@@ -395,7 +300,6 @@ void main() {
       initializeAuth();
       // init dependencies
       CurrencySetting().isInt = true;
-      Seller();
     });
   });
 }

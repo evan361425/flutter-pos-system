@@ -16,9 +16,11 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 import '../mocks/mock_database.dart';
+import '../mocks/mock_database.mocks.dart';
 
 void main() {
   group('Random Generate Order', () {
@@ -42,22 +44,29 @@ void main() {
       );
 
       expect(result.length, equals(10));
-      expect(result.map((e) => e.totalCount).reduce((a, b) => a + b),
+      expect(result.map((e) => e.productsCount).reduce((a, b) => a + b),
           greaterThanOrEqualTo(10));
-      expect(
-          result.fold<int>(
-              0,
-              (pre, e) =>
-                  e.attributes.where((ee) => ee.isNotEmpty).length + pre),
+      expect(result.fold<int>(0, (pre, e) => e.attributes.length + pre),
           greaterThan(0));
     });
 
     testWidgets('change date and count', (tester) async {
-      when(database.push(any, any)).thenAnswer((_) => Future.value(1));
+      final txn = MockDatabaseExecutor();
+      final batch = MockBatch();
+
+      when(database.transaction(any))
+          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+      when(txn.batch()).thenReturn(batch);
+      when(txn.insert(Seller.orderTable, any))
+          .thenAnswer((_) => Future.value(1));
+      when(txn.insert(Seller.productTable, any))
+          .thenAnswer((_) => Future.value(1));
+      when(batch.commit(noResult: anyNamed('noResult')))
+          .thenAnswer((_) => Future.value([]));
 
       const btn = Key('test');
       await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Seller(),
+        value: Seller.instance,
         child: const MaterialApp(home: RandomGenerateOrderButton(key: btn)),
       ));
 
@@ -73,11 +82,13 @@ void main() {
       await tester.tap(find.text('OK'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      verify(database.push(any, any)).called(15);
+      verify(txn.insert(Seller.orderTable, any)).called(15);
     });
   });
 
   setUpAll(() {
+    CurrencySetting().isInt = true;
+
     final stock = Stock()
       ..replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
