@@ -24,7 +24,7 @@ jobs:
       tag_version: ${{ steps.pubspec_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load pubspec version
         id: pubspec
@@ -62,8 +62,8 @@ jobs:
         run: |
           PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+")
           PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "::set-output name=version::$PUBSPEC_VERSION"
-          echo "::set-output name=code::$PUBSPEC_BUILD_CODE"
+          echo "version=$PUBSPEC_VERSION" >> $GITHUB_OUTPUT
+          echo "code=$PUBSPEC_BUILD_CODE" >> $GITHUB_OUTPUT
 
       - name: Check version
         if: ${{ github.event_name != 'workflow_dispatch' && steps.tag_version.outputs.result != steps.pubspec_version.outputs.version }}
@@ -78,7 +78,7 @@ jobs:
     needs: check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build Changelog
         id: build_changelog
@@ -109,7 +109,7 @@ jobs:
       - check-version
     steps:
       # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: "zulu"
           java-version: "12.x"
@@ -124,7 +124,7 @@ jobs:
 
       # Checkout code.
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Recreate missing files, and get packages.
       - name: Build dependencies
@@ -165,7 +165,7 @@ jobs:
             -H 'Accept: application/vnd.github.v3+json' \
             https://api.github.com/repos/evan361425/flutter-pos-system/releases \
             | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag_version }}"))')
-          echo "::set-output name=upload_url::$(echo "$release" | jq -r '.upload_url')"
+          echo "upload_url=$(echo "$release" | jq -r '.upload_url')" >> $GITHUB_OUTPUT
 
       # Upload the build.
       - name: Upload built package to release

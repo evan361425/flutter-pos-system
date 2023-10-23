@@ -19,7 +19,7 @@ jobs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load pubspec version
         id: pubspec
@@ -33,8 +33,8 @@ jobs:
         run: |
           PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+")
           PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "::set-output name=version::$PUBSPEC_VERSION"
-          echo "::set-output name=code::$PUBSPEC_BUILD_CODE"
+          echo "version=$PUBSPEC_VERSION" >> $GITHUB_OUTPUT
+          echo "code=$PUBSPEC_BUILD_CODE" >> $GITHUB_OUTPUT
 
       - name: Get tag that trigger this workflow
         id: tag
@@ -84,7 +84,7 @@ jobs:
           body="${body//$'\r'/'%0D'}"
           body="${body//$'## '/}"
           body="${body//$'-'/•}"
-          echo "::set-output name=changelog::$body"
+          echo "changelog=$body" >> $GITHUB_OUTPUT
 
   # Push changelog to repository
   add-changelog:
@@ -95,7 +95,7 @@ jobs:
       - check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: "master"
 
