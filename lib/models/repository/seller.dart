@@ -28,7 +28,7 @@ class Seller extends ChangeNotifier {
     final cease = Util.toUTC(now: end);
     // using UTC to calculate the count but use user's timezone when returned.
     final rows = await Database.instance.query(
-      '(SELECT CAST((createdAt - $begin) / 86400 AS INT) day FROM $orderTable'
+      '(SELECT CAST((createdAt - $begin) / 86400 AS INT) day FROM $orderTable '
       'WHERE createdAt BETWEEN $begin AND $cease) t',
       columns: ['t.day', 'COUNT(*) c'],
       groupBy: "t.day",
@@ -37,7 +37,7 @@ class Seller extends ChangeNotifier {
 
     return <DateTime, int>{
       for (final row in rows)
-        Util.fromUTC(begin + (row['day'] as int)): row['c'] as int
+        Util.fromUTC(begin + (row['day'] as int) * 86400): row['c'] as int
     };
   }
 

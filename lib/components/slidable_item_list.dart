@@ -13,11 +13,15 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
   final String? hintText;
 
+  /// With floating action button and add the padding below
+  final bool withFAB;
+
   const SlidableItemList({
     Key? key,
     required this.delegate,
     this.scrollable = true,
     this.hintText,
+    this.withFAB = false,
   }) : super(key: key);
 
   @override
@@ -34,7 +38,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
       ),
       for (final item in delegate.items)
         delegate.build(context, item, index: index++, theme: theme),
-      const SizedBox(height: 4.0),
+      SizedBox(height: withFAB ? 76.0 : 4.0),
     ]);
 
     final groupChild = delegate.groupTag == null

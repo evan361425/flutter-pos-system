@@ -22,6 +22,7 @@ class MenuProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList(
+      withFAB: true,
       delegate: SlidableItemDelegate<Product, int>(
         groupTag: 'menu.product',
         items: catalog?.itemList ?? Menu.instance.products.toList(),

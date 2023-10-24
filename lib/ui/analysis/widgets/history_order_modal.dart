@@ -6,7 +6,6 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -68,14 +67,6 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
       context,
       deleteValue: _Action.delete,
       popAfterDeleted: true,
-      actions: [
-        const BottomSheetAction(
-          title: Text('編輯訂單'),
-          leading: Icon(KIcons.edit),
-          returnValue: _Action.edit,
-          // TODO: add route
-        ),
-      ],
       deleteCallback: () => showSnackbarWhenFailed(
         Seller.instance.delete(widget.orderId),
         context,
@@ -95,5 +86,4 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
 
 enum _Action {
   delete,
-  edit,
 }

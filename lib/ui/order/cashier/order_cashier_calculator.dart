@@ -33,6 +33,8 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     final theme = Theme.of(context);
 
     return Column(children: [
+      // avoid rounded border of accessor and causing overlapping.
+      const SizedBox(height: 8.0),
       Column(children: [
         _SingleField(
           key: paidState,

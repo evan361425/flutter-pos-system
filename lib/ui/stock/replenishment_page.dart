@@ -56,6 +56,7 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
     }
 
     return SlidableItemList<Replenishment, _Actions>(
+      withFAB: true,
       delegate: SlidableItemDelegate(
         groupTag: 'stock.replenishment',
         handleDelete: (item) => item.remove(),

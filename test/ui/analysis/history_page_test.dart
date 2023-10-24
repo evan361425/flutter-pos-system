@@ -66,11 +66,12 @@ void main() {
 
     testWidgets('select date and show order list in portrait', (tester) async {
       final now = DateTime.now();
-      final nowS = (now.millisecondsSinceEpoch -
+      final nowD = DateTime(now.year, now.month, now.day);
+      final nowS = (nowD.millisecondsSinceEpoch -
               DateTime(now.year, now.month)
                   .subtract(const Duration(days: 7))
                   .millisecondsSinceEpoch) ~/
-          1000;
+          86400000; // get days
 
       final o1 = OrderSetter.sample(id: 1);
       final o2 = OrderSetter.sample(id: 2);
@@ -78,7 +79,7 @@ void main() {
       OrderSetter.setMetrics([o1, o2]);
       mockGetCountPerDay([
         {'day': nowS, 'c': 100},
-        {'day': nowS - 86400, 'c': 50},
+        {'day': nowS - 1, 'c': 50},
       ]);
 
       // setup portrait env
@@ -114,17 +115,18 @@ void main() {
 
     testWidgets('load count when page changed in landscape', (tester) async {
       final now = DateTime.now();
-      final nowS = (now.millisecondsSinceEpoch -
+      final nowD = DateTime(now.year, now.month, now.day);
+      final nowS = (nowD.millisecondsSinceEpoch -
               DateTime(now.year, now.month)
                   .subtract(const Duration(days: 7))
                   .millisecondsSinceEpoch) ~/
-          1000;
+          86400000; // get days
       OrderSetter.setOrders([]);
       OrderSetter.setMetrics([]);
       mockGetCountPerDay([
         {'day': nowS, 'c': 50},
         // last month
-        {'day': nowS - 86400 * (now.day + 7), 'c': 60},
+        {'day': nowS - now.day - 7, 'c': 60},
       ]);
 
       // setup landscape env

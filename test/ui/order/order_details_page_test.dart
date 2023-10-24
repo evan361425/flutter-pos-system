@@ -205,11 +205,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.details.confirm')));
-      await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('order.more')), findsOneWidget);
-      expect(find.text(S.actSuccess), findsNothing);
+      expect(find.byKey(const Key('order.details.confirm')), findsNothing);
     });
 
     testWidgets('Order without attributes', (tester) async {

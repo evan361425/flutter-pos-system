@@ -18,6 +18,7 @@ class StockQuantityList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Quantity, int>(
+      withFAB: true,
       delegate: SlidableItemDelegate(
         groupTag: 'quantities.quantity',
         items: quantities,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -10,6 +11,7 @@ import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
 import 'package:possystem/ui/order/cashier/stashed_order_list_view.dart';
 import 'package:possystem/ui/order/widgets/order_object_view.dart';
+import 'package:provider/provider.dart';
 
 import 'order_setting_view.dart';
 
@@ -36,6 +38,58 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final orderView = Cart.instance.isEmpty
+        ? const Center(child: HintText('請先進行點單。'))
+        : ChangeNotifierProvider.value(
+            value: paid,
+            builder: (context, child) {
+              final paid = context.watch<ValueNotifier<num>>();
+              return OrderObjectView(
+                order: Cart.instance.toObject(paid: paid.value),
+              );
+            },
+          );
+
+    final body = Scaffold(
+      appBar: AppBar(
+        leading: const PopButton(),
+        actions: Cart.instance.isEmpty
+            ? const <Widget>[]
+            : [
+                TextButton(
+                  key: const Key('order.details.stash'),
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStatePropertyAll(
+                      theme.textTheme.bodyMedium!.color,
+                    ),
+                  ),
+                  onPressed: _stash,
+                  child: const Text('暫存'),
+                ),
+                TextButton(
+                  key: const Key('order.details.confirm'),
+                  onPressed: _checkout,
+                  child: Text(S.orderDetailsConfirm),
+                ),
+              ],
+        // disable shadow after scrolled
+        scrolledUnderElevation: 0,
+        bottom: TabBar(
+          controller: _controller,
+          tabs: tabs,
+        ),
+      ),
+      body: TabBarView(controller: _controller, children: [
+        if (hasAttr) OderSettingView(price: price),
+        orderView,
+        const StashedOrderListView(),
+      ]),
+    );
+
+    if (Cart.instance.isEmpty) {
+      return body;
+    }
+
     final collapsed = OrderCashierSnapshot(price: price, paid: paid);
 
     final panel = Container(
@@ -50,40 +104,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         price: price,
         paid: paid,
       ),
-    );
-
-    final body = Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        actions: [
-          TextButton(
-            key: const Key('order.details.stash'),
-            style: ButtonStyle(
-              foregroundColor: MaterialStatePropertyAll(
-                theme.textTheme.bodyMedium!.color,
-              ),
-            ),
-            onPressed: _stash,
-            child: const Text('暫存'),
-          ),
-          TextButton(
-            key: const Key('order.details.confirm'),
-            onPressed: _checkout,
-            child: Text(S.orderDetailsConfirm),
-          ),
-        ],
-        // disable shadow after scrolled
-        scrolledUnderElevation: 0,
-        bottom: TabBar(
-          controller: _controller,
-          tabs: tabs,
-        ),
-      ),
-      body: TabBarView(controller: _controller, children: [
-        if (hasAttr) OderSettingView(price: price),
-        OrderObjectView(order: Cart.instance.toObject()),
-        const StashedOrderListView(),
-      ]),
     );
 
     return Material(

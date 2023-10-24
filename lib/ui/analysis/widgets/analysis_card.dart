@@ -83,7 +83,7 @@ class _AnalysisCardState<T> extends State<AnalysisCard<T>> {
             }
           },
           child: const ColoredBox(
-            color: Colors.black54,
+            color: Colors.black12,
             child: Center(
               child: SizedBox(
                 height: 20,

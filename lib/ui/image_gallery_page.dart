@@ -100,16 +100,21 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       );
     }
 
+    const crossAxisCount = 3;
     return GridView.builder(
       primary: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+        crossAxisCount: crossAxisCount,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
       ),
-      itemCount: images!.length,
+      itemCount: images!.length + crossAxisCount,
       semanticChildCount: images!.length,
       itemBuilder: (context, index) {
+        if (index >= images!.length) {
+          // Floating action button offset
+          return const SizedBox(height: 72.0);
+        }
         final image = XFile(images![index]);
 
         final inkwell = isSelecting

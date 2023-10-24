@@ -32,7 +32,9 @@ class OrderAttributeList extends StatelessWidget {
             ChangeNotifierProvider<OrderAttribute>.value(
               value: attribute,
               child: const _OrderAttributeCard(),
-            )
+            ),
+          // Floating action button offset
+          const SizedBox(height: 72.0),
         ],
       ),
     );
