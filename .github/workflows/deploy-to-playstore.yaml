@@ -103,7 +103,7 @@ jobs:
         id: build_code
         run: |
           BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "build_code=$BUILD_CODE" >> $GITHUB_OUTPUT
+          echo "value=$BUILD_CODE" >> $GITHUB_OUTPUT
 
       - name: Extract build number
         id: dev_build_number
