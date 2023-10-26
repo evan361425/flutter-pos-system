@@ -24,13 +24,11 @@ class MenuCatalogList extends StatelessWidget {
     return SlidableItemList<Catalog, _Action>(
       withFAB: true,
       delegate: SlidableItemDelegate(
-        groupTag: 'menu.catalog',
         items: catalogs,
         deleteValue: _Action.delete,
         tileBuilder: _tileBuilder,
-        warningContextBuilder: _warningContextBuilder,
+        confirmContextBuilder: _confirmContextBuilder,
         actionBuilder: _actionBuilder,
-        handleTap: _handleTap,
         handleDelete: (item) => item.remove(),
       ),
     );
@@ -52,15 +50,13 @@ class MenuCatalogList extends StatelessWidget {
     ];
   }
 
-  void _handleTap(BuildContext context, Catalog catalog) => onSelected(catalog);
-
   Widget _tileBuilder(
     BuildContext context,
-    int index,
     Catalog catalog,
+    int index,
     VoidCallback showActions,
   ) {
-    final child = ListTile(
+    return ListTile(
       key: Key('catalog.${catalog.id}'),
       leading: catalog.avator,
       title: Text(catalog.name),
@@ -70,12 +66,12 @@ class MenuCatalogList extends StatelessWidget {
         catalog.itemList.map((product) => product.name),
         emptyText: S.menuCatalogListEmptyProduct,
       ),
+      onLongPress: showActions,
+      onTap: () => onSelected(catalog),
     );
-
-    return child;
   }
 
-  Widget _warningContextBuilder(BuildContext context, Catalog catalog) {
+  Widget _confirmContextBuilder(BuildContext context, Catalog catalog) {
     final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
     return Text(S.dialogDeletionContent(catalog.name, moreCtx));
   }

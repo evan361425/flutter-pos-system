@@ -80,13 +80,13 @@ void main() {
       await tester.tap(findByK('add_favorite'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       expect(find.text('請選擇要套用的組合'), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('cashier.changer.favorite.0')));
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.favorite.0')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       expect(find.text('go to changer'), findsNothing);
@@ -104,15 +104,14 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      expect(
-          find.byKey(const Key('cashier.changer.favorite.0')), findsOneWidget);
+      expect(find.byKey(const Key('changer.favorite.0')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.more_vert_sharp));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('cashier.changer.favorite.0')), findsNothing);
+      expect(find.byKey(const Key('changer.favorite.0')), findsNothing);
     });
 
     testWidgets('apply custom', (tester) async {
@@ -135,7 +134,7 @@ void main() {
         }
       }
 
-      await tester.tap(find.byKey(const Key('cashier.changer.custom')));
+      await tester.tap(find.byKey(const Key('changer.custom')));
       await tester.pumpAndSettle();
       // change count should also fired target reset
       await setCountUnit('source', unit: '10');
@@ -161,7 +160,7 @@ void main() {
       await setCountUnit('target.2', unit: '1', count: '5');
 
       // 5*10 is not able to change 10*5 + 1*5 + 5*1
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       expect(
@@ -171,7 +170,7 @@ void main() {
 
       // apply correctly now!
       await setCountUnit('target.0', count: '6');
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       // should setup current data
@@ -179,7 +178,7 @@ void main() {
 
       await Cashier.instance.setUnitCount(10, 10);
 
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       expect(find.text('go to changer'), findsOneWidget);

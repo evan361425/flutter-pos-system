@@ -208,8 +208,8 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
     final confirmed = await ConfirmDialog.show(
       context,
-      title: '確認執行$label嗎？',
-      content: '將會$hint',
+      title: '$label？',
+      content: '此動作將會$hint',
     );
 
     if (confirmed) {

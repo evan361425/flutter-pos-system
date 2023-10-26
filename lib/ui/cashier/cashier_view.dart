@@ -72,8 +72,8 @@ class CashierView extends StatelessWidget {
     if (!Cashier.instance.defaultNotSet) {
       final result = await ConfirmDialog.show(
         context,
-        title: '確認通知',
-        content: '將會覆蓋先前的設定\n此動作無法復原。',
+        title: '調整收銀臺預設？',
+        content: '此動作將會覆蓋掉先前的設定。',
       );
 
       if (!result) {

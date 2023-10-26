@@ -45,7 +45,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
 
           createdAt = DateFormat.MMMEd(S.localeName).format(order.createdAt) +
               MetaBlock.string +
-              DateFormat.jms(S.localeName).format(order.createdAt);
+              DateFormat.Hms(S.localeName).format(order.createdAt);
           return Column(children: [
             Padding(
               padding: const EdgeInsets.all(4.0),

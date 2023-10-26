@@ -117,24 +117,18 @@ class _MenuPageState extends State<MenuPage> {
     }
 
     if (widget.productOnly) {
-      return const SingleChildScrollView(
-        child: MenuProductList(catalog: null),
-      );
+      return const MenuProductList(catalog: null);
     }
 
-    return SingleChildScrollView(
-      child: MenuCatalogList(
-        Menu.instance.itemList, // put it here to handle reload
-        onSelected: _handleSelected,
-      ),
+    return MenuCatalogList(
+      Menu.instance.itemList, // put it here to handle reload
+      onSelected: _handleSelected,
     );
   }
 
   Widget get secondView {
     if (selected?.isNotEmpty == true) {
-      return SingleChildScrollView(
-        child: MenuProductList(catalog: selected),
-      );
+      return MenuProductList(catalog: selected);
     }
 
     // empty or not exist
@@ -200,15 +194,12 @@ class _MenuPageState extends State<MenuPage> {
       return true;
     }
 
-    _goTo(0);
-    setState(() {
-      selected = null;
-    });
+    _goTo(0).then((_) => setState(() => selected = null));
     return false;
   }
 
-  void _goTo(int index) {
-    controller.animateToPage(
+  Future<void> _goTo(int index) {
+    return controller.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
       curve: Curves.ease,

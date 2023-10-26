@@ -43,24 +43,25 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
     }
 
     final delegate = SlidableItemDelegate<FavoriteItem, int>(
-      groupTag: 'cashier.changer_favorite',
       items: Cashier.instance.favoriteItems().toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),
-      tileBuilder: (context, index, item, showActions) =>
-          RadioListTile<FavoriteItem>(
-        key: Key('cashier.changer.favorite.$index'),
-        value: item,
-        title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),
-        subtitle: MetaBlock.withString(
-          context,
-          item.targets.map<String>((e) => '${e.count} 個 ${e.unit} 元'),
-          textOverflow: TextOverflow.visible,
+      tileBuilder: (context, item, index, showActions) => InkWell(
+        onLongPress: showActions,
+        child: RadioListTile<FavoriteItem>(
+          key: Key('changer.favorite.$index'),
+          value: item,
+          title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),
+          subtitle: MetaBlock.withString(
+            context,
+            item.targets.map<String>((e) => '${e.count} 個 ${e.unit} 元'),
+            textOverflow: TextOverflow.visible,
+          ),
+          secondary: EntryMoreButton(onPressed: showActions),
+          groupValue: selected,
+          selected: selected == item,
+          onChanged: (item) => setState(() => selected = item),
         ),
-        secondary: EntryMoreButton(onPressed: showActions),
-        groupValue: selected,
-        selected: selected == item,
-        onChanged: (item) => setState(() => selected = item),
       ),
     );
 

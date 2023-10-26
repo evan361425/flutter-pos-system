@@ -74,8 +74,6 @@ class OrderObjectView extends StatelessWidget {
         TextDivider(label: S.orderObjectProductTitle),
         HintText(S.orderObjectProductsCount(order.productsCount)),
         for (final product in order.products) _ProductTile(product),
-        // avoid calculator overlapping it
-        const SizedBox(height: 36),
       ]),
     );
   }
@@ -127,22 +125,13 @@ class _ProductTile extends StatelessWidget {
           head: S.orderObjectProductCatalog,
           tail: data.catalogName,
         ),
+        if (data.ingredients.isNotEmpty) const SizedBox(height: 8.0),
         if (data.ingredients.isNotEmpty)
+          HeadTailTile(head: S.orderObjectProductIngredient, tail: ''),
+        for (final e in data.ingredients)
           HeadTailTile(
-            head: S.orderObjectProductIngredient,
-            tail: '',
-            subtitle: MetaBlock.withString(
-              context,
-              data.ingredients.map(
-                (e) => e.quantityName == null
-                    ? S.orderProductIngredientDefaultName(e.ingredientName)
-                    : S.orderProductIngredientName(
-                        e.ingredientName,
-                        e.quantityName!,
-                      ),
-              ),
-              maxLines: 30,
-            )!,
+            head: e.ingredientName,
+            tail: e.quantityName == null ? '（預設）' : e.quantityName!,
           ),
       ],
     );

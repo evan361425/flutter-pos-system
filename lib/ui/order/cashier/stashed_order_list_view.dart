@@ -44,7 +44,7 @@ class StashedOrderListView extends StatelessWidget {
     final title = order.createdAt.isBefore(DateTime(n.year, n.month, n.day))
         ? DateFormat.MMMd(S.localeName).format(order.createdAt) +
             MetaBlock.string +
-            DateFormat.Hms(S.localeName).format(order.createdAt)
+            DateFormat.Hm(S.localeName).format(order.createdAt)
         : DateFormat.Hms(S.localeName).format(order.createdAt);
 
     final products = order.products
@@ -56,13 +56,26 @@ class StashedOrderListView extends StatelessWidget {
         .where((e) => e != null)
         .cast<String>();
 
-    return ListTile(
-      key: Key('stashed_order.${order.id}'),
-      title: Text(title),
-      subtitle: MetaBlock.withString(context, products, emptyText: '沒有任何產品'),
-      trailing: MoreButton(onPressed: () => _showActions(context, order)),
-      onTap: () => _act(_Action.checkout, context, order),
-      onLongPress: () => _showActions(context, order),
+    return Dismissible(
+      key: ObjectKey(order),
+      background: Container(
+        alignment: AlignmentDirectional.centerEnd,
+        color: const Color(0xFF198753),
+        child: const Padding(
+          padding: EdgeInsets.only(right: 10.0),
+          child: Icon(Icons.file_upload, color: Color(0xFF051B11)),
+        ),
+      ),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (_) => _act(_Action.restore, context, order),
+      child: ListTile(
+        key: Key('stashed_order.${order.id}'),
+        title: Text(title),
+        subtitle: MetaBlock.withString(context, products, emptyText: '沒有任何產品'),
+        trailing: MoreButton(onPressed: () => _showActions(context, order)),
+        onTap: () => _act(_Action.checkout, context, order),
+        onLongPress: () => _showActions(context, order),
+      ),
     );
   }
 
@@ -93,7 +106,7 @@ class StashedOrderListView extends StatelessWidget {
     }
   }
 
-  Future<void> _act(
+  Future<bool?> _act(
     _Action act,
     BuildContext context,
     OrderObject order,
@@ -102,7 +115,11 @@ class StashedOrderListView extends StatelessWidget {
       case _Action.restore:
         bool ok = true;
         if (!Cart.instance.isEmpty) {
-          ok = await ConfirmDialog.show(context, title: '要覆蓋購物車資料嗎？');
+          ok = await ConfirmDialog.show(
+            context,
+            title: '復原暫存訂單？',
+            content: '此動作將會覆蓋掉現在購物車內的訂單',
+          );
         }
 
         if (ok) {
@@ -113,7 +130,7 @@ class StashedOrderListView extends StatelessWidget {
             context.pop(CheckoutStatus.restore);
           }
         }
-        break;
+        return ok;
       case _Action.checkout:
         // ignore: use_build_context_synchronously
         await _checkout(context, order);
@@ -121,9 +138,10 @@ class StashedOrderListView extends StatelessWidget {
       case _Action.delete:
         await StashedOrders.instance.delete(order.id ?? 0);
         if (context.mounted) {
-          showSnackBar(context, S.orderCashierPaidFailed);
+          showSnackBar(context, S.actSuccess);
         }
     }
+    return true;
   }
 
   Future<void> _checkout(

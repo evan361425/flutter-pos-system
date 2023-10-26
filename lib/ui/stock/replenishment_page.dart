@@ -58,10 +58,9 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
     return SlidableItemList<Replenishment, _Actions>(
       withFAB: true,
       delegate: SlidableItemDelegate(
-        groupTag: 'stock.replenishment',
         handleDelete: (item) => item.remove(),
         deleteValue: _Actions.delete,
-        warningContextBuilder: (_, item) => Text(
+        confirmContextBuilder: (_, item) => Text(
           S.dialogDeletionContent(item.name, ''),
         ),
         items: Replenisher.instance.itemList,
@@ -80,11 +79,12 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
           ),
         ],
         handleAction: handleAction,
-        tileBuilder: (context, index, item, showActions) => ListTile(
+        tileBuilder: (context, item, index, showActions) => ListTile(
           key: Key('replenisher.${item.id}'),
           title: Text(item.name),
           subtitle: Text(S.stockReplenishmentSubtitle(item.data.length)),
           onTap: () => handleApply(item),
+          onLongPress: showActions,
           trailing: EntryMoreButton(onPressed: showActions),
         ),
       ),
@@ -102,9 +102,10 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
   }
 
   Future<void> handleApply(Replenishment item) async {
+    // TODO: use modal
     final confirmed = await ConfirmDialog.show(
       context,
-      title: S.stockReplenishmentApplyConfirmTitle(item.name),
+      title: S.stockReplenishmentApplyConfirmTitle,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

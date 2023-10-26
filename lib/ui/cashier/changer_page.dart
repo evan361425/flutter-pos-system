@@ -24,8 +24,8 @@ class _ChangerModalState extends State<ChangerModal>
     final tabBar = TabBar(
       controller: controller,
       tabs: const [
-        Tab(key: Key('cashier.changer.favorite'), text: '常用'),
-        Tab(key: Key('cashier.changer.custom'), text: '手動'),
+        Tab(key: Key('changer.favorite'), text: '常用'),
+        Tab(key: Key('changer.custom'), text: '手動'),
       ],
     );
     final tabBarView = TabBarView(controller: controller, children: [
@@ -46,7 +46,7 @@ class _ChangerModalState extends State<ChangerModal>
         title: const Text('換錢'),
         actions: [
           TextButton(
-            key: const Key('cashier.changer.apply'),
+            key: const Key('changer.apply'),
             onPressed: handleApply,
             child: const Text('套用'),
           ),

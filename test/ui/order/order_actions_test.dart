@@ -216,8 +216,8 @@ void main() {
       await tester.tap(find.byKey(const Key('order.action.changer')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.changer.favorite.0')));
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.favorite.0')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       // should go back

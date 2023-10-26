@@ -32,10 +32,23 @@ class _CartProductListState extends State<CartProductList> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < length; i++)
-            ChangeNotifierProvider<CartProduct>.value(
-              value: Cart.instance.products[i],
-              child: _CartProductListTile(i),
-            )
+            Dismissible(
+              key: ObjectKey(DateTime.now()),
+              background: Container(
+                alignment: AlignmentDirectional.centerEnd,
+                color: const Color(0xFFC62828),
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 10.0),
+                  child: Icon(KIcons.delete, color: Colors.white),
+                ),
+              ),
+              direction: DismissDirection.endToStart,
+              onDismissed: (_) => Cart.instance.removeAt(i),
+              child: ChangeNotifierProvider<CartProduct>.value(
+                value: Cart.instance.products[i],
+                child: _CartProductListTile(i),
+              ),
+            ),
         ],
       ),
     );

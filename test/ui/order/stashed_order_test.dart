@@ -160,6 +160,30 @@ void main() {
       expect(order, findsNothing);
     });
 
+    testWidgets('drag to recover', (tester) async {
+      final now = DateTime.now();
+      final orders = prepareOrders(now: now);
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.drag(
+        find.byKey(const Key('stashed_order.0')),
+        const Offset(-1200, 0),
+      );
+      await tester.pumpAndSettle();
+
+      // should pop
+      expect(find.text('Home Page'), findsOneWidget);
+
+      // been deleted
+      expect(orders.isEmpty, isTrue);
+
+      // been replaced
+      final product = Cart.instance.products[0];
+      expect(product.id, equals('p-1'));
+    });
+
     testWidgets('recover should pop', (tester) async {
       final now = DateTime.now();
       final orders = prepareOrders(now: now.subtract(const Duration(days: 2)));

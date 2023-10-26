@@ -62,8 +62,8 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.changer')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.changer.favorite.0')));
-      await tester.tap(find.byKey(const Key('cashier.changer.apply')));
+      await tester.tap(find.byKey(const Key('changer.favorite.0')));
+      await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
       expect(Cashier.instance.at(0).count, 15);

@@ -20,7 +20,7 @@ class DeleteDialog extends StatelessWidget {
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           style: FilledButton.styleFrom(
-            backgroundColor: Colors.red[800],
+            backgroundColor: const Color(0xFFC62828),
             foregroundColor: Colors.white,
           ),
           child: Text(S.btnDelete),
@@ -34,7 +34,7 @@ class DeleteDialog extends StatelessWidget {
   /// [warningContent] - Content of warning in [DeleteDialog], `null` to disable confirm
   /// [deleteCallback] - Callback after confirmed
   /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
-  static Future<void> show(
+  static Future<bool?> show(
     BuildContext context, {
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
@@ -67,7 +67,8 @@ class DeleteDialog extends StatelessWidget {
     );
 
     if (isConfirmed == true) {
-      return startDelete();
+      await startDelete();
     }
+    return isConfirmed;
   }
 }

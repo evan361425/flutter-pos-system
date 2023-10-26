@@ -469,15 +469,9 @@
       }
     }
   },
-  "stockReplenishmentApplyConfirmTitle": "是否要套用「{name}」？",
+  "stockReplenishmentApplyConfirmTitle": "套用採購？",
   "@stockReplenishmentApplyConfirmTitle": {
-    "description": "套用採購時的確認標題",
-    "placeholders": {
-      "name": {
-        "description": "採購種類名稱",
-        "type": "String"
-      }
-    }
+    "description": "套用採購時的確認標題"
   },
   "stockReplenishmentApplyConfirmContent": "將會影響以下的成分：",
   "@stockReplenishmentApplyConfirmContent": {
@@ -647,7 +641,7 @@
     }
   },
   "orderAttributeOptionSetToDefault": "設為預設",
-  "orderAttributeOptionConfirmChangeDefaultTitle": "確定要覆蓋預設值嗎",
+  "orderAttributeOptionConfirmChangeDefaultTitle": "覆蓋選項預設？",
   "orderAttributeOptionConfirmChangeDefaultContent": "這麼做會讓「{name}」變成非預設值",
   "@orderAttributeOptionConfirmChangeDefaultContent": {
     "description": "為了確保使用者知道原先的預設值是什麼而做的提示",

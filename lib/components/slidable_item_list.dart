@@ -1,5 +1,5 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -9,8 +9,6 @@ import 'package:possystem/translator.dart';
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
 
-  final bool scrollable;
-
   final String? hintText;
 
   /// With floating action button and add the padding below
@@ -19,121 +17,110 @@ class SlidableItemList<T, Action> extends StatelessWidget {
   const SlidableItemList({
     Key? key,
     required this.delegate,
-    this.scrollable = true,
     this.hintText,
     this.withFAB = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    int index = 0;
-
-    final child = Column(children: <Widget>[
+    return ListView(children: <Widget>[
       Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
           child: HintText(hintText ?? S.totalCount(delegate.items.length)),
         ),
       ),
-      for (final item in delegate.items)
-        delegate.build(context, item, index: index++, theme: theme),
+      for (final widget in delegate.items.mapIndexed(
+        (index, item) => delegate.build(context, item, index),
+      ))
+        widget,
       SizedBox(height: withFAB ? 76.0 : 4.0),
     ]);
-
-    final groupChild = delegate.groupTag == null
-        ? child
-        : SlidableAutoCloseBehavior(child: child);
-
-    return scrollable ? SingleChildScrollView(child: groupChild) : groupChild;
   }
 }
 
 class SlidableItemDelegate<T, U> {
   final List<T> items;
 
-  /// Return value from navigator after delete
-  final U deleteValue;
+  final Widget Function(
+    BuildContext context,
+    T item,
+    int index,
+    VoidCallback showActions,
+  ) tileBuilder;
 
   final Future<void> Function(T) handleDelete;
 
-  final Widget Function(BuildContext, int, T, VoidCallback) tileBuilder;
+  /// When set the function, it will call before deletion
+  final Widget Function(BuildContext, T)? confirmContextBuilder;
 
-  final Widget Function(BuildContext, T)? warningContextBuilder;
-
+  /// Build the actions without deletion.
   final Iterable<BottomSheetAction<U>> Function(T)? actionBuilder;
 
-  final void Function(BuildContext, T)? handleTap;
-
+  /// You should ignore deletion which will be handled.
   final void Function(T item, U action)? handleAction;
 
-  final Object? groupTag;
+  /// Required when using [showActions].
+  final U? deleteValue;
 
   SlidableItemDelegate({
     required this.items,
-    required this.deleteValue,
     required this.tileBuilder,
-    this.groupTag,
-    this.warningContextBuilder,
+    required this.handleDelete,
+    this.deleteValue,
+    this.confirmContextBuilder,
     this.actionBuilder,
     this.handleAction,
-    required this.handleDelete,
-    this.handleTap,
   });
 
   Widget build(
     BuildContext context,
-    T item, {
-    required int index,
-    required ThemeData theme,
-  }) {
-    return Slidable(
-      groupTag: groupTag,
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            key: groupTag == null ? null : Key('slidable.$groupTag.$index'),
-            label: S.btnDelete,
-            backgroundColor: theme.colorScheme.error,
-            foregroundColor: theme.colorScheme.onError,
-            icon: KIcons.delete,
-            onPressed: (_) => DeleteDialog.show(
-              context,
-              deleteCallback: () => handleDelete(item),
-              warningContent: warningContextBuilder == null
-                  ? null
-                  : warningContextBuilder!(context, item),
-            ),
-          ),
-        ],
+    T item,
+    int index,
+  ) {
+    return Dismissible(
+      key: ObjectKey(item),
+      background: Container(
+        alignment: AlignmentDirectional.centerEnd,
+        color: const Color(0xFFC62828),
+        child: const Padding(
+          padding: EdgeInsets.only(right: 10.0),
+          child: Icon(KIcons.delete, color: Colors.white),
+        ),
       ),
-      child: InkWell(
-        onTap: () {
-          if (handleTap != null) {
-            handleTap!(context, item);
-          }
-        },
-        onLongPress: () => showActions(context, item),
-        child:
-            tileBuilder(context, index, item, () => showActions(context, item)),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return DeleteDialog.show(
+          context,
+          deleteCallback: () async {
+            await handleDelete(item);
+          },
+          warningContent: confirmContextBuilder?.call(context, item),
+        );
+      },
+      child: tileBuilder(
+        context,
+        item,
+        index,
+        () => showActions(context, item),
       ),
     );
   }
 
   Future<void> showActions(BuildContext context, T item) async {
+    assert(deleteValue != null, "deleteValue should be set when using actions");
+
     final customActions = actionBuilder == null
         ? const <BottomSheetAction>[]
         : actionBuilder!(item).toList();
 
-    final result = await BottomSheetActions.withDelete<U>(
+    final result = await BottomSheetActions.withDelete<U?>(
       context,
       actions: customActions.toList(),
       deleteValue: deleteValue,
-      warningContent: warningContextBuilder == null
+      warningContent: confirmContextBuilder == null
           ? null
-          : warningContextBuilder!(context, item),
+          : confirmContextBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
 

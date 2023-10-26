@@ -361,6 +361,7 @@ void main() {
 
     testWidgets('Cart actions', (tester) async {
       Cart.instance.replaceAll(products: [
+        CartProduct(Menu.instance.getProduct('p-1')!, count: 1),
         CartProduct(Menu.instance.getProduct('p-1')!, count: 8),
         CartProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
       ]);
@@ -369,6 +370,17 @@ void main() {
       await tester.tap(find.byKey(const Key('cart.collapsed')));
       await tester.pumpAndSettle();
 
+      // remove it
+      await tester.drag(
+        find.byKey(const Key('cart.product.0')),
+        const Offset(-1200, 0),
+      );
+      await tester.pumpAndSettle();
+
+      // after remove, selection should not be changed.
+      expect(find.byKey(const Key('cart.product.2')), findsNothing);
+      expect(Cart.instance.selected.first.id, equals('p-2'));
+
       tapAction(String action, {int? product, String? text}) async {
         if (product == null) {
           await tester.tap(find.byKey(const Key('cart.action')));
@@ -376,6 +388,7 @@ void main() {
         } else {
           await tester.longPress(find.byKey(Key('cart.product.$product')));
           await tester.pumpAndSettle();
+          await tester.pump(const Duration(seconds: 1));
         }
 
         await tester.tap(find.byKey(Key('cart.action.$action')));

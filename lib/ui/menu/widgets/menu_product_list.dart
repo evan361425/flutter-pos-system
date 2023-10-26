@@ -24,13 +24,11 @@ class MenuProductList extends StatelessWidget {
     return SlidableItemList(
       withFAB: true,
       delegate: SlidableItemDelegate<Product, int>(
-        groupTag: 'menu.product',
         items: catalog?.itemList ?? Menu.instance.products.toList(),
         deleteValue: 0,
         actionBuilder: _actionBuilder,
         tileBuilder: _tileBuilder,
-        warningContextBuilder: _warningContextBuilder,
-        handleTap: _handleTap,
+        confirmContextBuilder: _confirmContextBuilder,
         handleDelete: (item) => item.remove(),
       ),
     );
@@ -53,17 +51,10 @@ class MenuProductList extends StatelessWidget {
     ];
   }
 
-  void _handleTap(BuildContext context, Product product) {
-    context.pushNamed(
-      Routes.menuProduct,
-      pathParameters: {'id': product.id},
-    );
-  }
-
   Widget _tileBuilder(
     BuildContext context,
-    int index,
     Product product,
+    int index,
     VoidCallback showActions,
   ) {
     return ListTile(
@@ -76,10 +67,15 @@ class MenuProductList extends StatelessWidget {
         product.items.map((e) => e.name),
         emptyText: S.menuProductListEmptyIngredient,
       ),
+      onLongPress: showActions,
+      onTap: () => context.pushNamed(
+        Routes.menuProduct,
+        pathParameters: {'id': product.id},
+      ),
     );
   }
 
-  Widget _warningContextBuilder(BuildContext context, Product product) {
+  Widget _confirmContextBuilder(BuildContext context, Product product) {
     return Text(S.dialogDeletionContent(product.name, ''));
   }
 }

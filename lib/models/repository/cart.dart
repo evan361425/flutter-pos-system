@@ -236,6 +236,14 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Remove specific product
+  void removeAt(int index) {
+    products.removeAt(index);
+
+    updateSelection();
+    notifyListeners();
+  }
+
   /// Public function to let watcher knows the price has changed.
   ///
   /// For example: quantity selection.

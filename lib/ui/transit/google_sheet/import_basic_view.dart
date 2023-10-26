@@ -74,8 +74,8 @@ class _ImportBasicViewState extends State<ImportBasicView> {
           onTap: () async {
             final confirmed = await ConfirmDialog.show(
               context,
-              title: '確定要匯入全部嗎？',
-              content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。',
+              title: '匯入全部資料？',
+              content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。\n此動作無法復原。',
             );
 
             if (confirmed) {
