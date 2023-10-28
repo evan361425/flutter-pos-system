@@ -50,7 +50,21 @@ class _MenuPageState extends State<MenuPage> {
             },
           ),
           actions: [
-            // TODO: put reorder inside here
+            if (!widget.productOnly)
+              IconButton(
+                tooltip: selected == null
+                    ? S.menuCatalogReorder
+                    : S.menuProductReorder,
+                onPressed: () {
+                  selected == null
+                      ? context.pushNamed(Routes.menuReorder)
+                      : context.pushNamed(
+                          Routes.menuCatalogReorder,
+                          pathParameters: {'id': selected!.id},
+                        );
+                },
+                icon: const Icon(Icons.compare_arrows_sharp),
+              ),
             SearchBarWrapper(
               key: const Key('menu.search'),
               hintText: S.menuSearchProductHint,
@@ -159,12 +173,6 @@ class _MenuPageState extends State<MenuPage> {
         context.pushNamed(Routes.menuProduct, pathParameters: {
           'id': item.id,
         });
-        // NOTE: using pushReplacement will hide the search bar...
-        // Navigator.of(context).pop();
-        // Navigator.of(context).pushNamed(
-        //   Routes.menu,
-        //   arguments: ,
-        // );
       },
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
+import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
 
 import 'models/repository/menu.dart';
 import 'models/repository/order_attributes.dart';
@@ -321,6 +322,19 @@ class Routes {
               );
             },
           ),
+          GoRoute(
+            name: replenishmentApply,
+            path: 'r/:id/apply',
+            redirect: (context, state) {
+              final has = Replenisher.instance
+                  .hasItem(state.pathParameters['id'] ?? '');
+              return has ? null : '$base/stock/repl';
+            },
+            builder: (ctx, state) {
+              final id = state.pathParameters['id'] ?? '';
+              return ReplenishmentApply(Replenisher.instance.getItem(id)!);
+            },
+          ),
         ],
       ),
     ],
@@ -409,6 +423,7 @@ class Routes {
   static const replenishment = '/stock/repl';
   static const replenishmentNew = '/stock/repl/new';
   static const replenishmentModal = '/stock/repl/modal';
+  static const replenishmentApply = '/stock/repl/apply';
 
   static const cashierChanger = '/cashier/changer';
   static const cashierSurplus = '/cashier/surplus';

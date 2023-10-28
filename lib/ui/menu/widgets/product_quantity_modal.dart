@@ -233,11 +233,12 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   }
 
   void _updateQuantity(Quantity quantity) {
+    final val = widget.ingredient.amount * quantity.defaultProportion;
     setState(() {
       quantityId = quantity.id;
       quantityName = quantity.name;
       _amountController.text =
-          (widget.ingredient.amount * quantity.defaultProportion).toString();
+          val.toInt() == val ? val.toString() : val.toStringAsFixed(2);
     });
     // pop off search page
     Navigator.of(context).pop();

@@ -6,6 +6,7 @@ import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
+import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -110,24 +111,30 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      key: Key('order_attributes.${option.repository.id}.${option.id}'),
-      title: Text(option.name),
-      subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
-      trailing: option.isDefault
-          ? OutlinedText(S.orderAttributeOptionIsDefault)
-          : null,
-      onLongPress: () => BottomSheetActions.withDelete<int>(
-        context,
-        deleteValue: 0,
-        warningContent: Text(S.dialogDeletionContent(option.name, '')),
-        deleteCallback: () => option.remove(),
-      ),
-      onTap: () => context.pushNamed(
-        Routes.orderAttrModal,
-        pathParameters: {'id': option.attribute.id},
-        queryParameters: {'oid': option.id},
+    return SlideToDelete(
+      item: option,
+      onDismissed: _remove,
+      child: ListTile(
+        key: Key('order_attributes.${option.repository.id}.${option.id}'),
+        title: Text(option.name),
+        subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
+        trailing: option.isDefault
+            ? OutlinedText(S.orderAttributeOptionIsDefault)
+            : null,
+        onLongPress: () => BottomSheetActions.withDelete<int>(
+          context,
+          deleteValue: 0,
+          warningContent: Text(S.dialogDeletionContent(option.name, '')),
+          deleteCallback: _remove,
+        ),
+        onTap: () => context.pushNamed(
+          Routes.orderAttrModal,
+          pathParameters: {'id': option.attribute.id},
+          queryParameters: {'oid': option.id},
+        ),
       ),
     );
   }
+
+  Future<void> _remove() => option.remove();
 }

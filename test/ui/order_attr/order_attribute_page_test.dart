@@ -199,9 +199,7 @@ void main() {
     testWidgets('Reorder attributes', (tester) async {
       await buildAppWithAttributes(tester);
 
-      await tester.tap(find.byKey(const Key('order_attributes.action')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.reorder_sharp));
+      await tester.tap(find.byKey(const Key('order_attributes.reorder')));
       await tester.pumpAndSettle();
       final rect = tester.getRect(find.byKey(const Key('reorder.0')));
 

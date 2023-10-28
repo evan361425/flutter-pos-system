@@ -180,9 +180,7 @@ void main() {
 
       await moveTo(tester, catalog);
 
-      await tester.longPress(find.byKey(const Key('product.p-1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.reorder_sharp));
+      await tester.tap(find.byIcon(Icons.compare_arrows_sharp));
       await tester.pumpAndSettle();
 
       await tester.drag(

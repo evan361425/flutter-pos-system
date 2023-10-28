@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -71,28 +72,34 @@ class _QuantityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      key: Key('product_quantity.${quantity.id}'),
-      title: Text(quantity.name),
-      subtitle: MetaBlock.withString(context, <String>[
-        S.menuQuantityMetaAmount(quantity.amount),
-        S.menuQuantityMetaPrice(quantity.additionalPrice),
-        S.menuQuantityMetaCost(quantity.additionalCost),
-      ]),
-      onLongPress: () => BottomSheetActions.withDelete<int>(
-        context,
-        deleteValue: 0,
-        warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
-        deleteCallback: quantity.remove,
-      ),
-      onTap: () => context.pushNamed(
-        Routes.menuProductDetails,
-        pathParameters: {'id': quantity.ingredient.product.id},
-        queryParameters: {
-          'iid': quantity.ingredient.id,
-          'qid': quantity.id,
-        },
+    return SlideToDelete(
+      item: quantity,
+      onDismissed: _remove,
+      child: ListTile(
+        key: Key('product_quantity.${quantity.id}'),
+        title: Text(quantity.name),
+        subtitle: MetaBlock.withString(context, <String>[
+          S.menuQuantityMetaAmount(quantity.amount),
+          S.menuQuantityMetaPrice(quantity.additionalPrice),
+          S.menuQuantityMetaCost(quantity.additionalCost),
+        ]),
+        onLongPress: () => BottomSheetActions.withDelete<int>(
+          context,
+          deleteValue: 0,
+          warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
+          deleteCallback: _remove,
+        ),
+        onTap: () => context.pushNamed(
+          Routes.menuProductDetails,
+          pathParameters: {'id': quantity.ingredient.product.id},
+          queryParameters: {
+            'iid': quantity.ingredient.id,
+            'qid': quantity.id,
+          },
+        ),
       ),
     );
   }
+
+  Future<void> _remove() => quantity.remove();
 }

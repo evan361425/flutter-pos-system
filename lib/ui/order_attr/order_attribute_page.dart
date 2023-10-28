@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -26,9 +24,11 @@ class OrderAttributePage extends StatelessWidget {
         title: Text(S.orderAttributeTitle),
         leading: const PopButton(),
         actions: [
-          MoreButton(
-            key: const Key('order_attributes.action'),
-            onPressed: () => _showActions(context),
+          IconButton(
+            key: const Key('order_attributes.reorder'),
+            tooltip: S.orderAttributeReorder,
+            onPressed: () => context.pushNamed(Routes.orderAttrReorder),
+            icon: const Icon(Icons.compare_arrows_sharp),
           ),
         ],
       ),
@@ -45,15 +45,5 @@ class OrderAttributePage extends StatelessWidget {
             ))
           : OrderAttributeList(attrs.itemList),
     );
-  }
-
-  void _showActions(BuildContext context) async {
-    await showCircularBottomSheet(context, actions: [
-      BottomSheetAction(
-        title: Text(S.orderAttributeReorder),
-        leading: const Icon(KIcons.reorder),
-        route: Routes.orderAttrReorder,
-      ),
-    ]);
   }
 }

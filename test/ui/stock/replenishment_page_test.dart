@@ -75,16 +75,6 @@ void main() {
       expect(((w as ListTile).title as Text).data, equals('r-3'));
       expect(replenishment.getNumOfId('i-1'), equals(2));
       expect(replenishment.getNumOfId('i-2'), equals(3));
-
-      // Apply
-      await tester.tap(find.byKey(const Key('replenisher.r-1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
-      await tester.pumpAndSettle();
-
-      verify(storage.set(any, argThat(predicate((e) {
-        return e is Map && e['i-1.currentAmount'] == 2;
-      }))));
     });
 
     testWidgets('Add replenishment', (tester) async {

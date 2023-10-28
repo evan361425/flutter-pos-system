@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/translator.dart';
 
 class SlidableItemList<T, Action> extends StatelessWidget {
@@ -49,13 +49,13 @@ class SlidableItemDelegate<T, U> {
     VoidCallback showActions,
   ) tileBuilder;
 
-  final Future<void> Function(T) handleDelete;
+  final Future<void> Function(T item) handleDelete;
 
   /// When set the function, it will call before deletion
-  final Widget Function(BuildContext, T)? confirmContextBuilder;
+  final Widget Function(BuildContext context, T item)? confirmContextBuilder;
 
   /// Build the actions without deletion.
-  final Iterable<BottomSheetAction<U>> Function(T)? actionBuilder;
+  final Iterable<BottomSheetAction<U>> Function(T item)? actionBuilder;
 
   /// You should ignore deletion which will be handled.
   final void Function(T item, U action)? handleAction;
@@ -78,17 +78,8 @@ class SlidableItemDelegate<T, U> {
     T item,
     int index,
   ) {
-    return Dismissible(
-      key: ObjectKey(item),
-      background: Container(
-        alignment: AlignmentDirectional.centerEnd,
-        color: const Color(0xFFC62828),
-        child: const Padding(
-          padding: EdgeInsets.only(right: 10.0),
-          child: Icon(KIcons.delete, color: Colors.white),
-        ),
-      ),
-      direction: DismissDirection.endToStart,
+    return SlideToDelete(
+      item: item,
       confirmDismiss: (direction) {
         return DeleteDialog.show(
           context,

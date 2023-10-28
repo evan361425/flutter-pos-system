@@ -3,10 +3,11 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
-class ReorderableScaffold<T> extends StatelessWidget {
-  final String? title;
+class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
+  final String title;
 
   final List<T> items;
 
@@ -15,10 +16,16 @@ class ReorderableScaffold<T> extends StatelessWidget {
   const ReorderableScaffold({
     Key? key,
     required this.items,
-    this.title,
+    required this.title,
     required this.handleSubmit,
   }) : super(key: key);
 
+  @override
+  State<ReorderableScaffold<T>> createState() => _ReorderableScaffoldState<T>();
+}
+
+class _ReorderableScaffoldState<T extends ModelOrderable>
+    extends State<ReorderableScaffold<T>> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +35,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
           TextButton(
             key: const Key('reorder.save'),
             onPressed: () async {
-              await handleSubmit(items);
+              await widget.handleSubmit(widget.items);
               if (context.mounted) {
                 Navigator.of(context).pop();
               }
@@ -36,7 +43,7 @@ class ReorderableScaffold<T> extends StatelessWidget {
             child: Text(MaterialLocalizations.of(context).saveButtonLabel),
           ),
         ],
-        title: title == null ? null : Text(title!),
+        title: Text(widget.title),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -45,45 +52,39 @@ class ReorderableScaffold<T> extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(kSpacing0),
-              child: HintText(S.totalCount(items.length)),
+              child: HintText(S.totalCount(widget.items.length)),
             ),
           ),
           Expanded(
-            child: _OrderableList(items: items),
+            child: ReorderableList(
+              itemCount: widget.items.length,
+              onReorder: _handleReorder,
+              itemBuilder: (BuildContext context, int index) {
+                final item = widget.items[index];
+
+                // delayed drag let it able to scroll
+                return ReorderableDelayedDragStartListener(
+                  key: Key('reorder.$index'), // required for reorder
+                  index: index,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1.0),
+                    child: Material(
+                      elevation: 1.0,
+                      child: ListTile(
+                        title: Text(item.name),
+                        trailing: ReorderableDragStartListener(
+                          index: index,
+                          child: const Icon(KIcons.reorder),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _OrderableList<T> extends StatefulWidget {
-  final List<T> items;
-
-  const _OrderableList({
-    Key? key,
-    required this.items,
-  }) : super(key: key);
-
-  @override
-  State<_OrderableList> createState() => _OrderableListState();
-}
-
-class _OrderableListState extends State<_OrderableList> {
-  @override
-  Widget build(BuildContext context) {
-    return ReorderableList(
-      itemCount: widget.items.length,
-      onReorder: _handleReorder,
-      itemBuilder: (BuildContext context, int index) {
-        final item = widget.items[index];
-
-        return _ReorderableListItem(
-          key: ValueKey(item.index),
-          index: index,
-          title: item.name,
-        );
-      },
     );
   }
 
@@ -97,41 +98,5 @@ class _OrderableListState extends State<_OrderableList> {
     });
 
     return true;
-  }
-}
-
-class _ReorderableListItem extends StatelessWidget {
-  final String? title;
-
-  final int? index;
-
-  const _ReorderableListItem({this.title, this.index, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      key: Key('reorder.$index'),
-      shape: const RoundedRectangleBorder(),
-      margin: const EdgeInsets.all(0.5),
-      child: Row(children: [
-        Expanded(
-          child: ReorderableDelayedDragStartListener(
-            index: index!,
-            child: Padding(
-              padding: const EdgeInsets.all(kSpacing3),
-              child: Text(title!),
-            ),
-          ),
-        ),
-        ReorderableDragStartListener(
-          index: index!,
-          child: const Padding(
-            padding: EdgeInsets.only(right: kSpacing3),
-            child: Center(child: Icon(KIcons.reorder)),
-          ),
-        ),
-      ]),
-    );
   }
 }

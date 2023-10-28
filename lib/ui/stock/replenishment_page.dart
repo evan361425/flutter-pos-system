@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/stock/replenishment.dart';
@@ -83,7 +81,7 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
           key: Key('replenisher.${item.id}'),
           title: Text(item.name),
           subtitle: Text(S.stockReplenishmentSubtitle(item.data.length)),
-          onTap: () => handleApply(item),
+          onTap: () => handleAction(item, _Actions.apply),
           onLongPress: showActions,
           trailing: EntryMoreButton(onPressed: showActions),
         ),
@@ -102,34 +100,13 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
   }
 
   Future<void> handleApply(Replenishment item) async {
-    // TODO: use modal
-    final confirmed = await ConfirmDialog.show(
-      context,
-      title: S.stockReplenishmentApplyConfirmTitle,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(S.stockReplenishmentApplyConfirmContent),
-          const SizedBox(height: kSpacing1),
-          DataTable(columns: const [
-            DataColumn(label: Text('名稱')),
-            DataColumn(numeric: true, label: Text('數量'))
-          ], rows: <DataRow>[
-            for (final entry in item.ingredientData.entries)
-              DataRow(cells: [
-                DataCell(Text(entry.key.name)),
-                DataCell(Text(entry.value.toString())),
-              ])
-          ]),
-        ],
-      ),
+    final confirmed = await context.pushNamed<bool>(
+      Routes.replenishmentApply,
+      pathParameters: {'id': item.id},
     );
 
-    if (confirmed) {
-      await item.apply();
-      if (context.mounted && context.canPop()) {
-        context.pop(true);
-      }
+    if (context.mounted && confirmed == true && context.canPop()) {
+      context.pop(true);
     }
   }
 }

@@ -97,11 +97,9 @@ void main() {
 
       await tester.tap(find.byKey(const Key('stock.replenisher')));
       await tester.pumpAndSettle();
-      await tester.longPress(find.byKey(const Key('replenisher.r-1')));
+      await tester.tap(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('apply')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+      await tester.tap(find.byKey(const Key('repl.apply')));
       await tester.pumpAndSettle();
 
       expect(ing1.currentAmount, equals(10));

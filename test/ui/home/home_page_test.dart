@@ -86,13 +86,13 @@ void main() {
 
       await navAndPop('setting_header.menu1', 'menu.search');
       await navAndPop('setting_header.menu2', 'menu.search');
-      await navAndPop('setting_header.order_attrs', 'order_attributes.action');
+      await navAndPop('setting_header.order_attrs', 'order_attributes.reorder');
 
       // rest
       await navAndPop('setting.menu', 'menu.search');
       await navAndPop('setting.exporter', 'transit.google_sheet');
       await navAndPop('setting.quantity', 'quantity.add');
-      await navAndPop('setting.order_attrs', 'order_attributes.action');
+      await navAndPop('setting.order_attrs', 'order_attributes.reorder');
       await dragUp();
       await navAndPop('setting.feature_request', 'feature_request_please');
       await dragUp();

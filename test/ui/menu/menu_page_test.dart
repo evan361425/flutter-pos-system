@@ -160,9 +160,7 @@ void main() {
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
       ], child: buildApp()));
 
-      await tester.longPress(find.byKey(const Key('catalog.c-1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.reorder_sharp));
+      await tester.tap(find.byIcon(Icons.compare_arrows_sharp));
       await tester.pumpAndSettle();
 
       await tester.drag(
