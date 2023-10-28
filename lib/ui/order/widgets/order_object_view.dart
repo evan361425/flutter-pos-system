@@ -131,7 +131,8 @@ class _ProductTile extends StatelessWidget {
         for (final e in data.ingredients)
           HeadTailTile(
             head: e.ingredientName,
-            tail: e.quantityName == null ? '（預設）' : e.quantityName!,
+            tailWidget: e.quantityName == null ? const HintText('預設') : null,
+            tail: e.quantityName,
           ),
       ],
     );

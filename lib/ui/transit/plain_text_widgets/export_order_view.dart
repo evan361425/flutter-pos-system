@@ -61,17 +61,19 @@ class ExportOrderView extends StatelessWidget {
         .join('\n\n'));
   }
 
-  /// 產品文字較多。
+  /// 實際輸出結果：
   ///
-  /// 這裡是一些實測的大小對應值：
-  /// | productSize | attrSize | count | bytes | actual |
-  /// | - | - | - | - |
-  /// | 13195 | 34 | 17 | 6439 | 6.1KB |
-  /// | 39672 | 92 | 46 | 18758 | 18KB |
-  /// | 61751 | 142 | 71 | 29043 | 28KB |
-  /// | 83775 | 200 | 100 | 39771 | 38KB |
+  /// 共 110 元，其中的 90 元是產品價錢。
+  /// 付額 150 元、成分 30 元。
+  /// 顧客的 用餐位置 為 內用、年紀 為 三十歲。
+  /// 餐點有 3 份（2 種）包括：
+  /// 起士漢堡（漢堡）1 份共 200 元，成份包括
+  /// 起士（多量，使用 3 個）。
   static int memoryPredictor(OrderMetrics m) {
-    return (m.productCount! * 0.435 + m.attrCount! * 0.3 + 30 * m.count)
+    return (m.count * 60 +
+            m.attrCount! * 18 +
+            m.productCount! * 25 +
+            m.ingredientCount! * 10)
         .toInt();
   }
 
@@ -89,7 +91,7 @@ class ExportOrderView extends StatelessWidget {
       }).join('、');
       return [
         '${p.productName}（${p.catalogName}）',
-        '${p.count} 份共 ${p.totalPrice.toCurrency()} 元',
+        '${p.count} 份共 ${p.totalPrice.toCurrency()} 元，',
         ing == '' ? '沒有設定成分' : '成份包括 $ing',
       ].join('');
     }).join('；\n');

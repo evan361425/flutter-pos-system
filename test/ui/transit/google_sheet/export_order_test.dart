@@ -265,7 +265,7 @@ void main() {
         for (final e in expected.entries) {
           verify(sheetsApi.spreadsheets.values.append(
             argThat(predicate<gs.ValueRange?>((vr) {
-              if (vr?.range != e.key) return false;
+              if (vr?.range != "'${e.key}'") return false;
               for (var e1 in e.value) {
                 final row = vr?.values?.removeAt(0);
                 for (var e2 in e1) {
@@ -278,7 +278,7 @@ void main() {
               return true;
             })),
             any,
-            e.key,
+            "'${e.key}'",
             includeValuesInResponse: anyNamed('includeValuesInResponse'),
             insertDataOption: anyNamed('insertDataOption'),
             valueInputOption: anyNamed('valueInputOption'),

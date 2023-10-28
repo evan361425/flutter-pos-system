@@ -210,16 +210,23 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     }
   }
 
-  /// 這裡是一些實測的大小對應值（尚未考慮 gzip）：
+  /// 這裡是一些實測輸出結果：
   ///
-  /// | productCount | attrCount | count | bytes | actual |
-  /// | - | - | - | - |
-  /// | 30037 | 74 | 37 | 14767 | 14767 |
-  /// | 62988 | 134 | 67 | 29302 | 29302 |
-  /// | 93391 | 200 | 100 | 43442 | 43442 |
+  /// order:
+  /// 1698067340,2023-10-28 14:51:23,356,295,356,115,241,5,4
+  /// attr:
+  /// 1698067340,用餐位置,內用
+  /// product:
+  /// 1698067340,起士漢堡,漢堡,1,60,30,60
+  /// ingredient:
+  /// 1698067340,起士,漢堡,,10
   ///
-  /// 後來考慮壓縮之後，上述的值應該再乘以 0.45：2.8 -> 1.25
+  /// 後來考慮壓縮之後，上述的值應該再乘以 0.45
   static int memoryPredictor(OrderMetrics m) {
-    return (m.productCount! * 0.465 + m.attrCount! * 0.465).toInt();
+    return (m.count * 30 +
+            m.attrCount! * 10 +
+            m.productCount! * 13 +
+            m.ingredientCount! * 8)
+        .toInt();
   }
 }

@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 class HeadTailTile extends StatelessWidget {
   final String head;
 
-  final String tail;
+  final String? tail;
+
+  final Widget? tailWidget;
 
   final Widget? subtitle;
 
   const HeadTailTile({
     Key? key,
     required this.head,
-    required this.tail,
+    this.tail,
+    this.tailWidget,
     this.subtitle,
-  }) : super(key: key);
+  })  : assert(tailWidget != null || tail != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,7 @@ class HeadTailTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(head),
-        Text(tail),
+        tailWidget ?? Text(tail!),
       ],
     );
     return Padding(

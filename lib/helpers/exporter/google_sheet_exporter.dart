@@ -219,11 +219,11 @@ class GoogleSheetExporter extends DataExporter {
     await sheetsApi?.spreadsheets.values.append(
       gs.ValueRange(
         majorDimension: 'ROWS',
-        range: sheet.title,
+        range: "'${sheet.title}'",
         values: data.toList(),
       ),
       spreadsheet.id,
-      sheet.title,
+      "'${sheet.title}'",
       includeValuesInResponse: false,
       insertDataOption: 'INSERT_ROWS',
       valueInputOption: "USER_ENTERED",
