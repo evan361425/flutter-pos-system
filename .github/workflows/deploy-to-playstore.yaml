@@ -39,7 +39,7 @@ jobs:
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.value }}
-      build_code: ${{ steps.build_code.outputs.build_code }}
+      build_code: ${{ steps.build_code.outputs.value }}
     steps:
       - name: Get latest tag
         id: tag
