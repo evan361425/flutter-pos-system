@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
@@ -74,7 +73,7 @@ class _ReorderableScaffoldState<T extends ModelOrderable>
                         title: Text(item.name),
                         trailing: ReorderableDragStartListener(
                           index: index,
-                          child: const Icon(KIcons.reorder),
+                          child: const Icon(Icons.reorder_sharp),
                         ),
                       ),
                     ),

@@ -63,7 +63,7 @@ class _MenuPageState extends State<MenuPage> {
                           pathParameters: {'id': selected!.id},
                         );
                 },
-                icon: const Icon(Icons.compare_arrows_sharp),
+                icon: const Icon(KIcons.reorder),
               ),
             SearchBarWrapper(
               key: const Key('menu.search'),

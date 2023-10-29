@@ -180,7 +180,7 @@ void main() {
 
       await moveTo(tester, catalog);
 
-      await tester.tap(find.byIcon(Icons.compare_arrows_sharp));
+      await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
       await tester.drag(

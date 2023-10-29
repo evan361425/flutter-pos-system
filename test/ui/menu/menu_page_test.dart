@@ -160,7 +160,7 @@ void main() {
         ChangeNotifierProvider<Menu>.value(value: Menu.instance),
       ], child: buildApp()));
 
-      await tester.tap(find.byIcon(Icons.compare_arrows_sharp));
+      await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
       await tester.drag(

@@ -11,6 +11,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order_attr/order_attribute_page.dart';
 import 'package:provider/provider.dart';
 
@@ -199,7 +200,7 @@ void main() {
     testWidgets('Reorder attributes', (tester) async {
       await buildAppWithAttributes(tester);
 
-      await tester.tap(find.byKey(const Key('order_attributes.reorder')));
+      await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
       final rect = tester.getRect(find.byKey(const Key('reorder.0')));
 
@@ -364,7 +365,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.reorder_sharp));
+      await tester.tap(find.text(S.orderAttributeOptionReorder));
       await tester.pumpAndSettle();
 
       await tester.drag(

@@ -22,23 +22,19 @@ class OrderAttributeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(kSpacing1),
-            child: HintText(S.totalCount(attributes.length)),
-          ),
-          for (final attribute in attributes)
-            ChangeNotifierProvider<OrderAttribute>.value(
-              value: attribute,
-              child: const _OrderAttributeCard(),
-            ),
-          // Floating action button offset
-          const SizedBox(height: 72.0),
-        ],
+    return ListView(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(kSpacing1),
+        child: HintText(S.totalCount(attributes.length)),
       ),
-    );
+      for (final attribute in attributes)
+        ChangeNotifierProvider<OrderAttribute>.value(
+          value: attribute,
+          child: const _OrderAttributeCard(),
+        ),
+      // Floating action button offset
+      const SizedBox(height: 72.0),
+    ]);
   }
 }
 

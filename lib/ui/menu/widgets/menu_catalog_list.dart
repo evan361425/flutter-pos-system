@@ -28,26 +28,23 @@ class MenuCatalogList extends StatelessWidget {
         deleteValue: _Action.delete,
         tileBuilder: _tileBuilder,
         confirmContextBuilder: _confirmContextBuilder,
-        actionBuilder: _actionBuilder,
+        actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
+          BottomSheetAction(
+            title: Text(S.menuCatalogUpdate),
+            leading: const Icon(KIcons.modal),
+            routePathParameters: {'id': catalog.id},
+            route: Routes.menuCatalogModal,
+          ),
+          BottomSheetAction(
+            title: Text(S.menuProductReorder),
+            leading: const Icon(KIcons.reorder),
+            route: Routes.menuCatalogReorder,
+            routePathParameters: {'id': catalog.id},
+          ),
+        ],
         handleDelete: (item) => item.remove(),
       ),
     );
-  }
-
-  Iterable<BottomSheetAction<_Action>> _actionBuilder(catalog) {
-    return <BottomSheetAction<_Action>>[
-      BottomSheetAction(
-        title: Text(S.menuCatalogUpdate),
-        leading: const Icon(KIcons.modal),
-        routePathParameters: {'id': catalog.id},
-        route: Routes.menuCatalogModal,
-      ),
-      BottomSheetAction(
-        title: Text(S.menuCatalogReorder),
-        leading: const Icon(KIcons.reorder),
-        route: Routes.menuReorder,
-      ),
-    ];
   }
 
   Widget _tileBuilder(

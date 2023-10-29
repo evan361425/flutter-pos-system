@@ -4,7 +4,7 @@ class KIcons {
   static const add = Icons.add_sharp;
   static const cancel = Icons.cancel_sharp;
   static const delete = Icons.delete_sharp;
-  static const reorder = Icons.reorder_sharp;
+  static const reorder = Icons.switch_access_shortcut_sharp;
   static const modal = Icons.text_fields_sharp;
   static const image = Icons.image_sharp;
 

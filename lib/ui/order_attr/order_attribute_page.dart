@@ -28,7 +28,7 @@ class OrderAttributePage extends StatelessWidget {
             key: const Key('order_attributes.reorder'),
             tooltip: S.orderAttributeReorder,
             onPressed: () => context.pushNamed(Routes.orderAttrReorder),
-            icon: const Icon(Icons.compare_arrows_sharp),
+            icon: const Icon(KIcons.reorder),
           ),
         ],
       ),

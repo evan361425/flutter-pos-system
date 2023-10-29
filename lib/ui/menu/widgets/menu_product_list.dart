@@ -42,12 +42,6 @@ class MenuProductList extends StatelessWidget {
         route: Routes.menuProductModal,
         routePathParameters: {'id': product.id},
       ),
-      BottomSheetAction(
-        title: Text(S.menuProductReorder),
-        leading: const Icon(KIcons.reorder),
-        route: Routes.menuCatalogReorder,
-        routePathParameters: {'id': product.catalog.id},
-      ),
     ];
   }
 
