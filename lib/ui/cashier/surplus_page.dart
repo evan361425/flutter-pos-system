@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:info_popup/info_popup.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -143,11 +142,7 @@ class _DataWithLabel extends StatelessWidget {
         Text(data, style: theme.textTheme.headlineSmall),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(label),
-          if (helper != null)
-            InfoPopupWidget(
-              contentTitle: helper!,
-              child: const Icon(KIcons.help, size: 16.0),
-            ),
+          if (helper != null) InfoPopup(helper!),
         ]),
       ]),
     );

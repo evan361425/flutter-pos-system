@@ -19,6 +19,5 @@ class KIcons {
   static const preview = Icons.remove_red_eye_sharp;
   static const navTo = Icons.open_in_new_sharp;
 
-  static const help = Icons.help_outline_sharp;
   static const warn = Icons.warning_amber_sharp;
 }

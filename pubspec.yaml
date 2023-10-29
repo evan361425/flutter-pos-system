@@ -43,7 +43,7 @@ dependencies:
   # services
   sqflite: ^2.3.0 # 23, 07-26
   sembast: ^3.5.0+1 # 23, 07-21
-  shared_preferences: ^2.2.1 # 23, 08-30
+  shared_preferences: ^2.2.2 # 23, 10-10
   http: ^1.1.0 # 23, 06-26
 
   # google services
@@ -68,8 +68,7 @@ dependencies:
   flutter_svg: ^2.0.7 # 23, 06-12
 
   # Make it easy to test
-  # TODO: wait shared_preferences to support ^7.0.0
-  file: ^6.1.4 # 23, 05-19
+  file: ^7.0.0 # 23, 05-19
 
   # tools
   uuid: ^4.1.0 # 23, 09-25
@@ -84,8 +83,6 @@ dependencies:
   flutter_native_splash: ^2.3.2 # 23, 08-13
   package_info_plus: ^4.1.0 # 23, 08-02
   visibility_detector: ^0.4.0+2 # 23, 03-09
-  # TODO: remove this as it is not useful
-  info_popup: ^3.0.6 # 23, 08-29
 
 dev_dependencies:
   flutter_test:
