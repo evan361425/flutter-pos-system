@@ -78,12 +78,7 @@ jobs:
               "https://api.github.com/repos/evan361425/flutter-pos-system/releases/$(echo "$release" | jq -r '.id')"
           fi
 
-          body="$(echo "$release" | jq -r '.body')"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          body="${body//$'## '/}"
-          body="${body//$'-'/•}"
+          body="$(echo "$release" | jq -r '.body' | sed 's/^## //' | sed 's/^-/•/')"
           echo "changelog=$body" >> $GITHUB_OUTPUT
 
   # Push changelog to repository
