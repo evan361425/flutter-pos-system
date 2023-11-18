@@ -11,13 +11,15 @@ import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
+import 'package:possystem/ui/order/cart/cart_product_list.dart';
+import 'package:possystem/ui/order/cart/cart_product_selector.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
-import 'cart/cart_view.dart';
 import 'widgets/order_actions.dart';
 import 'widgets/orientated_view.dart';
-import 'widgets/sliding_panel_view.dart';
+import 'widgets/draggable_sheet_view.dart';
 import 'widgets/order_catalog_list_view.dart';
 import 'widgets/order_product_list_view.dart';
 
@@ -29,7 +31,6 @@ class OrderPage extends StatefulWidget {
 }
 
 class OrderPageState extends State<OrderPage> {
-  late final GlobalKey<SlidingPanelViewState> slidingPanel;
   late final PageController _pageController;
   late final ValueNotifier<int> _catalogIndexNotifier;
 
@@ -54,34 +55,46 @@ class OrderPageState extends State<OrderPage> {
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
     return TutorialWrapper(
-      child: Scaffold(
-        // avoid resize when keyboard(bottom inset) shows
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: const PopButton(),
-          actions: [
-            const OrderActions(key: Key('order.more')),
-            TextButton(
-              key: const Key('order.checkout'),
-              onPressed: () => _handleCheckout(),
-              child: Text(S.orderActionsCheckout),
-            ),
-          ],
+      child: DraggableScrollableActuator(
+        child: Scaffold(
+          // avoid resize when keyboard(bottom inset) shows
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            leading: const PopButton(),
+            actions: [
+              const OrderActions(key: Key('order.more')),
+              Builder(builder: (context) {
+                // allow it to access descendent DraggableScrollableSheet.
+                return TextButton(
+                  key: const Key('order.checkout'),
+                  onPressed: () => _handleCheckout(context),
+                  child: Text(S.orderActionsCheckout),
+                );
+              }),
+            ],
+          ),
+          body: outlook.value == OrderOutlookTypes.slidingPanel
+              ? DraggableSheetView(
+                  row1: orderCatalogListView,
+                  row2: orderProductListView,
+                  row3_1: const CartProductSelector(),
+                  row3_2Builder: (scroll) => Expanded(
+                    child: CartProductList(
+                      scrollController: scroll,
+                    ),
+                  ),
+                  row3_3: const CartMetadataView(),
+                  row4: const CartProductStateSelector(),
+                )
+              : OrientatedView(
+                  row1: orderCatalogListView,
+                  row2: orderProductListView,
+                  row3_1: const CartProductSelector(),
+                  row3_2: const Expanded(child: CartProductList()),
+                  row3_3: const CartMetadataView(),
+                  row4: const CartProductStateSelector(),
+                ),
         ),
-        body: outlook.value == OrderOutlookTypes.slidingPanel
-            ? SlidingPanelView(
-                key: slidingPanel,
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3: const CartView(),
-                row4: const CartProductStateSelector(),
-              )
-            : OrientatedView(
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3: const CartView(),
-                row4: const CartProductStateSelector(),
-              ),
       ),
     );
   }
@@ -102,17 +115,16 @@ class OrderPageState extends State<OrderPage> {
     // rebind menu/attributes if changed
     Cart.instance.rebind();
 
-    slidingPanel = GlobalKey<SlidingPanelViewState>();
     _pageController = PageController();
     _catalogIndexNotifier = ValueNotifier<int>(0);
     super.initState();
   }
 
-  void _handleCheckout() async {
+  void _handleCheckout(BuildContext context) async {
     final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
     if (status != null && context.mounted) {
       handleCheckoutStatus(context, status);
-      slidingPanel.currentState?.reset();
+      DraggableScrollableActuator.reset(context);
     }
   }
 }

@@ -47,12 +47,13 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
           ],
         ),
       ),
-      const SizedBox(width: 8.0),
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(
-          S.orderCashierSnapshotChangeField(change),
-          key: const Key('cashier.snapshot.change'),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 0, 8.0, 0),
+        child: SizedBox(
+          height: double.infinity,
+          child: Center(
+            child: Text(S.orderCashierSnapshotChangeField(change)),
+          ),
         ),
       ),
     ]);

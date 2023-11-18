@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/sliding_up_opener.dart';
+import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -11,7 +11,6 @@ import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
 import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
 import 'package:possystem/ui/order/cashier/stashed_order_list_view.dart';
 import 'package:possystem/ui/order/widgets/order_object_view.dart';
-import 'package:provider/provider.dart';
 
 import 'order_setting_view.dart';
 
@@ -24,6 +23,9 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage>
     with SingleTickerProviderStateMixin {
+  static const double snapshotHeight = 64.0;
+  static const double calculatorHeight = 408.0;
+
   late final ValueNotifier<num> paid;
 
   late final ValueNotifier<num> price;
@@ -37,20 +39,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final orderView = Cart.instance.isEmpty
-        ? const Center(child: HintText('請先進行點單。'))
-        : ChangeNotifierProvider.value(
-            value: paid,
-            builder: (context, child) {
-              final paid = context.watch<ValueNotifier<num>>();
-              return OrderObjectView(
-                order: Cart.instance.toObject(paid: paid.value),
-              );
-            },
-          );
-
-    final body = Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
         actions: Cart.instance.isEmpty
@@ -79,44 +68,63 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
           tabs: tabs,
         ),
       ),
-      body: TabBarView(controller: _controller, children: [
-        if (hasAttr) OderSettingView(price: price),
-        orderView,
-        const StashedOrderListView(),
-      ]),
+      body: buildBody(context),
     );
+  }
 
+  Widget buildBody(BuildContext context) {
     if (Cart.instance.isEmpty) {
-      return body;
+      return TabBarView(controller: _controller, children: [
+        if (hasAttr) OderSettingView(price: price),
+        const Center(child: HintText('請先進行點單。')),
+        const StashedOrderListView(),
+      ]);
     }
 
-    final collapsed = OrderCashierSnapshot(price: price, paid: paid);
-
-    final panel = Container(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      margin: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 16.0),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(18.0)),
+    return Stack(children: [
+      Positioned.fill(
+        child: TabBarView(controller: _controller, children: [
+          if (hasAttr) OderSettingView(price: price),
+          ValueListenableBuilder(
+            valueListenable: paid,
+            builder: (context, value, child) => OrderObjectView(
+              order: Cart.instance.toObject(paid: value),
+            ),
+          ),
+          const StashedOrderListView(),
+        ]),
       ),
-      child: OrderCashierCalculator(
-        onSubmit: _checkout,
-        price: price,
-        paid: paid,
+      Positioned.fill(
+        child: ScrollableDraggableSheet(
+          indicator: const DraggableIndicator(key: Key('order.details.ds')),
+          snapSizes: const [snapshotHeight, calculatorHeight],
+          builder: (controller, scroll) {
+            return [
+              FixedHeightClipper(
+                controller: controller,
+                height: snapshotHeight,
+                baseline: -2 * snapshotHeight,
+                valueScalar: -1,
+                child: OrderCashierSnapshot(price: price, paid: paid),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scroll,
+                  child: SizedBox(
+                    height: calculatorHeight,
+                    child: OrderCashierCalculator(
+                      onSubmit: _checkout,
+                      price: price,
+                      paid: paid,
+                    ),
+                  ),
+                ),
+              )
+            ];
+          },
+        ),
       ),
-    );
-
-    return Material(
-      child: SlidingUpOpener(
-        // 4 rows * 64 + 24 (insets) + 64 (collapse)
-        maxHeight: 408,
-        minHeight: 84,
-        renderPanelSheet: false,
-        body: body,
-        panel: panel,
-        collapsed: collapsed,
-      ),
-    );
+    ]);
   }
 
   Future<void> _stash() async {

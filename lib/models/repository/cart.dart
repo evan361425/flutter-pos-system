@@ -40,6 +40,9 @@ class Cart extends ChangeNotifier {
   /// Current selected product if and only if all selected products are same.
   final ValueNotifier<CartProduct?> selectedProduct = ValueNotifier(null);
 
+  /// Current selected product index.
+  int selectedIndex = -1;
+
   /// Whether cart is empty and can be recovered by stashed data without any
   /// side effect.
   bool get isEmpty => products.isEmpty;
@@ -188,10 +191,12 @@ class Cart extends ChangeNotifier {
     final selected = this.selected;
     if (selected.isEmpty) {
       selectedProduct.value = null;
+      selectedIndex = -1;
       return;
     }
 
     final s = selected.first;
+    selectedIndex = products.indexOf(s);
     selectedProduct.value = selected.every((e) => e.id == s.id) ? s : null;
   }
 

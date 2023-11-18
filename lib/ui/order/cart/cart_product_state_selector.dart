@@ -25,6 +25,7 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SingleRowWrap(
           key: Key('order.ingredient.${status.name}'),
+          color: Colors.transparent,
           children: <Widget>[
             ChoiceChip(
               selected: false,
@@ -33,6 +34,7 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
           ],
         ),
         SingleRowWrap(
+          color: Colors.transparent,
           children: <Widget>[
             ChoiceChip(
               selected: false,
@@ -46,35 +48,43 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SingleRowWrap(children: <Widget>[
-          for (final item in product!.product.items)
+        const SizedBox(height: 4),
+        SingleRowWrap(
+          color: Colors.transparent,
+          children: <Widget>[
+            for (final item in product!.product.items)
+              ChoiceChip(
+                key: Key('order.ingredient.${item.id}'),
+                selected: ingredient.id == item.id,
+                onSelected: (selected) {
+                  setState(() {
+                    ingredient = item;
+                    quantityId = product!.getQuantityId(item.id);
+                  });
+                },
+                label: Text(item.name),
+              ),
+          ],
+        ),
+        SingleRowWrap(
+          color: Colors.transparent,
+          children: <Widget>[
             ChoiceChip(
-              key: Key('order.ingredient.${item.id}'),
-              selected: ingredient.id == item.id,
-              onSelected: (selected) {
-                setState(() {
-                  ingredient = item;
-                  quantityId = product!.getQuantityId(item.id);
-                });
-              },
-              label: Text(item.name),
+              key: const Key('order.quantity.default'),
+              onSelected: (_) => _changeQuantity(null),
+              selected: quantityId == null,
+              label: Text(S.orderCartQuantityDefault(ingredient.amount)),
             ),
-        ]),
-        SingleRowWrap(children: <Widget>[
-          ChoiceChip(
-            key: const Key('order.quantity.default'),
-            onSelected: (_) => _changeQuantity(null),
-            selected: quantityId == null,
-            label: Text(S.orderCartQuantityDefault(ingredient.amount)),
-          ),
-          for (final q in ingredient.items)
-            ChoiceChip(
-              key: Key('order.quantity.${q.id}'),
-              onSelected: (_) => _changeQuantity(q.id),
-              selected: quantityId == q.id,
-              label: Text('${q.name}（${q.amount}）'),
-            ),
-        ]),
+            for (final q in ingredient.items)
+              ChoiceChip(
+                key: Key('order.quantity.${q.id}'),
+                onSelected: (_) => _changeQuantity(q.id),
+                selected: quantityId == q.id,
+                label: Text('${q.name}（${q.amount.toStringAsFixed(1)}）'),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
       ],
     );
   }
