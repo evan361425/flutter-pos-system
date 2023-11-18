@@ -35,24 +35,27 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
     return Column(children: [
       // avoid rounded border of accessor and causing overlapping.
       const SizedBox(height: 8.0),
-      Column(children: [
-        _SingleField(
-          key: paidState,
-          id: 'cashier.calculator.paid',
-          prefix: S.orderCashierPaidLabel,
-          defaultText: widget.price.value.toCurrency(),
-          errorText: '',
-        ),
-        const Divider(),
-        _SingleField(
-          key: changeState,
-          id: 'cashier.calculator.change',
-          prefix: S.orderCashierChangeLabel,
-          defaultText: '0',
-          errorText: S.orderCashierCalculatorChangeNotEnough,
-        ),
-        const Divider(),
-      ]),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(children: [
+          _SingleField(
+            key: paidState,
+            id: 'cashier.calculator.paid',
+            prefix: S.orderCashierPaidLabel,
+            defaultText: widget.price.value.toCurrency(),
+            errorText: '',
+          ),
+          const Divider(),
+          _SingleField(
+            key: changeState,
+            id: 'cashier.calculator.change',
+            prefix: S.orderCashierChangeLabel,
+            defaultText: '0',
+            errorText: S.orderCashierCalculatorChangeNotEnough,
+          ),
+          const Divider(),
+        ]),
+      ),
       Expanded(
         child: Center(
           child: SingleChildScrollView(
@@ -327,8 +330,9 @@ class _SingleFieldState extends State<_SingleField> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return Row(children: [
       Text(widget.prefix),
+      const Spacer(),
       _text == null
           ? Text(widget.errorText, key: Key('${widget.id}.error'))
           : _text!.isEmpty

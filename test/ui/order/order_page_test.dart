@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
-import 'package:possystem/components/style/sliding_up_opener.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -111,7 +111,7 @@ void main() {
       Cart.instance = Cart();
     }
 
-    Widget buildApp<T>({Key? key, T Function()? popResult}) {
+    Widget buildApp<T>({T Function()? popResult}) {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Seller.instance),
@@ -121,7 +121,7 @@ void main() {
           routerConfig: GoRouter(routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => OrderPage(key: key),
+              builder: (_, __) => const OrderPage(),
               routes: [
                 GoRoute(
                     name: Routes.orderDetails,
@@ -142,10 +142,11 @@ void main() {
       );
     }
 
-    group('Slidable Panel', () {
+    group('Draggable Sheet', () {
       testWidgets('Selecting change state', (tester) async {
-        final key = GlobalKey<OrderPageState>();
-        await tester.pumpWidget(buildApp(key: key));
+        await tester.pumpWidget(buildApp(
+          popResult: () => CheckoutStatus.nothingHappened,
+        ));
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -203,7 +204,7 @@ void main() {
           }
           if (subtitle != null) {
             subtitle.isEmpty
-                ? expect(w.subtitle, isNull)
+                ? expect(w.subtitle, isA<HintText>())
                 : expect((w.subtitle as RichText).text.toPlainText(),
                     equals(subtitle));
           }
@@ -222,7 +223,7 @@ void main() {
 
         verifyMetadata(int count, num price) {
           final w =
-              tester.widget<Container>(find.byKey(const Key('cart.metadata')));
+              tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
           final t =
               '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
           expect((w.child as RichText).text.toPlainText(), equals(t));
@@ -233,7 +234,10 @@ void main() {
           ['p-2', '1'],
         ], 28);
 
-        await tester.tap(find.byKey(const Key('cart.collapsed')));
+        await tester.drag(
+          find.byKey(const Key('order.ds')),
+          const Offset(0, -300),
+        );
         await tester.pumpAndSettle();
 
         verifyProductList(0, title: 'p-1', selected: false);
@@ -242,12 +246,15 @@ void main() {
 
         expect(find.byKey(const Key('order.ingredient.noNeedIngredient')),
             findsOneWidget);
+
+        // select product
         await tester.tap(find.byKey(const Key('cart.product.0')));
         await tester.pumpAndSettle();
 
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: false);
 
+        // select quantity
         await tester.tap(find.byKey(const Key('order.quantity.pq-1')));
         await tester.pumpAndSettle();
         verifyProductList(0,
@@ -262,6 +269,7 @@ void main() {
         verifyProductList(0,
             subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
 
+        // add count
         await tester.tap(find.byKey(const Key('cart.product.0.add')));
         await tester.tap(find.byKey(const Key('cart.product.1.add')));
         await tester.pumpAndSettle();
@@ -269,6 +277,7 @@ void main() {
         verifyProductList(1, selected: false, price: 22, count: 2);
         verifyMetadata(4, 36);
 
+        // select by checkbox
         await tester.tap(find.byKey(const Key('cart.product.1.select')));
         await tester.pumpAndSettle();
         verifyProductList(0, selected: true);
@@ -287,6 +296,7 @@ void main() {
                 .selected,
             isTrue);
 
+        // select ingredient
         await tester.tap(find.byKey(const Key('order.ingredient.pi-2')));
         await tester.pumpAndSettle();
         expect(
@@ -306,8 +316,11 @@ void main() {
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: true);
 
-        // close panel
-        key.currentState?.slidingPanel.currentState?.reset();
+        // verify snapshot state
+        await tester.tap(find.byKey(const Key('order.checkout')));
+        await tester.pumpAndSettle();
+        // pop back
+        await tester.tap(find.text('hi'));
         await tester.pumpAndSettle();
 
         verifySnapshot([
@@ -339,10 +352,9 @@ void main() {
         await tester.tap(find.byKey(const Key('order.product.p-2')));
         await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('cart.collapsed')), findsNothing);
+        expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
         final scrollController = tester
-            .widget<SingleChildScrollView>(
-                find.byKey(const Key('cart.product_list')))
+            .widget<ListView>(find.byKey(const Key('cart.product_list')))
             .controller!;
         // scroll to bottom
         expect(scrollController.position.maxScrollExtent, isNonZero);
@@ -367,7 +379,11 @@ void main() {
       ]);
 
       await tester.pumpWidget(buildApp());
-      await tester.tap(find.byKey(const Key('cart.collapsed')));
+      await tester.pumpAndSettle();
+      await tester.drag(
+        find.byKey(const Key('order.ds')),
+        const Offset(0, -400),
+      );
       await tester.pumpAndSettle();
 
       // remove it
@@ -415,7 +431,7 @@ void main() {
 
       verifyMetadata(int count, num price) {
         final w =
-            tester.widget<Container>(find.byKey(const Key('cart.metadata')));
+            tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
         final t =
             '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
         expect((w.child as RichText).text.toPlainText(), equals(t));
@@ -449,15 +465,6 @@ void main() {
       verifyProductList(0, count: 8, price: 0);
       expect(find.byKey(const Key('cart.product.1')), findsNothing);
       verifyMetadata(8, 0);
-
-      // close panel
-      final opener =
-          tester.state(find.byType(SlidingUpOpener)) as SlidingUpOpenerState;
-      await opener.handlePrePop();
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('cart_snapshot.price')).hitTestable(),
-          findsOneWidget);
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
@@ -468,7 +475,10 @@ void main() {
       await tester.tap(find.byKey(const Key('order.product.p-3')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cart.collapsed')));
+      await tester.drag(
+        find.byKey(const Key('order.ds')),
+        const Offset(0, -400),
+      );
       await tester.pumpAndSettle();
 
       final chip = tester

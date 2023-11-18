@@ -157,11 +157,4 @@ class CartProduct extends ChangeNotifier {
           .toList(),
     );
   }
-
-  @override
-  // we are not going to use map
-  // ignore: hash_and_equals
-  operator ==(Object? other) {
-    return other is CartProduct && other.id == id;
-  }
 }

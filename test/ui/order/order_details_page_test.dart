@@ -229,10 +229,11 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.snapshot.30')));
       await tester.pumpAndSettle();
 
-      final sChange = find.byKey(const Key('cashier.snapshot.change'));
-      expect(tester.widget<Text>(sChange).data,
-          equals(S.orderCashierSnapshotChangeField(2)));
-      await tester.tap(sChange);
+      expect(find.text(S.orderCashierSnapshotChangeField(2)), findsOneWidget);
+      await tester.drag(
+        find.byKey(const Key('order.details.ds')),
+        const Offset(0, -408),
+      );
       await tester.pumpAndSettle();
 
       verifyText(String key, String expectValue) {
@@ -274,7 +275,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
-      expect(tester.widget<Text>(sChange).data, equals('找錢：62'));
+      expect(find.text(S.orderCashierSnapshotChangeField(62)), findsOneWidget);
 
       await Cashier.instance.setCurrentByUnit(1, 5);
 
@@ -333,7 +334,7 @@ void main() {
 
       expect(Cart.instance.isEmpty, isTrue);
       // navigator popped
-      expect(sChange, findsNothing);
+      expect(find.byKey(const Key('order.details.ds')), findsNothing);
 
       checker();
 
@@ -462,7 +463,10 @@ void main() {
       await tester.tap(find.byKey(const Key('order.checkout')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('cashier.snapshot.change')));
+      await tester.drag(
+        find.byKey(const Key('order.details.ds')),
+        const Offset(0, -408),
+      );
       await tester.pumpAndSettle();
 
       // Start testing calculator

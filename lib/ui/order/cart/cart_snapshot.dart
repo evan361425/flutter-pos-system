@@ -27,23 +27,21 @@ class CartSnapshot extends StatelessWidget {
             key: Key('cart_snapshot.${count++}'),
             margin: const EdgeInsets.only(right: 8),
             badge: product.count > 9 ? '9+' : product.count.toString(),
-            textScaleFactor: 1,
           ),
         const SizedBox(width: 16),
       ]),
     );
 
     return Row(children: <Widget>[
+      const SizedBox(width: 12.0),
       Expanded(child: products),
-      const SizedBox(width: 4.0),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(
-          cart.productsPrice.toString(),
-          key: const Key('cart_snapshot.price'),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+      const SizedBox(width: 16.0),
+      Text(
+        cart.productsPrice.toString(),
+        key: const Key('cart_snapshot.price'),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
+      const SizedBox(width: 12.0),
     ]);
   }
 }

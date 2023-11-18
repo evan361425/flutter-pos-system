@@ -7,8 +7,6 @@ class OutlinedText extends StatelessWidget {
 
   final EdgeInsets? margin;
 
-  final double? textScaleFactor;
-
   /// * `textStyle` - Theme.textTheme.labelLarge
   /// * `backgroundColor` - transparent
   /// * `foregroundColor`
@@ -47,7 +45,6 @@ class OutlinedText extends StatelessWidget {
     Key? key,
     this.badge,
     this.margin,
-    this.textScaleFactor,
   }) : super(key: key);
 
   @override

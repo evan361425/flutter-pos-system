@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/cart_product.dart';
@@ -10,7 +11,9 @@ import 'package:provider/provider.dart';
 import 'cart_actions.dart';
 
 class CartProductList extends StatefulWidget {
-  const CartProductList({Key? key}) : super(key: key);
+  final ScrollController? scrollController;
+
+  const CartProductList({super.key, this.scrollController});
 
   @override
   State<CartProductList> createState() => _CartProductListState();
@@ -25,30 +28,34 @@ class _CartProductListState extends State<CartProductList> {
     // if product length changed, rebuild it.
     final length = context.select<Cart, int>((cart) => cart.products.length);
 
-    return SingleChildScrollView(
+    return ListView(
       key: const Key('cart.product_list'),
       controller: scrollController,
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < length; i++)
-            SlideToDelete(
-              item: Cart.instance.products[i],
-              onDismissed: () => Cart.instance.removeAt(i),
-              child: ChangeNotifierProvider<CartProduct>.value(
-                value: Cart.instance.products[i],
-                child: _CartProductListTile(i),
-              ),
+      prototypeItem: const ListTile(title: Text('a'), subtitle: Text('a')),
+      children: [
+        if (length == 0)
+          ListTile(
+            title: Center(child: HintText(S.orderCartSnapshotEmpty)),
+            subtitle: const Text(''),
+          ),
+        for (var i = 0; i < length; i++)
+          SlideToDelete(
+            item: Cart.instance.products[i],
+            onDismissed: () => Cart.instance.removeAt(i),
+            child: ChangeNotifierProvider<CartProduct>.value(
+              value: Cart.instance.products[i],
+              child: _CartProductListTile(i),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    if (widget.scrollController == null) {
+      scrollController.dispose();
+    }
     Cart.instance.removeListener(scrollToBottomIfAdded);
     super.dispose();
   }
@@ -56,14 +63,16 @@ class _CartProductListState extends State<CartProductList> {
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
+    scrollController = widget.scrollController ?? ScrollController();
     Cart.instance.addListener(scrollToBottomIfAdded);
   }
 
   Future<void> scrollToBottomIfAdded() async {
     final length = Cart.instance.products.length;
-    if (lastLength < length && mounted) {
-      lastLength = length;
+    final isAdded = lastLength < length;
+    lastLength = length;
+
+    if (isAdded && mounted) {
       await scrollController.animateTo(
         scrollController.position.maxScrollExtent + 80,
         duration: const Duration(milliseconds: 300),
@@ -130,10 +139,11 @@ class _CartProductListTile extends StatelessWidget {
             leading: leading,
             title: Text(product.name, overflow: TextOverflow.ellipsis),
             subtitle: MetaBlock.withString(
-              context,
-              subtitle,
-              textOverflow: TextOverflow.visible,
-            ),
+                  context,
+                  subtitle,
+                  textOverflow: TextOverflow.visible,
+                ) ??
+                const HintText('預設份量'),
             trailing: trailing,
             onTap: () => Cart.instance.toggleAll(false, except: product),
             onLongPress: () {

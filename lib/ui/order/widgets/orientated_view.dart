@@ -5,7 +5,9 @@ class OrientatedView extends StatelessWidget {
 
   final Widget row2;
 
-  final Widget row3;
+  final Widget row3_1;
+  final Widget row3_2;
+  final Widget row3_3;
 
   final Widget row4;
 
@@ -13,7 +15,9 @@ class OrientatedView extends StatelessWidget {
     Key? key,
     required this.row1,
     required this.row2,
-    required this.row3,
+    required this.row3_1,
+    required this.row3_2,
+    required this.row3_3,
     required this.row4,
   }) : super(key: key);
 
@@ -38,7 +42,7 @@ class OrientatedView extends StatelessWidget {
           child: row1,
         ),
         Expanded(child: row2),
-        Expanded(flex: 3, child: row3),
+        Expanded(flex: 3, child: wrapRow3(context)),
         row4,
       ],
     );
@@ -54,7 +58,7 @@ class OrientatedView extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 300.0),
             child: Column(
               children: [
-                Expanded(child: row3),
+                Expanded(child: wrapRow3(context)),
                 row4,
               ],
             ),
@@ -73,6 +77,23 @@ class OrientatedView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget wrapRow3(BuildContext context) {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      ),
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          row3_1,
+          row3_2,
+          row3_3,
+        ],
+      ),
     );
   }
 }

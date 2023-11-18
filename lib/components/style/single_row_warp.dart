@@ -4,17 +4,20 @@ import 'package:possystem/constants/constant.dart';
 class SingleRowWrap extends StatelessWidget {
   final List<Widget> children;
 
+  final Color? color;
+
   const SingleRowWrap({
-    Key? key,
+    super.key,
     required this.children,
-  }) : super(key: key);
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-      ),
+    return Material(
+      elevation: 1.0,
+      color: color,
+      shadowColor: color,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
