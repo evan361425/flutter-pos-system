@@ -28,7 +28,7 @@ class Database {
   // delimiter for blob.
   static const queryDelimiter = 'char(29)';
 
-  static const latestVersion = 8;
+  static const latestVersion = 9;
 
   late sqflite.Database db;
 
