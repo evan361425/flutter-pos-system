@@ -77,8 +77,10 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
 
   bool _avatorMissed = false;
 
+  bool get useDefaultImage => imagePath == null;
+
   Widget get avator {
-    if (imagePath == null || _avatorMissed) {
+    if (useDefaultImage || _avatorMissed) {
       return CircleAvatar(
         child: Text(name.characters.first.toUpperCase()),
       );
@@ -93,7 +95,7 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
   }
 
   ImageProvider get image {
-    if (imagePath == null) {
+    if (useDefaultImage) {
       return const AssetImage("assets/food_placeholder.png");
     }
 

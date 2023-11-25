@@ -16,6 +16,13 @@ class SliverImageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = ImageHolder(
+      image: model.image,
+      padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
+      title: '',
+      onImageError: () => model.saveImage(null),
+    );
+
     return SliverAppBar(
       expandedHeight: 250.0,
       pinned: true,
@@ -28,12 +35,9 @@ class SliverImageAppBar extends StatelessWidget {
           ),
         ),
         titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
-        background: ImageHolder(
-          image: model.image,
-          padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
-          title: '',
-          onImageError: () => model.saveImage(null),
-        ),
+        background: model.useDefaultImage
+            ? background
+            : Hero(tag: model, child: background),
       ),
       actions: actions,
     );

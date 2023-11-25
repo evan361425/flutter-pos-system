@@ -65,17 +65,17 @@ class ImageHolder extends StatelessWidget {
 
     return AspectRatio(
       aspectRatio: 1,
-      child: Ink.image(
-        padding: EdgeInsets.zero,
-        image: image,
-        fit: BoxFit.cover,
-        onImageError: (error, stack) {
-          Log.err(error, 'image_holder_error', stack);
-          onImageError?.call();
-        },
-        child: Material(
-          type: MaterialType.transparency,
-          textStyle: TextStyle(color: textColor),
+      child: Material(
+        type: MaterialType.transparency,
+        textStyle: TextStyle(color: textColor),
+        child: Ink.image(
+          padding: EdgeInsets.zero,
+          image: image,
+          fit: BoxFit.cover,
+          onImageError: (error, stack) {
+            Log.err(error, 'image_holder_error', stack);
+            onImageError?.call();
+          },
           child: body,
         ),
       ),

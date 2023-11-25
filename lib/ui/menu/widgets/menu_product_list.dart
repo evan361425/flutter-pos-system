@@ -53,7 +53,9 @@ class MenuProductList extends StatelessWidget {
   ) {
     return ListTile(
       key: Key('product.${product.id}'),
-      leading: product.avator,
+      leading: product.useDefaultImage
+          ? product.avator
+          : Hero(tag: product, child: product.avator),
       title: Text(product.name),
       trailing: EntryMoreButton(onPressed: showActions),
       subtitle: MetaBlock.withString(
