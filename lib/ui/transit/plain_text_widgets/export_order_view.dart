@@ -21,20 +21,27 @@ class ExportOrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TransitOrderRange(notifier: notifier),
-        ListTile(
+        const SizedBox(height: 16.0),
+        Card(
           key: const Key('export_btn'),
-          title: const Text('複製文字'),
-          subtitle: const Text('複製過大的文字可能會造成系統的崩潰'),
-          trailing: const Icon(Icons.copy_outlined),
-          onTap: () {
-            showSnackbarWhenFailed(
-              export(),
-              context,
-              'pt_export_failed',
-            ).then((value) => showSnackBar(context, '複製成功'));
-          },
+          margin: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ListTile(
+            title: const Text('複製文字'),
+            subtitle: const Text('複製過大的文字可能會造成系統的崩潰'),
+            trailing: const Icon(Icons.copy_outlined),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            onTap: () {
+              showSnackbarWhenFailed(
+                export(),
+                context,
+                'pt_export_failed',
+              ).then((value) => showSnackBar(context, '複製成功'));
+            },
+          ),
         ),
+        TransitOrderRange(notifier: notifier),
         Expanded(
           child: TransitOrderList(
             notifier: notifier,

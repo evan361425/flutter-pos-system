@@ -50,7 +50,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     return ListView(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: SignInButton(
             signedInWidget: SpreadsheetSelector(
               key: selector,

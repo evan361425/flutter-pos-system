@@ -42,7 +42,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
   Widget build(BuildContext context) {
     return ListView(children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+        padding: const EdgeInsets.all(16.0),
         child: SignInButton(
           signedInWidget: SpreadsheetSelector(
             key: selector,

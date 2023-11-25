@@ -39,10 +39,7 @@ class _AnalysisCardState<T> extends State<AnalysisCard<T>> {
         ? Center(child: Text(e))
         : m == null
             ? const CircularLoading()
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: widget.builder(context, m),
-              );
+            : widget.builder(context, m);
 
     final card = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 600),
@@ -51,7 +48,7 @@ class _AnalysisCardState<T> extends State<AnalysisCard<T>> {
         child: AspectRatio(
           aspectRatio: 1.6,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(color: Theme.of(context).cardColor),

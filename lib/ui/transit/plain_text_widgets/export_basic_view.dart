@@ -63,28 +63,37 @@ class _ExportBasicViewState extends State<ExportBasicView>
 
   Widget _buildTabBarView(BuildContext context, Formattable able) {
     return Column(children: [
-      ListTile(
-        key: Key('export_btn.${able.name}'),
-        title: const Text('複製文字'),
-        subtitle: MetaBlock.withString(
-          context,
-          widget.exporter.formatter.getHeader(able),
-        ),
-        onTap: () => _copy(able),
-        trailing: const Icon(
-          Icons.copy_outlined,
-          semanticLabel: '複製文字',
+      const SizedBox(height: 16.0),
+      Card(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          key: Key('export_btn.${able.name}'),
+          title: const Text('複製文字'),
+          subtitle: MetaBlock.withString(
+            context,
+            widget.exporter.formatter.getHeader(able),
+          ),
+          onTap: () => _copy(able),
+          trailing: const Icon(
+            Icons.copy_outlined,
+            semanticLabel: '複製文字',
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
         ),
       ),
+      const SizedBox(height: 16.0),
       Expanded(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildItemsView(
             able,
             widget.exporter.formatter.getRows(able),
           ),
         ),
       ),
+      const SizedBox(height: 16.0),
     ]);
   }
 
@@ -98,7 +107,7 @@ class _ExportBasicViewState extends State<ExportBasicView>
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final item in items[index]) Text(item),
+              for (final item in items[0]) Center(child: Text(item)),
             ],
           );
         }

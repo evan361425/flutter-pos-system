@@ -9,59 +9,64 @@ import 'package:possystem/translator.dart';
 
 import 'transit_station.dart';
 
-class TransitPage extends StatefulWidget {
-  const TransitPage({Key? key}) : super(key: key);
+class TransitPage extends StatelessWidget {
+  TransitPage({Key? key}) : super(key: key);
 
-  @override
-  State<TransitPage> createState() => _TransitPageState();
-}
-
-class _TransitPageState extends State<TransitPage> {
   final selector = GlobalKey<ChoiceChipWithHelpState<TransitType>>();
 
   @override
   Widget build(BuildContext context) {
+    final body = ListView(children: [
+      ChoiceChipWithHelp<TransitType>(
+        key: selector,
+        values: TransitType.values,
+        selected: TransitType.order,
+        labels: const ['訂單記錄', '商家資訊'],
+        helpTexts: const [
+          '訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。',
+          '商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。',
+        ],
+      ),
+      TextDivider(label: S.transitDescription),
+      ListTile(
+        key: const Key('transit.google_sheet'),
+        leading: CircleAvatar(
+          radius: 24,
+          child: SvgPicture.asset(
+            'assets/google_sheet_icon.svg',
+            width: 24,
+          ),
+        ),
+        title: Text(S.transitMethod(TransitMethod.googleSheet.name)),
+        subtitle: Text(S.transitGSDescription),
+        onTap: () => _goToStation(context, TransitMethod.googleSheet),
+      ),
+      ListTile(
+        key: const Key('transit.plain_text'),
+        leading: const CircleAvatar(
+          radius: 24,
+          child: Text('Text'),
+        ),
+        title: Text(S.transitMethod(TransitMethod.plainText.name)),
+        subtitle: const Text('快速檢查、快速分享。'),
+        onTap: () => _goToStation(context, TransitMethod.plainText),
+      ),
+    ]);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(S.transitTitle),
         leading: const PopButton(),
       ),
-      body: ListView(children: [
-        ChoiceChipWithHelp<TransitType>(
-          key: selector,
-          values: TransitType.values,
-          selected: TransitType.order,
-          labels: const ['訂單記錄', '商家資訊'],
-          helpTexts: const [
-            '訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。',
-            '商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。',
-          ],
-        ),
-        TextDivider(label: S.transitDescription),
-        ListTile(
-          key: const Key('transit.google_sheet'),
-          leading: CircleAvatar(
-            radius: 24,
-            child: SvgPicture.asset(
-              'assets/google_sheet_icon.svg',
-              width: 24,
-            ),
-          ),
-          title: Text(S.transitMethod(TransitMethod.googleSheet.name)),
-          subtitle: Text(S.transitGSDescription),
-          onTap: () => _goToStation(context, TransitMethod.googleSheet),
-        ),
-        ListTile(
-          key: const Key('transit.plain_text'),
-          leading: const CircleAvatar(
-            radius: 24,
-            child: Text('Text'),
-          ),
-          title: Text(S.transitMethod(TransitMethod.plainText.name)),
-          subtitle: const Text('快速檢查、快速分享。'),
-          onTap: () => _goToStation(context, TransitMethod.plainText),
-        ),
-      ]),
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          selector.currentState?.updateSelectedIndex(
+            details.velocity.pixelsPerSecond.dx,
+          );
+        },
+        // fill the screen to allow drag from white space
+        child: SizedBox(height: double.infinity, child: body),
+      ),
     );
   }
 

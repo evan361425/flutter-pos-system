@@ -25,11 +25,25 @@ class _ImportBasicViewState extends State<ImportBasicView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          TextField(
+    return SingleChildScrollView(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        const SizedBox(height: 16.0),
+        Card(
+          key: const Key('import_btn'),
+          margin: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ListTile(
+            title: const Text('預覽結果'),
+            trailing: const Icon(KIcons.preview),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            onTap: importData,
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: TextField(
             key: const Key('import_text'),
             controller: controller,
             keyboardType: TextInputType.multiline,
@@ -44,15 +58,8 @@ class _ImportBasicViewState extends State<ImportBasicView>
               helperMaxLines: 2,
             ),
           ),
-          const SizedBox(height: 8),
-          FilledButton.icon(
-            key: const Key('import_btn'),
-            onPressed: importData,
-            label: const Text('預覽結果'),
-            icon: const Icon(KIcons.preview),
-          ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 

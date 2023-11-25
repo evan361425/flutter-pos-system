@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/card_info_text.dart';
 
@@ -74,6 +76,18 @@ class ChoiceChipWithHelpState<T> extends State<ChoiceChipWithHelp<T>> {
 
   updateSelected(T value) {
     setState(() => _updateSelected(value));
+  }
+
+  updateSelectedIndex(double delta) {
+    if (delta > 10 || delta < -10) {
+      setState(() {
+        final d = delta > 0 ? -1 : 1;
+        final m = widget.values.length - 1;
+
+        selectedIndex = max(0, min(m, selectedIndex + d));
+        selected = widget.values[selectedIndex];
+      });
+    }
   }
 
   _updateSelected(T value) {

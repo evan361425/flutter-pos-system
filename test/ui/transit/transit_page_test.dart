@@ -26,7 +26,7 @@ void main() {
         routerConfig: GoRouter(routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => const TransitPage(),
+            builder: (_, __) => TransitPage(),
             routes: Routes.routes,
           ),
         ]),
