@@ -47,7 +47,13 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               color: Theme.of(context).colorScheme.background,
               child: widget.row1,
             ),
-            Expanded(child: widget.row2),
+            Expanded(
+              key: const Key('order.bg'),
+              child: GestureDetector(
+                onTap: () => DraggableScrollableActuator.reset(context),
+                child: widget.row2,
+              ),
+            ),
           ],
         ),
       ),

@@ -316,12 +316,10 @@ void main() {
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: true);
 
-        // verify snapshot state
-        await tester.tap(find.byKey(const Key('order.checkout')));
-        await tester.pumpAndSettle();
-        // pop back
-        await tester.tap(find.text('hi'));
-        await tester.pumpAndSettle();
+        // close panel and verify snapshot state
+        await tester.tapAt(
+          tester.getTopLeft(find.byKey(const Key('order.bg'))),
+        );
 
         verifySnapshot([
           ['p-1', '2'],
