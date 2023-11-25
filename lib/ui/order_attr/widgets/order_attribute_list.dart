@@ -7,7 +7,6 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
@@ -23,10 +22,9 @@ class OrderAttributeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(kSpacing1),
-        child: HintText(S.totalCount(attributes.length)),
-      ),
+      const SizedBox(height: 8.0),
+      Center(child: HintText(S.totalCount(attributes.length))),
+      const SizedBox(height: 8.0),
       for (final attribute in attributes)
         ChangeNotifierProvider<OrderAttribute>.value(
           value: attribute,
