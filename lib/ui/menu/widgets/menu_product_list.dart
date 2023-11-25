@@ -28,7 +28,7 @@ class MenuProductList extends StatelessWidget {
         deleteValue: 0,
         actionBuilder: _actionBuilder,
         tileBuilder: _tileBuilder,
-        confirmContextBuilder: _confirmContextBuilder,
+        warningContentBuilder: _warningContentBuilder,
         handleDelete: (item) => item.remove(),
       ),
     );
@@ -69,7 +69,7 @@ class MenuProductList extends StatelessWidget {
     );
   }
 
-  Widget _confirmContextBuilder(BuildContext context, Product product) {
+  Widget _warningContentBuilder(BuildContext context, Product product) {
     return Text(S.dialogDeletionContent(product.name, ''));
   }
 }

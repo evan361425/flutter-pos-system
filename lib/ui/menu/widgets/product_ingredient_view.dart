@@ -74,7 +74,10 @@ class _QuantityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlideToDelete(
       item: quantity,
-      onDismissed: _remove,
+      deleteCallback: _remove,
+      warningContentBuilder: (context) {
+        return Text(S.dialogDeletionContent(quantity.name, ''));
+      },
       child: ListTile(
         key: Key('product_quantity.${quantity.id}'),
         title: Text(quantity.name),

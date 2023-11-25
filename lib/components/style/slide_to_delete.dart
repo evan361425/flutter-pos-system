@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/constants/icons.dart';
 
 class SlideToDelete<T> extends StatelessWidget {
@@ -6,16 +7,16 @@ class SlideToDelete<T> extends StatelessWidget {
 
   final Widget child;
 
-  final void Function()? onDismissed;
+  final Future<void> Function() deleteCallback;
 
-  final Future<bool?> Function(DismissDirection)? confirmDismiss;
+  final Widget? Function(BuildContext context)? warningContentBuilder;
 
   const SlideToDelete({
     Key? key,
     required this.item,
     required this.child,
-    this.onDismissed,
-    this.confirmDismiss,
+    required this.deleteCallback,
+    this.warningContentBuilder,
   }) : super(key: key);
 
   @override
@@ -31,8 +32,14 @@ class SlideToDelete<T> extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: onDismissed == null ? null : (_) => onDismissed!(),
-      confirmDismiss: confirmDismiss,
+      onDismissed: (direction) => deleteCallback(),
+      confirmDismiss: warningContentBuilder == null
+          ? null
+          : (direction) => DeleteDialog.show(
+                context,
+                deleteCallback: () => Future.value(),
+                warningContent: warningContentBuilder!(context),
+              ),
       child: child,
     );
   }

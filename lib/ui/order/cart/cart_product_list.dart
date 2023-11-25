@@ -41,7 +41,7 @@ class _CartProductListState extends State<CartProductList> {
         for (var i = 0; i < length; i++)
           SlideToDelete(
             item: Cart.instance.products[i],
-            onDismissed: () => Cart.instance.removeAt(i),
+            deleteCallback: () async => Cart.instance.removeAt(i),
             child: ChangeNotifierProvider<CartProduct>.value(
               value: Cart.instance.products[i],
               child: _CartProductListTile(i),

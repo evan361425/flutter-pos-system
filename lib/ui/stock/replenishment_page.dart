@@ -58,9 +58,9 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
         deleteValue: _Actions.delete,
-        confirmContextBuilder: (_, item) => Text(
-          S.dialogDeletionContent(item.name, ''),
-        ),
+        warningContentBuilder: (_, item) {
+          return Text(S.dialogDeletionContent(item.name, ''));
+        },
         items: Replenisher.instance.itemList,
         actionBuilder: (item) => [
           BottomSheetAction(

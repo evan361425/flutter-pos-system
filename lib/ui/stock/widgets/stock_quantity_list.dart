@@ -23,7 +23,7 @@ class StockQuantityList extends StatelessWidget {
         items: quantities,
         deleteValue: 0,
         tileBuilder: _tileBuilder,
-        confirmContextBuilder: _confirmContextBuilder,
+        warningContentBuilder: _warningContentBuilder,
         handleDelete: _handleDelete,
         actionBuilder: (quantity) => [
           BottomSheetAction(
@@ -62,7 +62,7 @@ class StockQuantityList extends StatelessWidget {
     );
   }
 
-  Widget _confirmContextBuilder(BuildContext context, Quantity quantity) {
+  Widget _warningContentBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
     final moreCtx = S.quantityDialogDeletionContent(count);
 

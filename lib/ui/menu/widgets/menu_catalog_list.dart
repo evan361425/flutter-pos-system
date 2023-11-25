@@ -27,7 +27,7 @@ class MenuCatalogList extends StatelessWidget {
         items: catalogs,
         deleteValue: _Action.delete,
         tileBuilder: _tileBuilder,
-        confirmContextBuilder: _confirmContextBuilder,
+        warningContentBuilder: _warningContentBuilder,
         actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
           BottomSheetAction(
             title: Text(S.menuCatalogUpdate),
@@ -68,7 +68,7 @@ class MenuCatalogList extends StatelessWidget {
     );
   }
 
-  Widget _confirmContextBuilder(BuildContext context, Catalog catalog) {
+  Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
     final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
     return Text(S.dialogDeletionContent(catalog.name, moreCtx));
   }

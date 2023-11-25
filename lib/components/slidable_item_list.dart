@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/translator.dart';
@@ -52,7 +51,7 @@ class SlidableItemDelegate<T, U> {
   final Future<void> Function(T item) handleDelete;
 
   /// When set the function, it will call before deletion
-  final Widget Function(BuildContext context, T item)? confirmContextBuilder;
+  final Widget Function(BuildContext context, T item)? warningContentBuilder;
 
   /// Build the actions without deletion.
   final Iterable<BottomSheetAction<U>> Function(T item)? actionBuilder;
@@ -68,7 +67,7 @@ class SlidableItemDelegate<T, U> {
     required this.tileBuilder,
     required this.handleDelete,
     this.deleteValue,
-    this.confirmContextBuilder,
+    this.warningContentBuilder,
     this.actionBuilder,
     this.handleAction,
   });
@@ -80,15 +79,8 @@ class SlidableItemDelegate<T, U> {
   ) {
     return SlideToDelete(
       item: item,
-      confirmDismiss: (direction) {
-        return DeleteDialog.show(
-          context,
-          deleteCallback: () async {
-            await handleDelete(item);
-          },
-          warningContent: confirmContextBuilder?.call(context, item),
-        );
-      },
+      deleteCallback: () => handleDelete(item),
+      warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
       child: tileBuilder(
         context,
         item,
@@ -109,9 +101,9 @@ class SlidableItemDelegate<T, U> {
       context,
       actions: customActions.toList(),
       deleteValue: deleteValue,
-      warningContent: confirmContextBuilder == null
+      warningContent: warningContentBuilder == null
           ? null
-          : confirmContextBuilder!(context, item),
+          : warningContentBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
 

@@ -17,7 +17,7 @@ void main() {
               items: const ['1', '2'],
               deleteValue: 0,
               tileBuilder: (_, item, int index, __) => Text(item),
-              confirmContextBuilder: (_, __) => const Text('hi'),
+              warningContentBuilder: (_, __) => const Text('hi'),
               handleDelete: (_) async => deletionFired = true,
             ),
           ),

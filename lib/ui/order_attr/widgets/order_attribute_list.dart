@@ -107,7 +107,10 @@ class _OptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlideToDelete(
       item: option,
-      onDismissed: _remove,
+      deleteCallback: _remove,
+      warningContentBuilder: (context) {
+        return Text(S.dialogDeletionContent(option.name, ''));
+      },
       child: ListTile(
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
