@@ -121,6 +121,7 @@ class _TransitStationState extends State<TransitStation>
     switch (widget.type) {
       case TransitType.basic:
         return TabBarView(
+          key: const Key('transit.basic_tab'),
           controller: tabController,
           children: [
             _buildScreen(_Combination.exportBasic),

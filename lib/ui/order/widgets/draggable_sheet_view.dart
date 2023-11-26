@@ -50,7 +50,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
             Expanded(
               key: const Key('order.bg'),
               child: GestureDetector(
-                onTap: () => DraggableScrollableActuator.reset(context),
+                onTap: () => controller.reset(),
                 child: widget.row2,
               ),
             ),

@@ -25,7 +25,7 @@ class RouteCircularButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final secondary = Theme.of(context).colorScheme.secondary;
+    final color = Theme.of(context).colorScheme.primary;
     return InkWell(
       borderRadius: const BorderRadius.all(Radius.circular(48)),
       splashColor: Colors.transparent,
@@ -49,13 +49,14 @@ class RouteCircularButton extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: secondary),
+                  border: Border.all(color: color),
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: secondary),
+                child: Icon(icon, color: color),
               ),
               const SizedBox(height: 4),
-              Text(text, style: TextStyle(color: secondary)),
+              Text(text, style: TextStyle(color: color)),
             ],
           ),
         ),

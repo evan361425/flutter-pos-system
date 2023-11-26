@@ -26,7 +26,7 @@ void main() {
         routerConfig: GoRouter(routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => TransitPage(),
+            builder: (_, __) => const TransitPage(),
             routes: Routes.routes,
           ),
         ]),
@@ -35,6 +35,24 @@ void main() {
       for (var key in keys) {
         await tester.tap(find.byKey(Key(key)));
         await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('pop')));
+        await tester.pumpAndSettle();
+      }
+
+      // move to basic
+      await tester.timedDragFrom(
+        const Offset(300, 300),
+        const Offset(-200, 0),
+        const Duration(milliseconds: 100),
+      );
+      await tester.pumpAndSettle();
+
+      for (var key in keys) {
+        await tester.tap(find.byKey(Key(key)));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('transit.basic_tab')), findsOneWidget);
+
         await tester.tap(find.byKey(const Key('pop')));
         await tester.pumpAndSettle();
       }

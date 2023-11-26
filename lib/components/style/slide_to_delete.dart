@@ -11,12 +11,15 @@ class SlideToDelete<T> extends StatelessWidget {
 
   final Widget? Function(BuildContext context)? warningContentBuilder;
 
+  final Widget? warningContent;
+
   const SlideToDelete({
     Key? key,
     required this.item,
     required this.child,
     required this.deleteCallback,
     this.warningContentBuilder,
+    this.warningContent,
   }) : super(key: key);
 
   @override
@@ -33,12 +36,13 @@ class SlideToDelete<T> extends StatelessWidget {
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) => deleteCallback(),
-      confirmDismiss: warningContentBuilder == null
+      confirmDismiss: warningContent == null && warningContentBuilder == null
           ? null
           : (direction) => DeleteDialog.show(
                 context,
                 deleteCallback: () => Future.value(),
-                warningContent: warningContentBuilder!(context),
+                warningContent:
+                    warningContent ?? warningContentBuilder!(context),
               ),
       child: child,
     );

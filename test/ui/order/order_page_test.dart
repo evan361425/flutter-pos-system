@@ -317,9 +317,14 @@ void main() {
         verifyProductList(1, selected: true);
 
         // close panel and verify snapshot state
-        await tester.tapAt(
-          tester.getTopLeft(find.byKey(const Key('order.bg'))),
+        await tester.drag(
+          find.byKey(const Key('order.ds')),
+          const Offset(0, 300),
         );
+        await tester.pumpAndSettle();
+        final bg = tester.getTopLeft(find.byKey(const Key('order.bg')));
+        await tester.tapAt(bg.translate(1, 1));
+        await tester.pumpAndSettle();
 
         verifySnapshot([
           ['p-1', '2'],

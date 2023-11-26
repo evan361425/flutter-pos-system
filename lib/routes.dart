@@ -128,7 +128,7 @@ class Routes {
     GoRoute(
       name: transit,
       path: 'transit',
-      builder: (ctx, state) => TransitPage(),
+      builder: (ctx, state) => const TransitPage(),
       routes: [
         GoRoute(
           name: transitStation,

@@ -9,9 +9,14 @@ import 'package:possystem/translator.dart';
 
 import 'transit_station.dart';
 
-class TransitPage extends StatelessWidget {
-  TransitPage({Key? key}) : super(key: key);
+class TransitPage extends StatefulWidget {
+  const TransitPage({Key? key}) : super(key: key);
 
+  @override
+  State<TransitPage> createState() => _TransitPageState();
+}
+
+class _TransitPageState extends State<TransitPage> {
   final selector = GlobalKey<ChoiceChipWithHelpState<TransitType>>();
 
   @override
