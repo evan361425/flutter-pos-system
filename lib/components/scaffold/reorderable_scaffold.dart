@@ -59,10 +59,6 @@ class _ReorderableScaffoldState<T extends ModelOrderable>
             child: ReorderableList(
               itemCount: widget.items.length,
               onReorder: _handleReorder,
-              prototypeItem: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 1.0),
-                child: ListTile(title: Text('')),
-              ),
               onReorderStart: (int index) => HapticFeedback.lightImpact(),
               onReorderEnd: (int index) => HapticFeedback.lightImpact(),
               itemBuilder: (BuildContext context, int index) {
