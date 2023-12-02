@@ -26,13 +26,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Load pubspec version
-        id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v1.0.1
-        with:
-          file: pubspec.yaml
-          version: version
-
       # v1.2.3-rc1 => 1.2.3
       - name: Extract tag version name
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -60,10 +53,9 @@ jobs:
       - name: Extract pubspec version and code
         id: pubspec_version
         run: |
-          PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+")
-          PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "version=$PUBSPEC_VERSION" >> $GITHUB_OUTPUT
-          echo "code=$PUBSPEC_BUILD_CODE" >> $GITHUB_OUTPUT
+          ver=$(grep -m 1 '^version: ' pubspec.yaml | cut -d' ' -f2)
+          echo "version=$(echo "$ver" | cut -f1 -d"+")" >> $GITHUB_OUTPUT
+          echo "code=$(echo "$ver" | cut -f2- -d"+")" >> $GITHUB_OUTPUT
 
       - name: Check version
         if: ${{ github.event_name != 'workflow_dispatch' && steps.tag_version.outputs.result != steps.pubspec_version.outputs.version }}

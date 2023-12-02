@@ -272,7 +272,7 @@ void main() {
       verifyText('change', '62');
 
       // tap outside to close draggable
-      await tester.tapAt(Offset(400, 161));
+      await tester.tapAt(const Offset(400, 161));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
