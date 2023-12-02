@@ -83,16 +83,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
     return Stack(children: [
       Positioned.fill(
-        child: TabBarView(controller: _controller, children: [
-          if (hasAttr) OderSettingView(price: price),
-          ValueListenableBuilder(
-            valueListenable: paid,
-            builder: (context, value, child) => OrderObjectView(
-              order: Cart.instance.toObject(paid: value),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 76.0),
+          child: TabBarView(controller: _controller, children: [
+            if (hasAttr) OderSettingView(price: price),
+            ValueListenableBuilder(
+              valueListenable: paid,
+              builder: (context, value, child) => OrderObjectView(
+                order: Cart.instance.toObject(paid: value),
+              ),
             ),
-          ),
-          const StashedOrderListView(),
-        ]),
+            const StashedOrderListView(),
+          ]),
+        ),
       ),
       Positioned.fill(
         child: ScrollableDraggableSheet(

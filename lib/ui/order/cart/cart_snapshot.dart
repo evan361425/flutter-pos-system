@@ -6,7 +6,7 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CartSnapshot extends StatelessWidget {
-  const CartSnapshot({Key? key}) : super(key: key);
+  const CartSnapshot({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,32 +16,32 @@ class CartSnapshot extends StatelessWidget {
       return Center(child: HintText(S.orderCartSnapshotEmpty));
     }
 
-    var count = 0;
-
-    final products = SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Row(children: <Widget>[
-        for (final product in cart.products)
-          OutlinedText(
-            product.name,
-            key: Key('cart_snapshot.${count++}'),
-            margin: const EdgeInsets.only(right: 8),
-            badge: product.count > 9 ? '9+' : product.count.toString(),
+        Expanded(
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(right: 16),
+            itemCount: cart.products.length,
+            itemBuilder: (context, index) {
+              final product = cart.products[index];
+              return OutlinedText(
+                product.name,
+                key: Key('cart_snapshot.$index'),
+                margin: const EdgeInsets.only(right: 8),
+                badge: product.count > 9 ? '9+' : product.count.toString(),
+              );
+            },
           ),
-        const SizedBox(width: 16),
+        ),
+        const SizedBox(width: 16.0),
+        Text(
+          cart.productsPrice.toString(),
+          key: const Key('cart_snapshot.price'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ]),
     );
-
-    return Row(children: <Widget>[
-      const SizedBox(width: 12.0),
-      Expanded(child: products),
-      const SizedBox(width: 16.0),
-      Text(
-        cart.productsPrice.toString(),
-        key: const Key('cart_snapshot.price'),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(width: 12.0),
-    ]);
   }
 }

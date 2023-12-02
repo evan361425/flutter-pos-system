@@ -31,7 +31,7 @@ class DraggableSheetView extends StatefulWidget {
 class _DraggableSheetViewState extends State<DraggableSheetView> {
   static const double itemHeight = 72.0;
   static const double buttonHeight = 48.0;
-  static const double snapshotHeight = 64.0;
+  static const double snapshotHeight = 52.0;
   static const double stateSelectorHeight = 52.0;
 
   late final ScrollableDraggableController controller;

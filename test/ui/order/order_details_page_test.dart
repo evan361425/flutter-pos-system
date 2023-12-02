@@ -35,7 +35,7 @@ import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Order Cashier', () {
+  group('Order Details', () {
     void prepareData() {
       SettingsProvider(SettingsProvider.allSettings);
 
