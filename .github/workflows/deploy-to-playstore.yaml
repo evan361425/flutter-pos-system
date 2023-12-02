@@ -92,18 +92,11 @@ jobs:
         with:
           ref: "refs/tags/${{ steps.tag.outputs.result }}"
 
-      - name: Load pubspec version
-        id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v1.0.1
-        with:
-          file: pubspec.yaml
-          version: version
-
       - name: Extract build code
         id: build_code
         run: |
-          BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "value=$BUILD_CODE" >> $GITHUB_OUTPUT
+          ver=$(grep -m 1 '^version: ' pubspec.yaml | cut -d' ' -f2)
+          echo "value=$(echo "$ver" | cut -f2- -d"+")" >> $GITHUB_OUTPUT
 
       - name: Extract build number
         id: dev_build_number

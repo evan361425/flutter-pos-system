@@ -8,7 +8,7 @@ on:
         required: false
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+" # Release only
+      - "v[0-9]+.[0-9]+.[0-9]+-beta" # Release only
 
 jobs:
   check-version:
@@ -21,20 +21,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Load pubspec version
-        id: pubspec
-        uses: CumulusDS/get-yaml-paths-action@v1.0.1
-        with:
-          file: pubspec.yaml
-          version: version
 
       - name: Extract pubspec version and code
         id: pubspec_version
         run: |
-          PUBSPEC_VERSION=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f1 -d"+")
-          PUBSPEC_BUILD_CODE=$(echo "${{ steps.pubspec.outputs.version }}" | cut -f2- -d"+")
-          echo "version=$PUBSPEC_VERSION" >> $GITHUB_OUTPUT
-          echo "code=$PUBSPEC_BUILD_CODE" >> $GITHUB_OUTPUT
+          ver=$(grep -m 1 '^version: ' pubspec.yaml | cut -d' ' -f2)
+          echo "version=$(echo "$ver" | cut -f1 -d"+")" >> $GITHUB_OUTPUT
+          echo "code=$(echo "$ver" | cut -f2- -d"+")" >> $GITHUB_OUTPUT
 
       - name: Get tag that trigger this workflow
         id: tag
@@ -44,7 +37,7 @@ jobs:
           script: |
             return context.eventName === 'workflow_dispatch'
               ? '${{ github.event.inputs.tag }}'
-              : context.payload.ref.replace(/\/?refs\/tags\//, '');
+              : context.payload.ref.replace(/\/?refs\/tags\//, '').replace(/-beta$/, '');
 
       - name: Check version
         run: test '${{ steps.tag.outputs.result }}' = 'v${{ steps.pubspec_version.outputs.version }}'
@@ -70,14 +63,6 @@ jobs:
             | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag }}"))')
           [ -z "$release" ] && exit 1
 
-          if [ ! "$(echo "$release" | jq -r '.tag_name')" = "${{ needs.check-version.outputs.tag }}" ]; then
-            curl -X PATCH \
-              -H 'Accept: application/vnd.github.v3+json' \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
-              "https://api.github.com/repos/evan361425/flutter-pos-system/releases/$(echo "$release" | jq -r '.id')"
-          fi
-
           body="$(echo "$release" | jq -r '.body' | sed 's/^## //' | sed 's/^-/•/')"
           echo "changelog=$body" >> $GITHUB_OUTPUT
 
@@ -101,11 +86,14 @@ jobs:
           git config --local user.name "github-actions[bot]"
           echo "${{ needs.get-release.outputs.changelog }}" > "$file"
           git add --all
-          git commit . -m "release(${{ needs.check-version.outputs.tag }}): ${{ needs.check-version.outputs.build_code }}"
+          git commit . -m "doc: changelog for ${{ needs.check-version.outputs.tag }}"
           git push
 
-      - name: Push tag if fired by dispatch
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        run: |
-          git tag ${{ github.event.inputs.tag }}
+          git tag ${{ needs.check-version.outputs.tag }}
           git push origin --tags
+
+          curl -X PATCH \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
+            "https://api.github.com/repos/evan361425/flutter-pos-system/releases/$(echo "$release" | jq -r '.id')"
