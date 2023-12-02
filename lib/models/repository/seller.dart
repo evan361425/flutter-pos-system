@@ -37,7 +37,8 @@ class Seller extends ChangeNotifier {
 
     return <DateTime, int>{
       for (final row in rows)
-        Util.fromUTC(begin + (row['day'] as int) * 86400): row['c'] as int
+        if (row['day'] != null)
+          Util.fromUTC(begin + (row['day'] as int) * 86400): row['c'] as int
     };
   }
 

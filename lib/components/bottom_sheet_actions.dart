@@ -62,19 +62,20 @@ class BottomSheetAction<T> {
       leading: leading,
       title: title,
       onTap: () {
-        if (route == null) {
-          // pop off bottom sheet
-          Navigator.of(context).pop(returnValue);
-          return;
-        }
+        if (context.mounted) {
+          if (route == null) {
+            // pop off bottom sheet
+            Navigator.of(context).pop(returnValue);
+            return;
+          }
 
-        Navigator.of(context).pop();
-        context.pushNamed(
-          route!,
-          pathParameters: routePathParameters,
-          queryParameters: routeQueryParameters,
-          extra: routeExtra,
-        );
+          context.replaceNamed(
+            route!,
+            pathParameters: routePathParameters,
+            queryParameters: routeQueryParameters,
+            extra: routeExtra,
+          );
+        }
       },
     );
   }
