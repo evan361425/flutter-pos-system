@@ -31,6 +31,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
   late final ValueNotifier<num> price;
 
   late final TabController _controller;
+  ScrollableDraggableController? draggableController;
 
   late final bool hasAttr;
 
@@ -84,17 +85,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     return Stack(children: [
       Positioned.fill(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 76.0),
-          child: TabBarView(controller: _controller, children: [
-            if (hasAttr) OderSettingView(price: price),
-            ValueListenableBuilder(
-              valueListenable: paid,
-              builder: (context, value, child) => OrderObjectView(
-                order: Cart.instance.toObject(paid: value),
+          padding: const EdgeInsets.only(
+            bottom: snapshotHeight + DraggableIndicator.height + 12.0,
+          ),
+          child: GestureDetector(
+            onTap: () => draggableController?.reset(),
+            child: TabBarView(controller: _controller, children: [
+              if (hasAttr) OderSettingView(price: price),
+              ValueListenableBuilder(
+                key: const Key('evan'),
+                valueListenable: paid,
+                builder: (context, value, child) => OrderObjectView(
+                  order: Cart.instance.toObject(paid: value),
+                ),
               ),
-            ),
-            const StashedOrderListView(),
-          ]),
+              const StashedOrderListView(),
+            ]),
+          ),
         ),
       ),
       Positioned.fill(
@@ -102,6 +109,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
           indicator: const DraggableIndicator(key: Key('order.details.ds')),
           snapSizes: const [snapshotHeight, calculatorHeight],
           builder: (controller, scroll) {
+            draggableController = controller;
             return [
               FixedHeightClipper(
                 controller: controller,

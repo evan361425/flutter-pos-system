@@ -271,7 +271,8 @@ void main() {
       verifyText('paid', '90');
       verifyText('change', '62');
 
-      await tester.drag(fCKey('paid'), const Offset(0, 500));
+      // tap outside to close draggable
+      await tester.tapAt(Offset(400, 161));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
