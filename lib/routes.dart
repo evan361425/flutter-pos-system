@@ -66,7 +66,8 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 }) {
   return (ctx, state) {
     final id = state.pathParameters['id'];
-    return id == null || !hasItem(id) ? ctx.namedLocation(path) : null;
+    // namedLocation is not allowed.
+    return id == null || !hasItem(id) ? Routes.base + path : null;
   };
 }
 
@@ -214,7 +215,7 @@ class Routes {
         name: menuCatalogReorder,
         path: 'c/:id/reorder',
         redirect: _redirectIfMissed(
-          path: menu,
+          path: '/menu',
           hasItem: (id) => Menu.instance.hasItem(id),
         ),
         builder: (ctx, state) => ProductReorder(
@@ -225,7 +226,7 @@ class Routes {
         name: menuProduct,
         path: 'p/:id',
         redirect: _redirectIfMissed(
-          path: menu,
+          path: '/menu',
           hasItem: (id) => Menu.instance.getProduct(id) != null,
         ),
         builder: (ctx, state) => ProductPage(
@@ -377,7 +378,7 @@ class Routes {
         name: orderAttrOptionReorder,
         path: 'a/:id/reorder',
         redirect: _redirectIfMissed(
-          path: orderAttr,
+          path: '/oa',
           hasItem: (id) => OrderAttributes.instance.hasItem(id),
         ),
         builder: (ctx, state) {

@@ -42,8 +42,6 @@ class BottomSheetAction<T> {
 
   final Map<String, dynamic> routeQueryParameters;
 
-  final Object? routeExtra;
-
   const BottomSheetAction({
     required this.title,
     this.key,
@@ -52,7 +50,6 @@ class BottomSheetAction<T> {
     this.route,
     this.routePathParameters = const <String, String>{},
     this.routeQueryParameters = const <String, dynamic>{},
-    this.routeExtra,
   }) : assert(returnValue != null || route != null);
 
   Widget toWidget(BuildContext context) {
@@ -62,20 +59,18 @@ class BottomSheetAction<T> {
       leading: leading,
       title: title,
       onTap: () {
-        if (context.mounted) {
-          if (route == null) {
-            // pop off bottom sheet
-            Navigator.of(context).pop(returnValue);
-            return;
-          }
-
-          context.replaceNamed(
-            route!,
-            pathParameters: routePathParameters,
-            queryParameters: routeQueryParameters,
-            extra: routeExtra,
-          );
+        if (route == null) {
+          // pop off bottom sheet
+          Navigator.of(context).pop(returnValue);
+          return;
         }
+
+        Navigator.of(context).pop();
+        context.pushNamed(
+          route!,
+          pathParameters: routePathParameters,
+          queryParameters: routeQueryParameters,
+        );
       },
     );
   }
