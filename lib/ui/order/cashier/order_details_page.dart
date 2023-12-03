@@ -108,7 +108,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         child: ScrollableDraggableSheet(
           indicator: const DraggableIndicator(key: Key('order.details.ds')),
           snapSizes: const [snapshotHeight, calculatorHeight],
-          builder: (controller, scroll) {
+          builder: (controller, scroll, _) {
             draggableController = controller;
             return [
               FixedHeightClipper(

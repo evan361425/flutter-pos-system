@@ -16,7 +16,7 @@ void main() {
                       body: ScrollableDraggableSheet(
                         indicator: const DraggableIndicator(key: Key('t')),
                         snapSizes: const [0.1, 1.0],
-                        builder: (controller, scroll) {
+                        builder: (controller, scroll, _) {
                           return [
                             Expanded(
                               child: SingleChildScrollView(
@@ -61,7 +61,7 @@ void main() {
             body: ScrollableDraggableSheet(
               indicator: const DraggableIndicator(key: Key('t')),
               snapSizes: const [0.1, 1.0],
-              builder: (c, scroll) {
+              builder: (c, scroll, _) {
                 controller = c;
                 return [
                   Expanded(

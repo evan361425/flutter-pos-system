@@ -10,7 +10,10 @@ class DraggableSheetView extends StatefulWidget {
   final Widget row1;
   final Widget row2;
   final Widget row3_1;
-  final Widget Function(ScrollController) row3_2Builder;
+  final Widget Function(
+    ScrollController scroll,
+    ValueNotifier<bool> scrollable,
+  ) row3_2Builder;
   final Widget row3_3;
   final Widget row4;
 
@@ -67,7 +70,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               scroll.jumpTo(Cart.instance.selectedIndex * itemHeight);
             }
           },
-          builder: (controller, scroll) => [
+          builder: (controller, scroll, scrollable) => [
             FixedHeightClipper(
               controller: controller,
               height: snapshotHeight,
@@ -88,7 +91,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               title: S.orderCartSnapshotTutorialTitle,
               message: S.orderCartSnapshotTutorialMessage,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
-              child: widget.row3_2Builder(scroll),
+              child: widget.row3_2Builder(scroll, scrollable),
             ),
             FixedHeightClipper(
               controller: controller,
@@ -117,7 +120,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     controller = ScrollableDraggableController(const [
       snapshotHeight,
       base,
-      base + buttonHeight * 2,
+      // base + buttonHeight * 2,
       1.0,
     ]);
 

@@ -13,7 +13,13 @@ import 'cart_actions.dart';
 class CartProductList extends StatefulWidget {
   final ScrollController? scrollController;
 
-  const CartProductList({super.key, this.scrollController});
+  final ValueNotifier<bool>? scrollable;
+
+  const CartProductList({
+    super.key,
+    this.scrollController,
+    this.scrollable,
+  });
 
   @override
   State<CartProductList> createState() => _CartProductListState();
@@ -21,6 +27,7 @@ class CartProductList extends StatefulWidget {
 
 class _CartProductListState extends State<CartProductList> {
   late ScrollController scrollController;
+  late final ValueNotifier<bool> scrollable;
   int lastLength = 0;
 
   @override
@@ -28,26 +35,32 @@ class _CartProductListState extends State<CartProductList> {
     // if product length changed, rebuild it.
     final length = context.select<Cart, int>((cart) => cart.products.length);
 
-    return ListView(
-      key: const Key('cart.product_list'),
-      controller: scrollController,
-      prototypeItem: const ListTile(title: Text('a'), subtitle: Text('a')),
-      children: [
-        if (length == 0)
-          ListTile(
-            title: Center(child: HintText(S.orderCartSnapshotEmpty)),
-            subtitle: const Text(''),
-          ),
-        for (var i = 0; i < length; i++)
-          SlideToDelete(
-            item: Cart.instance.products[i],
-            deleteCallback: () async => Cart.instance.removeAt(i),
-            child: ChangeNotifierProvider<CartProduct>.value(
-              value: Cart.instance.products[i],
-              child: _CartProductListTile(i),
-            ),
-          ),
-      ],
+    return ValueListenableBuilder(
+      valueListenable: scrollable,
+      builder: (context, value, child) {
+        return ListView(
+          key: const Key('cart.product_list'),
+          controller: scrollController,
+          physics: value ? null : const NeverScrollableScrollPhysics(),
+          prototypeItem: const ListTile(title: Text('a'), subtitle: Text('a')),
+          children: [
+            if (length == 0)
+              ListTile(
+                title: Center(child: HintText(S.orderCartSnapshotEmpty)),
+                subtitle: const Text(''),
+              ),
+            for (var i = 0; i < length; i++)
+              SlideToDelete(
+                item: Cart.instance.products[i],
+                deleteCallback: () async => Cart.instance.removeAt(i),
+                child: ChangeNotifierProvider<CartProduct>.value(
+                  value: Cart.instance.products[i],
+                  child: _CartProductListTile(i),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -63,6 +76,7 @@ class _CartProductListState extends State<CartProductList> {
   @override
   void initState() {
     super.initState();
+    scrollable = widget.scrollable ?? ValueNotifier<bool>(true);
     scrollController = widget.scrollController ?? ScrollController();
     Cart.instance.addListener(scrollToBottomIfAdded);
   }

@@ -78,9 +78,10 @@ class OrderPageState extends State<OrderPage> {
                   row1: orderCatalogListView,
                   row2: orderProductListView,
                   row3_1: const CartProductSelector(),
-                  row3_2Builder: (scroll) => Expanded(
+                  row3_2Builder: (scroll, scrollable) => Expanded(
                     child: CartProductList(
                       scrollController: scroll,
+                      scrollable: scrollable,
                     ),
                   ),
                   row3_3: const CartMetadataView(),

@@ -19,6 +19,7 @@ class ScrollableDraggableSheet extends StatefulWidget {
   final Iterable<Widget> Function(
     ScrollableDraggableController controller,
     ScrollController scroll,
+    ValueNotifier<bool> scrollable,
   ) builder;
 
   const ScrollableDraggableSheet({
@@ -41,6 +42,8 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
   late final ScrollableDraggableController controller;
 
   late ScrollController scroll;
+
+  final scrollable = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +92,12 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
         controller.updateSnapIndex(controller.size);
       }
     });
-    if (widget.onSnapIndexChanged != null) {
-      controller.snapIndex.addListener(() {
-        widget.onSnapIndexChanged!(controller.snapIndex.value, scroll);
-      });
-    }
+    controller.snapIndex.addListener(() {
+      if (controller.snapIndex.value < controller.snapSizes.length - 1) {
+        scrollable.value = false;
+      }
+      widget.onSnapIndexChanged?.call(controller.snapIndex.value, scroll);
+    });
   }
 
   @override
@@ -121,6 +125,10 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
       child: ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, value, child) {
+          // can't disable scrolling here
+          if (value == 1.0) {
+            scrollable.value = true;
+          }
           return Card(
             shape: value == 1.0
                 ? const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
@@ -139,7 +147,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             widget.indicator,
-            ...widget.builder(controller, scroll),
+            ...widget.builder(controller, scroll, scrollable),
           ],
         ),
       ),
@@ -174,13 +182,15 @@ class ScrollableDraggableController extends DraggableScrollableController
   double get maxSnap => snapSizes[snapSizes.length - 1];
 
   Future<void> animateToClosestSnap(double velocity) async {
-    snapIndex.value = getNextSnapIndex(velocity);
+    final index = getNextSnapIndex(velocity);
     await animateTo(
-      snapSizes[snapIndex.value],
+      snapSizes[index],
       duration: const Duration(milliseconds: 120),
       curve: Curves.bounceOut,
     );
+    // only update the value after correctly move to target
     isDrag = false;
+    snapIndex.value = index;
   }
 
   void updateSnapIndex(double size) {
