@@ -63,8 +63,11 @@ jobs:
             | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag }}"))')
           [ -z "$release" ] && exit 1
 
-          body="$(echo "$release" | jq -r '.body' | sed 's/^## //' | sed 's/^-/•/')"
-          echo "changelog=$body" >> $GITHUB_OUTPUT
+          {
+            echo 'changelog<<EOF'
+            echo "$release" | jq -r '.body' | sed 's/^## //' | sed 's/^-/•/'
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
   # Push changelog to repository
   add-changelog:
