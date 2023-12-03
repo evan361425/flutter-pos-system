@@ -50,6 +50,7 @@ jobs:
     needs: check-version
     outputs:
       changelog: ${{ steps.get_release.outputs.changelog }}
+      release_id: ${{ steps.get_release.outputs.release_id }}
     steps:
       # escape special characters
       # https://github.com/actions/toolkit/issues/403
@@ -68,6 +69,7 @@ jobs:
             echo "$release" | jq -r '.body' | sed 's/^## //' | sed 's/^-/•/'
             echo EOF
           } >> "$GITHUB_OUTPUT"
+          echo "release_id=$(echo "$release" | jq -r '.id')" >> "$GITHUB_OUTPUT"
 
   # Push changelog to repository
   add-changelog:
@@ -99,4 +101,4 @@ jobs:
             -H 'Accept: application/vnd.github.v3+json' \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
-            "https://api.github.com/repos/evan361425/flutter-pos-system/releases/$(echo "$release" | jq -r '.id')"
+            "https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ needs.get-release.outputs.release_id }}"
