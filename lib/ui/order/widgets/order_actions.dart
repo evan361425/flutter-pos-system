@@ -10,36 +10,32 @@ import 'package:possystem/translator.dart';
 class OrderActions extends StatelessWidget {
   const OrderActions({Key? key}) : super(key: key);
 
-  List<BottomSheetAction<OrderAction>> get actions {
-    return [
-      BottomSheetAction(
-        key: const Key('order.action.changer'),
-        title: Text(S.orderActionsOpenChanger),
-        leading: const Icon(Icons.change_circle_sharp),
-        returnValue: const OrderAction(route: Routes.cashierChanger),
-      ),
-      BottomSheetAction(
-        key: const Key('order.action.stash'),
-        title: Text(S.orderActionsStash),
-        leading: const Icon(Icons.file_download_sharp),
-        returnValue: OrderAction(action: _stash),
-      ),
-      const BottomSheetAction(
-        key: Key('order.action.history'),
-        title: Text('訂單記錄'),
-        leading: Icon(Icons.history_sharp),
-        returnValue: OrderAction(route: Routes.history),
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     return MoreButton(
       onPressed: () async {
         final result = await showCircularBottomSheet<OrderAction>(
           context,
-          actions: actions,
+          actions: [
+            BottomSheetAction(
+              key: const Key('order.action.changer'),
+              title: Text(S.orderActionsOpenChanger),
+              leading: const Icon(Icons.change_circle_sharp),
+              returnValue: const OrderAction(route: Routes.cashierChanger),
+            ),
+            BottomSheetAction(
+              key: const Key('order.action.stash'),
+              title: Text(S.orderActionsStash),
+              leading: const Icon(Icons.file_download_sharp),
+              returnValue: OrderAction(action: () => _stash(context)),
+            ),
+            const BottomSheetAction(
+              key: Key('order.action.history'),
+              title: Text('訂單記錄'),
+              leading: Icon(Icons.history_sharp),
+              returnValue: OrderAction(route: Routes.history),
+            ),
+          ],
         );
 
         if (context.mounted && result != null) {
@@ -53,7 +49,8 @@ class OrderActions extends StatelessWidget {
     );
   }
 
-  Future<bool?> _stash() {
+  Future<bool?> _stash(BuildContext context) {
+    DraggableScrollableActuator.reset(context);
     return Cart.instance.stash();
   }
 }

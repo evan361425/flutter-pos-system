@@ -19,6 +19,8 @@ class ItemLoader<T, U> extends StatefulWidget {
 
   final Widget emptyChild;
 
+  final EdgeInsets? padding;
+
   const ItemLoader({
     Key? key,
     required this.builder,
@@ -29,6 +31,7 @@ class ItemLoader<T, U> extends StatefulWidget {
     required this.metricsBuilder,
     this.notifier,
     this.emptyChild = const SizedBox.shrink(),
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -54,6 +57,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
       const SizedBox(height: 4.0),
       Expanded(
         child: ListView.builder(
+          padding: widget.padding,
           key: const Key('item_loader'),
           prototypeItem: widget.prototypeItem,
           itemBuilder: (context, index) {

@@ -74,6 +74,8 @@ class OrderObjectView extends StatelessWidget {
         TextDivider(label: S.orderObjectProductTitle),
         HintText(S.orderObjectProductsCount(order.productsCount)),
         for (final product in order.products) _ProductTile(product),
+        // padding for ScrollableDraggableSheet on OrderDetailsPage
+        const SizedBox(height: 428),
       ]),
     );
   }

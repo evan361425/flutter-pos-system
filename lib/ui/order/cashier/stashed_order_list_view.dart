@@ -36,6 +36,7 @@ class StashedOrderListView extends StatelessWidget {
         return Center(child: Text(S.orderListMetaCount(metrics.count)));
       },
       emptyChild: const Center(child: HintText('目前無任何暫存餐點。')),
+      padding: const EdgeInsets.only(bottom: 428),
     );
   }
 
