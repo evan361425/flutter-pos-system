@@ -20,7 +20,7 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.8.1+20801004
 
 environment:
-  flutter: ">=3.13.0 <3.14.0"
+  flutter: ">=3.16.0 <3.17.0"
   sdk: ">=3.1.4 <4.0.0"
 
 dependencies:
@@ -53,7 +53,7 @@ dependencies:
 
   # components
   table_calendar: ^3.0.9 # 23, 01-06
-  fl_chart: ^0.63.0 # 23, 06-10
+  syncfusion_flutter_charts: ^24.1.44+1
   spotlight_ant: ^1.0.5
 
   # image
@@ -103,10 +103,10 @@ flutter:
   generate: true
 
   assets:
-    - assets/food_placeholder.png
-    - assets/google_sheet_icon.svg
-    - assets/feature_request_please.gif
-    - assets/google_signin_button.svg
+  - assets/food_placeholder.png
+  - assets/google_sheet_icon.svg
+  - assets/feature_request_please.gif
+  - assets/google_signin_button.svg
 
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:
