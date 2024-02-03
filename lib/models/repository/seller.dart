@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/services/database.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// Help I/O from order DB.
 class Seller extends ChangeNotifier {
@@ -19,27 +20,75 @@ class Seller extends ChangeNotifier {
 
   Seller._();
 
-  /// Get the count of orders per day.
-  Future<Map<DateTime, int>> getCountPerDay(
+  /// Get the metric of orders grouped by the day.
+  ///
+  /// [types] is the metrics type to calculate.
+  /// [period] is the time interval to group by.
+  /// [fulfillAll] is to fulfill the missing day in the period.
+  Future<List<OrderMetricPerDay>> getMetricsInPeriod(
     DateTime start,
-    DateTime end,
-  ) async {
+    DateTime end, {
+    List<OrderMetricsType> types = const [OrderMetricsType.count],
+    MetricsPeriod period = MetricsPeriod.day,
+    bool fulfillAll = false,
+  }) async {
+    // using UTC to calculate the count but use user's timezone when returned.
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
-    // using UTC to calculate the count but use user's timezone when returned.
+
+    // get SQL column names
+    final notCount = types.where((e) => e.method != 'COUNT');
+    final isCount = types.where((e) => e.method == 'COUNT');
+    final srcCols = [
+      'day',
+      ...notCount.map((e) => e.column),
+    ].join(', ');
+    final dstCols = [
+      't.day',
+      ...isCount.map((e) => 'COUNT(*) count'),
+      ...notCount.map((e) => '${e.method}(t.${e.column}) ${e.column}'),
+    ];
+
     final rows = await Database.instance.query(
-      '(SELECT CAST((createdAt - $begin) / 86400 AS INT) day FROM $orderTable '
-      'WHERE createdAt BETWEEN $begin AND $cease) t',
-      columns: ['t.day', 'COUNT(*) c'],
+      '('
+      'SELECT CAST((createdAt - $begin) / ${period.seconds} AS INT) $srcCols '
+      'FROM $orderTable '
+      'WHERE createdAt BETWEEN $begin AND $cease'
+      ') t',
+      columns: dstCols,
       groupBy: "t.day",
+      orderBy: "t.day asc",
       escapeTable: false,
     );
 
-    return <DateTime, int>{
+    final result = <OrderMetricPerDay>[
       for (final row in rows)
         if (row['day'] != null)
-          Util.fromUTC(begin + (row['day'] as int) * 86400): row['c'] as int
-    };
+          OrderMetricPerDay(
+            at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
+            count: row['count'] as int?,
+            price: row['price'] as num?,
+            cost: row['cost'] as num?,
+            revenue: row['revenue'] as num?,
+          ),
+    ];
+    if (!fulfillAll) {
+      return result;
+    }
+
+    var i = 0;
+    final fulfilled = <OrderMetricPerDay>[];
+    for (var v = start; v.isBefore(end); v = v.add(const Duration(days: 1))) {
+      // fulfill the missing day
+      if (i >= result.length || result[i].at != v) {
+        fulfilled.add(OrderMetricPerDay(at: v));
+      } else {
+        fulfilled.add(result[i]);
+        i++;
+      }
+    }
+
+    return fulfilled;
   }
 
   /// Get the metrics of orders from time range.
@@ -339,4 +388,72 @@ class OrderMetrics {
       attrCount: attrCount,
     );
   }
+}
+
+class OrderMetricPerDay {
+  final DateTime at;
+
+  final int? count;
+  final num? price;
+  final num? cost;
+  final num? revenue;
+
+  const OrderMetricPerDay({
+    required this.at,
+    this.count,
+    this.price,
+    this.cost,
+    this.revenue,
+  });
+
+  num valueFromType(OrderMetricsType t) {
+    switch (t) {
+      case OrderMetricsType.count:
+        return count ?? 0;
+      case OrderMetricsType.price:
+        return price ?? 0;
+      case OrderMetricsType.cost:
+        return cost ?? 0;
+      case OrderMetricsType.revenue:
+        return revenue ?? 0;
+    }
+  }
+}
+
+enum OrderMetricsType {
+  count('COUNT', 'count', null, '訂單數'),
+  price('SUM', 'price', r'${value}', '營收'),
+  cost('SUM', 'cost', r'${value}', '成本'),
+  revenue('SUM', 'revenue', r'${value}', '盈利');
+
+  /// The method to calculate the value in DB.
+  final String method;
+
+  /// The column name in DB.
+  final String column;
+
+  /// The label on chart.
+  final String? label;
+
+  /// The title of the series.
+  final String title;
+
+  const OrderMetricsType(
+    this.method,
+    this.column,
+    this.label,
+    this.title,
+  );
+}
+
+enum MetricsPeriod {
+  hour(3600, 'HH:mm a', DateTimeIntervalType.hours),
+  day(86400, 'MMMEd', DateTimeIntervalType.days),
+  month(2592000, 'MMMd', DateTimeIntervalType.months);
+
+  final int seconds;
+  final String format;
+  final DateTimeIntervalType intervalType;
+
+  const MetricsPeriod(this.seconds, this.format, this.intervalType);
 }

@@ -161,12 +161,19 @@ class _CalendarViewState extends State<CalendarView> {
     final start =
         DateTime(local.year, local.month).subtract(const Duration(days: 7));
 
-    final counts = await Seller.instance.getCountPerDay(start, end);
+    final metrics = await Seller.instance.getMetricsInPeriod(
+      start,
+      end,
+      types: [OrderMetricsType.count],
+      period: MetricsPeriod.day,
+    );
 
     if (mounted) {
       setState(() {
         _loadedMonths.add(_hashMonth(local));
-        _loadedCounts.addAll(counts);
+        _loadedCounts.addAll({
+          for (final m in metrics) m.at: m.count ?? 0,
+        });
       });
     }
   }

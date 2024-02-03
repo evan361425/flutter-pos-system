@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
+import 'package:possystem/ui/analysis/widgets/chart_order_modal.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
 
 import 'models/repository/menu.dart';
@@ -115,6 +117,15 @@ class Routes {
       builder: (ctx, state) => HistoryOrderModal(
         int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
       ),
+    ),
+    GoRoute(
+      name: chartOrderModal,
+      path: 'chart/o/:id/modal',
+      builder: (ctx, state) {
+        final id = state.pathParameters['id'] ?? '0';
+        final chart = Analysis.instance.getItem(id);
+        return ChartOrderModal(chart: chart);
+      },
     ),
     GoRoute(
       name: cashierChanger,
@@ -431,6 +442,7 @@ class Routes {
 
   static const order = '/order';
   static const orderDetails = '/order/details';
+  static const chartOrderModal = '/chart/order/modal';
 
   static const transit = '/transit';
   static const transitStation = '/transit/station';

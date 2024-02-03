@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_card.dart';
+import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 void main() {
   group('Component AnalysisCard', () {
     testWidgets('show error', (tester) async {
       await tester.pumpWidget(MaterialApp(
-        home: AnalysisCard(
+        home: ReloadableCard(
           id: 'test',
           builder: (context, metric) => const SizedBox.shrink(),
           loader: () => Future.error('test'),
@@ -25,7 +25,7 @@ void main() {
       VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
       await tester.pumpWidget(MaterialApp(
-        home: AnalysisCard<String>(
+        home: ReloadableCard<String>(
           id: 'test',
           notifier: notifier,
           builder: (context, metric) => TextButton(

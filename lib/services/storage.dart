@@ -10,7 +10,7 @@ class Storage {
 
   bool _initialized = false;
 
-  /// add data into record
+  /// add data into record, overwrite and create if needed
   Future<void> add(
     Stores storeId,
     String recordId,
@@ -158,6 +158,7 @@ enum Stores {
   quantities,
   cashier,
   orderAttributes,
+  analysis,
 }
 
 class StorageSanitizedValue {

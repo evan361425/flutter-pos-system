@@ -7,6 +7,7 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +63,7 @@ void main() async {
       await OrderAttributes().initialize();
       await Replenisher().initialize();
       await Cashier().reset();
+      await Analysis().initialize();
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
