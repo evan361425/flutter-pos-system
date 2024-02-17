@@ -22,13 +22,12 @@ class OrderAttribute extends Model<OrderAttributeObject>
 
   OrderAttribute({
     String? id,
-    ModelStatus? status,
+    ModelStatus status = ModelStatus.normal,
     String name = 'order attribute',
     int index = 0,
     this.mode = OrderAttributeMode.statOnly,
     Map<String, OrderAttributeOption>? options,
-  }) : super(id, status) {
-    this.name = name;
+  }) : super(id, name, status) {
     this.index = index;
     if (options != null) replaceItems(options);
   }

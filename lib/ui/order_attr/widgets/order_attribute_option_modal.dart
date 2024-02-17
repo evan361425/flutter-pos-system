@@ -61,7 +61,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
           );
 
     return [
-      TextFormField(
+      p(TextFormField(
         key: const Key('order_attribute_option.name'),
         controller: _nameController,
         textInputAction: widget.attribute.shouldHaveModeValue
@@ -85,7 +85,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
                 : null;
           },
         ),
-      ),
+      )),
       CheckboxListTile(
         key: const Key('order_attribute_option.isDefault'),
         controlAffinity: ListTileControlAffinity.leading,
@@ -94,7 +94,8 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
         onChanged: _toggledDefault,
         title: Text(S.orderAttributeOptionSetToDefault),
       ),
-      widget.attribute.shouldHaveModeValue
+      const SizedBox(height: 12.0),
+      p(widget.attribute.shouldHaveModeValue
           ? TextFormField(
               key: const Key('order_attribute_option.modeValue'),
               controller: _valueController,
@@ -110,7 +111,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
               onFieldSubmitted: (_) => handleSubmit(),
               validator: validator,
             )
-          : HintText(helper),
+          : Center(child: HintText(helper))),
     ];
   }
 

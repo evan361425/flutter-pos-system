@@ -25,15 +25,14 @@ class Catalog extends Model<CatalogObject>
 
   Catalog({
     String? id,
-    ModelStatus? status,
+    ModelStatus status = ModelStatus.normal,
     String name = 'catalog',
     int index = 0,
     String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
   })  : createdAt = createdAt ?? DateTime.now(),
-        super(id, status) {
-    this.name = name;
+        super(id, name, status) {
     this.index = index;
     this.imagePath = imagePath;
     if (products != null) replaceItems(products);

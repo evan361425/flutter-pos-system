@@ -48,7 +48,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      SearchBarWrapper(
+      // avoid search-bar's label overflow
+      const SizedBox(height: 12.0),
+      p(SearchBarWrapper(
         key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: S.menuQuantitySearchLabel,
@@ -59,8 +61,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         search: (text) async => Quantities.instance.sortBySimilarity(text),
         itemBuilder: _searchItemBuilder,
         emptyBuilder: _searchEmptyBuilder,
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product_quantity.amount'),
         controller: _amountController,
         keyboardType: TextInputType.number,
@@ -74,8 +76,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           S.menuQuantityAmountLabel,
           focusNode: _amountFocusNode,
         ),
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product_quantity.price'),
         controller: _priceController,
         keyboardType: TextInputType.number,
@@ -92,8 +94,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           S.menuQuantityAdditionalPriceLabel,
           focusNode: _priceFocusNode,
         ),
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product_quantity.cost'),
         controller: _costController,
         keyboardType: TextInputType.number,
@@ -111,7 +113,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
           S.menuQuantityAdditionalCostLabel,
           focusNode: _costFocusNode,
         ),
-      )
+      )),
     ];
   }
 

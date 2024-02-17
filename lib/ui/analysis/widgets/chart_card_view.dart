@@ -5,6 +5,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -12,32 +13,25 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ChartCardView extends StatefulWidget {
-  final Chart chart;
+class ChartCardView<T> extends StatefulWidget {
+  final Chart<T> chart;
 
-  const ChartCardView({Key? key, required this.chart}) : super(key: key);
+  const ChartCardView({
+    Key? key,
+    required this.chart,
+  }) : super(key: key);
 
   @override
-  State<ChartCardView> createState() => _ChartCardViewState();
+  State<ChartCardView<T>> createState() => _ChartCardViewState<T>();
 }
 
-class _ChartCardViewState extends State<ChartCardView> {
-  /// Trackball behavior, used to show tooltip
-  final _trackballBehavior = TrackballBehavior(
-    enable: true,
-    activationMode: ActivationMode.singleTap,
-    tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
-    tooltipSettings: const InteractiveTooltip(
-      format: 'series.name : point.y',
-    ),
-  );
-
+class _ChartCardViewState<T> extends State<ChartCardView<T>> {
   /// Range of the chart, it can updated by the user
   late ValueNotifier<DateTimeRange> range;
 
   @override
   Widget build(BuildContext context) {
-    return ReloadableCard<List<OrderMetricPerDay>>(
+    return ReloadableCard<List<T>>(
       id: widget.chart.name,
       wrappedByCard: false,
       notifier: range,
@@ -63,50 +57,25 @@ class _ChartCardViewState extends State<ChartCardView> {
           buildRangeSlider(),
         ]);
       },
-      loader: () {
-        return Seller.instance.getMetricsInPeriod(
-          range.value.start,
-          range.value.end,
-          types: widget.chart.types,
-          period: widget.chart.range.period,
-          fulfillAll: !widget.chart.ignoreEmpty,
-        );
-      },
+      loader: () => widget.chart.loader(range.value.start, range.value.end),
     );
   }
 
-  Widget buildChart(BuildContext context, List<OrderMetricPerDay> metrics) {
+  Widget buildChart(BuildContext context, List<T> metrics) {
     if (metrics.isEmpty) {
       return const Center(child: Text('沒有資料'));
     }
 
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0.7,
-      selectionType: SelectionType.point,
-      selectionGesture: ActivationMode.singleTap,
-      primaryXAxis: DateTimeAxis(
-        enableAutoIntervalOnZooming: false,
-        dateFormat: DateFormat(widget.chart.range.period.format, S.localeName),
-        majorGridLines: const MajorGridLines(width: 0),
-      ),
-      primaryYAxis: NumericAxis(
-        labelFormat: widget.chart.types.first.label,
-      ),
-      trackballBehavior: _trackballBehavior,
-      legend: const Legend(
-        isVisible: true,
-      ),
-      series: widget.chart.types
-          .mapIndexed(
-            (i, e) => LineSeries(
-              markerSettings: const MarkerSettings(isVisible: true),
-              name: e.title,
-              xValueMapper: (v, i) => v.at,
-              yValueMapper: (v, i) => v.valueFromType(e),
-              dataSource: metrics,
-            ),
-          )
-          .toList(),
+    if (widget.chart is CartesianChart) {
+      return _CartesianChart(
+        chart: widget.chart as CartesianChart,
+        metrics: metrics as List<OrderMetricPerDay>,
+      );
+    }
+
+    return _CircularChart(
+      chart: widget.chart as CircularChart,
+      metrics: metrics as List<OrderMetricPerItem>,
     );
   }
 
@@ -214,6 +183,99 @@ class _ChartCardViewState extends State<ChartCardView> {
           leading: const Icon(KIcons.modal),
           route: Routes.chartOrderModal,
           routePathParameters: {'id': widget.chart.id},
+        ),
+      ],
+    );
+  }
+}
+
+class _CartesianChart extends StatelessWidget {
+  final CartesianChart chart;
+
+  final List<OrderMetricPerDay> metrics;
+
+  const _CartesianChart({
+    required this.chart,
+    required this.metrics,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0.7,
+      selectionType: SelectionType.point,
+      selectionGesture: ActivationMode.singleTap,
+      primaryXAxis: DateTimeAxis(
+        enableAutoIntervalOnZooming: false,
+        dateFormat: DateFormat(chart.range.period.format, S.localeName),
+        majorGridLines: const MajorGridLines(width: 0),
+      ),
+      primaryYAxis: NumericAxis(
+        labelFormat: chart.types.first.label,
+      ),
+      trackballBehavior: TrackballBehavior(
+        enable: true,
+        activationMode: ActivationMode.singleTap,
+        tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
+        tooltipSettings: const InteractiveTooltip(
+          format: 'series.name : point.y',
+        ),
+      ),
+      legend: const Legend(
+        isVisible: true,
+      ),
+      series: chart.types
+          .mapIndexed(
+            (i, e) => LineSeries(
+              markerSettings: const MarkerSettings(isVisible: true),
+              name: e.title,
+              xValueMapper: (v, i) => v.at,
+              yValueMapper: (v, i) => v.valueFromType(e),
+              dataSource: metrics,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _CircularChart extends StatelessWidget {
+  final CircularChart chart;
+
+  final List<OrderMetricPerItem> metrics;
+
+  const _CircularChart({
+    required this.chart,
+    required this.metrics,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SfCircularChart(
+      selectionGesture: ActivationMode.singleTap,
+      tooltipBehavior: TooltipBehavior(
+        enable: true,
+        activationMode: ActivationMode.singleTap,
+        animationDuration: 150,
+        format: 'point.x : point.y%',
+      ),
+      legend: const Legend(
+        isVisible: true,
+      ),
+      series: [
+        PieSeries<OrderMetricPerItem, String>(
+          explode: false, // show larger section when tap
+          name: chart.target.name,
+          xValueMapper: (v, i) => v.name,
+          yValueMapper: (v, i) => v.count,
+          dataSource: metrics,
+          dataLabelMapper: (datum, index) => datum.name,
+          dataLabelSettings: const DataLabelSettings(
+            isVisible: true,
+            labelPosition: ChartDataLabelPosition.inside,
+            overflowMode: OverflowMode.shift,
+            labelIntersectAction: LabelIntersectAction.none,
+          ),
         ),
       ],
     );

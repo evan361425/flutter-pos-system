@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
@@ -20,11 +19,17 @@ class ChartOrderModal extends StatefulWidget {
 
 class _ChartOrderModalState extends State<ChartOrderModal>
     with ItemModal<ChartOrderModal> {
+  late AnalysisChartType type;
+
   late TextEditingController _nameController;
   late bool withToday;
   late bool ignoreEmpty;
   late OrderChartRange range;
+
+  // ===== Cartesian properties =====
   final types = <OrderMetricsType>[];
+
+  // ===== Circular properties =====
 
   @override
   String get title => widget.chart?.name ?? '新增圖表';
@@ -33,7 +38,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
   List<Widget> buildFormFields() {
     final textTheme = Theme.of(context).textTheme;
     return [
-      TextFormField(
+      p(TextFormField(
         key: const Key('chart.title'),
         controller: _nameController,
         textInputAction: TextInputAction.next,
@@ -44,7 +49,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         ),
         maxLength: 30,
         validator: Validator.textLimit('標題', 16),
-      ),
+      )),
       CheckboxListTile(
         key: const Key('chart.withToday'),
         controlAffinity: ListTileControlAffinity.leading,
@@ -70,34 +75,17 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         title: const Text('是否忽略沒有訂單的日期'),
         subtitle: const Text('例如七天內有一天沒有訂單，則只會有六天的資料'),
       ),
-      const TextDivider(label: '觀看指標'),
-      Text('圖表中要出現哪些指標，越多指標則圖表越難專注但是可以方便比較', style: textTheme.labelMedium),
-      SizedBox(
-        width: double.infinity,
-        child: Wrap(
-          spacing: 4.0,
-          // runSpacing: 4.0,
-          children: OrderMetricsType.values.map((e) {
-            return ChoiceChip(
-              key: Key('chart.type.${e.name}'),
-              selected: types.contains(e),
-              label: Text(e.name),
-              onSelected: (bool value) {
-                setState(() {
-                  if (value) {
-                    types.add(e);
-                  } else {
-                    types.remove(e);
-                  }
-                });
-              },
-            );
-          }).toList(),
-        ),
-      ),
+      if (type == AnalysisChartType.cartesian)
+        ..._buildCartesianFields(textTheme),
       const TextDivider(label: '時間區間'),
-      Text('長時間可以看到趨勢，短時間可以看到變化', style: textTheme.labelMedium),
-      SizedBox(
+      p(Center(
+        child: Text(
+          '長時間可以看到趨勢，短時間可以看到變化',
+          style: textTheme.labelMedium,
+        ),
+      )),
+      const SizedBox(height: 12.0),
+      p(SizedBox(
         width: double.infinity,
         child: Wrap(
           spacing: 4.0,
@@ -117,37 +105,64 @@ class _ChartOrderModalState extends State<ChartOrderModal>
             );
           }).toList(),
         ),
-      ),
+      )),
     ];
   }
 
-  @override
-  Widget buildBody() {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: buildFormFields().mapIndexed((index, widget) {
-            return index != 1 && index != 2
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: widget,
-                  )
-                : widget;
-          }).toList(),
-        ),
+  Iterable<Widget> _buildCartesianFields(TextTheme textTheme) sync* {
+    yield const TextDivider(label: '觀看指標');
+    yield p(Center(
+      child: Text(
+        '圖表中要出現哪些指標，越多指標則圖表越難專注但是可以方便比較',
+        style: textTheme.labelMedium,
       ),
-    );
+    ));
+    yield const SizedBox(height: 12.0);
+    yield p(SizedBox(
+      width: double.infinity,
+      child: Wrap(
+        spacing: 4.0,
+        // runSpacing: 4.0,
+        children: OrderMetricsType.values.map((e) {
+          return ChoiceChip(
+            key: Key('chart.type.${e.name}'),
+            selected: types.contains(e),
+            label: Text(e.name),
+            onSelected: (bool value) {
+              setState(() {
+                if (value) {
+                  types.add(e);
+                } else {
+                  types.remove(e);
+                }
+              });
+            },
+          );
+        }).toList(),
+      ),
+    ));
   }
 
   @override
   void initState() {
+    type = widget.chart?.type ?? AnalysisChartType.cartesian;
+
     _nameController = TextEditingController(text: widget.chart?.name);
     withToday = widget.chart?.withToday ?? false;
     ignoreEmpty = widget.chart?.ignoreEmpty ?? false;
     range = widget.chart?.range ?? OrderChartRange.sevenDays;
-    types.addAll(widget.chart?.types ?? OrderMetricsType.values);
+
+    if (widget.chart == null) {
+      types.addAll(OrderMetricsType.values);
+    } else {
+      switch (type) {
+        case AnalysisChartType.cartesian:
+          types.addAll((widget.chart as CartesianChart).types);
+          break;
+        case AnalysisChartType.circular:
+          break;
+      }
+    }
 
     super.initState();
   }
@@ -160,7 +175,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
 
   @override
   Future<void> updateItem() async {
-    final object = ChartObject(
+    final object = CartesianChartObject(
       name: _nameController.text,
       withToday: withToday,
       ignoreEmpty: ignoreEmpty,
@@ -169,7 +184,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     );
 
     if (widget.chart == null) {
-      await Analysis.instance.addItem(Chart.fromObject(object));
+      await Analysis.instance.addItem(CartesianChart.fromObject(object));
     } else {
       await widget.chart!.update(object);
     }

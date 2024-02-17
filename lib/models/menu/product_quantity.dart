@@ -31,12 +31,12 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   ProductQuantity({
     String? id,
-    ModelStatus? status,
+    ModelStatus status = ModelStatus.normal,
     Quantity? quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : super(id, status) {
+  }) : super(id, '', status) {
     if (quantity != null) this.quantity = quantity;
   }
 

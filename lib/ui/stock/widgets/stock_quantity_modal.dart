@@ -33,7 +33,7 @@ class _StockQuantityModalState extends State<StockQuantityModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      TextFormField(
+      p(TextFormField(
         key: const Key('quantity.name'),
         controller: _nameController,
         textCapitalization: TextCapitalization.words,
@@ -56,8 +56,8 @@ class _StockQuantityModalState extends State<StockQuantityModal>
                 : null;
           },
         ),
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('quantity.proportion'),
         controller: _proportionController,
         keyboardType: TextInputType.number,
@@ -77,7 +77,7 @@ class _StockQuantityModalState extends State<StockQuantityModal>
           allowNull: true,
           focusNode: _proportionFocusNode,
         ),
-      )
+      )),
     ];
   }
 

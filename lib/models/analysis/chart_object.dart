@@ -2,7 +2,7 @@ import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 
-class ChartObject extends ModelObject<Chart> {
+class CartesianChartObject extends ModelObject<CartesianChart> {
   final String? id;
   final String? name;
   final bool? withToday;
@@ -10,7 +10,7 @@ class ChartObject extends ModelObject<Chart> {
   final List<OrderMetricsType>? types;
   final OrderChartRange? range;
 
-  const ChartObject({
+  const CartesianChartObject({
     this.id,
     this.name,
     this.withToday,
@@ -19,8 +19,8 @@ class ChartObject extends ModelObject<Chart> {
     this.range,
   });
 
-  factory ChartObject.build(Map<String, Object?> map) {
-    return ChartObject(
+  factory CartesianChartObject.build(Map<String, Object?> map) {
+    return CartesianChartObject(
       id: map['id'] as String?,
       name: map['name'] as String?,
       withToday: map['withToday'] as bool?,
@@ -41,11 +41,12 @@ class ChartObject extends ModelObject<Chart> {
       'ignoreEmpty': ignoreEmpty,
       'types': types?.map((e) => e.index).toList(),
       'range': range?.index,
+      'type': AnalysisChartType.cartesian.index,
     };
   }
 
   @override
-  Map<String, Object> diff(Chart model) {
+  Map<String, Object> diff(CartesianChart model) {
     final result = <String, Object>{};
 
     if (name != null && name != model.name) {
@@ -67,6 +68,84 @@ class ChartObject extends ModelObject<Chart> {
     if (range != null && range != model.range) {
       model.range = range!;
       result['range'] = range!.index;
+    }
+
+    return result;
+  }
+}
+
+class CircularChartObject extends ModelObject<CircularChart> {
+  final String? id;
+  final String? name;
+  final CircularChartTarget? target;
+  final List<String>? selection;
+  final OrderChartRange? range;
+  final bool? isAll;
+  final bool? withToday;
+
+  const CircularChartObject({
+    this.id,
+    this.name,
+    this.target,
+    this.selection,
+    this.range,
+    this.isAll,
+    this.withToday,
+  });
+
+  factory CircularChartObject.build(Map<String, Object?> map) {
+    return CircularChartObject(
+      id: map['id'] as String?,
+      name: map['name'] as String?,
+      target: CircularChartTarget.values[map['target'] as int? ?? 0],
+      selection: map['targets'] as List<String>?,
+      range: OrderChartRange.values[map['range'] as int? ?? 0],
+      isAll: map['isAll'] as bool?,
+      withToday: map['withToday'] as bool?,
+    );
+  }
+
+  @override
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'target': target?.index,
+      'selection': selection,
+      'range': range?.index,
+      'isAll': isAll,
+      'withToday': withToday,
+      'type': AnalysisChartType.circular.index,
+    };
+  }
+
+  @override
+  Map<String, Object> diff(CircularChart model) {
+    final result = <String, Object>{};
+
+    if (name != null && name != model.name) {
+      model.name = name!;
+      result['name'] = name!;
+    }
+    if (target != null && target != model.target) {
+      model.target = target!;
+      result['target'] = target!.index;
+    }
+    if (range != null && range != model.range) {
+      model.range = range!;
+      result['range'] = range!.index;
+    }
+    if (isAll != null && isAll != model.isAll) {
+      model.isAll = isAll!;
+      result['isAll'] = isAll!;
+    }
+    if (withToday != null && withToday != model.withToday) {
+      model.withToday = withToday!;
+      result['withToday'] = withToday!;
+    }
+    if (selection != null && selection!.join('') != model.selection.join('')) {
+      model.selection = selection!;
+      result['selection'] = selection!;
     }
 
     return result;

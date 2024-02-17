@@ -44,7 +44,9 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      SearchBarWrapper(
+      // avoid search-bar's label overflow
+      const SizedBox(height: 12.0),
+      p(SearchBarWrapper(
         key: const Key('product_ingredient.search'),
         text: ingredientName,
         labelText: S.menuIngredientSearchLabel,
@@ -56,8 +58,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         search: (text) async => Stock.instance.sortBySimilarity(text),
         itemBuilder: _searchItemBuilder,
         emptyBuilder: _searchEmptyBuilder,
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product_ingredient.amount'),
         controller: _amountController,
         textInputAction: TextInputAction.done,
@@ -74,7 +76,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
           S.menuIngredientAmountLabel,
           focusNode: _amountFocusNode,
         ),
-      ),
+      )),
     ];
   }
 

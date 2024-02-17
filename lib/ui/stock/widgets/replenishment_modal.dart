@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
-import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/replenisher.dart';
@@ -39,7 +39,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
     final textTheme = Theme.of(context).textTheme;
 
     return <Widget>[
-      TextFormField(
+      p(TextFormField(
         key: const Key('replenishment.name'),
         controller: _nameController,
         textInputAction: TextInputAction.done,
@@ -63,8 +63,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
                 : null;
           },
         ),
-      ),
-      HintText(S.stockReplenishmentIngredientListTitle),
+      )),
+      TextDivider(label: S.stockReplenishmentIngredientListTitle),
       for (final ing in Stock.instance.itemList) _buildIngredientField(ing),
     ];
   }
@@ -104,7 +104,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
   }
 
   Widget _buildIngredientField(Ingredient ingredient) {
-    return TextFormField(
+    return p(TextFormField(
       key: Key('replenishment.ingredients.${ingredient.id}'),
       onSaved: (String? value) {
         final numValue = num.tryParse(value!);
@@ -119,7 +119,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
         labelText: ingredient.name,
         hintText: S.stockReplenishmentIngredientAmountHint,
       ),
-    );
+    ));
   }
 
   ReplenishmentObject _parseObject() {

@@ -31,7 +31,6 @@ class AnalysisView extends StatelessWidget {
           ),
           for (final chart in Analysis.instance.items)
             ChartCardView(chart: chart),
-          // TODO: today pie chart with `product`, `category`, `ingredient`.
           // TODO: time series with specific product, category, ingredient, order attrs.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -38,11 +38,6 @@ class _OrderSettingPageState extends State<OrderSettingPage>
   String get title => '訂單匯出設定';
 
   @override
-  Widget buildBody() {
-    return SingleChildScrollView(child: buildForm(buildFormFields()));
-  }
-
-  @override
   List<Widget> buildFormFields() {
     return [
       CheckboxListTile(
@@ -72,20 +67,18 @@ class _OrderSettingPageState extends State<OrderSettingPage>
         },
       ),
       if (!isOverwrite && withPrefix)
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            '不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴',
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+        p(
+          Center(
+            child: Text(
+              '不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ),
       const TextDivider(label: '表單名稱'),
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: CardInfoText(
-          child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
-        ),
-      ),
+      p(const CardInfoText(
+        child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
+      )),
       for (final namer in namers) SheetNamer(prop: namer),
     ];
   }

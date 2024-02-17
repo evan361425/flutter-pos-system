@@ -172,7 +172,7 @@ class _CalendarViewState extends State<CalendarView> {
       setState(() {
         _loadedMonths.add(_hashMonth(local));
         _loadedCounts.addAll({
-          for (final m in metrics) m.at: m.count ?? 0,
+          for (final m in metrics) m.at: m.count,
         });
       });
     }

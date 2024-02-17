@@ -34,7 +34,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      TextFormField(
+      p(TextFormField(
         key: const Key('order_attribute.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
@@ -57,7 +57,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
                 : null;
           },
         ),
-      ),
+      )),
       TextDivider(label: S.orderAttributeModeTitle),
       ChoiceChipWithHelp(
         key: modeSelector,

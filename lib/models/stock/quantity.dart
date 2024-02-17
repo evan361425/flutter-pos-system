@@ -14,12 +14,10 @@ class Quantity extends Model<QuantityObject>
 
   Quantity({
     String? id,
-    ModelStatus? status,
     String name = 'quantity',
+    ModelStatus status = ModelStatus.normal,
     this.defaultProportion = 1,
-  }) : super(id, status) {
-    this.name = name;
-  }
+  }) : super(id, name, status);
 
   factory Quantity.fromObject(QuantityObject object) => Quantity(
         id: object.id,

@@ -1,24 +1,25 @@
 class EMACalculator {
-  double result = 0;
-
   final double weightFactor;
 
-  EMACalculator(int length) : weightFactor = 2 / (length + 1);
+  final int length;
+
+  const EMACalculator(this.length) : weightFactor = 2 / (length + 1);
 
   double calculate(Iterable<num> data) {
+    double carry = 0;
+
     for (final value in data) {
-      feed(value);
+      carry = feed(value, carry);
     }
 
-    return result;
+    return carry;
   }
 
-  void feed(num value) {
-    if (result == 0) {
-      result = value.toDouble();
-      return;
+  double feed(num value, double carry) {
+    if (carry == 0) {
+      return value.toDouble();
     }
 
-    result = value * weightFactor + result * (1 - weightFactor);
+    return value * weightFactor + carry * (1 - weightFactor);
   }
 }

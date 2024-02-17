@@ -66,10 +66,10 @@ class Seller extends ChangeNotifier {
         if (row['day'] != null)
           OrderMetricPerDay(
             at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
-            count: row['count'] as int?,
-            price: row['price'] as num?,
-            cost: row['cost'] as num?,
-            revenue: row['revenue'] as num?,
+            count: row['count'] as int,
+            price: row['price'] as num,
+            cost: row['cost'] as num,
+            revenue: row['revenue'] as num,
           ),
     ];
     if (!fulfillAll) {
@@ -91,7 +91,7 @@ class Seller extends ChangeNotifier {
     return fulfilled;
   }
 
-  /// Get the metrics of orders from time range.
+  /// Get the metrics(e.g. count, price) of orders from time range.
   Future<OrderMetrics> getMetrics(
     DateTime start,
     DateTime end, {
@@ -161,6 +161,38 @@ class Seller extends ChangeNotifier {
     } catch (e) {
       return OrderMetrics.fromMap(const {});
     }
+  }
+
+  /// Get the metrics of orders and group by the items.
+  Future<List<OrderMetricPerItem>> getMetricsByItems(
+    DateTime start,
+    DateTime end, {
+    OrderItemMetrics item = OrderItemMetrics.catalog,
+    List<String>? selection,
+  }) async {
+    final begin = Util.toUTC(now: start);
+    final cease = Util.toUTC(now: end);
+
+    final where = selection == null
+        ? ''
+        : ' AND ${item.column} IN ("${selection.join('","')}")';
+
+    final rows = await Database.instance.query(
+      item.table,
+      columns: ['${item.column} name', 'COUNT(*) count'],
+      where: 'createdAt BETWEEN ? AND ?$where',
+      whereArgs: [begin, cease],
+      groupBy: item.column,
+      orderBy: 'count desc',
+    );
+
+    return <OrderMetricPerItem>[
+      for (final row in rows)
+        OrderMetricPerItem(
+          row['name'] as String,
+          row['count'] as int,
+        ),
+    ];
   }
 
   /// Get orders and its products info from time range.
@@ -393,31 +425,38 @@ class OrderMetrics {
 class OrderMetricPerDay {
   final DateTime at;
 
-  final int? count;
-  final num? price;
-  final num? cost;
-  final num? revenue;
+  final int count;
+  final num price;
+  final num cost;
+  final num revenue;
 
   const OrderMetricPerDay({
     required this.at,
-    this.count,
-    this.price,
-    this.cost,
-    this.revenue,
+    this.count = 0,
+    this.price = 0,
+    this.cost = 0,
+    this.revenue = 0,
   });
 
   num valueFromType(OrderMetricsType t) {
     switch (t) {
       case OrderMetricsType.count:
-        return count ?? 0;
+        return count;
       case OrderMetricsType.price:
-        return price ?? 0;
+        return price;
       case OrderMetricsType.cost:
-        return cost ?? 0;
+        return cost;
       case OrderMetricsType.revenue:
-        return revenue ?? 0;
+        return revenue;
     }
   }
+}
+
+class OrderMetricPerItem {
+  final String name;
+  final int count;
+
+  OrderMetricPerItem(this.name, this.count);
 }
 
 enum OrderMetricsType {
@@ -444,6 +483,21 @@ enum OrderMetricsType {
     this.label,
     this.title,
   );
+}
+
+enum OrderItemMetrics {
+  catalog(Seller.productTable, 'catalogName'),
+  product(Seller.productTable, 'productName'),
+  ingredient(Seller.ingredientTable, 'ingredientName'),
+  attribute(Seller.attributeTable, 'name');
+
+  /// The table name in DB.
+  final String table;
+
+  /// The column name in DB.
+  final String column;
+
+  const OrderItemMetrics(this.table, this.column);
 }
 
 enum MetricsPeriod {
