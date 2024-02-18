@@ -236,6 +236,7 @@ void main() {
 
         await tester.drag(
           find.byKey(const Key('order.ds')),
+          // should below the window height: H - currentH < 300
           const Offset(0, -300),
         );
         await tester.pumpAndSettle();
@@ -246,6 +247,13 @@ void main() {
 
         expect(find.byKey(const Key('order.ingredient.noNeedIngredient')),
             findsOneWidget);
+
+        // full screen the panel
+        await tester.dragFrom(
+          tester.getCenter(find.byKey(const Key('cart.product_list'))),
+          const Offset(0, -200),
+        );
+        await tester.pumpAndSettle();
 
         // select product
         await tester.tap(find.byKey(const Key('cart.product.0')));

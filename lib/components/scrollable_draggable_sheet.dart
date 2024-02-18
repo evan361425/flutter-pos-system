@@ -47,36 +47,28 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: controller.snapIndex.value == 0,
-      onPopInvoked: (popped) {
-        if (!popped) {
-          controller.reset();
-        }
-      },
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          controller.transferSnapSizes(
-            constraints.biggest.height,
-            widget.margin.vertical,
-          );
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        controller.transferSnapSizes(
+          constraints.biggest.height,
+          widget.margin.vertical,
+        );
 
-          return DraggableScrollableSheet(
-            controller: controller,
-            initialChildSize: controller.snapSizes[widget.initSnapIndex],
-            minChildSize: controller.minSnap,
-            maxChildSize: controller.maxSnap,
-            expand: true,
-            snap: true,
-            snapSizes: controller.snapSizes,
-            shouldCloseOnMinExtent: true,
-            builder: (_, scrollController) {
-              scroll = scrollController;
-              return content;
-            },
-          );
-        },
-      ),
+        return DraggableScrollableSheet(
+          controller: controller,
+          initialChildSize: controller.snapSizes[widget.initSnapIndex],
+          minChildSize: controller.minSnap,
+          maxChildSize: controller.maxSnap,
+          expand: true,
+          snap: true,
+          snapSizes: controller.snapSizes,
+          shouldCloseOnMinExtent: true,
+          builder: (_, scrollController) {
+            scroll = scrollController;
+            return content;
+          },
+        );
+      },
     );
   }
 
@@ -127,18 +119,27 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
           if (value == 1.0) {
             scrollable.value = true;
           }
-          return Card(
-            shape: value == 1.0
-                ? const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
-                : const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16.0),
+          return PopScope(
+            canPop: controller.snapIndex.value == 0,
+            onPopInvoked: (popped) {
+              if (!popped) {
+                controller.reset();
+              }
+            },
+            child: Card(
+              shape: value == 1.0
+                  ? const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero)
+                  : const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16.0),
+                      ),
                     ),
-                  ),
-            clipBehavior: Clip.hardEdge,
-            elevation: 2.0,
-            margin: value == 1.0 ? const EdgeInsets.all(0) : widget.margin,
-            child: child,
+              clipBehavior: Clip.hardEdge,
+              elevation: 2.0,
+              margin: value == 1.0 ? const EdgeInsets.all(0) : widget.margin,
+              child: child,
+            ),
           );
         },
         child: Column(

@@ -101,7 +101,7 @@ void main() {
       // xx/01-xx/05
       await tester.tap(find.text('1').first);
       await tester.tap(find.text('5').first);
-      await tester.tap(find.text('SAVE')); // material 2
+      await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
       final expected = DateTimeRange(

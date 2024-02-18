@@ -39,10 +39,11 @@ void main() {
 
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
-      expect(find.text('title'), findsOneWidget);
+      expect(tester.getCenter(find.text('title')).dy, equals(588));
 
-      await tester.drag(find.byKey(const Key('t')), const Offset(0, -400));
+      await tester.drag(find.byKey(const Key('t')), const Offset(0, -300));
       await tester.pumpAndSettle();
+      expect(tester.getCenter(find.text('title')).dy, equals(48));
 
       // pop
       final dynamic widgetsAppState = tester.state(find.byType(WidgetsApp));
@@ -50,7 +51,7 @@ void main() {
       await tester.pump();
 
       // only reset the sheet
-      expect(find.text('title'), findsOneWidget);
+      expect(tester.getCenter(find.text('title')).dy, equals(588));
     });
 
     testWidgets('quickly drag without over half', (tester) async {

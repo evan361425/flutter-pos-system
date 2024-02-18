@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -58,6 +59,7 @@ void main() {
     }
 
     testWidgets('navigate to history', (tester) async {
+      Analysis();
       mockGetMetrics();
       when(database.query(
         Seller.orderTable,
@@ -72,8 +74,9 @@ void main() {
       )).thenAnswer((_) => Future.value([]));
       when(database.query(
         any,
-        columns: argThat(equals(['t.day', 'COUNT(*) c']), named: 'columns'),
+        columns: anyNamed('columns'),
         groupBy: argThat(equals('t.day'), named: 'groupBy'),
+        orderBy: anyNamed('orderBy'),
         whereArgs: anyNamed('whereArgs'),
         escapeTable: false,
       )).thenAnswer((_) => Future.value([]));

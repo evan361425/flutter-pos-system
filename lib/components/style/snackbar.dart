@@ -48,11 +48,13 @@ void showMoreInfoSnackBar(
       onPressed: () {
         showDialog(
           context: context,
-          builder: (context) => SimpleDialog(
-            title: Text(message),
-            contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
-            children: [content],
-          ),
+          builder: (context) {
+            return SimpleDialog(
+              title: Text(message),
+              contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
+              children: [content],
+            );
+          },
         );
       },
     ),

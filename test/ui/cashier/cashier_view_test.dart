@@ -136,11 +136,11 @@ void main() {
       }
 
       await action('1', '13');
-      expect(find.text('13'), findsOneWidget);
+      expect(find.text('13／0'), findsOneWidget);
 
       await action('5', '2');
       await action('5', '5', 'cancel');
-      expect(find.text('2'), findsOneWidget);
+      expect(find.text('2／0'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('cashier.defaulter')));
       await tester.pumpAndSettle();

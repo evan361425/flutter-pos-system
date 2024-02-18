@@ -36,14 +36,14 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: canPop,
+      canPop: selected == null,
       onPopInvoked: _onPopInvoked,
       child: Scaffold(
         appBar: AppBar(
           title: Text(selected?.name ?? S.menuTitle),
           leading: PopButton(
             onPressed: () {
-              if (_onPopInvoked(canPop)) {
+              if (_onPopInvoked(selected == null)) {
                 if (context.mounted && context.canPop()) {
                   context.pop();
                 }
@@ -96,11 +96,6 @@ class _MenuPageState extends State<MenuPage> {
       ),
     );
   }
-
-  /// Can pop if empty or at first page
-  ///
-  /// if has no clients, it means menu is empty(build without PageView)
-  bool get canPop => !controller.hasClients || controller.page == 0;
 
   @override
   void didChangeDependencies() {
