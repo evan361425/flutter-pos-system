@@ -43,9 +43,8 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      // text being too large will cause overlay
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    // text being too large will cause overlay
+    return MediaQuery.withNoTextScaling(
       child: TableCalendar<void>(
         firstDay: DateTime(2021, 1),
         lastDay: DateTime.now(),

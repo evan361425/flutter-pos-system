@@ -47,14 +47,12 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final willPop = controller.snapIndex.value == 0;
-        if (!willPop) {
+    return PopScope(
+      canPop: controller.snapIndex.value == 0,
+      onPopInvoked: (popped) {
+        if (!popped) {
           controller.reset();
         }
-
-        return willPop;
       },
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {

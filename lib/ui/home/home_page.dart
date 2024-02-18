@@ -109,14 +109,15 @@ class _CustomTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // fix the font size, avoid scaling
-    return Tab(
-      iconMargin: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14),
-        textScaleFactor: 1,
-        softWrap: false,
-        overflow: TextOverflow.fade,
+    return MediaQuery.withNoTextScaling(
+      child: Tab(
+        iconMargin: const EdgeInsets.only(bottom: 6),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 14),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+        ),
       ),
     );
   }
