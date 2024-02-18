@@ -5,29 +5,37 @@ import 'package:possystem/models/repository/seller.dart';
 class CartesianChartObject extends ModelObject<CartesianChart> {
   final String? id;
   final String? name;
+  final List<OrderMetricType>? metrics;
+  final OrderMetricTarget? target;
+  final List<String>? selection;
+
   final bool? withToday;
   final bool? ignoreEmpty;
-  final List<OrderMetricsType>? types;
   final OrderChartRange? range;
 
   const CartesianChartObject({
     this.id,
     this.name,
+    this.metrics,
+    this.target,
+    this.selection,
     this.withToday,
     this.ignoreEmpty,
-    this.types,
     this.range,
   });
 
   factory CartesianChartObject.build(Map<String, Object?> map) {
+    final target = map['target'] as int?;
     return CartesianChartObject(
       id: map['id'] as String?,
       name: map['name'] as String?,
+      metrics: (map['metrics'] as List?)
+          ?.map((e) => OrderMetricType.values[e as int])
+          .toList(),
+      target: target == null ? null : OrderMetricTarget.values[target],
+      selection: map['selection'] as List<String>?,
       withToday: map['withToday'] as bool?,
       ignoreEmpty: map['ignoreEmpty'] as bool?,
-      types: (map['types'] as List?)
-          ?.map((e) => OrderMetricsType.values[e as int])
-          .toList(),
       range: OrderChartRange.values[map['range'] as int? ?? 0],
     );
   }
@@ -35,23 +43,37 @@ class CartesianChartObject extends ModelObject<CartesianChart> {
   @override
   Map<String, Object?> toMap() {
     return {
+      'type': AnalysisChartType.cartesian.index,
       'id': id,
       'name': name,
+      'metrics': metrics?.map((e) => e.index).toList(),
+      'target': target?.index,
+      'selection': selection,
       'withToday': withToday,
       'ignoreEmpty': ignoreEmpty,
-      'types': types?.map((e) => e.index).toList(),
       'range': range?.index,
-      'type': AnalysisChartType.cartesian.index,
     };
   }
 
   @override
-  Map<String, Object> diff(CartesianChart model) {
-    final result = <String, Object>{};
+  Map<String, Object?> diff(CartesianChart model) {
+    final result = <String, Object?>{};
 
     if (name != null && name != model.name) {
       model.name = name!;
       result['name'] = name!;
+    }
+    if (metrics != null && metrics!.join('') != model.metrics.join('')) {
+      model.metrics = metrics!;
+      result['metrics'] = metrics!.map((e) => e.index).toList();
+    }
+    if (target != model.target) {
+      model.target = target!;
+      result['target'] = target?.index;
+    }
+    if (selection != null && selection!.join('') != model.selection.join('')) {
+      model.selection = selection!;
+      result['selection'] = selection!;
     }
     if (withToday != null && withToday != model.withToday) {
       model.withToday = withToday!;
@@ -60,10 +82,6 @@ class CartesianChartObject extends ModelObject<CartesianChart> {
     if (ignoreEmpty != null && ignoreEmpty != model.ignoreEmpty) {
       model.ignoreEmpty = ignoreEmpty!;
       result['ignoreEmpty'] = ignoreEmpty!;
-    }
-    if (types != null && types!.join('') != model.types.join('')) {
-      model.types = types!;
-      result['types'] = types!.map((e) => e.index).toList();
     }
     if (range != null && range != model.range) {
       model.range = range!;
@@ -77,45 +95,50 @@ class CartesianChartObject extends ModelObject<CartesianChart> {
 class CircularChartObject extends ModelObject<CircularChart> {
   final String? id;
   final String? name;
-  final CircularChartTarget? target;
+  final OrderMetricTarget? target;
   final List<String>? selection;
+  final int? groupTo;
+
   final OrderChartRange? range;
-  final bool? isAll;
   final bool? withToday;
+  final bool? ignoreEmpty;
 
   const CircularChartObject({
     this.id,
     this.name,
     this.target,
     this.selection,
+    this.groupTo,
     this.range,
-    this.isAll,
     this.withToday,
+    this.ignoreEmpty,
   });
 
   factory CircularChartObject.build(Map<String, Object?> map) {
     return CircularChartObject(
       id: map['id'] as String?,
       name: map['name'] as String?,
-      target: CircularChartTarget.values[map['target'] as int? ?? 0],
+      target: OrderMetricTarget.values[map['target'] as int? ?? 0],
       selection: map['targets'] as List<String>?,
+      groupTo: map['groupTo'] as int?,
       range: OrderChartRange.values[map['range'] as int? ?? 0],
-      isAll: map['isAll'] as bool?,
       withToday: map['withToday'] as bool?,
+      ignoreEmpty: map['ignoreEmpty'] as bool?,
     );
   }
 
   @override
   Map<String, Object?> toMap() {
     return {
+      'type': AnalysisChartType.circular.index,
       'id': id,
       'name': name,
       'target': target?.index,
       'selection': selection,
+      'groupTo': groupTo,
       'range': range?.index,
-      'isAll': isAll,
       'withToday': withToday,
-      'type': AnalysisChartType.circular.index,
+      'ignoreEmpty': ignoreEmpty,
     };
   }
 
@@ -131,21 +154,25 @@ class CircularChartObject extends ModelObject<CircularChart> {
       model.target = target!;
       result['target'] = target!.index;
     }
+    if (selection != null && selection!.join('') != model.selection.join('')) {
+      model.selection = selection!;
+      result['selection'] = selection!;
+    }
+    if (groupTo != null && groupTo != model.groupTo) {
+      model.groupTo = groupTo!;
+      result['groupTo'] = groupTo!;
+    }
     if (range != null && range != model.range) {
       model.range = range!;
       result['range'] = range!.index;
-    }
-    if (isAll != null && isAll != model.isAll) {
-      model.isAll = isAll!;
-      result['isAll'] = isAll!;
     }
     if (withToday != null && withToday != model.withToday) {
       model.withToday = withToday!;
       result['withToday'] = withToday!;
     }
-    if (selection != null && selection!.join('') != model.selection.join('')) {
-      model.selection = selection!;
-      result['selection'] = selection!;
+    if (ignoreEmpty != null && ignoreEmpty != model.ignoreEmpty) {
+      model.ignoreEmpty = ignoreEmpty!;
+      result['ignoreEmpty'] = ignoreEmpty!;
     }
 
     return result;

@@ -10,7 +10,13 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
   final AnalysisChartType type = AnalysisChartType.cartesian;
 
   /// Which metrics to show, price, cost, or revenue
-  List<OrderMetricsType> types;
+  List<OrderMetricType> metrics;
+
+  /// Which target to show, product, category, or ingredients
+  OrderMetricTarget? target;
+
+  /// Target's IDs of product, category, or ingredients
+  List<String> selection;
 
   CartesianChart({
     String? id,
@@ -19,7 +25,9 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
     OrderChartRange range = OrderChartRange.sevenDays,
     bool withToday = false,
     bool ignoreEmpty = true,
-    this.types = const [OrderMetricsType.revenue],
+    this.metrics = const [OrderMetricType.revenue],
+    this.target = OrderMetricTarget.product,
+    this.selection = const [],
   }) : super(id, name, status,
             range: range, withToday: withToday, ignoreEmpty: ignoreEmpty);
 
@@ -27,10 +35,12 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
     return CartesianChart(
       id: object.id,
       name: object.name ?? 'chart',
+      metrics: object.metrics ?? const [OrderMetricType.revenue],
+      target: object.target,
+      selection: object.selection ?? const <String>[],
+      range: object.range ?? OrderChartRange.sevenDays,
       withToday: object.withToday ?? false,
       ignoreEmpty: object.ignoreEmpty ?? true,
-      types: object.types ?? const [OrderMetricsType.revenue],
-      range: object.range ?? OrderChartRange.sevenDays,
     );
   }
 
@@ -39,10 +49,12 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
     return CartesianChartObject(
       id: id,
       name: name,
+      metrics: metrics,
+      target: target,
+      selection: selection,
+      range: range,
       withToday: withToday,
       ignoreEmpty: ignoreEmpty,
-      types: types,
-      range: range,
     );
   }
 
@@ -51,7 +63,7 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
     return Seller.instance.getMetricsInPeriod(
       start,
       end,
-      types: types,
+      types: metrics,
       period: range.period,
       fulfillAll: !ignoreEmpty,
     );
@@ -63,13 +75,13 @@ class CircularChart extends Chart<OrderMetricPerItem> {
   final AnalysisChartType type = AnalysisChartType.circular;
 
   /// Which target to show, product, category, or ingredients
-  CircularChartTarget target;
+  OrderMetricTarget target;
 
-  /// Targets, ID of product, category, or ingredients
+  /// Target's IDs of product, category, or ingredients
   List<String> selection;
 
-  /// Whether show all data
-  bool isAll;
+  /// Show [groupTo]-largest items and group the rest
+  int groupTo;
 
   CircularChart({
     String? id,
@@ -78,9 +90,9 @@ class CircularChart extends Chart<OrderMetricPerItem> {
     OrderChartRange range = OrderChartRange.sevenDays,
     bool withToday = false,
     bool ignoreEmpty = true,
-    this.target = CircularChartTarget.product,
+    this.target = OrderMetricTarget.product,
     this.selection = const [],
-    this.isAll = false,
+    this.groupTo = 5,
   }) : super(id, name, status,
             range: range, withToday: withToday, ignoreEmpty: ignoreEmpty);
 
@@ -88,9 +100,12 @@ class CircularChart extends Chart<OrderMetricPerItem> {
     return CircularChart(
       id: object.id,
       name: object.name ?? 'pie',
-      target: object.target ?? CircularChartTarget.product,
+      target: object.target ?? OrderMetricTarget.product,
       selection: object.selection ?? [],
-      isAll: object.isAll ?? false,
+      groupTo: object.groupTo ?? 5,
+      range: object.range ?? OrderChartRange.sevenDays,
+      withToday: object.withToday ?? false,
+      ignoreEmpty: object.ignoreEmpty ?? true,
     );
   }
 
@@ -101,7 +116,10 @@ class CircularChart extends Chart<OrderMetricPerItem> {
       name: name,
       target: target,
       selection: selection,
-      isAll: isAll,
+      groupTo: groupTo,
+      range: range,
+      withToday: withToday,
+      ignoreEmpty: ignoreEmpty,
     );
   }
 
@@ -110,25 +128,8 @@ class CircularChart extends Chart<OrderMetricPerItem> {
     return Seller.instance.getMetricsByItems(
       start,
       end,
-      item: target.itemMetrics,
+      item: target,
       selection: selection,
     );
-  }
-}
-
-enum CircularChartTarget {
-  product,
-  catalog,
-  ingredient;
-
-  OrderItemMetrics get itemMetrics {
-    switch (this) {
-      case CircularChartTarget.product:
-        return OrderItemMetrics.product;
-      case CircularChartTarget.catalog:
-        return OrderItemMetrics.catalog;
-      case CircularChartTarget.ingredient:
-        return OrderItemMetrics.ingredient;
-    }
   }
 }

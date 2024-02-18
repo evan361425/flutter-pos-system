@@ -43,7 +43,7 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   widget.chart.name,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
             ),
@@ -63,7 +63,11 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
 
   Widget buildChart(BuildContext context, List<T> metrics) {
     if (metrics.isEmpty) {
-      return const Center(child: Text('沒有資料'));
+      return const SizedBox(
+        width: 128,
+        height: 128,
+        child: Center(child: Text('沒有資料')),
+      );
     }
 
     if (widget.chart is CartesianChart) {
@@ -205,14 +209,24 @@ class _CartesianChart extends StatelessWidget {
       plotAreaBorderWidth: 0.7,
       selectionType: SelectionType.point,
       selectionGesture: ActivationMode.singleTap,
+      // get the different unit axis
+      axes: chart.metrics
+          .groupFoldBy<OrderMetricUnit, OrderMetricType>(
+              (e) => e.unit, (prev, current) => prev ?? current)
+          .values
+          .take(2)
+          .mapIndexed((i, e) => NumericAxis(
+                opposedPosition: i == 1,
+                name: e.title,
+                labelFormat: e.unit.labelFormat,
+              ))
+          .toList(),
       primaryXAxis: DateTimeAxis(
         enableAutoIntervalOnZooming: false,
         dateFormat: DateFormat(chart.range.period.format, S.localeName),
         majorGridLines: const MajorGridLines(width: 0),
       ),
-      primaryYAxis: NumericAxis(
-        labelFormat: chart.types.first.label,
-      ),
+      primaryYAxis: const NumericAxis(isVisible: false),
       trackballBehavior: TrackballBehavior(
         enable: true,
         activationMode: ActivationMode.singleTap,
@@ -224,9 +238,9 @@ class _CartesianChart extends StatelessWidget {
       legend: const Legend(
         isVisible: true,
       ),
-      series: chart.types
-          .mapIndexed(
-            (i, e) => LineSeries(
+      series: chart.metrics
+          .map(
+            (e) => SplineSeries(
               markerSettings: const MarkerSettings(isVisible: true),
               name: e.title,
               xValueMapper: (v, i) => v.at,
@@ -257,7 +271,7 @@ class _CircularChart extends StatelessWidget {
         enable: true,
         activationMode: ActivationMode.singleTap,
         animationDuration: 150,
-        format: 'point.x : point.y%',
+        format: 'point.x : point.y',
       ),
       legend: const Legend(
         isVisible: true,
@@ -268,8 +282,10 @@ class _CircularChart extends StatelessWidget {
           name: chart.target.name,
           xValueMapper: (v, i) => v.name,
           yValueMapper: (v, i) => v.count,
+          dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
           dataSource: metrics,
-          dataLabelMapper: (datum, index) => datum.name,
+          groupTo: metrics.elementAtOrNull(chart.groupTo)?.count.toDouble(),
+          groupMode: CircularChartGroupMode.value,
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelPosition: ChartDataLabelPosition.inside,

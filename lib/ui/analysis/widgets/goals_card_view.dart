@@ -36,7 +36,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     final style = Theme.of(context).textTheme.bodyLarge;
     final goals = <Widget>[
       _GoalItem(
-        type: OrderMetricsType.count,
+        type: OrderMetricType.count,
         current: metric.count,
         goal: goal!.count,
         style: style,
@@ -45,7 +45,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
             '訂單數反映了產品對顧客的吸引力。它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。但要注意，單純追求高訂單數可能會忽略盈利能力。',
       ),
       _GoalItem(
-        type: OrderMetricsType.price,
+        type: OrderMetricType.price,
         current: metric.price,
         goal: goal!.price,
         style: style,
@@ -54,7 +54,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
             '營收代表總銷售額，是業務規模的指標。高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。它不考慮成本和利潤，因此單純追求高營收可能會忽視實際利潤狀況。',
       ),
       _GoalItem(
-        type: OrderMetricsType.revenue,
+        type: OrderMetricType.revenue,
         current: metric.revenue,
         goal: goal!.revenue,
         style: style,
@@ -79,31 +79,31 @@ class _GoalsCardViewState extends State<GoalsCardView> {
             children: goals,
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Stack(children: [
-              AspectRatio(
-                aspectRatio: 1.0,
-                child: CircularProgressIndicator(
-                  value:
-                      goal!.revenue == 0 ? 0 : metric.revenue / goal!.revenue,
-                  color: Colors.pink,
-                  backgroundColor: Colors.grey.withOpacity(0.2),
-                  strokeWidth: 20,
-                ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Text(
-                    '利潤達成率',
-                    style: Theme.of(context).textTheme.titleMedium,
+        if (goal!.revenue != 0)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Stack(children: [
+                AspectRatio(
+                  aspectRatio: 1.0,
+                  child: CircularProgressIndicator(
+                    value: metric.revenue / goal!.revenue,
+                    color: Colors.pink,
+                    backgroundColor: Colors.grey.withOpacity(0.2),
+                    strokeWidth: 20,
                   ),
                 ),
-              ),
-            ]),
+                Positioned.fill(
+                  child: Center(
+                    child: Text(
+                      '利潤達成\n${(metric.revenue / goal!.revenue * 100).prettyString()}%',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ]),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -117,10 +117,10 @@ class _GoalsCardViewState extends State<GoalsCardView> {
           : range.start,
       range.end,
       types: [
-        OrderMetricsType.count,
-        OrderMetricsType.price,
-        OrderMetricsType.revenue,
-        OrderMetricsType.cost,
+        OrderMetricType.count,
+        OrderMetricType.price,
+        OrderMetricType.revenue,
+        OrderMetricType.cost,
       ],
       period: MetricsPeriod.day,
       fulfillAll: true,
@@ -141,7 +141,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
 }
 
 class _GoalItem extends StatelessWidget {
-  final OrderMetricsType type;
+  final OrderMetricType type;
 
   final String name;
 

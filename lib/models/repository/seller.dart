@@ -28,7 +28,7 @@ class Seller extends ChangeNotifier {
   Future<List<OrderMetricPerDay>> getMetricsInPeriod(
     DateTime start,
     DateTime end, {
-    List<OrderMetricsType> types = const [OrderMetricsType.count],
+    List<OrderMetricType> types = const [OrderMetricType.count],
     MetricsPeriod period = MetricsPeriod.day,
     bool fulfillAll = false,
   }) async {
@@ -66,10 +66,10 @@ class Seller extends ChangeNotifier {
         if (row['day'] != null)
           OrderMetricPerDay(
             at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
-            count: row['count'] as int,
-            price: row['price'] as num,
-            cost: row['cost'] as num,
-            revenue: row['revenue'] as num,
+            count: row['count'] as int? ?? 0,
+            price: row['price'] as num? ?? 0,
+            cost: row['cost'] as num? ?? 0,
+            revenue: row['revenue'] as num? ?? 0,
           ),
     ];
     if (!fulfillAll) {
@@ -78,7 +78,9 @@ class Seller extends ChangeNotifier {
 
     var i = 0;
     final fulfilled = <OrderMetricPerDay>[];
-    for (var v = start; v.isBefore(end); v = v.add(const Duration(days: 1))) {
+    for (var v = start;
+        v.isBefore(end);
+        v = v.add(Duration(seconds: period.seconds))) {
       // fulfill the missing day
       if (i >= result.length || result[i].at != v) {
         fulfilled.add(OrderMetricPerDay(at: v));
@@ -167,13 +169,13 @@ class Seller extends ChangeNotifier {
   Future<List<OrderMetricPerItem>> getMetricsByItems(
     DateTime start,
     DateTime end, {
-    OrderItemMetrics item = OrderItemMetrics.catalog,
-    List<String>? selection,
+    OrderMetricTarget item = OrderMetricTarget.catalog,
+    List<String> selection = const [],
   }) async {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
 
-    final where = selection == null
+    final where = selection.isEmpty
         ? ''
         : ' AND ${item.column} IN ("${selection.join('","')}")';
 
@@ -186,11 +188,14 @@ class Seller extends ChangeNotifier {
       orderBy: 'count desc',
     );
 
+    final total = rows.fold(0, (prev, e) => prev + (e['count'] as int));
+
     return <OrderMetricPerItem>[
       for (final row in rows)
         OrderMetricPerItem(
           row['name'] as String,
           row['count'] as int,
+          total,
         ),
     ];
   }
@@ -438,15 +443,15 @@ class OrderMetricPerDay {
     this.revenue = 0,
   });
 
-  num valueFromType(OrderMetricsType t) {
+  num valueFromType(OrderMetricType t) {
     switch (t) {
-      case OrderMetricsType.count:
+      case OrderMetricType.count:
         return count;
-      case OrderMetricsType.price:
+      case OrderMetricType.price:
         return price;
-      case OrderMetricsType.cost:
+      case OrderMetricType.cost:
         return cost;
-      case OrderMetricsType.revenue:
+      case OrderMetricType.revenue:
         return revenue;
     }
   }
@@ -455,15 +460,26 @@ class OrderMetricPerDay {
 class OrderMetricPerItem {
   final String name;
   final int count;
+  final double percent;
 
-  OrderMetricPerItem(this.name, this.count);
+  OrderMetricPerItem(this.name, this.count, int total)
+      : percent = count / total * 100;
 }
 
-enum OrderMetricsType {
-  count('COUNT', 'count', null, '訂單數'),
-  price('SUM', 'price', r'${value}', '營收'),
-  cost('SUM', 'cost', r'${value}', '成本'),
-  revenue('SUM', 'revenue', r'${value}', '盈利');
+enum OrderMetricUnit {
+  money(r'${value}'),
+  count(r'{value}');
+
+  final String labelFormat;
+
+  const OrderMetricUnit(this.labelFormat);
+}
+
+enum OrderMetricType {
+  price('SUM', 'price', OrderMetricUnit.money, '營收'),
+  cost('SUM', 'cost', OrderMetricUnit.money, '成本'),
+  revenue('SUM', 'revenue', OrderMetricUnit.money, '盈利'),
+  count('COUNT', 'count', OrderMetricUnit.count, '訂單數');
 
   /// The method to calculate the value in DB.
   final String method;
@@ -471,25 +487,25 @@ enum OrderMetricsType {
   /// The column name in DB.
   final String column;
 
-  /// The label on chart.
-  final String? label;
+  /// The unit on chart.
+  final OrderMetricUnit unit;
 
   /// The title of the series.
   final String title;
 
-  const OrderMetricsType(
+  const OrderMetricType(
     this.method,
     this.column,
-    this.label,
+    this.unit,
     this.title,
   );
 }
 
-enum OrderItemMetrics {
-  catalog(Seller.productTable, 'catalogName'),
-  product(Seller.productTable, 'productName'),
-  ingredient(Seller.ingredientTable, 'ingredientName'),
-  attribute(Seller.attributeTable, 'name');
+enum OrderMetricTarget {
+  catalog(Seller.productTable, 'catalogName', OrderMetricUnit.count),
+  product(Seller.productTable, 'productName', OrderMetricUnit.count),
+  ingredient(Seller.ingredientTable, 'ingredientName', OrderMetricUnit.count),
+  attribute(Seller.attributeTable, 'name', OrderMetricUnit.count);
 
   /// The table name in DB.
   final String table;
@@ -497,7 +513,10 @@ enum OrderItemMetrics {
   /// The column name in DB.
   final String column;
 
-  const OrderItemMetrics(this.table, this.column);
+  /// The unit on chart.
+  final OrderMetricUnit unit;
+
+  const OrderMetricTarget(this.table, this.column, this.unit);
 }
 
 enum MetricsPeriod {

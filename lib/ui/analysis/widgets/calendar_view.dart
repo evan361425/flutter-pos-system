@@ -164,7 +164,7 @@ class _CalendarViewState extends State<CalendarView> {
     final metrics = await Seller.instance.getMetricsInPeriod(
       start,
       end,
-      types: [OrderMetricsType.count],
+      types: [OrderMetricType.count],
       period: MetricsPeriod.day,
     );
 
