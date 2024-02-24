@@ -108,7 +108,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
                 hintText: hint,
                 filled: false,
               ),
-              onFieldSubmitted: (_) => handleSubmit(),
+              onFieldSubmitted: handleFieldSubmit,
               validator: validator,
             )
           : Center(child: HintText(helper))),

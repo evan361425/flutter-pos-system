@@ -49,7 +49,7 @@ class _CatalogModalState extends State<CatalogModal>
           hintText: S.menuCatalogNameHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         maxLength: 30,
         validator: Validator.textLimit(
           S.menuCatalogNameLabel,

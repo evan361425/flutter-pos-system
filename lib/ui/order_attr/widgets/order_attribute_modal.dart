@@ -44,7 +44,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
           hintText: S.orderAttributeNameHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         maxLength: 30,
         validator: Validator.textLimit(
           S.orderAttributeNameLabel,

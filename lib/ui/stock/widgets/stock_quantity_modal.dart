@@ -63,7 +63,7 @@ class _StockQuantityModalState extends State<StockQuantityModal>
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         focusNode: _proportionFocusNode,
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         decoration: InputDecoration(
           labelText: S.quantityProportionLabel,
           helperText: S.quantityProportionHelper,

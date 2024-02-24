@@ -63,7 +63,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
         key: const Key('product_ingredient.amount'),
         controller: _amountController,
         textInputAction: TextInputAction.done,
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         keyboardType: TextInputType.number,
         focusNode: _amountFocusNode,
         decoration: InputDecoration(

@@ -39,6 +39,11 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Fields in form
   List<Widget> buildFormFields();
 
+  /// Handle submission from input field (e.g. onFieldSubmitted)
+  void handleFieldSubmit(String _) {
+    handleSubmit();
+  }
+
   /// Handle user submission
   Future<void> handleSubmit() async {
     if (isSaving || !_validate()) return;
@@ -46,10 +51,11 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     await updateItem();
   }
 
+  /// Update item implementation, called when the form is valid
   Future<void> updateItem();
 
   bool _validate() {
-    if (formKey.currentState?.validate() != true) {
+    if (formKey.currentState?.validate() != true || !customValidate()) {
       return false;
     }
 
@@ -59,6 +65,9 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
     return true;
   }
+
+  /// Custom validation execute after the form validation.
+  bool customValidate() => true;
 
   /// Padding widget
   Widget p(Widget child) {

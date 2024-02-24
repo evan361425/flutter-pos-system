@@ -101,7 +101,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         focusNode: _costFocusNode,
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.attach_money_sharp),
           labelText: S.menuQuantityAdditionalCostLabel,

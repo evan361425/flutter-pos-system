@@ -98,7 +98,7 @@ class _ProductModalState extends State<ProductModal>
           hintText: S.menuProductCostHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         validator: Validator.positiveNumber(
           S.menuProductCostLabel,
           focusNode: _costFocusNode,
