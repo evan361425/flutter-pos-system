@@ -189,6 +189,8 @@ enum OrderChartRange {
   year(Duration(days: 365), MetricsPeriod.month);
 
   final Duration duration;
+
+  /// The period of the metrics, use to group the data
   final MetricsPeriod period;
 
   const OrderChartRange(this.duration, this.period);

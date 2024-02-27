@@ -48,10 +48,14 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
               ),
             ),
             IconButton(
+              key: Key('chart.${widget.chart.id}.reset'),
               onPressed: _resetRange,
               icon: const Icon(Icons.refresh_sharp),
             ),
-            MoreButton(onPressed: _showActions),
+            MoreButton(
+              key: Key('chart.${widget.chart.id}.more'),
+              onPressed: _showActions,
+            ),
           ]),
           buildChart(context, metric),
           buildRangeSlider(),
@@ -73,7 +77,7 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
     if (widget.chart is CartesianChart) {
       return _CartesianChart(
         chart: widget.chart as CartesianChart,
-        metrics: metrics as List<OrderMetricPerDay>,
+        metrics: metrics as List<OrderDataPerDay>,
       );
     }
 
@@ -196,7 +200,7 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
 class _CartesianChart extends StatelessWidget {
   final CartesianChart chart;
 
-  final List<OrderMetricPerDay> metrics;
+  final List<OrderDataPerDay> metrics;
 
   const _CartesianChart({
     required this.chart,
@@ -238,13 +242,14 @@ class _CartesianChart extends StatelessWidget {
       legend: const Legend(
         isVisible: true,
       ),
-      series: chart.metrics
+      series: chart
+          .keys()
           .map(
-            (e) => SplineSeries(
+            (key) => SplineSeries(
               markerSettings: const MarkerSettings(isVisible: true),
-              name: e.title,
+              name: key,
               xValueMapper: (v, i) => v.at,
-              yValueMapper: (v, i) => v.valueFromType(e),
+              yValueMapper: (v, i) => v.value(key),
               dataSource: metrics,
             ),
           )

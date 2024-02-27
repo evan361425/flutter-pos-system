@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -58,9 +60,17 @@ void main() {
       )).thenAnswer((_) => Future.value([{}]));
     }
 
-    testWidgets('navigate to history', (tester) async {
-      Analysis();
-      mockGetMetrics();
+    void mockGetChart() {
+      when(database.query(
+        any,
+        columns: argThat(contains('SUM(t.revenue) revenue'), named: 'columns'),
+        orderBy: anyNamed('orderBy'),
+        escapeTable: anyNamed('escapeTable'),
+        groupBy: anyNamed('groupBy'),
+      )).thenAnswer((_) => Future.value([{}]));
+    }
+
+    void mockGetOrder() {
       when(database.query(
         Seller.orderTable,
         columns: anyNamed('columns'),
@@ -80,6 +90,12 @@ void main() {
         whereArgs: anyNamed('whereArgs'),
         escapeTable: false,
       )).thenAnswer((_) => Future.value([]));
+    }
+
+    testWidgets('navigate to history', (tester) async {
+      mockGetMetrics();
+      mockGetOrder();
+      Analysis();
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -88,9 +104,53 @@ void main() {
       await tester.pumpAndSettle();
     });
 
+    testWidgets('add chart', (tester) async {
+      Analysis();
+      mockGetMetrics();
+      mockGetChart();
+      when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
+
+      await tester.pumpWidget(buildApp());
+      await tester.tap(find.byKey(const Key('anal.add_chart')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('chart.title')), 'test');
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      final chart = Analysis.instance.items.first;
+      verify(storage.add(
+        any,
+        argThat(equals(chart.id)),
+        argThat(predicate((data) => data is Map && data['name'] == 'test')),
+      ));
+
+      expect(find.text('test'), findsOneWidget);
+      expect(find.byKey(Key('chart.${chart.id}.reset')), findsOneWidget);
+      expect(chart.name, equals('test'));
+      // verify default values
+      expect(chart.type.name, equals('cartesian'));
+      expect(chart.ignoreEmpty, equals(false));
+      expect(chart.withToday, equals(false));
+      expect(chart.range.duration, equals(const Duration(days: 7)));
+      if (chart is! CartesianChart) {
+        fail('is not cartesian chart');
+      }
+
+      expect(
+        chart.metrics,
+        equals(const [OrderMetricType.price, OrderMetricType.revenue]),
+      );
+      expect(chart.target, isNull);
+      expect(chart.selection, isEmpty);
+    });
+
     setUpAll(() {
       initializeCache();
       initializeDatabase();
+      initializeStorage();
       initializeTranslator();
     });
   });

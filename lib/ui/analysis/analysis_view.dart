@@ -31,7 +31,6 @@ class AnalysisView extends StatelessWidget {
           ),
           for (final chart in Analysis.instance.items)
             ChartCardView(chart: chart),
-          // TODO: time series with specific product, category, ingredient, order attrs.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: addChartButton(context),
@@ -63,30 +62,22 @@ class AnalysisView extends StatelessWidget {
   Widget addChartButton(BuildContext context) {
     return Card(
       child: Stack(children: [
-        SfCartesianChart(
+        const SfCartesianChart(
           plotAreaBorderWidth: 0.7,
           enableAxisAnimation: false,
           selectionGesture: ActivationMode.none,
-          primaryXAxis: const NumericAxis(
-            labelFormat: ' ',
-          ),
-          primaryYAxis: const NumericAxis(
+          primaryXAxis: NumericAxis(labelFormat: ' '),
+          primaryYAxis: NumericAxis(
             minimum: 0,
             maximum: 6,
             interval: 1,
             labelFormat: ' ',
           ),
-          series: [
-            LineSeries<double, int>(
-              dataSource: const [2, 1, 3.5, 4, 5, 3],
-              xValueMapper: (_, i) => i,
-              yValueMapper: (v, _) => v,
-              color: Theme.of(context).primaryColor.withAlpha(36),
-            ),
-          ],
+          series: [],
         ),
         Positioned.fill(
           child: InkWell(
+            key: const Key('anal.add_chart'),
             onTap: () => context.pushNamed(
               Routes.chartOrderModal,
               pathParameters: {

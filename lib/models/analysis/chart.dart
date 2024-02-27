@@ -5,7 +5,7 @@ import 'package:possystem/models/repository/seller.dart';
 
 enum AnalysisChartType { cartesian, circular }
 
-class CartesianChart extends Chart<OrderMetricPerDay> {
+class CartesianChart extends Chart<OrderDataPerDay> {
   @override
   final AnalysisChartType type = AnalysisChartType.cartesian;
 
@@ -24,9 +24,9 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
     String name = 'cartesian chart',
     OrderChartRange range = OrderChartRange.sevenDays,
     bool withToday = false,
-    bool ignoreEmpty = true,
-    this.metrics = const [OrderMetricType.revenue],
-    this.target = OrderMetricTarget.product,
+    bool ignoreEmpty = false,
+    this.metrics = const [OrderMetricType.price, OrderMetricType.revenue],
+    this.target,
     this.selection = const [],
   }) : super(id, name, status,
             range: range, withToday: withToday, ignoreEmpty: ignoreEmpty);
@@ -59,14 +59,30 @@ class CartesianChart extends Chart<OrderMetricPerDay> {
   }
 
   @override
-  Future<List<OrderMetricPerDay>> loader(DateTime start, DateTime end) {
-    return Seller.instance.getMetricsInPeriod(
-      start,
-      end,
-      types: metrics,
-      period: range.period,
-      fulfillAll: !ignoreEmpty,
-    );
+  Future<List<OrderDataPerDay>> loader(DateTime start, DateTime end) {
+    return target == null
+        ? Seller.instance.getMetricsInPeriod(
+            start,
+            end,
+            types: metrics,
+            period: range.period,
+            ignoreEmpty: ignoreEmpty,
+          )
+        : Seller.instance.getItemMetricsInPeriod(
+            start,
+            end,
+            target: target!,
+            selection: selection,
+            period: range.period,
+            ignoreEmpty: ignoreEmpty,
+          );
+  }
+
+  Iterable<String> keys() {
+    return target?.getItems(selection).map(target!.isGroupedName(selection)
+            ? (e) => '${e.name}(${(e.repository as Model).name})'
+            : (e) => e.name) ??
+        metrics.map((e) => e.name);
   }
 }
 
@@ -89,7 +105,7 @@ class CircularChart extends Chart<OrderMetricPerItem> {
     String name = 'circular chart',
     OrderChartRange range = OrderChartRange.sevenDays,
     bool withToday = false,
-    bool ignoreEmpty = true,
+    bool ignoreEmpty = false,
     this.target = OrderMetricTarget.product,
     this.selection = const [],
     this.groupTo = 5,
@@ -124,12 +140,23 @@ class CircularChart extends Chart<OrderMetricPerItem> {
   }
 
   @override
-  Future<List<OrderMetricPerItem>> loader(DateTime start, DateTime end) {
-    return Seller.instance.getMetricsByItems(
+  Future<List<OrderMetricPerItem>> loader(DateTime start, DateTime end) async {
+    final result = await Seller.instance.getMetricsByItems(
       start,
       end,
-      item: target,
+      target: target,
       selection: selection,
     );
+
+    if (ignoreEmpty) {
+      return result;
+    }
+
+    return target
+        .getItems(selection)
+        .map((item) =>
+            result.where((e) => e.name == item.name).firstOrNull ??
+            OrderMetricPerItem(item.name, 0, 0))
+        .toList();
   }
 }

@@ -6,11 +6,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/analysis/chart_object.dart';
-import 'package:possystem/models/model.dart';
-import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/models/repository/stock.dart';
 
 class ChartOrderModal extends StatefulWidget {
   final Chart? chart;
@@ -24,6 +20,7 @@ class ChartOrderModal extends StatefulWidget {
 class _ChartOrderModalState extends State<ChartOrderModal>
     with ItemModal<ChartOrderModal> {
   late AnalysisChartType type;
+  String? error;
 
   late TextEditingController _nameController;
   late bool withToday;
@@ -119,6 +116,14 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         ),
       )),
       const TextDivider(label: '圖表資料'),
+      if (error != null)
+        Text(
+          error!,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: Theme.of(context).colorScheme.error),
+        ),
       if (type == AnalysisChartType.cartesian)
         _buildWrappedChoices(
           '觀看指標',
@@ -153,7 +158,10 @@ class _ChartOrderModalState extends State<ChartOrderModal>
             helperText: '顯示前幾名的項目，其餘歸類為「其他」；\n0 表示全部顯示。',
             filled: false,
           ),
-          validator: Validator.positiveInt('最多顯示數'),
+          validator: Validator.positiveInt(
+            '最多顯示數',
+            allowNull: type == AnalysisChartType.cartesian,
+          ),
         )),
       _buildWrappedChoices(
         '項目種類',
@@ -207,8 +215,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
   }
 
   Iterable<ChoiceChip> _buildTargetItems() sync* {
-    if (type != AnalysisChartType.circular ||
-        target != OrderMetricTarget.attribute) {
+    if (allowMultiSelection) {
       yield ChoiceChip(
         key: const Key('chart.item_all'),
         selected: selection.isEmpty,
@@ -223,16 +230,14 @@ class _ChartOrderModalState extends State<ChartOrderModal>
       );
     }
 
-    yield* _targetItems.map((e) => ChoiceChip(
+    yield* target!.getItems().map((e) => ChoiceChip(
           key: Key('chart.item.${e.id}'),
           selected: selection.contains(e.id),
           label: Text(e.name),
           onSelected: (bool value) {
             setState(() {
               if (value) {
-                // only one attribute can be selected in CircularChart
-                if (type == AnalysisChartType.circular &&
-                    target == OrderMetricTarget.attribute) {
+                if (!allowMultiSelection) {
                   selection.clear();
                 }
                 selection.add(e.id);
@@ -286,18 +291,10 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     super.dispose();
   }
 
-  Iterable<Model> get _targetItems {
-    switch (target!) {
-      case OrderMetricTarget.product:
-        return Menu.instance.products;
-      case OrderMetricTarget.catalog:
-        return Menu.instance.itemList;
-      case OrderMetricTarget.ingredient:
-        return Stock.instance.items;
-      case OrderMetricTarget.attribute:
-        return OrderAttributes.instance.itemList;
-    }
-  }
+  /// attribute in circular chart does not support multiple selection.
+  bool get allowMultiSelection =>
+      type != AnalysisChartType.circular ||
+      target != OrderMetricTarget.attribute;
 
   @override
   Future<void> updateItem() async {
@@ -305,7 +302,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         ? CircularChart.fromObject(CircularChartObject(
             name: _nameController.text,
             target: target,
-            selection: selection,
+            selection: selection.toSet().toList(),
             groupTo: int.parse(_groupToController.text),
             range: range,
             withToday: withToday,
@@ -315,7 +312,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
             name: _nameController.text,
             metrics: metrics,
             target: target,
-            selection: selection,
+            selection: selection.toSet().toList(),
             range: range,
             withToday: withToday,
             ignoreEmpty: ignoreEmpty,
@@ -330,5 +327,22 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     if (mounted && context.canPop()) {
       context.pop();
     }
+  }
+
+  @override
+  bool customValidate() {
+    if (type == AnalysisChartType.cartesian) {
+      // should either select metrics or target
+      return !(metrics.isEmpty ^ (target != null));
+    }
+
+    if (target == null) {
+      setState(() {
+        error = '請選擇一個項目種類';
+      });
+      return false;
+    }
+
+    return true;
   }
 }

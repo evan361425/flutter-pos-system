@@ -19,11 +19,11 @@ class GoalsCardView extends StatefulWidget {
 }
 
 class _GoalsCardViewState extends State<GoalsCardView> {
-  OrderMetricPerDay? goal;
+  OrderDataPerDay? goal;
 
   @override
   Widget build(BuildContext context) {
-    return ReloadableCard<OrderMetricPerDay>(
+    return ReloadableCard<OrderDataPerDay>(
       id: 'goals',
       title: '目標',
       notifier: Seller.instance,
@@ -32,7 +32,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
   }
 
-  Widget _builder(BuildContext context, OrderMetricPerDay metric) {
+  Widget _builder(BuildContext context, OrderDataPerDay metric) {
     final style = Theme.of(context).textTheme.bodyLarge;
     final goals = <Widget>[
       _GoalItem(
@@ -108,7 +108,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
   }
 
-  Future<OrderMetricPerDay> _loader() async {
+  Future<OrderDataPerDay> _loader() async {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
       // If there is no data, we will calculate the EMA of the last 20 days.
@@ -123,17 +123,20 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         OrderMetricType.cost,
       ],
       period: MetricsPeriod.day,
-      fulfillAll: true,
+      ignoreEmpty: false,
     );
 
     // Remove the last data, which is the today's data.
     final last = result.removeLast();
 
-    goal ??= OrderMetricPerDay(
+    goal ??= OrderDataPerDay(
       at: range.end, // this is dummy data, we don't need the date.
-      count: widget.calculator.calculate(result.map((e) => e.count)).toInt(),
-      price: widget.calculator.calculate(result.map((e) => e.price)),
-      revenue: widget.calculator.calculate(result.map((e) => e.revenue)),
+      values: {
+        'count':
+            widget.calculator.calculate(result.map((e) => e.count)).toInt(),
+        'price': widget.calculator.calculate(result.map((e) => e.price)),
+        'revenue': widget.calculator.calculate(result.map((e) => e.revenue)),
+      },
     );
 
     return last;
