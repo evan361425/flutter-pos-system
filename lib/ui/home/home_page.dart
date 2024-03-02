@@ -96,6 +96,12 @@ class _HomePageState extends State<HomePage>
       vsync: this,
     );
   }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 }
 
 class _CustomTab extends StatelessWidget {

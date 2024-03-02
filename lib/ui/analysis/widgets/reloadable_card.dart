@@ -41,7 +41,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
   T? data;
 
   /// Whether the card is reloading
-  bool reloading = false;
+  bool reloadable = false;
 
   /// Last built target, used to prevent rebuild when reloading
   Widget? lastBuiltTarget;
@@ -56,7 +56,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
           child: buildWrapper(buildTarget()),
         ),
       ),
-      if (reloading) buildReloading(),
+      if (reloadable) buildReloading(),
     ]);
   }
 
@@ -72,11 +72,11 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
 
     // when reloading, only show the circular loading indicator and
     // should not rebuild the target
-    if (reloading && lastBuiltTarget != null) {
+    if (reloadable && lastBuiltTarget != null) {
       return lastBuiltTarget!;
     }
 
-    return widget.builder(context, data as T);
+    return lastBuiltTarget = widget.builder(context, data as T);
   }
 
   /// Wrap the target with card or not
@@ -166,8 +166,9 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
 
   Future<void> reload() async {
     // only reload when data changed
-    if (reloading) {
-      reloading = false;
+    if (reloadable) {
+      reloadable = false;
+      lastBuiltTarget = null;
       final inline = await load();
 
       setState(() {
@@ -177,9 +178,9 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
   }
 
   void changeListener() {
-    if (!reloading) {
+    if (!reloadable) {
       setState(() {
-        reloading = true;
+        reloadable = true;
       });
     }
   }

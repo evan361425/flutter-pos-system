@@ -142,7 +142,7 @@ class _ProductPageState extends State<ProductPage> {
       ],
     );
 
-    if (result == _Action.changeImage && context.mounted) {
+    if (result == _Action.changeImage && mounted) {
       await widget.product.pickImage(context);
     }
   }

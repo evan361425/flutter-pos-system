@@ -99,7 +99,7 @@ class _OrderSettingPageState extends State<OrderSettingPage>
     );
     await properties.cache();
 
-    if (context.mounted) {
+    if (mounted) {
       Navigator.of(context).pop(properties);
     }
   }

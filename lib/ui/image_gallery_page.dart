@@ -219,11 +219,11 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     try {
       await Future.wait(target.map((image) => image.file.delete()));
 
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, S.actSuccess);
       }
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, '有一個或多個圖片沒有刪成功。');
       }
       Log.out(e.toString(), 'delete_image_error');

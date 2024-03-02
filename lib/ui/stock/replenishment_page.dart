@@ -105,7 +105,7 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
       pathParameters: {'id': item.id},
     );
 
-    if (context.mounted && confirmed == true && context.canPop()) {
+    if (mounted && confirmed == true && context.canPop()) {
       context.pop(true);
     }
   }
