@@ -155,7 +155,9 @@ class _ChartOrderModalState extends State<ChartOrderModal>
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
             labelText: '最多顯示數',
-            helperText: '顯示前幾名的項目，其餘歸類為「其他」；\n0 表示全部顯示。',
+            helperText: '顯示前N名的項目，其餘歸類為「其他」；\n'
+                '若第N的值和第N+k的值相等，則會顯示到N+k\n'
+                '0 表示全部顯示。',
             filled: false,
           ),
           validator: Validator.positiveInt(
@@ -232,7 +234,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
 
     yield* target!.getItems().map((e) => ChoiceChip(
           key: Key('chart.item.${e.id}'),
-          selected: selection.contains(e.id),
+          selected: selection.contains(e.name),
           label: Text(e.name),
           onSelected: (bool value) {
             setState(() {
@@ -240,9 +242,9 @@ class _ChartOrderModalState extends State<ChartOrderModal>
                 if (!allowMultiSelection) {
                   selection.clear();
                 }
-                selection.add(e.id);
+                selection.add(e.name);
               } else {
-                selection.remove(e.id);
+                selection.remove(e.name);
               }
             });
           },
@@ -258,7 +260,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     range = widget.chart?.range ?? OrderChartRange.sevenDays;
 
     _nameController = TextEditingController(text: widget.chart?.name);
-    _groupToController = TextEditingController(text: '0');
+    _groupToController = TextEditingController(text: '5');
 
     if (widget.chart == null) {
       metrics.addAll([OrderMetricType.price, OrderMetricType.revenue]);

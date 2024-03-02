@@ -74,17 +74,18 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
       );
     }
 
-    if (widget.chart is CartesianChart) {
-      return _CartesianChart(
-        chart: widget.chart as CartesianChart,
-        metrics: metrics as List<OrderDataPerDay>,
-      );
+    switch (widget.chart.type) {
+      case AnalysisChartType.cartesian:
+        return _CartesianChart(
+          chart: widget.chart as CartesianChart,
+          metrics: metrics as List<OrderDataPerDay>,
+        );
+      case AnalysisChartType.circular:
+        return _CircularChart(
+          chart: widget.chart as CircularChart,
+          metrics: metrics as List<OrderMetricPerItem>,
+        );
     }
-
-    return _CircularChart(
-      chart: widget.chart as CircularChart,
-      metrics: metrics as List<OrderMetricPerItem>,
-    );
   }
 
   Widget buildRangeSlider() {
@@ -155,16 +156,23 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
 
   void _resetRange() {
     final dur = widget.chart.range.duration;
-    range.value = Util.getDateRange(
+    final newValue = Util.getDateRange(
       now: DateTime.now().subtract(dur),
       days: widget.chart.withToday ? dur.inDays + 1 : dur.inDays,
     );
+
+    if (range.value != newValue) {
+      range.value = newValue;
+    } else {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      range.notifyListeners();
+    }
   }
 
   void _updateRange(DateTime start) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    if (start.isAfter(today)) return;
+    if (start == today || start.isAfter(today)) return;
 
     int days = widget.chart.range.duration.inDays;
     if (widget.chart.withToday &&
@@ -209,51 +217,64 @@ class _CartesianChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0.7,
-      selectionType: SelectionType.point,
-      selectionGesture: ActivationMode.singleTap,
-      // get the different unit axis
-      axes: chart.metrics
-          .groupFoldBy<OrderMetricUnit, OrderMetricType>(
-              (e) => e.unit, (prev, current) => prev ?? current)
-          .values
-          .take(2)
-          .mapIndexed((i, e) => NumericAxis(
-                opposedPosition: i == 1,
-                name: e.title,
-                labelFormat: e.unit.labelFormat,
-              ))
-          .toList(),
-      primaryXAxis: DateTimeAxis(
-        enableAutoIntervalOnZooming: false,
-        dateFormat: DateFormat(chart.range.period.format, S.localeName),
-        majorGridLines: const MajorGridLines(width: 0),
-      ),
-      primaryYAxis: const NumericAxis(isVisible: false),
-      trackballBehavior: TrackballBehavior(
-        enable: true,
-        activationMode: ActivationMode.singleTap,
-        tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
-        tooltipSettings: const InteractiveTooltip(
-          format: 'series.name : point.y',
+    return GestureDetector(
+      // catch drag event to prevent the parent from scrolling
+      onHorizontalDragStart: (details) {},
+      child: SfCartesianChart(
+        plotAreaBorderWidth: 0.7,
+        selectionType: SelectionType.point,
+        selectionGesture: ActivationMode.singleTap,
+        // get the different unit axis
+        axes: chart.metrics
+            .groupFoldBy<OrderMetricUnit, OrderMetricType>(
+                (e) => e.unit, (prev, current) => prev ?? current)
+            .values
+            .take(2)
+            .mapIndexed((i, e) => NumericAxis(
+                  opposedPosition: i == 1,
+                  name: e.unit.name,
+                  labelFormat: e.unit.labelFormat,
+                ))
+            .toList(),
+        primaryXAxis: DateTimeAxis(
+          enableAutoIntervalOnZooming: false,
+          dateFormat: DateFormat(chart.range.period.format, S.localeName),
+          majorGridLines: const MajorGridLines(width: 0),
         ),
-      ),
-      legend: const Legend(
-        isVisible: true,
-      ),
-      series: chart
-          .keys()
-          .map(
-            (key) => SplineSeries(
+        primaryYAxis: NumericAxis(
+          isVisible: chart.metrics.isEmpty,
+          name: 'primaryCount',
+          labelFormat: OrderMetricUnit.count.labelFormat,
+        ),
+        trackballBehavior: TrackballBehavior(
+          enable: true,
+          activationMode: ActivationMode.singleTap,
+          tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
+          tooltipSettings: const InteractiveTooltip(
+            format: 'series.name : point.y',
+          ),
+        ),
+        legend: const Legend(
+          isVisible: true,
+        ),
+        series: chart.keys().map(
+          (key) {
+            return SplineSeries(
               markerSettings: const MarkerSettings(isVisible: true),
               name: key,
+              yAxisName: chart.metrics.isEmpty
+                  ? 'primaryCount'
+                  : OrderMetricType.values
+                      .firstWhere((e) => e.name == key)
+                      .unit
+                      .name,
               xValueMapper: (v, i) => v.at,
               yValueMapper: (v, i) => v.value(key),
               dataSource: metrics,
-            ),
-          )
-          .toList(),
+            );
+          },
+        ).toList(),
+      ),
     );
   }
 }
@@ -271,7 +292,6 @@ class _CircularChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-      selectionGesture: ActivationMode.singleTap,
       tooltipBehavior: TooltipBehavior(
         enable: true,
         activationMode: ActivationMode.singleTap,
@@ -286,11 +306,11 @@ class _CircularChart extends StatelessWidget {
           explode: false, // show larger section when tap
           name: chart.target.name,
           xValueMapper: (v, i) => v.name,
-          yValueMapper: (v, i) => v.count,
-          dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
+          yValueMapper: (v, i) => v.value,
           dataSource: metrics,
-          groupTo: metrics.elementAtOrNull(chart.groupTo)?.count.toDouble(),
+          groupTo: chart.groupToValue(metrics),
           groupMode: CircularChartGroupMode.value,
+          dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelPosition: ChartDataLabelPosition.inside,

@@ -141,22 +141,32 @@ class CircularChart extends Chart<OrderMetricPerItem> {
 
   @override
   Future<List<OrderMetricPerItem>> loader(DateTime start, DateTime end) async {
-    final result = await Seller.instance.getMetricsByItems(
+    return Seller.instance.getMetricsByItems(
       start,
       end,
       target: target,
       selection: selection,
+      ignoreEmpty: ignoreEmpty,
     );
+  }
 
-    if (ignoreEmpty) {
-      return result;
+  /// [groupTo] indexing the largest items, this function return desired value.
+  ///
+  /// If [groupTo] is 0, return null.
+  ///
+  /// If target at [groupTo] has same value with others,
+  /// return value at `lastIndex+1` and fallback to null if overwhelming.
+  ///
+  /// Otherwise, return the value at [groupTo].
+  double? groupToValue(List<OrderMetricPerItem> metrics) {
+    final element = groupTo == 0 ? null : metrics.elementAtOrNull(groupTo);
+    if (element == null) {
+      return null;
     }
 
-    return target
-        .getItems(selection)
-        .map((item) =>
-            result.where((e) => e.name == item.name).firstOrNull ??
-            OrderMetricPerItem(item.name, 0, 0))
-        .toList();
+    final last = metrics.lastIndexWhere((e) => e.value == element.value);
+    return (last > groupTo ? metrics.elementAtOrNull(last + 1) : element)
+        ?.value
+        .toDouble();
   }
 }

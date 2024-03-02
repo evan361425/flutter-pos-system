@@ -58,34 +58,35 @@ class CartesianChartObject extends ModelObject<CartesianChart> {
   @override
   Map<String, Object?> diff(CartesianChart model) {
     final result = <String, Object?>{};
+    final prefix = model.prefix;
 
     if (name != null && name != model.name) {
       model.name = name!;
-      result['name'] = name!;
+      result['$prefix.name'] = name!;
     }
     if (metrics != null && metrics!.join('') != model.metrics.join('')) {
       model.metrics = metrics!;
-      result['metrics'] = metrics!.map((e) => e.index).toList();
+      result['$prefix.metrics'] = metrics!.map((e) => e.index).toList();
     }
     if (target != model.target) {
-      model.target = target!;
-      result['target'] = target?.index;
+      model.target = target;
+      result['$prefix.target'] = target?.index;
     }
     if (selection != null && selection!.join('') != model.selection.join('')) {
       model.selection = selection!;
-      result['selection'] = selection!;
+      result['$prefix.selection'] = selection!;
     }
     if (withToday != null && withToday != model.withToday) {
       model.withToday = withToday!;
-      result['withToday'] = withToday!;
+      result['$prefix.withToday'] = withToday!;
     }
     if (ignoreEmpty != null && ignoreEmpty != model.ignoreEmpty) {
       model.ignoreEmpty = ignoreEmpty!;
-      result['ignoreEmpty'] = ignoreEmpty!;
+      result['$prefix.ignoreEmpty'] = ignoreEmpty!;
     }
     if (range != null && range != model.range) {
       model.range = range!;
-      result['range'] = range!.index;
+      result['$prefix.range'] = range!.index;
     }
 
     return result;
@@ -145,34 +146,35 @@ class CircularChartObject extends ModelObject<CircularChart> {
   @override
   Map<String, Object> diff(CircularChart model) {
     final result = <String, Object>{};
+    final prefix = model.prefix;
 
     if (name != null && name != model.name) {
       model.name = name!;
-      result['name'] = name!;
+      result['$prefix.name'] = name!;
     }
     if (target != null && target != model.target) {
       model.target = target!;
-      result['target'] = target!.index;
+      result['$prefix.target'] = target!.index;
     }
     if (selection != null && selection!.join('') != model.selection.join('')) {
       model.selection = selection!;
-      result['selection'] = selection!;
+      result['$prefix.selection'] = selection!;
     }
     if (groupTo != null && groupTo != model.groupTo) {
       model.groupTo = groupTo!;
-      result['groupTo'] = groupTo!;
+      result['$prefix.groupTo'] = groupTo!;
     }
     if (range != null && range != model.range) {
       model.range = range!;
-      result['range'] = range!.index;
+      result['$prefix.range'] = range!.index;
     }
     if (withToday != null && withToday != model.withToday) {
       model.withToday = withToday!;
-      result['withToday'] = withToday!;
+      result['$prefix.withToday'] = withToday!;
     }
     if (ignoreEmpty != null && ignoreEmpty != model.ignoreEmpty) {
       model.ignoreEmpty = ignoreEmpty!;
-      result['ignoreEmpty'] = ignoreEmpty!;
+      result['$prefix.ignoreEmpty'] = ignoreEmpty!;
     }
 
     return result;

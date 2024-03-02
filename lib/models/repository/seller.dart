@@ -121,7 +121,7 @@ class Seller extends ChangeNotifier {
       ') t',
       columns: [
         't.day',
-        ...types.map((e) => '${e.method}(t.${e.src}) ${e.dst}'),
+        ...types.map((e) => '${e.method}(t.${e.column}) ${e.name}'),
       ],
       groupBy: "t.day",
       orderBy: "t.day asc",
@@ -130,10 +130,11 @@ class Seller extends ChangeNotifier {
 
     final result = <OrderDataPerDay>[
       for (final row in rows)
-        OrderDataPerDay(
-          at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
-          values: row.cast<String, num>(),
-        ),
+        if (row['day'] != null)
+          OrderDataPerDay(
+            at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
+            values: row.cast<String, num>(),
+          ),
     ];
 
     return ignoreEmpty
@@ -184,14 +185,18 @@ class Seller extends ChangeNotifier {
       escapeTable: false,
     );
 
-    final result = rows.groupListsBy((row) => row['day']).values.map((e) {
-      return OrderDataPerDay(
-        at: Util.fromUTC(begin + (e.first['day'] as int) * period.seconds),
-        values: {
-          for (final row in e) row['name'] as String: row['count'] as int,
-        },
-      );
-    }).toList();
+    final result = rows
+        .where((e) => e['day'] != null)
+        .groupListsBy((row) => row['day'])
+        .values
+        .map((e) => OrderDataPerDay(
+              at: Util.fromUTC(
+                  begin + (e.first['day'] as int) * period.seconds),
+              values: {
+                for (final row in e) row['name'] as String: row['count'] as int,
+              },
+            ))
+        .toList();
 
     return ignoreEmpty
         ? result
@@ -207,6 +212,7 @@ class Seller extends ChangeNotifier {
     DateTime end, {
     OrderMetricTarget target = OrderMetricTarget.catalog,
     List<String> selection = const [],
+    bool ignoreEmpty = false,
   }) async {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
@@ -217,23 +223,33 @@ class Seller extends ChangeNotifier {
 
     final rows = await Database.instance.query(
       target.table,
-      columns: ['${target.groupColumn} name', 'COUNT(*) count'],
+      columns: ['${target.groupColumn} name', 'COUNT(*) value'],
       where: 'createdAt BETWEEN ? AND ?$where',
       whereArgs: [begin, cease],
       groupBy: target.groupColumn,
       orderBy: 'count desc',
     );
 
-    final total = rows.fold(0, (prev, e) => prev + (e['count'] as int));
-
-    return <OrderMetricPerItem>[
+    final total = rows.fold(0.0, (prev, e) => prev + (e['value'] as num));
+    final result = <OrderMetricPerItem>[
       for (final row in rows)
         OrderMetricPerItem(
           row['name'] as String,
-          row['count'] as int,
+          row['value'] as num,
           total,
         ),
     ];
+
+    if (ignoreEmpty) {
+      return result;
+    }
+
+    return target
+        .getItems(selection)
+        .map((item) =>
+            result.where((e) => e.name == item.name).firstOrNull ??
+            OrderMetricPerItem(item.name, 0, total))
+        .toList();
   }
 
   /// Get orders and its products info from time range.
@@ -504,11 +520,11 @@ class OrderDataPerDay {
 
 class OrderMetricPerItem {
   final String name;
-  final int count;
+  final num value;
   final double percent;
 
-  OrderMetricPerItem(this.name, this.count, int total)
-      : percent = count / total * 100;
+  OrderMetricPerItem(this.name, this.value, num total)
+      : percent = total == 0 ? 0 : (value / total * 100).toDouble();
 }
 
 enum OrderMetricUnit {
@@ -521,32 +537,24 @@ enum OrderMetricUnit {
 }
 
 enum OrderMetricType {
-  price('SUM', 'price', 'price', OrderMetricUnit.money, '營收'),
-  cost('SUM', 'cost', 'cost', OrderMetricUnit.money, '成本'),
-  revenue('SUM', 'revenue', 'revenue', OrderMetricUnit.money, '盈利'),
-  count('COUNT', '*', 'count', OrderMetricUnit.count, '訂單數');
+  price('SUM', 'price', OrderMetricUnit.money),
+  cost('SUM', 'cost', OrderMetricUnit.money),
+  revenue('SUM', 'revenue', OrderMetricUnit.money),
+  count('COUNT', 'price', OrderMetricUnit.count);
 
   /// The method to calculate the value in DB.
   final String method;
 
   /// The source column to execute [method].
-  final String src;
-
-  /// The destination column passed to user.
-  final String dst;
+  final String column;
 
   /// The unit on chart.
   final OrderMetricUnit unit;
 
-  /// The title of the series.
-  final String title;
-
   const OrderMetricType(
     this.method,
-    this.src,
-    this.dst,
+    this.column,
     this.unit,
-    this.title,
   );
 }
 
