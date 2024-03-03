@@ -623,8 +623,7 @@ enum OrderMetricTarget {
 
           return selection
               .expand<OrderAttributeOption>((id) =>
-                  OrderAttributes.instance.getItem(id)?.itemList ??
-                  <OrderAttributeOption>[])
+                  OrderAttributes.instance.getItem(id)?.itemList ?? const [])
               .toList();
         }
 

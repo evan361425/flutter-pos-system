@@ -112,29 +112,47 @@ void main() {
         await tester.tap(find.byKey(const Key('chart.type.cartesian')));
         await tester.pumpAndSettle();
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
+
         await tester.tap(find.byKey(const Key('chart.metrics.count')));
+        await tester.tap(find.byKey(const Key('chart.metrics.cost')));
         await tester.pumpAndSettle();
 
-        final selected = OrderMetricType.values.where((type) {
+        final types = OrderMetricType.values.where((type) {
           final chip = find.byKey(Key('chart.metrics.${type.name}')).evaluate();
           return (chip.single.widget as ChoiceChip).selected;
         });
-        expect(selected.map((e) => e.name).join(','), equals('price,count'));
+        expect(types.map((e) => e.name).join(','), equals('price,cost,count'));
+
+        await tester.tap(find.byKey(const Key('chart.metrics.cost')));
+        await tester.pumpAndSettle();
+        expect(types.map((e) => e.name).join(','), equals('price,count'));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.target.product')));
         await tester.pumpAndSettle();
         // reset
-        expect(selected.map((e) => e.name).join(','), equals('price'));
+        expect(types.map((e) => e.name).join(','), equals('price'));
         await tester.tap(find.byKey(const Key('chart.metrics.cost')));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
+        await tester.tap(find.byKey(const Key('chart.item.p1')));
         await tester.tap(find.byKey(const Key('chart.item.p2')));
         await tester.pumpAndSettle();
+
+        final items = ['p1', 'p2'].where((id) {
+          final chip = find.byKey(Key('chart.item.$id')).evaluate();
+          return (chip.single.widget as ChoiceChip).selected;
+        });
+        expect(items.join(','), equals('p1,p2'));
+
+        await tester.tap(find.byKey(const Key('chart.item.p2')));
+        await tester.pumpAndSettle();
+        expect(items.join(','), equals('p1'));
+
         await tester.tap(find.byKey(const Key('chart.item_all')));
-        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.item.p2')));
         await tester.pumpAndSettle();
+        expect(items.join(','), equals('p2'));
 
         // withToday is true so the range should contain tomorrow: yesterday < t < tomorrow
         mockGetItemMetricsInPeriod(

@@ -6,6 +6,7 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -327,8 +328,16 @@ void main() {
     test('Analysis', () async {
       when(storage.get(Stores.analysis, argThat(isNull))).thenAnswer(
         (_) => Future.value({
-          'c-1': {'name': 'c-1', 'type': 0},
-          'c-2': {'name': 'c-2', 'type': 1},
+          'c-1': {
+            'name': 'c-1',
+            'type': 0,
+            'metrics': [1, 2],
+          },
+          'c-2': {
+            'name': 'c-2',
+            'type': 1,
+            'metrics': [1],
+          },
         }),
       );
 
@@ -338,8 +347,13 @@ void main() {
       final c2 = Analysis.instance.getItem('c-2')!;
       expect(c1.name, equals('c-1'));
       expect(c1 is CartesianChart, isTrue);
+      expect(
+        c1.metrics,
+        equals([OrderMetricType.cost, OrderMetricType.revenue]),
+      );
       expect(c2.name, equals('c-2'));
       expect(c2 is CircularChart, isTrue);
+      expect(c2.metrics, equals([OrderMetricType.cost]));
     });
 
     setUpAll(() {

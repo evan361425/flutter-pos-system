@@ -47,7 +47,7 @@ void main() {
           ]));
 
       await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(body: GoalsCardView(key: Key('goals'))),
+        home: Scaffold(body: GoalsCardView()),
       ));
       await tester.pumpAndSettle();
 

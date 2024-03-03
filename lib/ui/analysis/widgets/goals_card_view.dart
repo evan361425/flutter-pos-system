@@ -10,9 +10,9 @@ class GoalsCardView extends StatefulWidget {
   final EMACalculator calculator;
 
   const GoalsCardView({
-    Key? key,
+    super.key,
     this.calculator = const EMACalculator(20),
-  }) : super(key: key);
+  });
 
   @override
   State<GoalsCardView> createState() => _GoalsCardViewState();
