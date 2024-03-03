@@ -8,10 +8,10 @@ class OrderCashierSnapshot extends StatefulWidget {
   final ValueNotifier<num> paid;
 
   const OrderCashierSnapshot({
-    Key? key,
+    super.key,
     required this.price,
     required this.paid,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderCashierSnapshot> createState() => _OrderCashierSnapshotState();

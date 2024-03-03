@@ -14,9 +14,9 @@ class ChangerFavoriteView extends StatefulWidget {
   final VoidCallback emptyAction;
 
   const ChangerFavoriteView({
-    Key? key,
+    super.key,
     required this.emptyAction,
-  }) : super(key: key);
+  });
 
   @override
   State<ChangerFavoriteView> createState() => ChangerFavoriteViewState();

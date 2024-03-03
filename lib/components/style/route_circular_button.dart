@@ -15,13 +15,13 @@ class RouteCircularButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   const RouteCircularButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.icon,
     this.route,
     this.popTrueShowSuccess = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

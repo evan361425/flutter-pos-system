@@ -41,7 +41,7 @@ class CartActions extends StatelessWidget {
     ),
   ];
 
-  const CartActions({Key? key}) : super(key: key);
+  const CartActions({super.key});
 
   @override
   Widget build(BuildContext context) {

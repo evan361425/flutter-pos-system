@@ -7,7 +7,7 @@ import 'package:possystem/translator.dart';
 class ProductReorder extends StatelessWidget {
   final Catalog catalog;
 
-  const ProductReorder(this.catalog, {Key? key}) : super(key: key);
+  const ProductReorder(this.catalog, {super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -83,7 +83,7 @@ void main() {
 }
 
 class _Scaffold extends StatefulWidget {
-  const _Scaffold({Key? key}) : super(key: key);
+  const _Scaffold();
 
   @override
   State<_Scaffold> createState() => _ScaffoldState();

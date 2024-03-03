@@ -22,7 +22,7 @@ class ItemLoader<T, U> extends StatefulWidget {
   final EdgeInsets? padding;
 
   const ItemLoader({
-    Key? key,
+    super.key,
     required this.builder,
     required this.loader,
     required this.prototypeItem,
@@ -32,7 +32,7 @@ class ItemLoader<T, U> extends StatefulWidget {
     this.notifier,
     this.emptyChild = const SizedBox.shrink(),
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   State<ItemLoader<T, U>> createState() => ItemLoaderState<T, U>();

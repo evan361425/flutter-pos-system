@@ -11,7 +11,7 @@ import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 class AnalysisView extends StatelessWidget {
   final TutorialInTab? tab;
 
-  const AnalysisView({Key? key, this.tab}) : super(key: key);
+  const AnalysisView({super.key, this.tab});
 
   @override
   Widget build(BuildContext context) {

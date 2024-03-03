@@ -39,9 +39,9 @@ class Product extends Model<ProductObject>
   final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
 
   Product({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
-    String name = 'product',
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'product',
     int index = 1,
     this.cost = 0,
     this.price = 0,
@@ -49,9 +49,7 @@ class Product extends Model<ProductObject>
     DateTime? createdAt,
     this.searchedAt,
     Map<String, ProductIngredient>? ingredients,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        super(id, name, status) {
-    this.name = name;
+  }) : createdAt = createdAt ?? DateTime.now() {
     this.index = index;
     this.imagePath = imagePath;
 

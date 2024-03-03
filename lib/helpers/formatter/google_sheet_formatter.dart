@@ -29,7 +29,7 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
 }
 
 class _MenuTransformer extends ModelTransformer<Menu> {
-  const _MenuTransformer(Menu target) : super(target);
+  const _MenuTransformer(super.target);
 
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
@@ -66,7 +66,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 }
 
 class _StockTransformer extends ModelTransformer<Stock> {
-  const _StockTransformer(Stock target) : super(target);
+  const _StockTransformer(super.target);
 
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
@@ -86,7 +86,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
 }
 
 class _QuantitiesTransformer extends ModelTransformer<Quantities> {
-  const _QuantitiesTransformer(Quantities target) : super(target);
+  const _QuantitiesTransformer(super.target);
 
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
@@ -104,7 +104,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
 }
 
 class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
-  const _ReplenisherTransformer(Replenisher target) : super(target);
+  const _ReplenisherTransformer(super.target);
 
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
@@ -126,7 +126,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
 }
 
 class _OATransformer extends ModelTransformer<OrderAttributes> {
-  const _OATransformer(OrderAttributes target) : super(target);
+  const _OATransformer(super.target);
 
   @override
   List<GoogleSheetCellData> getHeader() {

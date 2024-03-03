@@ -13,9 +13,9 @@ class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   const ExportOrderView({
-    Key? key,
+    super.key,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -18,9 +18,9 @@ class SettingView extends StatelessWidget {
   final TutorialInTab? tab;
 
   const SettingView({
-    Key? key,
+    super.key,
     this.tab,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,7 @@ class SettingView extends StatelessWidget {
 }
 
 class _HeaderInfoList extends StatelessWidget {
-  const _HeaderInfoList({Key? key}) : super(key: key);
+  const _HeaderInfoList();
 
   @override
   Widget build(BuildContext context) {

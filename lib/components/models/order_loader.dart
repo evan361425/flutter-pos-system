@@ -17,12 +17,12 @@ class OrderLoader extends StatefulWidget {
   final bool countingAll;
 
   const OrderLoader({
-    Key? key,
+    super.key,
     required this.ranger,
     required this.builder,
     this.trailingBuilder,
     this.countingAll = false,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderLoader> createState() => _OrderLoaderState();

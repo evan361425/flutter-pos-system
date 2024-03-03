@@ -9,9 +9,9 @@ class ExportBasicView extends StatefulWidget {
   final PlainTextExporter exporter;
 
   const ExportBasicView({
-    Key? key,
+    super.key,
     this.exporter = const PlainTextExporter(),
-  }) : super(key: key);
+  });
 
   @override
   State<ExportBasicView> createState() => _ExportBasicViewState();

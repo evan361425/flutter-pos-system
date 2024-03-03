@@ -12,14 +12,14 @@ class OrientatedView extends StatelessWidget {
   final Widget row4;
 
   const OrientatedView({
-    Key? key,
+    super.key,
     required this.row1,
     required this.row2,
     required this.row3_1,
     required this.row3_2,
     required this.row3_3,
     required this.row4,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

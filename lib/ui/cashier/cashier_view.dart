@@ -13,7 +13,7 @@ import 'widgets/unit_list_view.dart';
 class CashierView extends StatelessWidget {
   final TutorialInTab? tab;
 
-  const CashierView({Key? key, this.tab}) : super(key: key);
+  const CashierView({super.key, this.tab});
 
   @override
   Widget build(BuildContext context) {

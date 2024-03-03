@@ -15,9 +15,9 @@ class MenuCatalogList extends StatelessWidget {
 
   const MenuCatalogList(
     this.catalogs, {
-    Key? key,
+    super.key,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

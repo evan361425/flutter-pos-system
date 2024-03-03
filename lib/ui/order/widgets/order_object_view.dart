@@ -14,9 +14,9 @@ class OrderObjectView extends StatelessWidget {
   final OrderObject order;
 
   const OrderObjectView({
-    Key? key,
+    super.key,
     required this.order,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

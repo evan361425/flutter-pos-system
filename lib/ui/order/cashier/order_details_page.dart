@@ -15,7 +15,7 @@ import 'package:possystem/ui/order/widgets/order_object_view.dart';
 import 'order_setting_view.dart';
 
 class OrderDetailsPage extends StatefulWidget {
-  const OrderDetailsPage({Key? key}) : super(key: key);
+  const OrderDetailsPage({super.key});
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();

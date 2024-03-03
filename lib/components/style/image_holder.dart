@@ -18,14 +18,14 @@ class ImageHolder extends StatelessWidget {
   final EdgeInsets padding;
 
   const ImageHolder({
-    Key? key,
+    super.key,
     required this.image,
     required this.title,
     this.onPressed,
     this.onImageError,
     this.focusNode,
     this.padding = const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +89,10 @@ class EditImageHolder extends StatelessWidget {
   final void Function(String) onSelected;
 
   const EditImageHolder({
-    Key? key,
+    super.key,
     this.path,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

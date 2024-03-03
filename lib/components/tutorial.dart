@@ -8,10 +8,10 @@ class TutorialWrapper extends StatelessWidget {
   final TutorialInTab? tab;
 
   const TutorialWrapper({
-    Key? key,
+    super.key,
     required this.child,
     this.tab,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class Tutorial extends StatelessWidget {
   final SpotlightDurationConfig duration;
 
   const Tutorial({
-    Key? key,
+    super.key,
     required this.id,
     this.title,
     required this.message,
@@ -66,7 +66,7 @@ class Tutorial extends StatelessWidget {
       zoomOut: Duration(milliseconds: 600),
       contentFadeIn: Duration(milliseconds: 200),
     ),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

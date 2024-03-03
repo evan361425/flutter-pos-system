@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 
 import 'preview_page.dart';
 
 class IngredientPreviewPage extends PreviewPage<Ingredient> {
   const IngredientPreviewPage({
-    Key? key,
-    required List<FormattedItem> items,
-  }) : super(key: key, items: items);
+    super.key,
+    required super.items,
+  });
 
   @override
   Widget getItem(BuildContext context, Ingredient item) {

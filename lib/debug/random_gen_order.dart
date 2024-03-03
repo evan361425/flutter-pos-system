@@ -122,7 +122,7 @@ List<int> _selectExistedProduct<T>(List<OrderProductObject> data, String id) {
 }
 
 class RandomGenerateOrderButton extends StatelessWidget {
-  const RandomGenerateOrderButton({Key? key}) : super(key: key);
+  const RandomGenerateOrderButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +136,7 @@ class RandomGenerateOrderButton extends StatelessWidget {
 }
 
 class _SettingPage extends StatefulWidget {
-  const _SettingPage({Key? key}) : super(key: key);
+  const _SettingPage();
 
   @override
   State<_SettingPage> createState() => _SettingPageState();

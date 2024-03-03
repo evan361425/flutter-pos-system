@@ -47,7 +47,7 @@ class PlainTextFormatter extends Formatter<String> {
 }
 
 class _MenuTransformer extends ModelTransformer<Menu> {
-  const _MenuTransformer(Menu target) : super(target);
+  const _MenuTransformer(super.target);
 
   static const catalogTmp = r'第%num個種類叫做 %name';
   static const productTmp = r'第%num個產品叫做 %name，其售價為 %price 元，成本為 %cost 元';
@@ -204,7 +204,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 }
 
 class _StockTransformer extends ModelTransformer<Stock> {
-  const _StockTransformer(Stock target) : super(target);
+  const _StockTransformer(super.target);
 
   static const baseTmp = r'第%num個成份叫做 %name，庫存現有 %amount 個';
   static const maxTmp = r'最大量有 %max 個。';
@@ -261,7 +261,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
 }
 
 class _QuantitiesTransformer extends ModelTransformer<Quantities> {
-  const _QuantitiesTransformer(Quantities target) : super(target);
+  const _QuantitiesTransformer(super.target);
 
   static const baseTmp = r'第%num種份量叫做 %name，'
       '預設會讓成分的份量乘以 %prop 倍。';
@@ -312,7 +312,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
 }
 
 class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
-  const _ReplenisherTransformer(Replenisher target) : super(target);
+  const _ReplenisherTransformer(super.target);
 
   static const baseTmp = r'第%num種方式叫做 %name，';
   static const ingredientTmp = r'%name（%amount 個）';
@@ -382,7 +382,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
 }
 
 class _OATransformer extends ModelTransformer<OrderAttributes> {
-  const _OATransformer(OrderAttributes target) : super(target);
+  const _OATransformer(super.target);
 
   static const baseTmp = r'第%num種屬性叫做 %name，屬於 %mode 類型。';
 

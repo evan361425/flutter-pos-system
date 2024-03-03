@@ -11,11 +11,11 @@ class OrderCatalogListView extends StatefulWidget {
   final ValueNotifier<int> indexNotifier;
 
   const OrderCatalogListView({
-    Key? key,
+    super.key,
     required this.catalogs,
     required this.indexNotifier,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderCatalogListView> createState() => _OrderCatalogListViewState();

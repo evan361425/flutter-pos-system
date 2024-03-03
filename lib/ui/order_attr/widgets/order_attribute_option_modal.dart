@@ -19,10 +19,9 @@ class OrderAttributeOptionModal extends StatefulWidget {
 
   const OrderAttributeOptionModal(
     this.attribute, {
-    Key? key,
+    super.key,
     this.option,
-  })  : isNew = option == null,
-        super(key: key);
+  }) : isNew = option == null;
 
   @override
   State<OrderAttributeOptionModal> createState() => _OrderAttributeModalState();

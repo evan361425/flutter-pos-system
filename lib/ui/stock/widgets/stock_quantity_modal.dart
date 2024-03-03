@@ -12,9 +12,8 @@ class StockQuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockQuantityModal({Key? key, this.quantity})
-      : isNew = quantity == null,
-        super(key: key);
+  const StockQuantityModal({super.key, this.quantity})
+      : isNew = quantity == null;
 
   @override
   State<StockQuantityModal> createState() => _StockQuantityModalState();

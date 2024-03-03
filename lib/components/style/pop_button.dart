@@ -6,10 +6,10 @@ class PopButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const PopButton({
-    Key? key,
+    super.key,
     this.title,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

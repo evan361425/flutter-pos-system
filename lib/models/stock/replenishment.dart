@@ -16,12 +16,11 @@ class Replenishment extends Model<ReplenishmentObject>
   final Stores storageStore = Stores.replenisher;
 
   Replenishment({
-    String? id,
-    String name = 'replenishment',
-    ModelStatus status = ModelStatus.normal,
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'replenishment',
     Map<String, num>? data,
-  })  : data = data ?? {},
-        super(id, name, status);
+  }) : data = data ?? {};
 
   factory Replenishment.fromObject(ReplenishmentObject object) => Replenishment(
         id: object.id,

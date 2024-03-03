@@ -17,9 +17,9 @@ class ChartCardView<T> extends StatefulWidget {
   final Chart<T> chart;
 
   const ChartCardView({
-    Key? key,
+    super.key,
     required this.chart,
-  }) : super(key: key);
+  });
 
   @override
   State<ChartCardView<T>> createState() => _ChartCardViewState<T>();

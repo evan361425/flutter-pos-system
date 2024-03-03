@@ -17,10 +17,10 @@ class OrderSettingPage extends StatefulWidget {
   final List<GoogleSheetProperties>? sheets;
 
   const OrderSettingPage({
-    Key? key,
+    super.key,
     required this.properties,
     this.sheets,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderSettingPage> createState() => _OrderSettingPageState();

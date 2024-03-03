@@ -18,13 +18,13 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
   final Stores storageStore = Stores.orderAttributes;
 
   OrderAttributeOption({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
-    String name = 'order attribute option',
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'order attribute option',
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-  }) : super(id, name, status) {
+  }) {
     this.index = index;
   }
 

@@ -3,7 +3,7 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
 
 class FeatureRequestPage extends StatelessWidget {
-  const FeatureRequestPage({Key? key}) : super(key: key);
+  const FeatureRequestPage({super.key});
 
   @override
   Widget build(BuildContext context) {

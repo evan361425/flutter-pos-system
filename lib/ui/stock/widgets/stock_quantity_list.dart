@@ -12,8 +12,7 @@ import 'package:possystem/translator.dart';
 class StockQuantityList extends StatelessWidget {
   final List<Quantity> quantities;
 
-  const StockQuantityList({Key? key, required this.quantities})
-      : super(key: key);
+  const StockQuantityList({super.key, required this.quantities});
 
   @override
   Widget build(BuildContext context) {

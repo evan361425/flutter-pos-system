@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
@@ -8,9 +7,9 @@ import 'preview_page.dart';
 
 class QuantityPreviewPage extends PreviewPage<Quantity> {
   const QuantityPreviewPage({
-    Key? key,
-    required List<FormattedItem> items,
-  }) : super(key: key, items: items);
+    super.key,
+    required super.items,
+  });
 
   @override
   Widget getItem(BuildContext context, Quantity item) {

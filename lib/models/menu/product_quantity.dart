@@ -30,13 +30,14 @@ class ProductQuantity extends Model<ProductQuantityObject>
   final Stores storageStore = Stores.menu;
 
   ProductQuantity({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = '',
     Quantity? quantity,
     this.amount = 0,
     this.additionalCost = 0,
     this.additionalPrice = 0,
-  }) : super(id, '', status) {
+  }) {
     if (quantity != null) this.quantity = quantity;
   }
 

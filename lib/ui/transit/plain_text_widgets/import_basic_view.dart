@@ -10,9 +10,9 @@ class ImportBasicView extends StatefulWidget {
   final PlainTextExporter exporter;
 
   const ImportBasicView({
-    Key? key,
+    super.key,
     this.exporter = const PlainTextExporter(),
-  }) : super(key: key);
+  });
 
   @override
   State<ImportBasicView> createState() => _ImportBasicViewState();

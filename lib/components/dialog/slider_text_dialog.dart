@@ -6,14 +6,14 @@ import 'package:possystem/translator.dart';
 
 class SliderTextDialog extends StatefulWidget {
   const SliderTextDialog({
-    Key? key,
+    super.key,
     required this.value,
     required this.max,
     this.min = 0.0,
     this.validator,
     this.decoration,
     this.title,
-  }) : super(key: key);
+  });
 
   final String? Function(String?)? validator;
   final Widget? title;

@@ -20,10 +20,10 @@ class MenuPage extends StatefulWidget {
   final bool productOnly;
 
   const MenuPage({
-    Key? key,
+    super.key,
     this.catalog,
     this.productOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   State<MenuPage> createState() => _MenuPageState();

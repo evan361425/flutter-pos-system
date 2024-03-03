@@ -15,9 +15,9 @@ class StockScreen<T> extends StatelessWidget {
   final TutorialInTab? tab;
 
   const StockScreen({
-    Key? key,
+    super.key,
     this.tab,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartProductSelector extends StatelessWidget {
-  const CartProductSelector({Key? key}) : super(key: key);
+  const CartProductSelector({super.key});
 
   @override
   Widget build(BuildContext context) {

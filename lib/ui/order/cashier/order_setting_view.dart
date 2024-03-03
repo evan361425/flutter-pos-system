@@ -9,9 +9,9 @@ class OderSettingView extends StatelessWidget {
   final ValueNotifier<num> price;
 
   const OderSettingView({
-    Key? key,
+    super.key,
     required this.price,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

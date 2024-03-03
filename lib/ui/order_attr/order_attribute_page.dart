@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'widgets/order_attribute_list.dart';
 
 class OrderAttributePage extends StatelessWidget {
-  const OrderAttributePage({Key? key}) : super(key: key);
+  const OrderAttributePage({super.key});
 
   @override
   Widget build(BuildContext context) {

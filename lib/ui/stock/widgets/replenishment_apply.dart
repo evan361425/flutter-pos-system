@@ -6,7 +6,7 @@ import 'package:possystem/models/stock/replenishment.dart';
 class ReplenishmentApply extends StatelessWidget {
   final Replenishment item;
 
-  const ReplenishmentApply(this.item, {Key? key}) : super(key: key);
+  const ReplenishmentApply(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {

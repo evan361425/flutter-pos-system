@@ -56,16 +56,16 @@ abstract class Chart<T> extends Model<ModelObject>
   List<String> targetItems;
 
   Chart({
-    String? id,
-    required String name,
-    required ModelStatus status,
+    super.id,
+    required super.name,
+    required super.status,
     required this.range,
     required this.withToday,
     required this.ignoreEmpty,
     required this.metrics,
     required this.target,
     required this.targetItems,
-  }) : super(id, name, status);
+  });
 
   @override
   Stores get storageStore => Stores.analysis;

@@ -9,11 +9,11 @@ class EmptyBody extends StatelessWidget {
   final String? helperText;
 
   const EmptyBody({
-    Key? key,
+    super.key,
     this.title,
     required this.onPressed,
     this.helperText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

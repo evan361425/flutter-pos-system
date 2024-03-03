@@ -4,15 +4,12 @@ import 'package:possystem/helpers/launcher.dart';
 
 class LauncherSnackbarAction extends SnackBarAction {
   LauncherSnackbarAction({
-    Key? key,
-    required String label,
+    super.key,
+    required super.label,
     required String link,
     required String logCode,
-  }) : super(
-            key: key,
-            label: label,
-            onPressed: () {
-              Log.ger('snackbar launch', logCode, link);
-              Launcher.launch(link).ignore();
-            });
+  }) : super(onPressed: () {
+          Log.ger('snackbar launch', logCode, link);
+          Launcher.launch(link).ignore();
+        });
 }

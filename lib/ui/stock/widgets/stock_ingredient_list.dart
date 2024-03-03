@@ -15,8 +15,7 @@ import 'package:possystem/translator.dart';
 class StockIngredientList extends StatelessWidget {
   final List<Ingredient> ingredients;
 
-  const StockIngredientList({Key? key, required this.ingredients})
-      : super(key: key);
+  const StockIngredientList({super.key, required this.ingredients});
 
   @override
   Widget build(BuildContext context) {

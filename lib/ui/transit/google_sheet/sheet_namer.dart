@@ -18,12 +18,12 @@ class SheetNamer extends StatefulWidget {
   final String? actionTitle;
 
   const SheetNamer({
-    Key? key,
+    super.key,
     required this.prop,
     this.action,
     this.actionIcon,
     this.actionTitle,
-  }) : super(key: key);
+  });
 
   @override
   State<SheetNamer> createState() => SheetNamerState();

@@ -5,9 +5,9 @@ class MoreButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MoreButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class EntryMoreButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const EntryMoreButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +43,9 @@ class NavToButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const NavToButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

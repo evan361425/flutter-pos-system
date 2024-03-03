@@ -15,9 +15,9 @@ class MenuProductList extends StatelessWidget {
   final Catalog? catalog;
 
   const MenuProductList({
-    Key? key,
+    super.key,
     required this.catalog,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

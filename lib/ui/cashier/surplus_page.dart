@@ -10,7 +10,7 @@ import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 class CashierSurplus extends StatelessWidget {
-  const CashierSurplus({Key? key}) : super(key: key);
+  const CashierSurplus({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -126,11 +126,10 @@ class _DataWithLabel extends StatelessWidget {
   final String? helper;
 
   const _DataWithLabel({
-    Key? key,
     required this.data,
     required this.label,
     this.helper,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

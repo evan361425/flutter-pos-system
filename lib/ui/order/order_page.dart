@@ -24,7 +24,7 @@ import 'widgets/order_catalog_list_view.dart';
 import 'widgets/order_product_list_view.dart';
 
 class OrderPage extends StatefulWidget {
-  const OrderPage({Key? key}) : super(key: key);
+  const OrderPage({super.key});
 
   @override
   State<OrderPage> createState() => OrderPageState();

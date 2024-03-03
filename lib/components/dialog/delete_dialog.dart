@@ -7,7 +7,7 @@ import 'package:possystem/translator.dart';
 class DeleteDialog extends StatelessWidget {
   final Widget content;
 
-  const DeleteDialog({Key? key, required this.content}) : super(key: key);
+  const DeleteDialog({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {

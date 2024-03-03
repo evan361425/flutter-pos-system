@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:possystem/translator.dart';
 
 class ReplenishmentPage extends StatefulWidget {
-  const ReplenishmentPage({Key? key}) : super(key: key);
+  const ReplenishmentPage({super.key});
 
   @override
   State<ReplenishmentPage> createState() => _ReplenishmentPageState();

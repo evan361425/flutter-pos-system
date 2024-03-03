@@ -13,12 +13,12 @@ class ChoiceChipWithHelp<T> extends StatefulWidget {
   final List<String> helpTexts;
 
   const ChoiceChipWithHelp({
-    Key? key,
+    super.key,
     required this.values,
     required this.selected,
     required this.labels,
     required this.helpTexts,
-  }) : super(key: key);
+  });
 
   @override
   State<ChoiceChipWithHelp<T>> createState() => ChoiceChipWithHelpState<T>();

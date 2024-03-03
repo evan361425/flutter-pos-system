@@ -12,7 +12,7 @@ import 'widgets/history_order_list.dart';
 import 'widgets/calendar_view.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+  const HistoryPage({super.key});
 
   @override
   State<HistoryPage> createState() => _HistoryPageState();

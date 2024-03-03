@@ -13,12 +13,12 @@ class ItemListScaffold extends StatelessWidget {
   final int selected;
 
   const ItemListScaffold({
-    Key? key,
+    super.key,
     required this.title,
     required this.items,
     required this.selected,
     this.tips,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -4,10 +4,10 @@ import 'package:possystem/translator.dart';
 
 class ConfirmDialog extends StatelessWidget {
   const ConfirmDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.content,
-  }) : super(key: key);
+  });
 
   final String title;
   final Widget? content;

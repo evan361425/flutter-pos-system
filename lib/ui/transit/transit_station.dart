@@ -33,13 +33,13 @@ class TransitStation extends StatefulWidget {
   final DataExporter? exporter;
 
   const TransitStation({
-    Key? key,
+    super.key,
     required this.type,
     required this.method,
     this.exporter,
     this.notifier,
     this.range,
-  }) : super(key: key);
+  });
 
   @override
   State<TransitStation> createState() => _TransitStationState();

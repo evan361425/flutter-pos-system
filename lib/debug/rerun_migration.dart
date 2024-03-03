@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/services/database.dart';
 
 class RerunMigration extends StatelessWidget {
-  const RerunMigration({Key? key}) : super(key: key);
+  const RerunMigration({super.key});
 
   @override
   Widget build(BuildContext context) {

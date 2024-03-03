@@ -9,8 +9,8 @@ class PercentileBar extends StatefulWidget {
   const PercentileBar(
     this.at,
     this.total, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<PercentileBar> createState() => _PercentileBarState();

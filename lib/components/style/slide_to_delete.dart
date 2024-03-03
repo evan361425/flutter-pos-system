@@ -14,13 +14,13 @@ class SlideToDelete<T> extends StatelessWidget {
   final Widget? warningContent;
 
   const SlideToDelete({
-    Key? key,
+    super.key,
     required this.item,
     required this.child,
     required this.deleteCallback,
     this.warningContentBuilder,
     this.warningContent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -18,10 +18,10 @@ class CalendarView extends StatefulWidget {
   final bool isPortrait;
 
   const CalendarView({
-    Key? key,
+    super.key,
     required this.notifier,
     required this.isPortrait,
-  }) : super(key: key);
+  });
 
   @override
   State<CalendarView> createState() => _CalendarViewState();

@@ -12,9 +12,9 @@ class OrderProductListView extends StatelessWidget {
   final List<Product> products;
 
   const OrderProductListView({
-    Key? key,
+    super.key,
     required this.products,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

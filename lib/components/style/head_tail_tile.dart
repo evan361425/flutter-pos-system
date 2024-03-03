@@ -10,13 +10,12 @@ class HeadTailTile extends StatelessWidget {
   final Widget? subtitle;
 
   const HeadTailTile({
-    Key? key,
+    super.key,
     required this.head,
     this.tail,
     this.tailWidget,
     this.subtitle,
-  })  : assert(tailWidget != null || tail != null),
-        super(key: key);
+  }) : assert(tailWidget != null || tail != null);
 
   @override
   Widget build(BuildContext context) {

@@ -15,9 +15,8 @@ class ReplenishmentModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ReplenishmentModal({Key? key, this.replenishment})
-      : isNew = replenishment == null,
-        super(key: key);
+  const ReplenishmentModal({super.key, this.replenishment})
+      : isNew = replenishment == null;
 
   @override
   State<ReplenishmentModal> createState() => _ReplenishmentModalState();

@@ -14,9 +14,9 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   final List<FormattedItem> items;
 
   const PreviewPage({
-    Key? key,
+    super.key,
     required this.items,
-  }) : super(key: key);
+  });
 
   static Future<bool?> show(
     BuildContext context,
@@ -102,11 +102,11 @@ class ImporterColumnStatus extends StatelessWidget {
   final FontWeight? fontWeight;
 
   const ImporterColumnStatus({
-    Key? key,
+    super.key,
     required this.name,
     required this.status,
     this.fontWeight,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +134,7 @@ class ImporterColumnStatus extends StatelessWidget {
 class PreviewErrorListTile extends StatelessWidget {
   final FormattedItem item;
 
-  const PreviewErrorListTile(this.item, {Key? key}) : super(key: key);
+  const PreviewErrorListTile(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -9,9 +9,9 @@ class OrderTable extends StatefulWidget {
   final OrderObject order;
 
   const OrderTable({
-    Key? key,
+    super.key,
     required this.order,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderTable> createState() => _OrderTableState();
@@ -59,11 +59,11 @@ class SimpleTable extends StatelessWidget {
   final List<int> expandableIndexes;
 
   const SimpleTable({
-    Key? key,
+    super.key,
     required this.headers,
     required this.data,
     this.expandableIndexes = const [],
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

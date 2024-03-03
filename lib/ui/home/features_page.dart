@@ -19,7 +19,7 @@ import 'package:possystem/ui/home/widgets/feature_slider.dart';
 import 'package:possystem/ui/home/widgets/feature_switch.dart';
 
 class FeaturesPage extends StatefulWidget {
-  const FeaturesPage({Key? key}) : super(key: key);
+  const FeaturesPage({super.key});
 
   @override
   State<FeaturesPage> createState() => _FeaturesPageState();

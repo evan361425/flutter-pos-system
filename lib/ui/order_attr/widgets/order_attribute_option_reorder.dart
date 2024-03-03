@@ -8,9 +8,9 @@ class OrderAttributeOptionReorder extends StatelessWidget {
   final OrderAttribute attribute;
 
   const OrderAttributeOptionReorder({
-    Key? key,
+    super.key,
     required this.attribute,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

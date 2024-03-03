@@ -19,12 +19,12 @@ class TransitOrderList extends StatelessWidget {
   final String? warning;
 
   const TransitOrderList({
-    Key? key,
+    super.key,
     required this.notifier,
     required this.formatOrder,
     required this.memoryPredictor,
     this.warning,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

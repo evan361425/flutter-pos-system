@@ -20,14 +20,14 @@ class ReloadableCard<T> extends StatefulWidget {
   final bool wrappedByCard;
 
   const ReloadableCard({
-    Key? key,
+    super.key,
     this.id,
     required this.builder,
     required this.loader,
     this.title,
     this.notifier,
     this.wrappedByCard = true,
-  }) : super(key: key);
+  });
 
   @override
   State<ReloadableCard<T>> createState() => _ReloadableCardState<T>();

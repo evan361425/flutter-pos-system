@@ -5,9 +5,9 @@ class TextDivider extends StatelessWidget {
   final String label;
 
   const TextDivider({
-    Key? key,
+    super.key,
     required this.label,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ class Linkify extends StatelessWidget {
 
   final TextAlign? textAlign;
 
-  const Linkify(this.data, {Key? key, this.textAlign}) : super(key: key);
+  const Linkify(this.data, {super.key, this.textAlign});
 
   factory Linkify.fromString(text, {TextAlign? textAlign}) {
     return Linkify(_parseText(text), textAlign: textAlign);

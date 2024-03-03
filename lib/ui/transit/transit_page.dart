@@ -10,7 +10,7 @@ import 'package:possystem/translator.dart';
 import 'transit_station.dart';
 
 class TransitPage extends StatefulWidget {
-  const TransitPage({Key? key}) : super(key: key);
+  const TransitPage({super.key});
 
   @override
   State<TransitPage> createState() => _TransitPageState();

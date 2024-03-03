@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CircularLoading extends StatelessWidget {
-  const CircularLoading({Key? key, this.size}) : super(key: key);
+  const CircularLoading({super.key, this.size});
 
   final double? size;
 

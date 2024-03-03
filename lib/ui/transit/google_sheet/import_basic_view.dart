@@ -25,10 +25,10 @@ class ImportBasicView extends StatefulWidget {
   final GoogleSheetExporter exporter;
 
   const ImportBasicView({
-    Key? key,
+    super.key,
     required this.exporter,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   State<ImportBasicView> createState() => _ImportBasicViewState();

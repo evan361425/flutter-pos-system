@@ -24,15 +24,14 @@ class Catalog extends Model<CatalogObject>
   final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
 
   Catalog({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
-    String name = 'catalog',
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'catalog',
     int index = 0,
     String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        super(id, name, status) {
+  }) : createdAt = createdAt ?? DateTime.now() {
     this.index = index;
     this.imagePath = imagePath;
     if (products != null) replaceItems(products);

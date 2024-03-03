@@ -6,7 +6,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartProductStateSelector extends StatefulWidget {
-  const CartProductStateSelector({Key? key}) : super(key: key);
+  const CartProductStateSelector({super.key});
 
   @override
   State<CartProductStateSelector> createState() =>

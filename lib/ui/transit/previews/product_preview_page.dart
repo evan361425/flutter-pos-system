@@ -8,9 +8,9 @@ import 'preview_page.dart';
 
 class ProductPreviewPage extends PreviewPage<Product> {
   const ProductPreviewPage({
-    Key? key,
-    required List<FormattedItem> items,
-  }) : super(key: key, items: items);
+    super.key,
+    required super.items,
+  });
 
   @override
   Iterable<Widget> getDetails(

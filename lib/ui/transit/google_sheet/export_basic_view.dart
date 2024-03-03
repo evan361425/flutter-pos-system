@@ -24,10 +24,10 @@ class ExportBasicView extends StatefulWidget {
   final GoogleSheetExporter exporter;
 
   const ExportBasicView({
-    Key? key,
+    super.key,
     required this.exporter,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   State<ExportBasicView> createState() => _ExportBasicViewState();

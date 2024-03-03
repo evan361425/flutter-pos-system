@@ -17,10 +17,10 @@ class SignInButton extends StatelessWidget {
   final Widget Function(User? user)? signedInWidgetBuilder;
 
   const SignInButton({
-    Key? key,
+    super.key,
     this.signedInWidget,
     this.signedInWidgetBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class SignInButton extends StatelessWidget {
 }
 
 class _GoogleSignInButton extends StatefulWidget {
-  const _GoogleSignInButton({Key? key}) : super(key: key);
+  const _GoogleSignInButton({super.key});
 
   @override
   State<_GoogleSignInButton> createState() => _GoogleSignInButtonState();

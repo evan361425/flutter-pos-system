@@ -6,10 +6,10 @@ class LoadingWrapper extends StatefulWidget {
   final bool isLoading;
 
   const LoadingWrapper({
-    Key? key,
+    super.key,
     required this.child,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   @override
   State<LoadingWrapper> createState() => LoadingWrapperState();

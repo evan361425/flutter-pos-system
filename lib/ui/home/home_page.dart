@@ -13,9 +13,9 @@ class HomePage extends StatefulWidget {
   final HomeTab tab;
 
   const HomePage({
-    Key? key,
+    super.key,
     required this.tab,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -108,9 +108,9 @@ class _CustomTab extends StatelessWidget {
   final String text;
 
   const _CustomTab({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

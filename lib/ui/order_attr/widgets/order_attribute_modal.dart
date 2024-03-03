@@ -13,9 +13,8 @@ class OrderAttributeModal extends StatefulWidget {
 
   final bool isNew;
 
-  const OrderAttributeModal({Key? key, this.attribute})
-      : isNew = attribute == null,
-        super(key: key);
+  const OrderAttributeModal({super.key, this.attribute})
+      : isNew = attribute == null;
 
   @override
   State<OrderAttributeModal> createState() => _OrderAttributeModalState();

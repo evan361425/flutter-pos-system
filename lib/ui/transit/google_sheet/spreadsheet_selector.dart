@@ -59,7 +59,7 @@ class SpreadsheetSelector extends StatefulWidget {
   final Map<SheetType, String> Function()? requiredSheetTitles;
 
   const SpreadsheetSelector({
-    Key? key,
+    super.key,
     required this.exporter,
     required this.cacheKey,
     required this.existLabel,
@@ -73,7 +73,7 @@ class SpreadsheetSelector extends StatefulWidget {
     this.onUpdated,
     this.requiredSheetTitles,
     this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   State<SpreadsheetSelector> createState() => SpreadsheetSelectorState();

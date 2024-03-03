@@ -29,16 +29,16 @@ class Ingredient extends Model<IngredientObject>
   final Stores storageStore = Stores.stock;
 
   Ingredient({
-    String? id,
-    String name = 'ingredient',
-    ModelStatus status = ModelStatus.normal,
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'ingredient',
     this.currentAmount = 0.0,
     this.totalAmount,
     this.warningAmount,
     this.alertAmount,
     this.lastAmount,
     this.updatedAt,
-  }) : super(id, name, status);
+  });
 
   factory Ingredient.fromObject(IngredientObject object) => Ingredient(
         id: object.id,

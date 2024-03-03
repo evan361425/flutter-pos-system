@@ -8,10 +8,10 @@ class SheetSelector extends StatefulWidget {
   final String label;
 
   const SheetSelector({
-    Key? key,
+    super.key,
     this.defaultValue,
     required this.label,
-  }) : super(key: key);
+  });
 
   @override
   State<SheetSelector> createState() => SheetSelectorState();

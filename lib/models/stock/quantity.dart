@@ -13,11 +13,11 @@ class Quantity extends Model<QuantityObject>
   final Stores storageStore = Stores.quantities;
 
   Quantity({
-    String? id,
-    String name = 'quantity',
-    ModelStatus status = ModelStatus.normal,
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'quantity',
     this.defaultProportion = 1,
-  }) : super(id, name, status);
+  });
 
   factory Quantity.fromObject(QuantityObject object) => Quantity(
         id: object.id,

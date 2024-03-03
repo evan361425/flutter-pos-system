@@ -12,14 +12,13 @@ class SearchBarInline extends StatelessWidget {
   final TextEditingController textController;
 
   SearchBarInline({
-    Key? key,
+    super.key,
     this.text,
     this.validator,
     this.labelText,
     this.hintText,
     required this.onTap,
-  })  : textController = TextEditingController(text: text),
-        super(key: key);
+  }) : textController = TextEditingController(text: text);
 
   @override
   Widget build(BuildContext context) {

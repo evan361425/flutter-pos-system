@@ -20,11 +20,10 @@ class ProductIngredientModal extends StatefulWidget {
   final bool isNew;
 
   const ProductIngredientModal({
-    Key? key,
+    super.key,
     this.ingredient,
     required this.product,
-  })  : isNew = ingredient == null,
-        super(key: key);
+  }) : isNew = ingredient == null;
 
   @override
   State<ProductIngredientModal> createState() => _ProductIngredientModalState();

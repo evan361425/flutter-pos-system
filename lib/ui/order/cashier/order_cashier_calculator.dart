@@ -12,11 +12,11 @@ class OrderCashierCalculator extends StatefulWidget {
   final ValueNotifier<num> paid;
 
   const OrderCashierCalculator({
-    Key? key,
+    super.key,
     required this.onSubmit,
     required this.price,
     required this.paid,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderCashierCalculator> createState() => _OrderCashierCalculatorState();
@@ -260,12 +260,12 @@ class _CalculatorAction extends StatelessWidget {
   final Widget child;
 
   const _CalculatorAction({
-    Key? key,
+    super.key,
     required this.action,
     required this.child,
     this.height = 60,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -314,12 +314,12 @@ class _SingleField extends StatefulWidget {
   final String id;
 
   const _SingleField({
-    Key? key,
+    super.key,
     required this.id,
     required this.prefix,
     required this.defaultText,
     required this.errorText,
-  }) : super(key: key);
+  });
 
   @override
   State<_SingleField> createState() => _SingleFieldState();

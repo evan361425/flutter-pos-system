@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'widgets/stock_quantity_list.dart';
 
 class QuantityPage extends StatelessWidget {
-  const QuantityPage({Key? key}) : super(key: key);
+  const QuantityPage({super.key});
 
   @override
   Widget build(BuildContext context) {

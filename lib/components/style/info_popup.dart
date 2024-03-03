@@ -5,8 +5,8 @@ class InfoPopup extends StatelessWidget {
 
   const InfoPopup(
     this.message, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

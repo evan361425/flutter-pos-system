@@ -79,7 +79,7 @@ class BottomSheetAction<T> {
 class BottomSheetActions extends StatelessWidget {
   final List<BottomSheetAction> actions;
 
-  const BottomSheetActions({Key? key, required this.actions}) : super(key: key);
+  const BottomSheetActions({super.key, required this.actions});
 
   @override
   Widget build(BuildContext context) {

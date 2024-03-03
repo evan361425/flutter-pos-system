@@ -9,10 +9,10 @@ class HintText extends StatelessWidget {
 
   const HintText(
     this.text, {
-    Key? key,
+    super.key,
     this.overflow,
     this.textAlign,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

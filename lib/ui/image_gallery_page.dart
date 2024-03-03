@@ -12,7 +12,7 @@ import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/translator.dart';
 
 class ImageGalleryPage extends StatefulWidget {
-  const ImageGalleryPage({Key? key}) : super(key: key);
+  const ImageGalleryPage({super.key});
 
   @override
   State<ImageGalleryPage> createState() => ImageGalleryPageState();

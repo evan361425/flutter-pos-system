@@ -11,9 +11,9 @@ class ChangerCustomView extends StatefulWidget {
   final VoidCallback afterFavoriteAdded;
 
   const ChangerCustomView({
-    Key? key,
+    super.key,
     required this.afterFavoriteAdded,
-  }) : super(key: key);
+  });
 
   @override
   State<ChangerCustomView> createState() => ChangerCustomViewState();

@@ -7,7 +7,7 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:provider/provider.dart';
 
 class UnitListView extends StatelessWidget {
-  const UnitListView({Key? key}) : super(key: key);
+  const UnitListView({super.key});
 
   @override
   Widget build(BuildContext context) {

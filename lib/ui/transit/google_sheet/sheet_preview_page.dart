@@ -13,12 +13,12 @@ class SheetPreviewPage extends StatelessWidget {
   final List<Widget>? actions;
 
   const SheetPreviewPage({
-    Key? key,
+    super.key,
     required this.source,
     required this.title,
     required this.header,
     this.actions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -21,7 +21,7 @@ class FeatureSlider extends StatefulWidget {
   final Key? sliderKey;
 
   const FeatureSlider({
-    Key? key,
+    super.key,
     this.sliderKey,
     required this.title,
     required this.value,
@@ -31,7 +31,7 @@ class FeatureSlider extends StatefulWidget {
     this.minLabel,
     this.maxLabel,
     this.hintText,
-  }) : super(key: key);
+  });
 
   @override
   State<FeatureSlider> createState() => _FeatureSliderState();

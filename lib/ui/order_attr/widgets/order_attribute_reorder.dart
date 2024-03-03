@@ -5,7 +5,7 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 
 class OrderAttributeReorder extends StatelessWidget {
-  const OrderAttributeReorder({Key? key}) : super(key: key);
+  const OrderAttributeReorder({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -16,11 +16,10 @@ class ProductModal extends StatefulWidget {
   final bool isNew;
 
   const ProductModal({
-    Key? key,
+    super.key,
     this.product,
     required this.catalog,
-  })  : isNew = product == null,
-        super(key: key);
+  }) : isNew = product == null;
 
   @override
   State<ProductModal> createState() => _ProductModalState();

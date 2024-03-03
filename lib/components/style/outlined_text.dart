@@ -42,10 +42,10 @@ class OutlinedText extends StatelessWidget {
   /// * `splashFactory` - Theme.splashFactory
   const OutlinedText(
     this.text, {
-    Key? key,
+    super.key,
     this.badge,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
 

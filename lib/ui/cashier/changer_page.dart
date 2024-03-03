@@ -6,7 +6,7 @@ import 'widgets/changer_custom_view.dart';
 import 'widgets/changer_favorite_view.dart';
 
 class ChangerModal extends StatefulWidget {
-  const ChangerModal({Key? key}) : super(key: key);
+  const ChangerModal({super.key});
 
   @override
   State<ChangerModal> createState() => _ChangerModalState();

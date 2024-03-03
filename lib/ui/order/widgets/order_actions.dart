@@ -8,7 +8,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class OrderActions extends StatelessWidget {
-  const OrderActions({Key? key}) : super(key: key);
+  const OrderActions({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:possystem/ui/order/cart/cart_actions.dart';
 import 'package:provider/provider.dart';
 
 class CartMetadataView extends StatelessWidget {
-  const CartMetadataView({Key? key}) : super(key: key);
+  const CartMetadataView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,8 +10,8 @@ class OrderAttributeValueWidget extends StatelessWidget {
   const OrderAttributeValueWidget(
     this.mode,
     this.value, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

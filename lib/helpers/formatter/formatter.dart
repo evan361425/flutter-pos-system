@@ -166,7 +166,7 @@ abstract class ModelTransformer<T extends Repository> {
 }
 
 class _MenuFormatter extends ModelFormatter<Menu, Product> {
-  const _MenuFormatter(Menu target) : super(target);
+  const _MenuFormatter(super.target);
 
   @override
   int get nameIndex => 1;
@@ -262,7 +262,7 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
 }
 
 class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
-  const _StockFormatter(Stock target) : super(target);
+  const _StockFormatter(super.target);
 
   @override
   String? validate(List<String> row) {
@@ -285,7 +285,7 @@ class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
 }
 
 class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
-  const _QuantitiesFormatter(Quantities target) : super(target);
+  const _QuantitiesFormatter(super.target);
 
   @override
   String? validate(List<String> row) {
@@ -309,7 +309,7 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
 }
 
 class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
-  const _ReplenisherFormatter(Replenisher target) : super(target);
+  const _ReplenisherFormatter(super.target);
 
   @override
   String? validate(List<String> row) {
@@ -374,7 +374,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
 }
 
 class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
-  const _OAFormatter(OrderAttributes target) : super(target);
+  const _OAFormatter(super.target);
 
   @override
   String? validate(List<String> row) {

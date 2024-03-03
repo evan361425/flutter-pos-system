@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
   final SettingsProvider settings;
 
   const MyApp({
-    Key? key,
+    super.key,
     required this.settings,
-  }) : super(key: key);
+  });
 
   // This widget is the root of your application.
   @override

@@ -8,9 +8,9 @@ class TransitOrderRange extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   const TransitOrderRange({
-    Key? key,
+    super.key,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   State<TransitOrderRange> createState() => _TransitOrderRangeState();

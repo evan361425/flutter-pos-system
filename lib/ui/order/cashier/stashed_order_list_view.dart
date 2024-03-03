@@ -17,7 +17,7 @@ import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 
 class StashedOrderListView extends StatelessWidget {
-  const StashedOrderListView({Key? key}) : super(key: key);
+  const StashedOrderListView({super.key});
 
   @override
   Widget build(BuildContext context) {

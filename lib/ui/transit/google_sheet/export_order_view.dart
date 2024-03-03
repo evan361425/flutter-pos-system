@@ -28,11 +28,11 @@ class ExportOrderView extends StatefulWidget {
   final GoogleSheetExporter exporter;
 
   const ExportOrderView({
-    Key? key,
+    super.key,
     required this.rangeNotifier,
     required this.statusNotifier,
     required this.exporter,
-  }) : super(key: key);
+  });
 
   @override
   State<ExportOrderView> createState() => _ExportOrderViewState();

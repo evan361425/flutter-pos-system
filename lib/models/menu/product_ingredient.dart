@@ -31,12 +31,13 @@ class ProductIngredient extends Model<ProductIngredientObject>
   final Stores storageStore = Stores.menu;
 
   ProductIngredient({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = '',
     Ingredient? ingredient,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
-  }) : super(id, '', status) {
+  }) {
     if (quantities != null) replaceItems(quantities);
 
     if (ingredient != null) this.ingredient = ingredient;

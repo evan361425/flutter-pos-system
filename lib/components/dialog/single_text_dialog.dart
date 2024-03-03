@@ -4,7 +4,7 @@ import 'package:possystem/translator.dart';
 
 class SingleTextDialog extends StatefulWidget {
   const SingleTextDialog({
-    Key? key,
+    super.key,
     this.validator,
     this.formatter,
     this.hints,
@@ -16,7 +16,7 @@ class SingleTextDialog extends StatefulWidget {
     this.autofocus = true,
     this.header,
     this.title,
-  }) : super(key: key);
+  });
 
   final String? Function(String?)? validator;
   final String? Function(String?)? formatter;

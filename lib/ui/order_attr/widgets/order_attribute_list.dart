@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class OrderAttributeList extends StatelessWidget {
   final List<OrderAttribute> attributes;
 
-  const OrderAttributeList(this.attributes, {Key? key}) : super(key: key);
+  const OrderAttributeList(this.attributes, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class OrderAttributeList extends StatelessWidget {
 }
 
 class _OrderAttributeCard extends StatelessWidget {
-  const _OrderAttributeCard({Key? key}) : super(key: key);
+  const _OrderAttributeCard();
 
   @override
   Widget build(BuildContext context) {

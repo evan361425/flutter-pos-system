@@ -17,9 +17,8 @@ class StockIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockIngredientModal({Key? key, this.ingredient})
-      : isNew = ingredient == null,
-        super(key: key);
+  const StockIngredientModal({super.key, this.ingredient})
+      : isNew = ingredient == null;
 
   @override
   State<StockIngredientModal> createState() => _StockIngredientModalState();

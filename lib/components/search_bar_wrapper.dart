@@ -22,7 +22,7 @@ class SearchBarWrapper<T> extends StatefulWidget {
   final Widget Function(BuildContext, String) emptyBuilder;
 
   const SearchBarWrapper({
-    Key? key,
+    super.key,
     this.text,
     this.labelText,
     this.hintText,
@@ -32,7 +32,7 @@ class SearchBarWrapper<T> extends StatefulWidget {
     required this.initData,
     required this.itemBuilder,
     required this.emptyBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchBarWrapper<T>> createState() => _SearchBarWrapperState<T>();

@@ -13,9 +13,7 @@ class CatalogModal extends StatefulWidget {
 
   final bool isNew;
 
-  const CatalogModal({Key? key, this.catalog})
-      : isNew = catalog == null,
-        super(key: key);
+  const CatalogModal({super.key, this.catalog}) : isNew = catalog == null;
 
   @override
   State<CatalogModal> createState() => _CatalogModalState();

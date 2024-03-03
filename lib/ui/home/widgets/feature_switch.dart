@@ -6,10 +6,10 @@ class FeatureSwitch extends StatefulWidget {
   final Function(bool) onChanged;
 
   const FeatureSwitch({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<FeatureSwitch> createState() => _FeatureSwitchState();

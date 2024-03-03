@@ -14,11 +14,11 @@ class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
   final Future<void> Function(List<T>) handleSubmit;
 
   const ReorderableScaffold({
-    Key? key,
+    super.key,
     required this.items,
     required this.title,
     required this.handleSubmit,
-  }) : super(key: key);
+  });
 
   @override
   State<ReorderableScaffold<T>> createState() => _ReorderableScaffoldState<T>();

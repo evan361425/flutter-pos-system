@@ -14,11 +14,11 @@ class SlidableItemList<T, Action> extends StatelessWidget {
   final bool withFAB;
 
   const SlidableItemList({
-    Key? key,
+    super.key,
     required this.delegate,
     this.hintText,
     this.withFAB = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

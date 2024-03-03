@@ -11,9 +11,9 @@ class HistoryOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   const HistoryOrderList({
-    Key? key,
+    super.key,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
