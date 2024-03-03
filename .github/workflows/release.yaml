@@ -31,7 +31,7 @@ jobs:
 
       - name: Get tag that trigger this workflow
         id: tag
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
