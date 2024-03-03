@@ -1,8 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/database.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// Help I/O from order DB.
 class Seller extends ChangeNotifier {
@@ -19,30 +25,7 @@ class Seller extends ChangeNotifier {
 
   Seller._();
 
-  /// Get the count of orders per day.
-  Future<Map<DateTime, int>> getCountPerDay(
-    DateTime start,
-    DateTime end,
-  ) async {
-    final begin = Util.toUTC(now: start);
-    final cease = Util.toUTC(now: end);
-    // using UTC to calculate the count but use user's timezone when returned.
-    final rows = await Database.instance.query(
-      '(SELECT CAST((createdAt - $begin) / 86400 AS INT) day FROM $orderTable '
-      'WHERE createdAt BETWEEN $begin AND $cease) t',
-      columns: ['t.day', 'COUNT(*) c'],
-      groupBy: "t.day",
-      escapeTable: false,
-    );
-
-    return <DateTime, int>{
-      for (final row in rows)
-        if (row['day'] != null)
-          Util.fromUTC(begin + (row['day'] as int) * 86400): row['c'] as int
-    };
-  }
-
-  /// Get the metrics of orders from time range.
+  /// Get the metrics(e.g. count, price) of orders from time range.
   Future<OrderMetrics> getMetrics(
     DateTime start,
     DateTime end, {
@@ -112,6 +95,170 @@ class Seller extends ChangeNotifier {
     } catch (e) {
       return OrderMetrics.fromMap(const {});
     }
+  }
+
+  /// Get the metric of orders grouped by the day.
+  ///
+  /// - [types] is the metrics type to calculate.
+  /// - [period] is the time interval to group by.
+  /// - [ignoreEmpty] whether to ignore the empty day.
+  Future<List<OrderDataPerDay>> getMetricsInPeriod(
+    DateTime start,
+    DateTime end, {
+    List<OrderMetricType> types = const [OrderMetricType.count],
+    MetricsPeriod period = MetricsPeriod.day,
+    bool ignoreEmpty = true,
+  }) async {
+    // using UTC to calculate the count but use user's timezone when returned.
+    final begin = Util.toUTC(now: start);
+    final cease = Util.toUTC(now: end);
+
+    final rows = await Database.instance.query(
+      '('
+      'SELECT CAST((createdAt - $begin) / ${period.seconds} AS INT) day, * '
+      'FROM $orderTable '
+      'WHERE createdAt BETWEEN $begin AND $cease'
+      ') t',
+      columns: [
+        't.day',
+        ...types.map((e) => '${e.method}(t.${e.column}) ${e.name}'),
+      ],
+      groupBy: "t.day",
+      orderBy: "t.day asc",
+      escapeTable: false,
+    );
+
+    final result = <OrderDataPerDay>[
+      for (final row in rows)
+        if (row['day'] != null)
+          OrderDataPerDay(
+            at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
+            values: row.cast<String, num>(),
+          ),
+    ];
+
+    return ignoreEmpty
+        ? result
+        : _fulfillPeriodData(
+            start, end, Duration(seconds: period.seconds), result);
+  }
+
+  /// Get the metric of items grouped by the day.
+  ///
+  /// - [target] is the target of catalog to group by.
+  /// - [period] is the time interval to group by.
+  /// - [selection] is the specific items to group by.
+  /// - [ignoreEmpty] whether to ignore the empty day.
+  Future<List<OrderDataPerDay>> getItemMetricsInPeriod(
+    DateTime start,
+    DateTime end, {
+    required OrderMetricType type,
+    required OrderMetricTarget target,
+    MetricsPeriod period = MetricsPeriod.day,
+    List<String> selection = const [],
+    bool ignoreEmpty = true,
+  }) async {
+    // using UTC to calculate the count but use user's timezone when returned.
+    final begin = Util.toUTC(now: start);
+    final cease = Util.toUTC(now: end);
+
+    final where = selection.isEmpty
+        ? ''
+        : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
+    // if target has different column then we need to concat the column to
+    // make the result more readable.
+    // (different catalog may have same item name).
+    // take order attribute as example:
+    // plasticSpoon(yes), withBag(yes) both have same attribute: `yes`
+    final name = target.isGroupedName(selection)
+        ? "`${target.groupColumn}` || '(' || `${target.filterColumn}` || ')'"
+        : target.groupColumn;
+
+    final rows = await Database.instance.query(
+      '('
+      'SELECT CAST((createdAt - $begin) / ${period.seconds} AS INT) day, * '
+      'FROM ${target.table} '
+      'WHERE createdAt BETWEEN $begin AND $cease $where '
+      ') t',
+      columns: [
+        't.day',
+        '$name name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
+      groupBy: "t.day, ${target.groupColumn}",
+      orderBy: "t.day asc",
+      escapeTable: false,
+    );
+
+    final result = rows
+        .where((e) => e['day'] != null)
+        .groupListsBy((row) => row['day'])
+        .values
+        .map((e) => OrderDataPerDay(
+              at: Util.fromUTC(
+                  begin + (e.first['day'] as int) * period.seconds),
+              values: {
+                for (final row in e) row['name'] as String: row['value'] as num,
+              },
+            ))
+        .toList();
+
+    return ignoreEmpty
+        ? result
+        : _fulfillPeriodData(
+            start, end, Duration(seconds: period.seconds), result);
+  }
+
+  /// Get the metrics of orders and group by the items.
+  ///
+  /// select all if [selection] is empty.
+  Future<List<OrderMetricPerItem>> getMetricsByItems(
+    DateTime start,
+    DateTime end, {
+    required OrderMetricType type,
+    required OrderMetricTarget target,
+    List<String> selection = const [],
+    bool ignoreEmpty = false,
+  }) async {
+    final begin = Util.toUTC(now: start);
+    final cease = Util.toUTC(now: end);
+
+    final where = selection.isEmpty
+        ? ''
+        : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
+
+    final rows = await Database.instance.query(
+      target.table,
+      columns: [
+        '${target.groupColumn} name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
+      where: 'createdAt BETWEEN ? AND ?$where',
+      whereArgs: [begin, cease],
+      groupBy: target.groupColumn,
+      orderBy: 'count desc',
+    );
+
+    final total = rows.fold(0.0, (prev, e) => prev + (e['value'] as num));
+    final result = <OrderMetricPerItem>[
+      for (final row in rows)
+        OrderMetricPerItem(
+          row['name'] as String,
+          row['value'] as num,
+          total,
+        ),
+    ];
+
+    if (ignoreEmpty) {
+      return result;
+    }
+
+    return target
+        .getItems(selection)
+        .map((item) =>
+            result.where((e) => e.name == item.name).firstOrNull ??
+            OrderMetricPerItem(item.name, 0, total))
+        .toList();
   }
 
   /// Get orders and its products info from time range.
@@ -284,6 +431,22 @@ class Seller extends ChangeNotifier {
     }
     return items.length;
   }
+
+  List<OrderDataPerDay> _fulfillPeriodData(
+    DateTime start,
+    DateTime end,
+    Duration interval,
+    List<OrderDataPerDay> data,
+  ) {
+    var i = 0;
+    return <OrderDataPerDay>[
+      for (var v = start; v.isBefore(end); v = v.add(interval))
+        // `result is not enough` or `result has not contains the day`
+        i >= data.length || data[i].at != v
+            ? OrderDataPerDay(at: v)
+            : data[i++],
+    ];
+  }
 }
 
 /// Metrics from [Seller.getMetrics]
@@ -339,4 +502,171 @@ class OrderMetrics {
       attrCount: attrCount,
     );
   }
+}
+
+class OrderDataPerDay {
+  final DateTime at;
+
+  final Map<String, num> values;
+
+  const OrderDataPerDay({
+    required this.at,
+    this.values = const {},
+  });
+
+  num value(String key) {
+    return values[key] ?? 0;
+  }
+
+  int get count => value('count').toInt();
+
+  num get price => value('price');
+
+  num get cost => value('cost');
+
+  num get revenue => value('revenue');
+}
+
+class OrderMetricPerItem {
+  final String name;
+  final num value;
+  final double percent;
+
+  OrderMetricPerItem(this.name, this.value, num total)
+      : percent = total == 0 ? 0 : (value / total * 100).toDouble();
+}
+
+enum OrderMetricUnit {
+  money(r'${value}', r'$point.y'),
+  count(r'{value}', r'point.y');
+
+  final String labelFormat;
+  final String tooltipFormat;
+
+  const OrderMetricUnit(this.labelFormat, this.tooltipFormat);
+}
+
+enum OrderMetricType {
+  price('SUM', 'price', 't.singlePrice * t.count', OrderMetricUnit.money),
+  cost('SUM', 'cost', 't.singleCost * t.count', OrderMetricUnit.money),
+  revenue('SUM', 'revenue', '(t.singlePrice - t.singleCost) * t.count',
+      OrderMetricUnit.money),
+  count('COUNT', 'price', '*', OrderMetricUnit.count);
+
+  /// The method to calculate the value in DB.
+  final String method;
+
+  /// The source column to execute [method].
+  final String column;
+
+  /// Target item column.
+  final String targetColumn;
+
+  /// The unit on chart.
+  final OrderMetricUnit unit;
+
+  const OrderMetricType(
+    this.method,
+    this.column,
+    this.targetColumn,
+    this.unit,
+  );
+}
+
+enum OrderMetricTarget {
+  order(Seller.orderTable, '', ''),
+  catalog(Seller.productTable, 'catalogName', 'catalogName'),
+  product(Seller.productTable, 'productName', 'productName'),
+  ingredient(Seller.ingredientTable, 'ingredientName', 'ingredientName'),
+  attribute(Seller.attributeTable, 'name', 'optionName');
+
+  /// The table name in DB.
+  final String table;
+
+  /// The column use on `where` syntax in DB.
+  final String filterColumn;
+
+  /// The column use on `group` syntax in DB.
+  final String groupColumn;
+
+  const OrderMetricTarget(this.table, this.filterColumn, this.groupColumn);
+
+  /// Whether the filter column is different from the group column.
+  bool get hasDifferentColumn => filterColumn != groupColumn;
+
+  /// Whether append parenthesis to the name when grouped.
+  bool isGroupedName(List<String> selection) =>
+      hasDifferentColumn && selection.length != 1;
+
+  /// Get the items from the target.
+  ///
+  /// - [selection] null and empty means select all
+  List<Model> getItems([List<String>? selection]) {
+    late final List<Model> result;
+    switch (this) {
+      case OrderMetricTarget.product:
+        result = Menu.instance.products.toList();
+        break;
+      case OrderMetricTarget.catalog:
+        result = Menu.instance.itemList;
+        break;
+      case OrderMetricTarget.ingredient:
+        result = Stock.instance.itemList;
+        break;
+      case OrderMetricTarget.attribute:
+        if (selection != null) {
+          if (selection.isEmpty) {
+            return OrderAttributes.instance.itemList
+                .expand((e) => e.itemList)
+                .toList();
+          }
+
+          return selection
+              .expand<OrderAttributeOption>((id) =>
+                  OrderAttributes.instance.getItem(id)?.itemList ?? const [])
+              .toList();
+        }
+
+        result = OrderAttributes.instance.itemList;
+        break;
+      default:
+        return const [];
+    }
+
+    // null and empty means select all
+    if (selection == null || selection.isEmpty) {
+      return result;
+    }
+
+    return result.where((e) => selection.contains(e.id)).toList();
+  }
+}
+
+enum OrderChartRange {
+  today(Duration(days: 1), MetricsPeriod.hour),
+  sevenDays(Duration(days: 7), MetricsPeriod.day),
+  twoWeeks(Duration(days: 14), MetricsPeriod.day),
+  month(Duration(days: 30), MetricsPeriod.day),
+  twoMonths(Duration(days: 60), MetricsPeriod.day),
+  halfYear(Duration(days: 180), MetricsPeriod.month),
+  year(Duration(days: 365), MetricsPeriod.month);
+
+  final Duration duration;
+
+  /// The period of the metrics, use to group the data
+  final MetricsPeriod period;
+
+  const OrderChartRange(this.duration, this.period);
+}
+
+enum MetricsPeriod {
+  hour(3600, 'HH:mm a', DateTimeIntervalType.hours),
+  day(86400, 'MMMEd', DateTimeIntervalType.days),
+  month(2592000, 'MMMd', DateTimeIntervalType.months);
+
+  final int seconds;
+  final String format;
+  final DateTimeIntervalType intervalType;
+
+  const MetricsPeriod(this.seconds, this.format, this.intervalType);
 }

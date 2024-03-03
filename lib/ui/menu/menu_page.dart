@@ -35,14 +35,15 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _willPop,
+    return PopScope(
+      canPop: selected == null,
+      onPopInvoked: _onPopInvoked,
       child: Scaffold(
         appBar: AppBar(
           title: Text(selected?.name ?? S.menuTitle),
           leading: PopButton(
-            onPressed: () async {
-              if (await _willPop()) {
+            onPressed: () {
+              if (_onPopInvoked(selected == null)) {
                 if (context.mounted && context.canPop()) {
                   context.pop();
                 }
@@ -196,14 +197,13 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-  Future<bool> _willPop() async {
-    // if has no clients, it means menu is empty(build without PageView)
-    if (!controller.hasClients || controller.page == 0) {
-      return true;
+  bool _onPopInvoked(bool didPop) {
+    if (!didPop) {
+      _goTo(0).then((_) => setState(() => selected = null));
+      return false;
     }
 
-    _goTo(0).then((_) => setState(() => selected = null));
-    return false;
+    return true;
   }
 
   Future<void> _goTo(int index) {

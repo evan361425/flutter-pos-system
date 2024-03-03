@@ -34,7 +34,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
   @override
   List<Widget> buildFormFields() {
     return [
-      TextFormField(
+      p(TextFormField(
         key: const Key('order_attribute.name'),
         controller: _nameController,
         textInputAction: TextInputAction.send,
@@ -44,7 +44,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
           hintText: S.orderAttributeNameHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         maxLength: 30,
         validator: Validator.textLimit(
           S.orderAttributeNameLabel,
@@ -57,7 +57,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
                 : null;
           },
         ),
-      ),
+      )),
       TextDivider(label: S.orderAttributeModeTitle),
       ChoiceChipWithHelp(
         key: modeSelector,

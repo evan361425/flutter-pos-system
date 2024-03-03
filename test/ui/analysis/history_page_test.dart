@@ -57,9 +57,12 @@ void main() {
     void mockGetCountPerDay(List<Map<String, Object?>> count) {
       when(database.query(
         any,
-        columns: argThat(equals(['t.day', 'COUNT(*) c']), named: 'columns'),
+        columns: argThat(
+          equals(['t.day', 'COUNT(t.price) count']),
+          named: 'columns',
+        ),
         groupBy: argThat(equals('t.day'), named: 'groupBy'),
-        whereArgs: anyNamed('whereArgs'),
+        orderBy: anyNamed('orderBy'),
         escapeTable: false,
       )).thenAnswer((_) => Future.value(count));
     }
@@ -78,8 +81,8 @@ void main() {
       OrderSetter.setOrders([o1, o2]);
       OrderSetter.setMetrics([o1, o2]);
       mockGetCountPerDay([
-        {'day': nowS, 'c': 100},
-        {'day': nowS - 1, 'c': 50},
+        {'day': nowS, 'count': 100},
+        {'day': nowS - 1, 'count': 50},
       ]);
 
       // setup portrait env
@@ -124,9 +127,9 @@ void main() {
       OrderSetter.setOrders([]);
       OrderSetter.setMetrics([]);
       mockGetCountPerDay([
-        {'day': nowS, 'c': 50},
+        {'day': nowS, 'count': 50},
         // last month
-        {'day': nowS - now.day - 7, 'c': 60},
+        {'day': nowS - now.day - 7, 'count': 60},
       ]);
 
       // setup landscape env

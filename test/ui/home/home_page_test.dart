@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/app_themes.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -33,10 +34,13 @@ void main() {
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
       when(database.query(
-        Seller.orderTable,
+        any,
         columns: anyNamed('columns'),
+        groupBy: anyNamed('groupBy'),
+        orderBy: anyNamed('orderBy'),
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
+        escapeTable: anyNamed('escapeTable'),
       )).thenAnswer((_) => Future.value([]));
       final settings = SettingsProvider(SettingsProvider.allSettings);
 
@@ -48,6 +52,7 @@ void main() {
           ChangeNotifierProvider.value(value: Stock()),
           ChangeNotifierProvider.value(value: Quantities()),
           ChangeNotifierProvider.value(value: OrderAttributes()),
+          ChangeNotifierProvider.value(value: Analysis()),
           ChangeNotifierProvider.value(value: Cart()),
           ChangeNotifierProvider.value(value: Cashier()),
         ],

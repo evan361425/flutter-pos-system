@@ -30,17 +30,15 @@ class Ingredient extends Model<IngredientObject>
 
   Ingredient({
     String? id,
-    ModelStatus? status,
     String name = 'ingredient',
+    ModelStatus status = ModelStatus.normal,
     this.currentAmount = 0.0,
     this.totalAmount,
     this.warningAmount,
     this.alertAmount,
     this.lastAmount,
     this.updatedAt,
-  }) : super(id, status) {
-    this.name = name;
-  }
+  }) : super(id, name, status);
 
   factory Ingredient.fromObject(IngredientObject object) => Ingredient(
         id: object.id,

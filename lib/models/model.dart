@@ -15,16 +15,15 @@ enum ModelStatus {
 }
 
 abstract class Model<T extends ModelObject> extends ChangeNotifier {
-  late String id;
+  String id;
 
-  late String name;
+  String name;
 
-  // 是否是暫存的資料，並未存進檔案系統中，僅存在於記憶體中。
-  late ModelStatus status;
+  /// 是否是暫存的資料，並未存進檔案系統中，僅存在於記憶體中。
+  ModelStatus status;
 
-  Model(String? id, ModelStatus? status)
-      : id = id ?? Util.uuidV4(),
-        status = status ?? ModelStatus.normal;
+  Model([String? id, this.name = '', this.status = ModelStatus.normal])
+      : id = id ?? Util.uuidV4();
 
   String get logName;
 

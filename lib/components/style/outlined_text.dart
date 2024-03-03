@@ -56,7 +56,7 @@ class OutlinedText extends StatelessWidget {
       const EdgeInsets.symmetric(horizontal: 16),
       const EdgeInsets.symmetric(horizontal: 8),
       const EdgeInsets.symmetric(horizontal: 4),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
+      MediaQuery.textScalerOf(context).scale(1),
     );
 
     final base = ConstrainedBox(

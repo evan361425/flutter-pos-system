@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/helpers/util.dart';
 
 class PercentileBar extends StatefulWidget {
   final num total;
@@ -28,9 +29,7 @@ class _PercentileBarState extends State<PercentileBar>
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(_toString(widget.at)),
-            const Text('／'),
-            Text(_toString(widget.total)),
+            Text('${widget.at.prettyString()}／${widget.total.prettyString()}'),
           ],
         ),
         AnimatedBuilder(
@@ -98,16 +97,4 @@ class _PercentileBarState extends State<PercentileBar>
     _controller.dispose();
     super.dispose();
   }
-}
-
-/// Maximum 4 characters
-String _toString(num v) {
-  if (v is int || v == v.ceil()) {
-    if (v < 10000) {
-      return v.toStringAsFixed(0);
-    }
-  } else if (v < 1000) {
-    return v.toStringAsFixed(1);
-  }
-  return v.toStringAsExponential(1);
 }

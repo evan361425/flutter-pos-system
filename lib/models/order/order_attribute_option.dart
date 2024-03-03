@@ -19,13 +19,12 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
 
   OrderAttributeOption({
     String? id,
-    ModelStatus? status,
+    ModelStatus status = ModelStatus.normal,
     String name = 'order attribute option',
     int index = 0,
     this.isDefault = false,
     this.modeValue,
-  }) : super(id, status) {
-    this.name = name;
+  }) : super(id, name, status) {
     this.index = index;
   }
 

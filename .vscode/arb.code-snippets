@@ -30,7 +30,7 @@
     "scope": "json",
     "prefix": "select",
     "body": [
-      "\"${1:name}\": \"{${2:placeholder}, select, other{$3}}\",",
+      "\"${1:name}\": \"{${2:placeholder}, select, other{${3:UNKNOWN}}}\",",
       "\"@$1\": {",
       "\t\"description\": \"${0:description}\",",
       "\t\"placeholders\": {",

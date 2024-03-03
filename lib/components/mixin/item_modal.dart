@@ -9,20 +9,6 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   String get title;
 
-  Widget buildBody() {
-    final fields = buildFormFields()
-        .expand((field) => [field, const SizedBox(height: kSpacing2)])
-        .toList();
-    fields.removeLast();
-
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(kSpacing3),
-        child: Center(child: buildForm(fields)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,21 +23,26 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
           ),
         ],
       ),
-      body: buildBody(),
+      body: buildForm(),
     );
   }
 
-  Widget buildForm(List<Widget> fields) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: fields,
+  Widget buildForm() {
+    return SingleChildScrollView(
+      child: Form(
+        key: formKey,
+        child: Column(children: buildFormFields()),
       ),
     );
   }
 
   /// Fields in form
   List<Widget> buildFormFields();
+
+  /// Handle submission from input field (e.g. onFieldSubmitted)
+  void handleFieldSubmit(String _) {
+    handleSubmit();
+  }
 
   /// Handle user submission
   Future<void> handleSubmit() async {
@@ -60,6 +51,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     await updateItem();
   }
 
+  /// Update item implementation, called when the form is valid
   Future<void> updateItem();
 
   bool _validate() {
@@ -72,5 +64,13 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     });
 
     return true;
+  }
+
+  /// Padding widget
+  Widget p(Widget child) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+      child: child,
+    );
   }
 }

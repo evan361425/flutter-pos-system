@@ -38,19 +38,24 @@ class _StockIngredientModalState extends State<StockIngredientModal>
   String get title => widget.ingredient?.name ?? S.stockIngredientCreate;
 
   @override
-  Widget buildBody() {
+  Widget buildForm() {
     final ingredients = widget.isNew
         ? const <ProductIngredient>[]
         : Menu.instance.getIngredients(widget.ingredient!.id);
-    // 1 for body, 2 for divider and text
-    final length = ingredients.length + 1 + (widget.isNew ? 0 : 1);
+    // +2: 1 for form, 2 for text-divider
+    final length = widget.isNew ? 1 : ingredients.length + 2;
 
     return ListView.builder(
         itemCount: length,
         itemBuilder: (context, index) {
           switch (index) {
             case 0:
-              return super.buildBody();
+              return Form(
+                key: formKey,
+                child: Column(
+                  children: buildFormFields(),
+                ),
+              );
             case 1:
               return TextDivider(
                 label: S.stockIngredientConnectedProductsCount(
@@ -73,7 +78,7 @@ class _StockIngredientModalState extends State<StockIngredientModal>
 
   @override
   List<Widget> buildFormFields() => <Widget>[
-        TextFormField(
+        p(TextFormField(
           key: const Key('stock.ingredient.name'),
           controller: _nameController,
           textInputAction: TextInputAction.done,
@@ -96,8 +101,8 @@ class _StockIngredientModalState extends State<StockIngredientModal>
                   : null;
             },
           ),
-        ),
-        TextFormField(
+        )),
+        p(TextFormField(
           key: const Key('stock.ingredient.amount'),
           controller: _amountController,
           textInputAction: TextInputAction.done,
@@ -112,8 +117,8 @@ class _StockIngredientModalState extends State<StockIngredientModal>
             allowNull: true,
             focusNode: _amountFocusNode,
           ),
-        ),
-        TextFormField(
+        )),
+        p(TextFormField(
           key: const Key('stock.ingredient.totalAmount'),
           controller: _totalAmountController,
           textInputAction: TextInputAction.done,
@@ -130,7 +135,7 @@ class _StockIngredientModalState extends State<StockIngredientModal>
             allowNull: true,
             focusNode: _totalAmountFocusNode,
           ),
-        ),
+        )),
       ];
 
   @override

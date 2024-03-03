@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/head_tail_tile.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
-import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/ui/analysis/widgets/analysis_card.dart';
+import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
+import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 
 class AnalysisView extends StatelessWidget {
   final TutorialInTab? tab;
@@ -17,51 +17,76 @@ class AnalysisView extends StatelessWidget {
   Widget build(BuildContext context) {
     return TutorialWrapper(
       tab: tab,
-      child: ListView(children: [
-        const Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          RouteCircularButton(
-            key: Key('anal.order'),
-            icon: Icons.store_sharp,
-            route: Routes.order,
-            text: '點餐',
-          ),
-          SizedBox.square(dimension: 96.0),
-          RouteCircularButton(
-            key: Key('anal.history'),
-            icon: Icons.calendar_month_sharp,
-            route: Routes.history,
-            text: '紀錄',
-          ),
-        ]),
-        const SizedBox(height: 4.0),
-        metricsCard,
-        // TODO: 折線圖、圓餅圖
-      ]),
-    );
-  }
+      child: ListenableBuilder(
+        listenable: Analysis.instance,
+        builder: (context, child) => ListView.builder(
+          itemCount: Analysis.instance.length + 6,
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return child;
+              case 1:
+                return const GoalsCardView();
+              case 2:
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '圖表分析',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      ElevatedButton.icon(
+                        key: const Key('anal.add_chart'),
+                        icon: const Icon(KIcons.add),
+                        label: const Text('新增圖表'),
+                        onPressed: () => context.pushNamed(
+                          Routes.chartOrderModal,
+                          pathParameters: {
+                            'id': '0',
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+            }
 
-  Widget get metricsCard {
-    return AnalysisCard<OrderMetrics>(
-      id: 'summarize',
-      notifier: Seller.instance,
-      builder: (context, metric) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('銷售', style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 4.0),
-          // TODO: add target
-          HeadTailTile(head: '訂單數', tail: metric.count.toString()),
-          HeadTailTile(head: '營收', tail: metric.price.toCurrency()),
-          HeadTailTile(head: '成本', tail: metric.cost.toCurrency()),
-          HeadTailTile(head: '利潤', tail: metric.revenue.toCurrency()),
-        ]);
-      },
-      loader: () {
-        final range = Util.getDateRange();
-        return Seller.instance.getMetrics(
-          range.start,
-          range.end,
-        );
-      },
+            index -= 3;
+            if (Analysis.instance.length > index) {
+              return Center(
+                child: ChartCardView(
+                  chart: Analysis.instance.items.elementAt(index),
+                ),
+              );
+            }
+
+            if (index == Analysis.instance.length) {
+              return const SizedBox(height: 128.0);
+            }
+            return null;
+          },
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            RouteCircularButton(
+              key: Key('anal.order'),
+              icon: Icons.store_sharp,
+              route: Routes.order,
+              text: '點餐',
+            ),
+            SizedBox.square(dimension: 96.0),
+            RouteCircularButton(
+              key: Key('anal.history'),
+              icon: Icons.calendar_month_sharp,
+              route: Routes.history,
+              text: '紀錄',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

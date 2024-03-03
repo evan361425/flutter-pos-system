@@ -151,8 +151,8 @@ void main() {
       ], child: buildApp()));
 
       // correctly transform string
-      expect(find.text('5.4e+4'), findsOneWidget);
-      expect(find.text('900.6'), findsOneWidget);
+      expect(find.text('0／5.4e+4'), findsOneWidget);
+      expect(find.text('0／900.6'), findsOneWidget);
 
       final ingredient = Stock.instance.items.first;
 

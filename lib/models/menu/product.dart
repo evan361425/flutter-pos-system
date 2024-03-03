@@ -40,7 +40,7 @@ class Product extends Model<ProductObject>
 
   Product({
     String? id,
-    ModelStatus? status,
+    ModelStatus status = ModelStatus.normal,
     String name = 'product',
     int index = 1,
     this.cost = 0,
@@ -50,7 +50,7 @@ class Product extends Model<ProductObject>
     this.searchedAt,
     Map<String, ProductIngredient>? ingredients,
   })  : createdAt = createdAt ?? DateTime.now(),
-        super(id, status) {
+        super(id, name, status) {
     this.name = name;
     this.index = index;
     this.imagePath = imagePath;

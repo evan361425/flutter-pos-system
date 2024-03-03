@@ -38,7 +38,7 @@ class _CatalogModalState extends State<CatalogModal>
         path: _image,
         onSelected: (image) => setState(() => _image = image),
       ),
-      TextFormField(
+      p(TextFormField(
         key: const Key('catalog.name'),
         controller: _nameController,
         focusNode: _nameFocusNode,
@@ -49,7 +49,7 @@ class _CatalogModalState extends State<CatalogModal>
           hintText: S.menuCatalogNameHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         maxLength: 30,
         validator: Validator.textLimit(
           S.menuCatalogNameLabel,
@@ -61,7 +61,7 @@ class _CatalogModalState extends State<CatalogModal>
                 : null;
           },
         ),
-      ),
+      )),
     ];
   }
 

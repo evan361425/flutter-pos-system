@@ -29,8 +29,9 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: safelyPop,
+    return PopScope(
+      canPop: !isSelecting,
+      onPopInvoked: onPopInvoked,
       child: SafeArea(
         child: isSelecting ? buildSelectingScaffold() : buildScaffold(),
       ),
@@ -48,7 +49,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       appBar: AppBar(
         leading: CloseButton(
           key: const Key('image_gallery.cancel'),
-          onPressed: safelyPop,
+          onPressed: () => onPopInvoked(false),
         ),
         actions: [
           TextButton(
@@ -218,11 +219,11 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     try {
       await Future.wait(target.map((image) => image.file.delete()));
 
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, S.actSuccess);
       }
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, '有一個或多個圖片沒有刪成功。');
       }
       Log.out(e.toString(), 'delete_image_error');
@@ -231,12 +232,10 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     }
   }
 
-  Future<bool> safelyPop() async {
-    if (isSelecting) {
+  void onPopInvoked(bool didPop) {
+    if (!didPop) {
       cancelSelecting();
-      return false;
     }
-    return true;
   }
 
   void cancelSelecting({reloadImages = false}) {

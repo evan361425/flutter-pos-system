@@ -43,9 +43,8 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      // text being too large will cause overlay
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    // text being too large will cause overlay
+    return MediaQuery.withNoTextScaling(
       child: TableCalendar<void>(
         firstDay: DateTime(2021, 1),
         lastDay: DateTime.now(),
@@ -161,12 +160,19 @@ class _CalendarViewState extends State<CalendarView> {
     final start =
         DateTime(local.year, local.month).subtract(const Duration(days: 7));
 
-    final counts = await Seller.instance.getCountPerDay(start, end);
+    final metrics = await Seller.instance.getMetricsInPeriod(
+      start,
+      end,
+      types: [OrderMetricType.count],
+      period: MetricsPeriod.day,
+    );
 
     if (mounted) {
       setState(() {
         _loadedMonths.add(_hashMonth(local));
-        _loadedCounts.addAll(counts);
+        _loadedCounts.addAll({
+          for (final m in metrics) m.at: m.count,
+        });
       });
     }
   }

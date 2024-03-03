@@ -226,7 +226,7 @@ class _SettingPageState extends State<_SettingPage> {
     );
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
-    if (context.mounted) {
+    if (mounted) {
       showSnackBar(context, '成功產生 ${result.length} 個訂單');
 
       Navigator.of(context).pop();

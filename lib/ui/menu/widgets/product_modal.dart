@@ -47,7 +47,7 @@ class _ProductModalState extends State<ProductModal>
         path: _image,
         onSelected: (image) => setState(() => _image = image),
       ),
-      TextFormField(
+      p(TextFormField(
         key: const Key('product.name'),
         controller: _nameController,
         textInputAction: TextInputAction.next,
@@ -70,8 +70,8 @@ class _ProductModalState extends State<ProductModal>
                 : null;
           },
         ),
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product.price'),
         controller: _priceController,
         textInputAction: TextInputAction.next,
@@ -86,8 +86,8 @@ class _ProductModalState extends State<ProductModal>
           S.menuProductPriceLabel,
           focusNode: _priceFocusNode,
         ),
-      ),
-      TextFormField(
+      )),
+      p(TextFormField(
         key: const Key('product.cost'),
         controller: _costController,
         textInputAction: TextInputAction.done,
@@ -98,12 +98,12 @@ class _ProductModalState extends State<ProductModal>
           hintText: S.menuProductCostHint,
           filled: false,
         ),
-        onFieldSubmitted: (_) => handleSubmit(),
+        onFieldSubmitted: handleFieldSubmit,
         validator: Validator.positiveNumber(
           S.menuProductCostLabel,
           focusNode: _costFocusNode,
         ),
-      ),
+      )),
     ];
   }
 

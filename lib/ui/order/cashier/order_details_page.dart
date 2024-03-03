@@ -135,7 +135,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
   Future<void> _stash() async {
     final ok = await Cart.instance.stash();
-    if (context.mounted && ok && context.canPop()) {
+    if (mounted && ok && context.canPop()) {
       context.pop(CheckoutStatus.stash);
     }
   }
@@ -178,7 +178,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     final status = await Cart.instance.checkout(price.value, paid.value);
 
     // send success message
-    if (context.mounted) {
+    if (mounted) {
       if (status == CheckoutStatus.paidNotEnough) {
         showSnackBar(context, S.orderCashierPaidFailed);
       } else if (context.canPop()) {

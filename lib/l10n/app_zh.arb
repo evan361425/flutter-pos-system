@@ -1,4 +1,5 @@
 {
+  "@@locale": "zh",
   "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {
@@ -18,6 +19,8 @@
   },
   "btnImport": "匯入",
   "btnExport": "匯出",
+  "singleChoice": "一次只能選擇一種",
+  "multiChoices": "可以選擇多種",
   "totalCount": "總共 {count} 項",
   "@totalCount": {
     "description": "顯示於 ListView 上的數量總數",
@@ -457,7 +460,7 @@
   "stockIngredientNameRepeatError": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientTotalAmountLabel": "庫存最大值",
-  "stockIngredientTotalAmountHelper": "填空則重設。\n設定這個值可以幫助你一眼看出用了多少成份。\n不填寫則每次「增加庫存」會自動設定這值",
+  "stockIngredientTotalAmountHelper": "填空則重設。\n設定這個值可以幫助你一眼看出用了多少成分。\n不填寫則每次「增加庫存」會自動設定這值",
   "stockReplenishmentTitle": "採購列表",
   "stockReplenishmentSubtitle": "會影響 {count} 項成分",
   "@stockReplenishmentSubtitle": {
@@ -882,7 +885,7 @@
   "transitPreviewExportTitle": "預覽輸出結果",
   "transitBasicTitle": "POS System 資料",
   "transitOrderTitle": "訂單資料",
-  "transitType": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成份細項} other{UNKNOWN}}",
+  "transitType": "{label, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderSetAttr{訂單顧客設定} orderProduct{訂單產品細項} orderIngredient{訂單成分細項} other{UNKNOWN}}",
   "@transitType": {
     "description": "各種匯出資料的名稱，這會變成預設的表單名稱",
     "placeholders": {
@@ -920,7 +923,7 @@
       }
     }
   },
-  "transitGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成份細項中..} other{{model}}}",
+  "transitGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderSetAttr{匯出顧客設定中..} orderProduct{匯出產品細項中..} orderIngredient{匯出成分細項中..} other{{model}}}",
   "@transitGSUpdateModelStatus": {
     "description": "更新 Model 時的狀態說明",
     "placeholders": {
@@ -929,11 +932,11 @@
       }
     }
   },
-  "transitProductIngredientInfoTitle": "成份資訊",
+  "transitProductIngredientInfoTitle": "成分資訊",
   "transitReplenishmentTitle": "補貨量",
   "transitOrderAttributeOptionTitle": "顧客設定選項",
-  "transitProductIngredientInfoGSNote": "產品全部成份的資訊，格式如下：\n- 成份1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成份2,預設使用量",
-  "transitReplenishmentGSNote": "每次補貨時特定成份的量，格式如下：\n- 成份1,補貨量\n- 成份2,補貨量",
+  "transitProductIngredientInfoGSNote": "產品全部成分的資訊，格式如下：\n- 成分1,預設使用量\n  + 份量a,額外使用量,額外價格,額外成本\n  + 份量b,額外使用量,額外價格,額外成本\n- 成分2,預設使用量",
+  "transitReplenishmentGSNote": "每次補貨時特定成分的量，格式如下：\n- 成分1,補貨量\n- 成分2,補貨量",
   "transitOrderAttributeOptionGSNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
   "transitGSImportError": "{error, select, emptySpreadsheet{必須選擇試算表來匯入} emptySheet{必須選擇指定的表單來匯入} emptyData{在表單中沒找到任何值} other{{error}}}",
   "@transitGSImportError": {
@@ -962,5 +965,54 @@
         "type": "String"
       }
     }
-  }
+  },
+  "analysisChartCreate": "新增圖表",
+  "analysisChartNameLabel": "圖表標題",
+  "analysisChartWithTodayLabel": "資料是否包含今日",
+  "analysisChartIgnoreEmptyLabel": "是否忽略空資料",
+  "analysisChartIgnoreEmptyHelper": "某商品或指標在該時段沒有資料，則不顯示。",
+  "analysisChartRangeLabel": "時間區間",
+  "analysisChartRangeHelper": "長時間可以看到趨勢，短時間可以看到變化。",
+  "analysisChartRange": "{val, select, today{單日} sevenDays{七日} twoWeeks{雙週} month{單月} twoMonths{雙月} halfYear{半年} year{一年} other{UNKNOWN}}",
+  "@analysisChartRange": {
+    "placeholders": {
+      "val": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartTypeLabel": "圖表類型",
+  "analysisChartType": "{val, select, cartesian{時序圖} circular{圓餅圖} other{UNKNOWN}}",
+  "@analysisChartType": {
+    "placeholders": {
+      "val": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartDataPropertiesDivider": "圖表資料",
+  "analysisChartMetricLabel": "觀看指標",
+  "analysisChartMetricHelper": "根據不同目的，選擇不同指標類型。",
+  "analysisChartMetric": "{val, select, price{營收} cost{成本} revenue{淨利} count{數量／份量} other{UNKNOWN}}",
+  "@analysisChartMetric": {
+    "placeholders": {
+      "val": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartTargetLabel": "項目種類",
+  "analysisChartTargetHelper": "選擇圖表中要針對哪些資訊做分析。",
+  "analysisChartTargetError": "請選擇一個項目種類",
+  "analysisChartTarget": "{val, select, order{訂單} catalog{產品種類} product{產品} ingredient{成分} attribute{顧客屬性} other{UNKNOWN}}",
+  "@analysisChartTarget": {
+    "placeholders": {
+      "val": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartTargetItemLabel": "項目選擇",
+  "analysisChartTargetItemHelper": "你想要觀察哪些項目的變化，例如區間內某商品的數量。",
+  "analysisChartTargetItemSelectAll": "全選"
 }

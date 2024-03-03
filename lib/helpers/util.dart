@@ -61,3 +61,17 @@ class Util {
     };
   }
 }
+
+extension PrettyNum on num {
+  /// Maximum 4 characters
+  String prettyString() {
+    if (this is int || this == ceil()) {
+      if (this < 10000) {
+        return toStringAsFixed(0);
+      }
+    } else if (this < 1000) {
+      return toStringAsFixed(1);
+    }
+    return toStringAsExponential(1);
+  }
+}
