@@ -55,7 +55,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   Future<void> updateItem();
 
   bool _validate() {
-    if (formKey.currentState?.validate() != true || !customValidate()) {
+    if (formKey.currentState?.validate() != true) {
       return false;
     }
 
@@ -65,9 +65,6 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
     return true;
   }
-
-  /// Custom validation execute after the form validation.
-  bool customValidate() => true;
 
   /// Padding widget
   Widget p(Widget child) {

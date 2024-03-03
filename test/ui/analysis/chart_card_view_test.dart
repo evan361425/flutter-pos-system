@@ -6,7 +6,6 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
-import 'package:possystem/models/analysis/chart_object.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -90,13 +89,10 @@ void main() {
         });
         mockGetMetricsInPeriod(
             table: equals(
-                '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, * FROM order_records WHERE createdAt BETWEEN $sevenDaysAgo AND $today) t'),
+                '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, '
+                '* FROM order_records WHERE createdAt BETWEEN $sevenDaysAgo AND $today) t'),
             rows: [
-              {
-                'day': 1,
-                'price': 1.1,
-                'revenue': 2.2,
-              },
+              {'day': 1, 'price': 1.1, 'revenue': 2.2},
               {'day': 3, 'price': 1.2, 'revenue': 2.3},
             ]);
 
@@ -112,21 +108,25 @@ void main() {
         await tester.tap(find.byKey(const Key('chart.ignoreEmpty')));
         await tester.tap(find.byKey(const Key('chart.range.today')));
         await tester.tap(find.byKey(const Key('chart.type.circular')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.type.cartesian')));
+        await tester.pumpAndSettle();
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.metrics.count')));
         await tester.pumpAndSettle();
 
-        final selected = OrderMetricType.values.map((type) {
+        final selected = OrderMetricType.values.where((type) {
           final chip = find.byKey(Key('chart.metrics.${type.name}')).evaluate();
           return (chip.single.widget as ChoiceChip).selected;
         });
-        expect(selected.where((e) => e).length, equals(3));
+        expect(selected.map((e) => e.name).join(','), equals('price,count'));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.target.product')));
         await tester.pumpAndSettle();
-        expect(selected.where((e) => e).isEmpty, equals(true));
+        // reset
+        expect(selected.map((e) => e.name).join(','), equals('price'));
+        await tester.tap(find.byKey(const Key('chart.metrics.cost')));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.item.p2')));
@@ -139,11 +139,14 @@ void main() {
         // withToday is true so the range should contain tomorrow: yesterday < t < tomorrow
         mockGetItemMetricsInPeriod(
           table: equals(
-              '(SELECT CAST((createdAt - $yesterday) / 3600 AS INT) day, * FROM order_products WHERE createdAt BETWEEN $yesterday AND $tomorrow  AND productName IN ("p2") ) t'),
+              '(SELECT CAST((createdAt - $yesterday) / 3600 AS INT) day, * '
+              'FROM order_products WHERE createdAt BETWEEN $yesterday AND $tomorrow  '
+              'AND productName IN ("p2") ) t'),
           target: OrderMetricTarget.product,
+          columns: contains('SUM(t.singleCost * t.count) value'),
           rows: [
-            {'day': 1, 'name': 'p2', 'count': 1},
-            {'day': 3, 'name': 'p2', 'count': 3},
+            {'day': 1, 'name': 'p2', 'value': 1},
+            {'day': 3, 'name': 'p2', 'value': 3},
           ],
         );
 
@@ -159,12 +162,12 @@ void main() {
           any,
           argThat(equals(<String, Object?>{
             'test.name': 'title2',
-            'test.metrics': [],
-            'test.target': OrderMetricTarget.product.index,
-            'test.selection': ['p2'],
             'test.withToday': true,
-            'test.ignoreEmpty': true,
+            'test.ignoreEmpty': false,
             'test.range': OrderChartRange.today.index,
+            'test.target': OrderMetricTarget.product.index,
+            'test.metrics': [OrderMetricType.cost.index],
+            'test.targetItems': ['p2'],
           })),
         ));
       });
@@ -188,7 +191,10 @@ void main() {
         });
         mockGetMetricsInPeriod();
 
-        await tester.pumpWidget(buildApp(CartesianChart(id: 'test')));
+        await tester.pumpWidget(buildApp(CartesianChart(
+          id: 'test',
+          ignoreEmpty: false,
+        )));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -202,7 +208,8 @@ void main() {
         // withToday is true so the range should contain tomorrow: yesterday < t < tomorrow
         mockGetItemMetricsInPeriod(
           table: equals(
-              '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, * FROM order_attributes WHERE createdAt BETWEEN $sevenDaysAgo AND $today  ) t'),
+              '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, * '
+              'FROM order_attributes WHERE createdAt BETWEEN $sevenDaysAgo AND $today  ) t'),
           target: OrderMetricTarget.attribute,
         );
 
@@ -218,7 +225,7 @@ void main() {
         verify(storage.set(
           any,
           argThat(equals(<String, Object?>{
-            'test.metrics': [],
+            'test.metrics': [OrderMetricType.count.index],
             'test.target': OrderMetricTarget.attribute.index,
           })),
         ));
@@ -362,7 +369,6 @@ void main() {
         await tester.pumpWidget(buildApp(CircularChart(
           id: 'test',
           target: OrderMetricTarget.ingredient,
-          ignoreEmpty: true,
         )));
         await tester.pumpAndSettle();
 
@@ -374,13 +380,18 @@ void main() {
         await tester.tap(find.byIcon(KIcons.modal));
         await tester.pumpAndSettle();
 
-        await tester.enterText(find.byKey(const Key('chart.groupTo')), '1');
+        await tester.enterText(find.byKey(const Key('chart.title')), 'title2');
+        await tester.tap(find.byKey(const Key('chart.withToday')));
         await tester.tap(find.byKey(const Key('chart.ignoreEmpty')));
+        await tester.tap(find.byKey(const Key('chart.range.today')));
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.target.attribute')));
         await tester.pumpAndSettle();
 
-        await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
+        expect(find.byKey(const Key('chart.metric.price')), findsNothing);
+
+        await tester.dragFrom(const Offset(500, 500), const Offset(0, -300));
+        await tester.dragFrom(const Offset(500, 500), const Offset(0, -300));
         await tester.tap(find.byKey(const Key('chart.item.a1')));
         await tester.tap(find.byKey(const Key('chart.item.a2')));
         await tester.pumpAndSettle();
@@ -392,6 +403,7 @@ void main() {
           rows: [
             {'name': 'a2o1', 'value': 2},
             {'name': 'a2o2', 'value': 1},
+            {'name': 'non-exist', 'value': 1},
           ],
         );
 
@@ -399,26 +411,25 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('a2o1', findRichText: true), findsOneWidget);
-        // group to others
-        expect(find.text('a2o2', findRichText: true), findsNothing);
-        expect(find.text('a2o3', findRichText: true), findsNothing);
-        expect(find.text('Others', findRichText: true), findsOneWidget);
+        expect(find.text('a2o2', findRichText: true), findsOneWidget);
+        expect(find.text('a2o3', findRichText: true), findsOneWidget);
 
         verify(storage.set(
           any,
           argThat(equals(<String, Object?>{
+            'test.name': 'title2',
             'test.target': OrderMetricTarget.attribute.index,
-            'test.selection': ['a2'],
+            'test.targetItems': ['a2'],
             'test.ignoreEmpty': false,
-            'test.groupTo': 1,
+            'test.withToday': true,
+            'test.range': OrderChartRange.today.index,
           })),
         ));
       });
 
-      testWidgets('slide date range', (tester) async {
+      testWidgets('update date by date-picker', (tester) async {
         final today = Util.toUTC(hour: 0);
         final yesterday = today - 86400;
-        final twoDaysAgo = yesterday - 86400;
         final tomorrow = today + 86400;
         Menu().replaceItems({
           'c1': Catalog(id: 'c1', name: 'c1'),
@@ -430,7 +441,6 @@ void main() {
             {'name': 'c1', 'value': 1},
           ],
         );
-        mockGetMetricsByItems(whereArgs: equals([twoDaysAgo, yesterday]));
 
         await tester.pumpWidget(buildApp(CircularChart(
           id: 'test',
@@ -438,14 +448,15 @@ void main() {
           range: OrderChartRange.today,
           ignoreEmpty: true,
           withToday: true,
-          groupTo: 0,
         )));
         await tester.pumpAndSettle();
 
         expect(find.text('c1', findRichText: true), findsOneWidget);
         expect(find.text('c2', findRichText: true), findsNothing);
 
-        await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
+        await tester.tap(find.byKey(const Key('chart.test.range_button')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('OK'));
         await tester.pumpAndSettle();
 
         verify(database.query(
@@ -456,36 +467,6 @@ void main() {
           groupBy: anyNamed('groupBy'),
           orderBy: anyNamed('orderBy'),
         ));
-      });
-
-      testWidgets('group to 2 values but show all if all same', (tester) async {
-        Menu().replaceItems({
-          'c1': Catalog(id: 'c1', name: 'c1'),
-          'c2': Catalog(id: 'c2', name: 'c2'),
-          'c3': Catalog(id: 'c3', name: 'c3'),
-          'c4': Catalog(id: 'c4', name: 'c4'),
-        });
-        mockGetMetricsByItems(
-          rows: [
-            {'name': 'c1', 'value': 3},
-            // {'name': 'c2', 'value': 1},
-            // {'name': 'c3', 'value': 1},
-            // {'name': 'c4', 'value': 1},
-          ],
-        );
-
-        await tester.pumpWidget(buildApp(CircularChart(
-          id: 'test',
-          target: OrderMetricTarget.catalog,
-          ignoreEmpty: false,
-          groupTo: 2,
-        )));
-        await tester.pumpAndSettle();
-
-        expect(find.text('c1', findRichText: true), findsOneWidget);
-        expect(find.text('c2', findRichText: true), findsOneWidget);
-        expect(find.text('c3', findRichText: true), findsOneWidget);
-        expect(find.text('c4', findRichText: true), findsOneWidget);
       });
     });
   });

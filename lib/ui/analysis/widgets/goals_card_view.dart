@@ -180,10 +180,11 @@ class _GoalItem extends StatelessWidget {
             text: current.prettyString(),
             style: style,
             children: [
-              TextSpan(
-                text: '／${goal.prettyString()}',
-                style: const TextStyle(color: Colors.grey),
-              ),
+              if (goal != 0)
+                TextSpan(
+                  text: '／${goal.prettyString()}',
+                  style: const TextStyle(color: Colors.grey),
+                ),
             ],
           ),
         ),

@@ -63,7 +63,7 @@ void main() {
     void mockGetChart() {
       when(database.query(
         any,
-        columns: argThat(contains('SUM(t.revenue) revenue'), named: 'columns'),
+        columns: argThat(contains('SUM(t.price) price'), named: 'columns'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
         groupBy: anyNamed('groupBy'),
@@ -132,19 +132,13 @@ void main() {
       expect(chart.name, equals('test'));
       // verify default values
       expect(chart.type.name, equals('cartesian'));
-      expect(chart.ignoreEmpty, equals(false));
+      expect(chart.ignoreEmpty, equals(true));
       expect(chart.withToday, equals(false));
       expect(chart.range.duration, equals(const Duration(days: 7)));
-      if (chart is! CartesianChart) {
-        fail('is not cartesian chart');
-      }
-
-      expect(
-        chart.metrics,
-        equals(const [OrderMetricType.price, OrderMetricType.revenue]),
-      );
-      expect(chart.target, isNull);
-      expect(chart.selection, isEmpty);
+      expect(chart is CartesianChart, isTrue);
+      expect(chart.target, OrderMetricTarget.order);
+      expect(chart.metrics, equals(const [OrderMetricType.price]));
+      expect(chart.targetItems, isEmpty);
     });
 
     setUpAll(() {

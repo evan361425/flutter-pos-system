@@ -116,6 +116,7 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
   Widget buildRangeText() {
     final f = DateFormat.MMMd(S.localeName);
     return OutlinedButton(
+      key: Key('chart.${widget.chart.id}.range_button'),
       onPressed: () async {
         final date = await showDatePicker(
           context: context,
@@ -225,15 +226,12 @@ class _CartesianChart extends StatelessWidget {
         selectionType: SelectionType.point,
         selectionGesture: ActivationMode.singleTap,
         // get the different unit axis
-        axes: chart.metrics
-            .groupFoldBy<OrderMetricUnit, OrderMetricType>(
-                (e) => e.unit, (prev, current) => prev ?? current)
-            .values
+        axes: chart.units
             .take(2)
             .mapIndexed((i, e) => NumericAxis(
                   opposedPosition: i == 1,
-                  name: e.unit.name,
-                  labelFormat: e.unit.labelFormat,
+                  name: e.name,
+                  labelFormat: e.labelFormat,
                 ))
             .toList(),
         primaryXAxis: DateTimeAxis(
@@ -241,11 +239,7 @@ class _CartesianChart extends StatelessWidget {
           dateFormat: DateFormat(chart.range.period.format, S.localeName),
           majorGridLines: const MajorGridLines(width: 0),
         ),
-        primaryYAxis: NumericAxis(
-          isVisible: chart.metrics.isEmpty,
-          name: 'primaryCount',
-          labelFormat: OrderMetricUnit.count.labelFormat,
-        ),
+        primaryYAxis: const NumericAxis(isVisible: false),
         trackballBehavior: TrackballBehavior(
           enable: true,
           activationMode: ActivationMode.singleTap,
@@ -257,19 +251,14 @@ class _CartesianChart extends StatelessWidget {
         legend: const Legend(
           isVisible: true,
         ),
-        series: chart.keys().map(
-          (key) {
+        series: chart.keyUnits().map(
+          (keyUnit) {
             return SplineSeries(
               markerSettings: const MarkerSettings(isVisible: true),
-              name: key,
-              yAxisName: chart.metrics.isEmpty
-                  ? 'primaryCount'
-                  : OrderMetricType.values
-                      .firstWhere((e) => e.name == key)
-                      .unit
-                      .name,
+              name: keyUnit.key,
+              yAxisName: keyUnit.value.name,
               xValueMapper: (v, i) => v.at,
-              yValueMapper: (v, i) => v.value(key),
+              yValueMapper: (v, i) => v.value(keyUnit.key),
               dataSource: metrics,
             );
           },
@@ -296,7 +285,7 @@ class _CircularChart extends StatelessWidget {
         enable: true,
         activationMode: ActivationMode.singleTap,
         animationDuration: 150,
-        format: 'point.x : point.y',
+        format: 'point.x : ${chart.units.first.tooltipFormat}',
       ),
       legend: const Legend(
         isVisible: true,
@@ -308,8 +297,6 @@ class _CircularChart extends StatelessWidget {
           xValueMapper: (v, i) => v.name,
           yValueMapper: (v, i) => v.value,
           dataSource: metrics,
-          groupTo: chart.groupToValue(metrics),
-          groupMode: CircularChartGroupMode.value,
           dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,

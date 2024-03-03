@@ -7,7 +7,6 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AnalysisView extends StatelessWidget {
   final TutorialInTab? tab;
@@ -20,23 +19,55 @@ class AnalysisView extends StatelessWidget {
       tab: tab,
       child: ListenableBuilder(
         listenable: Analysis.instance,
-        builder: (context, child) => ListView(children: [
-          child!,
-          const SizedBox(height: 4.0),
-          const GoalsCardView(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Text('圖表分析', style: Theme.of(context).textTheme.headlineSmall),
-          ),
-          for (final chart in Analysis.instance.items)
-            ChartCardView(chart: chart),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: addChartButton(context),
-          ),
-          const SizedBox(height: 64.0),
-        ]),
+        builder: (context, child) => ListView.builder(
+          itemCount: Analysis.instance.length + 6,
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return child;
+              case 1:
+                return const GoalsCardView();
+              case 2:
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '圖表分析',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      ElevatedButton.icon(
+                        key: const Key('anal.add_chart'),
+                        icon: const Icon(KIcons.add),
+                        label: const Text('新增圖表'),
+                        onPressed: () => context.pushNamed(
+                          Routes.chartOrderModal,
+                          pathParameters: {
+                            'id': '0',
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+            }
+
+            index -= 3;
+            if (Analysis.instance.length > index) {
+              return Center(
+                child: ChartCardView(
+                  chart: Analysis.instance.items.elementAt(index),
+                ),
+              );
+            }
+
+            if (index == Analysis.instance.length) {
+              return const SizedBox(height: 128.0);
+            }
+            return null;
+          },
+        ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -56,48 +87,6 @@ class AnalysisView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget addChartButton(BuildContext context) {
-    return Card(
-      child: Stack(children: [
-        const SfCartesianChart(
-          plotAreaBorderWidth: 0.7,
-          enableAxisAnimation: false,
-          selectionGesture: ActivationMode.none,
-          primaryXAxis: NumericAxis(labelFormat: ' '),
-          primaryYAxis: NumericAxis(
-            minimum: 0,
-            maximum: 6,
-            interval: 1,
-            labelFormat: ' ',
-          ),
-          series: [],
-        ),
-        Positioned.fill(
-          child: InkWell(
-            key: const Key('anal.add_chart'),
-            onTap: () => context.pushNamed(
-              Routes.chartOrderModal,
-              pathParameters: {
-                'id': '0',
-              },
-            ),
-            child: const AspectRatio(
-              aspectRatio: 1.0,
-              child: Column(
-                children: [
-                  Spacer(),
-                  Icon(KIcons.add, size: 48.0),
-                  Text('新增圖表'),
-                  Spacer(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ]),
     );
   }
 }

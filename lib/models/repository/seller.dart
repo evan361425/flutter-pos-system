@@ -152,6 +152,7 @@ class Seller extends ChangeNotifier {
   Future<List<OrderDataPerDay>> getItemMetricsInPeriod(
     DateTime start,
     DateTime end, {
+    required OrderMetricType type,
     required OrderMetricTarget target,
     MetricsPeriod period = MetricsPeriod.day,
     List<String> selection = const [],
@@ -179,7 +180,11 @@ class Seller extends ChangeNotifier {
       'FROM ${target.table} '
       'WHERE createdAt BETWEEN $begin AND $cease $where '
       ') t',
-      columns: ['t.day', '$name name', 'COUNT(*) count'],
+      columns: [
+        't.day',
+        '$name name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
       groupBy: "t.day, ${target.groupColumn}",
       orderBy: "t.day asc",
       escapeTable: false,
@@ -193,7 +198,7 @@ class Seller extends ChangeNotifier {
               at: Util.fromUTC(
                   begin + (e.first['day'] as int) * period.seconds),
               values: {
-                for (final row in e) row['name'] as String: row['count'] as int,
+                for (final row in e) row['name'] as String: row['value'] as num,
               },
             ))
         .toList();
@@ -210,7 +215,8 @@ class Seller extends ChangeNotifier {
   Future<List<OrderMetricPerItem>> getMetricsByItems(
     DateTime start,
     DateTime end, {
-    OrderMetricTarget target = OrderMetricTarget.catalog,
+    required OrderMetricType type,
+    required OrderMetricTarget target,
     List<String> selection = const [],
     bool ignoreEmpty = false,
   }) async {
@@ -223,7 +229,10 @@ class Seller extends ChangeNotifier {
 
     final rows = await Database.instance.query(
       target.table,
-      columns: ['${target.groupColumn} name', 'COUNT(*) value'],
+      columns: [
+        '${target.groupColumn} name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
       where: 'createdAt BETWEEN ? AND ?$where',
       whereArgs: [begin, cease],
       groupBy: target.groupColumn,
@@ -528,19 +537,21 @@ class OrderMetricPerItem {
 }
 
 enum OrderMetricUnit {
-  money(r'${value}'),
-  count(r'{value}');
+  money(r'${value}', r'$point.y'),
+  count(r'{value}', r'point.y');
 
   final String labelFormat;
+  final String tooltipFormat;
 
-  const OrderMetricUnit(this.labelFormat);
+  const OrderMetricUnit(this.labelFormat, this.tooltipFormat);
 }
 
 enum OrderMetricType {
-  price('SUM', 'price', OrderMetricUnit.money),
-  cost('SUM', 'cost', OrderMetricUnit.money),
-  revenue('SUM', 'revenue', OrderMetricUnit.money),
-  count('COUNT', 'price', OrderMetricUnit.count);
+  price('SUM', 'price', 't.singlePrice * t.count', OrderMetricUnit.money),
+  cost('SUM', 'cost', 't.singleCost * t.count', OrderMetricUnit.money),
+  revenue('SUM', 'revenue', '(t.singlePrice - t.singleCost) * t.count',
+      OrderMetricUnit.money),
+  count('COUNT', 'price', '*', OrderMetricUnit.count);
 
   /// The method to calculate the value in DB.
   final String method;
@@ -548,17 +559,22 @@ enum OrderMetricType {
   /// The source column to execute [method].
   final String column;
 
+  /// Target item column.
+  final String targetColumn;
+
   /// The unit on chart.
   final OrderMetricUnit unit;
 
   const OrderMetricType(
     this.method,
     this.column,
+    this.targetColumn,
     this.unit,
   );
 }
 
 enum OrderMetricTarget {
+  order(Seller.orderTable, '', ''),
   catalog(Seller.productTable, 'catalogName', 'catalogName'),
   product(Seller.productTable, 'productName', 'productName'),
   ingredient(Seller.ingredientTable, 'ingredientName', 'ingredientName'),
@@ -614,6 +630,8 @@ enum OrderMetricTarget {
 
         result = OrderAttributes.instance.itemList;
         break;
+      default:
+        return const [];
     }
 
     // null and empty means select all
@@ -623,6 +641,23 @@ enum OrderMetricTarget {
 
     return result.where((e) => selection.contains(e.id)).toList();
   }
+}
+
+enum OrderChartRange {
+  today(Duration(days: 1), MetricsPeriod.hour),
+  sevenDays(Duration(days: 7), MetricsPeriod.day),
+  twoWeeks(Duration(days: 14), MetricsPeriod.day),
+  month(Duration(days: 30), MetricsPeriod.day),
+  twoMonths(Duration(days: 60), MetricsPeriod.day),
+  halfYear(Duration(days: 180), MetricsPeriod.month),
+  year(Duration(days: 365), MetricsPeriod.month);
+
+  final Duration duration;
+
+  /// The period of the metrics, use to group the data
+  final MetricsPeriod period;
+
+  const OrderChartRange(this.duration, this.period);
 }
 
 enum MetricsPeriod {

@@ -57,7 +57,10 @@ void main() {
     void mockGetCountPerDay(List<Map<String, Object?>> count) {
       when(database.query(
         any,
-        columns: argThat(equals(['t.day', 'COUNT(*) count']), named: 'columns'),
+        columns: argThat(
+          equals(['t.day', 'COUNT(t.price) count']),
+          named: 'columns',
+        ),
         groupBy: argThat(equals('t.day'), named: 'groupBy'),
         orderBy: anyNamed('orderBy'),
         escapeTable: false,

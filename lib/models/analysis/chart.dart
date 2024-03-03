@@ -9,58 +9,34 @@ class CartesianChart extends Chart<OrderDataPerDay> {
   @override
   final AnalysisChartType type = AnalysisChartType.cartesian;
 
-  /// Which metrics to show, price, cost, or revenue
-  List<OrderMetricType> metrics;
-
-  /// Which target to show, product, category, or ingredients
-  OrderMetricTarget? target;
-
-  /// Target's IDs of product, category, or ingredients
-  List<String> selection;
-
   CartesianChart({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
-    String name = 'cartesian chart',
-    OrderChartRange range = OrderChartRange.sevenDays,
-    bool withToday = false,
-    bool ignoreEmpty = false,
-    this.metrics = const [OrderMetricType.price, OrderMetricType.revenue],
-    this.target,
-    this.selection = const [],
-  }) : super(id, name, status,
-            range: range, withToday: withToday, ignoreEmpty: ignoreEmpty);
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'cartesian',
+    super.range = OrderChartRange.sevenDays,
+    super.withToday = false,
+    super.ignoreEmpty = true,
+    super.target = OrderMetricTarget.order,
+    super.metrics = const [OrderMetricType.price],
+    super.targetItems = const [],
+  });
 
-  factory CartesianChart.fromObject(CartesianChartObject object) {
+  factory CartesianChart.fromObject(ChartObject object) {
     return CartesianChart(
       id: object.id,
-      name: object.name ?? 'chart',
-      metrics: object.metrics ?? const [OrderMetricType.revenue],
-      target: object.target,
-      selection: object.selection ?? const <String>[],
+      name: object.name ?? 'cartesian',
       range: object.range ?? OrderChartRange.sevenDays,
       withToday: object.withToday ?? false,
       ignoreEmpty: object.ignoreEmpty ?? true,
-    );
-  }
-
-  @override
-  CartesianChartObject toObject() {
-    return CartesianChartObject(
-      id: id,
-      name: name,
-      metrics: metrics,
-      target: target,
-      selection: selection,
-      range: range,
-      withToday: withToday,
-      ignoreEmpty: ignoreEmpty,
+      target: object.target ?? OrderMetricTarget.order,
+      metrics: object.metrics ?? const [OrderMetricType.price],
+      targetItems: object.targetItems ?? const <String>[],
     );
   }
 
   @override
   Future<List<OrderDataPerDay>> loader(DateTime start, DateTime end) {
-    return target == null
+    return target == OrderMetricTarget.order
         ? Seller.instance.getMetricsInPeriod(
             start,
             end,
@@ -71,18 +47,26 @@ class CartesianChart extends Chart<OrderDataPerDay> {
         : Seller.instance.getItemMetricsInPeriod(
             start,
             end,
-            target: target!,
-            selection: selection,
+            target: target,
+            type: metrics.first,
+            selection: targetItems,
             period: range.period,
             ignoreEmpty: ignoreEmpty,
           );
   }
 
-  Iterable<String> keys() {
-    return target?.getItems(selection).map(target!.isGroupedName(selection)
+  Iterable<MapEntry<String, OrderMetricUnit>> keyUnits() {
+    if (target == OrderMetricTarget.order) {
+      return metrics.map((e) => MapEntry(e.name, e.unit));
+    }
+
+    final unit = metrics.first.unit;
+    return target
+        .getItems(targetItems)
+        .map(target.isGroupedName(targetItems)
             ? (e) => '${e.name}(${(e.repository as Model).name})'
-            : (e) => e.name) ??
-        metrics.map((e) => e.name);
+            : (e) => e.name)
+        .map((e) => MapEntry(e, unit));
   }
 }
 
@@ -90,52 +74,28 @@ class CircularChart extends Chart<OrderMetricPerItem> {
   @override
   final AnalysisChartType type = AnalysisChartType.circular;
 
-  /// Which target to show, product, category, or ingredients
-  OrderMetricTarget target;
-
-  /// Target's IDs of product, category, or ingredients
-  List<String> selection;
-
-  /// Show [groupTo]-largest items and group the rest
-  int groupTo;
-
   CircularChart({
-    String? id,
-    ModelStatus status = ModelStatus.normal,
-    String name = 'circular chart',
-    OrderChartRange range = OrderChartRange.sevenDays,
-    bool withToday = false,
-    bool ignoreEmpty = false,
-    this.target = OrderMetricTarget.product,
-    this.selection = const [],
-    this.groupTo = 5,
-  }) : super(id, name, status,
-            range: range, withToday: withToday, ignoreEmpty: ignoreEmpty);
+    super.id,
+    super.status = ModelStatus.normal,
+    super.name = 'circular',
+    super.range = OrderChartRange.sevenDays,
+    super.withToday = false,
+    super.ignoreEmpty = true,
+    super.target = OrderMetricTarget.catalog,
+    super.metrics = const [OrderMetricType.count],
+    super.targetItems = const [],
+  });
 
-  factory CircularChart.fromObject(CircularChartObject object) {
+  factory CircularChart.fromObject(ChartObject object) {
     return CircularChart(
       id: object.id,
-      name: object.name ?? 'pie',
-      target: object.target ?? OrderMetricTarget.product,
-      selection: object.selection ?? [],
-      groupTo: object.groupTo ?? 5,
+      name: object.name ?? 'circular',
       range: object.range ?? OrderChartRange.sevenDays,
       withToday: object.withToday ?? false,
       ignoreEmpty: object.ignoreEmpty ?? true,
-    );
-  }
-
-  @override
-  CircularChartObject toObject() {
-    return CircularChartObject(
-      id: id,
-      name: name,
-      target: target,
-      selection: selection,
-      groupTo: groupTo,
-      range: range,
-      withToday: withToday,
-      ignoreEmpty: ignoreEmpty,
+      target: object.target ?? OrderMetricTarget.catalog,
+      metrics: object.metrics ?? const [OrderMetricType.count],
+      targetItems: object.targetItems ?? const <String>[],
     );
   }
 
@@ -145,28 +105,9 @@ class CircularChart extends Chart<OrderMetricPerItem> {
       start,
       end,
       target: target,
-      selection: selection,
+      type: metrics.first,
+      selection: targetItems,
       ignoreEmpty: ignoreEmpty,
     );
-  }
-
-  /// [groupTo] indexing the largest items, this function return desired value.
-  ///
-  /// If [groupTo] is 0, return null.
-  ///
-  /// If target at [groupTo] has same value with others,
-  /// return value at `lastIndex+1` and fallback to null if overwhelming.
-  ///
-  /// Otherwise, return the value at [groupTo].
-  double? groupToValue(List<OrderMetricPerItem> metrics) {
-    final element = groupTo == 0 ? null : metrics.elementAtOrNull(groupTo);
-    if (element == null) {
-      return null;
-    }
-
-    final last = metrics.lastIndexWhere((e) => e.value == element.value);
-    return (last > groupTo ? metrics.elementAtOrNull(last + 1) : element)
-        ?.value
-        .toDouble();
   }
 }

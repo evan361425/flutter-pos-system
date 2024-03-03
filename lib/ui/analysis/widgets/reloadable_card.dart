@@ -101,11 +101,6 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
     }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (widget.title != null)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: buildTitle(),
-        ),
       const SizedBox(height: 8.0),
       child,
     ]);
