@@ -76,6 +76,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               height: snapshotHeight,
               baselineSize: -2 * controller.snapSizes[0],
               valueScalar: -1,
+              // TODO: wrap with gesture detector to go up when tap
               child: const CartSnapshot(),
             ),
             FixedHeightClipper(
@@ -87,7 +88,8 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
             ),
             Tutorial(
               id: 'order.sliding_collapsed',
-              padding: const EdgeInsets.fromLTRB(-4, 24, -4, 0),
+              padding: const EdgeInsets.fromLTRB(
+                  -4, snapshotHeight + DraggableIndicator.height, -4, 0),
               title: S.orderCartSnapshotTutorialTitle,
               message: S.orderCartSnapshotTutorialMessage,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),

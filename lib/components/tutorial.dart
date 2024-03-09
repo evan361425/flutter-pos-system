@@ -112,18 +112,25 @@ class Tutorial extends StatelessWidget {
 }
 
 class TutorialInTab {
-  final TabController controller;
+  final TabController? controller;
+  final BuildContext? context;
   final int index;
 
   bool hasRegistered = false;
 
   TutorialInTab({
-    required this.controller,
+    this.controller,
+    this.context,
     required this.index,
-  });
+  }) : assert(controller != null || context != null);
+
+  /// get the tab controller, if not provided, use the default one
+  TabController get cont {
+    return controller ?? DefaultTabController.of(context!);
+  }
 
   bool get shouldShow {
-    return index == controller.index && !controller.indexIsChanging;
+    return index == cont.index && !cont.indexIsChanging;
   }
 
   void listenIndexChanging(BuildContext context) {
@@ -134,12 +141,14 @@ class TutorialInTab {
     void handler() {
       if (shouldShow && context.mounted) {
         SpotlightShow.maybeOf(context)?.start();
-        controller.removeListener(handler);
+        cont.removeListener(handler);
       }
     }
 
-    controller.addListener(handler);
-    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) => handler());
+    cont.addListener(handler);
+    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
+      handler();
+    });
     hasRegistered = true;
   }
 }

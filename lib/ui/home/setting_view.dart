@@ -15,16 +15,16 @@ import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 class SettingView extends StatelessWidget {
-  final TutorialInTab? tab;
+  final int? tabIndex;
 
-  const SettingView({
-    super.key,
-    this.tab,
-  });
+  const SettingView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
+    final tab = tabIndex == null
+        ? null
+        : TutorialInTab(index: tabIndex!, context: context);
 
     return TutorialWrapper(
       tab: tab,

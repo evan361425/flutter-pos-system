@@ -12,12 +12,9 @@ import 'package:provider/provider.dart';
 import 'widgets/stock_ingredient_list.dart';
 
 class StockScreen<T> extends StatelessWidget {
-  final TutorialInTab? tab;
+  final int? tabIndex;
 
-  const StockScreen({
-    super.key,
-    this.tab,
-  });
+  const StockScreen({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +29,10 @@ class StockScreen<T> extends StatelessWidget {
         ),
       );
     }
+
+    final tab = tabIndex == null
+        ? null
+        : TutorialInTab(index: tabIndex!, context: context);
 
     return TutorialWrapper(
       tab: tab,

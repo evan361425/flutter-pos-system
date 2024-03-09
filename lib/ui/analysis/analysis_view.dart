@@ -9,12 +9,16 @@ import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 
 class AnalysisView extends StatelessWidget {
-  final TutorialInTab? tab;
+  final int? tabIndex;
 
-  const AnalysisView({super.key, this.tab});
+  const AnalysisView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
+    final tab = tabIndex == null
+        ? null
+        : TutorialInTab(index: tabIndex!, context: context);
+
     return TutorialWrapper(
       tab: tab,
       child: ListenableBuilder(

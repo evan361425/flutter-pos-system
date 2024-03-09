@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -9,7 +8,7 @@ import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:possystem/ui/home/setting_view.dart';
 import '../stock/stock_view.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   final HomeTab tab;
 
   const HomePage({
@@ -18,89 +17,59 @@ class HomePage extends StatefulWidget {
   });
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.appTitle),
-        centerTitle: true,
-        shadowColor: Theme.of(context).colorScheme.shadow,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: Theme.of(context).gradientColors,
-              tileMode: TileMode.clamp,
+    // 如果使用 stateful 並另外建立 tabController，
+    // 則會在 push page 時造成 Home 頁面重建，
+    // 進而導致底下的頁面也重建，可能造成 tutorial 重複出現。
+    return DefaultTabController(
+      length: 4,
+      initialIndex: HomeTab.values.indexOf(tab),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(S.appTitle),
+          centerTitle: true,
+          shadowColor: Theme.of(context).colorScheme.shadow,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: Theme.of(context).gradientColors,
+                tileMode: TileMode.clamp,
+              ),
             ),
           ),
-        ),
-        // disable scrolling effect
-        notificationPredicate: (ScrollNotification notification) {
-          return notification.depth == 1;
-        },
-        // disable shadow after scrolled
-        scrolledUnderElevation: 0,
-        actions: [
-          TextButton(
-            key: const Key('home.order'),
-            onPressed: () => context.pushNamed(Routes.order),
-            child: const Text('點餐'),
-          )
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
+          // disable scrolling effect
+          notificationPredicate: (ScrollNotification notification) {
+            return notification.depth == 1;
+          },
+          // disable shadow after scrolled
+          scrolledUnderElevation: 0,
+          actions: [
+            TextButton(
+              key: const Key('home.order'),
+              onPressed: () => context.pushNamed(Routes.order),
+              child: const Text('點餐'),
+            )
+          ],
+          bottom: TabBar(tabs: [
             _CustomTab(
                 key: const Key('home.analysis'), text: S.homeTabAnalysis),
             _CustomTab(key: const Key('home.stock'), text: S.homeTabStock),
             _CustomTab(key: const Key('home.cashier'), text: S.homeTabCashier),
             _CustomTab(key: const Key('home.setting'), text: S.homeTabSetting),
+          ]),
+        ),
+        body: const TabBarView(
+          children: [
+            AnalysisView(tabIndex: 0),
+            StockScreen(tabIndex: 1),
+            CashierView(tabIndex: 2),
+            SettingView(tabIndex: 3),
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          AnalysisView(
-            tab: TutorialInTab(controller: _tabController, index: 0),
-          ),
-          StockScreen(
-            tab: TutorialInTab(controller: _tabController, index: 1),
-          ),
-          CashierView(
-            tab: TutorialInTab(controller: _tabController, index: 2),
-          ),
-          SettingView(
-            tab: TutorialInTab(controller: _tabController, index: 3),
-          ),
-        ],
-      ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _tabController = TabController(
-      initialIndex: HomeTab.values.indexOf(widget.tab),
-      length: 4,
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 }
 

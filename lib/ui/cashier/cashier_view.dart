@@ -11,12 +11,16 @@ import 'package:possystem/translator.dart';
 import 'widgets/unit_list_view.dart';
 
 class CashierView extends StatelessWidget {
-  final TutorialInTab? tab;
+  final int? tabIndex;
 
-  const CashierView({super.key, this.tab});
+  const CashierView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
+    final tab = tabIndex == null
+        ? null
+        : TutorialInTab(index: tabIndex!, context: context);
+
     return TutorialWrapper(
       tab: tab,
       child: ListView(children: [

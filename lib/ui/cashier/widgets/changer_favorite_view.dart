@@ -37,7 +37,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
-        helperText: '可以幫助你快速轉換不同幣值',
+        helperText: '這裡可以幫助你快速轉換不同幣值',
         onPressed: widget.emptyAction,
       );
     }
