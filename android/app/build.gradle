@@ -1,43 +1,23 @@
+plugins {
+  id "com.android.application"
+  id "kotlin-android"
+  id "dev.flutter.flutter-gradle-plugin"
+  id "com.google.gms.google-services"
+  id "com.google.firebase.crashlytics"
+}
+
 def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
-
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-  flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-  flutterVersionName = '1.0'
-}
-
-apply plugin: 'com.android.application'
-// START: FlutterFire Configuration
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-// END: FlutterFire Configuration
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+rootProject.file('local.properties').withInputStream { localProperties.load(it) }
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
+rootProject.file('key.properties').withInputStream { keystoreProperties.load(it) }
 
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
 def buildNumber = System.getenv("BUILD_NUMBER") ?: "0"
 
 android {
+  namespace "com.evanlu.possystem"
   compileSdkVersion flutter.compileSdkVersion
   ndkVersion flutter.ndkVersion
 
@@ -56,6 +36,7 @@ android {
 
   defaultConfig {
     applicationId "com.evanlu.possystem"
+    // should be flutter.minSdkVersion
     // https://github.com/FirebaseExtended/flutterfire/issues/1401
     minSdkVersion 21
     targetSdkVersion flutter.targetSdkVersion
@@ -109,6 +90,7 @@ flutter {
 
 dependencies {
   implementation 'com.android.support:multidex:1.0.3'
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  // kotlin version
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
   implementation "androidx.multidex:multidex:2.0.1"
 }
