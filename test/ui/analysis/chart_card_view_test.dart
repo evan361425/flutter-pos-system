@@ -181,7 +181,7 @@ void main() {
           argThat(equals(<String, Object?>{
             'test.name': 'title2',
             'test.withToday': true,
-            'test.ignoreEmpty': false,
+            'test.ignoreEmpty': true,
             'test.range': OrderChartRange.today.index,
             'test.target': OrderMetricTarget.product.index,
             'test.metrics': [OrderMetricType.cost.index],
@@ -209,10 +209,7 @@ void main() {
         });
         mockGetMetricsInPeriod();
 
-        await tester.pumpWidget(buildApp(CartesianChart(
-          id: 'test',
-          ignoreEmpty: false,
-        )));
+        await tester.pumpWidget(buildApp(CartesianChart(id: 'test')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -387,6 +384,7 @@ void main() {
         await tester.pumpWidget(buildApp(CircularChart(
           id: 'test',
           target: OrderMetricTarget.ingredient,
+          ignoreEmpty: true,
         )));
         await tester.pumpAndSettle();
 

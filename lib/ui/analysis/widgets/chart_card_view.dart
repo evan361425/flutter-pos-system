@@ -254,8 +254,11 @@ class _CartesianChart extends StatelessWidget {
         series: chart.keyUnits().map(
           (keyUnit) {
             return SplineSeries(
+              animationDuration: 0,
               markerSettings: const MarkerSettings(isVisible: true),
-              name: keyUnit.key,
+              name: chart.target == OrderMetricTarget.order
+                  ? S.analysisChartMetric(keyUnit.key)
+                  : keyUnit.key,
               yAxisName: keyUnit.value.name,
               xValueMapper: (v, i) => v.at,
               yValueMapper: (v, i) => v.value(keyUnit.key),
@@ -292,6 +295,7 @@ class _CircularChart extends StatelessWidget {
       ),
       series: [
         PieSeries<OrderMetricPerItem, String>(
+          animationDuration: 0,
           explode: false, // show larger section when tap
           name: chart.target.name,
           xValueMapper: (v, i) => v.name,

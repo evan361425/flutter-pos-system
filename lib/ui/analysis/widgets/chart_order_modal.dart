@@ -25,7 +25,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
 
   AnalysisChartType type = AnalysisChartType.cartesian;
   bool withToday = false;
-  bool ignoreEmpty = true;
+  bool ignoreEmpty = false;
   OrderChartRange range = OrderChartRange.sevenDays;
   late OrderMetricTarget target;
   final metrics = <OrderMetricType>[];

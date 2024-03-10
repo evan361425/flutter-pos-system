@@ -132,7 +132,7 @@ void main() {
       expect(chart.name, equals('test'));
       // verify default values
       expect(chart.type.name, equals('cartesian'));
-      expect(chart.ignoreEmpty, equals(true));
+      expect(chart.ignoreEmpty, equals(false));
       expect(chart.withToday, equals(false));
       expect(chart.range.duration, equals(const Duration(days: 7)));
       expect(chart is CartesianChart, isTrue);

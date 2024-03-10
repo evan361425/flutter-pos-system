@@ -26,38 +26,11 @@ class AnalysisView extends StatelessWidget {
         builder: (context, child) => ListView.builder(
           itemCount: Analysis.instance.length + 6,
           itemBuilder: (context, index) {
-            switch (index) {
-              case 0:
-                return child;
-              case 1:
-                return const GoalsCardView();
-              case 2:
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '圖表分析',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      ElevatedButton.icon(
-                        key: const Key('anal.add_chart'),
-                        icon: const Icon(KIcons.add),
-                        label: const Text('新增圖表'),
-                        onPressed: () => context.pushNamed(
-                          Routes.chartOrderModal,
-                          pathParameters: {
-                            'id': '0',
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+            if (index == 0) {
+              return child;
             }
 
-            index -= 3;
+            index -= 1;
             if (Analysis.instance.length > index) {
               return Center(
                 child: ChartCardView(
@@ -72,24 +45,63 @@ class AnalysisView extends StatelessWidget {
             return null;
           },
         ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            RouteCircularButton(
-              key: Key('anal.order'),
-              icon: Icons.store_sharp,
-              route: Routes.order,
-              text: '點餐',
+        child: const Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              RouteCircularButton(
+                key: Key('anal.order'),
+                icon: Icons.store_sharp,
+                route: Routes.order,
+                text: '點餐',
+              ),
+              SizedBox.square(dimension: 96.0),
+              RouteCircularButton(
+                key: Key('anal.history'),
+                icon: Icons.calendar_month_sharp,
+                route: Routes.history,
+                text: '紀錄',
+              ),
+            ],
+          ),
+          GoalsCardView(),
+          _ChartTitle(),
+        ]),
+      ),
+    );
+  }
+}
+
+class _ChartTitle extends StatelessWidget {
+  const _ChartTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '圖表分析',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Tutorial(
+            id: 'anal.add_chart',
+            message: '開始設計圖表追蹤你的銷售狀況。',
+            child: ElevatedButton.icon(
+              key: const Key('anal.add_chart'),
+              icon: const Icon(KIcons.add),
+              label: const Text('新增圖表'),
+              onPressed: () => context.pushNamed(
+                Routes.chartOrderModal,
+                pathParameters: {
+                  'id': '0',
+                },
+              ),
             ),
-            SizedBox.square(dimension: 96.0),
-            RouteCircularButton(
-              key: Key('anal.history'),
-              icon: Icons.calendar_month_sharp,
-              route: Routes.history,
-              text: '紀錄',
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
