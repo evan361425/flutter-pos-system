@@ -6,11 +6,12 @@ import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -43,13 +44,14 @@ void main() {
         escapeTable: anyNamed('escapeTable'),
       )).thenAnswer((_) => Future.value([]));
       final settings = SettingsProvider(SettingsProvider.allSettings);
+      final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
 
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Menu()),
-          ChangeNotifierProvider.value(value: Stock()),
+          ChangeNotifierProvider.value(value: stock),
           ChangeNotifierProvider.value(value: Quantities()),
           ChangeNotifierProvider.value(value: OrderAttributes()),
           ChangeNotifierProvider.value(value: Analysis()),
@@ -103,7 +105,7 @@ void main() {
       await dragUp();
       await navAndPop('setting.setting', 'feature.theme');
       await navAndPop('home.order', 'order.more');
-      await navAndCheck('home.stock', 'stock.empty');
+      await navAndCheck('home.stock', 'stock.replenisher');
       await navAndCheck('home.cashier', 'cashier.changer');
       await navAndCheck('home.analysis', 'anal.history');
     });

@@ -6,7 +6,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:possystem/ui/home/setting_view.dart';
-import '../stock/stock_view.dart';
+import 'package:possystem/ui/stock/stock_view.dart';
 
 class HomePage extends StatelessWidget {
   final HomeTab tab;
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
         body: const TabBarView(
           children: [
             AnalysisView(tabIndex: 0),
-            StockScreen(tabIndex: 1),
+            StockView(tabIndex: 1),
             CashierView(tabIndex: 2),
             SettingView(tabIndex: 3),
           ],

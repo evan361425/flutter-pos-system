@@ -6,6 +6,10 @@ import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/database_migration_actions.dart';
 import 'package:possystem/services/database_migrations.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite/sqlite_api.dart';
+// This only be used in dev.
+// ignore: depend_on_referenced_packages
+import 'package:sqflite_common/sqflite_logger.dart';
 
 typedef DbOpener = Future<sqflite.Database> Function(
   String path, {
@@ -22,16 +26,17 @@ typedef DbOpener = Future<sqflite.Database> Function(
 class Database {
   static Database instance = Database();
 
-  // delimiter: https://stackoverflow.com/a/29811033/12089368
+  /// delimiter: https://stackoverflow.com/a/29811033/12089368
   static final delimiter = String.fromCharCode(29);
 
-  // delimiter for blob.
+  /// delimiter for blob.
   static const queryDelimiter = 'char(29)';
 
   static const latestVersion = 8;
 
   late sqflite.Database db;
 
+  /// Whether the database is initialized.
   bool _initialized = false;
 
   Future<List<Object?>> batchUpdate(
@@ -86,29 +91,43 @@ class Database {
 
   Future<void> initialize({
     String? path,
-    DbOpener opener = sqflite.openDatabase,
+    sqflite.DatabaseFactory? factory,
+    bool logWhenQuery = false,
   }) async {
     if (_initialized) return;
     _initialized = true;
 
+    factory ??= sqflite.databaseFactory;
+    if (logWhenQuery) {
+      factory = SqfliteDatabaseFactoryLogger(
+        factory,
+        options: SqfliteLoggerOptions(
+          type: SqfliteDatabaseFactoryLoggerType.all,
+        ),
+      );
+    }
+
     final databasePath = path ?? await getRootPath();
-    Log.out('start', 'db_initialize');
-    db = await opener(
+    Log.out('start at $databasePath', 'db_initialize');
+
+    db = await factory.openDatabase(
       databasePath,
-      version: latestVersion,
-      onCreate: (db, latestVer) async {
-        Log.ger('0 $latestVer', 'db_initialize');
-        for (var ver = 1; ver <= latestVer; ver++) {
-          await execMigration(db, ver);
-        }
-      },
-      onUpgrade: (db, oldVer, newVer) async {
-        Log.ger('$oldVer $newVer', 'db_initialize');
-        for (var ver = oldVer + 1; ver <= newVer; ver++) {
-          await execMigration(db, ver);
-          await execMigrationAction(db, ver);
-        }
-      },
+      options: OpenDatabaseOptions(
+        version: latestVersion,
+        onCreate: (db, latestVer) async {
+          Log.ger('0 $latestVer', 'db_initialize');
+          for (var ver = 1; ver <= latestVer; ver++) {
+            await execMigration(db, ver);
+          }
+        },
+        onUpgrade: (db, oldVer, newVer) async {
+          Log.ger('$oldVer $newVer', 'db_initialize');
+          for (var ver = oldVer + 1; ver <= newVer; ver++) {
+            await execMigration(db, ver);
+            await execMigrationAction(db, ver);
+          }
+        },
+      ),
     );
   }
 

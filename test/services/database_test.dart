@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -15,38 +17,11 @@ import 'database_test.mocks.dart';
 void main() {
   group('Database', () {
     group('#initialize', () {
-      // ignore: prefer_function_declarations_over_variables
-      final DbOpener opener = (
-        path, {
-        onConfigure,
-        onCreate,
-        onDowngrade,
-        onOpen,
-        onUpgrade,
-        readOnly = false,
-        // avoid pollution from different test
-        singleInstance = false,
-        version,
-      }) {
-        return databaseFactoryFfi.openDatabase(
-          path,
-          options: sqflite.OpenDatabaseOptions(
-            onConfigure: onConfigure,
-            onCreate: onCreate,
-            onDowngrade: onDowngrade,
-            onOpen: onOpen,
-            onUpgrade: onUpgrade,
-            readOnly: readOnly,
-            singleInstance: singleInstance,
-            version: version,
-          ),
-        );
-      };
-
       test('onCreate', () async {
+        sqflite.databaseFactoryOrNull = databaseFactoryFfi;
         await Database.instance.initialize(
           path: sqflite.inMemoryDatabasePath,
-          opener: opener,
+          logWhenQuery: true,
         );
 
         final dbVersion = await Database.instance.db.getVersion();
@@ -54,41 +29,29 @@ void main() {
       });
 
       test('onUpgrade should not failed', () async {
+        final db = await databaseFactoryFfi.openDatabase(
+          sqflite.inMemoryDatabasePath,
+        );
         await Database.instance.initialize(
-          opener: (path,
-              {onConfigure,
-              onCreate,
-              onDowngrade,
-              onOpen,
-              onUpgrade,
-              readOnly = true,
-              singleInstance = true,
-              version}) async {
+          factory: MockDatabaseFactory(db, (path, options) async {
             expect(path, equals('databases/pos_system.sqlite'));
-            final db = await opener(sqflite.inMemoryDatabasePath);
-            await onUpgrade!(db, 0, version!);
-            return db;
-          },
+            await options.onUpgrade!(db, 0, options.version!);
+          }),
         );
       });
 
       test('onUpgrade should catch the error', () async {
         Log.errorCount = 0;
+        final db = await databaseFactoryFfi.openDatabase(
+          sqflite.inMemoryDatabasePath,
+        );
 
-        await Database.instance.initialize(opener: (path,
-            {onConfigure,
-            onCreate,
-            onDowngrade,
-            onOpen,
-            onUpgrade,
-            readOnly = true,
-            singleInstance = true,
-            version}) async {
-          final db = await opener(sqflite.inMemoryDatabasePath);
-          // without running version 1, it will throw error
-          await onUpgrade!(db, 3, version!);
-          return db;
-        });
+        await Database.instance.initialize(
+          factory: MockDatabaseFactory(db, (path, options) async {
+            // without running version 1, it will throw error
+            await options.onUpgrade!(db, 3, options.version!);
+          }),
+        );
 
         expect(Log.errorCount, isNonZero);
         Log.errorCount = 0;
@@ -284,4 +247,51 @@ void main() {
       initializeFileSystem();
     });
   });
+}
+
+class MockDatabaseFactory extends sqflite.DatabaseFactory {
+  final sqflite.Database db;
+
+  final Function(String path, sqflite.OpenDatabaseOptions options) hook;
+
+  MockDatabaseFactory(this.db, this.hook);
+
+  @override
+  Future<bool> databaseExists(String path) {
+    return Future.value(false);
+  }
+
+  @override
+  Future<void> deleteDatabase(String path) {
+    return Future.value();
+  }
+
+  @override
+  Future<String> getDatabasesPath() {
+    return Future.value('databases');
+  }
+
+  @override
+  Future<sqflite.Database> openDatabase(
+    String path, {
+    sqflite.OpenDatabaseOptions? options,
+  }) async {
+    await hook(path, options!);
+    return db;
+  }
+
+  @override
+  Future<Uint8List> readDatabaseBytes(String path) {
+    return Future.value(Uint8List(0));
+  }
+
+  @override
+  Future<void> setDatabasesPath(String path) {
+    return Future.value();
+  }
+
+  @override
+  Future<void> writeDatabaseBytes(String path, Uint8List bytes) {
+    return Future.value();
+  }
 }

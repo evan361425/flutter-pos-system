@@ -11,10 +11,10 @@ import 'package:provider/provider.dart';
 
 import 'widgets/stock_ingredient_list.dart';
 
-class StockScreen<T> extends StatelessWidget {
+class StockView<T> extends StatelessWidget {
   final int? tabIndex;
 
-  const StockScreen({super.key, this.tabIndex});
+  const StockView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {

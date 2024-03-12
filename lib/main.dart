@@ -7,6 +7,7 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +52,7 @@ void main() async {
         await FirebaseInAppMessaging.instance.setMessagesSuppressed(false);
       }
 
-      await Database.instance.initialize();
+      await Database.instance.initialize(logWhenQuery: isLocalTest);
       await Storage.instance.initialize();
       await Cache.instance.initialize();
 

@@ -168,7 +168,8 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
   @override
   _i3.Future<void> initialize({
     String? path,
-    _i4.DbOpener? opener = _i2.openDatabase,
+    _i2.DatabaseFactory? factory,
+    bool? logWhenQuery = false,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -176,7 +177,8 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
           [],
           {
             #path: path,
-            #opener: opener,
+            #factory: factory,
+            #logWhenQuery: logWhenQuery,
           },
         ),
         returnValue: _i3.Future<void>.value(),

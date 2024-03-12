@@ -1123,7 +1123,7 @@ packages:
     source: hosted
     version: "2.3.2"
   sqflite_common:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: sqflite_common
       sha256: "28d8c66baee4968519fb8bd6cdbedad982d6e53359091f0b74544a9f32ec72d5"

@@ -90,6 +90,7 @@ dev_dependencies:
   # mock object
   build_runner: ^2.4.8
   mockito: ^5.4.4
+  sqflite_common: ^2.5.3 # logging
   sqflite_common_ffi: ^2.3.2+1
 
 # For information on the generic Dart part of this file, see the
