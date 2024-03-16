@@ -58,10 +58,10 @@ void main() {
       when(database.query(
         any,
         columns: argThat(
-          equals(['t.day', 'COUNT(t.price) count']),
+          equals(['day', 'COUNT(price) count']),
           named: 'columns',
         ),
-        groupBy: argThat(equals('t.day'), named: 'groupBy'),
+        groupBy: argThat(equals('day'), named: 'groupBy'),
         orderBy: anyNamed('orderBy'),
         escapeTable: false,
       )).thenAnswer((_) => Future.value(count));

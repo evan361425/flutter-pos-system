@@ -5,8 +5,8 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
+import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 
 class AnalysisView extends StatelessWidget {
   final int? tabIndex;
@@ -23,50 +23,44 @@ class AnalysisView extends StatelessWidget {
       tab: tab,
       child: ListenableBuilder(
         listenable: Analysis.instance,
-        builder: (context, child) => ListView.builder(
-          itemCount: Analysis.instance.length + 6,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return child;
-            }
+        builder: (context, child) {
+          return ListView.builder(
+            padding: const EdgeInsets.only(bottom: 256),
+            itemCount: Analysis.instance.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return const Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      RouteCircularButton(
+                        key: Key('anal.order'),
+                        icon: Icons.store_sharp,
+                        route: Routes.order,
+                        text: '點餐',
+                      ),
+                      SizedBox.square(dimension: 96.0),
+                      RouteCircularButton(
+                        key: Key('anal.history'),
+                        icon: Icons.calendar_month_sharp,
+                        route: Routes.history,
+                        text: '紀錄',
+                      ),
+                    ],
+                  ),
+                  GoalsCardView(),
+                  _ChartTitle(),
+                ]);
+              }
 
-            index -= 1;
-            if (Analysis.instance.length > index) {
               return Center(
                 child: ChartCardView(
-                  chart: Analysis.instance.items.elementAt(index),
+                  chart: Analysis.instance.items.elementAt(index - 1),
                 ),
               );
-            }
-
-            if (index == Analysis.instance.length) {
-              return const SizedBox(height: 128.0);
-            }
-            return null;
-          },
-        ),
-        child: const Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              RouteCircularButton(
-                key: Key('anal.order'),
-                icon: Icons.store_sharp,
-                route: Routes.order,
-                text: '點餐',
-              ),
-              SizedBox.square(dimension: 96.0),
-              RouteCircularButton(
-                key: Key('anal.history'),
-                icon: Icons.calendar_month_sharp,
-                route: Routes.history,
-                text: '紀錄',
-              ),
-            ],
-          ),
-          GoalsCardView(),
-          _ChartTitle(),
-        ]),
+            },
+          );
+        },
       ),
     );
   }
@@ -88,7 +82,7 @@ class _ChartTitle extends StatelessWidget {
           ),
           Tutorial(
             id: 'anal.add_chart',
-            message: '開始設計圖表追蹤你的銷售狀況。',
+            message: '開始設計圖表追蹤你的銷售狀況吧！',
             child: ElevatedButton.icon(
               key: const Key('anal.add_chart'),
               icon: const Icon(KIcons.add),

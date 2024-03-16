@@ -120,11 +120,11 @@ class Seller extends ChangeNotifier {
       'WHERE createdAt BETWEEN $begin AND $cease'
       ') t',
       columns: [
-        't.day',
-        ...types.map((e) => '${e.method}(t.${e.column}) ${e.name}'),
+        'day',
+        ...types.map((e) => '${e.method}(${e.column}) ${e.name}'),
       ],
-      groupBy: "t.day",
-      orderBy: "t.day asc",
+      groupBy: "day",
+      orderBy: "day asc",
       escapeTable: false,
     );
 
@@ -181,12 +181,12 @@ class Seller extends ChangeNotifier {
       'WHERE createdAt BETWEEN $begin AND $cease $where '
       ') t',
       columns: [
-        't.day',
+        'day',
         '$name name',
         '${type.method}(${type.targetColumn}) value',
       ],
-      groupBy: "t.day, ${target.groupColumn}",
-      orderBy: "t.day asc",
+      groupBy: "day, ${target.groupColumn}",
+      orderBy: "day asc",
       escapeTable: false,
     );
 
@@ -225,7 +225,7 @@ class Seller extends ChangeNotifier {
 
     final where = selection.isEmpty
         ? ''
-        : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
+        : ' AND `${target.filterColumn}` IN ("${selection.join('","')}")';
 
     final rows = await Database.instance.query(
       target.table,
@@ -236,7 +236,7 @@ class Seller extends ChangeNotifier {
       where: 'createdAt BETWEEN ? AND ?$where',
       whereArgs: [begin, cease],
       groupBy: target.groupColumn,
-      orderBy: 'count desc',
+      orderBy: 'value desc',
     );
 
     final total = rows.fold(0.0, (prev, e) => prev + (e['value'] as num));
@@ -547,9 +547,9 @@ enum OrderMetricUnit {
 }
 
 enum OrderMetricType {
-  price('SUM', 'price', 't.singlePrice * t.count', OrderMetricUnit.money),
-  cost('SUM', 'cost', 't.singleCost * t.count', OrderMetricUnit.money),
-  revenue('SUM', 'revenue', '(t.singlePrice - t.singleCost) * t.count',
+  price('SUM', 'price', 'singlePrice * count', OrderMetricUnit.money),
+  cost('SUM', 'cost', 'singleCost * count', OrderMetricUnit.money),
+  revenue('SUM', 'revenue', '(singlePrice - singleCost) * count',
       OrderMetricUnit.money),
   count('COUNT', 'price', '*', OrderMetricUnit.count);
 
@@ -623,7 +623,8 @@ enum OrderMetricTarget {
 
           return selection
               .expand<OrderAttributeOption>((id) =>
-                  OrderAttributes.instance.getItem(id)?.itemList ?? const [])
+                  OrderAttributes.instance.getItemByName(id)?.itemList ??
+                  const [])
               .toList();
         }
 
@@ -638,7 +639,7 @@ enum OrderMetricTarget {
       return result;
     }
 
-    return result.where((e) => selection.contains(e.id)).toList();
+    return result.where((e) => selection.contains(e.name)).toList();
   }
 }
 

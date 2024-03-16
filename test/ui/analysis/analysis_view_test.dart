@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/analysis/analysis.dart';
-import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -63,7 +62,7 @@ void main() {
     void mockGetChart() {
       when(database.query(
         any,
-        columns: argThat(contains('SUM(t.price) price'), named: 'columns'),
+        columns: argThat(contains('SUM(price) price'), named: 'columns'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
         groupBy: anyNamed('groupBy'),
@@ -85,7 +84,7 @@ void main() {
       when(database.query(
         any,
         columns: anyNamed('columns'),
-        groupBy: argThat(equals('t.day'), named: 'groupBy'),
+        groupBy: argThat(equals('day'), named: 'groupBy'),
         orderBy: anyNamed('orderBy'),
         whereArgs: anyNamed('whereArgs'),
         escapeTable: false,
@@ -135,7 +134,6 @@ void main() {
       expect(chart.ignoreEmpty, equals(false));
       expect(chart.withToday, equals(false));
       expect(chart.range.duration, equals(const Duration(days: 7)));
-      expect(chart is CartesianChart, isTrue);
       expect(chart.target, OrderMetricTarget.order);
       expect(chart.metrics, equals(const [OrderMetricType.price]));
       expect(chart.targetItems, isEmpty);

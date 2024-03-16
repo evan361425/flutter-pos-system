@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/analysis/analysis.dart';
-import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -346,13 +345,13 @@ void main() {
       final c1 = Analysis.instance.getItem('c-1')!;
       final c2 = Analysis.instance.getItem('c-2')!;
       expect(c1.name, equals('c-1'));
-      expect(c1 is CartesianChart, isTrue);
+      expect(c1.type.name, equals('cartesian'));
       expect(
         c1.metrics,
         equals([OrderMetricType.cost, OrderMetricType.revenue]),
       );
       expect(c2.name, equals('c-2'));
-      expect(c2 is CircularChart, isTrue);
+      expect(c2.type.name, equals('circular'));
       expect(c2.metrics, equals([OrderMetricType.cost]));
     });
 

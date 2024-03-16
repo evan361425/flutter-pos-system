@@ -26,9 +26,9 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Chart View', () {
-    Widget buildApp<T>(Chart<T> chart) {
+    Widget buildApp<T>(Chart chart) {
       Analysis().replaceItems({chart.id: chart});
-      final view = ChartCardView<T>(chart: chart);
+      final view = ChartCardView(chart: chart);
       return MaterialApp.router(
         routerConfig: GoRouter(routes: [
           GoRoute(
@@ -52,7 +52,7 @@ void main() {
         argThat(table ?? anything),
         columns: argThat(columns ?? anything, named: 'columns'),
         groupBy: argThat(
-          target == null ? anything : equals("t.day, ${target.groupColumn}"),
+          target == null ? anything : equals("day, ${target.groupColumn}"),
           named: 'groupBy',
         ),
         orderBy: anyNamed('orderBy'),
@@ -68,7 +68,7 @@ void main() {
       when(database.query(
         argThat(table ?? anything),
         columns: argThat(columns ?? anything, named: 'columns'),
-        groupBy: argThat(equals("t.day"), named: 'groupBy'),
+        groupBy: argThat(equals("day"), named: 'groupBy'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
       )).thenAnswer((_) async => rows);
@@ -96,7 +96,10 @@ void main() {
               {'day': 3, 'price': 1.2, 'revenue': 2.3},
             ]);
 
-        await tester.pumpWidget(buildApp(CartesianChart(id: 'test')));
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.cartesian,
+          id: 'test',
+        )));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -161,7 +164,7 @@ void main() {
               'FROM order_products WHERE createdAt BETWEEN $yesterday AND $tomorrow  '
               'AND productName IN ("p2") ) t'),
           target: OrderMetricTarget.product,
-          columns: contains('SUM(t.singleCost * t.count) value'),
+          columns: contains('SUM(singleCost * count) value'),
           rows: [
             {'day': 1, 'name': 'p2', 'value': 1},
             {'day': 3, 'name': 'p2', 'value': 3},
@@ -209,7 +212,10 @@ void main() {
         });
         mockGetMetricsInPeriod();
 
-        await tester.pumpWidget(buildApp(CartesianChart(id: 'test')));
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.cartesian,
+          id: 'test',
+        )));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -255,7 +261,8 @@ void main() {
           {'day': 2, 'price': 2.2, 'count': 3},
         ]);
 
-        await tester.pumpWidget(buildApp(CartesianChart(
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.cartesian,
           id: 'test',
           metrics: [OrderMetricType.price, OrderMetricType.count],
         )));
@@ -303,8 +310,9 @@ void main() {
           {'day': 2, 'price': 2.2, 'revenue': 2.2, 'cost': 2.2, 'count': 3},
         ]);
 
-        final chart = CartesianChart(
+        final chart = Chart(
           id: 'test',
+          type: AnalysisChartType.cartesian,
           metrics: OrderMetricType.values,
           range: OrderChartRange.year,
           ignoreEmpty: true,
@@ -359,13 +367,13 @@ void main() {
           'i2': Ingredient(id: 'i2', name: 'i2'),
         });
         OrderAttributes().replaceItems({
-          'a1': OrderAttribute(id: 'a1', name: 'a1')
+          'a1': OrderAttribute(id: 'a1', name: 'a1-name')
             ..replaceItems({
               'a1o1': OrderAttributeOption(id: 'a1o1', name: 'a1o1'),
               'a1o2': OrderAttributeOption(id: 'a1o2', name: 'a1o2'),
             })
             ..prepareItem(),
-          'a2': OrderAttribute(id: 'a2', name: 'a2')
+          'a2': OrderAttribute(id: 'a2', name: 'a2-name')
             ..replaceItems({
               'a2o1': OrderAttributeOption(id: 'a2o1', name: 'a2o1'),
               'a2o2': OrderAttributeOption(id: 'a2o2', name: 'a2o2'),
@@ -381,7 +389,8 @@ void main() {
           ],
         );
 
-        await tester.pumpWidget(buildApp(CircularChart(
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.circular,
           id: 'test',
           target: OrderMetricTarget.ingredient,
           ignoreEmpty: true,
@@ -415,7 +424,7 @@ void main() {
         // only one selected
         mockGetMetricsByItems(
           table: equals(OrderMetricTarget.attribute.table),
-          where: equals('createdAt BETWEEN ? AND ? AND name IN ("a2")'),
+          where: equals('createdAt BETWEEN ? AND ? AND `name` IN ("a2-name")'),
           rows: [
             {'name': 'a2o1', 'value': 2},
             {'name': 'a2o2', 'value': 1},
@@ -434,11 +443,12 @@ void main() {
           any,
           argThat(equals(<String, Object?>{
             'test.name': 'title2',
+            'test.range': OrderChartRange.today.index,
             'test.target': OrderMetricTarget.attribute.index,
-            'test.targetItems': ['a2'],
+            'test.metrics': [OrderMetricType.count.index],
+            'test.targetItems': ['a2-name'],
             'test.ignoreEmpty': false,
             'test.withToday': true,
-            'test.range': OrderChartRange.today.index,
           })),
         ));
       });
@@ -458,7 +468,8 @@ void main() {
           ],
         );
 
-        await tester.pumpWidget(buildApp(CircularChart(
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.circular,
           id: 'test',
           target: OrderMetricTarget.catalog,
           range: OrderChartRange.today,
@@ -484,6 +495,32 @@ void main() {
           orderBy: anyNamed('orderBy'),
         ));
       });
+    });
+
+    testWidgets('cartesian change to circular', (tester) async {
+      mockGetMetricsByItems();
+      mockGetMetricsInPeriod();
+      Menu();
+
+      await tester.pumpWidget(buildApp(Chart(id: 'test')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('chart.test.more')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.modal));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('chart.type.circular')));
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      verify(storage.set(
+        any,
+        argThat(equals(<String, Object?>{
+          'test.type': AnalysisChartType.circular.index,
+          'test.target': OrderMetricTarget.catalog.index,
+        })),
+      ));
     });
   });
 

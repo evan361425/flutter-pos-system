@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(MaterialApp(
         home: ReloadableCard<String>(
           id: 'test',
-          notifier: notifier,
+          notifiers: [notifier],
           builder: (context, metric) => TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {

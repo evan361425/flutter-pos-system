@@ -26,7 +26,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     return ReloadableCard<OrderDataPerDay>(
       id: 'goals',
       title: '目標',
-      notifier: Seller.instance,
+      notifiers: [Seller.instance],
       builder: _builder,
       loader: _loader,
     );

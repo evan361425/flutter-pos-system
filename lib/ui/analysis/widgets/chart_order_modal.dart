@@ -293,21 +293,19 @@ class _ChartOrderModalState extends State<ChartOrderModal>
 
   @override
   Future<void> updateItem() async {
-    final object = ChartObject(
+    final model = Chart.fromObject(ChartObject(
       name: _nameController.text,
+      type: type,
       range: range,
       withToday: withToday,
       ignoreEmpty: ignoreEmpty,
       target: target,
       metrics: metrics,
       targetItems: targetItems.toSet().toList(),
-    );
-    final model = type == AnalysisChartType.circular
-        ? CircularChart.fromObject(object)
-        : CartesianChart.fromObject(object);
+    ));
 
     if (widget.chart == null) {
-      await Analysis.instance.addItem(model as Chart);
+      await Analysis.instance.addItem(model);
     } else {
       await widget.chart!.update(model.toObject());
     }

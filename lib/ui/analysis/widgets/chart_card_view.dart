@@ -5,7 +5,6 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -13,8 +12,8 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ChartCardView<T> extends StatefulWidget {
-  final Chart<T> chart;
+class ChartCardView extends StatefulWidget {
+  final Chart chart;
 
   const ChartCardView({
     super.key,
@@ -22,19 +21,19 @@ class ChartCardView<T> extends StatefulWidget {
   });
 
   @override
-  State<ChartCardView<T>> createState() => _ChartCardViewState<T>();
+  State<ChartCardView> createState() => _ChartCardViewState();
 }
 
-class _ChartCardViewState<T> extends State<ChartCardView<T>> {
+class _ChartCardViewState<T> extends State<ChartCardView> {
   /// Range of the chart, it can updated by the user
   late ValueNotifier<DateTimeRange> range;
 
   @override
   Widget build(BuildContext context) {
-    return ReloadableCard<List<T>>(
+    return ReloadableCard<List>(
       id: widget.chart.name,
       wrappedByCard: false,
-      notifier: range,
+      notifiers: [range, widget.chart, Seller.instance],
       builder: (context, metric) {
         return Column(children: [
           Row(children: [
@@ -61,11 +60,11 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
           buildRangeSlider(),
         ]);
       },
-      loader: () => widget.chart.loader(range.value.start, range.value.end),
+      loader: () => widget.chart.load(range.value.start, range.value.end),
     );
   }
 
-  Widget buildChart(BuildContext context, List<T> metrics) {
+  Widget buildChart(BuildContext context, List metrics) {
     if (metrics.isEmpty) {
       return const SizedBox(
         width: 128,
@@ -77,12 +76,12 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
     switch (widget.chart.type) {
       case AnalysisChartType.cartesian:
         return _CartesianChart(
-          chart: widget.chart as CartesianChart,
+          chart: widget.chart,
           metrics: metrics as List<OrderDataPerDay>,
         );
       case AnalysisChartType.circular:
         return _CircularChart(
-          chart: widget.chart as CircularChart,
+          chart: widget.chart,
           metrics: metrics as List<OrderMetricPerItem>,
         );
     }
@@ -207,7 +206,7 @@ class _ChartCardViewState<T> extends State<ChartCardView<T>> {
 }
 
 class _CartesianChart extends StatelessWidget {
-  final CartesianChart chart;
+  final Chart chart;
 
   final List<OrderDataPerDay> metrics;
 
@@ -272,7 +271,7 @@ class _CartesianChart extends StatelessWidget {
 }
 
 class _CircularChart extends StatelessWidget {
-  final CircularChart chart;
+  final Chart chart;
 
   final List<OrderMetricPerItem> metrics;
 
@@ -288,7 +287,8 @@ class _CircularChart extends StatelessWidget {
         enable: true,
         activationMode: ActivationMode.singleTap,
         animationDuration: 150,
-        format: 'point.x : ${chart.units.first.tooltipFormat}',
+        format:
+            'point.x ${S.analysisChartMetric(chart.metrics.first.name)}: ${chart.units.first.tooltipFormat}',
       ),
       legend: const Legend(
         isVisible: true,

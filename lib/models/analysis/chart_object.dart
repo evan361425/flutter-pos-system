@@ -1,12 +1,11 @@
-import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 
 class ChartObject<T extends Chart> extends ModelObject<T> {
-  final AnalysisChartType type;
   final String? id;
   final String? name;
+  final AnalysisChartType? type;
   final OrderChartRange? range;
   final bool? withToday;
   final bool? ignoreEmpty;
@@ -15,7 +14,7 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   final List<String>? targetItems;
 
   const ChartObject({
-    this.type = AnalysisChartType.cartesian,
+    this.type,
     this.id,
     this.name,
     this.range,
@@ -29,6 +28,7 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   factory ChartObject.build(Map<String, Object?> map) {
     return ChartObject(
       id: map['id'] as String?,
+      type: AnalysisChartType.values[map['type'] as int? ?? 0],
       name: map['name'] as String?,
       range: OrderChartRange.values[map['range'] as int? ?? 0],
       withToday: map['withToday'] as bool?,
@@ -37,15 +37,15 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       metrics: (map['metrics'] as List?)
           ?.map((e) => OrderMetricType.values[e as int])
           .toList(),
-      targetItems: map['targetItems'] as List<String>?,
+      targetItems: (map['targetItems'] as List?)?.cast<String>(),
     );
   }
 
   @override
   Map<String, Object?> toMap() {
     return {
-      'type': type.index,
       'name': name,
+      'type': type?.index,
       'range': range?.index,
       'withToday': withToday,
       'ignoreEmpty': ignoreEmpty,
@@ -64,18 +64,13 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (metrics != null && metrics!.join('') != model.metrics.join('')) {
-      model.metrics = metrics!;
-      result['$prefix.metrics'] = metrics!.map((e) => e.index).toList();
+    if (type != null && type != model.type) {
+      model.type = type!;
+      result['$prefix.type'] = type!.index;
     }
-    if (target != null && target != model.target) {
-      model.target = target!;
-      result['$prefix.target'] = target!.index;
-    }
-    if (targetItems != null &&
-        targetItems!.join('') != model.targetItems.join('')) {
-      model.targetItems = targetItems!;
-      result['$prefix.targetItems'] = targetItems!;
+    if (range != null && range != model.range) {
+      model.range = range!;
+      result['$prefix.range'] = range!.index;
     }
     if (withToday != null && withToday != model.withToday) {
       model.withToday = withToday!;
@@ -85,9 +80,18 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       model.ignoreEmpty = ignoreEmpty!;
       result['$prefix.ignoreEmpty'] = ignoreEmpty!;
     }
-    if (range != null && range != model.range) {
-      model.range = range!;
-      result['$prefix.range'] = range!.index;
+    if (target != null && target != model.target) {
+      model.target = target!;
+      result['$prefix.target'] = target!.index;
+    }
+    if (metrics != null && metrics!.join('') != model.metrics.join('')) {
+      model.metrics = metrics!;
+      result['$prefix.metrics'] = metrics!.map((e) => e.index).toList();
+    }
+    if (targetItems != null &&
+        targetItems!.join('') != model.targetItems.join('')) {
+      model.targetItems = targetItems!;
+      result['$prefix.targetItems'] = targetItems!;
     }
 
     return result;

@@ -10,7 +10,7 @@ class ReloadableCard<T> extends StatefulWidget {
 
   final Future<T> Function() loader;
 
-  final ChangeNotifier? notifier;
+  final List<ChangeNotifier>? notifiers;
 
   /// Required if you want to reload the card when it's visible.
   final String? id;
@@ -25,7 +25,7 @@ class ReloadableCard<T> extends StatefulWidget {
     required this.builder,
     required this.loader,
     this.title,
-    this.notifier,
+    this.notifiers,
     this.wrappedByCard = true,
   });
 
@@ -142,13 +142,17 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
     super.initState();
 
     load().then((value) => setState(() => data = value));
-    widget.notifier?.addListener(changeListener);
+    widget.notifiers?.forEach((e) {
+      e.addListener(changeListener);
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.notifier?.removeListener(changeListener);
+    widget.notifiers?.forEach((e) {
+      e.removeListener(changeListener);
+    });
   }
 
   Future<T?> load() {
