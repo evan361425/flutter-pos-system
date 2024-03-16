@@ -38,17 +38,17 @@ class StockView<T> extends StatelessWidget {
       tab: tab,
       child: ListView(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          const Tutorial(
+          Tutorial(
             id: 'stock.replenishment',
             index: 1,
-            title: '成份採購',
-            message: '你不需要一個一個去設定庫存！\n' '馬上設定採購，一次調整多個成份吧！',
+            title: S.stockReplenishmentTutorialTitle,
+            message: S.stockReplenishmentTutorialMessage,
             child: RouteCircularButton(
-              key: Key('stock.replenisher'),
+              key: const Key('stock.replenisher'),
               icon: Icons.shopping_basket_sharp,
               route: Routes.replenishment,
               popTrueShowSuccess: true,
-              text: '採購',
+              text: S.stockReplenishmentButton,
             ),
           ),
           const SizedBox.square(dimension: 96.0),
@@ -56,8 +56,8 @@ class StockView<T> extends StatelessWidget {
             id: 'stock.add',
             index: 0,
             disable: Stock.instance.isNotEmpty,
-            title: '新增成份',
-            message: '成份可以幫助我們確認相關產品的庫存！',
+            title: S.stockIngredientAddTutorialTitle,
+            message: S.stockIngredientAddTutorialMessage,
             child: RouteCircularButton(
               key: const Key('stock.add'),
               route: Routes.ingredientNew,

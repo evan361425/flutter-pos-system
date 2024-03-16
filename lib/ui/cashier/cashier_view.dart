@@ -29,39 +29,37 @@ class CashierView extends StatelessWidget {
           Tutorial(
             id: 'cashier.default',
             index: 2,
-            title: '收銀機預設狀態',
-            message: '在下面設定完收銀機各幣值的數量後，\n'
-                '按這裡設定預設狀態！\n'
-                '設定好的數量就會是各個幣值狀態條的「最大值」。',
+            title: S.orderCashierDefaultTutorialTitle,
+            message: S.orderCashierDefaultTutorialMessage,
             child: RouteCircularButton(
               key: const Key('cashier.defaulter'),
               onTap: () => handleSetDefault(context),
               icon: Icons.upload_sharp,
-              text: '設為預設',
+              text: S.orderCashierDefaultButton,
             ),
           ),
-          const Tutorial(
+          Tutorial(
             index: 1,
             id: 'cashier.change',
-            title: '收銀機換錢',
-            message: '一百塊換成 10 個十塊之類。\n' '幫助快速調整收銀機狀態。',
+            title: S.orderCashierChangeTutorialTitle,
+            message: S.orderCashierChangeTutorialMessage,
             child: RouteCircularButton(
-              key: Key('cashier.changer'),
+              key: const Key('cashier.changer'),
               route: Routes.cashierChanger,
               icon: Icons.sync_alt_sharp,
-              text: '換錢',
+              text: S.orderCashierChangeButton,
               popTrueShowSuccess: true,
             ),
           ),
           Tutorial(
             index: 0,
             id: 'cashier.surplus',
-            title: '每日結餘',
-            message: '結餘可以幫助我們在每天打烊時，\n' '計算現有金額和預設金額的差異。',
+            title: S.orderCashierSurplusTutorialTitle,
+            message: S.orderCashierSurplusTutorialMessage,
             child: RouteCircularButton(
               key: const Key('cashier.surplus'),
               icon: Icons.coffee_sharp,
-              text: '結餘',
+              text: S.orderCashierSurplusButton,
               popTrueShowSuccess: true,
               onTap: () => handleSurplus(context),
             ),

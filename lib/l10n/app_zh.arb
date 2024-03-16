@@ -455,6 +455,8 @@
       }
     }
   },
+  "stockIngredientAddTutorialTitle": "新增成份",
+  "stockIngredientAddTutorialMessage": "成份可以幫助我們確認相關產品的庫存。\n你可以在「產品」中設定成分，並在這裡設定庫存。",
   "stockIngredientNameLabel": "成分名稱",
   "stockIngredientNameHint": "例如：起司",
   "stockIngredientNameRepeatError": "成分名稱重複",
@@ -463,6 +465,9 @@
   "stockIngredientTotalAmountHelper": "填空則重設。\n設定這個值可以幫助你一眼看出用了多少成分。\n不填寫則每次「增加庫存」會自動設定這值",
   "stockReplenishmentTitle": "採購列表",
   "stockReplenishmentSubtitle": "會影響 {count} 項成分",
+  "stockReplenishmentButton": "採購",
+  "stockReplenishmentTutorialTitle": "成份採購",
+  "stockReplenishmentTutorialMessage": "透過採購，你不再需要一個一個去設定庫存。' '馬上設定採購，一次調整多個成份吧！",
   "@stockReplenishmentSubtitle": {
     "description": "採購列表中各個項目會顯示的子標題",
     "placeholders": {
@@ -772,6 +777,15 @@
   "@orderSetAttributeTitle": {
     "description": "點完餐後的顧客設定頁面的標題"
   },
+  "orderCashierDefaultButton": "設為預設",
+  "orderCashierDefaultTutorialTitle": "收銀機預設狀態",
+  "orderCashierDefaultTutorialMessage": "在下面設定完收銀機各幣值的數量後，\n按這裡設定預設狀態！\n設定好的數量就會是各個幣值狀態條的「最大值」。",
+  "orderCashierChangeButton": "換錢",
+  "orderCashierChangeTutorialTitle": "收銀機換錢",
+  "orderCashierChangeTutorialMessage": "一百塊換成 10 個十塊之類。\n幫助快速調整收銀機狀態。",
+  "orderCashierSurplusButton": "結餘",
+  "orderCashierSurplusTutorialTitle": "每日結餘",
+  "orderCashierSurplusTutorialMessage": "結餘可以幫助我們在每天打烊時，\n' '計算現有金額和預設金額的差異。",
   "orderCashierTitle": "收銀機",
   "@orderCashierTitle": {
     "description": "點完餐後的收銀機頁面的標題"
@@ -993,7 +1007,7 @@
   "analysisChartDataPropertiesDivider": "圖表資料",
   "analysisChartMetricLabel": "觀看指標",
   "analysisChartMetricHelper": "根據不同目的，選擇不同指標類型。",
-  "analysisChartMetric": "{val, select, price{營收} cost{成本} revenue{淨利} count{數量／份量} other{UNKNOWN}}",
+  "analysisChartMetric": "{val, select, price{營收} cost{成本} revenue{淨利} count{數量} other{UNKNOWN}}",
   "@analysisChartMetric": {
     "placeholders": {
       "val": {
