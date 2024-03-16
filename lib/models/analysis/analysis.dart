@@ -5,7 +5,10 @@ import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/storage.dart';
 
 class Analysis extends ChangeNotifier
-    with Repository<Chart>, RepositoryStorage<Chart> {
+    with
+        Repository<Chart>,
+        RepositoryStorage<Chart>,
+        RepositoryOrderable<Chart> {
   static late Analysis instance;
 
   @override

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_order_modal.dart';
+import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
 
 import 'models/repository/menu.dart';
@@ -20,11 +21,11 @@ import 'ui/home/home_page.dart';
 import 'ui/image_gallery_page.dart';
 import 'ui/menu/menu_page.dart';
 import 'ui/menu/product_page.dart';
-import 'ui/menu/widgets/product_ingredient_modal.dart';
-import 'ui/menu/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/catalog_modal.dart';
 import 'ui/menu/widgets/catalog_reorder.dart';
+import 'ui/menu/widgets/product_ingredient_modal.dart';
 import 'ui/menu/widgets/product_modal.dart';
+import 'ui/menu/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/product_reorder.dart';
 import 'ui/order/cashier/order_details_page.dart';
 import 'ui/order/order_page.dart';
@@ -34,10 +35,10 @@ import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
 import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
 import 'ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'ui/stock/quantity_page.dart';
-import 'ui/stock/widgets/stock_quantity_modal.dart';
-import 'ui/stock/widgets/stock_ingredient_modal.dart';
-import 'ui/stock/widgets/replenishment_modal.dart';
 import 'ui/stock/replenishment_page.dart';
+import 'ui/stock/widgets/replenishment_modal.dart';
+import 'ui/stock/widgets/stock_ingredient_modal.dart';
+import 'ui/stock/widgets/stock_quantity_modal.dart';
 import 'ui/transit/transit_page.dart';
 import 'ui/transit/transit_station.dart';
 
@@ -126,6 +127,11 @@ class Routes {
         final chart = Analysis.instance.getItem(id);
         return ChartOrderModal(chart: chart);
       },
+    ),
+    GoRoute(
+      name: chartReorder,
+      path: 'chart/reorder',
+      builder: (ctx, state) => const ChartReorder(),
     ),
     GoRoute(
       name: cashierChanger,
@@ -443,6 +449,7 @@ class Routes {
   static const order = '/order';
   static const orderDetails = '/order/details';
   static const chartOrderModal = '/chart/order/modal';
+  static const chartReorder = '/chart/reorder';
 
   static const transit = '/transit';
   static const transitStation = '/transit/station';

@@ -5,6 +5,7 @@ import 'package:possystem/models/repository/seller.dart';
 class ChartObject<T extends Chart> extends ModelObject<T> {
   final String? id;
   final String? name;
+  final int? index;
   final AnalysisChartType? type;
   final OrderChartRange? range;
   final bool? withToday;
@@ -14,9 +15,10 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   final List<String>? targetItems;
 
   const ChartObject({
-    this.type,
     this.id,
     this.name,
+    this.index,
+    this.type,
     this.range,
     this.withToday,
     this.ignoreEmpty,
@@ -28,8 +30,9 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   factory ChartObject.build(Map<String, Object?> map) {
     return ChartObject(
       id: map['id'] as String?,
-      type: AnalysisChartType.values[map['type'] as int? ?? 0],
       name: map['name'] as String?,
+      index: map['index'] as int?,
+      type: AnalysisChartType.values[map['type'] as int? ?? 0],
       range: OrderChartRange.values[map['range'] as int? ?? 0],
       withToday: map['withToday'] as bool?,
       ignoreEmpty: map['ignoreEmpty'] as bool?,
@@ -45,6 +48,7 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   Map<String, Object?> toMap() {
     return {
       'name': name,
+      'index': index,
       'type': type?.index,
       'range': range?.index,
       'withToday': withToday,

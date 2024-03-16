@@ -8,7 +8,8 @@ import 'package:possystem/services/storage.dart';
 
 enum AnalysisChartType { cartesian, circular }
 
-class Chart extends Model<ChartObject> with ModelStorage<ChartObject> {
+class Chart extends Model<ChartObject>
+    with ModelStorage<ChartObject>, ModelOrderable<ChartObject> {
   /// Which type of chart to show, for example, cartesian or circular
   AnalysisChartType type;
 

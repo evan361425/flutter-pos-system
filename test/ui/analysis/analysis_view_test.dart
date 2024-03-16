@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -110,6 +111,14 @@ void main() {
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.byIcon(KIcons.more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.reorder));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('pop')));
+      await tester.pumpAndSettle();
+
       await tester.tap(find.byKey(const Key('anal.add_chart')));
       await tester.pumpAndSettle();
 
