@@ -22,6 +22,7 @@ class ChartOrderModal extends StatefulWidget {
 class _ChartOrderModalState extends State<ChartOrderModal>
     with ItemModal<ChartOrderModal> {
   final _nameController = TextEditingController();
+  final _nameFocusNode = FocusNode();
 
   AnalysisChartType type = AnalysisChartType.cartesian;
   bool withToday = false;
@@ -40,6 +41,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
       p(TextFormField(
         key: const Key('chart.title'),
         controller: _nameController,
+        focusNode: _nameFocusNode,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
@@ -47,7 +49,11 @@ class _ChartOrderModalState extends State<ChartOrderModal>
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit(S.analysisChartNameLabel, 16),
+        validator: Validator.textLimit(
+          S.analysisChartNameLabel,
+          16,
+          focusNode: _nameFocusNode,
+        ),
       )),
       CheckboxListTile(
         key: const Key('chart.withToday'),
@@ -288,6 +294,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
   @override
   void dispose() {
     _nameController.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 

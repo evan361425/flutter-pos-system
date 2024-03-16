@@ -31,7 +31,9 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     return SingleChildScrollView(
       child: Form(
         key: formKey,
-        child: Column(children: buildFormFields()),
+        child: Column(
+          children: buildFormFields()..add(const SizedBox(height: 256)),
+        ),
       ),
     );
   }

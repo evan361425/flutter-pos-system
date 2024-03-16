@@ -42,7 +42,9 @@ class _ChartCardViewState<T> extends State<ChartCardView> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   widget.chart.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -287,8 +289,7 @@ class _CircularChart extends StatelessWidget {
         enable: true,
         activationMode: ActivationMode.singleTap,
         animationDuration: 150,
-        format:
-            'point.x ${S.analysisChartMetric(chart.metrics.first.name)}: ${chart.units.first.tooltipFormat}',
+        format: 'point.x : ${chart.units.first.tooltipFormat}',
       ),
       legend: const Legend(
         isVisible: true,
