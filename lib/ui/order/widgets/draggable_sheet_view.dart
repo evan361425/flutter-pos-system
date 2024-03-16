@@ -16,6 +16,7 @@ class DraggableSheetView extends StatefulWidget {
   ) row3_2Builder;
   final Widget row3_3;
   final Widget row4;
+  final ChangeNotifier? resetNotifier;
 
   const DraggableSheetView({
     super.key,
@@ -25,6 +26,7 @@ class DraggableSheetView extends StatefulWidget {
     required this.row3_2Builder,
     required this.row3_3,
     required this.row4,
+    this.resetNotifier,
   });
 
   @override
@@ -127,11 +129,13 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     ]);
 
     Cart.instance.addListener(showStateSelectorIfStartOrder);
+    widget.resetNotifier?.addListener(() => controller.reset());
   }
 
   @override
   void dispose() {
     Cart.instance.removeListener(showStateSelectorIfStartOrder);
+    widget.resetNotifier?.dispose();
     super.dispose();
   }
 

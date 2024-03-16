@@ -17,22 +17,23 @@ import 'package:possystem/ui/order/cart/cart_product_selector.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
-import 'widgets/order_actions.dart';
-import 'widgets/orientated_view.dart';
 import 'widgets/draggable_sheet_view.dart';
+import 'widgets/order_actions.dart';
 import 'widgets/order_catalog_list_view.dart';
 import 'widgets/order_product_list_view.dart';
+import 'widgets/orientated_view.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
 
   @override
-  State<OrderPage> createState() => OrderPageState();
+  State<OrderPage> createState() => _OrderPageState();
 }
 
-class OrderPageState extends State<OrderPage> {
+class _OrderPageState extends State<OrderPage> {
   late final PageController _pageController;
   late final ValueNotifier<int> _catalogIndexNotifier;
+  final _Notifier resetNotifier = _Notifier();
 
   @override
   Widget build(BuildContext context) {
@@ -55,47 +56,43 @@ class OrderPageState extends State<OrderPage> {
     final outlook = SettingsProvider.of<OrderOutlookSetting>();
 
     return TutorialWrapper(
-      child: DraggableScrollableActuator(
-        child: Scaffold(
-          // avoid resize when keyboard(bottom inset) shows
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            leading: const PopButton(),
-            actions: [
-              const OrderActions(key: Key('order.more')),
-              Builder(builder: (context) {
-                // allow it to access descendent DraggableScrollableSheet.
-                return TextButton(
-                  key: const Key('order.checkout'),
-                  onPressed: () => _handleCheckout(context),
-                  child: Text(S.orderActionsCheckout),
-                );
-              }),
-            ],
-          ),
-          body: outlook.value == OrderOutlookTypes.slidingPanel
-              ? DraggableSheetView(
-                  row1: orderCatalogListView,
-                  row2: orderProductListView,
-                  row3_1: const CartProductSelector(),
-                  row3_2Builder: (scroll, scrollable) => Expanded(
-                    child: CartProductList(
-                      scrollController: scroll,
-                      scrollable: scrollable,
-                    ),
-                  ),
-                  row3_3: const CartMetadataView(),
-                  row4: const CartProductStateSelector(),
-                )
-              : OrientatedView(
-                  row1: orderCatalogListView,
-                  row2: orderProductListView,
-                  row3_1: const CartProductSelector(),
-                  row3_2: const Expanded(child: CartProductList()),
-                  row3_3: const CartMetadataView(),
-                  row4: const CartProductStateSelector(),
-                ),
+      child: Scaffold(
+        // avoid resize when keyboard(bottom inset) shows
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: const PopButton(),
+          actions: [
+            const OrderActions(key: Key('order.more')),
+            TextButton(
+              key: const Key('order.checkout'),
+              onPressed: () => _handleCheckout(),
+              child: Text(S.orderActionsCheckout),
+            ),
+          ],
         ),
+        body: outlook.value == OrderOutlookTypes.slidingPanel
+            ? DraggableSheetView(
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3_1: const CartProductSelector(),
+                row3_2Builder: (scroll, scrollable) => Expanded(
+                  child: CartProductList(
+                    scrollController: scroll,
+                    scrollable: scrollable,
+                  ),
+                ),
+                row3_3: const CartMetadataView(),
+                row4: const CartProductStateSelector(),
+                resetNotifier: resetNotifier,
+              )
+            : OrientatedView(
+                row1: orderCatalogListView,
+                row2: orderProductListView,
+                row3_1: const CartProductSelector(),
+                row3_2: const Expanded(child: CartProductList()),
+                row3_3: const CartMetadataView(),
+                row4: const CartProductStateSelector(),
+              ),
       ),
     );
   }
@@ -121,11 +118,11 @@ class OrderPageState extends State<OrderPage> {
     super.initState();
   }
 
-  void _handleCheckout(BuildContext context) async {
+  void _handleCheckout() async {
     final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
-    if (status != null && context.mounted) {
+    if (status != null && mounted) {
       handleCheckoutStatus(context, status);
-      DraggableScrollableActuator.reset(context);
+      resetNotifier.notify();
     }
   }
 }
@@ -150,5 +147,15 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       );
       break;
     default:
+  }
+}
+
+/// [DraggableScrollableActuator] will trigger `animateTo` while building widget
+/// which will cause `setState` to be called during build.
+///
+/// This notifier is used to avoid this issue.
+class _Notifier extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
   }
 }
