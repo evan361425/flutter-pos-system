@@ -35,6 +35,7 @@ class Chart extends Model<ChartObject>
     super.id,
     super.name = 'chart',
     super.status = ModelStatus.normal,
+    int index = 0,
     this.type = AnalysisChartType.cartesian,
     this.range = OrderChartRange.sevenDays,
     this.withToday = false,
@@ -42,12 +43,15 @@ class Chart extends Model<ChartObject>
     this.target = OrderMetricTarget.order,
     this.metrics = const [OrderMetricType.price],
     this.targetItems = const [],
-  });
+  }) {
+    this.index = index;
+  }
 
   factory Chart.fromObject(ChartObject object) {
     return Chart(
       id: object.id,
       name: object.name ?? 'chart',
+      index: object.index ?? 0,
       type: object.type ?? AnalysisChartType.cartesian,
       range: object.range ?? OrderChartRange.sevenDays,
       withToday: object.withToday ?? false,
@@ -72,6 +76,7 @@ class Chart extends Model<ChartObject>
     return ChartObject(
       id: id,
       name: name,
+      index: index,
       type: type,
       range: range,
       withToday: withToday,

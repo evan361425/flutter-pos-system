@@ -77,17 +77,12 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 class Routes {
   static const base = '/pos';
 
+  static final _homeWidget = HomePage();
+
   static final home = GoRoute(
     name: 'home',
     path: base,
-    builder: (ctx, state) {
-      final tab = _findEnum(
-        HomeTab.values,
-        state.uri.queryParameters['tab'],
-        Menu.instance.isEmpty ? HomeTab.setting : HomeTab.analysis,
-      );
-      return HomePage(tab: tab);
-    },
+    builder: (ctx, state) => _homeWidget,
     routes: routes,
   );
 

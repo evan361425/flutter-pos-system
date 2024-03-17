@@ -7,20 +7,22 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/ui/stock/widgets/stock_ingredient_list.dart';
 
-import 'widgets/stock_ingredient_list.dart';
-
-class StockView<T> extends StatelessWidget {
+// every time push a new page, the page will rebuild, so cache the child widget
+// ignore: must_be_immutable
+class StockView extends StatelessWidget {
   final int? tabIndex;
 
-  const StockView({super.key, this.tabIndex});
+  Widget? child;
+
+  StockView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
-    final stock = context.watch<Stock>();
-
-    if (stock.isEmpty) {
+    // after pop from AddPage, this page will rebuild by TabView
+    // so we don't need to watch Stock.instance
+    if (Stock.instance.isEmpty) {
       return Center(
         key: const Key('stock.empty'),
         child: EmptyBody(
@@ -30,6 +32,10 @@ class StockView<T> extends StatelessWidget {
       );
     }
 
+    return child ??= _build(context);
+  }
+
+  Widget _build(BuildContext context) {
     final tab = tabIndex == null
         ? null
         : TutorialInTab(index: tabIndex!, context: context);
@@ -67,7 +73,12 @@ class StockView<T> extends StatelessWidget {
           ),
         ]),
         const SizedBox(height: 4.0),
-        StockIngredientList(ingredients: Stock.instance.itemList),
+        ListenableBuilder(
+          listenable: Stock.instance,
+          builder: (context, child) {
+            return StockIngredientList(ingredients: Stock.instance.itemList);
+          },
+        ),
       ]),
     );
   }

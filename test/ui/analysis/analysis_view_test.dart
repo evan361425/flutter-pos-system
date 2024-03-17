@@ -112,13 +112,6 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byIcon(KIcons.more));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.reorder));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pop')));
-      await tester.pumpAndSettle();
-
       await tester.tap(find.byKey(const Key('anal.add_chart')));
       await tester.pumpAndSettle();
 
@@ -146,6 +139,13 @@ void main() {
       expect(chart.target, OrderMetricTarget.order);
       expect(chart.metrics, equals(const [OrderMetricType.price]));
       expect(chart.targetItems, isEmpty);
+
+      await tester.tap(find.byIcon(KIcons.more).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.reorder));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('reorder.save')));
+      await tester.pumpAndSettle();
     });
 
     setUpAll(() {

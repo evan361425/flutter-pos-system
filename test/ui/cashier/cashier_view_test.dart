@@ -35,7 +35,7 @@ void main() {
           routerConfig: GoRouter(routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: CashierView()),
+              builder: (_, __) => Scaffold(body: CashierView()),
               routes: Routes.routes,
             )
           ]),

@@ -14,13 +14,20 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
+// ignore: must_be_immutable
 class SettingView extends StatelessWidget {
   final int? tabIndex;
 
-  const SettingView({super.key, this.tabIndex});
+  Widget? child;
+
+  SettingView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
+    return child ??= _build(context);
+  }
+
+  Widget _build(BuildContext context) {
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
     final tab = tabIndex == null
         ? null

@@ -125,12 +125,13 @@ class TutorialInTab {
   }) : assert(controller != null || context != null);
 
   /// get the tab controller, if not provided, use the default one
-  TabController get cont {
-    return controller ?? DefaultTabController.of(context!);
+  TabController? get cont {
+    return controller ??
+        (context!.mounted ? DefaultTabController.of(context!) : null);
   }
 
   bool get shouldShow {
-    return index == cont.index && !cont.indexIsChanging;
+    return index == cont?.index && !cont!.indexIsChanging;
   }
 
   void listenIndexChanging(BuildContext context) {
@@ -141,11 +142,11 @@ class TutorialInTab {
     void handler() {
       if (shouldShow && context.mounted) {
         SpotlightShow.maybeOf(context)?.start();
-        cont.removeListener(handler);
+        cont?.removeListener(handler);
       }
     }
 
-    cont.addListener(handler);
+    cont?.addListener(handler);
     WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
       handler();
     });

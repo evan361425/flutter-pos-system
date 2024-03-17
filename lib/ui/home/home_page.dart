@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/app_themes.dart';
+import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
@@ -8,22 +10,31 @@ import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:possystem/ui/home/setting_view.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
 
+// every time push a new page, the page will rebuild, so cache the child widget
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
-  final HomeTab tab;
+  Widget? widget;
 
-  const HomePage({
+  HomePage({
     super.key,
-    required this.tab,
   });
 
   @override
   Widget build(BuildContext context) {
+    return widget ??= _build(context);
+  }
+
+  Widget _build(BuildContext context) {
+    final query = GoRouterState.of(context).uri.queryParameters['tab'];
+    final tab = HomeTab.values.firstWhereOrNull((e) => e.name == query) ??
+        (Menu.instance.isEmpty ? HomeTab.setting : HomeTab.analysis);
+
     // 如果使用 stateful 並另外建立 tabController，
     // 則會在 push page 時造成 Home 頁面重建，
     // 進而導致底下的頁面也重建，可能造成 tutorial 重複出現。
     return DefaultTabController(
       length: 4,
-      initialIndex: HomeTab.values.indexOf(tab),
+      initialIndex: tab.index,
       child: Scaffold(
         appBar: AppBar(
           title: Text(S.appTitle),
@@ -60,9 +71,9 @@ class HomePage extends StatelessWidget {
             _CustomTab(key: const Key('home.setting'), text: S.homeTabSetting),
           ]),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            AnalysisView(tabIndex: 0),
+            const AnalysisView(tabIndex: 0),
             StockView(tabIndex: 1),
             CashierView(tabIndex: 2),
             SettingView(tabIndex: 3),

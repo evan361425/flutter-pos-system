@@ -46,6 +46,7 @@ void main() {
       final settings = SettingsProvider(SettingsProvider.allSettings);
       final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
 
+      final page = HomePage();
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
@@ -65,7 +66,7 @@ void main() {
             GoRoute(
               path: '/',
               routes: Routes.routes,
-              builder: (_, __) => const HomePage(tab: HomeTab.setting),
+              builder: (_, __) => page,
             )
           ]),
           theme: AppThemes.lightTheme,

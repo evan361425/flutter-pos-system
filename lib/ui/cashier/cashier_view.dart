@@ -10,13 +10,21 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/unit_list_view.dart';
 
+// every time push a new page, the page will rebuild, so cache the child widget
+// ignore: must_be_immutable
 class CashierView extends StatelessWidget {
   final int? tabIndex;
 
-  const CashierView({super.key, this.tabIndex});
+  Widget? child;
+
+  CashierView({super.key, this.tabIndex});
 
   @override
   Widget build(BuildContext context) {
+    return child ??= _build(context);
+  }
+
+  Widget _build(BuildContext context) {
     final tab = tabIndex == null
         ? null
         : TutorialInTab(index: tabIndex!, context: context);

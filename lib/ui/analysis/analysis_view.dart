@@ -11,17 +11,39 @@ import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-class AnalysisView extends StatelessWidget {
+class AnalysisView extends StatefulWidget {
   final int? tabIndex;
 
   const AnalysisView({super.key, this.tabIndex});
 
   @override
-  Widget build(BuildContext context) {
-    final tab = tabIndex == null
-        ? null
-        : TutorialInTab(index: tabIndex!, context: context);
+  State<AnalysisView> createState() => _AnalysisViewState();
+}
 
+class _AnalysisViewState extends State<AnalysisView>
+    with AutomaticKeepAliveClientMixin {
+  late final TutorialInTab? tab;
+  Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return child ??= _build();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    tab = widget.tabIndex == null
+        ? null
+        : TutorialInTab(index: widget.tabIndex!, context: context);
+
+    super.initState();
+  }
+
+  Widget _build() {
     return TutorialWrapper(
       tab: tab,
       child: ListenableBuilder(
