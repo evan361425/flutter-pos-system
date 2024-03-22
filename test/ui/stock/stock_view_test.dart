@@ -29,7 +29,7 @@ void main() {
           GoRoute(
             path: '/',
             routes: Routes.routes,
-            builder: (_, __) => Scaffold(body: StockView()),
+            builder: (_, __) => const Scaffold(body: StockView()),
           )
         ]),
       );

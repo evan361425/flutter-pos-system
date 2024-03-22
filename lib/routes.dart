@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -77,12 +78,15 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 class Routes {
   static const base = '/pos';
 
-  static final _homeWidget = HomePage();
-
   static final home = GoRoute(
     name: 'home',
     path: base,
-    builder: (ctx, state) => _homeWidget,
+    builder: (ctx, state) {
+      final query = state.uri.queryParameters['tab'];
+      final tab = HomeTab.values.firstWhereOrNull((e) => e.name == query) ??
+          (Menu.instance.isEmpty ? HomeTab.setting : HomeTab.analysis);
+      return HomePage(tab: tab);
+    },
     routes: routes,
   );
 

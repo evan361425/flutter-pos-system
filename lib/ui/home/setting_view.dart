@@ -14,24 +14,23 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-// ignore: must_be_immutable
-class SettingView extends StatelessWidget {
+class SettingView extends StatefulWidget {
   final int? tabIndex;
 
-  Widget? child;
+  const SettingView({super.key, this.tabIndex});
 
-  SettingView({super.key, this.tabIndex});
+  @override
+  State<SettingView> createState() => _SettingViewState();
+}
+
+class _SettingViewState extends State<SettingView>
+    with AutomaticKeepAliveClientMixin {
+  late final TutorialInTab? tab;
 
   @override
   Widget build(BuildContext context) {
-    return child ??= _build(context);
-  }
-
-  Widget _build(BuildContext context) {
+    super.build(context);
     const isProd = String.fromEnvironment('appFlavor') == 'prod';
-    final tab = tabIndex == null
-        ? null
-        : TutorialInTab(index: tabIndex!, context: context);
 
     return TutorialWrapper(
       tab: tab,
@@ -60,7 +59,6 @@ class SettingView extends StatelessWidget {
               spotlightBuilder: const SpotlightRectBuilder(),
               disable: Menu.instance.isNotEmpty,
               child: _buildRouteTile(
-                context,
                 id: 'menu',
                 icon: Icons.collections_sharp,
                 route: Routes.menu,
@@ -75,7 +73,6 @@ class SettingView extends StatelessWidget {
               message: '這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。',
               spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
-                context,
                 id: 'exporter',
                 icon: Icons.upload_file_sharp,
                 route: Routes.transit,
@@ -92,7 +89,6 @@ class SettingView extends StatelessWidget {
                   '外帶，維持原價。',
               spotlightBuilder: const SpotlightRectBuilder(),
               child: _buildRouteTile(
-                context,
                 id: 'order_attrs',
                 icon: Icons.assignment_ind_sharp,
                 route: Routes.orderAttr,
@@ -101,7 +97,6 @@ class SettingView extends StatelessWidget {
               ),
             ),
             _buildRouteTile(
-              context,
               id: 'quantity',
               icon: Icons.exposure_sharp,
               route: Routes.quantity,
@@ -109,7 +104,6 @@ class SettingView extends StatelessWidget {
               subtitle: '半糖、微糖等等',
             ),
             _buildRouteTile(
-              context,
               id: 'feature_request',
               icon: Icons.lightbulb_sharp,
               route: Routes.featureRequest,
@@ -117,7 +111,6 @@ class SettingView extends StatelessWidget {
               subtitle: '使用 Google 表單提供回饋',
             ),
             _buildRouteTile(
-              context,
               id: 'setting',
               icon: Icons.settings_sharp,
               route: Routes.features,
@@ -141,8 +134,19 @@ class SettingView extends StatelessWidget {
     );
   }
 
-  Widget _buildRouteTile(
-    BuildContext context, {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    tab = widget.tabIndex == null
+        ? null
+        : TutorialInTab(index: widget.tabIndex!, context: context);
+
+    super.initState();
+  }
+
+  Widget _buildRouteTile({
     required String id,
     required IconData icon,
     required String route,

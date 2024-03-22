@@ -10,24 +10,22 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/unit_list_view.dart';
 
-// every time push a new page, the page will rebuild, so cache the child widget
-// ignore: must_be_immutable
-class CashierView extends StatelessWidget {
+class CashierView extends StatefulWidget {
   final int? tabIndex;
 
-  Widget? child;
+  const CashierView({super.key, this.tabIndex});
 
-  CashierView({super.key, this.tabIndex});
+  @override
+  State<CashierView> createState() => _CashierViewState();
+}
+
+class _CashierViewState extends State<CashierView>
+    with AutomaticKeepAliveClientMixin {
+  late final TutorialInTab? tab;
 
   @override
   Widget build(BuildContext context) {
-    return child ??= _build(context);
-  }
-
-  Widget _build(BuildContext context) {
-    final tab = tabIndex == null
-        ? null
-        : TutorialInTab(index: tabIndex!, context: context);
+    super.build(context);
 
     return TutorialWrapper(
       tab: tab,
@@ -41,7 +39,7 @@ class CashierView extends StatelessWidget {
             message: S.orderCashierDefaultTutorialMessage,
             child: RouteCircularButton(
               key: const Key('cashier.defaulter'),
-              onTap: () => handleSetDefault(context),
+              onTap: handleSetDefault,
               icon: Icons.upload_sharp,
               text: S.orderCashierDefaultButton,
             ),
@@ -69,7 +67,7 @@ class CashierView extends StatelessWidget {
               icon: Icons.coffee_sharp,
               text: S.orderCashierSurplusButton,
               popTrueShowSuccess: true,
-              onTap: () => handleSurplus(context),
+              onTap: handleSurplus,
             ),
           ),
         ]),
@@ -78,7 +76,19 @@ class CashierView extends StatelessWidget {
     );
   }
 
-  void handleSetDefault(BuildContext context) async {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    tab = widget.tabIndex == null
+        ? null
+        : TutorialInTab(index: widget.tabIndex!, context: context);
+
+    super.initState();
+  }
+
+  void handleSetDefault() async {
     if (!Cashier.instance.defaultNotSet) {
       final result = await ConfirmDialog.show(
         context,
@@ -93,19 +103,19 @@ class CashierView extends StatelessWidget {
 
     await Cashier.instance.setDefault();
 
-    if (context.mounted) {
+    if (mounted) {
       showSnackBar(context, S.actSuccess);
     }
   }
 
-  void handleSurplus(BuildContext context) async {
+  void handleSurplus() async {
     if (Cashier.instance.defaultNotSet) {
       return showSnackBar(context, '尚未設定，請點選右上角「設為預設」');
     }
 
     final result = await context.pushNamed(Routes.cashierSurplus);
     if (result == true) {
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, S.actSuccess);
       }
     }

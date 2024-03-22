@@ -9,17 +9,23 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/stock_ingredient_list.dart';
 
-// every time push a new page, the page will rebuild, so cache the child widget
-// ignore: must_be_immutable
-class StockView extends StatelessWidget {
+class StockView extends StatefulWidget {
   final int? tabIndex;
 
-  Widget? child;
+  const StockView({super.key, this.tabIndex});
 
-  StockView({super.key, this.tabIndex});
+  @override
+  State<StockView> createState() => _StockViewState();
+}
+
+class _StockViewState extends State<StockView>
+    with AutomaticKeepAliveClientMixin {
+  late final TutorialInTab? tab;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     // after pop from AddPage, this page will rebuild by TabView
     // so we don't need to watch Stock.instance
     if (Stock.instance.isEmpty) {
@@ -31,14 +37,6 @@ class StockView extends StatelessWidget {
         ),
       );
     }
-
-    return child ??= _build(context);
-  }
-
-  Widget _build(BuildContext context) {
-    final tab = tabIndex == null
-        ? null
-        : TutorialInTab(index: tabIndex!, context: context);
 
     return TutorialWrapper(
       tab: tab,
@@ -81,5 +79,17 @@ class StockView extends StatelessWidget {
         ),
       ]),
     );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    tab = widget.tabIndex == null
+        ? null
+        : TutorialInTab(index: widget.tabIndex!, context: context);
+
+    super.initState();
   }
 }

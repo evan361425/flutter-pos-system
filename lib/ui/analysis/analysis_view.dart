@@ -23,27 +23,11 @@ class AnalysisView extends StatefulWidget {
 class _AnalysisViewState extends State<AnalysisView>
     with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
-  Widget? child;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return child ??= _build();
-  }
 
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    tab = widget.tabIndex == null
-        ? null
-        : TutorialInTab(index: widget.tabIndex!, context: context);
-
-    super.initState();
-  }
-
-  Widget _build() {
     return TutorialWrapper(
       tab: tab,
       child: ListenableBuilder(
@@ -89,6 +73,18 @@ class _AnalysisViewState extends State<AnalysisView>
         },
       ),
     );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    tab = widget.tabIndex == null
+        ? null
+        : TutorialInTab(index: widget.tabIndex!, context: context);
+
+    super.initState();
   }
 }
 
