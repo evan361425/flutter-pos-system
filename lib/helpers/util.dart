@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -63,15 +64,19 @@ class Util {
 }
 
 extension PrettyNum on num {
-  /// Maximum 4 characters
+  static final _format = NumberFormat.compact(locale: 'zh_TW');
+
+  /// TODO: After currency is implemented, we need to change this to use currency formatter.
+  /// 4.444     -> 4.44
+  /// 44.44     -> 44.4
+  /// 444.4     -> 444
+  /// 4444      -> 4444
+  /// 44444     -> 4.44萬
+  /// 444444    -> 44.4萬
+  /// 4444444   -> 444萬
+  /// 44444444  -> 4444萬
+  /// 444444444 -> 4.44億
   String prettyString() {
-    if (this is int || this == ceil()) {
-      if (this < 10000) {
-        return toStringAsFixed(0);
-      }
-    } else if (this < 1000) {
-      return toStringAsFixed(1);
-    }
-    return toStringAsExponential(1);
+    return _format.format(this);
   }
 }

@@ -157,8 +157,6 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
 
   Future<T?> load() {
     return widget.loader().onError((e, stack) {
-      print(e);
-      print(stack);
       Log.err(e ?? 'unknown', 'load_metrics', stack);
       setState(() => error = e?.toString() ?? 'unknown');
       return Future.value(null);
