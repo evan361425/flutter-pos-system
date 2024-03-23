@@ -9,9 +9,8 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
-import 'package:provider/provider.dart';
-
 import 'package:possystem/translator.dart';
+import 'package:provider/provider.dart';
 
 class ReplenishmentPage extends StatefulWidget {
   const ReplenishmentPage({super.key});
@@ -54,7 +53,6 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
     }
 
     return SlidableItemList<Replenishment, _Actions>(
-      withFAB: true,
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
         deleteValue: _Actions.delete,

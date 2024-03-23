@@ -34,103 +34,98 @@ class _SettingViewState extends State<SettingView>
 
     return TutorialWrapper(
       tab: tab,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _HeaderInfoList(),
-            if (!isProd)
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  const RandomGenerateOrderButton(),
-                  ElevatedButton.icon(
-                    onPressed: Cache.instance.reset,
-                    label: const Text('清除快取'),
-                    icon: const Icon(Icons.clear_all_sharp),
-                  ),
-                  const RerunMigration(),
-                ]),
+      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+        const _HeaderInfoList(),
+        if (!isProd)
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+              const RandomGenerateOrderButton(),
+              ElevatedButton.icon(
+                onPressed: Cache.instance.reset,
+                label: const Text('清除快取'),
+                icon: const Icon(Icons.clear_all_sharp),
               ),
-            Tutorial(
-              id: 'home.menu',
-              index: 2,
-              message: '現在就趕緊來設定菜單吧！',
-              spotlightBuilder: const SpotlightRectBuilder(),
-              disable: Menu.instance.isNotEmpty,
-              child: _buildRouteTile(
-                id: 'menu',
-                icon: Icons.collections_sharp,
-                route: Routes.menu,
-                title: S.menuTitle,
-                subtitle: '產品種類、產品',
-              ),
-            ),
-            Tutorial(
-              id: 'home.exporter',
-              index: 1,
-              title: '資料轉移',
-              message: '這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。',
-              spotlightBuilder: const SpotlightRectBuilder(),
-              child: _buildRouteTile(
-                id: 'exporter',
-                icon: Icons.upload_file_sharp,
-                route: Routes.transit,
-                title: S.transitTitle,
-                subtitle: '匯入、匯出資料',
-              ),
-            ),
-            Tutorial(
-              id: 'home.order_attr',
-              index: 0,
-              title: '顧客設定',
-              message: '這裡可以設定顧客資訊，例如：\n'
-                  '內用，加價一成；\n'
-                  '外帶，維持原價。',
-              spotlightBuilder: const SpotlightRectBuilder(),
-              child: _buildRouteTile(
-                id: 'order_attrs',
-                icon: Icons.assignment_ind_sharp,
-                route: Routes.orderAttr,
-                title: S.orderAttributeTitle,
-                subtitle: '內用、外帶等等',
-              ),
-            ),
-            _buildRouteTile(
-              id: 'quantity',
-              icon: Icons.exposure_sharp,
-              route: Routes.quantity,
-              title: S.quantityTitle,
-              subtitle: '半糖、微糖等等',
-            ),
-            _buildRouteTile(
-              id: 'feature_request',
-              icon: Icons.lightbulb_sharp,
-              route: Routes.featureRequest,
-              title: S.featureRequestTitle,
-              subtitle: '使用 Google 表單提供回饋',
-            ),
-            _buildRouteTile(
-              id: 'setting',
-              icon: Icons.settings_sharp,
-              route: Routes.features,
-              title: S.settingTitle,
-              subtitle: '外觀、語言、提示',
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              TextButton(
-                onPressed: _bottomLinks[0].launch,
-                child: Text(_bottomLinks[0].text),
-              ),
-              const Text(MetaBlock.string),
-              TextButton(
-                onPressed: _bottomLinks[1].launch,
-                child: Text(_bottomLinks[1].text),
-              ),
-            ])
-          ],
+              const RerunMigration(),
+            ]),
+          ),
+        Tutorial(
+          id: 'home.menu',
+          index: 2,
+          message: '現在就趕緊來設定菜單吧！',
+          spotlightBuilder: const SpotlightRectBuilder(),
+          disable: Menu.instance.isNotEmpty,
+          child: _buildRouteTile(
+            id: 'menu',
+            icon: Icons.collections_sharp,
+            route: Routes.menu,
+            title: S.menuTitle,
+            subtitle: '產品種類、產品',
+          ),
         ),
-      ),
+        Tutorial(
+          id: 'home.exporter',
+          index: 1,
+          title: '資料轉移',
+          message: '這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。',
+          spotlightBuilder: const SpotlightRectBuilder(),
+          child: _buildRouteTile(
+            id: 'exporter',
+            icon: Icons.upload_file_sharp,
+            route: Routes.transit,
+            title: S.transitTitle,
+            subtitle: '匯入、匯出資料',
+          ),
+        ),
+        Tutorial(
+          id: 'home.order_attr',
+          index: 0,
+          title: '顧客設定',
+          message: '這裡可以設定顧客資訊，例如：\n'
+              '內用，加價一成；\n'
+              '外帶，維持原價。',
+          spotlightBuilder: const SpotlightRectBuilder(),
+          child: _buildRouteTile(
+            id: 'order_attrs',
+            icon: Icons.assignment_ind_sharp,
+            route: Routes.orderAttr,
+            title: S.orderAttributeTitle,
+            subtitle: '內用、外帶等等',
+          ),
+        ),
+        _buildRouteTile(
+          id: 'quantity',
+          icon: Icons.exposure_sharp,
+          route: Routes.quantity,
+          title: S.quantityTitle,
+          subtitle: '半糖、微糖等等',
+        ),
+        _buildRouteTile(
+          id: 'feature_request',
+          icon: Icons.lightbulb_sharp,
+          route: Routes.featureRequest,
+          title: S.featureRequestTitle,
+          subtitle: '使用 Google 表單提供回饋',
+        ),
+        _buildRouteTile(
+          id: 'setting',
+          icon: Icons.settings_sharp,
+          route: Routes.features,
+          title: S.settingTitle,
+          subtitle: '外觀、語言、提示',
+        ),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          TextButton(
+            onPressed: _bottomLinks[0].launch,
+            child: Text(_bottomLinks[0].text),
+          ),
+          const Text(MetaBlock.string),
+          TextButton(
+            onPressed: _bottomLinks[1].launch,
+            child: Text(_bottomLinks[1].text),
+          ),
+        ])
+      ]),
     );
   }
 

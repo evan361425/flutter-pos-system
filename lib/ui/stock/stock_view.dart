@@ -40,7 +40,7 @@ class _StockViewState extends State<StockView>
 
     return TutorialWrapper(
       tab: tab,
-      child: ListView(children: [
+      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Tutorial(
             id: 'stock.replenishment',

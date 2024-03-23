@@ -32,7 +32,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
       child: Form(
         key: formKey,
         child: Column(
-          children: buildFormFields()..add(const SizedBox(height: 256)),
+          children: buildFormFields()..add(const SizedBox(height: 76)),
         ),
       ),
     );

@@ -29,8 +29,7 @@ class _CashierViewState extends State<CashierView>
 
     return TutorialWrapper(
       tab: tab,
-      child: ListView(children: [
-        const SizedBox(height: 4.0),
+      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Tutorial(
             id: 'cashier.default',

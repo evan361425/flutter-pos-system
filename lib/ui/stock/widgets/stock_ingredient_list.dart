@@ -33,7 +33,6 @@ class StockIngredientList extends StatelessWidget {
         ),
         const SizedBox(height: 2.0),
         for (final item in ingredients) _IngredientTile(item),
-        const SizedBox(height: 4.0),
       ],
     );
   }

@@ -10,31 +10,29 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
   final String? hintText;
 
-  /// With floating action button and add the padding below
-  final bool withFAB;
-
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
-    this.withFAB = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: <Widget>[
-      Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: HintText(hintText ?? S.totalCount(delegate.items.length)),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 76),
+      children: <Widget>[
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            child: HintText(hintText ?? S.totalCount(delegate.items.length)),
+          ),
         ),
-      ),
-      for (final widget in delegate.items.mapIndexed(
-        (index, item) => delegate.build(context, item, index),
-      ))
-        widget,
-      SizedBox(height: withFAB ? 76.0 : 4.0),
-    ]);
+        for (final widget in delegate.items.mapIndexed(
+          (index, item) => delegate.build(context, item, index),
+        ))
+          widget,
+      ],
+    );
   }
 }
 

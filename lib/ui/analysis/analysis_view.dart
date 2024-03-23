@@ -35,7 +35,7 @@ class _AnalysisViewState extends State<AnalysisView>
         builder: (context, child) {
           final items = Analysis.instance.itemList;
           return ListView.builder(
-            padding: const EdgeInsets.only(bottom: 256),
+            padding: const EdgeInsets.only(bottom: 76),
             itemCount: items.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {

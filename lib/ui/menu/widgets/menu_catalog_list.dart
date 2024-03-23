@@ -22,7 +22,6 @@ class MenuCatalogList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Catalog, _Action>(
-      withFAB: true,
       delegate: SlidableItemDelegate(
         items: catalogs,
         deleteValue: _Action.delete,
