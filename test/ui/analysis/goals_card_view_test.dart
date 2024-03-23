@@ -7,6 +7,7 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 
 void main() {
@@ -16,6 +17,7 @@ void main() {
       columns: anyNamed('columns'),
       groupBy: anyNamed('groupBy'),
       orderBy: anyNamed('orderBy'),
+      limit: anyNamed('limit'),
       escapeTable: anyNamed('escapeTable'),
     );
   }
@@ -24,10 +26,10 @@ void main() {
     testWidgets('EMA calculator should work correctly', (tester) async {
       final today = Util.toUTC(hour: 0);
       final tomorrow = today + 86400;
-      final twentyDaysAgo = today - 86400 * 20;
+      final fortyDaysAgo = today - 86400 * 40;
 
-      when(mockQuery(twentyDaysAgo, tomorrow)).thenAnswer((_) async => [
-            for (var i = 0; i < 21; i++)
+      when(mockQuery(fortyDaysAgo, tomorrow)).thenAnswer((_) async => [
+            for (var i = 20; i >= 0; i--)
               {
                 'day': i,
                 'count': i,
@@ -36,15 +38,6 @@ void main() {
                 'cost': i * 1.3,
               }
           ]);
-      when(mockQuery(today, tomorrow)).thenAnswer((_) => Future.value([
-            {
-              'day': 0,
-              'count': 2,
-              'price': 2.1,
-              'revenue': 2.2,
-              'cost': 2.3,
-            }
-          ]));
 
       await tester.pumpWidget(const MaterialApp(
         home: Scaffold(body: GoalsCardView()),
@@ -64,19 +57,33 @@ void main() {
       findText('20／${data['count']!.toInt()}');
       findText('22／${data['price']!.prettyString()}');
       findText('24／${data['revenue']!.prettyString()}');
-      verify(mockQuery(twentyDaysAgo, tomorrow));
+      verify(mockQuery(fortyDaysAgo, tomorrow));
 
       // notify the seller to update the view
+      when(mockQuery(today, tomorrow)).thenAnswer((_) => Future.value([
+            {
+              'day': 0,
+              'count': 2,
+              'price': 2.1,
+              'revenue': 2.2,
+              'cost': 2.3,
+            }
+          ]));
       Seller.instance.notifyListeners();
       await tester.pumpAndSettle();
 
       findText('2／${data['count']!.toInt()}');
       verify(mockQuery(today, tomorrow));
-      verifyNever(mockQuery(twentyDaysAgo, tomorrow));
+      verifyNever(mockQuery(fortyDaysAgo, tomorrow));
+    });
+
+    setUp(() {
+      when(cache.get('analysis.goals')).thenReturn(true);
     });
 
     setUpAll(() {
       initializeDatabase();
+      initializeCache();
       VisibilityDetectorController.instance.updateInterval = Duration.zero;
     });
   });

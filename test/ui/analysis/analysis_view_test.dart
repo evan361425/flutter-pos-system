@@ -51,15 +51,6 @@ void main() {
       );
     }
 
-    void mockGetMetrics() {
-      when(database.query(
-        Seller.orderTable,
-        columns: argThat(contains('COUNT(*) count'), named: 'columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value([{}]));
-    }
-
     void mockGetChart() {
       when(database.query(
         any,
@@ -67,6 +58,8 @@ void main() {
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
         groupBy: anyNamed('groupBy'),
+        limit: anyNamed('limit'),
+        offset: anyNamed('offset'),
       )).thenAnswer((_) => Future.value([{}]));
     }
 
@@ -93,7 +86,7 @@ void main() {
     }
 
     testWidgets('navigate to history', (tester) async {
-      mockGetMetrics();
+      mockGetChart();
       mockGetOrder();
       Analysis();
 
@@ -106,7 +99,6 @@ void main() {
 
     testWidgets('add chart', (tester) async {
       Analysis();
-      mockGetMetrics();
       mockGetChart();
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
 

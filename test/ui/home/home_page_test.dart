@@ -42,6 +42,7 @@ void main() {
         where: anyNamed('where'),
         whereArgs: anyNamed('whereArgs'),
         escapeTable: anyNamed('escapeTable'),
+        limit: anyNamed('limit'),
       )).thenAnswer((_) => Future.value([]));
       final settings = SettingsProvider(SettingsProvider.allSettings);
       final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
@@ -87,8 +88,9 @@ void main() {
         await tester.pumpAndSettle();
       }
 
-      Future<void> dragUp() {
-        return tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
+      Future<void> dragDown() async {
+        await tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
+        await tester.pumpAndSettle();
       }
 
       await navAndPop('setting_header.menu1', 'menu.search');
@@ -100,9 +102,9 @@ void main() {
       await navAndPop('setting.exporter', 'transit.google_sheet');
       await navAndPop('setting.quantity', 'quantity.add');
       await navAndPop('setting.order_attrs', 'order_attributes.reorder');
-      await dragUp();
+      await dragDown();
       await navAndPop('setting.feature_request', 'feature_request_please');
-      await dragUp();
+      await dragDown();
       await navAndPop('setting.setting', 'feature.theme');
       await navAndPop('home.order', 'order.more');
       await navAndCheck('home.stock', 'stock.replenisher');

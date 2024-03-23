@@ -3,6 +3,7 @@ import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 
 class GoalsCardView extends StatefulWidget {
@@ -30,6 +31,18 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       builder: _builder,
       loader: _loader,
     );
+  }
+
+  @override
+  void initState() {
+    final enabled = Cache.instance.get<bool>('analysis.goals');
+    // If the user disabled the goals, we don't need to load the data.
+    // which is currently only option(goals is a beta feature).
+    if (enabled != true) {
+      goal = OrderDataPerDay(at: DateTime(0));
+    }
+
+    super.initState();
   }
 
   Widget _builder(BuildContext context, OrderDataPerDay metric) {
@@ -111,9 +124,9 @@ class _GoalsCardViewState extends State<GoalsCardView> {
   Future<OrderDataPerDay> _loader() async {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
-      // If there is no data, we will calculate the EMA of the last 20 days.
+      // If there is no data, we need to calculate the EMA from the last 20 data points withing 40 days.
       goal == null
-          ? range.start.subtract(Duration(days: widget.calculator.length))
+          ? range.start.subtract(const Duration(days: 40))
           : range.start,
       range.end,
       types: [
@@ -123,23 +136,26 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         OrderMetricType.cost,
       ],
       period: MetricsPeriod.day,
-      ignoreEmpty: false,
+      ignoreEmpty: true,
+      limit: widget.calculator.length + 1,
+      orderDirection: "desc",
     );
 
-    // Remove the last data, which is the today's data.
-    final last = result.removeLast();
+    // Remove the first data, which is the today's data.
+    final todayData =
+        result.isEmpty ? OrderDataPerDay(at: range.start) : result.removeAt(0);
 
+    final reversed = result.reversed;
     goal ??= OrderDataPerDay(
-      at: range.end, // this is dummy data, we don't need the date.
+      at: DateTime(0), // this is dummy data, we don't need the date.
       values: {
-        'count':
-            widget.calculator.calculate(result.map((e) => e.count)).toInt(),
-        'price': widget.calculator.calculate(result.map((e) => e.price)),
-        'revenue': widget.calculator.calculate(result.map((e) => e.revenue)),
+        'count': widget.calculator.calculate(reversed.map((e) => e.count)),
+        'price': widget.calculator.calculate(reversed.map((e) => e.price)),
+        'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
       },
     );
 
-    return last;
+    return todayData;
   }
 }
 

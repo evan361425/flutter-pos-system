@@ -108,6 +108,8 @@ class Seller extends ChangeNotifier {
     List<OrderMetricType> types = const [OrderMetricType.count],
     MetricsPeriod period = MetricsPeriod.day,
     bool ignoreEmpty = true,
+    String orderDirection = 'asc',
+    int? limit,
   }) async {
     // using UTC to calculate the count but use user's timezone when returned.
     final begin = Util.toUTC(now: start);
@@ -124,7 +126,8 @@ class Seller extends ChangeNotifier {
         ...types.map((e) => '${e.method}(${e.column}) ${e.name}'),
       ],
       groupBy: "day",
-      orderBy: "day asc",
+      orderBy: "day $orderDirection",
+      limit: limit,
       escapeTable: false,
     );
 
