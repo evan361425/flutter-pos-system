@@ -7,8 +7,6 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
   final String? name;
   final int? index;
   final AnalysisChartType? type;
-  final OrderChartRange? range;
-  final bool? withToday;
   final bool? ignoreEmpty;
   final OrderMetricTarget? target;
   final List<OrderMetricType>? metrics;
@@ -19,8 +17,6 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
     this.name,
     this.index,
     this.type,
-    this.range,
-    this.withToday,
     this.ignoreEmpty,
     this.target,
     this.metrics,
@@ -33,8 +29,6 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       name: map['name'] as String?,
       index: map['index'] as int?,
       type: AnalysisChartType.values[map['type'] as int? ?? 0],
-      range: OrderChartRange.values[map['range'] as int? ?? 0],
-      withToday: map['withToday'] as bool?,
       ignoreEmpty: map['ignoreEmpty'] as bool?,
       target: OrderMetricTarget.values[map['target'] as int? ?? 0],
       metrics: (map['metrics'] as List?)
@@ -50,8 +44,6 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       'name': name,
       'index': index,
       'type': type?.index,
-      'range': range?.index,
-      'withToday': withToday,
       'ignoreEmpty': ignoreEmpty,
       'target': target?.index,
       'metrics': metrics?.map((e) => e.index).toList(),
@@ -71,14 +63,6 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
     if (type != null && type != model.type) {
       model.type = type!;
       result['$prefix.type'] = type!.index;
-    }
-    if (range != null && range != model.range) {
-      model.range = range!;
-      result['$prefix.range'] = range!.index;
-    }
-    if (withToday != null && withToday != model.withToday) {
-      model.withToday = withToday!;
-      result['$prefix.withToday'] = withToday!;
     }
     if (ignoreEmpty != null && ignoreEmpty != model.ignoreEmpty) {
       model.ignoreEmpty = ignoreEmpty!;

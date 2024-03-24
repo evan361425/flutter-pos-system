@@ -972,19 +972,8 @@
   },
   "analysisChartCreate": "新增圖表",
   "analysisChartNameLabel": "圖表標題",
-  "analysisChartWithTodayLabel": "資料是否包含今日",
   "analysisChartIgnoreEmptyLabel": "是否忽略空資料",
   "analysisChartIgnoreEmptyHelper": "某商品或指標在該時段沒有資料，則不顯示。",
-  "analysisChartRangeLabel": "時間區間",
-  "analysisChartRangeHelper": "長時間可以看到趨勢，短時間可以看到變化。",
-  "analysisChartRange": "{val, select, today{單日} sevenDays{七日} twoWeeks{雙週} month{單月} twoMonths{雙月} halfYear{半年} year{一年} other{UNKNOWN}}",
-  "@analysisChartRange": {
-    "placeholders": {
-      "val": {
-        "type": "String"
-      }
-    }
-  },
   "analysisChartTypeLabel": "圖表類型",
   "analysisChartType": "{val, select, cartesian{時序圖} circular{圓餅圖} other{UNKNOWN}}",
   "@analysisChartType": {

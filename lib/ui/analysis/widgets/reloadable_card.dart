@@ -33,7 +33,8 @@ class ReloadableCard<T> extends StatefulWidget {
   State<ReloadableCard<T>> createState() => _ReloadableCardState<T>();
 }
 
-class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
+class _ReloadableCardState<T> extends State<ReloadableCard<T>>
+    with AutomaticKeepAliveClientMixin {
   /// Error message when loading failed
   String? error;
 
@@ -48,6 +49,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Stack(children: [
       ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 432),
@@ -59,6 +61,9 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
       if (reloadable) buildReloading(),
     ]);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   /// Main content of the card
   Widget buildTarget() {
@@ -141,7 +146,11 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
   void initState() {
     super.initState();
 
-    load().then((value) => setState(() => data = value));
+    load().then((value) {
+      if (mounted) {
+        setState(() => data = value);
+      }
+    });
     widget.notifiers?.forEach((e) {
       e.addListener(changeListener);
     });
@@ -157,6 +166,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> {
 
   Future<T?> load() {
     return widget.loader().onError((e, stack) {
+      print(e);
       Log.err(e ?? 'unknown', 'load_metrics', stack);
       setState(() => error = e?.toString() ?? 'unknown');
       return Future.value(null);

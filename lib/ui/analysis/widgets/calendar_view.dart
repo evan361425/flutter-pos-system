@@ -164,7 +164,6 @@ class _CalendarViewState extends State<CalendarView> {
       start,
       end,
       types: [OrderMetricType.count],
-      period: MetricsPeriod.day,
     );
 
     if (mounted) {

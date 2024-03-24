@@ -8,7 +8,6 @@ import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/database.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// Help I/O from order DB.
 class Seller extends ChangeNotifier {
@@ -106,7 +105,7 @@ class Seller extends ChangeNotifier {
     DateTime start,
     DateTime end, {
     List<OrderMetricType> types = const [OrderMetricType.count],
-    MetricsPeriod period = MetricsPeriod.day,
+    MetricsIntervalType interval = MetricsIntervalType.day,
     bool ignoreEmpty = true,
     String orderDirection = 'asc',
     int? limit,
@@ -117,7 +116,7 @@ class Seller extends ChangeNotifier {
 
     final rows = await Database.instance.query(
       '('
-      'SELECT CAST((createdAt - $begin) / ${period.seconds} AS INT) day, * '
+      'SELECT CAST((createdAt - $begin) / ${interval.seconds} AS INT) day, * '
       'FROM $orderTable '
       'WHERE createdAt BETWEEN $begin AND $cease'
       ') t',
@@ -135,7 +134,7 @@ class Seller extends ChangeNotifier {
       for (final row in rows)
         if (row['day'] != null)
           OrderDataPerDay(
-            at: Util.fromUTC(begin + (row['day'] as int) * period.seconds),
+            at: Util.fromUTC(begin + (row['day'] as int) * interval.seconds),
             values: row.cast<String, num>(),
           ),
     ];
@@ -143,13 +142,13 @@ class Seller extends ChangeNotifier {
     return ignoreEmpty
         ? result
         : _fulfillPeriodData(
-            start, end, Duration(seconds: period.seconds), result);
+            start, end, Duration(seconds: interval.seconds), result);
   }
 
   /// Get the metric of items grouped by the day.
   ///
   /// - [target] is the target of catalog to group by.
-  /// - [period] is the time interval to group by.
+  /// - [interval] is the time interval to group by.
   /// - [selection] is the specific items to group by.
   /// - [ignoreEmpty] whether to ignore the empty day.
   Future<List<OrderDataPerDay>> getItemMetricsInPeriod(
@@ -157,7 +156,7 @@ class Seller extends ChangeNotifier {
     DateTime end, {
     required OrderMetricType type,
     required OrderMetricTarget target,
-    MetricsPeriod period = MetricsPeriod.day,
+    MetricsIntervalType interval = MetricsIntervalType.day,
     List<String> selection = const [],
     bool ignoreEmpty = true,
   }) async {
@@ -179,7 +178,7 @@ class Seller extends ChangeNotifier {
 
     final rows = await Database.instance.query(
       '('
-      'SELECT CAST((createdAt - $begin) / ${period.seconds} AS INT) day, * '
+      'SELECT CAST((createdAt - $begin) / ${interval.seconds} AS INT) day, * '
       'FROM ${target.table} '
       'WHERE createdAt BETWEEN $begin AND $cease $where '
       ') t',
@@ -199,7 +198,7 @@ class Seller extends ChangeNotifier {
         .values
         .map((e) => OrderDataPerDay(
               at: Util.fromUTC(
-                  begin + (e.first['day'] as int) * period.seconds),
+                  begin + (e.first['day'] as int) * interval.seconds),
               values: {
                 for (final row in e) row['name'] as String: row['value'] as num,
               },
@@ -209,7 +208,7 @@ class Seller extends ChangeNotifier {
     return ignoreEmpty
         ? result
         : _fulfillPeriodData(
-            start, end, Duration(seconds: period.seconds), result);
+            start, end, Duration(seconds: interval.seconds), result);
   }
 
   /// Get the metrics of orders and group by the items.
@@ -646,31 +645,25 @@ enum OrderMetricTarget {
   }
 }
 
-enum OrderChartRange {
-  today(Duration(days: 1), MetricsPeriod.hour),
-  sevenDays(Duration(days: 7), MetricsPeriod.day),
-  twoWeeks(Duration(days: 14), MetricsPeriod.day),
-  month(Duration(days: 30), MetricsPeriod.day),
-  twoMonths(Duration(days: 60), MetricsPeriod.day),
-  halfYear(Duration(days: 180), MetricsPeriod.month),
-  year(Duration(days: 365), MetricsPeriod.month);
-
-  final Duration duration;
-
-  /// The period of the metrics, use to group the data
-  final MetricsPeriod period;
-
-  const OrderChartRange(this.duration, this.period);
-}
-
-enum MetricsPeriod {
-  hour(3600, 'HH:mm a', DateTimeIntervalType.hours),
-  day(86400, 'MMMEd', DateTimeIntervalType.days),
-  month(2592000, 'MMMd', DateTimeIntervalType.months);
+enum MetricsIntervalType {
+  hour(3600, 'HH:mm a'),
+  day(86400, 'MMMEd'),
+  month(2592000, 'MMMd');
 
   final int seconds;
   final String format;
-  final DateTimeIntervalType intervalType;
 
-  const MetricsPeriod(this.seconds, this.format, this.intervalType);
+  factory MetricsIntervalType.fromDays(int days) {
+    if (days > 62) {
+      return month;
+    }
+
+    if (days > 2) {
+      return day;
+    }
+
+    return hour;
+  }
+
+  const MetricsIntervalType(this.seconds, this.format);
 }

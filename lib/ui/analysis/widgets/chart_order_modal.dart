@@ -25,9 +25,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
   final _nameFocusNode = FocusNode();
 
   AnalysisChartType type = AnalysisChartType.cartesian;
-  bool withToday = false;
   bool ignoreEmpty = false;
-  OrderChartRange range = OrderChartRange.sevenDays;
   late OrderMetricTarget target;
   final metrics = <OrderMetricType>[];
   final targetItems = <String>[];
@@ -56,18 +54,6 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         ),
       )),
       CheckboxListTile(
-        key: const Key('chart.withToday'),
-        controlAffinity: ListTileControlAffinity.leading,
-        value: withToday,
-        selected: withToday,
-        onChanged: (bool? value) {
-          setState(() {
-            withToday = value!;
-          });
-        },
-        title: Text(S.analysisChartWithTodayLabel),
-      ),
-      CheckboxListTile(
         key: const Key('chart.ignoreEmpty'),
         controlAffinity: ListTileControlAffinity.leading,
         value: ignoreEmpty,
@@ -79,24 +65,6 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         },
         title: Text(S.analysisChartIgnoreEmptyLabel),
         subtitle: Text(S.analysisChartIgnoreEmptyHelper),
-      ),
-      _buildWrappedChoices(
-        S.analysisChartRangeLabel,
-        '${S.analysisChartRangeHelper}\n${S.singleChoice}',
-        OrderChartRange.values.map((e) {
-          return ChoiceChip(
-            key: Key('chart.range.${e.name}'),
-            selected: range == e,
-            label: Text(S.analysisChartRange(e.name)),
-            onSelected: (bool value) {
-              if (value && range != e) {
-                setState(() {
-                  range = e;
-                });
-              }
-            },
-          );
-        }),
       ),
       TextDivider(label: S.analysisChartTypeLabel),
       p(SizedBox(
@@ -282,9 +250,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     } else {
       _nameController.text = chart.name;
       type = chart.type;
-      withToday = chart.withToday;
       ignoreEmpty = chart.ignoreEmpty;
-      range = chart.range;
       target = chart.target;
       metrics.addAll(chart.metrics);
       targetItems.addAll(chart.targetItems);
@@ -303,8 +269,6 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     final model = Chart.fromObject(ChartObject(
       name: _nameController.text,
       type: type,
-      range: range,
-      withToday: withToday,
       ignoreEmpty: ignoreEmpty,
       target: target,
       metrics: metrics,

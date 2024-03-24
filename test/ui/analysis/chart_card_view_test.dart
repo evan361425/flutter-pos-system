@@ -25,10 +25,13 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Chart View', () {
-    Widget buildApp<T>(Chart chart) {
+  group('Chart Card View', () {
+    Widget buildApp<T>(Chart chart, {ValueNotifier<DateTimeRange>? range}) {
       Analysis().replaceItems({chart.id: chart});
-      final view = ChartCardView(chart: chart);
+      final view = ChartCardView(
+        chart: chart,
+        range: range ?? ValueNotifier(Util.getDateRange()),
+      );
       return MaterialApp.router(
         routerConfig: GoRouter(routes: [
           GoRoute(
@@ -77,9 +80,7 @@ void main() {
     group('Cartesian Chart', () {
       testWidgets('edit to product with selection', (tester) async {
         final today = Util.toUTC(hour: 0);
-        final yesterday = today - 86400;
         final tomorrow = today + 86400;
-        final sevenDaysAgo = today - 86400 * 7;
         Menu().replaceItems({
           'c1': Catalog(id: 'c1', name: 'c1')
             ..replaceItems({
@@ -89,8 +90,8 @@ void main() {
         });
         mockGetMetricsInPeriod(
             table: equals(
-                '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, '
-                '* FROM order_records WHERE createdAt BETWEEN $sevenDaysAgo AND $today) t'),
+                '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
+                '* FROM order_records WHERE createdAt BETWEEN $today AND $tomorrow) t'),
             rows: [
               {'day': 1, 'price': 1.1, 'revenue': 2.2},
               {'day': 3, 'price': 1.2, 'revenue': 2.3},
@@ -107,9 +108,7 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byKey(const Key('chart.title')), 'title2');
-        await tester.tap(find.byKey(const Key('chart.withToday')));
         await tester.tap(find.byKey(const Key('chart.ignoreEmpty')));
-        await tester.tap(find.byKey(const Key('chart.range.today')));
         await tester.tap(find.byKey(const Key('chart.type.circular')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.type.cartesian')));
@@ -157,11 +156,10 @@ void main() {
         await tester.pumpAndSettle();
         expect(items.join(','), equals('p2'));
 
-        // withToday is true so the range should contain tomorrow: yesterday < t < tomorrow
         mockGetItemMetricsInPeriod(
           table: equals(
-              '(SELECT CAST((createdAt - $yesterday) / 3600 AS INT) day, * '
-              'FROM order_products WHERE createdAt BETWEEN $yesterday AND $tomorrow  '
+              '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+              'FROM order_products WHERE createdAt BETWEEN $today AND $tomorrow  '
               'AND productName IN ("p2") ) t'),
           target: OrderMetricTarget.product,
           columns: contains('SUM(singleCost * count) value'),
@@ -183,9 +181,7 @@ void main() {
           any,
           argThat(equals(<String, Object?>{
             'test.name': 'title2',
-            'test.withToday': true,
             'test.ignoreEmpty': true,
-            'test.range': OrderChartRange.today.index,
             'test.target': OrderMetricTarget.product.index,
             'test.metrics': [OrderMetricType.cost.index],
             'test.targetItems': ['p2'],
@@ -195,7 +191,7 @@ void main() {
 
       testWidgets('edit to attributes without selection', (tester) async {
         final today = Util.toUTC(hour: 0);
-        final sevenDaysAgo = today - 86400 * 7;
+        final tomorrow = today + 86400;
         OrderAttributes().replaceItems({
           'a1': OrderAttribute(id: 'a1', name: 'a1')
             ..replaceItems({
@@ -226,11 +222,10 @@ void main() {
         await tester.tap(find.byKey(const Key('chart.target.attribute')));
         await tester.pumpAndSettle();
 
-        // withToday is true so the range should contain tomorrow: yesterday < t < tomorrow
         mockGetItemMetricsInPeriod(
           table: equals(
-              '(SELECT CAST((createdAt - $sevenDaysAgo) / 86400 AS INT) day, * '
-              'FROM order_attributes WHERE createdAt BETWEEN $sevenDaysAgo AND $today  ) t'),
+              '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+              'FROM order_attributes WHERE createdAt BETWEEN $today AND $tomorrow  ) t'),
           target: OrderMetricTarget.attribute,
         );
 
@@ -252,25 +247,35 @@ void main() {
         ));
       });
 
-      testWidgets('slide the range with price and count', (tester) async {
+      testWidgets('different date interval', (tester) async {
         final today = Util.toUTC(hour: 0);
         final sevenDaysAgo = today - 86400 * 7;
         final fourteenDaysAgo = today - 86400 * 14;
+        final nineteenDaysAgo = today - 86400 * 90;
+        final range = ValueNotifier(
+          Util.getDateRange(
+            now: DateTime.now().subtract(const Duration(days: 7)),
+            days: 7,
+          ),
+        );
         mockGetMetricsInPeriod(rows: [
           {'day': 1, 'price': 1.1, 'count': 2},
           {'day': 2, 'price': 2.2, 'count': 3},
         ]);
 
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.cartesian,
-          id: 'test',
-          metrics: [OrderMetricType.price, OrderMetricType.count],
-        )));
+        await tester.pumpWidget(buildApp(
+          Chart(
+            type: AnalysisChartType.cartesian,
+            id: 'test',
+            metrics: [OrderMetricType.price, OrderMetricType.count],
+          ),
+          range: range,
+        ));
         await tester.pumpAndSettle();
 
-        void verifyContains(int days) {
+        void verifyContains(String value) {
           verify(database.query(
-            argThat(contains('$days')),
+            argThat(contains(value)),
             columns: anyNamed('columns'),
             groupBy: anyNamed('groupBy'),
             orderBy: anyNamed('orderBy'),
@@ -278,33 +283,24 @@ void main() {
           )).called(1);
         }
 
-        verifyContains(sevenDaysAgo);
+        verifyContains('$sevenDaysAgo) / 86400');
 
-        await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
+        range.value = Util.getDateRange(
+          now: DateTime.now().subtract(const Duration(days: 14)),
+          days: 14,
+        );
         await tester.pumpAndSettle();
-        verifyContains(fourteenDaysAgo);
+        verifyContains('$fourteenDaysAgo) / 86400');
 
-        await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
+        range.value = Util.getDateRange(
+          now: DateTime.now().subtract(const Duration(days: 90)),
+          days: 90,
+        );
         await tester.pumpAndSettle();
-        verifyContains(sevenDaysAgo);
-
-        // after today is not searchable
-        await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
-        await tester.pumpAndSettle();
-        verifyNever(database.query(
-          any,
-          columns: anyNamed('columns'),
-          groupBy: anyNamed('groupBy'),
-          orderBy: anyNamed('orderBy'),
-          escapeTable: anyNamed('escapeTable'),
-        ));
-
-        await tester.tap(find.byIcon(Icons.refresh_sharp));
-        await tester.pumpAndSettle();
-        verifyContains(sevenDaysAgo);
+        verifyContains('$nineteenDaysAgo) / 2592000');
       });
 
-      testWidgets('365 day with all types and ignore drag', (tester) async {
+      testWidgets('all types and ignore drag', (tester) async {
         mockGetMetricsInPeriod(rows: [
           {'day': 1, 'price': 1.1, 'revenue': 1.1, 'cost': 1.1, 'count': 2},
           {'day': 2, 'price': 2.2, 'revenue': 2.2, 'cost': 2.2, 'count': 3},
@@ -314,7 +310,6 @@ void main() {
           id: 'test',
           type: AnalysisChartType.cartesian,
           metrics: OrderMetricType.values,
-          range: OrderChartRange.year,
           ignoreEmpty: true,
         );
         Analysis().replaceItems({chart.id: chart});
@@ -323,7 +318,13 @@ void main() {
             body: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(children: [
-                SizedBox(width: 300, child: ChartCardView(chart: chart)),
+                SizedBox(
+                  width: 300,
+                  child: ChartCardView(
+                    chart: chart,
+                    range: ValueNotifier(Util.getDateRange()),
+                  ),
+                ),
                 const SizedBox(width: 2000, height: 200),
               ]),
             ),
@@ -406,9 +407,7 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byKey(const Key('chart.title')), 'title2');
-        await tester.tap(find.byKey(const Key('chart.withToday')));
         await tester.tap(find.byKey(const Key('chart.ignoreEmpty')));
-        await tester.tap(find.byKey(const Key('chart.range.today')));
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.target.attribute')));
         await tester.pumpAndSettle();
@@ -443,56 +442,11 @@ void main() {
           any,
           argThat(equals(<String, Object?>{
             'test.name': 'title2',
-            'test.range': OrderChartRange.today.index,
             'test.target': OrderMetricTarget.attribute.index,
             'test.metrics': [OrderMetricType.count.index],
             'test.targetItems': ['a2-name'],
             'test.ignoreEmpty': false,
-            'test.withToday': true,
           })),
-        ));
-      });
-
-      testWidgets('update date by date-picker', (tester) async {
-        final today = Util.toUTC(hour: 0);
-        final yesterday = today - 86400;
-        final tomorrow = today + 86400;
-        Menu().replaceItems({
-          'c1': Catalog(id: 'c1', name: 'c1'),
-          'c2': Catalog(id: 'c2', name: 'c2'),
-        });
-        mockGetMetricsByItems(
-          whereArgs: equals([yesterday, tomorrow]),
-          rows: [
-            {'name': 'c1', 'value': 1},
-          ],
-        );
-
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.circular,
-          id: 'test',
-          target: OrderMetricTarget.catalog,
-          range: OrderChartRange.today,
-          ignoreEmpty: true,
-          withToday: true,
-        )));
-        await tester.pumpAndSettle();
-
-        expect(find.text('c1', findRichText: true), findsOneWidget);
-        expect(find.text('c2', findRichText: true), findsNothing);
-
-        await tester.tap(find.byKey(const Key('chart.test.range_button')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('OK'));
-        await tester.pumpAndSettle();
-
-        verify(database.query(
-          any,
-          columns: anyNamed('columns'),
-          where: anyNamed('where'),
-          whereArgs: argThat(equals([yesterday, tomorrow]), named: 'whereArgs'),
-          groupBy: anyNamed('groupBy'),
-          orderBy: anyNamed('orderBy'),
         ));
       });
     });

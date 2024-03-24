@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -11,6 +13,7 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:provider/provider.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -97,7 +100,7 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('add chart', (tester) async {
+    testWidgets('interact with chart', (tester) async {
       Analysis();
       mockGetChart();
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
@@ -121,23 +124,55 @@ void main() {
       ));
 
       expect(find.text('test'), findsOneWidget);
-      expect(find.byKey(Key('chart.${chart.id}.reset')), findsOneWidget);
+      expect(find.byKey(Key('chart.${chart.id}.more')), findsOneWidget);
       expect(chart.name, equals('test'));
       // verify default values
       expect(chart.type.name, equals('cartesian'));
       expect(chart.ignoreEmpty, equals(false));
-      expect(chart.withToday, equals(false));
-      expect(chart.range.duration, equals(const Duration(days: 7)));
       expect(chart.target, OrderMetricTarget.order);
       expect(chart.metrics, equals(const [OrderMetricType.price]));
       expect(chart.targetItems, isEmpty);
 
-      await tester.tap(find.byIcon(KIcons.more).first);
+      // reorder
+      await tester.tap(find.byIcon(Icons.settings_sharp));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
+
+      // slide date range
+      DateTimeRange range = Util.getDateRange(
+        now: DateTime.now().subtract(const Duration(days: 7)),
+        days: 7,
+      );
+      final format = DateFormat.MMMd('zh_TW');
+      expect(find.text(range.format(format)), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
+      await tester.pumpAndSettle();
+
+      range = Util.getDateRange(
+        now: DateTime.now().subtract(const Duration(days: 14)),
+        days: 7,
+      );
+      expect(find.text(range.format(format)), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
+      await tester.pumpAndSettle();
+
+      range = Util.getDateRange(
+        now: DateTime.now().subtract(const Duration(days: 7)),
+        days: 7,
+      );
+      expect(find.text(range.format(format)), findsOneWidget);
+
+      // select date range
+      await tester.tap(find.byKey(const Key('anal.chart_range')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      expect(find.text(range.format(format)), findsOneWidget);
     });
 
     setUpAll(() {
@@ -145,6 +180,7 @@ void main() {
       initializeDatabase();
       initializeStorage();
       initializeTranslator();
+      VisibilityDetectorController.instance.updateInterval = Duration.zero;
     });
   });
 }

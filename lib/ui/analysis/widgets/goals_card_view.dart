@@ -135,7 +135,6 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         OrderMetricType.revenue,
         OrderMetricType.cost,
       ],
-      period: MetricsPeriod.day,
       ignoreEmpty: true,
       limit: widget.calculator.length + 1,
       orderDirection: "desc",

@@ -22,47 +22,51 @@ class HomePage extends StatelessWidget {
       length: 4,
       initialIndex: tab.index,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.appTitle),
-          centerTitle: true,
-          shadowColor: Theme.of(context).colorScheme.shadow,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: Theme.of(context).gradientColors,
-                tileMode: TileMode.clamp,
-              ),
-            ),
-          ),
-          // disable scrolling effect
-          notificationPredicate: (ScrollNotification notification) {
-            return notification.depth == 1;
-          },
-          // disable shadow after scrolled
-          scrolledUnderElevation: 0,
-          actions: [
-            TextButton(
-              key: const Key('home.order'),
-              onPressed: () => context.pushNamed(Routes.order),
-              child: const Text('點餐'),
-            )
-          ],
-          bottom: TabBar(tabs: [
-            _Tab(key: const Key('home.analysis'), text: S.homeTabAnalysis),
-            _Tab(key: const Key('home.stock'), text: S.homeTabStock),
-            _Tab(key: const Key('home.cashier'), text: S.homeTabCashier),
-            _Tab(key: const Key('home.setting'), text: S.homeTabSetting),
-          ]),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          key: const Key('home.order'),
+          onPressed: () => context.pushNamed(Routes.order),
+          child: const Text('點餐'),
         ),
-        body: const TabBarView(
-          children: [
-            AnalysisView(tabIndex: 0),
-            StockView(tabIndex: 1),
-            CashierView(tabIndex: 2),
-            SettingView(tabIndex: 3),
-          ],
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                pinned: true,
+                floating: true,
+                title: Text(S.appTitle),
+                centerTitle: true,
+                shadowColor: Theme.of(context).colorScheme.shadow,
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: Theme.of(context).gradientColors,
+                      tileMode: TileMode.clamp,
+                    ),
+                  ),
+                ),
+                // disable shadow after scrolled
+                scrolledUnderElevation: 0,
+                bottom: TabBar(tabs: [
+                  _Tab(
+                      key: const Key('home.analysis'), text: S.homeTabAnalysis),
+                  _Tab(key: const Key('home.stock'), text: S.homeTabStock),
+                  _Tab(key: const Key('home.cashier'), text: S.homeTabCashier),
+                  _Tab(key: const Key('home.setting'), text: S.homeTabSetting),
+                ]),
+              ),
+            ];
+          },
+          body: const TabBarView(
+            children: [
+              AnalysisView(tabIndex: 0),
+              StockView(tabIndex: 1),
+              CashierView(tabIndex: 2),
+              SettingView(tabIndex: 3),
+            ],
+          ),
         ),
       ),
     );
