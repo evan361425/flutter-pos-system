@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/translator.dart';
 
 import '../test_helpers/translator.dart';
 
@@ -27,7 +26,7 @@ void main() {
       await tester.drag(find.text('1'), const Offset(-1000, 0));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(S.btnDelete));
+      await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
       expect(deletionFired, isTrue);

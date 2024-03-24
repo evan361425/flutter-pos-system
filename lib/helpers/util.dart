@@ -80,3 +80,11 @@ extension PrettyNum on num {
     return _format.format(this);
   }
 }
+
+extension RangeFormat on DateTimeRange {
+  String format(DateFormat f) {
+    return duration.inDays == 1
+        ? f.format(start)
+        : '${f.format(start)} - ${f.format(end.subtract(const Duration(days: 1)))}';
+  }
+}

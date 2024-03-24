@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/translator.dart';
 
 class ConfirmDialog extends StatelessWidget {
   const ConfirmDialog({
@@ -31,18 +30,19 @@ class ConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = MaterialLocalizations.of(context);
     return AlertDialog(
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
         PopButton(
           key: const Key('confirm_dialog.cancel'),
-          title: MaterialLocalizations.of(context).cancelButtonLabel,
+          title: local.cancelButtonLabel,
         ),
         FilledButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(S.btnConfirm),
+          child: Text(local.okButtonLabel),
         ),
       ],
     );

@@ -45,6 +45,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   }
 
   Widget buildSelectingScaffold() {
+    final local = MaterialLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: CloseButton(
@@ -63,7 +64,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
                 deleteCallback: deleteImages,
               );
             },
-            child: Text(S.btnDelete),
+            child: Text(local.deleteButtonTooltip),
           ),
         ],
         title: const Text('刪除所選'),

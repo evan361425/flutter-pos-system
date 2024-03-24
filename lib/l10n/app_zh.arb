@@ -9,14 +9,6 @@
   "@actError": {
     "description": "當發生錯誤時，會顯示在 SnackBar 上的文字"
   },
-  "btnConfirm": "確認",
-  "@btnConfirm": {
-    "description": "確認按鈕"
-  },
-  "btnDelete": "刪除",
-  "@btnDelete": {
-    "description": "刪除按鈕"
-  },
   "btnImport": "匯入",
   "btnExport": "匯出",
   "singleChoice": "一次只能選擇一種",
@@ -714,7 +706,6 @@
   "@orderCartToggleSelection": {
     "description": "點選的取消點選，未點選的則點選"
   },
-  "orderCartSelectAll": "全選",
   "orderCartActionsBtn": "使所選物",
   "@orderCartActionsBtn": {
     "description": "針對所選物進行操作的按鈕"
@@ -840,7 +831,6 @@
       }
     }
   },
-  "orderDetailsConfirm": "完成",
   "orderObjectChange": "找錢",
   "orderObjectTotalPrice": "訂單總價：{price}",
   "@orderObjectTotalPrice": {

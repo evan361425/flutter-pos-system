@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -35,7 +34,7 @@ class CashierSurplus extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const PopButton(),
+        leading: const CloseButton(key: Key('pop')),
         title: const Text('結餘'),
         actions: [
           TextButton(
@@ -46,7 +45,7 @@ class CashierSurplus extends StatelessWidget {
                 context.pop(true);
               }
             },
-            child: const Text('完成'),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
           ),
         ],
       ),

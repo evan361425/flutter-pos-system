@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/translator.dart';
 
 class SliderTextDialog extends StatefulWidget {
   const SliderTextDialog({
@@ -35,6 +34,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final local = MaterialLocalizations.of(context);
     final textField = TextFormField(
       key: const Key('slider_dialog.text'),
       controller: textController,
@@ -73,12 +73,12 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       actions: [
         PopButton(
           key: const Key('slider_dialog.cancel'),
-          title: MaterialLocalizations.of(context).cancelButtonLabel,
+          title: local.cancelButtonLabel,
         ),
         FilledButton(
           key: const Key('slider_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
-          child: Text(S.btnConfirm),
+          child: Text(local.okButtonLabel),
         ),
       ],
     );

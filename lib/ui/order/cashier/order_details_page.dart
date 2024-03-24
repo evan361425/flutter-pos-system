@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -59,7 +59,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
                 TextButton(
                   key: const Key('order.details.confirm'),
                   onPressed: _checkout,
-                  child: Text(S.orderDetailsConfirm),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 ),
               ],
         // disable shadow after scrolled

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/translator.dart';
 
 class SingleTextDialog extends StatefulWidget {
   const SingleTextDialog({
@@ -42,6 +41,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final local = MaterialLocalizations.of(context);
     final textField = TextFormField(
       key: const Key('text_dialog.text'),
       controller: textController,
@@ -70,12 +70,12 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       actions: [
         PopButton(
           key: const Key('text_dialog.cancel'),
-          title: MaterialLocalizations.of(context).cancelButtonLabel,
+          title: local.cancelButtonLabel,
         ),
         FilledButton(
           key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
-          child: Text(S.btnConfirm),
+          child: Text(local.okButtonLabel),
         ),
       ],
     );

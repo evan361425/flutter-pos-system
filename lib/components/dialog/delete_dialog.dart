@@ -11,11 +11,12 @@ class DeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = MaterialLocalizations.of(context);
     return AlertDialog(
       title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+        PopButton(title: local.cancelButtonLabel),
         FilledButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
@@ -23,7 +24,7 @@ class DeleteDialog extends StatelessWidget {
             backgroundColor: const Color(0xFFC62828),
             foregroundColor: Colors.white,
           ),
-          child: Text(S.btnDelete),
+          child: Text(local.deleteButtonTooltip),
         ),
       ],
     );

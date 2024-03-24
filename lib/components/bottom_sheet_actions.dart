@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/translator.dart';
 
 import 'dialog/delete_dialog.dart';
 
@@ -125,11 +124,12 @@ class BottomSheetActions extends StatelessWidget {
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
   }) async {
+    final local = MaterialLocalizations.of(context);
     final result = await showCircularBottomSheet<T>(context, actions: [
       ...actions,
       BottomSheetAction(
         key: const Key('btn.delete'),
-        title: Text(S.btnDelete),
+        title: Text(local.deleteButtonTooltip),
         leading: const Icon(KIcons.delete),
         returnValue: deleteValue,
       ),

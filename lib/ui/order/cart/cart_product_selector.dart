@@ -7,6 +7,7 @@ class CartProductSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = MaterialLocalizations.of(context);
     return Row(children: <Widget>[
       const SizedBox(width: 16.0),
       Expanded(
@@ -18,7 +19,7 @@ class CartProductSelector extends StatelessWidget {
             ),
           ),
           onPressed: () => Cart.instance.toggleAll(true),
-          child: Text(S.orderCartSelectAll),
+          child: Text(local.selectAllButtonLabel),
         ),
       ),
       const SizedBox(width: 4.0),

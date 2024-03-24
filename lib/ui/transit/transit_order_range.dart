@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
@@ -67,13 +68,5 @@ class _TransitOrderRangeState extends State<TransitOrderRange> {
     setState(() {
       widget.notifier.value = DateTimeRange(start: start, end: end);
     });
-  }
-}
-
-extension RangeFormat on DateTimeRange {
-  String format(DateFormat f) {
-    return duration.inDays == 1
-        ? f.format(start)
-        : '${f.format(start)}-${f.format(end.subtract(const Duration(days: 1)))}';
   }
 }
