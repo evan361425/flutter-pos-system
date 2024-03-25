@@ -147,7 +147,7 @@ class _CartesianChart extends StatelessWidget {
         ),
         series: chart.keyUnits().map(
           (keyUnit) {
-            return SplineSeries(
+            return LineSeries(
               animationDuration: 0,
               markerSettings: const MarkerSettings(isVisible: true),
               name: chart.target == OrderMetricTarget.order

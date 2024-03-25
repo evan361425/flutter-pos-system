@@ -219,7 +219,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
             labelFormat: ' ',
           ),
           series: [
-            SplineSeries<int, int>(
+            LineSeries<int, int>(
               xValueMapper: (_, i) => i,
               yValueMapper: (int data, _) => data,
               dataSource: const [3, 1, 4, 6, 5, 2, 5],
