@@ -20,9 +20,9 @@ import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../mocks/mock_database.dart';
-import '../../mocks/mock_storage.dart';
-import '../../test_helpers/translator.dart';
+import '../../../mocks/mock_database.dart';
+import '../../../mocks/mock_storage.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Chart Card View', () {
@@ -448,6 +448,29 @@ void main() {
             'test.ignoreEmpty': false,
           })),
         ));
+      });
+
+      testWidgets('all metrics are zero', (tester) async {
+        Menu().replaceItems({
+          'c1': Catalog(id: 'c1', name: 'c1'),
+          'c2': Catalog(id: 'c2', name: 'c2'),
+        });
+        mockGetMetricsByItems(
+          table: equals(OrderMetricTarget.catalog.table),
+          rows: [
+            {'name': 'c1', 'value': 0},
+            {'name': 'c2', 'value': 0},
+          ],
+        );
+
+        await tester.pumpWidget(buildApp(Chart(
+          type: AnalysisChartType.circular,
+          target: OrderMetricTarget.catalog,
+        )));
+        await tester.pumpAndSettle();
+
+        expect(find.text('c1', findRichText: true), findsOneWidget);
+        expect(find.text('c2', findRichText: true), findsOneWidget);
       });
     });
 

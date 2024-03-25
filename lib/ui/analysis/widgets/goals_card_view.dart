@@ -26,7 +26,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
   Widget build(BuildContext context) {
     return ReloadableCard<OrderDataPerDay>(
       id: 'goals',
-      title: '目標',
+      title: '本日總結',
       notifiers: [Seller.instance],
       builder: _builder,
       loader: _loader,

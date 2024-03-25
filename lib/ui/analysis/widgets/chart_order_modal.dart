@@ -77,9 +77,10 @@ class _ChartOrderModalState extends State<ChartOrderModal>
               selected: type == e,
               label: Text(S.analysisChartType(e.name)),
               onSelected: (bool value) {
+                type = e;
+                _updateTarget(_allowedTargets.first);
                 setState(() {
-                  type = e;
-                  _updateTarget(_allowedTargets.first);
+                  _updateTargetItem(_allowedTargets.first);
                 });
               },
             );
@@ -98,8 +99,9 @@ class _ChartOrderModalState extends State<ChartOrderModal>
             label: Text(S.analysisChartTarget(e.name)),
             onSelected: (bool value) {
               if (value && target != e) {
+                _updateTarget(e);
                 setState(() {
-                  _updateTarget(e);
+                  _updateTargetItem(e);
                 });
               }
             },
@@ -226,7 +228,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
         );
       case AnalysisChartType.circular:
         return SfCircularChart(
-          title: const ChartTitle(text: '範例'),
+          title: const ChartTitle(),
           selectionGesture: ActivationMode.none,
           series: <CircularSeries>[
             PieSeries<int, int>(
@@ -325,10 +327,13 @@ class _ChartOrderModalState extends State<ChartOrderModal>
     target = e;
     metrics.clear();
     metrics.add(_allowedMetrics.first);
-    targetItems.clear();
+  }
 
+  /// separate from [_updateTarget] to avoid check-mark dynamically change the ChoiceChip width
+  void _updateTargetItem(OrderMetricTarget e) {
+    targetItems.clear();
     if (_singleTargetItem) {
-      targetItems.add(target.getItems().first.name);
+      targetItems.add(e.getItems().first.name);
     }
   }
 }

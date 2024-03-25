@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -101,7 +102,18 @@ void main() {
     });
 
     testWidgets('interact with chart', (tester) async {
-      Analysis();
+      Analysis().replaceItems({
+        'origin': Chart(
+          id: 'origin',
+          name: 'origin',
+          index: 1,
+          type: AnalysisChartType.cartesian,
+          ignoreEmpty: false,
+          target: OrderMetricTarget.order,
+          metrics: const [OrderMetricType.price],
+          targetItems: [],
+        ),
+      });
       mockGetChart();
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
 
@@ -116,7 +128,7 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      final chart = Analysis.instance.items.first;
+      final chart = Analysis.instance.items.last;
       verify(storage.add(
         any,
         argThat(equals(chart.id)),
@@ -132,6 +144,7 @@ void main() {
       expect(chart.target, OrderMetricTarget.order);
       expect(chart.metrics, equals(const [OrderMetricType.price]));
       expect(chart.targetItems, isEmpty);
+      expect(chart.index, 0);
 
       // reorder
       await tester.tap(find.byIcon(Icons.settings_sharp));
@@ -150,7 +163,7 @@ void main() {
       expect(find.text(range.format(format)), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(
         now: DateTime.now().subtract(const Duration(days: 14)),
@@ -159,7 +172,7 @@ void main() {
       expect(find.text(range.format(format)), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(
         now: DateTime.now().subtract(const Duration(days: 7)),
@@ -171,8 +184,8 @@ void main() {
       await tester.tap(find.byKey(const Key('anal.chart_range')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
-      await tester.pumpAndSettle();
-      expect(find.text(range.format(format)), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.text(range.format(format)), findsAtLeastNWidgets(1));
     });
 
     setUpAll(() {

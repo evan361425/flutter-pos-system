@@ -26,7 +26,7 @@ class ChartCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReloadableCard<List>(
-      id: chart.name,
+      id: chart.id,
       wrappedByCard: false,
       notifiers: [range, chart, Seller.instance],
       builder: (context, metric) {
@@ -177,6 +177,35 @@ class _CircularChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (metrics.every((e) => e.value == 0)) {
+      return SfCircularChart(
+        tooltipBehavior: TooltipBehavior(
+          enable: true,
+          activationMode: ActivationMode.singleTap,
+          animationDuration: 150,
+          format: 'point.x : 0',
+        ),
+        legend: const Legend(isVisible: true),
+        series: [
+          PieSeries<OrderMetricPerItem, String>(
+            animationDuration: 0,
+            explode: false, // show larger section when tap
+            name: chart.target.name,
+            xValueMapper: (v, i) => v.name,
+            yValueMapper: (v, i) => 1,
+            dataSource: metrics,
+            dataLabelMapper: (v, i) => '0%',
+            dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              labelPosition: ChartDataLabelPosition.inside,
+              overflowMode: OverflowMode.shift,
+              labelIntersectAction: LabelIntersectAction.none,
+            ),
+          ),
+        ],
+      );
+    }
+
     return SfCircularChart(
       tooltipBehavior: TooltipBehavior(
         enable: true,

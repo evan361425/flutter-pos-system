@@ -13,7 +13,7 @@ class ReloadableCard<T> extends StatefulWidget {
   final List<ChangeNotifier>? notifiers;
 
   /// Required if you want to reload the card when it's visible.
-  final String? id;
+  final String id;
 
   final String? title;
 
@@ -21,7 +21,7 @@ class ReloadableCard<T> extends StatefulWidget {
 
   const ReloadableCard({
     super.key,
-    this.id,
+    required this.id,
     required this.builder,
     required this.loader,
     this.title,
@@ -63,7 +63,20 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  void didUpdateWidget(covariant ReloadableCard<T> oldWidget) {
+    // after reorder, the widget will be updated
+    if (oldWidget.id != widget.id) {
+      data = null;
+      reloadable = true;
+      reload();
+      updateKeepAlive();
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  bool get wantKeepAlive => data != null;
 
   /// Main content of the card
   Widget buildTarget() {

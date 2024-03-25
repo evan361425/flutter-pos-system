@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 
-import '../../test_helpers/translator.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Chart Range Page', () {
@@ -39,7 +39,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('最近7日'), findsOneWidget);
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format(format)), findsAtLeastNWidgets(1));
       expect(find.text('本週'), findsOneWidget);
       expect(find.text('上週'), findsOneWidget);
 

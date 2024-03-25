@@ -7,8 +7,8 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../mocks/mock_cache.dart';
-import '../../mocks/mock_database.dart';
+import '../../../mocks/mock_cache.dart';
+import '../../../mocks/mock_database.dart';
 
 void main() {
   Future<List<Map<String, Object?>>> mockQuery(int begin, int cease) {
