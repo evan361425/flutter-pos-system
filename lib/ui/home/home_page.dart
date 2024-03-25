@@ -15,6 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    goOrderPage() => context.pushNamed(Routes.order);
     // 如果使用 stateful 並另外建立 tabController，
     // 則會在 push page 時造成 Home 頁面重建，
     // 進而導致底下的頁面也重建，可能造成 tutorial 重複出現。
@@ -23,10 +24,11 @@ class HomePage extends StatelessWidget {
       initialIndex: tab.index,
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton.extended(
           key: const Key('home.order'),
-          onPressed: () => context.pushNamed(Routes.order),
-          child: const Text('點餐'),
+          onPressed: goOrderPage,
+          icon: const Icon(Icons.store_sharp),
+          label: const Text('點餐'),
         ),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -56,6 +58,12 @@ class HomePage extends StatelessWidget {
                   _Tab(key: const Key('home.cashier'), text: S.homeTabCashier),
                   _Tab(key: const Key('home.setting'), text: S.homeTabSetting),
                 ]),
+                actions: [
+                  TextButton(
+                    onPressed: goOrderPage,
+                    child: const Text('點餐'),
+                  ),
+                ],
               ),
             ];
           },
