@@ -1,7 +1,6 @@
 import os
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+
+from PIL import Image, ImageDraw, ImageFont
 
 
 def pp(file):
@@ -15,9 +14,9 @@ space = 60
 
 images = [
     Image.open("%s/%s" % (folder, x))
-    for x in ["2_menu_product.png", "3_order.png", "5_stock.png"]
+    for x in ["1_analysis_chart.png", "4_order_action.png", "7_stock.png"]
 ]
-textList = ["設定產品", "點餐", "庫存系統"]
+textList = ["分析訂單", "點餐", "庫存系統"]
 widths, heights = zip(*(i.size for i in images))
 
 # with space between images and around
@@ -36,7 +35,7 @@ draw = ImageDraw.Draw(new_im)
 font = ImageFont.truetype(pp("Tra-Chi.ttf"), 50)
 x_offset = space // 2
 for text, im in zip(textList, images):
-    w, h = draw.textsize(text, font=font)
+    x, y, w, h = draw.textbbox(xy=(0, 0), text=text, font=font)
     draw.text(
         (x_offset + im.size[0] // 2 - w // 2, im.size[1] + 10),
         text,
