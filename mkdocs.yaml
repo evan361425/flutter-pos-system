@@ -7,62 +7,63 @@ repo_url: https://github.com/evan361425/flutter-pos-system
 edit_uri: https://github.com/evan361425/flutter-pos-system/edit/master
 
 nav:
-  - 幫助: about/contribute.md
-  - 架構: about/structure.md
-  - 維運:
-      - 部署流程: maintenance/deployment.md
-      - 本地端開發: maintenance/development.md
-      - 升版相依套件: maintenance/bump-dependencies.md
-  - 文件:
-      - 開發公約: CODE_OF_CONDUCT.md
-      - 使用許可: LICENSE.md
-      - 隱私權規範: PRIVACY_POLICY.md
+- README.md
+- 幫助: about/contribute.md
+- 架構: about/structure.md
+- 維運:
+  - 部署流程: maintenance/deployment.md
+  - 本地端開發: maintenance/development.md
+  - 升版相依套件: maintenance/bump-dependencies.md
+- 文件:
+  - 開發公約: CODE_OF_CONDUCT.md
+  - 使用許可: LICENSE.md
+  - 隱私權規範: PRIVACY_POLICY.md
 
 theme:
   name: material
   language: "zh-TW"
   features:
-    - search.suggest
-    - search.highlight
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - content.code.annotate
+  - search.suggest
+  - search.highlight
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - content.code.annotate
   favicon: images/favicon.ico
   logo: images/logo.png
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: light-blue
-      toggle:
-        icon: material/weather-sunny
-        name: 黑夜降臨
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: blue-grey
-      accent: deep orange
-      toggle:
-        icon: material/weather-night
-        name: 白日昇起
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: indigo
+    accent: light-blue
+    toggle:
+      icon: material/weather-sunny
+      name: 黑夜降臨
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: blue-grey
+    accent: deep orange
+    toggle:
+      icon: material/weather-night
+      name: 白日昇起
 
 markdown_extensions:
-  # 展開用：??? info "title"
-  - pymdownx.details
-  - pymdownx.highlight
-  - pymdownx.superfences:
-  - toc:
-      # 增加 anchor
-      permalink: true
-      toc_depth: 3
-  # 允許增加 tooltip，於 MD 檔下方中增加下列說明
-  # *[Text]: Description
-  - abbr
-  # 允許設定警告卡片
-  # !!! [note|abstract|info|tip|success|question|warning|failure|bug|example|quote|danger] "Custom title"
-  - admonition
-  # 設定腳註
-  # [^1]: Description
-  - footnotes
+# 展開用：??? info "title"
+- pymdownx.details
+- pymdownx.highlight
+- pymdownx.superfences:
+- toc:
+    # 增加 anchor
+    permalink: true
+    toc_depth: 3
+# 允許增加 tooltip，於 MD 檔下方中增加下列說明
+# *[Text]: Description
+- abbr
+# 允許設定警告卡片
+# !!! [note|abstract|info|tip|success|question|warning|failure|bug|example|quote|danger] "Custom title"
+- admonition
+# 設定腳註
+# [^1]: Description
+- footnotes
 
 extra:
   analytics:
@@ -70,5 +71,5 @@ extra:
     property: G-P67FD9XP83
 
 plugins:
-  - git-revision-date
-  - search
+- git-revision-date
+- search
