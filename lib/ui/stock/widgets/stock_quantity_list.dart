@@ -62,8 +62,8 @@ class StockQuantityList extends StatelessWidget {
 
   Widget _warningContentBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
-    final moreCtx = S.quantityDialogDeletionContent(count);
+    final more = S.quantityDialogDeletionContent(count);
 
-    return Text(S.dialogDeletionContent(quantity.name, moreCtx));
+    return Text(S.dialogDeletionContent(quantity.name, '$more\n\n'));
   }
 }

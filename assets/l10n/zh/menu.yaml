@@ -1,0 +1,93 @@
+"@@context": menu
+title: 菜單
+emptyTitle: 尚未設定產品
+searchHint: 搜尋產品、成分、份量
+searchNotFound: 搜尋不到相關資訊，打錯字了嗎？
+# Catalog
+catalogEmptyTitle: 可以新增產品囉！
+catalogCreateTitle:
+- 新增產品種類
+- 菜單頁的 floatingActionButton 說明
+catalogUpdateTitle: 編輯產品種類
+catalogReorderTitle: 排序產品種類
+# catalogMetaCreatedAt:
+# - 建立時間：{createdAt}
+# - 產品種類建立時間
+# - createdAt: {type: DateTime, format: MMMd}
+catalogDialogDeletionContent:
+- 0: 其內無任何產品
+  other: 將會一同刪除掉 {count} 個產品'
+- 菜單頁刪除產品種類時的警語
+- count: {type: int, mode: plural}
+catalogNameLabel: 產品種類名稱
+catalogNameHint: 例如：漢堡
+catalogNameRepeatError: 名稱重複了，請改個名字吧！
+# Product
+productEmptyTitle: 可以設定產品的成分囉！
+productMetaTitle:
+- 產品
+- meta 的前綴，這樣可以讓使用者知道這是產品的 meta 資訊而不是產品種類
+productMetaPrice:
+- 價格：{price}
+- 產品的售價
+- price: {type: num, format: compact}
+productMetaCost:
+- 成本：{cost}
+- 產品的成本
+- cost: {type: num, format: compact}
+productMetaEmpty:
+- 尚未設定成分
+- 在 product list 中，於 subtitle 顯示的文字
+productCreateTitle: 新增產品
+productUpdateTitle: 編輯產品
+productReorderTitle: 排序產品
+productNameLabel: 產品名稱
+productNameHint: 例如：起司漢堡
+productNameRepeatError: 產品名稱重複
+productPriceLabel: 產品價格
+productPriceHint: 給客人看的價錢
+productCostLabel: 產品成本
+productCostHint: 用來算出利潤，理應小於價錢
+# Ingredient
+ingredientMetaAmount:
+- 使用量：{amount}
+- amount: {type: num, format: decimalPattern}
+ingredientCreateTitle: 新增成分
+ingredientUpdateTitle: 編輯成分
+ingredientSearchLabel: 搜尋成分
+ingredientSearchHelper: 新增成分後，可至「庫存」設定相關資訊。
+ingredientSearchHint: 例如：起司
+ingredientSearchAdd:
+- 新增成分「{name}」
+- 成分搜尋結果若找不到，新增成分的按鈕
+- name: {type: string}
+ingredientSearchEmptyError: 必須設定成分，請點選以設定。
+ingredientSearchRepeatError: 產品已經有相同的成分了，不能重複選取。
+ingredientAmountLabel: 使用量
+ingredientAmountHelper: 預設的使用量，若餐點可以調整該成分的使用量，請於成分的「份量」中設定。
+# Quantity
+quantityMetaAmount:
+- 使用量：{amount}
+- amount: {type: num, format: decimalPattern}
+quantityMetaAdditionalPrice:
+- 額外售價：{price}
+- price: {type: num, format: compact}
+quantityMetaAdditionalCost:
+- 額外成本：{cost}
+- cost: {type: num, format: compact}
+quantityCreateTitle: 新增份量
+quantityUpdateTitle: 編輯份量
+quantitySearchLabel: 搜尋份量
+quantitySearchHelper: 新增成分份量後，可至「份量」設定相關資訊。
+quantitySearchHint: 例如：多量、少量
+quantitySearchAdd:
+- 新增份量「{name}」
+- 份量搜尋結果若找不到，新增份量的按鈕
+- name: {type: string}
+quantitySearchEmptyError: 必須設定份量，請點選以設定。
+quantitySearchRepeatError: 產品已經有相同的份量了，不能重複選取。
+quantityAmountLabel: 使用量
+quantityAdditionalPriceLabel: 額外售價
+quantityAdditionalPriceHelper: 設為 0 則代表加量（減量）不加價。
+quantityAdditionalCostLabel: 額外成本
+quantityAdditionalCostHelper: 預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。

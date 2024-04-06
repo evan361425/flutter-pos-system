@@ -1,0 +1,18 @@
+"@@context": cashier
+title: 收銀
+defaultButton: 設為預設
+defaultTutorialTitle: 收銀機預設狀態
+defaultTutorialContent: |
+  在下面設定完收銀機各幣值的數量後，
+  按這裡設定預設狀態！
+  設定好的數量就會是各個幣值狀態條的「最大值」。
+changeButton: 換錢
+changeTutorialTitle: 收銀機換錢
+changeTutorialContent: |
+  一百塊換成 10 個十塊之類。
+  幫助快速調整收銀機狀態。
+surplusButton: 結餘
+surplusTutorialTitle: 每日結餘
+surplusTutorialContent: |
+  結餘可以幫助我們在每天打烊時，
+  計算現有金額和預設金額的差異。

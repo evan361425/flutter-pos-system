@@ -78,6 +78,8 @@ dev_dependencies:
   sqflite_common: ^2.5.4 # logging
   sqflite_common_ffi: ^2.3.3
 
+  arb_glue: ^0.0.2
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -99,3 +101,12 @@ flutter_native_splash:
   color: "#5c98ff"
   fullscreen: true
   image: assets/logo.png
+
+arb_glue:
+  source: assets/l10n
+  destination: lib/l10n
+  exclude:
+  author: Lu Shueh Chou
+  context:
+  base: zh
+  verbose: true

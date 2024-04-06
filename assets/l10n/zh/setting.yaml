@@ -1,0 +1,31 @@
+"@@context": setting
+title: 設定
+elfTitle: 建議 # 小精靈
+configTitle: 其他設定
+themeTitle: 調色盤
+themeTypes:
+- dark: 暗色模式
+  light: 日光模式
+  system: 跟隨系統
+  other: 未知
+- 應用程式外表的類型
+- {type: String}
+languageTitle: 語言
+checkoutWarningTitle: 收銀機提示
+checkoutWarningTypes:
+- showAll: 全部顯示
+  onlyNotEnough: 僅不夠時顯示
+  hideAll: 全部隱藏
+  other: 未知
+- 是否顯示收銀機的提示
+- {type: String}
+orderOutlookTitle: 點餐的外觀
+orderOutlookTypes:
+- slidingPanel: 酷炫面板
+  singleView: 經典模式
+  other: 未知
+- 點餐時的外觀類型
+- {type: String}
+orderAwakeningTitle:
+- 點餐時不關閉螢幕
+- 在點餐過程中，即使閒置仍不關閉螢幕

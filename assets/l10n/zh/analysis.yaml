@@ -1,0 +1,57 @@
+"@@context": analysis
+title: 統計
+orderListEmptyTitle: 查無點餐紀錄
+orderListMetaPrice:
+- 總營收：{price}
+- 點餐列表中，單日點餐的營收
+- price: {type: num, format: compactCurrency, symbol: '$'}
+orderListMetaCount:
+- 總單數：{count}
+- 點餐列表中，單日點餐的數量
+- count: {type: int, format: compactLong}
+orderListItemMetaPrice:
+- 售價：{price}
+- 點餐列表中，特定訂單的餐點售價
+- price: {type: num, format: compactCurrency, symbol: '$'}
+orderListItemMetaPaid:
+- 付額：{paid}
+- 點餐列表中，特定訂單的餐點付款金額
+- paid: {type: num, format: compactCurrency, symbol: '$'}
+orderListItemMetaIncome:
+- 淨利：{income}
+- 點餐列表中，特定訂單的餐點淨利
+- income: {type: num, format: compactCurrency, symbol: '$'}
+chartCreateTitle: 新增圖表
+chartNameLabel: 圖表標題
+chartIgnoreEmptyLabel: 是否忽略空資料
+chartIgnoreEmptyHelper: 某商品或指標在該時段沒有資料，則不顯示。
+chartTypeLabel: 圖表類型
+chartType:
+- cartesian: 時序圖
+  circular: 圓餅圖
+  other: UNKNOWN
+- {val: {type: String, mode: select}}
+chartDataPropertiesDivider: 圖表資料
+chartMetricLabel: 觀看指標
+chartMetricHelper: 根據不同目的，選擇不同指標類型。
+chartMetric:
+- price: 營收
+  cost: 成本
+  revenue: 淨利
+  count: 數量
+  other: UNKNOWN
+- {val: {type: String, mode: select}}
+chartTargetLabel: 項目種類
+chartTargetHelper: 選擇圖表中要針對哪些資訊做分析。
+chartTargetError: 請選擇一個項目種類
+chartTarget:
+- order: 訂單
+  catalog: 產品種類
+  product: 產品
+  ingredient: 成分
+  attribute: 顧客屬性
+  other: UNKNOWN
+- {val: {type: String, mode: select}}
+chartTargetItemLabel: 項目選擇
+chartTargetItemHelper: 你想要觀察哪些項目的變化，例如區間內某商品的數量。
+chartTargetItemSelectAll: 全選

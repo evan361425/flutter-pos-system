@@ -1,0 +1,68 @@
+"@@context": orderAttribute
+title: 顧客設定
+metaMode:
+- 種類：{mode}
+- 顧客設定列表的資訊之一
+- mode: {type: String}
+metaNoDefault: 無
+metaDefault:
+- 預設：{name}
+- 顧客設定列表的資訊之一
+- name: {type: String}
+emptyTitle: |
+  顧客設定可以幫助我們統計哪些人來消費，例如：
+  20-30歲、外帶、上班族。
+createTitle: 新增顧客設定
+updateTitle: 編輯顧客設定
+reorderTitle: 排序顧客設定
+modes:
+- statOnly: 一般
+  changePrice: 變價
+  changeDiscount: 折扣
+  other: 未知
+- 顧客設定種類名稱
+- {mode: {type: String, mode: select}}
+modeContent:
+- statOnly: 一般的設定，選取時並不會影響點單價格。
+  changePrice: 選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。
+  changeDiscount: 選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。
+  other: UNKNOWN
+- 顧客設定種類的說明
+- {mode: {type: String, mode: select}}
+nameLabel: 顧客設定名稱
+nameHint: 例如：顧客年齡
+nameRepeatError: 名稱不能重複
+modeTitle: 顧客設定種類
+optionCreateTitle:
+- 新增{name}的選項
+- name: {type: String}
+optionUpdateTitle: 編輯選項
+optionReorderTitle: 排序選項
+optionMetaDefault: 預設
+optionNameLabel: 選項名稱
+optionNameHelper: |
+  以年齡為例，可能的選項有：
+  - 20 歲以下
+  - 20 到 30 歲
+optionNameRepeatError: 名稱不能重複
+optionModeHelper:
+- statOnly: 因為本設定為「一般」故無須設定「折價」或「變價」
+  changePrice: 訂單時選擇此項會套用此變價
+  changeDiscount: 訂單時選擇此項會套用此折價
+  other: UNKNOWN
+- 模式的說明
+- {mode: {type: String, mode: select}}
+optionModeHint:
+- statOnly:
+  changePrice: 例如：-30 代表減少三十塊
+  changeDiscount: 例如：80 代表「八折」
+  other: UNKNOWN}
+- {mode: {type: String, mode: select}}
+optionDefaultLabel: 設為預設
+optionDefaultHelper: |
+  設定此選項為預設值，每個訂單預設都會是使用這個選項。
+confirmChangeDefaultTitle: 覆蓋選項預設？
+confirmChangeDefaultContent:
+- 這麼做會讓「{name}」變成非預設值
+- 為了確保使用者知道原先的預設值是什麼而做的提示
+- name: {type: String}

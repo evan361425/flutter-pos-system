@@ -85,7 +85,7 @@ class _IngredientTile extends StatelessWidget {
     final result = await BottomSheetActions.withDelete<_Actions>(
       context,
       deleteValue: _Actions.delete,
-      warningContent: Text(S.dialogDeletionContent(ingredient.name, more)),
+      warningContent: Text(S.dialogDeletionContent(ingredient.name, '$more\n\n')),
       deleteCallback: delete,
       actions: [
         const BottomSheetAction(

@@ -1,0 +1,108 @@
+"@@context": order
+title: 點餐
+metaTotalPrice:
+- 總價：{price}
+- 點餐列表中，單日點餐的總價
+- price: {type: num, format: compactCurrency, symbol: '$'}
+metaTotalCount:
+- 總數：{count}
+- 點餐列表中，單日點餐的總數
+- count: {type: int, format: compact}
+actionsCheckout:
+- 結帳
+- 確認好購物車裡的餐點後準備往下一步走
+actionsOpenChanger: 換錢
+actionsStash: 暫存本次點餐
+actionsHistory: 訂單記錄
+cartSnapshotTutorialTitle: 購物車
+cartSnapshotTutorialMessage: |
+  為了讓點選產品可以更方便，
+  我們把點餐後的產品設定至於此面板。
+  如果需要一次顯示所有訊息的排版（適合大螢幕），
+  可以至「設定」>「點餐的外觀」調整。
+cartSnapshotEmpty: 尚未點餐
+cartToggleSelection: 反選
+cartActionsButton: 使所選物
+cartActionsDiscount: 打折
+cartActionsDiscountLabel: 折扣
+cartActionsDiscountHint: 例如：50，代表打五折（半價）
+cartActionsDiscountHelper: 這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。
+cartActionsDiscountSuffix: 折
+cartActionsChangePrice: 變價
+cartActionsChangePriceLabel: 價錢
+cartActionsChangePriceHint: 每項產品的價錢
+cartActionsChangePriceSuffix: 元
+cartActionsChangeCount: 變更數量
+cartActionsChangeCountLabel: 數量
+cartActionsChangeCountHint: 產品數量
+cartActionsChangeCountSuffix: 個
+cartActionsFree: 招待
+cartActionsDelete: 刪除
+cartEmptyCatalog: 尚未設定產品種類
+cartEmptyProduct: 尚未設定產品
+cartItemPrice:
+- 0: 免費
+  other: '{price}元'
+- 產品的價格
+- price: {type: num, mode: plural, format: compact}
+cartItemIngredientTitle:
+- "{name}（{quantity}）"
+- 點單時的產品列表中各項產品的成分和份量資訊
+- name: {type: String}
+  quantity: {type: String}
+cartIngredientStatus:
+- emptyCart: 請選擇產品來設定其成分
+  differentProducts: 請選擇相同的產品來設定其成分
+  noNeedIngredient: 這個產品沒有可以設定的成分
+  other: UNKNOWN
+- 點餐時，若點選的產品不需要設定成分資訊，會需要提示給使用者
+- {status: {type: String, mode: select}}
+cartQuantityNotAble:
+- 請選擇成分來設定份量
+- 點餐時，須先點選要設定的成分才可以設定份量
+cartQuantityDefault:
+- 預設值（{amount}）
+- 設定成分時，份量可以自訂或使用預設值（不使用份量）
+- amount: {type: num, format: decimalPattern}
+detailsAttributeTitle: 顧客設定
+detailsCashierTitle: 收銀機
+detailsCashierPaidFailed: 糟糕，付額小於總價唷
+detailsCashierPaidNotEnough: 收銀機錢不夠找囉！
+detailsCashierPaidUsingSmallMoney: 收銀機使用小錢去找零
+detailsCashierPaidUsingSmallMoneyAction: 說明
+detailsCashierPaidUsingSmallMoneyHint: |
+  找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。
+
+  例如，售價「65」，消費者支付「100」，此時應找「35」
+  如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。
+
+  怎麼避免本提示：
+  • 到換錢頁面把各幣值補足。
+  • 到設定頁關閉收銀機的相關提示。
+detailsCashierPaidLabel: 付額
+detailsCashierChangeLabel: 找錢
+detailsCashierCalculatorChangeNotEnough: 必須大於訂單總價
+detailsCashierSnapshotChangeField:
+- 找錢：{price}
+- 快照上說明的找錢資訊
+- price: {type: num, format: compactCurrency, decimalDigits: 0, symbol: ''}
+# Order Form
+formChangeTitle: 找錢
+formTotalPriceTitle:
+- 訂單總價：{price}
+- 點餐後的總價資訊
+- price: {type: num, format: compactCurrency, symbol: '$'}
+formProductsPriceTitle: 產品總價
+formAttributesPriceTitle: 顧客設定總價
+formProductsCostTitle: 產品成本
+formRevenueTitle: 淨利
+formPaidTitle: 付額
+formAttributeTitle: 顧客設定
+formProductTitle: 產品資訊
+formProductPriceTitle: 總價
+formProductCostTitle: 總成本
+formProductCountTitle: 總數
+formProductSinglePriceTitle: 單價
+formProductOriginalPriceTitle: 折扣前單價
+formProductCatalogTitle: 產品種類
+formProductIngredientTitle: 成分

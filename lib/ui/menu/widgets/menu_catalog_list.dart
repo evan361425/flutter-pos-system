@@ -68,8 +68,8 @@ class MenuCatalogList extends StatelessWidget {
   }
 
   Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
-    final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
-    return Text(S.dialogDeletionContent(catalog.name, moreCtx));
+    final more = S.menuCatalogDialogDeletionContent(catalog.length);
+    return Text(S.dialogDeletionContent(catalog.name, '$more\n\n'));
   }
 }
 
