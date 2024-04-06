@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -893,13 +893,23 @@
 
 
 <h1 id="_1">架構<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>使用 <a href="https://flutter.dev">Flutter</a> 去撰寫所有應用程式相關邏輯，他提供很多素材去做學習，包括各種應用程式的完成品，如 <a href="https://github.com/flutter/gallery">Gallery</a> 和其他<a href="https://github.com/flutter/samples">小範例</a>。</p>
-<p>Flutter 透過 <a href="https://skia.org">Skia</a> 來做繪圖工具，在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，減少和各平台的接口接觸，進而達到能在眾平台中統一介面。</p>
-<p>當然，在一些特殊情境上，仍需要單獨處理平台的設定。例如，iOS 的通知，便需要在 XCode 和 <a href="http://appstoreconnect.apple.com">AppStoreConnect</a> 中設定。但整體的商務邏輯和應用程式設計都可以直接透過 Flutter 設定。</p>
-<p>Flutter 是一個框架，撰寫其框架的語言是 <a href="https://dart.dev">Dart</a>，其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。這有幾個詳細說明的文章，無聊可以讀讀，<a href="https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332">10-good-reasons-why-you-should-learn-dart</a>、<a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">why-flutter-uses-dart</a>。</p>
+<p>使用 <a href="https://flutter.dev">Flutter</a> 去撰寫所有應用程式相關邏輯，
+他提供很多素材去做學習，包括各種應用程式的完成品，
+如 <a href="https://github.com/flutter/gallery">Gallery</a> 和其他<a href="https://github.com/flutter/samples">小範例</a>。</p>
+<p>Flutter 透過 <a href="https://skia.org">Skia</a> 來做繪圖工具，
+在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，
+減少和各平台的接口接觸，進而達到能在眾平台中統一介面。</p>
+<p>當然，在一些特殊情境上，仍需要單獨處理平台的設定。
+例如，iOS 的通知，便需要在 XCode 和 <a href="http://appstoreconnect.apple.com">AppStoreConnect</a> 中設定。
+但整體的商務邏輯和應用程式設計都可以直接使用 Flutter 撰寫。</p>
+<p>Flutter 是一個框架，撰寫其框架的語言是 <a href="https://dart.dev">Dart</a>，
+其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。
+這有幾個詳細說明的文章，無聊可以讀讀，
+<a href="https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332">10-good-reasons-why-you-should-learn-dart</a>、
+<a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">why-flutter-uses-dart</a>。</p>
 <p>如果想馬上來試試，可以玩玩看他們的線上 <a href="https://dartpad.dev/?null_safety=true">compiler</a>。</p>
 <h2 id="pos-flutter">POS 系統在 Flutter 之上的架構<a class="headerlink" href="#pos-flutter" title="Permanent link">&para;</a></h2>
-<p>這裡初入的人了解應用程式架構。</p>
+<p>這裡嘗試讓初入的人了解應用程式架構。</p>
 <h3 id="_2">主要架構<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>.
 ├── assets/             - 各種圖片，未來可能會放字體
@@ -931,11 +941,8 @@
 ├── scaffold/                   - 框架類元件
 │    ├── item_list_scaffold     - 目前僅有設定時會用到，未來可能會直接搬到 setting_screen
 │    └── reorderable_scaffold   - 可以重新排列物件的框架
-├── style/                      - 不會過 test 的元件
-│    └── ...                    - 小東西，不列舉
-└── tip/                        - 教學相關輔助函示
-     ├── cache_state_manager    - 用 Cache 做狀態管理
-     └── tip_tutorial           - 讓單一教學直接使用這個 Widget，不用去設定 Cache
+└── style/                      - 不會過 test 的元件
+     └── ...                    - 小東西，不列舉
 </code></pre></div>
 <h3 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>constants/     - 各種定死的標準，例如外觀顏色，常用圖標
@@ -1057,7 +1064,7 @@
     <span class="md-icon" title="最後更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2023-08-13
+    2024-04-06
   </span>
 
     
@@ -1109,7 +1116,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "\u5df2\u8907\u88fd", "clipboard.copy": "\u8907\u88fd", "search.result.more.one": "\u6b64\u9801\u5c1a\u6709 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.more.other": "\u6b64\u9801\u5c1a\u6709 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.none": "\u6c92\u6709\u7b26\u5408\u7684\u9805\u76ee", "search.result.one": "\u627e\u5230 1 \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.other": "\u627e\u5230 # \u500b\u7b26\u5408\u7684\u9805\u76ee", "search.result.placeholder": "\u6253\u5b57\u9032\u884c\u641c\u5c0b", "search.result.term.missing": "\u7f3a\u5c11\u5b57\u8a5e", "select.version": "\u9078\u64c7\u7248\u672c"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.bd41221c.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>
