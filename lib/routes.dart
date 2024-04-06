@@ -313,8 +313,7 @@ class Routes {
             path: 'q/:id/modal',
             builder: (ctx, state) {
               final id = state.pathParameters['id'] ?? '';
-              return StockQuantityModal(
-                  quantity: Quantities.instance.getItem(id));
+              return StockQuantityModal(quantity: Quantities.instance.getItem(id));
             },
           ),
         ],
@@ -343,8 +342,7 @@ class Routes {
             name: replenishmentApply,
             path: 'r/:id/apply',
             redirect: (context, state) {
-              final has = Replenisher.instance
-                  .hasItem(state.pathParameters['id'] ?? '');
+              final has = Replenisher.instance.hasItem(state.pathParameters['id'] ?? '');
               return has ? null : '$base/stock/repl';
             },
             builder: (ctx, state) {

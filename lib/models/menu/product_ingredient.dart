@@ -75,9 +75,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
     ProductIngredient? ori,
     List<String> row,
   ) {
-    var ingredient = ori?.ingredient ??
-        Stock.instance.getItemByName(row[0]) ??
-        Stock.instance.getStagedByName(row[0]);
+    var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]) ?? Stock.instance.getStagedByName(row[0]);
     if (ingredient == null) {
       ingredient = Ingredient(
         name: row[0],
@@ -87,9 +85,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
     }
 
     final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
-    final status = ori == null
-        ? ModelStatus.staged
-        : (amount == ori.amount ? ModelStatus.normal : ModelStatus.updated);
+    final status = ori == null ? ModelStatus.staged : (amount == ori.amount ? ModelStatus.normal : ModelStatus.updated);
 
     return ProductIngredient(
       id: ori?.id,

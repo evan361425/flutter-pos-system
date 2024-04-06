@@ -6,8 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart'
-    show databaseFactoryFfi, sqfliteFfiInit;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' show databaseFactoryFfi, sqfliteFfiInit;
 
 import '../mocks/mock_database.mocks.dart' show MockDatabaseExecutor;
 import '../test_helpers/file_mocker.dart';
@@ -164,8 +163,7 @@ void main() {
     test('#query', () async {
       final db = Database.instance.db as MockDatabase;
       when(db.rawQuery(any, any)).thenAnswer((_) => Future.value([]));
-      when(db.rawQuery('SELECT * FROM `table`     '))
-          .thenAnswer((_) => Future.error('error'));
+      when(db.rawQuery('SELECT * FROM `table`     ')).thenAnswer((_) => Future.error('error'));
 
       expect(await Database.instance.query('table'), isEmpty);
 
@@ -229,8 +227,7 @@ void main() {
     test('#transaction', () async {
       final db = Database.instance.db as MockDatabase;
       final txn = MockDatabaseExecutor();
-      when(db.transaction(any))
-          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+      when(db.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
 
       var fired = false;
 

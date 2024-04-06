@@ -90,8 +90,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
             ),
             Tutorial(
               id: 'order.sliding_collapsed',
-              padding: const EdgeInsets.fromLTRB(
-                  -4, snapshotHeight + DraggableIndicator.height, -4, 0),
+              padding: const EdgeInsets.fromLTRB(-4, snapshotHeight + DraggableIndicator.height, -4, 0),
               title: S.orderCartSnapshotTutorialTitle,
               message: S.orderCartSnapshotTutorialMessage,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),

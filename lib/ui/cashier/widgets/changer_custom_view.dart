@@ -79,13 +79,11 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
               TextFormField(
                 key: Key('changer.custom.target.${entry.key}.count'),
                 controller: entry.key == 0 ? targetController : null,
-                initialValue:
-                    entry.key == 0 ? null : entry.value.count?.toString(),
+                initialValue: entry.key == 0 ? null : entry.value.count?.toString(),
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: '數量'),
                 validator: Validator.positiveInt('', allowNull: true),
-                onSaved: (value) =>
-                    entry.value.count = int.tryParse(value ?? ''),
+                onSaved: (value) => entry.value.count = int.tryParse(value ?? ''),
               ),
               DropdownButtonFormField<num>(
                 key: Key('changer.custom.target.${entry.key}.unit'),
@@ -104,8 +102,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                       }),
                       color: theme.colorScheme.error,
                       icon: const Icon(KIcons.entryRemove),
-                      tooltip:
-                          MaterialLocalizations.of(context).deleteButtonTooltip,
+                      tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
                     )),
         )
     ];
@@ -129,8 +126,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                       ? Center(
                           child: Text(
                             errorMessage,
-                            style: theme.textTheme.bodyMedium!
-                                .copyWith(color: theme.colorScheme.error),
+                            style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error),
                           ),
                         )
                       : const SizedBox();
@@ -178,8 +174,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
           unit: sourceUnit!,
         ),
         targets: [
-          for (var target in _mergedTargets().entries)
-            CashierChangeEntryObject(count: target.value, unit: target.key)
+          for (var target in _mergedTargets().entries) CashierChangeEntryObject(count: target.value, unit: target.key)
         ]));
 
     // close keyboard
@@ -199,10 +194,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     if (Cashier.instance.validate(index, count)) {
       await Cashier.instance.update({
         index: -count,
-        ...{
-          for (var target in _mergedTargets().entries)
-            Cashier.instance.indexOf(target.key): target.value
-        },
+        ...{for (var target in _mergedTargets().entries) Cashier.instance.indexOf(target.key): target.value},
       });
       return true;
     } else {

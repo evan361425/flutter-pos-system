@@ -110,8 +110,7 @@ class OrderSetter {
     final txn = MockDatabaseExecutor();
     final batch = MockBatch();
 
-    when(database.transaction(any))
-        .thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
     when(txn.batch()).thenReturn(batch);
     when(batch.commit()).thenAnswer((_) => Future.value([op, oi, oa]));
   }
@@ -133,8 +132,7 @@ class OrderSetter {
     )).thenAnswer((_) => Future.value(orders.map((e) {
           final m = e.toMap();
           m['id'] = e.id;
-          m['pn'] =
-              e.products.map((e) => e.productName).join(Database.delimiter);
+          m['pn'] = e.products.map((e) => e.productName).join(Database.delimiter);
           m['pc'] = e.products.map((e) => e.count).join(Database.delimiter);
           return m;
         }).toList()));
@@ -233,8 +231,7 @@ class OrderSetter {
     final txn = MockDatabaseExecutor();
     final batch = MockBatch();
 
-    when(database.transaction(any))
-        .thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
     when(txn.batch()).thenReturn(batch);
     when(batch.commit()).thenAnswer((_) => Future.value([om, op, oi, oa]));
   }
@@ -244,8 +241,7 @@ class OrderSetter {
     final checkers = <void Function()>[];
     final batches = <MockBatch>[];
 
-    when(database.transaction(any))
-        .thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
 
     final om = order.toMap();
     when(txn.insert(Seller.orderTable, om)).thenAnswer((_) => Future.value(1));
@@ -255,8 +251,7 @@ class OrderSetter {
       final m = p.toMap();
       m['orderId'] = order.id;
       m['createdAt'] = om['createdAt'];
-      when(txn.insert(Seller.productTable, m))
-          .thenAnswer((_) => Future.value(i + 1));
+      when(txn.insert(Seller.productTable, m)).thenAnswer((_) => Future.value(i + 1));
 
       final batch = MockBatch();
       batches.add(batch);
@@ -280,8 +275,7 @@ class OrderSetter {
 
     when(txn.batch()).thenReturnInOrder(batches);
     for (final b in batches) {
-      when(b.commit(noResult: argThat(isTrue, named: 'noResult')))
-          .thenAnswer((_) => Future.value([]));
+      when(b.commit(noResult: argThat(isTrue, named: 'noResult'))).thenAnswer((_) => Future.value([]));
     }
 
     return () {

@@ -44,10 +44,7 @@ class Catalog extends Model<CatalogObject>
       name: object.name,
       createdAt: object.createdAt,
       imagePath: object.imagePath,
-      products: {
-        for (var product in object.products)
-          product.id!: Product.fromObject(product)
-      },
+      products: {for (var product in object.products) product.id!: Product.fromObject(product)},
     )..prepareItem();
   }
 
@@ -85,9 +82,7 @@ class Catalog extends Model<CatalogObject>
       final score = product.getSimilarity(pattern);
       yield MapEntry(
         product,
-        score > 0
-            ? score * 1.5
-            : product.getItemsSimilarity(pattern).toDouble(),
+        score > 0 ? score * 1.5 : product.getItemsSimilarity(pattern).toDouble(),
       );
     }
   }

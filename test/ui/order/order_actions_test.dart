@@ -47,10 +47,7 @@ void main() {
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
       });
-      Quantities().replaceItems({
-        'q-1': Quantity(id: 'q-1', name: 'q-1'),
-        'q-2': Quantity(id: 'q-2', name: 'q-2')
-      });
+      Quantities().replaceItems({'q-1': Quantity(id: 'q-1', name: 'q-1'), 'q-2': Quantity(id: 'q-2', name: 'q-2')});
       final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),

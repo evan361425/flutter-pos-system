@@ -81,9 +81,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     Iterable<FormattedItem> items,
   ) sync* {
     for (final item in items) {
-      yield item.hasError
-          ? PreviewErrorListTile(item)
-          : getItem(context, item.item! as T);
+      yield item.hasError ? PreviewErrorListTile(item) : getItem(context, item.item! as T);
     }
   }
 

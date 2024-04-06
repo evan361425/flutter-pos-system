@@ -8,9 +8,7 @@ import '../stock/quantity.dart';
 import 'product_ingredient.dart';
 
 class ProductQuantity extends Model<ProductQuantityObject>
-    with
-        ModelStorage<ProductQuantityObject>,
-        ModelSearchable<ProductQuantityObject> {
+    with ModelStorage<ProductQuantityObject>, ModelSearchable<ProductQuantityObject> {
   /// Connect to parent object
   late final ProductIngredient ingredient;
 
@@ -60,9 +58,8 @@ class ProductQuantity extends Model<ProductQuantityObject>
     ProductQuantity? ori,
     List<String> row,
   ) {
-    var quantity = ori?.quantity ??
-        Quantities.instance.getItemByName(row[0]) ??
-        Quantities.instance.getStagedByName(row[0]);
+    var quantity =
+        ori?.quantity ?? Quantities.instance.getItemByName(row[0]) ?? Quantities.instance.getStagedByName(row[0]);
     if (quantity == null) {
       quantity = Quantity(
         name: row[0],
@@ -76,9 +73,7 @@ class ProductQuantity extends Model<ProductQuantityObject>
     final ac = row.length > 3 ? num.tryParse(row[3]) ?? 0 : 0;
     final status = ori == null
         ? ModelStatus.staged
-        : (amount == ori.amount &&
-                ap == ori.additionalPrice &&
-                ac == ori.additionalCost
+        : (amount == ori.amount && ap == ori.additionalPrice && ac == ori.additionalCost
             ? ModelStatus.normal
             : ModelStatus.updated);
 

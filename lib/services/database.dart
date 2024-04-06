@@ -135,8 +135,7 @@ class Database {
     return db.insert(table, data);
   }
 
-  Future<T> transaction<T>(
-      Future<T> Function(sqflite.DatabaseExecutor txn) action) {
+  Future<T> transaction<T>(Future<T> Function(sqflite.DatabaseExecutor txn) action) {
     return db.transaction<T>(action);
   }
 

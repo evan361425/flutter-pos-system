@@ -63,8 +63,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         goal: goal!.price,
         style: style,
         name: '營收',
-        desc:
-            '營收代表總銷售額，是業務規模的指標。高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。它不考慮成本和利潤，因此單純追求高營收可能會忽視實際利潤狀況。',
+        desc: '營收代表總銷售額，是業務規模的指標。高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。它不考慮成本和利潤，因此單純追求高營收可能會忽視實際利潤狀況。',
       ),
       _GoalItem(
         type: OrderMetricType.revenue,
@@ -125,9 +124,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
       // If there is no data, we need to calculate the EMA from the last 20 data points withing 40 days.
-      goal == null
-          ? range.start.subtract(const Duration(days: 40))
-          : range.start,
+      goal == null ? range.start.subtract(const Duration(days: 40)) : range.start,
       range.end,
       types: [
         OrderMetricType.count,
@@ -141,8 +138,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
 
     // Remove the first data, which is the today's data.
-    final todayData =
-        result.isEmpty ? OrderDataPerDay(at: range.start) : result.removeAt(0);
+    final todayData = result.isEmpty ? OrderDataPerDay(at: range.start) : result.removeAt(0);
 
     final reversed = result.reversed;
     goal ??= OrderDataPerDay(

@@ -71,9 +71,7 @@ void main() {
       final now = DateTime.now();
       final nowD = DateTime(now.year, now.month, now.day);
       final nowS = (nowD.millisecondsSinceEpoch -
-              DateTime(now.year, now.month)
-                  .subtract(const Duration(days: 7))
-                  .millisecondsSinceEpoch) ~/
+              DateTime(now.year, now.month).subtract(const Duration(days: 7)).millisecondsSinceEpoch) ~/
           86400000; // get days
 
       final o1 = OrderSetter.sample(id: 1);
@@ -120,9 +118,7 @@ void main() {
       final now = DateTime.now();
       final nowD = DateTime(now.year, now.month, now.day);
       final nowS = (nowD.millisecondsSinceEpoch -
-              DateTime(now.year, now.month)
-                  .subtract(const Duration(days: 7))
-                  .millisecondsSinceEpoch) ~/
+              DateTime(now.year, now.month).subtract(const Duration(days: 7)).millisecondsSinceEpoch) ~/
           86400000; // get days
       OrderSetter.setOrders([]);
       OrderSetter.setMetrics([]);
@@ -153,8 +149,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.chevron_left));
       await tester.pumpAndSettle();
 
-      expect(find.text('50'),
-          now.day < now.weekday ? findsOneWidget : findsNothing);
+      expect(find.text('50'), now.day < now.weekday ? findsOneWidget : findsNothing);
       expect(find.text('60'), findsOneWidget);
     });
 

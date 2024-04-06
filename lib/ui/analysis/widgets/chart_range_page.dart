@@ -13,8 +13,7 @@ class ChartRangePage extends StatefulWidget {
   State<ChartRangePage> createState() => _ChartRangePageState();
 }
 
-class _ChartRangePageState extends State<ChartRangePage>
-    with SingleTickerProviderStateMixin {
+class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
   late DateTimeRange select;
@@ -38,8 +37,7 @@ class _ChartRangePageState extends State<ChartRangePage>
           const SizedBox(width: 8),
         ],
         bottom: TabBar(controller: _controller, tabs: [
-          for (final tab in _TabType.values)
-            Tab(child: Text(tab.title, softWrap: true)),
+          for (final tab in _TabType.values) Tab(child: Text(tab.title, softWrap: true)),
         ]),
       ),
       body: TabBarView(controller: _controller, children: [
@@ -136,12 +134,8 @@ class _ChartRangePageState extends State<ChartRangePage>
       },
     };
 
-    final tab = ranges.entries
-            .firstWhereOrNull((e) => e.value.containsValue(select))
-            ?.key ??
-        _TabType.custom;
-    _controller =
-        TabController(length: 4, vsync: this, initialIndex: tab.index);
+    final tab = ranges.entries.firstWhereOrNull((e) => e.value.containsValue(select))?.key ?? _TabType.custom;
+    _controller = TabController(length: 4, vsync: this, initialIndex: tab.index);
 
     super.initState();
   }

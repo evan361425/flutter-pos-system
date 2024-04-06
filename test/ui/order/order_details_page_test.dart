@@ -44,10 +44,7 @@ void main() {
         'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 100),
         'i-3': Ingredient(id: 'i-3', name: 'i-3', currentAmount: 100),
       });
-      Quantities().replaceItems({
-        'q-1': Quantity(id: 'q-1', name: 'q-1'),
-        'q-2': Quantity(id: 'q-2', name: 'q-2')
-      });
+      Quantities().replaceItems({'q-1': Quantity(id: 'q-1', name: 'q-1'), 'q-2': Quantity(id: 'q-2', name: 'q-2')});
       final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),
@@ -106,8 +103,7 @@ void main() {
 
       Cart.instance = Cart();
       Cart.instance.replaceAll(products: [
-        CartProduct(Menu.instance.getProduct('p-1')!,
-            quantities: {'pi-1': 'pq-1'}),
+        CartProduct(Menu.instance.getProduct('p-1')!, quantities: {'pi-1': 'pq-1'}),
         CartProduct(Menu.instance.getProduct('p-2')!),
       ], attributes: {
         'oa-1': 'oao-1',
@@ -341,9 +337,7 @@ void main() {
 
       verify(storage.set(Stores.cashier, argThat(predicate((data) {
         // 95 - 62
-        return data is Map &&
-            data['.current'][2]['count'] == 3 &&
-            data['.current'][0]['count'] == 3;
+        return data is Map && data['.current'][2]['count'] == 3 && data['.current'][0]['count'] == 3;
       }))));
       verify(storage.set(Stores.stock, argThat(predicate((data) {
         return data is Map &&
@@ -554,8 +548,7 @@ void main() {
 
     testWidgets('is able to stash the order', (tester) async {
       // only test available and actual function was test by other test case.
-      when(database.push(StashedOrders.table, any))
-          .thenAnswer((_) => Future.value(1));
+      when(database.push(StashedOrders.table, any)).thenAnswer((_) => Future.value(1));
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();

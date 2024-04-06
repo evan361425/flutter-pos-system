@@ -27,8 +27,7 @@ class OrderAttributeOptionModal extends StatefulWidget {
   State<OrderAttributeOptionModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
-    with ItemModal<OrderAttributeOptionModal> {
+class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _valueController;
   late FocusNode _nameFocusNode;
@@ -36,15 +35,12 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
   late bool isDefault;
 
   @override
-  String get title =>
-      widget.option?.name ??
-      S.orderAttributeOptionCreateTitle(widget.attribute.name);
+  String get title => widget.option?.name ?? S.orderAttributeOptionCreateTitle(widget.attribute.name);
 
   @override
   List<Widget> buildFormFields() {
     final label = S.orderAttributeModeNames(widget.attribute.mode.name);
-    final helper =
-        S.orderAttributeOptionsModeHelper(widget.attribute.mode.name);
+    final helper = S.orderAttributeOptionsModeHelper(widget.attribute.mode.name);
     final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode.name);
     final validator = widget.attribute.mode == OrderAttributeMode.changeDiscount
         ? Validator.positiveInt(
@@ -63,9 +59,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
       p(TextFormField(
         key: const Key('order_attribute_option.name'),
         controller: _nameController,
-        textInputAction: widget.attribute.shouldHaveModeValue
-            ? TextInputAction.next
-            : TextInputAction.send,
+        textInputAction: widget.attribute.shouldHaveModeValue ? TextInputAction.next : TextInputAction.send,
         textCapitalization: TextCapitalization.words,
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
@@ -173,9 +167,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
   void _toggledDefault(bool? value) async {
     final defaultOption = widget.attribute.defaultOption;
     // warn if default option is going to changed
-    if (value == true &&
-        defaultOption != null &&
-        defaultOption.id != widget.option?.id) {
+    if (value == true && defaultOption != null && defaultOption.id != widget.option?.id) {
       final confirmed = await ConfirmDialog.show(
         context,
         title: S.orderAttributeOptionConfirmChangeDefaultTitle,

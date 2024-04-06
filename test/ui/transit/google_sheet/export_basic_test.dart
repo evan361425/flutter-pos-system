@@ -33,10 +33,7 @@ void main() {
   group('Transit - Google Sheet - Basic', () {
     const eCacheKey = 'exporter_google_sheet';
     const iCacheKey = 'importer_google_sheet';
-    const gsExporterScopes = [
-      gs.SheetsApi.driveFileScope,
-      gs.SheetsApi.spreadsheetsScope
-    ];
+    const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
@@ -60,8 +57,7 @@ void main() {
       Quantities.instance.replaceItems({'q1': q1});
 
       final pQ1 = ProductQuantity(id: 'pQ1', quantity: q1);
-      final pI1 = ProductIngredient(
-          id: 'pI1', ingredient: i1, quantities: {'pQ1': pQ1});
+      final pI1 = ProductIngredient(id: 'pI1', ingredient: i1, quantities: {'pQ1': pQ1});
       pI1.prepareItem();
       final p1 = Product(id: 'p1', name: 'p1', ingredients: {'pI1': pI1});
       p1.prepareItem();
@@ -89,18 +85,11 @@ void main() {
       await tester.pumpAndSettle();
 
       CheckboxListTile checkbox(String key) =>
-          find.byKey(Key('sheet_namer.$key')).evaluate().single.widget
-              as CheckboxListTile;
+          find.byKey(Key('sheet_namer.$key')).evaluate().single.widget as CheckboxListTile;
       bool isChecked(String key) => checkbox(key).value == true;
 
       // only non-empty will check default
-      const sheets = [
-        'menu',
-        'stock',
-        'quantities',
-        'replenisher',
-        'orderAttr'
-      ];
+      const sheets = ['menu', 'stock', 'quantities', 'replenisher', 'orderAttr'];
       expect(sheets.where(isChecked).length, equals(1));
 
       checkbox('menu').onChanged!(true);
@@ -171,8 +160,7 @@ void main() {
         when(cache.get(eCacheKey)).thenReturn(null);
         when(sheetsApi.spreadsheets.create(
           argThat(predicate<gs.Spreadsheet>((e) {
-            return e.sheets?.length == 1 &&
-                e.sheets?.first.properties?.title == 'title';
+            return e.sheets?.length == 1 && e.sheets?.first.properties?.title == 'title';
           })),
           $fields: anyNamed('\$fields'),
         )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
@@ -211,8 +199,7 @@ void main() {
         )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
         when(sheetsApi.spreadsheets.batchUpdate(
           argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
-            return e.requests?.length == 1 &&
-                e.requests?.first.addSheet?.properties?.title == 'title';
+            return e.requests?.length == 1 && e.requests?.first.addSheet?.properties?.title == 'title';
           })),
           'id',
         )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
@@ -261,9 +248,7 @@ void main() {
 
         verifyNever(cache.set(eCacheKey + '.stock', any));
         verify(sheetsApi.spreadsheets.batchUpdate(
-          argThat(predicate((e) =>
-              e is gs.BatchUpdateSpreadsheetRequest &&
-              e.requests?.length == 5)),
+          argThat(predicate((e) => e is gs.BatchUpdateSpreadsheetRequest && e.requests?.length == 5)),
           any,
           $fields: anyNamed('\$fields'),
         ));
@@ -272,8 +257,7 @@ void main() {
         await tester.tap(find.text('開啟表單'));
         await tester.pumpAndSettle();
 
-        expect(Launcher.lastUrl,
-            equals('https://docs.google.com/spreadsheets/d/id/edit'));
+        expect(Launcher.lastUrl, equals('https://docs.google.com/spreadsheets/d/id/edit'));
       });
 
       testWidgets('export with new sheets', (tester) async {
@@ -287,21 +271,16 @@ void main() {
           includeGridData: anyNamed('includeGridData'),
         )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [])));
         // updateSheet => ok
-        when(sheetsApi.spreadsheets
-                .batchUpdate(any, 'id', $fields: anyNamed('\$fields')))
-            .thenAnswer(
-                (_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+        when(sheetsApi.spreadsheets.batchUpdate(any, 'id', $fields: anyNamed('\$fields')))
+            .thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
         // addSheets => add new-title
         when(sheetsApi.spreadsheets.batchUpdate(
           argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
-            return e.requests?.length == 1 &&
-                e.requests?.first.addSheet?.properties?.title == 'new-sheet';
+            return e.requests?.length == 1 && e.requests?.first.addSheet?.properties?.title == 'new-sheet';
           })),
           'id',
         )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse(
-                replies: [
-                  gs.Response(addSheet: gs.AddSheetResponse(properties: sheet))
-                ])));
+            replies: [gs.Response(addSheet: gs.AddSheetResponse(properties: sheet))])));
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
@@ -311,8 +290,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('btn.edit')));
         await tester.pumpAndSettle();
-        await tester.enterText(
-            find.byKey(const Key('text_dialog.text')), 'new-sheet');
+        await tester.enterText(find.byKey(const Key('text_dialog.text')), 'new-sheet');
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('text_dialog.confirm')));
 

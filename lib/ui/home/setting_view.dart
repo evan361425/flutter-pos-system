@@ -23,8 +23,7 @@ class SettingView extends StatefulWidget {
   State<SettingView> createState() => _SettingViewState();
 }
 
-class _SettingViewState extends State<SettingView>
-    with AutomaticKeepAliveClientMixin {
+class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
 
   @override
@@ -134,9 +133,7 @@ class _SettingViewState extends State<SettingView>
 
   @override
   void initState() {
-    tab = widget.tabIndex == null
-        ? null
-        : TutorialInTab(index: widget.tabIndex!, context: context);
+    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
 
     super.initState();
   }
@@ -248,8 +245,6 @@ class _HeaderInfoList extends StatelessWidget {
 }
 
 const _bottomLinks = <LinkifyData>[
-  LinkifyData('Privacy Policy',
-      'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/'),
-  LinkifyData(
-      'License', 'https://evan361425.github.io/flutter-pos-system/LICENSE/'),
+  LinkifyData('Privacy Policy', 'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/'),
+  LinkifyData('License', 'https://evan361425.github.io/flutter-pos-system/LICENSE/'),
 ];

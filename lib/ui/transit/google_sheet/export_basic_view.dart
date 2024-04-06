@@ -81,8 +81,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       SheetType.replenisher,
       SheetType.orderAttr,
     ].map((e) {
-      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ??
-          S.transitType(e.name);
+      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitType(e.name);
       final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
 
       return SheetNamerProperties(
@@ -121,8 +120,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
 
   /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
   Map<SheetType, String> requiredSheetTitles() => {
-        for (var sheet in sheets.where((sheet) => sheet.checked))
-          sheet.type: sheet.name,
+        for (var sheet in sheets.where((sheet) => sheet.checked)) sheet.type: sheet.name,
       };
 
   /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。

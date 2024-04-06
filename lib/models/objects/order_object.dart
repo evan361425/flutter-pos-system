@@ -72,8 +72,7 @@ class OrderObject extends _Object {
         singlePrice: object.singlePrice,
         quantities: {
           for (final item in object.ingredients)
-            if (item.productQuantityId != null)
-              item.productIngredientId: item.productQuantityId!
+            if (item.productQuantityId != null) item.productIngredientId: item.productQuantityId!
         },
       );
     }
@@ -113,10 +112,8 @@ class OrderObject extends _Object {
   @override
   Map<String, Object?> toStashMap() {
     return {
-      'encodedProducts':
-          jsonEncode(products.map((e) => e.toStashMap()).toList()),
-      'encodedAttributes':
-          jsonEncode(attributes.map((e) => e.toStashMap()).toList()),
+      'encodedProducts': jsonEncode(products.map((e) => e.toStashMap()).toList()),
+      'encodedAttributes': jsonEncode(attributes.map((e) => e.toStashMap()).toList()),
       'createdAt': Util.toUTC(now: createdAt),
     };
   }
@@ -137,12 +134,10 @@ class OrderObject extends _Object {
       productsCount: order['productsCount'] as int? ?? 0,
       productsPrice: order['productsPrice'] as num? ?? 0,
       products: [
-        for (Map<String, dynamic> product in products)
-          OrderProductObject.fromMap(product, ingredients),
+        for (Map<String, dynamic> product in products) OrderProductObject.fromMap(product, ingredients),
       ],
       attributes: [
-        for (Map<String, dynamic> attr in attributes)
-          OrderSelectedAttributeObject.fromMap(attr),
+        for (Map<String, dynamic> attr in attributes) OrderSelectedAttributeObject.fromMap(attr),
       ],
       createdAt: Util.fromUTC(order['createdAt'] as int? ?? 0),
     );
@@ -155,11 +150,8 @@ class OrderObject extends _Object {
 
     return OrderObject(
       id: data['id'] as int?,
-      attributes: attributes
-          .map((e) => OrderSelectedAttributeObject.fromStashMap(e))
-          .toList(),
-      products:
-          products.map((e) => OrderProductObject.fromStashMap(e)).toList(),
+      attributes: attributes.map((e) => OrderSelectedAttributeObject.fromStashMap(e)).toList(),
+      products: products.map((e) => OrderProductObject.fromStashMap(e)).toList(),
       createdAt: Util.fromUTC(data['createdAt'] as int? ?? 0),
     );
   }
@@ -237,10 +229,8 @@ class OrderProductObject extends _Object {
       'productId': productId,
       'count': count,
       'singlePrice': singlePrice,
-      'ingredients': ingredients
-          .map((e) => e.productQuantityId == null ? null : e.toStashMap())
-          .where((e) => e != null)
-          .toList(),
+      'ingredients':
+          ingredients.map((e) => e.productQuantityId == null ? null : e.toStashMap()).where((e) => e != null).toList(),
     };
   }
 
@@ -277,8 +267,7 @@ class OrderProductObject extends _Object {
       count: data['count'],
       singlePrice: data['singlePrice'],
       ingredients: [
-        for (final ing in data['ingredients'])
-          OrderIngredientObject.fromStashMap(ing),
+        for (final ing in data['ingredients']) OrderIngredientObject.fromStashMap(ing),
       ],
     );
   }

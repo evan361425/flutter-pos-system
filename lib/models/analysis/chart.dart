@@ -9,8 +9,7 @@ import 'package:possystem/services/storage.dart';
 
 enum AnalysisChartType { cartesian, circular }
 
-class Chart extends Model<ChartObject>
-    with ModelStorage<ChartObject>, ModelOrderable<ChartObject> {
+class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrderable<ChartObject> {
   /// Which type of chart to show, for example, cartesian or circular
   AnalysisChartType type;
 
@@ -77,9 +76,7 @@ class Chart extends Model<ChartObject>
   }
 
   Iterable<OrderMetricUnit> get units {
-    return metrics
-        .groupFoldBy<OrderMetricUnit, int>((e) => e.unit, (prev, current) => 0)
-        .keys;
+    return metrics.groupFoldBy<OrderMetricUnit, int>((e) => e.unit, (prev, current) => 0).keys;
   }
 
   /// Get the name and unit of each metric in the chart.
@@ -91,9 +88,7 @@ class Chart extends Model<ChartObject>
     final unit = metrics.first.unit;
     return target
         .getItems(targetItems)
-        .map(target.isGroupedName(targetItems)
-            ? (e) => '${e.name}(${(e.repository as Model).name})'
-            : (e) => e.name)
+        .map(target.isGroupedName(targetItems) ? (e) => '${e.name}(${(e.repository as Model).name})' : (e) => e.name)
         .map((e) => MapEntry(e, unit));
   }
 

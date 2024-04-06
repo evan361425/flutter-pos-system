@@ -18,8 +18,7 @@ void main() {
     final mockClipboard = MockClipboard();
     TestWidgetsFlutterBinding.ensureInitialized()
         .defaultBinaryMessenger
-        .setMockMethodCallHandler(
-            SystemChannels.platform, mockClipboard.handleMethodCall);
+        .setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
 
     Widget buildApp() {
       return const MaterialApp(

@@ -37,9 +37,7 @@ class ItemListScaffold extends StatelessWidget {
           return ListTile(
             title: Text(items[index]),
             trailing: selected == index ? const Icon(KIcons.check) : null,
-            subtitle: tips != null && tips![index] != null
-                ? Text(tips![index]!, style: hintStyle)
-                : null,
+            subtitle: tips != null && tips![index] != null ? Text(tips![index]!, style: hintStyle) : null,
             onTap: () {
               if (selected != index) {
                 Navigator.of(context).pop(index);

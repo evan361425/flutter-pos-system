@@ -12,8 +12,7 @@ class OrderAttributeReorder extends StatelessWidget {
     return ReorderableScaffold(
       items: OrderAttributes.instance.itemList,
       title: S.orderAttributeReorder,
-      handleSubmit: (List<OrderAttribute> items) =>
-          OrderAttributes.instance.reorderItems(items),
+      handleSubmit: (List<OrderAttribute> items) => OrderAttributes.instance.reorderItems(items),
     );
   }
 }

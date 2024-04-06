@@ -21,8 +21,7 @@ class CheckoutWarningSetting extends Setting<CheckoutWarningTypes> {
       return CheckoutStatus.ok;
     }
 
-    if (status != CheckoutStatus.cashierNotEnough &&
-        value == CheckoutWarningTypes.onlyNotEnough) {
+    if (status != CheckoutStatus.cashierNotEnough && value == CheckoutWarningTypes.onlyNotEnough) {
       return CheckoutStatus.ok;
     }
 

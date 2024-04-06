@@ -2,7 +2,7 @@
 
 正常程式碼開發只需要：
 
-    pub get
+    flutter pub get
 
 就可以安裝你需要的東西了，但如果你想要建置應用程式，你需要三個東西：
 
@@ -59,16 +59,15 @@ Certificate fingerprint (SHA-256): B4:D1:3E:F5:8A:4C:20:07:30:16:4A:01:59:4A:4F:
 
 在開始執行測試之前，你可以先把 mock 檔案準備好：
 
-    flutter pub run build_runner build --delete-conflicting-outputs
+    make mock
 
-當想要開始測試，你可以
+當想要開始測試，你可以：
+    make test
 
-    flutter test
+如果想要測試加上 coverage，你可以：
 
-如果想要測試加上 coverage，你可以
+    make test-coverage
 
-    flutter test --coverage
+最後產出的覆蓋率就可以打開以網頁格式打開：
 
-最後產出 `./coverage/lconv.info` 後就可以
-
-    genhtml coverage/lcov.info -o coverage/html
+    open coverage/html/index.html

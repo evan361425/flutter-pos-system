@@ -91,17 +91,13 @@ class SlidableItemDelegate<T, U> {
   Future<void> showActions(BuildContext context, T item) async {
     assert(deleteValue != null, "deleteValue should be set when using actions");
 
-    final customActions = actionBuilder == null
-        ? const <BottomSheetAction>[]
-        : actionBuilder!(item).toList();
+    final customActions = actionBuilder == null ? const <BottomSheetAction>[] : actionBuilder!(item).toList();
 
     final result = await BottomSheetActions.withDelete<U?>(
       context,
       actions: customActions.toList(),
       deleteValue: deleteValue,
-      warningContent: warningContentBuilder == null
-          ? null
-          : warningContentBuilder!(context, item),
+      warningContent: warningContentBuilder == null ? null : warningContentBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
 

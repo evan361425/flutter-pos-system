@@ -24,8 +24,7 @@ class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
   State<ReorderableScaffold<T>> createState() => _ReorderableScaffoldState<T>();
 }
 
-class _ReorderableScaffoldState<T extends ModelOrderable>
-    extends State<ReorderableScaffold<T>> {
+class _ReorderableScaffoldState<T extends ModelOrderable> extends State<ReorderableScaffold<T>> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

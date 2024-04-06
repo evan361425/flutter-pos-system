@@ -21,8 +21,7 @@ class OrderDetailsPage extends StatefulWidget {
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
 
-class _OrderDetailsPageState extends State<OrderDetailsPage>
-    with SingleTickerProviderStateMixin {
+class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerProviderStateMixin {
   static const double snapshotHeight = 64.0;
   static const double calculatorHeight = 408.0;
 
@@ -157,10 +156,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
     );
 
     tabs = [
-      if (hasAttr)
-        Tab(
-            key: const Key('order.details.attr'),
-            text: S.orderSetAttributeTitle),
+      if (hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderSetAttributeTitle),
       Tab(key: const Key('order.details.order'), text: S.orderCashierTitle),
       const Tab(key: Key('order.details.stashed'), text: '暫存訂單'),
     ];

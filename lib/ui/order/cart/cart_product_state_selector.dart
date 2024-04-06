@@ -9,8 +9,7 @@ class CartProductStateSelector extends StatefulWidget {
   const CartProductStateSelector({super.key});
 
   @override
-  State<CartProductStateSelector> createState() =>
-      _CartProductStateSelectorState();
+  State<CartProductStateSelector> createState() => _CartProductStateSelectorState();
 }
 
 class _CartProductStateSelectorState extends State<CartProductStateSelector> {
@@ -113,8 +112,7 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   void _changeProduct(CartProduct? p) {
     product = p;
     if (p == null) {
-      status =
-          Cart.instance.isEmpty ? _Status.emptyCart : _Status.differentProducts;
+      status = Cart.instance.isEmpty ? _Status.emptyCart : _Status.differentProducts;
       return;
     } else if (p.product.isEmpty) {
       status = _Status.noNeedIngredient;

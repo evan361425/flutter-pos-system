@@ -306,8 +306,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     return GoogleSheetProperties.fromCacheValue(nameId);
   }
 
-  Future<void> _cacheSheetName(
-      String label, GoogleSheetProperties sheet) async {
+  Future<void> _cacheSheetName(String label, GoogleSheetProperties sheet) async {
     final key = '$_cacheKey.$label';
     if (sheet.toCacheValue() != Cache.instance.get<String>(key)) {
       await Cache.instance.set<String>(key, sheet.toCacheValue());

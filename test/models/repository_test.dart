@@ -36,8 +36,7 @@ void main() {
 
     group('Should catch error', () {
       test('Cart', () {
-        expect(() => Cart().toggleAll(null, except: CartProduct(Product())),
-            throwsAssertionError);
+        expect(() => Cart().toggleAll(null, except: CartProduct(Product())), throwsAssertionError);
       });
 
       test('Cashier', () async {

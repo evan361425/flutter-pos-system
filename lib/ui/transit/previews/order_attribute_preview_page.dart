@@ -16,8 +16,7 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
   @override
   Widget getItem(BuildContext context, OrderAttribute item) {
     final mode = S.orderAttributeModeNames(item.mode.name);
-    final defaultName =
-        item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
+    final defaultName = item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(
       title: ImporterColumnStatus(
         name: item.name,
@@ -33,9 +32,7 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
           ListTile(
             title: Text(option.name),
             subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
-            trailing: option.isDefault
-                ? OutlinedText(S.orderAttributeOptionIsDefault)
-                : null,
+            trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionIsDefault) : null,
           ),
       ],
     );

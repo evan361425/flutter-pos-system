@@ -33,8 +33,7 @@ void main() {
     });
 
     test('#authStateChanges', () async {
-      when(firebaseAuth.authStateChanges())
-          .thenAnswer((_) => Stream.value(null));
+      when(firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(null));
 
       final result = await auth.authStateChanges().first;
 
@@ -49,8 +48,7 @@ void main() {
         when(user.authentication).thenAnswer((_) => Future.value(cred));
         when(cred.accessToken).thenReturn('hi');
         when(cred.idToken).thenReturn('there');
-        when(firebaseAuth.signInWithCredential(any))
-            .thenAnswer((_) => Future.value(MockUserCredential()));
+        when(firebaseAuth.signInWithCredential(any)).thenAnswer((_) => Future.value(MockUserCredential()));
 
         final success = await auth.signIn();
 
@@ -72,8 +70,7 @@ void main() {
       when(cred.accessToken).thenReturn(null);
       when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
       when(googleSignIn.scopes).thenReturn(scopes);
-      when(googleSignIn.requestScopes(['b', 'c']))
-          .thenAnswer((_) => Future.value(true));
+      when(googleSignIn.requestScopes(['b', 'c'])).thenAnswer((_) => Future.value(true));
 
       final result = await auth.getAuthenticatedClient(
         scopes: ['a', 'b', 'c'],

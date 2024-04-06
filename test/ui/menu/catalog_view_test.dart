@@ -83,11 +83,7 @@ void main() {
 
       verify(storage.set(any, argThat(predicate((data) {
         final map = (data as Map).values.first;
-        return map is Map &&
-            map['price'] == 1 &&
-            map['cost'] == 1 &&
-            map['name'] == 'name' &&
-            map['index'] == 1;
+        return map is Map && map['price'] == 1 && map['cost'] == 1 && map['name'] == 'name' && map['index'] == 1;
       }))));
     });
 
@@ -183,8 +179,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(
-          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();

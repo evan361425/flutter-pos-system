@@ -31,9 +31,7 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       type: AnalysisChartType.values[map['type'] as int? ?? 0],
       ignoreEmpty: map['ignoreEmpty'] as bool?,
       target: OrderMetricTarget.values[map['target'] as int? ?? 0],
-      metrics: (map['metrics'] as List?)
-          ?.map((e) => OrderMetricType.values[e as int])
-          .toList(),
+      metrics: (map['metrics'] as List?)?.map((e) => OrderMetricType.values[e as int]).toList(),
       targetItems: (map['targetItems'] as List?)?.cast<String>(),
     );
   }
@@ -76,8 +74,7 @@ class ChartObject<T extends Chart> extends ModelObject<T> {
       model.metrics = metrics!;
       result['$prefix.metrics'] = metrics!.map((e) => e.index).toList();
     }
-    if (targetItems != null &&
-        targetItems!.join('') != model.targetItems.join('')) {
+    if (targetItems != null && targetItems!.join('') != model.targetItems.join('')) {
       model.targetItems = targetItems!;
       result['$prefix.targetItems'] = targetItems!;
     }

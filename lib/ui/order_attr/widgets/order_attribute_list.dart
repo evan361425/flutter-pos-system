@@ -43,8 +43,7 @@ class _OrderAttributeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
     final mode = S.orderAttributeModeNames(attr.mode.name);
-    final defaultName =
-        attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
+    final defaultName = attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     final key = 'order_attributes.${attr.id}';
 
     return ExpansionTile(
@@ -113,9 +112,7 @@ class _OptionTile extends StatelessWidget {
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
         subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
-        trailing: option.isDefault
-            ? OutlinedText(S.orderAttributeOptionIsDefault)
-            : null,
+        trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionIsDefault) : null,
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,
           deleteValue: 0,

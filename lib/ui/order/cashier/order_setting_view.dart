@@ -18,8 +18,7 @@ class OderSettingView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 428),
       children: [
-        for (final item in OrderAttributes.instance.notEmptyItems)
-          _OrderAttributeGroup(item, price),
+        for (final item in OrderAttributes.instance.notEmptyItems) _OrderAttributeGroup(item, price),
       ],
     );
   }
@@ -68,8 +67,7 @@ class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
   @override
   void initState() {
     super.initState();
-    selectedId = Cart.instance.attributes[widget.attribute.id] ??
-        widget.attribute.defaultOption?.id;
+    selectedId = Cart.instance.attributes[widget.attribute.id] ?? widget.attribute.defaultOption?.id;
   }
 
   void selectOption(OrderAttributeOption option, bool isSelected) {

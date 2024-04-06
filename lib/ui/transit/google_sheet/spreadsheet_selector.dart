@@ -79,8 +79,7 @@ class SpreadsheetSelector extends StatefulWidget {
   State<SpreadsheetSelector> createState() => SpreadsheetSelectorState();
 
   GoogleSpreadsheet? get defaultSpreadsheet {
-    final cached = Cache.instance.get<String>(cacheKey) ??
-        Cache.instance.get<String>(fallbackCacheKey);
+    final cached = Cache.instance.get<String>(cacheKey) ?? Cache.instance.get<String>(fallbackCacheKey);
     if (cached != null) {
       return GoogleSpreadsheet.fromString(cached);
     }
@@ -96,9 +95,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   String get label => isExist ? widget.existLabel : widget.emptyLabel;
 
-  String get hint => (isExist
-      ? widget.existHint.replaceFirst('%name', spreadsheet!.name)
-      : widget.emptyHint);
+  String get hint => (isExist ? widget.existHint.replaceFirst('%name', spreadsheet!.name) : widget.emptyHint);
 
   @override
   Widget build(BuildContext context) {
@@ -235,9 +232,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           initialValue: spreadsheet?.id,
           decoration: InputDecoration(
             labelText: S.transitGSSpreadsheetLabel,
-            helperText: spreadsheet?.name == null
-                ? '輸入試算表網址或試算表 ID'
-                : '本試算表為「${spreadsheet?.name}」',
+            helperText: spreadsheet?.name == null ? '輸入試算表網址或試算表 ID' : '本試算表為「${spreadsheet?.name}」',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             errorMaxLines: 5,
           ),

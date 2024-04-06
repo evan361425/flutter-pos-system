@@ -130,8 +130,7 @@ class TutorialInTab {
 
   /// get the tab controller, if not provided, use the default one
   TabController? get cont {
-    return controller ??
-        (context!.mounted ? DefaultTabController.of(context!) : null);
+    return controller ?? (context!.mounted ? DefaultTabController.of(context!) : null);
   }
 
   bool get shouldShow {

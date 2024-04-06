@@ -61,10 +61,8 @@ class Cashier extends ChangeNotifier {
       return false;
     }
 
-    await update({
-      sourceIndex: -item.source.count!,
-      for (var target in item.targets) indexOf(target.unit!): target.count!
-    });
+    await update(
+        {sourceIndex: -item.source.count!, for (var target in item.targets) indexOf(target.unit!): target.count!});
 
     return true;
   }
@@ -73,8 +71,7 @@ class Cashier extends ChangeNotifier {
   CashierUnitObject at(int index) => _current[index];
 
   /// Get default unit from [index]
-  CashierUnitObject? defaultAt(int index) =>
-      index < _default.length ? _default[index] : null;
+  CashierUnitObject? defaultAt(int index) => index < _default.length ? _default[index] : null;
 
   Future<void> deleteFavorite(int index) async {
     try {
@@ -249,20 +246,14 @@ class Cashier extends ChangeNotifier {
 
       _current
         ..clear()
-        ..addAll([
-          for (var unit in record as Iterable)
-            CashierUnitObject.fromMap(unit.cast<String, num>())
-        ]);
+        ..addAll([for (var unit in record as Iterable) CashierUnitObject.fromMap(unit.cast<String, num>())]);
     } catch (e, stack) {
       if (e is! TypeError) {
         Log.err(e, 'cashier_fetch_unit', stack);
       }
       _current
         ..clear()
-        ..addAll([
-          for (var unit in CurrencySetting.instance.unitList)
-            CashierUnitObject(unit: unit, count: 0)
-        ]);
+        ..addAll([for (var unit in CurrencySetting.instance.unitList) CashierUnitObject(unit: unit, count: 0)]);
 
       // reset to empty
       await _registerStorage();
@@ -283,10 +274,7 @@ class Cashier extends ChangeNotifier {
       Log.ger('changed', 'cashier_default');
       _default
         ..clear()
-        ..addAll([
-          for (final item in _current)
-            CashierUnitObject(unit: item.unit, count: item.count)
-        ]);
+        ..addAll([for (final item in _current) CashierUnitObject(unit: item.unit, count: item.count)]);
 
       notifyListeners();
       return _updateDefaultStorage();
@@ -294,10 +282,7 @@ class Cashier extends ChangeNotifier {
     try {
       _default
         ..clear()
-        ..addAll([
-          for (var item in record)
-            CashierUnitObject.fromMap(item.cast<String, num>())
-        ]);
+        ..addAll([for (var item in record) CashierUnitObject.fromMap(item.cast<String, num>())]);
     } catch (e, stack) {
       Log.err(e, 'cashier_fetch_default', stack);
     }
@@ -308,10 +293,7 @@ class Cashier extends ChangeNotifier {
     try {
       _favorites
         ..clear()
-        ..addAll([
-          for (var map in (record ?? []) as Iterable)
-            CashierChangeBatchObject.fromMap(map)
-        ]);
+        ..addAll([for (var map in (record ?? []) as Iterable) CashierChangeBatchObject.fromMap(map)]);
     } catch (e, stack) {
       Log.err(e, 'cashier_fetch_favorite', stack);
     }

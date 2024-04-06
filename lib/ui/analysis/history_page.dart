@@ -57,9 +57,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ],
         ),
         body: OrientationBuilder(
-          builder: (context, orientation) => orientation == Orientation.portrait
-              ? _buildPortrait()
-              : _buildLandscape(),
+          builder: (context, orientation) => orientation == Orientation.portrait ? _buildPortrait() : _buildLandscape(),
         ),
       ),
     );

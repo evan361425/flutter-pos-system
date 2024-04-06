@@ -25,9 +25,7 @@ class OrientatedView extends StatelessWidget {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) {
-        return orientation == Orientation.portrait
-            ? _portrait(context)
-            : _landscape(context);
+        return orientation == Orientation.portrait ? _portrait(context) : _landscape(context);
       },
     );
   }

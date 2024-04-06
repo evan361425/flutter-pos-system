@@ -15,15 +15,13 @@ class ReplenishmentModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ReplenishmentModal({super.key, this.replenishment})
-      : isNew = replenishment == null;
+  const ReplenishmentModal({super.key, this.replenishment}) : isNew = replenishment == null;
 
   @override
   State<ReplenishmentModal> createState() => _ReplenishmentModalState();
 }
 
-class _ReplenishmentModalState extends State<ReplenishmentModal>
-    with ItemModal<ReplenishmentModal> {
+class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<ReplenishmentModal> {
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;
 
@@ -56,8 +54,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal>
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.replenishment?.name != name &&
-                    Replenisher.instance.hasName(name)
+            return widget.replenishment?.name != name && Replenisher.instance.hasName(name)
                 ? S.stockReplenishmentNameRepeatError
                 : null;
           },

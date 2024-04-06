@@ -32,8 +32,7 @@ class _FakeDatabase_0 extends _i1.SmartFake implements _i2.Database {
         );
 }
 
-class _FakeStorageSanitizedData_1 extends _i1.SmartFake
-    implements _i3.StorageSanitizedData {
+class _FakeStorageSanitizedData_1 extends _i1.SmartFake implements _i3.StorageSanitizedData {
   _FakeStorageSanitizedData_1(
     Object parent,
     Invocation parentInvocation,
@@ -101,13 +100,11 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
             record,
           ],
         ),
-        returnValue:
-            _i4.Future<Map<String, Object?>>.value(<String, Object?>{}),
+        returnValue: _i4.Future<Map<String, Object?>>.value(<String, Object?>{}),
       ) as _i4.Future<Map<String, Object?>>);
 
   @override
-  _i4.Future<void> initialize({_i3.StorageOpener? opener}) =>
-      (super.noSuchMethod(
+  _i4.Future<void> initialize({_i3.StorageOpener? opener}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
@@ -135,8 +132,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
       ) as _i4.Future<void>);
 
   @override
-  _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) =>
-      (super.noSuchMethod(
+  _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) => (super.noSuchMethod(
         Invocation.method(
           #sanitize,
           [data],

@@ -13,15 +13,13 @@ class OrderAttributeModal extends StatefulWidget {
 
   final bool isNew;
 
-  const OrderAttributeModal({super.key, this.attribute})
-      : isNew = attribute == null;
+  const OrderAttributeModal({super.key, this.attribute}) : isNew = attribute == null;
 
   @override
   State<OrderAttributeModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeModal>
-    with ItemModal<OrderAttributeModal> {
+class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModal<OrderAttributeModal> {
   late final TextEditingController _nameController;
 
   final FocusNode _nameFocusNode = FocusNode();
@@ -50,8 +48,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.attribute?.name != name &&
-                    OrderAttributes.instance.hasName(name)
+            return widget.attribute?.name != name && OrderAttributes.instance.hasName(name)
                 ? S.orderAttributeNameRepeatError
                 : null;
           },
@@ -61,13 +58,9 @@ class _OrderAttributeModalState extends State<OrderAttributeModal>
       ChoiceChipWithHelp(
         key: modeSelector,
         values: OrderAttributeMode.values,
-        selected:
-            widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
-        labels: OrderAttributeMode.values
-            .map((e) => S.orderAttributeModeNames(e.name)),
-        helpTexts: OrderAttributeMode.values
-            .map((e) => S.orderAttributeModeDescriptions(e.name))
-            .toList(),
+        selected: widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
+        labels: OrderAttributeMode.values.map((e) => S.orderAttributeModeNames(e.name)),
+        helpTexts: OrderAttributeMode.values.map((e) => S.orderAttributeModeDescriptions(e.name)).toList(),
       ),
     ];
   }

@@ -46,16 +46,14 @@ void main() {
           'so-1': OrderAttributeOption(modeValue: 1),
         })
           ..prepareItem();
-        final s2 =
-            OrderAttribute(mode: OrderAttributeMode.changeDiscount, options: {
+        final s2 = OrderAttribute(mode: OrderAttributeMode.changeDiscount, options: {
           'so-2': OrderAttributeOption(modeValue: 50),
         })
-              ..prepareItem();
-        final s3 =
-            OrderAttribute(mode: OrderAttributeMode.changePrice, options: {
+          ..prepareItem();
+        final s3 = OrderAttribute(mode: OrderAttributeMode.changePrice, options: {
           'so-2': OrderAttributeOption(modeValue: 5),
         })
-              ..prepareItem();
+          ..prepareItem();
         num price = 100;
 
         for (var option in s1.items) {

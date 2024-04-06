@@ -19,8 +19,7 @@ class CatalogModal extends StatefulWidget {
   State<CatalogModal> createState() => _CatalogModalState();
 }
 
-class _CatalogModalState extends State<CatalogModal>
-    with ItemModal<CatalogModal> {
+class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
   late FocusNode _nameFocusNode;
 
@@ -54,9 +53,7 @@ class _CatalogModalState extends State<CatalogModal>
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.catalog?.name != name && Menu.instance.hasName(name)
-                ? S.menuCatalogNameRepeatError
-                : null;
+            return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameRepeatError : null;
           },
         ),
       )),

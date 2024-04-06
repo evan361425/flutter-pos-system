@@ -21,8 +21,7 @@ MockCrashlytics setupFirebaseCrashlyticsMocks() {
   TestFirebaseCoreHostApi.setup(crashlytics);
 
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(MethodChannelFirebaseCrashlytics.channel,
-          (c) async {
+      .setMockMethodCallHandler(MethodChannelFirebaseCrashlytics.channel, (c) async {
     crashlytics.methodCalls.add(c.method);
     return null;
   });
@@ -38,8 +37,7 @@ Map<String, List<String>> setupFirebaseAnalyticsMocks() {
 
   final record = <String, List<String>>{'methods': []};
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(MethodChannelFirebaseAnalytics.channel,
-          (c) async {
+      .setMockMethodCallHandler(MethodChannelFirebaseAnalytics.channel, (c) async {
     record['methods']!.add(c.method);
     return false;
   });
@@ -64,9 +62,7 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
         messagingSenderId: '123',
       ),
       pluginConstants: {
-        'plugins.flutter.io/firebase_crashlytics': {
-          'isCrashlyticsCollectionEnabled': false
-        }
+        'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false}
       },
     );
   }
@@ -83,9 +79,7 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
           messagingSenderId: '123',
         ),
         pluginConstants: {
-          'plugins.flutter.io/firebase_crashlytics': {
-            'isCrashlyticsCollectionEnabled': false
-          }
+          'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false}
         },
       )
     ];

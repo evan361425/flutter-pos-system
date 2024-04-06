@@ -7,10 +7,7 @@ import 'package:possystem/services/storage.dart';
 import '../repository.dart';
 
 class Stock extends ChangeNotifier
-    with
-        Repository<Ingredient>,
-        RepositoryStorage<Ingredient>,
-        RepositorySearchable<Ingredient> {
+    with Repository<Ingredient>, RepositoryStorage<Ingredient>, RepositorySearchable<Ingredient> {
   static late Stock instance;
 
   @override
@@ -28,9 +25,7 @@ class Stock extends ChangeNotifier
 
     amounts.forEach((id, amount) {
       if (amount != 0) {
-        getItem(id)
-            ?.getUpdateData(amount, onlyAmount: onlyAmount)
-            .forEach((key, value) {
+        getItem(id)?.getUpdateData(amount, onlyAmount: onlyAmount).forEach((key, value) {
           updateData[key] = value;
         });
       }

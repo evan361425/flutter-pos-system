@@ -42,13 +42,11 @@ void main() async {
       );
 
       // Pass all uncaught errors from the framework to Crashlytics.
-      FlutterError.onError =
-          FirebaseCrashlytics.instance.recordFlutterFatalError;
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
       if (kDebugMode) {
         await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
-        await FirebaseCrashlytics.instance
-            .setCrashlyticsCollectionEnabled(false);
+        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
         await FirebaseInAppMessaging.instance.setMessagesSuppressed(false);
       }
 
@@ -107,7 +105,6 @@ void main() async {
         child: MyApp(settings: settings),
       ));
     },
-    (error, stack) =>
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+    (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
   );
 }

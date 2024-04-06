@@ -10,8 +10,7 @@ import '../../mocks/mock_google_api.dart';
 void main() {
   group('Google Sheet Exporter', () {
     test('login', () async {
-      when(auth.getAuthenticatedClient(scopes: anyNamed('scopes')))
-          .thenAnswer((_) => Future.value(Client()));
+      when(auth.getAuthenticatedClient(scopes: anyNamed('scopes'))).thenAnswer((_) => Future.value(Client()));
 
       final exporter = GoogleSheetExporter();
       await exporter.auth();
@@ -32,9 +31,8 @@ void main() {
         scopes: [gs.SheetsApi.driveFileScope],
       );
       when(api.spreadsheets.create(
-        argThat(predicate<gs.Spreadsheet>((e) =>
-            e.properties?.title == 'title' &&
-            e.sheets?.first.properties?.title == 'sheet1')),
+        argThat(predicate<gs.Spreadsheet>(
+            (e) => e.properties?.title == 'title' && e.sheets?.first.properties?.title == 'sheet1')),
         $fields: anyNamed('\$fields'),
       )).thenAnswer((_) => Future.value(gs.Spreadsheet(spreadsheetId: 'abc')));
 
@@ -50,9 +48,7 @@ void main() {
       final result = data.toGoogleFormat();
 
       expect(
-        result.dataValidation?.condition?.values
-            ?.map((e) => e.userEnteredValue)
-            .toList(),
+        result.dataValidation?.condition?.values?.map((e) => e.userEnteredValue).toList(),
         equals(['b', 'c']),
       );
     });

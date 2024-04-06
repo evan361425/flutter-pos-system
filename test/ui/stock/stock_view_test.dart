@@ -39,19 +39,15 @@ void main() {
       final stock = Stock()..replaceItems({});
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider<Stock>.value(value: stock),
-        ChangeNotifierProvider<Replenisher>.value(
-            value: Replenisher()..replaceItems({})),
+        ChangeNotifierProvider<Replenisher>.value(value: Replenisher()..replaceItems({})),
         ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
       ], child: buildApp()));
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.amount')), '1');
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.name')), 'i-1');
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.totalAmount')), '50');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.amount')), '1');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-1');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.totalAmount')), '50');
       await tester.tap(find.byKey(const Key('modal.save')));
       // wait for updating
       await tester.pumpAndSettle();
@@ -169,11 +165,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.edit_square));
       await tester.pumpAndSettle();
 
-      final w = find
-          .byKey(const Key('slider_dialog.text'))
-          .evaluate()
-          .single
-          .widget as TextFormField;
+      final w = find.byKey(const Key('slider_dialog.text')).evaluate().single.widget as TextFormField;
       expect(w.controller!.text, equals('10.0'));
 
       await tester.tap(find.byType(Slider));
@@ -192,10 +184,8 @@ void main() {
       await tester.tap(find.byKey(const Key('stock.i-1.edit')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.amount')), '1');
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.totalAmount')), '');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.amount')), '1');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.totalAmount')), '');
 
       // go to product
       await tester.tap(find.byKey(const Key('stock.ingredient.p-1')));
@@ -204,13 +194,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // validate failed
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.name')), 'i-2');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-2');
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('stock.ingredient.name')), 'i-3');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-3');
       await tester.tap(find.byKey(const Key('modal.save')));
       // wait for updating
       await tester.pumpAndSettle();
@@ -220,8 +208,7 @@ void main() {
       // check name is changed
       final w = find.byKey(const Key('stock.i-1'));
       expect(w, findsOneWidget);
-      expect(((w.evaluate().first.widget as ListTile).title as Text).data,
-          equals('i-3'));
+      expect(((w.evaluate().first.widget as ListTile).title as Text).data, equals('i-3'));
 
       final ingredient = Stock.instance.items.first;
       expect(ingredient.name, equals('i-3'));

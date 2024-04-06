@@ -26,10 +26,7 @@ void main() {
     const eCacheKey = 'exporter_google_sheet';
     const iCacheKey = 'importer_google_sheet';
     const spreadsheetId = '1bCPUG2iS5xXqchWIa9Pq-TT4J-Bt9Pig6i-QqkOWEoE';
-    const gsExporterScopes = [
-      gs.SheetsApi.driveFileScope,
-      gs.SheetsApi.spreadsheetsScope
-    ];
+    const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
@@ -58,11 +55,8 @@ void main() {
     DropdownButtonFormField<GoogleSheetProperties?> getSelector(
       String label,
     ) {
-      return find
-          .byKey(Key('gs_export.$label.sheet_selector'))
-          .evaluate()
-          .single
-          .widget as DropdownButtonFormField<GoogleSheetProperties?>;
+      return find.byKey(Key('gs_export.$label.sheet_selector')).evaluate().single.widget
+          as DropdownButtonFormField<GoogleSheetProperties?>;
     }
 
     void mockPick(CustomMockSheetsApi sheetsApi, String id, String sheet) {
@@ -119,9 +113,7 @@ void main() {
 
     testWidgets('exporter pick success', (tester) async {
       SheetNamerState? getNamer() {
-        return tester
-            .element(find.byKey(const Key('sheet_namer.menu')))
-            .findAncestorStateOfType<SheetNamerState>();
+        return tester.element(find.byKey(const Key('sheet_namer.menu'))).findAncestorStateOfType<SheetNamerState>();
       }
 
       final sheetsApi = getMockSheetsApi();

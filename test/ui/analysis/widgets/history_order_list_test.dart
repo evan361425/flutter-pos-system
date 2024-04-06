@@ -192,8 +192,7 @@ void main() {
         Seller.attributeTable,
         where: argThat(equals('orderId = 1'), named: 'where'),
       )).thenAnswer((_) => Future.value(1));
-      when(database.transaction(any))
-          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+      when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
 
       await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
       await tester.pumpAndSettle();

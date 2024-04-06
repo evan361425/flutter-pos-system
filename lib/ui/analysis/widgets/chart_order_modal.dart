@@ -19,8 +19,7 @@ class ChartOrderModal extends StatefulWidget {
   State<ChartOrderModal> createState() => _ChartOrderModalState();
 }
 
-class _ChartOrderModalState extends State<ChartOrderModal>
-    with ItemModal<ChartOrderModal> {
+class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartOrderModal> {
   final _nameController = TextEditingController();
   final _nameFocusNode = FocusNode();
 
@@ -317,9 +316,7 @@ class _ChartOrderModalState extends State<ChartOrderModal>
 
   bool get _singleMetric => target != OrderMetricTarget.order;
 
-  bool get _singleTargetItem =>
-      type == AnalysisChartType.circular &&
-      target == OrderMetricTarget.attribute;
+  bool get _singleTargetItem => type == AnalysisChartType.circular && target == OrderMetricTarget.attribute;
 
   bool get _hasTargetItems => target != OrderMetricTarget.order;
 

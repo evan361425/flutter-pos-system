@@ -53,10 +53,7 @@ class _CalendarViewState extends State<CalendarView> {
         shouldFillViewport: widget.isPortrait ? false : true,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        locale: SettingsProvider.instance
-            .getSetting<LanguageSetting>()
-            .value
-            .toString(),
+        locale: SettingsProvider.instance.getSetting<LanguageSetting>().value.toString(),
         // header
         // chinese will be hidden if using default value
         daysOfWeekHeight: 20.0,
@@ -72,16 +69,14 @@ class _CalendarViewState extends State<CalendarView> {
         weekendDays: const [],
         // event handlers
         selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
-        eventLoader: (DateTime day) =>
-            List.filled(_loadedCounts[day] ?? 0, null),
+        eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, null),
         calendarBuilders: CalendarBuilders(
           markerBuilder: _badgeBuilder,
           defaultBuilder: _defaultBuilder,
         ),
         onPageChanged: _searchPageData,
         onFormatChanged: (format) => setState(() => _calendarFormat = format),
-        onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
-            _onDaySelected(selectedDay),
+        onDaySelected: (DateTime selectedDay, DateTime focusedDay) => _onDaySelected(selectedDay),
       ),
     );
   }
@@ -157,8 +152,7 @@ class _CalendarViewState extends State<CalendarView> {
     final local = day.toLocal();
     // add/sub 7 days for first/last few days on next/last month
     final end = DateTime(local.year, local.month + 1, 7);
-    final start =
-        DateTime(local.year, local.month).subtract(const Duration(days: 7));
+    final start = DateTime(local.year, local.month).subtract(const Duration(days: 7));
 
     final metrics = await Seller.instance.getMetricsInPeriod(
       start,

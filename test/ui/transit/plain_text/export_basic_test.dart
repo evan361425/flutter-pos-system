@@ -19,8 +19,7 @@ void main() {
     final MockClipboard mockClipboard = MockClipboard();
     TestWidgetsFlutterBinding.ensureInitialized()
         .defaultBinaryMessenger
-        .setMockMethodCallHandler(
-            SystemChannels.platform, mockClipboard.handleMethodCall);
+        .setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
 
     Widget buildApp() {
       return const MaterialApp(
@@ -90,8 +89,7 @@ class MockClipboard {
         if (hasStringsThrows) {
           throw Exception();
         }
-        final Map<String, dynamic>? clipboardDataMap =
-            clipboardData as Map<String, dynamic>?;
+        final Map<String, dynamic>? clipboardDataMap = clipboardData as Map<String, dynamic>?;
         final String? text = clipboardDataMap?['text'] as String?;
         return <String, bool>{'value': text != null && text.isNotEmpty};
       case 'Clipboard.setData':

@@ -178,8 +178,7 @@ class TransitOrderList extends StatelessWidget {
         break;
     }
     final part = size / math.pow(1024, depth);
-    return (part > 10 ? part.toInt().toString() : part.toStringAsFixed(1)) +
-        unit;
+    return (part > 10 ? part.toInt().toString() : part.toStringAsFixed(1)) + unit;
   }
 }
 

@@ -24,8 +24,6 @@ class XFile {
   }
 
   static Future<String> getRootPath() async {
-    return fs is LocalFileSystem
-        ? (await getApplicationDocumentsDirectory()).path
-        : '';
+    return fs is LocalFileSystem ? (await getApplicationDocumentsDirectory()).path : '';
   }
 }

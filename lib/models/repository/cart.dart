@@ -74,8 +74,7 @@ class Cart extends ChangeNotifier {
   }
 
   /// The list of selected product.
-  Iterable<CartProduct> get selected =>
-      products.where((product) => product.isSelected);
+  Iterable<CartProduct> get selected => products.where((product) => product.isSelected);
 
   /// The attribute options that are selected or default value.
   Iterable<OrderAttributeOption> get selectedAttributeOptions sync* {
@@ -129,8 +128,7 @@ class Cart extends ChangeNotifier {
   void rebind() {
     // remove not exist product
     products.removeWhere((product) {
-      return Menu.instance.items
-          .every((catalog) => !catalog.hasItem(product.id));
+      return Menu.instance.items.every((catalog) => !catalog.hasItem(product.id));
     });
     // remove non exist attribute
     attributes.entries.toList().forEach((entry) {
@@ -298,9 +296,7 @@ class Cart extends ChangeNotifier {
       productsCount: productCount,
       productsPrice: productsPrice,
       products: products.map<OrderProductObject>((e) => e.toObject()).toList(),
-      attributes: selectedAttributeOptions
-          .map((e) => OrderSelectedAttributeObject.fromModel(e))
-          .toList(),
+      attributes: selectedAttributeOptions.map((e) => OrderSelectedAttributeObject.fromModel(e)).toList(),
       createdAt: timer(),
     );
   }

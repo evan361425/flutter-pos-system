@@ -126,9 +126,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
                   value: selectedImages.contains(index),
                   onChanged: (bool? value) {
                     setState(() {
-                      value == true
-                          ? selectedImages.add(index)
-                          : selectedImages.remove(index);
+                      value == true ? selectedImages.add(index) : selectedImages.remove(index);
                     });
                   },
                 ),
@@ -166,11 +164,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
       await baseDir.create();
 
-      final imageList = await baseDir
-          .list()
-          .map((e) => e.path)
-          .where((e) => !e.endsWith('-avator'))
-          .toList();
+      final imageList = await baseDir.list().map((e) => e.path).where((e) => !e.endsWith('-avator')).toList();
       // 因為照著時間產生的在最後面，但他應該在最前面，所以反序排列。
       // 除此之外，最新的圖片應該在最上面。
       imageList.sort((a, b) => a.compareTo(b) * -1);
@@ -184,11 +178,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     if (image != null) {
       // 2023-01-01T01:23:45.123
       // G20230101T012345123
-      final name = DateTime.now()
-          .toIso8601String()
-          .replaceAll('-', '')
-          .replaceAll(':', '')
-          .replaceFirst('.', '');
+      final name = DateTime.now().toIso8601String().replaceAll('-', '').replaceAll(':', '').replaceFirst('.', '');
       // 原本檔名是 uuid v4 產生，前綴為 [0-9A-F]，
       // 為了做區別而設計成這樣。
       final dst = XFile.fs.path.join(baseDir.path, 'g$name');

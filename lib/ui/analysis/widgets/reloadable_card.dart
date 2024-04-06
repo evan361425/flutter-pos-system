@@ -33,8 +33,7 @@ class ReloadableCard<T> extends StatefulWidget {
   State<ReloadableCard<T>> createState() => _ReloadableCardState<T>();
 }
 
-class _ReloadableCardState<T> extends State<ReloadableCard<T>>
-    with AutomaticKeepAliveClientMixin {
+class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKeepAliveClientMixin {
   /// Error message when loading failed
   String? error;
 

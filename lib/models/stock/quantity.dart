@@ -4,8 +4,7 @@ import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/services/storage.dart';
 
-class Quantity extends Model<QuantityObject>
-    with ModelStorage<QuantityObject>, ModelSearchable<QuantityObject> {
+class Quantity extends Model<QuantityObject> with ModelStorage<QuantityObject>, ModelSearchable<QuantityObject> {
   /// between 0 ~ 1
   num defaultProportion;
 
@@ -27,11 +26,8 @@ class Quantity extends Model<QuantityObject>
 
   factory Quantity.fromRow(Quantity? ori, List<String> row) {
     final p = row.length > 1 ? num.tryParse(row[1]) ?? 1 : 1;
-    final status = ori == null
-        ? ModelStatus.staged
-        : (p == ori.defaultProportion
-            ? ModelStatus.normal
-            : ModelStatus.updated);
+    final status =
+        ori == null ? ModelStatus.staged : (p == ori.defaultProportion ? ModelStatus.normal : ModelStatus.updated);
 
     return Quantity(
       id: ori?.id,

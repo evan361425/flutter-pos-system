@@ -35,9 +35,7 @@ class SliverImageAppBar extends StatelessWidget {
           ),
         ),
         titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
-        background: model.useDefaultImage
-            ? background
-            : Hero(tag: model, child: background),
+        background: model.useDefaultImage ? background : Hero(tag: model, child: background),
       ),
       actions: actions,
     );

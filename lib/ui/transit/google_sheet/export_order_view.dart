@@ -108,14 +108,11 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   Map<SheetType, String> requiredSheetTitles() {
-    final prefix = properties.withPrefix
-        ? widget.rangeNotifier.value.format(DateFormat('MMdd '))
-        : '';
+    final prefix = properties.withPrefix ? widget.rangeNotifier.value.format(DateFormat('MMdd ')) : '';
 
     return {
       for (final sheet in properties.requiredSheets)
-        SheetType.values.firstWhere((e) => e.name == sheet.type.name):
-            '$prefix${sheet.name}',
+        SheetType.values.firstWhere((e) => e.name == sheet.type.name): '$prefix${sheet.name}',
     };
   }
 
@@ -131,9 +128,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     );
     Log.ger('ready', 'gs_export_order', ss.id);
 
-    final data = prepared.keys
-        .map(chooseFormatter)
-        .map((method) => orders.expand((order) => method(order)));
+    final data = prepared.keys.map(chooseFormatter).map((method) => orders.expand((order) => method(order)));
 
     if (properties.isOverwrite) {
       widget.statusNotifier.value = '覆寫訂單資料';
@@ -184,8 +179,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     }
   }
 
-  static List<List<Object>> Function(OrderObject) chooseFormatter(
-      SheetType type) {
+  static List<List<Object>> Function(OrderObject) chooseFormatter(SheetType type) {
     switch (type) {
       case SheetType.orderSetAttr:
         return OrderFormatter.formatOrderSetAttr;
@@ -224,10 +218,6 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   ///
   /// 後來考慮壓縮之後，上述的值應該再乘以 0.45
   static int memoryPredictor(OrderMetrics m) {
-    return (m.count * 30 +
-            m.attrCount! * 10 +
-            m.productCount! * 13 +
-            m.ingredientCount! * 8)
-        .toInt();
+    return (m.count * 30 + m.attrCount! * 10 + m.productCount! * 13 + m.ingredientCount! * 8).toInt();
   }
 }

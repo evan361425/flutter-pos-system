@@ -29,9 +29,7 @@ List<OrderObject> generateOrder({
   final interval = endTo.difference(startFrom).inMinutes;
   if (interval == 0 || products.isEmpty) return const [];
 
-  final createdList = [
-    for (var i = 0; i < orderCount; i++) rng.nextInt(interval)
-  ]..sort();
+  final createdList = [for (var i = 0; i < orderCount; i++) rng.nextInt(interval)]..sort();
 
   while (orderCount-- > 0) {
     final ordered = <OrderProductObject>[];
@@ -59,9 +57,7 @@ List<OrderObject> generateOrder({
           catalogName: product.catalog.name,
           count: 1,
           singleCost: product.cost,
-          singlePrice: isDiscount
-              ? (product.price * rng.nextDouble()).toCurrencyNum()
-              : product.price,
+          singlePrice: isDiscount ? (product.price * rng.nextDouble()).toCurrencyNum() : product.price,
           originalPrice: product.price,
           isDiscount: isDiscount,
           ingredients: product.items.map((e) {
@@ -81,8 +77,7 @@ List<OrderObject> generateOrder({
       }
     }
 
-    final attrs =
-        OrderAttributes.instance.items.where((e) => e.isNotEmpty).map((e) {
+    final attrs = OrderAttributes.instance.items.where((e) => e.isNotEmpty).map((e) {
       final idx = rng.nextInt(e.length);
       final opt = e.items.toList()[idx];
 
@@ -127,8 +122,7 @@ class RandomGenerateOrderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () => Navigator.of(context)
-          .push(MaterialPageRoute(builder: (_) => const _SettingPage())),
+      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _SettingPage())),
       label: const Text('產生隨機餐點'),
       icon: const Icon(Icons.developer_mode_sharp),
     );

@@ -37,10 +37,7 @@ class GoogleSheetExporter extends DataExporter {
     final result = await sheetsApi?.spreadsheets.create(
       gs.Spreadsheet(
         properties: gs.SpreadsheetProperties(title: title),
-        sheets: [
-          for (final sheetTitle in sheetTitles)
-            gs.Sheet(properties: getNewSheetProperties(sheetTitle))
-        ],
+        sheets: [for (final sheetTitle in sheetTitles) gs.Sheet(properties: getNewSheetProperties(sheetTitle))],
       ),
       $fields: 'spreadsheetId,sheets(properties(sheetId,title))',
     );
@@ -103,17 +100,14 @@ class GoogleSheetExporter extends DataExporter {
     );
 
     final replies = result?.replies;
-    if (replies == null ||
-        replies.any((reply) => reply.addSheet?.properties?.sheetId == null)) {
+    if (replies == null || replies.any((reply) => reply.addSheet?.properties?.sheetId == null)) {
       Log.ger('add_sheets miss', _logCode);
       return null;
     }
 
     Log.ger('add_sheets success', _logCode);
     return replies
-        .map((reply) => GoogleSheetProperties(
-            reply.addSheet!.properties!.sheetId!,
-            reply.addSheet!.properties!.title!))
+        .map((reply) => GoogleSheetProperties(reply.addSheet!.properties!.sheetId!, reply.addSheet!.properties!.title!))
         .toList();
   }
 
@@ -330,9 +324,7 @@ class GoogleSheetProperties {
   static List<GoogleSheetProperties> fromSheet(List<gs.Sheet>? sheets) {
     return sheets
             ?.where((sheet) =>
-                sheet.properties != null &&
-                sheet.properties!.sheetId != null &&
-                sheet.properties!.title != null)
+                sheet.properties != null && sheet.properties!.sheetId != null && sheet.properties!.title != null)
             .map((sheet) => GoogleSheetProperties(
                   sheet.properties!.sheetId!,
                   sheet.properties!.title!,
@@ -359,9 +351,7 @@ class GoogleSheetProperties {
   @override
   // ignore: hash_and_equals
   bool operator ==(Object other) {
-    return other is GoogleSheetProperties &&
-        other.id == id &&
-        other.title == title;
+    return other is GoogleSheetProperties && other.id == id && other.title == title;
   }
 }
 
@@ -387,9 +377,7 @@ class GoogleSheetCellData {
           numberValue: numberValue?.toDouble(),
           stringValue: stringValue,
         ),
-        format = isBold
-            ? gs.CellFormat(textFormat: gs.TextFormat(bold: true))
-            : null;
+        format = isBold ? gs.CellFormat(textFormat: gs.TextFormat(bold: true)) : null;
 
   gs.CellData toGoogleFormat() {
     return gs.CellData(
@@ -400,9 +388,7 @@ class GoogleSheetCellData {
           : gs.DataValidationRule(
               condition: gs.BooleanCondition(
                 type: 'ONE_OF_LIST',
-                values: options!
-                    .map((e) => gs.ConditionValue(userEnteredValue: e))
-                    .toList(),
+                values: options!.map((e) => gs.ConditionValue(userEnteredValue: e)).toList(),
               ),
             ),
       note: note,

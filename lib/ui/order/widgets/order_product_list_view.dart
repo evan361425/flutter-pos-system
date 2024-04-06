@@ -47,8 +47,7 @@ class OrderProductListView extends StatelessWidget {
                     message: '透過圖片點餐更方便！\n'
                         '你也可以到「設定」頁面，\n'
                         '設定「每行顯示幾個產品」或僅使用文字點餐',
-                    spotlightBuilder:
-                        const SpotlightRectBuilder(borderRadius: 16),
+                    spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
                     disable: index++ != 0,
                     child: ImageHolder(
                       key: Key('order.product.${product.id}'),

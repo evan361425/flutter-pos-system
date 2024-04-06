@@ -98,8 +98,7 @@ void main() {
     testWidgets('select outlook_order', (tester) async {
       await tester.pumpWidget(buildApp());
 
-      expect(find.text(S.settingOrderOutlookTypes('slidingPanel')),
-          findsOneWidget);
+      expect(find.text(S.settingOrderOutlookTypes('slidingPanel')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('feature.outlook_order')));
       await tester.pumpAndSettle();
@@ -107,26 +106,22 @@ void main() {
       await tester.tap(find.text(S.settingOrderOutlookTypes('singleView')));
       await tester.pumpAndSettle();
 
-      expect(
-          find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
+      expect(find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
       verify(cache.set(any, 1));
     });
 
     testWidgets('select checkout_warning', (tester) async {
       await tester.pumpWidget(buildApp());
 
-      expect(
-          find.text(S.settingCheckoutWarningTypes('showAll')), findsOneWidget);
+      expect(find.text(S.settingCheckoutWarningTypes('showAll')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('feature.checkout_warning')));
       await tester.pumpAndSettle();
 
-      await tester
-          .tap(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')));
+      await tester.tap(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')),
-          findsOneWidget);
+      expect(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')), findsOneWidget);
       verify(cache.set(any, 1));
     });
 

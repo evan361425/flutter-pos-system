@@ -18,8 +18,7 @@ class ImportBasicView extends StatefulWidget {
   State<ImportBasicView> createState() => _ImportBasicViewState();
 }
 
-class _ImportBasicViewState extends State<ImportBasicView>
-    with AutomaticKeepAliveClientMixin {
+class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
 
   @override

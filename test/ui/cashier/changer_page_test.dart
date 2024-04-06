@@ -48,8 +48,7 @@ void main() {
                     path: '/',
                     builder: (context, __) {
                       return TextButton(
-                        onPressed: () =>
-                            context.pushNamed(Routes.cashierChanger),
+                        onPressed: () => context.pushNamed(Routes.cashierChanger),
                         child: const Text('go to changer'),
                       );
                     },

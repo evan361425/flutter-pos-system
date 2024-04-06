@@ -128,8 +128,7 @@ class _ProductTile extends StatelessWidget {
           tail: data.catalogName,
         ),
         if (data.ingredients.isNotEmpty) const SizedBox(height: 8.0),
-        if (data.ingredients.isNotEmpty)
-          HeadTailTile(head: S.orderObjectProductIngredient, tail: ''),
+        if (data.ingredients.isNotEmpty) HeadTailTile(head: S.orderObjectProductIngredient, tail: ''),
         for (final e in data.ingredients)
           HeadTailTile(
             head: e.ingredientName,

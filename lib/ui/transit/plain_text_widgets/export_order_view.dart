@@ -77,11 +77,7 @@ class ExportOrderView extends StatelessWidget {
   /// 起士漢堡（漢堡）1 份共 200 元，成份包括
   /// 起士（多量，使用 3 個）。
   static int memoryPredictor(OrderMetrics m) {
-    return (m.count * 60 +
-            m.attrCount! * 18 +
-            m.productCount! * 25 +
-            m.ingredientCount! * 10)
-        .toInt();
+    return (m.count * 60 + m.attrCount! * 18 + m.productCount! * 25 + m.ingredientCount! * 10).toInt();
   }
 
   static String formatOrder(OrderObject order) {
@@ -107,9 +103,7 @@ class ExportOrderView extends StatelessWidget {
 
     return [
       '共 ${order.price.toCurrency()} 元',
-      order.productsPrice == order.price
-          ? '。\n'
-          : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
+      order.productsPrice == order.price ? '。\n' : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
       '付額 ${order.paid.toCurrency()} 元、',
       '成分 ${order.cost.toCurrency()} 元。\n',
       if (attributes != '') '顧客的 $attributes。\n',

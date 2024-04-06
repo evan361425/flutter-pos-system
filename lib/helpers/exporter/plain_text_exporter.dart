@@ -10,8 +10,7 @@ class PlainTextExporter extends DataExporter {
   const PlainTextExporter({this.formatter = const PlainTextFormatter()});
 
   Future<void> export(Formattable able) {
-    final text =
-        formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
+    final text = formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
     return exportToClipboard(text);
   }
 

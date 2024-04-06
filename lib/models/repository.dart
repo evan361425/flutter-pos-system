@@ -130,13 +130,11 @@ mixin Repository<T extends Model> on ChangeNotifier {
 mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
   /// sorted by index
   @override
-  List<T> get itemList =>
-      items.toList()..sort((a, b) => a.index.compareTo(b.index));
+  List<T> get itemList => items.toList()..sort((a, b) => a.index.compareTo(b.index));
 
   /// Get highest index of products plus 1
   /// 1-index
-  int get newIndex =>
-      isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
+  int get newIndex => isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
   Future<void> reorderItems(List<T> items) async {
     var i = 0;
@@ -149,8 +147,7 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
             return false;
           }
         })
-        .map<RepositoryBatchData>((item) => RepositoryBatchData(
-            id: item.prefix, key: 'index', value: item.index))
+        .map<RepositoryBatchData>((item) => RepositoryBatchData(id: item.prefix, key: 'index', value: item.index))
         .toList();
 
     if (data.isNotEmpty) {
@@ -164,10 +161,7 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
 
 mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
   List<T> sortBySimilarity(String text, {int limit = 10}) {
-    final similarities = items
-        .map((e) => MapEntry(e.id, e.getSimilarity(text)))
-        .where((e) => e.value > 0)
-        .toList();
+    final similarities = items.map((e) => MapEntry(e.id, e.getSimilarity(text))).where((e) => e.value > 0).toList();
     similarities.sort((ing1, ing2) {
       // if ing1 < ing2 return -1 will make ing1 be the first one
       if (ing1.value == ing2.value) return 0;
@@ -206,8 +200,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
       if (versionChanged) {
         Log.ger('upgrade start', storageStore.name, _items.toString());
         await Storage.instance.setAll(storageStore, {
-          for (final item in _items.values)
-            item.prefix: item.toObject().toMap(),
+          for (final item in _items.values) item.prefix: item.toObject().toMap(),
         });
       }
     } catch (e, stack) {

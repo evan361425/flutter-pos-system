@@ -139,10 +139,7 @@ class Seller extends ChangeNotifier {
           ),
     ];
 
-    return ignoreEmpty
-        ? result
-        : _fulfillPeriodData(
-            start, end, Duration(seconds: interval.seconds), result);
+    return ignoreEmpty ? result : _fulfillPeriodData(start, end, Duration(seconds: interval.seconds), result);
   }
 
   /// Get the metric of items grouped by the day.
@@ -164,9 +161,7 @@ class Seller extends ChangeNotifier {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
 
-    final where = selection.isEmpty
-        ? ''
-        : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
+    final where = selection.isEmpty ? '' : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
     // if target has different column then we need to concat the column to
     // make the result more readable.
     // (different catalog may have same item name).
@@ -197,18 +192,14 @@ class Seller extends ChangeNotifier {
         .groupListsBy((row) => row['day'])
         .values
         .map((e) => OrderDataPerDay(
-              at: Util.fromUTC(
-                  begin + (e.first['day'] as int) * interval.seconds),
+              at: Util.fromUTC(begin + (e.first['day'] as int) * interval.seconds),
               values: {
                 for (final row in e) row['name'] as String: row['value'] as num,
               },
             ))
         .toList();
 
-    return ignoreEmpty
-        ? result
-        : _fulfillPeriodData(
-            start, end, Duration(seconds: interval.seconds), result);
+    return ignoreEmpty ? result : _fulfillPeriodData(start, end, Duration(seconds: interval.seconds), result);
   }
 
   /// Get the metrics of orders and group by the items.
@@ -225,9 +216,7 @@ class Seller extends ChangeNotifier {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
 
-    final where = selection.isEmpty
-        ? ''
-        : ' AND `${target.filterColumn}` IN ("${selection.join('","')}")';
+    final where = selection.isEmpty ? '' : ' AND `${target.filterColumn}` IN ("${selection.join('","')}")';
 
     final rows = await Database.instance.query(
       target.table,
@@ -257,9 +246,7 @@ class Seller extends ChangeNotifier {
 
     return target
         .getItems(selection)
-        .map((item) =>
-            result.where((e) => e.name == item.name).firstOrNull ??
-            OrderMetricPerItem(item.name, 0, total))
+        .map((item) => result.where((e) => e.name == item.name).firstOrNull ?? OrderMetricPerItem(item.name, 0, total))
         .toList();
   }
 
@@ -310,8 +297,7 @@ class Seller extends ChangeNotifier {
   /// Get orders in all detailed set.
   ///
   /// This is used to export orders.
-  Future<List<OrderObject>> getDetailedOrders(
-      DateTime start, DateTime end) async {
+  Future<List<OrderObject>> getDetailedOrders(DateTime start, DateTime end) async {
     final r = await Database.instance.transaction((txn) async {
       final batch = txn.batch();
       queryTable(String t) {
@@ -444,9 +430,7 @@ class Seller extends ChangeNotifier {
     return <OrderDataPerDay>[
       for (var v = start; v.isBefore(end); v = v.add(interval))
         // `result is not enough` or `result has not contains the day`
-        i >= data.length || data[i].at != v
-            ? OrderDataPerDay(at: v)
-            : data[i++],
+        i >= data.length || data[i].at != v ? OrderDataPerDay(at: v) : data[i++],
     ];
   }
 }
@@ -534,8 +518,7 @@ class OrderMetricPerItem {
   final num value;
   final double percent;
 
-  OrderMetricPerItem(this.name, this.value, num total)
-      : percent = total == 0 ? 0 : (value / total * 100).toDouble();
+  OrderMetricPerItem(this.name, this.value, num total) : percent = total == 0 ? 0 : (value / total * 100).toDouble();
 }
 
 enum OrderMetricUnit {
@@ -551,8 +534,7 @@ enum OrderMetricUnit {
 enum OrderMetricType {
   price('SUM', 'price', 'singlePrice * count', OrderMetricUnit.money),
   cost('SUM', 'cost', 'singleCost * count', OrderMetricUnit.money),
-  revenue('SUM', 'revenue', '(singlePrice - singleCost) * count',
-      OrderMetricUnit.money),
+  revenue('SUM', 'revenue', '(singlePrice - singleCost) * count', OrderMetricUnit.money),
   count('COUNT', 'price', '*', OrderMetricUnit.count);
 
   /// The method to calculate the value in DB.
@@ -597,8 +579,7 @@ enum OrderMetricTarget {
   bool get hasDifferentColumn => filterColumn != groupColumn;
 
   /// Whether append parenthesis to the name when grouped.
-  bool isGroupedName(List<String> selection) =>
-      hasDifferentColumn && selection.length != 1;
+  bool isGroupedName(List<String> selection) => hasDifferentColumn && selection.length != 1;
 
   /// Get the items from the target.
   ///
@@ -618,15 +599,11 @@ enum OrderMetricTarget {
       case OrderMetricTarget.attribute:
         if (selection != null) {
           if (selection.isEmpty) {
-            return OrderAttributes.instance.itemList
-                .expand((e) => e.itemList)
-                .toList();
+            return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
           }
 
           return selection
-              .expand<OrderAttributeOption>((id) =>
-                  OrderAttributes.instance.getItemByName(id)?.itemList ??
-                  const [])
+              .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
               .toList();
         }
 

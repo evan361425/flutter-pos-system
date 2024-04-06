@@ -44,25 +44,19 @@ void main() {
       );
 
       expect(result.length, equals(10));
-      expect(result.map((e) => e.productsCount).reduce((a, b) => a + b),
-          greaterThanOrEqualTo(10));
-      expect(result.fold<int>(0, (pre, e) => e.attributes.length + pre),
-          greaterThan(0));
+      expect(result.map((e) => e.productsCount).reduce((a, b) => a + b), greaterThanOrEqualTo(10));
+      expect(result.fold<int>(0, (pre, e) => e.attributes.length + pre), greaterThan(0));
     });
 
     testWidgets('change date and count', (tester) async {
       final txn = MockDatabaseExecutor();
       final batch = MockBatch();
 
-      when(database.transaction(any))
-          .thenAnswer((inv) => inv.positionalArguments[0](txn));
+      when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
       when(txn.batch()).thenReturn(batch);
-      when(txn.insert(Seller.orderTable, any))
-          .thenAnswer((_) => Future.value(1));
-      when(txn.insert(Seller.productTable, any))
-          .thenAnswer((_) => Future.value(1));
-      when(batch.commit(noResult: anyNamed('noResult')))
-          .thenAnswer((_) => Future.value([]));
+      when(txn.insert(Seller.orderTable, any)).thenAnswer((_) => Future.value(1));
+      when(txn.insert(Seller.productTable, any)).thenAnswer((_) => Future.value(1));
+      when(batch.commit(noResult: anyNamed('noResult'))).thenAnswer((_) => Future.value([]));
 
       const btn = Key('test');
       await tester.pumpWidget(ChangeNotifierProvider.value(
@@ -105,22 +99,18 @@ void main() {
     final attrs = OrderAttributes();
     attrs.replaceItems({
       'at-1': OrderAttribute(id: 'at-1', name: 'at-1'),
-      'at-2': OrderAttribute(
-          id: 'at-2',
-          name: 'at-2',
-          mode: OrderAttributeMode.changePrice,
-          options: {
-            'o1': OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1),
-            'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 2),
-            'o3': OrderAttributeOption(id: 'o3', name: 'o3', modeValue: 3),
-            'o4': OrderAttributeOption(id: 'o4', name: 'o4', modeValue: 4),
-            'o5': OrderAttributeOption(id: 'o5', name: 'o5', modeValue: 5.0),
-            'o6': OrderAttributeOption(id: 'o6', name: 'o6', modeValue: 6.1),
-            'o7': OrderAttributeOption(id: 'o7', name: 'o7', modeValue: 7.2),
-            'o8': OrderAttributeOption(id: 'o8', name: 'o8', modeValue: 8),
-            'o9': OrderAttributeOption(id: 'o9', name: 'o9', modeValue: null),
-            'o0': OrderAttributeOption(id: 'o0', name: 'o0', modeValue: null),
-          })
+      'at-2': OrderAttribute(id: 'at-2', name: 'at-2', mode: OrderAttributeMode.changePrice, options: {
+        'o1': OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1),
+        'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 2),
+        'o3': OrderAttributeOption(id: 'o3', name: 'o3', modeValue: 3),
+        'o4': OrderAttributeOption(id: 'o4', name: 'o4', modeValue: 4),
+        'o5': OrderAttributeOption(id: 'o5', name: 'o5', modeValue: 5.0),
+        'o6': OrderAttributeOption(id: 'o6', name: 'o6', modeValue: 6.1),
+        'o7': OrderAttributeOption(id: 'o7', name: 'o7', modeValue: 7.2),
+        'o8': OrderAttributeOption(id: 'o8', name: 'o8', modeValue: 8),
+        'o9': OrderAttributeOption(id: 'o9', name: 'o9', modeValue: null),
+        'o0': OrderAttributeOption(id: 'o0', name: 'o0', modeValue: null),
+      })
         ..prepareItem(),
     });
     // Menu
@@ -178,8 +168,7 @@ void main() {
     )..prepareItem();
     final p3 = Product(id: 'p-3', name: 'p-3', cost: 37, price: 41);
     Menu().replaceItems({
-      'c-1': Catalog(id: 'c-1', products: {'p-1': p1, 'p-2': p2, 'p-3': p3})
-        ..prepareItem()
+      'c-1': Catalog(id: 'c-1', products: {'p-1': p1, 'p-2': p2, 'p-3': p3})..prepareItem()
     });
 
     initializeDatabase();

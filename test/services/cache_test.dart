@@ -43,8 +43,7 @@ void main() {
       when(service.setBool('a', true)).thenAnswer((_) => Future.value(true));
       Cache.instance.set<bool>('a', true);
 
-      when(service.setString('b', 'true'))
-          .thenAnswer((_) => Future.value(true));
+      when(service.setString('b', 'true')).thenAnswer((_) => Future.value(true));
       Cache.instance.set<String>('b', 'true');
 
       when(service.setInt('c', 0)).thenAnswer((_) => Future.value(true));

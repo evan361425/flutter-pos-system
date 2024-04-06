@@ -26,8 +26,7 @@ class OrderSettingPage extends StatefulWidget {
   State<OrderSettingPage> createState() => _OrderSettingPageState();
 }
 
-class _OrderSettingPageState extends State<OrderSettingPage>
-    with ItemModal<OrderSettingPage> {
+class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<OrderSettingPage> {
   late final List<SheetNamerProperties> namers;
 
   late bool isOverwrite;
@@ -88,8 +87,7 @@ class _OrderSettingPageState extends State<OrderSettingPage>
     final properties = OrderSpreadsheetProperties(
       sheets: namers
           .map((namer) => OrderSheetProperties(
-                OrderSheetType.values
-                    .firstWhere((e) => e.name == namer.type.name),
+                OrderSheetType.values.firstWhere((e) => e.name == namer.type.name),
                 namer.name,
                 namer.checked,
               ))
@@ -155,8 +153,7 @@ class OrderSpreadsheetProperties {
     );
   }
 
-  Iterable<OrderSheetProperties> get requiredSheets =>
-      sheets.where((e) => e.isRequired);
+  Iterable<OrderSheetProperties> get requiredSheets => sheets.where((e) => e.isRequired);
 
   Future<void> cache() async {
     for (var sheet in sheets) {

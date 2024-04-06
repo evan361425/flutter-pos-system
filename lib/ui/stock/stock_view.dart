@@ -18,8 +18,7 @@ class StockView extends StatefulWidget {
   State<StockView> createState() => _StockViewState();
 }
 
-class _StockViewState extends State<StockView>
-    with AutomaticKeepAliveClientMixin {
+class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
 
   @override
@@ -86,9 +85,7 @@ class _StockViewState extends State<StockView>
 
   @override
   void initState() {
-    tab = widget.tabIndex == null
-        ? null
-        : TutorialInTab(index: widget.tabIndex!, context: context);
+    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
 
     super.initState();
   }

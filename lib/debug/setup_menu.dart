@@ -60,25 +60,11 @@ Future<void> debugSetupMenu() async {
             "ingredientId": "cheese",
             "amount": 18,
             "quantities": <String, Object?>{
-              "cb-quantity-1": {
-                "quantityId": "more",
-                "amount": 18,
-                "additionalCost": 5,
-                "additionalPrice": 15
-              },
-              "cb-quantity-2": {
-                "quantityId": "less",
-                "amount": 9.0,
-                "additionalCost": 0,
-                "additionalPrice": 0
-              }
+              "cb-quantity-1": {"quantityId": "more", "amount": 18, "additionalCost": 5, "additionalPrice": 15},
+              "cb-quantity-2": {"quantityId": "less", "amount": 9.0, "additionalCost": 0, "additionalPrice": 0}
             }
           },
-          "cb-ingredient2": {
-            "ingredientId": "bread",
-            "amount": 15,
-            "quantities": <String, Object?>{}
-          }
+          "cb-ingredient2": {"ingredientId": "bread", "amount": 15, "quantities": <String, Object?>{}}
         }
       },
       "veg-burger": {
@@ -93,25 +79,11 @@ Future<void> debugSetupMenu() async {
             "ingredientId": "vegetable",
             "amount": 10,
             "quantities": <String, Object?>{
-              "vb-quantity1": {
-                "quantityId": "more",
-                "amount": 20,
-                "additionalCost": 2,
-                "additionalPrice": 8
-              },
-              "vb-quantity2": {
-                "quantityId": "less",
-                "amount": 5.0,
-                "additionalCost": 0,
-                "additionalPrice": 0
-              }
+              "vb-quantity1": {"quantityId": "more", "amount": 20, "additionalCost": 2, "additionalPrice": 8},
+              "vb-quantity2": {"quantityId": "less", "amount": 5.0, "additionalCost": 0, "additionalPrice": 0}
             }
           },
-          "vb-ingredient2": {
-            "ingredientId": "bread",
-            "amount": 15,
-            "quantities": <String, Object?>{}
-          }
+          "vb-ingredient2": {"ingredientId": "bread", "amount": 15, "quantities": <String, Object?>{}}
         }
       },
       "rice-burger": {

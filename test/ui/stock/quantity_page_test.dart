@@ -91,8 +91,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final quantity = quantities.items.first;
-      final w =
-          find.byKey(Key('quantities.${quantity.id}')).evaluate().first.widget;
+      final w = find.byKey(Key('quantities.${quantity.id}')).evaluate().first.widget;
 
       expect(((w as ListTile).title as Text).data, equals('q-1'));
       expect(quantity.defaultProportion, equals(2));

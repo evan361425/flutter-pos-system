@@ -7,8 +7,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
-  static final List<BottomSheetAction> actions =
-      <BottomSheetAction<CartActionTypes>>[
+  static final List<BottomSheetAction> actions = <BottomSheetAction<CartActionTypes>>[
     BottomSheetAction(
       key: const Key('cart.action.discount'),
       leading: const Icon(Icons.loyalty_sharp),
@@ -79,8 +78,7 @@ class CartActions extends StatelessWidget {
         break;
       case CartActionTypes.price:
         item = _DialogItem(
-          validator:
-              Validator.positiveNumber(S.orderCartActionsChangePriceLabel),
+          validator: Validator.positiveNumber(S.orderCartActionsChangePriceLabel),
           decoration: InputDecoration(
             hintText: S.orderCartActionsChangePriceHint,
             suffix: Text(S.orderCartActionsChangePriceSuffix),

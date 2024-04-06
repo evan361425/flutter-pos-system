@@ -5,10 +5,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/services/storage.dart';
 
 class Quantities extends ChangeNotifier
-    with
-        Repository<Quantity>,
-        RepositoryStorage<Quantity>,
-        RepositorySearchable<Quantity> {
+    with Repository<Quantity>, RepositoryStorage<Quantity>, RepositorySearchable<Quantity> {
   static late Quantities instance;
 
   @override

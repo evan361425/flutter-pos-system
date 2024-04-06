@@ -41,8 +41,7 @@ class CartProduct extends ChangeNotifier {
   String get name => product.name;
 
   /// The cost of single product.
-  num get cost =>
-      quantities.fold<num>(product.cost, (v, q) => v + (q.additionalCost));
+  num get cost => quantities.fold<num>(product.cost, (v, q) => v + (q.additionalCost));
 
   /// Total price which is single price times the count.
   num get totalPrice => _count * _singlePrice;
@@ -84,11 +83,7 @@ class CartProduct extends ChangeNotifier {
   num getQuantityPrice(String ingredientId, String? quantityId) {
     if (quantityId == null) return 0;
 
-    return product
-            .getItem(ingredientId)
-            ?.getItem(quantityId)
-            ?.additionalPrice ??
-        0;
+    return product.getItem(ingredientId)?.getItem(quantityId)?.additionalPrice ?? 0;
   }
 
   /// Selected the quantity from cart and affect the price.
@@ -152,9 +147,7 @@ class CartProduct extends ChangeNotifier {
       singlePrice: _singlePrice,
       originalPrice: product.price,
       isDiscount: _singlePrice < product.price,
-      ingredients: product.items
-          .map((e) => OrderIngredientObject.fromModel(e, getQuantityId(e.id)))
-          .toList(),
+      ingredients: product.items.map((e) => OrderIngredientObject.fromModel(e, getQuantityId(e.id))).toList(),
     );
   }
 }

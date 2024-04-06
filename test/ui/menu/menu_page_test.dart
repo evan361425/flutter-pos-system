@@ -163,8 +163,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(
-          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
@@ -224,24 +223,20 @@ void main() {
 
     testWidgets('Search product', (WidgetTester tester) async {
       final now = DateTime.now();
-      final product =
-          Product(id: 'p-1', name: 'p-1', searchedAt: now, ingredients: {
-        'pi-1': ProductIngredient(
-            id: 'pi-1',
-            ingredient: Ingredient(id: 'i-1', name: 'i-1'),
-            quantities: {
-              'pq-1': ProductQuantity(
-                id: 'pq-1',
-                quantity: Quantity(id: 'q-1', name: 'q-1'),
-              ),
-            })
+      final product = Product(id: 'p-1', name: 'p-1', searchedAt: now, ingredients: {
+        'pi-1': ProductIngredient(id: 'pi-1', ingredient: Ingredient(id: 'i-1', name: 'i-1'), quantities: {
+          'pq-1': ProductQuantity(
+            id: 'pq-1',
+            quantity: Quantity(id: 'q-1', name: 'q-1'),
+          ),
+        })
           ..prepareItem(),
         'pi-2': ProductIngredient(
           id: 'pi-2',
           ingredient: Ingredient(id: 'i-2', name: 'i-2'),
         ),
       })
-            ..prepareItem();
+        ..prepareItem();
       Menu().replaceItems({
         'c-1': Catalog(id: 'c-1', products: {
           'p-1': product,

@@ -104,9 +104,7 @@ class _CartProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = context.watch<CartProduct>();
-    final color = product.isSelected
-        ? Theme.of(context).primaryColorLight
-        : Colors.transparent;
+    final color = product.isSelected ? Theme.of(context).primaryColorLight : Colors.transparent;
 
     final leading = Checkbox(
       key: Key('cart.product.$index.select'),

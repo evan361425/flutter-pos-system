@@ -12,15 +12,13 @@ class StockQuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockQuantityModal({super.key, this.quantity})
-      : isNew = quantity == null;
+  const StockQuantityModal({super.key, this.quantity}) : isNew = quantity == null;
 
   @override
   State<StockQuantityModal> createState() => _StockQuantityModalState();
 }
 
-class _StockQuantityModalState extends State<StockQuantityModal>
-    with ItemModal<StockQuantityModal> {
+class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<StockQuantityModal> {
   late TextEditingController _nameController;
   late TextEditingController _proportionController;
   late FocusNode _nameFocusNode;
@@ -49,8 +47,7 @@ class _StockQuantityModalState extends State<StockQuantityModal>
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.quantity?.name != name &&
-                    Quantities.instance.hasName(name)
+            return widget.quantity?.name != name && Quantities.instance.hasName(name)
                 ? S.quantityNameRepeatError
                 : null;
           },

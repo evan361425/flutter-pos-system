@@ -90,9 +90,7 @@ class _ProductPageState extends State<ProductPage> {
       SliverList(
         delegate: SliverChildBuilderDelegate(
           // Floating action button offset
-          (_, int index) => index == items.length
-              ? const SizedBox(height: 72.0)
-              : ProductIngredientView(items[index]),
+          (_, int index) => index == items.length ? const SizedBox(height: 72.0) : ProductIngredientView(items[index]),
           childCount: items.length + 1,
         ),
       ),

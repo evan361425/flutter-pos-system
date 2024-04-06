@@ -7,8 +7,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/services/storage.dart';
 
-class Replenishment extends Model<ReplenishmentObject>
-    with ModelStorage<ReplenishmentObject> {
+class Replenishment extends Model<ReplenishmentObject> with ModelStorage<ReplenishmentObject> {
   /// ingredient id => add number
   final Map<String, num> data;
 
@@ -35,9 +34,7 @@ class Replenishment extends Model<ReplenishmentObject>
   ) {
     final status = ori == null
         ? ModelStatus.staged
-        : (mapEquals<String, num>(data, ori.data)
-            ? ModelStatus.normal
-            : ModelStatus.updated);
+        : (mapEquals<String, num>(data, ori.data) ? ModelStatus.normal : ModelStatus.updated);
 
     return Replenishment(
       id: ori?.id,

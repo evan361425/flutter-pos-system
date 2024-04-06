@@ -17,15 +17,13 @@ class StockIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockIngredientModal({super.key, this.ingredient})
-      : isNew = ingredient == null;
+  const StockIngredientModal({super.key, this.ingredient}) : isNew = ingredient == null;
 
   @override
   State<StockIngredientModal> createState() => _StockIngredientModalState();
 }
 
-class _StockIngredientModalState extends State<StockIngredientModal>
-    with ItemModal<StockIngredientModal> {
+class _StockIngredientModalState extends State<StockIngredientModal> with ItemModal<StockIngredientModal> {
   late TextEditingController _nameController;
   late TextEditingController _amountController;
   late TextEditingController _totalAmountController;
@@ -38,9 +36,8 @@ class _StockIngredientModalState extends State<StockIngredientModal>
 
   @override
   Widget buildForm() {
-    final ingredients = widget.isNew
-        ? const <ProductIngredient>[]
-        : Menu.instance.getIngredients(widget.ingredient!.id);
+    final ingredients =
+        widget.isNew ? const <ProductIngredient>[] : Menu.instance.getIngredients(widget.ingredient!.id);
     // +2: 1 for form, 2 for text-divider
     final length = widget.isNew ? 1 : ingredients.length + 2;
 
@@ -94,8 +91,7 @@ class _StockIngredientModalState extends State<StockIngredientModal>
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.ingredient?.name != name &&
-                      Stock.instance.hasName(name)
+              return widget.ingredient?.name != name && Stock.instance.hasName(name)
                   ? S.stockIngredientNameRepeatError
                   : null;
             },

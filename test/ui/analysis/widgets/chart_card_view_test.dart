@@ -89,8 +89,7 @@ void main() {
             }),
         });
         mockGetMetricsInPeriod(
-            table: equals(
-                '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
+            table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
                 '* FROM order_records WHERE createdAt BETWEEN $today AND $tomorrow) t'),
             rows: [
               {'day': 1, 'price': 1.1, 'revenue': 2.2},
@@ -157,8 +156,7 @@ void main() {
         expect(items.join(','), equals('p2'));
 
         mockGetItemMetricsInPeriod(
-          table: equals(
-              '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+          table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
               'FROM order_products WHERE createdAt BETWEEN $today AND $tomorrow  '
               'AND productName IN ("p2") ) t'),
           target: OrderMetricTarget.product,
@@ -223,8 +221,7 @@ void main() {
         await tester.pumpAndSettle();
 
         mockGetItemMetricsInPeriod(
-          table: equals(
-              '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+          table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
               'FROM order_attributes WHERE createdAt BETWEEN $today AND $tomorrow  ) t'),
           target: OrderMetricTarget.attribute,
         );

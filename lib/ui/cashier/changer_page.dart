@@ -12,8 +12,7 @@ class ChangerModal extends StatefulWidget {
   State<ChangerModal> createState() => _ChangerModalState();
 }
 
-class _ChangerModalState extends State<ChangerModal>
-    with TickerProviderStateMixin {
+class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerCustomViewState>();
   final favoriteState = GlobalKey<ChangerFavoriteViewState>();

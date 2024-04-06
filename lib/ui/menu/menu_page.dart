@@ -53,9 +53,7 @@ class _MenuPageState extends State<MenuPage> {
           actions: [
             if (!widget.productOnly)
               IconButton(
-                tooltip: selected == null
-                    ? S.menuCatalogReorder
-                    : S.menuProductReorder,
+                tooltip: selected == null ? S.menuCatalogReorder : S.menuProductReorder,
                 onPressed: () {
                   selected == null
                       ? context.pushNamed(Routes.menuReorder)

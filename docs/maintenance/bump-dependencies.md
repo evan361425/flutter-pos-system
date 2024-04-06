@@ -9,8 +9,8 @@
 ## 如何查找哪些套件需要更新
 
 ```bash
-$ flutter pub outdated --no-transitive --no-prereleases
-howing outdated packages.
+$ make outdated
+Showing outdated packages.
 [*] indicates versions that are not the latest available.
 
 Package Name   Current   Upgradable  Resolvable  Latest
@@ -33,9 +33,7 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 
 根據上面得到想要升級的版本後
 
-```bash
-flutter pub upgrade some_package
-```
+  flutter pub upgrade some_package
 
 這樣的方式可以同時升級 Transitive 的套件。
 
@@ -43,6 +41,4 @@ flutter pub upgrade some_package
 
 請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：
 
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
+  make mock

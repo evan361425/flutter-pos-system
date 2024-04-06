@@ -23,8 +23,7 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
   });
 
   factory OrderAttributeObject.build(Map<String, Object?> data) {
-    final options =
-        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final options = (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return OrderAttributeObject(
       id: data['id'].toString(),
@@ -32,11 +31,10 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
       index: data['index'] as int,
       mode: OrderAttributeMode.values[data['mode'] as int],
       options: options.entries
-          .map<OrderAttributeOptionObject>(
-              (e) => OrderAttributeOptionObject.build({
-                    'id': e.key,
-                    ...e.value as Map<String, Object?>,
-                  }))
+          .map<OrderAttributeOptionObject>((e) => OrderAttributeOptionObject.build({
+                'id': e.key,
+                ...e.value as Map<String, Object?>,
+              }))
           .toList(),
     );
   }

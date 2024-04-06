@@ -36,8 +36,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedLanguage = LanguageSetting.supported
-        .indexWhere((e) => e.languageCode == language.value.languageCode);
+    final selectedLanguage = LanguageSetting.supported.indexWhere((e) => e.languageCode == language.value.languageCode);
     const flavor = String.fromEnvironment('appFlavor');
 
     return Scaffold(
@@ -87,9 +86,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             onTap: () => _buildChoiceList(
               (index) => theme.update(ThemeMode.values[index]),
               title: S.settingThemeTitle,
-              items: ThemeMode.values
-                  .map<String>((e) => S.settingThemeTypes(e.name))
-                  .toList(),
+              items: ThemeMode.values.map<String>((e) => S.settingThemeTypes(e.name)).toList(),
               selected: theme.value.index,
             ),
           ),
@@ -117,9 +114,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
               title: S.settingOrderOutlookTitle,
               selected: orderOutlook.value.index,
-              items: OrderOutlookTypes.values
-                  .map((e) => S.settingOrderOutlookTypes(e.name))
-                  .toList(),
+              items: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTypes(e.name)).toList(),
               tips: [
                 '點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機',
                 '所有資訊顯示在單一螢幕中，適合大螢幕的平板',
@@ -130,17 +125,13 @@ class _FeaturesPageState extends State<FeaturesPage> {
             key: const Key('feature.checkout_warning'),
             leading: const Icon(Icons.store_mall_directory_outlined),
             title: Text(S.settingCheckoutWarningTitle),
-            subtitle:
-                Text(S.settingCheckoutWarningTypes(checkoutWarning.value.name)),
+            subtitle: Text(S.settingCheckoutWarningTypes(checkoutWarning.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _buildChoiceList(
-              (index) =>
-                  checkoutWarning.update(CheckoutWarningTypes.values[index]),
+              (index) => checkoutWarning.update(CheckoutWarningTypes.values[index]),
               title: S.settingCheckoutWarningTitle,
               selected: checkoutWarning.value.index,
-              items: CheckoutWarningTypes.values
-                  .map((e) => S.settingCheckoutWarningTypes(e.name))
-                  .toList(),
+              items: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTypes(e.name)).toList(),
               tips: [
                 '收銀機若使用小錢會出現提示，例如收銀機 5 塊錢不夠了並嘗試用 1 塊錢去找 5 塊錢',
                 null,

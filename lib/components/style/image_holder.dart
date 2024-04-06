@@ -96,9 +96,8 @@ class EditImageHolder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider image = path == null
-        ? const AssetImage("assets/food_placeholder.png") as ImageProvider
-        : FileImage(XFile(path!).file);
+    final ImageProvider image =
+        path == null ? const AssetImage("assets/food_placeholder.png") as ImageProvider : FileImage(XFile(path!).file);
 
     return ImageHolder(
       key: const Key('image_holder.edit'),

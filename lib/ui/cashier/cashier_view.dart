@@ -19,8 +19,7 @@ class CashierView extends StatefulWidget {
   State<CashierView> createState() => _CashierViewState();
 }
 
-class _CashierViewState extends State<CashierView>
-    with AutomaticKeepAliveClientMixin {
+class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
 
   @override
@@ -80,9 +79,7 @@ class _CashierViewState extends State<CashierView>
 
   @override
   void initState() {
-    tab = widget.tabIndex == null
-        ? null
-        : TutorialInTab(index: widget.tabIndex!, context: context);
+    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
 
     super.initState();
   }

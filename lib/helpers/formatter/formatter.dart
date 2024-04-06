@@ -46,8 +46,7 @@ abstract class Formatter<T> {
     int counter = 1;
     for (var row in parsed) {
       final r = row.map((e) => e.trim()).toList();
-      final msg = formatter.validate(r) ??
-          (existInResult(r[formatter.nameIndex]) ? '將忽略本行，相同的項目已於前面出現' : null);
+      final msg = formatter.validate(r) ?? (existInResult(r[formatter.nameIndex]) ? '將忽略本行，相同的項目已於前面出現' : null);
 
       if (msg != null) {
         result.add(
@@ -63,11 +62,9 @@ abstract class Formatter<T> {
     return result;
   }
 
-  List<T> getHeader(Formattable able) =>
-      getTransformer(able).getHeader() as List<T>;
+  List<T> getHeader(Formattable able) => getTransformer(able).getHeader() as List<T>;
 
-  List<List<T>> getRows(Formattable able) =>
-      getTransformer(able).getRows() as List<List<T>>;
+  List<List<T>> getRows(Formattable able) => getTransformer(able).getRows() as List<List<T>>;
 
   ModelFormatter getFormatter(Formattable able) {
     switch (able) {
@@ -159,9 +156,7 @@ abstract class ModelTransformer<T extends Repository> {
   List<List<Object>> getRows();
 
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    return rows
-        .map((row) => row.map((e) => e.toString().trim()).toList())
-        .toList();
+    return rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
   }
 }
 
@@ -198,14 +193,12 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
 
-        final msg = (columns.isEmpty ? null : vIng(columns[0])) ??
-            (columns.length < 2 ? null : vAmount(columns[1]));
+        final msg = (columns.isEmpty ? null : vIng(columns[0])) ?? (columns.length < 2 ? null : vAmount(columns[1]));
         if (msg != null) return msg;
       } else if (line.startsWith('+ ')) {
         final columns = line.substring(2).split(',');
 
-        final msg = (columns.isEmpty ? null : vQua(columns[0])) ??
-            (columns.length < 2 ? null : vQuaAmount(columns[1]));
+        final msg = (columns.isEmpty ? null : vQua(columns[0])) ?? (columns.length < 2 ? null : vQuaAmount(columns[1]));
         if (msg != null) return msg;
       }
     }
@@ -227,9 +220,7 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
     final product = Product.fromRow(oriProduct, row, index: index);
     catalog.addItem(product, save: false);
 
-    return row.length == 4
-        ? product
-        : _formatProduct(oriProduct, product, row[4]);
+    return row.length == 4 ? product : _formatProduct(oriProduct, product, row[4]);
   }
 
   Product _formatProduct(Product? ori, Product product, String value) {
@@ -315,8 +306,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
   String? validate(List<String> row) {
     if (row.isEmpty) return S.transitImportColumnsCountError(1);
 
-    final errorMsg =
-        Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
+    final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
     if (errorMsg != null || row.length == 1) return errorMsg;
 
     final lines = row[1].split('\n');
@@ -384,18 +374,14 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
     if (msg != null || row.length == 2) return msg;
 
     final lines = row[2].toString().split('\n');
-    final shouldValidateMode =
-        _str2mode(row[1]) == OrderAttributeMode.changeDiscount;
+    final shouldValidateMode = _str2mode(row[1]) == OrderAttributeMode.changeDiscount;
     final vName = Validator.textLimit(S.orderAttributeOptionNameLabel, 30);
     final vMode = Validator.positiveInt(row[1], maximum: 1000, allowNull: true);
     for (var line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
 
-        final err = vName(columns[0]) ??
-            (columns.length > 2 && shouldValidateMode
-                ? vMode(columns[2])
-                : null);
+        final err = vName(columns[0]) ?? (columns.length > 2 && shouldValidateMode ? vMode(columns[2]) : null);
         if (err != null) return err;
       }
     }

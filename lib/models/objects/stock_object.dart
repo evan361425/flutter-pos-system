@@ -57,16 +57,14 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.lastAmount = lastAmount;
       result['$prefix.lastAmount'] = lastAmount!;
     }
-    if ((fromModal || totalAmount != null) &&
-        totalAmount != model.totalAmount) {
+    if ((fromModal || totalAmount != null) && totalAmount != model.totalAmount) {
       model.totalAmount = totalAmount;
       result['$prefix.totalAmount'] = totalAmount;
     }
 
     if (result.isNotEmpty) {
       // should not only change currentAmount
-      if (!(result.length == 1 &&
-          result.containsKey('$prefix.currentAmount'))) {
+      if (!(result.length == 1 && result.containsKey('$prefix.currentAmount'))) {
         model.updatedAt = DateTime.now();
         result['$prefix.updatedAt'] = model.updatedAt.toString();
       }
@@ -84,9 +82,7 @@ class IngredientObject extends ModelObject<Ingredient> {
       alertAmount: data['alertAmount'] as num?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
-      updatedAt: data['updatedAt'] == null
-          ? null
-          : DateTime.parse(data['updatedAt'] as String),
+      updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),
     );
   }
 }
@@ -119,8 +115,7 @@ class QuantityObject extends ModelObject<Quantity> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (defaultProportion != null &&
-        defaultProportion != model.defaultProportion) {
+    if (defaultProportion != null && defaultProportion != model.defaultProportion) {
       model.defaultProportion = defaultProportion!;
       result['$prefix.defaultProportion'] = defaultProportion!;
     }

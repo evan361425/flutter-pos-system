@@ -63,8 +63,7 @@ class Log {
   // no need send event in debug mode
   static bool _allowSendEvents = !_isDebug;
   static bool get allowSendEvents => _allowSendEvents;
-  static set allowSendEvents(bool value) =>
-      _allowSendEvents = _isDebug ? false : value;
+  static set allowSendEvents(bool value) => _allowSendEvents = _isDebug ? false : value;
 
   @visibleForTesting
   static int errorCount = 0;

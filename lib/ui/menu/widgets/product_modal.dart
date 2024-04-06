@@ -25,8 +25,7 @@ class ProductModal extends StatefulWidget {
   State<ProductModal> createState() => _ProductModalState();
 }
 
-class _ProductModalState extends State<ProductModal>
-    with ItemModal<ProductModal> {
+class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
@@ -63,8 +62,7 @@ class _ProductModalState extends State<ProductModal>
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.product?.name != name &&
-                    Menu.instance.hasProductByName(name)
+            return widget.product?.name != name && Menu.instance.hasProductByName(name)
                 ? S.menuProductNameRepeatError
                 : null;
           },

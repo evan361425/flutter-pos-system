@@ -52,8 +52,7 @@ class HomePage extends StatelessWidget {
                 // disable shadow after scrolled
                 scrolledUnderElevation: 0,
                 bottom: TabBar(tabs: [
-                  _Tab(
-                      key: const Key('home.analysis'), text: S.homeTabAnalysis),
+                  _Tab(key: const Key('home.analysis'), text: S.homeTabAnalysis),
                   _Tab(key: const Key('home.stock'), text: S.homeTabStock),
                   _Tab(key: const Key('home.cashier'), text: S.homeTabCashier),
                   _Tab(key: const Key('home.setting'), text: S.homeTabSetting),

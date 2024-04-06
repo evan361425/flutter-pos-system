@@ -38,9 +38,8 @@ class HistoryOrderList extends StatelessWidget {
       ),
       title: MetaBlock.withString(
         context,
-        order.products.map((product) => product.count == 1
-            ? product.productName
-            : '${product.productName} * ${product.count}'),
+        order.products
+            .map((product) => product.count == 1 ? product.productName : '${product.productName} * ${product.count}'),
       ),
       subtitle: subtitle,
       onTap: () => context.pushNamed(

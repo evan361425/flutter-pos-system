@@ -40,10 +40,7 @@ void main() {
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
         'i-3': Ingredient(id: 'i-3', name: 'i-3'),
       });
-      Quantities().replaceItems({
-        'q-1': Quantity(id: 'q-1', name: 'q-1'),
-        'q-2': Quantity(id: 'q-2', name: 'q-2')
-      });
+      Quantities().replaceItems({'q-1': Quantity(id: 'q-1', name: 'q-1'), 'q-2': Quantity(id: 'q-2', name: 'q-2')});
       final ingredient1 = ProductIngredient(
         id: 'pi-1',
         ingredient: Stock.instance.getItem('i-1'),
@@ -152,8 +149,7 @@ void main() {
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
         await tester.pumpAndSettle();
         // cancel tap
-        final gesture = await tester.startGesture(
-            tester.getRect(find.byKey(const Key('order.product.p-2'))).center);
+        final gesture = await tester.startGesture(tester.getRect(find.byKey(const Key('order.product.p-2'))).center);
         await tester.pump(const Duration(milliseconds: 100));
         await gesture.moveBy(const Offset(0.0, 200.0));
         await gesture.cancel();
@@ -179,13 +175,11 @@ void main() {
         verifySnapshot(List<List<String>> data, num price) {
           var count = 0;
           for (var item in data) {
-            final w = tester.widget<OutlinedText>(
-                find.byKey(Key('cart_snapshot.${count++}')));
+            final w = tester.widget<OutlinedText>(find.byKey(Key('cart_snapshot.${count++}')));
             expect(w.text, equals(item[0]));
             expect(w.badge, equals(item[1]));
           }
-          final w =
-              tester.widget<Text>(find.byKey(const Key('cart_snapshot.price')));
+          final w = tester.widget<Text>(find.byKey(const Key('cart_snapshot.price')));
           expect(w.data, equals(price.toString()));
         }
 
@@ -205,27 +199,23 @@ void main() {
           if (subtitle != null) {
             subtitle.isEmpty
                 ? expect(w.subtitle, isA<HintText>())
-                : expect((w.subtitle as RichText).text.toPlainText(),
-                    equals(subtitle));
+                : expect((w.subtitle as RichText).text.toPlainText(), equals(subtitle));
           }
           if (selected != null) {
             expect(w.selected, equals(selected));
           }
           if (count != null) {
-            expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data,
-                equals(count.toString()));
+            expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
           }
           if (price != null) {
-            expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-                equals(S.orderCartItemPrice(price.toInt())));
+            expect(
+                tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
           }
         }
 
         verifyMetadata(int count, num price) {
-          final w =
-              tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-          final t =
-              '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+          final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
+          final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
           expect((w.child as RichText).text.toPlainText(), equals(t));
         }
 
@@ -245,8 +235,7 @@ void main() {
         verifyProductList(1, title: 'p-2', selected: true);
         verifyMetadata(2, 28);
 
-        expect(find.byKey(const Key('order.ingredient.noNeedIngredient')),
-            findsOneWidget);
+        expect(find.byKey(const Key('order.ingredient.noNeedIngredient')), findsOneWidget);
 
         // full screen the panel
         await tester.dragFrom(
@@ -265,8 +254,7 @@ void main() {
         // select quantity
         await tester.tap(find.byKey(const Key('order.quantity.pq-1')));
         await tester.pumpAndSettle();
-        verifyProductList(0,
-            subtitle: S.orderProductIngredientName('i-1', 'q-1'), price: 27);
+        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-1'), price: 27);
 
         await tester.tap(find.byKey(const Key('order.quantity.default')));
         await tester.pumpAndSettle();
@@ -274,8 +262,7 @@ void main() {
 
         await tester.tap(find.byKey(const Key('order.quantity.pq-2')));
         await tester.pumpAndSettle();
-        verifyProductList(0,
-            subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
+        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
 
         // add count
         await tester.tap(find.byKey(const Key('cart.product.0.add')));
@@ -290,29 +277,18 @@ void main() {
         await tester.pumpAndSettle();
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: true);
-        expect(find.byKey(const Key('order.ingredient.differentProducts')),
-            findsOneWidget);
+        expect(find.byKey(const Key('order.ingredient.differentProducts')), findsOneWidget);
 
         await tester.tap(find.byKey(const Key('cart.product.1.select')));
         await tester.pumpAndSettle();
         verifyProductList(0, selected: true);
         verifyProductList(1, selected: false);
-        expect(
-            tester
-                .widget<ChoiceChip>(
-                    find.byKey(const Key('order.quantity.pq-2')))
-                .selected,
-            isTrue);
+        expect(tester.widget<ChoiceChip>(find.byKey(const Key('order.quantity.pq-2'))).selected, isTrue);
 
         // select ingredient
         await tester.tap(find.byKey(const Key('order.ingredient.pi-2')));
         await tester.pumpAndSettle();
-        expect(
-            tester
-                .widget<ChoiceChip>(
-                    find.byKey(const Key('order.quantity.default')))
-                .selected,
-            isTrue);
+        expect(tester.widget<ChoiceChip>(find.byKey(const Key('order.quantity.default'))).selected, isTrue);
 
         // select all, toggle all
         await tester.tap(find.byKey(const Key('cart.toggle_all')));
@@ -364,21 +340,17 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
-        final scrollController = tester
-            .widget<ListView>(find.byKey(const Key('cart.product_list')))
-            .controller!;
+        final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
         // scroll to bottom
         expect(scrollController.position.maxScrollExtent, isNonZero);
-        expect(find.byKey(const Key('order.orientation.landscape')),
-            findsOneWidget);
+        expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
 
         // setup portrait env
         tester.view.physicalSize = const Size(1000, 2000);
         addTearDown(tester.view.resetPhysicalSize);
 
         await tester.pumpAndSettle();
-        expect(find.byKey(const Key('order.orientation.portrait')),
-            findsOneWidget);
+        expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
       });
     });
 
@@ -431,20 +403,16 @@ void main() {
       verifyProductList(int index, {int? count, num? price}) {
         final key = 'cart.product.$index';
         if (count != null) {
-          expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data,
-              equals(count.toString()));
+          expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
         }
         if (price != null) {
-          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-              equals(S.orderCartItemPrice(price.toInt())));
+          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
         }
       }
 
       verifyMetadata(int count, num price) {
-        final w =
-            tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-        final t =
-            '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+        final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
+        final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
         expect((w.child as RichText).text.toPlainText(), equals(t));
       }
 
@@ -492,15 +460,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final chip = tester
-          .widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')));
+      final chip = tester.widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')));
       expect(chip.selected, isTrue);
 
       await tester.tap(find.byKey(const Key('cart.product.1.select')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCartIngredientStatus('differentProducts')),
-          findsOneWidget);
+      expect(find.text(S.orderCartIngredientStatus('differentProducts')), findsOneWidget);
     });
 
     testWidgets('Show different message by cashier status', (tester) async {
@@ -525,8 +491,7 @@ void main() {
       }
 
       // hide all
-      SettingsProvider.of<CheckoutWarningSetting>().value =
-          CheckoutWarningTypes.hideAll;
+      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.hideAll;
       await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
       await tapWithCheck(CheckoutStatus.restore, S.actSuccess);
       await tapWithCheck(CheckoutStatus.stash, S.actSuccess);
@@ -541,17 +506,13 @@ void main() {
       await tapWithCheck(CheckoutStatus.nothingHappened);
 
       // only not enough
-      SettingsProvider.of<CheckoutWarningSetting>().value =
-          CheckoutWarningTypes.onlyNotEnough;
-      await tapWithCheck(
-          CheckoutStatus.cashierNotEnough, S.orderCashierPaidNotEnough);
+      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.onlyNotEnough;
+      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderCashierPaidNotEnough);
       await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
 
       // show all
-      SettingsProvider.of<CheckoutWarningSetting>().value =
-          CheckoutWarningTypes.showAll;
-      await tapWithCheck(
-          CheckoutStatus.cashierUsingSmall, S.orderCashierPaidUsingSmallMoney);
+      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.showAll;
+      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderCashierPaidUsingSmallMoney);
     });
 
     setUp(() {

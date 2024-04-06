@@ -46,8 +46,7 @@ void main() {
               ),
               ...Routes.routes.where((e) => e.name != Routes.imageGallery),
             ],
-            builder: (context, __) =>
-                home?.call(context) ?? ProductPage(product: product),
+            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
           )
         ]),
       ),
@@ -81,13 +80,11 @@ void main() {
       expect(captured.length, equals(2));
       expect(
         captured[0],
-        predicate((data) =>
-            data is Map && data['c-1.products.p-1.imagePath'] == null),
+        predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == null),
       );
       expect(
         captured[1],
-        predicate((data) =>
-            data is Map && data['c-1.products.p-1.imagePath'] == newImage),
+        predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == newImage),
       );
 
       expect(product.imagePath, equals(newImage));
@@ -145,8 +142,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // enter amount
-        await tester.enterText(
-            find.byKey(const Key('product_ingredient.amount')), '1');
+        await tester.enterText(find.byKey(const Key('product_ingredient.amount')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -158,8 +154,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField).last, 'new-ingredient');
         await tester.pumpAndSettle();
-        await tester
-            .tap(find.byKey(const Key('product_ingredient.add_ingredient')));
+        await tester.tap(find.byKey(const Key('product_ingredient.add_ingredient')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('modal.save')));
@@ -171,8 +166,7 @@ void main() {
         expect(ingredient.name, equals('new-ingredient'));
         expect(ingredient.amount, equals(1));
 
-        expect(find.byKey(Key('product_ingredient.${ingredient.id}')),
-            findsOneWidget);
+        expect(find.byKey(Key('product_ingredient.${ingredient.id}')), findsOneWidget);
 
         // add ingredient
         verify(storage.add(any, argThat(equals(id)), argThat(predicate((data) {
@@ -202,12 +196,10 @@ void main() {
         );
         final product = Product(id: 'p-1', ingredients: {
           'pi-1': ingredient,
-          'pi-2':
-              ProductIngredient(id: 'pi-2', ingredient: stock.getItem('i-2')),
+          'pi-2': ProductIngredient(id: 'pi-2', ingredient: stock.getItem('i-2')),
         });
         Menu().replaceItems({
-          'c-1': Catalog(id: 'c-1', products: {'p-1': product..prepareItem()})
-            ..prepareItem()
+          'c-1': Catalog(id: 'c-1', products: {'p-1': product..prepareItem()})..prepareItem()
         });
       }
 
@@ -237,8 +229,7 @@ void main() {
         // go into modal and edit ingredient2 name
         await tester.tap(find.byIcon(Icons.open_in_new_sharp));
         await tester.pumpAndSettle();
-        await tester.enterText(
-            find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
+        await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
@@ -250,8 +241,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // enter amount
-        await tester.enterText(
-            find.byKey(const Key('product_ingredient.amount')), '1');
+        await tester.enterText(find.byKey(const Key('product_ingredient.amount')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -267,20 +257,12 @@ void main() {
         // prefix-i-3 should be smaller similarity
         await tester.enterText(find.byType(TextField).last, 'i-');
         await tester.pumpAndSettle();
-        expect(
-            tester
-                .getCenter(
-                    find.byKey(const Key('product_ingredient.search.i-2')))
-                .dy,
-            lessThan(tester
-                .getCenter(
-                    find.byKey(const Key('product_ingredient.search.i-3')))
-                .dy));
+        expect(tester.getCenter(find.byKey(const Key('product_ingredient.search.i-2'))).dy,
+            lessThan(tester.getCenter(find.byKey(const Key('product_ingredient.search.i-3'))).dy));
 
         await tester.enterText(find.byType(TextField).last, '3');
         await tester.pumpAndSettle();
-        await tester
-            .tap(find.byKey(const Key('product_ingredient.search.i-3')));
+        await tester.tap(find.byKey(const Key('product_ingredient.search.i-3')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('modal.save')));
@@ -295,12 +277,8 @@ void main() {
         // edit ingredient and product ingredient
         final captured = verify(storage.set(any, captureAny)).captured;
         expect(captured.length, equals(2));
-        expect(
-            captured[0],
-            predicate((data) =>
-                data is Map &&
-                data['i-2.name'] == 'i-2-n' &&
-                data['i-2.updatedAt'] != null));
+        expect(captured[0],
+            predicate((data) => data is Map && data['i-2.name'] == 'i-2-n' && data['i-2.updatedAt'] != null));
         expect(
             captured[1],
             predicate((data) =>
@@ -340,19 +318,13 @@ void main() {
             'q-2': Quantity(id: 'q-2', name: 'q-2'),
             'q-3': Quantity(id: 'q-3', name: 'q-3'),
           });
-        final stock = Stock()
-          ..replaceItems({'i-1': Ingredient(id: 'i-1', name: 'i-1')});
-        final ingredient = ProductIngredient(
-            id: 'pi-1',
-            ingredient: stock.getItem('i-1'),
-            quantities: {
-              'pq-1': ProductQuantity(id: 'pq-1', quantity: qs.getItem('q-1')),
-              'pq-2': ProductQuantity(id: 'pq-2', quantity: qs.getItem('q-2')),
-            });
-        final product = Product(
-            id: 'p-1', ingredients: {'pi-1': ingredient..prepareItem()});
-        final catalog =
-            Catalog(id: 'c-1', products: {'p-1': product..prepareItem()});
+        final stock = Stock()..replaceItems({'i-1': Ingredient(id: 'i-1', name: 'i-1')});
+        final ingredient = ProductIngredient(id: 'pi-1', ingredient: stock.getItem('i-1'), quantities: {
+          'pq-1': ProductQuantity(id: 'pq-1', quantity: qs.getItem('q-1')),
+          'pq-2': ProductQuantity(id: 'pq-2', quantity: qs.getItem('q-2')),
+        });
+        final product = Product(id: 'p-1', ingredients: {'pi-1': ingredient..prepareItem()});
+        final catalog = Catalog(id: 'c-1', products: {'p-1': product..prepareItem()});
         Menu().replaceItems({'c-1': catalog..prepareItem()});
       }
 
@@ -367,10 +339,8 @@ void main() {
         await tester.tap(find.byKey(const Key('product_ingredient.pi-1.add')));
         await tester.pumpAndSettle();
 
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.price')), '1');
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.cost')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.price')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.cost')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -382,12 +352,10 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField).last, 'new-quantity');
         await tester.pumpAndSettle();
-        await tester
-            .tap(find.byKey(const Key('product_quantity.add_quantity')));
+        await tester.tap(find.byKey(const Key('product_quantity.add_quantity')));
         await tester.pumpAndSettle();
 
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.amount')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.amount')), '1');
 
         await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
@@ -400,8 +368,7 @@ void main() {
         expect(quantity.additionalCost, equals(1));
         expect(quantity.additionalPrice, equals(1));
 
-        expect(
-            find.byKey(Key('product_quantity.${quantity.id}')), findsOneWidget);
+        expect(find.byKey(Key('product_quantity.${quantity.id}')), findsOneWidget);
 
         // add quantity
         verify(storage.add(any, argThat(equals(id)), argThat(predicate((data) {
@@ -453,10 +420,8 @@ void main() {
         await tester.pumpAndSettle();
 
         // edit properties
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.price')), '1');
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.cost')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.price')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.cost')), '1');
         await tester.testTextInput.receiveAction(TextInputAction.done);
         await tester.pumpAndSettle();
 
@@ -474,12 +439,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // amount will be effect by proportion
-        var w =
-            find.byKey(const Key('product_quantity.amount')).evaluate().first;
+        var w = find.byKey(const Key('product_quantity.amount')).evaluate().first;
         expect((w.widget as TextFormField).initialValue, equals('0'));
 
-        await tester.enterText(
-            find.byKey(const Key('product_quantity.amount')), '1');
+        await tester.enterText(find.byKey(const Key('product_quantity.amount')), '1');
         await tester.tap(find.byKey(const Key('modal.save')));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle();
@@ -494,8 +457,7 @@ void main() {
         // edit ingredient and product ingredient
         final captured = verify(storage.set(any, captureAny)).captured;
         expect(captured.length, equals(2));
-        expect(captured[0],
-            predicate((data) => data is Map && data['q-2.name'] == 'q-2-n'));
+        expect(captured[0], predicate((data) => data is Map && data['q-2.name'] == 'q-2-n'));
         expect(
             captured[1],
             predicate((data) =>
@@ -514,8 +476,7 @@ void main() {
 
         await tester.pumpWidget(buildApp(product));
 
-        await tester
-            .longPress(find.byKey(const Key('product_ingredient.pi-1')));
+        await tester.longPress(find.byKey(const Key('product_ingredient.pi-1')));
         await tester.pumpAndSettle();
         await tester.longPress(find.byKey(const Key('product_quantity.pq-1')));
         await tester.pumpAndSettle();
@@ -526,8 +487,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // expansion is still open
-        expect(find.byKey(const Key('product_ingredient.pi-1.add')),
-            findsOneWidget);
+        expect(find.byKey(const Key('product_ingredient.pi-1.add')), findsOneWidget);
         expect(find.byKey(const Key('product_quantity.pq-1')), findsNothing);
         expect(ingredient.getItem('pq-1'), isNull);
         verify(storage.set(any, argThat(equals({quantity.prefix: null}))));

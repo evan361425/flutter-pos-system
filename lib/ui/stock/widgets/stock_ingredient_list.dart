@@ -25,9 +25,7 @@ class StockIngredientList extends StatelessWidget {
       children: [
         Center(
           child: HintText([
-            updatedAt == null
-                ? S.stockHasNotReplenishEver
-                : S.stockUpdatedAt(updatedAt),
+            updatedAt == null ? S.stockHasNotReplenishEver : S.stockUpdatedAt(updatedAt),
             S.totalCount(ingredients.length),
           ].join(MetaBlock.string)),
         ),

@@ -40,8 +40,7 @@ void main() {
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('order_attribute.name')), 'attr-1');
+      await tester.enterText(find.byKey(const Key('order_attribute.name')), 'attr-1');
       await tester.tap(find.byKey(const Key('modal.save')));
       // save to storage
       await tester.pumpAndSettle();
@@ -70,35 +69,18 @@ void main() {
     });
 
     Future<void> buildAppWithAttributes(WidgetTester tester) async {
-      final attr1 = OrderAttribute(
-          id: '1',
-          name: 'cs-1',
-          index: 1,
-          mode: OrderAttributeMode.changePrice,
-          options: {
-            '1': OrderAttributeOption(
-                id: '1',
-                name: 'cso-1',
-                index: 1,
-                isDefault: true,
-                modeValue: 10),
-            '2': OrderAttributeOption(
-                id: '2', name: 'cso-2', index: 2, modeValue: -10),
-            '3': OrderAttributeOption(
-                id: '3', name: 'cso-3', index: 3, modeValue: 0),
-            '4': OrderAttributeOption(id: '4', name: 'cso-4', index: 4),
-          })
+      final attr1 = OrderAttribute(id: '1', name: 'cs-1', index: 1, mode: OrderAttributeMode.changePrice, options: {
+        '1': OrderAttributeOption(id: '1', name: 'cso-1', index: 1, isDefault: true, modeValue: 10),
+        '2': OrderAttributeOption(id: '2', name: 'cso-2', index: 2, modeValue: -10),
+        '3': OrderAttributeOption(id: '3', name: 'cso-3', index: 3, modeValue: 0),
+        '4': OrderAttributeOption(id: '4', name: 'cso-4', index: 4),
+      })
         ..prepareItem();
-      final attr2 = OrderAttribute(
-          id: '2',
-          name: 'cs-2',
-          index: 2,
-          mode: OrderAttributeMode.changeDiscount,
-          options: {
-            '5': OrderAttributeOption(id: '5', name: 'cso-5', modeValue: 110),
-            '6': OrderAttributeOption(id: '6', name: 'cso-6', modeValue: 60),
-            '7': OrderAttributeOption(id: '7', name: 'cso-7', modeValue: 55),
-          })
+      final attr2 = OrderAttribute(id: '2', name: 'cs-2', index: 2, mode: OrderAttributeMode.changeDiscount, options: {
+        '5': OrderAttributeOption(id: '5', name: 'cso-5', modeValue: 110),
+        '6': OrderAttributeOption(id: '6', name: 'cso-6', modeValue: 60),
+        '7': OrderAttributeOption(id: '7', name: 'cso-7', modeValue: 55),
+      })
         ..prepareItem();
       final attrs = OrderAttributes()
         ..replaceItems({
@@ -141,22 +123,17 @@ void main() {
       await tester.pumpAndSettle();
 
       // repeat name
-      await tester.enterText(
-          find.byKey(const Key('order_attribute.name')), 'cs-2');
+      await tester.enterText(find.byKey(const Key('order_attribute.name')), 'cs-2');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('order_attribute.name')), 'new');
-      await tester.tap(
-          find.byKey(Key('choice_chip.${OrderAttributeMode.changePrice}')));
-      await tester.tap(
-          find.byKey(Key('choice_chip.${OrderAttributeMode.changeDiscount}')));
+      await tester.enterText(find.byKey(const Key('order_attribute.name')), 'new');
+      await tester.tap(find.byKey(Key('choice_chip.${OrderAttributeMode.changePrice}')));
+      await tester.tap(find.byKey(Key('choice_chip.${OrderAttributeMode.changeDiscount}')));
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      final w =
-          find.byKey(const Key('order_attributes.1')).evaluate().first.widget;
+      final w = find.byKey(const Key('order_attributes.1')).evaluate().first.widget;
       expect(((w as ExpansionTile).title as Text).data, equals('new'));
 
       final attr = OrderAttributes.instance.items.first;
@@ -211,10 +188,8 @@ void main() {
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
-      final y1 =
-          tester.getCenter(find.byKey(const Key('order_attributes.1'))).dy;
-      final y2 =
-          tester.getCenter(find.byKey(const Key('order_attributes.2'))).dy;
+      final y1 = tester.getCenter(find.byKey(const Key('order_attributes.1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('order_attributes.2'))).dy;
       final itemList = OrderAttributes.instance.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('2'));
@@ -236,12 +211,7 @@ void main() {
       /// show [OrderAttributeOptionMode.changePrice] modeValue
       await tester.tap(find.byKey(const Key('order_attributes.1.2')));
       await tester.pumpAndSettle();
-      expect(
-          tester
-              .widget<TextFormField>(
-                  find.byKey(const Key('order_attribute_option.modeValue')))
-              .controller
-              ?.text,
+      expect(tester.widget<TextFormField>(find.byKey(const Key('order_attribute_option.modeValue'))).controller?.text,
           equals('-10'));
       await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
@@ -314,8 +284,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      final w =
-          find.byKey(const Key('order_attributes.2.7')).evaluate().first.widget;
+      final w = find.byKey(const Key('order_attributes.2.7')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('cso-new'));
 
       final attr = OrderAttributes.instance.getItem('2')!;
@@ -368,15 +337,12 @@ void main() {
       await tester.tap(find.text(S.orderAttributeOptionReorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(
-          find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
+      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
-      final y1 =
-          tester.getCenter(find.byKey(const Key('order_attributes.1.1'))).dy;
-      final y2 =
-          tester.getCenter(find.byKey(const Key('order_attributes.1.2'))).dy;
+      final y1 = tester.getCenter(find.byKey(const Key('order_attributes.1.1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('order_attributes.1.2'))).dy;
       final itemList = OrderAttributes.instance.items.first.itemList;
       expect(y1, greaterThan(y2));
       expect(itemList[0].id, equals('2'));

@@ -28,8 +28,7 @@ class CatalogObject extends ModelObject<Catalog> {
   }) : products = products ?? const [];
 
   factory CatalogObject.build(Map<String, Object?> data) {
-    final products =
-        (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final products = (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return CatalogObject(
       id: data['id'] as String,
@@ -100,8 +99,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
     final id = version == 1 ? Util.uuidV4() : data['id'];
     final ingredientId = version == 1 ? data['id'] : data['ingredientId'];
 
-    final quantities =
-        (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final quantities = (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductIngredientObject(
       id: id as String,
@@ -141,9 +139,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
     return {
       'ingredientId': ingredientId!,
       'amount': amount!,
-      'quantities': {
-        for (var quantity in quantities) quantity.id: quantity.toMap()
-      },
+      'quantities': {for (var quantity in quantities) quantity.id: quantity.toMap()},
     };
   }
 }
@@ -172,8 +168,7 @@ class ProductObject extends ModelObject<Product> {
   }) : ingredients = ingredients ?? const [];
 
   factory ProductObject.build(Map<String, Object?> data) {
-    final ingredients =
-        (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final ingredients = (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
     final searchedAt = data['searchedAt'] as int?;
 
     return ProductObject(
@@ -231,9 +226,7 @@ class ProductObject extends ModelObject<Product> {
       'imagePath': imagePath,
       'createdAt': Util.toUTC(now: createdAt),
       if (searchedAt != null) 'searchedAt': Util.toUTC(now: searchedAt),
-      'ingredients': {
-        for (var ingredient in ingredients) ingredient.id: ingredient.toMap()
-      }
+      'ingredients': {for (var ingredient in ingredients) ingredient.id: ingredient.toMap()}
     };
   }
 }

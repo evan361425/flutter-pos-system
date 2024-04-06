@@ -16,8 +16,7 @@ class PercentileBar extends StatefulWidget {
   State<PercentileBar> createState() => _PercentileBarState();
 }
 
-class _PercentileBarState extends State<PercentileBar>
-    with SingleTickerProviderStateMixin {
+class _PercentileBarState extends State<PercentileBar> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
   late Animation<double> _curveAnimation;

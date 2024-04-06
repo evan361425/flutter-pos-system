@@ -1,18 +1,28 @@
 # 架構
 
-使用 [Flutter](https://flutter.dev) 去撰寫所有應用程式相關邏輯，他提供很多素材去做學習，包括各種應用程式的完成品，如 [Gallery](https://github.com/flutter/gallery) 和其他[小範例](https://github.com/flutter/samples)。
+使用 [Flutter](https://flutter.dev) 去撰寫所有應用程式相關邏輯，
+他提供很多素材去做學習，包括各種應用程式的完成品，
+如 [Gallery](https://github.com/flutter/gallery) 和其他[小範例](https://github.com/flutter/samples)。
 
-Flutter 透過 [Skia](https://skia.org) 來做繪圖工具，在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，減少和各平台的接口接觸，進而達到能在眾平台中統一介面。
+Flutter 透過 [Skia](https://skia.org) 來做繪圖工具，
+在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，
+減少和各平台的接口接觸，進而達到能在眾平台中統一介面。
 
-當然，在一些特殊情境上，仍需要單獨處理平台的設定。例如，iOS 的通知，便需要在 XCode 和 [AppStoreConnect](http://appstoreconnect.apple.com) 中設定。但整體的商務邏輯和應用程式設計都可以直接透過 Flutter 設定。
+當然，在一些特殊情境上，仍需要單獨處理平台的設定。
+例如，iOS 的通知，便需要在 XCode 和 [AppStoreConnect](http://appstoreconnect.apple.com) 中設定。
+但整體的商務邏輯和應用程式設計都可以直接使用 Flutter 撰寫。
 
-Flutter 是一個框架，撰寫其框架的語言是 [Dart](https://dart.dev)，其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。這有幾個詳細說明的文章，無聊可以讀讀，[10-good-reasons-why-you-should-learn-dart](https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332)、[why-flutter-uses-dart](https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf)。
+Flutter 是一個框架，撰寫其框架的語言是 [Dart](https://dart.dev)，
+其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。
+這有幾個詳細說明的文章，無聊可以讀讀，
+[10-good-reasons-why-you-should-learn-dart](https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332)、
+[why-flutter-uses-dart](https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf)。
 
 如果想馬上來試試，可以玩玩看他們的線上 [compiler](https://dartpad.dev/?null_safety=true)。
 
 ## POS 系統在 Flutter 之上的架構
 
-這裡初入的人了解應用程式架構。
+這裡嘗試讓初入的人了解應用程式架構。
 
 ### 主要架構
 
@@ -50,11 +60,8 @@ components/                     - 各種 UI 輔助元件
 ├── scaffold/                   - 框架類元件
 │    ├── item_list_scaffold     - 目前僅有設定時會用到，未來可能會直接搬到 setting_screen
 │    └── reorderable_scaffold   - 可以重新排列物件的框架
-├── style/                      - 不會過 test 的元件
-│    └── ...                    - 小東西，不列舉
-└── tip/                        - 教學相關輔助函示
-     ├── cache_state_manager    - 用 Cache 做狀態管理
-     └── tip_tutorial           - 讓單一教學直接使用這個 Widget，不用去設定 Cache
+└── style/                      - 不會過 test 的元件
+     └── ...                    - 小東西，不列舉
 ```
 
 ### Constants

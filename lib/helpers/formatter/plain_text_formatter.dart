@@ -58,8 +58,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
       '成本 %cost 元）';
 
   @override
-  List<String> getHeader() =>
-      ['${target.length} 個產品種類', '${target.products.length} 個產品'];
+  List<String> getHeader() => ['${target.length} 個產品種類', '${target.products.length} 個產品'];
 
   @override
   List<List<String>> getRows() {
@@ -138,9 +137,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
           'cost': '(?<cost>$_reDig)',
         }));
 
-    final lines = rows[0]
-        .expand((e) => e.toString().split('。').map((e) => e.trim()))
-        .where((e) => e.isNotEmpty);
+    final lines = rows[0].expand((e) => e.toString().split('。').map((e) => e.trim())).where((e) => e.isNotEmpty);
     final result = <List<String>>[];
     String catalog = '', product = '', price = '', cost = '';
     bool foundProduct = false;

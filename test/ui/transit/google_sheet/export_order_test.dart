@@ -26,10 +26,7 @@ import '../../../test_helpers/translator.dart';
 void main() {
   group('Transit - Google Sheet - Order', () {
     const cacheKey = 'exporter_order_google_sheet';
-    const gsExporterScopes = [
-      gs.SheetsApi.driveFileScope,
-      gs.SheetsApi.spreadsheetsScope
-    ];
+    const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
@@ -217,9 +214,7 @@ void main() {
         )).thenAnswer((_) => Future.value(
               gs.Spreadsheet(
                   sheets: ['o', 'os', 'op', 'oi']
-                      .map((e) => gs.Sheet(
-                          properties: gs.SheetProperties(
-                              title: '$e title', sheetId: 1)))
+                      .map((e) => gs.Sheet(properties: gs.SheetProperties(title: '$e title', sheetId: 1)))
                       .toList()),
             ));
         when(sheetsApi.spreadsheets.values.append(

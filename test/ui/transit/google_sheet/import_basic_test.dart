@@ -26,10 +26,7 @@ import '../../../test_helpers/translator.dart';
 void main() {
   group('Transit - Google Sheet - Import Basic', () {
     const iCacheKey = 'importer_google_sheet';
-    const gsExporterScopes = [
-      gs.SheetsApi.driveFileScope,
-      gs.SheetsApi.spreadsheetsScope
-    ];
+    const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
@@ -155,8 +152,7 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSImportError('emptySpreadsheet')),
-            findsOneWidget);
+        expect(find.text(S.transitGSImportError('emptySpreadsheet')), findsOneWidget);
       });
 
       testWidgets('sheet not selected', (tester) async {

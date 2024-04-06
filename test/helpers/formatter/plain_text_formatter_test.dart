@@ -28,8 +28,7 @@ void main() {
       String expected,
     ) {
       const formatter = PlainTextFormatter();
-      final text =
-          formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
+      final text = formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
       expect(text, equals(expected));
 
       final lines = text.trim().split('\n');
@@ -163,8 +162,7 @@ void main() {
 
       expect(
         items.map((e) => e.item?.toObject().toMap().toString()).toList(),
-        equals(
-            stock.items.map((e) => e.toObject().toMap().toString()).toList()),
+        equals(stock.items.map((e) => e.toObject().toMap().toString()).toList()),
       );
     });
 

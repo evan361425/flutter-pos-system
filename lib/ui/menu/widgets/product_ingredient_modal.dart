@@ -29,8 +29,7 @@ class ProductIngredientModal extends StatefulWidget {
   State<ProductIngredientModal> createState() => _ProductIngredientModalState();
 }
 
-class _ProductIngredientModalState extends State<ProductIngredientModal>
-    with ItemModal<ProductIngredientModal> {
+class _ProductIngredientModalState extends State<ProductIngredientModal> with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
   late FocusNode _amountFocusNode;
 
@@ -143,8 +142,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal>
       return S.menuIngredientSearchEmptyError;
     }
 
-    if (widget.ingredient?.ingredient.id != ingredientId &&
-        widget.product.hasIngredient(ingredientId)) {
+    if (widget.ingredient?.ingredient.id != ingredientId && widget.product.hasIngredient(ingredientId)) {
       return S.menuIngredientRepeatError;
     }
 

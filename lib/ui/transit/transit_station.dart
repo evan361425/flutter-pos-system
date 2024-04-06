@@ -45,8 +45,7 @@ class TransitStation extends StatefulWidget {
   State<TransitStation> createState() => _TransitStationState();
 }
 
-class _TransitStationState extends State<TransitStation>
-    with TickerProviderStateMixin {
+class _TransitStationState extends State<TransitStation> with TickerProviderStateMixin {
   final loading = GlobalKey<LoadingWrapperState>();
 
   /// 這個是用來顯示「正在執行中」的資訊，避免匯出時被中斷。
@@ -136,8 +135,7 @@ class _TransitStationState extends State<TransitStation>
   Widget _buildScreen(_Combination combination) {
     switch (widget.method) {
       case TransitMethod.googleSheet:
-        final exporter =
-            (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
+        final exporter = (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
         switch (combination) {
           case _Combination.exportBasic:
             return gs.ExportBasicView(

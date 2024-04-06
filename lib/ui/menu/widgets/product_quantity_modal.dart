@@ -29,8 +29,7 @@ class ProductQuantityModal extends StatefulWidget {
   State<ProductQuantityModal> createState() => _ProductQuantityModalState();
 }
 
-class _ProductQuantityModalState extends State<ProductQuantityModal>
-    with ItemModal<ProductQuantityModal> {
+class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
@@ -133,12 +132,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     super.initState();
 
     final q = widget.quantity;
-    _amountController =
-        TextEditingController(text: q?.amount.toString() ?? '0');
-    _priceController =
-        TextEditingController(text: q?.additionalPrice.toString() ?? '0');
-    _costController =
-        TextEditingController(text: q?.additionalCost.toString() ?? '0');
+    _amountController = TextEditingController(text: q?.amount.toString() ?? '0');
+    _priceController = TextEditingController(text: q?.additionalPrice.toString() ?? '0');
+    _costController = TextEditingController(text: q?.additionalCost.toString() ?? '0');
     _amountFocusNode = FocusNode();
     _priceFocusNode = FocusNode();
     _costFocusNode = FocusNode();
@@ -193,8 +189,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     if (quantityId.isEmpty) {
       return S.menuQuantitySearchEmptyError;
     }
-    if (widget.quantity?.quantity.id != quantityId &&
-        widget.ingredient.hasQuantity(quantityId)) {
+    if (widget.quantity?.quantity.id != quantityId && widget.ingredient.hasQuantity(quantityId)) {
       return S.menuQuantityRepeatError;
     }
 
@@ -238,8 +233,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal>
     setState(() {
       quantityId = quantity.id;
       quantityName = quantity.name;
-      _amountController.text =
-          val.toInt() == val ? val.toString() : val.toStringAsFixed(2);
+      _amountController.text = val.toInt() == val ? val.toString() : val.toStringAsFixed(2);
     });
     // pop off search page
     Navigator.of(context).pop();

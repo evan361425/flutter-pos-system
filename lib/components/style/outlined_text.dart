@@ -62,8 +62,7 @@ class OutlinedText extends StatelessWidget {
     final base = ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 64, minHeight: 40),
       child: Material(
-        textStyle: theme.textTheme.labelLarge!
-            .copyWith(color: theme.colorScheme.primary),
+        textStyle: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.primary),
         shape: StadiumBorder(
           side: BorderSide(color: theme.colorScheme.outline),
         ),

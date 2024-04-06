@@ -10,11 +10,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
-class Menu extends ChangeNotifier
-    with
-        Repository<Catalog>,
-        RepositoryStorage<Catalog>,
-        RepositoryOrderable<Catalog> {
+class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Catalog>, RepositoryOrderable<Catalog> {
   static late Menu instance;
 
   @override
@@ -24,8 +20,7 @@ class Menu extends ChangeNotifier
     instance = this;
   }
 
-  List<Catalog> get notEmptyItems =>
-      itemList.where((e) => e.isNotEmpty).toList();
+  List<Catalog> get notEmptyItems => itemList.where((e) => e.isNotEmpty).toList();
 
   Iterable<Product> get products sync* {
     for (final catalog in itemList) {
@@ -131,14 +126,11 @@ class Menu extends ChangeNotifier
   ///
   /// [limit] will fire list.take.
   Iterable<Product> searchProducts({int limit = 10, String? text}) {
-    final products = text == null || text.isEmpty
-        ? _getSortedSearchedHistory()
-        : _getSortedSimilarities(text);
+    final products = text == null || text.isEmpty ? _getSortedSearchedHistory() : _getSortedSimilarities(text);
     return products.take(limit);
   }
 
-  Iterable<MapEntry<Product, double>> _getProductSimilarities(
-      String pattern) sync* {
+  Iterable<MapEntry<Product, double>> _getProductSimilarities(String pattern) sync* {
     for (final catalog in items) {
       for (final entry in catalog.getItemsSimilarity(pattern)) {
         yield entry;
@@ -151,22 +143,16 @@ class Menu extends ChangeNotifier
   /// If not enough, return by product asc index
   Iterable<Product> _getSortedSearchedHistory() sync* {
     // products have been searched
-    yield* items
-        .expand((catalog) =>
-            catalog.items.where((product) => product.searchedAt != null))
-        .toList()
+    yield* items.expand((catalog) => catalog.items.where((product) => product.searchedAt != null)).toList()
       ..sort((item1, item2) => item2.searchedAt!.compareTo(item1.searchedAt!));
 
     // products have not been searched
-    yield* itemList.expand((catalog) =>
-        catalog.itemList.where((product) => product.searchedAt == null));
+    yield* itemList.expand((catalog) => catalog.itemList.where((product) => product.searchedAt == null));
   }
 
   /// Get desc similarity value of products
   Iterable<Product> _getSortedSimilarities(String pattern) {
-    final sorted = _getProductSimilarities(pattern)
-        .where((entry) => entry.value > 0)
-        .toList()
+    final sorted = _getProductSimilarities(pattern).where((entry) => entry.value > 0).toList()
       ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
 
     return sorted.map<Product>((e) => e.key);

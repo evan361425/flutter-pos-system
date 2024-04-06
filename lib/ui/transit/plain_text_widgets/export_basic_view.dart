@@ -17,8 +17,7 @@ class ExportBasicView extends StatefulWidget {
   State<ExportBasicView> createState() => _ExportBasicViewState();
 }
 
-class _ExportBasicViewState extends State<ExportBasicView>
-    with SingleTickerProviderStateMixin {
+class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   @override
   Widget build(BuildContext context) {
@@ -38,8 +37,7 @@ class _ExportBasicViewState extends State<ExportBasicView>
         child: TabBarView(
           controller: _tabController,
           children: <Widget>[
-            for (final able in Formattable.values)
-              _buildTabBarView(context, able),
+            for (final able in Formattable.values) _buildTabBarView(context, able),
           ],
         ),
       ),

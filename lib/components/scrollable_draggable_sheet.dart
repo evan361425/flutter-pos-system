@@ -34,8 +34,7 @@ class ScrollableDraggableSheet extends StatefulWidget {
   }) : assert(snapSizes != null || controller != null);
 
   @override
-  State<ScrollableDraggableSheet> createState() =>
-      _ScrollableDraggableSheetState();
+  State<ScrollableDraggableSheet> createState() => _ScrollableDraggableSheetState();
 }
 
 class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
@@ -75,8 +74,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
   @override
   void initState() {
     super.initState();
-    controller =
-        widget.controller ?? ScrollableDraggableController(widget.snapSizes!);
+    controller = widget.controller ?? ScrollableDraggableController(widget.snapSizes!);
     controller.addListener(() {
       if (!controller.isDrag) {
         controller.updateSnapIndex(controller.size);
@@ -128,8 +126,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
             },
             child: Card(
               shape: value == 1.0
-                  ? const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero)
+                  ? const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
                   : const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(16.0),
@@ -154,8 +151,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
   }
 }
 
-class ScrollableDraggableController extends DraggableScrollableController
-    implements ValueListenable<double> {
+class ScrollableDraggableController extends DraggableScrollableController implements ValueListenable<double> {
   ScrollableDraggableController(this.pixelsSnapSizes);
 
   bool isDrag = false;
@@ -169,11 +165,8 @@ class ScrollableDraggableController extends DraggableScrollableController
   transferSnapSizes(double pixels, double offset) {
     final last = pixelsSnapSizes[pixelsSnapSizes.length - 1];
     availablePixels = last > 1 ? last : last * pixels;
-    snapSizes = pixelsSnapSizes
-        .map((e) => e > 1.0
-            ? min((e + DraggableIndicator.height + offset) / pixels, 1.0)
-            : e)
-        .toList();
+    snapSizes =
+        pixelsSnapSizes.map((e) => e > 1.0 ? min((e + DraggableIndicator.height + offset) / pixels, 1.0) : e).toList();
     snapIndex.value = 0;
   }
 
@@ -205,8 +198,7 @@ class ScrollableDraggableController extends DraggableScrollableController
 
   int getNextSnapIndex(double velocity) {
     // drag up/down but is in max/min
-    if ((velocity < 0 && snapIndex.value == snapSizes.length - 1) ||
-        (velocity > 0 && snapIndex.value == 0)) {
+    if ((velocity < 0 && snapIndex.value == snapSizes.length - 1) || (velocity > 0 && snapIndex.value == 0)) {
       return snapIndex.value;
     }
 
@@ -288,10 +280,7 @@ class FixedHeightClipper extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller,
       builder: (context, value, child) {
-        final h =
-            ((valueScalar * value - baselineSize) * controller.availablePixels -
-                    baseline) *
-                exposeFraction;
+        final h = ((valueScalar * value - baselineSize) * controller.availablePixels - baseline) * exposeFraction;
 
         return Stack(clipBehavior: Clip.hardEdge, children: [
           SizedBox(height: clampDouble(h, 0, height)),

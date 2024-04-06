@@ -79,9 +79,7 @@ class Product extends Model<ProductObject>
       imagePath: object.imagePath,
       createdAt: object.createdAt,
       searchedAt: object.searchedAt,
-      ingredients: {
-        for (var ingredient in ingredients) ingredient!.id: ingredient
-      },
+      ingredients: {for (var ingredient in ingredients) ingredient!.id: ingredient},
     )..prepareItem();
   }
 
@@ -94,9 +92,7 @@ class Product extends Model<ProductObject>
     final cost = num.parse(row[3]);
     final status = ori == null
         ? ModelStatus.staged
-        : (price == ori.price && cost == ori.cost
-            ? ModelStatus.normal
-            : ModelStatus.updated);
+        : (price == ori.price && cost == ori.cost ? ModelStatus.normal : ModelStatus.updated);
 
     return Product(
       id: ori?.id,

@@ -1,5 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart'
-    show User, FirebaseAuthException;
+import 'package:firebase_auth/firebase_auth.dart' show User, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:possystem/constants/constant.dart';

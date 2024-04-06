@@ -56,9 +56,7 @@ class Ingredient extends Model<IngredientObject>
     final total = row.length > 2 ? double.tryParse(row[2]) : null;
     final status = ori == null
         ? ModelStatus.staged
-        : (amount == ori.currentAmount && total == ori.totalAmount
-            ? ModelStatus.normal
-            : ModelStatus.updated);
+        : (amount == ori.currentAmount && total == ori.totalAmount ? ModelStatus.normal : ModelStatus.updated);
 
     return Ingredient(
       id: ori?.id,
@@ -69,8 +67,7 @@ class Ingredient extends Model<IngredientObject>
     );
   }
 
-  double get maxAmount =>
-      (totalAmount ?? lastAmount ?? currentAmount).toDouble();
+  double get maxAmount => (totalAmount ?? lastAmount ?? currentAmount).toDouble();
 
   @override
   Stock get repository => Stock.instance;

@@ -53,25 +53,20 @@ void main() {
       await tester.pumpAndSettle();
 
       // should failed
-      await tester.enterText(
-          find.byKey(const Key('replenishment.name')), 'r-2');
+      await tester.enterText(find.byKey(const Key('replenishment.name')), 'r-2');
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('replenishment.name')), 'r-3');
-      await tester.enterText(
-          find.byKey(const Key('replenishment.ingredients.i-1')), '2');
-      await tester.enterText(
-          find.byKey(const Key('replenishment.ingredients.i-2')), '3');
+      await tester.enterText(find.byKey(const Key('replenishment.name')), 'r-3');
+      await tester.enterText(find.byKey(const Key('replenishment.ingredients.i-1')), '2');
+      await tester.enterText(find.byKey(const Key('replenishment.ingredients.i-2')), '3');
       await tester.tap(find.byKey(const Key('modal.save')));
       // update to storage
       await tester.pumpAndSettle();
       // pop
       await tester.pumpAndSettle();
 
-      final w =
-          find.byKey(const Key('replenisher.r-1')).evaluate().first.widget;
+      final w = find.byKey(const Key('replenisher.r-1')).evaluate().first.widget;
       expect(((w as ListTile).title as Text).data, equals('r-3'));
       expect(replenishment.getNumOfId('i-1'), equals(2));
       expect(replenishment.getNumOfId('i-2'), equals(3));
@@ -103,12 +98,9 @@ void main() {
       await tester.tap(find.byKey(const Key('replenisher.add')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const Key('replenishment.name')), 'r-1');
-      await tester.enterText(
-          find.byKey(const Key('replenishment.ingredients.i-1')), '1');
-      await tester.enterText(
-          find.byKey(const Key('replenishment.ingredients.i-2')), '2');
+      await tester.enterText(find.byKey(const Key('replenishment.name')), 'r-1');
+      await tester.enterText(find.byKey(const Key('replenishment.ingredients.i-1')), '1');
+      await tester.enterText(find.byKey(const Key('replenishment.ingredients.i-2')), '2');
       await tester.tap(find.byKey(const Key('modal.save')));
       // save to storage
       await tester.pumpAndSettle();
@@ -116,11 +108,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final replenishment = replenisher.items.first;
-      final w = find
-          .byKey(Key('replenisher.${replenishment.id}'))
-          .evaluate()
-          .first
-          .widget;
+      final w = find.byKey(Key('replenisher.${replenishment.id}')).evaluate().first.widget;
 
       expect(((w as ListTile).title as Text).data, equals('r-1'));
       expect(replenishment.getNumOfId('i-1'), equals(1));

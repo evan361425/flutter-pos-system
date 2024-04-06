@@ -55,8 +55,7 @@ class Storage {
 
   StorageSanitizedData sanitize(Map<String, Object?> data) {
     final sanitizedData = StorageSanitizedData();
-    data.forEach(
-        (key, value) => sanitizedData.add(StorageSanitizedValue(key, value)));
+    data.forEach((key, value) => sanitizedData.add(StorageSanitizedValue(key, value)));
     return sanitizedData;
   }
 
@@ -65,12 +64,11 @@ class Storage {
     final sanitizedData = sanitize(data);
     final store = getStore(storeId);
 
-    return db.transaction(
-        (txn) => Future.wait(sanitizedData.data.entries.map((entry) {
-              return entry.value == null
-                  ? store.record(entry.key).delete(txn)
-                  : store.record(entry.key).update(txn, entry.value);
-            })));
+    return db.transaction((txn) => Future.wait(sanitizedData.data.entries.map((entry) {
+          return entry.value == null
+              ? store.record(entry.key).delete(txn)
+              : store.record(entry.key).update(txn, entry.value);
+        })));
   }
 
   Future<void> setAll(Stores storeId, Map<String, Object?> data) {
@@ -91,8 +89,7 @@ class Storage {
   /// Get string map Store
   ///
   /// variable to make it easy to test
-  static StoreRef getStore(Stores storeId) =>
-      stringMapStoreFactory.store(storeId.toString());
+  static StoreRef getStore(Stores storeId) => stringMapStoreFactory.store(storeId.toString());
 }
 
 class StorageSanitizedData {

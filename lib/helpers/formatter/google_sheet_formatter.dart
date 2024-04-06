@@ -37,8 +37,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
         _toCD(S.menuProductNameLabel),
         _toCD(S.menuProductPriceLabel),
         _toCD(S.menuProductCostLabel),
-        _toCD(S.transitProductIngredientInfoTitle,
-            S.transitProductIngredientInfoGSNote),
+        _toCD(S.transitProductIngredientInfoTitle, S.transitProductIngredientInfoGSNote),
       ];
 
   @override
@@ -115,8 +114,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   @override
   List<List<GoogleSheetCellData>> getRows() => target.itemList.map((e) {
         final info = [
-          for (final entry in e.ingredientData.entries)
-            '- ${entry.key.name},${entry.value}',
+          for (final entry in e.ingredientData.entries) '- ${entry.key.name},${entry.value}',
         ].join('\n');
         return [
           GoogleSheetCellData(stringValue: e.name),
@@ -131,27 +129,22 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
   @override
   List<GoogleSheetCellData> getHeader() {
     final note = OrderAttributeMode.values
-        .map((e) =>
-            '${S.orderAttributeModeNames(e.name)} -  ${S.orderAttributeModeDescriptions(e.name)}')
+        .map((e) => '${S.orderAttributeModeNames(e.name)} -  ${S.orderAttributeModeDescriptions(e.name)}')
         .join('\n');
     return <GoogleSheetCellData>[
       _toCD(S.orderAttributeNameLabel),
       _toCD(S.orderAttributeModeTitle, note),
-      _toCD(S.transitOrderAttributeOptionTitle,
-          S.transitOrderAttributeOptionGSNote),
+      _toCD(S.transitOrderAttributeOptionTitle, S.transitOrderAttributeOptionGSNote),
     ];
   }
 
   @override
   List<List<GoogleSheetCellData>> getRows() {
-    final options = OrderAttributeMode.values
-        .map((e) => S.orderAttributeModeNames(e.name))
-        .toList();
+    final options = OrderAttributeMode.values.map((e) => S.orderAttributeModeNames(e.name)).toList();
 
     return target.itemList.map((e) {
       final info = [
-        for (final item in e.itemList)
-          '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
+        for (final item in e.itemList) '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
       ].join('\n');
       return [
         GoogleSheetCellData(stringValue: e.name),

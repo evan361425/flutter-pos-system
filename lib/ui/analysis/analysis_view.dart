@@ -23,8 +23,7 @@ class AnalysisView extends StatefulWidget {
   State<AnalysisView> createState() => _AnalysisViewState();
 }
 
-class _AnalysisViewState extends State<AnalysisView>
-    with AutomaticKeepAliveClientMixin {
+class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
 
   /// Range of the data to show in charts, it can updated by the user
@@ -152,9 +151,7 @@ class _AnalysisViewState extends State<AnalysisView>
 
   @override
   void initState() {
-    tab = widget.tabIndex == null
-        ? null
-        : TutorialInTab(index: widget.tabIndex!, context: context);
+    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
     range = ValueNotifier(Util.getDateRange(
       now: DateTime.now().subtract(const Duration(days: 7)),
       days: 7,
