@@ -1,79 +1,97 @@
-"@@context": stock
+$prefix: stock
 title: 庫存
-hasNotReplenishEver:
-- 尚未補貨過
-- 庫存頁面會顯示上次補貨時間，若未補貨過則設此文字
 updatedAt:
 - 上次補貨時間：{updatedAt}
 - {type: DateTime, format: MMMEd}
-ingredientCreateTitle: 新增成分
-ingredientUpdateTitle: 編輯成分
-ingredientDialogDeletionContent:
-- 0: 目前無任何產品有本成分
-  other: 將會一同刪除掉 {count} 個產品的成分
-- 刪除成分時會提示多少個產品受影響
-- count: {type: int, mode: plural}
-ingredientUsedProductsCount:
-- 共有 {count} 個產品使用 {name}
-- 在編輯成分時，會提示有幾個產品正在使用，並允許點擊導進產品頁
-- count: {type: int, description: 產品數量}
-  name: {type: String, description: 成分名稱}
-ingredientCreateTutorialTitle: 新增成分
-ingredientCreateTutorialContent: |
-  成份可以幫助我們確認產品的庫存。
-  你可以在「產品」中設定成分，然後在這裡設定庫存。
-ingredientNameLabel: 成分名稱
-ingredientNameHint: 例如：起司
-ingredientNameRepeatError: 成分名稱重複
-ingredientAmountLabel: 現有庫存
-ingredientAmountMaxLabel: 最大庫存
-ingredientAmountMaxHelper: |
-  設定這個值可以幫助你一眼看出用了多少成分。
+ingredient:
+  title:
+    create: 新增成分
+    update: 編輯成分
+  tutorial:
+    title: 新增成分
+    content: |
+      成份可以幫助我們確認產品的庫存。
+      你可以在「產品」中設定成分，然後在這裡設定庫存。
+  dialogDeletionContent:
+  - =0: 目前無任何產品有本成分
+    other: 將會一同刪除掉 {count} 個產品的成分
+  - 刪除成分時會提示多少個產品受影響
+  - count: {type: int, mode: plural}
+  productsCount:
+  - 共有 {count} 個產品使用 {name}
+  - 在編輯成分時，會提示有幾個產品正在使用，並允許點擊導進產品頁
+  - count: {type: int, description: 產品數量}
+    name: {type: String, description: 成分名稱}
+  name:
+    label: 成分名稱
+    hint: 例如：起司
+    error:
+      repeat: 成分名稱重複
+  amount:
+    label: 現有庫存
+    maxLabel: 最大庫存
+    maxHelper: |
+      設定這個值可以幫助你一眼看出用了多少成分。
 
-  填空或不填寫則每次增加庫存，都會自動設定這值，
-  這是假設每次補貨都會讓庫存達到最大值。
-# Replenishment
-replenishmentTitle: 採購列表
-replenishmentSubtitle:
-- 會影響 {count} 項成分
-- 顯示在採購列表中，會影響多少個成分
-- count: {type: int}
-replenishmentApplyButton: 採購
-replenishmentTutorialTitle: 成份採購
-replenishmentTutorialMessage: |
-  透過採購，你不再需要一個一個去設定成分的庫存。
-  馬上設定採購，一次調整多個成份吧！
-replenishmentApplyConfirmTitle: 套用採購？
-replenishmentApplyConfirmContent:
-- 將會影響以下的成分：{ingredients}
-- 確認採購時會顯示影響的成分
-- ingredients: {type: String, description: 影響的成分}
-replenishmentIngredientListTitle: 點選以設定不同成分欲採購的量
-replenishmentCreateTitle: 新增採購種類
-replenishmentNameLabel: 採購名稱
-replenishmentNameHint: 例如：Costco 採購
-replenishmentNameRepeatError: 採購名稱重複
-replenishmentIngredientAmountHint: 設定增加／減少的量
-# Quantity
-quantityTitle: 份量
-quantityMetaProportion:
-- 預設比例：{proportion}
-- 份量列表中各個項目的子標題中，說明預設比例的文字
-- proportion: {type: num, format: decimalPattern}
-quantityDialogDeletionContent:
-- 0: 目前無任何產品成分有本份量
-  other: 將會一同刪除掉 {count} 個產品成分的份量'
-- 刪除份量時會提示多少個產品成分受影響
-- count: {type: int, mode: plural}
-quantityCreateTitle: 新增份量
-quantityNameLabel: 份量名稱
-quantityNameHint: 例如：少量或多量
-quantityNameRepeatError: 份量名稱重複
-quantityProportionLabel: 預設比例
-quantityProportionHelper: |
-  當產品成分使用此份量時，預設替該成分增加的比例。
-  例如：此份量為「多量」預設份量為「1.5」，
-  今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，
-  當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。
-  若設為「1」則無任何影響。
-  若設為「0」則代表將不會使用此成分
+      填空或不填寫則每次增加庫存，都會自動設定這值，
+      這是假設每次補貨都會讓庫存達到最大值。
+replenish:
+  title:
+    base: 採購列表
+    create: 新增採購
+    ingredientList: 點選以設定不同成分欲採購的量
+    sub:
+    - 會影響 {count} 項成分
+    - 顯示在採購列表中，會影響多少個成分
+    - count: {type: int}
+  never:
+  - 尚未補貨過
+  - 庫存頁面會顯示上次補貨時間，若未補貨過則設此文字
+  apply:
+    button: 採購
+    confirm:
+      title: 套用採購？
+      content:
+      - 將會影響以下的成分：{ingredients}
+      - 確認採購時會顯示影響的成分
+      - ingredients: {type: String, description: 影響的成分}
+  tutorial:
+    title: 成份採購
+    content: |
+      透過採購，你不再需要一個一個去設定成分的庫存。
+      馬上設定採購，一次調整多個成份吧！
+  name:
+    label: 採購名稱
+    hint: 例如：Costco 採購
+    error:
+      repeat: 採購名稱重複
+  ingredientAmount:
+    hint: 設定增加／減少的量
+quantity:
+  title:
+    base: 份量
+    create: 新增份量
+  meta:
+    proportion:
+    - 預設比例：{proportion}
+    - 份量列表中各個項目的子標題中，說明預設比例的文字
+    - proportion: {type: num, format: decimalPattern}
+  dialogDeletionContent:
+  - =0: 目前無任何產品成分有本份量
+    other: 將會一同刪除掉 {count} 個產品成分的份量'
+  - 刪除份量時會提示多少個產品成分受影響
+  - count: {type: int, mode: plural}
+  name:
+    label: 份量名稱
+    hint: 例如：少量或多量
+    error:
+      repeat: 份量名稱重複
+  proportion:
+    label: 預設比例
+    helper: |
+      當產品成分使用此份量時，預設替該成分增加的比例。
+      例如：此份量為「多量」預設份量為「1.5」，
+      今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，
+      當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。
+      若設為「1」則無任何影響。
+      若設為「0」則代表將不會使用此成分

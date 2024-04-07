@@ -1,150 +1,179 @@
 {
-  "title": "ARB placeholder configuration files",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ARB yaml configuration files",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
 
-  "patternProperties": {
-    "^[\\w]+": {
-      "type": "string"
+  "$ref": "#/defs/base",
+
+  "$defs": {
+    "base": {
+      "type": "object",
+      "patternProperties": {
+        "$prefix": { "type": "string" },
+        "^[\\w]+": {
+          "type": ["string", "array", "object"],
+          "anyOf": [
+            { "$ref": "#/$defs/extendedMap" },
+            { "$ref": "#/$defs/list" },
+            { "$ref": "#" }
+          ]
+        },
+        "^@[\\w]": { "$ref": "#/$defs/map" }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Add simple",
+          "description": "Add simple entry",
+          "body": ["$1", "$2"]
+        }
+      ]
     },
-    "^@[\\w]": {
+    "map": {
       "type": "object",
       "properties": {
         "description": { "type": "string" },
         "placeholders": {
           "type": "object",
           "patternProperties": {
-            ".*": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "String",
-                    "int",
-                    "double",
-                    "num",
-                    "DateTime",
-                    "Object"
-                  ]
-                },
-                "example": { "type": "string" },
-                "description": { "type": "string" },
-                "optionalParameters": {
-                  "type": "object",
-                  "properties": {
-                    "decimalDigits": {
-                      "type": "number",
-                      "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
-                    },
-                    "symbol": {
-                      "type": "string",
-                      "description": "Use for currency and compactCurrency"
-                    },
-                    "customPattern": {
-                      "type": "string",
-                      "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
-                    }
-                  }
-                },
-                "format": {
-                  "type": "string",
-                  "enum": [
-                    "compact",
-                    "compactCurrency",
-                    "compactLong",
-                    "compactSimpleCurrency",
-                    "currency",
-                    "decimalPattern",
-                    "decimalPercentPattern",
-                    "percentPattern",
-                    "scientificPattern",
-                    "simpleCurrency",
-                    "d",
-                    "E",
-                    "EEEE",
-                    "LLL",
-                    "LLLL",
-                    "M",
-                    "Md",
-                    "MEd",
-                    "MMM",
-                    "MMMd",
-                    "MMMEd",
-                    "MMMM",
-                    "MMMMd",
-                    "MMMMEEEEd",
-                    "QQQ",
-                    "QQQQ",
-                    "y",
-                    "yM",
-                    "yMd",
-                    "yMEd",
-                    "yMMM",
-                    "yMMMd",
-                    "yMMMEd",
-                    "yMMMM",
-                    "yMMMMd",
-                    "yMMMMEEEEd",
-                    "yQQQ",
-                    "yQQQQ",
-                    "H",
-                    "Hm",
-                    "Hms",
-                    "j",
-                    "jm",
-                    "jms",
-                    "m",
-                    "ms",
-                    "s"
-                  ],
-                  "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
-                }
-              },
-              "defaultSnippets": [
-                {
-                  "label": "String",
-                  "description": "Add description inside @key placeholder",
-                  "body": { "description": "$1", "type": "${2:String}" }
-                },
-                {
-                  "label": "currency",
-                  "description": "Currency format placeholder",
-                  "body": {
-                    "description": "$1",
-                    "type": "num",
-                    "format": "compactCurrency",
-                    "optionalParameters": {
-                      "decimalDigits": 0
-                    }
-                  }
-                },
-                {
-                  "label": "int",
-                  "description": "int placeholder",
-                  "body": { "description": "$1", "type": "${2:int}" }
-                },
-                {
-                  "label": "DateTime",
-                  "description": "DateTime placeholder",
-                  "body": {
-                    "description": "$1",
-                    "type": "DateTime",
-                    "format": "${2:MMMEd}"
-                  }
-                }
-              ]
+            ".*": { "$ref": "#/$defs/mapItem" }
+          }
+        }
+      }
+    },
+    "extendedMap": {
+      "type": "object",
+      "properties": {
+        "text": { "type": ["string", "object"] },
+        "description": { "type": "string" },
+        "placeholders": {
+          "type": "object",
+          "patternProperties": {
+            ".*": { "$ref": "#/$defs/mapItem" }
+          }
+        }
+      }
+    },
+    "list": {
+      "type": "array",
+      "oneOf": [
+        { "items": { "type": "string" } },
+        { "items": { "$ref": "#/$defs/map" } }
+      ],
+      "items": false,
+      "unevaluatedItems": false
+    },
+    "mapItem": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["String", "int", "double", "num", "DateTime", "Object"]
+        },
+        "example": { "type": "string" },
+        "description": { "type": "string" },
+        "optionalParameters": {
+          "type": "object",
+          "properties": {
+            "decimalDigits": {
+              "type": "number",
+              "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
+            },
+            "symbol": {
+              "type": "string",
+              "description": "Use for currency and compactCurrency"
+            },
+            "customPattern": {
+              "type": "string",
+              "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
             }
           }
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "compact",
+            "compactCurrency",
+            "compactLong",
+            "compactSimpleCurrency",
+            "currency",
+            "decimalPattern",
+            "decimalPercentPattern",
+            "percentPattern",
+            "scientificPattern",
+            "simpleCurrency",
+            "d",
+            "E",
+            "EEEE",
+            "LLL",
+            "LLLL",
+            "M",
+            "Md",
+            "MEd",
+            "MMM",
+            "MMMd",
+            "MMMEd",
+            "MMMM",
+            "MMMMd",
+            "MMMMEEEEd",
+            "QQQ",
+            "QQQQ",
+            "y",
+            "yM",
+            "yMd",
+            "yMEd",
+            "yMMM",
+            "yMMMd",
+            "yMMMEd",
+            "yMMMM",
+            "yMMMMd",
+            "yMMMMEEEEd",
+            "yQQQ",
+            "yQQQQ",
+            "H",
+            "Hm",
+            "Hms",
+            "j",
+            "jm",
+            "jms",
+            "m",
+            "ms",
+            "s"
+          ],
+          "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
         }
       },
       "defaultSnippets": [
         {
-          "label": "With description",
-          "description": "Add description inside @key",
-          "body": { "description": "$1" }
+          "label": "String",
+          "description": "Add description inside @key placeholder",
+          "body": { "description": "$1", "type": "${2:String}" }
+        },
+        {
+          "label": "currency",
+          "description": "Currency format placeholder",
+          "body": {
+            "description": "$1",
+            "type": "num",
+            "format": "compactCurrency",
+            "optionalParameters": {
+              "decimalDigits": 0
+            }
+          }
+        },
+        {
+          "label": "int",
+          "description": "int placeholder",
+          "body": { "description": "$1", "type": "${2:int}" }
+        },
+        {
+          "label": "DateTime",
+          "description": "DateTime placeholder",
+          "body": {
+            "description": "$1",
+            "type": "DateTime",
+            "format": "${2:MMMEd}"
+          }
         }
       ]
     }
-  },
-  "type": "object"
+  }
 }

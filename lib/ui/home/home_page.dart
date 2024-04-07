@@ -58,17 +58,17 @@ class HomePage extends StatelessWidget {
                   _Tab(key: const Key('home.setting'), text: S.homeTabSetting),
                 ]),
                 actions: [
-                  TextButton(
-                    onPressed: goOrderPage,
-                    child: const Text('點餐'),
-                  ),
                   const Tooltip(
                     message: '未來這裡的按鈕將會移除，請使用右下角的點餐按鈕。',
                     triggerMode: TooltipTriggerMode.tap,
                     showDuration: Duration(seconds: 30),
                     margin: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Icon(Icons.info_outline),
-                  )
+                  ),
+                  TextButton(
+                    onPressed: goOrderPage,
+                    child: const Text('點餐'),
+                  ),
                 ],
               ),
             ];

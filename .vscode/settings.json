@@ -33,13 +33,10 @@
   },
   "json.schemas": [
     {
-      "fileMatch": ["/lib/l10n/*.arb"],
+      "fileMatch": ["/assets/l10n/*.yaml"],
       "url": "/.vscode/arb.schema.json"
     }
   ],
   "json.format.enable": false,
-  "json.maxItemsComputed": 100,
-  "[json]": {
-    "editor.formatOnSave": false
-  }
+  "json.maxItemsComputed": 100
 }

@@ -1,96 +1,109 @@
-"@@context": "transit"
+$prefix: "transit"
 title: 資料轉移
-btnImport: 匯入
-btnExport: 匯出
-chooseMethodTitle: 請選擇欲轉移的方式
+btn:
+  import: 匯入
+  export: 匯出
 method:
-- googleSheet: Google 試算表
-  plainText: 純文字
-  other: UNKNOWN
-- {label: {type: String, mode: select}}
-previewExportTitle: 預覽輸出結果
-previewImportTitle: 預覽匯入結果
-basicTitle: POS System 資料
-orderTitle: 訂單資料
-dataType:
-- menu: 菜單
-  stock: 庫存
-  quantities: 份量
-  replenisher: 補貨
-  orderAttr: 顧客設定
-  order: 訂單
-  orderDetailsAttr: 訂單顧客設定
-  orderDetailsProduct: 訂單產品細項
-  orderDetailsIngredient: 訂單成分細項
-  other: UNKNOWN
-- {label: {type: String, mode: select}}
-importColumnCountError:
-- 資料量不足，需要 {columns} 個欄位
-- {columns: {type: int}}
-importColumnStatus:
-- normal: （一般）
-  staged: （新增）
-  stagedIng: （新的成分）
-  stagedQua: （新的份量）
-  updated: （異動）
-  other: UNKNOWN
-- 顯示該資料的額外狀態
-- {status: {type: String, mode: select}}
+  title: 請選擇欲轉移的方式
+  name:
+  - googleSheet: Google 試算表
+    plainText: 純文字
+    other: UNKNOWN
+  - {name: {type: String, mode: select}}
+preview:
+  exportTitle: 預覽輸出結果
+  importTitle: 預覽匯入結果
+sheet:
+  basic: POS System 資料
+  order: 訂單資料
+data:
+  name:
+  - menu: 菜單
+    stock: 庫存
+    quantities: 份量
+    replenisher: 補貨
+    orderAttr: 顧客設定
+    order: 訂單
+    orderDetailsAttr: 訂單顧客設定
+    orderDetailsProduct: 訂單產品細項
+    orderDetailsIngredient: 訂單成分細項
+    other: UNKNOWN
+  - {name: {type: String, mode: select}}
+import:
+  error:
+    columnCount:
+    - 資料量不足，需要 {columns} 個欄位
+    - {columns: {type: int}}
+  columnStatus:
+  - normal: （一般）
+    staged: （新增）
+    stagedIng: （新的成分）
+    stagedQua: （新的份量）
+    updated: （異動）
+    other: UNKNOWN
+  - 顯示該資料的額外狀態
+  - {status: {type: String, mode: select}}
 # Google 試算表
-GSDescription: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
-GSSpreadsheetLabel: 試算表
-GSSheetLabel:
-- '{item}的表單標題'
-- 表單標題的說明
-- item: {type: String}
-GSProgressSattus:
-- addSpreadsheet: 新增試算表中..
-  addSheets: 新增表單中..
-  other: UNKNOWN
-- {status: {type: String, mode: select}}
-GSUpdateModelStatus:
-- menu: 更新菜單中..
-  stock: 更新庫存中..
-  quantities: 更新份量中..
-  replenisher: 更新補貨中..
-  orderAttr: 更新顧客設定中..
-  order: 匯出訂單中..
-  orderDetailsAttr: 匯出顧客設定中..
-  orderDetailsProduct: 匯出產品細項中..
-  orderDetailsIngredient: 匯出成分細項中..
-  other: 'UKNOWN'
-- {model: {type: String, mode: select}}
-GSProductIngredientInfoTitle: 成分資訊
-GSProductIngredientInfoNote: |
-  產品全部成分的資訊，格式如下：
-  - 成分1,預設使用量
-    + 份量a,額外使用量,額外價格,額外成本
-    + 份量b,額外使用量,額外價格,額外成本
-  - 成分2,預設使用量
-GSReplenishmentTitle: 補貨量
-GSReplenishmentNote: |
-  每次補貨時特定成分的量，格式如下：
-  - 成分1,補貨量
-  - 成分2,補貨量
-GSOrderAttributeOptionTitle: 顧客設定選項
-GSOrderAttributeOptionNote: |
-  「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
-  - 選項1,是否為預設,選項值
-  - 選項2,是否為預設,選項值
-GSErrors:
-- spreadsheet: 無法建立試算表
-  spreadsheetEmpty: 請先選擇試算表
-  sheet: 無法在試算表中建立表單
-  sheetRepeat: 表單名稱重複
-  sheetEmpty: 請選擇至少一個表單來匯出
-  nonExistName: 找不到試算表，是否已被刪除？
-  other: UNKNOWN
-- 發生錯誤時的提示訊息
-- {type: String, mode: select}
-GSImportError:
-- emptySpreadsheet: 必須選擇試算表來匯入
-  emptySheet: 必須選擇指定的表單來匯入
-  emptyData: 在表單中沒找到任何值
-  other: '{error}'
-- 匯入時會有的錯誤
-- {error: {type: String, mode: select}}
+GS:
+  description: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
+  spreadsheetLabel: 試算表
+  sheetLabel:
+  - '{item}的表單標題'
+  - 表單標題的說明
+  - item: {type: String}
+  progressStatus:
+  - addSpreadsheet: 新增試算表中..
+    addSheets: 新增表單中..
+    other: UNKNOWN
+  - {status: {type: String, mode: select}}
+  updateModelStatus:
+  - menu: 更新菜單中..
+    stock: 更新庫存中..
+    quantities: 更新份量中..
+    replenisher: 更新補貨中..
+    orderAttr: 更新顧客設定中..
+    order: 匯出訂單中..
+    orderDetailsAttr: 匯出顧客設定中..
+    orderDetailsProduct: 匯出產品細項中..
+    orderDetailsIngredient: 匯出成分細項中..
+    other: 'UKNOWN'
+  - {model: {type: String, mode: select}}
+  product:
+    ingredient:
+      title: 成分資訊
+      note: |
+        產品全部成分的資訊，格式如下：
+        - 成分1,預設使用量
+          + 份量a,額外使用量,額外價格,額外成本
+          + 份量b,額外使用量,額外價格,額外成本
+        - 成分2,預設使用量
+  replenishment:
+    title: 補貨量
+    note: |
+      每次補貨時特定成分的量，格式如下：
+      - 成分1,補貨量
+      - 成分2,補貨量
+  attributeOption:
+    title: 顧客設定選項
+    note: |
+      「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
+      - 選項1,是否為預設,選項值
+      - 選項2,是否為預設,選項值
+  error:
+    sheet:
+    - spreadsheet: 無法建立試算表
+      spreadsheetEmpty: 請先選擇試算表
+      sheet: 無法在試算表中建立表單
+      sheetRepeat: 表單名稱重複
+      sheetEmpty: 請選擇至少一個表單來匯出
+      nonExistName: 找不到試算表，是否已被刪除？
+      other: UNKNOWN
+    - 發生錯誤時的提示訊息
+    - {type: String, mode: select}
+    import:
+    - emptySpreadsheet: 必須選擇試算表來匯入
+      emptySheet: 必須選擇指定的表單來匯入
+      emptyData: 在表單中沒找到任何值
+      other: '{error}'
+    - 匯入時會有的錯誤
+    - {error: {type: String, mode: select}}
