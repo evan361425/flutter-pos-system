@@ -60,7 +60,7 @@ invalid:
     empty:
     - "{field}不能為空"
     - 當發現尚未輸入文字的警語
-    - field: {type: !Select '', example: 欄位名稱}
+    - field: {type: String, example: 欄位名稱}
     maximum:
     - "{field}不能超過 {maximum} 個字"
     - 當發現輸入超過最大字數時的警語

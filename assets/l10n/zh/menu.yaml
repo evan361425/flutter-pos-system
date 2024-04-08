@@ -74,7 +74,7 @@ ingredient:
     add:
     - 新增成分「{name}」
     - 成分搜尋結果若找不到，新增成分的按鈕
-    - name: {type: string}
+    - name: {type: String}
     error:
       empty: 必須設定成分，請點選以設定。
       repeat: 產品已經有相同的成分了，不能重複選取。
@@ -102,7 +102,7 @@ quantity:
     add:
     - 新增份量「{name}」
     - 份量搜尋結果若找不到，新增份量的按鈕
-    - name: {type: string}
+    - name: {type: String}
     error:
       empty: 必須設定份量，請點選以設定。
       repeat: 產品已經有相同的份量了，不能重複選取。

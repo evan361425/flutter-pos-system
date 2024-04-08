@@ -28,15 +28,7 @@
     "wakelock",
     "xfile"
   ],
-  "files.associations": {
-    "*.arb": "json"
-  },
-  "json.schemas": [
-    {
-      "fileMatch": ["/assets/l10n/*.yaml"],
-      "url": "/.vscode/arb.schema.json"
-    }
-  ],
-  "json.format.enable": false,
-  "json.maxItemsComputed": 100
+  "yaml.schemas": {
+    ".vscode/arb.schema.json": ["/assets/l10n/**/*.yaml"]
+  }
 }

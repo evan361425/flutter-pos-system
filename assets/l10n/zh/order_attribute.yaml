@@ -63,7 +63,7 @@ option:
     - 模式的說明
     - {mode: {type: String, mode: select}}
     hint:
-    - statOnly:
+    - statOnly: ''
       changePrice: 例如：-30 代表減少三十塊
       changeDiscount: 例如：80 代表「八折」
       other: UNKNOWN}
