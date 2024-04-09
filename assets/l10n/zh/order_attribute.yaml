@@ -1,5 +1,11 @@
 $prefix: orderAttribute
 title: 顧客設定
+subtitle: 內用、外帶等幫助分析的資訊
+tutorial:
+  title: 顧客設定
+  content: |
+    這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。
+    這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
 meta:
   title:
     empty: |

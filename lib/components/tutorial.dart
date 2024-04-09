@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -49,6 +50,8 @@ class Tutorial extends StatelessWidget {
 
   final SpotlightDurationConfig duration;
 
+  final String? route;
+
   const Tutorial({
     super.key,
     required this.id,
@@ -59,6 +62,7 @@ class Tutorial extends StatelessWidget {
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
     this.monitorVisibility = false,
+    this.route,
     required this.child,
     this.duration = const SpotlightDurationConfig(
       bump: Duration(milliseconds: 500),
@@ -80,10 +84,13 @@ class Tutorial extends StatelessWidget {
       duration: duration,
       monitorId: monitorVisibility ? 'tutorial.$id' : null,
       onDismiss: _onDismiss,
+      onDismissed: route != null ? () => context.goNamed(route!) : null,
       spotlight: SpotlightConfig(
         builder: spotlightBuilder,
         padding: padding,
+        onTap: route != null ? () async => SpotlightAntAction.skip : null,
       ),
+      backdrop: SpotlightBackdropConfig(silent: route != null),
       action: const SpotlightActionConfig(
         enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
       ),

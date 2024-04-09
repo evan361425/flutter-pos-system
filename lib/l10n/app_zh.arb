@@ -1,9 +1,11 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-09T00:33:22.422092Z",
+  "@@last_modified": "2024-04-09T10:10:23.825889Z",
   "@@author": "Lu Shueh Chou",
-  "settingTitle": "設定",
+  "settingTab": "設定",
   "settingElfTitle": "建議",
+  "settingElfSubtitle": "使用 Google 表單提供回饋",
+  "settingElfContent": "覺得這裡還少了什麼嗎？\n歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。\n也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。\n",
   "settingFeatureTitle": "其他設定",
   "settingThemeTitle": "調色盤",
   "settingThemeName": "{name, select, dark{暗色模式} light{日光模式} system{跟隨系統} other{未知}}",
@@ -40,7 +42,7 @@
   "@settingOrderAwakeningTitle": {
     "description": "在點餐過程中，即使閒置仍不關閉螢幕"
   },
-  "stockTitle": "庫存",
+  "stockTab": "庫存",
   "stockUpdatedAt": "上次補貨時間：{updatedAt}",
   "stockIngredientTitleCreate": "新增成分",
   "stockIngredientTitleUpdate": "編輯成分",
@@ -110,6 +112,7 @@
   "stockReplenishNameErrorRepeat": "採購名稱重複",
   "stockReplenishIngredientAmountHint": "設定增加／減少的量",
   "stockQuantityTitleBase": "份量",
+  "stockQuantityTitleSub": "半糖、微糖等",
   "stockQuantityTitleCreate": "新增份量",
   "stockQuantityMetaProportion": "預設比例：{proportion}",
   "@stockQuantityMetaProportion": {
@@ -136,6 +139,9 @@
   "stockQuantityProportionLabel": "預設比例",
   "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分\n",
   "transitTitle": "資料轉移",
+  "transitSubtitle": "匯入、匯出店家資訊和訂單",
+  "transitTutorialTitle": "多人、裝置的第一步",
+  "transitTutorialContent": "這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。\n我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。\n",
   "transitBtnImport": "匯入",
   "transitBtnExport": "匯出",
   "transitMethodTitle": "請選擇欲轉移的方式",
@@ -372,6 +378,9 @@
     "description": "日曆週期轉換單位之一"
   },
   "orderAttributeTitle": "顧客設定",
+  "orderAttributeSubtitle": "內用、外帶等幫助分析的資訊",
+  "orderAttributeTutorialTitle": "顧客設定",
+  "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。\n",
   "orderAttributeMetaTitleEmpty": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。\n",
   "orderAttributeMetaTitleCreate": "新增顧客設定",
   "orderAttributeMetaTitleUpdate": "編輯顧客設定",
@@ -384,7 +393,15 @@
       }
     }
   },
-  "orderAttributeMetaDefault": "預設：",
+  "orderAttributeMetaDefault": "預設：{name}",
+  "@orderAttributeMetaDefault": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeMetaNoDefault": "未設定預設",
   "orderAttributeModeLabel": "顧客設定種類",
   "orderAttributeModeName": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{未知}}",
   "@orderAttributeModeName": {
@@ -452,6 +469,9 @@
     }
   },
   "menuTitle": "菜單",
+  "menuSubtitle": "產品種類、產品",
+  "menuTutorialTitle": "建立屬於你的菜單",
+  "menuTutorialContent": "首先我們來開始建立一份菜單吧！",
   "menuEmptyTitle": "尚未設定產品",
   "menuSearchHint": "搜尋產品、成分、份量",
   "menuSearchNotFound": "搜尋不到相關資訊，打錯字了嗎？",
@@ -589,7 +609,7 @@
   "menuQuantitySearchAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
   "menuQuantitySearchAdditionalCostLabel": "額外成本",
   "menuQuantitySearchAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
-  "cashierTitle": "收銀",
+  "cashierTab": "收銀",
   "cashierToDefaultButton": "設為預設",
   "cashierToDefaultTutorialTitle": "收銀機預設狀態",
   "cashierToDefaultTutorialContent": "在下面設定完收銀機各幣值的數量後，\n按這裡設定預設狀態！\n設定好的數量就會是各個幣值狀態條的「最大值」。\n",
@@ -600,6 +620,7 @@
   "cashierSurplusTutorialTitle": "每日結餘",
   "cashierSurplusTutorialContent": "結餘可以幫助我們在每天打烊時，\n計算現有金額和預設金額的差異。\n",
   "orderTitle": "點餐",
+  "orderBtn": "點餐",
   "orderMetaTotalPrice": "總價：{price}",
   "@orderMetaTotalPrice": {
     "description": "點餐列表中，單日點餐的總價",
@@ -749,7 +770,7 @@
   "orderFormTitleProductOriginalPrice": "折扣前單價",
   "orderFormTitleProductCatalog": "產品種類",
   "orderFormTitleProductIngredient": "成分",
-  "analysisTitle": "統計",
+  "analysisTab": "統計",
   "analysisOrderListTitleEmpty": "查無點餐紀錄",
   "analysisOrderListMetaPrice": "總營收：{price}",
   "@analysisOrderListMetaPrice": {

@@ -1,5 +1,5 @@
 $prefix: analysis
-title: 統計
+tab: 統計
 orderList:
   title:
     empty: 查無點餐紀錄

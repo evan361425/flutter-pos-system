@@ -13,7 +13,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class ChartOrderModal extends StatefulWidget {
   final Chart? chart;
 
-  const ChartOrderModal({super.key, required this.chart});
+  const ChartOrderModal({super.key, this.chart});
 
   @override
   State<ChartOrderModal> createState() => _ChartOrderModalState();
@@ -30,7 +30,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
   final targetItems = <String>[];
 
   @override
-  String get title => widget.chart?.name ?? S.analysisChartCreate;
+  String get title => widget.chart?.name ?? S.analysisChartTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -74,7 +74,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
             return ChoiceChip(
               key: Key('chart.type.${e.name}'),
               selected: type == e,
-              label: Text(S.analysisChartType(e.name)),
+              label: Text(S.analysisChartTypeName(e.name)),
               onSelected: (bool value) {
                 type = e;
                 _updateTarget(_allowedTargets.first);
@@ -87,7 +87,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
         ),
       )),
       _buildExampleChart(),
-      TextDivider(label: S.analysisChartDataPropertiesDivider),
+      TextDivider(label: S.analysisChartDividerDataProperties),
       _buildWrappedChoices(
         S.analysisChartTargetLabel,
         S.analysisChartTargetHelper,
@@ -95,7 +95,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
           return ChoiceChip(
             key: Key('chart.target.${e.name}'),
             selected: target == e,
-            label: Text(S.analysisChartTarget(e.name)),
+            label: Text(S.analysisChartTargetName(e.name)),
             onSelected: (bool value) {
               if (value && target != e) {
                 _updateTarget(e);
@@ -114,7 +114,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
           return ChoiceChip(
             key: Key('chart.metrics.${e.name}'),
             selected: metrics.contains(e),
-            label: Text(S.analysisChartMetric(e.name)),
+            label: Text(S.analysisChartMetricName(e.name)),
             onSelected: (bool value) {
               setState(() {
                 if (value) {

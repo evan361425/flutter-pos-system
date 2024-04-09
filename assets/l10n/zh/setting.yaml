@@ -1,7 +1,12 @@
 $prefix: setting
-title: 設定
+tab: 設定
 elf: # 小精靈
   title: 建議
+  subtitle: 使用 Google 表單提供回饋
+  content: |
+    覺得這裡還少了什麼嗎？
+    歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。
+    也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。
 feature:
   title: 其他設定
 theme:

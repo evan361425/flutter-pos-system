@@ -1,5 +1,6 @@
 $prefix: order
 title: 點餐
+btn: 點餐
 meta:
   totalPrice:
   - 總價：{price}

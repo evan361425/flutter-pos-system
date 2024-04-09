@@ -1,5 +1,5 @@
 $prefix: cashier
-title: 收銀
+tab: 收銀
 toDefault:
   button: 設為預設
   tutorial:

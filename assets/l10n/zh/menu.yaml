@@ -1,5 +1,9 @@
 $prefix: menu
 title: 菜單
+subtitle: 產品種類、產品
+tutorial:
+  title: 建立屬於你的菜單
+  content: 首先我們來開始建立一份菜單吧！
 emptyTitle: 尚未設定產品
 search:
   hint: 搜尋產品、成分、份量

@@ -119,7 +119,12 @@ class Routes {
       ),
     ),
     GoRoute(
-      name: chartOrderModal,
+      name: chartNew,
+      path: 'chart/new',
+      builder: (ctx, state) => const ChartOrderModal(),
+    ),
+    GoRoute(
+      name: chartModal,
       path: 'chart/o/:id/modal',
       builder: (ctx, state) {
         final id = state.pathParameters['id'] ?? '0';
@@ -445,7 +450,8 @@ class Routes {
 
   static const order = '/order';
   static const orderDetails = '/order/details';
-  static const chartOrderModal = '/chart/order/modal';
+  static const chartNew = '/chart/order/new';
+  static const chartModal = '/chart/order/modal';
   static const chartReorder = '/chart/reorder';
 
   static const transit = '/transit';

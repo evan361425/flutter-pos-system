@@ -89,7 +89,7 @@ class ChartCardView extends StatelessWidget {
         BottomSheetAction(
           title: const Text('編輯圖表'),
           leading: const Icon(KIcons.modal),
-          route: Routes.chartOrderModal,
+          route: Routes.chartModal,
           routePathParameters: {'id': chart.id},
         ),
       ],
@@ -150,7 +150,7 @@ class _CartesianChart extends StatelessWidget {
             return LineSeries(
               animationDuration: 0,
               markerSettings: const MarkerSettings(isVisible: true),
-              name: chart.target == OrderMetricTarget.order ? S.analysisChartMetric(keyUnit.key) : keyUnit.key,
+              name: chart.target == OrderMetricTarget.order ? S.analysisChartMetricName(keyUnit.key) : keyUnit.key,
               yAxisName: keyUnit.value.name,
               xValueMapper: (v, i) => v.at,
               yValueMapper: (v, i) => v.value(keyUnit.key),

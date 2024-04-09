@@ -1,5 +1,5 @@
 $prefix: stock
-title: 庫存
+tab: 庫存
 updatedAt:
 - 上次補貨時間：{updatedAt}
 - {type: DateTime, format: MMMEd}
@@ -70,6 +70,7 @@ replenish:
 quantity:
   title:
     base: 份量
+    sub: 半糖、微糖等
     create: 新增份量
   meta:
     proportion:

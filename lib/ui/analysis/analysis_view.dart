@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
@@ -12,7 +11,6 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
-import 'package:spotlight_ant/spotlight_ant.dart';
 
 class AnalysisView extends StatefulWidget {
   final int? tabIndex;
@@ -62,11 +60,15 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              RouteCircularButton(
-                key: Key('anal.order'),
-                icon: Icons.store_sharp,
-                route: Routes.order,
-                text: '點餐',
+              Tutorial(
+                id: 'anal.add_chart',
+                message: '開始設計圖表追蹤你的銷售狀況吧！',
+                child: RouteCircularButton(
+                  key: Key('anal.add_chart'),
+                  route: Routes.chartModal,
+                  icon: KIcons.add,
+                  text: '新增圖表',
+                ),
               ),
               SizedBox.square(dimension: 96.0),
               RouteCircularButton(
@@ -88,24 +90,6 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       pinned: true,
       title: const Text('圖表分析'),
       toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
-      actions: [
-        Tutorial(
-          id: 'anal.add_chart',
-          message: '開始設計圖表追蹤你的銷售狀況吧！',
-          spotlightBuilder: const SpotlightRectBuilder(borderRadius: 28),
-          child: ElevatedButton.icon(
-            key: const Key('anal.add_chart'),
-            onPressed: () => context.pushNamed(
-              Routes.chartOrderModal,
-              pathParameters: {
-                'id': '0',
-              },
-            ),
-            icon: const Icon(KIcons.add),
-            label: const Text('新增圖表'),
-          ),
-        ),
-      ],
       bottom: AppBar(
         primary: false,
         centerTitle: false,
@@ -190,6 +174,11 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           title: Text('排序圖表'),
           leading: Icon(KIcons.reorder),
           route: Routes.chartReorder,
+        ),
+        const BottomSheetAction(
+          title: Text('新增圖表'),
+          leading: Icon(KIcons.add),
+          route: Routes.chartNew,
         ),
       ],
     );
