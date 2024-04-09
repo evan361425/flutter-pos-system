@@ -45,10 +45,10 @@ packages:
     dependency: "direct dev"
     description:
       name: arb_glue
-      sha256: a0d1e7d3d707bc2392b11faa0c9f412b83206cad3433cfe618c0002910907d27
+      sha256: db6510d0dcacf0eadef299ea6b331f91a609dc01224766efe5e0d89178530863
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.2"
   archive:
     dependency: transitive
     description:

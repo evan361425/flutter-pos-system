@@ -12,9 +12,9 @@ meta:
   - 種類：{mode}
   - mode: {type: String}
   default:
-  - '': 預設：無
-    other: 預設：{name}
-  - name: {type: String, mode: select}
+  - 預設：{name}
+  - name: {type: String}
+  noDefault: 未設定預設
 mode:
   label: 顧客設定種類
   name:

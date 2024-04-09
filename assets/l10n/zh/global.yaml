@@ -36,35 +36,35 @@ invalid:
     type:
     - "{field}必須是整數"
     - 當發現輸入不是整數時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
   number:
     type:
     - "{field}必須是數字"
     - 當發現輸入不是數字時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
     positive:
     - "{field}不能為負數"
     - 當發現輸入不是正數時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
     maximum:
     - "{field}不能超過 {maximum}"
     - 當發現輸入超過最大值時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
       maximum: {type: num, description: 最大值，必須小於（且不等於）該值, format: decimalPattern}
     minimum:
     - "{field}不能低於 {minimum}"
     - 當發現輸入低於最小值時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
       minimum: {type: num, description: 最小值，必須大於（且不等於）該值, format: decimalPattern}
   string:
     empty:
     - "{field}不能為空"
     - 當發現尚未輸入文字的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
     maximum:
     - "{field}不能超過 {maximum} 個字"
     - 當發現輸入超過最大字數時的警語
-    - field: {type: String, example: 欄位名稱}
+    - field: {type: String}
       maximum: {type: int, description: 最大字數}
 singleMonth:
 - 單月

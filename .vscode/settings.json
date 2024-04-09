@@ -28,6 +28,9 @@
     "wakelock",
     "xfile"
   ],
+  "files.associations": {
+    "*.arb": "json"
+  },
   "yaml.schemas": {
     ".vscode/arb.schema.json": ["/assets/l10n/**/*.yaml"]
   }

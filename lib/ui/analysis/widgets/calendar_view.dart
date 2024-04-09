@@ -60,9 +60,9 @@ class _CalendarViewState extends State<CalendarView> {
         headerStyle: const HeaderStyle(formatButtonShowsNext: false),
         // show next format
         availableCalendarFormats: {
-          CalendarFormat.month: S.analysisCalendarTwoWeek,
-          CalendarFormat.twoWeeks: S.analysisCalendarWeek,
-          CalendarFormat.week: S.analysisCalendarMonth,
+          CalendarFormat.month: S.singleMonth,
+          CalendarFormat.twoWeeks: S.twoWeeks,
+          CalendarFormat.week: S.singleWeek,
         },
         // no need holiday/weekend days
         holidayPredicate: (day) => false,

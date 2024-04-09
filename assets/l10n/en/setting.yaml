@@ -1,0 +1,14 @@
+$prefix: setting
+title: 設定
+elf: # 小精靈
+  title: Feature Request
+feature:
+  title: Settings
+theme:
+  title: Platte
+  name:
+  - dark: Dark Mode
+    light: Light Mode
+    system: Follow System
+language:
+  title: Language
