@@ -4,13 +4,19 @@ subtitle: 產品種類、產品
 tutorial:
   title: 建立屬於你的菜單
   content: 首先我們來開始建立一份菜單吧！
-emptyTitle: 尚未設定產品
 search:
   hint: 搜尋產品、成分、份量
   notFound: 搜尋不到相關資訊，打錯字了嗎？
 catalog:
+  headerInfo:
+  - 種類
+  - 放在首頁的框框標題
+  emptyBody: |
+    我們會把相似「產品」放在「產品種類」中，
+    到時候點餐會比較方便，例如：
+    「起司漢堡」、「蔬菜漢堡」整合進「漢堡」
+    「塑膠袋」、「環保杯」整合進「其他」
   title:
-    empty: 可以新增產品囉！
     create:
     - 新增產品種類
     - 菜單頁的 floatingActionButton 說明
@@ -30,12 +36,19 @@ catalog:
     hint: 例如：漢堡
     error:
       repeat: 名稱重複了，請改個名字吧！
+  emptyProducts: 尚未設定產品
 product:
+  headerInfo:
+  - 產品
+  - 放在首頁的框框標題
+  emptyBody: |
+    「產品」是菜單裡的基本單位，例如：
+    「起司漢堡」、「可樂」
   title:
-    empty: 可以設定產品的成分囉！
     create: 新增產品
     update: 編輯產品
     reorder: 排序產品
+    updateImage: 更新照片
   meta:
     title:
     - 產品
@@ -58,11 +71,15 @@ product:
       repeat: 產品名稱重複
   price:
     label: 產品價格
-    helper: 訂單頁面會呈現的價錢
+    hint: 訂單頁面會呈現的價錢
   cost:
     label: 產品成本
     hint: 用來算出利潤，理應小於價錢
+  emptyIngredients: 尚未設定成分
 ingredient:
+  emptyBody: |
+    你可以在產品中設定成分等資訊，例如：
+    「起司漢堡」有「起司」、「麵包」等成分
   title:
     create: 新增成分
     update: 編輯成分
@@ -110,11 +127,11 @@ quantity:
     error:
       empty: 必須設定份量，請點選以設定。
       repeat: 產品已經有相同的份量了，不能重複選取。
-    amount:
-      label: 使用量
-    additionalPrice:
-      label: 額外售價
-      helper: 設為 0 則代表加量（減量）不加價。
-    additionalCost:
-      label: 額外成本
-      helper: 預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。
+  amount:
+    label: 使用量
+  additionalPrice:
+    label: 額外售價
+    helper: 設為 0 則代表加量（減量）不加價。
+  additionalCost:
+    label: 額外成本
+    helper: 預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。

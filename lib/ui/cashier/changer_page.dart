@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/translator.dart';
 
 import 'widgets/changer_custom_view.dart';
 import 'widgets/changer_favorite_view.dart';
@@ -22,9 +23,9 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
     // tab widgets
     final tabBar = TabBar(
       controller: controller,
-      tabs: const [
-        Tab(key: Key('changer.favorite'), text: '常用'),
-        Tab(key: Key('changer.custom'), text: '手動'),
+      tabs: [
+        Tab(key: const Key('changer.favorite'), text: S.cashierChangerFavoriteTab),
+        Tab(key: const Key('changer.custom'), text: S.cashierChangerCustomTab),
       ],
     );
     final tabBarView = TabBarView(controller: controller, children: [
@@ -42,12 +43,12 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: const PopButton(),
-        title: const Text('換錢'),
+        title: Text(S.cashierChangerTitle),
         actions: [
           TextButton(
             key: const Key('changer.apply'),
             onPressed: handleApply,
-            child: const Text('套用'),
+            child: Text(S.cashierChangerButton),
           ),
         ],
       ),

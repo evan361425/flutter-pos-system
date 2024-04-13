@@ -12,9 +12,10 @@
         {
           "type": "array",
           "items": {
-            "oneOf": [
+            "anyOf": [
               { "type": "string" },
               { "$ref": "#/$defs/placeholders" },
+              { "type": "object", "description": "allo empty value" },
               {
                 "description": "Select or plural key-value pair",
                 "type": "object",

@@ -53,7 +53,7 @@ class _MenuPageState extends State<MenuPage> {
           actions: [
             if (!widget.productOnly)
               IconButton(
-                tooltip: selected == null ? S.menuCatalogReorder : S.menuProductReorder,
+                tooltip: selected == null ? S.menuCatalogTitleReorder : S.menuProductTitleReorder,
                 onPressed: () {
                   selected == null
                       ? context.pushNamed(Routes.menuReorder)
@@ -66,7 +66,7 @@ class _MenuPageState extends State<MenuPage> {
               ),
             SearchBarWrapper(
               key: const Key('menu.search'),
-              hintText: S.menuSearchProductHint,
+              hintText: S.menuSearchHint,
               initData: Menu.instance.searchProducts(),
               search: (text) async => Menu.instance.searchProducts(text: text),
               itemBuilder: _searchItemBuilder,
@@ -79,7 +79,7 @@ class _MenuPageState extends State<MenuPage> {
             : FloatingActionButton(
                 key: const Key('menu.add'),
                 onPressed: _handleCreate,
-                tooltip: S.menuCatalogCreate,
+                tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
                 child: const Icon(KIcons.add),
               ),
         body: PageView(
@@ -121,9 +121,7 @@ class _MenuPageState extends State<MenuPage> {
     if (Menu.instance.isEmpty) {
       return Center(
         child: EmptyBody(
-          helperText: '我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n'
-              '「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n'
-              '「塑膠袋」、「環保杯」整合進「其他」',
+          helperText: S.menuCatalogEmptyBody,
           onPressed: _handleCreate,
         ),
       );
@@ -148,9 +146,7 @@ class _MenuPageState extends State<MenuPage> {
     return Center(
       child: EmptyBody(
         key: const Key('catalog.empty'),
-        title: S.menuCatalogEmptyBody,
-        helperText: '「產品」是菜單裡的基本單位，例如：\n'
-            '「起司漢堡」、「可樂」',
+        helperText: S.menuProductEmptyBody,
         onPressed: _handleCreate,
       ),
     );
@@ -178,7 +174,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Widget _searchEmptyBuilder(BuildContext context, String text) {
     return ListTile(
-      title: Text(S.menuSearchProductNotFound),
+      title: Text(S.menuSearchNotFound),
       leading: const Icon(KIcons.warn),
     );
   }

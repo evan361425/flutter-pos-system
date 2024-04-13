@@ -55,6 +55,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
       vsync: this,
     );
 
+    // TODO: use single color
     final colorTween = TweenSequence([
       TweenSequenceItem(
         tween: ColorTween(

@@ -24,7 +24,7 @@ class EmptyBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            title ?? S.emptyBodyContent,
+            title ?? S.emptyBodyTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           if (helperText != null)
@@ -35,7 +35,7 @@ class EmptyBody extends StatelessWidget {
           TextButton(
             key: const Key('empty_body'),
             onPressed: onPressed,
-            child: const Text('立即設定'),
+            child: const Text(S.emptyBodyAction),
           ),
         ],
       ),

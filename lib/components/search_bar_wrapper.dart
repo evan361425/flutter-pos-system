@@ -43,6 +43,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: highlight the match string
     return SearchAnchor(
       searchController: searchController,
       // default using [MaterialTapTargetSize.shrinkWrap] button, which has bad

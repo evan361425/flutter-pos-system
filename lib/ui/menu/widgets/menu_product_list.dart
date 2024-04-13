@@ -36,7 +36,7 @@ class MenuProductList extends StatelessWidget {
   Iterable<BottomSheetAction<int>> _actionBuilder(Product product) {
     return <BottomSheetAction<int>>[
       BottomSheetAction(
-        title: Text(S.menuProductUpdate),
+        title: Text(S.menuProductTitleUpdate),
         leading: const Icon(KIcons.modal),
         route: Routes.menuProductModal,
         routePathParameters: {'id': product.id},
@@ -58,7 +58,7 @@ class MenuProductList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),
-        emptyText: S.menuProductListEmptyIngredient,
+        emptyText: S.menuProductEmptyIngredients,
       ),
       onLongPress: showActions,
       onTap: () => context.pushNamed(

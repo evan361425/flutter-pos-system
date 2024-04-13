@@ -51,7 +51,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (info != null) Text('版本：${info.version}'),
+                  if (info != null) Text(S.settingVersion(info.version)),
                   const SizedBox(width: 8.0),
                   OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
                 ],
@@ -65,13 +65,13 @@ class _FeaturesPageState extends State<FeaturesPage> {
               signedInWidgetBuilder: (user) => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('HI，${user?.displayName}'),
+                  Text(S.settingWelcome(user?.displayName ?? '')),
                   OutlinedButton(
                     key: const Key('feature.sign_out'),
                     onPressed: () async {
                       await Auth.instance.signOut();
                     },
-                    child: const Text('登出'),
+                    child: Text(S.settingLogoutBtn),
                   ),
                 ],
               ),
@@ -81,12 +81,12 @@ class _FeaturesPageState extends State<FeaturesPage> {
             key: const Key('feature.theme'),
             leading: const Icon(Icons.palette_outlined),
             title: Text(S.settingThemeTitle),
-            subtitle: Text(S.settingThemeTypes(theme.value.name)),
+            subtitle: Text(S.settingThemeName(theme.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _buildChoiceList(
               (index) => theme.update(ThemeMode.values[index]),
               title: S.settingThemeTitle,
-              items: ThemeMode.values.map<String>((e) => S.settingThemeTypes(e.name)).toList(),
+              items: ThemeMode.values.map<String>((e) => S.settingThemeName(e.name)).toList(),
               selected: theme.value.index,
             ),
           ),
@@ -108,50 +108,44 @@ class _FeaturesPageState extends State<FeaturesPage> {
             key: const Key('feature.outlook_order'),
             leading: const Icon(Icons.library_books_outlined),
             title: Text(S.settingOrderOutlookTitle),
-            subtitle: Text(S.settingOrderOutlookTypes(orderOutlook.value.name)),
+            subtitle: Text(S.settingOrderOutlookName(orderOutlook.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _buildChoiceList(
               (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
               title: S.settingOrderOutlookTitle,
               selected: orderOutlook.value.index,
-              items: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTypes(e.name)).toList(),
-              tips: [
-                '點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機',
-                '所有資訊顯示在單一螢幕中，適合大螢幕的平板',
-              ],
+              items: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookName(e.name)).toList(),
+              tips: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTip(e.name)).toList(),
             ),
           ),
           ListTile(
             key: const Key('feature.checkout_warning'),
             leading: const Icon(Icons.store_mall_directory_outlined),
             title: Text(S.settingCheckoutWarningTitle),
-            subtitle: Text(S.settingCheckoutWarningTypes(checkoutWarning.value.name)),
+            subtitle: Text(S.settingCheckoutWarningName(checkoutWarning.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => _buildChoiceList(
               (index) => checkoutWarning.update(CheckoutWarningTypes.values[index]),
               title: S.settingCheckoutWarningTitle,
               selected: checkoutWarning.value.index,
-              items: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTypes(e.name)).toList(),
-              tips: [
-                '收銀機若使用小錢會出現提示，例如收銀機 5 塊錢不夠了並嘗試用 1 塊錢去找 5 塊錢',
-                null,
-                null,
-              ],
+              items: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)).toList(),
+              tips: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)).toList(),
             ),
           ),
+          // TODO: After using RWD, this feature is not necessary
           FeatureSlider(
             sliderKey: const Key('feature.order_product_count'),
-            title: '點餐時每行顯示幾個產品',
+            title: S.settingOrderProductCountTitle,
             value: orderCount.value,
             max: 5,
-            minLabel: '純文字顯示',
-            hintText: '設定「零」則點餐時僅會以文字顯示',
+            minLabel: S.settingOrderProductCountMinLabel,
+            hintText: S.settingOrderProductCountHint,
             onChanged: (value) => orderCount.update(value),
           ),
           ListTile(
             leading: const Icon(Icons.remove_red_eye_outlined),
             title: Text(S.settingOrderAwakeningTitle),
-            subtitle: const Text('是否根據系統設定時間關閉螢幕'),
+            subtitle: Text(S.settingOrderAwakeningSubtitle),
             trailing: FeatureSwitch(
               key: const Key('feature.awake_ordering'),
               value: orderAwakening.value,
@@ -161,8 +155,8 @@ class _FeaturesPageState extends State<FeaturesPage> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.report_outlined),
-            title: const Text('收集錯誤訊息和事件'),
-            subtitle: const Text('當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長'),
+            title: Text(S.settingReportTitle),
+            subtitle: Text(S.settingReportSubtitle),
             trailing: FeatureSwitch(
               key: const Key('feature.collect_events'),
               value: collectEvents.value,

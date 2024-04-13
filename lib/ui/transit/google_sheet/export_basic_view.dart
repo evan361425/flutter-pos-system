@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/components/style/launcher_snackbar_action.dart';
+import 'package:possystem/components/style/snackbar_actions.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';

@@ -30,7 +30,7 @@ class ProductIngredientView extends StatelessWidget {
         ListTile(
           key: Key('$key.add'),
           leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.menuQuantityCreate),
+          title: Text(S.menuQuantityTitleCreate),
           onTap: () => context.pushNamed(
             Routes.menuProductDetails,
             pathParameters: {'id': ingredient.product.id},
@@ -52,7 +52,7 @@ class ProductIngredientView extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(S.menuIngredientUpdate),
+          title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductDetails,
           routePathParameters: {'id': ingredient.product.id},
@@ -81,8 +81,8 @@ class _QuantityTile extends StatelessWidget {
         title: Text(quantity.name),
         subtitle: MetaBlock.withString(context, <String>[
           S.menuQuantityMetaAmount(quantity.amount),
-          S.menuQuantityMetaPrice(quantity.additionalPrice),
-          S.menuQuantityMetaCost(quantity.additionalCost),
+          S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice),
+          S.menuQuantityMetaAdditionalCost(quantity.additionalCost),
         ]),
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,

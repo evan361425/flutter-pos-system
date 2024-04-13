@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -36,7 +36,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
   String? _image;
 
   @override
-  String get title => widget.product?.name ?? S.menuProductCreate;
+  String get title => widget.product?.name ?? S.menuProductTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -63,7 +63,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.product?.name != name && Menu.instance.hasProductByName(name)
-                ? S.menuProductNameRepeatError
+                ? S.menuProductNameErrorRepeat
                 : null;
           },
         ),

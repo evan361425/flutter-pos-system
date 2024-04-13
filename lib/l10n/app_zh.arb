@@ -1,14 +1,34 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-09T10:10:23.825889Z",
+  "@@last_modified": "2024-04-13T02:31:12.996815Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
+  "settingVersion": "版本：{version}",
+  "@settingVersion": {
+    "description": "顯示應用程式的版本",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingWelcome": "HI，{name}",
+  "@settingWelcome": {
+    "description": "顯示使用者的名字",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingLogoutBtn": "登出",
   "settingElfTitle": "建議",
   "settingElfSubtitle": "使用 Google 表單提供回饋",
   "settingElfContent": "覺得這裡還少了什麼嗎？\n歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。\n也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。\n",
   "settingFeatureTitle": "其他設定",
+  "settingFeatureSubtitle": "外觀、語言、提示",
   "settingThemeTitle": "調色盤",
-  "settingThemeName": "{name, select, dark{暗色模式} light{日光模式} system{跟隨系統} other{未知}}",
+  "settingThemeName": "{name, select, dark{暗色模式} light{日光模式} system{跟隨系統} other{UNKNOWN}}",
   "@settingThemeName": {
     "description": "應用程式外表的類型",
     "placeholders": {
@@ -18,18 +38,8 @@
     }
   },
   "settingLanguageTitle": "語言",
-  "settingCheckoutWarningTitle": "收銀機提示",
-  "settingCheckoutWarningName": "{name, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{未知}}",
-  "@settingCheckoutWarningName": {
-    "description": "是否顯示收銀機的提示",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "settingOrderOutlookTitle": "點餐的外觀",
-  "settingOrderOutlookName": "{name, select, slidingPanel{酷炫面板} singleView{經典模式} other{未知}}",
+  "settingOrderOutlookName": "{name, select, slidingPanel{酷炫面板} singleView{經典模式} other{UNKNOWN}}",
   "@settingOrderOutlookName": {
     "description": "點餐時的外觀類型",
     "placeholders": {
@@ -38,12 +48,47 @@
       }
     }
   },
+  "settingOrderOutlookTip": "{name, select, slidingPanel{點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機} singleView{所有資訊顯示在單一螢幕中，適合大螢幕的平板} other{UNKNOWN}}",
+  "@settingOrderOutlookTip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingCheckoutWarningTitle": "收銀機提示",
+  "settingCheckoutWarningName": "{name, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
+  "@settingCheckoutWarningName": {
+    "description": "是否顯示收銀機的提示",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingCheckoutWarningTip": "{name, select, showAll{若使用小錢去找，顯示提示。\n例如 5 塊錢不夠了，開始用 5 個 1 塊去找錢\n} onlyNotEnough{當零錢不夠找的時候，顯示提示。} hideAll{當點餐時，收銀機不會顯示任何提示} other{UNKNOWN}}",
+  "settingOrderProductCountTitle": "點餐時每行顯示幾個產品",
+  "settingOrderProductCountHint": "設定「零」則點餐時僅會以文字顯示",
+  "settingOrderProductCountMinLabel": "純文字顯示",
   "settingOrderAwakeningTitle": "點餐時不關閉螢幕",
   "@settingOrderAwakeningTitle": {
     "description": "在點餐過程中，即使閒置仍不關閉螢幕"
   },
+  "settingOrderAwakeningSubtitle": "若取消，則會根據系統設定時間關閉螢幕",
+  "settingReportTitle": "收集錯誤訊息和事件",
+  "settingReportSubtitle": "當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長",
   "stockTab": "庫存",
   "stockUpdatedAt": "上次補貨時間：{updatedAt}",
+  "@stockUpdatedAt": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "format": {
+        "type": "String"
+      }
+    }
+  },
   "stockIngredientTitleCreate": "新增成分",
   "stockIngredientTitleUpdate": "編輯成分",
   "stockIngredientTutorialTitle": "新增成分",
@@ -217,7 +262,15 @@
   "transitGSAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值\n",
   "transitGSErrorSheet": "{type, select, spreadsheet{無法建立試算表} spreadsheetEmpty{請先選擇試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{UNKNOWN}}",
   "@transitGSErrorSheet": {
-    "description": "發生錯誤時的提示訊息"
+    "description": "發生錯誤時的提示訊息",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
   },
   "transitGSErrorImport": "{error, select, emptySpreadsheet{必須選擇試算表來匯入} emptySheet{必須選擇指定的表單來匯入} emptyData{在表單中沒找到任何值} other{{error}}}",
   "@transitGSErrorImport": {
@@ -284,10 +337,11 @@
       }
     }
   },
-  "emptyBodyContent": "哎呀！這裡還是空的",
-  "@emptyBodyContent": {
-    "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目"
+  "emptyBodyTitle": "哎呀！這裡還是空的",
+  "@emptyBodyTitle": {
+    "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目，這是預設的文字"
   },
+  "emptyBodyAction": "立即設定",
   "invalidIntegerType": "{field}必須是整數",
   "@invalidIntegerType": {
     "description": "當發現輸入不是整數時的警語",
@@ -379,6 +433,10 @@
   },
   "orderAttributeTitle": "顧客設定",
   "orderAttributeSubtitle": "內用、外帶等幫助分析的資訊",
+  "orderAttributeHeaderInfo": "顧客設定",
+  "@orderAttributeHeaderInfo": {
+    "description": "放在首頁的框框標題"
+  },
   "orderAttributeTutorialTitle": "顧客設定",
   "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。\n",
   "orderAttributeMetaTitleEmpty": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。\n",
@@ -472,10 +530,13 @@
   "menuSubtitle": "產品種類、產品",
   "menuTutorialTitle": "建立屬於你的菜單",
   "menuTutorialContent": "首先我們來開始建立一份菜單吧！",
-  "menuEmptyTitle": "尚未設定產品",
   "menuSearchHint": "搜尋產品、成分、份量",
   "menuSearchNotFound": "搜尋不到相關資訊，打錯字了嗎？",
-  "menuCatalogTitleEmpty": "可以新增產品囉！",
+  "menuCatalogHeaderInfo": "種類",
+  "@menuCatalogHeaderInfo": {
+    "description": "放在首頁的框框標題"
+  },
+  "menuCatalogEmptyBody": "我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n「塑膠袋」、「環保杯」整合進「其他」\n",
   "menuCatalogTitleCreate": "新增產品種類",
   "@menuCatalogTitleCreate": {
     "description": "菜單頁的 floatingActionButton 說明"
@@ -494,10 +555,16 @@
   "menuCatalogNameLabel": "產品種類名稱",
   "menuCatalogNameHint": "例如：漢堡",
   "menuCatalogNameErrorRepeat": "名稱重複了，請改個名字吧！",
-  "menuProductTitleEmpty": "可以設定產品的成分囉！",
+  "menuCatalogEmptyProducts": "尚未設定產品",
+  "menuProductHeaderInfo": "產品",
+  "@menuProductHeaderInfo": {
+    "description": "放在首頁的框框標題"
+  },
+  "menuProductEmptyBody": "「產品」是菜單裡的基本單位，例如：\n「起司漢堡」、「可樂」\n",
   "menuProductTitleCreate": "新增產品",
   "menuProductTitleUpdate": "編輯產品",
   "menuProductTitleReorder": "排序產品",
+  "menuProductTitleUpdateImage": "更新照片",
   "menuProductMetaTitle": "產品",
   "@menuProductMetaTitle": {
     "description": "meta 的前綴，這樣可以讓使用者知道這是產品的 meta 資訊而不是產品種類"
@@ -530,9 +597,11 @@
   "menuProductNameHint": "例如：起司漢堡",
   "menuProductNameErrorRepeat": "產品名稱重複",
   "menuProductPriceLabel": "產品價格",
-  "menuProductPriceHelper": "訂單頁面會呈現的價錢",
+  "menuProductPriceHint": "訂單頁面會呈現的價錢",
   "menuProductCostLabel": "產品成本",
   "menuProductCostHint": "用來算出利潤，理應小於價錢",
+  "menuProductEmptyIngredients": "尚未設定成分",
+  "menuIngredientEmptyBody": "你可以在產品中設定成分等資訊，例如：\n「起司漢堡」有「起司」、「麵包」等成分\n",
   "menuIngredientTitleCreate": "新增成分",
   "menuIngredientTitleUpdate": "編輯成分",
   "menuIngredientTitleReorder": "排序成分",
@@ -604,21 +673,59 @@
   },
   "menuQuantitySearchErrorEmpty": "必須設定份量，請點選以設定。",
   "menuQuantitySearchErrorRepeat": "產品已經有相同的份量了，不能重複選取。",
-  "menuQuantitySearchAmountLabel": "使用量",
-  "menuQuantitySearchAdditionalPriceLabel": "額外售價",
-  "menuQuantitySearchAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
-  "menuQuantitySearchAdditionalCostLabel": "額外成本",
-  "menuQuantitySearchAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
+  "menuQuantityAmountLabel": "使用量",
+  "menuQuantityAdditionalPriceLabel": "額外售價",
+  "menuQuantityAdditionalPriceHelper": "設為 0 則代表加量（減量）不加價。",
+  "menuQuantityAdditionalCostLabel": "額外成本",
+  "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
   "cashierTab": "收銀",
-  "cashierToDefaultButton": "設為預設",
+  "cashierUnitLabel": "幣值：{unit}",
+  "@cashierUnitLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierCounterLabel": "數量",
+  "@cashierCounterLabel": {
+    "description": "設定幣值數量時的標籤"
+  },
+  "cashierToDefaultTitle": "設為預設",
   "cashierToDefaultTutorialTitle": "收銀機預設狀態",
   "cashierToDefaultTutorialContent": "在下面設定完收銀機各幣值的數量後，\n按這裡設定預設狀態！\n設定好的數量就會是各個幣值狀態條的「最大值」。\n",
-  "cashierChangerButton": "換錢",
+  "cashierToDefaultDialogTitle": "調整收銀臺預設？",
+  "cashierToDefaultDialogContent": "這將會把目前的收銀機狀態設定為預設狀態。\n此動作將會覆蓋掉先前的設定。\n",
+  "cashierChangerTitle": "換錢",
+  "cashierChangerButton": "套用",
   "cashierChangerTutorialTitle": "收銀機換錢",
   "cashierChangerTutorialContent": "一百塊換成 10 個十塊之類。\n幫助快速調整收銀機狀態。\n",
+  "cashierChangerFavoriteTab": "常用",
+  "cashierChangerCustomTab": "自訂",
+  "cashierSurplusTitle": "結餘",
   "cashierSurplusButton": "結餘",
   "cashierSurplusTutorialTitle": "每日結餘",
   "cashierSurplusTutorialContent": "結餘可以幫助我們在每天打烊時，\n計算現有金額和預設金額的差異。\n",
+  "cashierSurplusErrorEmptyDefault": "尚未設定預設狀態",
+  "cashierSurplusTableHint": "若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！",
+  "cashierSurplusColumnName": "{name, select, unit{單位} currentCount{現有} diffCount{差異} defaultCount{預設} other{UNKNOWN}}",
+  "cashierSurplusCounterLabel": "幣值{unit}的數量",
+  "@cashierSurplusCounterLabel": {
+    "description": "允許使用者結餘時，自訂幣值",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierSurplusCounterShortLabel": "數量",
+  "@cashierSurplusCounterShortLabel": {
+    "description": "這是為了顯示在錯誤訊息中，例如「數量不能為 0」"
+  },
+  "cashierSurplusCurrentTotalLabel": "現有總額",
+  "cashierSurplusCurrentTotalHelper": "現在收銀機應該要有的總額。\n若你發現現金和這值對不上，想一想今天有沒有用收銀機的錢買東西？\n",
+  "cashierSurplusDiffTotalLabel": "差額",
+  "cashierSurplusDiffTotalHelper": "和收銀機最一開始的總額的差額。\n這可以快速幫你了解今天收銀機多了多少錢唷。\n",
   "orderTitle": "點餐",
   "orderBtn": "點餐",
   "orderMetaTotalPrice": "總價：{price}",

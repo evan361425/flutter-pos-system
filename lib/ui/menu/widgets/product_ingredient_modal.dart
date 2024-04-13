@@ -37,7 +37,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
   String ingredientName = '';
 
   @override
-  String get title => widget.ingredient?.name ?? S.menuIngredientCreate;
+  String get title => widget.ingredient?.name ?? S.menuIngredientTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -49,7 +49,6 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
         text: ingredientName,
         labelText: S.menuIngredientSearchLabel,
         hintText: S.menuIngredientSearchHint,
-        // TODO: merge into one validator, and custom [initData]
         validator: Validator.textLimit(S.menuIngredientSearchLabel, 30),
         formValidator: _validateIngredient,
         initData: Stock.instance.itemList,
@@ -139,11 +138,11 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
 
   String? _validateIngredient(String? name) {
     if (ingredientId.isEmpty) {
-      return S.menuIngredientSearchEmptyError;
+      return S.menuIngredientSearchErrorEmpty;
     }
 
     if (widget.ingredient?.ingredient.id != ingredientId && widget.product.hasIngredient(ingredientId)) {
-      return S.menuIngredientRepeatError;
+      return S.menuIngredientSearchErrorRepeat;
     }
 
     return null;

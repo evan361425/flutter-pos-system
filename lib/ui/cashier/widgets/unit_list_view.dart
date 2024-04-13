@@ -4,6 +4,8 @@ import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class UnitListView extends StatelessWidget {
@@ -22,7 +24,7 @@ class UnitListView extends StatelessWidget {
   Widget _itemWidget(BuildContext context, CashierUnitObject item, int index) {
     final max = Cashier.instance.defaultAt(index)?.count ?? 0;
     return ListTile(
-      title: Text('幣值：${item.unit}'),
+      title: Text(S.cashierUnitLabel(item.unit.toCurrency())),
       subtitle: PercentileBar(item.count, max),
       onTap: () => _setUnitCount(context, item.unit, max, item.count),
     );
@@ -39,11 +41,9 @@ class UnitListView extends StatelessWidget {
       builder: (BuildContext context) => SliderTextDialog(
         value: value,
         max: max.toDouble(),
-        title: Text('幣值：$unit'),
-        validator: Validator.positiveInt('數量'),
-        decoration: const InputDecoration(
-          label: Text('數量'),
-        ),
+        title: Text(S.cashierUnitLabel(unit.toCurrency())),
+        validator: Validator.positiveInt(S.cashierCounterLabel),
+        decoration: InputDecoration(label: Text(S.cashierCounterLabel)),
       ),
     );
 

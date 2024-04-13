@@ -29,13 +29,13 @@ class MenuCatalogList extends StatelessWidget {
         warningContentBuilder: _warningContentBuilder,
         actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
           BottomSheetAction(
-            title: Text(S.menuCatalogUpdate),
+            title: Text(S.menuCatalogTitleUpdate),
             leading: const Icon(KIcons.modal),
             routePathParameters: {'id': catalog.id},
             route: Routes.menuCatalogModal,
           ),
           BottomSheetAction(
-            title: Text(S.menuProductReorder),
+            title: Text(S.menuProductTitleReorder),
             leading: const Icon(KIcons.reorder),
             route: Routes.menuCatalogReorder,
             routePathParameters: {'id': catalog.id},
@@ -60,7 +60,7 @@ class MenuCatalogList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
-        emptyText: S.menuCatalogListEmptyProduct,
+        emptyText: S.menuCatalogEmptyProducts,
       ),
       onLongPress: showActions,
       onTap: () => onSelected(catalog),

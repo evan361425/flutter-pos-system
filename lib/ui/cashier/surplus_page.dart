@@ -6,6 +6,7 @@ import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class CashierSurplus extends StatelessWidget {
@@ -15,11 +16,11 @@ class CashierSurplus extends StatelessWidget {
   Widget build(BuildContext context) {
     final cashier = context.watch<Cashier>();
 
-    const columns = <DataColumn>[
-      DataColumn(label: Text('單位'), numeric: true),
-      DataColumn(label: Text('現有'), numeric: true),
-      DataColumn(label: Text('差異')),
-      DataColumn(label: Text('預設'), numeric: true),
+    final columns = <DataColumn>[
+      DataColumn(label: Text(S.cashierSurplusColumnName('unit')), numeric: true),
+      DataColumn(label: Text(S.cashierSurplusColumnName('currentCount')), numeric: true),
+      DataColumn(label: Text(S.cashierSurplusColumnName('diffCount'))),
+      DataColumn(label: Text(S.cashierSurplusColumnName('defaultCount')), numeric: true),
     ];
 
     final rows = <DataRow>[
@@ -35,7 +36,7 @@ class CashierSurplus extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CloseButton(key: Key('pop')),
-        title: const Text('結餘'),
+        title: Text(S.cashierSurplusButton),
         actions: [
           TextButton(
             key: const Key('cashier_surplus.confirm'),
@@ -52,21 +53,18 @@ class CashierSurplus extends StatelessWidget {
       body: Column(children: [
         _DataWithLabel(
           data: cashier.currentTotal.toCurrency(),
-          label: '現有總額',
-          helper: '現在收銀機應該要有的總額\n若你發現現金和這值對不上，想一想今天有沒有用收銀機的錢買東西？',
+          label: S.cashierSurplusCurrentTotalLabel,
+          helper: S.cashierSurplusCurrentTotalHelper,
         ),
         _DataWithLabel(
           data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
-          label: '差額',
-          helper: '和收銀機最一開始的總額的差額\n這可以快速幫你了解今天收銀機多了多少錢唷。',
+          label: S.cashierSurplusDiffTotalLabel,
+          helper: S.cashierSurplusDiffTotalHelper,
         ),
         const Divider(),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: HintText(
-            '若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！',
-            textAlign: TextAlign.center,
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
         ),
         Expanded(
           child: Padding(
@@ -102,11 +100,11 @@ class CashierSurplus extends StatelessWidget {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => SingleTextDialog(
-        validator: Validator.positiveInt('數量'),
+        validator: Validator.positiveInt(S.cashierSurplusCounterShortLabel),
         keyboardType: TextInputType.number,
         selectAll: true,
         initialValue: item.currentCount.toString(),
-        title: Text('幣值${item.unit.toCurrency()}的數量'),
+        title: Text(S.cashierSurplusCounterLabel(item.unit.toCurrency())),
       ),
     );
 

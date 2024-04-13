@@ -35,7 +35,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButton: FloatingActionButton(
         key: const Key('product.add'),
         onPressed: _handleCreateIng,
-        tooltip: S.menuIngredientCreate,
+        tooltip: S.menuIngredientTitleCreate,
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
@@ -72,9 +72,7 @@ class _ProductPageState extends State<ProductPage> {
       return [
         SliverToBoxAdapter(
           child: EmptyBody(
-            title: S.menuProductEmptyBody,
-            helperText: '你可以在產品中設定成分等資訊，例如：\n'
-                '「起司漢堡」有「起司」、「麵包」等成分',
+            helperText: S.menuIngredientEmptyBody,
             onPressed: _handleCreateIng,
           ),
         )
@@ -127,14 +125,14 @@ class _ProductPageState extends State<ProductPage> {
       warningContent: Text(S.dialogDeletionContent(widget.product.name, '')),
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
-          title: Text(S.menuProductUpdate),
+          title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductModal,
           routePathParameters: {'id': widget.product.id},
         ),
-        const BottomSheetAction(
-          title: Text('更新照片'),
-          leading: Icon(KIcons.image),
+        BottomSheetAction(
+          title: Text(S.menuProductTitleUpdateImage),
+          leading: const Icon(KIcons.image),
           returnValue: _Action.changeImage,
         ),
       ],

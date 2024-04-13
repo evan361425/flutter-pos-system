@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
@@ -26,7 +26,7 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
   String? _image;
 
   @override
-  String get title => widget.catalog?.name ?? S.menuCatalogCreate;
+  String get title => widget.catalog?.name ?? S.menuCatalogTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -53,7 +53,7 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameRepeatError : null;
+            return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameErrorRepeat : null;
           },
         ),
       )),

@@ -41,7 +41,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   String quantityId = '';
 
   @override
-  String get title => widget.quantity?.name ?? S.menuQuantityCreate;
+  String get title => widget.quantity?.name ?? S.menuQuantityTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -187,10 +187,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
 
   String? _validateQuantity(String? name) {
     if (quantityId.isEmpty) {
-      return S.menuQuantitySearchEmptyError;
+      return S.menuQuantitySearchErrorEmpty;
     }
     if (widget.quantity?.quantity.id != quantityId && widget.ingredient.hasQuantity(quantityId)) {
-      return S.menuQuantityRepeatError;
+      return S.menuQuantitySearchErrorRepeat;
     }
 
     return null;
