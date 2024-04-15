@@ -6,6 +6,7 @@ import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class ChangerCustomView extends StatefulWidget {
   final VoidCallback afterFavoriteAdded;
@@ -46,7 +47,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       FilledButton(
         key: const Key('changer.custom.add_favorite'),
         onPressed: handleAddFavorite,
-        child: const Text('新增常用'),
+        child: Text(S.cashierChangerCustomAddBtn),
       ),
     ]);
 
@@ -56,16 +57,16 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
         controller: sourceCount,
         keyboardType: TextInputType.number,
         onChanged: handleCountChanged,
-        decoration: const InputDecoration(labelText: '數量'),
-        validator: Validator.positiveInt('數量', minimum: 1),
+        decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
+        validator: Validator.positiveInt(S.cashierChangerCustomCountLabel, minimum: 1),
       ),
       DropdownButtonFormField<num>(
         key: const Key('changer.custom.source.unit'),
         value: sourceUnit,
-        hint: const Text('幣值'),
+        hint: Text(S.cashierChangerCustomUnitLabel),
         isDense: true,
         style: Theme.of(context).textTheme.bodyMedium,
-        validator: Validator.positiveNumber('幣值'),
+        validator: Validator.positiveNumber(S.cashierChangerCustomUnitLabel),
         onChanged: handleUnitChanged,
         items: _unitDropdownMenuItems(),
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -81,14 +82,14 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                 controller: entry.key == 0 ? targetController : null,
                 initialValue: entry.key == 0 ? null : entry.value.count?.toString(),
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: '數量'),
+                decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
                 validator: Validator.positiveInt('', allowNull: true),
                 onSaved: (value) => entry.value.count = int.tryParse(value ?? ''),
               ),
               DropdownButtonFormField<num>(
                 key: Key('changer.custom.target.${entry.key}.unit'),
                 value: entry.value.unit,
-                hint: const Text('幣值'),
+                hint: Text(S.cashierChangerCustomCountLabel),
                 style: Theme.of(context).textTheme.bodyMedium,
                 onChanged: (value) => setState(() => entry.value.unit = value),
                 onSaved: (value) => entry.value.unit = value,
@@ -116,9 +117,9 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               actions,
-              const TextDivider(label: '從收銀機中拿出'),
+              TextDivider(label: S.cashierChangerCustomDividerFrom),
               sourceEntry,
-              const TextDivider(label: '換'),
+              TextDivider(label: S.cashierChangerCustomDividerTo),
               Focus(
                 focusNode: errorFocus,
                 child: Builder(builder: (context) {
@@ -140,7 +141,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                   targets.add(CashierChangeEntryObject());
                 }),
                 icon: const Icon(KIcons.add),
-                label: const Text('新增幣種'),
+                label: Text(S.cashierChangerCustomUnitAddBtn),
               )
             ],
           ),
@@ -198,7 +199,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       });
       return true;
     } else {
-      _setError('$sourceUnit 元不夠換');
+      _setError(S.cashierChangerErrorNotEnough(sourceUnit!.toCurrency()));
       return false;
     }
   }
@@ -232,10 +233,10 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
         return true;
       }
 
-      var msg = '$count 個 $sourceUnit 元沒辦法換';
+      var msg = S.cashierChangerErrorInvalidHead(count, sourceUnit!.toCurrency());
       for (var target in targets) {
         if (!target.isEmpty) {
-          msg += '\n- ${target.count} 個 ${target.unit} 元';
+          msg += '\n- ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
         }
       }
       _setError(msg);

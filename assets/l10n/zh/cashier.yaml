@@ -28,10 +28,43 @@ changer:
     content: |
       一百塊換成 10 個十塊之類。
       幫助快速調整收銀機狀態。
+  error:
+    noSelection: 請選擇要套用的組合
+    notEnough:
+    - "{unit} 元不夠換"
+    - unit:
+    invalidHead:
+    - "{count} 個 {unit} 元沒辦法換"
+    - count: {type: int}
+      unit:
+    invalidBody:
+    - "{count} 個 {unit} 元"
+    - count: {type: int}
+      unit:
   favorite:
     tab: 常用
+    hint: 選完後請點選「套用」來使用該組合
+    emptyBody: 這裡可以幫助你快速轉換不同幣值
+    item:
+      from:
+      - 用 {count} 個 {unit} 元換
+      - count: {type: int}
+        unit:
+      to:
+      - "{count} 個 {unit} 元"
+      - count: {type: int}
+        unit:
   custom:
     tab: 自訂
+    addBtn: 新增常用
+    count:
+      label: 數量
+    unit:
+      label: 幣值
+      addBtn: 新增幣種
+    divider:
+      from: 從收銀機中拿出
+      to: 換
 surplus:
   title: 結餘
   button: 結餘

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-13T02:31:12.996815Z",
+  "@@last_modified": "2024-04-15T10:02:52.097459Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -700,8 +700,69 @@
   "cashierChangerButton": "套用",
   "cashierChangerTutorialTitle": "收銀機換錢",
   "cashierChangerTutorialContent": "一百塊換成 10 個十塊之類。\n幫助快速調整收銀機狀態。\n",
+  "cashierChangerErrorNoSelection": "請選擇要套用的組合",
+  "cashierChangerErrorNotEnough": "{unit} 元不夠換",
+  "@cashierChangerErrorNotEnough": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerErrorInvalidHead": "{count} 個 {unit} 元沒辦法換",
+  "@cashierChangerErrorInvalidHead": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerErrorInvalidBody": "{count} 個 {unit} 元",
+  "@cashierChangerErrorInvalidBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "cashierChangerFavoriteTab": "常用",
+  "cashierChangerFavoriteHint": "選完後請點選「套用」來使用該組合",
+  "cashierChangerFavoriteEmptyBody": "這裡可以幫助你快速轉換不同幣值",
+  "cashierChangerFavoriteItemFrom": "用 {count} 個 {unit} 元換",
+  "@cashierChangerFavoriteItemFrom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerFavoriteItemTo": "{count} 個 {unit} 元",
+  "@cashierChangerFavoriteItemTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "cashierChangerCustomTab": "自訂",
+  "cashierChangerCustomAddBtn": "新增常用",
+  "cashierChangerCustomCountLabel": "數量",
+  "cashierChangerCustomUnitLabel": "幣值",
+  "cashierChangerCustomUnitAddBtn": "新增幣種",
+  "cashierChangerCustomDividerFrom": "從收銀機中拿出",
+  "cashierChangerCustomDividerTo": "換",
   "cashierSurplusTitle": "結餘",
   "cashierSurplusButton": "結餘",
   "cashierSurplusTutorialTitle": "每日結餘",

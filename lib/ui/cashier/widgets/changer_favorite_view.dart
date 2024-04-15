@@ -8,6 +8,8 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class ChangerFavoriteView extends StatefulWidget {
@@ -37,7 +39,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
-        helperText: '這裡可以幫助你快速轉換不同幣值',
+        helperText: S.cashierChangerFavoriteEmptyBody,
         onPressed: widget.emptyAction,
       );
     }
@@ -51,10 +53,10 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
         child: RadioListTile<FavoriteItem>(
           key: Key('changer.favorite.$index'),
           value: item,
-          title: Text('用 ${item.source.count} 個 ${item.source.unit} 元換'),
+          title: Text(S.cashierChangerFavoriteItemFrom(item.source.count!, item.source.unit!.toCurrency())),
           subtitle: MetaBlock.withString(
             context,
-            item.targets.map<String>((e) => '${e.count} 個 ${e.unit} 元'),
+            item.targets.map<String>((e) => S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency())),
             textOverflow: TextOverflow.visible,
           ),
           secondary: EntryMoreButton(onPressed: showActions),
@@ -66,9 +68,9 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
     );
 
     return Column(children: [
-      const Padding(
-        padding: EdgeInsets.all(kSpacing1),
-        child: HintText('選完後請點選「套用」來使用該組合'),
+      Padding(
+        padding: const EdgeInsets.all(kSpacing1),
+        child: HintText(S.cashierChangerFavoriteHint),
       ),
       Expanded(child: SlidableItemList(delegate: delegate)),
     ]);
@@ -76,14 +78,14 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
 
   Future<bool> handleApply() async {
     if (selected == null) {
-      showSnackBar(context, '請選擇要套用的組合');
+      showSnackBar(context, S.cashierChangerErrorNoSelection);
       return false;
     }
 
     final isValid = await Cashier.instance.applyFavorite(selected!.item);
 
     if (!isValid && mounted) {
-      showSnackBar(context, '${selected!.source.unit} 元不夠換');
+      showSnackBar(context, S.cashierChangerErrorNotEnough(selected!.source.unit?.toCurrency() ?? ''));
     }
 
     return isValid;
