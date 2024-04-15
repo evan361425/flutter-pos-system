@@ -18,11 +18,11 @@ tutorial:
     這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
 meta:
   mode:
-  - 種類：{mode}
-  - mode: {type: String}
+  - 種類：{name}
+  - name:
   default:
   - 預設：{name}
-  - name: {type: String}
+  - name:
   noDefault: 未設定預設
 mode:
   divider: 顧客設定種類
@@ -32,14 +32,14 @@ mode:
     changeDiscount: 折扣
     other: 未知
   - 顧客設定種類名稱
-  - {mode: {type: String, mode: select}}
+  - name
   helper:
   - statOnly: 一般的設定，選取時並不會影響點單價格。
     changePrice: 選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。
     changeDiscount: 選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。
     other: UNKNOWN
   - 顧客設定種類的說明
-  - {mode: {type: String, mode: select}}
+  - name:
 name:
   label: 顧客設定名稱
   hint: 例如：顧客年齡
@@ -69,15 +69,13 @@ option:
     - statOnly: 因為本設定為「一般」故無須設定「折價」或「變價」
       changePrice: 訂單時選擇此項會套用此變價
       changeDiscount: 訂單時選擇此項會套用此折價
-      other: UNKNOWN
     - 模式的說明
-    - {mode: {type: String, mode: select}}
+    - name:
     hint:
     - statOnly: ''
       changePrice: 例如：-30 代表減少三十塊
       changeDiscount: 例如：80 代表「八折」
-      other: UNKNOWN}
-    - {mode: {type: String, mode: select}}
+    - name:
   toDefault:
     label: 設為預設
     helper: |
@@ -87,4 +85,4 @@ option:
       content:
       - 這麼做會讓「{name}」變成非預設值
       - 為了確保使用者知道原先的預設值是什麼而做的提示
-      - name: {type: String}
+      - name:

@@ -74,8 +74,8 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             id: 'exporter',
             icon: Icons.upload_file_sharp,
             route: Routes.transit,
-            title: S.transitTitle,
-            subtitle: S.transitSubtitle,
+            title: S.transitTitleMain,
+            subtitle: S.transitTitleSub,
           ),
         ),
         Tutorial(

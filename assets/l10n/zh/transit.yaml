@@ -1,6 +1,9 @@
 $prefix: "transit"
-title: 資料轉移
-subtitle: 匯入、匯出店家資訊和訂單
+title:
+  main: 資料轉移
+  sub: 匯入、匯出店家資訊和訂單
+  previewExport: 預覽輸出結果
+  previewImport: 預覽匯入結果
 tutorial:
   title: 多人、裝置的第一步
   content: |
@@ -14,27 +17,57 @@ method:
   name:
   - googleSheet: Google 試算表
     plainText: 純文字
-    other: UNKNOWN
-  - {name: {type: String, mode: select}}
-preview:
-  exportTitle: 預覽輸出結果
-  importTitle: 預覽匯入結果
-sheet:
-  basic: POS System 資料
-  order: 訂單資料
+  - name:
 data:
   name:
-  - menu: 菜單
-    stock: 庫存
-    quantities: 份量
-    replenisher: 補貨
-    orderAttr: 顧客設定
-    order: 訂單
-    orderDetailsAttr: 訂單顧客設定
-    orderDetailsProduct: 訂單產品細項
-    orderDetailsIngredient: 訂單成分細項
-    other: UNKNOWN
-  - {name: {type: String, mode: select}}
+  - order: 訂單記錄
+    basic: 店家資訊
+  - name:
+  helper:
+  - order: 訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。
+    basic: 商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。
+  - name:
+  order:
+    meta:
+      range:
+      - "{range}的訂單"
+      - range:
+      rangeDays:
+      - "{days} 天的資料"
+      - days: {type: int}
+    capacity:
+      title:
+      - 預估容量為：{size}
+      - size:
+      content: 過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。
+      ok: 容量剛好
+      warn: 容量警告
+      danger: 容量危險
+    item:
+      title:
+      - "{date}"
+      - date: {type: DateTime, format: "M月d日 HH:mm:ss"}
+      meta:
+        productCount:
+        - 餐點數：{count}
+        - count: {type: int}
+        price:
+        - 總價：{price}
+        - price:
+      dialog:
+        title: 訂單細節
+  basic:
+    name:
+    - menu: 菜單
+      stock: 庫存
+      quantities: 份量
+      replenisher: 補貨
+      orderAttr: 顧客設定
+      order: 訂單
+      orderDetailsAttr: 訂單顧客設定
+      orderDetailsProduct: 訂單產品細項
+      orderDetailsIngredient: 訂單成分細項
+    - name:
 import:
   error:
     columnCount:
@@ -50,6 +83,9 @@ import:
   - 顯示該資料的額外狀態
   - {status: {type: String, mode: select}}
 # Google 試算表
+sheet:
+  basic: POS System 資料
+  order: 訂單資料
 GS:
   description: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
   spreadsheetLabel: 試算表
@@ -113,3 +149,4 @@ GS:
       other: '{error}'
     - 匯入時會有的錯誤
     - {error: {type: String, mode: select}}
+# 純文字

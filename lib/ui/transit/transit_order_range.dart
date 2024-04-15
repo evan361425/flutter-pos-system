@@ -22,8 +22,8 @@ class _TransitOrderRangeState extends State<TransitOrderRange> {
   Widget build(BuildContext context) {
     return ListTile(
       key: const Key('btn.edit_range'),
-      title: Text('${range.format(DateFormat.MMMd(S.localeName))} 的訂單'),
-      subtitle: Text('${range.duration.inDays} 天的資料'),
+      title: Text(S.transitDataOrderMetaRange(range.format(DateFormat.MMMd(S.localeName)))),
+      subtitle: Text(S.transitDataOrderMetaRangeDays(range.duration.inDays)),
       onTap: pickRange,
       trailing: const Icon(Icons.date_range_sharp),
     );

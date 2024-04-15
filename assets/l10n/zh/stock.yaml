@@ -23,7 +23,7 @@ ingredient:
   - 共有 {count} 個產品使用 {name}
   - 在編輯成分時，會提示有幾個產品正在使用，並允許點擊導進產品頁
   - count: {type: int, description: 產品數量}
-    name: {type: String, description: 成分名稱}
+    name:
   name:
     label: 成分名稱
     hint: 例如：起司

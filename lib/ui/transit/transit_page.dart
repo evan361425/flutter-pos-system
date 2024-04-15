@@ -26,13 +26,10 @@ class _TransitPageState extends State<TransitPage> {
         key: selector,
         values: TransitType.values,
         selected: TransitType.order,
-        labels: const ['訂單記錄', '商家資訊'],
-        helpTexts: const [
-          '訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。',
-          '商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。',
-        ],
+        labels: TransitType.values.map((e) => S.transitDataTypeName(e.name)).toList(),
+        helpTexts: TransitType.values.map((e) => S.transitDataTypeHelper(e.name)).toList(),
       ),
-      TextDivider(label: S.transitDescription),
+      TextDivider(label: S.transitMethodTitle),
       ListTile(
         key: const Key('transit.google_sheet'),
         leading: CircleAvatar(
@@ -42,7 +39,7 @@ class _TransitPageState extends State<TransitPage> {
             width: 24,
           ),
         ),
-        title: Text(S.transitMethod(TransitMethod.googleSheet.name)),
+        title: Text(S.transitMethodName(TransitMethod.googleSheet.name)),
         subtitle: Text(S.transitGSDescription),
         onTap: () => _goToStation(context, TransitMethod.googleSheet),
       ),
@@ -52,7 +49,7 @@ class _TransitPageState extends State<TransitPage> {
           radius: 24,
           child: Text('Text'),
         ),
-        title: Text(S.transitMethod(TransitMethod.plainText.name)),
+        title: Text(S.transitMethodName(TransitMethod.plainText.name)),
         subtitle: const Text('快速檢查、快速分享。'),
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
@@ -60,7 +57,7 @@ class _TransitPageState extends State<TransitPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.transitTitle),
+        title: Text(S.transitTitleMain),
         leading: const PopButton(),
       ),
       body: GestureDetector(

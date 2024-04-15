@@ -59,7 +59,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
       key: loading,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(S.transitMethod(widget.method.name)),
+          title: Text(S.transitMethodName(widget.method.name)),
           leading: const PopButton(),
           bottom: _buildAppBarBottom(),
         ),
@@ -107,8 +107,8 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
         return TabBar(
           controller: tabController,
           tabs: [
-            Tab(text: S.btnExport),
-            Tab(text: S.btnImport),
+            Tab(text: S.transitBtnExport),
+            Tab(text: S.transitBtnImport),
           ],
         );
       default:
