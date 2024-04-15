@@ -1,6 +1,13 @@
 $prefix: orderAttribute
-title: 顧客設定
-subtitle: 內用、外帶等幫助分析的資訊
+title:
+  main: 顧客設定
+  sub: 內用、外帶等幫助分析的資訊
+  create: 新增顧客設定
+  update: 編輯顧客設定
+  reorder: 排序顧客設定
+emptyBody: |
+  顧客設定可以幫助我們統計哪些人來消費，例如：
+  20-30歲、外帶、上班族。
 headerInfo:
 - 顧客設定
 - 放在首頁的框框標題
@@ -10,13 +17,6 @@ tutorial:
     這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。
     這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
 meta:
-  title:
-    empty: |
-      顧客設定可以幫助我們統計哪些人來消費，例如：
-      20-30歲、外帶、上班族。
-    create: 新增顧客設定
-    update: 編輯顧客設定
-    reorder: 排序顧客設定
   mode:
   - 種類：{mode}
   - mode: {type: String}
@@ -25,7 +25,7 @@ meta:
   - name: {type: String}
   noDefault: 未設定預設
 mode:
-  label: 顧客設定種類
+  divider: 顧客設定種類
   name:
   - statOnly: 一般
     changePrice: 變價
@@ -47,9 +47,10 @@ name:
     repeat: 名稱不能重複
 option:
   title:
-    create:
+    create: 新增選項
+    createWith:
     - 新增{name}的選項
-    - name: {type: String}
+    - name:
     update: 編輯選項
     reorder: 排序選項
   meta:

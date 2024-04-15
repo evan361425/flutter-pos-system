@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-15T10:02:52.097459Z",
+  "@@last_modified": "2024-04-15T13:18:35.291547Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -81,16 +81,16 @@
   "stockUpdatedAt": "上次補貨時間：{updatedAt}",
   "@stockUpdatedAt": {
     "placeholders": {
-      "type": {
-        "type": "String"
-      },
-      "format": {
-        "type": "String"
+      "updatedAt": {
+        "type": "DateTime",
+        "format": "MMMEd"
       }
     }
   },
+  "stockIngredientEmptyBody": "新增成份後，就可以開始追蹤這些成份的庫存囉！",
   "stockIngredientTitleCreate": "新增成分",
   "stockIngredientTitleUpdate": "編輯成分",
+  "stockIngredientTitleUpdateAmount": "編輯庫存",
   "stockIngredientTutorialTitle": "新增成分",
   "stockIngredientTutorialContent": "成份可以幫助我們確認產品的庫存。\n你可以在「產品」中設定成分，然後在這裡設定庫存。\n",
   "stockIngredientDialogDeletionContent": "{count, plural, =0{目前無任何產品有本成分} other{將會一同刪除掉 {count} 個產品的成分}}",
@@ -122,11 +122,17 @@
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
   "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n\n填空或不填寫則每次增加庫存，都會自動設定這值，\n這是假設每次補貨都會讓庫存達到最大值。\n",
-  "stockReplenishTitleBase": "採購列表",
-  "stockReplenishTitleCreate": "新增採購",
-  "stockReplenishTitleIngredientList": "點選以設定不同成分欲採購的量",
-  "stockReplenishTitleSub": "會影響 {count} 項成分",
-  "@stockReplenishTitleSub": {
+  "stockIngredientAmountShortHelper": "若沒有設定最大庫存量，增加庫存會重設最大值。",
+  "@stockIngredientAmountShortHelper": {
+    "description": "被用在快速增加庫存的輔助文字"
+  },
+  "stockReplenishmentButton": "採購",
+  "stockReplenishmentEmptyBody": "採購可以幫你快速調整成分的庫存",
+  "stockReplenishmentTitleList": "採購列表",
+  "stockReplenishmentTitleCreate": "新增採購",
+  "stockReplenishmentTitleUpdate": "編輯採購",
+  "stockReplenishmentMetaAffect": "會影響 {count} 項成分",
+  "@stockReplenishmentMetaAffect": {
     "description": "顯示在採購列表中，會影響多少個成分",
     "placeholders": {
       "count": {
@@ -134,31 +140,37 @@
       }
     }
   },
-  "stockReplenishNever": "尚未補貨過",
-  "@stockReplenishNever": {
+  "stockReplenishmentNever": "尚未補貨過",
+  "@stockReplenishmentNever": {
     "description": "庫存頁面會顯示上次補貨時間，若未補貨過則設此文字"
   },
-  "stockReplenishApplyButton": "採購",
-  "stockReplenishApplyConfirmTitle": "套用採購？",
-  "stockReplenishApplyConfirmContent": "將會影響以下的成分：{ingredients}",
-  "@stockReplenishApplyConfirmContent": {
-    "description": "確認採購時會顯示影響的成分",
+  "stockReplenishmentApplyButton": "套用採購",
+  "stockReplenishmentApplyConfirmButton": "套用",
+  "stockReplenishmentApplyConfirmTitle": "套用採購？",
+  "stockReplenishmentApplyConfirmColumn": "{name, select, name{名稱} amount{數量} other{UNKNOWN}}",
+  "@stockReplenishmentApplyConfirmColumn": {
     "placeholders": {
-      "ingredients": {
-        "type": "String",
-        "description": "影響的成分"
+      "name": {
+        "type": "String"
       }
     }
   },
-  "stockReplenishTutorialTitle": "成份採購",
-  "stockReplenishTutorialContent": "透過採購，你不再需要一個一個去設定成分的庫存。\n馬上設定採購，一次調整多個成份吧！\n",
-  "stockReplenishNameLabel": "採購名稱",
-  "stockReplenishNameHint": "例如：Costco 採購",
-  "stockReplenishNameErrorRepeat": "採購名稱重複",
-  "stockReplenishIngredientAmountHint": "設定增加／減少的量",
-  "stockQuantityTitleBase": "份量",
+  "stockReplenishmentApplyConfirmHint": "選擇套用後，將會影響以下成分的庫存",
+  "stockReplenishmentTutorialTitle": "成份採購",
+  "stockReplenishmentTutorialContent": "透過採購，你不再需要一個一個去設定成分的庫存。\n馬上設定採購，一次調整多個成份吧！\n",
+  "stockReplenishmentNameLabel": "採購名稱",
+  "stockReplenishmentNameHint": "例如：Costco 採購",
+  "stockReplenishmentNameErrorRepeat": "採購名稱重複",
+  "stockReplenishmentDividerIngredientList": "點選以設定不同成分欲採購的量",
+  "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
+  "stockQuantityTitleMain": "份量",
   "stockQuantityTitleSub": "半糖、微糖等",
+  "@stockQuantityTitleSub": {
+    "description": "首頁中列表的子標題"
+  },
   "stockQuantityTitleCreate": "新增份量",
+  "stockQuantityTitleUpdate": "編輯份量",
+  "stockQuantityEmptyBody": "份量可以快速調整成分的量，例如：\n半糖、微糖。\n",
   "stockQuantityMetaProportion": "預設比例：{proportion}",
   "@stockQuantityMetaProportion": {
     "description": "份量列表中各個項目的子標題中，說明預設比例的文字",
@@ -431,18 +443,18 @@
   "@twoWeeks": {
     "description": "日曆週期轉換單位之一"
   },
-  "orderAttributeTitle": "顧客設定",
-  "orderAttributeSubtitle": "內用、外帶等幫助分析的資訊",
+  "orderAttributeTitleMain": "顧客設定",
+  "orderAttributeTitleSub": "內用、外帶等幫助分析的資訊",
+  "orderAttributeTitleCreate": "新增顧客設定",
+  "orderAttributeTitleUpdate": "編輯顧客設定",
+  "orderAttributeTitleReorder": "排序顧客設定",
+  "orderAttributeEmptyBody": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。\n",
   "orderAttributeHeaderInfo": "顧客設定",
   "@orderAttributeHeaderInfo": {
     "description": "放在首頁的框框標題"
   },
   "orderAttributeTutorialTitle": "顧客設定",
   "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。\n",
-  "orderAttributeMetaTitleEmpty": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。\n",
-  "orderAttributeMetaTitleCreate": "新增顧客設定",
-  "orderAttributeMetaTitleUpdate": "編輯顧客設定",
-  "orderAttributeMetaTitleReorder": "排序顧客設定",
   "orderAttributeMetaMode": "種類：{mode}",
   "@orderAttributeMetaMode": {
     "placeholders": {
@@ -460,7 +472,7 @@
     }
   },
   "orderAttributeMetaNoDefault": "未設定預設",
-  "orderAttributeModeLabel": "顧客設定種類",
+  "orderAttributeModeDivider": "顧客設定種類",
   "orderAttributeModeName": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{未知}}",
   "@orderAttributeModeName": {
     "description": "顧客設定種類名稱",
@@ -482,8 +494,9 @@
   "orderAttributeNameLabel": "顧客設定名稱",
   "orderAttributeNameHint": "例如：顧客年齡",
   "orderAttributeNameErrorRepeat": "名稱不能重複",
-  "orderAttributeOptionTitleCreate": "新增{name}的選項",
-  "@orderAttributeOptionTitleCreate": {
+  "orderAttributeOptionTitleCreate": "新增選項",
+  "orderAttributeOptionTitleCreateWith": "新增{name}的選項",
+  "@orderAttributeOptionTitleCreateWith": {
     "placeholders": {
       "name": {
         "type": "String"

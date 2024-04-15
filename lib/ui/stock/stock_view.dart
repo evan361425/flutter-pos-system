@@ -31,7 +31,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       return Center(
         key: const Key('stock.empty'),
         child: EmptyBody(
-          helperText: '新增成份後，就可以開始追蹤這些成份的庫存囉！',
+          helperText: S.stockIngredientEmptyBody,
           onPressed: () => context.pushNamed(Routes.ingredientNew),
         ),
       );
@@ -45,7 +45,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
             id: 'stock.replenishment',
             index: 1,
             title: S.stockReplenishmentTutorialTitle,
-            message: S.stockReplenishmentTutorialMessage,
+            message: S.stockReplenishmentTutorialContent,
             child: RouteCircularButton(
               key: const Key('stock.replenisher'),
               icon: Icons.shopping_basket_sharp,
@@ -59,13 +59,13 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
             id: 'stock.add',
             index: 0,
             disable: Stock.instance.isNotEmpty,
-            title: S.stockIngredientAddTutorialTitle,
-            message: S.stockIngredientAddTutorialMessage,
+            title: S.stockIngredientTutorialTitle,
+            message: S.stockIngredientTutorialContent,
             child: RouteCircularButton(
               key: const Key('stock.add'),
               route: Routes.ingredientNew,
               icon: KIcons.add,
-              text: S.stockIngredientCreate,
+              text: S.stockIngredientTitleCreate,
             ),
           ),
         ]),

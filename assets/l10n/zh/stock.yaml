@@ -2,11 +2,13 @@ $prefix: stock
 tab: 庫存
 updatedAt:
 - 上次補貨時間：{updatedAt}
-- {type: DateTime, format: MMMEd}
+- updatedAt: {type: DateTime, format: MMMEd}
 ingredient:
+  emptyBody: 新增成份後，就可以開始追蹤這些成份的庫存囉！
   title:
     create: 新增成分
     update: 編輯成分
+    updateAmount: 編輯庫存
   tutorial:
     title: 新增成分
     content: |
@@ -35,12 +37,18 @@ ingredient:
 
       填空或不填寫則每次增加庫存，都會自動設定這值，
       這是假設每次補貨都會讓庫存達到最大值。
-replenish:
+    shortHelper:
+    - 若沒有設定最大庫存量，增加庫存會重設最大值。
+    - 被用在快速增加庫存的輔助文字
+replenishment:
+  button: 採購
+  emptyBody: 採購可以幫你快速調整成分的庫存
   title:
-    base: 採購列表
+    list: 採購列表
     create: 新增採購
-    ingredientList: 點選以設定不同成分欲採購的量
-    sub:
+    update: 編輯採購
+  meta:
+    affect:
     - 會影響 {count} 項成分
     - 顯示在採購列表中，會影響多少個成分
     - count: {type: int}
@@ -48,13 +56,15 @@ replenish:
   - 尚未補貨過
   - 庫存頁面會顯示上次補貨時間，若未補貨過則設此文字
   apply:
-    button: 採購
+    button: 套用採購
     confirm:
+      button: 套用
       title: 套用採購？
-      content:
-      - 將會影響以下的成分：{ingredients}
-      - 確認採購時會顯示影響的成分
-      - ingredients: {type: String, description: 影響的成分}
+      column:
+      - name: 名稱
+        amount: 數量
+      - name:
+      hint: 選擇套用後，將會影響以下成分的庫存
   tutorial:
     title: 成份採購
     content: |
@@ -65,13 +75,21 @@ replenish:
     hint: 例如：Costco 採購
     error:
       repeat: 採購名稱重複
+  divider:
+    ingredientList: 點選以設定不同成分欲採購的量
   ingredientAmount:
     hint: 設定增加／減少的量
 quantity:
   title:
-    base: 份量
-    sub: 半糖、微糖等
+    main: 份量
+    sub:
+    - 半糖、微糖等
+    - 首頁中列表的子標題
     create: 新增份量
+    update: 編輯份量
+  emptyBody: |
+    份量可以快速調整成分的量，例如：
+    半糖、微糖。
   meta:
     proportion:
     - 預設比例：{proportion}

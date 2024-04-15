@@ -29,7 +29,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
   late FocusNode _nameFocusNode;
 
   @override
-  String get title => widget.replenishment?.name ?? S.stockReplenishmentCreate;
+  String get title => widget.replenishment?.name ?? S.stockReplenishmentTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -55,12 +55,12 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.replenishment?.name != name && Replenisher.instance.hasName(name)
-                ? S.stockReplenishmentNameRepeatError
+                ? S.stockReplenishmentNameErrorRepeat
                 : null;
           },
         ),
       )),
-      TextDivider(label: S.stockReplenishmentIngredientListTitle),
+      TextDivider(label: S.stockReplenishmentDividerIngredientList),
       for (final ing in Stock.instance.itemList) _buildIngredientField(ing),
     ];
   }

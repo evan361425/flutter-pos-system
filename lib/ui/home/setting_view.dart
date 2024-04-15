@@ -88,15 +88,15 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             id: 'order_attrs',
             icon: Icons.assignment_ind_sharp,
             route: Routes.orderAttr,
-            title: S.orderAttributeTitle,
-            subtitle: S.orderAttributeSubtitle,
+            title: S.orderAttributeTitleMain,
+            subtitle: S.orderAttributeTitleSub,
           ),
         ),
         _buildRouteTile(
           id: 'quantity',
           icon: Icons.exposure_sharp,
           route: Routes.quantity,
-          title: S.stockQuantityTitleBase,
+          title: S.stockQuantityTitleMain,
           subtitle: S.stockQuantityTitleSub,
         ),
         _buildRouteTile(

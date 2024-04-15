@@ -26,7 +26,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
   final modeSelector = GlobalKey<ChoiceChipWithHelpState<OrderAttributeMode>>();
 
   @override
-  String get title => widget.attribute?.name ?? S.orderAttributeCreate;
+  String get title => widget.attribute?.name ?? S.orderAttributeTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -49,18 +49,18 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.attribute?.name != name && OrderAttributes.instance.hasName(name)
-                ? S.orderAttributeNameRepeatError
+                ? S.orderAttributeNameErrorRepeat
                 : null;
           },
         ),
       )),
-      TextDivider(label: S.orderAttributeModeTitle),
+      TextDivider(label: S.orderAttributeModeDivider),
       ChoiceChipWithHelp(
         key: modeSelector,
         values: OrderAttributeMode.values,
         selected: widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
-        labels: OrderAttributeMode.values.map((e) => S.orderAttributeModeNames(e.name)),
-        helpTexts: OrderAttributeMode.values.map((e) => S.orderAttributeModeDescriptions(e.name)).toList(),
+        labels: OrderAttributeMode.values.map((e) => S.orderAttributeModeName(e.name)),
+        helpTexts: OrderAttributeMode.values.map((e) => S.orderAttributeModeHelper(e.name)).toList(),
       ),
     ];
   }

@@ -24,13 +24,13 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.stockReplenishmentTitle),
+        title: Text(S.stockReplenishmentTitleList),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('replenisher.add'),
         onPressed: goToCreate,
-        tooltip: S.stockReplenishmentCreate,
+        tooltip: S.stockReplenishmentTitleCreate,
         child: const Icon(KIcons.add),
       ),
       body: body,
@@ -46,10 +46,11 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
   Widget get body {
     if (Replenisher.instance.isEmpty) {
       return Center(
-          child: EmptyBody(
-        onPressed: goToCreate,
-        helperText: '採購可以幫你快速調整成分的庫存',
-      ));
+        child: EmptyBody(
+          onPressed: goToCreate,
+          helperText: S.stockReplenishmentEmptyBody,
+        ),
+      );
     }
 
     return SlidableItemList<Replenishment, _Actions>(
@@ -62,15 +63,15 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
         items: Replenisher.instance.itemList,
         actionBuilder: (item) => [
           BottomSheetAction(
-            title: const Text('編輯採購'),
+            title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
             route: Routes.replenishmentModal,
             routePathParameters: {'id': item.id},
           ),
-          const BottomSheetAction(
-            key: Key('apply'),
-            title: Text('套用採購'),
-            leading: Icon(Icons.check_circle_outline_sharp),
+          BottomSheetAction(
+            key: const Key('apply'),
+            title: Text(S.stockReplenishmentApplyButton),
+            leading: const Icon(Icons.check_circle_outline_sharp),
             returnValue: _Actions.apply,
           ),
         ],
@@ -78,7 +79,7 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
         tileBuilder: (context, item, index, showActions) => ListTile(
           key: Key('replenisher.${item.id}'),
           title: Text(item.name),
-          subtitle: Text(S.stockReplenishmentSubtitle(item.data.length)),
+          subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
           onTap: () => handleAction(item, _Actions.apply),
           onLongPress: showActions,
           trailing: EntryMoreButton(onPressed: showActions),

@@ -42,7 +42,7 @@ class _OrderAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
-    final mode = S.orderAttributeModeNames(attr.mode.name);
+    final mode = S.orderAttributeModeName(attr.mode.name);
     final defaultName = attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     final key = 'order_attributes.${attr.id}';
 
@@ -58,7 +58,7 @@ class _OrderAttributeCard extends StatelessWidget {
         ListTile(
           key: Key('$key.add'),
           leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.orderAttributeOptionCreate),
+          title: Text(S.orderAttributeOptionTitleCreate),
           onTap: () => context.pushNamed(
             Routes.orderAttrNew,
             queryParameters: {'id': attr.id},
@@ -79,13 +79,13 @@ class _OrderAttributeCard extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(S.orderAttributeUpdate),
+          title: Text(S.orderAttributeTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.orderAttrModal,
           routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
-          title: Text(S.orderAttributeOptionReorder),
+          title: Text(S.orderAttributeOptionTitleReorder),
           leading: const Icon(KIcons.reorder),
           route: Routes.orderAttrOptionReorder,
           routePathParameters: {'id': attr.id},
@@ -112,7 +112,7 @@ class _OptionTile extends StatelessWidget {
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
         subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
-        trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionIsDefault) : null,
+        trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionMetaDefault) : null,
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,
           deleteValue: 0,
