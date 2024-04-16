@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_order_range.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
+import 'package:possystem/ui/transit/transit_order_range.dart';
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
@@ -26,8 +25,8 @@ class ExportOrderView extends StatelessWidget {
           key: const Key('export_btn'),
           margin: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
-            title: const Text('複製文字'),
-            subtitle: const Text('複製過大的文字可能會造成系統的崩潰'),
+            title: Text(S.transitPTCopyBtn),
+            subtitle: Text(S.transitPTCopyWarning),
             trailing: const Icon(Icons.copy_outlined),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -37,7 +36,7 @@ class ExportOrderView extends StatelessWidget {
                 export(),
                 context,
                 'pt_export_failed',
-              ).then((value) => showSnackBar(context, '複製成功'));
+              ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
             },
           ),
         ),
@@ -62,7 +61,7 @@ class ExportOrderView extends StatelessWidget {
     const exporter = PlainTextExporter();
     await exporter.exportToClipboard(orders
         .map((o) => [
-              DateFormat('M月d日 HH:mm:ss').format(o.createdAt),
+              S.transitDataOrderItemTitle(o.createdAt),
               formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
@@ -82,34 +81,37 @@ class ExportOrderView extends StatelessWidget {
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes.map((a) {
-      return '${a.name} 為 ${a.optionName}';
+      return S.transitDataOrderFormatOrderAttributeItem(a.name, a.optionName);
     }).join('、');
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
-        final amount = i.amount == 0 ? '' : '，使用 ${i.amount} 個';
-        return S.orderProductIngredientName(
+        return S.transitDataOrderFormatIngredient(
+          i.amount,
           i.ingredientName,
-          (i.quantityName ?? '預設份量') + amount,
+          i.quantityName ?? S.transitDataOrderFormatNoQuantity,
         );
       }).join('、');
-      return [
-        '${p.productName}（${p.catalogName}）',
-        '${p.count} 份共 ${p.totalPrice.toCurrency()} 元，',
-        ing == '' ? '沒有設定成分' : '成份包括 $ing',
-      ].join('');
+      return S.transitDataOrderFormatProduct(
+        p.ingredients.length,
+        p.productName,
+        p.catalogName,
+        p.count,
+        p.totalPrice.toCurrency(),
+        ing,
+      );
     }).join('；\n');
     final pl = order.products.length;
     final tc = order.productsCount;
 
     return [
-      '共 ${order.price.toCurrency()} 元',
-      order.productsPrice == order.price ? '。\n' : '，其中的 ${order.productsPrice.toCurrency()} 元是產品價錢。\n',
-      '付額 ${order.paid.toCurrency()} 元、',
-      '成分 ${order.cost.toCurrency()} 元。\n',
-      if (attributes != '') '顧客的 $attributes。\n',
-      '餐點有 $tc 份',
-      if (pl != tc) '（$pl 種）',
-      '包括：\n$products。',
-    ].join('');
+      S.transitDataOrderFormatPrice(
+        order.productsPrice == order.price ? 0 : 1,
+        order.price.toCurrency(),
+        order.productsPrice.toCurrency(),
+      ),
+      S.transitDataOrderFormatMoney(order.paid.toCurrency(), order.cost.toCurrency()),
+      if (attributes != '') S.transitDataOrderFormatOrderAttribute(attributes),
+      S.transitDataOrderFormatProductCount(pl == tc ? 0 : 1, tc, pl, products)
+    ].join('\n');
   }
 }

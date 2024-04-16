@@ -99,7 +99,7 @@ class TransitOrderList extends StatelessWidget {
       title: Text(S.transitDataOrderItemTitle(order.createdAt)),
       subtitle: MetaBlock.withString(context, [
         S.transitDataOrderItemMetaProductCount(order.productsCount),
-        S.transitDataOrderItemTitlePrice(order.price.toCurrency()),
+        S.transitDataOrderItemMetaPrice(order.price.toCurrency()),
       ]),
       trailing: const Icon(Icons.expand_outlined),
       onTap: () async {

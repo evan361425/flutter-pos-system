@@ -26,8 +26,8 @@ class _TransitPageState extends State<TransitPage> {
         key: selector,
         values: TransitType.values,
         selected: TransitType.order,
-        labels: TransitType.values.map((e) => S.transitDataTypeName(e.name)).toList(),
-        helpTexts: TransitType.values.map((e) => S.transitDataTypeHelper(e.name)).toList(),
+        labels: TransitType.values.map((e) => S.transitDataName(e.name)).toList(),
+        helpTexts: TransitType.values.map((e) => S.transitDataHelper(e.name)).toList(),
       ),
       TextDivider(label: S.transitMethodTitle),
       ListTile(

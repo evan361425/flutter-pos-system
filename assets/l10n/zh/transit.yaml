@@ -46,7 +46,7 @@ data:
     item:
       title:
       - "{date}"
-      - date: {type: DateTime, format: "M月d日 HH:mm:ss"}
+      - date: {type: DateTime, format: "M月d日 HH:mm:ss", isCustomDateFormat: true}
       meta:
         productCount:
         - 餐點數：{count}
@@ -56,6 +56,50 @@ data:
         - price:
       dialog:
         title: 訂單細節
+    format:
+      price:
+      - =0: 共 {price} 元。
+        other: 共 {price} 元，其中的 {productsPrice} 元是產品價錢。
+      - hasProducts: {type: int, mode: plural}
+        price:
+        productsPrice:
+      money:
+      - 付額 {paid} 元、成分 {cost} 元。
+      - paid:
+        cost:
+      productCount:
+      - =0: 餐點有 {count} 份，包括：{products}。
+        other: |
+          餐點有 {count} 份（{type} 種）包括：
+          {products}。
+      - differentType: {type: int, mode: plural}
+        count: {type: int}
+        type: {type: int}
+        products:
+      product:
+      - =0: '{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分'
+        other: '{product}（{catalog}）{count} 份共 {price} 元，成份包括 {ingredients}'
+      - hasIngredient: {type: int, mode: plural}
+        product:
+        catalog:
+        count: {type: int}
+        price:
+        ingredients:
+      ingredient:
+      - =0: "{ingredient}（{quantity}）"
+        other: "{ingredient}（{quantity}），使用 {amount} 個"
+      - 點單時的產品列表中各項產品的成分和份量資訊
+      - amount: {type: num, mode: plural, format: decimalPattern}
+        ingredient:
+        quantity:
+      noQuantity: 預設份量
+      orderAttribute:
+      - 顧客的 {options}
+      - options:
+      orderAttributeItem:
+      - '{name} 為 {option}'
+      - name:
+        option:
   basic:
     name:
     - menu: 菜單
@@ -108,7 +152,6 @@ GS:
     orderDetailsAttr: 匯出顧客設定中..
     orderDetailsProduct: 匯出產品細項中..
     orderDetailsIngredient: 匯出成分細項中..
-    other: 'UKNOWN'
   - {model: {type: String, mode: select}}
   product:
     ingredient:
@@ -150,3 +193,13 @@ GS:
     - 匯入時會有的錯誤
     - {error: {type: String, mode: select}}
 # 純文字
+PT:
+  copy:
+    btn: 複製文字
+    success: 複製成功
+    warning: 複製過大的文字可能會造成系統的崩潰
+  import:
+    hint: 請貼上複製而來的文字
+    helper: 貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
+    error:
+      notFound: 這段文字無法匹配相應的服務，請參考匯出時的文字內容。

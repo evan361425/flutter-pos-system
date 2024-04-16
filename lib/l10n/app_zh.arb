@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-15T13:18:35.291547Z",
+  "@@last_modified": "2024-04-16T01:07:59.580645Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -111,8 +111,7 @@
         "description": "產品數量"
       },
       "name": {
-        "type": "String",
-        "description": "成分名稱"
+        "type": "String"
       }
     }
   },
@@ -195,8 +194,10 @@
   "stockQuantityNameErrorRepeat": "份量名稱重複",
   "stockQuantityProportionLabel": "預設比例",
   "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分\n",
-  "transitTitle": "資料轉移",
-  "transitSubtitle": "匯入、匯出店家資訊和訂單",
+  "transitTitleMain": "資料轉移",
+  "transitTitleSub": "匯入、匯出店家資訊和訂單",
+  "transitTitlePreviewExport": "預覽輸出結果",
+  "transitTitlePreviewImport": "預覽匯入結果",
   "transitTutorialTitle": "多人、裝置的第一步",
   "transitTutorialContent": "這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。\n我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。\n",
   "transitBtnImport": "匯入",
@@ -210,12 +211,170 @@
       }
     }
   },
-  "transitPreviewExportTitle": "預覽輸出結果",
-  "transitPreviewImportTitle": "預覽匯入結果",
-  "transitSheetBasic": "POS System 資料",
-  "transitSheetOrder": "訂單資料",
-  "transitDataName": "{name, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderDetailsAttr{訂單顧客設定} orderDetailsProduct{訂單產品細項} orderDetailsIngredient{訂單成分細項} other{UNKNOWN}}",
+  "transitDataName": "{name, select, order{訂單記錄} basic{店家資訊} other{UNKNOWN}}",
   "@transitDataName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataHelper": "{name, select, order{訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。} basic{商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。} other{UNKNOWN}}",
+  "@transitDataHelper": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderMetaRange": "{range}的訂單",
+  "@transitDataOrderMetaRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderMetaRangeDays": "{days} 天的資料",
+  "@transitDataOrderMetaRangeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "transitDataOrderCapacityTitle": "預估容量為：{size}",
+  "@transitDataOrderCapacityTitle": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderCapacityContent": "過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。",
+  "transitDataOrderCapacityOk": "容量剛好",
+  "transitDataOrderCapacityWarn": "容量警告",
+  "transitDataOrderCapacityDanger": "容量危險",
+  "transitDataOrderItemTitle": "{date}",
+  "@transitDataOrderItemTitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "M月d日 HH:mm:ss",
+        "isCustomDateFormat": "true"
+      }
+    }
+  },
+  "transitDataOrderItemMetaProductCount": "餐點數：{count}",
+  "@transitDataOrderItemMetaProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitDataOrderItemMetaPrice": "總價：{price}",
+  "@transitDataOrderItemMetaPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderItemDialogTitle": "訂單細節",
+  "transitDataOrderFormatPrice": "{hasProducts, plural, =0{共 {price} 元} other{共 {price} 元，其中的 {productsPrice} 元是產品價錢。}}",
+  "@transitDataOrderFormatPrice": {
+    "placeholders": {
+      "hasProducts": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "productsPrice": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderFormatMoney": "付額 {paid} 元、成分 {cost} 元。",
+  "transitDataOrderFormatProductCount": "{differentType, plural, =0{餐點有 {count} 份，包括：{products}。} other{餐點有 {count} 份（{type} 種）包括：{products}。}}",
+  "@transitDataOrderFormatProductCount": {
+    "placeholders": {
+      "differentType": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "type": {
+        "type": "int"
+      },
+      "products": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderFormatProduct": "{hasIngredient, plural, =0{{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分} other{{product}（{catalog}）{count} 份共 {price} 元，成份包括 {ingredients}}}",
+  "@transitDataOrderFormatProduct": {
+    "placeholders": {
+      "hasIngredient": {
+        "type": "int"
+      },
+      "product": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderFormatIngredient": "{amount, plural, =0{{ingredient}（{quantity}）} other{{ingredient}（{quantity}），使用 {amount} 個}}",
+  "@transitDataOrderFormatIngredient": {
+    "description": "點單時的產品列表中各項產品的成分和份量資訊",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      },
+      "ingredient": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderFormatNoQuantity": "預設份量",
+  "transitDataOrderFormatOrderAttribute": "顧客的 {options}",
+  "@transitDataOrderFormatOrderAttribute": {
+    "placeholders": {
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataOrderFormatOrderAttributeItem": "{name} 為 {option}",
+  "@transitDataOrderFormatOrderAttributeItem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "option": {
+        "type": "String"
+      }
+    }
+  },
+  "transitDataBasicName": "{name, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderDetailsAttr{訂單顧客設定} orderDetailsProduct{訂單產品細項} orderDetailsIngredient{訂單成分細項} other{UNKNOWN}}",
+  "@transitDataBasicName": {
     "placeholders": {
       "name": {
         "type": "String"
@@ -239,6 +398,8 @@
       }
     }
   },
+  "transitSheetBasic": "POS System 資料",
+  "transitSheetOrder": "訂單資料",
   "transitGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
   "transitGSSpreadsheetLabel": "試算表",
   "transitGSSheetLabel": "{item}的表單標題",
@@ -258,7 +419,7 @@
       }
     }
   },
-  "transitGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderDetailsAttr{匯出顧客設定中..} orderDetailsProduct{匯出產品細項中..} orderDetailsIngredient{匯出成分細項中..} other{UKNOWN}}",
+  "transitGSUpdateModelStatus": "{model, select, menu{更新菜單中..} stock{更新庫存中..} quantities{更新份量中..} replenisher{更新補貨中..} orderAttr{更新顧客設定中..} order{匯出訂單中..} orderDetailsAttr{匯出顧客設定中..} orderDetailsProduct{匯出產品細項中..} orderDetailsIngredient{匯出成分細項中..} other{UNKNOWN}}",
   "@transitGSUpdateModelStatus": {
     "placeholders": {
       "model": {
@@ -293,6 +454,12 @@
       }
     }
   },
+  "transitPTCopyBtn": "複製文字",
+  "transitPTCopySuccess": "複製成功",
+  "transitPTCopyWarning": "複製過大的文字可能會造成系統的崩潰",
+  "transitPTImportHint": "請貼上複製而來的文字",
+  "transitPTImportHelper": "貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。",
+  "transitPTImportErrorNotFound": "這段文字無法匹配相應的服務，請參考匯出時的文字內容。",
   "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {
@@ -455,10 +622,10 @@
   },
   "orderAttributeTutorialTitle": "顧客設定",
   "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。\n",
-  "orderAttributeMetaMode": "種類：{mode}",
+  "orderAttributeMetaMode": "種類：{name}",
   "@orderAttributeMetaMode": {
     "placeholders": {
-      "mode": {
+      "name": {
         "type": "String"
       }
     }
@@ -473,20 +640,15 @@
   },
   "orderAttributeMetaNoDefault": "未設定預設",
   "orderAttributeModeDivider": "顧客設定種類",
-  "orderAttributeModeName": "{mode, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{未知}}",
+  "orderAttributeModeName": "{name, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{未知}}",
   "@orderAttributeModeName": {
-    "description": "顧客設定種類名稱",
-    "placeholders": {
-      "mode": {
-        "type": "String"
-      }
-    }
+    "description": "name"
   },
-  "orderAttributeModeHelper": "{mode, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
+  "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
     "description": "顧客設定種類的說明",
     "placeholders": {
-      "mode": {
+      "name": {
         "type": "String"
       }
     }
@@ -510,19 +672,19 @@
   "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲\n",
   "orderAttributeOptionNameErrorRepeat": "名稱不能重複",
   "orderAttributeOptionModeTitle": "選項模式",
-  "orderAttributeOptionModeHelper": "{mode, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價} other{UNKNOWN}}",
+  "orderAttributeOptionModeHelper": "{name, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價} other{UNKNOWN}}",
   "@orderAttributeOptionModeHelper": {
     "description": "模式的說明",
     "placeholders": {
-      "mode": {
+      "name": {
         "type": "String"
       }
     }
   },
-  "orderAttributeOptionModeHint": "{mode, select, statOnly{} changePrice{例如：-30 代表減少三十塊} changeDiscount{例如：80 代表「八折」} other{UNKNOWN}}}",
+  "orderAttributeOptionModeHint": "{name, select, statOnly{} changePrice{例如：-30 代表減少三十塊} changeDiscount{例如：80 代表「八折」} other{UNKNOWN}}",
   "@orderAttributeOptionModeHint": {
     "placeholders": {
-      "mode": {
+      "name": {
         "type": "String"
       }
     }

@@ -62,6 +62,12 @@
             },
             "example": { "type": "string" },
             "description": { "type": "string" },
+            "isCustomDateFormat": {
+              "anyOf": [
+                { "type": "string", "enum": ["true", "false"] },
+                { "type": "boolean" }
+              ]
+            },
             "optionalParameters": {
               "type": "object",
               "properties": {
