@@ -5,7 +5,11 @@ meta:
   totalPrice:
   - 總價：{price}
   - 點餐列表中，單日點餐的總價
-  - price: {type: num, format: compactCurrency, symbol: '$'}
+  - price:
+  totalCost:
+  - 總成本：{cost}
+  - 點餐列表中，單日點餐的總成本
+  - cost:
   totalCount:
   - 總數：{count}
   - 點餐列表中，單日點餐的總數
@@ -111,6 +115,7 @@ details:
       change: 找錢
 # Order Form
 form:
+  empty: 查無點餐紀錄
   title:
     change: 找錢
     price:

@@ -22,10 +22,6 @@ catalog:
     - 菜單頁的 floatingActionButton 說明
     update: 編輯產品種類
     reorder: 排序產品種類
-  # metaCreatedAt:
-  # - 建立時間：{createdAt}
-  # - 產品種類建立時間
-  # - createdAt: {type: DateTime, format: MMMd}
   dialogDeletionContent:
   - =0: 其內無任何產品
     other: 將會一同刪除掉 {count} 個產品'

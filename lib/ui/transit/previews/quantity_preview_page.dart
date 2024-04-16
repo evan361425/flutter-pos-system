@@ -19,13 +19,13 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
         status: item.statusName,
       ),
       subtitle: MetaBlock.withString(context, <String>[
-        S.quantityMetaProportion(item.defaultProportion),
+        S.stockQuantityMetaProportion(item.defaultProportion),
       ]),
     );
   }
 
   @override
   Widget getHeader(BuildContext context) {
-    return const Text('匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。');
+    return Text(S.transitPreviewQuantityHeader);
   }
 }

@@ -22,8 +22,8 @@ class _TransitOrderRangeState extends State<TransitOrderRange> {
   Widget build(BuildContext context) {
     return ListTile(
       key: const Key('btn.edit_range'),
-      title: Text(S.transitDataOrderMetaRange(range.format(DateFormat.MMMd(S.localeName)))),
-      subtitle: Text(S.transitDataOrderMetaRangeDays(range.duration.inDays)),
+      title: Text(S.transitOrderMetaRange(range.format(DateFormat.MMMd(S.localeName)))),
+      subtitle: Text(S.transitOrderMetaRangeDays(range.duration.inDays)),
       onTap: pickRange,
       trailing: const Icon(Icons.date_range_sharp),
     );

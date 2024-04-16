@@ -52,8 +52,8 @@ class _ExportBasicViewState extends State<ExportBasicView> {
             existLabel: '指定匯出',
             existHint: '匯出至試算表「%name」',
             emptyLabel: '建立匯出',
-            emptyHint: '建立新的試算表「${S.transitBasicTitle}」，並把資料匯出至此',
-            defaultName: S.transitBasicTitle,
+            emptyHint: '建立新的試算表「${S.transitGSSheetBasicTitle}」，並把資料匯出至此',
+            defaultName: S.transitGSSheetBasicTitle,
             requiredSheetTitles: requiredSheetTitles,
             onUpdated: onSpreadsheetUpdate,
             onPrepared: exportData,
@@ -66,7 +66,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
           prop: sheet,
           action: (prop) => previewData(prop.type),
           actionIcon: KIcons.preview,
-          actionTitle: S.transitPreviewExportTitle,
+          actionTitle: S.transitTitlePreviewExport,
         ),
     ]);
   }
@@ -81,7 +81,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       SheetType.replenisher,
       SheetType.orderAttr,
     ].map((e) {
-      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitType(e.name);
+      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitDataBasicName(e.name);
       final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
 
       return SheetNamerProperties(
@@ -112,7 +112,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         builder: (_) => SheetPreviewPage(
           source: SheetPreviewerDataTableSource(formatter.getRows(able)),
           header: formatter.getHeader(able),
-          title: S.transitType(able.name),
+          title: S.transitDataBasicName(able.name),
         ),
       ),
     );
@@ -154,7 +154,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         context,
         S.actSuccess,
         action: LauncherSnackbarAction(
-          label: '開啟表單',
+          label: S.transitGSSpreadsheetCreateSnackbarAction,
           link: ss.toLink(),
           logCode: 'gs_export',
         ),
@@ -167,7 +167,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       sheet.hints = other?.sheets.map((e) => e.title);
     }
 
-    // 同時更新用作 import 的試算表
+    // auto set the title to import, to make user easier to import
     if (other != null && Cache.instance.get<String>(_importKey) == null) {
       await Cache.instance.set(_importKey, other.toString());
     }

@@ -61,7 +61,7 @@ class ExportOrderView extends StatelessWidget {
     const exporter = PlainTextExporter();
     await exporter.exportToClipboard(orders
         .map((o) => [
-              S.transitDataOrderItemTitle(o.createdAt),
+              S.transitOrderItemTitle(o.createdAt),
               formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
@@ -81,17 +81,17 @@ class ExportOrderView extends StatelessWidget {
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes.map((a) {
-      return S.transitDataOrderFormatOrderAttributeItem(a.name, a.optionName);
+      return S.transitPTFormatOrderOrderAttributeItem(a.name, a.optionName);
     }).join('、');
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
-        return S.transitDataOrderFormatIngredient(
+        return S.transitPTFormatOrderIngredient(
           i.amount,
           i.ingredientName,
-          i.quantityName ?? S.transitDataOrderFormatNoQuantity,
+          i.quantityName ?? S.transitPTFormatOrderNoQuantity,
         );
       }).join('、');
-      return S.transitDataOrderFormatProduct(
+      return S.transitPTFormatOrderProduct(
         p.ingredients.length,
         p.productName,
         p.catalogName,
@@ -104,14 +104,14 @@ class ExportOrderView extends StatelessWidget {
     final tc = order.productsCount;
 
     return [
-      S.transitDataOrderFormatPrice(
+      S.transitPTFormatOrderPrice(
         order.productsPrice == order.price ? 0 : 1,
         order.price.toCurrency(),
         order.productsPrice.toCurrency(),
       ),
-      S.transitDataOrderFormatMoney(order.paid.toCurrency(), order.cost.toCurrency()),
-      if (attributes != '') S.transitDataOrderFormatOrderAttribute(attributes),
-      S.transitDataOrderFormatProductCount(pl == tc ? 0 : 1, tc, pl, products)
+      S.transitPTFormatOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
+      if (attributes != '') S.transitPTFormatOrderOrderAttribute(attributes),
+      S.transitPTFormatOrderProductCount(pl == tc ? 0 : 1, tc, pl, products)
     ].join('\n');
   }
 }

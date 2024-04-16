@@ -56,7 +56,7 @@ class ProductPreviewPage extends PreviewPage<Product> {
       subtitle: MetaBlock.withString(
         context,
         item.items.map((e) => e.name),
-        emptyText: S.menuProductListEmptyIngredient,
+        emptyText: S.menuProductEmptyIngredients,
         textStyle: textStyle,
       ),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -87,8 +87,8 @@ class ProductPreviewPage extends PreviewPage<Product> {
                   context,
                   <String>[
                     S.menuQuantityMetaAmount(quantity.amount),
-                    S.menuQuantityMetaPrice(quantity.additionalPrice),
-                    S.menuQuantityMetaCost(quantity.additionalCost),
+                    S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice),
+                    S.menuQuantityMetaAdditionalCost(quantity.additionalCost),
                   ],
                   textStyle: textStyle,
                 ),

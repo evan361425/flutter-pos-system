@@ -35,7 +35,7 @@ class EmptyBody extends StatelessWidget {
           TextButton(
             key: const Key('empty_body'),
             onPressed: onPressed,
-            child: const Text(S.emptyBodyAction),
+            child: Text(S.emptyBodyAction),
           ),
         ],
       ),

@@ -56,7 +56,7 @@ class TransitOrderList extends StatelessWidget {
       return IconButton(
         icon: const Icon(Icons.check_outlined),
         iconSize: 16.0,
-        tooltip: S.transitDataOrderCapacityOk,
+        tooltip: S.transitOrderCapacityOk,
         style: FilledButton.styleFrom(
           backgroundColor: Colors.green[800],
           foregroundColor: Colors.white,
@@ -69,7 +69,7 @@ class TransitOrderList extends StatelessWidget {
       return IconButton(
         icon: const Icon(Icons.warning_amber_outlined),
         iconSize: 16.0,
-        tooltip: S.transitDataOrderCapacityWarn,
+        tooltip: S.transitOrderCapacityWarn,
         style: FilledButton.styleFrom(
           backgroundColor: Colors.yellow,
           foregroundColor: Colors.black,
@@ -81,7 +81,7 @@ class TransitOrderList extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.dangerous_outlined),
       iconSize: 16.0,
-      tooltip: S.transitDataOrderCapacityDanger,
+      tooltip: S.transitOrderCapacityDanger,
       style: FilledButton.styleFrom(
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
@@ -96,10 +96,10 @@ class TransitOrderList extends StatelessWidget {
         padding: const EdgeInsets.only(top: 4.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
       ),
-      title: Text(S.transitDataOrderItemTitle(order.createdAt)),
+      title: Text(S.transitOrderItemTitle(order.createdAt)),
       subtitle: MetaBlock.withString(context, [
-        S.transitDataOrderItemMetaProductCount(order.productsCount),
-        S.transitDataOrderItemMetaPrice(order.price.toCurrency()),
+        S.transitOrderItemMetaProductCount(order.productsCount),
+        S.transitOrderItemMetaPrice(order.price.toCurrency()),
       ]),
       trailing: const Icon(Icons.expand_outlined),
       onTap: () async {
@@ -108,7 +108,7 @@ class TransitOrderList extends StatelessWidget {
           await showDialog(
             context: context,
             builder: (context) {
-              return SimpleDialog(title: Text(S.transitDataOrderItemDialogTitle), children: [
+              return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: formatOrder(detailedOrder),
@@ -125,7 +125,7 @@ class TransitOrderList extends StatelessWidget {
     const style = TextStyle(fontWeight: FontWeight.bold);
     return SimpleDialog(children: [
       Column(children: [
-        Text(S.transitDataOrderCapacityTitle(getMemoryWithUnit(size))),
+        Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
         const SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -156,7 +156,7 @@ class TransitOrderList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Linkify.fromString([
-            S.transitDataOrderCapacityContent,
+            S.transitOrderCapacityContent,
             if (warning != null) '\n$warning',
           ].join()),
         )

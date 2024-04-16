@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-16T01:07:59.580645Z",
+  "@@last_modified": "2024-04-16T13:03:17.762530Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -227,152 +227,6 @@
       }
     }
   },
-  "transitDataOrderMetaRange": "{range}的訂單",
-  "@transitDataOrderMetaRange": {
-    "placeholders": {
-      "range": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderMetaRangeDays": "{days} 天的資料",
-  "@transitDataOrderMetaRangeDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "transitDataOrderCapacityTitle": "預估容量為：{size}",
-  "@transitDataOrderCapacityTitle": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderCapacityContent": "過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。",
-  "transitDataOrderCapacityOk": "容量剛好",
-  "transitDataOrderCapacityWarn": "容量警告",
-  "transitDataOrderCapacityDanger": "容量危險",
-  "transitDataOrderItemTitle": "{date}",
-  "@transitDataOrderItemTitle": {
-    "placeholders": {
-      "date": {
-        "type": "DateTime",
-        "format": "M月d日 HH:mm:ss",
-        "isCustomDateFormat": "true"
-      }
-    }
-  },
-  "transitDataOrderItemMetaProductCount": "餐點數：{count}",
-  "@transitDataOrderItemMetaProductCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitDataOrderItemMetaPrice": "總價：{price}",
-  "@transitDataOrderItemMetaPrice": {
-    "placeholders": {
-      "price": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderItemDialogTitle": "訂單細節",
-  "transitDataOrderFormatPrice": "{hasProducts, plural, =0{共 {price} 元} other{共 {price} 元，其中的 {productsPrice} 元是產品價錢。}}",
-  "@transitDataOrderFormatPrice": {
-    "placeholders": {
-      "hasProducts": {
-        "type": "int"
-      },
-      "price": {
-        "type": "String"
-      },
-      "productsPrice": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderFormatMoney": "付額 {paid} 元、成分 {cost} 元。",
-  "transitDataOrderFormatProductCount": "{differentType, plural, =0{餐點有 {count} 份，包括：{products}。} other{餐點有 {count} 份（{type} 種）包括：{products}。}}",
-  "@transitDataOrderFormatProductCount": {
-    "placeholders": {
-      "differentType": {
-        "type": "int"
-      },
-      "count": {
-        "type": "int"
-      },
-      "type": {
-        "type": "int"
-      },
-      "products": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderFormatProduct": "{hasIngredient, plural, =0{{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分} other{{product}（{catalog}）{count} 份共 {price} 元，成份包括 {ingredients}}}",
-  "@transitDataOrderFormatProduct": {
-    "placeholders": {
-      "hasIngredient": {
-        "type": "int"
-      },
-      "product": {
-        "type": "String"
-      },
-      "catalog": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      },
-      "price": {
-        "type": "String"
-      },
-      "ingredients": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderFormatIngredient": "{amount, plural, =0{{ingredient}（{quantity}）} other{{ingredient}（{quantity}），使用 {amount} 個}}",
-  "@transitDataOrderFormatIngredient": {
-    "description": "點單時的產品列表中各項產品的成分和份量資訊",
-    "placeholders": {
-      "amount": {
-        "type": "num",
-        "format": "decimalPattern"
-      },
-      "ingredient": {
-        "type": "String"
-      },
-      "quantity": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderFormatNoQuantity": "預設份量",
-  "transitDataOrderFormatOrderAttribute": "顧客的 {options}",
-  "@transitDataOrderFormatOrderAttribute": {
-    "placeholders": {
-      "options": {
-        "type": "String"
-      }
-    }
-  },
-  "transitDataOrderFormatOrderAttributeItem": "{name} 為 {option}",
-  "@transitDataOrderFormatOrderAttributeItem": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "option": {
-        "type": "String"
-      }
-    }
-  },
   "transitDataBasicName": "{name, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} order{訂單} orderDetailsAttr{訂單顧客設定} orderDetailsProduct{訂單產品細項} orderDetailsIngredient{訂單成分細項} other{UNKNOWN}}",
   "@transitDataBasicName": {
     "placeholders": {
@@ -381,6 +235,85 @@
       }
     }
   },
+  "transitOrderMetaRange": "{range}的訂單",
+  "@transitOrderMetaRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderMetaRangeDays": "{days} 天的資料",
+  "@transitOrderMetaRangeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "transitOrderCapacityTitle": "預估容量為：{size}",
+  "@transitOrderCapacityTitle": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderCapacityContent": "過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。",
+  "transitOrderCapacityOk": "容量剛好",
+  "transitOrderCapacityWarn": "容量警告",
+  "transitOrderCapacityDanger": "容量危險",
+  "transitOrderItemTitle": "{date}",
+  "@transitOrderItemTitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "M月d日 HH:mm:ss",
+        "isCustomDateFormat": "true"
+      }
+    }
+  },
+  "transitOrderItemMetaProductCount": "餐點數：{count}",
+  "@transitOrderItemMetaProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitOrderItemMetaPrice": "總價：{price}",
+  "@transitOrderItemMetaPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderItemDialogTitle": "訂單細節",
+  "transitPreviewHeader": "注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！",
+  "transitPreviewIngredientMetaAmount": "庫存：{amount}",
+  "@transitPreviewIngredientMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "transitPreviewIngredientMetaMaxAmount": "{exist, plural, =0{未設定} other{最大值：{value}}}",
+  "@transitPreviewIngredientMetaMaxAmount": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "transitPreviewIngredientHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。",
+  "transitPreviewQuantityHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。",
   "transitImportErrorColumnCount": "資料量不足，需要 {columns} 個欄位",
   "@transitImportErrorColumnCount": {
     "placeholders": {
@@ -389,19 +322,52 @@
       }
     }
   },
-  "transitImportColumnStatus": "{status, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
+  "transitImportErrorDuplicate": "將忽略本行，相同的項目已於前面出現",
+  "transitImportColumnStatus": "{name, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
   "@transitImportColumnStatus": {
-    "description": "顯示該資料的額外狀態",
+    "description": "name"
+  },
+  "transitGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
+  "transitGSSheetBasicTitle": "POS System 資料",
+  "transitGSSheetBasicEmptyLabel": "建立匯出",
+  "transitGSSheetBasicEmptyHint": "建立新的試算表「{name}」，並把資料匯出至此",
+  "transitGSSheetBasicExistLabel": "指定匯出",
+  "transitGSSheetBasicExistHint": "匯出至試算表「{name}」",
+  "@transitGSSheetBasicExistHint": {
     "placeholders": {
-      "status": {
+      "name": {
         "type": "String"
       }
     }
   },
-  "transitSheetBasic": "POS System 資料",
-  "transitSheetOrder": "訂單資料",
-  "transitGSDescription": "Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！",
-  "transitGSSpreadsheetLabel": "試算表",
+  "transitGSSheetBasicCreate": "建立新的試算表「{name}」，並把資料匯出至此",
+  "@transitGSSheetBasicCreate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSheetBasicDivider": "選擇欲匯出的種類",
+  "transitGSSheetOrderTitle": "訂單資料",
+  "transitGSSheetOrderEmptyLabel": "建立匯出",
+  "transitGSSheetOrderEmptyHint": "建立新的試算表「{name}」，並把訂單匯出至此",
+  "@transitGSSheetOrderEmptyHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSheetOrderExistLabel": "指定匯出",
+  "transitGSSheetOrderExistHint": "匯出至試算表「{name}」",
+  "@transitGSSheetOrderExistHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "transitGSSheetLabel": "{item}的表單標題",
   "@transitGSSheetLabel": {
     "description": "表單標題的說明",
@@ -411,6 +377,8 @@
       }
     }
   },
+  "transitGSSpreadsheetLabel": "試算表",
+  "transitGSSpreadsheetCreateSnackbarAction": "開啟表單",
   "transitGSProgressStatus": "{status, select, addSpreadsheet{新增試算表中..} addSheets{新增表單中..} other{UNKNOWN}}",
   "@transitGSProgressStatus": {
     "placeholders": {
@@ -433,14 +401,11 @@
   "transitGSReplenishmentNote": "每次補貨時特定成分的量，格式如下：\n- 成分1,補貨量\n- 成分2,補貨量\n",
   "transitGSAttributeOptionTitle": "顧客設定選項",
   "transitGSAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值\n",
-  "transitGSErrorSheet": "{type, select, spreadsheet{無法建立試算表} spreadsheetEmpty{請先選擇試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{UNKNOWN}}",
+  "transitGSErrorSheet": "{error, select, spreadsheet{無法建立試算表} spreadsheetEmpty{請先選擇試算表} sheet{無法在試算表中建立表單} sheetRepeat{表單名稱重複} sheetEmpty{請選擇至少一個表單來匯出} nonExistName{找不到試算表，是否已被刪除？} other{UNKNOWN}}",
   "@transitGSErrorSheet": {
     "description": "發生錯誤時的提示訊息",
     "placeholders": {
-      "type": {
-        "type": "String"
-      },
-      "mode": {
+      "error": {
         "type": "String"
       }
     }
@@ -460,6 +425,425 @@
   "transitPTImportHint": "請貼上複製而來的文字",
   "transitPTImportHelper": "貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。",
   "transitPTImportErrorNotFound": "這段文字無法匹配相應的服務，請參考匯出時的文字內容。",
+  "transitPTFormatOrderPrice": "{hasProducts, plural, =0{共 {price} 元。} other{共 {price} 元，其中的 {productsPrice} 元是產品價錢。}}",
+  "@transitPTFormatOrderPrice": {
+    "placeholders": {
+      "hasProducts": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "productsPrice": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderMoney": "付額 {paid} 元、成分 {cost} 元。",
+  "@transitPTFormatOrderMoney": {
+    "placeholders": {
+      "paid": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderProductCount": "{differentType, plural, =0{餐點有 {count} 份，包括：{products}。} other{餐點有 {count} 份（{type} 種）包括：\n{products}。\n}}",
+  "@transitPTFormatOrderProductCount": {
+    "placeholders": {
+      "differentType": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "type": {
+        "type": "int"
+      },
+      "products": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderProduct": "{hasIngredient, plural, =0{{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分} other{{product}（{catalog}）{count} 份共 {price} 元，成份包括 {ingredients}}}",
+  "@transitPTFormatOrderProduct": {
+    "placeholders": {
+      "hasIngredient": {
+        "type": "int"
+      },
+      "product": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderIngredient": "{amount, plural, =0{{ingredient}（{quantity}）} other{{ingredient}（{quantity}），使用 {amount} 個}}",
+  "@transitPTFormatOrderIngredient": {
+    "description": "點單時的產品列表中各項產品的成分和份量資訊",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      },
+      "ingredient": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderNoQuantity": "預設份量",
+  "transitPTFormatOrderOrderAttribute": "顧客的 {options}",
+  "@transitPTFormatOrderOrderAttribute": {
+    "placeholders": {
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderOrderAttributeItem": "{name} 為 {option}",
+  "@transitPTFormatOrderOrderAttributeItem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "option": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuMetaCatalog": "{catalogs} 個產品種類",
+  "@transitPTFormatBasicMenuMetaCatalog": {
+    "placeholders": {
+      "catalogs": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuMetaProduct": "{products} 個產品",
+  "@transitPTFormatBasicMenuMetaProduct": {
+    "placeholders": {
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuHeader": "本菜單共有 {catalogs} 個產品種類、{products} 個產品。",
+  "@transitPTFormatBasicMenuHeader": {
+    "placeholders": {
+      "catalogs": {
+        "type": "int"
+      },
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuHeaderPrefix": "本菜單",
+  "@transitPTFormatBasicMenuHeaderPrefix": {
+    "description": "這是用來檢查這段文字是否為菜單"
+  },
+  "transitPTFormatBasicMenuCatalog": "第{index}個種類叫做 {catalog}，{details}。",
+  "@transitPTFormatBasicMenuCatalog": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuCatalogDetails": "{count, plural, =0{沒有設定產品} other{共有 {count} 個產品}}",
+  "@transitPTFormatBasicMenuCatalogDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuProduct": "第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}。",
+  "@transitPTFormatBasicMenuProduct": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuProductDetails": "{count, plural, =0{它沒有設定任何成份} other{它的成份有 {count} 種：{names}。{details}。}}",
+  "@transitPTFormatBasicMenuProductDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuIngredient": "每份產品預設需要使用 {amount} 個 {name}，{details}",
+  "@transitPTFormatBasicMenuIngredient": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuIngredientDetails": "{count, plural, =0{無法做份量調整} other{它還有 {count} 個不同份量：{quantities}}}",
+  "@transitPTFormatBasicMenuIngredientDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "quantities": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicMenuQuantity": "每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元",
+  "@transitPTFormatBasicMenuQuantity": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicStockMetaIngredient": "{count} 種成分",
+  "@transitPTFormatBasicStockMetaIngredient": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicStockHeader": "本庫存共有 {count} 種成分。",
+  "@transitPTFormatBasicStockHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicStockHeaderPrefix": "本庫存",
+  "@transitPTFormatBasicStockHeaderPrefix": {
+    "description": "這是用來檢查這段文字是否為庫存"
+  },
+  "transitPTFormatBasicStockIngredient": "第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。",
+  "@transitPTFormatBasicStockIngredient": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicStockIngredientDetails": "{exist, plural, =0{} other{，最大量有 {max} 個}}",
+  "@transitPTFormatBasicStockIngredientDetails": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicQuantitiesMetaQuantity": "{count} 種份量",
+  "@transitPTFormatBasicQuantitiesMetaQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicQuantitiesHeader": "共設定 {count} 種份量。",
+  "@transitPTFormatBasicQuantitiesHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicQuantitiesHeaderSuffix": "種份量。",
+  "@transitPTFormatBasicQuantitiesHeaderSuffix": {
+    "description": "這是用來檢查這段文字是否為份量"
+  },
+  "transitPTFormatBasicQuantitiesQuantity": "第{index}種份量叫做 {name}，預設會讓成分的份量乘以 {prop} 倍。",
+  "@transitPTFormatBasicQuantitiesQuantity": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "prop": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicReplenisherMetaReplenishment": "{count} 種補貨方式",
+  "@transitPTFormatBasicReplenisherMetaReplenishment": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicReplenisherHeader": "共設定 {count} 種補貨方式。",
+  "@transitPTFormatBasicReplenisherHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicReplenisherHeaderSuffix": "種補貨方式。",
+  "@transitPTFormatBasicReplenisherHeaderSuffix": {
+    "description": "這是用來檢查這段文字是否為補貨量"
+  },
+  "transitPTFormatBasicReplenisherReplenishment": "第{index}個成分叫做 {name}，{details}。",
+  "@transitPTFormatBasicReplenisherReplenishment": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicReplenisherReplenishmentDetails": "{count, plural, =0{它並不會調整庫存} other{它會調整{count}種成份的庫存：{ingredients}}}",
+  "@transitPTFormatBasicReplenisherReplenishmentDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicOaMetaOa": "{count} 種顧客屬性",
+  "@transitPTFormatBasicOaMetaOa": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicOaHeader": "共設定 {count} 種顧客屬性。",
+  "@transitPTFormatBasicOaHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatBasicOaHeaderSuffix": "種顧客屬性。",
+  "@transitPTFormatBasicOaHeaderSuffix": {
+    "description": "這是用來檢查這段文字是否為顧客設定"
+  },
+  "transitPTFormatBasicOaOa": "第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。",
+  "@transitPTFormatBasicOaOa": {
+    "description": "都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicOaOaDetails": "{count, plural, =0{它並沒有設定選項} other{它有 {count} 個選項：{options}}}",
+  "@transitPTFormatBasicOaOaDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatBasicOaDefaultOption": "預設",
+  "transitPTFormatBasicOaModeValue": "選項的值為 {value}",
+  "@transitPTFormatBasicOaModeValue": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {
@@ -969,11 +1353,16 @@
     "description": "點餐列表中，單日點餐的總價",
     "placeholders": {
       "price": {
-        "type": "num",
-        "format": "compactCurrency",
-        "optionalParameters": {
-          "symbol": "$"
-        }
+        "type": "String"
+      }
+    }
+  },
+  "orderMetaTotalCost": "總成本：{cost}",
+  "@orderMetaTotalCost": {
+    "description": "點餐列表中，單日點餐的總成本",
+    "placeholders": {
+      "cost": {
+        "type": "String"
       }
     }
   },
@@ -1085,6 +1474,7 @@
   "orderDetailsCalculatorPaidFailed": "必須大於訂單總價",
   "orderDetailsCalculatorLabelPaid": "付額",
   "orderDetailsCalculatorLabelChange": "找錢",
+  "orderFormEmpty": "查無點餐紀錄",
   "orderFormTitleChange": "找錢",
   "orderFormTitlePriceTotal": "訂單總價：{price}",
   "@orderFormTitlePriceTotal": {

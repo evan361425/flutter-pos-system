@@ -27,36 +27,179 @@ data:
   - order: 訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。
     basic: 商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。
   - name:
-  order:
+  basic:
+    name:
+    - menu: 菜單
+      stock: 庫存
+      quantities: 份量
+      replenisher: 補貨
+      orderAttr: 顧客設定
+      order: 訂單
+      orderDetailsAttr: 訂單顧客設定
+      orderDetailsProduct: 訂單產品細項
+      orderDetailsIngredient: 訂單成分細項
+    - name:
+order:
+  meta:
+    range:
+    - "{range}的訂單"
+    - range:
+    rangeDays:
+    - "{days} 天的資料"
+    - days: {type: int}
+  capacity:
+    title:
+    - 預估容量為：{size}
+    - size:
+    content: 過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。
+    ok: 容量剛好
+    warn: 容量警告
+    danger: 容量危險
+  item:
+    title:
+    - "{date}"
+    - date: {type: DateTime, format: "M月d日 HH:mm:ss", isCustomDateFormat: true}
     meta:
-      range:
-      - "{range}的訂單"
-      - range:
-      rangeDays:
-      - "{days} 天的資料"
-      - days: {type: int}
-    capacity:
-      title:
-      - 預估容量為：{size}
-      - size:
-      content: 過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。
-      ok: 容量剛好
-      warn: 容量警告
-      danger: 容量危險
-    item:
-      title:
-      - "{date}"
-      - date: {type: DateTime, format: "M月d日 HH:mm:ss", isCustomDateFormat: true}
-      meta:
-        productCount:
-        - 餐點數：{count}
-        - count: {type: int}
-        price:
-        - 總價：{price}
-        - price:
-      dialog:
-        title: 訂單細節
-    format:
+      productCount:
+      - 餐點數：{count}
+      - count: {type: int}
+      price:
+      - 總價：{price}
+      - price:
+    dialog:
+      title: 訂單細節
+preview:
+  header: 注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！
+  ingredient:
+    meta:
+      amount:
+      - 庫存：{amount}
+      - amount: {type: num, format: decimalPattern}
+      maxAmount:
+      - =0: 未設定
+        other: 最大值：{value}
+      - exist: {type: int, mode: plural}
+        value: {type: num, format: decimalPattern}
+    header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。
+  quantity:
+    header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。
+import:
+  error:
+    columnCount:
+    - 資料量不足，需要 {columns} 個欄位
+    - {columns: {type: int}}
+    duplicate: 將忽略本行，相同的項目已於前面出現
+  columnStatus:
+  - normal: （一般）
+    staged: （新增）
+    stagedIng: （新的成分）
+    stagedQua: （新的份量）
+    updated: （異動）
+  - 顯示該資料的額外狀態
+  - name
+# Google 試算表
+GS:
+  description: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
+  sheet:
+    basic:
+      title: POS System 資料
+      empty:
+        label: 建立匯出
+        hint: 建立新的試算表「{name}」，並把資料匯出至此
+      exist:
+        label: 指定匯出
+        hint:
+        - 匯出至試算表「{name}」
+        - name:
+      create:
+      - 建立新的試算表「{name}」，並把資料匯出至此
+      - name:
+      divider: 選擇欲匯出的種類
+    order:
+      title: 訂單資料
+      empty:
+        label: 建立匯出
+        hint:
+        - 建立新的試算表「{name}」，並把訂單匯出至此
+        - name:
+      exist:
+        label: 指定匯出
+        hint:
+        - 匯出至試算表「{name}」
+        - name:
+    label:
+    - '{item}的表單標題'
+    - 表單標題的說明
+    - item:
+  spreadsheet:
+    label: 試算表
+    createSnackbarAction: 開啟表單
+  progressStatus:
+  - addSpreadsheet: 新增試算表中..
+    addSheets: 新增表單中..
+  - status:
+  updateModelStatus:
+  - menu: 更新菜單中..
+    stock: 更新庫存中..
+    quantities: 更新份量中..
+    replenisher: 更新補貨中..
+    orderAttr: 更新顧客設定中..
+    order: 匯出訂單中..
+    orderDetailsAttr: 匯出顧客設定中..
+    orderDetailsProduct: 匯出產品細項中..
+    orderDetailsIngredient: 匯出成分細項中..
+  - model:
+  product:
+    ingredient:
+      title: 成分資訊
+      note: |
+        產品全部成分的資訊，格式如下：
+        - 成分1,預設使用量
+          + 份量a,額外使用量,額外價格,額外成本
+          + 份量b,額外使用量,額外價格,額外成本
+        - 成分2,預設使用量
+  replenishment:
+    title: 補貨量
+    note: |
+      每次補貨時特定成分的量，格式如下：
+      - 成分1,補貨量
+      - 成分2,補貨量
+  attributeOption:
+    title: 顧客設定選項
+    note: |
+      「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
+      - 選項1,是否為預設,選項值
+      - 選項2,是否為預設,選項值
+  error:
+    sheet:
+    - spreadsheet: 無法建立試算表
+      spreadsheetEmpty: 請先選擇試算表
+      sheet: 無法在試算表中建立表單
+      sheetRepeat: 表單名稱重複
+      sheetEmpty: 請選擇至少一個表單來匯出
+      nonExistName: 找不到試算表，是否已被刪除？
+    - 發生錯誤時的提示訊息
+    - error:
+    import:
+    - emptySpreadsheet: 必須選擇試算表來匯入
+      emptySheet: 必須選擇指定的表單來匯入
+      emptyData: 在表單中沒找到任何值
+      other: '{error}'
+    - 匯入時會有的錯誤
+    - error:
+# 純文字
+PT:
+  copy:
+    btn: 複製文字
+    success: 複製成功
+    warning: 複製過大的文字可能會造成系統的崩潰
+  import:
+    hint: 請貼上複製而來的文字
+    helper: 貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
+    error:
+      notFound: 這段文字無法匹配相應的服務，請參考匯出時的文字內容。
+  format:
+    order:
       price:
       - =0: 共 {price} 元。
         other: 共 {price} 元，其中的 {productsPrice} 元是產品價錢。
@@ -100,106 +243,149 @@ data:
       - '{name} 為 {option}'
       - name:
         option:
-  basic:
-    name:
-    - menu: 菜單
-      stock: 庫存
-      quantities: 份量
-      replenisher: 補貨
-      orderAttr: 顧客設定
-      order: 訂單
-      orderDetailsAttr: 訂單顧客設定
-      orderDetailsProduct: 訂單產品細項
-      orderDetailsIngredient: 訂單成分細項
-    - name:
-import:
-  error:
-    columnCount:
-    - 資料量不足，需要 {columns} 個欄位
-    - {columns: {type: int}}
-  columnStatus:
-  - normal: （一般）
-    staged: （新增）
-    stagedIng: （新的成分）
-    stagedQua: （新的份量）
-    updated: （異動）
-    other: UNKNOWN
-  - 顯示該資料的額外狀態
-  - {status: {type: String, mode: select}}
-# Google 試算表
-sheet:
-  basic: POS System 資料
-  order: 訂單資料
-GS:
-  description: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
-  spreadsheetLabel: 試算表
-  sheetLabel:
-  - '{item}的表單標題'
-  - 表單標題的說明
-  - item: {type: String}
-  progressStatus:
-  - addSpreadsheet: 新增試算表中..
-    addSheets: 新增表單中..
-    other: UNKNOWN
-  - {status: {type: String, mode: select}}
-  updateModelStatus:
-  - menu: 更新菜單中..
-    stock: 更新庫存中..
-    quantities: 更新份量中..
-    replenisher: 更新補貨中..
-    orderAttr: 更新顧客設定中..
-    order: 匯出訂單中..
-    orderDetailsAttr: 匯出顧客設定中..
-    orderDetailsProduct: 匯出產品細項中..
-    orderDetailsIngredient: 匯出成分細項中..
-  - {model: {type: String, mode: select}}
-  product:
-    ingredient:
-      title: 成分資訊
-      note: |
-        產品全部成分的資訊，格式如下：
-        - 成分1,預設使用量
-          + 份量a,額外使用量,額外價格,額外成本
-          + 份量b,額外使用量,額外價格,額外成本
-        - 成分2,預設使用量
-  replenishment:
-    title: 補貨量
-    note: |
-      每次補貨時特定成分的量，格式如下：
-      - 成分1,補貨量
-      - 成分2,補貨量
-  attributeOption:
-    title: 顧客設定選項
-    note: |
-      「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
-      - 選項1,是否為預設,選項值
-      - 選項2,是否為預設,選項值
-  error:
-    sheet:
-    - spreadsheet: 無法建立試算表
-      spreadsheetEmpty: 請先選擇試算表
-      sheet: 無法在試算表中建立表單
-      sheetRepeat: 表單名稱重複
-      sheetEmpty: 請選擇至少一個表單來匯出
-      nonExistName: 找不到試算表，是否已被刪除？
-      other: UNKNOWN
-    - 發生錯誤時的提示訊息
-    - {type: String, mode: select}
-    import:
-    - emptySpreadsheet: 必須選擇試算表來匯入
-      emptySheet: 必須選擇指定的表單來匯入
-      emptyData: 在表單中沒找到任何值
-      other: '{error}'
-    - 匯入時會有的錯誤
-    - {error: {type: String, mode: select}}
-# 純文字
-PT:
-  copy:
-    btn: 複製文字
-    success: 複製成功
-    warning: 複製過大的文字可能會造成系統的崩潰
-  import:
-    hint: 請貼上複製而來的文字
-    helper: 貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
-    error:
-      notFound: 這段文字無法匹配相應的服務，請參考匯出時的文字內容。
+    basic:
+      menu:
+        meta:
+          catalog:
+          - '{catalogs} 個產品種類'
+          - catalogs: {type: int}
+          product:
+          - '{products} 個產品'
+          - products: {type: int}
+        header:
+        - 本菜單共有 {catalogs} 個產品種類、{products} 個產品。
+        - catalogs: {type: int}
+          products: {type: int}
+        headerPrefix:
+        - 本菜單
+        - 這是用來檢查這段文字是否為菜單
+        catalog:
+        - 第{index}個種類叫做 {catalog}，{details}。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          catalog:
+          details:
+        catalogDetails:
+        - =0: 沒有設定產品
+          other: 共有 {count} 個產品
+        - count: {type: int, mode: plural}
+        product:
+        - 第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          name:
+          price:
+          cost:
+          details:
+        productDetails:
+        - =0: 它沒有設定任何成份
+          other: 它的成份有 {count} 種：{names}。{details}。
+        - count: {type: int, mode: plural}
+          names:
+          details:
+        ingredient:
+        - 每份產品預設需要使用 {amount} 個 {name}，{details}
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - amount:
+          name:
+          details:
+        ingredientDetails:
+        - =0: 無法做份量調整
+          other: 它還有 {count} 個不同份量：{quantities}
+        - count: {type: int, mode: plural}
+          quantities:
+        quantity:
+        - '每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元'
+        - amount:
+          price:
+          cost:
+      stock:
+        meta:
+          ingredient:
+          - '{count} 種成分'
+          - count: {type: int}
+        header:
+        - 本庫存共有 {count} 種成分。
+        - count: {type: int}
+        headerPrefix:
+        - 本庫存
+        - 這是用來檢查這段文字是否為庫存
+        ingredient:
+        - 第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          name:
+          amount:
+          details:
+        ingredientDetails:
+        - =0: ''
+          other: ，最大量有 {max} 個
+        - exist: {type: int, mode: plural}
+          max:
+      quantities:
+        meta:
+          quantity:
+          - '{count} 種份量'
+          - count: {type: int}
+        header:
+        - 共設定 {count} 種份量。
+        - count: {type: int}
+        headerSuffix:
+        - 種份量。
+        - 這是用來檢查這段文字是否為份量
+        quantity:
+        - 第{index}種份量叫做 {name}，預設會讓成分的份量乘以 {prop} 倍。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          name:
+          prop:
+      replenisher:
+        meta:
+          replenishment:
+          - '{count} 種補貨方式'
+          - count: {type: int}
+        header:
+        - 共設定 {count} 種補貨方式。
+        - count: {type: int}
+        headerSuffix:
+        - 種補貨方式。
+        - 這是用來檢查這段文字是否為補貨量
+        replenishment:
+        - 第{index}個成分叫做 {name}，{details}。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          name:
+          details:
+        replenishmentDetails:
+        - =0: '它並不會調整庫存'
+          other: 它會調整{count}種成份的庫存：{ingredients}
+        - count: {type: int, mode: plural}
+          ingredients:
+      oa: # order attribute
+        meta:
+          oa:
+          - '{count} 種顧客屬性'
+          - count: {type: int}
+        header:
+        - 共設定 {count} 種顧客屬性。
+        - count: {type: int}
+        headerSuffix:
+        - 種顧客屬性。
+        - 這是用來檢查這段文字是否為顧客設定
+        oa:
+        - 第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。
+        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
+        - index:
+          name:
+          mode:
+          details:
+        oaDetails:
+        - =0: 它並沒有設定選項
+          other: 它有 {count} 個選項：{options}
+        - count: {type: int, mode: plural}
+          options:
+        defaultOption: 預設
+        modeValue:
+        - 選項的值為 {value}
+        - value: {type: num, format: decimalPattern}
+

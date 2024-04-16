@@ -1,9 +1,9 @@
-import 'package:possystem/models/model.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
@@ -46,7 +46,8 @@ abstract class Formatter<T> {
     int counter = 1;
     for (var row in parsed) {
       final r = row.map((e) => e.trim()).toList();
-      final msg = formatter.validate(r) ?? (existInResult(r[formatter.nameIndex]) ? '將忽略本行，相同的項目已於前面出現' : null);
+      final msg =
+          formatter.validate(r) ?? (existInResult(r[formatter.nameIndex]) ? S.transitImportErrorDuplicate : null);
 
       if (msg != null) {
         result.add(
@@ -168,7 +169,7 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 4) return S.transitImportColumnsCountError(4);
+    if (row.length < 4) return S.transitImportErrorColumnCount(4);
 
     final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
         Validator.textLimit(S.menuProductNameLabel, 30)(row[1]) ??
@@ -178,7 +179,7 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
     if (errorMsg != null || row.length == 4) return errorMsg;
 
     final vIng = Validator.textLimit(S.stockIngredientNameLabel, 30);
-    final vQua = Validator.textLimit(S.quantityNameLabel, 30);
+    final vQua = Validator.textLimit(S.stockQuantityNameLabel, 30);
     final vAmount = Validator.positiveNumber(
       S.stockIngredientAmountLabel,
       allowNull: true,
@@ -257,7 +258,7 @@ class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportColumnsCountError(1);
+    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
@@ -280,11 +281,11 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportColumnsCountError(1);
+    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
 
-    return Validator.textLimit(S.quantityNameLabel, 30)(row[0]) ??
+    return Validator.textLimit(S.stockQuantityNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
-          S.quantityProportionLabel,
+          S.stockQuantityProportionLabel,
           maximum: 100,
           allowNull: true,
         )(row.length > 1 ? row[1] : null);
@@ -304,7 +305,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportColumnsCountError(1);
+    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
 
     final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
     if (errorMsg != null || row.length == 1) return errorMsg;
@@ -368,7 +369,7 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 2) return S.transitImportColumnsCountError(2);
+    if (row.length < 2) return S.transitImportErrorColumnCount(2);
 
     final msg = Validator.textLimit(S.orderAttributeNameLabel, 30)(row[0]);
     if (msg != null || row.length == 2) return msg;
@@ -430,7 +431,7 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
 
   OrderAttributeMode _str2mode(String key) {
     for (final e in OrderAttributeMode.values) {
-      if (S.orderAttributeModeNames(e.name) == key) {
+      if (S.orderAttributeModeName(e.name) == key) {
         return e;
       }
     }
