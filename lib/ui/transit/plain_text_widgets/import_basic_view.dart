@@ -31,7 +31,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
           key: const Key('import_btn'),
           margin: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
-            title: Text(S.transitTitlePreviewImport),
+            title: Text(S.transitImportPreviewTitle),
             trailing: const Icon(KIcons.preview),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),

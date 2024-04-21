@@ -11,14 +11,14 @@ welcome:
 logoutBtn: 登出
 elf: # 小精靈
   title: 建議
-  subtitle: 使用 Google 表單提供回饋
+  description: 使用 Google 表單提供回饋
   content: |
     覺得這裡還少了什麼嗎？
     歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。
     也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。
 feature:
   title: 其他設定
-  subtitle: 外觀、語言、提示
+  description: 外觀、語言、提示
 theme:
   title: 調色盤
   name:
@@ -62,7 +62,7 @@ orderAwakening:
   title:
   - 點餐時不關閉螢幕
   - 在點餐過程中，即使閒置仍不關閉螢幕
-  subtitle: 若取消，則會根據系統設定時間關閉螢幕
+  description: 若取消，則會根據系統設定時間關閉螢幕
 report:
   title: 收集錯誤訊息和事件
-  subtitle: 當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長
+  description: 當應用程式發生錯誤時，寄送錯誤訊息，以幫助應用程式成長

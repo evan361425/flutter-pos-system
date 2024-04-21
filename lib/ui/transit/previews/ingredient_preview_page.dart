@@ -19,14 +19,14 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
         status: item.statusName,
       ),
       subtitle: MetaBlock.withString(context, <String>[
-        S.transitPreviewIngredientMetaAmount(item.currentAmount),
-        S.transitPreviewIngredientMetaMaxAmount(item.totalAmount == null ? 0 : 1, item.totalAmount ?? 0),
+        S.transitImportPreviewIngredientMetaAmount(item.currentAmount),
+        S.transitImportPreviewIngredientMetaMaxAmount(item.totalAmount == null ? 0 : 1, item.totalAmount ?? 0),
       ]),
     );
   }
 
   @override
   Widget getHeader(BuildContext context) {
-    return Text(S.transitPreviewIngredientHeader);
+    return Text(S.transitImportPreviewIngredientHeader);
   }
 }

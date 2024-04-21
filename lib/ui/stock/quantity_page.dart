@@ -29,7 +29,7 @@ class QuantityPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.stockQuantityTitleMain),
+        title: Text(S.stockQuantityTitle),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(

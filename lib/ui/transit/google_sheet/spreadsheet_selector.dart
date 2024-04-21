@@ -21,41 +21,45 @@ class SpreadsheetSelector extends StatefulWidget {
 
   final ValueNotifier<String>? notifier;
 
-  /// 快取的鍵
+  /// The key to cache the selected spreadsheet
   final String cacheKey;
 
-  // 允許設定一個預設的表單
+  /// The key to cache the selected spreadsheet when the [cacheKey] is not found
+  ///
+  /// For example import and export use different cache key but they want to
+  /// share the same spreadsheet when the user only select one.
   final String fallbackCacheKey;
 
-  // 預設的試算表名稱
+  /// The default name of the spreadsheet
   final String defaultName;
 
-  /// 試算表存在的話，按鈕的文字
+  /// The text of the button when the spreadsheet is exist
   final String existLabel;
 
-  /// 試算表不存在的話，按鈕的文字
+  /// The text of the button when the spreadsheet is not set
   final String emptyLabel;
 
-  /// 試算表存在的話，按鈕下方的文字。
-  /// %name 可以替代為現在的 spreadsheet 名稱
-  final String existHint;
+  /// The hint text when the spreadsheet is exist
+  final String Function(String) existHint;
 
-  /// 試算表不存在的話，按鈕下方的文字
+  /// The hint text when the spreadsheet is not set
   final String emptyHint;
 
-  /// 試算表被更新了
+  /// Spreadsheet has been updated(clear or changed), should update the UI
   final Future<void> Function(GoogleSpreadsheet? spreadsheet)? onUpdated;
 
-  /// 根據選擇好的試算表去執行某些行為，例如匯入
+  /// Spreadsheet has been changed, should update the UI
   final Future<void> Function(GoogleSpreadsheet spreadsheet)? onChosen;
 
-  /// 根據選擇好的試算表並且準備好 [sheetsToCreate] 的表單後，去執行某些行為，例如匯出
+  /// Spreadsheet has been prepared(sheet has been created), should start exporting
   final Future<void> Function(
     GoogleSpreadsheet spreadsheet,
     Map<SheetType, GoogleSheetProperties> sheets,
   )? onPrepared;
 
-  /// 若設定此值，代表允許建立試算表，並同時準備好該試算表的部分表單
+  /// The title of the sheets when the spreadsheet is created.
+  ///
+  /// This means the user can create a spreadsheet and prepare the sheets at the same time.
   final Map<SheetType, String> Function()? requiredSheetTitles;
 
   const SpreadsheetSelector({
@@ -95,7 +99,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   String get label => isExist ? widget.existLabel : widget.emptyLabel;
 
-  String get hint => (isExist ? widget.existHint.replaceFirst('%name', spreadsheet!.name) : widget.emptyHint);
+  String get hint => isExist ? widget.existHint(spreadsheet!.name) : widget.emptyHint;
 
   @override
   Widget build(BuildContext context) {
@@ -122,15 +126,15 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     final selected = await showCircularBottomSheet<_ActionTypes>(
       context,
       actions: <BottomSheetAction<_ActionTypes>>[
-        const BottomSheetAction(
-          title: Text('選擇試算表'),
-          leading: Icon(Icons.file_open_outlined),
+        BottomSheetAction(
+          title: Text(S.transitGSSpreadsheetActionSelect),
+          leading: const Icon(Icons.file_open_outlined),
           returnValue: _ActionTypes.choose,
         ),
         if (widget.requiredSheetTitles != null)
-          const BottomSheetAction(
-            title: Text('清除所選'),
-            leading: Icon(Icons.cleaning_services_outlined),
+          BottomSheetAction(
+            title: Text(S.transitGSSpreadsheetActionClear),
+            leading: const Icon(Icons.cleaning_services_outlined),
             returnValue: _ActionTypes.clear,
           ),
       ],
@@ -148,7 +152,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     }
   }
 
-  // 執行要求的函式
+  /// Execute the action when the button is clicked
   void execute() async {
     await showSnackbarWhenFailed(
       _execute(),
@@ -159,7 +163,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     _notify('_finish');
   }
 
-  // 選擇試算表
+  /// Choose a spreadsheet
   Future<void> choose() async {
     _notify('_start');
 
@@ -172,7 +176,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     _notify('_finish');
   }
 
-  // 清除所選的試算表
+  /// Clear the selected spreadsheet
   Future<void> clear() async {
     await _update(null);
 
@@ -189,14 +193,14 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   Future<void> _execute() async {
     final requiredSheetTitles = widget.requiredSheetTitles;
-    // 如果不能建立，就再去跟使用者要一次
+    // If the required sheets are not set, notify the user to choose a spreadsheet
     if (requiredSheetTitles == null) {
       _notify('_start');
       if (!isExist) {
         await _choose();
       }
 
-      // 剛剛有成功要到或者本來就有
+      // It is successful from previous action or already have the spreadsheet
       if (isExist) {
         await widget.onChosen?.call(spreadsheet!);
       }
@@ -206,12 +210,12 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     final confirmed = await ConfirmDialog.show(
       context,
       title: '$label？',
-      content: '此動作將會$hint',
+      content: S.transitGSSpreadsheetConfirm(hint),
     );
 
     if (confirmed) {
       _notify('_start');
-      // 建立並且回應
+      // create sheets and execute callback
       final sheets = await _prepare(spreadsheet, requiredSheetTitles());
       if (sheets != null) {
         await widget.onPrepared?.call(spreadsheet!, sheets);
@@ -232,7 +236,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           initialValue: spreadsheet?.id,
           decoration: InputDecoration(
             labelText: S.transitGSSpreadsheetLabel,
-            helperText: spreadsheet?.name == null ? '輸入試算表網址或試算表 ID' : '本試算表為「${spreadsheet?.name}」',
+            helperText: S.transitGSSpreadsheetSelectionHint(spreadsheet?.name.toString() ?? '_'),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             errorMaxLines: 5,
           ),
@@ -255,17 +259,15 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     } else if (mounted) {
       showMoreInfoSnackBar(
         context,
-        '找不到表單',
+        S.transitGSErrorImportNotFoundSpreadsheet,
         MetaBlock.withString(
-            context,
-            [
-              '別擔心，通常都可以簡單解決！\n可能的原因有：\n',
-              '網路狀況不穩；\n',
-              '該表單被限制存取了，請打開權限；\n',
-              '打錯了，請嘗試複製整個網址後貼上；\n',
-              '該表單被刪除了。',
-            ],
-            textOverflow: TextOverflow.visible)!,
+          context,
+          [
+            S.transitGSErrorImportNotFoundHelper,
+            ...S.transitGSErrorImportNotFoundHelperReasons.split('\n').map((e) => '$e\n'),
+          ],
+          textOverflow: TextOverflow.visible,
+        )!,
       );
     }
   }
@@ -280,31 +282,31 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     }
   }
 
-  /// 準備好試算表裡的表單
+  /// Prepare the sheets in the spreadsheet.
   ///
-  /// 若沒有試算表則建立，並建立所有可能的表單。
-  /// 若有則把需要的表單準備好。
+  /// If the spreadsheet is not exist, create it and create all the sheets.
+  /// If the spreadsheet is exist, prepare the sheets.
   Future<Map<SheetType, GoogleSheetProperties>?> _prepare(
     GoogleSpreadsheet? ss,
     Map<SheetType, String> sheets,
   ) async {
     if (sheets.isEmpty) {
-      showSnackBar(context, S.transitGSErrors('sheetEmpty'));
+      showSnackBar(context, S.transitGSErrorSheetEmpty);
       return null;
     }
 
     if (sheets.values.toSet().length != sheets.length) {
-      showSnackBar(context, S.transitGSErrors('sheetRepeat'));
+      showSnackBar(context, S.transitGSErrorSheetRepeat);
       return null;
     }
 
-    _notify('驗證身份中');
+    _notify(S.transitGSProgressStatusVerifyUser);
 
     await widget.exporter.auth();
 
     final names = sheets.values.toList();
     if (ss == null) {
-      _notify(S.transitGSProgressStatus('addSpreadsheet'));
+      _notify(S.transitGSProgressStatusAddSpreadsheet);
 
       final other = await widget.exporter.addSpreadsheet(
         widget.defaultName,
@@ -314,13 +316,12 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
         if (mounted) {
           showMoreInfoSnackBar(
             context,
-            S.transitGSErrors('spreadsheet'),
+            S.transitGSErrorCreateSpreadsheet,
             MetaBlock.withString(
                 context,
                 [
-                  '別擔心，通常都可以簡單解決！\n可能的原因有：\n',
-                  '網路狀況不穩；\n',
-                  '尚未授權 POS 系統進行表單的編輯。',
+                  S.transitGSErrorCreateSpreadsheetHelper,
+                  ...S.transitGSErrorCreateSpreadsheetHelperReasons.split('\n').map((e) => '$e\n'),
                 ],
                 textOverflow: TextOverflow.visible)!,
           );
@@ -339,17 +340,15 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
         if (mounted) {
           showMoreInfoSnackBar(
             context,
-            S.transitGSErrors('sheet'),
+            S.transitGSErrorCreateSheet,
             MetaBlock.withString(
-                context,
-                [
-                  '別擔心，通常都可以簡單解決！\n可能的原因有：\n',
-                  '網路狀況不穩；\n',
-                  '尚未進行授權；\n',
-                  '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
-                  '該試算表被刪除了。',
-                ],
-                textOverflow: TextOverflow.visible)!,
+              context,
+              [
+                S.transitGSErrorImportNotFoundHelper,
+                ...S.transitGSErrorImportNotFoundHelperReasons.split('\n').map((e) => '$e\n'),
+              ],
+              textOverflow: TextOverflow.visible,
+            )!,
           );
         }
         return null;
@@ -366,7 +365,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     };
   }
 
-  /// 補足該試算表的表單
+  /// Fulfill the sheets in the spreadsheet
   Future<bool> _fulfillSheets(GoogleSpreadsheet ss, List<String> names) async {
     final exist = ss.sheets.map((e) => e.title).toSet();
     final missing = names.toSet().difference(exist);
@@ -374,7 +373,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       return true;
     }
 
-    _notify(S.transitGSProgressStatus('addSheets'));
+    _notify(S.transitGSProgressStatusAddSheets);
     final added = await widget.exporter.addSheets(ss, missing.toList());
     if (added != null) {
       ss.sheets.addAll(added);
@@ -386,12 +385,10 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 }
 
 String? _spreadsheetValidator(String? text) {
-  if (text == null || text.isEmpty) return '不能為空';
+  if (text == null || text.isEmpty) return S.transitGSErrorSpreadsheetIdEmpty;
 
   if (!_sheetUrlRegex.hasMatch(text) && !_sheetIdRegex.hasMatch(text)) {
-    return '不合法的文字，必須包含：\n'
-        '/spreadsheets/d/<ID>/\n'
-        '或者直接給 ID（英文+數字+底線+減號的組合）';
+    return S.transitGSErrorSpreadsheetIdInvalid;
   }
 
   return null;

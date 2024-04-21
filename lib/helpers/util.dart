@@ -82,9 +82,14 @@ extension PrettyNum on num {
 }
 
 extension RangeFormat on DateTimeRange {
-  String format(DateFormat f) {
-    return duration.inDays == 1
-        ? f.format(start)
-        : '${f.format(start)} - ${f.format(end.subtract(const Duration(days: 1)))}';
+  String format(String local) {
+    final thisYear = DateTime.now().year;
+    final fs = start.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    if (duration.inDays == 1) {
+      return fs.format(start);
+    }
+
+    final fe = end.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
   }
 }

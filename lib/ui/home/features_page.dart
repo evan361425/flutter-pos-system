@@ -145,7 +145,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
           ListTile(
             leading: const Icon(Icons.remove_red_eye_outlined),
             title: Text(S.settingOrderAwakeningTitle),
-            subtitle: Text(S.settingOrderAwakeningSubtitle),
+            subtitle: Text(S.settingOrderAwakeningDescription),
             trailing: FeatureSwitch(
               key: const Key('feature.awake_ordering'),
               value: orderAwakening.value,
@@ -156,7 +156,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
           ListTile(
             leading: const Icon(Icons.report_outlined),
             title: Text(S.settingReportTitle),
-            subtitle: Text(S.settingReportSubtitle),
+            subtitle: Text(S.settingReportDescription),
             trailing: FeatureSwitch(
               key: const Key('feature.collect_events'),
               value: collectEvents.value,

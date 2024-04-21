@@ -29,7 +29,7 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
           for (final able in Formattable.values)
             Tab(
               key: Key('tab.${able.name}'),
-              text: S.transitDataBasicName(able.name),
+              text: S.transitModelName(able.name),
             )
         ],
       ),

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/style/date_range_picker.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/util.dart';
@@ -192,21 +193,15 @@ class _SettingPageState extends State<_SettingPage> {
   }
 
   Future<void> selectDates() async {
-    const oneDay = Duration(days: 1);
-    final selected = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateUtils.dateOnly(DateTime.now()),
-      initialDateRange: DateTimeRange(
-        start: startFrom,
-        end: endTo.subtract(oneDay),
-      ),
+    final selected = await showMyDateRangePicker(
+      context,
+      DateTimeRange(start: startFrom, end: endTo),
     );
 
     if (selected != null) {
       setState(() {
         startFrom = selected.start;
-        endTo = selected.end.add(oneDay);
+        endTo = selected.end;
       });
     }
   }

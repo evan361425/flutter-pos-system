@@ -26,8 +26,8 @@ class _TransitPageState extends State<TransitPage> {
         key: selector,
         values: TransitType.values,
         selected: TransitType.order,
-        labels: TransitType.values.map((e) => S.transitDataName(e.name)).toList(),
-        helpTexts: TransitType.values.map((e) => S.transitDataHelper(e.name)).toList(),
+        labels: TransitType.values.map((e) => S.transitCatalogName(e.name)).toList(),
+        helpTexts: TransitType.values.map((e) => S.transitCatalogHelper(e.name)).toList(),
       ),
       TextDivider(label: S.transitMethodTitle),
       ListTile(
@@ -50,14 +50,14 @@ class _TransitPageState extends State<TransitPage> {
           child: Text('Text'),
         ),
         title: Text(S.transitMethodName(TransitMethod.plainText.name)),
-        subtitle: const Text('快速檢查、快速分享。'),
+        subtitle: Text(S.transitPTDescription),
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
     ]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.transitTitleMain),
+        title: Text(S.transitTitle),
         leading: const PopButton(),
       ),
       body: GestureDetector(

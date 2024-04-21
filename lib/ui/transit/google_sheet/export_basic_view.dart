@@ -49,24 +49,24 @@ class _ExportBasicViewState extends State<ExportBasicView> {
             exporter: widget.exporter,
             notifier: widget.notifier,
             cacheKey: _cacheKey,
-            existLabel: '指定匯出',
-            existHint: '匯出至試算表「%name」',
-            emptyLabel: '建立匯出',
-            emptyHint: '建立新的試算表「${S.transitGSSheetBasicTitle}」，並把資料匯出至此',
-            defaultName: S.transitGSSheetBasicTitle,
+            existLabel: S.transitGSSpreadsheetExportExistLabel,
+            existHint: S.transitGSSpreadsheetExportExistHint,
+            emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
+            emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetModelDefaultName),
+            defaultName: S.transitGSSpreadsheetModelDefaultName,
             requiredSheetTitles: requiredSheetTitles,
             onUpdated: onSpreadsheetUpdate,
             onPrepared: exportData,
           ),
         ),
       ),
-      const TextDivider(label: '選擇欲匯出的種類'),
+      TextDivider(label: S.transitGSSpreadsheetModelExportDivider),
       for (final sheet in sheets)
         SheetNamer(
           prop: sheet,
           action: (prop) => previewData(prop.type),
           actionIcon: KIcons.preview,
-          actionTitle: S.transitTitlePreviewExport,
+          actionTitle: S.transitExportPreviewTitle,
         ),
     ]);
   }
@@ -81,7 +81,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       SheetType.replenisher,
       SheetType.orderAttr,
     ].map((e) {
-      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitDataBasicName(e.name);
+      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitModelName(e.name);
       final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
 
       return SheetNamerProperties(
@@ -112,18 +112,18 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         builder: (_) => SheetPreviewPage(
           source: SheetPreviewerDataTableSource(formatter.getRows(able)),
           header: formatter.getHeader(able),
-          title: S.transitDataBasicName(able.name),
+          title: S.transitModelName(able.name),
         ),
       ),
     );
   }
 
-  /// 用來讓 [SpreadsheetSelector] 幫忙建立表單。
+  /// It is used to let [SpreadsheetSelector] help to create the form.
   Map<SheetType, String> requiredSheetTitles() => {
         for (var sheet in sheets.where((sheet) => sheet.checked)) sheet.type: sheet.name,
       };
 
-  /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
+  /// [SpreadsheetSelector] will check the basic data before actually exporting.
   Future<void> exportData(
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> kv,
@@ -154,7 +154,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         context,
         S.actSuccess,
         action: LauncherSnackbarAction(
-          label: S.transitGSSpreadsheetCreateSnackbarAction,
+          label: S.transitGSSpreadsheetSnackbarAction,
           link: ss.toLink(),
           logCode: 'gs_export',
         ),

@@ -35,7 +35,7 @@ class SheetNamerState extends State<SheetNamer> {
     final secondary = widget.action == null
         ? IconButton(
             icon: const Icon(KIcons.edit),
-            tooltip: '修改標題',
+            tooltip: S.transitGSSheetNameUpdate,
             onPressed: editSheetName,
           )
         : EntryMoreButton(
@@ -67,10 +67,10 @@ class SheetNamerState extends State<SheetNamer> {
 
   void showActions() async {
     final result = await showCircularBottomSheet<int>(context, actions: [
-      const BottomSheetAction(
-        key: Key('btn.edit'),
-        title: Text('修改標題'),
-        leading: Icon(KIcons.edit),
+      BottomSheetAction(
+        key: const Key('btn.edit'),
+        title: Text(S.transitGSSheetNameUpdate),
+        leading: const Icon(KIcons.edit),
         returnValue: 0,
       ),
       BottomSheetAction(
@@ -132,6 +132,6 @@ class SheetNamerProperties {
   });
 
   String get labelText {
-    return S.transitGSSheetLabel(S.transitType(type.name));
+    return S.transitGSSheetNameLabel(S.transitModelName(type.name));
   }
 }

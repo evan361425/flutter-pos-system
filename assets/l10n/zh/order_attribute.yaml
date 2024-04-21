@@ -1,7 +1,8 @@
 $prefix: orderAttribute
-title:
-  main: 顧客設定
-  sub: 內用、外帶等幫助分析的資訊
+title: 顧客設定
+description: 內用、外帶等幫助分析的資訊
+_title:
+  $prefix: title
   create: 新增顧客設定
   update: 編輯顧客設定
   reorder: 排序顧客設定

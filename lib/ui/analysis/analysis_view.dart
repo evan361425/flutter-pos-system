@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -101,7 +100,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             key: const Key('anal.chart_range'),
             onPressed: _goToChartRange,
             child: Text(
-              range.value.format(DateFormat.MMMd(S.localeName)),
+              range.value.format(S.localeName),
             ),
           ),
         ),

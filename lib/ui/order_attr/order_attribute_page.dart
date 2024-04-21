@@ -21,7 +21,7 @@ class OrderAttributePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.orderAttributeTitleMain),
+        title: Text(S.orderAttributeTitle),
         leading: const PopButton(),
         actions: [
           IconButton(

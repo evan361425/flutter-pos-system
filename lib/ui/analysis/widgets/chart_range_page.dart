@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:possystem/components/style/date_range_picker.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 
@@ -19,8 +19,6 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
   late DateTimeRange select;
 
   late final Map<_TabType, Map<String, DateTimeRange>> ranges;
-
-  final format = DateFormat.MMMd(S.localeName);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +45,7 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
               for (final e in ranges[tab]!.entries)
                 RadioListTile(
                   title: Text(e.key),
-                  subtitle: Text(e.value.format(format)),
+                  subtitle: Text(e.value.format(S.localeName)),
                   value: e.value,
                   groupValue: select,
                   onChanged: (value) => setState(() => select = value!),
@@ -57,22 +55,12 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
         ListView(
           children: [
             ListTile(
-              title: Text(select.format(format)),
+              title: Text(select.format(S.localeName)),
               onTap: () async {
-                final value = await showDateRangePicker(
-                  context: context,
-                  firstDate: DateTime(2021),
-                  lastDate: DateTime.now(),
-                  initialDateRange: DateTimeRange(
-                    start: select.start,
-                    end: select.end.subtract(const Duration(days: 1)),
-                  ),
-                );
+                final value = await showMyDateRangePicker(context, select);
+
                 if (value != null) {
-                  setState(() => select = DateTimeRange(
-                        start: value.start,
-                        end: value.end.add(const Duration(days: 1)),
-                      ));
+                  setState(() => select = value);
                 }
               },
             ),

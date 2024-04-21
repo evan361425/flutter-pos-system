@@ -57,10 +57,10 @@ class _ImportBasicViewState extends State<ImportBasicView> {
               exporter: widget.exporter,
               notifier: widget.notifier,
               cacheKey: _cacheKey,
-              existLabel: '確認表單名稱',
-              existHint: '從試算表中取得所有表單的名稱，並進行匯入',
-              emptyLabel: '選擇試算表',
-              emptyHint: '選擇要匯入的試算表後，就能開始匯入資料',
+              existLabel: S.transitGSSpreadsheetImportExistLabel,
+              existHint: (_) => S.transitGSSpreadsheetImportExistHint,
+              emptyLabel: S.transitGSSpreadsheetImportEmptyLabel,
+              emptyHint: S.transitGSSpreadsheetImportEmptyHint,
               onUpdated: reloadSheetHints,
               onChosen: reloadSheets,
             ),
@@ -68,14 +68,14 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         ),
         ListTile(
           key: const Key('gs_export.import_all'),
-          title: const Text('匯入全部'),
-          subtitle: const Text('不會有任何預覽畫面，直接覆寫全部的資料。'),
+          title: Text(S.transitGSSpreadsheetImportAllBtn),
+          subtitle: Text(S.transitGSSpreadsheetImportAllHint),
           trailing: const Icon(Icons.download_for_offline_sharp),
           onTap: () async {
             final confirmed = await ConfirmDialog.show(
               context,
-              title: '匯入全部資料？',
-              content: '將會把所選表單的資料都下載，並完全覆蓋本地資料。\n此動作無法復原。',
+              title: S.transitGSSpreadsheetImportAllConfirmTitle,
+              content: S.transitGSSpreadsheetImportAllConfirmContent,
             );
 
             if (confirmed) {
@@ -83,7 +83,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
             }
           },
         ),
-        const TextDivider(label: '選擇欲匯入表單'),
+        TextDivider(label: S.transitGSSpreadsheetModelImportDivider),
         for (final entry in sheets.entries)
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -97,7 +97,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
               ),
               const SizedBox(width: 8.0),
               IconButton(
-                tooltip: '預覽結果並匯入',
+                tooltip: S.transitImportPreviewBtn,
                 icon: const Icon(KIcons.preview),
                 onPressed: () => import(entry.key),
               ),
@@ -115,7 +115,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     super.dispose();
   }
 
-  /// 重新讀取試算表的表單名稱
+  /// Reload the sheet names for later import.
   Future<void> reloadSheets(GoogleSpreadsheet ss) async {
     final exist = await widget.exporter.getSheets(ss);
 
@@ -131,7 +131,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   Future<void> import(Formattable? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
-      showSnackBar(context, S.transitGSImportError('emptySpreadsheet'));
+      showSnackBar(context, S.transitGSErrorImportEmptySpreadsheet);
       return;
     }
 
@@ -141,7 +141,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
         .toList();
     if (selected.isEmpty) {
-      showSnackBar(context, S.transitGSImportError('emptySheet'));
+      showSnackBar(context, S.transitGSErrorImportEmptySheet);
       return;
     }
 
@@ -156,7 +156,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     widget.notifier.value = '_finish';
   }
 
-  /// 檢查基礎資料後，真正開始匯入。
+  /// After verifying the basic data, start importing.
   Future<void> _importSheets(
     GoogleSpreadsheet ss,
     List<MapEntry<Formattable, GoogleSheetProperties>> ableSheets,
@@ -165,7 +165,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     for (final entry in ableSheets) {
       final able = entry.key;
       final sheet = entry.value;
-      widget.notifier.value = S.transitGSUpdateModelStatus(able.name);
+      widget.notifier.value = S.transitGSModelStatus(able.name);
 
       if (!await _importData(ss, able, sheet, needPreview)) {
         return;
@@ -183,11 +183,12 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
   }
 
-  /// 匯入指定表單。
+  /// Import the specified form.
   ///
-  /// 1. 取得資料
-  /// 2. 快取（如果可能的話，預覽）
-  /// 3. 解析資料並匯入
+  /// The process is as follows:
+  /// 1. Get data
+  /// 2. Cache (if possible, preview)
+  /// 3. Parse data and import
   Future<bool> _importData(
     GoogleSpreadsheet ss,
     Formattable able,
@@ -201,16 +202,8 @@ class _ImportBasicViewState extends State<ImportBasicView> {
       if (mounted) {
         showMoreInfoSnackBar(
           context,
-          '找不到表單「${sheet.title}」的資料',
-          MetaBlock.withString(
-              context,
-              [
-                '別擔心，通常都可以簡單解決！\n可能的原因有：\n',
-                '網路狀況不穩；\n',
-                '尚未進行授權；\n',
-                '表單 ID 打錯了，請嘗試複製整個網址後貼上；\n',
-                '該表單被刪除了。',
-              ],
+          S.transitGSErrorImportNotFoundSheets(sheet.title),
+          MetaBlock.withString(context, S.transitGSErrorImportNotFoundHelper.split('\n').map((e) => '$e\n').toList(),
               textOverflow: TextOverflow.visible)!,
         );
       }
@@ -239,13 +232,13 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     return approved ?? false;
   }
 
-  /// 請求表單的資料
+  /// Request the data from the sheet.
   Future<List<List<Object?>>?> _requestData(
     Formattable able,
     GoogleSpreadsheet ss,
     GoogleSheetProperties sheet,
   ) async {
-    widget.notifier.value = '驗證身份中';
+    widget.notifier.value = S.transitGSProgressStatusVerifyUser;
     await widget.exporter.auth();
 
     const formatter = GoogleSheetFormatter();
@@ -276,11 +269,11 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         builder: (context) => SheetPreviewPage(
           source: SheetPreviewerDataTableSource(source),
           header: formatter.getHeader(able),
-          title: S.transitType(able.name),
+          title: S.transitModelName(able.name),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(S.transitPreviewImportTitle),
+              child: Text(S.transitImportPreviewBtn),
             ),
           ],
         ),

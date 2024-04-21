@@ -26,6 +26,6 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
 
   @override
   Widget getHeader(BuildContext context) {
-    return Text(S.transitPreviewQuantityHeader);
+    return Text(S.transitImportPreviewQuantityHeader);
   }
 }

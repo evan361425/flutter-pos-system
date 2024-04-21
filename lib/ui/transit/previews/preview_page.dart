@@ -48,7 +48,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.transitTitlePreviewImport),
+        title: Text(S.transitImportPreviewTitle),
         leading: const CloseButton(),
         actions: [
           TextButton(
@@ -88,7 +88,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget getItem(BuildContext context, T item);
 
   Widget getHeader(BuildContext context) {
-    return Text(S.transitPreviewHeader);
+    return Text(S.transitImportPreviewHeader);
   }
 }
 

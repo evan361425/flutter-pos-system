@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -55,12 +54,12 @@ class _ExportOrderViewState extends State<ExportOrderView> {
               notifier: widget.statusNotifier,
               exporter: widget.exporter,
               cacheKey: _cacheKey,
+              existLabel: S.transitGSSpreadsheetExportExistLabel,
+              existHint: S.transitGSSpreadsheetExportExistHint,
+              emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
+              emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetOrderDefaultName),
               fallbackCacheKey: 'exporter_google_sheet',
-              existLabel: '指定匯出',
-              existHint: '匯出至試算表「%name」',
-              emptyLabel: '建立匯出',
-              emptyHint: '建立新的試算表「${S.transitOrderTitle}」，並把訂單匯出至此',
-              defaultName: S.transitOrderTitle,
+              defaultName: S.transitGSSpreadsheetOrderDefaultName,
               requiredSheetTitles: requiredSheetTitles,
               onPrepared: exportData,
             ),
@@ -69,13 +68,13 @@ class _ExportOrderViewState extends State<ExportOrderView> {
         TransitOrderRange(notifier: widget.rangeNotifier),
         ListTile(
           key: const Key('edit_sheets'),
-          title: const Text('表單設定'),
+          title: Text(S.transitGSOrderSettingTitle),
           subtitle: MetaBlock.withString(
             context,
             [
-              '${properties.isOverwrite ? '會' : '不會'}覆寫',
-              '${properties.withPrefix ? '有' : '沒有'}日期前綴',
-              // 這個資訊可能突破兩行的限制，所以放最後
+              S.transitGSOrderMetaOverwrite(properties.isOverwrite.toString()),
+              S.transitGSOrderMetaTitlePrefix(properties.withPrefix.toString()),
+              // This message may break the two lines limit, so put it at the end.
               properties.requiredSheets.map((e) => e.name).join('、'),
             ],
             maxLines: 2,
@@ -92,9 +91,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
             notifier: widget.rangeNotifier,
             formatOrder: (order) => OrderTable(order: order),
             memoryPredictor: memoryPredictor,
-            warning: '這裡的容量代表網路傳輸所消耗的量，'
-                '實際佔用的雲端記憶體可能是此值的百分之一而已。'
-                '詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。',
+            warning: S.transitGSOrderMetaMemoryWarning,
           ),
         ),
       ],
@@ -108,7 +105,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   Map<SheetType, String> requiredSheetTitles() {
-    final prefix = properties.withPrefix ? widget.rangeNotifier.value.format(DateFormat('MMdd ')) : '';
+    final prefix = properties.withPrefix ? '${widget.rangeNotifier.value.format(S.localeName)} ' : '';
 
     return {
       for (final sheet in properties.requiredSheets)
@@ -116,12 +113,12 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     };
   }
 
-  /// [SpreadsheetSelector] 檢查基礎資料後，真正開始匯出。
+  /// [SpreadsheetSelector] validate the basic data before actually exporting.
   Future<void> exportData(
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
-    widget.statusNotifier.value = '取得本地資料';
+    widget.statusNotifier.value = S.transitGSProgressStatusFetchLocalOrders;
     final orders = await Seller.instance.getDetailedOrders(
       widget.rangeNotifier.value.start,
       widget.rangeNotifier.value.end,
@@ -131,7 +128,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     final data = prepared.keys.map(chooseFormatter).map((method) => orders.expand((order) => method(order)));
 
     if (properties.isOverwrite) {
-      widget.statusNotifier.value = '覆寫訂單資料';
+      widget.statusNotifier.value = S.transitGSProgressStatusOverwriteOrders;
       await widget.exporter.updateSheetValues(
         ss,
         prepared.values,
@@ -142,8 +139,8 @@ class _ExportOrderViewState extends State<ExportOrderView> {
       final it = data.iterator;
       for (final entry in prepared.entries) {
         it.moveNext();
-        final name = S.transitType(entry.key.name);
-        widget.statusNotifier.value = '附加進 $name';
+        final name = S.transitModelName(entry.key.name);
+        widget.statusNotifier.value = S.transitGSProgressStatusAppendOrders(name);
         await widget.exporter.appendSheetValues(ss, entry.value, it.current);
       }
     }
@@ -154,7 +151,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
         context,
         S.actSuccess,
         action: LauncherSnackbarAction(
-          label: '開啟表單',
+          label: S.transitGSSpreadsheetSnackbarAction,
           link: ss.toLink(),
           logCode: 'gs_export',
         ),
@@ -205,18 +202,18 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     }
   }
 
-  /// 這裡是一些實測輸出結果：
+  /// These values are based on the actual data:
   ///
   /// order:
   /// 1698067340,2023-10-28 14:51:23,356,295,356,115,241,5,4
   /// attr:
-  /// 1698067340,用餐位置,內用
+  /// 1698067340,place,takeout
   /// product:
-  /// 1698067340,起士漢堡,漢堡,1,60,30,60
+  /// 1698067340,cheese burger,burger,1,60,30,60
   /// ingredient:
-  /// 1698067340,起士,漢堡,,10
+  /// 1698067340,cheese,burger,,10
   ///
-  /// 後來考慮壓縮之後，上述的值應該再乘以 0.45
+  /// After compression, the values should be multiplied by 0.5.
   static int memoryPredictor(OrderMetrics m) {
     return (m.count * 30 + m.attrCount! * 10 + m.productCount! * 13 + m.ingredientCount! * 8).toInt();
   }

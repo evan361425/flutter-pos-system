@@ -31,15 +31,15 @@ class PlainTextFormatter extends Formatter<String> {
   }
 
   Formattable? whichFormattable(String line) {
-    if (line.startsWith(S.transitPTFormatBasicMenuHeaderPrefix)) {
+    if (line.startsWith(S.transitPTFormatModelMenuHeaderPrefix)) {
       return Formattable.menu;
-    } else if (line.startsWith(S.transitPTFormatBasicStockHeaderPrefix)) {
+    } else if (line.startsWith(S.transitPTFormatModelStockHeaderPrefix)) {
       return Formattable.stock;
-    } else if (line.endsWith(S.transitPTFormatBasicQuantitiesHeaderSuffix)) {
+    } else if (line.endsWith(S.transitPTFormatModelQuantitiesHeaderSuffix)) {
       return Formattable.quantities;
-    } else if (line.endsWith(S.transitPTFormatBasicReplenisherHeaderSuffix)) {
+    } else if (line.endsWith(S.transitPTFormatModelReplenisherHeaderSuffix)) {
       return Formattable.replenisher;
-    } else if (line.endsWith(S.transitPTFormatBasicOaHeaderSuffix)) {
+    } else if (line.endsWith(S.transitPTFormatModelOaHeaderSuffix)) {
       return Formattable.orderAttr;
     }
 
@@ -52,42 +52,42 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 
   @override
   List<String> getHeader() => [
-        S.transitPTFormatBasicMenuMetaCatalog(target.length),
-        S.transitPTFormatBasicMenuMetaProduct(target.products.length)
+        S.transitPTFormatModelMenuMetaCatalog(target.length),
+        S.transitPTFormatModelMenuMetaProduct(target.products.length)
       ];
 
   @override
   List<List<String>> getRows() {
     int catalogCount = 1;
     return [
-      [S.transitPTFormatBasicMenuHeader(target.length, target.products.length)],
+      [S.transitPTFormatModelMenuHeader(target.length, target.products.length)],
       ...target.itemList.map<List<String>>((catalog) {
         int productCount = 1;
         final nf = NumberFormat.decimalPattern(S.localeName);
         return [
-          S.transitPTFormatBasicMenuCatalog(
+          S.transitPTFormatModelMenuCatalog(
             (catalogCount++).toString(),
             catalog.name,
-            S.transitPTFormatBasicMenuCatalogDetails(catalog.length),
+            S.transitPTFormatModelMenuCatalogDetails(catalog.length),
           ),
           for (final product in catalog.itemList)
-            S.transitPTFormatBasicMenuProduct(
+            S.transitPTFormatModelMenuProduct(
               (productCount++).toString(),
               product.name,
               product.price.toCurrency(),
               product.cost.toCurrency(),
-              S.transitPTFormatBasicMenuProductDetails(
+              S.transitPTFormatModelMenuProductDetails(
                 product.items.length,
                 product.items.map((e) => e.name).join('、'),
                 product.items
                     .map<String>(
-                      (ingredient) => S.transitPTFormatBasicMenuIngredient(
+                      (ingredient) => S.transitPTFormatModelMenuIngredient(
                         nf.format(ingredient.amount),
                         ingredient.name,
-                        S.transitPTFormatBasicMenuIngredientDetails(
+                        S.transitPTFormatModelMenuIngredientDetails(
                           ingredient.items.length,
                           ingredient.items
-                              .map((quantity) => '${quantity.name}（${S.transitPTFormatBasicMenuQuantity(
+                              .map((quantity) => '${quantity.name}（${S.transitPTFormatModelMenuQuantity(
                                     nf.format(quantity.amount),
                                     quantity.additionalPrice.toCurrency(),
                                     quantity.additionalCost.toCurrency(),
@@ -108,7 +108,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reCatalog = RegExp(
       _rePre +
-          S.transitPTFormatBasicMenuCatalog(
+          S.transitPTFormatModelMenuCatalog(
             r'\d+',
             r'(?<name>[^，]+?)',
             '',
@@ -116,7 +116,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
     );
     final reProduct = RegExp(
       _rePre +
-          S.transitPTFormatBasicMenuProduct(
+          S.transitPTFormatModelMenuProduct(
             r'\d+',
             r'(?<name>[^，]+?)',
             '(?<price>$_reDig)',
@@ -126,7 +126,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
     );
     final reIngredient = RegExp(
       _rePre +
-          S.transitPTFormatBasicMenuIngredient(
+          S.transitPTFormatModelMenuIngredient(
             '(?<amount>$_reDig)',
             r'(?<name>[^，]+?)',
             '',
@@ -135,7 +135,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
     final reQuantity = RegExp(
       _rePre +
           r'(?<name>[^（]+?)（' +
-          S.transitPTFormatBasicMenuQuantity(
+          S.transitPTFormatModelMenuQuantity(
             '(?<amount>$_reDig)',
             '(?<price>$_reDig)',
             '(?<cost>$_reDig)',
@@ -209,21 +209,21 @@ class _StockTransformer extends ModelTransformer<Stock> {
   const _StockTransformer(super.target);
 
   @override
-  List<String> getHeader() => [S.transitPTFormatBasicStockMetaIngredient(target.length)];
+  List<String> getHeader() => [S.transitPTFormatModelStockMetaIngredient(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
     final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      [S.transitPTFormatBasicStockHeader(target.length)],
+      [S.transitPTFormatModelStockHeader(target.length)],
       for (final ingredient in target.itemList)
         [
-          S.transitPTFormatBasicStockIngredient(
+          S.transitPTFormatModelStockIngredient(
             (counter++).toString(),
             ingredient.name,
             nf.format(ingredient.currentAmount),
-            S.transitPTFormatBasicStockIngredientDetails(
+            S.transitPTFormatModelStockIngredientDetails(
               ingredient.totalAmount == null ? 0 : 1,
               nf.format(ingredient.totalAmount ?? 0),
             ),
@@ -235,13 +235,13 @@ class _StockTransformer extends ModelTransformer<Stock> {
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reBase = RegExp(_rePre +
-        S.transitPTFormatBasicStockIngredient(
+        S.transitPTFormatModelStockIngredient(
           r'\d+',
           r'(?<name>[^，]+?)',
           '(?<amount>$_reDig)',
           '',
         ));
-    final reMax = RegExp(S.transitPTFormatBasicStockIngredientDetails(1, '(?<max>$_reDig)'));
+    final reMax = RegExp(S.transitPTFormatModelStockIngredientDetails(1, '(?<max>$_reDig)'));
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
@@ -264,17 +264,17 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   const _QuantitiesTransformer(super.target);
 
   @override
-  List<String> getHeader() => [S.transitPTFormatBasicQuantitiesMetaQuantity(target.length)];
+  List<String> getHeader() => [S.transitPTFormatModelQuantitiesMetaQuantity(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
     final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      [S.transitPTFormatBasicQuantitiesHeader(target.length)],
+      [S.transitPTFormatModelQuantitiesHeader(target.length)],
       [
         for (final quantity in target.itemList)
-          S.transitPTFormatBasicQuantitiesQuantity(
+          S.transitPTFormatModelQuantitiesQuantity(
             (counter++).toString(),
             quantity.name,
             nf.format(quantity.defaultProportion),
@@ -287,7 +287,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final re = RegExp(
       _rePre +
-          S.transitPTFormatBasicQuantitiesQuantity(
+          S.transitPTFormatModelQuantitiesQuantity(
             r'\d+',
             r'(?<name>[^，]+?)',
             '(?<prop>$_reDig)',
@@ -313,20 +313,20 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   const _ReplenisherTransformer(super.target);
 
   @override
-  List<String> getHeader() => [S.transitPTFormatBasicReplenisherMetaReplenishment(target.length)];
+  List<String> getHeader() => [S.transitPTFormatModelReplenisherMetaReplenishment(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
     final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      [S.transitPTFormatBasicReplenisherHeader(target.length)],
+      [S.transitPTFormatModelReplenisherHeader(target.length)],
       [
         for (final repl in target.itemList)
-          S.transitPTFormatBasicReplenisherReplenishment(
+          S.transitPTFormatModelReplenisherReplenishment(
             (counter++).toString(),
             repl.name,
-            S.transitPTFormatBasicReplenisherReplenishmentDetails(
+            S.transitPTFormatModelReplenisherReplenishmentDetails(
               repl.ingredientData.length,
               repl.ingredientData.entries.map((e) => '${e.key.name}（${nf.format(e.value)}）').join('、'),
             ),
@@ -339,7 +339,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reBase = RegExp(
       _rePre +
-          S.transitPTFormatBasicReplenisherReplenishment(
+          S.transitPTFormatModelReplenisherReplenishment(
             r'\d+',
             r'(?<name>[^，]+?)',
             '',
@@ -376,25 +376,25 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
   const _OATransformer(super.target);
 
   @override
-  List<String> getHeader() => [S.transitPTFormatBasicOaMetaOa(target.length)];
+  List<String> getHeader() => [S.transitPTFormatModelOaMetaOa(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
     return [
-      [S.transitPTFormatBasicOaHeader(target.length)],
+      [S.transitPTFormatModelOaHeader(target.length)],
       [
         for (final attr in target.itemList)
-          S.transitPTFormatBasicOaOa(
+          S.transitPTFormatModelOaOa(
             (counter++).toString(),
             attr.name,
             S.orderAttributeModeName(attr.mode.name),
-            S.transitPTFormatBasicOaOaDetails(
+            S.transitPTFormatModelOaOaDetails(
               attr.length,
               attr.itemList
                   .map((e) => '${e.name}（${[
-                        e.isDefault ? S.transitPTFormatBasicOaDefaultOption : '',
-                        e.modeValue == null ? '' : S.transitPTFormatBasicOaModeValue(e.modeValue!),
+                        e.isDefault ? S.transitPTFormatModelOaDefaultOption : '',
+                        e.modeValue == null ? '' : S.transitPTFormatModelOaModeValue(e.modeValue!),
                       ].where((e) => e.isNotEmpty).join('，')}）')
                   .join('、'),
             ),
@@ -406,7 +406,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reOA = RegExp(_rePre +
-        S.transitPTFormatBasicOaOa(
+        S.transitPTFormatModelOaOa(
           r'\d+',
           r'(?<name>[^，]+?)',
           r'(?<mode>[^ ]+?)',
@@ -426,7 +426,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
             String info = 'false';
             if (infoIdx != -1) {
               final infoStr = opt.substring(infoIdx + 1, opt.length - 1);
-              if (infoStr.startsWith(S.transitPTFormatBasicOaDefaultOption)) {
+              if (infoStr.startsWith(S.transitPTFormatModelOaDefaultOption)) {
                 info = 'true';
               }
               final v = RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
