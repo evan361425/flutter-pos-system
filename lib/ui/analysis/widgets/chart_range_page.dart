@@ -35,11 +35,11 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
           const SizedBox(width: 8),
         ],
         bottom: TabBar(controller: _controller, tabs: [
-          for (final tab in _TabType.values) Tab(child: Text(tab.title, softWrap: true)),
+          for (final tab in _TabType.values) Tab(child: Text(S.analysisChartRangeTabName(tab.name), softWrap: true)),
         ]),
       ),
       body: TabBarView(controller: _controller, children: [
-        for (final tab in [_TabType.date, _TabType.week, _TabType.month])
+        for (final tab in [_TabType.day, _TabType.week, _TabType.month])
           ListView(
             children: [
               for (final e in ranges[tab]!.entries)
@@ -79,40 +79,40 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
     final thisWeek = today.subtract(Duration(days: today.weekday - 1));
     final thisMonth = DateTime(today.year, today.month);
     ranges = {
-      _TabType.date: {
-        '昨日': DateTimeRange(
+      _TabType.day: {
+        S.analysisChartRangeYesterday: DateTimeRange(
           start: today.subtract(const Duration(days: 1)),
           end: today,
         ),
-        '今日': DateTimeRange(
+        S.analysisChartRangeToday: DateTimeRange(
           start: today,
           end: today.add(const Duration(days: 1)),
         ),
       },
       _TabType.week: {
-        '最近7日': DateTimeRange(
+        S.analysisChartRangeLast7Days: DateTimeRange(
           start: today.subtract(const Duration(days: 7)),
           end: today,
         ),
-        '本週': DateTimeRange(
+        S.analysisChartRangeThisWeek: DateTimeRange(
           start: thisWeek,
           end: thisWeek.add(const Duration(days: 7)),
         ),
-        '上週': DateTimeRange(
+        S.analysisChartRangeLastWeek: DateTimeRange(
           start: thisWeek.subtract(const Duration(days: 7)),
           end: thisWeek,
         ),
       },
       _TabType.month: {
-        '最近30日': DateTimeRange(
+        S.analysisChartRangeLast30Days: DateTimeRange(
           start: today.subtract(const Duration(days: 30)),
           end: today,
         ),
-        '本月': DateTimeRange(
+        S.analysisChartRangeThisMonth: DateTimeRange(
           start: thisMonth,
           end: DateTime(now.year, now.month + 1),
         ),
-        '上月': DateTimeRange(
+        S.analysisChartRangeLastMonth: DateTimeRange(
           start: DateTime(now.year, now.month - 1),
           end: thisMonth,
         ),
@@ -130,12 +130,8 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
 }
 
 enum _TabType {
-  date('日期'),
-  week('週'),
-  month('月'),
-  custom('自訂');
-
-  final String title;
-
-  const _TabType(this.title);
+  day,
+  week,
+  month,
+  custom;
 }

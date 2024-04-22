@@ -1,72 +1,141 @@
 $prefix: analysis
 tab: 統計
-orderList:
-  title:
+history:
+  btn: 紀錄
+  title: 訂單記錄
+  _title:
+    $prefix: title
     empty: 查無點餐紀錄
-  meta:
-    price:
-    - 總營收：{price}
-    - 點餐列表中，單日點餐的營收
-    - price: {type: num, format: compactCurrency, symbol: '$'}
-    count:
-    - 總單數：{count}
-    - 點餐列表中，單日點餐的數量
-    - count: {type: int, format: compactLong}
-  itemMeta:
-    price:
-    - 售價：{price}
-    - 點餐列表中，特定訂單的餐點售價
-    - price: {type: num, format: compactCurrency, symbol: '$'}
-    paid:
-    - 付額：{paid}
-    - 點餐列表中，特定訂單的餐點付款金額
-    - paid: {type: num, format: compactCurrency, symbol: '$'}
-    income:
-    - 淨利：{income}
-    - 點餐列表中，特定訂單的餐點淨利
-    - income: {type: num, format: compactCurrency, symbol: '$'}
+  calendar:
+    tutorial:
+      title: 日曆格式
+      content: |
+        上下滑動可以調整週期單位，如月或週。
+        左右滑動可以調整日期起訖。
+  export:
+    tutorial:
+      title: 訂單資料匯出
+      content: |
+        把訂單匯出到外部，讓你可以做進一步分析或保存。
+        你可以到「設定」去匯出多日訂單。
+  orderList:
+    meta:
+      price:
+      - 售價：{price}
+      - 點餐列表中，特定訂單的餐點售價
+      - price: {type: num, format: compactCurrency, symbol: '$'}
+      paid:
+      - 付額：{paid}
+      - 點餐列表中，特定訂單的餐點付款金額
+      - paid: {type: num, format: compactCurrency, symbol: '$'}
+      income:
+      - 淨利：{income}
+      - 點餐列表中，特定訂單的餐點淨利
+      - income: {type: num, format: compactCurrency, symbol: '$'}
+  order:
+    title: 訂單詳情
+    notFound: 找不到相關訂單
+    deleteDialog:
+    - |
+      確定要刪除 {name} 的訂單嗎？
+      將不會復原收銀機和庫存資料。
+      此動作無法復原。
+    - name:
+goals:
+  title: 本日總結
+  count:
+    title: 訂單數
+    description: |
+      訂單數反映了產品對顧客的吸引力。
+      它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。
+      高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。
+      但要注意，單純追求高訂單數可能會忽略盈利能力。
+  price:
+    title: 營收
+    description: |
+      營收代表總銷售額，是業務規模的指標。
+      高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。
+      有時候，為了提高營收，公司可能會採取降價等策略，這可能會對公司的盈利能力造成影響。
+  revenue:
+    title: 淨利
+    description: |
+      淨利是營業收入減去營業成本後的餘額，是公司能否持續經營的關鍵。
+      盈利直接反映了營運效率和成本管理能力。
+      不同於營收，盈利考慮了生意的開支，包括原料成本、人力、租金等，
+      這是一個更實際的指標，能幫助你評估經營是否有效且可持續。
+  cost:
+    title: 成本
+  achievedRate:
+  - |
+    利潤達成
+    {rate}
+  - rate:
 chart:
-  title:
+  title: 圖表分析
+  _title:
+    $prefix: title
     create: 新增圖表
-  divider:
-    dataProperties: 圖表設定
-  name:
-    label: 圖表名稱
-    hint: 例如：每日營收
-  ignoreEmpty:
-    label: 忽略空資料
-    helper: 某商品或指標在該時段沒有資料，則不顯示。
-  type:
-    label: 圖表類型
+    reorder: 排序圖表
+  tutorial:
+    title: 圖表分析
+    content: |
+      透過圖表，你可以更直觀地看到數據變化。
+      現在就開始設計圖表追蹤你的銷售狀況吧！。
+  card:
+    emptyData: 沒有資料
+    title:
+      update: 編輯圖表
+  metricName:
+  - price: 營收
+    cost: 成本
+    revenue: 淨利
+    count: 數量
+  - name:
+  targetName:
+  - order: 訂單
+    catalog: 產品種類
+    product: 產品
+    ingredient: 成分
+    attribute: 顧客屬性
+  - name:
+  range:
+    yesterday: 昨天
+    today: 今天
+    lastWeek: 上週
+    thisWeek: 本週
+    last7Days: 最近7日
+    lastMonth: 上月
+    thisMonth: 本月
+    last30Days: 最近30日
+    tabName:
+    - day: 日期
+      week: 週
+      month: 月
+      custom: 自訂
+    - name:
+  modal:
     name:
-    - cartesian: 時序圖
-      circular: 圓餅圖
-      other: UNKNOWN
-    - {name: {type: String, mode: select}}
-  metric:
-    label: 觀看指標
-    helper: 根據不同目的，選擇不同指標類型。
-    name:
-    - price: 營收
-      cost: 成本
-      revenue: 淨利
-      count: 數量
-      other: UNKNOWN
-    - {name: {type: String, mode: select}}
-  target:
-    label: 項目種類
-    helper: 選擇圖表中要針對哪些資訊做分析。
-    error:
-      empty: 請選擇一個項目種類
-    name:
-    - order: 訂單
-      catalog: 產品種類
-      product: 產品
-      ingredient: 成分
-      attribute: 顧客屬性
-      other: UNKNOWN
-    - {name: {type: String, mode: select}}
-  targetItem:
-    label: 項目選擇
-    helper: 你想要觀察哪些項目的變化，例如區間內某商品的數量。
-    selectAll: 全選
+      label: 圖表名稱
+      hint: 例如：每日營收
+    ignoreEmpty:
+      label: 忽略空資料
+      helper: 某商品或指標在該時段沒有資料，則不顯示。
+    divider: 資料設定
+    type:
+      label: 圖表類型
+      name:
+      - cartesian: 時序圖
+        other: UNKNOWN
+      - name:
+    metric:
+      label: 觀看指標
+      helper: 根據不同目的，選擇不同指標類型。
+    target:
+      label: 項目種類
+      helper: 選擇圖表中要針對哪些資訊做分析。
+      error:
+        empty: 請選擇一個項目種類
+    targetItem:
+      label: 項目選擇
+      helper: 你想要觀察哪些項目的變化，例如區間內某商品的數量。
+      selectAll: 全選

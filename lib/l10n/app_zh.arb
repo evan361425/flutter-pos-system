@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-21T08:09:06.023448Z",
+  "@@last_modified": "2024-04-22T00:37:55.827498Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -475,6 +475,13 @@
   "transitGSErrorImportEmptyData": "在表單中沒找到任何值",
   "transitGSErrorImportNotFoundSpreadsheet": "找不到試算表",
   "transitGSErrorImportNotFoundSheets": "找不到表單「{name}」的資料",
+  "@transitGSErrorImportNotFoundSheets": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "transitGSErrorImportNotFoundHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n",
   "transitGSErrorImportNotFoundHelperReasons": "網路狀況不穩；\n尚未進行授權；\n表單 ID 打錯了，請嘗試複製整個網址後貼上；\n該表單被刪除了。\n",
   "transitPTDescription": "快速檢查、快速分享。",
@@ -1563,32 +1570,15 @@
   "orderFormTitleProductCatalog": "產品種類",
   "orderFormTitleProductIngredient": "成分",
   "analysisTab": "統計",
-  "analysisOrderListTitleEmpty": "查無點餐紀錄",
-  "analysisOrderListMetaPrice": "總營收：{price}",
-  "@analysisOrderListMetaPrice": {
-    "description": "點餐列表中，單日點餐的營收",
-    "placeholders": {
-      "price": {
-        "type": "num",
-        "format": "compactCurrency",
-        "optionalParameters": {
-          "symbol": "$"
-        }
-      }
-    }
-  },
-  "analysisOrderListMetaCount": "總單數：{count}",
-  "@analysisOrderListMetaCount": {
-    "description": "點餐列表中，單日點餐的數量",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "compactLong"
-      }
-    }
-  },
-  "analysisOrderListItemMetaPrice": "售價：{price}",
-  "@analysisOrderListItemMetaPrice": {
+  "analysisHistoryBtn": "紀錄",
+  "analysisHistoryTitle": "訂單記錄",
+  "analysisHistoryTitleEmpty": "查無點餐紀錄",
+  "analysisHistoryCalendarTutorialTitle": "日曆格式",
+  "analysisHistoryCalendarTutorialContent": "上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。\n",
+  "analysisHistoryExportTutorialTitle": "訂單資料匯出",
+  "analysisHistoryExportTutorialContent": "把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。\n",
+  "analysisHistoryOrderListMetaPrice": "售價：{price}",
+  "@analysisHistoryOrderListMetaPrice": {
     "description": "點餐列表中，特定訂單的餐點售價",
     "placeholders": {
       "price": {
@@ -1600,8 +1590,8 @@
       }
     }
   },
-  "analysisOrderListItemMetaPaid": "付額：{paid}",
-  "@analysisOrderListItemMetaPaid": {
+  "analysisHistoryOrderListMetaPaid": "付額：{paid}",
+  "@analysisHistoryOrderListMetaPaid": {
     "description": "點餐列表中，特定訂單的餐點付款金額",
     "placeholders": {
       "paid": {
@@ -1613,8 +1603,8 @@
       }
     }
   },
-  "analysisOrderListItemMetaIncome": "淨利：{income}",
-  "@analysisOrderListItemMetaIncome": {
+  "analysisHistoryOrderListMetaIncome": "淨利：{income}",
+  "@analysisHistoryOrderListMetaIncome": {
     "description": "點餐列表中，特定訂單的餐點淨利",
     "placeholders": {
       "income": {
@@ -1626,23 +1616,32 @@
       }
     }
   },
-  "analysisChartTitleCreate": "新增圖表",
-  "analysisChartDividerDataProperties": "圖表設定",
-  "analysisChartNameLabel": "圖表名稱",
-  "analysisChartNameHint": "例如：每日營收",
-  "analysisChartIgnoreEmptyLabel": "忽略空資料",
-  "analysisChartIgnoreEmptyHelper": "某商品或指標在該時段沒有資料，則不顯示。",
-  "analysisChartTypeLabel": "圖表類型",
-  "analysisChartTypeName": "{name, select, cartesian{時序圖} circular{圓餅圖} other{UNKNOWN}}",
-  "@analysisChartTypeName": {
+  "analysisHistoryOrderTitle": "訂單詳情",
+  "analysisHistoryOrderNotFound": "找不到相關訂單",
+  "analysisHistoryOrderDeleteDialog": "確定要刪除 {name} 的訂單嗎？\n將不會復原收銀機和庫存資料。\n此動作無法復原。\n",
+  "analysisGoalsTitle": "本日總結",
+  "analysisGoalsCountTitle": "訂單數",
+  "analysisGoalsCountDescription": "訂單數反映了產品對顧客的吸引力。\n它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。\n高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。\n但要注意，單純追求高訂單數可能會忽略盈利能力。\n",
+  "analysisGoalsPriceTitle": "營收",
+  "analysisGoalsPriceDescription": "營收代表總銷售額，是業務規模的指標。\n高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。\n有時候，為了提高營收，公司可能會採取降價等策略，這可能會對公司的盈利能力造成影響。\n",
+  "analysisGoalsRevenueTitle": "淨利",
+  "analysisGoalsRevenueDescription": "淨利是營業收入減去營業成本後的餘額，是公司能否持續經營的關鍵。\n盈利直接反映了營運效率和成本管理能力。\n不同於營收，盈利考慮了生意的開支，包括原料成本、人力、租金等，\n這是一個更實際的指標，能幫助你評估經營是否有效且可持續。\n",
+  "analysisGoalsCostTitle": "成本",
+  "analysisGoalsAchievedRate": "利潤達成\n{rate}\n",
+  "@analysisGoalsAchievedRate": {
     "placeholders": {
-      "name": {
+      "rate": {
         "type": "String"
       }
     }
   },
-  "analysisChartMetricLabel": "觀看指標",
-  "analysisChartMetricHelper": "根據不同目的，選擇不同指標類型。",
+  "analysisChartTitle": "圖表分析",
+  "analysisChartTitleCreate": "新增圖表",
+  "analysisChartTitleReorder": "排序圖表",
+  "analysisChartTutorialTitle": "圖表分析",
+  "analysisChartTutorialContent": "透過圖表，你可以更直觀地看到數據變化。\n現在就開始設計圖表追蹤你的銷售狀況吧！。\n",
+  "analysisChartCardEmptyData": "沒有資料",
+  "analysisChartCardTitleUpdate": "編輯圖表",
   "analysisChartMetricName": "{name, select, price{營收} cost{成本} revenue{淨利} count{數量} other{UNKNOWN}}",
   "@analysisChartMetricName": {
     "placeholders": {
@@ -1651,9 +1650,6 @@
       }
     }
   },
-  "analysisChartTargetLabel": "項目種類",
-  "analysisChartTargetHelper": "選擇圖表中要針對哪些資訊做分析。",
-  "analysisChartTargetErrorEmpty": "請選擇一個項目種類",
   "analysisChartTargetName": "{name, select, order{訂單} catalog{產品種類} product{產品} ingredient{成分} attribute{顧客屬性} other{UNKNOWN}}",
   "@analysisChartTargetName": {
     "placeholders": {
@@ -1662,7 +1658,42 @@
       }
     }
   },
-  "analysisChartTargetItemLabel": "項目選擇",
-  "analysisChartTargetItemHelper": "你想要觀察哪些項目的變化，例如區間內某商品的數量。",
-  "analysisChartTargetItemSelectAll": "全選"
+  "analysisChartRangeYesterday": "昨天",
+  "analysisChartRangeToday": "今天",
+  "analysisChartRangeLastWeek": "上週",
+  "analysisChartRangeThisWeek": "本週",
+  "analysisChartRangeLast7Days": "最近7日",
+  "analysisChartRangeLastMonth": "上月",
+  "analysisChartRangeThisMonth": "本月",
+  "analysisChartRangeLast30Days": "最近30日",
+  "analysisChartRangeTabName": "{name, select, day{日期} week{週} month{月} custom{自訂} other{UNKNOWN}}",
+  "@analysisChartRangeTabName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartModalNameLabel": "圖表名稱",
+  "analysisChartModalNameHint": "例如：每日營收",
+  "analysisChartModalIgnoreEmptyLabel": "忽略空資料",
+  "analysisChartModalIgnoreEmptyHelper": "某商品或指標在該時段沒有資料，則不顯示。",
+  "analysisChartModalDivider": "資料設定",
+  "analysisChartModalTypeLabel": "圖表類型",
+  "analysisChartModalTypeName": "{name, select, cartesian{時序圖} other{UNKNOWN}}",
+  "@analysisChartModalTypeName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartModalMetricLabel": "觀看指標",
+  "analysisChartModalMetricHelper": "根據不同目的，選擇不同指標類型。",
+  "analysisChartModalTargetLabel": "項目種類",
+  "analysisChartModalTargetHelper": "選擇圖表中要針對哪些資訊做分析。",
+  "analysisChartModalTargetErrorEmpty": "請選擇一個項目種類",
+  "analysisChartModalTargetItemLabel": "項目選擇",
+  "analysisChartModalTargetItemHelper": "你想要觀察哪些項目的變化，例如區間內某商品的數量。",
+  "analysisChartModalTargetItemSelectAll": "全選"
 }

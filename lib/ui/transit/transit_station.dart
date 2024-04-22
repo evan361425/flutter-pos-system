@@ -7,7 +7,7 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 
 import 'google_sheet/views.dart' as gs;
-import 'plain_text_widgets/views.dart' as pt;
+import 'plain_text/views.dart' as pt;
 
 enum TransitType {
   order,

@@ -8,8 +8,8 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/ui/transit/plain_text/views.dart' as pt;
 import 'package:possystem/ui/transit/transit_station.dart';
-import 'package:possystem/ui/transit/plain_text_widgets/views.dart' as pt;
 
 import '../../../mocks/mock_storage.dart';
 import '../../../test_helpers/translator.dart';

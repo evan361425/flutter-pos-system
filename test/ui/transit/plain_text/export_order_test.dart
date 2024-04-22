@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/ui/transit/plain_text/views.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
-import 'package:possystem/ui/transit/plain_text_widgets/views.dart';
 
 import '../../../mocks/mock_database.dart';
 import '../../../mocks/mock_storage.dart';

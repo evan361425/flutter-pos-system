@@ -8,8 +8,8 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
+import 'widgets/history_calendar_view.dart';
 import 'widgets/history_order_list.dart';
-import 'widgets/calendar_view.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -27,12 +27,12 @@ class _HistoryPageState extends State<HistoryPage> {
       child: Scaffold(
         appBar: AppBar(
           leading: const PopButton(),
-          title: const Text('訂單記錄'),
+          title: Text(S.analysisHistoryTitle),
           actions: [
             Tutorial(
               id: 'history.export',
-              title: '訂單資料匯出',
-              message: '把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「設定」去匯出多日訂單。',
+              title: S.analysisHistoryExportTutorialTitle,
+              message: S.analysisHistoryExportTutorialContent,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
               child: PopupMenuButton<TransitMethod>(
                 key: const Key('history.export'),
@@ -41,7 +41,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 itemBuilder: (context) => TransitMethod.values
                     .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
                           value: value,
-                          child: Text(S.transitMethod(value.name)),
+                          child: Text(S.transitMethodName(value.name)),
                         ))
                     .toList(),
                 onSelected: (value) {
@@ -78,10 +78,10 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildCalendar({required bool isPortrait}) {
     return Tutorial(
       id: 'history.calendar',
-      title: '日曆格式',
-      message: '上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。',
+      title: S.analysisHistoryCalendarTutorialTitle,
+      message: S.analysisHistoryCalendarTutorialContent,
       spotlightBuilder: const SpotlightRectBuilder(),
-      child: CalendarView(
+      child: HistoryCalendarView(
         isPortrait: isPortrait,
         notifier: notifier,
       ),

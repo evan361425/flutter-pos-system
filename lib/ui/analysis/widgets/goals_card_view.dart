@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 
 class GoalsCardView extends StatefulWidget {
@@ -22,11 +24,13 @@ class GoalsCardView extends StatefulWidget {
 class _GoalsCardViewState extends State<GoalsCardView> {
   OrderDataPerDay? goal;
 
+  final formatter = NumberFormat.percentPattern();
+
   @override
   Widget build(BuildContext context) {
     return ReloadableCard<OrderDataPerDay>(
       id: 'goals',
-      title: '本日總結',
+      title: S.analysisGoalsTitle,
       notifiers: [Seller.instance],
       builder: _builder,
       loader: _loader,
@@ -53,31 +57,29 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         current: metric.count,
         goal: goal!.count,
         style: style,
-        name: '訂單數',
-        desc:
-            '訂單數反映了產品對顧客的吸引力。它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。但要注意，單純追求高訂單數可能會忽略盈利能力。',
+        name: S.analysisGoalsCountTitle,
+        desc: S.analysisGoalsCountDescription,
       ),
       _GoalItem(
         type: OrderMetricType.price,
         current: metric.price,
         goal: goal!.price,
         style: style,
-        name: '營收',
-        desc: '營收代表總銷售額，是業務規模的指標。高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。它不考慮成本和利潤，因此單純追求高營收可能會忽視實際利潤狀況。',
+        name: S.analysisGoalsPriceTitle,
+        desc: S.analysisGoalsPriceDescription,
       ),
       _GoalItem(
         type: OrderMetricType.revenue,
         current: metric.revenue,
         goal: goal!.revenue,
         style: style,
-        name: '盈利',
-        desc:
-            '盈利是店家能否持續經營的關鍵。盈利直接反映了營運效率和成本管理能力。不同於營收，盈利考慮了生意的開支，包括原料成本、人力、租金等，這是一個更實際的指標，能幫助你評估經營是否有效且可持續。即使有高營收，但如果成本高於營收，最終可能面臨經營困境。',
+        name: S.analysisGoalsRevenueTitle,
+        desc: S.analysisGoalsRevenueDescription,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('成本', style: style),
+          Text(S.analysisGoalsCostTitle, style: style),
           Text(metric.cost.prettyString(), style: style),
         ],
       ),
@@ -108,7 +110,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                 Positioned.fill(
                   child: Center(
                     child: Text(
-                      '利潤達成\n${(metric.revenue / goal!.revenue * 100).prettyString()}%',
+                      S.analysisGoalsAchievedRate(formatter.format(metric.revenue / goal!.revenue)),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),

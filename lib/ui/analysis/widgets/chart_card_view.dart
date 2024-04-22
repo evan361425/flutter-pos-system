@@ -57,10 +57,10 @@ class ChartCardView extends StatelessWidget {
 
   Widget buildChart(BuildContext context, List metrics) {
     if (metrics.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         width: 128,
         height: 128,
-        child: Center(child: Text('沒有資料')),
+        child: Center(child: Text(S.analysisChartCardEmptyData)),
       );
     }
 
@@ -87,7 +87,7 @@ class ChartCardView extends StatelessWidget {
       warningContent: Text(S.dialogDeletionContent(chart.name, '')),
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: const Text('編輯圖表'),
+          title: Text(S.analysisChartCardTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.chartModal,
           routePathParameters: {'id': chart.id},

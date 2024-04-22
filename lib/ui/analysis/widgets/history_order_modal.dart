@@ -29,6 +29,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
+        title: Text(S.analysisHistoryOrderTitle),
         actions: [
           MoreButton(
             key: const Key('order_modal.more'),
@@ -40,7 +41,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         future: Seller.instance.getOrder(widget.orderId),
         builder: Util.handleSnapshot((context, order) {
           if (order == null) {
-            return const Center(child: Text('找不到相關訂單'));
+            return Center(child: Text(S.analysisHistoryOrderNotFound));
           }
 
           createdAt = DateFormat.MMMEd(S.localeName).format(order.createdAt) +
@@ -72,14 +73,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         context,
         'analysis_delete_error',
       ),
-      warningContent: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('確定要刪除 $createdAt 的訂單嗎？'),
-          const Text('\n將不會復原收銀機和庫存資料。'),
-          const Text('\n此動作無法復原。'),
-        ],
-      ),
+      warningContent: Text(S.analysisHistoryOrderDeleteDialog(createdAt!)),
     );
   }
 }

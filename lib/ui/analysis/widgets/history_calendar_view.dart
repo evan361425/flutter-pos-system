@@ -12,22 +12,22 @@ import 'package:table_calendar/table_calendar.dart';
 int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
 int _hashMonth(DateTime e) => e.month + e.year * 100;
 
-class CalendarView extends StatefulWidget {
+class HistoryCalendarView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   final bool isPortrait;
 
-  const CalendarView({
+  const HistoryCalendarView({
     super.key,
     required this.notifier,
     required this.isPortrait,
   });
 
   @override
-  State<CalendarView> createState() => _CalendarViewState();
+  State<HistoryCalendarView> createState() => _HistoryCalendarViewState();
 }
 
-class _CalendarViewState extends State<CalendarView> {
+class _HistoryCalendarViewState extends State<HistoryCalendarView> {
   final List<int> _loadedMonths = <int>[];
 
   final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(
@@ -129,7 +129,7 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  /// the day is UTC!!!
+  /// the day is UTC formatted
   void _onDaySelected(DateTime day) {
     widget.notifier.value = Util.getDateRange(now: day.toLocal());
     setState(() {
@@ -137,7 +137,7 @@ class _CalendarViewState extends State<CalendarView> {
     });
   }
 
-  /// the [day] is UTC!!!
+  /// the [day] is UTC formatted
   void _searchPageData(DateTime day) {
     // make calender page stay in current page
     _focusedDay = day;
@@ -147,7 +147,7 @@ class _CalendarViewState extends State<CalendarView> {
     }
   }
 
-  /// the [day] is UTC!!!
+  /// the [day] is UTC formatted
   void _searchCountInMonth(DateTime day) async {
     final local = day.toLocal();
     // add/sub 7 days for first/last few days on next/last month

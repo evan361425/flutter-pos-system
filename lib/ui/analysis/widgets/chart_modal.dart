@@ -42,12 +42,12 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
-          labelText: S.analysisChartNameLabel,
+          labelText: S.analysisChartModalNameLabel,
           filled: false,
         ),
         maxLength: 30,
         validator: Validator.textLimit(
-          S.analysisChartNameLabel,
+          S.analysisChartModalNameLabel,
           16,
           focusNode: _nameFocusNode,
         ),
@@ -62,10 +62,10 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
             ignoreEmpty = value!;
           });
         },
-        title: Text(S.analysisChartIgnoreEmptyLabel),
-        subtitle: Text(S.analysisChartIgnoreEmptyHelper),
+        title: Text(S.analysisChartModalIgnoreEmptyLabel),
+        subtitle: Text(S.analysisChartModalIgnoreEmptyHelper),
       ),
-      TextDivider(label: S.analysisChartTypeLabel),
+      TextDivider(label: S.analysisChartModalTypeLabel),
       p(SizedBox(
         width: double.infinity,
         child: Wrap(
@@ -74,7 +74,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
             return ChoiceChip(
               key: Key('chart.type.${e.name}'),
               selected: type == e,
-              label: Text(S.analysisChartTypeName(e.name)),
+              label: Text(S.analysisChartModalTypeName(e.name)),
               onSelected: (bool value) {
                 type = e;
                 _updateTarget(_allowedTargets.first);
@@ -87,10 +87,10 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
         ),
       )),
       _buildExampleChart(),
-      TextDivider(label: S.analysisChartDividerDataProperties),
+      TextDivider(label: S.analysisChartModalDivider),
       _buildWrappedChoices(
-        S.analysisChartTargetLabel,
-        S.analysisChartTargetHelper,
+        S.analysisChartModalTargetLabel,
+        S.analysisChartModalTargetHelper,
         _allowedTargets.map((e) {
           return ChoiceChip(
             key: Key('chart.target.${e.name}'),
@@ -108,8 +108,8 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
         }),
       ),
       _buildWrappedChoices(
-        S.analysisChartMetricLabel,
-        '${S.analysisChartMetricHelper}\n${_singleMetric ? S.singleChoice : S.multiChoices}',
+        S.analysisChartModalMetricLabel,
+        '${S.analysisChartModalMetricHelper}\n${_singleMetric ? S.singleChoice : S.multiChoices}',
         _allowedMetrics.map((e) {
           return ChoiceChip(
             key: Key('chart.metrics.${e.name}'),
@@ -132,8 +132,8 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
       ),
       if (_hasTargetItems)
         _buildWrappedChoices(
-          S.analysisChartTargetItemLabel,
-          '${S.analysisChartTargetItemHelper}\n${_singleTargetItem ? S.singleChoice : S.multiChoices}',
+          S.analysisChartModalTargetItemLabel,
+          '${S.analysisChartModalTargetItemHelper}\n${_singleTargetItem ? S.singleChoice : S.multiChoices}',
           _buildTargetItems(),
         ),
       const SizedBox(height: 16),
@@ -165,7 +165,7 @@ class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartO
     yield ChoiceChip(
       key: const Key('chart.item_all'),
       selected: targetItems.isEmpty,
-      label: Text(S.analysisChartTargetItemSelectAll),
+      label: Text(S.analysisChartModalTargetItemSelectAll),
       onSelected: _singleTargetItem
           ? null
           : (bool value) {
