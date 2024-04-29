@@ -270,9 +270,8 @@ GS:
     createSpreadsheetHelper: |
       別擔心，通常都可以簡單解決！
       可能的原因有：
-    createSpreadsheetHelperReasons: |
-      網路狀況不穩；
-      尚未授權 POS 系統進行表單的編輯。
+      • 網路狀況不穩；
+      • 尚未授權 POS 系統進行表單的編輯。
     spreadsheetEmpty: 請先選擇試算表
     spreadsheetId:
       empty: 不能為空
@@ -281,6 +280,13 @@ GS:
         /spreadsheets/d/<ID>/
         或者直接給 ID（英文+數字+底線+減號的組合）
     createSheet: 無法在試算表中建立表單
+    createSheetHelper: |
+      別擔心，通常都可以簡單解決！
+      可能的原因有：
+      • 網路狀況不穩；
+      • 尚未授權 POS 系統進行表單的建立；
+      • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
+      • 該試算表被刪除了。
     sheetRepeat: 表單名稱重複
     sheetEmpty: 請選擇至少一個表單來匯出
     nonExistName: 找不到試算表，是否已被刪除？
@@ -295,11 +301,10 @@ GS:
       notFoundHelper: |
         別擔心，通常都可以簡單解決！
         可能的原因有：
-      notFoundHelperReasons: |
-        網路狀況不穩；
-        尚未進行授權；
-        表單 ID 打錯了，請嘗試複製整個網址後貼上；
-        該表單被刪除了。
+        • 網路狀況不穩；
+        • 尚未授權 POS 系統進行表單的讀取；
+        • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
+        • 該試算表被刪除了。
 PT:
   description: 快速檢查、快速分享。
   copy:

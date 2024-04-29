@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -260,14 +259,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       showMoreInfoSnackBar(
         context,
         S.transitGSErrorImportNotFoundSpreadsheet,
-        MetaBlock.withString(
-          context,
-          [
-            S.transitGSErrorImportNotFoundHelper,
-            ...S.transitGSErrorImportNotFoundHelperReasons.split('\n').map((e) => '$e\n'),
-          ],
-          textOverflow: TextOverflow.visible,
-        )!,
+        Text(S.transitGSErrorImportNotFoundHelper),
       );
     }
   }
@@ -317,13 +309,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           showMoreInfoSnackBar(
             context,
             S.transitGSErrorCreateSpreadsheet,
-            MetaBlock.withString(
-                context,
-                [
-                  S.transitGSErrorCreateSpreadsheetHelper,
-                  ...S.transitGSErrorCreateSpreadsheetHelperReasons.split('\n').map((e) => '$e\n'),
-                ],
-                textOverflow: TextOverflow.visible)!,
+            Text(S.transitGSErrorCreateSpreadsheetHelper),
           );
         }
         return null;
@@ -341,14 +327,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           showMoreInfoSnackBar(
             context,
             S.transitGSErrorCreateSheet,
-            MetaBlock.withString(
-              context,
-              [
-                S.transitGSErrorImportNotFoundHelper,
-                ...S.transitGSErrorImportNotFoundHelperReasons.split('\n').map((e) => '$e\n'),
-              ],
-              textOverflow: TextOverflow.visible,
-            )!,
+            Text(S.transitGSErrorCreateSheetHelper),
           );
         }
         return null;

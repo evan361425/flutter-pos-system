@@ -1,21 +1,20 @@
 $prefix: order
 title: 點餐
 btn: 點餐
-meta:
-  totalPrice:
-  - 總價：{price}
-  - 點餐列表中，單日點餐的總價
-  - price:
-  totalCost:
-  - 總成本：{cost}
-  - 點餐列表中，單日點餐的總成本
-  - cost:
-  totalCount:
-  - 總數：{count}
-  - 點餐列表中，單日點餐的總數
-  - count: {type: int, format: compact}
-actions:
-  # On app bar
+snackbar:
+  cashier:
+    notEnough: 收銀機錢不夠找囉！
+    usingSmallMoney: 收銀機使用小錢去找零
+    usingSmallMoneyHelper: |
+      找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。
+
+      例如，售價「65」，消費者支付「100」，此時應找「35」
+      如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。
+
+      怎麼避免本提示：
+      • 到換錢頁面把各幣值補足。
+      • 到設定頁關閉收銀機的相關提示。
+action:
   checkout:
   - 結帳
   - 確認好購物車裡的餐點後準備往下一步走
@@ -45,6 +44,20 @@ actions:
     title: 招待
   delete:
     title: 刪除
+objectView:
+  meta:
+    totalPrice:
+    - 總價：{price}
+    - 點餐列表中，單日點餐的總價
+    - price:
+    totalCost:
+    - 總成本：{cost}
+    - 點餐列表中，單日點餐的總成本
+    - cost:
+    totalCount:
+    - 總數：{count}
+    - 點餐列表中，單日點餐的總數
+    - count: {type: int, format: compact}
 cart:
   snapshot:
     tutorial:
@@ -53,7 +66,7 @@ cart:
         為了讓點選產品可以更方便，
         我們把點餐後的產品設定至於此面板。
         如果需要一次顯示所有訊息的排版（適合大螢幕），
-        可以至「設定」>「點餐的外觀」調整。
+        可以至「設定」>「[點餐的外觀](https://evan361425.github.io/pos)」調整。
     empty:
       order: 尚未點餐
       catalog: 尚未設定產品種類
@@ -78,64 +91,51 @@ cart:
     - 預設值（{amount}）
     - 設定成分時，份量可以自訂或使用預設值（不使用份量）
     - amount: {type: num, format: decimalPattern}
-cartItem:
-  price:
-  - =0: 免費
-    other: '{price}元'
-  - 產品的價格
-  - price: {type: num, mode: plural, format: compact}
-  ingredient:
-  - "{name}（{quantity}）"
-  - 點單時的產品列表中各項產品的成分和份量資訊
-  - name: {type: String}
-    quantity: {type: String}
-details:
-  attribute:
-    title: 顧客設定
-  cashier:
-    title: 收銀機
-    notEnough: 收銀機錢不夠找囉！
-    usingSmallMoney:
-      title: 收銀機使用小錢去找零
-      action: 說明
-      hint: |
-        找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。
-
-        例如，售價「65」，消費者支付「100」，此時應找「35」
-        如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。
-
-        怎麼避免本提示：
-        • 到換錢頁面把各幣值補足。
-        • 到設定頁關閉收銀機的相關提示。
-  paidFailed: 糟糕，付額小於總價唷
-  calculator:
-    paidFailed: 必須大於訂單總價
-    label:
-      paid: 付額
-      change: 找錢
+  item:
+    price:
+    - =0: 免費
+      other: '{price}元'
+    - 產品的價格
+    - price: {type: num, mode: plural, format: compact}
+    ingredient:
+    - "{name}（{quantity}）"
+    - 點單時的產品列表中各項產品的成分和份量資訊
+    - name: {type: String}
+      quantity: {type: String}
+  details:
+    attribute:
+      title: 顧客設定
+    cashier:
+      title: 收銀機
+    paidFailed: 糟糕，付額小於總價唷
+    calculator:
+      paidFailed: 必須大於訂單總價
+      label:
+        paid: 付額
+        change: 找錢
 # Order Form
 form:
   empty: 查無點餐紀錄
-  title:
-    change: 找錢
-    price:
-      total:
-      - 訂單總價：{price}
-      - 點餐後的總價資訊
-      - price: {type: num, format: compactCurrency, symbol: '$'}
-      products: 產品總價
-      attributes: 顧客設定總價
-    cost:
-      products: 產品成本
-    revenue: 淨利
-    paid: 付額
-    attribute: 顧客設定
-    products: 產品資訊
-    product:
-      price: 總價
-      cost: 總成本
-      count: 總數
-      singlePrice: 單價
-      originalPrice: 折扣前單價
-      catalog: 產品種類
-      ingredient: 成分
+  title: 'a'
+  change: 找錢
+  price:
+    total:
+    - 訂單總價：{price}
+    - 點餐後的總價資訊
+    - price: {type: num, format: compactCurrency, symbol: '$'}
+    products: 產品總價
+    attributes: 顧客設定總價
+  cost:
+    products: 產品成本
+  revenue: 淨利
+  paid: 付額
+  attribute: 顧客設定
+  products: 產品資訊
+  product:
+    price: 總價
+    cost: 總成本
+    count: 總數
+    singlePrice: 單價
+    originalPrice: 折扣前單價
+    catalog: 產品種類
+    ingredient: 成分

@@ -66,7 +66,7 @@ class _OrderPageState extends State<OrderPage> {
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),
-              child: Text(S.orderActionsCheckout),
+              child: Text(S.orderActionCheckout),
             ),
           ],
         ),
@@ -137,13 +137,13 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showSnackBar(context, S.actSuccess);
       break;
     case CheckoutStatus.cashierNotEnough:
-      showSnackBar(context, S.orderCashierPaidNotEnough);
+      showSnackBar(context, S.orderSnackbarCashierNotEnough);
       break;
     case CheckoutStatus.cashierUsingSmall:
       showMoreInfoSnackBar(
         context,
-        S.orderCashierPaidUsingSmallMoney,
-        Text(S.orderCashierPaidUsingSmallMoneyHint),
+        S.orderSnackbarCashierUsingSmallMoney,
+        Text(S.orderSnackbarCashierUsingSmallMoneyHelper),
       );
       break;
     default:

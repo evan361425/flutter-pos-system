@@ -13,7 +13,6 @@ class KIcons {
   static const entryAdd = Icons.add_circle_outline_sharp;
 
   static const more = Icons.more_horiz_sharp;
-  static const check = Icons.check_sharp;
   static const edit = Icons.edit_sharp;
   static const search = Icons.search_sharp;
   static const preview = Icons.remove_red_eye_sharp;

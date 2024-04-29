@@ -191,6 +191,17 @@ class Routes {
       name: features,
       path: 'features',
       builder: (ctx, state) => const FeaturesPage(),
+      routes: [
+        GoRoute(
+          name: featuresChoices,
+          path: ':feature',
+          builder: (ctx, state) {
+            final f = state.pathParameters['feature'];
+            final feature = Feature.values.firstWhereOrNull((e) => e.name == f) ?? Feature.theme;
+            return ItemListScaffold(feature: feature);
+          },
+        ),
+      ],
     ),
   ];
 
@@ -460,4 +471,5 @@ class Routes {
   static const featureRequest = '/feature_request';
   static const imageGallery = '/image_gallery';
   static const features = '/features';
+  static const featuresChoices = '/features/choices';
 }

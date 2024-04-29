@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-22T00:37:55.827498Z",
+  "@@last_modified": "2024-04-29T12:29:28.495431Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -461,12 +461,12 @@
   "transitGSOrderIngredientHeaderAmount": "數量",
   "transitGSOrderExpandableHint": "詳見下欄",
   "transitGSErrorCreateSpreadsheet": "無法建立試算表",
-  "transitGSErrorCreateSpreadsheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n",
-  "transitGSErrorCreateSpreadsheetHelperReasons": "網路狀況不穩；\n尚未授權 POS 系統進行表單的編輯。\n",
+  "transitGSErrorCreateSpreadsheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的編輯。\n",
   "transitGSErrorSpreadsheetEmpty": "請先選擇試算表",
   "transitGSErrorSpreadsheetIdEmpty": "不能為空",
   "transitGSErrorSpreadsheetIdInvalid": "不合法的文字，必須包含：\n/spreadsheets/d/<ID>/\n或者直接給 ID（英文+數字+底線+減號的組合）\n",
   "transitGSErrorCreateSheet": "無法在試算表中建立表單",
+  "transitGSErrorCreateSheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的建立；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。\n",
   "transitGSErrorSheetRepeat": "表單名稱重複",
   "transitGSErrorSheetEmpty": "請選擇至少一個表單來匯出",
   "transitGSErrorNonExistName": "找不到試算表，是否已被刪除？",
@@ -482,8 +482,7 @@
       }
     }
   },
-  "transitGSErrorImportNotFoundHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n",
-  "transitGSErrorImportNotFoundHelperReasons": "網路狀況不穩；\n尚未進行授權；\n表單 ID 打錯了，請嘗試複製整個網址後貼上；\n該表單被刪除了。\n",
+  "transitGSErrorImportNotFoundHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的讀取；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。\n",
   "transitPTDescription": "快速檢查、快速分享。",
   "transitPTCopyBtn": "複製文字",
   "transitPTCopySuccess": "複製成功",
@@ -918,6 +917,10 @@
   "actError": "發生未知錯誤",
   "@actError": {
     "description": "當發生錯誤時，會顯示在 SnackBar 上的文字"
+  },
+  "actMoreInfo": "說明",
+  "@actMoreInfo": {
+    "description": "SnackBar 上的按鈕，會顯示更多說明"
   },
   "singleChoice": "一次只能選擇一種",
   "@singleChoice": {
@@ -1414,8 +1417,35 @@
   "cashierSurplusDiffTotalHelper": "和收銀機最一開始的總額的差額。\n這可以快速幫你了解今天收銀機多了多少錢唷。\n",
   "orderTitle": "點餐",
   "orderBtn": "點餐",
-  "orderMetaTotalPrice": "總價：{price}",
-  "@orderMetaTotalPrice": {
+  "orderSnackbarCashierNotEnough": "收銀機錢不夠找囉！",
+  "orderSnackbarCashierUsingSmallMoney": "收銀機使用小錢去找零",
+  "orderSnackbarCashierUsingSmallMoneyHelper": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。\n\n怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到設定頁關閉收銀機的相關提示。\n",
+  "orderActionCheckout": "結帳",
+  "@orderActionCheckout": {
+    "description": "確認好購物車裡的餐點後準備往下一步走"
+  },
+  "orderActionOpenChanger": "換錢",
+  "orderActionStash": "暫存本次點餐",
+  "orderActionHistory": "訂單記錄",
+  "orderActionButton": "使所選物",
+  "orderActionToggleSelection": "反選",
+  "orderActionDiscountTitle": "打折",
+  "orderActionDiscountLabel": "折扣",
+  "orderActionDiscountHint": "例如：50，代表打五折（半價）",
+  "orderActionDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
+  "orderActionDiscountSuffix": "折",
+  "orderActionChangePriceTitle": "變價",
+  "orderActionChangePriceLabel": "價錢",
+  "orderActionChangePriceHint": "每項產品的價錢",
+  "orderActionChangePriceSuffix": "元",
+  "orderActionChangeCountTitle": "變更數量",
+  "orderActionChangeCountLabel": "數量",
+  "orderActionChangeCountHint": "產品數量",
+  "orderActionChangeCountSuffix": "個",
+  "orderActionFreeTitle": "招待",
+  "orderActionDeleteTitle": "刪除",
+  "orderObjectViewMetaTotalPrice": "總價：{price}",
+  "@orderObjectViewMetaTotalPrice": {
     "description": "點餐列表中，單日點餐的總價",
     "placeholders": {
       "price": {
@@ -1423,8 +1453,8 @@
       }
     }
   },
-  "orderMetaTotalCost": "總成本：{cost}",
-  "@orderMetaTotalCost": {
+  "orderObjectViewMetaTotalCost": "總成本：{cost}",
+  "@orderObjectViewMetaTotalCost": {
     "description": "點餐列表中，單日點餐的總成本",
     "placeholders": {
       "cost": {
@@ -1432,8 +1462,8 @@
       }
     }
   },
-  "orderMetaTotalCount": "總數：{count}",
-  "@orderMetaTotalCount": {
+  "orderObjectViewMetaTotalCount": "總數：{count}",
+  "@orderObjectViewMetaTotalCount": {
     "description": "點餐列表中，單日點餐的總數",
     "placeholders": {
       "count": {
@@ -1442,32 +1472,8 @@
       }
     }
   },
-  "orderActionsCheckout": "結帳",
-  "@orderActionsCheckout": {
-    "description": "確認好購物車裡的餐點後準備往下一步走"
-  },
-  "orderActionsOpenChanger": "換錢",
-  "orderActionsStash": "暫存本次點餐",
-  "orderActionsHistory": "訂單記錄",
-  "orderActionsButton": "使所選物",
-  "orderActionsToggleSelection": "反選",
-  "orderActionsDiscountTitle": "打折",
-  "orderActionsDiscountLabel": "折扣",
-  "orderActionsDiscountHint": "例如：50，代表打五折（半價）",
-  "orderActionsDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
-  "orderActionsDiscountSuffix": "折",
-  "orderActionsChangePriceTitle": "變價",
-  "orderActionsChangePriceLabel": "價錢",
-  "orderActionsChangePriceHint": "每項產品的價錢",
-  "orderActionsChangePriceSuffix": "元",
-  "orderActionsChangeCountTitle": "變更數量",
-  "orderActionsChangeCountLabel": "數量",
-  "orderActionsChangeCountHint": "產品數量",
-  "orderActionsChangeCountSuffix": "個",
-  "orderActionsFreeTitle": "招待",
-  "orderActionsDeleteTitle": "刪除",
   "orderCartSnapshotTutorialTitle": "購物車",
-  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「點餐的外觀」調整。\n",
+  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「[點餐的外觀](https://evan361425.github.io/pos)」調整。\n",
   "orderCartSnapshotEmptyOrder": "尚未點餐",
   "orderCartSnapshotEmptyCatalog": "尚未設定產品種類",
   "orderCartSnapshotEmptyProduct": "尚未設定產品",
@@ -1530,20 +1536,17 @@
       }
     }
   },
-  "orderDetailsAttributeTitle": "顧客設定",
-  "orderDetailsCashierTitle": "收銀機",
-  "orderDetailsCashierNotEnough": "收銀機錢不夠找囉！",
-  "orderDetailsCashierUsingSmallMoneyTitle": "收銀機使用小錢去找零",
-  "orderDetailsCashierUsingSmallMoneyAction": "說明",
-  "orderDetailsCashierUsingSmallMoneyHint": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。\n\n怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到設定頁關閉收銀機的相關提示。\n",
-  "orderDetailsPaidFailed": "糟糕，付額小於總價唷",
-  "orderDetailsCalculatorPaidFailed": "必須大於訂單總價",
-  "orderDetailsCalculatorLabelPaid": "付額",
-  "orderDetailsCalculatorLabelChange": "找錢",
+  "orderCartDetailsAttributeTitle": "顧客設定",
+  "orderCartDetailsCashierTitle": "收銀機",
+  "orderCartDetailsPaidFailed": "糟糕，付額小於總價唷",
+  "orderCartDetailsCalculatorPaidFailed": "必須大於訂單總價",
+  "orderCartDetailsCalculatorLabelPaid": "付額",
+  "orderCartDetailsCalculatorLabelChange": "找錢",
   "orderFormEmpty": "查無點餐紀錄",
-  "orderFormTitleChange": "找錢",
-  "orderFormTitlePriceTotal": "訂單總價：{price}",
-  "@orderFormTitlePriceTotal": {
+  "orderFormTitle": "a",
+  "orderFormChange": "找錢",
+  "orderFormPriceTotal": "訂單總價：{price}",
+  "@orderFormPriceTotal": {
     "description": "點餐後的總價資訊",
     "placeholders": {
       "price": {
@@ -1555,20 +1558,20 @@
       }
     }
   },
-  "orderFormTitlePriceProducts": "產品總價",
-  "orderFormTitlePriceAttributes": "顧客設定總價",
-  "orderFormTitleCostProducts": "產品成本",
-  "orderFormTitleRevenue": "淨利",
-  "orderFormTitlePaid": "付額",
-  "orderFormTitleAttribute": "顧客設定",
-  "orderFormTitleProducts": "產品資訊",
-  "orderFormTitleProductPrice": "總價",
-  "orderFormTitleProductCost": "總成本",
-  "orderFormTitleProductCount": "總數",
-  "orderFormTitleProductSinglePrice": "單價",
-  "orderFormTitleProductOriginalPrice": "折扣前單價",
-  "orderFormTitleProductCatalog": "產品種類",
-  "orderFormTitleProductIngredient": "成分",
+  "orderFormPriceProducts": "產品總價",
+  "orderFormPriceAttributes": "顧客設定總價",
+  "orderFormCostProducts": "產品成本",
+  "orderFormRevenue": "淨利",
+  "orderFormPaid": "付額",
+  "orderFormAttribute": "顧客設定",
+  "orderFormProducts": "產品資訊",
+  "orderFormProductPrice": "總價",
+  "orderFormProductCost": "總成本",
+  "orderFormProductCount": "總數",
+  "orderFormProductSinglePrice": "單價",
+  "orderFormProductOriginalPrice": "折扣前單價",
+  "orderFormProductCatalog": "產品種類",
+  "orderFormProductIngredient": "成分",
   "analysisTab": "統計",
   "analysisHistoryBtn": "紀錄",
   "analysisHistoryTitle": "訂單記錄",
@@ -1619,6 +1622,13 @@
   "analysisHistoryOrderTitle": "訂單詳情",
   "analysisHistoryOrderNotFound": "找不到相關訂單",
   "analysisHistoryOrderDeleteDialog": "確定要刪除 {name} 的訂單嗎？\n將不會復原收銀機和庫存資料。\n此動作無法復原。\n",
+  "@analysisHistoryOrderDeleteDialog": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "analysisGoalsTitle": "本日總結",
   "analysisGoalsCountTitle": "訂單數",
   "analysisGoalsCountDescription": "訂單數反映了產品對顧客的吸引力。\n它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。\n高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。\n但要注意，單純追求高訂單數可能會忽略盈利能力。\n",

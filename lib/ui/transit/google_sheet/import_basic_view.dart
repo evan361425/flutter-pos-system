@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
@@ -203,8 +202,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         showMoreInfoSnackBar(
           context,
           S.transitGSErrorImportNotFoundSheets(sheet.title),
-          MetaBlock.withString(context, S.transitGSErrorImportNotFoundHelper.split('\n').map((e) => '$e\n').toList(),
-              textOverflow: TextOverflow.visible)!,
+          Text(S.transitGSErrorImportNotFoundHelper),
         );
       }
       return false;

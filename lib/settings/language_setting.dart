@@ -3,19 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
-class LanguageSetting extends Setting<Locale> {
-  // Make SettingsService a private variable so it is not used directly.
-  static const defaultLanguage = Locale.fromSubtags(
-    languageCode: 'zh',
-    countryCode: 'TW',
-  );
-
-  static const supported = [
-    defaultLanguage,
-    Locale('en'),
-  ];
-
-  static const supportedNames = ['繁體中文', 'English'];
+class LanguageSetting extends Setting<Language> {
+  static const defaultLanguage = Language.zhTW;
 
   @override
   final String key = 'language';
@@ -29,18 +18,29 @@ class LanguageSetting extends Setting<Locale> {
   }
 
   @override
-  Future<void> updateRemotely(Locale data) {
-    return service.set<String>(key, data.toString());
+  Future<void> updateRemotely(Language data) {
+    return service.set<String>(key, data.locale.toString());
   }
 
-  Locale? parseLanguage(String? value) {
+  Language? parseLanguage(String? value) {
     if (value == null || value.isEmpty) return null;
 
     final codes = value.split('_');
 
-    return supported.firstWhere(
-      (e) => e.languageCode == codes[0],
+    return Language.values.firstWhere(
+      (e) => e.locale.languageCode == codes[0],
       orElse: () => defaultLanguage,
     );
   }
+}
+
+enum Language {
+  zhTW(Locale('zh', 'TW'), '繁體中文'),
+  en(Locale('en'), 'English');
+
+  final Locale locale;
+
+  final String title;
+
+  const Language(this.locale, this.title);
 }

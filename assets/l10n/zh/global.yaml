@@ -5,6 +5,9 @@ actSuccess:
 actError:
 - 發生未知錯誤
 - 當發生錯誤時，會顯示在 SnackBar 上的文字
+actMoreInfo:
+- 說明
+- SnackBar 上的按鈕，會顯示更多說明
 singleChoice:
 - 一次只能選擇一種
 - 用來提醒使用者，一次只能選擇一種選項

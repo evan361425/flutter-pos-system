@@ -1,10 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:possystem/components/scaffold/item_list_scaffold.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
@@ -36,7 +38,6 @@ class _FeaturesPageState extends State<FeaturesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedLanguage = LanguageSetting.supported.indexWhere((e) => e.languageCode == language.value.languageCode);
     const flavor = String.fromEnvironment('appFlavor');
 
     return Scaffold(
@@ -83,25 +84,15 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: Text(S.settingThemeTitle),
             subtitle: Text(S.settingThemeName(theme.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => _buildChoiceList(
-              (index) => theme.update(ThemeMode.values[index]),
-              title: S.settingThemeTitle,
-              items: ThemeMode.values.map<String>((e) => S.settingThemeName(e.name)).toList(),
-              selected: theme.value.index,
-            ),
+            onTap: () => navigateTo(Feature.theme),
           ),
           ListTile(
             key: const Key('feature.language'),
             leading: const Icon(Icons.language_outlined),
             title: Text(S.settingLanguageTitle),
-            subtitle: Text(LanguageSetting.supportedNames[selectedLanguage]),
+            subtitle: Text(language.value.title),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => _buildChoiceList(
-              (index) => language.update(LanguageSetting.supported[index]),
-              title: S.settingLanguageTitle,
-              selected: selectedLanguage,
-              items: LanguageSetting.supportedNames,
-            ),
+            onTap: () => navigateTo(Feature.language),
           ),
           const Divider(),
           ListTile(
@@ -110,13 +101,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: Text(S.settingOrderOutlookTitle),
             subtitle: Text(S.settingOrderOutlookName(orderOutlook.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => _buildChoiceList(
-              (index) => orderOutlook.update(OrderOutlookTypes.values[index]),
-              title: S.settingOrderOutlookTitle,
-              selected: orderOutlook.value.index,
-              items: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookName(e.name)).toList(),
-              tips: OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTip(e.name)).toList(),
-            ),
+            onTap: () => navigateTo(Feature.orderOutlook),
           ),
           ListTile(
             key: const Key('feature.checkout_warning'),
@@ -124,13 +109,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: Text(S.settingCheckoutWarningTitle),
             subtitle: Text(S.settingCheckoutWarningName(checkoutWarning.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => _buildChoiceList(
-              (index) => checkoutWarning.update(CheckoutWarningTypes.values[index]),
-              title: S.settingCheckoutWarningTitle,
-              selected: checkoutWarning.value.index,
-              items: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)).toList(),
-              tips: CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)).toList(),
-            ),
+            onTap: () => navigateTo(Feature.checkoutWarning),
           ),
           // TODO: After using RWD, this feature is not necessary
           FeatureSlider(
@@ -168,26 +147,104 @@ class _FeaturesPageState extends State<FeaturesPage> {
     );
   }
 
-  void _buildChoiceList(
-    Future<void> Function(int) onChanged, {
-    required String title,
-    required List<String> items,
-    required int selected,
-    List<String?>? tips,
-  }) async {
-    final newSelected = await Navigator.of(context).push<int>(
-      MaterialPageRoute(
-          builder: (_) => ItemListScaffold(
-                title: title,
-                items: items,
-                selected: selected,
-                tips: tips,
-              )),
-    );
+  void navigateTo(Feature feature) {
+    context.pushNamed(Routes.featuresChoices, pathParameters: {'feature': feature.name});
+  }
+}
 
-    if (newSelected != null) {
-      await onChanged(newSelected);
-      setState(() {});
+class ItemListScaffold extends StatelessWidget {
+  final Feature feature;
+
+  const ItemListScaffold({
+    super.key,
+    required this.feature,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hintStyle = TextStyle(color: Theme.of(context).hintColor);
+
+    final selected = feature.selected;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(feature.title),
+        leading: const PopButton(),
+      ),
+      body: ListView(
+        children: IterableZip([feature.itemTitles, feature.itemSubtitles])
+            .mapIndexed((index, pair) => ListTile(
+                  title: Text(pair[0]),
+                  trailing: selected == index ? const Icon(Icons.check_sharp) : null,
+                  subtitle: Text(pair[1], style: hintStyle),
+                  onTap: () {
+                    if (selected != index) {
+                      Navigator.of(context).pop(index);
+                    }
+                  },
+                ))
+            .toList(),
+      ),
+    );
+  }
+}
+
+enum Feature {
+  theme(),
+  language(),
+  orderOutlook(),
+  checkoutWarning();
+
+  const Feature();
+
+  Iterable<String> get itemTitles {
+    switch (this) {
+      case Feature.theme:
+        return ThemeMode.values.map((e) => S.settingThemeName(e.name));
+      case Feature.language:
+        return Language.values.map((e) => e.title);
+      case Feature.orderOutlook:
+        return OrderOutlookTypes.values.map((e) => S.settingOrderOutlookName(e.name));
+      case Feature.checkoutWarning:
+        return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name));
+    }
+  }
+
+  Iterable<String> get itemSubtitles {
+    switch (this) {
+      case Feature.theme:
+        return ThemeMode.values.map((e) => '');
+      case Feature.language:
+        return Language.values.map((e) => '');
+      case Feature.orderOutlook:
+        return OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTip(e.name));
+      case Feature.checkoutWarning:
+        return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name));
+    }
+  }
+
+  String get title {
+    switch (this) {
+      case Feature.theme:
+        return S.settingThemeTitle;
+      case Feature.language:
+        return S.settingLanguageTitle;
+      case Feature.orderOutlook:
+        return S.settingOrderOutlookTitle;
+      case Feature.checkoutWarning:
+        return S.settingCheckoutWarningTitle;
+    }
+  }
+
+  int get selected {
+    switch (this) {
+      case Feature.theme:
+        return SettingsProvider.of<ThemeSetting>().value.index;
+      case Feature.language:
+        return SettingsProvider.of<LanguageSetting>().value.index;
+      case Feature.orderOutlook:
+        return SettingsProvider.of<OrderOutlookSetting>().value.index;
+      case Feature.checkoutWarning:
+        return SettingsProvider.of<CheckoutWarningSetting>().value.index;
     }
   }
 }
