@@ -151,7 +151,7 @@ void main() {
       expect(find.text('oao-1'), findsOneWidget);
       expect(find.text('p-2'), findsOneWidget);
 
-      await tester.tap(find.text(S.orderObjectTotalPrice('40')));
+      await tester.tap(find.text(S.orderObjectViewPriceTotal('40')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-04-29T12:29:28.495431Z",
+  "@@last_modified": "2024-05-01T02:09:26.242049Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1424,28 +1424,11 @@
   "@orderActionCheckout": {
     "description": "確認好購物車裡的餐點後準備往下一步走"
   },
-  "orderActionOpenChanger": "換錢",
+  "orderActionExchange": "換錢",
   "orderActionStash": "暫存本次點餐",
-  "orderActionHistory": "訂單記錄",
-  "orderActionButton": "使所選物",
-  "orderActionToggleSelection": "反選",
-  "orderActionDiscountTitle": "打折",
-  "orderActionDiscountLabel": "折扣",
-  "orderActionDiscountHint": "例如：50，代表打五折（半價）",
-  "orderActionDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
-  "orderActionDiscountSuffix": "折",
-  "orderActionChangePriceTitle": "變價",
-  "orderActionChangePriceLabel": "價錢",
-  "orderActionChangePriceHint": "每項產品的價錢",
-  "orderActionChangePriceSuffix": "元",
-  "orderActionChangeCountTitle": "變更數量",
-  "orderActionChangeCountLabel": "數量",
-  "orderActionChangeCountHint": "產品數量",
-  "orderActionChangeCountSuffix": "個",
-  "orderActionFreeTitle": "招待",
-  "orderActionDeleteTitle": "刪除",
-  "orderObjectViewMetaTotalPrice": "總價：{price}",
-  "@orderObjectViewMetaTotalPrice": {
+  "orderActionReview": "訂單記錄",
+  "orderLoaderMetaTotalPrice": "總價：{price}",
+  "@orderLoaderMetaTotalPrice": {
     "description": "點餐列表中，單日點餐的總價",
     "placeholders": {
       "price": {
@@ -1453,8 +1436,8 @@
       }
     }
   },
-  "orderObjectViewMetaTotalCost": "總成本：{cost}",
-  "@orderObjectViewMetaTotalCost": {
+  "orderLoaderMetaTotalCost": "總成本：{cost}",
+  "@orderLoaderMetaTotalCost": {
     "description": "點餐列表中，單日點餐的總成本",
     "placeholders": {
       "cost": {
@@ -1462,8 +1445,8 @@
       }
     }
   },
-  "orderObjectViewMetaTotalCount": "總數：{count}",
-  "@orderObjectViewMetaTotalCount": {
+  "orderLoaderMetaTotalCount": "總數：{count}",
+  "@orderLoaderMetaTotalCount": {
     "description": "點餐列表中，單日點餐的總數",
     "placeholders": {
       "count": {
@@ -1472,22 +1455,84 @@
       }
     }
   },
+  "orderLoaderEmpty": "查無點餐紀錄",
+  "orderCatalogListEmpty": "尚未設定產品種類",
+  "orderProductListTutorialTitle": "開始點餐！",
+  "orderProductListTutorialContent": "透過圖片點餐更方便！\n可以至「設定」>「[每行顯示幾個產品](link)」調整\n讓這裡僅使用文字點餐。\n",
+  "@orderProductListTutorialContent": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartActionBulkify": "批量操作",
+  "orderCartActionToggle": "反選",
+  "orderCartActionSelectAll": "全選",
+  "orderCartActionDiscount": "打折",
+  "orderCartActionDiscountLabel": "折扣",
+  "orderCartActionDiscountHint": "例如：50，代表打五折（半價）",
+  "orderCartActionDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
+  "orderCartActionDiscountSuffix": "折",
+  "orderCartActionChangePrice": "變價",
+  "orderCartActionChangePriceLabel": "價錢",
+  "orderCartActionChangePriceHint": "每項產品的價錢",
+  "orderCartActionChangePriceSuffix": "元",
+  "orderCartActionChangeCount": "變更數量",
+  "orderCartActionChangeCountLabel": "數量",
+  "orderCartActionChangeCountHint": "產品數量",
+  "orderCartActionChangeCountSuffix": "個",
+  "orderCartActionFree": "招待",
+  "orderCartActionDelete": "刪除",
   "orderCartSnapshotTutorialTitle": "購物車",
-  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「[點餐的外觀](https://evan361425.github.io/pos)」調整。\n",
-  "orderCartSnapshotEmptyOrder": "尚未點餐",
-  "orderCartSnapshotEmptyCatalog": "尚未設定產品種類",
-  "orderCartSnapshotEmptyProduct": "尚未設定產品",
-  "orderCartSnapshotChanger": "找錢：{price}",
-  "@orderCartSnapshotChanger": {
-    "description": "快照上說明的找錢資訊",
+  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「[點餐的外觀](link)」調整。\n",
+  "@orderCartSnapshotTutorialContent": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartSnapshotEmpty": "尚未點餐",
+  "orderCartMetaTotalPrice": "總價：{price}",
+  "@orderCartMetaTotalPrice": {
+    "description": "購物車中的總價",
     "placeholders": {
       "price": {
-        "type": "num",
-        "format": "compactCurrency",
-        "optionalParameters": {
-          "decimalDigits": 0,
-          "symbol": ""
-        }
+        "type": "String"
+      }
+    }
+  },
+  "orderCartMetaTotalCount": "總數：{count}",
+  "@orderCartMetaTotalCount": {
+    "description": "購物車中的總數",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "orderCartProductPrice": "{price, select, 0{免費} other{{price}元}}",
+  "@orderCartProductPrice": {
+    "description": "產品的價格",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartProductIncrease": "數量加一",
+  "orderCartProductDefaultQuantity": "預設份量",
+  "orderCartProductIngredient": "{name}（{quantity}）",
+  "@orderCartProductIngredient": {
+    "description": "點單時的產品列表中各項產品的成分和份量資訊",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
       }
     }
   },
@@ -1504,6 +1549,18 @@
   "@orderCartQuantityNotAble": {
     "description": "點餐時，須先點選要設定的成分才可以設定份量"
   },
+  "orderCartQuantityLabel": "{name}（{amount}）",
+  "@orderCartQuantityLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "orderCartQuantityDefaultLabel": "預設值（{amount}）",
   "@orderCartQuantityDefaultLabel": {
     "description": "設定成分時，份量可以自訂或使用預設值（不使用份量）",
@@ -1514,64 +1571,57 @@
       }
     }
   },
-  "orderCartItemPrice": "{price, plural, =0{免費} other{{price}元}}",
-  "@orderCartItemPrice": {
-    "description": "產品的價格",
+  "orderCheckoutEmptyCart": "請先進行點單。",
+  "orderCheckoutActionStash": "暫存",
+  "orderCheckoutActionConfirm": "確認",
+  "orderCheckoutStashTab": "暫存",
+  "orderCheckoutStashEmpty": "目前無任何暫存餐點。",
+  "orderCheckoutStashNoProducts": "沒有任何產品",
+  "orderCheckoutStashActionCheckout": "結帳",
+  "orderCheckoutStashActionRestore": "還原",
+  "orderCheckoutStashDialogCalculator": "結帳計算機",
+  "orderCheckoutStashDialogRestoreTitle": "還原暫存訂單",
+  "orderCheckoutStashDialogRestoreContent": "此動作將會覆蓋掉現在購物車內的訂單。",
+  "orderCheckoutStashDialogDeleteName": "訂單",
+  "orderCheckoutAttributeTab": "顧客設定",
+  "orderCheckoutCashierTab": "收銀機",
+  "orderCheckoutCashierCalculatorLabelPaid": "付額",
+  "orderCheckoutCashierCalculatorLabelChange": "找錢",
+  "orderCheckoutCashierSnapshotLabelChange": "找錢：{change}",
+  "@orderCheckoutCashierSnapshotLabelChange": {
+    "description": "顧客支付後，收銀機找的錢",
     "placeholders": {
-      "price": {
-        "type": "num",
-        "format": "compact"
+      "change": {
+        "type": "String"
       }
     }
   },
-  "orderCartItemIngredient": "{name}（{quantity}）",
-  "@orderCartItemIngredient": {
-    "description": "點單時的產品列表中各項產品的成分和份量資訊",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "quantity": {
-        "type": "String"
-      }
-    }
-  },
-  "orderCartDetailsAttributeTitle": "顧客設定",
-  "orderCartDetailsCashierTitle": "收銀機",
-  "orderCartDetailsPaidFailed": "糟糕，付額小於總價唷",
-  "orderCartDetailsCalculatorPaidFailed": "必須大於訂單總價",
-  "orderCartDetailsCalculatorLabelPaid": "付額",
-  "orderCartDetailsCalculatorLabelChange": "找錢",
-  "orderFormEmpty": "查無點餐紀錄",
-  "orderFormTitle": "a",
-  "orderFormChange": "找錢",
-  "orderFormPriceTotal": "訂單總價：{price}",
-  "@orderFormPriceTotal": {
+  "orderCheckoutSnackbarPaidFailed": "付額小於訂單總價，無法結帳。",
+  "orderObjectViewEmpty": "查無點餐紀錄",
+  "orderObjectViewChange": "找錢",
+  "orderObjectViewPriceTotal": "訂單總價：{price}",
+  "@orderObjectViewPriceTotal": {
     "description": "點餐後的總價資訊",
     "placeholders": {
       "price": {
-        "type": "num",
-        "format": "compactCurrency",
-        "optionalParameters": {
-          "symbol": "$"
-        }
+        "type": "String"
       }
     }
   },
-  "orderFormPriceProducts": "產品總價",
-  "orderFormPriceAttributes": "顧客設定總價",
-  "orderFormCostProducts": "產品成本",
-  "orderFormRevenue": "淨利",
-  "orderFormPaid": "付額",
-  "orderFormAttribute": "顧客設定",
-  "orderFormProducts": "產品資訊",
-  "orderFormProductPrice": "總價",
-  "orderFormProductCost": "總成本",
-  "orderFormProductCount": "總數",
-  "orderFormProductSinglePrice": "單價",
-  "orderFormProductOriginalPrice": "折扣前單價",
-  "orderFormProductCatalog": "產品種類",
-  "orderFormProductIngredient": "成分",
+  "orderObjectViewPriceProducts": "產品總價",
+  "orderObjectViewPriceAttributes": "顧客設定總價",
+  "orderObjectViewCost": "成本",
+  "orderObjectViewRevenue": "淨利",
+  "orderObjectViewPaid": "付額",
+  "orderObjectViewDividerAttribute": "顧客設定",
+  "orderObjectViewDividerProduct": "產品資訊",
+  "orderObjectViewProductPrice": "總價",
+  "orderObjectViewProductCost": "總成本",
+  "orderObjectViewProductCount": "總數",
+  "orderObjectViewProductSinglePrice": "單價",
+  "orderObjectViewProductOriginalPrice": "折扣前單價",
+  "orderObjectViewProductCatalog": "產品種類",
+  "orderObjectViewProductIngredient": "成分",
   "analysisTab": "統計",
   "analysisHistoryBtn": "紀錄",
   "analysisHistoryTitle": "訂單記錄",

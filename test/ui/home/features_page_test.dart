@@ -68,15 +68,15 @@ void main() {
     testWidgets('select theme', (tester) async {
       await tester.pumpWidget(buildApp());
 
-      expect(find.text(S.settingThemeTypes('system')), findsOneWidget);
+      expect(find.text(S.settingThemeName('system')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('feature.theme')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(S.settingThemeTypes('dark')));
+      await tester.tap(find.text(S.settingThemeName('dark')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.settingThemeTypes('dark')), findsOneWidget);
+      expect(find.text(S.settingThemeName('dark')), findsOneWidget);
       verify(cache.set(any, 2));
     });
 
@@ -95,33 +95,33 @@ void main() {
       verify(cache.set(any, 'en'));
     });
 
-    testWidgets('select outlook_order', (tester) async {
+    testWidgets('select order_outlook', (tester) async {
       await tester.pumpWidget(buildApp());
 
-      expect(find.text(S.settingOrderOutlookTypes('slidingPanel')), findsOneWidget);
+      expect(find.text(S.settingOrderOutlookName('slidingPanel')), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('feature.outlook_order')));
+      await tester.tap(find.byKey(const Key('feature.order_outlook')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(S.settingOrderOutlookTypes('singleView')));
+      await tester.tap(find.text(S.settingOrderOutlookName('singleView')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.settingOrderOutlookTypes('singleView')), findsOneWidget);
+      expect(find.text(S.settingOrderOutlookName('singleView')), findsOneWidget);
       verify(cache.set(any, 1));
     });
 
     testWidgets('select checkout_warning', (tester) async {
       await tester.pumpWidget(buildApp());
 
-      expect(find.text(S.settingCheckoutWarningTypes('showAll')), findsOneWidget);
+      expect(find.text(S.settingCheckoutWarningName('showAll')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('feature.checkout_warning')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')));
+      await tester.tap(find.text(S.settingCheckoutWarningName('onlyNotEnough')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.settingCheckoutWarningTypes('onlyNotEnough')), findsOneWidget);
+      expect(find.text(S.settingCheckoutWarningName('onlyNotEnough')), findsOneWidget);
       verify(cache.set(any, 1));
     });
 
@@ -145,7 +145,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('feature.awake_ordering')));
+      await tester.tap(find.byKey(const Key('feature.order_awakening')));
       await tester.pumpAndSettle();
 
       verify(cache.set(any, false));

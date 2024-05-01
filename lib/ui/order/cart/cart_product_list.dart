@@ -5,6 +5,7 @@ import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -123,20 +124,20 @@ class _CartProductListTile extends StatelessWidget {
         IconButton(
           key: Key('cart.product.$index.add'),
           icon: const Icon(KIcons.entryAdd),
-          tooltip: '數量加一',
+          tooltip: S.orderCartProductIncrease,
           onPressed: () {
             product.increment();
             Cart.instance.priceChanged();
           },
         ),
         Text(
-          S.orderCartItemPrice(product.totalPrice),
+          S.orderCartProductPrice(product.totalPrice.toCurrency()),
           key: Key('cart.product.$index.price'),
         ),
       ],
     );
 
-    final subtitle = product.quantities.map((e) => S.orderProductIngredientName(
+    final subtitle = product.quantities.map((e) => S.orderCartProductIngredient(
           e.ingredient.name,
           e.name,
         ));
@@ -155,7 +156,7 @@ class _CartProductListTile extends StatelessWidget {
                   subtitle,
                   textOverflow: TextOverflow.visible,
                 ) ??
-                const HintText('預設份量'),
+                HintText(S.orderCartProductDefaultQuantity),
             trailing: trailing,
             onTap: () => Cart.instance.toggleAll(false, except: product),
             onLongPress: () {

@@ -12,8 +12,8 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:possystem/ui/transit/google_sheet/sheet_namer.dart';
+import 'package:possystem/ui/transit/transit_station.dart';
 
 import '../../../mocks/mock_auth.dart';
 import '../../../mocks/mock_cache.dart';
@@ -166,7 +166,7 @@ void main() {
       final sheetsApi = getMockSheetsApi();
       await tester.pumpWidget(buildApp(sheetsApi));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
 
       expect(getSelector('menu').initialValue?.title, equals('menu title'));

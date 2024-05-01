@@ -28,7 +28,7 @@ import 'ui/menu/widgets/product_ingredient_modal.dart';
 import 'ui/menu/widgets/product_modal.dart';
 import 'ui/menu/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/product_reorder.dart';
-import 'ui/order/cashier/order_details_page.dart';
+import 'ui/order/order_checkout_page.dart';
 import 'ui/order/order_page.dart';
 import 'ui/order_attr/order_attribute_page.dart';
 import 'ui/order_attr/widgets/order_attribute_modal.dart';
@@ -77,6 +77,8 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 
 class Routes {
   static const base = '/pos';
+
+  static getRoute(String path) => 'https://evan361425.github.io$base/$path';
 
   static final home = GoRoute(
     name: 'home',
@@ -190,7 +192,7 @@ class Routes {
     GoRoute(
       name: features,
       path: 'features',
-      builder: (ctx, state) => const FeaturesPage(),
+      builder: (ctx, state) => FeaturesPage(focus: state.uri.queryParameters['f']),
       routes: [
         GoRoute(
           name: featuresChoices,

@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -42,7 +42,7 @@ void main() {
     }
 
     Future<void> go2Importer(WidgetTester tester) async {
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
     }
 
@@ -152,7 +152,7 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSImportError('emptySpreadsheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportEmptySpreadsheet), findsOneWidget);
       });
 
       testWidgets('sheet not selected', (tester) async {
@@ -160,7 +160,7 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSImportError('emptySheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportEmptySheet), findsOneWidget);
       });
 
       testWidgets('empty data', (tester) async {
@@ -242,13 +242,13 @@ void main() {
 
         verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
-        await tester.tap(find.text(S.transitPreviewImportTitle));
+        await tester.tap(find.text(S.transitImportPreviewTitle));
         await tester.pumpAndSettle();
 
         for (var e in ['p1', 'p2', 'p3', 'c1', 'c2']) {
           findText(e, 'staged');
         }
-        expect(find.text('將忽略本行，相同的項目已於前面出現'), findsOneWidget);
+        expect(find.text(S.transitImportErrorDuplicate), findsOneWidget);
 
         await tester.tap(find.byType(ExpansionTile).first);
         await tester.pumpAndSettle();
@@ -284,7 +284,7 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, index);
-        await tester.tap(find.text(S.transitPreviewImportTitle));
+        await tester.tap(find.text(S.transitImportPreviewTitle));
         await tester.pumpAndSettle();
 
         if (names == null) {

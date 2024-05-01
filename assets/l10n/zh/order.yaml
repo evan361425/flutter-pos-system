@@ -18,33 +18,10 @@ action:
   checkout:
   - 結帳
   - 確認好購物車裡的餐點後準備往下一步走
-  openChanger: 換錢
+  exchange: 換錢
   stash: 暫存本次點餐
-  history: 訂單記錄
-  # On opener
-  button: 使所選物
-  toggleSelection: 反選
-  discount:
-    title: 打折
-    label: 折扣
-    hint: 例如：50，代表打五折（半價）
-    helper: 這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。
-    suffix: 折
-  changePrice:
-    title: 變價
-    label: 價錢
-    hint: 每項產品的價錢
-    suffix: 元
-  changeCount:
-    title: 變更數量
-    label: 數量
-    hint: 產品數量
-    suffix: 個
-  free:
-    title: 招待
-  delete:
-    title: 刪除
-objectView:
+  review: 訂單記錄
+loader:
   meta:
     totalPrice:
     - 總價：{price}
@@ -58,23 +35,77 @@ objectView:
     - 總數：{count}
     - 點餐列表中，單日點餐的總數
     - count: {type: int, format: compact}
+  empty: 查無點餐紀錄
+catalogList:
+  empty: 尚未設定產品種類
+productList:
+  tutorial:
+    title: 開始點餐！
+    content:
+    - |
+      透過圖片點餐更方便！
+      可以至「設定」>「[每行顯示幾個產品](link)」調整
+      讓這裡僅使用文字點餐。
+    - link:
 cart:
+  action:
+    bulkify: 批量操作
+    toggle: 反選
+    selectAll: 全選
+    discount: 打折
+    _discount:
+      $prefix: discount
+      label: 折扣
+      hint: 例如：50，代表打五折（半價）
+      helper: 這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。
+      suffix: 折
+    changePrice: 變價
+    _changePrice:
+      $prefix: changePrice
+      label: 價錢
+      hint: 每項產品的價錢
+      suffix: 元
+    changeCount: 變更數量
+    _changeCount:
+      $prefix: changeCount
+      label: 數量
+      hint: 產品數量
+      suffix: 個
+    free: 招待
+    delete: 刪除
   snapshot:
     tutorial:
       title: 購物車
-      content: |
+      content:
+      - |
         為了讓點選產品可以更方便，
         我們把點餐後的產品設定至於此面板。
         如果需要一次顯示所有訊息的排版（適合大螢幕），
-        可以至「設定」>「[點餐的外觀](https://evan361425.github.io/pos)」調整。
-    empty:
-      order: 尚未點餐
-      catalog: 尚未設定產品種類
-      product: 尚未設定產品
-    changer:
-    - 找錢：{price}
-    - 快照上說明的找錢資訊
-    - price: {type: num, format: compactCurrency, decimalDigits: 0, symbol: ''}
+        可以至「設定」>「[點餐的外觀](link)」調整。
+      - link:
+    empty: 尚未點餐
+  meta:
+    totalPrice:
+    - 總價：{price}
+    - 購物車中的總價
+    - price:
+    totalCount:
+    - 總數：{count}
+    - 購物車中的總數
+    - count: {type: int, format: compact}
+  product:
+    price:
+    - '0': 免費
+      other: '{price}元'
+    - 產品的價格
+    - price:
+    increase: 數量加一
+    defaultQuantity: 預設份量
+    ingredient:
+    - "{name}（{quantity}）"
+    - 點單時的產品列表中各項產品的成分和份量資訊
+    - name:
+      quantity:
   ingredient:
     status:
     - emptyCart: 請選擇產品來設定其成分
@@ -87,50 +118,65 @@ cart:
     notAble:
     - 請選擇成分來設定份量
     - 點餐時，須先點選要設定的成分才可以設定份量
+    label:
+    - '{name}（{amount}）'
+    - name:
+      amount: {type: num, format: decimalPattern}
     defaultLabel:
     - 預設值（{amount}）
     - 設定成分時，份量可以自訂或使用預設值（不使用份量）
     - amount: {type: num, format: decimalPattern}
-  item:
-    price:
-    - =0: 免費
-      other: '{price}元'
-    - 產品的價格
-    - price: {type: num, mode: plural, format: compact}
-    ingredient:
-    - "{name}（{quantity}）"
-    - 點單時的產品列表中各項產品的成分和份量資訊
-    - name: {type: String}
-      quantity: {type: String}
-  details:
-    attribute:
-      title: 顧客設定
-    cashier:
-      title: 收銀機
-    paidFailed: 糟糕，付額小於總價唷
+checkout:
+  emptyCart: 請先進行點單。
+  action:
+    stash: 暫存
+    confirm: 確認
+  stash:
+    tab: 暫存
+    empty: 目前無任何暫存餐點。
+    noProducts: 沒有任何產品
+    action:
+      checkout: 結帳
+      restore: 還原
+    dialog:
+      calculator: 結帳計算機
+      restore:
+        title: 還原暫存訂單
+        content: 此動作將會覆蓋掉現在購物車內的訂單。
+      delete:
+        name: 訂單
+  attribute:
+    tab: 顧客設定
+  cashier:
+    tab: 收銀機
     calculator:
-      paidFailed: 必須大於訂單總價
       label:
         paid: 付額
         change: 找錢
-# Order Form
-form:
+    snapshot:
+      label:
+        change:
+        - 找錢：{change}
+        - 顧客支付後，收銀機找的錢
+        - change:
+  snackbar:
+    paidFailed: 付額小於訂單總價，無法結帳。
+objectView:
   empty: 查無點餐紀錄
-  title: 'a'
   change: 找錢
   price:
     total:
     - 訂單總價：{price}
     - 點餐後的總價資訊
-    - price: {type: num, format: compactCurrency, symbol: '$'}
+    - price:
     products: 產品總價
     attributes: 顧客設定總價
-  cost:
-    products: 產品成本
+  cost: 成本
   revenue: 淨利
   paid: 付額
-  attribute: 顧客設定
-  products: 產品資訊
+  divider:
+    attribute: 顧客設定
+    product: 產品資訊
   product:
     price: 總價
     cost: 總成本

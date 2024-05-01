@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class OrderCashierSnapshot extends StatefulWidget {
+class CheckoutCashierSnapshot extends StatefulWidget {
   final ValueNotifier<num> price;
 
   final ValueNotifier<num> paid;
 
-  const OrderCashierSnapshot({
+  const CheckoutCashierSnapshot({
     super.key,
     required this.price,
     required this.paid,
   });
 
   @override
-  State<OrderCashierSnapshot> createState() => _OrderCashierSnapshotState();
+  State<CheckoutCashierSnapshot> createState() => _CheckoutCashierSnapshotState();
 }
 
-class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
+class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
   num? customValue;
   late num change;
   late List<num> paidOptions;
@@ -52,7 +52,7 @@ class _OrderCashierSnapshotState extends State<OrderCashierSnapshot> {
         child: SizedBox(
           height: double.infinity,
           child: Center(
-            child: Text(S.orderCashierSnapshotChangeField(change)),
+            child: Text(S.orderCheckoutCashierSnapshotLabelChange(change.toCurrency())),
           ),
         ),
       ),

@@ -5,10 +5,10 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 
-class OderSettingView extends StatelessWidget {
+class CheckoutAttributeView extends StatelessWidget {
   final ValueNotifier<num> price;
 
-  const OderSettingView({
+  const CheckoutAttributeView({
     super.key,
     required this.price,
   });
@@ -18,24 +18,24 @@ class OderSettingView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 428),
       children: [
-        for (final item in OrderAttributes.instance.notEmptyItems) _OrderAttributeGroup(item, price),
+        for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
       ],
     );
   }
 }
 
-class _OrderAttributeGroup extends StatefulWidget {
+class _CheckoutAttributeGroup extends StatefulWidget {
   final ValueNotifier<num> price;
 
   final OrderAttribute attribute;
 
-  const _OrderAttributeGroup(this.attribute, this.price);
+  const _CheckoutAttributeGroup(this.attribute, this.price);
 
   @override
-  State<_OrderAttributeGroup> createState() => _OrderAttributeGroupState();
+  State<_CheckoutAttributeGroup> createState() => _CheckoutAttributeGroupState();
 }
 
-class _OrderAttributeGroupState extends State<_OrderAttributeGroup> {
+class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   late String? selectedId;
 
   @override

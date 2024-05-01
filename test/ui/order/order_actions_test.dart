@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -210,7 +210,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('order.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.action.changer')));
+      await tester.tap(find.byKey(const Key('order.action.exchange')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('changer.favorite.0')));

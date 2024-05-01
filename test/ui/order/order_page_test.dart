@@ -6,14 +6,14 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -21,6 +21,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
@@ -208,14 +209,15 @@ void main() {
             expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
           }
           if (price != null) {
-            expect(
-                tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
+            expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+                equals(S.orderCartProductPrice(price.toCurrency())));
           }
         }
 
         verifyMetadata(int count, num price) {
           final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-          final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+          final t =
+              '${S.orderCartMetaTotalCount(count)}${MetaBlock.string}${S.orderCartMetaTotalPrice(price.toCurrency())}';
           expect((w.child as RichText).text.toPlainText(), equals(t));
         }
 
@@ -254,7 +256,7 @@ void main() {
         // select quantity
         await tester.tap(find.byKey(const Key('order.quantity.pq-1')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-1'), price: 27);
+        verifyProductList(0, subtitle: S.orderCartProductIngredient('i-1', 'q-1'), price: 27);
 
         await tester.tap(find.byKey(const Key('order.quantity.default')));
         await tester.pumpAndSettle();
@@ -262,7 +264,7 @@ void main() {
 
         await tester.tap(find.byKey(const Key('order.quantity.pq-2')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
+        verifyProductList(0, subtitle: S.orderCartProductIngredient('i-1', 'q-2'), price: 7);
 
         // add count
         await tester.tap(find.byKey(const Key('cart.product.0.add')));
@@ -406,13 +408,15 @@ void main() {
           expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
         }
         if (price != null) {
-          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
+          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+              equals(S.orderCartProductPrice(price.toCurrency())));
         }
       }
 
       verifyMetadata(int count, num price) {
         final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-        final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+        final t =
+            '${S.orderCartMetaTotalCount(count)}${MetaBlock.string}${S.orderCartMetaTotalPrice(price.toCurrency())}';
         expect((w.child as RichText).text.toPlainText(), equals(t));
       }
 
@@ -507,12 +511,12 @@ void main() {
 
       // only not enough
       SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.onlyNotEnough;
-      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderCashierPaidNotEnough);
+      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderSnackbarCashierNotEnough);
       await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
 
       // show all
       SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.showAll;
-      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderCashierPaidUsingSmallMoney);
+      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderSnackbarCashierUsingSmallMoney);
     });
 
     setUp(() {

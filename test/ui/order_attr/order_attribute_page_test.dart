@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
@@ -334,7 +334,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(S.orderAttributeOptionReorder));
+      await tester.tap(find.text(S.orderAttributeTitleReorder));
       await tester.pumpAndSettle();
 
       await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));

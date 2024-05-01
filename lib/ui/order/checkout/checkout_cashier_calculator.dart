@@ -4,14 +4,14 @@ import 'package:possystem/translator.dart';
 
 const _operators = ['+', '-', 'x'];
 
-class OrderCashierCalculator extends StatefulWidget {
+class CheckoutCashierCalculator extends StatefulWidget {
   final VoidCallback onSubmit;
 
   final ValueNotifier<num> price;
 
   final ValueNotifier<num> paid;
 
-  const OrderCashierCalculator({
+  const CheckoutCashierCalculator({
     super.key,
     required this.onSubmit,
     required this.price,
@@ -19,10 +19,10 @@ class OrderCashierCalculator extends StatefulWidget {
   });
 
   @override
-  State<OrderCashierCalculator> createState() => _OrderCashierCalculatorState();
+  State<CheckoutCashierCalculator> createState() => _CheckoutCashierCalculatorState();
 }
 
-class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
+class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
   final paidState = GlobalKey<_SingleFieldState>();
   final changeState = GlobalKey<_SingleFieldState>();
 
@@ -41,7 +41,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _SingleField(
             key: paidState,
             id: 'cashier.calculator.paid',
-            prefix: S.orderCashierPaidLabel,
+            prefix: S.orderCheckoutCashierCalculatorLabelPaid,
             defaultText: widget.price.value.toCurrency(),
             errorText: '',
           ),
@@ -49,9 +49,9 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _SingleField(
             key: changeState,
             id: 'cashier.calculator.change',
-            prefix: S.orderCashierChangeLabel,
+            prefix: S.orderCheckoutCashierCalculatorLabelChange,
             defaultText: '0',
-            errorText: S.orderCashierCalculatorChangeNotEnough,
+            errorText: S.orderCheckoutSnackbarPaidFailed,
           ),
           const Divider(),
         ]),

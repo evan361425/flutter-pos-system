@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -78,8 +79,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               height: snapshotHeight,
               baselineSize: -2 * controller.snapSizes[0],
               valueScalar: -1,
-              // TODO: wrap with gesture detector to go up when tap
-              child: const CartSnapshot(),
+              child: CartSnapshot(controller: controller),
             ),
             FixedHeightClipper(
               controller: controller,
@@ -92,7 +92,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               id: 'order.sliding_collapsed',
               padding: const EdgeInsets.fromLTRB(-4, snapshotHeight + DraggableIndicator.height, -4, 0),
               title: S.orderCartSnapshotTutorialTitle,
-              message: S.orderCartSnapshotTutorialContent,
+              message: S.orderCartSnapshotTutorialContent(Routes.getRoute('features/orderOutlook')),
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
               child: widget.row3_2Builder(scroll, scrollable),
             ),
@@ -123,7 +123,6 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     controller = ScrollableDraggableController(const [
       snapshotHeight,
       base,
-      // base + buttonHeight * 2,
       1.0,
     ]);
 

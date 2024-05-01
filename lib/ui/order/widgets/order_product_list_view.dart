@@ -4,8 +4,10 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 class OrderProductListView extends StatelessWidget {
@@ -43,10 +45,8 @@ class OrderProductListView extends StatelessWidget {
                 for (final product in products)
                   Tutorial(
                     id: 'order.menu_product',
-                    title: '開始點餐！',
-                    message: '透過圖片點餐更方便！\n'
-                        '你也可以到「設定」頁面，\n'
-                        '設定「每行顯示幾個產品」或僅使用文字點餐',
+                    title: S.orderProductListTutorialTitle,
+                    message: S.orderProductListTutorialContent(Routes.getRoute('features?f=orderProductCount')),
                     spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
                     disable: index++ != 0,
                     child: ImageHolder(

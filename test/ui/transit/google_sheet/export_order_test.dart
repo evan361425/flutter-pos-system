@@ -62,7 +62,7 @@ void main() {
 
       final lang = LanguageSetting();
       final settings = SettingsProvider([lang]);
-      lang.value = const Locale('en', 'US');
+      lang.value = Language.en;
       final init = DateTimeRange(
         start: DateTime(2023, DateTime.june, 10),
         end: DateTime(2023, DateTime.june, 11),
@@ -73,13 +73,13 @@ void main() {
           ChangeNotifierProvider.value(value: settings),
         ],
         child: MaterialApp(
-          locale: lang.value,
+          locale: lang.value.locale,
           localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
             DefaultWidgetsLocalizations.delegate,
             DefaultMaterialLocalizations.delegate,
             DefaultCupertinoLocalizations.delegate,
           ],
-          supportedLocales: [lang.value],
+          supportedLocales: [lang.value.locale],
           home: TransitStation(
             type: TransitType.order,
             method: TransitMethod.googleSheet,
@@ -107,7 +107,7 @@ void main() {
       );
 
       expect(
-        find.text('${expected.format(DateFormat.MMMd('zh'))} 的訂單'),
+        find.text('${expected.format('zh_TW')} 的訂單'),
         findsOneWidget,
       );
     });
@@ -131,7 +131,7 @@ void main() {
                 return gs.Sheet(
                   properties: gs.SheetProperties(
                     sheetId: e.index,
-                    title: '$today ${S.transitType(e.name)}',
+                    title: '$today ${S.transitModelName(e.name)}',
                   ),
                 );
               }).toList(),
@@ -149,7 +149,7 @@ void main() {
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        final title = S.transitOrderTitle;
+        final title = S.transitGSSpreadsheetOrderDefaultName;
         verify(cache.set(cacheKey, 'abc:true:$title'));
 
         final expected = [

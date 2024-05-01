@@ -5,10 +5,13 @@ class FeatureSwitch extends StatefulWidget {
 
   final Function(bool) onChanged;
 
+  final bool autofocus;
+
   const FeatureSwitch({
     super.key,
     required this.value,
     required this.onChanged,
+    this.autofocus = false,
   });
 
   @override
@@ -22,6 +25,7 @@ class _FeatureSwitchState extends State<FeatureSwitch> {
   Widget build(BuildContext context) {
     return Switch(
         value: isEnable,
+        autofocus: widget.autofocus,
         onChanged: (value) {
           widget.onChanged(value);
           setState(() => isEnable = value);

@@ -13,7 +13,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
+import 'package:possystem/ui/order/checkout/checkout_cashier_calculator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 
 class StashedOrderListView extends StatelessWidget {
@@ -33,9 +33,9 @@ class StashedOrderListView extends StatelessWidget {
       ),
       metricsLoader: StashedOrders.instance.getMetrics,
       metricsBuilder: (metrics) {
-        return Center(child: Text(S.orderListMetaCount(metrics.count)));
+        return Center(child: Text(S.totalCount(metrics.count)));
       },
-      emptyChild: const Center(child: HintText('目前無任何暫存餐點。')),
+      emptyChild: Center(child: HintText(S.orderCheckoutStashEmpty)),
       padding: const EdgeInsets.only(bottom: 428),
     );
   }
@@ -72,7 +72,7 @@ class StashedOrderListView extends StatelessWidget {
       child: ListTile(
         key: Key('stashed_order.${order.id}'),
         title: Text(title),
-        subtitle: MetaBlock.withString(context, products, emptyText: '沒有任何產品'),
+        subtitle: MetaBlock.withString(context, products, emptyText: S.orderCheckoutStashNoProducts),
         trailing: MoreButton(onPressed: () => _showActions(context, order)),
         onTap: () => _act(_Action.checkout, context, order),
         onLongPress: () => _showActions(context, order),
@@ -83,20 +83,20 @@ class StashedOrderListView extends StatelessWidget {
   void _showActions(BuildContext context, OrderObject order) async {
     final action = await BottomSheetActions.withDelete(
       context,
-      actions: const [
+      actions: [
         BottomSheetAction(
-          title: Text('結帳'),
-          leading: Icon(Icons.price_check_sharp),
+          title: Text(S.orderCheckoutStashActionCheckout),
+          leading: const Icon(Icons.price_check_sharp),
           returnValue: _Action.checkout,
         ),
         BottomSheetAction(
-          title: Text('復原'),
-          leading: Icon(Icons.file_upload),
+          title: Text(S.orderCheckoutStashActionRestore),
+          leading: const Icon(Icons.file_upload),
           returnValue: _Action.restore,
         ),
       ],
       deleteValue: _Action.delete,
-      warningContent: Text(S.dialogDeletionContent('訂單', '')),
+      warningContent: Text(S.dialogDeletionContent(S.orderCheckoutStashDialogDeleteName, '')),
       deleteCallback: () => _act(_Action.delete, context, order),
     );
 
@@ -118,8 +118,8 @@ class StashedOrderListView extends StatelessWidget {
         if (!Cart.instance.isEmpty) {
           ok = await ConfirmDialog.show(
             context,
-            title: '復原暫存訂單？',
-            content: '此動作將會覆蓋掉現在購物車內的訂單',
+            title: S.orderCheckoutStashDialogRestoreTitle,
+            content: S.orderCheckoutStashDialogRestoreContent,
           );
         }
 
@@ -163,11 +163,11 @@ class StashedOrderListView extends StatelessWidget {
           vertical: 16.0,
           horizontal: 8.0,
         ),
-        semanticLabel: '結帳計算機',
+        semanticLabel: S.orderCheckoutStashDialogCalculator,
         children: [
           SizedBox(
             height: 360.0,
-            child: OrderCashierCalculator(
+            child: CheckoutCashierCalculator(
               onSubmit: () => Navigator.of(context).pop(true),
               price: price,
               paid: paid,
@@ -181,7 +181,7 @@ class StashedOrderListView extends StatelessWidget {
       final status = await cart.checkout(price.value, paid.value);
       if (status == CheckoutStatus.paidNotEnough) {
         if (context.mounted) {
-          showSnackBar(context, S.orderCashierPaidFailed);
+          showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
         }
         return;
       }

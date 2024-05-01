@@ -33,7 +33,7 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -50,7 +50,7 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('import_text')), message);

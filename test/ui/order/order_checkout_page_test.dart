@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -225,7 +225,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.snapshot.30')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCashierSnapshotChangeField(2)), findsOneWidget);
+      expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('2')), findsOneWidget);
       await tester.drag(
         find.byKey(const Key('order.details.ds')),
         const Offset(0, -408),
@@ -250,7 +250,7 @@ void main() {
       await tester.tap(fCKey('submit'));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCashierCalculatorChangeNotEnough), findsWidgets);
+      expect(find.text(S.orderCheckoutSnackbarPaidFailed), findsWidgets);
       scaffoldMessenger.currentState?.removeCurrentSnackBar();
       await tester.pumpAndSettle();
 
@@ -272,7 +272,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
-      expect(find.text(S.orderCashierSnapshotChangeField(62)), findsOneWidget);
+      expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('62')), findsOneWidget);
 
       await Cashier.instance.setCurrentByUnit(1, 5);
 

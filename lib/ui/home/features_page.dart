@@ -20,25 +20,25 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/feature_slider.dart';
 import 'package:possystem/ui/home/widgets/feature_switch.dart';
 
-class FeaturesPage extends StatefulWidget {
-  const FeaturesPage({super.key});
+class FeaturesPage extends StatelessWidget {
+  final String? focus;
 
-  @override
-  State<FeaturesPage> createState() => _FeaturesPageState();
-}
-
-class _FeaturesPageState extends State<FeaturesPage> {
-  final theme = SettingsProvider.of<ThemeSetting>();
-  final language = SettingsProvider.of<LanguageSetting>();
-  final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
-  final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
-  final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
-  final checkoutWarning = SettingsProvider.of<CheckoutWarningSetting>();
-  final collectEvents = SettingsProvider.of<CollectEventsSetting>();
+  const FeaturesPage({super.key, this.focus});
 
   @override
   Widget build(BuildContext context) {
+    final theme = SettingsProvider.of<ThemeSetting>();
+    final language = SettingsProvider.of<LanguageSetting>();
+    final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
+    final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
+    final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
+    final checkoutWarning = SettingsProvider.of<CheckoutWarningSetting>();
+    final collectEvents = SettingsProvider.of<CollectEventsSetting>();
     const flavor = String.fromEnvironment('appFlavor');
+
+    void navigateTo(Feature feature) {
+      context.pushNamed(Routes.featuresChoices, pathParameters: {'feature': feature.name});
+    }
 
     return Scaffold(
       appBar: AppBar(leading: const PopButton()),
@@ -96,7 +96,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
           ),
           const Divider(),
           ListTile(
-            key: const Key('feature.outlook_order'),
+            key: const Key('feature.order_outlook'),
             leading: const Icon(Icons.library_books_outlined),
             title: Text(S.settingOrderOutlookTitle),
             subtitle: Text(S.settingOrderOutlookName(orderOutlook.value.name)),
@@ -117,6 +117,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: S.settingOrderProductCountTitle,
             value: orderCount.value,
             max: 5,
+            autofocus: focus == 'orderProductCount',
             minLabel: S.settingOrderProductCountMinLabel,
             hintText: S.settingOrderProductCountHint,
             onChanged: (value) => orderCount.update(value),
@@ -126,7 +127,8 @@ class _FeaturesPageState extends State<FeaturesPage> {
             title: Text(S.settingOrderAwakeningTitle),
             subtitle: Text(S.settingOrderAwakeningDescription),
             trailing: FeatureSwitch(
-              key: const Key('feature.awake_ordering'),
+              key: const Key('feature.order_awakening'),
+              autofocus: focus == 'orderAwakening',
               value: orderAwakening.value,
               onChanged: (value) => orderAwakening.update(value),
             ),
@@ -138,6 +140,7 @@ class _FeaturesPageState extends State<FeaturesPage> {
             subtitle: Text(S.settingReportDescription),
             trailing: FeatureSwitch(
               key: const Key('feature.collect_events'),
+              autofocus: focus == 'collectEvents',
               value: collectEvents.value,
               onChanged: (value) => collectEvents.update(value),
             ),
@@ -145,10 +148,6 @@ class _FeaturesPageState extends State<FeaturesPage> {
         ],
       ),
     );
-  }
-
-  void navigateTo(Feature feature) {
-    context.pushNamed(Routes.featuresChoices, pathParameters: {'feature': feature.name});
   }
 }
 

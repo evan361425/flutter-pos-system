@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/translator.dart';
+
+import '../test_helpers/translator.dart';
 
 void main() {
   group('Widget Snackbar', () {
@@ -14,7 +17,6 @@ void main() {
                     context,
                     'message',
                     const Text('info'),
-                    label: 'label',
                   );
                 },
                 child: const Text('btn'));
@@ -28,10 +30,14 @@ void main() {
 
       expect(find.text('message'), findsOneWidget);
 
-      await tester.tap(find.text('label'));
+      await tester.tap(find.text(S.actMoreInfo));
       await tester.pumpAndSettle();
 
       expect(find.text('info'), findsOneWidget);
     });
+  });
+
+  setUpAll(() {
+    initializeTranslator();
   });
 }

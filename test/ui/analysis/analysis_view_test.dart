@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
@@ -159,8 +158,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      final format = DateFormat.MMMd('zh_TW');
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('zh_TW')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -169,7 +167,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 14)),
         days: 7,
       );
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('zh_TW')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -178,14 +176,14 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('zh_TW')), findsOneWidget);
 
       // select date range
       await tester.tap(find.byKey(const Key('anal.chart_range')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pump(const Duration(milliseconds: 50));
-      expect(find.text(range.format(format)), findsAtLeastNWidgets(1));
+      expect(find.text(range.format('zh_TW')), findsAtLeastNWidgets(1));
     });
 
     setUpAll(() {

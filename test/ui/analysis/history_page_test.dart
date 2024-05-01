@@ -138,7 +138,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // change format
-      await tester.tap(find.text(S.analysisCalendarMonth));
+      await tester.tap(find.text(S.singleMonth));
       await tester.pumpAndSettle();
 
       expect(find.text('50'), findsOneWidget);
@@ -163,10 +163,10 @@ void main() {
       await tester.tap(find.byKey(const Key('history.export')));
       await tester.pumpAndSettle();
       // dropdown have multiple child for items
-      await tester.tap(find.text(S.transitMethod('plainText')).last);
+      await tester.tap(find.text(S.transitMethodName('plainText')).last);
       await tester.pumpAndSettle();
 
-      expect(find.text(S.transitMethod('plainText')), findsOneWidget);
+      expect(find.text(S.transitMethodName('plainText')), findsOneWidget);
     });
 
     setUpAll(() {

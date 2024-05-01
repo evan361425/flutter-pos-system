@@ -16,7 +16,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/stashed_order_list_view.dart';
+import 'package:possystem/ui/order/checkout/stashed_order_list_view.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -229,7 +229,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.calculator.submit')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCashierPaidFailed), findsOneWidget);
+      expect(find.text(S.orderCheckoutSnackbarPaidFailed), findsOneWidget);
     });
 
     testWidgets('checkout will delete order after success', (tester) async {

@@ -42,16 +42,16 @@ class _OrderLoaderState extends State<OrderLoader> {
       builder: widget.builder,
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
-          S.orderMetaTotalPrice(metrics.price.toCurrency()),
+          S.orderLoaderMetaTotalPrice(metrics.price.toCurrency()),
           '總成本：${metrics.cost.toCurrency()}',
-          S.orderMetaTotalCount(metrics.count),
+          S.orderLoaderMetaTotalCount(metrics.count),
         ])!;
         return Row(children: [
           Expanded(child: Center(child: meta)),
           if (widget.trailingBuilder != null) buildTrailing(metrics),
         ]);
       },
-      emptyChild: HintText(S.orderFormEmpty),
+      emptyChild: HintText(S.orderLoaderEmpty),
     );
   }
 

@@ -30,7 +30,7 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
       return SingleRowWrap(children: [
         ChoiceChip(
           selected: false,
-          label: Text(S.orderCartEmptyCatalog),
+          label: Text(S.orderCatalogListEmpty),
         ),
       ]);
     }
