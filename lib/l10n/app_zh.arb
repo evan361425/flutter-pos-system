@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-01T02:09:26.242049Z",
+  "@@last_modified": "2024-05-01T02:46:27.222241Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -969,11 +969,23 @@
       }
     }
   },
+  "imageHolderCreate": "點選以新增圖片",
+  "imageHolderUpdate": "點擊以更新圖片",
   "emptyBodyTitle": "哎呀！這裡還是空的",
   "@emptyBodyTitle": {
     "description": "顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目，這是預設的文字"
   },
   "emptyBodyAction": "立即設定",
+  "btnNavTo": "前往",
+  "semanticsPercentileBar": "目前佔總數的 {percent}",
+  "@semanticsPercentileBar": {
+    "placeholders": {
+      "percent": {
+        "type": "num",
+        "format": "percentPattern"
+      }
+    }
+  },
   "invalidIntegerType": "{field}必須是整數",
   "@invalidIntegerType": {
     "description": "當發現輸入不是整數時的警語",
@@ -1150,6 +1162,42 @@
     "description": "為了確保使用者知道原先的預設值是什麼而做的提示",
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeValueEmpty": "不影響價錢",
+  "orderAttributeValueFree": "免費",
+  "orderAttributeValueDiscountIncrease": "增加至 {value} 倍",
+  "@orderAttributeValueDiscountIncrease": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderAttributeValueDiscountDecrease": "減少至 {value} 倍",
+  "@orderAttributeValueDiscountDecrease": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderAttributeValuePriceIncrease": "增加 {value} 元",
+  "@orderAttributeValuePriceIncrease": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeValuePriceDecrease": "減少 {value} 元",
+  "@orderAttributeValuePriceDecrease": {
+    "placeholders": {
+      "value": {
         "type": "String"
       }
     }

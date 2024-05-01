@@ -31,11 +31,20 @@ dialog:
   - 顯示於 DeleteDialog 上的內文
   - name: {example: 蔬菜三明治}
     more: {example: 刪除此項目會有什麼其他影響, description: 關於刪除帶來的副作用的更多說明}
+imageHolder:
+  create: 點選以新增圖片
+  update: 點擊以更新圖片
 emptyBody:
   title:
   - 哎呀！這裡還是空的
   - 顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目，這是預設的文字
   action: 立即設定
+btn:
+  navTo: 前往
+semantics:
+  percentileBar:
+  - 目前佔總數的 {percent}
+  - percent: {type: num, format: percentPattern}
 invalid:
   integer:
     type:

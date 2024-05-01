@@ -87,3 +87,20 @@ option:
       - 這麼做會讓「{name}」變成非預設值
       - 為了確保使用者知道原先的預設值是什麼而做的提示
       - name:
+value: # 選項可以設定值，這是 `OrderAttributeValue` 的文字
+  empty: 不影響價錢
+  free: 免費
+  discount:
+    increase:
+    - 增加至 {value} 倍
+    - value: {type: num, format: decimalPattern}
+    decrease:
+    - 減少至 {value} 倍
+    - value: {type: num, format: decimalPattern}
+  price:
+    increase:
+    - 增加 {value} 元
+    - value:
+    decrease:
+    - 減少 {value} 元
+    - value:

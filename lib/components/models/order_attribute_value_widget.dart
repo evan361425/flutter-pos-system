@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class OrderAttributeValueWidget extends StatelessWidget {
   final OrderAttributeMode? mode;
@@ -16,7 +17,7 @@ class OrderAttributeValueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = getValueName(mode, value);
-    return name == '' ? const HintText('不影響價錢') : Text(name);
+    return name == '' ? HintText(S.orderAttributeValueEmpty) : Text(name);
   }
 
   static String getValueName(OrderAttributeMode? mode, num? value) {
@@ -26,19 +27,19 @@ class OrderAttributeValueWidget extends StatelessWidget {
 
     final modeValue = value;
     if (mode == OrderAttributeMode.changeDiscount) {
-      final value = modeValue.toInt();
+      final value = modeValue.toInt() / 100;
       return value == 0
-          ? '免費'
-          : value >= 100
-              ? '增加 ${(value / 100).toStringAsFixed(2)} 倍'
-              : '打 ${(value % 10) == 0 ? (value / 10).toStringAsFixed(0) : value} 折';
+          ? S.orderAttributeValueFree
+          : value >= 1
+              ? S.orderAttributeValueDiscountIncrease(value)
+              : S.orderAttributeValueDiscountDecrease(value);
     } else {
       final value = modeValue.toCurrency();
       return modeValue == 0
           ? ''
           : modeValue > 0
-              ? '增加 $value 元'
-              : '減少 $value 元';
+              ? S.orderAttributeValuePriceIncrease(value)
+              : S.orderAttributeValuePriceDecrease(value);
     }
   }
 }
