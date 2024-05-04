@@ -143,7 +143,7 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showMoreInfoSnackBar(
         context,
         S.orderSnackbarCashierUsingSmallMoney,
-        Text(S.orderSnackbarCashierUsingSmallMoneyHelper),
+        Text(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
       );
       break;
     default:

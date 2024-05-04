@@ -13,7 +13,7 @@ class OrderFormatter {
         order.productsPrice,
         order.paid,
         order.cost,
-        order.revenue,
+        order.profit,
         order.productsCount,
         order.products.length,
       ]
@@ -67,7 +67,7 @@ class OrderFormatter {
         S.transitGSOrderHeaderProductPrice,
         S.transitGSOrderHeaderPaid,
         S.transitGSOrderHeaderCost,
-        S.transitGSOrderHeaderIncome,
+        S.transitGSOrderHeaderProfit,
         S.transitGSOrderHeaderProductCount,
         S.transitGSOrderHeaderProductPrice,
         S.transitGSOrderHeaderProductCatalog,

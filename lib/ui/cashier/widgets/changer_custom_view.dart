@@ -236,7 +236,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       var msg = S.cashierChangerErrorInvalidHead(count, sourceUnit!.toCurrency());
       for (var target in targets) {
         if (!target.isEmpty) {
-          msg += '\n- ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
+          msg += '\n •  ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
         }
       }
       _setError(msg);

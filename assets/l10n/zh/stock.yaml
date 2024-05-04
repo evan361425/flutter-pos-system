@@ -1,8 +1,6 @@
 $prefix: stock
 tab: 庫存
-updatedAt:
-- 上次補貨時間：{updatedAt}
-- updatedAt: {type: DateTime, format: MMMEd}
+updatedAt: 上次補貨時間：{updatedAt}
 ingredient:
   emptyBody: 新增成份後，就可以開始追蹤這些成份的庫存囉！
   title:
@@ -17,13 +15,7 @@ ingredient:
   dialogDeletionContent:
   - =0: 目前無任何產品有本成分
     other: 將會一同刪除掉 {count} 個產品的成分
-  - 刪除成分時會提示多少個產品受影響
-  - count: {type: int, mode: plural}
-  productsCount:
-  - 共有 {count} 個產品使用 {name}
-  - 在編輯成分時，會提示有幾個產品正在使用，並允許點擊導進產品頁
-  - count: {type: int, description: 產品數量}
-    name:
+  productsCount: 共有 {count} 個產品使用 {name}
   name:
     label: 成分名稱
     hint: 例如：起司
@@ -37,9 +29,7 @@ ingredient:
 
       填空或不填寫則每次增加庫存，都會自動設定這值，
       這是假設每次補貨都會讓庫存達到最大值。
-    shortHelper:
-    - 若沒有設定最大庫存量，增加庫存會重設最大值。
-    - 被用在快速增加庫存的輔助文字
+    shortHelper: 若沒有設定最大庫存量，增加庫存會重設最大值。
 replenishment:
   button: 採購
   emptyBody: 採購可以幫你快速調整成分的庫存
@@ -48,13 +38,8 @@ replenishment:
     create: 新增採購
     update: 編輯採購
   meta:
-    affect:
-    - 會影響 {count} 項成分
-    - 顯示在採購列表中，會影響多少個成分
-    - count: {type: int}
-  never:
-  - 尚未補貨過
-  - 庫存頁面會顯示上次補貨時間，若未補貨過則設此文字
+    affect: 會影響 {count} 項成分
+  never: 尚未補貨過
   apply:
     button: 套用採購
     confirm:
@@ -63,7 +48,6 @@ replenishment:
       column:
       - name: 名稱
         amount: 數量
-      - name:
       hint: 選擇套用後，將會影響以下成分的庫存
   tutorial:
     title: 成份採購
@@ -90,15 +74,10 @@ quantity:
     份量可以快速調整成分的量，例如：
     半糖、微糖。
   meta:
-    proportion:
-    - 預設比例：{proportion}
-    - 份量列表中各個項目的子標題中，說明預設比例的文字
-    - proportion: {type: num, format: decimalPattern}
+    proportion: 預設比例：{proportion}
   dialogDeletionContent:
   - =0: 目前無任何產品成分有本份量
     other: 將會一同刪除掉 {count} 個產品成分的份量'
-  - 刪除份量時會提示多少個產品成分受影響
-  - count: {type: int, mode: plural}
   name:
     label: 份量名稱
     hint: 例如：少量或多量

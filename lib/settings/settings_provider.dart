@@ -16,7 +16,7 @@ class SettingsProvider extends ChangeNotifier {
   static final allSettings = List<Setting>.from(<Setting>[
     LanguageSetting(),
     ThemeSetting(),
-    CurrencySetting(),
+    CurrencySetting.instance,
     OrderAwakeningSetting(),
     OrderOutlookSetting(),
     OrderProductAxisCountSetting(),

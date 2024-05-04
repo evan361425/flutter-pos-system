@@ -20,7 +20,6 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
@@ -37,7 +36,6 @@ void main() {
   group('Order Actions', () {
     void prepareData() {
       SettingsProvider([
-        CurrencySetting(),
         OrderOutlookSetting(),
         OrderAwakeningSetting(),
         OrderProductAxisCountSetting(),

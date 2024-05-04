@@ -1,15 +1,9 @@
 $prefix: setting
 tab: 設定
-version:
-- 版本：{version}
-- 顯示應用程式的版本
-- version:
-welcome:
-- HI，{name}
-- 顯示使用者的名字
-- name:
+version: 版本：{version}
+welcome: HI，{name}
 logoutBtn: 登出
-elf: # 小精靈
+elf:
   title: 建議
   description: 使用 Google 表單提供回饋
   content: |
@@ -25,8 +19,6 @@ theme:
   - dark: 暗色模式
     light: 日光模式
     system: 跟隨系統
-  - 應用程式外表的類型
-  - name:
 language:
   title: 語言
 orderOutlook:
@@ -34,20 +26,15 @@ orderOutlook:
   name:
   - slidingPanel: 酷炫面板
     singleView: 經典模式
-  - 點餐時的外觀類型
-  - name:
   tip:
   - slidingPanel: 點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機
     singleView: 所有資訊顯示在單一螢幕中，適合大螢幕的平板
-  - name:
 checkoutWarning:
   title: 收銀機提示
   name:
   - showAll: 全部顯示
     onlyNotEnough: 僅不夠時顯示
     hideAll: 全部隱藏
-  - 是否顯示收銀機的提示
-  - name:
   tip:
   - showAll: |
       若使用小錢去找，顯示提示。
@@ -59,9 +46,7 @@ orderProductCount:
   hint: 設定「零」則點餐時僅會以文字顯示
   minLabel: 純文字顯示
 orderAwakening:
-  title:
-  - 點餐時不關閉螢幕
-  - 在點餐過程中，即使閒置仍不關閉螢幕
+  title: 點餐時不關閉螢幕
   description: 若取消，則會根據系統設定時間關閉螢幕
 report:
   title: 收集錯誤訊息和事件

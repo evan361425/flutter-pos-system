@@ -30,30 +30,16 @@ changer:
       幫助快速調整收銀機狀態。
   error:
     noSelection: 請選擇要套用的組合
-    notEnough:
-    - "{unit} 元不夠換"
-    - unit:
-    invalidHead:
-    - "{count} 個 {unit} 元沒辦法換"
-    - count: {type: int}
-      unit:
-    invalidBody:
-    - "{count} 個 {unit} 元"
-    - count: {type: int}
-      unit:
+    notEnough: "{unit} 元不夠換"
+    invalidHead: "{count} 個 {unit} 元沒辦法換"
+    invalidBody: "{count} 個 {unit} 元"
   favorite:
     tab: 常用
     hint: 選完後請點選「套用」來使用該組合
     emptyBody: 這裡可以幫助你快速轉換不同幣值
     item:
-      from:
-      - 用 {count} 個 {unit} 元換
-      - count: {type: int}
-        unit:
-      to:
-      - "{count} 個 {unit} 元"
-      - count: {type: int}
-        unit:
+      from: 用 {count} 個 {unit} 元換
+      to: "{count} 個 {unit} 元"
   custom:
     tab: 自訂
     addBtn: 新增常用
@@ -82,13 +68,8 @@ surplus:
     diffCount: 差異
     defaultCount: 預設
   counter:
-    label:
-    - 幣值{unit}的數量
-    - 允許使用者結餘時，自訂幣值
-    - unit:
-    shortLabel:
-    - 數量
-    - 這是為了顯示在錯誤訊息中，例如「數量不能為 0」
+    label: 幣值{unit}的數量
+    shortLabel: 數量
   currentTotal:
     label: 現有總額
     helper: |

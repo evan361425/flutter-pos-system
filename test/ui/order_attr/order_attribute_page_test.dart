@@ -9,8 +9,6 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order_attr/order_attribute_page.dart';
 import 'package:provider/provider.dart';
@@ -90,12 +88,10 @@ void main() {
         });
 
       when(cache.get(any)).thenReturn(null);
-      final currency = CurrencySetting();
 
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: attrs),
-          ChangeNotifierProvider.value(value: SettingsProvider([currency])),
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(routes: [

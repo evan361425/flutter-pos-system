@@ -8,6 +8,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientView extends StatelessWidget {
@@ -81,8 +82,8 @@ class _QuantityTile extends StatelessWidget {
         title: Text(quantity.name),
         subtitle: MetaBlock.withString(context, <String>[
           S.menuQuantityMetaAmount(quantity.amount),
-          S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice),
-          S.menuQuantityMetaAdditionalCost(quantity.additionalCost),
+          S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
+          S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
         ]),
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,

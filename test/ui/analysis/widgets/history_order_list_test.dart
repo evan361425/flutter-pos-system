@@ -10,11 +10,8 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/history_order_list.dart';
-import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_database.dart';
@@ -30,22 +27,19 @@ void main() {
       when(cache.get(
         argThat(predicate((String e) => e.startsWith('tutorial.'))),
       )).thenReturn(true);
-      return ChangeNotifierProvider.value(
-        value: SettingsProvider([CurrencySetting()]),
-        child: MaterialApp.router(
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (_, __) {
-                  return Material(
-                    child: HistoryOrderList(notifier: notifier),
-                  );
-                },
-                routes: Routes.routes,
-              ),
-            ],
-          ),
+      return MaterialApp.router(
+        routerConfig: GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return Material(
+                  child: HistoryOrderList(notifier: notifier),
+                );
+              },
+              routes: Routes.routes,
+            ),
+          ],
         ),
       );
     }

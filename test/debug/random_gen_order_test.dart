@@ -16,7 +16,6 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 import '../mocks/mock_database.dart';
@@ -81,8 +80,6 @@ void main() {
   });
 
   setUpAll(() {
-    CurrencySetting().isInt = true;
-
     final stock = Stock()
       ..replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),

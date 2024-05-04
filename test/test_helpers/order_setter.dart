@@ -152,7 +152,7 @@ class OrderSetter {
             "count": orders.length,
             "price": orders.fold<num>(0, (pre, e) => pre + e.price),
             "cost": orders.fold<num>(0, (pre, e) => pre + e.cost),
-            "revenue": orders.fold<num>(0, (pre, e) => pre + e.revenue),
+            "profit": orders.fold<num>(0, (pre, e) => pre + e.profit),
           }
         ]));
 

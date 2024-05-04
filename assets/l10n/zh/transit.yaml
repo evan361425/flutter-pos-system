@@ -11,16 +11,13 @@ method:
   name:
   - googleSheet: Google 試算表
     plainText: 純文字
-  - name:
 catalog: # 資料的分類
   name:
   - order: 訂單記錄
     model: 店家資訊
-  - name:
   helper:
   - order: 訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。
     model: 商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。
-  - name:
 model:
   name:
   - menu: 菜單
@@ -32,34 +29,21 @@ model:
     orderDetailsAttr: 訂單顧客設定
     orderDetailsProduct: 訂單產品細項
     orderDetailsIngredient: 訂單成分細項
-  - name:
 order:
   meta:
-    range:
-    - "{range}的訂單"
-    - range: {example: '01/01 - 01/31'}
-    rangeDays:
-    - "{days} 天的資料"
-    - days: {type: int}
+    range: "{range}的訂單"
+    rangeDays: "{days} 天的資料"
   capacity:
-    title:
-    - 預估容量為：{size}
-    - size:
+    title: 預估容量為：{size}
     content: 過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。
     ok: 容量剛好
     warn: 容量警告
     danger: 容量危險
   item:
-    title:
-    - "{date}"
-    - date: {type: DateTime, format: "M月d日 HH:mm:ss", isCustomDateFormat: true}
+    title: "{date}"
     meta:
-      productCount:
-      - 餐點數：{count}
-      - count: {type: int}
-      price:
-      - 總價：{price}
-      - price:
+      productCount: 餐點數：{count}
+      price: 總價：{price}
     dialog:
       title: 訂單細節
 export:
@@ -74,22 +58,16 @@ import:
     header: 注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！
     ingredient:
       meta:
-        amount:
-        - 庫存：{amount}
-        - amount: {type: num, format: decimalPattern}
+        amount: 庫存：{amount}
         maxAmount:
         - =0: 未設定
           other: 最大值：{value}
-        - exist: {type: int, mode: plural}
-          value: {type: num, format: decimalPattern}
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。
     quantity:
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。
   btn: 匯出
   error:
-    columnCount:
-    - 資料量不足，需要 {columns} 個欄位
-    - {columns: {type: int}}
+    columnCount: 資料量不足，需要 {columns} 個欄位
     duplicate: 將忽略本行，相同的項目已於前面出現
   columnStatus:
   - normal: （一般）
@@ -97,18 +75,12 @@ import:
     stagedIng: （新的成分）
     stagedQua: （新的份量）
     updated: （異動）
-  - 顯示該資料的額外狀態
-  - name
 GS:
   description: Google 試算表是一個強大的小型資料庫，匯出之後可以做很多客制化的分析！
   sheet:
     name:
-      label:
-      - '{name}的表單標題'
-      - 表單標題的說明
-      - name:
+      label: '{name}的表單標題'
       update: 修改標題
-      hint: 請先確認試算表
   spreadsheet:
     label: 試算表
     action:
@@ -117,16 +89,10 @@ GS:
     export:
       empty:
         label: 建立匯出
-        hint:
-        - 建立新的試算表「{name}」，並把資料匯出至此
-        - name:
+        hint: 建立新的試算表「{name}」，並把資料匯出至此
       exist:
-        label:
-        - 指定匯出
-        - 告知使用者，資料將會匯出至指定的試算表
-        hint:
-        - 匯出至試算表「{name}」
-        - name:
+        label: 指定匯出
+        hint: 匯出至試算表「{name}」
     import:
       all:
         btn: 匯入全部
@@ -142,13 +108,10 @@ GS:
       empty:
         label: 選擇試算表
         hint: 選擇要匯入的試算表後，就能開始匯入資料
-    confirm:
-    - 此動作將會{hint}
-    - hint:
+    confirm: 此動作將會{hint}
     selectionHint:
     - _: 輸入試算表網址或試算表 ID
-      other: 本試算表為「{name}」
-    - name:
+      other: 原試算表為「{name}」
     model:
       defaultName: POS System 資料
       export:
@@ -164,9 +127,7 @@ GS:
     verifyUser: 驗證身份中
     fetchLocalOrders: 取得本地資料..
     overwriteOrders: 覆寫訂單資料..
-    appendOrders:
-    - 附加進 {name}
-    - name:
+    appendOrders: 附加進 {name}
   model:
     status:
     - menu: 更新菜單中..
@@ -178,7 +139,6 @@ GS:
       orderDetailsAttr: 匯出顧客設定中..
       orderDetailsProduct: 匯出產品細項中..
       orderDetailsIngredient: 匯出成分細項中..
-    - model:
     product:
       ingredient:
         title: 成分資訊
@@ -235,7 +195,7 @@ GS:
       price: 總價
       paid: 付額
       cost: 成本
-      income: 收入
+      profit: 收入
       product:
         count: 產品總數
         price: 產品價錢
@@ -295,9 +255,7 @@ GS:
       emptySheet: 必須選擇指定的表單來匯入
       emptyData: 在表單中沒找到任何值
       notFoundSpreadsheet: 找不到試算表
-      notFoundSheets:
-      - 找不到表單「{name}」的資料
-      - name:
+      notFoundSheets: 找不到表單「{name}」的資料
       notFoundHelper: |
         別擔心，通常都可以簡單解決！
         可能的原因有：
@@ -321,189 +279,74 @@ PT:
       price:
       - =0: 共 {price} 元。
         other: 共 {price} 元，其中的 {productsPrice} 元是產品價錢。
-      - hasProducts: {type: int, mode: plural}
-        price:
-        productsPrice:
-      money:
-      - 付額 {paid} 元、成分 {cost} 元。
-      - paid:
-        cost:
+      money: 付額 {paid} 元、成分 {cost} 元。
       productCount:
       - =0: 餐點有 {count} 份，包括：{products}。
         other: |
           餐點有 {count} 份（{type} 種）包括：
           {products}。
-      - differentType: {type: int, mode: plural}
-        count: {type: int}
-        type: {type: int}
-        products:
       product:
       - =0: '{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分'
         other: '{product}（{catalog}）{count} 份共 {price} 元，成份包括 {ingredients}'
-      - hasIngredient: {type: int, mode: plural}
-        product:
-        catalog:
-        count: {type: int}
-        price:
-        ingredients:
       ingredient:
       - =0: "{ingredient}（{quantity}）"
         other: "{ingredient}（{quantity}），使用 {amount} 個"
-      - 點單時的產品列表中各項產品的成分和份量資訊
-      - amount: {type: num, mode: plural, format: decimalPattern}
-        ingredient:
-        quantity:
       noQuantity: 預設份量
-      orderAttribute:
-      - 顧客的 {options}
-      - options:
-      orderAttributeItem:
-      - '{name} 為 {option}'
-      - name:
-        option:
+      orderAttribute: 顧客的 {options}
+      orderAttributeItem: '{name} 為 {option}'
     model:
       menu:
         meta:
-          catalog:
-          - '{catalogs} 個產品種類'
-          - catalogs: {type: int}
-          product:
-          - '{products} 個產品'
-          - products: {type: int}
-        header:
-        - 本菜單共有 {catalogs} 個產品種類、{products} 個產品。
-        - catalogs: {type: int}
-          products: {type: int}
-        headerPrefix:
-        - 本菜單
-        - 這是用來檢查這段文字是否為菜單
-        catalog:
-        - 第{index}個種類叫做 {catalog}，{details}。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          catalog:
-          details:
+          catalog: '{count} 個產品種類'
+          product: '{count} 個產品'
+        header: 本菜單共有 {catalogs} 個產品種類、{products} 個產品。
+        headerPrefix: 本菜單
+        catalog: 第{index}個種類叫做 {catalog}，{details}。
         catalogDetails:
         - =0: 沒有設定產品
           other: 共有 {count} 個產品
-        - count: {type: int, mode: plural}
-        product:
-        - 第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          name:
-          price:
-          cost:
-          details:
+        product: 第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}。
         productDetails:
         - =0: 它沒有設定任何成份
           other: 它的成份有 {count} 種：{names}。{details}。
-        - count: {type: int, mode: plural}
-          names:
-          details:
-        ingredient:
-        - 每份產品預設需要使用 {amount} 個 {name}，{details}
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - amount:
-          name:
-          details:
+        ingredient: 每份產品預設需要使用 {amount} 個 {name}，{details}
         ingredientDetails:
         - =0: 無法做份量調整
           other: 它還有 {count} 個不同份量：{quantities}
-        - count: {type: int, mode: plural}
-          quantities:
-        quantity:
-        - '每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元'
-        - amount:
-          price:
-          cost:
+        quantity: '每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元'
       stock:
         meta:
-          ingredient:
-          - '{count} 種成分'
-          - count: {type: int}
-        header:
-        - 本庫存共有 {count} 種成分。
-        - count: {type: int}
-        headerPrefix:
-        - 本庫存
-        - 這是用來檢查這段文字是否為庫存
-        ingredient:
-        - 第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          name:
-          amount:
-          details:
+          ingredient: '{count} 種成分'
+        header: 本庫存共有 {count} 種成分。
+        headerPrefix: 本庫存
+        ingredient: 第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。
         ingredientDetails:
         - =0: ''
           other: ，最大量有 {max} 個
-        - exist: {type: int, mode: plural}
-          max:
       quantities:
         meta:
-          quantity:
-          - '{count} 種份量'
-          - count: {type: int}
-        header:
-        - 共設定 {count} 種份量。
-        - count: {type: int}
-        headerSuffix:
-        - 種份量。
-        - 這是用來檢查這段文字是否為份量
-        quantity:
-        - 第{index}種份量叫做 {name}，預設會讓成分的份量乘以 {prop} 倍。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          name:
-          prop:
+          quantity: '{count} 種份量'
+        header: 共設定 {count} 種份量。
+        headerSuffix: 種份量。
+        quantity: 第{index}種份量叫做 {name}，預設會讓成分的份量乘以 {prop} 倍。
       replenisher:
         meta:
-          replenishment:
-          - '{count} 種補貨方式'
-          - count: {type: int}
-        header:
-        - 共設定 {count} 種補貨方式。
-        - count: {type: int}
-        headerSuffix:
-        - 種補貨方式。
-        - 這是用來檢查這段文字是否為補貨量
-        replenishment:
-        - 第{index}個成分叫做 {name}，{details}。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          name:
-          details:
+          replenishment: '{count} 種補貨方式'
+        header: 共設定 {count} 種補貨方式。
+        headerSuffix: 種補貨方式。
+        replenishment: 第{index}個成分叫做 {name}，{details}。
         replenishmentDetails:
         - =0: '它並不會調整庫存'
           other: 它會調整{count}種成份的庫存：{ingredients}
-        - count: {type: int, mode: plural}
-          ingredients:
       oa: # order attribute
         meta:
-          oa:
-          - '{count} 種顧客屬性'
-          - count: {type: int}
-        header:
-        - 共設定 {count} 種顧客屬性。
-        - count: {type: int}
-        headerSuffix:
-        - 種顧客屬性。
-        - 這是用來檢查這段文字是否為顧客設定
-        oa:
-        - 第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。
-        - 都使用字串是為了在 import 的時候，可以在這個位置插上 regex 來取得資訊
-        - index:
-          name:
-          mode:
-          details:
+          oa: '{count} 種顧客屬性'
+        header: 共設定 {count} 種顧客屬性。
+        headerSuffix: 種顧客屬性。
+        oa: 第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。
         oaDetails:
         - =0: 它並沒有設定選項
           other: 它有 {count} 個選項：{options}
-        - count: {type: int, mode: plural}
-          options:
         defaultOption: 預設
-        modeValue:
-        - 選項的值為 {value}
-        - value: {type: num, format: decimalPattern}
+        modeValue: 選項的值為 {value}
 

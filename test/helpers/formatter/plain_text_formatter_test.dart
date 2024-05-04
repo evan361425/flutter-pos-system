@@ -17,7 +17,6 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
-import 'package:possystem/settings/currency_setting.dart';
 
 import '../../test_helpers/translator.dart';
 
@@ -229,7 +228,6 @@ void main() {
     });
 
     test('order attributes', () {
-      CurrencySetting().isInt = true;
       final attrs = OrderAttributes();
       attrs.replaceItems({
         'c1': OrderAttribute(

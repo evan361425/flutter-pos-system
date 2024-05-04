@@ -13,28 +13,17 @@ snackbar:
 
       怎麼避免本提示：
       • 到換錢頁面把各幣值補足。
-      • 到設定頁關閉收銀機的相關提示。
+      • 到[設定頁]({link})關閉收銀機的相關提示。
 action:
-  checkout:
-  - 結帳
-  - 確認好購物車裡的餐點後準備往下一步走
+  checkout: 結帳
   exchange: 換錢
   stash: 暫存本次點餐
   review: 訂單記錄
 loader:
   meta:
-    totalPrice:
-    - 總價：{price}
-    - 點餐列表中，單日點餐的總價
-    - price:
-    totalCost:
-    - 總成本：{cost}
-    - 點餐列表中，單日點餐的總成本
-    - cost:
-    totalCount:
-    - 總數：{count}
-    - 點餐列表中，單日點餐的總數
-    - count: {type: int, format: compact}
+    totalRevenue: 總營收：{revenue}
+    totalCost: 總成本：{cost}
+    totalCount: 總數：{count}
   empty: 查無點餐紀錄
 catalogList:
   empty: 尚未設定產品種類
@@ -44,7 +33,7 @@ productList:
     content:
     - |
       透過圖片點餐更方便！
-      可以至「設定」>「[每行顯示幾個產品](link)」調整
+      可以至「設定」>「[每行顯示幾個產品]({link})」調整
       讓這裡僅使用文字點餐。
     - link:
 cart:
@@ -64,6 +53,7 @@ cart:
       $prefix: changePrice
       label: 價錢
       hint: 每項產品的價錢
+      prefix: ''
       suffix: 元
     changeCount: 變更數量
     _changeCount:
@@ -76,56 +66,31 @@ cart:
   snapshot:
     tutorial:
       title: 購物車
-      content:
-      - |
+      content: |
         為了讓點選產品可以更方便，
         我們把點餐後的產品設定至於此面板。
         如果需要一次顯示所有訊息的排版（適合大螢幕），
-        可以至「設定」>「[點餐的外觀](link)」調整。
-      - link:
+        可以至「設定」>「[點餐的外觀]({link})」調整。
     empty: 尚未點餐
   meta:
-    totalPrice:
-    - 總價：{price}
-    - 購物車中的總價
-    - price:
-    totalCount:
-    - 總數：{count}
-    - 購物車中的總數
-    - count: {type: int, format: compact}
+    totalPrice: 總價：{price}
+    totalCount: 總數：{count}
   product:
     price:
     - '0': 免費
       other: '{price}元'
-    - 產品的價格
-    - price:
     increase: 數量加一
     defaultQuantity: 預設份量
-    ingredient:
-    - "{name}（{quantity}）"
-    - 點單時的產品列表中各項產品的成分和份量資訊
-    - name:
-      quantity:
+    ingredient: "{name}（{quantity}）"
   ingredient:
     status:
     - emptyCart: 請選擇產品來設定其成分
       differentProducts: 請選擇相同的產品來設定其成分
       noNeedIngredient: 這個產品沒有可以設定的成分
-      other: UNKNOWN
-    - 點餐時，若點選的產品不需要設定成分資訊，會需要提示給使用者
-    - {status: {type: String, mode: select}}
   quantity:
-    notAble:
-    - 請選擇成分來設定份量
-    - 點餐時，須先點選要設定的成分才可以設定份量
-    label:
-    - '{name}（{amount}）'
-    - name:
-      amount: {type: num, format: decimalPattern}
-    defaultLabel:
-    - 預設值（{amount}）
-    - 設定成分時，份量可以自訂或使用預設值（不使用份量）
-    - amount: {type: num, format: decimalPattern}
+    notAble: 請選擇成分來設定份量
+    label: '{name}（{amount}）'
+    defaultLabel: 預設值（{amount}）
 checkout:
   emptyCart: 請先進行點單。
   action:
@@ -155,24 +120,18 @@ checkout:
         change: 找錢
     snapshot:
       label:
-        change:
-        - 找錢：{change}
-        - 顧客支付後，收銀機找的錢
-        - change:
+        change: 找錢：{change}
   snackbar:
     paidFailed: 付額小於訂單總價，無法結帳。
 objectView:
   empty: 查無點餐紀錄
   change: 找錢
   price:
-    total:
-    - 訂單總價：{price}
-    - 點餐後的總價資訊
-    - price:
+    total: 訂單總價：{price}
     products: 產品總價
     attributes: 顧客設定總價
   cost: 成本
-  revenue: 淨利
+  profit: 淨利
   paid: 付額
   divider:
     attribute: 顧客設定
@@ -185,3 +144,4 @@ objectView:
     originalPrice: 折扣前單價
     catalog: 產品種類
     ingredient: 成分
+    defaultQuantity: 預設

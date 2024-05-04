@@ -37,9 +37,9 @@ class Seller extends ChangeNotifier {
         orderTable,
         columns: [
           'COUNT(*) count',
-          'SUM(price) price',
+          'SUM(price) revenue',
           'SUM(cost) cost',
-          'SUM(revenue) revenue',
+          'SUM(revenue) profit',
         ],
         where: 'createdAt BETWEEN ? AND ?',
         whereArgs: [begin, finish],
@@ -50,21 +50,18 @@ class Seller extends ChangeNotifier {
       queries.addAll([
         Database.instance.query(
           productTable,
-          // so far so good, add new if we need it
           columns: ['COUNT(*) count'],
           where: 'createdAt BETWEEN ? AND ?',
           whereArgs: [begin, finish],
         ),
         Database.instance.query(
           ingredientTable,
-          // so far so good, add new if we need it
           columns: ['COUNT(*) count'],
           where: 'createdAt BETWEEN ? AND ?',
           whereArgs: [begin, finish],
         ),
         Database.instance.query(
           attributeTable,
-          // so far so good, add new if we need it
           columns: ['COUNT(*) count'],
           where: 'createdAt BETWEEN ? AND ?',
           whereArgs: [begin, finish],
@@ -99,7 +96,7 @@ class Seller extends ChangeNotifier {
   /// Get the metric of orders grouped by the day.
   ///
   /// - [types] is the metrics type to calculate.
-  /// - [period] is the time interval to group by.
+  /// - [interval] is the time interval to group by.
   /// - [ignoreEmpty] whether to ignore the empty day.
   Future<List<OrderDataPerDay>> getMetricsInPeriod(
     DateTime start,
@@ -440,14 +437,14 @@ class OrderMetrics {
   /// Total count of orders in specific day range.
   final int count;
 
-  /// Total price of orders in specific day range.
-  final num price;
+  /// Total revenue of orders in specific day range.
+  final num revenue;
 
   /// Total cost of orders in specific day range.
   final num cost;
 
-  /// Total revenue of orders in specific day range.
-  final num revenue;
+  /// Total (net) profit of orders in specific day range.
+  final num profit;
 
   /// How many rows in the table of products.
   final int? productCount;
@@ -463,9 +460,9 @@ class OrderMetrics {
   /// see detailed in [Seller.getMetrics].
   const OrderMetrics._({
     required this.cost,
-    required this.price,
-    required this.count,
     required this.revenue,
+    required this.count,
+    required this.profit,
     this.productCount,
     this.ingredientCount,
     this.attrCount,
@@ -480,9 +477,9 @@ class OrderMetrics {
   }) {
     return OrderMetrics._(
       count: map['count'] as int? ?? 0,
-      price: map['price'] as num? ?? 0,
-      cost: map['cost'] as num? ?? 0,
       revenue: map['revenue'] as num? ?? 0,
+      cost: map['cost'] as num? ?? 0,
+      profit: map['profit'] as num? ?? 0,
       productCount: productCount,
       ingredientCount: ingredientCount,
       attrCount: attrCount,
@@ -506,11 +503,11 @@ class OrderDataPerDay {
 
   int get count => value('count').toInt();
 
-  num get price => value('price');
+  num get revenue => value('revenue');
 
   num get cost => value('cost');
 
-  num get revenue => value('revenue');
+  num get profit => value('profit');
 }
 
 class OrderMetricPerItem {
@@ -532,9 +529,9 @@ enum OrderMetricUnit {
 }
 
 enum OrderMetricType {
-  price('SUM', 'price', 'singlePrice * count', OrderMetricUnit.money),
+  revenue('SUM', 'revenue', 'singlePrice * count', OrderMetricUnit.money),
   cost('SUM', 'cost', 'singleCost * count', OrderMetricUnit.money),
-  revenue('SUM', 'revenue', '(singlePrice - singleCost) * count', OrderMetricUnit.money),
+  profit('SUM', 'profit', '(singlePrice - singleCost) * count', OrderMetricUnit.money),
   count('COUNT', 'price', '*', OrderMetricUnit.count);
 
   /// The method to calculate the value in DB.

@@ -8,7 +8,7 @@ history:
     empty: 查無點餐紀錄
   calendar:
     tutorial:
-      title: 日曆格式
+      title: 日曆
       content: |
         上下滑動可以調整週期單位，如月或週。
         左右滑動可以調整日期起訖。
@@ -17,30 +17,19 @@ history:
       title: 訂單資料匯出
       content: |
         把訂單匯出到外部，讓你可以做進一步分析或保存。
-        你可以到「設定」去匯出多日訂單。
+        你可以到「資料轉移」去匯出多日訂單。
   orderList:
     meta:
-      price:
-      - 售價：{price}
-      - 點餐列表中，特定訂單的餐點售價
-      - price: {type: num, format: compactCurrency, symbol: '$'}
-      paid:
-      - 付額：{paid}
-      - 點餐列表中，特定訂單的餐點付款金額
-      - paid: {type: num, format: compactCurrency, symbol: '$'}
-      income:
-      - 淨利：{income}
-      - 點餐列表中，特定訂單的餐點淨利
-      - income: {type: num, format: compactCurrency, symbol: '$'}
+      price: 售價：{price}
+      paid: 付額：{paid}
+      profit: 淨利：{profit}
   order:
     title: 訂單詳情
     notFound: 找不到相關訂單
-    deleteDialog:
-    - |
+    deleteDialog: |
       確定要刪除 {name} 的訂單嗎？
       將不會復原收銀機和庫存資料。
       此動作無法復原。
-    - name:
 goals:
   title: 本日總結
   count:
@@ -50,13 +39,13 @@ goals:
       它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。
       高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。
       但要注意，單純追求高訂單數可能會忽略盈利能力。
-  price:
+  revenue:
     title: 營收
     description: |
       營收代表總銷售額，是業務規模的指標。
       高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。
       有時候，為了提高營收，公司可能會採取降價等策略，這可能會對公司的盈利能力造成影響。
-  revenue:
+  profit:
     title: 淨利
     description: |
       淨利是營業收入減去營業成本後的餘額，是公司能否持續經營的關鍵。
@@ -65,11 +54,9 @@ goals:
       這是一個更實際的指標，能幫助你評估經營是否有效且可持續。
   cost:
     title: 成本
-  achievedRate:
-  - |
+  achievedRate: |
     利潤達成
     {rate}
-  - rate:
 chart:
   title: 圖表分析
   _title:
@@ -86,9 +73,9 @@ chart:
     title:
       update: 編輯圖表
   metricName:
-  - price: 營收
+  - revenue: 營收
     cost: 成本
-    revenue: 淨利
+    profit: 淨利
     count: 數量
   - name:
   targetName:

@@ -1,27 +1,25 @@
 import 'package:possystem/settings/setting.dart';
 
 class CurrencySetting extends Setting<CurrencyTypes> {
-  static late CurrencySetting instance;
+  static CurrencySetting instance = CurrencySetting._();
 
   static const defaultCurrency = CurrencyTypes.twd;
 
-  static const supports = {
+  static const supports = <CurrencyTypes, List<num>>{
     CurrencyTypes.twd: [1, 5, 10, 50, 100, 500, 1000],
     CurrencyTypes.usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };
 
   /// Current available unit of money
-  late List<num> unitList;
+  List<num> unitList = CurrencySetting.supports[CurrencyTypes.twd]!;
 
   /// Is this currency all int?
-  late bool isInt;
+  bool isInt = true;
 
   /// Index of integer in [unitList]
-  late int intIndex;
+  int intIndex = 0;
 
-  CurrencySetting() {
-    instance = this;
-  }
+  CurrencySetting._();
 
   @override
   String get key => 'currency';

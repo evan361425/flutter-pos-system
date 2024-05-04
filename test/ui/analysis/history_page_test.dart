@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
@@ -27,7 +26,6 @@ void main() {
       )).thenReturn(true);
       final settings = SettingsProvider([
         LanguageSetting(),
-        CurrencySetting(),
       ]);
 
       return MultiProvider(

@@ -1,14 +1,36 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-01T02:46:27.233121Z",
+  "@@last_modified": "2024-05-04T02:46:49.376932Z",
   "@@author": "Lu Shueh Chou",
-  "settingTitle": "設定",
-  "settingElfTitle": "Feature Request",
-  "settingFeatureTitle": "Settings",
-  "settingThemeTitle": "Platte",
+  "settingTab": "Settings",
+  "settingVersion": "Version: {version}",
+  "@settingVersion": {
+    "description": "Display the app version",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingWelcome": "Hi, {name}",
+  "@settingWelcome": {
+    "description": "Display user's name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingLogoutBtn": "Log Out",
+  "settingElfTitle": "Suggestions",
+  "settingElfDescription": "Provide feedback using Google Forms",
+  "settingElfContent": "Feel like something's missing here?\nFeel free to [give suggestions](https://forms.gle/s8V5SXuqhA1u3zmt7).\nYou can also check out [upcoming features](https://github.com/evan361425/flutter-pos-system/milestones).\n",
+  "settingFeatureTitle": "Other Settings",
+  "settingFeatureDescription": "Appearance, Language, Tips",
+  "settingThemeTitle": "Theme",
   "settingThemeName": "{name, select, dark{Dark Mode} light{Light Mode} system{Follow System} other{UNKNOWN}}",
   "@settingThemeName": {
-    "description": "應用程式外表的類型",
+    "description": "Appearance of the app",
     "placeholders": {
       "name": {
         "type": "String"
@@ -16,5 +38,1808 @@
     }
   },
   "settingLanguageTitle": "Language",
-  "appTitle": "POS System"
+  "settingOrderOutlookTitle": "Ordering Outlook",
+  "settingOrderOutlookName": "{name, select, slidingPanel{Sliding Panel} singleView{Classic Mode} other{UNKNOWN}}",
+  "@settingOrderOutlookName": {
+    "description": "Appearance during ordering",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingOrderOutlookTip": "{name, select, slidingPanel{Panel slides up during ordering, suitable for small-screen phones} singleView{All info displayed on a single screen, suitable for large-screen tablets} other{UNKNOWN}}",
+  "@settingOrderOutlookTip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingCheckoutWarningTitle": "Cash Registry Warnings",
+  "settingCheckoutWarningName": "{name, select, showAll{Show All} onlyNotEnough{Show Only When Not Enough} hideAll{Hide All} other{UNKNOWN}}",
+  "@settingCheckoutWarningName": {
+    "description": "Whether to display cash registry warnings",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingCheckoutWarningTip": "{name, select, showAll{Show warning when using smaller denominations to give change.\nFor example, if $5 is not enough, start using 5 $1 bills for change.\n} onlyNotEnough{Show warning when cash registry not enough money.} hideAll{Won't display any warnings during ordering.} other{UNKNOWN}}",
+  "@settingCheckoutWarningTip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingOrderProductCountTitle": "Products per Row during Ordering",
+  "settingOrderProductCountHint": "Set to \"0\" to display only text during ordering",
+  "settingOrderProductCountMinLabel": "Text Only",
+  "settingOrderAwakeningTitle": "Keep Screen On During Ordering",
+  "@settingOrderAwakeningTitle": {
+    "description": "Keep the screen on during ordering, even when idle"
+  },
+  "settingOrderAwakeningDescription": "If disabled, the screen will turn off based on system settings during ordering.",
+  "settingReportTitle": "Collect Error Messages and Events",
+  "settingReportDescription": "Send error messages when the app encounters issues, helping the app improve",
+  "stockTab": "Inventory",
+  "stockUpdatedAt": "Last Restock: {updatedAt}",
+  "@stockUpdatedAt": {
+    "placeholders": {
+      "updatedAt": {
+        "type": "DateTime",
+        "format": "MMMEd"
+      }
+    }
+  },
+  "stockIngredientEmptyBody": "Once ingredients are added, you can start tracking their inventory!",
+  "stockIngredientTitleCreate": "Add Ingredient",
+  "stockIngredientTitleUpdate": "Edit Ingredient",
+  "stockIngredientTitleUpdateAmount": "Edit Inventory",
+  "stockIngredientTutorialTitle": "Add Ingredient",
+  "stockIngredientTutorialContent": "Ingredients help us track product inventory.\nYou can set ingredients in \"Products\" and then manage inventory here.\n",
+  "stockIngredientDialogDeletionContent": "{count, plural, =0{No products currently use this ingredient} other{Deleting this ingredient will also remove it from {count} products}}",
+  "@stockIngredientDialogDeletionContent": {
+    "description": "Indicates how many products will be affected when deleting the ingredient",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockIngredientProductsCount": "{count} Products Using {name}",
+  "@stockIngredientProductsCount": {
+    "description": "When editing an ingredient, it indicates how many products are using it and allows for navigation to the product page",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of products"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientNameLabel": "Ingredient Name",
+  "stockIngredientNameHint": "e.g., Cheese",
+  "stockIngredientNameErrorRepeat": "Ingredient name already exists",
+  "stockIngredientAmountLabel": "Current Amount",
+  "stockIngredientAmountMaxLabel": "Maximum Amount",
+  "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\n\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased,\nassuming each restock brings the inventory to the maximum value.\n",
+  "stockIngredientAmountShortHelper": "If not set, increasing inventory will reset this value.",
+  "@stockIngredientAmountShortHelper": {
+    "description": "Auxiliary text used for quickly increasing inventory"
+  },
+  "stockReplenishmentButton": "Purchase",
+  "stockReplenishmentEmptyBody": "Purchasing helps you quickly adjust ingredient inventory",
+  "stockReplenishmentTitleList": "Purchase List",
+  "stockReplenishmentTitleCreate": "Add Purchase",
+  "stockReplenishmentTitleUpdate": "Edit Purchase",
+  "stockReplenishmentMetaAffect": "Affects {count} Ingredients",
+  "@stockReplenishmentMetaAffect": {
+    "description": "Indicates in the purchase list how many ingredients are affected",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockReplenishmentNever": "Never Restocked",
+  "@stockReplenishmentNever": {
+    "description": "The stock page displays the last restock time; if never restocked, this text is set"
+  },
+  "stockReplenishmentApplyButton": "Apply Purchase",
+  "stockReplenishmentApplyConfirmButton": "Apply",
+  "stockReplenishmentApplyConfirmTitle": "Apply Purchase?",
+  "stockReplenishmentApplyConfirmColumn": "{value, select, name{Name} amount{Amount} other{UNKNOWN}}",
+  "@stockReplenishmentApplyConfirmColumn": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "stockReplenishmentApplyConfirmHint": "Selecting apply will affect the inventory of the following ingredients",
+  "stockReplenishmentTutorialTitle": "Ingredient Purchases",
+  "stockReplenishmentTutorialContent": "Through purchases, you no longer need to set the inventory of each ingredient one by one.\nSet up purchases now and adjust multiple ingredients at once!\n",
+  "stockReplenishmentNameLabel": "Purchase Name",
+  "stockReplenishmentNameHint": "e.g., Costco Purchase",
+  "stockReplenishmentNameErrorRepeat": "Purchase name already exists",
+  "stockReplenishmentDividerIngredientList": "Click to set the quantity of different ingredients to be purchased",
+  "stockReplenishmentIngredientAmountHint": "Set the amount to increase/decrease",
+  "stockQuantityTitle": "Quantity",
+  "stockQuantityDescription": "Half Sugar, Low Sugar, etc.",
+  "stockQuantityTitleCreate": "Add Quantity",
+  "stockQuantityTitleUpdate": "Edit Quantity",
+  "stockQuantityEmptyBody": "Quantity allows for quick adjustments to the amount of ingredients, such as:\nHalf Sugar, Low Sugar.\n",
+  "stockQuantityMetaProportion": "Default Ratio: {proportion}",
+  "@stockQuantityMetaProportion": {
+    "description": "Text explaining default ratios in subheadings of quantity items",
+    "placeholders": {
+      "proportion": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "stockQuantityDialogDeletionContent": "{count, plural, =0{No product ingredients currently use this quantity} other{Deleting this quantity will also remove it from {count} product ingredients}}",
+  "@stockQuantityDialogDeletionContent": {
+    "description": "Indicates how many product ingredients will be affected when deleting the quantity",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockQuantityNameLabel": "Quantity Name",
+  "stockQuantityNameHint": "e.g., Small or Large",
+  "stockQuantityNameErrorRepeat": "Quantity name already exists",
+  "stockQuantityProportionLabel": "Default Ratio",
+  "stockQuantityProportionHelper": "When this quantity is used for an ingredient, the default ratio added to that ingredient.\nFor example: if this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\" which uses \"2\" units of cheese per burger,\nwhen adding this quantity, the quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\nIf set to \"1,\" there's no effect.\nIf set to \"0,\" the ingredient won't be used.\n",
+  "transitTitle": "Data Transfer",
+  "transitDescription": "Importing and Exporting Store Information and Orders",
+  "transitTutorialTitle": "First Step for Multiple Users and Devices",
+  "transitTutorialContent": "This is where you can import/export menu, inventory, order records, and other information.\nWe provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.\n",
+  "transitMethodTitle": "Please Select Transfer Method",
+  "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} other{UNKNOWN}}",
+  "@transitMethodName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitCatalogName": "{name, select, order{Order Records} model{Store Information} other{UNKNOWN}}",
+  "@transitCatalogName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitCatalogHelper": "{name, select, order{Export order info for detailed statistical analysis.} model{Store info is usually used to sync menu, inventory, etc., to third-party locations or to import to another device.} other{UNKNOWN}}",
+  "@transitCatalogHelper": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitModelName": "{name, select, menu{Menu} stock{Inventory} quantities{Quantities} replenisher{Replenisher} orderAttr{Customer Settings} order{Order} orderDetailsAttr{Order Customer Settings} orderDetailsProduct{Order Product Details} orderDetailsIngredient{Order Ingredient Details} other{UNKNOWN}}",
+  "@transitModelName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderMetaRange": "Orders for {range}",
+  "@transitOrderMetaRange": {
+    "placeholders": {
+      "range": {
+        "type": "String",
+        "example": "01/01 - 01/31"
+      }
+    }
+  },
+  "transitOrderMetaRangeDays": "Data for {days} Days",
+  "@transitOrderMetaRangeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "transitOrderCapacityTitle": "Estimated Capacity: {size}",
+  "@transitOrderCapacityTitle": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderCapacityContent": "High capacity may cause execution errors. It's recommended to perform in batches and not export too many records at once.",
+  "transitOrderCapacityOk": "Capacity Okay",
+  "transitOrderCapacityWarn": "Capacity Warning",
+  "transitOrderCapacityDanger": "Capacity Danger",
+  "transitOrderItemTitle": "{date}",
+  "@transitOrderItemTitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "MMM d HH:mm:ss",
+        "isCustomDateFormat": "true"
+      }
+    }
+  },
+  "transitOrderItemMetaProductCount": "Product Count: {count}",
+  "@transitOrderItemMetaProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitOrderItemMetaPrice": "Total Price: {price}",
+  "@transitOrderItemMetaPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "transitOrderItemDialogTitle": "Order Details",
+  "transitExportPreviewBtn": "Preview",
+  "transitExportPreviewTitle": "Preview Output Result",
+  "transitExportBtn": "Import",
+  "transitImportPreviewBtn": "Preview",
+  "transitImportPreviewTitle": "Preview Import Result",
+  "transitImportPreviewHeader": "Note: Importing will remove the data not listed below. Please confirm before executing!",
+  "transitImportPreviewIngredientMetaAmount": "Amount: {amount}",
+  "@transitImportPreviewIngredientMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "transitImportPreviewIngredientMetaMaxAmount": "{exist, plural, =0{Not Set} other{Max Value: {value}}}",
+  "@transitImportPreviewIngredientMetaMaxAmount": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "transitImportPreviewIngredientHeader": "After import, old ingredients won't be removed to avoid affecting the \"Menu\" status.",
+  "transitImportPreviewQuantityHeader": "After import, old quantities won't be removed to avoid affecting the \"Menu\" status.",
+  "transitImportBtn": "Export",
+  "transitImportErrorColumnCount": "Insufficient data, {columns} columns required",
+  "@transitImportErrorColumnCount": {
+    "placeholders": {
+      "columns": {
+        "type": "int"
+      }
+    }
+  },
+  "transitImportErrorDuplicate": "This line will be ignored as the same item appeared earlier",
+  "transitImportColumnStatus": "{name, select, normal{(Normal)} staged{(New)} stagedIng{(New Ingredient)} stagedQua{(New Quantity)} updated{(Updated)} other{UNKNOWN}}",
+  "@transitImportColumnStatus": {
+    "description": "Additional status of the data displayed",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSDescription": "Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!",
+  "transitGSSheetNameLabel": "Sheet Title of {name}",
+  "@transitGSSheetNameLabel": {
+    "description": "Label of title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSheetNameUpdate": "Modify Title",
+  "transitGSSpreadsheetLabel": "Spreadsheet",
+  "transitGSSpreadsheetActionSelect": "Select Spreadsheet",
+  "transitGSSpreadsheetActionClear": "Clear Selection",
+  "transitGSSpreadsheetExportEmptyLabel": "Create & Export",
+  "transitGSSpreadsheetExportEmptyHint": "Create a new spreadsheet \"{name}\" and export data to it.",
+  "@transitGSSpreadsheetExportEmptyHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSpreadsheetExportExistLabel": "Specify & Export",
+  "@transitGSSpreadsheetExportExistLabel": {
+    "description": "Inform the user that data will be exported to the specified spreadsheet."
+  },
+  "transitGSSpreadsheetExportExistHint": "Export to spreadsheet \"{name}\"",
+  "@transitGSSpreadsheetExportExistHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSpreadsheetImportAllBtn": "Import All",
+  "transitGSSpreadsheetImportAllHint": "There will be no preview screen, directly overwrite all data.",
+  "transitGSSpreadsheetImportAllConfirmTitle": "Import All Data?",
+  "transitGSSpreadsheetImportAllConfirmContent": "All data from the selected sheets will be downloaded and completely overwrite local data.\nThis action cannot be undone.\n",
+  "transitGSSpreadsheetImportExistLabel": "Load Sheets Name",
+  "transitGSSpreadsheetImportExistHint": "Get all sheet names from the spreadsheet and ready to import.",
+  "transitGSSpreadsheetImportEmptyLabel": "Select Spreadsheet",
+  "transitGSSpreadsheetImportEmptyHint": "Once you choose the spreadsheet to import, you can start importing data.",
+  "transitGSSpreadsheetConfirm": "This action will {hint}",
+  "@transitGSSpreadsheetConfirm": {
+    "placeholders": {
+      "hint": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSpreadsheetSelectionHint": "{name, select, _{Enter the spreadsheet URL or spreadsheet ID} other{The current spreadsheet is \"{name}\"}}",
+  "@transitGSSpreadsheetSelectionHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSSpreadsheetModelDefaultName": "POS System Data",
+  "transitGSSpreadsheetModelExportDivider": "Select types to export",
+  "transitGSSpreadsheetModelImportDivider": "Select sheet to import",
+  "transitGSSpreadsheetOrderDefaultName": "POS System Orders",
+  "transitGSSpreadsheetSnackbarAction": "Open",
+  "transitGSProgressStatusAddSpreadsheet": "Adding Spreadsheet...",
+  "transitGSProgressStatusAddSheets": "Adding Sheets...",
+  "transitGSProgressStatusVerifyUser": "Verifying Identity",
+  "transitGSProgressStatusFetchLocalOrders": "Retrieving Local Data...",
+  "transitGSProgressStatusOverwriteOrders": "Overwriting Order Data...",
+  "transitGSProgressStatusAppendOrders": "Appended to {name}",
+  "@transitGSProgressStatusAppendOrders": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSModelStatus": "{model, select, menu{Updating Menu...} stock{Updating Inventory...} quantities{Updating Quantities...} replenisher{Updating Replenisher...} orderAttr{Exporting Customer Settings...} order{Exporting Orders...} orderDetailsAttr{Exporting Order Customer Settings...} orderDetailsProduct{Exporting Order Product Details...} orderDetailsIngredient{Exporting Order Ingredient Details...} other{UNKNOWN}}",
+  "@transitGSModelStatus": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSModelProductIngredientTitle": "Ingredient Information",
+  "transitGSModelProductIngredientNote": "Information of all product ingredients, format as follows:\n- Ingredient 1, Default usage amount\n  + Quantity a, Additional usage amount, Additional price, Additional cost\n  + Quantity b, Additional usage amount, Additional price, Additional cost\n- Ingredient 2, Default usage amount\n",
+  "transitGSModelReplenishmentTitle": "Replenishment Amount",
+  "transitGSModelReplenishmentNote": "The amount of specific ingredients during each replenishment, format as follows:\n- Ingredient 1, Replenishment amount\n- Ingredient 2, Replenishment amount\n",
+  "transitGSModelAttributeOptionTitle": "Customer Setting Options",
+  "transitGSModelAttributeOptionHeaderTs": "Timestamp",
+  "transitGSModelAttributeOptionHeaderMode": "Type",
+  "transitGSModelAttributeOptionHeaderOptions": "Options",
+  "transitGSModelAttributeOptionNote": "\"Options\" will have different meanings depending on the type of customer settings, format as follows:\n- Option 1, Is default, Option value\n- Option 2, Is default, Option value\n",
+  "transitGSOrderSettingTitle": "Order Export Settings",
+  "transitGSOrderSettingOverwriteLabel": "Overwrite Sheet",
+  "transitGSOrderSettingOverwriteHint": "Overwriting the sheet will start exporting from the first row.",
+  "transitGSOrderSettingTitlePrefixLabel": "Add Date Prefix",
+  "transitGSOrderSettingTitlePrefixHint": "Add a date prefix to the sheet name, for example, \"0101 - 0131 Order Data\".",
+  "transitGSOrderSettingRecommendCombination": "When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.",
+  "transitGSOrderSettingNameLabel": "Sheet Name",
+  "transitGSOrderSettingNameHelper": "Splitting the sheet allows for more flexible data analysis,\nfor example, you can query the total usage of a certain ingredient in order details.\n",
+  "transitGSOrderMetaOverwrite": "{value, select, true{Will overwrite} false{Won't overwrite} other{UNKNOWN}}",
+  "@transitGSOrderMetaOverwrite": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSOrderMetaTitlePrefix": "{value, select, true{Has date prefix} false{No date prefix} other{UNKNOWN}}",
+  "@transitGSOrderMetaTitlePrefix": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSOrderMetaMemoryWarning": "The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.\nFor detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).\n",
+  "transitGSOrderHeaderTs": "Timestamp",
+  "transitGSOrderHeaderTime": "Time",
+  "transitGSOrderHeaderPrice": "Price",
+  "transitGSOrderHeaderPaid": "Paid",
+  "transitGSOrderHeaderCost": "Cost",
+  "transitGSOrderHeaderProfit": "Profit",
+  "transitGSOrderHeaderProductCount": "Product Count",
+  "transitGSOrderHeaderProductPrice": "Product Price",
+  "transitGSOrderHeaderProductCatalog": "Product Category",
+  "transitGSOrderAttributeTitle": "Order Customer Settings",
+  "transitGSOrderAttributeHeaderTs": "Timestamp",
+  "transitGSOrderAttributeHeaderName": "Setting Category",
+  "transitGSOrderAttributeHeaderOption": "Option",
+  "transitGSOrderProductTitle": "Order Product Details",
+  "transitGSOrderProductHeaderTs": "Timestamp",
+  "transitGSOrderProductHeaderName": "Product",
+  "transitGSOrderProductHeaderCatalog": "Category",
+  "transitGSOrderProductHeaderCount": "Quantity",
+  "transitGSOrderProductHeaderPrice": "Single Price",
+  "transitGSOrderProductHeaderCost": "Single Cost",
+  "transitGSOrderProductHeaderOrigin": "Original Price",
+  "transitGSOrderIngredientTitle": "Order Ingredient Details",
+  "transitGSOrderIngredientHeaderTs": "Timestamp",
+  "transitGSOrderIngredientHeaderName": "Ingredient",
+  "transitGSOrderIngredientHeaderQuantity": "Quantity",
+  "transitGSOrderIngredientHeaderAmount": "Amount",
+  "transitGSOrderExpandableHint": "See next table",
+  "transitGSErrorCreateSpreadsheet": "Unable to Create Spreadsheet",
+  "transitGSErrorCreateSpreadsheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to edit spreadsheets.\n",
+  "transitGSErrorSpreadsheetEmpty": "Please Select a Spreadsheet First",
+  "transitGSErrorSpreadsheetIdEmpty": "Cannot be Empty",
+  "transitGSErrorSpreadsheetIdInvalid": "Invalid text. It must include:\n/spreadsheets/d/<ID>/\nOr provide the ID directly (combination of letters, numbers, underscores, and hyphens).\n",
+  "transitGSErrorCreateSheet": "Unable to Create Sheet in Spreadsheet",
+  "transitGSErrorCreateSheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to create sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.\n",
+  "transitGSErrorSheetRepeat": "Sheet name duplicate",
+  "transitGSErrorSheetEmpty": "Please select at least one sheet to export",
+  "transitGSErrorNonExistName": "Spreadsheet not found, has it been deleted?",
+  "transitGSErrorImportEmptySpreadsheet": "Must select a spreadsheet to import",
+  "transitGSErrorImportEmptySheet": "Must select a specific sheet to import",
+  "transitGSErrorImportEmptyData": "No values found in sheet",
+  "transitGSErrorImportNotFoundSpreadsheet": "Spreadsheet not found",
+  "transitGSErrorImportNotFoundSheets": "No data found for sheet \"{name}\"",
+  "@transitGSErrorImportNotFoundSheets": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitGSErrorImportNotFoundHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.\n",
+  "transitPTDescription": "Quick check, quick share.",
+  "transitPTCopyBtn": "Copy Text",
+  "transitPTCopySuccess": "Copied successfully",
+  "transitPTCopyWarning": "Copying too much text may cause system crash",
+  "transitPTImportHint": "Paste copied text here",
+  "transitPTImportHelper": "After pasting the text, it will analyze and determine the type of information to import.",
+  "transitPTImportErrorNotFound": "This text cannot match any corresponding service. Please refer to the exported text content.",
+  "transitPTFormatOrderPrice": "{hasProducts, plural, =0{Price ${price}.} other{Price ${price}, with ${productsPrice} from product prices.}}",
+  "@transitPTFormatOrderPrice": {
+    "placeholders": {
+      "hasProducts": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "productsPrice": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderMoney": "paid ${paid}, ingredients cost ${cost}.",
+  "@transitPTFormatOrderMoney": {
+    "placeholders": {
+      "paid": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderProductCount": "{differentType, plural, =0{There are {count} products, including: {products}.} other{There are {count} products ({type} catalogs) including:\n{products}.\n}}",
+  "@transitPTFormatOrderProductCount": {
+    "placeholders": {
+      "differentType": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "type": {
+        "type": "int"
+      },
+      "products": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderProduct": "{hasIngredient, plural, =0{{product} ({catalog}) {count} servings totaling ${price}, no ingredient settings} other{{product} ({catalog}) {count} servings totaling ${price}, ingredients include {ingredients}}}",
+  "@transitPTFormatOrderProduct": {
+    "placeholders": {
+      "hasIngredient": {
+        "type": "int"
+      },
+      "product": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderIngredient": "{amount, plural, =0{{ingredient} ({quantity})} other{{ingredient} ({quantity}), using {amount} amount}}",
+  "@transitPTFormatOrderIngredient": {
+    "description": "Details of ingredients and quantities for each product in the order list",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      },
+      "ingredient": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderNoQuantity": "Default quantity",
+  "transitPTFormatOrderOrderAttribute": "Customer's {options}",
+  "@transitPTFormatOrderOrderAttribute": {
+    "placeholders": {
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatOrderOrderAttributeItem": "{name} is {option}",
+  "@transitPTFormatOrderOrderAttributeItem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "option": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuMetaCatalog": "{count} categories",
+  "@transitPTFormatModelMenuMetaCatalog": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelMenuMetaProduct": "{count} products",
+  "@transitPTFormatModelMenuMetaProduct": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelMenuHeader": "This menu has {catalogs} categories, {products} products.",
+  "@transitPTFormatModelMenuHeader": {
+    "placeholders": {
+      "catalogs": {
+        "type": "int"
+      },
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelMenuHeaderPrefix": "This menu has",
+  "@transitPTFormatModelMenuHeaderPrefix": {
+    "description": "This is used to check if this text is a menu"
+  },
+  "transitPTFormatModelMenuCatalog": "Category {index} is called {catalog}, {details}.",
+  "@transitPTFormatModelMenuCatalog": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuCatalogDetails": "{count, plural, =0{No products set} other{Total {count} products}}",
+  "@transitPTFormatModelMenuCatalogDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelMenuProduct": "Product {index} is called {name}, with price of ${price}, cost ${cost}, {details}.",
+  "@transitPTFormatModelMenuProduct": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuProductDetails": "{count, plural, =0{It has no set ingredients} other{It has {count} ingredients: {names}. {details}.}}",
+  "@transitPTFormatModelMenuProductDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuIngredient": "each product default requires {amount} {name}, {details}",
+  "@transitPTFormatModelMenuIngredient": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuIngredientDetails": "{count, plural, =0{Unable to adjust quantity} other{It also has {count} different quantities: {quantities}}}",
+  "@transitPTFormatModelMenuIngredientDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "quantities": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelMenuQuantity": "Change each product to use additional {amount} ingredient and additional product price ${price} and additional cost ${cost}",
+  "@transitPTFormatModelMenuQuantity": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelStockMetaIngredient": "{count} ingredients",
+  "@transitPTFormatModelStockMetaIngredient": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelStockHeader": "The inventory has {count} ingredients in total.",
+  "@transitPTFormatModelStockHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelStockHeaderPrefix": "The inventory has",
+  "@transitPTFormatModelStockHeaderPrefix": {
+    "description": "This is used to check if this text is stock"
+  },
+  "transitPTFormatModelStockIngredient": "Ingredient at {index} is called {name}, with {amount} amount {details}.",
+  "@transitPTFormatModelStockIngredient": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelStockIngredientDetails": "{exist, plural, =0{} other{, with a maximum of {max} pieces}}",
+  "@transitPTFormatModelStockIngredientDetails": {
+    "description": "String(max) are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelQuantitiesMetaQuantity": "{count} quantities",
+  "@transitPTFormatModelQuantitiesMetaQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelQuantitiesHeader": "{count} quantities have been set.",
+  "@transitPTFormatModelQuantitiesHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelQuantitiesHeaderSuffix": "quantities have been set.",
+  "@transitPTFormatModelQuantitiesHeaderSuffix": {
+    "description": "This is used to check if this text is quantities"
+  },
+  "transitPTFormatModelQuantitiesQuantity": "Quantity at {index} is called {name}, which defaults to multiplying ingredient quantity by {prop}.",
+  "@transitPTFormatModelQuantitiesQuantity": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "prop": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelReplenisherMetaReplenishment": "{count} replenishment methods",
+  "@transitPTFormatModelReplenisherMetaReplenishment": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelReplenisherHeader": "{count} replenishment methods have been set.",
+  "@transitPTFormatModelReplenisherHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelReplenisherHeaderSuffix": "replenishment methods have been set.",
+  "@transitPTFormatModelReplenisherHeaderSuffix": {
+    "description": "This is used to check if this text is replenishment quantity"
+  },
+  "transitPTFormatModelReplenisherReplenishment": "Replenishment method at {index} is called {name}, {details}.",
+  "@transitPTFormatModelReplenisherReplenishment": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelReplenisherReplenishmentDetails": "{count, plural, =0{It will not adjust inventory} other{It will adjust the inventory of {count} ingredients: {ingredients}}}",
+  "@transitPTFormatModelReplenisherReplenishmentDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelOaMetaOa": "{count} customer attributes",
+  "@transitPTFormatModelOaMetaOa": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelOaHeader": "{count} customer attributes have been set.",
+  "@transitPTFormatModelOaHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitPTFormatModelOaHeaderSuffix": "customer attributes have been set.",
+  "@transitPTFormatModelOaHeaderSuffix": {
+    "description": "This is used to check if this text is customer settings"
+  },
+  "transitPTFormatModelOaOa": "Attribute at {index} is called {name}, belongs to {mode} type, {details}.",
+  "@transitPTFormatModelOaOa": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelOaOaDetails": "{count, plural, =0{it has no set options} other{it has {count} options: {options}}}",
+  "@transitPTFormatModelOaOaDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelOaDefaultOption": "Default",
+  "transitPTFormatModelOaModeValue": "option value is {value}",
+  "@transitPTFormatModelOaModeValue": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "appTitle": "POS System",
+  "actSuccess": "Successful!",
+  "@actSuccess": {
+    "description": "Action executed successfully and displayed on the Snackbar."
+  },
+  "actError": "Unknown error occurred.",
+  "@actError": {
+    "description": "Error message displayed on the Snackbar when an error occurs."
+  },
+  "actMoreInfo": "More",
+  "@actMoreInfo": {
+    "description": "Button on the Snackbar to show more details."
+  },
+  "singleChoice": "Select One",
+  "@singleChoice": {
+    "description": "Reminder to the user that only one option can be selected at a time."
+  },
+  "multiChoices": "Select Multiple",
+  "@multiChoices": {
+    "description": "Reminder to the user that multiple options can be selected."
+  },
+  "totalCount": "{count} items",
+  "@totalCount": {
+    "description": "Total count displayed on the ListView.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "searchCount": "Found {count} results",
+  "@searchCount": {
+    "description": "Total count displayed on the SearchScaffold.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "dialogDeletionTitle": "Delete Confirmation",
+  "@dialogDeletionTitle": {
+    "description": "Title displayed on the DeleteDialog."
+  },
+  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\\n\\n{more}This action cannot be undone!",
+  "@dialogDeletionContent": {
+    "description": "Content displayed on the DeleteDialog.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Veggie Sandwich"
+      },
+      "more": {
+        "type": "String",
+        "description": "More details about the side effects of deletion",
+        "example": "What other impacts deleting this item will have"
+      }
+    }
+  },
+  "imageHolderCreate": "Tap to add image",
+  "imageHolderUpdate": "Click to update image",
+  "emptyBodyTitle": "Oops! It's empty here.",
+  "@emptyBodyTitle": {
+    "description": "Text displayed on EmptyBody, informing the user that there are no items yet. This is the default text."
+  },
+  "emptyBodyAction": "Set Up Now",
+  "btnNavTo": "View",
+  "@btnNavTo": {
+    "description": "Button text to navigate to another screen in trailing."
+  },
+  "semanticsPercentileBar": "Currently {percent} of total",
+  "@semanticsPercentileBar": {
+    "placeholders": {
+      "percent": {
+        "type": "num",
+        "format": "percentPattern"
+      }
+    }
+  },
+  "invalidIntegerType": "{field} must be an integer.",
+  "@invalidIntegerType": {
+    "description": "Warning message when the input is not an integer.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidNumberType": "{field} must be a number.",
+  "@invalidNumberType": {
+    "description": "Warning message when the input is not a number.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidNumberPositive": "{field} cannot be negative.",
+  "@invalidNumberPositive": {
+    "description": "Warning message when the input is not positive.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidNumberMaximum": "{field} cannot exceed {maximum}.",
+  "@invalidNumberMaximum": {
+    "description": "Warning message when the input exceeds the maximum value.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "maximum": {
+        "type": "num",
+        "description": "Maximum value",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "invalidNumberMinimum": "{field} cannot be less than {minimum}.",
+  "@invalidNumberMinimum": {
+    "description": "Warning message when the input is less than the minimum value.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "minimum": {
+        "type": "num",
+        "description": "Minimum value",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "invalidStringEmpty": "{field} cannot be empty.",
+  "@invalidStringEmpty": {
+    "description": "Warning message when no text is entered.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidStringMaximum": "{field} cannot exceed {maximum} characters.",
+  "@invalidStringMaximum": {
+    "description": "Warning message when the input exceeds the maximum character limit.",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "maximum": {
+        "type": "int",
+        "description": "Maximum number of characters"
+      }
+    }
+  },
+  "singleMonth": "Single Month",
+  "@singleMonth": {
+    "description": "One of the units for calendar period conversion."
+  },
+  "singleWeek": "Single Week",
+  "@singleWeek": {
+    "description": "One of the units for calendar period conversion."
+  },
+  "twoWeeks": "Two Weeks",
+  "@twoWeeks": {
+    "description": "One of the units for calendar period conversion."
+  },
+  "orderAttributeTitle": "Customer Settings",
+  "orderAttributeDescription": "Information for analysis such as dine-in, takeout, etc.",
+  "orderAttributeTitleCreate": "Add Customer Setting",
+  "orderAttributeTitleUpdate": "Edit Customer Setting",
+  "orderAttributeTitleReorder": "Reorder Customer Settings",
+  "orderAttributeEmptyBody": "Customer settings help us track who comes to consume, such as:\n20-30 years old, takeout, office workers, etc.\n",
+  "orderAttributeHeaderInfo": "Customer Settings",
+  "@orderAttributeHeaderInfo": {
+    "description": "Displayed on the upper rectangle in homepage"
+  },
+  "orderAttributeTutorialTitle": "Customer Settings",
+  "orderAttributeTutorialContent": "This is where you set customer information, such as dine-in, takeout, office worker, etc.\nThis information helps us track who comes to consume and make better business strategies.\n",
+  "orderAttributeMetaMode": "Mode: {name}",
+  "@orderAttributeMetaMode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeMetaDefault": "Default: {name}",
+  "@orderAttributeMetaDefault": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeMetaNoDefault": "Not set as default",
+  "orderAttributeModeDivider": "Customer Setting Mode",
+  "orderAttributeModeName": "{name, select, statOnly{Normal} changePrice{Price Change} changeDiscount{Discount} other{UNKNOWN}}",
+  "@orderAttributeModeName": {
+    "description": "name"
+  },
+  "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the menu price.} changePrice{Selecting this setting may affect the price. For example: Takeout + $30, Eco Cup - $5.} changeDiscount{Selecting this setting will affect the total price based on the discount. For example: Dine-in + 10% service charge, Friends & Family Discount - 10%.} other{UNKNOWN}}",
+  "@orderAttributeModeHelper": {
+    "description": "Explanation of customer setting categories",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeNameLabel": "Customer Setting Name",
+  "orderAttributeNameHint": "e.g., Customer Age",
+  "orderAttributeNameErrorRepeat": "Name already exists",
+  "orderAttributeOptionTitleCreate": "Add Option",
+  "orderAttributeOptionTitleCreateWith": "Add option for {name}",
+  "@orderAttributeOptionTitleCreateWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeOptionTitleUpdate": "Edit Option",
+  "orderAttributeOptionTitleReorder": "Reorder Options",
+  "orderAttributeOptionMetaDefault": "Default",
+  "orderAttributeOptionNameLabel": "Option Name",
+  "orderAttributeOptionNameHelper": "For example, possible options for age include:\n- Under 20\n- 20 to 30\n",
+  "orderAttributeOptionNameErrorRepeat": "Name already exists",
+  "orderAttributeOptionModeTitle": "Option Mode",
+  "orderAttributeOptionModeHelper": "{name, select, statOnly{No need to set \"Discount\" or \"Price Change\" because this setting is \"Normal\"} changePrice{Selecting this option during ordering will apply this price change} changeDiscount{Selecting this option during ordering will apply this discount} other{UNKNOWN}}",
+  "@orderAttributeOptionModeHelper": {
+    "description": "Explanation of mode",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeOptionModeHint": "{name, select, statOnly{} changePrice{For example: -30 means decrease by thirty dollars} changeDiscount{For example: 80 means \"20% off\"} other{UNKNOWN}}",
+  "@orderAttributeOptionModeHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeOptionToDefaultLabel": "Set as Default",
+  "orderAttributeOptionToDefaultHelper": "Set this option as the default value, which will be used for each order by default.\n",
+  "orderAttributeOptionToDefaultConfirmChangeTitle": "Override Option Default?",
+  "orderAttributeOptionToDefaultConfirmChangeContent": "Doing this will make \"{name}\" no longer the default value",
+  "@orderAttributeOptionToDefaultConfirmChangeContent": {
+    "description": "Prompt to ensure the user knows what the original default value was",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeValueEmpty": "No price impact",
+  "orderAttributeValueFree": "Free",
+  "orderAttributeValueDiscountIncrease": "Increase to {value} times",
+  "@orderAttributeValueDiscountIncrease": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderAttributeValueDiscountDecrease": "Decrease to {value} times",
+  "@orderAttributeValueDiscountDecrease": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderAttributeValuePriceIncrease": "Increase by {value} dollars",
+  "@orderAttributeValuePriceIncrease": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "orderAttributeValuePriceDecrease": "Decrease by {value} dollars",
+  "@orderAttributeValuePriceDecrease": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "menuTitle": "Menu",
+  "menuSubtitle": "Categories, Products",
+  "menuTutorialTitle": "Create Your Menu",
+  "menuTutorialContent": "Let's start by creating a menu!",
+  "menuSearchHint": "Search for products, ingredients, quantities",
+  "menuSearchNotFound": "Couldn't find relevant information. Did you misspell something?",
+  "menuCatalogHeaderInfo": "Categories",
+  "@menuCatalogHeaderInfo": {
+    "description": "Displayed on the upper rectangle in homepage"
+  },
+  "menuCatalogEmptyBody": "Similar \"products\" will be grouped under \"Categories\",\nmaking it convenient for ordering, such as:\n\"Cheese Burger\", \"Veggie Burger\" integrated into \"Burgers\"\n\"Plastic Bag\", \"Eco Cup\" integrated into \"Others\"\n",
+  "menuCatalogTitleCreate": "Add Category",
+  "@menuCatalogTitleCreate": {
+    "description": "FloatingActionButton description on the menu page"
+  },
+  "menuCatalogTitleUpdate": "Edit Category",
+  "menuCatalogTitleReorder": "Reorder Categories",
+  "menuCatalogDialogDeletionContent": "{count, plural, =0{No products inside} other{Will delete {count} products together}}",
+  "@menuCatalogDialogDeletionContent": {
+    "description": "Warning message when deleting product categories on the menu page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menuCatalogNameLabel": "Category Name",
+  "menuCatalogNameHint": "e.g., Burgers",
+  "menuCatalogNameErrorRepeat": "Name already exists. Please choose a different name!",
+  "menuCatalogEmptyProducts": "No products set yet",
+  "menuProductHeaderInfo": "Products",
+  "@menuProductHeaderInfo": {
+    "description": "Displayed on the upper rectangle in homepage"
+  },
+  "menuProductEmptyBody": "\"Products\" are the basic units in the menu, such as:\n\"Cheese Burger\", \"Cola\"\n",
+  "menuProductTitleCreate": "Add Product",
+  "menuProductTitleUpdate": "Edit Product",
+  "menuProductTitleReorder": "Reorder Products",
+  "menuProductTitleUpdateImage": "Update Photo",
+  "menuProductMetaTitle": "Product",
+  "@menuProductMetaTitle": {
+    "description": "Prefix for meta, so users know this is product meta info, not category"
+  },
+  "menuProductMetaPrice": "Price: {price}",
+  "@menuProductMetaPrice": {
+    "description": "Price of the product",
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "menuProductMetaCost": "Cost: {cost}",
+  "@menuProductMetaCost": {
+    "description": "Cost of the product",
+    "placeholders": {
+      "cost": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "menuProductMetaEmpty": "No ingredients set",
+  "@menuProductMetaEmpty": {
+    "description": "Text displayed in the subtitle in the product list"
+  },
+  "menuProductNameLabel": "Product Name",
+  "menuProductNameHint": "e.g., Cheeseburger",
+  "menuProductNameErrorRepeat": "Product name already exists",
+  "menuProductPriceLabel": "Product Price",
+  "menuProductPriceHint": "Price displayed on the order page",
+  "menuProductCostLabel": "Product Cost",
+  "menuProductCostHint": "Used to calculate profit, should be less than the price",
+  "menuProductEmptyIngredients": "No ingredients set yet",
+  "menuIngredientEmptyBody": "You can set ingredients and other information for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients\n",
+  "menuIngredientTitleCreate": "Add Ingredient",
+  "menuIngredientTitleUpdate": "Edit Ingredient",
+  "menuIngredientTitleReorder": "Reorder Ingredients",
+  "menuIngredientMetaAmount": "Amount: {amount}",
+  "@menuIngredientMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "menuIngredientSearchLabel": "Search Ingredients",
+  "menuIngredientSearchHelper": "After adding ingredient, you can set related information in \"Inventory\".",
+  "menuIngredientSearchHint": "e.g., Cheese",
+  "menuIngredientSearchAdd": "Add Ingredient \"{name}\"",
+  "@menuIngredientSearchAdd": {
+    "description": "Button to add ingredient if search result not found",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "menuIngredientSearchErrorEmpty": "Ingredient must be set, please click to set.",
+  "menuIngredientSearchErrorRepeat": "Product already has the same ingredient, cannot select repeatedly.",
+  "menuIngredientAmountLabel": "Amount Used",
+  "menuIngredientAmountHelper": "Default amount used. If quantity of ingredient can be adjusted for the dish, please set in \"Quantity\".",
+  "menuQuantityTitleCreate": "Add Quantity",
+  "menuQuantityTitleUpdate": "Edit Quantity",
+  "menuQuantityMetaAmount": "Amount: {amount}",
+  "@menuQuantityMetaAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "menuQuantityMetaAdditionalPrice": "Price: {price}",
+  "@menuQuantityMetaAdditionalPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "menuQuantityMetaAdditionalCost": "Cost: {cost}",
+  "@menuQuantityMetaAdditionalCost": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "menuQuantitySearchLabel": "Search Quantity",
+  "menuQuantitySearchHelper": "After adding ingredient quantity, you can set related information in \"Quantity\".",
+  "menuQuantitySearchHint": "e.g., Large, Small",
+  "menuQuantitySearchAdd": "Add Quantity \"{name}\"",
+  "@menuQuantitySearchAdd": {
+    "description": "Button to add quantity if search result not found",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "menuQuantitySearchErrorEmpty": "Quantity must be set, please click to set.",
+  "menuQuantitySearchErrorRepeat": "Product already has the same quantity, cannot select repeatedly.",
+  "menuQuantityAmountLabel": "Amount Used",
+  "menuQuantityAdditionalPriceLabel": "Additional Price",
+  "menuQuantityAdditionalPriceHelper": "Set to 0 to indicate no additional charge for extra (or less) quantity.",
+  "menuQuantityAdditionalCostLabel": "Additional Cost",
+  "menuQuantityAdditionalCostHelper": "Additional cost can be negative, e.g., \"Less\" reduces ingredient usage, reducing cost accordingly.",
+  "cashierTab": "Cashier",
+  "cashierUnitLabel": "${unit}",
+  "@cashierUnitLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierCounterLabel": "Quantity",
+  "@cashierCounterLabel": {
+    "description": "Label when setting currency quantity."
+  },
+  "cashierToDefaultTitle": "Set as Default",
+  "cashierToDefaultTutorialTitle": "Cash Register Default Status",
+  "cashierToDefaultTutorialContent": "After setting the quantities of various currencies below,\nclick here to set the default status!\nThe set quantities will be the \"maximum\" for each currency status bar.\n",
+  "cashierToDefaultDialogTitle": "Adjust Cash Register Default?",
+  "cashierToDefaultDialogContent": "This will set the current cash register status as the default status.\nThis action will override previous settings.\n",
+  "cashierChangerTitle": "Changer",
+  "cashierChangerButton": "Apply",
+  "cashierChangerTutorialTitle": "Cash Register Money Changer",
+  "cashierChangerTutorialContent": "Exchange one hundred for 10 tens, for example.\nHelps to quickly adjust the cash register status.\n",
+  "cashierChangerErrorNoSelection": "Please select a combination to apply",
+  "cashierChangerErrorNotEnough": "Not enough ${unit}",
+  "@cashierChangerErrorNotEnough": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerErrorInvalidHead": "Cannot exchange {count} ${unit}",
+  "@cashierChangerErrorInvalidHead": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerErrorInvalidBody": "{count} ${unit}",
+  "@cashierChangerErrorInvalidBody": {
+    "description": "Concatenated multiple lines after `invalidHead` to form a complete sentence.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerFavoriteTab": "Favorites",
+  "cashierChangerFavoriteHint": "After selecting, please click \"Apply\" to use the combination.",
+  "cashierChangerFavoriteEmptyBody": "Here can help you quickly convert different currencies.",
+  "cashierChangerFavoriteItemFrom": "Exchange with {count} ${unit}",
+  "@cashierChangerFavoriteItemFrom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerFavoriteItemTo": "{count} ${unit}",
+  "@cashierChangerFavoriteItemTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierChangerCustomTab": "Custom",
+  "cashierChangerCustomAddBtn": "Add Favorite",
+  "cashierChangerCustomCountLabel": "Quantity",
+  "cashierChangerCustomUnitLabel": "Currency",
+  "cashierChangerCustomUnitAddBtn": "Add Currency",
+  "cashierChangerCustomDividerFrom": "Withdraw from Cash Register",
+  "cashierChangerCustomDividerTo": "Exchange",
+  "cashierSurplusTitle": "Surplus",
+  "cashierSurplusButton": "Surplus",
+  "cashierSurplusTutorialTitle": "Daily Surplus",
+  "cashierSurplusTutorialContent": "Surplus helps us at the end of each day,\ncalculate the difference between the current amount and the default amount.\n",
+  "cashierSurplusErrorEmptyDefault": "Default status not set yet",
+  "cashierSurplusTableHint": "Once you confirm that there are no issues with the cash register money, you can complete the surplus!",
+  "cashierSurplusColumnName": "{name, select, unit{Unit} currentCount{Current} diffCount{Difference} defaultCount{Default} other{UNKNOWN}}",
+  "cashierSurplusCounterLabel": "Quantity of ${unit}",
+  "@cashierSurplusCounterLabel": {
+    "description": "Allow users to customize currency when surplus.",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashierSurplusCounterShortLabel": "Quantity",
+  "@cashierSurplusCounterShortLabel": {
+    "description": "This is for display in error messages, e.g., \"Quantity cannot be 0\"."
+  },
+  "cashierSurplusCurrentTotalLabel": "Current Total",
+  "cashierSurplusCurrentTotalHelper": "The total amount the cash register should have now.\nIf you find that the cash and this value don't match, think about whether you used the cash register to buy something today?\n",
+  "cashierSurplusDiffTotalLabel": "Difference",
+  "cashierSurplusDiffTotalHelper": "The difference from the total amount of the cash register at the very beginning.\nThis can quickly help you understand how much money the cash register has gained today.\n",
+  "orderTitle": "Ordering",
+  "orderBtn": "Order",
+  "orderSnackbarCashierNotEnough": "Insufficient cash in the cashier!",
+  "orderSnackbarCashierUsingSmallMoney": "Using smaller denominations to give change",
+  "orderSnackbarCashierUsingSmallMoneyHelper": "When giving change to customers, if the cashier doesn't have the appropriate denominations, this message will appear.\n\nFor example, if the total is $65 and the customer pays $100, the change should be $35.\nIf the cashier only has two $10 bills and more than three $5 bills, this message will appear.\n\nTo avoid this prompt:\n• Go to the changer page and top up various denominations.\n• Go to the [settings page]({link}) to disable related prompts from the cashier.\n",
+  "@orderSnackbarCashierUsingSmallMoneyHelper": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "orderActionCheckout": "Checkout",
+  "@orderActionCheckout": {
+    "description": "Proceed to the next step after confirming the items in your cart"
+  },
+  "orderActionExchange": "Exchange",
+  "orderActionStash": "Stash",
+  "orderActionReview": "Order History",
+  "orderLoaderMetaTotalRevenue": "Revenue: {revenue}",
+  "@orderLoaderMetaTotalRevenue": {
+    "description": "Total revenue from orders in the order list",
+    "placeholders": {
+      "revenue": {
+        "type": "String"
+      }
+    }
+  },
+  "orderLoaderMetaTotalCost": "Cost: {cost}",
+  "@orderLoaderMetaTotalCost": {
+    "description": "Total cost from orders in the order list",
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "orderLoaderMetaTotalCount": "Count: {count}",
+  "@orderLoaderMetaTotalCount": {
+    "description": "Total number of orders in the order list",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "orderLoaderEmpty": "No order records found",
+  "orderCatalogListEmpty": "No product categories set yet",
+  "orderProductListTutorialTitle": "Start Ordering!",
+  "orderProductListTutorialContent": "Ordering through images is more convenient!\nYou can go to \"Settings\" > \"[Items Per Row]({link})\" to adjust\nand allow text-only ordering here.\n",
+  "@orderProductListTutorialContent": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartActionBulkify": "Bulk Actions",
+  "orderCartActionToggle": "Toggle",
+  "orderCartActionSelectAll": "Select All",
+  "orderCartActionDiscount": "Discount",
+  "orderCartActionDiscountLabel": "Discount",
+  "orderCartActionDiscountHint": "e.g., 30 means 70% off",
+  "orderCartActionDiscountHelper": "The number here represents the \"percentage\" off, i.e., 85 means 15% off. For precise prices, use \"Price Change\".",
+  "orderCartActionDiscountSuffix": "%",
+  "orderCartActionChangePrice": "Price Change",
+  "orderCartActionChangePriceLabel": "Price",
+  "orderCartActionChangePriceHint": "Price per item",
+  "orderCartActionChangePricePrefix": "$",
+  "orderCartActionChangePriceSuffix": "",
+  "orderCartActionChangeCount": "Change Quantity",
+  "orderCartActionChangeCountLabel": "Quantity",
+  "orderCartActionChangeCountHint": "Quantity of items",
+  "orderCartActionChangeCountSuffix": "items",
+  "orderCartActionFree": "Free",
+  "orderCartActionDelete": "Delete",
+  "orderCartSnapshotTutorialTitle": "Cart",
+  "orderCartSnapshotTutorialContent": "To make selecting products more convenient,\nwe've placed the products you've ordered here.\nIf you need a layout that shows all information at once (suitable for large screens),\ngo to \"Settings\" > \"[Ordering Layout]({link})\" to adjust.\n",
+  "@orderCartSnapshotTutorialContent": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartSnapshotEmpty": "No items in cart",
+  "orderCartMetaTotalPrice": "Price: {price}",
+  "@orderCartMetaTotalPrice": {
+    "description": "Total price of items in the cart",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartMetaTotalCount": "Count: {count}",
+  "@orderCartMetaTotalCount": {
+    "description": "Total number of items in the cart",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "orderCartProductPrice": "{price, select, 0{Free} other{${price}}}",
+  "@orderCartProductPrice": {
+    "description": "Price of the product",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartProductIncrease": "Increase Quantity",
+  "orderCartProductDefaultQuantity": "Default Quantity",
+  "orderCartProductIngredient": "{name} ({quantity})",
+  "@orderCartProductIngredient": {
+    "description": "Ingredients and quantities of each item in the product list when ordering",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartIngredientStatus": "{status, select, emptyCart{Please select a product to set its ingredients} differentProducts{Please select the same product to set its ingredients} noNeedIngredient{This product doesn't require ingredient settings} other{UNKNOWN}}",
+  "@orderCartIngredientStatus": {
+    "description": "Prompt to users during ordering if the selected product doesn't require ingredient settings",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCartQuantityNotAble": "Please select an ingredient to set quantity",
+  "@orderCartQuantityNotAble": {
+    "description": "During ordering, select the ingredient to set the quantity"
+  },
+  "orderCartQuantityLabel": "{name} ({amount})",
+  "@orderCartQuantityLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderCartQuantityDefaultLabel": "Default ({amount})",
+  "@orderCartQuantityDefaultLabel": {
+    "description": "During ingredient setup, the quantity can be customized or set to default (no quantity used)",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "orderCheckoutEmptyCart": "Please make an order first.",
+  "orderCheckoutActionStash": "Stash",
+  "orderCheckoutActionConfirm": "Confirm",
+  "orderCheckoutStashTab": "Stash",
+  "orderCheckoutStashEmpty": "No items currently stashed.",
+  "orderCheckoutStashNoProducts": "No products",
+  "orderCheckoutStashActionCheckout": "Checkout",
+  "orderCheckoutStashActionRestore": "Restore",
+  "orderCheckoutStashDialogCalculator": "Checkout Calculator",
+  "orderCheckoutStashDialogRestoreTitle": "Restore Stashed Order",
+  "orderCheckoutStashDialogRestoreContent": "This action will override the current cart contents.",
+  "orderCheckoutStashDialogDeleteName": "order",
+  "orderCheckoutAttributeTab": "Customer Settings",
+  "orderCheckoutCashierTab": "Cashier",
+  "orderCheckoutCashierCalculatorLabelPaid": "Paid",
+  "orderCheckoutCashierCalculatorLabelChange": "Change",
+  "orderCheckoutCashierSnapshotLabelChange": "Change: {change}",
+  "@orderCheckoutCashierSnapshotLabelChange": {
+    "description": "Change given by the cashier after the customer's payment",
+    "placeholders": {
+      "change": {
+        "type": "String"
+      }
+    }
+  },
+  "orderCheckoutSnackbarPaidFailed": "Payment is less than the order amount.",
+  "orderObjectViewEmpty": "No order records found",
+  "orderObjectViewChange": "Change",
+  "orderObjectViewPriceTotal": "Total Price: {price}",
+  "@orderObjectViewPriceTotal": {
+    "description": "Total price information after ordering",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "orderObjectViewPriceProducts": "Product Price",
+  "orderObjectViewPriceAttributes": "Customer Settings Price",
+  "orderObjectViewCost": "Cost",
+  "orderObjectViewProfit": "Profit",
+  "orderObjectViewPaid": "Paid",
+  "orderObjectViewDividerAttribute": "Customer Settings",
+  "orderObjectViewDividerProduct": "Product Information",
+  "orderObjectViewProductPrice": "Price",
+  "orderObjectViewProductCost": "Cost",
+  "orderObjectViewProductCount": "Count",
+  "orderObjectViewProductSinglePrice": "Unit Price",
+  "orderObjectViewProductOriginalPrice": "Original Unit Price",
+  "orderObjectViewProductCatalog": "Product Category",
+  "orderObjectViewProductIngredient": "Ingredients",
+  "orderObjectViewProductDefaultQuantity": "Default",
+  "analysisTab": "Stats",
+  "analysisHistoryBtn": "Records",
+  "analysisHistoryTitle": "Order Records",
+  "analysisHistoryTitleEmpty": "No Order History Found",
+  "analysisHistoryCalendarTutorialTitle": "Calendar",
+  "analysisHistoryCalendarTutorialContent": "Swipe up and down to adjust the time period, such as month or week.\nSwipe left and right to adjust the date range.\n",
+  "analysisHistoryExportTutorialTitle": "Export Orders Data",
+  "analysisHistoryExportTutorialContent": "Export orders externally for further analysis or backup.\nYou can export multi-day orders in the \"Transit\" page.\n",
+  "analysisHistoryOrderListMetaPrice": "Price: {price}",
+  "@analysisHistoryOrderListMetaPrice": {
+    "description": "Price of specific orders in the order list.",
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "symbol": "$"
+        }
+      }
+    }
+  },
+  "analysisHistoryOrderListMetaPaid": "Paid: {paid}",
+  "@analysisHistoryOrderListMetaPaid": {
+    "description": "Payment amount for specific orders in the order list.",
+    "placeholders": {
+      "paid": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "symbol": "$"
+        }
+      }
+    }
+  },
+  "analysisHistoryOrderListMetaProfit": "Profit: {profit}",
+  "@analysisHistoryOrderListMetaProfit": {
+    "description": "Net profit for specific orders in the order list.",
+    "placeholders": {
+      "profit": {
+        "type": "num",
+        "format": "compactCurrency",
+        "optionalParameters": {
+          "symbol": "$"
+        }
+      }
+    }
+  },
+  "analysisHistoryOrderTitle": "Order Details",
+  "analysisHistoryOrderNotFound": "No relevant orders found",
+  "analysisHistoryOrderDeleteDialog": "Are you sure you want to delete the order for {name}?\nCash register and inventory data cannot be recovered.\nThis action cannot be undone.\n",
+  "@analysisHistoryOrderDeleteDialog": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisGoalsTitle": "Today's Summary",
+  "analysisGoalsCountTitle": "Order Count",
+  "analysisGoalsCountDescription": "The order count reflects the attractiveness of products to customers.\nIt represents the demand for your products in the market and helps you understand which products or time periods are most popular.\nA high order count may indicate the success of your pricing strategy or marketing activities and is one of the indicators of business model effectiveness.\nHowever, it's essential to note that simply pursuing a high order count may overlook profitability.\n",
+  "analysisGoalsRevenueTitle": "Revenue",
+  "analysisGoalsRevenueDescription": "Revenue represents the total sales amount and is an indicator of business scale.\nHigh revenue may indicate that your products are popular and selling well, but revenue alone cannot reflect the sustainability and profitability of the business.\nSometimes, to increase revenue, companies may adopt strategies such as price reductions, which may affect profitability.\n",
+  "analysisGoalsProfitTitle": "Profit",
+  "analysisGoalsProfitDescription": "Profit is the balance after deducting operating costs from operating income and is crucial for the company's ongoing operations.\nProfit directly reflects operational efficiency and cost management capabilities.\nUnlike revenue, profit considers the business expenses, including raw material costs, labor, rent, etc.\nIt's a more practical indicator that helps you evaluate the effectiveness and sustainability of operations.\n",
+  "analysisGoalsCostTitle": "Cost",
+  "analysisGoalsAchievedRate": "Profit Achievement\n{rate}\n",
+  "@analysisGoalsAchievedRate": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartTitle": "Chart Analysis",
+  "analysisChartTitleCreate": "Create Chart",
+  "analysisChartTitleReorder": "Reorder Charts",
+  "analysisChartTutorialTitle": "Chart Analysis",
+  "analysisChartTutorialContent": "With charts, you can visualize data changes more intuitively.\nStart designing charts to track your sales performance now!\n",
+  "analysisChartCardEmptyData": "No Data",
+  "analysisChartCardTitleUpdate": "Edit Chart",
+  "analysisChartMetricName": "{name, select, revenue{Revenue} cost{Cost} profit{Profit} count{Quantity} other{UNKNOWN}}",
+  "@analysisChartMetricName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartTargetName": "{name, select, order{Order} catalog{Category} product{Product} ingredient{Ingredient} attribute{Attribute} other{UNKNOWN}}",
+  "@analysisChartTargetName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartRangeYesterday": "Yesterday",
+  "analysisChartRangeToday": "Today",
+  "analysisChartRangeLastWeek": "Last Week",
+  "analysisChartRangeThisWeek": "This Week",
+  "analysisChartRangeLast7Days": "Last 7 Days",
+  "analysisChartRangeLastMonth": "Last Month",
+  "analysisChartRangeThisMonth": "This Month",
+  "analysisChartRangeLast30Days": "Last 30 Days",
+  "analysisChartRangeTabName": "{name, select, day{Date} week{Week} month{Month} custom{Custom} other{UNKNOWN}}",
+  "@analysisChartRangeTabName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartModalNameLabel": "Chart Name",
+  "analysisChartModalNameHint": "For example: Daily Revenue",
+  "analysisChartModalIgnoreEmptyLabel": "Ignore Empty Data",
+  "analysisChartModalIgnoreEmptyHelper": "Do not display if a product or metric has no data for that period.",
+  "analysisChartModalDivider": "Data Settings",
+  "analysisChartModalTypeLabel": "Chart Type",
+  "analysisChartModalTypeName": "{name, select, cartesian{Time Series Chart} other{UNKNOWN}}",
+  "@analysisChartModalTypeName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisChartModalMetricLabel": "Metrics to View",
+  "analysisChartModalMetricHelper": "Choose different types of metrics based on your objectives.",
+  "analysisChartModalTargetLabel": "Item Category",
+  "analysisChartModalTargetHelper": "Select the information to analyze in the chart.",
+  "analysisChartModalTargetErrorEmpty": "Please select an item category",
+  "analysisChartModalTargetItemLabel": "Item Selection",
+  "analysisChartModalTargetItemHelper": "Choose the items you want to observe, such as the quantity of a specific product within a certain period.",
+  "analysisChartModalTargetItemSelectAll": "Select All"
 }

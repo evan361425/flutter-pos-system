@@ -9,18 +9,17 @@ void main() {
     test('set', () {
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
-      CurrencySetting().updateRemotely(CurrencyTypes.usd);
+      CurrencySetting.instance.updateRemotely(CurrencyTypes.usd);
 
       verify(cache.set('currency', 1));
     });
 
     test('initialize', () {
       when(cache.get(any)).thenReturn(1);
-      final currency = CurrencySetting();
 
-      currency.initialize();
+      CurrencySetting.instance.initialize();
 
-      expect(currency.isInt, false);
+      expect(CurrencySetting.instance.isInt, false);
     });
 
     setUpAll(() {

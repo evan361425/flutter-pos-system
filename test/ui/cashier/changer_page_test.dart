@@ -187,7 +187,6 @@ void main() {
     });
 
     setUp(() {
-      CurrencySetting();
       Cashier();
     });
 

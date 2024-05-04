@@ -36,8 +36,8 @@ class OrderObjectView extends StatelessWidget {
           tail: order.cost.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectViewRevenue,
-          tail: order.revenue.toCurrency(),
+          head: S.orderObjectViewProfit,
+          tail: order.profit.toCurrency(),
         ),
         HeadTailTile(
           head: S.orderObjectViewPaid,
@@ -132,7 +132,7 @@ class _ProductTile extends StatelessWidget {
         for (final e in data.ingredients)
           HeadTailTile(
             head: e.ingredientName,
-            tailWidget: e.quantityName == null ? const HintText('預設') : null,
+            tailWidget: e.quantityName == null ? HintText(S.orderObjectViewProductDefaultQuantity) : null,
             tail: e.quantityName,
           ),
       ],

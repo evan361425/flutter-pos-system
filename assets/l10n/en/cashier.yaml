@@ -1,0 +1,102 @@
+$prefix: cashier
+tab: Cashier
+unitLabel:
+- '${unit}'
+- unit:
+counter:
+  label:
+  - Quantity
+  - Label when setting currency quantity.
+toDefault:
+  title: Set as Default
+  tutorial:
+    title: Cash Register Default Status
+    content: |
+      After setting the quantities of various currencies below,
+      click here to set the default status!
+      The set quantities will be the "maximum" for each currency status bar.
+  dialog:
+    title: Adjust Cash Register Default?
+    content: |
+      This will set the current cash register status as the default status.
+      This action will override previous settings.
+changer:
+  title: Changer
+  button: Apply
+  tutorial:
+    title: Cash Register Money Changer
+    content: |
+      Exchange one hundred for 10 tens, for example.
+      Helps to quickly adjust the cash register status.
+  error:
+    noSelection: Please select a combination to apply
+    notEnough:
+    - "Not enough ${unit}"
+    - unit:
+    invalidHead:
+    - "Cannot exchange {count} ${unit}"
+    - count: {type: int}
+      unit:
+    invalidBody:
+    - "{count} ${unit}"
+    - Concatenated multiple lines after `invalidHead` to form a complete sentence.
+    - count: {type: int}
+      unit:
+  favorite:
+    tab: Favorites
+    hint: After selecting, please click "Apply" to use the combination.
+    emptyBody: Here can help you quickly convert different currencies.
+    item:
+      from:
+      - Exchange with {count} ${unit}
+      - count: {type: int}
+        unit:
+      to:
+      - "{count} ${unit}"
+      - count: {type: int}
+        unit:
+  custom:
+    tab: Custom
+    addBtn: Add Favorite
+    count:
+      label: Quantity
+    unit:
+      label: Currency
+      addBtn: Add Currency
+    divider:
+      from: Withdraw from Cash Register
+      to: Exchange
+surplus:
+  title: Surplus
+  button: Surplus
+  tutorial:
+    title: Daily Surplus
+    content: |
+      Surplus helps us at the end of each day,
+      calculate the difference between the current amount and the default amount.
+  error:
+    emptyDefault: Default status not set yet
+  tableHint: Once you confirm that there are no issues with the cash register money, you can complete the surplus!
+  columnName:
+  - unit: Unit
+    currentCount: Current
+    diffCount: Difference
+    defaultCount: Default
+  counter:
+    label:
+    - Quantity of ${unit}
+    - Allow users to customize currency when surplus.
+    - unit:
+    shortLabel:
+    - Quantity
+    - This is for display in error messages, e.g., "Quantity cannot be 0".
+  currentTotal:
+    label: Current Total
+    helper: |
+      The total amount the cash register should have now.
+      If you find that the cash and this value don't match, think about whether you used the cash register to buy something today?
+  diffTotal:
+    label: Difference
+    helper: |
+      The difference from the total amount of the cash register at the very beginning.
+      This can quickly help you understand how much money the cash register has gained today.

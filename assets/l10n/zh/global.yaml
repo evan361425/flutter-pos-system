@@ -1,91 +1,35 @@
 appTitle: POS 系統
-actSuccess:
-- 執行成功
-- 執行行為成功，並顯示於 Snackbar 上的文字
-actError:
-- 發生未知錯誤
-- 當發生錯誤時，會顯示在 SnackBar 上的文字
-actMoreInfo:
-- 說明
-- SnackBar 上的按鈕，會顯示更多說明
-singleChoice:
-- 一次只能選擇一種
-- 用來提醒使用者，一次只能選擇一種選項
-multiChoices:
-- 可以選擇多種
-- 用來提醒使用者，可以選擇多種選項
-totalCount:
-- 總共 {count} 項
-- 顯示於 ListView 上的數量總數
-- count: {type: int, format: compactLong}
-searchCount:
-- 搜尋到 {count} 個結果
-- 顯示於 SearchScaffold 上的數量總數
-- count: {type: int, format: compact}
+actSuccess: 執行成功
+actError: 發生未知錯誤
+actMoreInfo: 說明
+singleChoice: 一次只能選擇一種
+multiChoices: 可以選擇多種
+totalCount: 總共 {count} 項
+searchCount: 搜尋到 {count} 個結果
 dialog:
-  deletionTitle:
-  - 刪除確認通知
-  - 顯示於 DeleteDialog 上的標題
-  deletionContent:
-  - 確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！
-  - 顯示於 DeleteDialog 上的內文
-  - name: {example: 蔬菜三明治}
-    more: {example: 刪除此項目會有什麼其他影響, description: 關於刪除帶來的副作用的更多說明}
+  deletionTitle: 刪除確認通知
+  deletionContent: 確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！
 imageHolder:
   create: 點選以新增圖片
   update: 點擊以更新圖片
 emptyBody:
-  title:
-  - 哎呀！這裡還是空的
-  - 顯示於 EmptyBody 的文字，告訴使用者現在並未有任何項目，這是預設的文字
+  title: 哎呀！這裡還是空的
   action: 立即設定
 btn:
-  navTo: 前往
+  navTo: 查看
 semantics:
-  percentileBar:
-  - 目前佔總數的 {percent}
-  - percent: {type: num, format: percentPattern}
+  percentileBar: 目前佔總數的 {percent}
 invalid:
   integer:
-    type:
-    - "{field}必須是整數"
-    - 當發現輸入不是整數時的警語
-    - field:
+    type: "{field}必須是整數"
   number:
-    type:
-    - "{field}必須是數字"
-    - 當發現輸入不是數字時的警語
-    - field:
-    positive:
-    - "{field}不能為負數"
-    - 當發現輸入不是正數時的警語
-    - field:
-    maximum:
-    - "{field}不能超過 {maximum}"
-    - 當發現輸入超過最大值時的警語
-    - field:
-      maximum: {type: num, description: 最大值，必須小於（且不等於）該值, format: decimalPattern}
-    minimum:
-    - "{field}不能低於 {minimum}"
-    - 當發現輸入低於最小值時的警語
-    - field:
-      minimum: {type: num, description: 最小值，必須大於（且不等於）該值, format: decimalPattern}
+    type: "{field}必須是數字"
+    positive: "{field}不能為負數"
+    maximum: "{field}不能超過 {maximum}"
+    minimum: "{field}不能低於 {minimum}"
   string:
-    empty:
-    - "{field}不能為空"
-    - 當發現尚未輸入文字的警語
-    - field:
-    maximum:
-    - "{field}不能超過 {maximum} 個字"
-    - 當發現輸入超過最大字數時的警語
-    - field:
-      maximum: {type: int, description: 最大字數}
-singleMonth:
-- 單月
-- 日曆週期轉換單位之一
-singleWeek:
-- 單週
-- 日曆週期轉換單位之一
-twoWeeks:
-- 雙週
-- 日曆週期轉換單位之一
+    empty: "{field}不能為空"
+    maximum: "{field}不能超過 {maximum} 個字"
+singleMonth: 單月
+singleWeek: 單週
+twoWeeks: 雙週

@@ -81,6 +81,7 @@ class CartActions extends StatelessWidget {
           validator: Validator.positiveNumber(S.orderCartActionChangePriceLabel),
           decoration: InputDecoration(
             hintText: S.orderCartActionChangePriceHint,
+            prefix: Text(S.orderCartActionChangePricePrefix),
             suffix: Text(S.orderCartActionChangePriceSuffix),
           ),
           action: (result) {

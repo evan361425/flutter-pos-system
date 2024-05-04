@@ -115,7 +115,7 @@ void main() {
     setUp(() {
       // setup currency
       when(cache.get('currency')).thenReturn(null);
-      CurrencySetting().initialize();
+      CurrencySetting.instance.initialize();
 
       // setup seller
       when(database.query(

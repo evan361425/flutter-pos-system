@@ -19,7 +19,7 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
   /// Which target to show, product, category, or ingredients
   OrderMetricTarget target;
 
-  /// Which metrics to show, price, cost, or revenue
+  /// Which metrics to show, revenue, cost, or profit
   List<OrderMetricType> metrics;
 
   /// Target's specified items IDs.
@@ -33,7 +33,7 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
     this.type = AnalysisChartType.cartesian,
     this.ignoreEmpty = false,
     this.target = OrderMetricTarget.order,
-    this.metrics = const [OrderMetricType.price],
+    this.metrics = const [OrderMetricType.revenue],
     this.targetItems = const [],
   }) {
     this.index = index;
@@ -47,7 +47,7 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
       type: object.type ?? AnalysisChartType.cartesian,
       ignoreEmpty: object.ignoreEmpty ?? false,
       target: object.target ?? OrderMetricTarget.order,
-      metrics: object.metrics ?? const [OrderMetricType.price],
+      metrics: object.metrics ?? const [OrderMetricType.revenue],
       targetItems: object.targetItems ?? const <String>[],
     );
   }

@@ -8,7 +8,6 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
@@ -30,7 +29,6 @@ void main() {
       )).thenReturn(true);
       final settings = SettingsProvider([
         LanguageSetting(),
-        CurrencySetting(),
       ]);
 
       return MultiProvider(
@@ -109,7 +107,7 @@ void main() {
           type: AnalysisChartType.cartesian,
           ignoreEmpty: false,
           target: OrderMetricTarget.order,
-          metrics: const [OrderMetricType.price],
+          metrics: const [OrderMetricType.revenue],
           targetItems: [],
         ),
       });
@@ -141,7 +139,7 @@ void main() {
       expect(chart.type.name, equals('cartesian'));
       expect(chart.ignoreEmpty, equals(false));
       expect(chart.target, OrderMetricTarget.order);
-      expect(chart.metrics, equals(const [OrderMetricType.price]));
+      expect(chart.metrics, equals(const [OrderMetricType.revenue]));
       expect(chart.targetItems, isEmpty);
       expect(chart.index, 0);
 

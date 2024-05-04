@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 
 import '../../mocks/mock_database.dart';
@@ -15,7 +14,7 @@ void main() {
       final widget = TransitOrderList(
         notifier: ValueNotifier(range),
         formatOrder: (o) => const Text('hi'),
-        memoryPredictor: (m) => m.price.toInt(),
+        memoryPredictor: (m) => m.revenue.toInt(),
         warning: 'hi there',
       );
 
@@ -59,8 +58,6 @@ void main() {
     setUpAll(() {
       initializeDatabase();
       initializeTranslator();
-
-      CurrencySetting().isInt = true;
     });
   });
 }

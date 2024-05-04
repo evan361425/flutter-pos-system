@@ -42,7 +42,7 @@ class _OrderLoaderState extends State<OrderLoader> {
       builder: widget.builder,
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
-          S.orderLoaderMetaTotalPrice(metrics.price.toCurrency()),
+          S.orderLoaderMetaTotalRevenue(metrics.revenue.toCurrency()),
           S.orderLoaderMetaTotalCost(metrics.cost.toCurrency()),
           S.orderLoaderMetaTotalCount(metrics.count),
         ])!;

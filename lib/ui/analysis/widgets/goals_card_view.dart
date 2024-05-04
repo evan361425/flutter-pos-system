@@ -61,20 +61,20 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         desc: S.analysisGoalsCountDescription,
       ),
       _GoalItem(
-        type: OrderMetricType.price,
-        current: metric.price,
-        goal: goal!.price,
-        style: style,
-        name: S.analysisGoalsPriceTitle,
-        desc: S.analysisGoalsPriceDescription,
-      ),
-      _GoalItem(
         type: OrderMetricType.revenue,
         current: metric.revenue,
         goal: goal!.revenue,
         style: style,
         name: S.analysisGoalsRevenueTitle,
         desc: S.analysisGoalsRevenueDescription,
+      ),
+      _GoalItem(
+        type: OrderMetricType.profit,
+        current: metric.revenue,
+        goal: goal!.profit,
+        style: style,
+        name: S.analysisGoalsProfitTitle,
+        desc: S.analysisGoalsProfitDescription,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +93,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
             children: goals,
           ),
         ),
-        if (goal!.revenue != 0)
+        if (goal!.profit != 0)
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -101,7 +101,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                 AspectRatio(
                   aspectRatio: 1.0,
                   child: CircularProgressIndicator(
-                    value: metric.revenue / goal!.revenue,
+                    value: metric.profit / goal!.profit,
                     color: Colors.pink,
                     backgroundColor: Colors.grey.withOpacity(0.2),
                     strokeWidth: 20,
@@ -110,7 +110,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                 Positioned.fill(
                   child: Center(
                     child: Text(
-                      S.analysisGoalsAchievedRate(formatter.format(metric.revenue / goal!.revenue)),
+                      S.analysisGoalsAchievedRate(formatter.format(metric.profit / goal!.profit)),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
@@ -130,8 +130,8 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       range.end,
       types: [
         OrderMetricType.count,
-        OrderMetricType.price,
         OrderMetricType.revenue,
+        OrderMetricType.profit,
         OrderMetricType.cost,
       ],
       ignoreEmpty: true,
@@ -147,8 +147,8 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       at: DateTime(0), // this is dummy data, we don't need the date.
       values: {
         'count': widget.calculator.calculate(reversed.map((e) => e.count)),
-        'price': widget.calculator.calculate(reversed.map((e) => e.price)),
         'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
+        'profit': widget.calculator.calculate(reversed.map((e) => e.profit)),
       },
     );
 

@@ -92,8 +92,8 @@ void main() {
             table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
                 '* FROM order_records WHERE createdAt BETWEEN $today AND $tomorrow) t'),
             rows: [
-              {'day': 1, 'price': 1.1, 'revenue': 2.2},
-              {'day': 3, 'price': 1.2, 'revenue': 2.3},
+              {'day': 1, 'revenue': 1.1, 'profit': 2.2},
+              {'day': 3, 'revenue': 1.2, 'profit': 2.3},
             ]);
 
         await tester.pumpWidget(buildApp(Chart(
@@ -122,17 +122,17 @@ void main() {
           final chip = find.byKey(Key('chart.metrics.${type.name}')).evaluate();
           return (chip.single.widget as ChoiceChip).selected;
         });
-        expect(types.map((e) => e.name).join(','), equals('price,cost,count'));
+        expect(types.map((e) => e.name).join(','), equals('revenue,cost,count'));
 
         await tester.tap(find.byKey(const Key('chart.metrics.cost')));
         await tester.pumpAndSettle();
-        expect(types.map((e) => e.name).join(','), equals('price,count'));
+        expect(types.map((e) => e.name).join(','), equals('revenue,count'));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
         await tester.tap(find.byKey(const Key('chart.target.product')));
         await tester.pumpAndSettle();
         // reset
-        expect(types.map((e) => e.name).join(','), equals('price'));
+        expect(types.map((e) => e.name).join(','), equals('revenue'));
         await tester.tap(find.byKey(const Key('chart.metrics.cost')));
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
@@ -256,15 +256,15 @@ void main() {
           ),
         );
         mockGetMetricsInPeriod(rows: [
-          {'day': 1, 'price': 1.1, 'count': 2},
-          {'day': 2, 'price': 2.2, 'count': 3},
+          {'day': 1, 'revenue': 1.1, 'count': 2},
+          {'day': 2, 'revenue': 2.2, 'count': 3},
         ]);
 
         await tester.pumpWidget(buildApp(
           Chart(
             type: AnalysisChartType.cartesian,
             id: 'test',
-            metrics: [OrderMetricType.price, OrderMetricType.count],
+            metrics: [OrderMetricType.revenue, OrderMetricType.count],
           ),
           range: range,
         ));
@@ -299,8 +299,8 @@ void main() {
 
       testWidgets('all types and ignore drag', (tester) async {
         mockGetMetricsInPeriod(rows: [
-          {'day': 1, 'price': 1.1, 'revenue': 1.1, 'cost': 1.1, 'count': 2},
-          {'day': 2, 'price': 2.2, 'revenue': 2.2, 'cost': 2.2, 'count': 3},
+          {'day': 1, 'revenue': 1.1, 'profit': 1.1, 'cost': 1.1, 'count': 2},
+          {'day': 2, 'revenue': 2.2, 'profit': 2.2, 'cost': 2.2, 'count': 3},
         ]);
 
         final chart = Chart(
@@ -409,7 +409,7 @@ void main() {
         await tester.tap(find.byKey(const Key('chart.target.attribute')));
         await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('chart.metric.price')), findsNothing);
+        expect(find.byKey(const Key('chart.metric.revenue')), findsNothing);
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -300));
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -300));

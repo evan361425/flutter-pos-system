@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
 class LanguageSetting extends Setting<Language> {
-  static const defaultLanguage = Language.zhTW;
+  static const defaultLanguage = Language.en;
 
   @override
   final String key = 'language';
