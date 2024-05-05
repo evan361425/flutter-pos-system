@@ -2,6 +2,7 @@ import 'package:image/image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart' hide XFile;
 import 'package:possystem/models/xfile.dart';
+import 'package:possystem/translator.dart';
 
 class ImageDumper {
   static ImageDumper instance = const ImageDumper._();
@@ -22,7 +23,7 @@ class ImageDumper {
       maxHeight: 512,
       maxWidth: 512,
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [AndroidUiSettings(toolbarTitle: '裁切')],
+      uiSettings: [AndroidUiSettings(toolbarTitle: S.imageBtnCrop)],
     );
 
     return result == null ? null : XFile(result.path);

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -33,12 +35,7 @@ class MyApp extends StatelessWidget {
     ],
   );
 
-  final SettingsProvider settings;
-
-  const MyApp({
-    super.key,
-    required this.settings,
-  });
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -48,7 +45,7 @@ class MyApp extends StatelessWidget {
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     return AnimatedBuilder(
-      animation: settings,
+      animation: SettingsProvider.instance,
       builder: (_, __) {
         return MaterialApp.router(
           routerConfig: router,
@@ -58,6 +55,9 @@ class MyApp extends StatelessWidget {
             final localizations = AppLocalizations.of(context)!;
 
             S = localizations;
+            Intl.systemLocale = S.localeName;
+            Intl.defaultLocale = S.localeName;
+            initializeDateFormatting(S.localeName);
 
             FlutterNativeSplash.remove();
 
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
           // depending on the user's locale.
-          locale: settings.getSetting<LanguageSetting>().value.locale,
+          locale: LanguageSetting.instance.value.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
 
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
           // SettingsController to display the correct theme.
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          themeMode: settings.getSetting<ThemeSetting>().value,
+          themeMode: ThemeSetting.instance.value,
         );
       },
     );

@@ -3,7 +3,7 @@ title: Data Transfer
 description: Importing and Exporting Store Information and Orders
 tutorial:
   title: First Step for Multiple Users and Devices
-  content: |
+  content: |-
     This is where you can import/export menu, inventory, order records, and other information.
     We provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.
 method:
@@ -132,7 +132,7 @@ GS:
         hint: There will be no preview screen, directly overwrite all data.
         confirm:
           title: Import All Data?
-          content: |
+          content: |-
             All data from the selected sheets will be downloaded and completely overwrite local data.
             This action cannot be undone.
       exist:
@@ -181,7 +181,7 @@ GS:
     product:
       ingredient:
         title: Ingredient Information
-        note: |
+        note: |-
           Information of all product ingredients, format as follows:
           - Ingredient 1, Default usage amount
             + Quantity a, Additional usage amount, Additional price, Additional cost
@@ -189,7 +189,7 @@ GS:
           - Ingredient 2, Default usage amount
     replenishment:
       title: Replenishment Amount
-      note: |
+      note: |-
         The amount of specific ingredients during each replenishment, format as follows:
         - Ingredient 1, Replenishment amount
         - Ingredient 2, Replenishment amount
@@ -199,7 +199,7 @@ GS:
         ts: Timestamp
         mode: Type
         options: Options
-      note: |
+      note: |-
         "Options" will have different meanings depending on the type of customer settings, format as follows:
         - Option 1, Is default, Option value
         - Option 2, Is default, Option value
@@ -215,7 +215,7 @@ GS:
       recommendCombination: When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.
       name:
         label: Sheet Name
-        helper: |
+        helper: |-
           Splitting the sheet allows for more flexible data analysis,
           for example, you can query the total usage of a certain ingredient in order details.
     meta:
@@ -227,7 +227,7 @@ GS:
       - 'true': Has date prefix
         'false': No date prefix
       - value:
-      memoryWarning: |
+      memoryWarning: |-
         The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.
         For detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).
     header:
@@ -268,7 +268,7 @@ GS:
       hint: See next table
   error:
     createSpreadsheet: Unable to Create Spreadsheet
-    createSpreadsheetHelper: |
+    createSpreadsheetHelper: |-
       Don't worry, it's usually easy to solve!
       Possible reasons include:
       • Unstable network conditions;
@@ -276,12 +276,12 @@ GS:
     spreadsheetEmpty: Please Select a Spreadsheet First
     spreadsheetId:
       empty: Cannot be Empty
-      invalid: |
+      invalid: |-
         Invalid text. It must include:
         /spreadsheets/d/<ID>/
         Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
     createSheet: Unable to Create Sheet in Spreadsheet
-    createSheetHelper: |
+    createSheetHelper: |-
       Don't worry, it's usually easy to solve!
       Possible reasons include:
       • Unstable network conditions;
@@ -299,7 +299,7 @@ GS:
       notFoundSheets:
       - No data found for sheet "{name}"
       - name:
-      notFoundHelper: |
+      notFoundHelper: |-
         Don't worry, it's usually easy to solve!
         Possible reasons include:
         • Unstable network conditions;
@@ -320,27 +320,29 @@ PT:
   format:
     order:
       price:
-      - =0: Price ${price}.
-        other: Price ${price}, with ${productsPrice} from product prices.
+      - =0: Total price ${price}.
+        other: Total price ${price}, {productsPrice} of them are product price.
       - hasProducts: {type: int, mode: plural}
         price:
         productsPrice:
       money:
-      - paid ${paid}, ingredients cost ${cost}.
+      - Paid ${paid}, cost ${cost}.
       - paid:
         cost:
       productCount:
-      - =0: 'There are {count} products, including: {products}.'
-        other: |
-          There are {count} products ({type} catalogs) including:
+      - =0: There is no product.
+        =1: |-
+          There is 1 product details are:
           {products}.
-      - differentType: {type: int, mode: plural}
-        count: {type: int}
-        type: {type: int}
+        other: |-
+          There are {count} products ({setCount} types of set) including:
+          {products}.
+      - count: {type: int, mode: plural}
+        setCount: {type: int}
         products:
       product:
-      - =0: '{product} ({catalog}) {count} servings totaling ${price}, no ingredient settings'
-        other: '{product} ({catalog}) {count} servings totaling ${price}, ingredients include {ingredients}'
+      - =0: '{count} of {product} ({catalog}), total price is ${price}, no ingredient settings'
+        other: '{count} of {product} ({catalog}), total price is ${price}, ingredients are {ingredients}'
       - hasIngredient: {type: int, mode: plural}
         product:
         catalog:
@@ -349,14 +351,14 @@ PT:
         ingredients:
       ingredient:
       - =0: "{ingredient} ({quantity})"
-        other: "{ingredient} ({quantity}), using {amount} amount"
+        other: "{ingredient} ({quantity}), used {amount}"
       - Details of ingredients and quantities for each product in the order list
       - amount: {type: num, mode: plural, format: decimalPattern}
         ingredient:
         quantity:
-      noQuantity: Default quantity
+      noQuantity: default quantity
       orderAttribute:
-      - Customer's {options}
+      - Customer's {options}.
       - options:
       orderAttributeItem:
       - '{name} is {option}'
@@ -379,17 +381,18 @@ PT:
         - This menu has
         - This is used to check if this text is a menu
         catalog:
-        - Category {index} is called {catalog}, {details}.
+        - Category {index} is called {catalog} and {details}.
         - Strings are used so that regex can be inserted here during import to obtain information
         - index:
           catalog:
           details:
         catalogDetails:
-        - =0: No products set
-          other: Total {count} products
+        - =0: it has no product
+          =1: it has one product
+          other: it has {count} products
         - count: {type: int, mode: plural}
         product:
-        - Product {index} is called {name}, with price of ${price}, cost ${cost}, {details}.
+        - Product {index} is called {name}, with price at ${price}, cost ${cost} and {details}
         - Strings are used so that regex can be inserted here during import to obtain information
         - index:
           name:
@@ -397,24 +400,30 @@ PT:
           cost:
           details:
         productDetails:
-        - =0: It has no set ingredients
-          other: 'It has {count} ingredients: {names}. {details}.'
+        - =0: it has no ingredient.
+          =1: |-
+            it has one ingredient: {names}.
+            Each product requires {details}.
+          other: |-
+            it has {count} ingredients: {names}.
+            Each product requires {details}.
         - count: {type: int, mode: plural}
           names:
           details:
         ingredient:
-        - each product default requires {amount} {name}, {details}
+        - '{amount} of {name} and {details}'
         - Strings are used so that regex can be inserted here during import to obtain information
         - amount:
           name:
           details:
         ingredientDetails:
-        - =0: Unable to adjust quantity
-          other: 'It also has {count} different quantities: {quantities}'
+        - =0: it is unable to adjust quantity
+          =1: 'it also has one different quantity {quantities}'
+          other: 'it also has {count} different quantities {quantities}'
         - count: {type: int, mode: plural}
           quantities:
         quantity:
-        - Change each product to use additional {amount} ingredient and additional product price ${price} and additional cost ${cost}
+        - quantity {amount} with additional price ${price} and cost ${cost}
         - Strings are used so that regex can be inserted here during import to obtain information
         - amount:
           price:
@@ -431,7 +440,7 @@ PT:
         - The inventory has
         - This is used to check if this text is stock
         ingredient:
-        - Ingredient at {index} is called {name}, with {amount} amount {details}.
+        - Ingredient at {index} is called {name}, with {amount} amount{details}.
         - Strings are used so that regex can be inserted here during import to obtain information
         - index:
           name:
@@ -478,10 +487,9 @@ PT:
           name:
           details:
         replenishmentDetails:
-        - =0: 'It will not adjust inventory'
-          other: 'It will adjust the inventory of {count} ingredients: {ingredients}'
+        - =0: 'it will not adjust inventory'
+          other: 'it will adjust the inventory of {count} ingredients'
         - count: {type: int, mode: plural}
-          ingredients:
       oa: # order attribute
         meta:
           oa:
@@ -501,11 +509,11 @@ PT:
           mode:
           details:
         oaDetails:
-        - =0: it has no set options
-          other: 'it has {count} options: {options}'
+        - =0: it has no options
+          =1: it has one option
+          other: 'it has {count} options'
         - count: {type: int, mode: plural}
-          options:
-        defaultOption: Default
+        defaultOption: default
         modeValue:
         - option value is {value}
         - value: {type: num, format: decimalPattern}

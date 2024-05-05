@@ -17,10 +17,8 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Features Page', () {
     Widget buildApp() {
-      final setting = SettingsProvider(SettingsProvider.allSettings);
-
       return ChangeNotifierProvider.value(
-        value: setting,
+        value: SettingsProvider.instance,
         builder: (_, __) => const MaterialApp(home: FeaturesPage()),
       );
     }

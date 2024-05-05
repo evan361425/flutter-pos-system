@@ -1,6 +1,10 @@
 import 'package:possystem/settings/setting.dart';
 
 class OrderOutlookSetting extends Setting<OrderOutlookTypes> {
+  static final instance = OrderOutlookSetting._();
+
+  OrderOutlookSetting._();
+
   @override
   String get key => 'feat.orderOutlook';
 

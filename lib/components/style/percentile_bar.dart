@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/util.dart';
+import 'package:intl/intl.dart';
 import 'package:possystem/translator.dart';
 
 class PercentileBar extends StatefulWidget {
@@ -21,6 +21,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
   late Animation<double> _curveAnimation;
+  final nf = NumberFormat.compact(locale: S.localeName);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('${widget.at.prettyString()}／${widget.total.prettyString()}'),
+            Text('${nf.format(widget.at)}／${nf.format(widget.total)}'),
           ],
         ),
         AnimatedBuilder(

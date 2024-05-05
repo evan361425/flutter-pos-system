@@ -63,11 +63,11 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
                 id: 'anal.add_chart',
                 title: S.analysisChartTutorialTitle,
                 message: S.analysisChartTutorialContent,
-                child: const RouteCircularButton(
-                  key: Key('anal.add_chart'),
+                child: RouteCircularButton(
+                  key: const Key('anal.add_chart'),
                   route: Routes.chartModal,
                   icon: KIcons.add,
-                  text: '新增圖表',
+                  text: S.analysisChartTitleCreate,
                 ),
               ),
               const SizedBox.square(dimension: 96.0),

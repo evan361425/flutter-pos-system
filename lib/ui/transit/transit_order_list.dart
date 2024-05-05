@@ -37,7 +37,8 @@ class TransitOrderList extends StatelessWidget {
     );
   }
 
-  /// 因為匯出時過大的資訊量會導致服務崩潰，所以先盡可能的計算大小。
+  /// Since exporting too much data will cause the service to crash,
+  /// calculate the size as much as possible first.
   Widget _buildMemoryInfo(BuildContext context, OrderMetrics metrics) {
     final size = memoryPredictor(metrics);
     final level = size < 500000 // 500KB

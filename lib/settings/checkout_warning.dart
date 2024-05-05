@@ -2,6 +2,10 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CheckoutWarningSetting extends Setting<CheckoutWarningTypes> {
+  static final instance = CheckoutWarningSetting._();
+
+  CheckoutWarningSetting._();
+
   // history reason for calling cashier
   @override
   String get key => 'feat.cashierWarning';

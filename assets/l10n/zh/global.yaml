@@ -1,7 +1,8 @@
 appTitle: POS 系統
-actSuccess: 執行成功
-actError: 發生未知錯誤
-actMoreInfo: 說明
+act:
+  success: 執行成功
+  error: 發生未知錯誤
+  moreInfo: 說明
 singleChoice: 一次只能選擇一種
 multiChoices: 可以選擇多種
 totalCount: 總共 {count} 項
@@ -9,14 +10,32 @@ searchCount: 搜尋到 {count} 個結果
 dialog:
   deletionTitle: 刪除確認通知
   deletionContent: 確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！
-imageHolder:
-  create: 點選以新增圖片
-  update: 點擊以更新圖片
+image:
+  holder:
+    create: 點選以新增圖片
+    update: 點擊以更新圖片
+  btn:
+    crop: 裁切
+  gallery:
+    title: 圖片管理
+    empty: 點擊開始匯入你的第一張照片！
+    action:
+      create: 新增圖片
+      delete: 刪除
+    snackbar:
+      deleteFailed: 有一個或多個圖片沒有刪成功。
+    selection:
+      title: 選擇相片
+      deleteConfirm: |-
+        將會刪除 {count} 個圖片
+        刪除之後會讓相關產品顯示不到圖片
 emptyBody:
   title: 哎呀！這裡還是空的
   action: 立即設定
 btn:
   navTo: 查看
+  signInWith:
+    google: 使用 Google 登入
 semantics:
   percentileBar: 目前佔總數的 {percent}
 invalid:

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/plain_text/views.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 
@@ -34,12 +35,38 @@ void main() {
       OrderSetter.setMetrics([order], countingAll: true);
       OrderSetter.setOrders([order]);
 
-      const message = '共 40 元，其中的 20 元是產品價錢。\n'
-          '付額 0 元、成分 30 元。\n'
-          '顧客的 oa-1 為 oao-1、oa-2 為 oao-2。\n'
-          '餐點有 10 份（2 種）包括：\n'
-          'p-1（c-1）5 份共 35 元，成份包括 i-1（q-1，使用 3 個）、i-2（預設份量）、i-3（預設份量，使用 -5 個）；\n'
-          'p-2（c-2）15 份共 300 元，沒有設定成分。';
+//       const message = '''Total price \$40, 20 of them are product price.
+// Paid \$0, cost \$30.
+// Customer's oa-1 is oao-1、oa-2 is oao-2.
+// There are 10 products (2 types of set) including:
+// 5 of p-1 (c-1), total price is \$35, ingredients are i-1 (q-1), used 3、i-2 (default quantity)、i-3 (default quantity), used -5；
+// 15 of p-2 (c-2), total price is \$300, no ingredient settings.
+// ''';
+      final message = [
+        S.transitPTFormatOrderPrice(1, '40', '20'),
+        S.transitPTFormatOrderMoney('0', '30'),
+        S.transitPTFormatOrderOrderAttribute([
+          S.transitPTFormatOrderOrderAttributeItem('oa-1', 'oao-1'),
+          S.transitPTFormatOrderOrderAttributeItem('oa-2', 'oao-2'),
+        ].join('、')),
+        S.transitPTFormatOrderProductCount(
+            10,
+            2,
+            [
+              S.transitPTFormatOrderProduct(
+                  1,
+                  'p-1',
+                  'c-1',
+                  5,
+                  '35',
+                  [
+                    S.transitPTFormatOrderIngredient(3, 'i-1', 'q-1'),
+                    S.transitPTFormatOrderIngredient(0, 'i-2', S.transitPTFormatOrderNoQuantity),
+                    S.transitPTFormatOrderIngredient(-5, 'i-3', S.transitPTFormatOrderNoQuantity),
+                  ].join('、')),
+              S.transitPTFormatOrderProduct(0, 'p-2', 'c-2', 15, '300', ''),
+            ].join('；\n')),
+      ].join('\n');
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -57,16 +84,22 @@ void main() {
       await tester.pumpAndSettle();
 
       final copied = await Clipboard.getData('text/plain');
+
       expect(
         copied?.text,
-        equals('3月4日 05:06:07\n$message'),
+        equals([S.transitOrderItemTitle(order.createdAt), message].join('\n')),
       );
     });
 
     test('format', () {
-      const expected = '共 0 元。\n'
-          '付額 0 元、成分 0 元。\n'
-          '餐點有 0 份包括：\n。';
+//       const expected = '''Total price \$0.
+// Paid \$0, cost \$0.
+// There is no product.''';
+      final expected = [
+        S.transitPTFormatOrderPrice(0, '0', '0'),
+        S.transitPTFormatOrderMoney('0', '0'),
+        S.transitPTFormatOrderProductCount(0, 0, ''),
+      ].join('\n');
 
       final actual = ExportOrderView.formatOrder(
         OrderObject(createdAt: DateTime.now()),

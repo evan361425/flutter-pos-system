@@ -6,7 +6,7 @@ logoutBtn: 登出
 elf:
   title: 建議
   description: 使用 Google 表單提供回饋
-  content: |
+  content: |-
     覺得這裡還少了什麼嗎？
     歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。
     也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。
@@ -36,7 +36,7 @@ checkoutWarning:
     onlyNotEnough: 僅不夠時顯示
     hideAll: 全部隱藏
   tip:
-  - showAll: |
+  - showAll: |-
       若使用小錢去找，顯示提示。
       例如 5 塊錢不夠了，開始用 5 個 1 塊去找錢
     onlyNotEnough: 當零錢不夠找的時候，顯示提示。

@@ -19,7 +19,9 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
   String name;
 
-  /// 是否是暫存的資料，並未存進檔案系統中，僅存在於記憶體中。
+  /// Whether the data is saved in the file system, only exists in memory.
+  ///
+  /// This is used to import/export data.
   ModelStatus status;
 
   Model({

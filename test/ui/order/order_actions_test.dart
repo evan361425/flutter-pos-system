@@ -20,10 +20,6 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
 
@@ -35,12 +31,6 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Actions', () {
     void prepareData() {
-      SettingsProvider([
-        OrderOutlookSetting(),
-        OrderAwakeningSetting(),
-        OrderProductAxisCountSetting(),
-      ]);
-
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),

@@ -6,7 +6,7 @@ _title:
   create: Add Customer Setting
   update: Edit Customer Setting
   reorder: Reorder Customer Settings
-emptyBody: |
+emptyBody: |-
   Customer settings help us track who comes to consume, such as:
   20-30 years old, takeout, office workers, etc.
 headerInfo:
@@ -14,7 +14,7 @@ headerInfo:
 - Displayed on the upper rectangle in homepage
 tutorial:
   title: Customer Settings
-  content: |
+  content: |-
     This is where you set customer information, such as dine-in, takeout, office worker, etc.
     This information helps us track who comes to consume and make better business strategies.
 meta:
@@ -56,7 +56,7 @@ option:
     default: Default
   name:
     label: Option Name
-    helper: |
+    helper: |-
       For example, possible options for age include:
       - Under 20
       - 20 to 30
@@ -77,7 +77,7 @@ option:
     - name:
   toDefault:
     label: Set as Default
-    helper: |
+    helper: |-
       Set this option as the default value, which will be used for each order by default.
     confirmChange:
       title: Override Option Default?

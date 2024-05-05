@@ -115,13 +115,13 @@ class SheetNamerState extends State<SheetNamer> {
 class SheetNamerProperties {
   final SheetType type;
 
-  // 表單標題
+  /// The name of the sheet
   String name;
 
-  // 初始是否啟用
+  /// Whether the sheet is enabled
   bool checked;
 
-  // 用作 autocomplete
+  /// Use as autocomplete
   Iterable<String>? hints;
 
   SheetNamerProperties(

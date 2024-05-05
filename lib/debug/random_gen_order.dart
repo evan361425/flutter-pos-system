@@ -124,7 +124,7 @@ class RandomGenerateOrderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _SettingPage())),
-      label: const Text('產生隨機餐點'),
+      label: const Text('Random Orders'),
       icon: const Icon(Icons.developer_mode_sharp),
     );
   }
@@ -141,6 +141,7 @@ class _SettingPageState extends State<_SettingPage> {
   final DateFormat dateFormat = DateFormat("yyyy-MM-dd");
   final _countController = TextEditingController(text: '1');
 
+  bool generating = false;
   late DateTime startFrom;
   late DateTime endTo;
 
@@ -151,7 +152,7 @@ class _SettingPageState extends State<_SettingPage> {
         leading: const PopButton(),
         actions: [
           TextButton(
-            onPressed: () => submit(context.read<Seller>()),
+            onPressed: generating ? null : () => submit(context.read<Seller>()),
             child: const Text('OK'),
           )
         ],
@@ -165,11 +166,11 @@ class _SettingPageState extends State<_SettingPage> {
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
-              labelText: '訂單數量',
-              hintText: '平均分配於時間區間',
+              labelText: 'Count',
+              hintText: 'It will be distributed in the time interval.',
             ),
             maxLength: 5,
-            validator: Validator.positiveInt('訂單數量', maximum: 9999, minimum: 1),
+            validator: Validator.positiveInt('Count', maximum: 9999, minimum: 1),
           ),
           const SizedBox(height: 8.0),
           InkWell(
@@ -207,6 +208,8 @@ class _SettingPageState extends State<_SettingPage> {
   }
 
   void submit(Seller seller) async {
+    setState(() => generating = true);
+
     final count = int.tryParse(_countController.text);
     final result = generateOrder(
       orderCount: count ?? 0,
@@ -216,7 +219,7 @@ class _SettingPageState extends State<_SettingPage> {
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
     if (mounted) {
-      showSnackBar(context, '成功產生 ${result.length} 個訂單');
+      showSnackBar(context, 'Generate ${result.length} orders successfully');
 
       Navigator.of(context).pop();
     }

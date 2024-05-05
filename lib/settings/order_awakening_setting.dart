@@ -1,6 +1,10 @@
 import 'package:possystem/settings/setting.dart';
 
 class OrderAwakeningSetting extends Setting<bool> {
+  static final instance = OrderAwakeningSetting._();
+
+  OrderAwakeningSetting._();
+
   @override
   String get key => 'feat.orderAwakening';
 

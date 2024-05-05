@@ -67,14 +67,13 @@ class ExportOrderView extends StatelessWidget {
         .join('\n\n'));
   }
 
-  /// 實際輸出結果：
+  /// Actual result depends on language, here is English version:
   ///
-  /// 共 110 元，其中的 90 元是產品價錢。
-  /// 付額 150 元、成分 30 元。
-  /// 顧客的 用餐位置 為 內用、年紀 為 三十歲。
-  /// 餐點有 3 份（2 種）包括：
-  /// 起士漢堡（漢堡）1 份共 200 元，成份包括
-  /// 起士（多量，使用 3 個）。
+  /// Total $110, $90 of them are product price.
+  /// Paid $150, cost $30.
+  /// Customer's dining location is Dine-in, age is 30.
+  /// There are 3 (2 kinds) products including:
+  /// Cheese Burger (Burger) 1, total $200, ingredients are Cheese (Large, use 3).
   static int memoryPredictor(OrderMetrics m) {
     return (m.count * 60 + m.attrCount! * 18 + m.productCount! * 25 + m.ingredientCount! * 10).toInt();
   }
@@ -100,8 +99,8 @@ class ExportOrderView extends StatelessWidget {
         ing,
       );
     }).join('；\n');
-    final pl = order.products.length;
-    final tc = order.productsCount;
+    final setCount = order.products.length;
+    final totalCount = order.productsCount;
 
     return [
       S.transitPTFormatOrderPrice(
@@ -111,7 +110,7 @@ class ExportOrderView extends StatelessWidget {
       ),
       S.transitPTFormatOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
       if (attributes != '') S.transitPTFormatOrderOrderAttribute(attributes),
-      S.transitPTFormatOrderProductCount(pl == tc ? 0 : 1, tc, pl, products)
+      S.transitPTFormatOrderProductCount(totalCount, setCount, products)
     ].join('\n');
   }
 }

@@ -6,6 +6,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/cashier/changer_page.dart';
 import 'package:provider/provider.dart';
 
@@ -82,7 +83,7 @@ void main() {
       await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.text('請選擇要套用的組合'), findsOneWidget);
+      expect(find.text(S.cashierChangerErrorNoSelection), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('changer.favorite.0')));
       await tester.tap(find.byKey(const Key('changer.apply')));
@@ -163,7 +164,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('4 個 10 元沒辦法換\n- 8 個 5 元\n- 1 個 5 元\n- 5 個 1 元'),
+        find.text('${S.cashierChangerErrorInvalidHead(4, '10')}\n'
+            '- ${S.cashierChangerErrorInvalidBody(8, '5')}\n'
+            '- ${S.cashierChangerErrorInvalidBody(1, '5')}\n'
+            '- ${S.cashierChangerErrorInvalidBody(5, '1')}'),
         findsOneWidget,
       );
 

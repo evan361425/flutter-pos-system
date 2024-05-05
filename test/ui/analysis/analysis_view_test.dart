@@ -8,8 +8,6 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -27,13 +25,8 @@ void main() {
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
-      final settings = SettingsProvider([
-        LanguageSetting(),
-      ]);
-
       return MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller.instance),
         ],
         builder: (_, __) => MaterialApp.router(

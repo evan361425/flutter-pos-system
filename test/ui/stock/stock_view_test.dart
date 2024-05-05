@@ -13,6 +13,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
 import 'package:provider/provider.dart';
@@ -86,7 +87,7 @@ void main() {
 
       void verifyLastUpdated(DateTime dt) {
         final s = S.stockUpdatedAt(dt);
-        expect(find.text('$s${MetaBlock.string}總共 2 項'), findsOneWidget);
+        expect(find.text('$s${MetaBlock.string}${S.totalCount(2)}'), findsOneWidget);
       }
 
       verifyLastUpdated(DateTime(2020, 10, 11));
@@ -147,7 +148,7 @@ void main() {
       ], child: buildApp()));
 
       // correctly transform string
-      expect(find.text('0／5.43萬'), findsOneWidget);
+      expect(find.text('0／${54321.toCurrency()}'), findsOneWidget);
       expect(find.text('0／901'), findsOneWidget);
 
       final ingredient = Stock.instance.items.first;

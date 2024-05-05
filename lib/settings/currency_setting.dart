@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CurrencySetting extends Setting<CurrencyTypes> {
@@ -19,12 +21,19 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   /// Index of integer in [unitList]
   int intIndex = 0;
 
-  CurrencySetting._();
+  CurrencySetting._() {
+    value = defaultCurrency;
+    LanguageSetting.instance.addListener(() {
+      formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
+    });
+  }
 
   @override
   String get key => 'currency';
 
   String get recordName => '新台幣';
+
+  NumberFormat formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
 
   /// Ceiling [value] to currency least value
   ///
@@ -73,7 +82,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
 
   @override
   void initialize() {
-    value = CurrencyTypes.values[service.get<int>(key) ?? 0];
+    value = CurrencyTypes.values[service.get<int>(key) ?? defaultCurrency.index];
     _setMetadata(value);
   }
 
@@ -104,7 +113,7 @@ enum CurrencyTypes {
 extension ToCurrency on num {
   /// Parse value to int or double string, decided by [CurrencySetting.isInt]
   String toCurrency() {
-    return CurrencySetting.instance.isInt ? round().toString() : toString();
+    return CurrencySetting.instance.formatter.format(toCurrencyNum());
   }
 
   num toCurrencyNum() {

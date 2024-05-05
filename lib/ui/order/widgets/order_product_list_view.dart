@@ -6,7 +6,6 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -20,7 +19,7 @@ class OrderProductListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final count = SettingsProvider.of<OrderProductAxisCountSetting>().value;
+    final count = OrderProductAxisCountSetting.instance.value;
     int index = 0;
 
     return Padding(

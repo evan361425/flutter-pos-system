@@ -5,7 +5,7 @@ snackbar:
   cashier:
     notEnough: 收銀機錢不夠找囉！
     usingSmallMoney: 收銀機使用小錢去找零
-    usingSmallMoneyHelper: |
+    usingSmallMoneyHelper: |-
       找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。
 
       例如，售價「65」，消費者支付「100」，此時應找「35」
@@ -31,7 +31,7 @@ productList:
   tutorial:
     title: 開始點餐！
     content:
-    - |
+    - |-
       透過圖片點餐更方便！
       可以至「設定」>「[每行顯示幾個產品]({link})」調整
       讓這裡僅使用文字點餐。
@@ -66,7 +66,7 @@ cart:
   snapshot:
     tutorial:
       title: 購物車
-      content: |
+      content: |-
         為了讓點選產品可以更方便，
         我們把點餐後的產品設定至於此面板。
         如果需要一次顯示所有訊息的排版（適合大螢幕），

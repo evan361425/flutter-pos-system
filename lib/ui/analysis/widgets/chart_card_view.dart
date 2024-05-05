@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -204,6 +203,7 @@ class _CircularChart extends StatelessWidget {
       );
     }
 
+    final percentFormat = NumberFormat.percentPattern(S.localeName);
     return SfCircularChart(
       tooltipBehavior: TooltipBehavior(
         enable: true,
@@ -222,7 +222,7 @@ class _CircularChart extends StatelessWidget {
           xValueMapper: (v, i) => v.name,
           yValueMapper: (v, i) => v.value,
           dataSource: metrics,
-          dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
+          dataLabelMapper: (v, i) => percentFormat.format(v.percent),
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelPosition: ChartDataLabelPosition.inside,

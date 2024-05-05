@@ -2,6 +2,10 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CollectEventsSetting extends Setting<bool> {
+  static final instance = CollectEventsSetting._();
+
+  CollectEventsSetting._();
+
   @override
   String get key => 'feat.collectEvents';
 

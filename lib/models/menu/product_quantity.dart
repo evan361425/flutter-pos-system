@@ -95,7 +95,9 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   @override
   String get statusName {
-    // 當成分是新的，代表產品份量一定也是新的，這樣就只需要輸出是否為「新的份量種類」
+    // When the ingredient is new, the product quantity
+    // must also be new, so only need to output whether
+    // it is a "new quantity type"
     if (ingredient.status == ModelStatus.staged) {
       return quantity.status == ModelStatus.staged ? 'stagedQua' : 'normal';
     }

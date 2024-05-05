@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:provider/provider.dart';
@@ -24,13 +22,8 @@ void main() {
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
-      final settings = SettingsProvider([
-        LanguageSetting(),
-      ]);
-
       return MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller.instance),
         ],
         builder: (_, __) => MaterialApp.router(

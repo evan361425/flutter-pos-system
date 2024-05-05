@@ -23,7 +23,6 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +36,6 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Details', () {
     void prepareData() {
-      SettingsProvider(SettingsProvider.allSettings);
-
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1', currentAmount: 100),
         'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 100),

@@ -3,7 +3,7 @@ title: 資料轉移
 description: 匯入、匯出店家資訊和訂單
 tutorial:
   title: 多人、裝置的第一步
-  content: |
+  content: |-
     這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。
     我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。
 method:
@@ -99,7 +99,7 @@ GS:
         hint: 不會有任何預覽畫面，直接覆寫全部的資料。
         confirm:
           title: 匯入全部資料？
-          content: |
+          content: |-
             將會把所選表單的資料都下載，並完全覆蓋本地資料。
             此動作無法復原。
       exist:
@@ -142,7 +142,7 @@ GS:
     product:
       ingredient:
         title: 成分資訊
-        note: |
+        note: |-
           產品全部成分的資訊，格式如下：
           - 成分1,預設使用量
             + 份量a,額外使用量,額外價格,額外成本
@@ -150,7 +150,7 @@ GS:
           - 成分2,預設使用量
     replenishment:
       title: 補貨量
-      note: |
+      note: |-
         每次補貨時特定成分的量，格式如下：
         - 成分1,補貨量
         - 成分2,補貨量
@@ -160,7 +160,7 @@ GS:
         ts: 時間戳記
         mode: 類型
         options: 選項
-      note: |
+      note: |-
         「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
         - 選項1,是否為預設,選項值
         - 選項2,是否為預設,選項值
@@ -176,7 +176,7 @@ GS:
       recommendCombination: 不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴
       name:
         label: 表單名稱
-        helper: |
+        helper: |-
           拆分表單可以讓你更彈性的去分析資料，
           例如可以到訂單成份細項查詢：今天某個成分總共用了多少。
     meta:
@@ -186,7 +186,7 @@ GS:
       titlePrefix:
       - 'true': 有日期前綴
         'false': 沒有日期前綴
-      memoryWarning: |
+      memoryWarning: |-
         這裡的容量代表網路傳輸所消耗的量，實際佔用的雲端記憶體可能是此值的百分之一而已。
         詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。
     header:
@@ -227,7 +227,7 @@ GS:
       hint: 詳見下欄
   error:
     createSpreadsheet: 無法建立試算表
-    createSpreadsheetHelper: |
+    createSpreadsheetHelper: |-
       別擔心，通常都可以簡單解決！
       可能的原因有：
       • 網路狀況不穩；
@@ -235,12 +235,12 @@ GS:
     spreadsheetEmpty: 請先選擇試算表
     spreadsheetId:
       empty: 不能為空
-      invalid: |
+      invalid: |-
         不合法的文字，必須包含：
         /spreadsheets/d/<ID>/
         或者直接給 ID（英文+數字+底線+減號的組合）
     createSheet: 無法在試算表中建立表單
-    createSheetHelper: |
+    createSheetHelper: |-
       別擔心，通常都可以簡單解決！
       可能的原因有：
       • 網路狀況不穩；
@@ -256,7 +256,7 @@ GS:
       emptyData: 在表單中沒找到任何值
       notFoundSpreadsheet: 找不到試算表
       notFoundSheets: 找不到表單「{name}」的資料
-      notFoundHelper: |
+      notFoundHelper: |-
         別擔心，通常都可以簡單解決！
         可能的原因有：
         • 網路狀況不穩；
@@ -281,9 +281,12 @@ PT:
         other: 共 {price} 元，其中的 {productsPrice} 元是產品價錢。
       money: 付額 {paid} 元、成分 {cost} 元。
       productCount:
-      - =0: 餐點有 {count} 份，包括：{products}。
-        other: |
-          餐點有 {count} 份（{type} 種）包括：
+      - =0: 沒有任何餐點。
+        =1: |-
+          餐點有 {count} 份，內容為：
+          {products}。
+        other: |-
+          餐點有 {count} 份（{setCount} 種組合）包括：
           {products}。
       product:
       - =0: '{product}（{catalog}）{count} 份共 {price} 元，沒有設定成分'
@@ -305,14 +308,16 @@ PT:
         catalogDetails:
         - =0: 沒有設定產品
           other: 共有 {count} 個產品
-        product: 第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}。
+        product: 第{index}個產品叫做 {name}，其售價為 {price} 元，成本為 {cost} 元，{details}
         productDetails:
-        - =0: 它沒有設定任何成份
-          other: 它的成份有 {count} 種：{names}。{details}。
-        ingredient: 每份產品預設需要使用 {amount} 個 {name}，{details}
+        - =0: 它沒有設定任何成份。
+          other: |-
+            它的成份有 {count} 種：{names}。
+            每份產品預設需要使用 {details}。
+        ingredient: '{amount} 個 {name}，{details}'
         ingredientDetails:
         - =0: 無法做份量調整
-          other: 它還有 {count} 個不同份量：{quantities}
+          other: 它還有 {count} 個不同份量 {quantities}
         quantity: '每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元'
       stock:
         meta:
@@ -337,7 +342,7 @@ PT:
         replenishment: 第{index}個成分叫做 {name}，{details}。
         replenishmentDetails:
         - =0: '它並不會調整庫存'
-          other: 它會調整{count}種成份的庫存：{ingredients}
+          other: 它會調整{count}種成份的庫存
       oa: # order attribute
         meta:
           oa: '{count} 種顧客屬性'
@@ -346,7 +351,7 @@ PT:
         oa: 第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。
         oaDetails:
         - =0: 它並沒有設定選項
-          other: 它有 {count} 個選項：{options}
+          other: 它有 {count} 個選項
         defaultOption: 預設
         modeValue: 選項的值為 {value}
 

@@ -1,13 +1,14 @@
 appTitle: POS System
-actSuccess:
-- Successful!
-- Action executed successfully and displayed on the Snackbar.
-actError:
-- Unknown error occurred.
-- Error message displayed on the Snackbar when an error occurs.
-actMoreInfo:
-- More
-- Button on the Snackbar to show more details.
+act:
+  success:
+  - Successful!
+  - Action executed successfully and displayed on the Snackbar.
+  error:
+  - Unknown error occurred.
+  - Error message displayed on the Snackbar when an error occurs.
+  moreInfo:
+  - More
+  - Button on the Snackbar to show more details.
 singleChoice:
 - Select One
 - Reminder to the user that only one option can be selected at a time.
@@ -31,9 +32,27 @@ dialog:
   - Content displayed on the DeleteDialog.
   - name: {example: Veggie Sandwich}
     more: {example: What other impacts deleting this item will have, description: More details about the side effects of deletion}
-imageHolder:
-  create: Tap to add image
-  update: Click to update image
+image:
+  holder:
+    create: Tap to add image
+    update: Click to update image
+  btn:
+    crop: Crop
+  gallery:
+    title: Gallery
+    empty: Start importing your first image!
+    action:
+      create: Add Image
+      delete: Delete
+    snackbar:
+      deleteFailed: One or more images failed to delete.
+    selection:
+      title: Select Images
+      deleteConfirm:
+      - |-
+        Will delete {count} image(s) permanently.
+        After deletion, the connected product will not able to display the image.
+      - count: {type: int, format: compact}
 emptyBody:
   title:
   - Oops! It's empty here.
@@ -43,6 +62,8 @@ btn:
   navTo:
   - View
   - Button text to navigate to another screen in trailing.
+  signInWith:
+    google: Sign in with Google
 semantics:
   percentileBar:
   - Currently {percent} of total

@@ -80,7 +80,7 @@ void main() {
 
       // should not set progress if empty result
       expect(find.byType(CircularLoading), findsNothing);
-      expect(find.text('查無點餐紀錄'), findsOneWidget);
+      expect(find.text(S.orderLoaderEmpty), findsOneWidget);
       expect(loadCount, equals(1));
     });
 

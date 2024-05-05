@@ -54,8 +54,8 @@ void main() async {
       await Storage.instance.initialize();
       await Cache.instance.initialize();
 
-      final settings = SettingsProvider(SettingsProvider.allSettings);
-      Log.allowSendEvents = SettingsProvider.of<CollectEventsSetting>().value;
+      SettingsProvider.instance.initialize();
+      Log.allowSendEvents = CollectEventsSetting.instance.value;
 
       await Stock().initialize();
       await Quantities().initialize();
@@ -74,35 +74,17 @@ void main() async {
       /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
       runApp(MultiProvider(
         providers: [
-          ChangeNotifierProvider<SettingsProvider>.value(
-            value: settings,
-          ),
-          ChangeNotifierProvider<Menu>(
-            create: (_) => Menu.instance,
-          ),
-          ChangeNotifierProvider<Stock>(
-            create: (_) => Stock.instance,
-          ),
-          ChangeNotifierProvider<Quantities>(
-            create: (_) => Quantities.instance,
-          ),
-          ChangeNotifierProvider<Replenisher>(
-            create: (_) => Replenisher.instance,
-          ),
-          ChangeNotifierProvider<OrderAttributes>(
-            create: (_) => OrderAttributes.instance,
-          ),
-          ChangeNotifierProvider<Seller>(
-            create: (_) => Seller.instance,
-          ),
-          ChangeNotifierProvider<Cashier>(
-            create: (_) => Cashier.instance,
-          ),
-          ChangeNotifierProvider<Cart>(
-            create: (_) => Cart.instance,
-          ),
+          ChangeNotifierProvider.value(value: SettingsProvider.instance),
+          ChangeNotifierProvider.value(value: Menu.instance),
+          ChangeNotifierProvider.value(value: Stock.instance),
+          ChangeNotifierProvider.value(value: Quantities.instance),
+          ChangeNotifierProvider.value(value: Replenisher.instance),
+          ChangeNotifierProvider.value(value: OrderAttributes.instance),
+          ChangeNotifierProvider.value(value: Seller.instance),
+          ChangeNotifierProvider.value(value: Cashier.instance),
+          ChangeNotifierProvider.value(value: Cart.instance),
         ],
-        child: MyApp(settings: settings),
+        child: const MyApp(),
       ));
     },
     (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),

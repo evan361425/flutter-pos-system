@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -55,8 +56,8 @@ void main() {
         'revenue': calculator.calculate([for (var i = 0; i < 20; i++) i * 1.2]),
       };
       findText('20／${data['count']!.toInt()}');
-      findText('22／${data['price']!.prettyString()}');
-      findText('24／${data['revenue']!.prettyString()}');
+      findText('22／${data['price']!.toCurrency()}');
+      findText('24／${data['revenue']!.toCurrency()}');
       verify(mockQuery(fortyDaysAgo, tomorrow));
 
       // notify the seller to update the view

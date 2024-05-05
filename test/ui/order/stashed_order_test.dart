@@ -13,7 +13,6 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/checkout/stashed_order_list_view.dart';
 
@@ -253,7 +252,6 @@ void main() {
 
     setUp(() {
       when(cache.get(any)).thenReturn(null);
-      SettingsProvider(SettingsProvider.allSettings);
     });
 
     setUpAll(() {

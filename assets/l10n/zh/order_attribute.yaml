@@ -6,13 +6,13 @@ _title:
   create: 新增顧客設定
   update: 編輯顧客設定
   reorder: 排序顧客設定
-emptyBody: |
+emptyBody: |-
   顧客設定可以幫助我們統計哪些人來消費，例如：
   20-30歲、外帶、上班族。
 headerInfo: 顧客設定
 tutorial:
   title: 顧客設定
-  content: |
+  content: |-
     這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。
     這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
 meta:
@@ -44,7 +44,7 @@ option:
     default: 預設
   name:
     label: 選項名稱
-    helper: |
+    helper: |-
       以年齡為例，可能的選項有：
       - 20 歲以下
       - 20 到 30 歲
@@ -62,7 +62,7 @@ option:
       changeDiscount: 例如：80 代表「八折」
   toDefault:
     label: 設為預設
-    helper: |
+    helper: |-
       設定此選項為預設值，每個訂單預設都會是使用這個選項。
     confirmChange:
       title: 覆蓋選項預設？

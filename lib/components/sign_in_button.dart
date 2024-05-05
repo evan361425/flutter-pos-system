@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
+import 'package:possystem/translator.dart';
 
 const _googleBlue = Color(0xff4285f4);
 const _googleWhite = Color(0xffffffff);
@@ -99,7 +100,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                           ),
                           Expanded(
                             child: Text(
-                              '使用 Google 登入',
+                              S.btnSignInWithGoogle,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 height: 1.1,

@@ -5,6 +5,7 @@ import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 
@@ -80,7 +81,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(S.analysisGoalsCostTitle, style: style),
-          Text(metric.cost.prettyString(), style: style),
+          Text(metric.cost.toCurrency(), style: style),
         ],
       ),
     ];
@@ -190,12 +191,12 @@ class _GoalItem extends StatelessWidget {
         ]),
         RichText(
           text: TextSpan(
-            text: current.prettyString(),
+            text: current.toCurrency(),
             style: style,
             children: [
               if (goal != 0)
                 TextSpan(
-                  text: '／${goal.prettyString()}',
+                  text: '／${goal.toCurrency()}',
                   style: const TextStyle(color: Colors.grey),
                 ),
             ],

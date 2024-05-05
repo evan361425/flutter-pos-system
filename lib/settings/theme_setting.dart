@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
 class ThemeSetting extends Setting<ThemeMode> {
+  static final instance = ThemeSetting._();
+
+  ThemeSetting._();
+
   @override
   String get key => 'theme';
 

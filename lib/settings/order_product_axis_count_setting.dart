@@ -1,6 +1,10 @@
 import 'package:possystem/settings/setting.dart';
 
 class OrderProductAxisCountSetting extends Setting<int> {
+  static final instance = OrderProductAxisCountSetting._();
+
+  OrderProductAxisCountSetting._();
+
   @override
   String get key => 'feat.orderProductAxisCount';
 

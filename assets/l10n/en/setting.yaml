@@ -12,7 +12,7 @@ logoutBtn: Log Out
 elf:
   title: Suggestions
   description: Provide feedback using Google Forms
-  content: |
+  content: |-
     Feel like something's missing here?
     Feel free to [give suggestions](https://forms.gle/s8V5SXuqhA1u3zmt7).
     You can also check out [upcoming features](https://github.com/evan361425/flutter-pos-system/milestones).
@@ -49,7 +49,7 @@ checkoutWarning:
   - Whether to display cash registry warnings
   - name:
   tip:
-  - showAll: |
+  - showAll: |-
       Show warning when using smaller denominations to give change.
       For example, if $5 is not enough, start using 5 $1 bills for change.
     onlyNotEnough: Show warning when cash registry not enough money.

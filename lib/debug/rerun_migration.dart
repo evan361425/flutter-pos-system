@@ -13,7 +13,7 @@ class RerunMigration extends StatelessWidget {
           Database.latestVersion,
         );
       },
-      label: const Text('重新執行 Migration'),
+      label: const Text('Migrate DB Again'),
       icon: const Icon(Icons.clear_all_sharp),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 
 /// Show a date range picker dialog but with a slightly different design.
 ///
@@ -17,7 +16,7 @@ Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       firstDate: DateTime(2021, 1),
       lastDate: DateTime.now(),
-      locale: SettingsProvider.of<LanguageSetting>().value.locale,
+      locale: LanguageSetting.instance.value.locale,
 
       /// TODO: should fix this bug
       /// Wrapping the design, because the background will use a slightly

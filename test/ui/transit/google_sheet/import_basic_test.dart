@@ -48,7 +48,9 @@ void main() {
 
     group('#refresh -', () {
       Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
-        await tester.tap(find.text(selected ? '確認表單名稱' : '選擇試算表'));
+        await tester.tap(find.text(
+          selected ? S.transitGSSpreadsheetImportExistLabel : S.transitGSSpreadsheetImportEmptyLabel,
+        ));
         await tester.pump();
       }
 
@@ -170,7 +172,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester);
 
-        expect(find.text('找不到表單「title」的資料'), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportNotFoundSheets('title')), findsOneWidget);
       });
 
       testWidgets('pop preview source', (tester) async {
@@ -196,7 +198,7 @@ void main() {
         await tapBtn(tester);
 
         expect(find.text(ing), findsOneWidget);
-        expect(notifier.value, equals('驗證身份中'));
+        expect(notifier.value, equals(S.transitGSProgressStatusVerifyUser));
 
         await tester.tap(find.byKey(const Key('pop')));
         await tester.pumpAndSettle();
@@ -220,7 +222,7 @@ void main() {
         )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
               gs.Sheet(properties: sheet),
             ])));
-        await tester.tap(find.text('確認表單名稱'));
+        await tester.tap(find.text(S.transitGSSpreadsheetImportExistLabel));
         await tester.pumpAndSettle();
         final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
         await tester.tap(menu);
@@ -370,7 +372,7 @@ void main() {
 
       testWidgets('orderAttribute', (tester) async {
         await prepareImport(tester, 'orderAttr', 4, true, [
-          ['c1', '折扣', '- co1,true\n- co2,,5'],
+          ['c1', S.orderAttributeModeName('changeDiscount'), '- co1,true\n- co2,,5'],
           ['c2'],
         ]);
 

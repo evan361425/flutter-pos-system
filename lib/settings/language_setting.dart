@@ -6,6 +6,12 @@ import 'package:possystem/settings/setting.dart';
 class LanguageSetting extends Setting<Language> {
   static const defaultLanguage = Language.en;
 
+  static final instance = LanguageSetting._();
+
+  LanguageSetting._() {
+    value = defaultLanguage;
+  }
+
   @override
   final String key = 'language';
 
@@ -15,6 +21,7 @@ class LanguageSetting extends Setting<Language> {
   @override
   void initialize() {
     value = parseLanguage(service.get<String>(key)) ?? defaultLanguage;
+    notifyListeners();
   }
 
   @override

@@ -11,7 +11,7 @@ catalog:
   headerInfo:
   - Categories
   - Displayed on the upper rectangle in homepage
-  emptyBody: |
+  emptyBody: |-
     Similar "products" will be grouped under "Categories",
     making it convenient for ordering, such as:
     "Cheese Burger", "Veggie Burger" integrated into "Burgers"
@@ -37,7 +37,7 @@ product:
   headerInfo:
   - Products
   - Displayed on the upper rectangle in homepage
-  emptyBody: |
+  emptyBody: |-
     "Products" are the basic units in the menu, such as:
     "Cheese Burger", "Cola"
   title:
@@ -73,7 +73,7 @@ product:
     hint: Used to calculate profit, should be less than the price
   emptyIngredients: No ingredients set yet
 ingredient:
-  emptyBody: |
+  emptyBody: |-
     You can set ingredients and other information for the product, such as:
     "Cheeseburger" with "Cheese", "Bun" as ingredients
   title:

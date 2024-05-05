@@ -6,7 +6,7 @@ snackbar:
     notEnough: Insufficient cash in the cashier!
     usingSmallMoney: Using smaller denominations to give change
     usingSmallMoneyHelper:
-    - |
+    - |-
       When giving change to customers, if the cashier doesn't have the appropriate denominations, this message will appear.
 
       For example, if the total is $65 and the customer pays $100, the change should be $35.
@@ -44,7 +44,7 @@ productList:
   tutorial:
     title: Start Ordering!
     content:
-    - |
+    - |-
       Ordering through images is more convenient!
       You can go to "Settings" > "[Items Per Row]({link})" to adjust
       and allow text-only ordering here.
@@ -80,7 +80,7 @@ cart:
     tutorial:
       title: Cart
       content:
-      - |
+      - |-
         To make selecting products more convenient,
         we've placed the products you've ordered here.
         If you need a layout that shows all information at once (suitable for large screens),

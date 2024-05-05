@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 
 import '../../mocks/mock_database.dart';
@@ -32,7 +33,7 @@ void main() {
 
       await showDialog(tester, Icons.check_outlined);
 
-      expect(find.text('預估容量為：<1KB'), findsOneWidget);
+      expect(find.text(S.transitOrderCapacityTitle('<1KB')), findsOneWidget);
     });
 
     testWidgets('memory usage show warning', (tester) async {
@@ -42,7 +43,7 @@ void main() {
 
       await showDialog(tester, Icons.warning_amber_outlined);
 
-      expect(find.text('預估容量為：700KB'), findsOneWidget);
+      expect(find.text(S.transitOrderCapacityTitle('700KB')), findsOneWidget);
     });
 
     testWidgets('memory usage show danger', (tester) async {
@@ -52,7 +53,7 @@ void main() {
 
       await showDialog(tester, Icons.dangerous_outlined);
 
-      expect(find.text('預估容量為：1.5MB'), findsOneWidget);
+      expect(find.text(S.transitOrderCapacityTitle('1.5MB')), findsOneWidget);
     });
 
     setUpAll(() {

@@ -22,7 +22,6 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +33,6 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Page', () {
     void prepareData() {
-      SettingsProvider(SettingsProvider.allSettings);
-
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
@@ -495,7 +492,7 @@ void main() {
       }
 
       // hide all
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.hideAll;
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.hideAll;
       await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
       await tapWithCheck(CheckoutStatus.restore, S.actSuccess);
       await tapWithCheck(CheckoutStatus.stash, S.actSuccess);
@@ -510,12 +507,12 @@ void main() {
       await tapWithCheck(CheckoutStatus.nothingHappened);
 
       // only not enough
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.onlyNotEnough;
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.onlyNotEnough;
       await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderSnackbarCashierNotEnough);
       await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
 
       // show all
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.showAll;
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.showAll;
       await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderSnackbarCashierUsingSmallMoney);
     });
 

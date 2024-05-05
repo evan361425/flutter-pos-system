@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -53,7 +52,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         shouldFillViewport: widget.isPortrait ? false : true,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        locale: SettingsProvider.instance.getSetting<LanguageSetting>().value.toString(),
+        locale: LanguageSetting.instance.value.toString(),
         // header
         // chinese will be hidden if using default value
         daysOfWeekHeight: 20.0,

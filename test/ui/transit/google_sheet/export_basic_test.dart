@@ -123,7 +123,9 @@ void main() {
         bool selected = true,
       }) async {
         await tester.pumpAndSettle();
-        await tester.tap(find.text(selected ? '指定匯出' : '建立匯出'));
+        await tester.tap(find.text(
+          selected ? S.transitGSSpreadsheetExportExistLabel : S.transitGSSpreadsheetExportEmptyLabel,
+        ));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
@@ -254,7 +256,7 @@ void main() {
         ));
 
         // which also verify button exist!
-        await tester.tap(find.text('開啟表單'));
+        await tester.tap(find.text(S.transitGSSpreadsheetSnackbarAction));
         await tester.pumpAndSettle();
 
         expect(Launcher.lastUrl, equals('https://docs.google.com/spreadsheets/d/id/edit'));

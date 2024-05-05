@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 
 import 'test_helpers/file_mocker.dart';
@@ -78,12 +79,12 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('image_gallery.0')));
       await tester.pumpAndSettle();
-      expect(find.text('刪除所選'), findsOneWidget);
+      expect(find.text(S.imageGallerySelectionTitle), findsOneWidget);
 
       // disable selecting
       await tester.tap(find.byKey(const Key('image_gallery.cancel')));
       await tester.pumpAndSettle();
-      expect(find.text('刪除所選'), findsNothing);
+      expect(find.text(S.imageGallerySelectionTitle), findsNothing);
       expect(find.text('go'), findsNothing);
 
       // leave

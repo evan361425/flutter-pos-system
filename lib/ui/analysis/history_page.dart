@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
               child: PopupMenuButton<TransitMethod>(
                 key: const Key('history.export'),
                 icon: const Icon(Icons.upload_file_sharp),
-                tooltip: '匯出',
+                tooltip: S.analysisHistoryExportBtn,
                 itemBuilder: (context) => TransitMethod.values
                     .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
                           value: value,

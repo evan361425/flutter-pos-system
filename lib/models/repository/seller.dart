@@ -515,7 +515,7 @@ class OrderMetricPerItem {
   final num value;
   final double percent;
 
-  OrderMetricPerItem(this.name, this.value, num total) : percent = total == 0 ? 0 : (value / total * 100).toDouble();
+  OrderMetricPerItem(this.name, this.value, num total) : percent = total == 0 ? 0 : value / total;
 }
 
 enum OrderMetricUnit {

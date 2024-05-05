@@ -7,12 +7,10 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/google_sheet/order_formatter.dart';
 import 'package:possystem/ui/transit/google_sheet/order_setting_page.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
-import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_auth.dart';
 import '../../../mocks/mock_cache.dart';
@@ -59,33 +57,25 @@ void main() {
       OrderSetter.setMetrics([], countingAll: true);
       OrderSetter.setOrders([]);
 
-      final lang = LanguageSetting();
-      final settings = SettingsProvider([lang]);
-      lang.value = Language.en;
       final init = DateTimeRange(
         start: DateTime(2023, DateTime.june, 10),
         end: DateTime(2023, DateTime.june, 11),
       );
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: settings),
+      await tester.pumpWidget(MaterialApp(
+        locale: LanguageSetting.defaultLanguage.locale,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          DefaultWidgetsLocalizations.delegate,
+          DefaultMaterialLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
         ],
-        child: MaterialApp(
-          locale: lang.value.locale,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            DefaultWidgetsLocalizations.delegate,
-            DefaultMaterialLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [lang.value.locale],
-          home: TransitStation(
-            type: TransitType.order,
-            method: TransitMethod.googleSheet,
-            range: init,
-            exporter: GoogleSheetExporter(
-              scopes: gsExporterScopes,
-            ),
+        supportedLocales: [LanguageSetting.defaultLanguage.locale],
+        home: TransitStation(
+          type: TransitType.order,
+          method: TransitMethod.googleSheet,
+          range: init,
+          exporter: GoogleSheetExporter(
+            scopes: gsExporterScopes,
           ),
         ),
       ));
@@ -106,7 +96,7 @@ void main() {
       );
 
       expect(
-        find.text('${expected.format('zh_TW')} 的訂單'),
+        find.text(S.transitOrderMetaRange(expected.format('en'))),
         findsOneWidget,
       );
     });
@@ -143,7 +133,7 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('建立匯出'));
+        await tester.tap(find.text(S.transitGSSpreadsheetExportEmptyLabel));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
@@ -246,7 +236,7 @@ void main() {
         verify(cache.set('$cacheKey.order.required', false));
 
         // export
-        await tester.tap(find.text('指定匯出'));
+        await tester.tap(find.text(S.transitGSSpreadsheetExportExistLabel));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();

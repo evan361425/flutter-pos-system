@@ -44,12 +44,11 @@ void main() {
         escapeTable: anyNamed('escapeTable'),
         limit: anyNamed('limit'),
       )).thenAnswer((_) => Future.value([]));
-      final settings = SettingsProvider(SettingsProvider.allSettings);
       final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
 
       await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: SettingsProvider.instance),
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Menu()),
           ChangeNotifierProvider.value(value: stock),

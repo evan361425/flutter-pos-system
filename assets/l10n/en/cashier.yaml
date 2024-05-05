@@ -11,13 +11,13 @@ toDefault:
   title: Set as Default
   tutorial:
     title: Cash Register Default Status
-    content: |
+    content: |-
       After setting the quantities of various currencies below,
       click here to set the default status!
       The set quantities will be the "maximum" for each currency status bar.
   dialog:
     title: Adjust Cash Register Default?
-    content: |
+    content: |-
       This will set the current cash register status as the default status.
       This action will override previous settings.
 changer:
@@ -25,7 +25,7 @@ changer:
   button: Apply
   tutorial:
     title: Cash Register Money Changer
-    content: |
+    content: |-
       Exchange one hundred for 10 tens, for example.
       Helps to quickly adjust the cash register status.
   error:
@@ -71,7 +71,7 @@ surplus:
   button: Surplus
   tutorial:
     title: Daily Surplus
-    content: |
+    content: |-
       Surplus helps us at the end of each day,
       calculate the difference between the current amount and the default amount.
   error:
@@ -92,11 +92,11 @@ surplus:
     - This is for display in error messages, e.g., "Quantity cannot be 0".
   currentTotal:
     label: Current Total
-    helper: |
+    helper: |-
       The total amount the cash register should have now.
       If you find that the cash and this value don't match, think about whether you used the cash register to buy something today?
   diffTotal:
     label: Difference
-    helper: |
+    helper: |-
       The difference from the total amount of the cash register at the very beginning.
       This can quickly help you understand how much money the cash register has gained today.

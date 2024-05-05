@@ -11,13 +11,13 @@ toDefault:
   title: 設為預設
   tutorial:
     title: 收銀機預設狀態
-    content: |
+    content: |-
       在下面設定完收銀機各幣值的數量後，
       按這裡設定預設狀態！
       設定好的數量就會是各個幣值狀態條的「最大值」。
   dialog:
     title: 調整收銀臺預設？
-    content: |
+    content: |-
       這將會把目前的收銀機狀態設定為預設狀態。
       此動作將會覆蓋掉先前的設定。
 changer:
@@ -25,7 +25,7 @@ changer:
   button: 套用
   tutorial:
     title: 收銀機換錢
-    content: |
+    content: |-
       一百塊換成 10 個十塊之類。
       幫助快速調整收銀機狀態。
   error:
@@ -56,7 +56,7 @@ surplus:
   button: 結餘
   tutorial:
     title: 每日結餘
-    content: |
+    content: |-
       結餘可以幫助我們在每天打烊時，
       計算現有金額和預設金額的差異。
   error:
@@ -72,11 +72,11 @@ surplus:
     shortLabel: 數量
   currentTotal:
     label: 現有總額
-    helper: |
+    helper: |-
       現在收銀機應該要有的總額。
       若你發現現金和這值對不上，想一想今天有沒有用收銀機的錢買東西？
   diffTotal:
     label: 差額
-    helper: |
+    helper: |-
       和收銀機最一開始的總額的差額。
       這可以快速幫你了解今天收銀機多了多少錢唷。

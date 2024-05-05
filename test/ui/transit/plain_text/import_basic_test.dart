@@ -25,11 +25,7 @@ void main() {
       );
     }
 
-    const message = '共設定 1 種份量\n\n第1種份量叫做 q1，預設會讓成分的份量乘以 1 倍。';
-
     testWidgets('wrong text', (tester) async {
-      const warnMsg = '這段文字無法匹配相應的服務，請參考匯出時的文字內容';
-
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
@@ -43,7 +39,7 @@ void main() {
       await tester.tap(find.byKey(const Key('import_btn')));
       await tester.pumpAndSettle();
 
-      expect(find.text(warnMsg), findsOneWidget);
+      expect(find.text(S.transitPTImportErrorNotFound), findsOneWidget);
     });
 
     testWidgets('successfully', (tester) async {
@@ -53,7 +49,10 @@ void main() {
       await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const Key('import_text')), message);
+      await tester.enterText(
+          find.byKey(const Key('import_text')),
+          '${S.transitPTFormatModelQuantitiesHeader(1)}\n\n'
+          '${S.transitPTFormatModelQuantitiesQuantity('1', 'q1', '1')}');
       await tester.tap(find.byKey(const Key('import_btn')));
       await tester.pumpAndSettle();
 

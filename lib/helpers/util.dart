@@ -63,24 +63,6 @@ class Util {
   }
 }
 
-extension PrettyNum on num {
-  static final _format = NumberFormat.compact(locale: 'zh_TW');
-
-  /// TODO: After currency is implemented, we need to change this to use currency formatter.
-  /// 4.444     -> 4.44
-  /// 44.44     -> 44.4
-  /// 444.4     -> 444
-  /// 4444      -> 4444
-  /// 44444     -> 4.44萬
-  /// 444444    -> 44.4萬
-  /// 4444444   -> 444萬
-  /// 44444444  -> 4444萬
-  /// 444444444 -> 4.44億
-  String prettyString() {
-    return _format.format(this);
-  }
-}
-
 extension RangeFormat on DateTimeRange {
   String format(String local) {
     final thisYear = DateTime.now().year;

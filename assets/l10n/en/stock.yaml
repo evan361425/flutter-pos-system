@@ -11,7 +11,7 @@ ingredient:
     updateAmount: Edit Inventory
   tutorial:
     title: Add Ingredient
-    content: |
+    content: |-
       Ingredients help us track product inventory.
       You can set ingredients in "Products" and then manage inventory here.
   dialogDeletionContent:
@@ -32,7 +32,7 @@ ingredient:
   amount:
     label: Current Amount
     maxLabel: Maximum Amount
-    maxHelper: |
+    maxHelper: |-
       Setting this value helps you see how much of the ingredient is being used.
 
       Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased,
@@ -67,7 +67,7 @@ replenishment:
       hint: Selecting apply will affect the inventory of the following ingredients
   tutorial:
     title: Ingredient Purchases
-    content: |
+    content: |-
       Through purchases, you no longer need to set the inventory of each ingredient one by one.
       Set up purchases now and adjust multiple ingredients at once!
   name:
@@ -86,7 +86,7 @@ quantity:
     $prefix: title
     create: Add Quantity
     update: Edit Quantity
-  emptyBody: |
+  emptyBody: |-
     Quantity allows for quick adjustments to the amount of ingredients, such as:
     Half Sugar, Low Sugar.
   meta:
@@ -106,7 +106,7 @@ quantity:
       repeat: Quantity name already exists
   proportion:
     label: Default Ratio
-    helper: |
+    helper: |-
       When this quantity is used for an ingredient, the default ratio added to that ingredient.
       For example: if this quantity is "Large" and the default ratio is "1.5",
       and there's a product "Cheeseburger" with the ingredient "Cheese," which uses "2" units of cheese per burger,

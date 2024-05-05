@@ -14,7 +14,6 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/order_product_axis_count_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/feature_slider.dart';
@@ -27,13 +26,6 @@ class FeaturesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = SettingsProvider.of<ThemeSetting>();
-    final language = SettingsProvider.of<LanguageSetting>();
-    final orderAwakening = SettingsProvider.of<OrderAwakeningSetting>();
-    final orderOutlook = SettingsProvider.of<OrderOutlookSetting>();
-    final orderCount = SettingsProvider.of<OrderProductAxisCountSetting>();
-    final checkoutWarning = SettingsProvider.of<CheckoutWarningSetting>();
-    final collectEvents = SettingsProvider.of<CollectEventsSetting>();
     const flavor = String.fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
@@ -82,7 +74,7 @@ class FeaturesPage extends StatelessWidget {
             key: const Key('feature.theme'),
             leading: const Icon(Icons.palette_outlined),
             title: Text(S.settingThemeTitle),
-            subtitle: Text(S.settingThemeName(theme.value.name)),
+            subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => navigateTo(Feature.theme),
           ),
@@ -90,7 +82,7 @@ class FeaturesPage extends StatelessWidget {
             key: const Key('feature.language'),
             leading: const Icon(Icons.language_outlined),
             title: Text(S.settingLanguageTitle),
-            subtitle: Text(language.value.title),
+            subtitle: Text(LanguageSetting.instance.value.title),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => navigateTo(Feature.language),
           ),
@@ -99,7 +91,7 @@ class FeaturesPage extends StatelessWidget {
             key: const Key('feature.order_outlook'),
             leading: const Icon(Icons.library_books_outlined),
             title: Text(S.settingOrderOutlookTitle),
-            subtitle: Text(S.settingOrderOutlookName(orderOutlook.value.name)),
+            subtitle: Text(S.settingOrderOutlookName(OrderOutlookSetting.instance.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => navigateTo(Feature.orderOutlook),
           ),
@@ -107,7 +99,7 @@ class FeaturesPage extends StatelessWidget {
             key: const Key('feature.checkout_warning'),
             leading: const Icon(Icons.store_mall_directory_outlined),
             title: Text(S.settingCheckoutWarningTitle),
-            subtitle: Text(S.settingCheckoutWarningName(checkoutWarning.value.name)),
+            subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => navigateTo(Feature.checkoutWarning),
           ),
@@ -115,12 +107,12 @@ class FeaturesPage extends StatelessWidget {
           FeatureSlider(
             sliderKey: const Key('feature.order_product_count'),
             title: S.settingOrderProductCountTitle,
-            value: orderCount.value,
+            value: OrderProductAxisCountSetting.instance.value,
             max: 5,
             autofocus: focus == 'orderProductCount',
             minLabel: S.settingOrderProductCountMinLabel,
             hintText: S.settingOrderProductCountHint,
-            onChanged: (value) => orderCount.update(value),
+            onChanged: (value) => OrderProductAxisCountSetting.instance.update(value),
           ),
           ListTile(
             leading: const Icon(Icons.remove_red_eye_outlined),
@@ -129,8 +121,8 @@ class FeaturesPage extends StatelessWidget {
             trailing: FeatureSwitch(
               key: const Key('feature.order_awakening'),
               autofocus: focus == 'orderAwakening',
-              value: orderAwakening.value,
-              onChanged: (value) => orderAwakening.update(value),
+              value: OrderAwakeningSetting.instance.value,
+              onChanged: (value) => OrderAwakeningSetting.instance.update(value),
             ),
           ),
           const Divider(),
@@ -141,8 +133,8 @@ class FeaturesPage extends StatelessWidget {
             trailing: FeatureSwitch(
               key: const Key('feature.collect_events'),
               autofocus: focus == 'collectEvents',
-              value: collectEvents.value,
-              onChanged: (value) => collectEvents.update(value),
+              value: CollectEventsSetting.instance.value,
+              onChanged: (value) => CollectEventsSetting.instance.update(value),
             ),
           ),
         ],
@@ -237,13 +229,13 @@ enum Feature {
   int get selected {
     switch (this) {
       case Feature.theme:
-        return SettingsProvider.of<ThemeSetting>().value.index;
+        return ThemeSetting.instance.value.index;
       case Feature.language:
-        return SettingsProvider.of<LanguageSetting>().value.index;
+        return LanguageSetting.instance.value.index;
       case Feature.orderOutlook:
-        return SettingsProvider.of<OrderOutlookSetting>().value.index;
+        return OrderOutlookSetting.instance.value.index;
       case Feature.checkoutWarning:
-        return SettingsProvider.of<CheckoutWarningSetting>().value.index;
+        return CheckoutWarningSetting.instance.value.index;
     }
   }
 }

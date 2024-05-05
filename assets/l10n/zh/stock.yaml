@@ -9,7 +9,7 @@ ingredient:
     updateAmount: 編輯庫存
   tutorial:
     title: 新增成分
-    content: |
+    content: |-
       成份可以幫助我們確認產品的庫存。
       你可以在「產品」中設定成分，然後在這裡設定庫存。
   dialogDeletionContent:
@@ -24,7 +24,7 @@ ingredient:
   amount:
     label: 現有庫存
     maxLabel: 最大庫存
-    maxHelper: |
+    maxHelper: |-
       設定這個值可以幫助你一眼看出用了多少成分。
 
       填空或不填寫則每次增加庫存，都會自動設定這值，
@@ -51,7 +51,7 @@ replenishment:
       hint: 選擇套用後，將會影響以下成分的庫存
   tutorial:
     title: 成份採購
-    content: |
+    content: |-
       透過採購，你不再需要一個一個去設定成分的庫存。
       馬上設定採購，一次調整多個成份吧！
   name:
@@ -70,7 +70,7 @@ quantity:
     $prefix: title
     create: 新增份量
     update: 編輯份量
-  emptyBody: |
+  emptyBody: |-
     份量可以快速調整成分的量，例如：
     半糖、微糖。
   meta:
@@ -85,7 +85,7 @@ quantity:
       repeat: 份量名稱重複
   proportion:
     label: 預設比例
-    helper: |
+    helper: |-
       當產品成分使用此份量時，預設替該成分增加的比例。
       例如：此份量為「多量」預設份量為「1.5」，
       今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，
