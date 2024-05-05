@@ -407,12 +407,11 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
         details = details.isEmpty ? '' : '：$details';
 
         return S.transitPTFormatModelOaOa(
-              (counter++).toString(),
-              attr.name,
-              S.orderAttributeModeName(attr.mode.name),
-              S.transitPTFormatModelOaOaDetails(attr.length),
-            ) +
-            details;
+          (counter++).toString(),
+          attr.name,
+          S.orderAttributeModeName(attr.mode.name),
+          S.transitPTFormatModelOaOaDetails(attr.length) + details,
+        );
       }).toList(),
     ];
   }

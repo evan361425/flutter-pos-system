@@ -282,7 +282,7 @@ void main() {
         '3 customer attributes have been set.\n'
         '\n'
         'Attribute at 1 is called c1, belongs to Price Change type, it has 3 options：o1、o2（default）、o3（option value is 20）.\n'
-        'Attribute at 2 is called c2, belongs to Normal type, it has no set options.\n'
+        'Attribute at 2 is called c2, belongs to Normal type, it has no options.\n'
         'Attribute at 3 is called c3, belongs to Discount type, it has 2 options：o1（default，option value is 20）、o2（option value is 0）.',
       );
 
