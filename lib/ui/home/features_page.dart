@@ -167,9 +167,9 @@ class ItemListScaffold extends StatelessWidget {
                   title: Text(pair[0]),
                   trailing: selected == index ? const Icon(Icons.check_sharp) : null,
                   subtitle: Text(pair[1], style: hintStyle),
-                  onTap: () {
+                  onTap: () async {
                     if (selected != index) {
-                      Navigator.of(context).pop(index);
+                      await feature.update(index);
                     }
                   },
                 ))
@@ -236,6 +236,19 @@ enum Feature {
         return OrderOutlookSetting.instance.value.index;
       case Feature.checkoutWarning:
         return CheckoutWarningSetting.instance.value.index;
+    }
+  }
+
+  Future<void> update(int index) {
+    switch (this) {
+      case Feature.theme:
+        return ThemeSetting.instance.update(ThemeMode.values[index]);
+      case Feature.language:
+        return LanguageSetting.instance.update(Language.values[index]);
+      case Feature.orderOutlook:
+        return OrderOutlookSetting.instance.update(OrderOutlookTypes.values[index]);
+      case Feature.checkoutWarning:
+        return CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]);
     }
   }
 }

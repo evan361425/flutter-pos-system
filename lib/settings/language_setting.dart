@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
 class LanguageSetting extends Setting<Language> {
-  static const defaultLanguage = Language.en;
-
   static final instance = LanguageSetting._();
 
+  static const defaultValue = Language.en;
+
   LanguageSetting._() {
-    value = defaultLanguage;
+    value = defaultValue;
   }
 
   @override
@@ -20,7 +20,7 @@ class LanguageSetting extends Setting<Language> {
 
   @override
   void initialize() {
-    value = parseLanguage(service.get<String>(key)) ?? defaultLanguage;
+    value = parseLanguage(service.get<String>(key)) ?? defaultValue;
     notifyListeners();
   }
 
@@ -36,7 +36,7 @@ class LanguageSetting extends Setting<Language> {
 
     return Language.values.firstWhere(
       (e) => e.locale.languageCode == codes[0],
-      orElse: () => defaultLanguage,
+      orElse: () => defaultValue,
     );
   }
 }

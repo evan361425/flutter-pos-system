@@ -5,7 +5,7 @@ import 'package:possystem/settings/setting.dart';
 class CurrencySetting extends Setting<CurrencyTypes> {
   static CurrencySetting instance = CurrencySetting._();
 
-  static const defaultCurrency = CurrencyTypes.twd;
+  static const defaultValue = CurrencyTypes.twd;
 
   static const supports = <CurrencyTypes, List<num>>{
     CurrencyTypes.twd: [1, 5, 10, 50, 100, 500, 1000],
@@ -22,7 +22,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   int intIndex = 0;
 
   CurrencySetting._() {
-    value = defaultCurrency;
+    value = defaultValue;
     LanguageSetting.instance.addListener(() {
       formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
     });
@@ -82,7 +82,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
 
   @override
   void initialize() {
-    value = CurrencyTypes.values[service.get<int>(key) ?? defaultCurrency.index];
+    value = CurrencyTypes.values[service.get<int>(key) ?? defaultValue.index];
     _setMetadata(value);
   }
 

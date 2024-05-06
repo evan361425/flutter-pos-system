@@ -3,14 +3,18 @@ import 'package:possystem/settings/setting.dart';
 class OrderOutlookSetting extends Setting<OrderOutlookTypes> {
   static final instance = OrderOutlookSetting._();
 
-  OrderOutlookSetting._();
+  static const defaultValue = OrderOutlookTypes.slidingPanel;
+
+  OrderOutlookSetting._() {
+    value = defaultValue;
+  }
 
   @override
   String get key => 'feat.orderOutlook';
 
   @override
   void initialize() {
-    value = OrderOutlookTypes.values[service.get<int>(key) ?? 0];
+    value = OrderOutlookTypes.values[service.get<int>(key) ?? defaultValue.index];
   }
 
   @override
@@ -20,6 +24,9 @@ class OrderOutlookSetting extends Setting<OrderOutlookTypes> {
 }
 
 enum OrderOutlookTypes {
+  /// show order in sliding panel, recommended for mobile phone
   slidingPanel,
+
+  /// show order in single view, recommended for tablet
   singleView,
 }
