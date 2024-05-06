@@ -15,10 +15,19 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
-/// Generate order records each record have total 1~10 products. For example,
-/// 1 product might have 10 count or 10 different products or 2 same product but
-/// each have different ingredients.
-List<OrderObject> generateOrder({
+void Function() goGenerateRandomOrders(BuildContext context) {
+  return () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return const _SettingPage();
+      }));
+}
+
+/// Generate random order records with random products,
+/// random count, random price, random ingredients, random attributes.
+///
+/// Each record might have 1~10 products, for example,
+/// 1 product might have 10 count or 10 different products
+/// or 2 same product but each have different ingredients.
+List<OrderObject> generateOrders({
   required int orderCount,
   required DateTime startFrom,
   required DateTime endTo,
@@ -117,19 +126,6 @@ List<int> _selectExistedProduct<T>(List<OrderProductObject> data, String id) {
   return result;
 }
 
-class RandomGenerateOrderButton extends StatelessWidget {
-  const RandomGenerateOrderButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _SettingPage())),
-      label: const Text('Random Orders'),
-      icon: const Icon(Icons.developer_mode_sharp),
-    );
-  }
-}
-
 class _SettingPage extends StatefulWidget {
   const _SettingPage();
 
@@ -211,7 +207,7 @@ class _SettingPageState extends State<_SettingPage> {
     setState(() => generating = true);
 
     final count = int.tryParse(_countController.text);
-    final result = generateOrder(
+    final result = generateOrders(
       orderCount: count ?? 0,
       startFrom: startFrom,
       endTo: endTo,

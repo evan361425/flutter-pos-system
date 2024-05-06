@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/debug/random_gen_order.dart';
@@ -36,17 +37,37 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
       child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         const _HeaderInfoList(),
         if (!isProd)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              const RandomGenerateOrderButton(),
-              ElevatedButton.icon(
-                onPressed: Cache.instance.reset,
-                label: const Text('Cache Reset'),
-                icon: const Icon(Icons.clear_all_sharp),
-              ),
-              const RerunMigration(),
-            ]),
+          ListTile(
+            key: const Key('setting.debug'),
+            title: const Text('Debug'),
+            subtitle: const Text('For developer only'),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return Scaffold(
+                  appBar: AppBar(title: const Text('Debug'), leading: const PopButton()),
+                  body: ListView(
+                    key: const Key('setting.debug.list'),
+                    children: [
+                      ListTile(
+                        title: const Text('Generate orders'),
+                        trailing: const Icon(Icons.add_sharp),
+                        onTap: goGenerateRandomOrders(context),
+                      ),
+                      ListTile(
+                        title: const Text('Cache Reset'),
+                        trailing: const Icon(Icons.clear_all_sharp),
+                        onTap: Cache.instance.reset,
+                      ),
+                      const ListTile(
+                        title: Text('Migrate DB Again'),
+                        trailing: Icon(Icons.refresh_sharp),
+                        onTap: rerunMigration,
+                      )
+                    ],
+                  ),
+                );
+              }));
+            },
           ),
         Tutorial(
           id: 'home.menu',

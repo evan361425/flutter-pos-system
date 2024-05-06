@@ -25,7 +25,7 @@ void main() {
   group('Random Generate Order', () {
     test('no gen if same date', () {
       final now = DateTime.now();
-      final result = generateOrder(
+      final result = generateOrders(
         orderCount: 10,
         startFrom: now,
         endTo: now,
@@ -36,7 +36,7 @@ void main() {
 
     test('default setting', () {
       final end = DateTime.now();
-      final result = generateOrder(
+      final result = generateOrders(
         orderCount: 10,
         startFrom: end.subtract(const Duration(days: 1)),
         endTo: end,
@@ -60,7 +60,13 @@ void main() {
       const btn = Key('test');
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: Seller.instance,
-        child: const MaterialApp(home: RandomGenerateOrderButton(key: btn)),
+        child: MaterialApp(home: Builder(builder: (context) {
+          return TextButton(
+            key: btn,
+            onPressed: goGenerateRandomOrders(context),
+            child: const Text('test'),
+          );
+        })),
       ));
 
       await tester.tap(find.byKey(btn));
