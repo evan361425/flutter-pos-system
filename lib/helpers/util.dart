@@ -74,4 +74,15 @@ extension RangeFormat on DateTimeRange {
     final fe = end.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
     return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
   }
+
+  String formatCompact(String local) {
+    final thisYear = DateTime.now().year;
+    final fs = start.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    if (duration.inDays == 1) {
+      return fs.format(start);
+    }
+
+    final fe = end.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
+  }
 }

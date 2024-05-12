@@ -137,6 +137,8 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
         final title = S.transitGSSpreadsheetOrderDefaultName;
         verify(cache.set(cacheKey, 'abc:true:$title'));
@@ -147,16 +149,16 @@ void main() {
             ...OrderFormatter.formatOrder(order),
           ],
           [
-            OrderFormatter.orderSetAttrHeaders,
-            ...OrderFormatter.formatOrderSetAttr(order),
+            OrderFormatter.orderDetailsAttrHeaders,
+            ...OrderFormatter.formatOrderDetailsAttr(order),
           ],
           [
-            OrderFormatter.orderProductHeaders,
-            ...OrderFormatter.formatOrderProduct(order),
+            OrderFormatter.orderDetailsProductHeaders,
+            ...OrderFormatter.formatOrderDetailsProduct(order),
           ],
           [
-            OrderFormatter.orderIngredientHeaders,
-            ...OrderFormatter.formatOrderIngredient(order),
+            OrderFormatter.orderDetailsIngredientHeaders,
+            ...OrderFormatter.formatOrderDetailsIngredient(order),
           ],
         ];
         verify(sheetsApi.spreadsheets.values.batchUpdate(
@@ -192,9 +194,9 @@ void main() {
         // exist spreadsheet
         when(cache.get(cacheKey)).thenReturn('id:true:name');
         when(cache.get('$cacheKey.order')).thenReturn('o title');
-        when(cache.get('$cacheKey.orderSetAttr')).thenReturn('os title');
-        when(cache.get('$cacheKey.orderProduct')).thenReturn('op title');
-        when(cache.get('$cacheKey.orderIngredient')).thenReturn('oi title');
+        when(cache.get('$cacheKey.orderDetailsAttr')).thenReturn('os title');
+        when(cache.get('$cacheKey.orderDetailsProduct')).thenReturn('op title');
+        when(cache.get('$cacheKey.orderDetailsIngredient')).thenReturn('oi title');
         when(cache.get('$cacheKey.order.required')).thenReturn(false);
         when(sheetsApi.spreadsheets.get(
           any,
@@ -242,9 +244,9 @@ void main() {
         await tester.pumpAndSettle();
 
         final expected = {
-          'os title': OrderFormatter.formatOrderSetAttr(order),
-          'op title': OrderFormatter.formatOrderProduct(order),
-          'oi title': OrderFormatter.formatOrderIngredient(order),
+          'os title': OrderFormatter.formatOrderDetailsAttr(order),
+          'op title': OrderFormatter.formatOrderDetailsProduct(order),
+          'oi title': OrderFormatter.formatOrderDetailsIngredient(order),
         };
         for (final e in expected.entries) {
           verify(sheetsApi.spreadsheets.values.append(
@@ -272,7 +274,8 @@ void main() {
       });
     });
 
-    setUp(() {
+    setUp(() async {
+      await cache.reset();
       when(cache.get(any)).thenReturn(null);
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(MockUser()));
     });

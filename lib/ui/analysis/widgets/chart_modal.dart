@@ -10,16 +10,16 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ChartOrderModal extends StatefulWidget {
+class ChartModal extends StatefulWidget {
   final Chart? chart;
 
-  const ChartOrderModal({super.key, this.chart});
+  const ChartModal({super.key, this.chart});
 
   @override
-  State<ChartOrderModal> createState() => _ChartOrderModalState();
+  State<ChartModal> createState() => _ChartModalState();
 }
 
-class _ChartOrderModalState extends State<ChartOrderModal> with ItemModal<ChartOrderModal> {
+class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   final _nameController = TextEditingController();
   final _nameFocusNode = FocusNode();
 

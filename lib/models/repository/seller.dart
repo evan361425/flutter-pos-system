@@ -98,7 +98,7 @@ class Seller extends ChangeNotifier {
   /// - [types] is the metrics type to calculate.
   /// - [interval] is the time interval to group by.
   /// - [ignoreEmpty] whether to ignore the empty day.
-  Future<List<OrderDataPerDay>> getMetricsInPeriod(
+  Future<List<OrderSummary>> getMetricsInPeriod(
     DateTime start,
     DateTime end, {
     List<OrderMetricType> types = const [OrderMetricType.count],
@@ -127,10 +127,10 @@ class Seller extends ChangeNotifier {
       escapeTable: false,
     );
 
-    final result = <OrderDataPerDay>[
+    final result = <OrderSummary>[
       for (final row in rows)
         if (row['day'] != null)
-          OrderDataPerDay(
+          OrderSummary(
             at: Util.fromUTC(begin + (row['day'] as int) * interval.seconds),
             values: row.cast<String, num>(),
           ),
@@ -145,7 +145,7 @@ class Seller extends ChangeNotifier {
   /// - [interval] is the time interval to group by.
   /// - [selection] is the specific items to group by.
   /// - [ignoreEmpty] whether to ignore the empty day.
-  Future<List<OrderDataPerDay>> getItemMetricsInPeriod(
+  Future<List<OrderSummary>> getItemMetricsInPeriod(
     DateTime start,
     DateTime end, {
     required OrderMetricType type,
@@ -188,7 +188,7 @@ class Seller extends ChangeNotifier {
         .where((e) => e['day'] != null)
         .groupListsBy((row) => row['day'])
         .values
-        .map((e) => OrderDataPerDay(
+        .map((e) => OrderSummary(
               at: Util.fromUTC(begin + (e.first['day'] as int) * interval.seconds),
               values: {
                 for (final row in e) row['name'] as String: row['value'] as num,
@@ -417,17 +417,17 @@ class Seller extends ChangeNotifier {
     return items.length;
   }
 
-  List<OrderDataPerDay> _fulfillPeriodData(
+  List<OrderSummary> _fulfillPeriodData(
     DateTime start,
     DateTime end,
     Duration interval,
-    List<OrderDataPerDay> data,
+    List<OrderSummary> data,
   ) {
     var i = 0;
-    return <OrderDataPerDay>[
+    return <OrderSummary>[
       for (var v = start; v.isBefore(end); v = v.add(interval))
         // `result is not enough` or `result has not contains the day`
-        i >= data.length || data[i].at != v ? OrderDataPerDay(at: v) : data[i++],
+        i >= data.length || data[i].at != v ? OrderSummary(at: v) : data[i++],
     ];
   }
 }
@@ -487,12 +487,12 @@ class OrderMetrics {
   }
 }
 
-class OrderDataPerDay {
+class OrderSummary {
   final DateTime at;
 
   final Map<String, num> values;
 
-  const OrderDataPerDay({
+  const OrderSummary({
     required this.at,
     this.values = const {},
   });
@@ -529,9 +529,10 @@ enum OrderMetricUnit {
 }
 
 enum OrderMetricType {
-  revenue('SUM', 'revenue', 'singlePrice * count', OrderMetricUnit.money),
+  revenue('SUM', 'price', 'singlePrice * count', OrderMetricUnit.money),
   cost('SUM', 'cost', 'singleCost * count', OrderMetricUnit.money),
-  profit('SUM', 'profit', '(singlePrice - singleCost) * count', OrderMetricUnit.money),
+  // profit = price - cost, we use `revenue` for historical reason.
+  profit('SUM', 'revenue', '(singlePrice - singleCost) * count', OrderMetricUnit.money),
   count('COUNT', 'price', '*', OrderMetricUnit.count);
 
   /// The method to calculate the value in DB.

@@ -20,7 +20,7 @@ class OrderFormatter {
     ];
   }
 
-  static List<List<Object>> formatOrderSetAttr(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsAttr(OrderObject order) {
     return [
       for (final attr in order.attributes)
         [
@@ -31,7 +31,7 @@ class OrderFormatter {
     ];
   }
 
-  static List<List<Object>> formatOrderProduct(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsProduct(OrderObject order) {
     return [
       for (final product in order.products)
         [
@@ -46,7 +46,7 @@ class OrderFormatter {
     ];
   }
 
-  static List<List<Object>> formatOrderIngredient(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsIngredient(OrderObject order) {
     final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final product in order.products)
@@ -68,24 +68,23 @@ class OrderFormatter {
         S.transitGSOrderHeaderPaid,
         S.transitGSOrderHeaderCost,
         S.transitGSOrderHeaderProfit,
-        S.transitGSOrderHeaderProductCount,
-        S.transitGSOrderHeaderProductPrice,
-        S.transitGSOrderHeaderProductCatalog,
+        S.transitGSOrderHeaderItemCount,
+        S.transitGSOrderHeaderTypeCount,
       ];
 
   /// Order's attributes at which index, 0-index
-  static const orderSetAttrIndex = 8;
+  static const orderDetailsAttrIndex = 8;
 
   /// Order's products detail at which index, 0-index
-  static const orderProductIndex = 9;
+  static const orderDetailsProductIndex = 9;
 
-  static List<String> get orderSetAttrHeaders => [
+  static List<String> get orderDetailsAttrHeaders => [
         S.transitGSOrderAttributeHeaderTs,
         S.transitGSOrderAttributeHeaderName,
         S.transitGSOrderAttributeHeaderOption,
       ];
 
-  static List<String> get orderProductHeaders => [
+  static List<String> get orderDetailsProductHeaders => [
         S.transitGSOrderProductHeaderTs,
         S.transitGSOrderProductHeaderName,
         S.transitGSOrderProductHeaderCatalog,
@@ -96,9 +95,9 @@ class OrderFormatter {
       ];
 
   /// Order's ingredients detail at which index, 0-index
-  static const orderIngredientIndex = 6;
+  static const orderDetailsIngredientIndex = 6;
 
-  static List<String> get orderIngredientHeaders => [
+  static List<String> get orderDetailsIngredientHeaders => [
         S.transitGSOrderIngredientHeaderTs,
         S.transitGSOrderIngredientHeaderName,
         S.transitGSOrderIngredientHeaderQuantity,

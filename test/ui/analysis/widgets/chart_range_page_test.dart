@@ -38,7 +38,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.analysisChartRangeLast7Days), findsOneWidget);
-      expect(find.text(range.format('zh_TW')), findsAtLeastNWidgets(1));
+      expect(find.text(range.format('en')), findsAtLeastNWidgets(1));
       expect(find.text(S.analysisChartRangeThisWeek), findsOneWidget);
       expect(find.text(S.analysisChartRangeLastWeek), findsOneWidget);
 
@@ -60,7 +60,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(
-        find.text(DateTimeRange(start: today, end: tomorrow).format('zh_TW')),
+        find.text(DateTimeRange(start: today, end: tomorrow).format('en')),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'), warnIfMissed: false);

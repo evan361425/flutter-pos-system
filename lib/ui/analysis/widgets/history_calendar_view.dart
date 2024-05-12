@@ -52,16 +52,16 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         shouldFillViewport: widget.isPortrait ? false : true,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        locale: LanguageSetting.instance.value.toString(),
+        locale: LanguageSetting.instance.value.locale.toString(),
         // header
         // chinese will be hidden if using default value
         daysOfWeekHeight: 20.0,
         headerStyle: const HeaderStyle(formatButtonShowsNext: false),
-        // show next format
+        // show next format, so k/v are not matching
         availableCalendarFormats: {
-          CalendarFormat.month: S.singleMonth,
-          CalendarFormat.twoWeeks: S.twoWeeks,
-          CalendarFormat.week: S.singleWeek,
+          CalendarFormat.month: S.twoWeeks,
+          CalendarFormat.twoWeeks: S.singleWeek,
+          CalendarFormat.week: S.singleMonth,
         },
         // no need holiday/weekend days
         holidayPredicate: (day) => false,

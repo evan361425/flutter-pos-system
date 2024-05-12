@@ -101,7 +101,7 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
     }
   }
 
-  Future<List<OrderDataPerDay>> _loadCartesian(DateTimeRange range) {
+  Future<List<OrderSummary>> _loadCartesian(DateTimeRange range) {
     return target == OrderMetricTarget.order
         ? Seller.instance.getMetricsInPeriod(
             range.start,

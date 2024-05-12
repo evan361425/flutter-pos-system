@@ -234,13 +234,16 @@ GS:
       ts: Timestamp
       time: Time
       price: Price
+      productPrice: Product Price
       paid: Paid
       cost: Cost
       profit: Profit
-      product:
-        count: Product Count
-        price: Product Price
-        catalog: Product Category
+      itemCount:
+      - Item Count
+      - how many items in the order
+      typeCount:
+      - Type Count
+      - how many types of products in the order
     attribute:
       title: Order Customer Settings
       header:

@@ -6,11 +6,11 @@ void main() {
     test('Parse language', () {
       final l = LanguageSetting.instance;
       expect(l.parseLanguage(''), isNull);
-      expect(l.parseLanguage('something'), equals(LanguageSetting.defaultValue));
-      expect(l.parseLanguage('zh'), equals(LanguageSetting.defaultValue));
-      expect(l.parseLanguage('zh_TW'), equals(LanguageSetting.defaultValue));
-      expect(l.parseLanguage('zh_Hant'), equals(LanguageSetting.defaultValue));
-      expect(l.parseLanguage('zh_Hant_TW'), equals(LanguageSetting.defaultValue));
+      expect(l.parseLanguage('something'), equals(Language.en));
+      expect(l.parseLanguage('zh'), equals(Language.zhTW));
+      expect(l.parseLanguage('zh_TW'), equals(Language.zhTW));
+      expect(l.parseLanguage('zh_Hant'), equals(Language.zhTW));
+      expect(l.parseLanguage('zh_Hant_TW'), equals(Language.zhTW));
     });
   });
 }

@@ -34,11 +34,11 @@ changer:
     - "Not enough ${unit}"
     - unit:
     invalidHead:
-    - "Cannot exchange {count} ${unit}"
+    - "Cannot exchange {count} of ${unit} to"
     - count: {type: int}
       unit:
     invalidBody:
-    - "{count} ${unit}"
+    - "{count} of ${unit}"
     - Concatenated multiple lines after `invalidHead` to form a complete sentence.
     - count: {type: int}
       unit:

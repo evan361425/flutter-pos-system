@@ -244,7 +244,7 @@ void main() {
 
         verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
-        await tester.tap(find.text(S.transitImportPreviewTitle));
+        await tester.tap(find.text(S.transitImportPreviewBtn));
         await tester.pumpAndSettle();
 
         for (var e in ['p1', 'p2', 'p3', 'c1', 'c2']) {
@@ -286,7 +286,7 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, index);
-        await tester.tap(find.text(S.transitImportPreviewTitle));
+        await tester.tap(find.text(S.transitImportPreviewBtn));
         await tester.pumpAndSettle();
 
         if (names == null) {

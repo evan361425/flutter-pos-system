@@ -105,7 +105,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   Map<SheetType, String> requiredSheetTitles() {
-    final prefix = properties.withPrefix ? '${widget.rangeNotifier.value.format(S.localeName)} ' : '';
+    final prefix = properties.withPrefix ? '${widget.rangeNotifier.value.formatCompact(S.localeName)} ' : '';
 
     return {
       for (final sheet in properties.requiredSheets)
@@ -178,12 +178,12 @@ class _ExportOrderViewState extends State<ExportOrderView> {
 
   static List<List<Object>> Function(OrderObject) chooseFormatter(SheetType type) {
     switch (type) {
-      case SheetType.orderSetAttr:
-        return OrderFormatter.formatOrderSetAttr;
-      case SheetType.orderProduct:
-        return OrderFormatter.formatOrderProduct;
-      case SheetType.orderIngredient:
-        return OrderFormatter.formatOrderIngredient;
+      case SheetType.orderDetailsAttr:
+        return OrderFormatter.formatOrderDetailsAttr;
+      case SheetType.orderDetailsProduct:
+        return OrderFormatter.formatOrderDetailsProduct;
+      case SheetType.orderDetailsIngredient:
+        return OrderFormatter.formatOrderDetailsIngredient;
       default:
         return OrderFormatter.formatOrder;
     }
@@ -191,12 +191,12 @@ class _ExportOrderViewState extends State<ExportOrderView> {
 
   static List<String> chooseHeaders(SheetType type) {
     switch (type) {
-      case SheetType.orderSetAttr:
-        return OrderFormatter.orderSetAttrHeaders;
-      case SheetType.orderProduct:
-        return OrderFormatter.orderProductHeaders;
-      case SheetType.orderIngredient:
-        return OrderFormatter.orderIngredientHeaders;
+      case SheetType.orderDetailsAttr:
+        return OrderFormatter.orderDetailsAttrHeaders;
+      case SheetType.orderDetailsProduct:
+        return OrderFormatter.orderDetailsProductHeaders;
+      case SheetType.orderDetailsIngredient:
+        return OrderFormatter.orderDetailsIngredientHeaders;
       default:
         return OrderFormatter.orderHeaders;
     }

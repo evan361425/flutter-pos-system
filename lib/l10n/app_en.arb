@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-05T10:03:32.292509Z",
+  "@@last_modified": "2024-05-12T07:46:45.720679Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -461,12 +461,18 @@
   "transitGSOrderHeaderTs": "Timestamp",
   "transitGSOrderHeaderTime": "Time",
   "transitGSOrderHeaderPrice": "Price",
+  "transitGSOrderHeaderProductPrice": "Product Price",
   "transitGSOrderHeaderPaid": "Paid",
   "transitGSOrderHeaderCost": "Cost",
   "transitGSOrderHeaderProfit": "Profit",
-  "transitGSOrderHeaderProductCount": "Product Count",
-  "transitGSOrderHeaderProductPrice": "Product Price",
-  "transitGSOrderHeaderProductCatalog": "Product Category",
+  "transitGSOrderHeaderItemCount": "Item Count",
+  "@transitGSOrderHeaderItemCount": {
+    "description": "how many items in the order"
+  },
+  "transitGSOrderHeaderTypeCount": "Type Count",
+  "@transitGSOrderHeaderTypeCount": {
+    "description": "how many types of products in the order"
+  },
   "transitGSOrderAttributeTitle": "Order Customer Settings",
   "transitGSOrderAttributeHeaderTs": "Timestamp",
   "transitGSOrderAttributeHeaderName": "Setting Category",

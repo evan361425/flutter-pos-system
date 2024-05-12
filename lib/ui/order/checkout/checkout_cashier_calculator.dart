@@ -156,7 +156,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
       final paid = _calc(value);
       final change = paid - widget.price.value;
 
-      changeText = change >= 0 ? change.toCurrency() : null;
+      changeText = change >= 0 ? change.toCurrencyLong() : null;
       widget.paid.value = paid;
     } else {
       widget.paid.value = widget.price.value;
@@ -168,7 +168,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
 
   void _addOperator(String operator) {
     if (text.isNotEmpty) {
-      text = _calc(text).toCurrency() + operator;
+      text = _calc(text).toCurrencyLong() + operator;
       setState(() {
         isOperating = true;
       });
@@ -178,7 +178,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
   void _execCeil() {
     final price = _calc(text, widget.price.value.toInt());
     final ceilPrice = CurrencySetting.instance.ceil(price);
-    text = ceilPrice.toCurrency();
+    text = ceilPrice.toCurrencyLong();
   }
 
   void _execBack() {
@@ -202,7 +202,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
       setState(() {
         isOperating = false;
       });
-      text = _calc(text).toCurrency();
+      text = _calc(text).toCurrencyLong();
     } else {
       widget.onSubmit();
     }
@@ -244,7 +244,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
   }
 
   _onNotify() {
-    text = _calc(widget.paid.value.toCurrency()).toCurrency();
+    text = _calc(widget.paid.value.toCurrencyLong()).toCurrencyLong();
   }
 }
 

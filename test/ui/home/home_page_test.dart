@@ -97,7 +97,7 @@ void main() {
       await navAndPop('setting_header.order_attrs', 'order_attributes.reorder');
 
       // rest
-      await navAndPop('setting.debug', 'setting.debug.list');
+      await navAndPop('setting.debug', 'debug.list');
       await navAndPop('setting.menu', 'menu.search');
       await navAndPop('setting.exporter', 'transit.google_sheet');
       await navAndPop('setting.quantity', 'quantity.add');

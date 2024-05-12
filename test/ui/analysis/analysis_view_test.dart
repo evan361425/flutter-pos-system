@@ -25,10 +25,8 @@ void main() {
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: Seller.instance),
-        ],
+      return ChangeNotifierProvider.value(
+        value: Seller.instance,
         builder: (_, __) => MaterialApp.router(
           routerConfig: GoRouter(
             routes: [
@@ -48,7 +46,7 @@ void main() {
     void mockGetChart() {
       when(database.query(
         any,
-        columns: argThat(contains('SUM(price) price'), named: 'columns'),
+        columns: argThat(contains('SUM(price) revenue'), named: 'columns'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
         groupBy: anyNamed('groupBy'),
@@ -149,7 +147,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      expect(find.text(range.format('zh_TW')), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -158,7 +156,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 14)),
         days: 7,
       );
-      expect(find.text(range.format('zh_TW')), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -167,14 +165,14 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      expect(find.text(range.format('zh_TW')), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       // select date range
       await tester.tap(find.byKey(const Key('anal.chart_range')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pump(const Duration(milliseconds: 50));
-      expect(find.text(range.format('zh_TW')), findsAtLeastNWidgets(1));
+      expect(find.text(range.format('en')), findsAtLeastNWidgets(1));
     });
 
     setUpAll(() {

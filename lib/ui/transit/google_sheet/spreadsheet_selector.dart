@@ -266,7 +266,9 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   Future<void> _update(GoogleSpreadsheet? other) async {
     Log.ger('change start', 'gs_export', other.toString());
-    setState(() => spreadsheet = other);
+    if (mounted) {
+      setState(() => spreadsheet = other);
+    }
     await widget.onUpdated?.call(other);
 
     if (other != null) {
@@ -393,7 +395,7 @@ enum SheetType {
   replenisher,
   orderAttr,
   order,
-  orderSetAttr,
-  orderProduct,
-  orderIngredient,
+  orderDetailsAttr,
+  orderDetailsProduct,
+  orderDetailsIngredient,
 }

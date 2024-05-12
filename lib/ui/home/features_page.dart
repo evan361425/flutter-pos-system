@@ -34,111 +34,109 @@ class FeaturesPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(leading: const PopButton()),
-      body: ListView(
-        children: <Widget>[
-          const SizedBox(height: 8.0),
-          FutureBuilder<PackageInfo>(
-            future: PackageInfo.fromPlatform(),
-            builder: (context, snapshot) {
-              final info = snapshot.data;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (info != null) Text(S.settingVersion(info.version)),
-                  const SizedBox(width: 8.0),
-                  OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 8.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: SignInButton(
-              signedInWidgetBuilder: (user) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(S.settingWelcome(user?.displayName ?? '')),
-                  OutlinedButton(
-                    key: const Key('feature.sign_out'),
-                    onPressed: () async {
-                      await Auth.instance.signOut();
-                    },
-                    child: Text(S.settingLogoutBtn),
-                  ),
-                ],
-              ),
+      body: ListView(children: <Widget>[
+        const SizedBox(height: 8.0),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            final info = snapshot.data;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (info != null) Text(S.settingVersion(info.version)),
+                const SizedBox(width: 8.0),
+                OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 8.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SignInButton(
+            signedInWidgetBuilder: (user) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(S.settingWelcome(user?.displayName ?? '')),
+                OutlinedButton(
+                  key: const Key('feature.sign_out'),
+                  onPressed: () async {
+                    await Auth.instance.signOut();
+                  },
+                  child: Text(S.settingLogoutBtn),
+                ),
+              ],
             ),
           ),
-          ListTile(
-            key: const Key('feature.theme'),
-            leading: const Icon(Icons.palette_outlined),
-            title: Text(S.settingThemeTitle),
-            subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
-            trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => navigateTo(Feature.theme),
+        ),
+        ListTile(
+          key: const Key('feature.theme'),
+          leading: const Icon(Icons.palette_outlined),
+          title: Text(S.settingThemeTitle),
+          subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
+          trailing: const Icon(Icons.arrow_forward_ios_sharp),
+          onTap: () => navigateTo(Feature.theme),
+        ),
+        ListTile(
+          key: const Key('feature.language'),
+          leading: const Icon(Icons.language_outlined),
+          title: Text(S.settingLanguageTitle),
+          subtitle: Text(LanguageSetting.instance.value.title),
+          trailing: const Icon(Icons.arrow_forward_ios_sharp),
+          onTap: () => navigateTo(Feature.language),
+        ),
+        const Divider(),
+        ListTile(
+          key: const Key('feature.order_outlook'),
+          leading: const Icon(Icons.library_books_outlined),
+          title: Text(S.settingOrderOutlookTitle),
+          subtitle: Text(S.settingOrderOutlookName(OrderOutlookSetting.instance.value.name)),
+          trailing: const Icon(Icons.arrow_forward_ios_sharp),
+          onTap: () => navigateTo(Feature.orderOutlook),
+        ),
+        ListTile(
+          key: const Key('feature.checkout_warning'),
+          leading: const Icon(Icons.store_mall_directory_outlined),
+          title: Text(S.settingCheckoutWarningTitle),
+          subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
+          trailing: const Icon(Icons.arrow_forward_ios_sharp),
+          onTap: () => navigateTo(Feature.checkoutWarning),
+        ),
+        // TODO: After using RWD, this feature is not necessary
+        FeatureSlider(
+          sliderKey: const Key('feature.order_product_count'),
+          title: S.settingOrderProductCountTitle,
+          value: OrderProductAxisCountSetting.instance.value,
+          max: 5,
+          autofocus: focus == 'orderProductCount',
+          minLabel: S.settingOrderProductCountMinLabel,
+          hintText: S.settingOrderProductCountHint,
+          onChanged: (value) => OrderProductAxisCountSetting.instance.update(value),
+        ),
+        ListTile(
+          leading: const Icon(Icons.remove_red_eye_outlined),
+          title: Text(S.settingOrderAwakeningTitle),
+          subtitle: Text(S.settingOrderAwakeningDescription),
+          trailing: FeatureSwitch(
+            key: const Key('feature.order_awakening'),
+            autofocus: focus == 'orderAwakening',
+            value: OrderAwakeningSetting.instance.value,
+            onChanged: (value) => OrderAwakeningSetting.instance.update(value),
           ),
-          ListTile(
-            key: const Key('feature.language'),
-            leading: const Icon(Icons.language_outlined),
-            title: Text(S.settingLanguageTitle),
-            subtitle: Text(LanguageSetting.instance.value.title),
-            trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => navigateTo(Feature.language),
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.report_outlined),
+          title: Text(S.settingReportTitle),
+          subtitle: Text(S.settingReportDescription),
+          trailing: FeatureSwitch(
+            key: const Key('feature.collect_events'),
+            autofocus: focus == 'collectEvents',
+            value: CollectEventsSetting.instance.value,
+            onChanged: (value) => CollectEventsSetting.instance.update(value),
           ),
-          const Divider(),
-          ListTile(
-            key: const Key('feature.order_outlook'),
-            leading: const Icon(Icons.library_books_outlined),
-            title: Text(S.settingOrderOutlookTitle),
-            subtitle: Text(S.settingOrderOutlookName(OrderOutlookSetting.instance.value.name)),
-            trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => navigateTo(Feature.orderOutlook),
-          ),
-          ListTile(
-            key: const Key('feature.checkout_warning'),
-            leading: const Icon(Icons.store_mall_directory_outlined),
-            title: Text(S.settingCheckoutWarningTitle),
-            subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
-            trailing: const Icon(Icons.arrow_forward_ios_sharp),
-            onTap: () => navigateTo(Feature.checkoutWarning),
-          ),
-          // TODO: After using RWD, this feature is not necessary
-          FeatureSlider(
-            sliderKey: const Key('feature.order_product_count'),
-            title: S.settingOrderProductCountTitle,
-            value: OrderProductAxisCountSetting.instance.value,
-            max: 5,
-            autofocus: focus == 'orderProductCount',
-            minLabel: S.settingOrderProductCountMinLabel,
-            hintText: S.settingOrderProductCountHint,
-            onChanged: (value) => OrderProductAxisCountSetting.instance.update(value),
-          ),
-          ListTile(
-            leading: const Icon(Icons.remove_red_eye_outlined),
-            title: Text(S.settingOrderAwakeningTitle),
-            subtitle: Text(S.settingOrderAwakeningDescription),
-            trailing: FeatureSwitch(
-              key: const Key('feature.order_awakening'),
-              autofocus: focus == 'orderAwakening',
-              value: OrderAwakeningSetting.instance.value,
-              onChanged: (value) => OrderAwakeningSetting.instance.update(value),
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.report_outlined),
-            title: Text(S.settingReportTitle),
-            subtitle: Text(S.settingReportDescription),
-            trailing: FeatureSwitch(
-              key: const Key('feature.collect_events'),
-              autofocus: focus == 'collectEvents',
-              value: CollectEventsSetting.instance.value,
-              onChanged: (value) => CollectEventsSetting.instance.update(value),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }

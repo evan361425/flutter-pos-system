@@ -116,6 +116,20 @@ extension ToCurrency on num {
     return CurrencySetting.instance.formatter.format(toCurrencyNum());
   }
 
+  String toCurrencyLong() {
+    if (CurrencySetting.instance.isInt) {
+      return round().toString();
+    }
+
+    // if it has decimal, show it, else show int
+    final rounded = round();
+    if (this == rounded) {
+      return round().toString();
+    }
+
+    return toString();
+  }
+
   num toCurrencyNum() {
     return CurrencySetting.instance.isInt ? round() : this;
   }

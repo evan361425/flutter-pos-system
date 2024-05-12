@@ -179,7 +179,7 @@ class OrderSheetProperties {
 
 enum OrderSheetType {
   order,
-  orderSetAttr,
-  orderProduct,
-  orderIngredient,
+  orderDetailsAttr,
+  orderDetailsProduct,
+  orderDetailsIngredient,
 }

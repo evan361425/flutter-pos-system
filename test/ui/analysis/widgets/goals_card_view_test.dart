@@ -10,6 +10,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_database.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
   Future<List<Map<String, Object?>>> mockQuery(int begin, int cease) {
@@ -34,8 +35,8 @@ void main() {
               {
                 'day': i,
                 'count': i,
-                'price': i * 1.1,
-                'revenue': i * 1.2,
+                'revenue': i * 1.1,
+                'profit': i * 1.2,
                 'cost': i * 1.3,
               }
           ]);
@@ -52,12 +53,12 @@ void main() {
       const calculator = EMACalculator(20);
       final data = <String, num>{
         'count': calculator.calculate([for (var i = 0; i < 20; i++) i]),
-        'price': calculator.calculate([for (var i = 0; i < 20; i++) i * 1.1]),
-        'revenue': calculator.calculate([for (var i = 0; i < 20; i++) i * 1.2]),
+        'revenue': calculator.calculate([for (var i = 0; i < 20; i++) i * 1.1]),
+        'profit': calculator.calculate([for (var i = 0; i < 20; i++) i * 1.2]),
       };
       findText('20／${data['count']!.toInt()}');
-      findText('22／${data['price']!.toCurrency()}');
-      findText('24／${data['revenue']!.toCurrency()}');
+      findText('22／${data['revenue']!.toCurrency()}');
+      findText('24／${data['profit']!.toCurrency()}');
       verify(mockQuery(fortyDaysAgo, tomorrow));
 
       // notify the seller to update the view
@@ -85,6 +86,7 @@ void main() {
     setUpAll(() {
       initializeDatabase();
       initializeCache();
+      initializeTranslator();
       VisibilityDetectorController.instance.updateInterval = Duration.zero;
     });
   });

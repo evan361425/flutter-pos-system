@@ -67,7 +67,7 @@ class ChartCardView extends StatelessWidget {
       case AnalysisChartType.cartesian:
         return _CartesianChart(
           chart: chart,
-          metrics: metrics as List<OrderDataPerDay>,
+          metrics: metrics as List<OrderSummary>,
           interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
         );
       case AnalysisChartType.circular:
@@ -99,7 +99,7 @@ class ChartCardView extends StatelessWidget {
 class _CartesianChart extends StatelessWidget {
   final Chart chart;
 
-  final List<OrderDataPerDay> metrics;
+  final List<OrderSummary> metrics;
 
   final MetricsIntervalType interval;
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -23,13 +22,13 @@ class GoalsCardView extends StatefulWidget {
 }
 
 class _GoalsCardViewState extends State<GoalsCardView> {
-  OrderDataPerDay? goal;
+  OrderSummary? goal;
 
   final formatter = NumberFormat.percentPattern();
 
   @override
   Widget build(BuildContext context) {
-    return ReloadableCard<OrderDataPerDay>(
+    return ReloadableCard<OrderSummary>(
       id: 'goals',
       title: S.analysisGoalsTitle,
       notifiers: [Seller.instance],
@@ -44,14 +43,16 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     // If the user disabled the goals, we don't need to load the data.
     // which is currently only option(goals is a beta feature).
     if (enabled != true) {
-      goal = OrderDataPerDay(at: DateTime(0));
+      goal = OrderSummary(at: DateTime(0));
     }
 
     super.initState();
   }
 
-  Widget _builder(BuildContext context, OrderDataPerDay metric) {
-    final style = Theme.of(context).textTheme.bodyLarge;
+  Widget _builder(BuildContext context, OrderSummary metric) {
+    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(
+          overflow: TextOverflow.ellipsis,
+        );
     final goals = <Widget>[
       _GoalItem(
         type: OrderMetricType.count,
@@ -71,7 +72,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       ),
       _GoalItem(
         type: OrderMetricType.profit,
-        current: metric.revenue,
+        current: metric.profit,
         goal: goal!.profit,
         style: style,
         name: S.analysisGoalsProfitTitle,
@@ -123,7 +124,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
   }
 
-  Future<OrderDataPerDay> _loader() async {
+  Future<OrderSummary> _loader() async {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
       // If there is no data, we need to calculate the EMA from the last 20 data points withing 40 days.
@@ -141,10 +142,10 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
 
     // Remove the first data, which is the today's data.
-    final todayData = result.isEmpty ? OrderDataPerDay(at: range.start) : result.removeAt(0);
+    final todayData = result.isEmpty ? OrderSummary(at: range.start) : result.removeAt(0);
 
     final reversed = result.reversed;
-    goal ??= OrderDataPerDay(
+    goal ??= OrderSummary(
       at: DateTime(0), // this is dummy data, we don't need the date.
       values: {
         'count': widget.calculator.calculate(reversed.map((e) => e.count)),
@@ -184,11 +185,9 @@ class _GoalItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(name, style: style),
-          const SizedBox(width: 4.0),
-          InfoPopup(desc),
-        ]),
+        Text(name, style: style),
+        // TODO: tap to show the description
+        // InfoPopup(desc),
         RichText(
           text: TextSpan(
             text: current.toCurrency(),

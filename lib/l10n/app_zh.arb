@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-05T10:03:32.315744Z",
+  "@@last_modified": "2024-05-12T07:46:45.754626Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -461,12 +461,18 @@
   "transitGSOrderHeaderTs": "時間戳記",
   "transitGSOrderHeaderTime": "時間",
   "transitGSOrderHeaderPrice": "總價",
+  "transitGSOrderHeaderProductPrice": "產品總價",
   "transitGSOrderHeaderPaid": "付額",
   "transitGSOrderHeaderCost": "成本",
   "transitGSOrderHeaderProfit": "收入",
-  "transitGSOrderHeaderProductCount": "產品總數",
-  "transitGSOrderHeaderProductPrice": "產品價錢",
-  "transitGSOrderHeaderProductCatalog": "產品種類",
+  "transitGSOrderHeaderItemCount": "產品份數",
+  "@transitGSOrderHeaderItemCount": {
+    "description": "how many items in the order"
+  },
+  "transitGSOrderHeaderTypeCount": "產品類數",
+  "@transitGSOrderHeaderTypeCount": {
+    "description": "how many types of products in the order"
+  },
   "transitGSOrderAttributeTitle": "訂單顧客設定",
   "transitGSOrderAttributeHeaderTs": "時間戳記",
   "transitGSOrderAttributeHeaderName": "設定類別",

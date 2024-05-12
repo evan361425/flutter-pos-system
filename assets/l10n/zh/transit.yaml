@@ -193,13 +193,12 @@ GS:
       ts: 時間戳記
       time: 時間
       price: 總價
+      productPrice: 產品總價
       paid: 付額
       cost: 成本
       profit: 收入
-      product:
-        count: 產品總數
-        price: 產品價錢
-        catalog: 產品種類
+      itemCount: 產品份數
+      typeCount: 產品類數
     attribute:
       title: 訂單顧客設定
       header:

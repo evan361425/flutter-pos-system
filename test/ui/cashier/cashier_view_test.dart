@@ -23,17 +23,15 @@ void main() {
       )).thenReturn(true);
       when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
 
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: Cashier.instance),
-        ],
+      return ChangeNotifierProvider.value(
+        value: Cashier.instance,
         builder: (_, __) => MaterialApp.router(
           routerConfig: GoRouter(routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const Scaffold(body: CashierView()),
               routes: Routes.routes,
-            )
+            ),
           ]),
         ),
       );

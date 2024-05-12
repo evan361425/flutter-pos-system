@@ -338,7 +338,7 @@ void main() {
       expect(c1.type.name, equals('cartesian'));
       expect(
         c1.metrics,
-        equals([OrderMetricType.cost, OrderMetricType.revenue]),
+        equals([OrderMetricType.cost, OrderMetricType.profit]),
       );
       expect(c2.name, equals('c-2'));
       expect(c2.type.name, equals('circular'));

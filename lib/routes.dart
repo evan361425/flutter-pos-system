@@ -123,15 +123,15 @@ class Routes {
     GoRoute(
       name: chartNew,
       path: 'chart/new',
-      builder: (ctx, state) => const ChartOrderModal(),
+      builder: (ctx, state) => const ChartModal(),
     ),
     GoRoute(
       name: chartModal,
       path: 'chart/o/:id/modal',
       builder: (ctx, state) {
-        final id = state.pathParameters['id'] ?? '0';
+        final id = state.pathParameters['id']!;
         final chart = Analysis.instance.getItem(id);
-        return ChartOrderModal(chart: chart);
+        return ChartModal(chart: chart);
       },
     ),
     GoRoute(
