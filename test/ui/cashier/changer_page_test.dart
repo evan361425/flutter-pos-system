@@ -165,9 +165,9 @@ void main() {
 
       expect(
         find.text('${S.cashierChangerErrorInvalidHead(4, '10')}\n'
-            '- ${S.cashierChangerErrorInvalidBody(8, '5')}\n'
-            '- ${S.cashierChangerErrorInvalidBody(1, '5')}\n'
-            '- ${S.cashierChangerErrorInvalidBody(5, '1')}'),
+            ' •  ${S.cashierChangerErrorInvalidBody(8, '5')}\n'
+            ' •  ${S.cashierChangerErrorInvalidBody(1, '5')}\n'
+            ' •  ${S.cashierChangerErrorInvalidBody(5, '1')}'),
         findsOneWidget,
       );
 

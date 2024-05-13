@@ -22,6 +22,9 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
@@ -318,38 +321,43 @@ void main() {
 
     group('All in one page', () {
       testWidgets('scroll to bottom', (tester) async {
-        when(cache.get('feat.orderAwakening')).thenReturn(false);
-        when(cache.get('feat.orderOutlook')).thenReturn(1);
-        // text only
-        when(cache.get('feat.orderProductAxisCount')).thenReturn(0);
+        OrderAwakeningSetting.instance.value = false;
+        OrderOutlookSetting.instance.value = OrderOutlookTypes.singleView;
+        OrderProductAxisCountSetting.instance.value = 0;
 
-        prepareData();
+        try {
+          prepareData();
 
-        await tester.pumpWidget(buildApp());
+          await tester.pumpWidget(buildApp());
 
-        await tester.tap(find.byKey(const Key('order.product.p-1')));
-        await tester.tap(find.byKey(const Key('order.catalog.c-2')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.product.p-1')));
+          await tester.tap(find.byKey(const Key('order.catalog.c-2')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
-        final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
-        // scroll to bottom
-        expect(scrollController.position.maxScrollExtent, isNonZero);
-        expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
+          expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
+          final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
+          // scroll to bottom
+          expect(scrollController.position.maxScrollExtent, isNonZero);
+          expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
 
-        // setup portrait env
-        tester.view.physicalSize = const Size(1000, 2000);
-        addTearDown(tester.view.resetPhysicalSize);
+          // setup portrait env
+          tester.view.physicalSize = const Size(1000, 2000);
+          addTearDown(tester.view.resetPhysicalSize);
 
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
+          await tester.pumpAndSettle();
+          expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
+        } finally {
+          OrderAwakeningSetting.instance.value = OrderAwakeningSetting.defaultValue;
+          OrderOutlookSetting.instance.value = OrderOutlookSetting.defaultValue;
+          OrderProductAxisCountSetting.instance.value = OrderProductAxisCountSetting.defaultValue;
+        }
       });
     });
 
@@ -517,6 +525,7 @@ void main() {
     });
 
     setUp(() {
+      cache.reset();
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial

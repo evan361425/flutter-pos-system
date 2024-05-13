@@ -16,6 +16,25 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Replenishment Page', () {
+    Widget buildApp(Stock stock, Replenisher replenisher) {
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<Stock>.value(value: stock),
+          ChangeNotifierProvider<Replenisher>.value(value: replenisher),
+        ],
+        builder: (_, __) => MaterialApp.router(
+          routerConfig: GoRouter(routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const ReplenishmentPage(),
+            )
+          ]),
+        ),
+      );
+    }
+
+    // TODO: find which causing overflows
     testWidgets('Edit replenishment', (tester) async {
       final replenishment = Replenishment(id: 'r-1', name: 'r-1', data: {
         'i-1': 1,
@@ -31,21 +50,7 @@ void main() {
         });
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: stock),
-          ChangeNotifierProvider<Replenisher>.value(value: replenisher),
-        ],
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const ReplenishmentPage(),
-            )
-          ]),
-        ),
-      ));
+      await tester.pumpWidget(buildApp(stock, replenisher));
 
       await tester.longPress(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();
@@ -79,21 +84,7 @@ void main() {
       final replenisher = Replenisher()..replaceItems({});
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: stock),
-          ChangeNotifierProvider<Replenisher>.value(value: replenisher),
-        ],
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const ReplenishmentPage(),
-            )
-          ]),
-        ),
-      ));
+      await tester.pumpWidget(buildApp(stock, replenisher));
 
       await tester.tap(find.byKey(const Key('replenisher.add')));
       await tester.pumpAndSettle();
@@ -120,18 +111,7 @@ void main() {
       final replenisher = Replenisher()..replaceItems({'r-1': replenishment});
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(ChangeNotifierProvider<Replenisher>.value(
-        value: replenisher,
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const ReplenishmentPage(),
-            )
-          ]),
-        ),
-      ));
+      await tester.pumpWidget(buildApp(Stock(), replenisher));
 
       await tester.longPress(find.byKey(const Key('replenisher.r-1')));
       await tester.pumpAndSettle();

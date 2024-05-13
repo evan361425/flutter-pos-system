@@ -10,18 +10,14 @@ import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 
-class ReplenishmentPage extends StatefulWidget {
+class ReplenishmentPage extends StatelessWidget {
   const ReplenishmentPage({super.key});
 
   @override
-  State<ReplenishmentPage> createState() => _ReplenishmentPageState();
-}
-
-class _ReplenishmentPageState extends State<ReplenishmentPage> {
-  @override
   Widget build(BuildContext context) {
+    void goToCreate() => context.pushNamed(Routes.replenishmentNew);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(S.stockReplenishmentTitleList),
@@ -33,24 +29,36 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
         tooltip: S.stockReplenishmentTitleCreate,
         child: const Icon(KIcons.add),
       ),
-      body: body,
+      body: ListenableBuilder(
+        listenable: Replenisher.instance,
+        builder: (_, __) {
+          if (Replenisher.instance.isEmpty) {
+            return Center(
+              child: EmptyBody(
+                onPressed: goToCreate,
+                helperText: S.stockReplenishmentEmptyBody,
+              ),
+            );
+          }
+
+          return buildList(context);
+        },
+      ),
     );
   }
 
-  @override
-  void didChangeDependencies() {
-    context.watch<Replenisher>();
-    super.didChangeDependencies();
-  }
+  Widget buildList(BuildContext context) {
+    void handler(Replenishment item, _Actions action) async {
+      if (action == _Actions.apply) {
+        final confirmed = await context.pushNamed<bool>(
+          Routes.replenishmentApply,
+          pathParameters: {'id': item.id},
+        );
 
-  Widget get body {
-    if (Replenisher.instance.isEmpty) {
-      return Center(
-        child: EmptyBody(
-          onPressed: goToCreate,
-          helperText: S.stockReplenishmentEmptyBody,
-        ),
-      );
+        if (confirmed == true && context.mounted && context.canPop()) {
+          context.pop(true);
+        }
+      }
     }
 
     return SlidableItemList<Replenishment, _Actions>(
@@ -75,38 +83,19 @@ class _ReplenishmentPageState extends State<ReplenishmentPage> {
             returnValue: _Actions.apply,
           ),
         ],
-        handleAction: handleAction,
-        tileBuilder: (context, item, index, showActions) => ListTile(
-          key: Key('replenisher.${item.id}'),
-          title: Text(item.name),
-          subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
-          onTap: () => handleAction(item, _Actions.apply),
-          onLongPress: showActions,
-          trailing: EntryMoreButton(onPressed: showActions),
-        ),
+        handleAction: handler,
+        tileBuilder: (context, item, index, showActions) {
+          return ListTile(
+            key: Key('replenisher.${item.id}'),
+            title: Text(item.name),
+            subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
+            onTap: () => handler(item, _Actions.apply),
+            onLongPress: showActions,
+            trailing: EntryMoreButton(onPressed: showActions),
+          );
+        },
       ),
     );
-  }
-
-  void goToCreate() {
-    context.pushNamed(Routes.replenishmentNew);
-  }
-
-  void handleAction(Replenishment item, _Actions action) {
-    if (action == _Actions.apply) {
-      handleApply(item);
-    }
-  }
-
-  Future<void> handleApply(Replenishment item) async {
-    final confirmed = await context.pushNamed<bool>(
-      Routes.replenishmentApply,
-      pathParameters: {'id': item.id},
-    );
-
-    if (mounted && confirmed == true && context.canPop()) {
-      context.pop(true);
-    }
   }
 }
 

@@ -330,7 +330,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(S.orderAttributeTitleReorder));
+      await tester.tap(find.text(S.orderAttributeOptionTitleReorder));
       await tester.pumpAndSettle();
 
       await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
