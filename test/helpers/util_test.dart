@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:possystem/helpers/util.dart';
 
 void main() {
@@ -30,6 +31,13 @@ void main() {
       expect(date.hour, equals(2));
       expect(date.minute, equals(59));
       expect(date.second, equals(33));
+    });
+
+    test('#formatCompact', () {
+      initializeDateFormatting('en', null);
+      DateTimeRange range = Util.getDateRange(now: DateTime.utc(2021, 6, 14), days: 3);
+
+      expect(range.formatCompact('en'), equals('20210614 - 20210616'));
     });
 
     testWidgets('#handleSnapshot error', (WidgetTester tester) async {

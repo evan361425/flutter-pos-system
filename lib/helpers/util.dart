@@ -46,7 +46,7 @@ class Util {
         return Center(child: Text(error.toString()));
       }
 
-      if (!snapshot.hasData) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(
           child: SizedBox(
             height: 20,

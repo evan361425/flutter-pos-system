@@ -10,8 +10,6 @@ class RouteCircularButton extends StatelessWidget {
 
   final String? route;
 
-  final Map<String, String> routePathParameters;
-
   final bool popTrueShowSuccess;
 
   final VoidCallback? onTap;
@@ -21,7 +19,6 @@ class RouteCircularButton extends StatelessWidget {
     required this.text,
     required this.icon,
     this.route,
-    this.routePathParameters = const <String, String>{},
     this.popTrueShowSuccess = false,
     this.onTap,
   });
@@ -42,10 +39,7 @@ class RouteCircularButton extends StatelessWidget {
             ),
             onPressed: onTap ??
                 () async {
-                  final result = await context.pushNamed(
-                    route!,
-                    pathParameters: routePathParameters,
-                  );
+                  final result = await context.pushNamed(route!);
                   if (result == true) {
                     if (context.mounted) {
                       showSnackBar(context, S.actSuccess);

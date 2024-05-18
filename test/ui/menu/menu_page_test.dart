@@ -17,6 +17,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
@@ -335,8 +336,14 @@ void main() {
       expect(find.byKey(const Key('catalog.c-1')), findsOneWidget);
     });
 
+    setUp(() async {
+      await cache.reset();
+      when(cache.get(any)).thenReturn(true);
+    });
+
     setUpAll(() {
       initializeStorage();
+      initializeCache();
       initializeTranslator();
       initializeFileSystem();
     });

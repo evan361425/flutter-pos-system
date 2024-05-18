@@ -27,10 +27,10 @@ mode:
     changeDiscount: 折扣
   helper:
   - statOnly: 一般的設定，選取時並不會影響點單價格。
-    changePrice: |
+    changePrice: |-
       選取設定時，可能會影響價格。
       例如：外送 + 30塊錢、環保杯 - 5塊錢。
-    changeDiscount: |
+    changeDiscount: |-
       選取設定時，會根據折扣影響總價。
       例如：內用 + 10% 服務費、親友價 - 10%。
 name:

@@ -316,6 +316,12 @@ void main() {
           ['p-1', '2'],
           ['p-2', '2'],
         ], 36);
+
+        // open by tapping snapshot product
+        await tester.tap(find.byKey(const Key('cart_snapshot.0')));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('order.ingredient.pi-2')), findsOneWidget);
       });
     });
 

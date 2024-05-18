@@ -237,8 +237,8 @@ GS:
       empty: 不能為空
       invalid: |-
         不合法的文字，必須包含：
-        /spreadsheets/d/<ID>/
-        或者直接給 ID（英文+數字+底線+減號的組合）
+        • /spreadsheets/d/<ID>/
+        • 或者直接給 ID（英文+數字+底線+減號的組合）
     createSheet: 無法在試算表中建立表單
     createSheetHelper: |-
       別擔心，通常都可以簡單解決！

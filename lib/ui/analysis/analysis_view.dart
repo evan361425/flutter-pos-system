@@ -67,8 +67,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
                   message: S.analysisChartTutorialContent,
                   child: RouteCircularButton(
                     key: const Key('anal.add_chart'),
-                    route: Routes.chartModal,
-                    routePathParameters: const {'id': '_'},
+                    route: Routes.chartNew,
                     icon: KIcons.add,
                     text: S.analysisChartTitleCreate,
                   ),

@@ -282,8 +282,8 @@ GS:
       empty: Cannot be Empty
       invalid: |-
         Invalid text. It must include:
-        /spreadsheets/d/<ID>/
-        Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
+        • /spreadsheets/d/<ID>/
+        • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
     createSheet: Unable to Create Sheet in Spreadsheet
     createSheetHelper: |-
       Don't worry, it's usually easy to solve!

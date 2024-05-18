@@ -73,7 +73,7 @@ void main() {
           )));
     }
 
-    testWidgets('exporter pick invalid and exist', (tester) async {
+    testWidgets('exporter pick invalid and exit', (tester) async {
       when(cache.get(eCacheKey)).thenReturn('old-id:true:old-name');
 
       await tester.pumpWidget(buildApp());
@@ -84,10 +84,13 @@ void main() {
       expect(editorW.controller?.text, equals('old-id'));
 
       await tester.enterText(editor, 'QQ');
+      await tester.tap(find.byKey(const Key('text_dialog.confirm')));
+      await tester.pump();
+      // not in dialog
+      expect(find.text(S.transitGSErrorSpreadsheetIdInvalid), findsOneWidget);
+
       await tester.tap(find.byKey(const Key('text_dialog.cancel')));
       await tester.pumpAndSettle();
-      // not in dialog
-      expect(find.byKey(const Key('text_dialog.cancel')), findsNothing);
     });
 
     testWidgets('exporter pick not exist', (tester) async {
@@ -216,5 +219,19 @@ void main() {
       initializeCache();
       initializeAuth();
     });
+  });
+
+  test('GoogleSheetProperties hash code', () {
+    final a = GoogleSheetProperties(1, 'title');
+    final b = GoogleSheetProperties(1, 'title');
+    final c = GoogleSheetProperties(1, 'title2');
+    final d = GoogleSheetProperties(2, 'title');
+
+    expect(a, equals(b));
+    expect(a.hashCode, equals(b.hashCode));
+    expect(a, isNot(equals(c)));
+    expect(a.hashCode, isNot(equals(c.hashCode)));
+    expect(a, isNot(equals(d)));
+    expect(a.hashCode, isNot(equals(d.hashCode)));
   });
 }

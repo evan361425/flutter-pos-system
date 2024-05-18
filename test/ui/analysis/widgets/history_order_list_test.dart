@@ -12,6 +12,7 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/history_order_list.dart';
+import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
 
 import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_database.dart';
@@ -192,6 +193,15 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(txn.delete(any, where: anyNamed('where'))).called(4);
+    });
+
+    testWidgets('order not found', (tester) async {
+      when(database.query(any, where: argThat(equals('id = 666'), named: 'where'))).thenAnswer((_) => Future.value([]));
+
+      await tester.pumpWidget(const MaterialApp(home: HistoryOrderModal(666)));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.analysisHistoryOrderNotFound), findsOneWidget);
     });
 
     setUpAll(() {

@@ -99,7 +99,7 @@ ingredient:
       repeat: Product already has the same ingredient, cannot select repeatedly.
   amount:
     label: Amount Used
-    helper: |
+    helper: |-
       Default amount used.
       If customers are able to adjust the amount,
       set different quantities in "Quantity."

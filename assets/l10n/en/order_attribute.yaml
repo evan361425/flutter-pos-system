@@ -35,10 +35,10 @@ mode:
   - name
   helper:
   - statOnly: Normal setting, selecting won't affect the order price.
-    changePrice: |
+    changePrice: |-
       Selecting this setting may affect the order price.
       For example: Takeout +$30, Eco Cup -$5.
-    changeDiscount: |
+    changeDiscount: |-
       Selecting this setting will affect the total price based on the discount.
       For example: Dine-in +10% service charge, Friends & Family Discount -10%.
   - Explanation of customer setting categories

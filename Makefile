@@ -20,7 +20,8 @@ test: ## Run tests
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage
 	flutter test --coverage
-	genhtml coverage/lcov.info -o coverage/html
+	@genhtml coverage/lcov.info -o coverage/html
+	@open coverage/html/index.html
 
 ##@ Build
 .PHONY: bump

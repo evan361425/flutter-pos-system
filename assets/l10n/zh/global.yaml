@@ -10,7 +10,7 @@ totalCount:
 searchCount: 搜尋到 {count} 個結果
 dialog:
   deletionTitle: 刪除確認通知
-  deletionContent: |
+  deletionContent: |-
     確定要刪除「{name}」嗎？
 
     {more}此動作將無法復原！
