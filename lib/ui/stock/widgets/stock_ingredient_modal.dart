@@ -54,7 +54,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
               );
             case 1:
               return TextDivider(
-                label: S.stockIngredientProductsCount(length - 2, widget.ingredient!.name),
+                label: S.stockIngredientProductsCount(length - 2),
               );
             default:
               final product = ingredients[index - 2].product;

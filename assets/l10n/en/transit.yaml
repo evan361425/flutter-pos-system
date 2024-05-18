@@ -2,9 +2,10 @@ $prefix: transit
 title: Data Transfer
 description: Importing and Exporting Store Information and Orders
 tutorial:
-  title: First Step for Multiple Users and Devices
+  title: Sync Multiple Devices
   content: |-
     This is where you can import/export menu, inventory, order records, and other information.
+
     We provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.
 method:
   title: Please Select Transfer Method

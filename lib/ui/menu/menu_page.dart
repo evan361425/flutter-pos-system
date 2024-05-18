@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -38,58 +39,53 @@ class _MenuPageState extends State<MenuPage> {
     return PopScope(
       canPop: selected == null,
       onPopInvoked: _onPopInvoked,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(selected?.name ?? S.menuTitle),
-          leading: PopButton(
-            onPressed: () {
-              if (_onPopInvoked(selected == null)) {
-                if (context.mounted && context.canPop()) {
-                  context.pop();
+      child: TutorialWrapper(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(selected?.name ?? S.menuTitle),
+            leading: PopButton(
+              onPressed: () {
+                if (_onPopInvoked(selected == null)) {
+                  if (context.mounted && context.canPop()) {
+                    context.pop();
+                  }
                 }
-              }
-            },
-          ),
-          actions: [
-            if (!widget.productOnly)
-              IconButton(
-                tooltip: selected == null ? S.menuCatalogTitleReorder : S.menuProductTitleReorder,
-                onPressed: () {
-                  selected == null
-                      ? context.pushNamed(Routes.menuReorder)
-                      : context.pushNamed(
-                          Routes.menuCatalogReorder,
-                          pathParameters: {'id': selected!.id},
-                        );
-                },
-                icon: const Icon(KIcons.reorder),
-              ),
-            SearchBarWrapper(
-              key: const Key('menu.search'),
-              hintText: S.menuSearchHint,
-              initData: Menu.instance.searchProducts(),
-              search: (text) async => Menu.instance.searchProducts(text: text),
-              itemBuilder: _searchItemBuilder,
-              emptyBuilder: _searchEmptyBuilder,
+              },
             ),
-          ],
-        ),
-        floatingActionButton: widget.productOnly
-            ? null
-            : FloatingActionButton(
-                key: const Key('menu.add'),
-                onPressed: _handleCreate,
-                tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
-                child: const Icon(KIcons.add),
+            actions: [
+              if (!widget.productOnly)
+                IconButton(
+                  tooltip: selected == null ? S.menuCatalogTitleReorder : S.menuProductTitleReorder,
+                  onPressed: () {
+                    selected == null
+                        ? context.pushNamed(Routes.menuReorder)
+                        : context.pushNamed(
+                            Routes.menuCatalogReorder,
+                            pathParameters: {'id': selected!.id},
+                          );
+                  },
+                  icon: const Icon(KIcons.reorder),
+                ),
+              SearchBarWrapper(
+                key: const Key('menu.search'),
+                hintText: S.menuSearchHint,
+                initData: Menu.instance.searchProducts(),
+                search: (text) async => Menu.instance.searchProducts(text: text),
+                itemBuilder: _searchItemBuilder,
+                emptyBuilder: _searchEmptyBuilder,
               ),
-        body: PageView(
-          controller: controller,
-          // disable scrolling, only control by program
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            firstView,
-            secondView,
-          ],
+            ],
+          ),
+          floatingActionButton: widget.productOnly ? null : fab,
+          body: PageView(
+            controller: controller,
+            // disable scrolling, only control by program
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              firstView,
+              secondView,
+            ],
+          ),
         ),
       ),
     );
@@ -115,6 +111,22 @@ class _MenuPageState extends State<MenuPage> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  Widget get fab {
+    return Tutorial(
+      id: 'add_menu',
+      disable: Menu.instance.isNotEmpty,
+      title: S.menuCatalogTutorialTitle,
+      message: S.menuCatalogEmptyBody,
+      route: Routes.menuNew,
+      child: FloatingActionButton(
+        key: const Key('menu.add'),
+        onPressed: _handleCreate,
+        tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
+        child: const Icon(KIcons.add),
+      ),
+    );
   }
 
   Widget get firstView {

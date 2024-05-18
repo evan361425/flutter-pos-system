@@ -56,27 +56,32 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           ]);
         },
         child: SliverList.list(children: [
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Tutorial(
-                id: 'anal.add_chart',
-                title: S.analysisChartTutorialTitle,
-                message: S.analysisChartTutorialContent,
-                child: RouteCircularButton(
-                  key: const Key('anal.add_chart'),
-                  route: Routes.chartModal,
-                  routePathParameters: const {'id': '_'},
-                  icon: KIcons.add,
-                  text: S.analysisChartTitleCreate,
+              Expanded(
+                child: Tutorial(
+                  id: 'anal.add_chart',
+                  title: S.analysisChartTutorialTitle,
+                  message: S.analysisChartTutorialContent,
+                  child: RouteCircularButton(
+                    key: const Key('anal.add_chart'),
+                    route: Routes.chartModal,
+                    routePathParameters: const {'id': '_'},
+                    icon: KIcons.add,
+                    text: S.analysisChartTitleCreate,
+                  ),
                 ),
               ),
-              const SizedBox.square(dimension: 96.0),
-              RouteCircularButton(
-                key: const Key('anal.history'),
-                icon: Icons.calendar_month_sharp,
-                route: Routes.history,
-                text: S.analysisHistoryBtn,
+              const Spacer(),
+              Expanded(
+                child: RouteCircularButton(
+                  key: const Key('anal.history'),
+                  icon: Icons.calendar_month_sharp,
+                  route: Routes.history,
+                  text: S.analysisHistoryBtn,
+                ),
               ),
             ],
           ),

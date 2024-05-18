@@ -5,11 +5,15 @@ act:
   moreInfo: 說明
 singleChoice: 一次只能選擇一種
 multiChoices: 可以選擇多種
-totalCount: 總共 {count} 項
+totalCount:
+- other: 總共 {count} 項
 searchCount: 搜尋到 {count} 個結果
 dialog:
   deletionTitle: 刪除確認通知
-  deletionContent: 確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！
+  deletionContent: |
+    確定要刪除「{name}」嗎？
+
+    {more}此動作將無法復原！
 image:
   holder:
     create: 點選以新增圖片

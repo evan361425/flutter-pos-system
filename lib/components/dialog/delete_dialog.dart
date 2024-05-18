@@ -20,7 +20,7 @@ class DeleteDialog extends StatelessWidget {
         FilledButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          style: FilledButton.styleFrom(foregroundColor: Colors.redAccent),
+          style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
           child: Text(local.deleteButtonTooltip),
         ),
       ],

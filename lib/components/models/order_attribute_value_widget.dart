@@ -4,27 +4,17 @@ import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-class OrderAttributeValueWidget extends StatelessWidget {
-  final OrderAttributeMode? mode;
-  final num? value;
+class OrderAttributeValueWidget {
+  static Widget? build(OrderAttributeMode? mode, num? value) {
+    if (value == null || mode == null || mode == OrderAttributeMode.statOnly) {
+      return null;
+    }
 
-  const OrderAttributeValueWidget(
-    this.mode,
-    this.value, {
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final name = getValueName(mode, value);
+    final name = _name(mode, value);
     return name == '' ? HintText(S.orderAttributeValueEmpty) : Text(name);
   }
 
-  static String getValueName(OrderAttributeMode? mode, num? value) {
-    if (value == null || mode == null || mode == OrderAttributeMode.statOnly) {
-      return '';
-    }
-
+  static String _name(OrderAttributeMode mode, num value) {
     final modeValue = value;
     if (mode == OrderAttributeMode.changeDiscount) {
       final value = modeValue.toInt() / 100;

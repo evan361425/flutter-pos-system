@@ -57,7 +57,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget get metadata {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: MetaBlock.withString(context, <String>[
           S.menuProductMetaTitle,
           S.menuProductMetaPrice(widget.product.price),

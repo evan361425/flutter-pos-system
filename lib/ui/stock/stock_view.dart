@@ -39,33 +39,37 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
 
     return TutorialWrapper(
       tab: tab,
-      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+      child: ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Tutorial(
-            id: 'stock.replenishment',
-            index: 1,
-            title: S.stockReplenishmentTutorialTitle,
-            message: S.stockReplenishmentTutorialContent,
-            child: RouteCircularButton(
-              key: const Key('stock.replenisher'),
-              icon: Icons.shopping_basket_sharp,
-              route: Routes.replenishment,
-              popTrueShowSuccess: true,
-              text: S.stockReplenishmentButton,
+          Expanded(
+            child: Tutorial(
+              id: 'stock.replenishment',
+              index: 1,
+              title: S.stockReplenishmentTutorialTitle,
+              message: S.stockReplenishmentTutorialContent,
+              child: RouteCircularButton(
+                key: const Key('stock.replenisher'),
+                icon: Icons.shopping_basket_sharp,
+                route: Routes.replenishment,
+                popTrueShowSuccess: true,
+                text: S.stockReplenishmentButton,
+              ),
             ),
           ),
-          const SizedBox.square(dimension: 96.0),
-          Tutorial(
-            id: 'stock.add',
-            index: 0,
-            disable: Stock.instance.isNotEmpty,
-            title: S.stockIngredientTutorialTitle,
-            message: S.stockIngredientTutorialContent,
-            child: RouteCircularButton(
-              key: const Key('stock.add'),
-              route: Routes.ingredientNew,
-              icon: KIcons.add,
-              text: S.stockIngredientTitleCreate,
+          const Spacer(),
+          Expanded(
+            child: Tutorial(
+              id: 'stock.add',
+              index: 0,
+              disable: Stock.instance.isNotEmpty,
+              title: S.stockIngredientTutorialTitle,
+              message: S.stockIngredientTutorialContent,
+              child: RouteCircularButton(
+                key: const Key('stock.add'),
+                route: Routes.ingredientNew,
+                icon: KIcons.add,
+                text: S.stockIngredientTitleCreate,
+              ),
             ),
           ),
         ]),

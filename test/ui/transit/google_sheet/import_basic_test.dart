@@ -31,7 +31,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -186,7 +186,7 @@ void main() {
 
         await tester.pumpWidget(MaterialApp(
           home: TransitStation(
-            type: TransitType.basic,
+            catalog: TransitCatalog.model,
             notifier: notifier,
             exporter: GoogleSheetExporter(
               sheetsApi: sheetsApi,

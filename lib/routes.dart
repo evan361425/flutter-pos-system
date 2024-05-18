@@ -164,15 +164,15 @@ class Routes {
               TransitMethod.plainText,
             );
             final type = _findEnum(
-              TransitType.values,
+              TransitCatalog.values,
               state.pathParameters['type'],
-              TransitType.basic,
+              TransitCatalog.model,
             );
             final range = _parseRange(state.uri.queryParameters['range']);
 
             return TransitStation(
               method: method,
-              type: type,
+              catalog: type,
               range: range,
             );
           },

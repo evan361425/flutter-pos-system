@@ -58,10 +58,7 @@ class OrderObjectView extends StatelessWidget {
               for (final attribute in order.attributes)
                 ListTile(
                   title: Text(attribute.name.toString()),
-                  subtitle: OrderAttributeValueWidget(
-                    attribute.mode,
-                    attribute.modeValue,
-                  ),
+                  subtitle: OrderAttributeValueWidget.build(attribute.mode, attribute.modeValue),
                   trailing: OutlinedText(attribute.optionName.toString()),
                 ),
             ],

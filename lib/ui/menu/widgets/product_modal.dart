@@ -76,7 +76,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
         focusNode: _priceFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductPriceLabel,
-          hintText: S.menuProductPriceHint,
+          helperText: S.menuProductPriceHelper,
           filled: false,
         ),
         validator: Validator.isNumber(
@@ -92,7 +92,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
         focusNode: _costFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductCostLabel,
-          hintText: S.menuProductCostHint,
+          helperText: S.menuProductCostHelper,
           filled: false,
         ),
         onFieldSubmitted: handleFieldSubmit,

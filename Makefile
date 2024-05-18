@@ -70,3 +70,9 @@ mock: ## Mock dependencies
 build-l10n: ## Build localization
 	dart run arb_glue
 	flutter pub get --no-example
+
+.PHONY: clean-version
+clean-version: ## Clean beta and rc version
+	@git pull
+	@git tag -l | grep -E 'beta|rc' | xargs git push --delete origin
+	@git tag -l | grep -E 'beta|rc' | xargs git tag -d

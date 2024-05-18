@@ -43,16 +43,31 @@ class _OrderAttributeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
     final mode = S.orderAttributeModeName(attr.mode.name);
-    final defaultName = attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     final key = 'order_attributes.${attr.id}';
+    final theme = Theme.of(context);
 
     return ExpansionTile(
       key: Key(key),
       title: Text(attr.name),
-      subtitle: MetaBlock.withString(context, [
-        S.orderAttributeMetaMode(mode),
-        S.orderAttributeMetaDefault(defaultName),
-      ]),
+      subtitle: RichText(
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+          children: [
+            TextSpan(text: S.orderAttributeMetaMode(mode)),
+            MetaBlock.span(),
+            attr.defaultOption?.name != null
+                ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
+                : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
+                    TextSpan(
+                      text: S.orderAttributeMetaNoDefault,
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                    ),
+                  ]),
+          ],
+          // disable parent text style
+          style: theme.textTheme.bodyMedium,
+        ),
+      ),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ListTile(
@@ -111,7 +126,7 @@ class _OptionTile extends StatelessWidget {
       child: ListTile(
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
-        subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
+        subtitle: OrderAttributeValueWidget.build(option.mode, option.modeValue),
         trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionMetaDefault) : null,
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-12T07:46:45.754626Z",
+  "@@last_modified": "2024-05-18T08:05:55.671229Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -109,16 +109,13 @@
       }
     }
   },
-  "stockIngredientProductsCount": "共有 {count} 個產品使用 {name}",
+  "stockIngredientProductsCount": "共有 {count} 個產品使用此成分",
   "@stockIngredientProductsCount": {
     "description": "When editing an ingredient, it indicates how many products are using it and allows for navigation to the product page",
     "placeholders": {
       "count": {
         "type": "int",
         "description": "Number of products"
-      },
-      "name": {
-        "type": "String"
       }
     }
   },
@@ -167,7 +164,8 @@
   "stockReplenishmentNameLabel": "採購名稱",
   "stockReplenishmentNameHint": "例如：Costco 採購",
   "stockReplenishmentNameErrorRepeat": "採購名稱重複",
-  "stockReplenishmentDividerIngredientList": "點選以設定不同成分欲採購的量",
+  "stockReplenishmentIngredientsDivider": "成分",
+  "stockReplenishmentIngredientsHelper": "點選以設定不同成分欲採購的量",
   "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
   "stockQuantityTitle": "份量",
   "stockQuantityDescription": "半糖、微糖等。",
@@ -197,11 +195,11 @@
   "stockQuantityNameHint": "例如：少量或多量",
   "stockQuantityNameErrorRepeat": "份量名稱重複",
   "stockQuantityProportionLabel": "預設比例",
-  "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n若設為「1」則無任何影響。\n若設為「0」則代表將不會使用此成分",
+  "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n\n若設為「1」則無任何影響。\n\n若設為「0」則代表將不會使用此成分",
   "transitTitle": "資料轉移",
   "transitDescription": "匯入、匯出店家資訊和訂單",
-  "transitTutorialTitle": "多人、裝置的第一步",
-  "transitTutorialContent": "這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。\n我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。",
+  "transitTutorialTitle": "同步多台裝置",
+  "transitTutorialContent": "這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。\n\n我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。",
   "transitMethodTitle": "請選擇欲轉移的方式",
   "transitMethodName": "{name, select, googleSheet{Google 試算表} plainText{純文字} other{UNKNOWN}}",
   "@transitMethodName": {
@@ -954,7 +952,7 @@
   "@multiChoices": {
     "description": "Reminder to the user that multiple options can be selected."
   },
-  "totalCount": "總共 {count} 項",
+  "totalCount": "{count, plural, other{總共 {count} 項}}",
   "@totalCount": {
     "description": "Total count displayed on the ListView.",
     "placeholders": {
@@ -978,7 +976,7 @@
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
   },
-  "dialogDeletionContent": "確定要刪除「{name}」嗎？\\n\\n{more}此動作將無法復原！",
+  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！\n",
   "@dialogDeletionContent": {
     "description": "Content displayed on the DeleteDialog.",
     "placeholders": {
@@ -1153,7 +1151,7 @@
   "@orderAttributeModeName": {
     "description": "name"
   },
-  "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
+  "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。\n例如：外送 + 30塊錢、環保杯 - 5塊錢。\n} changeDiscount{選取設定時，會根據折扣影響總價。\n例如：內用 + 10% 服務費、親友價 - 10%。\n} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
     "description": "Explanation of customer setting categories",
     "placeholders": {
@@ -1256,7 +1254,8 @@
   "@menuCatalogHeaderInfo": {
     "description": "Displayed on the upper rectangle in homepage"
   },
-  "menuCatalogEmptyBody": "我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n「塑膠袋」、「環保杯」整合進「其他」",
+  "menuCatalogTutorialTitle": "Create First Catalog",
+  "menuCatalogEmptyBody": "我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n• 「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n• 「塑膠袋」、「環保杯」整合進「其他」",
   "menuCatalogTitleCreate": "新增產品種類",
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
@@ -1317,9 +1316,9 @@
   "menuProductNameHint": "例如：起司漢堡",
   "menuProductNameErrorRepeat": "產品名稱重複",
   "menuProductPriceLabel": "產品價格",
-  "menuProductPriceHint": "訂單頁面會呈現的價錢",
+  "menuProductPriceHelper": "訂單頁面會呈現的價錢",
   "menuProductCostLabel": "產品成本",
-  "menuProductCostHint": "用來算出利潤，理應小於價錢",
+  "menuProductCostHelper": "用來算出利潤，理應小於價錢",
   "menuProductEmptyIngredients": "尚未設定成分",
   "menuIngredientEmptyBody": "你可以在產品中設定成分等資訊，例如：\n「起司漢堡」有「起司」、「麵包」等成分",
   "menuIngredientTitleCreate": "新增成分",
@@ -1841,7 +1840,7 @@
   "analysisChartModalIgnoreEmptyHelper": "某商品或指標在該時段沒有資料，則不顯示。",
   "analysisChartModalDivider": "資料設定",
   "analysisChartModalTypeLabel": "圖表類型",
-  "analysisChartModalTypeName": "{name, select, cartesian{時序圖} other{UNKNOWN}}",
+  "analysisChartModalTypeName": "{name, select, cartesian{時序圖} circular{圓餅圖} other{UNKNOWN}}",
   "@analysisChartModalTypeName": {
     "placeholders": {
       "name": {

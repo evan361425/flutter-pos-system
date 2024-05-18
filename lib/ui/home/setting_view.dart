@@ -4,6 +4,7 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -27,7 +28,6 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
     return TutorialWrapper(
       tab: tab,
@@ -36,6 +36,7 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
         if (!isProd)
           ListTile(
             key: const Key('setting.debug'),
+            leading: const Icon(Icons.bug_report_sharp),
             title: const Text('Debug'),
             subtitle: const Text('For developer only'),
             onTap: () => Navigator.of(context).push(
@@ -44,7 +45,6 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
           ),
         Tutorial(
           id: 'home.menu',
-          index: 0,
           title: S.menuTutorialTitle,
           message: S.menuTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),
@@ -60,7 +60,6 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
         ),
         Tutorial(
           id: 'home.exporter',
-          index: 2,
           title: S.transitTutorialTitle,
           message: S.transitTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),
@@ -74,7 +73,6 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
         ),
         Tutorial(
           id: 'home.order_attr',
-          index: 1,
           title: S.orderAttributeTutorialTitle,
           message: S.orderAttributeTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),

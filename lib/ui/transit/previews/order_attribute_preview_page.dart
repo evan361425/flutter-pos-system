@@ -31,7 +31,7 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
         for (final option in item.items)
           ListTile(
             title: Text(option.name),
-            subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
+            subtitle: OrderAttributeValueWidget.build(option.mode, option.modeValue),
             trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionMetaDefault) : null,
           ),
       ],

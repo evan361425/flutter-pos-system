@@ -24,7 +24,7 @@ void main() {
       return const MaterialApp(
         home: TransitStation(
           exporter: PlainTextExporter(),
-          type: TransitType.order,
+          catalog: TransitCatalog.order,
           method: TransitMethod.plainText,
         ),
       );

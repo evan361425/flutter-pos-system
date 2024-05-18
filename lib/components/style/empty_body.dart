@@ -29,8 +29,8 @@ class EmptyBody extends StatelessWidget {
           ),
           if (helperText != null)
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(helperText!, textAlign: TextAlign.center),
+              padding: const EdgeInsets.fromLTRB(16, 8.0, 16.0, 8.0),
+              child: Text(helperText!),
             ),
           TextButton(
             key: const Key('empty_body'),

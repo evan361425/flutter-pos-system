@@ -17,17 +17,17 @@ class TransitPage extends StatefulWidget {
 }
 
 class _TransitPageState extends State<TransitPage> {
-  final selector = GlobalKey<ChoiceChipWithHelpState<TransitType>>();
+  final selector = GlobalKey<ChoiceChipWithHelpState<TransitCatalog>>();
 
   @override
   Widget build(BuildContext context) {
     final body = ListView(children: [
-      ChoiceChipWithHelp<TransitType>(
+      ChoiceChipWithHelp<TransitCatalog>(
         key: selector,
-        values: TransitType.values,
-        selected: TransitType.order,
-        labels: TransitType.values.map((e) => S.transitCatalogName(e.name)).toList(),
-        helpTexts: TransitType.values.map((e) => S.transitCatalogHelper(e.name)).toList(),
+        values: TransitCatalog.values,
+        selected: TransitCatalog.order,
+        labels: TransitCatalog.values.map((e) => S.transitCatalogName(e.name)).toList(),
+        helpTexts: TransitCatalog.values.map((e) => S.transitCatalogHelper(e.name)).toList(),
       ),
       TextDivider(label: S.transitMethodTitle),
       ListTile(

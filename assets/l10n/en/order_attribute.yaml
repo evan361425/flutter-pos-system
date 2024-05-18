@@ -24,7 +24,7 @@ meta:
   default:
   - 'Default: {name}'
   - name:
-  noDefault: Not set as default
+  noDefault: None
 mode:
   divider: Customer Setting Mode
   name:
@@ -34,14 +34,18 @@ mode:
   - Customer setting mode name
   - name
   helper:
-  - statOnly: Normal setting, selecting won't affect the menu price.
-    changePrice: 'Selecting this setting may affect the price. For example: Takeout + $30, Eco Cup - $5.'
-    changeDiscount: 'Selecting this setting will affect the total price based on the discount. For example: Dine-in + 10% service charge, Friends & Family Discount - 10%.'
+  - statOnly: Normal setting, selecting won't affect the order price.
+    changePrice: |
+      Selecting this setting may affect the order price.
+      For example: Takeout +$30, Eco Cup -$5.
+    changeDiscount: |
+      Selecting this setting will affect the total price based on the discount.
+      For example: Dine-in +10% service charge, Friends & Family Discount -10%.
   - Explanation of customer setting categories
   - name:
 name:
   label: Customer Setting Name
-  hint: e.g., Customer Age
+  hint: e.g., Age
   error:
     repeat: Name already exists
 option:

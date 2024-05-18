@@ -19,7 +19,7 @@ void main() {
       return const MaterialApp(
         home: TransitStation(
           exporter: PlainTextExporter(),
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.plainText,
         ),
       );

@@ -15,7 +15,7 @@ ingredient:
   dialogDeletionContent:
   - =0: 目前無任何產品有本成分
     other: 將會一同刪除掉 {count} 個產品的成分
-  productsCount: 共有 {count} 個產品使用 {name}
+  productsCount: 共有 {count} 個產品使用此成分
   name:
     label: 成分名稱
     hint: 例如：起司
@@ -59,8 +59,9 @@ replenishment:
     hint: 例如：Costco 採購
     error:
       repeat: 採購名稱重複
-  divider:
-    ingredientList: 點選以設定不同成分欲採購的量
+  ingredients:
+    divider: 成分
+    helper: 點選以設定不同成分欲採購的量
   ingredientAmount:
     hint: 設定增加／減少的量
 quantity:
@@ -87,8 +88,11 @@ quantity:
     label: 預設比例
     helper: |-
       當產品成分使用此份量時，預設替該成分增加的比例。
+
       例如：此份量為「多量」預設份量為「1.5」，
       今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，
       當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。
+
       若設為「1」則無任何影響。
+
       若設為「0」則代表將不會使用此成分

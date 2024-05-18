@@ -24,7 +24,7 @@ class UnitListView extends StatelessWidget {
   Widget _itemWidget(BuildContext context, CashierUnitObject item, int index) {
     final max = Cashier.instance.defaultAt(index)?.count ?? 0;
     return ListTile(
-      title: Text(S.cashierUnitLabel(item.unit.toCurrency())),
+      title: Text(S.cashierUnitLabel(item.unit.toCurrencyLong())),
       subtitle: PercentileBar(item.count, max),
       onTap: () => _setUnitCount(context, item.unit, max, item.count),
     );

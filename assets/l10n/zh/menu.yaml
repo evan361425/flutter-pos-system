@@ -9,11 +9,13 @@ search:
   notFound: 搜尋不到相關資訊，打錯字了嗎？
 catalog:
   headerInfo: 種類
+  tutorial:
+    title: Create First Catalog
   emptyBody: |-
     我們會把相似「產品」放在「產品種類」中，
     到時候點餐會比較方便，例如：
-    「起司漢堡」、「蔬菜漢堡」整合進「漢堡」
-    「塑膠袋」、「環保杯」整合進「其他」
+    • 「起司漢堡」、「蔬菜漢堡」整合進「漢堡」
+    • 「塑膠袋」、「環保杯」整合進「其他」
   title:
     create: 新增產品種類
     update: 編輯產品種類
@@ -49,10 +51,10 @@ product:
       repeat: 產品名稱重複
   price:
     label: 產品價格
-    hint: 訂單頁面會呈現的價錢
+    helper: 訂單頁面會呈現的價錢
   cost:
     label: 產品成本
-    hint: 用來算出利潤，理應小於價錢
+    helper: 用來算出利潤，理應小於價錢
   emptyIngredients: 尚未設定成分
 ingredient:
   emptyBody: |-

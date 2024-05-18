@@ -28,7 +28,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.order,
+          catalog: TransitCatalog.order,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -71,7 +71,7 @@ void main() {
         ],
         supportedLocales: [LanguageSetting.defaultValue.locale],
         home: TransitStation(
-          type: TransitType.order,
+          catalog: TransitCatalog.order,
           method: TransitMethod.googleSheet,
           range: init,
           exporter: GoogleSheetExporter(

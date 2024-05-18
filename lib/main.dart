@@ -66,7 +66,7 @@ void main() async {
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
-      if (kDebugMode) {
+      if (isLocalTest) {
         await debugSetupMenu();
       }
 

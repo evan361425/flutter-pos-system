@@ -126,7 +126,7 @@ chart:
       label: Chart Type
       name:
       - cartesian: Time Series Chart
-        other: UNKNOWN
+        circular: Pie Chart
       - name:
     metric:
       label: Metrics to View

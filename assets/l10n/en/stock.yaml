@@ -13,17 +13,18 @@ ingredient:
     title: Add Ingredient
     content: |-
       Ingredients help us track product inventory.
-      You can set ingredients in "Products" and then manage inventory here.
+
+      You can add ingredients in "Menu"
+      and then manage inventory here.
   dialogDeletionContent:
   - =0: No products currently use this ingredient
     other: Deleting this ingredient will also remove it from {count} products
   - Indicates how many products will be affected when deleting the ingredient
   - count: {type: int, mode: plural}
   productsCount:
-  - '{count} Products Using {name}'
+  - '{count} products using it'
   - When editing an ingredient, it indicates how many products are using it and allows for navigation to the product page
   - count: {type: int, description: Number of products}
-    name:
   name:
     label: Ingredient Name
     hint: e.g., Cheese
@@ -34,11 +35,9 @@ ingredient:
     maxLabel: Maximum Amount
     maxHelper: |-
       Setting this value helps you see how much of the ingredient is being used.
-
-      Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased,
-      assuming each restock brings the inventory to the maximum value.
+      Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased.
     shortHelper:
-    - If not set, increasing inventory will reset this value.
+    - If not set maximum amount, every time increase the amount will be considered as the maximum amount
     - Auxiliary text used for quickly increasing inventory
 replenishment:
   button: Purchase
@@ -64,7 +63,7 @@ replenishment:
       - name: Name
         amount: Amount
       - value:
-      hint: Selecting apply will affect the inventory of the following ingredients
+      hint: After apply, following ingredients will be adjusted
   tutorial:
     title: Ingredient Purchases
     content: |-
@@ -75,8 +74,9 @@ replenishment:
     hint: e.g., Costco Purchase
     error:
       repeat: Purchase name already exists
-  divider:
-    ingredientList: Click to set the quantity of different ingredients to be purchased
+  ingredients:
+    divider: Ingredients
+    helper: Click to set the quantity of different ingredients to be purchased
   ingredientAmount:
     hint: Set the amount to increase/decrease
 quantity:
@@ -107,9 +107,15 @@ quantity:
   proportion:
     label: Default Ratio
     helper: |-
-      When this quantity is used for an ingredient, the default ratio added to that ingredient.
-      For example: if this quantity is "Large" and the default ratio is "1.5",
-      and there's a product "Cheeseburger" with the ingredient "Cheese," which uses "2" units of cheese per burger,
-      when adding this quantity, the quantity of "Cheese" will automatically be set to "3" (2 * 1.5).
+      Applied when this quantity is used for an ingredient.
+
+      For example:
+      if this quantity is "Large" and the default ratio is "1.5",
+      and there's a product "Cheeseburger" with the ingredient "Cheese,"
+      which uses "2" units of cheese per burger,
+      when adding this quantity,
+      the quantity of "Cheese" will automatically be set to "3" (2 * 1.5).
+
       If set to "1," there's no effect.
+
       If set to "0," the ingredient won't be used.

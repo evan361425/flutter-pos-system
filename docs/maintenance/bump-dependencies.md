@@ -2,9 +2,9 @@
 
 分三種：
 
--   dependencies，直接依賴的套件
--   dev_dependencies，開發環境依賴的套件
--   transitive，依賴套件的依賴套件
+- dependencies，直接依賴的套件
+- dev_dependencies，開發環境依賴的套件
+- transitive，依賴套件的依賴套件
 
 ## 如何查找哪些套件需要更新
 
@@ -24,10 +24,10 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 
 但要注意幾件事：
 
--   `Current` 代表現在的版本
--   `Upgradable` 代表依據[版本限制](https://dart.dev/tools/pub/dependencies#version-constraints)所能升級的最高版本
--   `Resolvable` 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本
--   `Latest` 代表這個套件目前最新的版本
+- `Current` 代表現在的版本
+- `Upgradable` 代表依據[版本限制](https://dart.dev/tools/pub/dependencies#version-constraints)所能升級的最高版本
+- `Resolvable` 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本
+- `Latest` 代表這個套件目前最新的版本
 
 ## 如何升級
 

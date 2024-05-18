@@ -99,10 +99,10 @@ class Tutorial extends StatelessWidget {
           if (title != null)
             Text(
               title!,
-              style: const TextStyle(fontSize: 24),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white),
             ),
           const SizedBox(height: 16),
-          Text(message, style: const TextStyle(fontSize: 18)),
+          Text(message),
         ]),
       ),
       child: child,

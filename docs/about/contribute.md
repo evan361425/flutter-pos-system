@@ -4,12 +4,12 @@
 
 本 POS 系統是一個開源的專案，並且由各方貢獻者一點一點把這產品建構起來。我們很高興有你的加入。無論你有多少時間和能力，你的付出我們都給予高度感謝。有很多種貢獻方式：
 
--   [改善文件](#改善文件)
--   [回報程式害蟲](#如何回報程式害蟲)
--   [提出新功能或改善功能](#提出新功能或改善功能)
--   [設計外觀和整體架構](#調整使用者介面)
--   透過留言回應其他人的 [issue]({{ site.github.repository_url }}/issues)
--   [直接撰寫程式碼改善 POS 系統](#怎麼提出程式碼上的異動)
+- [改善文件](#改善文件)
+- [回報程式害蟲](#如何回報程式害蟲)
+- [提出新功能或改善功能](#提出新功能或改善功能)
+- [設計外觀和整體架構](#調整使用者介面)
+- 透過留言回應其他人的 [issue]({{ site.github.repository_url }}/issues)
+- [直接撰寫程式碼改善 POS 系統](#怎麼提出程式碼上的異動)
 
 遵守以下的準則，會加速整個系統開發的流程和進度。當然，我們也會提供相應的幫助，如：確認 issue 的定位、確認改善和幫助完成最終的 PR。
 
@@ -25,11 +25,11 @@
 
 除此之外，在某些情況你可能也需要改善文件：
 
--   有錯字。
--   需要增加一些圖，來幫助理解。
--   補充文件或外站連結。
--   當你添加新的功能時，也請記得補上相關的文件。
--   當你想要找某些資訊時，卻沒辦法在第一個尋找的地方找到，那我們就應該在那個地方補上這類文件資訊。
+- 有錯字。
+- 需要增加一些圖，來幫助理解。
+- 補充文件或外站連結。
+- 當你添加新的功能時，也請記得補上相關的文件。
+- 當你想要找某些資訊時，卻沒辦法在第一個尋找的地方找到，那我們就應該在那個地方補上這類文件資訊。
 
 在進行[程式異動](#怎麼提出程式碼上的異動)時要注意，在執行 `git checkout -b my-branch-name` 之前，應將主分支先切到 `gh-pages`，請執行 `git checkout gh-pages` 後在執行上述指令。並且，當你完成程式異動時，請記得在合併時同樣選擇 `gh-pages` 作為要求合併的分支。
 
@@ -39,14 +39,14 @@
 
 這裡有幾個小技巧幫助你撰寫出一個好的害蟲通報文件：
 
--   說明明確的問題（例如，「出現錯誤」和「製作產品菜單時，若設定相同名字仍可以建立成功」）。
--   你怎麼產生這個問題的？
--   你預期應該要有什麼結果卻得到什麼結果。
--   確保你已經使用最新版本的應用程式。
--   說明你使用的手機型號和版本。
--   一隻害蟲一個 issue，若你發現兩個問題，請發兩個 issue。
--   就算你不知道該怎麼解決這些問題，幫助其他人重現問題可以加速問題的發現。
--   若你發現任何安全性的問題，請不要發 issue，相對的，請發信到 <evanlu361425@gmail.com>，會有人來專門處理。
+- 說明明確的問題（例如，「出現錯誤」和「製作產品菜單時，若設定相同名字仍可以建立成功」）。
+- 你怎麼產生這個問題的？
+- 你預期應該要有什麼結果卻得到什麼結果。
+- 確保你已經使用最新版本的應用程式。
+- 說明你使用的手機型號和版本。
+- 一隻害蟲一個 issue，若你發現兩個問題，請發兩個 issue。
+- 就算你不知道該怎麼解決這些問題，幫助其他人重現問題可以加速問題的發現。
+- 若你發現任何安全性的問題，請不要發 issue，相對的，請發信到 <evanlu361425@gmail.com>，會有人來專門處理。
 
 ## 提出新功能或改善功能
 
@@ -62,16 +62,16 @@
 
 這裡也提供幾點應注意的事項：
 
--   由於外觀和顏色是較為主觀的東西，每次調整，可能都會需要部分使用者的支持，例如按讚，才會考慮。
--   請提供前後變更的相關截圖，幫助 PR 流程的進展。
--   調整顏色應設定於定值，而非在特定元件上的變數。
+- 由於外觀和顏色是較為主觀的東西，每次調整，可能都會需要部分使用者的支持，例如按讚，才會考慮。
+- 請提供前後變更的相關截圖，幫助 PR 流程的進展。
+- 調整顏色應設定於定值，而非在特定元件上的變數。
 
 ## 第一次嘗試貢獻
 
 我們很開心你願意貢獻本專案。若你不確定如何開始做任何幫忙，建議你可以看看關於[good first issue]({{ site.github.repository_url }}/issues?q=is%3Aissue+label%3A%22good+first+issue%22)，來看看什麼是好的 issue。除此之外[help wanted]({{ site.github.repository_url }}/issues?q=is%3Aissue+label%3A%22help+wanted%22)也是一個對於不知如何幫忙的人下手的好地方。
 
--   Good first issues - 應該只會包含少數幾行程式碼的修正和一組單元測試。
--   Help wanted issues - 可能會需要一些能力和經驗，但卻是一個特別需要大家幫忙的地方。
+- Good first issues - 應該只會包含少數幾行程式碼的修正和一組單元測試。
+- Help wanted issues - 可能會需要一些能力和經驗，但卻是一個特別需要大家幫忙的地方。
 
 > 歡迎你透過 issue 或信箱提出任何問題，大家都是從初學者開始的唷 😺
 
@@ -79,23 +79,23 @@
 
 如要提出程式碼上的異動這裡有幾個建議方針去執行。
 
--   若你是製作外觀上的改變，請提供截圖說明改善前後的差異。
--   遵循 Flutter 程式碼[指南](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)。
--   若你是改動使用者會接觸到的功能，請記得更新相關的文件。
--   每個 PR 應該執行一個功能或處理一個害蟲。若你有多個功能或害蟲，請提交多個 PR。
--   不要改變和你要做的事情沒關的檔案。
--   [撰寫好的 commit 訊息](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)。
+- 若你是製作外觀上的改變，請提供截圖說明改善前後的差異。
+- 遵循 Flutter 程式碼[指南](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)。
+- 若你是改動使用者會接觸到的功能，請記得更新相關的文件。
+- 每個 PR 應該執行一個功能或處理一個害蟲。若你有多個功能或害蟲，請提交多個 PR。
+- 不要改變和你要做的事情沒關的檔案。
+- [撰寫好的 commit 訊息](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)。
 
 以下是執行程式碼改動的順序。
 
--   [Fork]({{ site.github.repository_url }}/fork) 並且複製本專案。
--   安裝必要檔案：`flutter pub get`。
--   安裝輔助工具：`flutter run build_runner build`。
--   確保你本地端可以正確執行：`flutter test`。
--   建立新的分支：`git checkout -b my-branch-name`
--   改動你要改的地方，並建立測試。
--   推到你 fork 的專案後提交 PR：`git push -u origin my-branch-name`
--   你可以休息一下了 😆，會有人來處理你的 PR 並把他合併進主要分支。
+- [Fork]({{ site.github.repository_url }}/fork) 並且複製本專案。
+- 安裝必要檔案：`flutter pub get`。
+- 安裝輔助工具：`flutter run build_runner build`。
+- 確保你本地端可以正確執行：`flutter test`。
+- 建立新的分支：`git checkout -b my-branch-name`
+- 改動你要改的地方，並建立測試。
+- 推到你 fork 的專案後提交 PR：`git push -u origin my-branch-name`
+- 你可以休息一下了 😆，會有人來處理你的 PR 並把他合併進主要分支。
 
 等不及想試試看提交你的第一個 PR 了嗎？你可以閱讀 GitHub 官方文件關於[如何貢獻 Open Source](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)。
 
@@ -113,6 +113,6 @@ This project is governed by [the Contributor Covenant Code of Conduct](../CODE_O
 
 ## 其他有用資源
 
--   [Contributing to Open Source on GitHub](https://guides.github.com/activities/contributing-to-open-source/)
--   [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
--   [GitHub Help](https://help.github.com)
+- [Contributing to Open Source on GitHub](https://guides.github.com/activities/contributing-to-open-source/)
+- [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
+- [GitHub Help](https://help.github.com)

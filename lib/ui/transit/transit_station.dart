@@ -9,9 +9,9 @@ import 'package:possystem/translator.dart';
 import 'google_sheet/views.dart' as gs;
 import 'plain_text/views.dart' as pt;
 
-enum TransitType {
+enum TransitCatalog {
   order,
-  basic,
+  model,
 }
 
 enum TransitMethod {
@@ -22,7 +22,7 @@ enum TransitMethod {
 class TransitStation extends StatefulWidget {
   final TransitMethod method;
 
-  final TransitType type;
+  final TransitCatalog catalog;
 
   final DateTimeRange? range;
 
@@ -34,7 +34,7 @@ class TransitStation extends StatefulWidget {
 
   const TransitStation({
     super.key,
-    required this.type,
+    required this.catalog,
     required this.method,
     this.exporter,
     this.notifier,
@@ -102,8 +102,8 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   PreferredSizeWidget? _buildAppBarBottom() {
-    switch (widget.type) {
-      case TransitType.basic:
+    switch (widget.catalog) {
+      case TransitCatalog.model:
         return TabBar(
           controller: tabController,
           tabs: [
@@ -117,8 +117,8 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   Widget _buildBody() {
-    switch (widget.type) {
-      case TransitType.basic:
+    switch (widget.catalog) {
+      case TransitCatalog.model:
         return TabBarView(
           key: const Key('transit.basic_tab'),
           controller: tabController,
@@ -127,7 +127,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
             _buildScreen(_Combination.importBasic),
           ],
         );
-      case TransitType.order:
+      case TransitCatalog.order:
         return _buildScreen(_Combination.exportOrder);
     }
   }

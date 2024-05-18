@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
@@ -60,7 +61,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
           },
         ),
       )),
-      TextDivider(label: S.stockReplenishmentDividerIngredientList),
+      TextDivider(label: S.stockReplenishmentIngredientsDivider),
+      HintText(S.stockReplenishmentIngredientsHelper),
       for (final ing in Stock.instance.itemList) _buildIngredientField(ing),
     ];
   }

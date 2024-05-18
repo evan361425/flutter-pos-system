@@ -16,9 +16,11 @@ multiChoices:
 - Select Multiple
 - Reminder to the user that multiple options can be selected.
 totalCount:
-- '{count} items'
+- =0: No Items
+  =1: '{count} item'
+  other: '{count} items'
 - Total count displayed on the ListView.
-- count: {type: int, format: compactLong}
+- count: {type: int, mode: plural, format: compactLong}
 searchCount:
 - Found {count} results
 - Total count displayed on the SearchScaffold.
@@ -28,7 +30,10 @@ dialog:
   - Delete Confirmation
   - Title displayed on the DeleteDialog.
   deletionContent:
-  - Are you sure you want to delete "{name}"?\n\n{more}This action cannot be undone!
+  - |
+    Are you sure you want to delete "{name}"?
+
+    {more}This action cannot be undone!
   - Content displayed on the DeleteDialog.
   - name: {example: Veggie Sandwich}
     more: {example: What other impacts deleting this item will have, description: More details about the side effects of deletion}

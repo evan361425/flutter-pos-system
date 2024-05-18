@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-12T07:46:45.720679Z",
+  "@@last_modified": "2024-05-18T08:05:55.647664Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -99,7 +99,7 @@
   "stockIngredientTitleUpdate": "Edit Ingredient",
   "stockIngredientTitleUpdateAmount": "Edit Inventory",
   "stockIngredientTutorialTitle": "Add Ingredient",
-  "stockIngredientTutorialContent": "Ingredients help us track product inventory.\nYou can set ingredients in \"Products\" and then manage inventory here.",
+  "stockIngredientTutorialContent": "Ingredients help us track product inventory.\n\nYou can add ingredients in \"Menu\"\nand then manage inventory here.",
   "stockIngredientDialogDeletionContent": "{count, plural, =0{No products currently use this ingredient} other{Deleting this ingredient will also remove it from {count} products}}",
   "@stockIngredientDialogDeletionContent": {
     "description": "Indicates how many products will be affected when deleting the ingredient",
@@ -109,16 +109,13 @@
       }
     }
   },
-  "stockIngredientProductsCount": "{count} Products Using {name}",
+  "stockIngredientProductsCount": "{count} products using it",
   "@stockIngredientProductsCount": {
     "description": "When editing an ingredient, it indicates how many products are using it and allows for navigation to the product page",
     "placeholders": {
       "count": {
         "type": "int",
         "description": "Number of products"
-      },
-      "name": {
-        "type": "String"
       }
     }
   },
@@ -127,8 +124,8 @@
   "stockIngredientNameErrorRepeat": "Ingredient name already exists",
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
-  "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\n\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased,\nassuming each restock brings the inventory to the maximum value.",
-  "stockIngredientAmountShortHelper": "If not set, increasing inventory will reset this value.",
+  "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
+  "stockIngredientAmountShortHelper": "If not set maximum amount, every time increase the amount will be considered as the maximum amount",
   "@stockIngredientAmountShortHelper": {
     "description": "Auxiliary text used for quickly increasing inventory"
   },
@@ -161,13 +158,14 @@
       }
     }
   },
-  "stockReplenishmentApplyConfirmHint": "Selecting apply will affect the inventory of the following ingredients",
+  "stockReplenishmentApplyConfirmHint": "After apply, following ingredients will be adjusted",
   "stockReplenishmentTutorialTitle": "Ingredient Purchases",
   "stockReplenishmentTutorialContent": "Through purchases, you no longer need to set the inventory of each ingredient one by one.\nSet up purchases now and adjust multiple ingredients at once!",
   "stockReplenishmentNameLabel": "Purchase Name",
   "stockReplenishmentNameHint": "e.g., Costco Purchase",
   "stockReplenishmentNameErrorRepeat": "Purchase name already exists",
-  "stockReplenishmentDividerIngredientList": "Click to set the quantity of different ingredients to be purchased",
+  "stockReplenishmentIngredientsDivider": "Ingredients",
+  "stockReplenishmentIngredientsHelper": "Click to set the quantity of different ingredients to be purchased",
   "stockReplenishmentIngredientAmountHint": "Set the amount to increase/decrease",
   "stockQuantityTitle": "Quantity",
   "stockQuantityDescription": "Half Sugar, Low Sugar, etc.",
@@ -197,11 +195,11 @@
   "stockQuantityNameHint": "e.g., Small or Large",
   "stockQuantityNameErrorRepeat": "Quantity name already exists",
   "stockQuantityProportionLabel": "Default Ratio",
-  "stockQuantityProportionHelper": "When this quantity is used for an ingredient, the default ratio added to that ingredient.\nFor example: if this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\" which uses \"2\" units of cheese per burger,\nwhen adding this quantity, the quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\nIf set to \"1,\" there's no effect.\nIf set to \"0,\" the ingredient won't be used.",
+  "stockQuantityProportionHelper": "Applied when this quantity is used for an ingredient.\n\nFor example:\nif this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\"\nwhich uses \"2\" units of cheese per burger,\nwhen adding this quantity,\nthe quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\n\nIf set to \"1,\" there's no effect.\n\nIf set to \"0,\" the ingredient won't be used.",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
-  "transitTutorialTitle": "First Step for Multiple Users and Devices",
-  "transitTutorialContent": "This is where you can import/export menu, inventory, order records, and other information.\nWe provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.",
+  "transitTutorialTitle": "Sync Multiple Devices",
+  "transitTutorialContent": "This is where you can import/export menu, inventory, order records, and other information.\n\nWe provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.",
   "transitMethodTitle": "Please Select Transfer Method",
   "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} other{UNKNOWN}}",
   "@transitMethodName": {
@@ -954,7 +952,7 @@
   "@multiChoices": {
     "description": "Reminder to the user that multiple options can be selected."
   },
-  "totalCount": "{count} items",
+  "totalCount": "{count, plural, =0{No Items} =1{{count} item} other{{count} items}}",
   "@totalCount": {
     "description": "Total count displayed on the ListView.",
     "placeholders": {
@@ -978,7 +976,7 @@
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
   },
-  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\\n\\n{more}This action cannot be undone!",
+  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\n\n{more}This action cannot be undone!\n",
   "@dialogDeletionContent": {
     "description": "Content displayed on the DeleteDialog.",
     "placeholders": {
@@ -1147,13 +1145,13 @@
       }
     }
   },
-  "orderAttributeMetaNoDefault": "Not set as default",
+  "orderAttributeMetaNoDefault": "None",
   "orderAttributeModeDivider": "Customer Setting Mode",
   "orderAttributeModeName": "{name, select, statOnly{Normal} changePrice{Price Change} changeDiscount{Discount} other{UNKNOWN}}",
   "@orderAttributeModeName": {
     "description": "name"
   },
-  "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the menu price.} changePrice{Selecting this setting may affect the price. For example: Takeout + $30, Eco Cup - $5.} changeDiscount{Selecting this setting will affect the total price based on the discount. For example: Dine-in + 10% service charge, Friends & Family Discount - 10%.} other{UNKNOWN}}",
+  "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the order price.} changePrice{Selecting this setting may affect the order price.\nFor example: Takeout +$30, Eco Cup -$5.\n} changeDiscount{Selecting this setting will affect the total price based on the discount.\nFor example: Dine-in +10% service charge, Friends & Family Discount -10%.\n} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
     "description": "Explanation of customer setting categories",
     "placeholders": {
@@ -1163,7 +1161,7 @@
     }
   },
   "orderAttributeNameLabel": "Customer Setting Name",
-  "orderAttributeNameHint": "e.g., Customer Age",
+  "orderAttributeNameHint": "e.g., Age",
   "orderAttributeNameErrorRepeat": "Name already exists",
   "orderAttributeOptionTitleCreate": "Add Option",
   "orderAttributeOptionTitleCreateWith": "Add option for {name}",
@@ -1256,7 +1254,8 @@
   "@menuCatalogHeaderInfo": {
     "description": "Displayed on the upper rectangle in homepage"
   },
-  "menuCatalogEmptyBody": "Similar \"products\" will be grouped under \"Categories\",\nmaking it convenient for ordering, such as:\n\"Cheese Burger\", \"Veggie Burger\" integrated into \"Burgers\"\n\"Plastic Bag\", \"Eco Cup\" integrated into \"Others\"",
+  "menuCatalogTutorialTitle": "Create First Catalog",
+  "menuCatalogEmptyBody": "Similar \"products\" will be grouped under \"categories\",\nmaking it convenient for ordering, such as:\n• \"Cheese Burger\", \"Veggie Burger\" > \"Burgers\"\n• \"Plastic Bag\", \"Eco Cup\" > \"Others\"",
   "menuCatalogTitleCreate": "Add Category",
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
@@ -1317,11 +1316,11 @@
   "menuProductNameHint": "e.g., Cheeseburger",
   "menuProductNameErrorRepeat": "Product name already exists",
   "menuProductPriceLabel": "Product Price",
-  "menuProductPriceHint": "Price displayed on the order page",
+  "menuProductPriceHelper": "Price displayed on the order page",
   "menuProductCostLabel": "Product Cost",
-  "menuProductCostHint": "Used to calculate profit, should be less than the price",
+  "menuProductCostHelper": "Used to calculate profit, should be less than the price",
   "menuProductEmptyIngredients": "No ingredients set yet",
-  "menuIngredientEmptyBody": "You can set ingredients and other information for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients",
+  "menuIngredientEmptyBody": "You can set ingredients for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients",
   "menuIngredientTitleCreate": "Add Ingredient",
   "menuIngredientTitleUpdate": "Edit Ingredient",
   "menuIngredientTitleReorder": "Reorder Ingredients",
@@ -1349,7 +1348,7 @@
   "menuIngredientSearchErrorEmpty": "Ingredient must be set, please click to set.",
   "menuIngredientSearchErrorRepeat": "Product already has the same ingredient, cannot select repeatedly.",
   "menuIngredientAmountLabel": "Amount Used",
-  "menuIngredientAmountHelper": "Default amount used. If quantity of ingredient can be adjusted for the dish, please set in \"Quantity\".",
+  "menuIngredientAmountHelper": "Default amount used.\nIf customers are able to adjust the amount,\nset different quantities in \"Quantity.\"\n",
   "menuQuantityTitleCreate": "Add Quantity",
   "menuQuantityTitleUpdate": "Edit Quantity",
   "menuQuantityMetaAmount": "Amount: {amount}",
@@ -1427,7 +1426,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidHead": "Cannot exchange {count} ${unit}",
+  "cashierChangerErrorInvalidHead": "Cannot exchange {count} of ${unit} to",
   "@cashierChangerErrorInvalidHead": {
     "placeholders": {
       "count": {
@@ -1438,7 +1437,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidBody": "{count} ${unit}",
+  "cashierChangerErrorInvalidBody": "{count} of ${unit}",
   "@cashierChangerErrorInvalidBody": {
     "description": "Concatenated multiple lines after `invalidHead` to form a complete sentence.",
     "placeholders": {
@@ -1453,7 +1452,7 @@
   "cashierChangerFavoriteTab": "Favorites",
   "cashierChangerFavoriteHint": "After selecting, please click \"Apply\" to use the combination.",
   "cashierChangerFavoriteEmptyBody": "Here can help you quickly convert different currencies.",
-  "cashierChangerFavoriteItemFrom": "Exchange with {count} ${unit}",
+  "cashierChangerFavoriteItemFrom": "Exchange {count} of ${unit} to",
   "@cashierChangerFavoriteItemFrom": {
     "placeholders": {
       "count": {
@@ -1464,7 +1463,7 @@
       }
     }
   },
-  "cashierChangerFavoriteItemTo": "{count} ${unit}",
+  "cashierChangerFavoriteItemTo": "{count} of ${unit}",
   "@cashierChangerFavoriteItemTo": {
     "placeholders": {
       "count": {
@@ -1841,7 +1840,7 @@
   "analysisChartModalIgnoreEmptyHelper": "Do not display if a product or metric has no data for that period.",
   "analysisChartModalDivider": "Data Settings",
   "analysisChartModalTypeLabel": "Chart Type",
-  "analysisChartModalTypeName": "{name, select, cartesian{Time Series Chart} other{UNKNOWN}}",
+  "analysisChartModalTypeName": "{name, select, cartesian{Time Series Chart} circular{Pie Chart} other{UNKNOWN}}",
   "@analysisChartModalTypeName": {
     "placeholders": {
       "name": {

@@ -48,11 +48,11 @@ changer:
     emptyBody: Here can help you quickly convert different currencies.
     item:
       from:
-      - Exchange with {count} ${unit}
+      - Exchange {count} of ${unit} to
       - count: {type: int}
         unit:
       to:
-      - "{count} ${unit}"
+      - "{count} of ${unit}"
       - count: {type: int}
         unit:
   custom:

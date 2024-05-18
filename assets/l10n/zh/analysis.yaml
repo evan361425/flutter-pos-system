@@ -113,7 +113,7 @@ chart:
       label: 圖表類型
       name:
       - cartesian: 時序圖
-        other: UNKNOWN
+        circular: 圓餅圖
       - name:
     metric:
       label: 觀看指標
