@@ -11,31 +11,31 @@ class CartActions extends StatelessWidget {
     BottomSheetAction(
       key: const Key('cart.action.discount'),
       leading: const Icon(Icons.loyalty_sharp),
-      title: Text(S.orderCartActionsDiscount),
+      title: Text(S.orderCartActionDiscount),
       returnValue: CartActionTypes.discount,
     ),
     BottomSheetAction(
       key: const Key('cart.action.price'),
       leading: const Icon(Icons.attach_money_sharp),
-      title: Text(S.orderCartActionsChangePrice),
+      title: Text(S.orderCartActionChangePrice),
       returnValue: CartActionTypes.price,
     ),
     BottomSheetAction(
       key: const Key('cart.action.count'),
       leading: const Icon(Icons.exposure_sharp),
-      title: Text(S.orderCartActionsChangeCount),
+      title: Text(S.orderCartActionChangeCount),
       returnValue: CartActionTypes.count,
     ),
     BottomSheetAction(
       key: const Key('cart.action.free'),
       leading: const Icon(Icons.free_breakfast_sharp),
-      title: Text(S.orderCartActionsFree),
+      title: Text(S.orderCartActionFree),
       returnValue: CartActionTypes.free,
     ),
     BottomSheetAction(
       key: const Key('cart.action.delete'),
       leading: const Icon(KIcons.delete),
-      title: Text(S.orderCartActionsDelete),
+      title: Text(S.orderCartActionDelete),
       returnValue: CartActionTypes.delete,
     ),
   ];
@@ -52,7 +52,7 @@ class CartActions extends StatelessWidget {
         ),
       ),
       onPressed: () => showActions(context),
-      child: Text(S.orderCartActionsBtn),
+      child: Text(S.orderCartActionBulkify),
     );
   }
 
@@ -62,14 +62,14 @@ class CartActions extends StatelessWidget {
       case CartActionTypes.discount:
         item = _DialogItem(
           validator: Validator.positiveInt(
-            S.orderCartActionsDiscountLabel,
+            S.orderCartActionDiscountLabel,
             maximum: 1000,
           ),
           decoration: InputDecoration(
-            hintText: S.orderCartActionsDiscountHint,
-            helperText: S.orderCartActionsDiscountHelper,
+            hintText: S.orderCartActionDiscountHint,
+            helperText: S.orderCartActionDiscountHelper,
             helperMaxLines: 4,
-            suffix: Text(S.orderCartActionsDiscountSuffix),
+            suffix: Text(S.orderCartActionDiscountSuffix),
           ),
           action: (result) {
             Cart.instance.selectedUpdateDiscount(int.tryParse(result));
@@ -78,10 +78,11 @@ class CartActions extends StatelessWidget {
         break;
       case CartActionTypes.price:
         item = _DialogItem(
-          validator: Validator.positiveNumber(S.orderCartActionsChangePriceLabel),
+          validator: Validator.positiveNumber(S.orderCartActionChangePriceLabel),
           decoration: InputDecoration(
-            hintText: S.orderCartActionsChangePriceHint,
-            suffix: Text(S.orderCartActionsChangePriceSuffix),
+            hintText: S.orderCartActionChangePriceHint,
+            prefix: Text(S.orderCartActionChangePricePrefix),
+            suffix: Text(S.orderCartActionChangePriceSuffix),
           ),
           action: (result) {
             Cart.instance.selectedUpdatePrice(num.tryParse(result));
@@ -91,14 +92,14 @@ class CartActions extends StatelessWidget {
       case CartActionTypes.count:
         item = _DialogItem(
           validator: Validator.positiveInt(
-            S.orderCartActionsChangeCountLabel,
+            S.orderCartActionChangeCountLabel,
             maximum: 10000,
             minimum: 1,
           ),
           decoration: InputDecoration(
-            hintText: S.orderCartActionsChangeCountHint,
+            hintText: S.orderCartActionChangeCountHint,
             helperMaxLines: 4,
-            suffix: Text(S.orderCartActionsChangeCountSuffix),
+            suffix: Text(S.orderCartActionChangeCountSuffix),
           ),
           action: (result) {
             Cart.instance.selectedUpdateCount(int.tryParse(result));

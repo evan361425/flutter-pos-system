@@ -4,8 +4,8 @@ import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
-import 'order_attribute_preview_page.dart';
 import 'ingredient_preview_page.dart';
+import 'order_attribute_preview_page.dart';
 import 'product_preview_page.dart';
 import 'quantity_preview_page.dart';
 import 'replenishment_preview_page.dart';
@@ -48,7 +48,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.transitPreviewImportTitle),
+        title: Text(S.transitImportPreviewTitle),
         leading: const CloseButton(),
         actions: [
           TextButton(
@@ -88,7 +88,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget getItem(BuildContext context, T item);
 
   Widget getHeader(BuildContext context) {
-    return const Text('注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！');
+    return Text(S.transitImportPreviewHeader);
   }
 }
 

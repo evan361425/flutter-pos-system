@@ -31,7 +31,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
           key: const Key('import_btn'),
           margin: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
-            title: const Text('預覽結果'),
+            title: Text(S.transitImportPreviewTitle),
             trailing: const Icon(KIcons.preview),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -48,12 +48,12 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
             keyboardType: TextInputType.multiline,
             minLines: 3,
             maxLines: 6,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(
                 borderSide: BorderSide(width: 5.0),
               ),
-              hintText: '請貼上複製而來的文字',
-              helperText: '貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。',
+              hintText: S.transitPTImportHint,
+              helperText: S.transitPTImportHelper,
               helperMaxLines: 2,
             ),
           ),
@@ -71,7 +71,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
     final able = widget.exporter.formatter.whichFormattable(first);
 
     if (able == null) {
-      showSnackBar(context, '這段文字無法匹配相應的服務，請參考匯出時的文字內容');
+      showSnackBar(context, S.transitPTImportErrorNotFound);
       return;
     }
 

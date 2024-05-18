@@ -10,11 +10,9 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/history_order_list.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
 
 import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_database.dart';
@@ -30,22 +28,19 @@ void main() {
       when(cache.get(
         argThat(predicate((String e) => e.startsWith('tutorial.'))),
       )).thenReturn(true);
-      return ChangeNotifierProvider.value(
-        value: SettingsProvider([CurrencySetting()]),
-        child: MaterialApp.router(
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (_, __) {
-                  return Material(
-                    child: HistoryOrderList(notifier: notifier),
-                  );
-                },
-                routes: Routes.routes,
-              ),
-            ],
-          ),
+      return MaterialApp.router(
+        routerConfig: GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return Material(
+                  child: HistoryOrderList(notifier: notifier),
+                );
+              },
+              routes: Routes.routes,
+            ),
+          ],
         ),
       );
     }
@@ -86,7 +81,7 @@ void main() {
 
       // should not set progress if empty result
       expect(find.byType(CircularLoading), findsNothing);
-      expect(find.text('查無點餐紀錄'), findsOneWidget);
+      expect(find.text(S.orderLoaderEmpty), findsOneWidget);
       expect(loadCount, equals(1));
     });
 
@@ -151,7 +146,7 @@ void main() {
       expect(find.text('oao-1'), findsOneWidget);
       expect(find.text('p-2'), findsOneWidget);
 
-      await tester.tap(find.text(S.orderObjectTotalPrice('40')));
+      await tester.tap(find.text(S.orderObjectViewPriceTotal('40')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
@@ -198,6 +193,15 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(txn.delete(any, where: anyNamed('where'))).called(4);
+    });
+
+    testWidgets('order not found', (tester) async {
+      when(database.query(any, where: argThat(equals('id = 666'), named: 'where'))).thenAnswer((_) => Future.value([]));
+
+      await tester.pumpWidget(const MaterialApp(home: HistoryOrderModal(666)));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.analysisHistoryOrderNotFound), findsOneWidget);
     });
 
     setUpAll(() {

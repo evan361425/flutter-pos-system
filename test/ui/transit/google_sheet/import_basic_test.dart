@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -31,7 +31,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -42,13 +42,15 @@ void main() {
     }
 
     Future<void> go2Importer(WidgetTester tester) async {
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
     }
 
     group('#refresh -', () {
       Future<void> tapBtn(WidgetTester tester, {bool selected = true}) async {
-        await tester.tap(find.text(selected ? '確認表單名稱' : '選擇試算表'));
+        await tester.tap(find.text(
+          selected ? S.transitGSSpreadsheetImportExistLabel : S.transitGSSpreadsheetImportEmptyLabel,
+        ));
         await tester.pump();
       }
 
@@ -152,7 +154,7 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSImportError('emptySpreadsheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportEmptySpreadsheet), findsOneWidget);
       });
 
       testWidgets('sheet not selected', (tester) async {
@@ -160,7 +162,7 @@ void main() {
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSImportError('emptySheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportEmptySheet), findsOneWidget);
       });
 
       testWidgets('empty data', (tester) async {
@@ -170,7 +172,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester);
 
-        expect(find.text('找不到表單「title」的資料'), findsOneWidget);
+        expect(find.text(S.transitGSErrorImportNotFoundSheets('title')), findsOneWidget);
       });
 
       testWidgets('pop preview source', (tester) async {
@@ -184,7 +186,7 @@ void main() {
 
         await tester.pumpWidget(MaterialApp(
           home: TransitStation(
-            type: TransitType.basic,
+            catalog: TransitCatalog.model,
             notifier: notifier,
             exporter: GoogleSheetExporter(
               sheetsApi: sheetsApi,
@@ -196,7 +198,7 @@ void main() {
         await tapBtn(tester);
 
         expect(find.text(ing), findsOneWidget);
-        expect(notifier.value, equals('驗證身份中'));
+        expect(notifier.value, equals(S.transitGSProgressStatusVerifyUser));
 
         await tester.tap(find.byKey(const Key('pop')));
         await tester.pumpAndSettle();
@@ -220,7 +222,7 @@ void main() {
         )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
               gs.Sheet(properties: sheet),
             ])));
-        await tester.tap(find.text('確認表單名稱'));
+        await tester.tap(find.text(S.transitGSSpreadsheetImportExistLabel));
         await tester.pumpAndSettle();
         final menu = find.byKey(const Key('gs_export.menu.sheet_selector'));
         await tester.tap(menu);
@@ -242,13 +244,13 @@ void main() {
 
         verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
-        await tester.tap(find.text(S.transitPreviewImportTitle));
+        await tester.tap(find.text(S.transitImportPreviewBtn));
         await tester.pumpAndSettle();
 
         for (var e in ['p1', 'p2', 'p3', 'c1', 'c2']) {
           findText(e, 'staged');
         }
-        expect(find.text('將忽略本行，相同的項目已於前面出現'), findsOneWidget);
+        expect(find.text(S.transitImportErrorDuplicate), findsOneWidget);
 
         await tester.tap(find.byType(ExpansionTile).first);
         await tester.pumpAndSettle();
@@ -284,7 +286,7 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, index);
-        await tester.tap(find.text(S.transitPreviewImportTitle));
+        await tester.tap(find.text(S.transitImportPreviewBtn));
         await tester.pumpAndSettle();
 
         if (names == null) {
@@ -370,7 +372,7 @@ void main() {
 
       testWidgets('orderAttribute', (tester) async {
         await prepareImport(tester, 'orderAttr', 4, true, [
-          ['c1', '折扣', '- co1,true\n- co2,,5'],
+          ['c1', S.orderAttributeModeName('changeDiscount'), '- co1,true\n- co2,,5'],
           ['c2'],
         ]);
 

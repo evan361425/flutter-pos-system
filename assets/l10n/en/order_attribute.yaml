@@ -1,0 +1,108 @@
+$prefix: orderAttribute
+title: Customer Settings
+description: Information for analysis such as dine-in, takeout, etc.
+_title:
+  $prefix: title
+  create: Add Customer Setting
+  update: Edit Customer Setting
+  reorder: Reorder Customer Settings
+emptyBody: |-
+  Customer settings help us track who comes to consume, such as:
+  20-30 years old, takeout, office workers, etc.
+headerInfo:
+- Customer Settings
+- Displayed on the upper rectangle in homepage
+tutorial:
+  title: Customer Settings
+  content: |-
+    This is where you set customer information, such as dine-in, takeout, office worker, etc.
+    This information helps us track who comes to consume and make better business strategies.
+meta:
+  mode:
+  - 'Mode: {name}'
+  - name:
+  default:
+  - 'Default: {name}'
+  - name:
+  noDefault: None
+mode:
+  divider: Customer Setting Mode
+  name:
+  - statOnly: Normal
+    changePrice: Price Change
+    changeDiscount: Discount
+  - Customer setting mode name
+  - name
+  helper:
+  - statOnly: Normal setting, selecting won't affect the order price.
+    changePrice: |-
+      Selecting this setting may affect the order price.
+      For example: Takeout +$30, Eco Cup -$5.
+    changeDiscount: |-
+      Selecting this setting will affect the total price based on the discount.
+      For example: Dine-in +10% service charge, Friends & Family Discount -10%.
+  - Explanation of customer setting categories
+  - name:
+name:
+  label: Customer Setting Name
+  hint: e.g., Age
+  error:
+    repeat: Name already exists
+option:
+  title:
+    create: Add Option
+    createWith:
+    - Add option for {name}
+    - name:
+    update: Edit Option
+    reorder: Reorder Options
+  meta:
+    default: Default
+  name:
+    label: Option Name
+    helper: |-
+      For example, possible options for age include:
+      - Under 20
+      - 20 to 30
+    error:
+      repeat: Name already exists
+  mode:
+    title: Option Mode
+    helper:
+    - statOnly: No need to set "Discount" or "Price Change" because this setting is "Normal"
+      changePrice: Selecting this option during ordering will apply this price change
+      changeDiscount: Selecting this option during ordering will apply this discount
+    - Explanation of mode
+    - name:
+    hint:
+    - statOnly: ''
+      changePrice: 'For example: -30 means decrease by thirty dollars'
+      changeDiscount: 'For example: 80 means "20% off"'
+    - name:
+  toDefault:
+    label: Set as Default
+    helper: |-
+      Set this option as the default value, which will be used for each order by default.
+    confirmChange:
+      title: Override Option Default?
+      content:
+      - Doing this will make "{name}" no longer the default value
+      - Prompt to ensure the user knows what the original default value was
+      - name:
+value: # Options can have values, this is the text for `OrderAttributeValue`
+  empty: No price impact
+  free: Free
+  discount:
+    increase:
+    - Increase to {value} times
+    - value: {type: num, format: decimalPattern}
+    decrease:
+    - Decrease to {value} times
+    - value: {type: num, format: decimalPattern}
+  price:
+    increase:
+    - Increase by {value} dollars
+    - value:
+    decrease:
+    - Decrease by {value} dollars
+    - value:

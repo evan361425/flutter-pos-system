@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/util.dart';
+import 'package:intl/intl.dart';
+import 'package:possystem/translator.dart';
 
 class PercentileBar extends StatefulWidget {
   final num total;
@@ -20,6 +21,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
   late Animation<double> _curveAnimation;
+  final nf = NumberFormat.compact(locale: S.localeName);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('${widget.at.prettyString()}／${widget.total.prettyString()}'),
+            Text('${nf.format(widget.at)}／${nf.format(widget.total)}'),
           ],
         ),
         AnimatedBuilder(
@@ -38,7 +40,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
               value: _controller.value,
               valueColor: _colorAnimation,
               backgroundColor: _colorAnimation.value?.withOpacity(0.2),
-              semanticsLabel: '目前佔總數的 ${_curveAnimation.value}',
+              semanticsLabel: S.semanticsPercentileBar(_curveAnimation.value),
             );
           },
         ),
@@ -55,14 +57,8 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
       vsync: this,
     );
 
+    // TODO: use single color
     final colorTween = TweenSequence([
-      TweenSequenceItem(
-        tween: ColorTween(
-          begin: const Color(0xffff834c),
-          end: const Color(0xffeebc01),
-        ),
-        weight: 1,
-      ),
       TweenSequenceItem(
         tween: ColorTween(
           begin: const Color(0xff7fca2b),
@@ -72,8 +68,8 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
       ),
       TweenSequenceItem(
         tween: ColorTween(
-          begin: const Color(0xff3d88df),
-          end: const Color(0xff8b6abc),
+          begin: const Color(0xff81c9de),
+          end: const Color(0xff3d88df),
         ),
         weight: 1,
       ),

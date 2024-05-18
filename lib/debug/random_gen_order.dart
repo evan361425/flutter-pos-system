@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/style/date_range_picker.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/util.dart';
@@ -14,10 +15,19 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
-/// Generate order records each record have total 1~10 products. For example,
-/// 1 product might have 10 count or 10 different products or 2 same product but
-/// each have different ingredients.
-List<OrderObject> generateOrder({
+void Function() goGenerateRandomOrders(BuildContext context) {
+  return () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return const _SettingPage();
+      }));
+}
+
+/// Generate random order records with random products,
+/// random count, random price, random ingredients, random attributes.
+///
+/// Each record might have 1~10 products, for example,
+/// 1 product might have 10 count or 10 different products
+/// or 2 same product but each have different ingredients.
+List<OrderObject> generateOrders({
   required int orderCount,
   required DateTime startFrom,
   required DateTime endTo,
@@ -116,19 +126,6 @@ List<int> _selectExistedProduct<T>(List<OrderProductObject> data, String id) {
   return result;
 }
 
-class RandomGenerateOrderButton extends StatelessWidget {
-  const RandomGenerateOrderButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _SettingPage())),
-      label: const Text('產生隨機餐點'),
-      icon: const Icon(Icons.developer_mode_sharp),
-    );
-  }
-}
-
 class _SettingPage extends StatefulWidget {
   const _SettingPage();
 
@@ -140,6 +137,7 @@ class _SettingPageState extends State<_SettingPage> {
   final DateFormat dateFormat = DateFormat("yyyy-MM-dd");
   final _countController = TextEditingController(text: '1');
 
+  bool generating = false;
   late DateTime startFrom;
   late DateTime endTo;
 
@@ -150,7 +148,7 @@ class _SettingPageState extends State<_SettingPage> {
         leading: const PopButton(),
         actions: [
           TextButton(
-            onPressed: () => submit(context.read<Seller>()),
+            onPressed: generating ? null : () => submit(context.read<Seller>()),
             child: const Text('OK'),
           )
         ],
@@ -164,11 +162,11 @@ class _SettingPageState extends State<_SettingPage> {
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
-              labelText: '訂單數量',
-              hintText: '平均分配於時間區間',
+              labelText: 'Count',
+              hintText: 'It will be distributed in the time interval.',
             ),
             maxLength: 5,
-            validator: Validator.positiveInt('訂單數量', maximum: 9999, minimum: 1),
+            validator: Validator.positiveInt('Count', maximum: 9999, minimum: 1),
           ),
           const SizedBox(height: 8.0),
           InkWell(
@@ -192,28 +190,24 @@ class _SettingPageState extends State<_SettingPage> {
   }
 
   Future<void> selectDates() async {
-    const oneDay = Duration(days: 1);
-    final selected = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateUtils.dateOnly(DateTime.now()),
-      initialDateRange: DateTimeRange(
-        start: startFrom,
-        end: endTo.subtract(oneDay),
-      ),
+    final selected = await showMyDateRangePicker(
+      context,
+      DateTimeRange(start: startFrom, end: endTo),
     );
 
     if (selected != null) {
       setState(() {
         startFrom = selected.start;
-        endTo = selected.end.add(oneDay);
+        endTo = selected.end;
       });
     }
   }
 
   void submit(Seller seller) async {
+    setState(() => generating = true);
+
     final count = int.tryParse(_countController.text);
-    final result = generateOrder(
+    final result = generateOrders(
       orderCount: count ?? 0,
       startFrom: startFrom,
       endTo: endTo,
@@ -221,7 +215,7 @@ class _SettingPageState extends State<_SettingPage> {
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
     if (mounted) {
-      showSnackBar(context, '成功產生 ${result.length} 個訂單');
+      showSnackBar(context, 'Generate ${result.length} orders successfully');
 
       Navigator.of(context).pop();
     }

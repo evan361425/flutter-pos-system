@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/info_popup.dart';
+import 'package:intl/intl.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 
 class GoalsCardView extends StatefulWidget {
@@ -20,13 +22,15 @@ class GoalsCardView extends StatefulWidget {
 }
 
 class _GoalsCardViewState extends State<GoalsCardView> {
-  OrderDataPerDay? goal;
+  OrderSummary? goal;
+
+  final formatter = NumberFormat.percentPattern();
 
   @override
   Widget build(BuildContext context) {
-    return ReloadableCard<OrderDataPerDay>(
+    return ReloadableCard<OrderSummary>(
       id: 'goals',
-      title: '本日總結',
+      title: S.analysisGoalsTitle,
       notifiers: [Seller.instance],
       builder: _builder,
       loader: _loader,
@@ -39,46 +43,46 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     // If the user disabled the goals, we don't need to load the data.
     // which is currently only option(goals is a beta feature).
     if (enabled != true) {
-      goal = OrderDataPerDay(at: DateTime(0));
+      goal = OrderSummary(at: DateTime(0));
     }
 
     super.initState();
   }
 
-  Widget _builder(BuildContext context, OrderDataPerDay metric) {
-    final style = Theme.of(context).textTheme.bodyLarge;
+  Widget _builder(BuildContext context, OrderSummary metric) {
+    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(
+          overflow: TextOverflow.ellipsis,
+        );
     final goals = <Widget>[
       _GoalItem(
         type: OrderMetricType.count,
         current: metric.count,
         goal: goal!.count,
         style: style,
-        name: '訂單數',
-        desc:
-            '訂單數反映了產品對顧客的吸引力。它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。但要注意，單純追求高訂單數可能會忽略盈利能力。',
-      ),
-      _GoalItem(
-        type: OrderMetricType.price,
-        current: metric.price,
-        goal: goal!.price,
-        style: style,
-        name: '營收',
-        desc: '營收代表總銷售額，是業務規模的指標。高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。它不考慮成本和利潤，因此單純追求高營收可能會忽視實際利潤狀況。',
+        name: S.analysisGoalsCountTitle,
+        desc: S.analysisGoalsCountDescription,
       ),
       _GoalItem(
         type: OrderMetricType.revenue,
         current: metric.revenue,
         goal: goal!.revenue,
         style: style,
-        name: '盈利',
-        desc:
-            '盈利是店家能否持續經營的關鍵。盈利直接反映了營運效率和成本管理能力。不同於營收，盈利考慮了生意的開支，包括原料成本、人力、租金等，這是一個更實際的指標，能幫助你評估經營是否有效且可持續。即使有高營收，但如果成本高於營收，最終可能面臨經營困境。',
+        name: S.analysisGoalsRevenueTitle,
+        desc: S.analysisGoalsRevenueDescription,
+      ),
+      _GoalItem(
+        type: OrderMetricType.profit,
+        current: metric.profit,
+        goal: goal!.profit,
+        style: style,
+        name: S.analysisGoalsProfitTitle,
+        desc: S.analysisGoalsProfitDescription,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('成本', style: style),
-          Text(metric.cost.prettyString(), style: style),
+          Text(S.analysisGoalsCostTitle, style: style),
+          Text(metric.cost.toCurrency(), style: style),
         ],
       ),
     ];
@@ -91,7 +95,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
             children: goals,
           ),
         ),
-        if (goal!.revenue != 0)
+        if (goal!.profit != 0)
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -99,7 +103,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                 AspectRatio(
                   aspectRatio: 1.0,
                   child: CircularProgressIndicator(
-                    value: metric.revenue / goal!.revenue,
+                    value: metric.profit / goal!.profit,
                     color: Colors.pink,
                     backgroundColor: Colors.grey.withOpacity(0.2),
                     strokeWidth: 20,
@@ -108,7 +112,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                 Positioned.fill(
                   child: Center(
                     child: Text(
-                      '利潤達成\n${(metric.revenue / goal!.revenue * 100).prettyString()}%',
+                      S.analysisGoalsAchievedRate(formatter.format(metric.profit / goal!.profit)),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
@@ -120,7 +124,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
   }
 
-  Future<OrderDataPerDay> _loader() async {
+  Future<OrderSummary> _loader() async {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
       // If there is no data, we need to calculate the EMA from the last 20 data points withing 40 days.
@@ -128,8 +132,8 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       range.end,
       types: [
         OrderMetricType.count,
-        OrderMetricType.price,
         OrderMetricType.revenue,
+        OrderMetricType.profit,
         OrderMetricType.cost,
       ],
       ignoreEmpty: true,
@@ -138,15 +142,15 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
 
     // Remove the first data, which is the today's data.
-    final todayData = result.isEmpty ? OrderDataPerDay(at: range.start) : result.removeAt(0);
+    final todayData = result.isEmpty ? OrderSummary(at: range.start) : result.removeAt(0);
 
     final reversed = result.reversed;
-    goal ??= OrderDataPerDay(
+    goal ??= OrderSummary(
       at: DateTime(0), // this is dummy data, we don't need the date.
       values: {
         'count': widget.calculator.calculate(reversed.map((e) => e.count)),
-        'price': widget.calculator.calculate(reversed.map((e) => e.price)),
         'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
+        'profit': widget.calculator.calculate(reversed.map((e) => e.profit)),
       },
     );
 
@@ -181,19 +185,17 @@ class _GoalItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(name, style: style),
-          const SizedBox(width: 4.0),
-          InfoPopup(desc),
-        ]),
+        Text(name, style: style),
+        // TODO: tap to show the description
+        // InfoPopup(desc),
         RichText(
           text: TextSpan(
-            text: current.prettyString(),
+            text: current.toCurrency(),
             style: style,
             children: [
               if (goal != 0)
                 TextSpan(
-                  text: '／${goal.prettyString()}',
+                  text: '／${goal.toCurrency()}',
                   style: const TextStyle(color: Colors.grey),
                 ),
             ],

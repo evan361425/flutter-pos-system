@@ -46,7 +46,7 @@ class Util {
         return Center(child: Text(error.toString()));
       }
 
-      if (!snapshot.hasData) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(
           child: SizedBox(
             height: 20,
@@ -63,28 +63,26 @@ class Util {
   }
 }
 
-extension PrettyNum on num {
-  static final _format = NumberFormat.compact(locale: 'zh_TW');
-
-  /// TODO: After currency is implemented, we need to change this to use currency formatter.
-  /// 4.444     -> 4.44
-  /// 44.44     -> 44.4
-  /// 444.4     -> 444
-  /// 4444      -> 4444
-  /// 44444     -> 4.44萬
-  /// 444444    -> 44.4萬
-  /// 4444444   -> 444萬
-  /// 44444444  -> 4444萬
-  /// 444444444 -> 4.44億
-  String prettyString() {
-    return _format.format(this);
-  }
-}
-
 extension RangeFormat on DateTimeRange {
-  String format(DateFormat f) {
-    return duration.inDays == 1
-        ? f.format(start)
-        : '${f.format(start)} - ${f.format(end.subtract(const Duration(days: 1)))}';
+  String format(String local) {
+    final thisYear = DateTime.now().year;
+    final fs = start.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    if (duration.inDays == 1) {
+      return fs.format(start);
+    }
+
+    final fe = end.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
+  }
+
+  String formatCompact(String local) {
+    final thisYear = DateTime.now().year;
+    final fs = start.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    if (duration.inDays == 1) {
+      return fs.format(start);
+    }
+
+    final fe = end.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
   }
 }

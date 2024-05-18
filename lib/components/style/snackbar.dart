@@ -32,19 +32,14 @@ Future<T?> showSnackbarWhenFailed<T>(
   });
 }
 
-void showMoreInfoSnackBar(
-  BuildContext context,
-  String message,
-  Widget content, {
-  String label = '說明',
-}) {
+void showMoreInfoSnackBar(BuildContext context, String message, Widget content) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     // make floating button below
     behavior: SnackBarBehavior.floating,
     content: Text(message),
     action: SnackBarAction(
-      label: label,
+      label: S.actMoreInfo,
       onPressed: () {
         showDialog(
           context: context,

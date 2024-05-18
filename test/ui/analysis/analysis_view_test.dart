@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
@@ -9,9 +8,6 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -29,16 +25,8 @@ void main() {
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
-      final settings = SettingsProvider([
-        LanguageSetting(),
-        CurrencySetting(),
-      ]);
-
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: settings),
-          ChangeNotifierProvider.value(value: Seller.instance),
-        ],
+      return ChangeNotifierProvider.value(
+        value: Seller.instance,
         builder: (_, __) => MaterialApp.router(
           routerConfig: GoRouter(
             routes: [
@@ -58,7 +46,7 @@ void main() {
     void mockGetChart() {
       when(database.query(
         any,
-        columns: argThat(contains('SUM(price) price'), named: 'columns'),
+        columns: argThat(contains('SUM(price) revenue'), named: 'columns'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),
         groupBy: anyNamed('groupBy'),
@@ -110,7 +98,7 @@ void main() {
           type: AnalysisChartType.cartesian,
           ignoreEmpty: false,
           target: OrderMetricTarget.order,
-          metrics: const [OrderMetricType.price],
+          metrics: const [OrderMetricType.revenue],
           targetItems: [],
         ),
       });
@@ -142,7 +130,7 @@ void main() {
       expect(chart.type.name, equals('cartesian'));
       expect(chart.ignoreEmpty, equals(false));
       expect(chart.target, OrderMetricTarget.order);
-      expect(chart.metrics, equals(const [OrderMetricType.price]));
+      expect(chart.metrics, equals(const [OrderMetricType.revenue]));
       expect(chart.targetItems, isEmpty);
       expect(chart.index, 0);
 
@@ -159,8 +147,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      final format = DateFormat.MMMd('zh_TW');
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -169,7 +156,7 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 14)),
         days: 7,
       );
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
       await tester.pump(const Duration(milliseconds: 50));
@@ -178,14 +165,14 @@ void main() {
         now: DateTime.now().subtract(const Duration(days: 7)),
         days: 7,
       );
-      expect(find.text(range.format(format)), findsOneWidget);
+      expect(find.text(range.format('en')), findsOneWidget);
 
       // select date range
       await tester.tap(find.byKey(const Key('anal.chart_range')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pump(const Duration(milliseconds: 50));
-      expect(find.text(range.format(format)), findsAtLeastNWidgets(1));
+      expect(find.text(range.format('en')), findsAtLeastNWidgets(1));
     });
 
     setUpAll(() {

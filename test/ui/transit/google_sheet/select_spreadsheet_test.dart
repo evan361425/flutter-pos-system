@@ -12,8 +12,8 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:possystem/ui/transit/google_sheet/sheet_namer.dart';
+import 'package:possystem/ui/transit/transit_station.dart';
 
 import '../../../mocks/mock_auth.dart';
 import '../../../mocks/mock_cache.dart';
@@ -31,7 +31,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -73,7 +73,7 @@ void main() {
           )));
     }
 
-    testWidgets('exporter pick invalid and exist', (tester) async {
+    testWidgets('exporter pick invalid and exit', (tester) async {
       when(cache.get(eCacheKey)).thenReturn('old-id:true:old-name');
 
       await tester.pumpWidget(buildApp());
@@ -84,10 +84,13 @@ void main() {
       expect(editorW.controller?.text, equals('old-id'));
 
       await tester.enterText(editor, 'QQ');
+      await tester.tap(find.byKey(const Key('text_dialog.confirm')));
+      await tester.pump();
+      // not in dialog
+      expect(find.text(S.transitGSErrorSpreadsheetIdInvalid), findsOneWidget);
+
       await tester.tap(find.byKey(const Key('text_dialog.cancel')));
       await tester.pumpAndSettle();
-      // not in dialog
-      expect(find.byKey(const Key('text_dialog.cancel')), findsNothing);
     });
 
     testWidgets('exporter pick not exist', (tester) async {
@@ -108,7 +111,7 @@ void main() {
       await tester.tap(find.byKey(const Key('text_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(find.text('找不到表單'), findsOneWidget);
+      expect(find.text(S.transitGSErrorImportNotFoundSpreadsheet), findsOneWidget);
     });
 
     testWidgets('exporter pick success', (tester) async {
@@ -166,7 +169,7 @@ void main() {
       final sheetsApi = getMockSheetsApi();
       await tester.pumpWidget(buildApp(sheetsApi));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(Tab, S.btnImport));
+      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
       await tester.pumpAndSettle();
 
       expect(getSelector('menu').initialValue?.title, equals('menu title'));
@@ -216,5 +219,19 @@ void main() {
       initializeCache();
       initializeAuth();
     });
+  });
+
+  test('GoogleSheetProperties hash code', () {
+    final a = GoogleSheetProperties(1, 'title');
+    final b = GoogleSheetProperties(1, 'title');
+    final c = GoogleSheetProperties(1, 'title2');
+    final d = GoogleSheetProperties(2, 'title');
+
+    expect(a, equals(b));
+    expect(a.hashCode, equals(b.hashCode));
+    expect(a, isNot(equals(c)));
+    expect(a.hashCode, isNot(equals(c.hashCode)));
+    expect(a, isNot(equals(d)));
+    expect(a.hashCode, isNot(equals(d.hashCode)));
   });
 }

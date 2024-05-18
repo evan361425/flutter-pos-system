@@ -1,150 +1,146 @@
 {
-  "title": "ARB placeholder configuration files",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ARB yaml configuration files",
+  "$schema": "https://json-schema.org/draft-07/schema",
 
+  "type": "object",
   "patternProperties": {
+    "$prefix": { "type": "string" },
     "^[\\w]+": {
-      "type": "string"
+      "type": ["string", "array", "object"],
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/$defs/placeholders" },
+              { "type": "object", "description": "allo empty value" },
+              {
+                "description": "Select or plural key-value pair",
+                "type": "object",
+                "patternProperties": {
+                  ".*": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "$ref": "#" }
+      ]
     },
-    "^@[\\w]": {
+    "^@[\\w]": { "$ref": "#/$defs/meta" }
+  },
+  "$defs": {
+    "meta": {
       "type": "object",
       "properties": {
         "description": { "type": "string" },
-        "placeholders": {
+        "placeholders": { "$ref": "#/$defs/placeholders" }
+      }
+    },
+    "placeholders": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
           "type": "object",
-          "patternProperties": {
-            ".*": {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "String",
+                "string",
+                "integer",
+                "int",
+                "double",
+                "num",
+                "DateTime",
+                "Object"
+              ]
+            },
+            "example": { "type": "string" },
+            "description": { "type": "string" },
+            "isCustomDateFormat": {
+              "anyOf": [
+                { "type": "string", "enum": ["true", "false"] },
+                { "type": "boolean" }
+              ]
+            },
+            "optionalParameters": {
               "type": "object",
               "properties": {
-                "type": {
+                "decimalDigits": {
+                  "type": "number",
+                  "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
+                },
+                "symbol": {
                   "type": "string",
-                  "enum": [
-                    "String",
-                    "int",
-                    "double",
-                    "num",
-                    "DateTime",
-                    "Object"
-                  ]
+                  "description": "Use for currency and compactCurrency"
                 },
-                "example": { "type": "string" },
-                "description": { "type": "string" },
-                "optionalParameters": {
-                  "type": "object",
-                  "properties": {
-                    "decimalDigits": {
-                      "type": "number",
-                      "description": "Use for currency, compactCurrency and compactSimpleCurrecy"
-                    },
-                    "symbol": {
-                      "type": "string",
-                      "description": "Use for currency and compactCurrency"
-                    },
-                    "customPattern": {
-                      "type": "string",
-                      "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
-                    }
-                  }
-                },
-                "format": {
+                "customPattern": {
                   "type": "string",
-                  "enum": [
-                    "compact",
-                    "compactCurrency",
-                    "compactLong",
-                    "compactSimpleCurrency",
-                    "currency",
-                    "decimalPattern",
-                    "decimalPercentPattern",
-                    "percentPattern",
-                    "scientificPattern",
-                    "simpleCurrency",
-                    "d",
-                    "E",
-                    "EEEE",
-                    "LLL",
-                    "LLLL",
-                    "M",
-                    "Md",
-                    "MEd",
-                    "MMM",
-                    "MMMd",
-                    "MMMEd",
-                    "MMMM",
-                    "MMMMd",
-                    "MMMMEEEEd",
-                    "QQQ",
-                    "QQQQ",
-                    "y",
-                    "yM",
-                    "yMd",
-                    "yMEd",
-                    "yMMM",
-                    "yMMMd",
-                    "yMMMEd",
-                    "yMMMM",
-                    "yMMMMd",
-                    "yMMMMEEEEd",
-                    "yQQQ",
-                    "yQQQQ",
-                    "H",
-                    "Hm",
-                    "Hms",
-                    "j",
-                    "jm",
-                    "jms",
-                    "m",
-                    "ms",
-                    "s"
-                  ],
-                  "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
+                  "description": "Use for currency details in https://pub.dev/documentation/intl/latest/intl/NumberFormat/NumberFormat.currency.html"
                 }
-              },
-              "defaultSnippets": [
-                {
-                  "label": "String",
-                  "description": "Add description inside @key placeholder",
-                  "body": { "description": "$1", "type": "${2:String}" }
-                },
-                {
-                  "label": "currency",
-                  "description": "Currency format placeholder",
-                  "body": {
-                    "description": "$1",
-                    "type": "num",
-                    "format": "compactCurrency",
-                    "optionalParameters": {
-                      "decimalDigits": 0
-                    }
-                  }
-                },
-                {
-                  "label": "int",
-                  "description": "int placeholder",
-                  "body": { "description": "$1", "type": "${2:int}" }
-                },
-                {
-                  "label": "DateTime",
-                  "description": "DateTime placeholder",
-                  "body": {
-                    "description": "$1",
-                    "type": "DateTime",
-                    "format": "${2:MMMEd}"
-                  }
-                }
-              ]
+              }
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "compact",
+                "compactCurrency",
+                "compactLong",
+                "compactSimpleCurrency",
+                "currency",
+                "decimalPattern",
+                "decimalPercentPattern",
+                "percentPattern",
+                "scientificPattern",
+                "simpleCurrency",
+                "d",
+                "E",
+                "EEEE",
+                "LLL",
+                "LLLL",
+                "M",
+                "Md",
+                "MEd",
+                "MMM",
+                "MMMd",
+                "MMMEd",
+                "MMMM",
+                "MMMMd",
+                "MMMMEEEEd",
+                "QQQ",
+                "QQQQ",
+                "y",
+                "yM",
+                "yMd",
+                "yMEd",
+                "yMMM",
+                "yMMMd",
+                "yMMMEd",
+                "yMMMM",
+                "yMMMMd",
+                "yMMMMEEEEd",
+                "yQQQ",
+                "yQQQQ",
+                "H",
+                "Hm",
+                "Hms",
+                "j",
+                "jm",
+                "jms",
+                "m",
+                "ms",
+                "s"
+              ],
+              "description": "See DateTime implement in https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html\nNumber implement in https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html"
             }
           }
         }
-      },
-      "defaultSnippets": [
-        {
-          "label": "With description",
-          "description": "Add description inside @key",
-          "body": { "description": "$1" }
-        }
-      ]
+      }
     }
-  },
-  "type": "object"
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -32,7 +32,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   late FocusNode _totalAmountFocusNode;
 
   @override
-  String get title => widget.ingredient?.name ?? S.stockIngredientCreate;
+  String get title => widget.ingredient?.name ?? S.stockIngredientTitleCreate;
 
   @override
   Widget buildForm() {
@@ -54,10 +54,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
               );
             case 1:
               return TextDivider(
-                label: S.stockIngredientConnectedProductsCount(
-                  length - 2,
-                  widget.ingredient!.name,
-                ),
+                label: S.stockIngredientProductsCount(length - 2),
               );
             default:
               final product = ingredients[index - 2].product;
@@ -92,7 +89,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
             focusNode: _nameFocusNode,
             validator: (name) {
               return widget.ingredient?.name != name && Stock.instance.hasName(name)
-                  ? S.stockIngredientNameRepeatError
+                  ? S.stockIngredientNameErrorRepeat
                   : null;
             },
           ),
@@ -120,13 +117,13 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
           keyboardType: TextInputType.number,
           focusNode: _totalAmountFocusNode,
           decoration: InputDecoration(
-            labelText: S.stockIngredientTotalAmountLabel,
-            helperText: S.stockIngredientTotalAmountHelper,
+            labelText: S.stockIngredientAmountMaxLabel,
+            helperText: S.stockIngredientAmountMaxHelper,
             helperMaxLines: 5,
             filled: false,
           ),
           validator: Validator.positiveNumber(
-            S.stockIngredientTotalAmountLabel,
+            S.stockIngredientAmountMaxLabel,
             allowNull: true,
             focusNode: _totalAmountFocusNode,
           ),

@@ -13,9 +13,11 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
 import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
@@ -269,7 +271,7 @@ void main() {
       await tester.enterText(find.byType(TextField).last, 'empty');
       await tester.pumpAndSettle();
 
-      expect(find.text('搜尋不到相關資訊，打錯字了嗎？'), findsOneWidget);
+      expect(find.text(S.menuSearchNotFound), findsOneWidget);
 
       // enter match products (including ingredient)
       await tester.enterText(find.byType(TextField).last, '2');
@@ -334,8 +336,14 @@ void main() {
       expect(find.byKey(const Key('catalog.c-1')), findsOneWidget);
     });
 
+    setUp(() async {
+      await cache.reset();
+      when(cache.get(any)).thenReturn(true);
+    });
+
     setUpAll(() {
       initializeStorage();
+      initializeCache();
       initializeTranslator();
       initializeFileSystem();
     });

@@ -4,14 +4,14 @@ import 'package:possystem/translator.dart';
 
 const _operators = ['+', '-', 'x'];
 
-class OrderCashierCalculator extends StatefulWidget {
+class CheckoutCashierCalculator extends StatefulWidget {
   final VoidCallback onSubmit;
 
   final ValueNotifier<num> price;
 
   final ValueNotifier<num> paid;
 
-  const OrderCashierCalculator({
+  const CheckoutCashierCalculator({
     super.key,
     required this.onSubmit,
     required this.price,
@@ -19,10 +19,10 @@ class OrderCashierCalculator extends StatefulWidget {
   });
 
   @override
-  State<OrderCashierCalculator> createState() => _OrderCashierCalculatorState();
+  State<CheckoutCashierCalculator> createState() => _CheckoutCashierCalculatorState();
 }
 
-class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
+class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
   final paidState = GlobalKey<_SingleFieldState>();
   final changeState = GlobalKey<_SingleFieldState>();
 
@@ -41,7 +41,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _SingleField(
             key: paidState,
             id: 'cashier.calculator.paid',
-            prefix: S.orderCashierPaidLabel,
+            prefix: S.orderCheckoutCashierCalculatorLabelPaid,
             defaultText: widget.price.value.toCurrency(),
             errorText: '',
           ),
@@ -49,9 +49,9 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
           _SingleField(
             key: changeState,
             id: 'cashier.calculator.change',
-            prefix: S.orderCashierChangeLabel,
+            prefix: S.orderCheckoutCashierCalculatorLabelChange,
             defaultText: '0',
-            errorText: S.orderCashierCalculatorChangeNotEnough,
+            errorText: S.orderCheckoutSnackbarPaidFailed,
           ),
           const Divider(),
         ]),
@@ -156,7 +156,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
       final paid = _calc(value);
       final change = paid - widget.price.value;
 
-      changeText = change >= 0 ? change.toCurrency() : null;
+      changeText = change >= 0 ? change.toCurrencyLong() : null;
       widget.paid.value = paid;
     } else {
       widget.paid.value = widget.price.value;
@@ -168,7 +168,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
 
   void _addOperator(String operator) {
     if (text.isNotEmpty) {
-      text = _calc(text).toCurrency() + operator;
+      text = _calc(text).toCurrencyLong() + operator;
       setState(() {
         isOperating = true;
       });
@@ -178,7 +178,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   void _execCeil() {
     final price = _calc(text, widget.price.value.toInt());
     final ceilPrice = CurrencySetting.instance.ceil(price);
-    text = ceilPrice.toCurrency();
+    text = ceilPrice.toCurrencyLong();
   }
 
   void _execBack() {
@@ -202,7 +202,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
       setState(() {
         isOperating = false;
       });
-      text = _calc(text).toCurrency();
+      text = _calc(text).toCurrencyLong();
     } else {
       widget.onSubmit();
     }
@@ -244,7 +244,7 @@ class _OrderCashierCalculatorState extends State<OrderCashierCalculator> {
   }
 
   _onNotify() {
-    text = _calc(widget.paid.value.toCurrency()).toCurrency();
+    text = _calc(widget.paid.value.toCurrencyLong()).toCurrencyLong();
   }
 }
 

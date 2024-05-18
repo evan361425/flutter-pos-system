@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
 class ThemeSetting extends Setting<ThemeMode> {
+  static final instance = ThemeSetting._();
+
+  static const defaultValue = ThemeMode.system;
+
+  ThemeSetting._() {
+    value = defaultValue;
+  }
+
   @override
   String get key => 'theme';
 
@@ -10,7 +18,7 @@ class ThemeSetting extends Setting<ThemeMode> {
 
   @override
   void initialize() {
-    value = ThemeMode.values[service.get<int>(key) ?? 0];
+    value = ThemeMode.values[service.get<int>(key) ?? defaultValue.index];
   }
 
   @override

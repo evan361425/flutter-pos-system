@@ -1,0 +1,103 @@
+$prefix: menu
+title: 菜單
+subtitle: 產品種類、產品
+tutorial:
+  title: 建立屬於你的菜單
+  content: 首先我們來開始建立一份菜單吧！
+search:
+  hint: 搜尋產品、成分、份量
+  notFound: 搜尋不到相關資訊，打錯字了嗎？
+catalog:
+  headerInfo: 種類
+  tutorial:
+    title: Create First Catalog
+  emptyBody: |-
+    我們會把相似「產品」放在「產品種類」中，
+    到時候點餐會比較方便，例如：
+    • 「起司漢堡」、「蔬菜漢堡」整合進「漢堡」
+    • 「塑膠袋」、「環保杯」整合進「其他」
+  title:
+    create: 新增產品種類
+    update: 編輯產品種類
+    reorder: 排序產品種類
+  dialogDeletionContent:
+  - =0: 其內無任何產品
+    other: 將會一同刪除掉 {count} 個產品
+  name:
+    label: 產品種類名稱
+    hint: 例如：漢堡
+    error:
+      repeat: 名稱重複了，請改個名字吧！
+  emptyProducts: 尚未設定產品
+product:
+  headerInfo: 產品
+  emptyBody: |-
+    「產品」是菜單裡的基本單位，例如：
+    「起司漢堡」、「可樂」
+  title:
+    create: 新增產品
+    update: 編輯產品
+    reorder: 排序產品
+    updateImage: 更新照片
+  meta:
+    title: 產品
+    price: 價格：{price}
+    cost: 成本：{cost}
+    empty: 尚未設定成分
+  name:
+    label: 產品名稱
+    hint: 例如：起司漢堡
+    error:
+      repeat: 產品名稱重複
+  price:
+    label: 產品價格
+    helper: 訂單頁面會呈現的價錢
+  cost:
+    label: 產品成本
+    helper: 用來算出利潤，理應小於價錢
+  emptyIngredients: 尚未設定成分
+ingredient:
+  emptyBody: |-
+    你可以在產品中設定成分等資訊，例如：
+    「起司漢堡」有「起司」、「麵包」等成分
+  title:
+    create: 新增成分
+    update: 編輯成分
+    reorder: 排序成分
+  meta:
+    amount: 使用量：{amount}
+  search:
+    label: 搜尋成分
+    helper: 新增成分後，可至「庫存」設定相關資訊。
+    hint: 例如：起司
+    add: 新增成分「{name}」
+    error:
+      empty: 必須設定成分，請點選以設定。
+      repeat: 產品已經有相同的成分了，不能重複選取。
+  amount:
+    label: 使用量
+    helper: 預設的使用量，若餐點可以調整該成分的使用量，請於成分的「份量」中設定。
+quantity:
+  title:
+    create: 新增份量
+    update: 編輯份量
+  meta:
+    amount: 使用量：{amount}
+    additionalPrice: 額外售價：{price}
+    additionalCost: 額外成本：{cost}
+  search:
+    label: 搜尋份量
+    helper: 新增成分份量後，可至「份量」設定相關資訊。
+    hint: 例如：多量、少量
+    add: 新增份量「{name}」
+    error:
+      empty: 必須設定份量，請點選以設定。
+      repeat: 產品已經有相同的份量了，不能重複選取。
+  amount:
+    label: 使用量
+  additionalPrice:
+    label: 額外售價
+    helper: 設為 0 則代表加量（減量）不加價。
+  additionalCost:
+    label: 額外成本
+    helper: 預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。

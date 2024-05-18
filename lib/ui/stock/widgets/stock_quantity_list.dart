@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/quantity.dart';
@@ -26,7 +26,7 @@ class StockQuantityList extends StatelessWidget {
         actionBuilder: (quantity) => [
           BottomSheetAction(
             key: const Key('btn.edit'),
-            title: const Text('編輯份量'),
+            title: Text(S.menuQuantityTitleUpdate),
             leading: const Icon(KIcons.edit),
             route: Routes.quantityModal,
             routePathParameters: {'id': quantity.id},
@@ -50,7 +50,7 @@ class StockQuantityList extends StatelessWidget {
     return ListTile(
       key: Key('quantities.${quantity.id}'),
       title: Text(quantity.name),
-      subtitle: Text(S.quantityMetaProportion(quantity.defaultProportion)),
+      subtitle: Text(S.stockQuantityMetaProportion(quantity.defaultProportion)),
       trailing: EntryMoreButton(onPressed: showActions),
       onLongPress: showActions,
       onTap: () => context.pushNamed(
@@ -62,8 +62,8 @@ class StockQuantityList extends StatelessWidget {
 
   Widget _warningContentBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
-    final moreCtx = S.quantityDialogDeletionContent(count);
+    final more = S.stockQuantityDialogDeletionContent(count);
 
-    return Text(S.dialogDeletionContent(quantity.name, moreCtx));
+    return Text(S.dialogDeletionContent(quantity.name, '$more\n\n'));
   }
 }

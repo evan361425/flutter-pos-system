@@ -17,7 +17,6 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
-import 'package:possystem/settings/currency_setting.dart';
 
 import '../../test_helpers/translator.dart';
 
@@ -105,23 +104,23 @@ void main() {
 
       final items = format<Product>(
         Formattable.menu,
-        '本菜單共有 3 個產品種類、4 個產品。\n'
+        'This menu has 3 categories, 4 products.\n'
         '\n'
-        '第1個種類叫做 A，共有 3 個產品。\n'
-        '第1個產品叫做 pA，其售價為 2 元，成本為 2 元，它沒有設定任何成份。\n'
-        '第2個產品叫做 pA2，其售價為 0 元，成本為 0 元，它的成份有 3 種：i1、i2、i5。'
-        '每份產品預設需要使用 2 個 i1，它還有 2 個不同份量：'
-        'q1（每份產品改成使用 2 個並調整產品售價 2 元和成本 2 元）、'
-        'q2（每份產品改成使用 5 個並調整產品售價 -5 元和成本 -5 元）；'
-        '每份產品預設需要使用 0 個 i2，無法做份量調整；'
-        '每份產品預設需要使用 0 個 i5，它還有 1 個不同份量：'
-        'q1（每份產品改成使用 1 個並調整產品售價 1 元和成本 1 元）。\n'
-        '第3個產品叫做 pA3，其售價為 0 元，成本為 0 元，它沒有設定任何成份。\n'
+        'Category 1 is called A and it has 3 products.\n'
+        'Product 1 is called pA, with price at \$2, cost \$2 and it has no ingredient.\n'
+        'Product 2 is called pA2, with price at \$0, cost \$0 and it has 3 ingredients: i1、i2、i5.\n'
+        'Each product requires 2 of i1 and it also has 2 different quantities ：'
+        'q1（quantity 2 with additional price \$2 and cost \$2）、'
+        'q2（quantity 5 with additional price \$-5 and cost \$-5）；'
+        '0 of i2 and it is unable to adjust quantity；'
+        '0 of i5 and it also has one different quantity ：'
+        'q1（quantity 1 with additional price \$1 and cost \$1）.\n'
+        'Product 3 is called pA3, with price at \$0, cost \$0 and it has no ingredient.\n'
         '\n'
-        '第2個種類叫做 B，沒有設定產品。\n'
+        'Category 2 is called B and it has no product.\n'
         '\n'
-        '第3個種類叫做 C，共有 1 個產品。\n'
-        '第1個產品叫做 pA4，其售價為 0 元，成本為 0 元，它沒有設定任何成份。',
+        'Category 3 is called C and it has one product.\n'
+        'Product 1 is called pA4, with price at \$0, cost \$0 and it has no ingredient.',
       );
 
       expect(
@@ -153,11 +152,11 @@ void main() {
 
       final items = format<Ingredient>(
         Formattable.stock,
-        '本庫存共有 3 種成份\n'
+        'The inventory has 3 ingredients in total.\n'
         '\n'
-        '第1個成份叫做 i1，庫存現有 0.0 個\n'
-        '第2個成份叫做 i2，庫存現有 1.0 個\n'
-        '第3個成份叫做 i3，庫存現有 1.0 個，最大量有 2.0 個。',
+        'Ingredient at 1 is called i1, with 0 amount.\n'
+        'Ingredient at 2 is called i2, with 1 amount.\n'
+        'Ingredient at 3 is called i3, with 1 amount, with a maximum of 2 pieces.',
       );
 
       expect(
@@ -177,12 +176,12 @@ void main() {
 
       final items = format<Quantity>(
         Formattable.quantities,
-        '共設定 4 種份量\n'
+        '4 quantities have been set.\n'
         '\n'
-        '第1種份量叫做 q1，預設會讓成分的份量乘以 1 倍。\n'
-        '第2種份量叫做 q2，預設會讓成分的份量乘以 2 倍。\n'
-        '第3種份量叫做 q3，預設會讓成分的份量乘以 0 倍。\n'
-        '第4種份量叫做 q4，預設會讓成分的份量乘以 0.5 倍。',
+        'Quantity at 1 is called q1, which defaults to multiplying ingredient quantity by 1.\n'
+        'Quantity at 2 is called q2, which defaults to multiplying ingredient quantity by 2.\n'
+        'Quantity at 3 is called q3, which defaults to multiplying ingredient quantity by 0.\n'
+        'Quantity at 4 is called q4, which defaults to multiplying ingredient quantity by 0.5.',
       );
 
       expect(
@@ -213,11 +212,10 @@ void main() {
 
       final items = format<Replenishment>(
         Formattable.replenisher,
-        '共設定 2 種補貨方式\n'
+        '2 replenishment methods have been set.\n'
         '\n'
-        '第1種方式叫做 r1，它並不會調整庫存。\n'
-        '\n'
-        '第2種方式叫做 r2，它會調整3種成份的庫存：i1（20 個）、i2（-30 個）、i3（0.5 個）。',
+        'Replenishment method at 1 is called r1, it will not adjust inventory.\n'
+        'Replenishment method at 2 is called r2, it will adjust the inventory of 3 ingredients：i1（20）、i2（-30）、i3（0.5）.',
       );
 
       expect(
@@ -229,7 +227,6 @@ void main() {
     });
 
     test('order attributes', () {
-      CurrencySetting().isInt = true;
       final attrs = OrderAttributes();
       attrs.replaceItems({
         'c1': OrderAttribute(
@@ -282,15 +279,11 @@ void main() {
 
       final items = format<OrderAttribute>(
         Formattable.orderAttr,
-        '共設定 3 種顧客屬性\n'
+        '3 customer attributes have been set.\n'
         '\n'
-        '第1種屬性叫做 c1，屬於 變價 類型。它有 3 個選項：'
-        'o1、o2（預設）、o3（選項的值為 20）\n'
-        '\n'
-        '第2種屬性叫做 c2，屬於 一般 類型。它並沒有設定選項。\n'
-        '\n'
-        '第3種屬性叫做 c3，屬於 折扣 類型。它有 2 個選項：'
-        'o1（預設，選項的值為 20）、o2（選項的值為 0）',
+        'Attribute at 1 is called c1, belongs to Price Change type, it has 3 options：o1、o2（default）、o3（option value is 20）.\n'
+        'Attribute at 2 is called c2, belongs to Normal type, it has no options.\n'
+        'Attribute at 3 is called c3, belongs to Discount type, it has 2 options：o1（default，option value is 20）、o2（option value is 0）.',
       );
 
       expect(

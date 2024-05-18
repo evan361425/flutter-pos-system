@@ -20,7 +20,8 @@ test: ## Run tests
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage
 	flutter test --coverage
-	genhtml coverage/lcov.info -o coverage/html
+	@genhtml coverage/lcov.info -o coverage/html
+	@open coverage/html/index.html
 
 ##@ Build
 .PHONY: bump
@@ -65,3 +66,14 @@ bump-beta: ## Bump beta version
 .PHONY: mock
 mock: ## Mock dependencies
 	flutter pub run build_runner build --delete-conflicting-outputs
+
+.PHONY: build-l10n
+build-l10n: ## Build localization
+	dart run arb_glue
+	flutter pub get --no-example
+
+.PHONY: clean-version
+clean-version: ## Clean beta and rc version
+	@git pull
+	@git tag -l | grep -E 'beta|rc' | xargs git push --delete origin
+	@git tag -l | grep -E 'beta|rc' | xargs git tag -d

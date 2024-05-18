@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
 
@@ -51,8 +51,8 @@ class OrderObject extends _Object {
     required this.createdAt,
   });
 
-  /// Revenue, [price] minus [cost].
-  num get revenue => price - cost;
+  /// Profit, [price] minus [cost].
+  num get profit => price - cost;
 
   /// Price that cause by order attributes, [price] minus [productsPrice].
   num get attributesPrice => price - productsPrice;
@@ -101,7 +101,7 @@ class OrderObject extends _Object {
       'paid': paid,
       'price': price,
       'cost': cost,
-      'revenue': revenue,
+      'revenue': profit,
       'productsPrice': productsPrice,
       'productsCount': productsCount,
       'attributesPrice': attributesPrice,

@@ -29,8 +29,8 @@ class SheetSelectorState extends State<SheetSelector> {
       value: selected,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
-        label: Text(S.transitGSSheetLabel(
-          S.transitType(widget.label),
+        label: Text(S.transitGSSheetNameLabel(
+          S.transitModelName(widget.label),
         )),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
@@ -39,7 +39,7 @@ class SheetSelectorState extends State<SheetSelector> {
         DropdownMenuItem<GoogleSheetProperties?>(
           value: null,
           child: Text(
-            '請先確認試算表',
+            S.stockReplenishmentNameHint,
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),

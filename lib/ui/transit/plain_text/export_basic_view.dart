@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
+import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/translator.dart';
 
 class ExportBasicView extends StatefulWidget {
@@ -29,7 +29,7 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
           for (final able in Formattable.values)
             Tab(
               key: Key('tab.${able.name}'),
-              text: S.transitType(able.name),
+              text: S.transitModelName(able.name),
             )
         ],
       ),
@@ -66,16 +66,13 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
         margin: const EdgeInsets.symmetric(horizontal: 16.0),
         child: ListTile(
           key: Key('export_btn.${able.name}'),
-          title: const Text('複製文字'),
+          title: Text(S.transitPTCopyBtn),
           subtitle: MetaBlock.withString(
             context,
             widget.exporter.formatter.getHeader(able),
           ),
           onTap: () => _copy(able),
-          trailing: const Icon(
-            Icons.copy_outlined,
-            semanticLabel: '複製文字',
-          ),
+          trailing: Icon(Icons.copy_outlined, semanticLabel: S.transitPTCopyBtn),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
@@ -137,6 +134,6 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
       widget.exporter.export(able),
       context,
       'pt_export_failed',
-    ).then((value) => showSnackBar(context, '複製成功'));
+    ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
   }
 }

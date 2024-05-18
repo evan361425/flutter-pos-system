@@ -17,7 +17,7 @@ class Validator {
           error = S.invalidNumberType(fieldName);
         }
       } else if (number < 0) {
-        error = S.invalidPositiveNumber(fieldName);
+        error = S.invalidNumberPositive(fieldName);
       } else if (maximum != null && maximum < number) {
         error = S.invalidNumberMaximum(fieldName, maximum);
       }
@@ -46,7 +46,7 @@ class Validator {
           error = S.invalidIntegerType(fieldName);
         }
       } else if (number < 0) {
-        error = S.invalidPositiveNumber(fieldName);
+        error = S.invalidNumberPositive(fieldName);
       } else if (maximum != null && maximum < number) {
         error = S.invalidNumberMaximum(fieldName, maximum);
       } else if (minimum != null && minimum > number) {
@@ -94,7 +94,7 @@ class Validator {
       String? error;
 
       if (value == null || value.isEmpty) {
-        error = S.invalidEmptyString(fieldName);
+        error = S.invalidStringEmpty(fieldName);
       } else if (value.characters.length > limit) {
         error = S.invalidStringMaximum(fieldName, limit);
       } else if (validator != null) {

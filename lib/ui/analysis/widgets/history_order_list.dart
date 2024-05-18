@@ -25,9 +25,9 @@ class HistoryOrderList extends StatelessWidget {
 
   Widget _buildOrder(BuildContext context, OrderObject order) {
     final subtitle = MetaBlock.withString(context, [
-      S.analysisOrderListItemMetaPaid(order.paid),
-      S.analysisOrderListItemMetaPrice(order.price),
-      S.analysisOrderListItemMetaIncome(order.revenue),
+      S.analysisHistoryOrderListMetaPaid(order.paid),
+      S.analysisHistoryOrderListMetaPrice(order.price),
+      S.analysisHistoryOrderListMetaProfit(order.profit),
     ]);
 
     return ListTile(

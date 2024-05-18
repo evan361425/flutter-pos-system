@@ -1,0 +1,119 @@
+appTitle: POS System
+act:
+  success:
+  - Successful!
+  - Action executed successfully and displayed on the Snackbar.
+  error:
+  - Unknown error occurred.
+  - Error message displayed on the Snackbar when an error occurs.
+  moreInfo:
+  - More
+  - Button on the Snackbar to show more details.
+singleChoice:
+- Select One
+- Reminder to the user that only one option can be selected at a time.
+multiChoices:
+- Select Multiple
+- Reminder to the user that multiple options can be selected.
+totalCount:
+- =0: No Items
+  =1: '{count} item'
+  other: '{count} items'
+- Total count displayed on the ListView.
+- count: {type: int, mode: plural, format: compactLong}
+searchCount:
+- Found {count} results
+- Total count displayed on the SearchScaffold.
+- count: {type: int, format: compact}
+dialog:
+  deletionTitle:
+  - Delete Confirmation
+  - Title displayed on the DeleteDialog.
+  deletionContent:
+  - |
+    Are you sure you want to delete "{name}"?
+
+    {more}This action cannot be undone!
+  - Content displayed on the DeleteDialog.
+  - name: {example: Veggie Sandwich}
+    more: {example: What other impacts deleting this item will have, description: More details about the side effects of deletion}
+image:
+  holder:
+    create: Tap to add image
+    update: Click to update image
+  btn:
+    crop: Crop
+  gallery:
+    title: Gallery
+    empty: Start importing your first image!
+    action:
+      create: Add Image
+      delete: Delete
+    snackbar:
+      deleteFailed: One or more images failed to delete.
+    selection:
+      title: Select Images
+      deleteConfirm:
+      - |-
+        Will delete {count} image(s) permanently.
+        After deletion, the connected product will not able to display the image.
+      - count: {type: int, format: compact}
+emptyBody:
+  title:
+  - Oops! It's empty here.
+  - Text displayed on EmptyBody, informing the user that there are no items yet. This is the default text.
+  action: Set Up Now
+btn:
+  navTo:
+  - View
+  - Button text to navigate to another screen in trailing.
+  signInWith:
+    google: Sign in with Google
+semantics:
+  percentileBar:
+  - Currently {percent} of total
+  - percent: {type: num, format: percentPattern}
+invalid:
+  integer:
+    type:
+    - "{field} must be an integer."
+    - Warning message when the input is not an integer.
+    - field:
+  number:
+    type:
+    - "{field} must be a number."
+    - Warning message when the input is not a number.
+    - field:
+    positive:
+    - "{field} cannot be negative."
+    - Warning message when the input is not positive.
+    - field:
+    maximum:
+    - "{field} cannot exceed {maximum}."
+    - Warning message when the input exceeds the maximum value.
+    - field:
+      maximum: {type: num, description: Maximum value, must be less than (and not equal to) this value: '', format: decimalPattern}
+    minimum:
+    - "{field} cannot be less than {minimum}."
+    - Warning message when the input is less than the minimum value.
+    - field:
+      minimum: {type: num, description: Minimum value, must be greater than (and not equal to) this value: '', format: decimalPattern}
+  string:
+    empty:
+    - "{field} cannot be empty."
+    - Warning message when no text is entered.
+    - field:
+    maximum:
+    - "{field} cannot exceed {maximum} characters."
+    - Warning message when the input exceeds the maximum character limit.
+    - field:
+      maximum: {type: int, description: Maximum number of characters}
+singleMonth:
+- Single Month
+- One of the units for calendar period conversion.
+singleWeek:
+- Single Week
+- One of the units for calendar period conversion.
+twoWeeks:
+- Two Weeks
+- One of the units for calendar period conversion.

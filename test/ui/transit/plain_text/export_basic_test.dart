@@ -8,8 +8,9 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/plain_text/views.dart' as pt;
 import 'package:possystem/ui/transit/transit_station.dart';
-import 'package:possystem/ui/transit/plain_text_widgets/views.dart' as pt;
 
 import '../../../mocks/mock_storage.dart';
 import '../../../test_helpers/translator.dart';
@@ -25,13 +26,11 @@ void main() {
       return const MaterialApp(
         home: TransitStation(
           exporter: PlainTextExporter(),
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.plainText,
         ),
       );
     }
-
-    const message = '共設定 1 種份量\n\n第1種份量叫做 q1，預設會讓成分的份量乘以 1 倍。';
 
     test('test key attribute exist', () {
       var i = 1;
@@ -51,7 +50,12 @@ void main() {
       await tester.pumpAndSettle();
 
       final copied = await Clipboard.getData('text/plain');
-      expect(copied?.text, equals(message));
+      expect(
+          copied?.text,
+          equals([
+            S.transitPTFormatModelQuantitiesHeader(1),
+            S.transitPTFormatModelQuantitiesQuantity('1', 'q1', '1'),
+          ].join('\n\n')));
     });
 
     setUpAll(() {

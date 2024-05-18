@@ -1,0 +1,142 @@
+$prefix: analysis
+tab: Stats
+history:
+  btn: Records
+  title: Order Records
+  _title:
+    $prefix: title
+    empty: No Order History Found
+  calendar:
+    tutorial:
+      title: Calendar
+      content: |-
+        Swipe up and down to adjust the time period, such as month or week.
+        Swipe left and right to adjust the date range.
+  export:
+    btn: Export
+    tutorial:
+      title: Export Orders Data
+      content: |-
+        Export orders externally for further analysis or backup.
+        You can export multi-day orders in the "Transit" page.
+  orderList:
+    meta:
+      price:
+      - 'Price: {price}'
+      - Price of specific orders in the order list.
+      - price: {type: num, format: compactCurrency, symbol: '$'}
+      paid:
+      - 'Paid: {paid}'
+      - Payment amount for specific orders in the order list.
+      - paid: {type: num, format: compactCurrency, symbol: '$'}
+      profit:
+      - 'Profit: {profit}'
+      - Net profit for specific orders in the order list.
+      - profit: {type: num, format: compactCurrency, symbol: '$'}
+  order:
+    title: Order Details
+    notFound: No relevant orders found
+    deleteDialog:
+    - |-
+      Are you sure you want to delete the order for {name}?
+      Cash register and inventory data cannot be recovered.
+      This action cannot be undone.
+    - name:
+goals:
+  title: Today's Summary
+  count:
+    title: Order Count
+    description: |-
+      The order count reflects the attractiveness of products to customers.
+      It represents the demand for your products in the market and helps you understand which products or time periods are most popular.
+      A high order count may indicate the success of your pricing strategy or marketing activities and is one of the indicators of business model effectiveness.
+      However, it's essential to note that simply pursuing a high order count may overlook profitability.
+  revenue:
+    title: Revenue
+    description: |-
+      Revenue represents the total sales amount and is an indicator of business scale.
+      High revenue may indicate that your products are popular and selling well, but revenue alone cannot reflect the sustainability and profitability of the business.
+      Sometimes, to increase revenue, companies may adopt strategies such as price reductions, which may affect profitability.
+  profit:
+    title: Profit
+    description: |-
+      Profit is the balance after deducting operating costs from operating income and is crucial for the company's ongoing operations.
+      Profit directly reflects operational efficiency and cost management capabilities.
+      Unlike revenue, profit considers the business expenses, including raw material costs, labor, rent, etc.
+      It's a more practical indicator that helps you evaluate the effectiveness and sustainability of operations.
+  cost:
+    title: Cost
+  achievedRate:
+  - |-
+    Profit Achievement
+    {rate}
+  - rate:
+chart:
+  title: Chart Analysis
+  _title:
+    $prefix: title
+    create: Create Chart
+    reorder: Reorder Charts
+  tutorial:
+    title: Chart Analysis
+    content: |-
+      With charts, you can visualize data changes more intuitively.
+      Start designing charts to track your sales performance now!
+  card:
+    emptyData: No Data
+    title:
+      update: Edit Chart
+  metricName:
+  - revenue: Revenue
+    cost: Cost
+    profit: Profit
+    count: Quantity
+  - name:
+  targetName:
+  - order: Order
+    catalog: Category
+    product: Product
+    ingredient: Ingredient
+    attribute: Attribute
+  - name:
+  range:
+    yesterday: Yesterday
+    today: Today
+    lastWeek: Last Week
+    thisWeek: This Week
+    last7Days: Last 7 Days
+    lastMonth: Last Month
+    thisMonth: This Month
+    last30Days: Last 30 Days
+    tabName:
+    - day: Date
+      week: Week
+      month: Month
+      custom: Custom
+    - name:
+  modal:
+    name:
+      label: Chart Name
+      hint: 'For example: Daily Revenue'
+    ignoreEmpty:
+      label: Ignore Empty Data
+      helper: Do not display if a product or metric has no data for that period.
+    divider: Data Settings
+    type:
+      label: Chart Type
+      name:
+      - cartesian: Time Series Chart
+        circular: Pie Chart
+      - name:
+    metric:
+      label: Metrics to View
+      helper: Choose different types of metrics based on your objectives.
+    target:
+      label: Item Category
+      helper: Select the information to analyze in the chart.
+      error:
+        empty: Please select an item category
+    targetItem:
+      label: Item Selection
+      helper: Choose the items you want to observe, such as the quantity of a specific product within a certain period.
+      selectAll: Select All

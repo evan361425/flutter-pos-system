@@ -1,0 +1,69 @@
+$prefix: setting
+tab: Settings
+version:
+- 'Version: {version}'
+- Display the app version
+- version:
+welcome:
+- Hi, {name}
+- Display user's name
+- name:
+logoutBtn: Log Out
+elf:
+  title: Suggestions
+  description: Provide feedback using Google Forms
+  content: |-
+    Feel like something's missing here?
+    Feel free to [give suggestions](https://forms.gle/s8V5SXuqhA1u3zmt7).
+    You can also check out [upcoming features](https://github.com/evan361425/flutter-pos-system/milestones).
+feature:
+  title: Other Settings
+  description: Appearance, Language, Tips
+theme:
+  title: Theme
+  name:
+  - dark: Dark Mode
+    light: Light Mode
+    system: Follow System
+  - Appearance of the app
+  - name:
+language:
+  title: Language
+orderOutlook:
+  title: Ordering Outlook
+  name:
+  - slidingPanel: Sliding Panel
+    singleView: Classic Mode
+  - Appearance during ordering
+  - name:
+  tip:
+  - slidingPanel: Panel slides up during ordering, suitable for small-screen phones
+    singleView: All info displayed on a single screen, suitable for large-screen tablets
+  - name:
+checkoutWarning:
+  title: Cash Registry Warnings
+  name:
+  - showAll: Show All
+    onlyNotEnough: Show Only When Not Enough
+    hideAll: Hide All
+  - Whether to display cash registry warnings
+  - name:
+  tip:
+  - showAll: |-
+      Show warning when using smaller denominations to give change.
+      For example, if $5 is not enough, start using 5 $1 bills for change.
+    onlyNotEnough: Show warning when cash registry not enough money.
+    hideAll: Won't display any warnings during ordering.
+  - name:
+orderProductCount:
+  title: Products per Row during Ordering
+  hint: Set to "0" to display only text during ordering
+  minLabel: Text Only
+orderAwakening:
+  title:
+  - Keep Screen On During Ordering
+  - Keep the screen on during ordering, even when idle
+  description: If disabled, the screen will turn off based on system settings during ordering.
+report:
+  title: Collect Error Messages and Events
+  description: Send error messages when the app encounters issues, helping the app improve

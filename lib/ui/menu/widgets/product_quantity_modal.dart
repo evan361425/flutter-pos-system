@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -41,7 +41,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   String quantityId = '';
 
   @override
-  String get title => widget.quantity?.name ?? S.menuQuantityCreate;
+  String get title => widget.quantity?.name ?? S.menuQuantityTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -187,10 +187,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
 
   String? _validateQuantity(String? name) {
     if (quantityId.isEmpty) {
-      return S.menuQuantitySearchEmptyError;
+      return S.menuQuantitySearchErrorEmpty;
     }
     if (widget.quantity?.quantity.id != quantityId && widget.ingredient.hasQuantity(quantityId)) {
-      return S.menuQuantityRepeatError;
+      return S.menuQuantitySearchErrorRepeat;
     }
 
     return null;

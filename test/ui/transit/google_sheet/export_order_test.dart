@@ -6,14 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/google_sheet/order_formatter.dart';
 import 'package:possystem/ui/transit/google_sheet/order_setting_page.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
-import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_auth.dart';
 import '../../../mocks/mock_cache.dart';
@@ -31,7 +28,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.order,
+          catalog: TransitCatalog.order,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -60,33 +57,25 @@ void main() {
       OrderSetter.setMetrics([], countingAll: true);
       OrderSetter.setOrders([]);
 
-      final lang = LanguageSetting();
-      final settings = SettingsProvider([lang]);
-      lang.value = const Locale('en', 'US');
       final init = DateTimeRange(
         start: DateTime(2023, DateTime.june, 10),
         end: DateTime(2023, DateTime.june, 11),
       );
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: settings),
+      await tester.pumpWidget(MaterialApp(
+        locale: LanguageSetting.defaultValue.locale,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          DefaultWidgetsLocalizations.delegate,
+          DefaultMaterialLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
         ],
-        child: MaterialApp(
-          locale: lang.value,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            DefaultWidgetsLocalizations.delegate,
-            DefaultMaterialLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [lang.value],
-          home: TransitStation(
-            type: TransitType.order,
-            method: TransitMethod.googleSheet,
-            range: init,
-            exporter: GoogleSheetExporter(
-              scopes: gsExporterScopes,
-            ),
+        supportedLocales: [LanguageSetting.defaultValue.locale],
+        home: TransitStation(
+          catalog: TransitCatalog.order,
+          method: TransitMethod.googleSheet,
+          range: init,
+          exporter: GoogleSheetExporter(
+            scopes: gsExporterScopes,
           ),
         ),
       ));
@@ -107,7 +96,7 @@ void main() {
       );
 
       expect(
-        find.text('${expected.format(DateFormat.MMMd('zh'))} 的訂單'),
+        find.text(S.transitOrderMetaRange(expected.format('en'))),
         findsOneWidget,
       );
     });
@@ -131,7 +120,7 @@ void main() {
                 return gs.Sheet(
                   properties: gs.SheetProperties(
                     sheetId: e.index,
-                    title: '$today ${S.transitType(e.name)}',
+                    title: '$today ${S.transitModelName(e.name)}',
                   ),
                 );
               }).toList(),
@@ -144,12 +133,14 @@ void main() {
 
         await tester.pumpWidget(buildApp(sheetsApi));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('建立匯出'));
+        await tester.tap(find.text(S.transitGSSpreadsheetExportEmptyLabel));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-        final title = S.transitOrderTitle;
+        final title = S.transitGSSpreadsheetOrderDefaultName;
         verify(cache.set(cacheKey, 'abc:true:$title'));
 
         final expected = [
@@ -158,16 +149,16 @@ void main() {
             ...OrderFormatter.formatOrder(order),
           ],
           [
-            OrderFormatter.orderSetAttrHeaders,
-            ...OrderFormatter.formatOrderSetAttr(order),
+            OrderFormatter.orderDetailsAttrHeaders,
+            ...OrderFormatter.formatOrderDetailsAttr(order),
           ],
           [
-            OrderFormatter.orderProductHeaders,
-            ...OrderFormatter.formatOrderProduct(order),
+            OrderFormatter.orderDetailsProductHeaders,
+            ...OrderFormatter.formatOrderDetailsProduct(order),
           ],
           [
-            OrderFormatter.orderIngredientHeaders,
-            ...OrderFormatter.formatOrderIngredient(order),
+            OrderFormatter.orderDetailsIngredientHeaders,
+            ...OrderFormatter.formatOrderDetailsIngredient(order),
           ],
         ];
         verify(sheetsApi.spreadsheets.values.batchUpdate(
@@ -203,9 +194,9 @@ void main() {
         // exist spreadsheet
         when(cache.get(cacheKey)).thenReturn('id:true:name');
         when(cache.get('$cacheKey.order')).thenReturn('o title');
-        when(cache.get('$cacheKey.orderSetAttr')).thenReturn('os title');
-        when(cache.get('$cacheKey.orderProduct')).thenReturn('op title');
-        when(cache.get('$cacheKey.orderIngredient')).thenReturn('oi title');
+        when(cache.get('$cacheKey.orderDetailsAttr')).thenReturn('os title');
+        when(cache.get('$cacheKey.orderDetailsProduct')).thenReturn('op title');
+        when(cache.get('$cacheKey.orderDetailsIngredient')).thenReturn('oi title');
         when(cache.get('$cacheKey.order.required')).thenReturn(false);
         when(sheetsApi.spreadsheets.get(
           any,
@@ -247,15 +238,15 @@ void main() {
         verify(cache.set('$cacheKey.order.required', false));
 
         // export
-        await tester.tap(find.text('指定匯出'));
+        await tester.tap(find.text(S.transitGSSpreadsheetExportExistLabel));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
 
         final expected = {
-          'os title': OrderFormatter.formatOrderSetAttr(order),
-          'op title': OrderFormatter.formatOrderProduct(order),
-          'oi title': OrderFormatter.formatOrderIngredient(order),
+          'os title': OrderFormatter.formatOrderDetailsAttr(order),
+          'op title': OrderFormatter.formatOrderDetailsProduct(order),
+          'oi title': OrderFormatter.formatOrderDetailsIngredient(order),
         };
         for (final e in expected.entries) {
           verify(sheetsApi.spreadsheets.values.append(
@@ -283,7 +274,8 @@ void main() {
       });
     });
 
-    setUp(() {
+    setUp(() async {
+      await cache.reset();
       when(cache.get(any)).thenReturn(null);
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(MockUser()));
     });
@@ -293,8 +285,6 @@ void main() {
       initializeTranslator();
       initializeDatabase();
       initializeAuth();
-      // init dependencies
-      CurrencySetting().isInt = true;
     });
   });
 }

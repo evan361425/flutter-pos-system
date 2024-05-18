@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart' show User, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
+import 'package:possystem/translator.dart';
 
 const _googleBlue = Color(0xff4285f4);
 const _googleWhite = Color(0xffffffff);
@@ -19,7 +19,7 @@ class SignInButton extends StatelessWidget {
     super.key,
     this.signedInWidget,
     this.signedInWidgetBuilder,
-  });
+  }) : assert(signedInWidget != null || signedInWidgetBuilder != null);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class SignInButton extends StatelessWidget {
       builder: (context, snapshot) {
         final user = snapshot.data;
         // User is not signed in
-        if (user == null && !isLocalTest) {
+        if (user == null) {
           return const _GoogleSignInButton(key: Key('google_sign_in'));
         }
 
@@ -99,7 +99,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                           ),
                           Expanded(
                             child: Text(
-                              '使用 Google 登入',
+                              S.btnSignInWithGoogle,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 height: 1.1,
@@ -119,7 +119,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(borderRadius),
-                    onTap: signIn,
+                    onTap: isLoading ? null : signIn,
                   ),
                 ),
               ),
@@ -152,20 +152,18 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
   }
 
   Future<void> signIn() async {
-    if (!isLoading) {
-      setState(() => isLoading = true);
+    setState(() => isLoading = true);
 
-      bool success = false;
-      try {
-        success = await Auth.instance.signIn();
-      } catch (e, stack) {
-        Log.err(e, 'auth_signin', stack);
-        setState(() {
-          error = e is FirebaseAuthException ? e.message : e.toString();
-        });
-      }
-      // if success this widget will disposed and should not fire setState
-      if (!success) setState(() => isLoading = false);
+    bool success = false;
+    try {
+      success = await Auth.instance.signIn();
+    } catch (e, stack) {
+      Log.err(e, 'auth_signin', stack);
+      setState(() {
+        error = e is FirebaseAuthException ? e.message : e.toString();
+      });
+    } finally {
+      if (mounted && !success) setState(() => isLoading = false);
     }
   }
 }

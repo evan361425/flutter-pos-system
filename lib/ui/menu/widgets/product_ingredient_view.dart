@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientView extends StatelessWidget {
@@ -30,7 +31,7 @@ class ProductIngredientView extends StatelessWidget {
         ListTile(
           key: Key('$key.add'),
           leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.menuQuantityCreate),
+          title: Text(S.menuQuantityTitleCreate),
           onTap: () => context.pushNamed(
             Routes.menuProductDetails,
             pathParameters: {'id': ingredient.product.id},
@@ -52,7 +53,7 @@ class ProductIngredientView extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(S.menuIngredientUpdate),
+          title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductDetails,
           routePathParameters: {'id': ingredient.product.id},
@@ -81,8 +82,8 @@ class _QuantityTile extends StatelessWidget {
         title: Text(quantity.name),
         subtitle: MetaBlock.withString(context, <String>[
           S.menuQuantityMetaAmount(quantity.amount),
-          S.menuQuantityMetaPrice(quantity.additionalPrice),
-          S.menuQuantityMetaCost(quantity.additionalCost),
+          S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
+          S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
         ]),
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,

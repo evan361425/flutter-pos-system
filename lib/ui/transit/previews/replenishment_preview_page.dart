@@ -22,7 +22,7 @@ class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
         name: item.name,
         status: item.statusName,
       ),
-      subtitle: Text(S.stockReplenishmentSubtitle(item.data.length)),
+      subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       children: _getData(context, item).toList(),
     );

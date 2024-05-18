@@ -178,9 +178,9 @@ class Cashier extends ChangeNotifier {
 
   /// Customer [given] money for the [price] and update the cashier
   ///
-  /// Example:
-  /// 給一百元來支付六十五元的商品，並更新收銀機的錢
-  /// 以此為例則是增加一張百元鈔，減少三十五塊的現金來找錢
+  /// For example:
+  /// given 100 for 65, then the cashier will
+  /// have add 1 100-dollar bill but minus 3 10-dollar and 1 5-dollar bill
   Future<CashierUpdateStatus> paid(num given, num price) async {
     final amounts = <int, int>{};
 
@@ -224,7 +224,7 @@ class Cashier extends ChangeNotifier {
     return CashierUpdateStatus.notEnough;
   }
 
-  /// When [Currency] changed, it must be fired
+  /// When [CurrencySetting] changed, it must be fired
   Future<void> reset() async {
     _recordName = CurrencySetting.instance.recordName;
     final record = await Storage.instance.get(Stores.cashier, _recordName);
@@ -375,15 +375,19 @@ class CashierDiffItem {
   num get unit => currentData.unit;
 }
 
-/// 當收銀機在更新錢的時，有任何狀況會回這個
+/// When the cashier is updating the money will return this
 enum CashierUpdateStatus {
-  /// 當收銀機沒有足夠的錢去找錢，會回應這個
+  /// When the cashier does not have enough money to change
   notEnough,
 
-  /// 當收銀機嘗試用較小的額度去換錢時，會回應這個
+  /// When the cashier is using smaller units to change
   ///
-  /// 例如，找錢 35 時，只有兩個 10 元，於是就使用 3 個 5元。
-  /// 若完全不夠換會使用 [CashierUpdateStatus.notEnough]
+  /// For example, change 35 with 2 10-dollar bills and 3 5-dollar bills
+  ///
+  /// If the cashier does not have enough bills to change,
+  /// it will return [CashierUpdateStatus.usingSmall]
   usingSmall,
+
+  /// When the cashier has enough money to change
   ok
 }

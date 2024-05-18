@@ -25,7 +25,7 @@ class StockIngredientList extends StatelessWidget {
       children: [
         Center(
           child: HintText([
-            updatedAt == null ? S.stockHasNotReplenishEver : S.stockUpdatedAt(updatedAt),
+            updatedAt == null ? S.stockReplenishmentNever : S.stockUpdatedAt(updatedAt),
             S.totalCount(ingredients.length),
           ].join(MetaBlock.string)),
         ),
@@ -64,7 +64,7 @@ class _IngredientTile extends StatelessWidget {
       onTap: () => editAmount(context),
       trailing: IconButton(
         key: Key('stock.${ingredient.id}.edit'),
-        tooltip: '編輯成分',
+        tooltip: S.stockIngredientTitleUpdate,
         onPressed: () => editIngredient(context),
         icon: const Icon(KIcons.edit),
       ),
@@ -85,17 +85,17 @@ class _IngredientTile extends StatelessWidget {
     final result = await BottomSheetActions.withDelete<_Actions>(
       context,
       deleteValue: _Actions.delete,
-      warningContent: Text(S.dialogDeletionContent(ingredient.name, more)),
+      warningContent: Text(S.dialogDeletionContent(ingredient.name, '$more\n\n')),
       deleteCallback: delete,
       actions: [
-        const BottomSheetAction(
-          title: Text('編輯庫存'),
-          leading: Icon(Icons.edit_square),
+        BottomSheetAction(
+          title: Text(S.stockIngredientTitleUpdateAmount),
+          leading: const Icon(Icons.edit_square),
           returnValue: _Actions.edit,
         ),
         BottomSheetAction(
           key: const Key('btn.edit'),
-          title: const Text('編輯成分'),
+          title: Text(S.stockIngredientTitleUpdate),
           leading: const Icon(KIcons.edit),
           route: Routes.ingredientModal,
           routePathParameters: {'id': ingredient.id},
@@ -122,7 +122,7 @@ class _IngredientTile extends StatelessWidget {
         max: ingredient.maxAmount,
         decoration: InputDecoration(
           label: Text(S.stockIngredientAmountLabel),
-          helperText: '若沒有設定最大庫存量，增加庫存會重設最大值。',
+          helperText: S.stockIngredientAmountShortHelper,
           helperMaxLines: 3,
         ),
         validator: Validator.positiveNumber(S.stockIngredientAmountLabel),

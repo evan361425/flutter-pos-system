@@ -147,7 +147,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text(S.menuIngredientSearchEmptyError), findsOneWidget);
+        expect(find.text(S.menuIngredientSearchErrorEmpty), findsOneWidget);
 
         // add new ingredient
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
@@ -246,7 +246,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text(S.menuIngredientRepeatError), findsOneWidget);
+        expect(find.text(S.menuIngredientSearchErrorRepeat), findsOneWidget);
 
         // search for ingredient3
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
@@ -345,7 +345,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text(S.menuQuantitySearchEmptyError), findsOneWidget);
+        expect(find.text(S.menuQuantitySearchErrorEmpty), findsOneWidget);
 
         // add new quantity
         await tester.tap(find.byKey(const Key('product_quantity.search')));
@@ -426,7 +426,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // error message
-        expect(find.text(S.menuQuantityRepeatError), findsOneWidget);
+        expect(find.text(S.menuQuantitySearchErrorRepeat), findsOneWidget);
 
         // search for quantity3
         await tester.tap(find.byKey(const Key('product_quantity.search')));

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
-import 'package:possystem/ui/analysis/widgets/chart_order_modal.dart';
+import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
 import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
 
@@ -28,7 +28,7 @@ import 'ui/menu/widgets/product_ingredient_modal.dart';
 import 'ui/menu/widgets/product_modal.dart';
 import 'ui/menu/widgets/product_quantity_modal.dart';
 import 'ui/menu/widgets/product_reorder.dart';
-import 'ui/order/cashier/order_details_page.dart';
+import 'ui/order/order_checkout_page.dart';
 import 'ui/order/order_page.dart';
 import 'ui/order_attr/order_attribute_page.dart';
 import 'ui/order_attr/widgets/order_attribute_modal.dart';
@@ -78,6 +78,8 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 class Routes {
   static const base = '/pos';
 
+  static getRoute(String path) => 'https://evan361425.github.io$base/$path';
+
   static final home = GoRoute(
     name: 'home',
     path: base,
@@ -119,12 +121,17 @@ class Routes {
       ),
     ),
     GoRoute(
-      name: chartOrderModal,
+      name: chartNew,
+      path: 'chart/new',
+      builder: (ctx, state) => const ChartModal(),
+    ),
+    GoRoute(
+      name: chartModal,
       path: 'chart/o/:id/modal',
       builder: (ctx, state) {
-        final id = state.pathParameters['id'] ?? '0';
+        final id = state.pathParameters['id']!;
         final chart = Analysis.instance.getItem(id);
-        return ChartOrderModal(chart: chart);
+        return ChartModal(chart: chart);
       },
     ),
     GoRoute(
@@ -157,15 +164,15 @@ class Routes {
               TransitMethod.plainText,
             );
             final type = _findEnum(
-              TransitType.values,
+              TransitCatalog.values,
               state.pathParameters['type'],
-              TransitType.basic,
+              TransitCatalog.model,
             );
             final range = _parseRange(state.uri.queryParameters['range']);
 
             return TransitStation(
               method: method,
-              type: type,
+              catalog: type,
               range: range,
             );
           },
@@ -185,7 +192,18 @@ class Routes {
     GoRoute(
       name: features,
       path: 'features',
-      builder: (ctx, state) => const FeaturesPage(),
+      builder: (ctx, state) => FeaturesPage(focus: state.uri.queryParameters['f']),
+      routes: [
+        GoRoute(
+          name: featuresChoices,
+          path: ':feature',
+          builder: (ctx, state) {
+            final f = state.pathParameters['feature'];
+            final feature = Feature.values.firstWhereOrNull((e) => e.name == f) ?? Feature.theme;
+            return ItemListScaffold(feature: feature);
+          },
+        ),
+      ],
     ),
   ];
 
@@ -445,7 +463,8 @@ class Routes {
 
   static const order = '/order';
   static const orderDetails = '/order/details';
-  static const chartOrderModal = '/chart/order/modal';
+  static const chartNew = '/chart/order/new';
+  static const chartModal = '/chart/order/modal';
   static const chartReorder = '/chart/reorder';
 
   static const transit = '/transit';
@@ -454,4 +473,5 @@ class Routes {
   static const featureRequest = '/feature_request';
   static const imageGallery = '/image_gallery';
   static const features = '/features';
+  static const featuresChoices = '/features/choices';
 }

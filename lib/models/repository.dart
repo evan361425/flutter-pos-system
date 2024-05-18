@@ -21,7 +21,9 @@ mixin Repository<T extends Model> on ChangeNotifier {
 
   Iterable<T> get stagedItems => _stagedItems.values;
 
-  /// 捨棄那些暫存的資料
+  /// Abort the data not saved in file system
+  ///
+  /// This is used to import/export data.
   void abortStaged() {
     _stagedItems.clear();
   }
@@ -48,7 +50,12 @@ mixin Repository<T extends Model> on ChangeNotifier {
     _stagedItems[item.id] = item;
   }
 
-  /// 提交那些暫存的資料
+  /// Commit the staged data to the file system
+  ///
+  /// [save] whether to save the data to the file system
+  /// [reset] whether to clear the original data and use staged data to replace it
+  ///
+  /// It is use for import/export data
   Future<void> commitStaged({bool save = true, bool reset = true}) async {
     if (reset) {
       _items.clear();

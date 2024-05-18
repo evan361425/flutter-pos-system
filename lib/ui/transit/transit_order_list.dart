@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/linkify.dart';
@@ -36,7 +37,8 @@ class TransitOrderList extends StatelessWidget {
     );
   }
 
-  /// 因為匯出時過大的資訊量會導致服務崩潰，所以先盡可能的計算大小。
+  /// Since exporting too much data will cause the service to crash,
+  /// calculate the size as much as possible first.
   Widget _buildMemoryInfo(BuildContext context, OrderMetrics metrics) {
     final size = memoryPredictor(metrics);
     final level = size < 500000 // 500KB
@@ -55,7 +57,7 @@ class TransitOrderList extends StatelessWidget {
       return IconButton(
         icon: const Icon(Icons.check_outlined),
         iconSize: 16.0,
-        tooltip: '容量剛好',
+        tooltip: S.transitOrderCapacityOk,
         style: FilledButton.styleFrom(
           backgroundColor: Colors.green[800],
           foregroundColor: Colors.white,
@@ -68,7 +70,7 @@ class TransitOrderList extends StatelessWidget {
       return IconButton(
         icon: const Icon(Icons.warning_amber_outlined),
         iconSize: 16.0,
-        tooltip: '容量警告',
+        tooltip: S.transitOrderCapacityWarn,
         style: FilledButton.styleFrom(
           backgroundColor: Colors.yellow,
           foregroundColor: Colors.black,
@@ -80,7 +82,7 @@ class TransitOrderList extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.dangerous_outlined),
       iconSize: 16.0,
-      tooltip: '容量危險',
+      tooltip: S.transitOrderCapacityDanger,
       style: FilledButton.styleFrom(
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
@@ -95,11 +97,11 @@ class TransitOrderList extends StatelessWidget {
         padding: const EdgeInsets.only(top: 4.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
       ),
-      title: Text(DateFormat('M月d日 HH:mm:ss').format(order.createdAt)),
-      subtitle: Text([
-        '${order.productsCount} 份餐點',
-        '共 ${order.price.toCurrency()} 元',
-      ].join(MetaBlock.string)),
+      title: Text(S.transitOrderItemTitle(order.createdAt)),
+      subtitle: MetaBlock.withString(context, [
+        S.transitOrderItemMetaProductCount(order.productsCount),
+        S.transitOrderItemMetaPrice(order.price.toCurrency()),
+      ]),
       trailing: const Icon(Icons.expand_outlined),
       onTap: () async {
         final detailedOrder = await Seller.instance.getOrder(order.id!);
@@ -107,7 +109,7 @@ class TransitOrderList extends StatelessWidget {
           await showDialog(
             context: context,
             builder: (context) {
-              return SimpleDialog(title: const Text('訂單細節'), children: [
+              return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: formatOrder(detailedOrder),
@@ -124,7 +126,7 @@ class TransitOrderList extends StatelessWidget {
     const style = TextStyle(fontWeight: FontWeight.bold);
     return SimpleDialog(children: [
       Column(children: [
-        Text('預估容量為：${getMemoryWithUnit(size)}'),
+        Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
         const SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -155,7 +157,7 @@ class TransitOrderList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Linkify.fromString([
-            '過高的容量可能會讓執行錯誤，建議分次執行，不要一次匯出太多筆。',
+            S.transitOrderCapacityContent,
             if (warning != null) '\n$warning',
           ].join()),
         )

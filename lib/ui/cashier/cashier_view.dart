@@ -28,44 +28,50 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
 
     return TutorialWrapper(
       tab: tab,
-      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+      child: ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Tutorial(
-            id: 'cashier.default',
-            index: 2,
-            title: S.orderCashierDefaultTutorialTitle,
-            message: S.orderCashierDefaultTutorialMessage,
-            child: RouteCircularButton(
-              key: const Key('cashier.defaulter'),
-              onTap: handleSetDefault,
-              icon: Icons.upload_sharp,
-              text: S.orderCashierDefaultButton,
+          Expanded(
+            child: Tutorial(
+              id: 'cashier.default',
+              index: 2,
+              title: S.cashierToDefaultTutorialTitle,
+              message: S.cashierToDefaultTutorialContent,
+              child: RouteCircularButton(
+                key: const Key('cashier.defaulter'),
+                onTap: handleSetDefault,
+                icon: Icons.upload_sharp,
+                text: S.cashierToDefaultTitle,
+              ),
             ),
           ),
-          Tutorial(
-            index: 1,
-            id: 'cashier.change',
-            title: S.orderCashierChangeTutorialTitle,
-            message: S.orderCashierChangeTutorialMessage,
-            child: RouteCircularButton(
-              key: const Key('cashier.changer'),
-              route: Routes.cashierChanger,
-              icon: Icons.sync_alt_sharp,
-              text: S.orderCashierChangeButton,
-              popTrueShowSuccess: true,
+          Expanded(
+            child: Tutorial(
+              index: 1,
+              id: 'cashier.change',
+              title: S.cashierChangerTutorialTitle,
+              message: S.cashierChangerTutorialContent,
+              child: RouteCircularButton(
+                key: const Key('cashier.changer'),
+                route: Routes.cashierChanger,
+                icon: Icons.sync_alt_sharp,
+                text: S.cashierChangerTitle,
+                popTrueShowSuccess: true,
+              ),
             ),
           ),
-          Tutorial(
-            index: 0,
-            id: 'cashier.surplus',
-            title: S.orderCashierSurplusTutorialTitle,
-            message: S.orderCashierSurplusTutorialMessage,
-            child: RouteCircularButton(
-              key: const Key('cashier.surplus'),
-              icon: Icons.coffee_sharp,
-              text: S.orderCashierSurplusButton,
-              popTrueShowSuccess: true,
-              onTap: handleSurplus,
+          Expanded(
+            child: Tutorial(
+              index: 0,
+              id: 'cashier.surplus',
+              title: S.cashierSurplusTutorialTitle,
+              message: S.cashierSurplusTutorialContent,
+              child: RouteCircularButton(
+                key: const Key('cashier.surplus'),
+                icon: Icons.coffee_sharp,
+                text: S.cashierSurplusTitle,
+                popTrueShowSuccess: true,
+                onTap: handleSurplus,
+              ),
             ),
           ),
         ]),
@@ -88,8 +94,8 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
     if (!Cashier.instance.defaultNotSet) {
       final result = await ConfirmDialog.show(
         context,
-        title: '調整收銀臺預設？',
-        content: '此動作將會覆蓋掉先前的設定。',
+        title: S.cashierToDefaultDialogTitle,
+        content: S.cashierToDefaultDialogContent,
       );
 
       if (!result) {
@@ -106,7 +112,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
 
   void handleSurplus() async {
     if (Cashier.instance.defaultNotSet) {
-      return showSnackBar(context, '尚未設定，請點選右上角「設為預設」');
+      return showSnackBar(context, S.cashierSurplusErrorEmptyDefault);
     }
 
     final result = await context.pushNamed(Routes.cashierSurplus);

@@ -1,6 +1,7 @@
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/translator.dart';
 
 class OrderFormatter {
   static List<List<Object>> formatOrder(OrderObject order) {
@@ -12,14 +13,14 @@ class OrderFormatter {
         order.productsPrice,
         order.paid,
         order.cost,
-        order.revenue,
+        order.profit,
         order.productsCount,
         order.products.length,
       ]
     ];
   }
 
-  static List<List<Object>> formatOrderSetAttr(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsAttr(OrderObject order) {
     return [
       for (final attr in order.attributes)
         [
@@ -30,7 +31,7 @@ class OrderFormatter {
     ];
   }
 
-  static List<List<Object>> formatOrderProduct(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsProduct(OrderObject order) {
     return [
       for (final product in order.products)
         [
@@ -45,7 +46,7 @@ class OrderFormatter {
     ];
   }
 
-  static List<List<Object>> formatOrderIngredient(OrderObject order) {
+  static List<List<Object>> formatOrderDetailsIngredient(OrderObject order) {
     final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final product in order.products)
@@ -59,47 +60,47 @@ class OrderFormatter {
     ];
   }
 
-  static const orderHeaders = [
-    '時間戳記',
-    '時間',
-    '總價',
-    '產品價錢',
-    '付額',
-    '成本',
-    '收入',
-    '產品總數',
-    '產品種類',
-  ];
+  static List<String> get orderHeaders => [
+        S.transitGSOrderHeaderTs,
+        S.transitGSOrderHeaderTime,
+        S.transitGSOrderHeaderPrice,
+        S.transitGSOrderHeaderProductPrice,
+        S.transitGSOrderHeaderPaid,
+        S.transitGSOrderHeaderCost,
+        S.transitGSOrderHeaderProfit,
+        S.transitGSOrderHeaderItemCount,
+        S.transitGSOrderHeaderTypeCount,
+      ];
 
-  /// 顧客設定位於第幾個欄位，0-index
-  static const orderSetAttrIndex = 8;
+  /// Order's attributes at which index, 0-index
+  static const orderDetailsAttrIndex = 8;
 
-  /// 產品細項位於第幾個欄位，0-index
-  static const orderProductIndex = 9;
+  /// Order's products detail at which index, 0-index
+  static const orderDetailsProductIndex = 9;
 
-  static const orderSetAttrHeaders = [
-    '時間戳記',
-    '設定類別',
-    '選項',
-  ];
+  static List<String> get orderDetailsAttrHeaders => [
+        S.transitGSOrderAttributeHeaderTs,
+        S.transitGSOrderAttributeHeaderName,
+        S.transitGSOrderAttributeHeaderOption,
+      ];
 
-  static const orderProductHeaders = [
-    '時間戳記',
-    '產品',
-    '種類',
-    '數量',
-    '單一售價',
-    '單一成本',
-    '單一原價',
-  ];
+  static List<String> get orderDetailsProductHeaders => [
+        S.transitGSOrderProductHeaderTs,
+        S.transitGSOrderProductHeaderName,
+        S.transitGSOrderProductHeaderCatalog,
+        S.transitGSOrderProductHeaderCount,
+        S.transitGSOrderProductHeaderPrice,
+        S.transitGSOrderProductHeaderCost,
+        S.transitGSOrderProductHeaderOrigin,
+      ];
 
-  /// 成份位於第幾個欄位，0-index
-  static const orderIngredientIndex = 6;
+  /// Order's ingredients detail at which index, 0-index
+  static const orderDetailsIngredientIndex = 6;
 
-  static const orderIngredientHeaders = [
-    '時間戳記',
-    '成份',
-    '份量',
-    '數量',
-  ];
+  static List<String> get orderDetailsIngredientHeaders => [
+        S.transitGSOrderIngredientHeaderTs,
+        S.transitGSOrderIngredientHeaderName,
+        S.transitGSOrderIngredientHeaderQuantity,
+        S.transitGSOrderIngredientHeaderAmount,
+      ];
 }

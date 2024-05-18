@@ -22,13 +22,13 @@ When you register for an Account, we may ask for your contact information, inclu
 
 We use the information we collect in various ways, including to:
 
--   Provide, operate, and maintain our apps
--   Improve, personalize, and expand our apps
--   Understand and analyze how you use our apps
--   Develop new products, services, features, and functionality
--   Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the apps, and for marketing and promotional purposes
--   Send you emails
--   Find and prevent fraud
+- Provide, operate, and maintain our apps
+- Improve, personalize, and expand our apps
+- Understand and analyze how you use our apps
+- Develop new products, services, features, and functionality
+- Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the apps, and for marketing and promotional purposes
+- Send you emails
+- Find and prevent fraud
 
 ## Log Files
 

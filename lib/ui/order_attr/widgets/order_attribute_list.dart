@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
@@ -42,23 +42,38 @@ class _OrderAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
-    final mode = S.orderAttributeModeNames(attr.mode.name);
-    final defaultName = attr.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
+    final mode = S.orderAttributeModeName(attr.mode.name);
     final key = 'order_attributes.${attr.id}';
+    final theme = Theme.of(context);
 
     return ExpansionTile(
       key: Key(key),
       title: Text(attr.name),
-      subtitle: MetaBlock.withString(context, [
-        S.orderAttributeMetaMode(mode),
-        S.orderAttributeMetaDefault(defaultName),
-      ]),
+      subtitle: RichText(
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+          children: [
+            TextSpan(text: S.orderAttributeMetaMode(mode)),
+            MetaBlock.span(),
+            attr.defaultOption?.name != null
+                ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
+                : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
+                    TextSpan(
+                      text: S.orderAttributeMetaNoDefault,
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                    ),
+                  ]),
+          ],
+          // disable parent text style
+          style: theme.textTheme.bodyMedium,
+        ),
+      ),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ListTile(
           key: Key('$key.add'),
           leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.orderAttributeOptionCreate),
+          title: Text(S.orderAttributeOptionTitleCreate),
           onTap: () => context.pushNamed(
             Routes.orderAttrNew,
             queryParameters: {'id': attr.id},
@@ -79,13 +94,13 @@ class _OrderAttributeCard extends StatelessWidget {
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: Text(S.orderAttributeUpdate),
+          title: Text(S.orderAttributeTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.orderAttrModal,
           routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
-          title: Text(S.orderAttributeOptionReorder),
+          title: Text(S.orderAttributeOptionTitleReorder),
           leading: const Icon(KIcons.reorder),
           route: Routes.orderAttrOptionReorder,
           routePathParameters: {'id': attr.id},
@@ -111,8 +126,8 @@ class _OptionTile extends StatelessWidget {
       child: ListTile(
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
-        subtitle: OrderAttributeValueWidget(option.mode, option.modeValue),
-        trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionIsDefault) : null,
+        subtitle: OrderAttributeValueWidget.build(option.mode, option.modeValue),
+        trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionMetaDefault) : null,
         onLongPress: () => BottomSheetActions.withDelete<int>(
           context,
           deleteValue: 0,

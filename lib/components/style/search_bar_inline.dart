@@ -36,6 +36,7 @@ class SearchBarInline extends StatelessWidget {
           labelText: labelText,
           hintText: hintText,
           focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+          errorMaxLines: 2,
           prefixIcon: const Icon(KIcons.search),
         ),
       ),

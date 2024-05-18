@@ -26,7 +26,7 @@ class OrderAttributePage extends StatelessWidget {
         actions: [
           IconButton(
             key: const Key('order_attributes.reorder'),
-            tooltip: S.orderAttributeReorder,
+            tooltip: S.orderAttributeTitleReorder,
             onPressed: () => context.pushNamed(Routes.orderAttrReorder),
             icon: const Icon(KIcons.reorder),
           ),
@@ -34,14 +34,14 @@ class OrderAttributePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: handleCreate,
-        tooltip: S.orderAttributeCreate,
+        tooltip: S.orderAttributeTitleCreate,
         child: const Icon(KIcons.add),
       ),
       body: attrs.isEmpty
           ? Center(
               child: EmptyBody(
               onPressed: handleCreate,
-              helperText: S.orderAttributeHint,
+              helperText: S.orderAttributeEmptyBody,
             ))
           : OrderAttributeList(attrs.itemList),
     );

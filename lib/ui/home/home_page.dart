@@ -15,10 +15,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    goOrderPage() => context.pushNamed(Routes.order);
-    // 如果使用 stateful 並另外建立 tabController，
-    // 則會在 push page 時造成 Home 頁面重建，
-    // 進而導致底下的頁面也重建，可能造成 tutorial 重複出現。
+    // Using DefaultTabController so descendant widgets can access the controller.
+    // This allow building constant tab views, otherwise after push page,
+    // the home page will rebuild(cause by go_route) and cause the tutorial to show again.
+    // see https://github.com/flutter/flutter/issues/132049
     return DefaultTabController(
       length: 4,
       initialIndex: tab.index,
@@ -26,9 +26,9 @@ class HomePage extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton.extended(
           key: const Key('home.order'),
-          onPressed: goOrderPage,
+          onPressed: () => context.pushNamed(Routes.order),
           icon: const Icon(Icons.store_sharp),
-          label: const Text('點餐'),
+          label: Text(S.orderBtn),
         ),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -52,24 +52,11 @@ class HomePage extends StatelessWidget {
                 // disable shadow after scrolled
                 scrolledUnderElevation: 0,
                 bottom: TabBar(tabs: [
-                  _Tab(key: const Key('home.analysis'), text: S.homeTabAnalysis),
-                  _Tab(key: const Key('home.stock'), text: S.homeTabStock),
-                  _Tab(key: const Key('home.cashier'), text: S.homeTabCashier),
-                  _Tab(key: const Key('home.setting'), text: S.homeTabSetting),
+                  _Tab(key: const Key('home.analysis'), text: S.analysisTab),
+                  _Tab(key: const Key('home.stock'), text: S.stockTab),
+                  _Tab(key: const Key('home.cashier'), text: S.cashierTab),
+                  _Tab(key: const Key('home.setting'), text: S.settingTab),
                 ]),
-                actions: [
-                  TextButton(
-                    onPressed: goOrderPage,
-                    child: const Text('點餐'),
-                  ),
-                  const Tooltip(
-                    message: '未來這裡的按鈕將會移除，請使用右下角的點餐按鈕。',
-                    triggerMode: TooltipTriggerMode.tap,
-                    showDuration: Duration(seconds: 30),
-                    margin: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Icon(Icons.info_outline),
-                  )
-                ],
               ),
             ];
           },

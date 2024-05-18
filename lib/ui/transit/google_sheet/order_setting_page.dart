@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -34,7 +34,7 @@ class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<Orde
   late bool withPrefix;
 
   @override
-  String get title => '訂單匯出設定';
+  String get title => S.transitGSOrderSettingTitle;
 
   @override
   List<Widget> buildFormFields() {
@@ -42,8 +42,8 @@ class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<Orde
       CheckboxListTile(
         key: const Key('is_overwrite'),
         value: isOverwrite,
-        title: const Text('是否覆寫表單'),
-        subtitle: const Text('覆寫表單之後，將會從第一行開始匯出'),
+        title: Text(S.transitGSOrderSettingOverwriteLabel),
+        subtitle: Text(S.transitGSOrderSettingOverwriteHint),
         onChanged: (value) {
           if (value != null) {
             setState(() {
@@ -55,8 +55,8 @@ class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<Orde
       CheckboxListTile(
         key: const Key('with_prefix'),
         value: withPrefix,
-        title: const Text('加上日期前綴'),
-        subtitle: const Text('表單名稱前面加上日期前綴，例如：「0101-0131 訂單資料」'),
+        title: Text(S.transitGSOrderSettingTitlePrefixLabel),
+        subtitle: Text(S.transitGSOrderSettingTitlePrefixHint),
         onChanged: (value) {
           if (value != null) {
             setState(() {
@@ -69,14 +69,14 @@ class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<Orde
         p(
           Center(
             child: Text(
-              '不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴',
+              S.transitGSOrderSettingRecommendCombination,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ),
-      const TextDivider(label: '表單名稱'),
-      p(const CardInfoText(
-        child: Text('拆分表單可以讓你更彈性的去分析資料，\n例如可以到訂單成份細項查詢：今天某個成分總共用了多少。'),
+      TextDivider(label: S.transitGSOrderSettingNameLabel),
+      p(CardInfoText(
+        child: Text(S.transitGSOrderSettingNameHelper),
       )),
       for (final namer in namers) SheetNamer(prop: namer),
     ];
@@ -121,10 +121,10 @@ class _OrderSettingPageState extends State<OrderSettingPage> with ItemModal<Orde
 class OrderSpreadsheetProperties {
   final List<OrderSheetProperties> sheets;
 
-  // 是否覆蓋表單的資料，預設是 true
+  /// Whether to overwrite the data in the form, default is true
   final bool isOverwrite;
 
-  // 表單名稱是否前綴日期，預設是 true
+  /// Whether the form name is prefixed with the date, default is true
   final bool withPrefix;
 
   const OrderSpreadsheetProperties({
@@ -141,7 +141,7 @@ class OrderSpreadsheetProperties {
       final isRequired = Cache.instance.get<bool>('$key.required') ?? true;
       sheets.add(OrderSheetProperties(
         type,
-        name ?? S.transitType(type.name),
+        name ?? S.transitModelName(type.name),
         isRequired,
       ));
     }
@@ -179,7 +179,7 @@ class OrderSheetProperties {
 
 enum OrderSheetType {
   order,
-  orderSetAttr,
-  orderProduct,
-  orderIngredient,
+  orderDetailsAttr,
+  orderDetailsProduct,
+  orderDetailsIngredient,
 }

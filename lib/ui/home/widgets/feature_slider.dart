@@ -20,6 +20,8 @@ class FeatureSlider extends StatefulWidget {
 
   final Key? sliderKey;
 
+  final bool autofocus;
+
   const FeatureSlider({
     super.key,
     this.sliderKey,
@@ -31,6 +33,7 @@ class FeatureSlider extends StatefulWidget {
     this.minLabel,
     this.maxLabel,
     this.hintText,
+    this.autofocus = false,
   });
 
   @override
@@ -55,6 +58,7 @@ class _FeatureSliderState extends State<FeatureSlider> {
       ),
       Slider(
         key: widget.sliderKey,
+        autofocus: widget.autofocus,
         value: value.toDouble(),
         min: widget.min.toDouble(),
         max: widget.max.toDouble(),

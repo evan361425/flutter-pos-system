@@ -1,14 +1,16 @@
+import 'package:intl/intl.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
-const _reDig = r'-?\d+\.?\d*';
+const _reDig = r' *-?\d+\.?\d*';
+const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
-const _rePost = r'$';
 
 class PlainTextFormatter extends Formatter<String> {
   const PlainTextFormatter();
@@ -30,15 +32,15 @@ class PlainTextFormatter extends Formatter<String> {
   }
 
   Formattable? whichFormattable(String line) {
-    if (line.startsWith('本菜單')) {
+    if (line.startsWith(S.transitPTFormatModelMenuHeaderPrefix)) {
       return Formattable.menu;
-    } else if (line.startsWith('本庫存')) {
+    } else if (line.startsWith(S.transitPTFormatModelStockHeaderPrefix)) {
       return Formattable.stock;
-    } else if (line.endsWith('種份量')) {
+    } else if (line.endsWith(S.transitPTFormatModelQuantitiesHeaderSuffix)) {
       return Formattable.quantities;
-    } else if (line.endsWith('種補貨方式')) {
+    } else if (line.endsWith(S.transitPTFormatModelReplenisherHeaderSuffix)) {
       return Formattable.replenisher;
-    } else if (line.endsWith('種顧客屬性')) {
+    } else if (line.endsWith(S.transitPTFormatModelOaHeaderSuffix)) {
       return Formattable.orderAttr;
     }
 
@@ -49,62 +51,60 @@ class PlainTextFormatter extends Formatter<String> {
 class _MenuTransformer extends ModelTransformer<Menu> {
   const _MenuTransformer(super.target);
 
-  static const catalogTmp = r'第%num個種類叫做 %name';
-  static const productTmp = r'第%num個產品叫做 %name，其售價為 %price 元，成本為 %cost 元';
-  static const ingredientTmp = r'每份產品預設需要使用 %amount 個 %name';
-  static const quantityTmp = r'%name（'
-      '每份產品改成使用 %amount 個'
-      '並調整產品售價 %price 元和'
-      '成本 %cost 元）';
+  static const ingredientDelimiter = '；';
+  static const quantityPrefix = '：';
+  static const quantityDelimiter = '、';
 
   @override
-  List<String> getHeader() => ['${target.length} 個產品種類', '${target.products.length} 個產品'];
+  List<String> getHeader() => [
+        S.transitPTFormatModelMenuMetaCatalog(target.length),
+        S.transitPTFormatModelMenuMetaProduct(target.products.length)
+      ];
 
   @override
   List<List<String>> getRows() {
     int catalogCount = 1;
     return [
-      ['本菜單共有 ${target.length} 個產品種類、${target.products.length} 個產品。'],
+      [S.transitPTFormatModelMenuHeader(target.length, target.products.length)],
       ...target.itemList.map<List<String>>((catalog) {
         int productCount = 1;
-        final v = catalog.isEmpty ? '沒有設定產品' : '共有 ${catalog.length} 個產品';
+        final nf = NumberFormat.decimalPattern(S.localeName);
         return [
-          '${catalogTmp.f({'num': catalogCount++, 'name': catalog.name})}，$v。',
-          ...catalog.itemList.map<String>((product) {
-            String base = productTmp.f({
-              'num': productCount++,
-              'name': product.name,
-              'price': product.price,
-              'cost': product.cost,
-            });
-            if (product.isEmpty) {
-              return '$base，它沒有設定任何成份。';
-            }
-
-            base = '$base，它的成份有 ${product.items.length} 種：'
-                '${product.items.map((e) => e.name).join('、')}';
-
-            final ingredients = product.items.map<String>((ingredient) {
-              final ing = ingredientTmp.f({
-                'amount': ingredient.amount,
-                'name': ingredient.name,
-              });
-              if (ingredient.isEmpty) {
-                return '$ing，無法做份量調整';
-              }
-
-              final quantities = ingredient.items
-                  .map((quantity) => quantityTmp.f({
-                        'name': quantity.name,
-                        'amount': quantity.amount,
-                        'price': quantity.additionalPrice,
-                        'cost': quantity.additionalCost,
-                      }))
-                  .join('、');
-              return '$ing，它還有 ${ingredient.items.length} 個不同份量：$quantities';
-            }).join('；');
-            return '$base。$ingredients。';
-          }),
+          S.transitPTFormatModelMenuCatalog(
+            (catalogCount++).toString(),
+            catalog.name,
+            S.transitPTFormatModelMenuCatalogDetails(catalog.length),
+          ),
+          for (final product in catalog.itemList)
+            S.transitPTFormatModelMenuProduct(
+              (productCount++).toString(),
+              product.name,
+              product.price.toCurrency(),
+              product.cost.toCurrency(),
+              S.transitPTFormatModelMenuProductDetails(
+                product.items.length,
+                product.items.map((e) => e.name).join('、'),
+                product.items
+                    .map<String>(
+                      (ingredient) => S.transitPTFormatModelMenuIngredient(
+                        nf.format(ingredient.amount),
+                        ingredient.name,
+                        S.transitPTFormatModelMenuIngredientDetails(
+                          ingredient.items.length,
+                          quantityPrefix +
+                              ingredient.items
+                                  .map((quantity) => '${quantity.name}（${S.transitPTFormatModelMenuQuantity(
+                                        nf.format(quantity.amount),
+                                        quantity.additionalPrice.toCurrency(),
+                                        quantity.additionalCost.toCurrency(),
+                                      )}）')
+                                  .join(quantityDelimiter),
+                        ),
+                      ),
+                    )
+                    .join(ingredientDelimiter),
+              ),
+            ),
         ];
       })
     ];
@@ -112,32 +112,50 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    final reCatalog = RegExp(_rePre +
-        catalogTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)，',
-        }));
-    final reProduct = RegExp(_rePre +
-        productTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)',
-          'price': '(?<price>$_reDig)',
-          'cost': '(?<cost>$_reDig)',
-        }));
-    final reIngredient = RegExp(_rePre +
-        ingredientTmp.f({
-          'amount': '(?<amount>$_reDig)',
-          'name': r'(?<name>[^，]+?)，',
-        }));
-    final reQuantity = RegExp(_rePre +
-        quantityTmp.f({
-          'name': r'(?<name>[^（]+?)',
-          'amount': '(?<amount>$_reDig)',
-          'price': '(?<price>$_reDig)',
-          'cost': '(?<cost>$_reDig)',
-        }));
+    final reCatalog = RegExp(
+      _rePre +
+          S.transitPTFormatModelMenuCatalog(
+            _reInt,
+            r'(?<name>.+)',
+            r'.*',
+          ),
+    );
+    final reProduct = RegExp(
+      _rePre +
+          S
+              .transitPTFormatModelMenuProduct(
+                _reInt,
+                r'(?<name>.+)',
+                '(?<price>$_reDig)',
+                '(?<cost>$_reDig)',
+                r'.*',
+              )
+              .replaceAll(r'$', r'\$'),
+    );
+    final reIngredient = RegExp(
+      S.transitPTFormatModelMenuIngredient(
+        '(?<amount>$_reDig)',
+        r'(?<name>.+?)',
+        r'.*',
+      ),
+    );
+    final reQuantity = RegExp(
+      _rePre +
+          r'(?<name>.+)（' + // hard coded naming pattern
+          S
+              .transitPTFormatModelMenuQuantity(
+                '(?<amount>$_reDig)',
+                '(?<price>$_reDig)',
+                '(?<cost>$_reDig)',
+              )
+              .replaceAll(r'$', r'\$'),
+    );
 
-    final lines = rows[0].expand((e) => e.toString().split('。').map((e) => e.trim())).where((e) => e.isNotEmpty);
+    final lines = rows[0]
+        .expand(
+          (e) => e.toString().split('\n').map((e) => e.trim()),
+        )
+        .where((e) => e.isNotEmpty);
     final result = <List<String>>[];
     String catalog = '', product = '', price = '', cost = '';
     bool foundProduct = false;
@@ -166,21 +184,21 @@ class _MenuTransformer extends ModelTransformer<Menu> {
         continue;
       }
 
-      final ingSplit = line.split('；');
+      final ingSplit = line.split(ingredientDelimiter);
       String ingredients = '';
       foundProduct = false;
       for (final ing in ingSplit) {
-        final ingSplit = ing.split('：');
+        int quaStartIndex = ing.indexOf(quantityPrefix);
+        if (quaStartIndex == -1) quaStartIndex = ing.length;
 
-        match = reIngredient.firstMatch(ingSplit[0]);
+        match = reIngredient.firstMatch(ing.substring(0, quaStartIndex));
         if (match != null) {
           ingredients = '$ingredients\n- ${match.namedGroup('name')!},'
               '${match.namedGroup('amount')!}';
         }
+        if (quaStartIndex == ing.length) continue;
 
-        if (ingSplit.length == 1) continue;
-        final quaSplit = ingSplit[1].split('、');
-
+        final quaSplit = ing.substring(quaStartIndex + 1).split(quantityDelimiter);
         for (final qua in quaSplit) {
           match = reQuantity.firstMatch(qua);
           if (match != null) {
@@ -203,42 +221,40 @@ class _MenuTransformer extends ModelTransformer<Menu> {
 class _StockTransformer extends ModelTransformer<Stock> {
   const _StockTransformer(super.target);
 
-  static const baseTmp = r'第%num個成份叫做 %name，庫存現有 %amount 個';
-  static const maxTmp = r'最大量有 %max 個。';
-
   @override
-  List<String> getHeader() => ['${target.length} 種成份'];
+  List<String> getHeader() => [S.transitPTFormatModelStockMetaIngredient(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
+    final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      ['本庫存共有 ${target.length} 種成份'],
-      if (target.isNotEmpty)
-        [
-          ...target.itemList.map((ingredient) {
-            final max = ingredient.totalAmount;
-            final maxStr = max == null ? '' : '，${maxTmp.f({'max': max})}';
-            return baseTmp.f({
-                  'num': counter++,
-                  'name': ingredient.name,
-                  'amount': ingredient.currentAmount,
-                }) +
-                maxStr;
-          }),
-        ],
+      [S.transitPTFormatModelStockHeader(target.length)],
+      [
+        for (final ingredient in target.itemList)
+          S.transitPTFormatModelStockIngredient(
+            (counter++).toString(),
+            ingredient.name,
+            nf.format(ingredient.currentAmount),
+            S.transitPTFormatModelStockIngredientDetails(
+              ingredient.totalAmount == null ? 0 : 1,
+              nf.format(ingredient.totalAmount ?? 0),
+            ),
+          ),
+      ],
     ];
   }
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reBase = RegExp(_rePre +
-        baseTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)',
-          'amount': '(?<amount>$_reDig)',
-        }));
-    final reMax = RegExp(maxTmp.f({'max': '(?<max>$_reDig)'}) + _rePost);
+        S.transitPTFormatModelStockIngredient(
+          _reInt,
+          r'(?<name>[^，]+?)',
+          '(?<amount>$_reDig)',
+          '',
+        ));
+    final reMax = RegExp(S.transitPTFormatModelStockIngredientDetails(1, '(?<max>$_reDig)'));
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
@@ -260,38 +276,36 @@ class _StockTransformer extends ModelTransformer<Stock> {
 class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   const _QuantitiesTransformer(super.target);
 
-  static const baseTmp = r'第%num種份量叫做 %name，'
-      '預設會讓成分的份量乘以 %prop 倍。';
-
   @override
-  List<String> getHeader() => ['${target.length} 種份量'];
+  List<String> getHeader() => [S.transitPTFormatModelQuantitiesMetaQuantity(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
+    final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      ['共設定 ${target.length} 種份量'],
-      if (target.isNotEmpty)
-        [
-          ...target.itemList.map((quantity) {
-            return baseTmp.f({
-              'num': counter++,
-              'name': quantity.name,
-              'prop': quantity.defaultProportion,
-            });
-          }),
-        ],
+      [S.transitPTFormatModelQuantitiesHeader(target.length)],
+      [
+        for (final quantity in target.itemList)
+          S.transitPTFormatModelQuantitiesQuantity(
+            (counter++).toString(),
+            quantity.name,
+            nf.format(quantity.defaultProportion),
+          ),
+      ]
     ];
   }
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    final re = RegExp(_rePre +
-        baseTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)',
-          'prop': '(?<prop>$_reDig)',
-        }));
+    final re = RegExp(
+      _rePre +
+          S.transitPTFormatModelQuantitiesQuantity(
+            _reInt,
+            r'(?<name>[^，]+?)',
+            '(?<prop>$_reDig)',
+          ),
+    );
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
@@ -311,56 +325,49 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
 class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   const _ReplenisherTransformer(super.target);
 
-  static const baseTmp = r'第%num種方式叫做 %name，';
-  static const ingredientTmp = r'%name（%amount 個）';
+  static const ingredientDelimiter = '：';
 
   @override
-  List<String> getHeader() => ['${target.length} 種補貨方式'];
+  List<String> getHeader() => [S.transitPTFormatModelReplenisherMetaReplenishment(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
+    final nf = NumberFormat.decimalPattern(S.localeName);
     return [
-      ['共設定 ${target.length} 種補貨方式'],
-      ...target.itemList.map((repl) {
-        final data = repl.ingredientData;
-        final base = baseTmp.f({'num': counter++, 'name': repl.name});
-
-        if (data.isEmpty) {
-          return ['$base它並不會調整庫存。'];
-        }
-        final ing = data.entries
-            .map((e) => ingredientTmp.f({
-                  'name': e.key.name,
-                  'amount': e.value,
-                }))
-            .join('、');
-        return ['$base它會調整${data.length}種成份的庫存：$ing。'];
-      })
+      [S.transitPTFormatModelReplenisherHeader(target.length)],
+      target.itemList.map((repl) {
+        String d = repl.ingredientData.entries.map((e) => '${e.key.name}（${nf.format(e.value)}）').join('、');
+        d = d.isEmpty ? '' : ingredientDelimiter + d;
+        return S.transitPTFormatModelReplenisherReplenishment(
+          (counter++).toString(),
+          repl.name,
+          S.transitPTFormatModelReplenisherReplenishmentDetails(repl.ingredientData.length) + d,
+        );
+      }).toList(),
     ];
   }
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
-    final reBase = RegExp(_rePre +
-        baseTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)',
-        }));
-    final reIngredient = RegExp(_rePre +
-        ingredientTmp.f({
-          'amount': '(?<amount>$_reDig)',
-          'name': r'(?<name>[^（]+?)',
-        }));
+    final reBase = RegExp(
+      _rePre +
+          S.transitPTFormatModelReplenisherReplenishment(
+            _reInt,
+            r'(?<name>[^，]+?)',
+            '.*',
+          ),
+    );
+    final reIngredient = RegExp('$_rePre(?<name>.*)（(?<amount>$_reDig)）');
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
-      final lineSplit = line.toString().split('：');
+      final lineSplit = line.toString().split(ingredientDelimiter);
       final baseMatch = reBase.firstMatch(lineSplit[0]);
       if (baseMatch != null) {
         String ingredients = '';
         if (lineSplit.length > 1) {
-          final lineIng = lineSplit[1].replaceFirst(RegExp(r'。?$'), '');
+          final lineIng = lineSplit[1].replaceFirst(RegExp(r'[^）]*$'), '');
           for (final ing in lineIng.split('、')) {
             final match = reIngredient.firstMatch(ing);
             if (match != null) {
@@ -381,47 +388,43 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
 class _OATransformer extends ModelTransformer<OrderAttributes> {
   const _OATransformer(super.target);
 
-  static const baseTmp = r'第%num種屬性叫做 %name，屬於 %mode 類型。';
-
   @override
-  List<String> getHeader() => ['${target.length} 種顧客屬性'];
+  List<String> getHeader() => [S.transitPTFormatModelOaMetaOa(target.length)];
 
   @override
   List<List<String>> getRows() {
     int counter = 1;
     return [
-      ['共設定 ${target.length} 種顧客屬性'],
-      ...target.itemList.map((attr) {
-        final base = baseTmp.f({
-          'num': counter++,
-          'name': attr.name,
-          'mode': S.orderAttributeModeNames(attr.mode.name),
-        });
-        if (attr.isEmpty) {
-          return ['$base它並沒有設定選項。'];
-        }
-
-        final attrs = attr.itemList.map((e) {
-          final info = [
-            e.isDefault ? '預設' : '',
-            e.modeValue == null ? '' : '選項的值為 ${e.modeValue}',
+      [S.transitPTFormatModelOaHeader(target.length)],
+      target.itemList.map((attr) {
+        String details = attr.itemList.map((e) {
+          final details = [
+            e.isDefault ? S.transitPTFormatModelOaDefaultOption : '',
+            e.modeValue == null ? '' : S.transitPTFormatModelOaModeValue(e.modeValue!),
           ].where((e) => e.isNotEmpty).join('，');
-          return info.isEmpty ? e.name : '${e.name}（$info）';
+          return details.isEmpty ? e.name : '${e.name}（$details）';
         }).join('、');
+        details = details.isEmpty ? '' : '：$details';
 
-        return ['$base它有 ${attr.length} 個選項：$attrs'];
-      })
+        return S.transitPTFormatModelOaOa(
+          (counter++).toString(),
+          attr.name,
+          S.orderAttributeModeName(attr.mode.name),
+          S.transitPTFormatModelOaOaDetails(attr.length) + details,
+        );
+      }).toList(),
     ];
   }
 
   @override
   List<List<String>> parseRows(List<List<Object?>> rows) {
     final reOA = RegExp(_rePre +
-        baseTmp.f({
-          'num': r'\d+',
-          'name': r'(?<name>[^，]+?)',
-          'mode': r'(?<mode>[^ ]+?)',
-        }));
+        S.transitPTFormatModelOaOa(
+          _reInt,
+          r'(?<name>.+?)',
+          r'(?<mode>.+)',
+          '.*',
+        ));
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
@@ -436,7 +439,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
             String info = 'false';
             if (infoIdx != -1) {
               final infoStr = opt.substring(infoIdx + 1, opt.length - 1);
-              if (infoStr.startsWith('預設')) {
+              if (infoStr.startsWith(S.transitPTFormatModelOaDefaultOption)) {
                 info = 'true';
               }
               final v = RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
@@ -454,16 +457,6 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
       }
     }
 
-    return result;
-  }
-}
-
-extension _StringExtension on String {
-  String f(Map<String, Object> params) {
-    String result = this;
-    for (final entry in params.entries) {
-      result = result.replaceFirst('%${entry.key}', entry.value.toString());
-    }
     return result;
   }
 }

@@ -6,14 +6,14 @@ import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/launcher.dart';
-import 'package:possystem/models/order/order_attribute.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -38,7 +38,7 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp(
         home: TransitStation(
-          type: TransitType.basic,
+          catalog: TransitCatalog.model,
           method: TransitMethod.googleSheet,
           exporter: GoogleSheetExporter(
             sheetsApi: sheetsApi,
@@ -123,7 +123,9 @@ void main() {
         bool selected = true,
       }) async {
         await tester.pumpAndSettle();
-        await tester.tap(find.text(selected ? '指定匯出' : '建立匯出'));
+        await tester.tap(find.text(
+          selected ? S.transitGSSpreadsheetExportExistLabel : S.transitGSSpreadsheetExportEmptyLabel,
+        ));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
@@ -135,7 +137,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: TransitStation(
-              type: TransitType.basic,
+              catalog: TransitCatalog.model,
               method: TransitMethod.googleSheet,
               notifier: notifier,
               exporter: GoogleSheetExporter(),
@@ -152,7 +154,7 @@ void main() {
         when(cache.get(eCacheKey + '.menu')).thenReturn('title');
         await tester.pumpWidget(buildApp());
         await tapBtn(tester);
-        expect(find.text(S.transitGSErrors('sheetRepeat')), findsOneWidget);
+        expect(find.text(S.transitGSErrorSheetRepeat), findsOneWidget);
       });
 
       testWidgets('spreadsheet create failed', (tester) async {
@@ -168,7 +170,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        expect(find.text(S.transitGSErrors('spreadsheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorCreateSpreadsheet), findsOneWidget);
       });
 
       testWidgets('spreadsheet create success', (tester) async {
@@ -185,7 +187,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, selected: false);
 
-        final title = S.transitBasicTitle;
+        final title = S.transitGSSpreadsheetModelDefaultName;
         verify(cache.set(eCacheKey, 'abc:true:' + title));
         verify(cache.set(iCacheKey, 'abc:true:' + title));
       });
@@ -207,7 +209,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester);
 
-        expect(find.text(S.transitGSErrors('sheet')), findsOneWidget);
+        expect(find.text(S.transitGSErrorCreateSheet), findsOneWidget);
       });
 
       testWidgets('export without new sheets', (tester) async {
@@ -254,7 +256,7 @@ void main() {
         ));
 
         // which also verify button exist!
-        await tester.tap(find.text('開啟表單'));
+        await tester.tap(find.text(S.transitGSSpreadsheetSnackbarAction));
         await tester.pumpAndSettle();
 
         expect(Launcher.lastUrl, equals('https://docs.google.com/spreadsheets/d/id/edit'));

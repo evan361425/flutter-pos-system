@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 
 class ImageHolder extends StatelessWidget {
   final ImageProvider image;
@@ -102,7 +103,7 @@ class EditImageHolder extends StatelessWidget {
     return ImageHolder(
       key: const Key('image_holder.edit'),
       image: image,
-      title: path == null ? '點選以新增圖片' : '點擊以更新圖片',
+      title: path == null ? S.imageHolderCreate : S.imageHolderUpdate,
       onPressed: () async {
         final file = await context.pushNamed(Routes.imageGallery);
         if (file != null && file is String) onSelected(file);

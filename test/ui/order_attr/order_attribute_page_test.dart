@@ -3,14 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order_attr/order_attribute_page.dart';
 import 'package:provider/provider.dart';
@@ -90,12 +88,10 @@ void main() {
         });
 
       when(cache.get(any)).thenReturn(null);
-      final currency = CurrencySetting();
 
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: attrs),
-          ChangeNotifierProvider.value(value: SettingsProvider([currency])),
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(routes: [
@@ -334,7 +330,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(S.orderAttributeOptionReorder));
+      await tester.tap(find.text(S.orderAttributeOptionTitleReorder));
       await tester.pumpAndSettle();
 
       await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));

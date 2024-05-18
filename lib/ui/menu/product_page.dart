@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/more_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -35,7 +35,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButton: FloatingActionButton(
         key: const Key('product.add'),
         onPressed: _handleCreateIng,
-        tooltip: S.menuIngredientCreate,
+        tooltip: S.menuIngredientTitleCreate,
         child: const Icon(KIcons.add),
       ),
       body: CustomScrollView(slivers: [
@@ -57,7 +57,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget get metadata {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: MetaBlock.withString(context, <String>[
           S.menuProductMetaTitle,
           S.menuProductMetaPrice(widget.product.price),
@@ -72,9 +72,7 @@ class _ProductPageState extends State<ProductPage> {
       return [
         SliverToBoxAdapter(
           child: EmptyBody(
-            title: S.menuProductEmptyBody,
-            helperText: '你可以在產品中設定成分等資訊，例如：\n'
-                '「起司漢堡」有「起司」、「麵包」等成分',
+            helperText: S.menuIngredientEmptyBody,
             onPressed: _handleCreateIng,
           ),
         )
@@ -127,14 +125,14 @@ class _ProductPageState extends State<ProductPage> {
       warningContent: Text(S.dialogDeletionContent(widget.product.name, '')),
       actions: <BottomSheetAction<_Action>>[
         BottomSheetAction(
-          title: Text(S.menuProductUpdate),
+          title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductModal,
           routePathParameters: {'id': widget.product.id},
         ),
-        const BottomSheetAction(
-          title: Text('更新照片'),
-          leading: Icon(KIcons.image),
+        BottomSheetAction(
+          title: Text(S.menuProductTitleUpdateImage),
+          leading: const Icon(KIcons.image),
           returnValue: _Action.changeImage,
         ),
       ],

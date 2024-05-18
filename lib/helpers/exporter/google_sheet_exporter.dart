@@ -126,7 +126,7 @@ class GoogleSheetExporter extends DataExporter {
     return GoogleSheetProperties.fromSheet(res?.sheets);
   }
 
-  /// 更新表單
+  /// Update the sheet with the given data.
   Future<void> updateSheet(
     GoogleSpreadsheet spreadsheet,
     Iterable<GoogleSheetProperties> sheets,
@@ -169,7 +169,7 @@ class GoogleSheetExporter extends DataExporter {
     );
   }
 
-  /// 值的修改，批次做
+  /// Update the sheet with the given data in batch.
   Future<void> updateSheetValues(
     GoogleSpreadsheet spreadsheet,
     Iterable<GoogleSheetProperties> sheets,
@@ -202,7 +202,7 @@ class GoogleSheetExporter extends DataExporter {
     );
   }
 
-  /// 僅作值的附加
+  /// Update the sheet by appending the given data.
   Future<void> appendSheetValues(
     GoogleSpreadsheet spreadsheet,
     GoogleSheetProperties sheet,
@@ -349,10 +349,12 @@ class GoogleSheetProperties {
   String toCacheValue() => '$title $id';
 
   @override
-  // ignore: hash_and_equals
   bool operator ==(Object other) {
     return other is GoogleSheetProperties && other.id == id && other.title == title;
   }
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode;
 }
 
 class GoogleSheetCellData {
@@ -362,7 +364,7 @@ class GoogleSheetCellData {
 
   final String? note;
 
-  // 讓資料變成選擇性的欄位，例如顧客設定的類別只能有哪幾種。
+  /// If this is not null, the cell will be a dropdown list.
   final List<String>? options;
 
   GoogleSheetCellData({

@@ -21,26 +21,26 @@ class OrderObjectView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final priceWidget = ExpansionTile(
-      title: Text(S.orderObjectTotalPrice(order.price.toCurrency())),
+      title: Text(S.orderObjectViewPriceTotal(order.price.toCurrency())),
       children: <Widget>[
         HeadTailTile(
-          head: S.orderObjectProductsPrice,
+          head: S.orderObjectViewPriceProducts,
           tail: order.productsPrice.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectAttributesPrice,
+          head: S.orderObjectViewPriceAttributes,
           tail: order.attributesPrice.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductsCost,
+          head: S.orderObjectViewCost,
           tail: order.cost.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectRevenue,
-          tail: order.revenue.toCurrency(),
+          head: S.orderObjectViewProfit,
+          tail: order.profit.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectPaid,
+          head: S.orderObjectViewPaid,
           tail: order.paid.toCurrency(),
         ),
       ],
@@ -50,18 +50,15 @@ class OrderObjectView extends StatelessWidget {
         ? const SizedBox.shrink()
         : ExpansionTile(
             key: const Key('order.attributes'),
-            title: Text(S.orderObjectAttributeTitle),
+            title: Text(S.orderObjectViewDividerAttribute),
             subtitle: Text(
-              S.orderObjectAttributeCount(order.attributes.length),
+              S.totalCount(order.attributes.length),
             ),
             children: <Widget>[
               for (final attribute in order.attributes)
                 ListTile(
                   title: Text(attribute.name.toString()),
-                  subtitle: OrderAttributeValueWidget(
-                    attribute.mode,
-                    attribute.modeValue,
-                  ),
+                  subtitle: OrderAttributeValueWidget.build(attribute.mode, attribute.modeValue),
                   trailing: OutlinedText(attribute.optionName.toString()),
                 ),
             ],
@@ -71,8 +68,8 @@ class OrderObjectView extends StatelessWidget {
       child: Column(children: [
         priceWidget,
         attrWidget,
-        TextDivider(label: S.orderObjectProductTitle),
-        HintText(S.orderObjectProductsCount(order.productsCount)),
+        TextDivider(label: S.orderObjectViewDividerProduct),
+        HintText(S.totalCount(order.productsCount)),
         for (final product in order.products) _ProductTile(product),
         // padding for ScrollableDraggableSheet on OrderDetailsPage
         const SizedBox(height: 428),
@@ -91,8 +88,8 @@ class _ProductTile extends StatelessWidget {
     return ExpansionTile(
       title: Text(data.productName),
       subtitle: MetaBlock.withString(context, <String>[
-        '${S.orderObjectProductPrice}：${data.totalPrice.toCurrency()}',
-        '${S.orderObjectProductCost}：${data.totalCost.toCurrency()}',
+        '${S.orderObjectViewProductPrice}：${data.totalPrice.toCurrency()}',
+        '${S.orderObjectViewProductCost}：${data.totalCost.toCurrency()}',
       ]),
       leading: Menu.instance.getProductByName(data.productName)?.avator ??
           (data.productName != ''
@@ -104,35 +101,35 @@ class _ProductTile extends StatelessWidget {
       childrenPadding: const EdgeInsets.all(8.0),
       children: [
         HeadTailTile(
-          head: S.orderObjectProductPrice,
+          head: S.orderObjectViewProductPrice,
           tail: data.totalPrice.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductCost,
+          head: S.orderObjectViewProductCost,
           tail: data.totalCost.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductCount,
+          head: S.orderObjectViewProductCount,
           tail: data.count.toString(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductSinglePrice,
+          head: S.orderObjectViewProductSinglePrice,
           tail: data.singlePrice.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductOriginalPrice,
+          head: S.orderObjectViewProductOriginalPrice,
           tail: data.originalPrice.toCurrency(),
         ),
         HeadTailTile(
-          head: S.orderObjectProductCatalog,
+          head: S.orderObjectViewProductCatalog,
           tail: data.catalogName,
         ),
         if (data.ingredients.isNotEmpty) const SizedBox(height: 8.0),
-        if (data.ingredients.isNotEmpty) HeadTailTile(head: S.orderObjectProductIngredient, tail: ''),
+        if (data.ingredients.isNotEmpty) HeadTailTile(head: S.orderObjectViewProductIngredient, tail: ''),
         for (final e in data.ingredients)
           HeadTailTile(
             head: e.ingredientName,
-            tailWidget: e.quantityName == null ? const HintText('預設') : null,
+            tailWidget: e.quantityName == null ? HintText(S.orderObjectViewProductDefaultQuantity) : null,
             tail: e.quantityName,
           ),
       ],

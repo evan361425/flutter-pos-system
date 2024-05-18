@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 import 'preview_page.dart';
@@ -56,7 +57,7 @@ class ProductPreviewPage extends PreviewPage<Product> {
       subtitle: MetaBlock.withString(
         context,
         item.items.map((e) => e.name),
-        emptyText: S.menuProductListEmptyIngredient,
+        emptyText: S.menuProductEmptyIngredients,
         textStyle: textStyle,
       ),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -87,8 +88,8 @@ class ProductPreviewPage extends PreviewPage<Product> {
                   context,
                   <String>[
                     S.menuQuantityMetaAmount(quantity.amount),
-                    S.menuQuantityMetaPrice(quantity.additionalPrice),
-                    S.menuQuantityMetaCost(quantity.additionalCost),
+                    S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
+                    S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
                   ],
                   textStyle: textStyle,
                 ),

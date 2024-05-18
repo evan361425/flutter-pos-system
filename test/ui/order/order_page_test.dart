@@ -6,14 +6,14 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -21,7 +21,10 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
-import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/settings/order_awakening_setting.dart';
+import 'package:possystem/settings/order_outlook_setting.dart';
+import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +36,6 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Page', () {
     void prepareData() {
-      SettingsProvider(SettingsProvider.allSettings);
-
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),
@@ -208,14 +209,15 @@ void main() {
             expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
           }
           if (price != null) {
-            expect(
-                tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
+            expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+                equals(S.orderCartProductPrice(price.toCurrency())));
           }
         }
 
         verifyMetadata(int count, num price) {
           final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-          final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+          final t =
+              '${S.orderCartMetaTotalCount(count)}${MetaBlock.string}${S.orderCartMetaTotalPrice(price.toCurrency())}';
           expect((w.child as RichText).text.toPlainText(), equals(t));
         }
 
@@ -254,7 +256,7 @@ void main() {
         // select quantity
         await tester.tap(find.byKey(const Key('order.quantity.pq-1')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-1'), price: 27);
+        verifyProductList(0, subtitle: S.orderCartProductIngredient('i-1', 'q-1'), price: 27);
 
         await tester.tap(find.byKey(const Key('order.quantity.default')));
         await tester.pumpAndSettle();
@@ -262,7 +264,7 @@ void main() {
 
         await tester.tap(find.byKey(const Key('order.quantity.pq-2')));
         await tester.pumpAndSettle();
-        verifyProductList(0, subtitle: S.orderProductIngredientName('i-1', 'q-2'), price: 7);
+        verifyProductList(0, subtitle: S.orderCartProductIngredient('i-1', 'q-2'), price: 7);
 
         // add count
         await tester.tap(find.byKey(const Key('cart.product.0.add')));
@@ -314,43 +316,54 @@ void main() {
           ['p-1', '2'],
           ['p-2', '2'],
         ], 36);
+
+        // open by tapping snapshot product
+        await tester.tap(find.byKey(const Key('cart_snapshot.0')));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('order.ingredient.pi-2')), findsOneWidget);
       });
     });
 
     group('All in one page', () {
       testWidgets('scroll to bottom', (tester) async {
-        when(cache.get('feat.orderAwakening')).thenReturn(false);
-        when(cache.get('feat.orderOutlook')).thenReturn(1);
-        // text only
-        when(cache.get('feat.orderProductAxisCount')).thenReturn(0);
+        OrderAwakeningSetting.instance.value = false;
+        OrderOutlookSetting.instance.value = OrderOutlookTypes.singleView;
+        OrderProductAxisCountSetting.instance.value = 0;
 
-        prepareData();
+        try {
+          prepareData();
 
-        await tester.pumpWidget(buildApp());
+          await tester.pumpWidget(buildApp());
 
-        await tester.tap(find.byKey(const Key('order.product.p-1')));
-        await tester.tap(find.byKey(const Key('order.catalog.c-2')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.tap(find.byKey(const Key('order.product.p-2')));
-        await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.product.p-1')));
+          await tester.tap(find.byKey(const Key('order.catalog.c-2')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
-        final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
-        // scroll to bottom
-        expect(scrollController.position.maxScrollExtent, isNonZero);
-        expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
+          expect(find.byKey(const Key('cart_snapshot.price')), findsNothing);
+          final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
+          // scroll to bottom
+          expect(scrollController.position.maxScrollExtent, isNonZero);
+          expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
 
-        // setup portrait env
-        tester.view.physicalSize = const Size(1000, 2000);
-        addTearDown(tester.view.resetPhysicalSize);
+          // setup portrait env
+          tester.view.physicalSize = const Size(1000, 2000);
+          addTearDown(tester.view.resetPhysicalSize);
 
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
+          await tester.pumpAndSettle();
+          expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
+        } finally {
+          OrderAwakeningSetting.instance.value = OrderAwakeningSetting.defaultValue;
+          OrderOutlookSetting.instance.value = OrderOutlookSetting.defaultValue;
+          OrderProductAxisCountSetting.instance.value = OrderProductAxisCountSetting.defaultValue;
+        }
       });
     });
 
@@ -406,13 +419,15 @@ void main() {
           expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
         }
         if (price != null) {
-          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data, equals(S.orderCartItemPrice(price.toInt())));
+          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+              equals(S.orderCartProductPrice(price.toCurrency())));
         }
       }
 
       verifyMetadata(int count, num price) {
         final w = tester.widget<Expanded>(find.byKey(const Key('cart.metadata')));
-        final t = '${S.orderMetaTotalCount(count)}${MetaBlock.string}${S.orderMetaTotalPrice(price)}';
+        final t =
+            '${S.orderCartMetaTotalCount(count)}${MetaBlock.string}${S.orderCartMetaTotalPrice(price.toCurrency())}';
         expect((w.child as RichText).text.toPlainText(), equals(t));
       }
 
@@ -491,7 +506,7 @@ void main() {
       }
 
       // hide all
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.hideAll;
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.hideAll;
       await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
       await tapWithCheck(CheckoutStatus.restore, S.actSuccess);
       await tapWithCheck(CheckoutStatus.stash, S.actSuccess);
@@ -506,16 +521,17 @@ void main() {
       await tapWithCheck(CheckoutStatus.nothingHappened);
 
       // only not enough
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.onlyNotEnough;
-      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderCashierPaidNotEnough);
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.onlyNotEnough;
+      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderSnackbarCashierNotEnough);
       await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
 
       // show all
-      SettingsProvider.of<CheckoutWarningSetting>().value = CheckoutWarningTypes.showAll;
-      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderCashierPaidUsingSmallMoney);
+      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.showAll;
+      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderSnackbarCashierUsingSmallMoney);
     });
 
     setUp(() {
+      cache.reset();
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial

@@ -44,12 +44,11 @@ void main() {
         escapeTable: anyNamed('escapeTable'),
         limit: anyNamed('limit'),
       )).thenAnswer((_) => Future.value([]));
-      final settings = SettingsProvider(SettingsProvider.allSettings);
       final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
 
       await tester.pumpWidget(MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: SettingsProvider.instance),
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Menu()),
           ChangeNotifierProvider.value(value: stock),
@@ -98,6 +97,7 @@ void main() {
       await navAndPop('setting_header.order_attrs', 'order_attributes.reorder');
 
       // rest
+      await navAndPop('setting.debug', 'debug.list');
       await navAndPop('setting.menu', 'menu.search');
       await navAndPop('setting.exporter', 'transit.google_sheet');
       await navAndPop('setting.quantity', 'quantity.add');
@@ -115,7 +115,7 @@ void main() {
     setUp(() {
       // setup currency
       when(cache.get('currency')).thenReturn(null);
-      CurrencySetting().initialize();
+      CurrencySetting.instance.initialize();
 
       // setup seller
       when(database.query(

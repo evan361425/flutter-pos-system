@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  arb_glue:
+    dependency: "direct dev"
+    description:
+      name: arb_glue
+      sha256: b5eb0ab046bf6028a69a34c2c8536cf09cbba469a31f2b9748949dba9c70e35c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   archive:
     dependency: transitive
     description:

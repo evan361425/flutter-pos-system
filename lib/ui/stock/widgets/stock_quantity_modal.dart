@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -25,7 +25,7 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
   late FocusNode _proportionFocusNode;
 
   @override
-  String get title => widget.quantity?.name ?? S.quantityCreate;
+  String get title => widget.quantity?.name ?? S.stockQuantityTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -36,19 +36,19 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          labelText: S.quantityNameLabel,
-          hintText: S.quantityNameHint,
+          labelText: S.stockQuantityNameLabel,
+          hintText: S.stockQuantityNameHint,
           filled: false,
         ),
         maxLength: 30,
         focusNode: _nameFocusNode,
         validator: Validator.textLimit(
-          S.quantityNameLabel,
+          S.stockQuantityNameLabel,
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.quantity?.name != name && Quantities.instance.hasName(name)
-                ? S.quantityNameRepeatError
+                ? S.stockQuantityNameErrorRepeat
                 : null;
           },
         ),
@@ -61,14 +61,14 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
         focusNode: _proportionFocusNode,
         onFieldSubmitted: handleFieldSubmit,
         decoration: InputDecoration(
-          labelText: S.quantityProportionLabel,
-          helperText: S.quantityProportionHelper,
+          labelText: S.stockQuantityProportionLabel,
+          helperText: S.stockQuantityProportionHelper,
           helperMaxLines: 100,
           filled: false,
         ),
         // NOTE: do we need maximum?
         validator: Validator.positiveNumber(
-          S.quantityProportionLabel,
+          S.stockQuantityProportionLabel,
           maximum: 100,
           allowNull: true,
           focusNode: _proportionFocusNode,

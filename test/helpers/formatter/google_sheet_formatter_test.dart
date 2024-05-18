@@ -15,6 +15,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
+import 'package:possystem/translator.dart';
 
 import '../../test_helpers/translator.dart';
 
@@ -318,12 +319,12 @@ void main() {
         const c1Data = '- co1,true\n- co2,,5';
 
         final items = formatter.format<OrderAttribute>(Formattable.orderAttr, [
-          ['c1', '折扣', c1Data],
+          ['c1', S.orderAttributeModeName('changeDiscount'), c1Data],
           ['c1', '', '- co1,20'],
           ['c2'],
-          ['c2', '折扣', '- a,b,10000'],
+          ['c2', S.orderAttributeModeName('changeDiscount'), '- a,b,10000'],
           ['c2', ''],
-          ['c3', '變價', '+'],
+          ['c3', S.orderAttributeModeName('changePrice'), '+'],
         ]);
 
         // should not changed

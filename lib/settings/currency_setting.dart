@@ -1,32 +1,39 @@
+import 'package:intl/intl.dart';
+import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CurrencySetting extends Setting<CurrencyTypes> {
-  static late CurrencySetting instance;
+  static CurrencySetting instance = CurrencySetting._();
 
-  static const defaultCurrency = CurrencyTypes.twd;
+  static const defaultValue = CurrencyTypes.twd;
 
-  static const supports = {
+  static const supports = <CurrencyTypes, List<num>>{
     CurrencyTypes.twd: [1, 5, 10, 50, 100, 500, 1000],
     CurrencyTypes.usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };
 
   /// Current available unit of money
-  late List<num> unitList;
+  List<num> unitList = CurrencySetting.supports[CurrencyTypes.twd]!;
 
   /// Is this currency all int?
-  late bool isInt;
+  bool isInt = true;
 
   /// Index of integer in [unitList]
-  late int intIndex;
+  int intIndex = 0;
 
-  CurrencySetting() {
-    instance = this;
+  CurrencySetting._() {
+    value = defaultValue;
+    LanguageSetting.instance.addListener(() {
+      formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
+    });
   }
 
   @override
   String get key => 'currency';
 
   String get recordName => '新台幣';
+
+  NumberFormat formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
 
   /// Ceiling [value] to currency least value
   ///
@@ -75,7 +82,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
 
   @override
   void initialize() {
-    value = CurrencyTypes.values[service.get<int>(key) ?? 0];
+    value = CurrencyTypes.values[service.get<int>(key) ?? defaultValue.index];
     _setMetadata(value);
   }
 
@@ -106,7 +113,21 @@ enum CurrencyTypes {
 extension ToCurrency on num {
   /// Parse value to int or double string, decided by [CurrencySetting.isInt]
   String toCurrency() {
-    return CurrencySetting.instance.isInt ? round().toString() : toString();
+    return CurrencySetting.instance.formatter.format(toCurrencyNum());
+  }
+
+  String toCurrencyLong() {
+    if (CurrencySetting.instance.isInt) {
+      return round().toString();
+    }
+
+    // if it has decimal, show it, else show int
+    final rounded = round();
+    if (this == rounded) {
+      return round().toString();
+    }
+
+    return toString();
   }
 
   num toCurrencyNum() {

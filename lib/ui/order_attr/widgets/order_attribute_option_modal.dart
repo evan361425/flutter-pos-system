@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
@@ -35,13 +35,13 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
   late bool isDefault;
 
   @override
-  String get title => widget.option?.name ?? S.orderAttributeOptionCreateTitle(widget.attribute.name);
+  String get title => widget.option?.name ?? S.orderAttributeOptionTitleCreateWith(widget.attribute.name);
 
   @override
   List<Widget> buildFormFields() {
-    final label = S.orderAttributeModeNames(widget.attribute.mode.name);
-    final helper = S.orderAttributeOptionsModeHelper(widget.attribute.mode.name);
-    final hint = S.orderAttributeOptionsModeHint(widget.attribute.mode.name);
+    final label = S.orderAttributeModeName(widget.attribute.mode.name);
+    final helper = S.orderAttributeOptionModeHelper(widget.attribute.mode.name);
+    final hint = S.orderAttributeOptionModeHint(widget.attribute.mode.name);
     final validator = widget.attribute.mode == OrderAttributeMode.changeDiscount
         ? Validator.positiveInt(
             label,
@@ -74,7 +74,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.option?.name != name && widget.attribute.hasName(name)
-                ? S.orderAttributeOptionNameRepeatError
+                ? S.orderAttributeOptionNameErrorRepeat
                 : null;
           },
         ),
@@ -85,7 +85,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
         value: isDefault,
         selected: isDefault,
         onChanged: _toggledDefault,
-        title: Text(S.orderAttributeOptionSetToDefault),
+        title: Text(S.orderAttributeOptionToDefaultLabel),
       ),
       const SizedBox(height: 12.0),
       p(widget.attribute.shouldHaveModeValue
@@ -170,10 +170,8 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
     if (value == true && defaultOption != null && defaultOption.id != widget.option?.id) {
       final confirmed = await ConfirmDialog.show(
         context,
-        title: S.orderAttributeOptionConfirmChangeDefaultTitle,
-        content: S.orderAttributeOptionConfirmChangeDefaultContent(
-          defaultOption.name,
-        ),
+        title: S.orderAttributeOptionToDefaultConfirmChangeTitle,
+        content: S.orderAttributeOptionToDefaultConfirmChangeContent(defaultOption.name),
       );
 
       if (confirmed) {

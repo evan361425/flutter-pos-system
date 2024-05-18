@@ -2,9 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -57,10 +56,10 @@ class ChartCardView extends StatelessWidget {
 
   Widget buildChart(BuildContext context, List metrics) {
     if (metrics.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         width: 128,
         height: 128,
-        child: Center(child: Text('沒有資料')),
+        child: Center(child: Text(S.analysisChartCardEmptyData)),
       );
     }
 
@@ -68,7 +67,7 @@ class ChartCardView extends StatelessWidget {
       case AnalysisChartType.cartesian:
         return _CartesianChart(
           chart: chart,
-          metrics: metrics as List<OrderDataPerDay>,
+          metrics: metrics as List<OrderSummary>,
           interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
         );
       case AnalysisChartType.circular:
@@ -87,9 +86,9 @@ class ChartCardView extends StatelessWidget {
       warningContent: Text(S.dialogDeletionContent(chart.name, '')),
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
-          title: const Text('編輯圖表'),
+          title: Text(S.analysisChartCardTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.chartOrderModal,
+          route: Routes.chartModal,
           routePathParameters: {'id': chart.id},
         ),
       ],
@@ -100,7 +99,7 @@ class ChartCardView extends StatelessWidget {
 class _CartesianChart extends StatelessWidget {
   final Chart chart;
 
-  final List<OrderDataPerDay> metrics;
+  final List<OrderSummary> metrics;
 
   final MetricsIntervalType interval;
 
@@ -150,7 +149,7 @@ class _CartesianChart extends StatelessWidget {
             return LineSeries(
               animationDuration: 0,
               markerSettings: const MarkerSettings(isVisible: true),
-              name: chart.target == OrderMetricTarget.order ? S.analysisChartMetric(keyUnit.key) : keyUnit.key,
+              name: chart.target == OrderMetricTarget.order ? S.analysisChartMetricName(keyUnit.key) : keyUnit.key,
               yAxisName: keyUnit.value.name,
               xValueMapper: (v, i) => v.at,
               yValueMapper: (v, i) => v.value(keyUnit.key),
@@ -204,6 +203,7 @@ class _CircularChart extends StatelessWidget {
       );
     }
 
+    final percentFormat = NumberFormat.percentPattern(S.localeName);
     return SfCircularChart(
       tooltipBehavior: TooltipBehavior(
         enable: true,
@@ -222,7 +222,7 @@ class _CircularChart extends StatelessWidget {
           xValueMapper: (v, i) => v.name,
           yValueMapper: (v, i) => v.value,
           dataSource: metrics,
-          dataLabelMapper: (v, i) => '${v.percent.prettyString()}%',
+          dataLabelMapper: (v, i) => percentFormat.format(v.percent),
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelPosition: ChartDataLabelPosition.inside,

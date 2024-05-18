@@ -4,12 +4,11 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
-import 'package:possystem/debug/random_gen_order.dart';
-import 'package:possystem/debug/rerun_migration.dart';
+import 'package:possystem/constants/constant.dart';
+import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -29,89 +28,82 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    const isProd = String.fromEnvironment('appFlavor') == 'prod';
 
     return TutorialWrapper(
       tab: tab,
       child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         const _HeaderInfoList(),
         if (!isProd)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              const RandomGenerateOrderButton(),
-              ElevatedButton.icon(
-                onPressed: Cache.instance.reset,
-                label: const Text('清除快取'),
-                icon: const Icon(Icons.clear_all_sharp),
-              ),
-              const RerunMigration(),
-            ]),
+          ListTile(
+            key: const Key('setting.debug'),
+            leading: const Icon(Icons.bug_report_sharp),
+            title: const Text('Debug'),
+            subtitle: const Text('For developer only'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const DebugPage()),
+            ),
           ),
         Tutorial(
           id: 'home.menu',
-          index: 2,
-          message: '現在就趕緊來設定菜單吧！',
+          title: S.menuTutorialTitle,
+          message: S.menuTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),
           disable: Menu.instance.isNotEmpty,
+          route: Routes.menu,
           child: _buildRouteTile(
             id: 'menu',
             icon: Icons.collections_sharp,
             route: Routes.menu,
             title: S.menuTitle,
-            subtitle: '產品種類、產品',
+            subtitle: S.menuSubtitle,
           ),
         ),
         Tutorial(
           id: 'home.exporter',
-          index: 1,
-          title: '資料轉移',
-          message: '這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。',
+          title: S.transitTutorialTitle,
+          message: S.transitTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),
           child: _buildRouteTile(
             id: 'exporter',
             icon: Icons.upload_file_sharp,
             route: Routes.transit,
             title: S.transitTitle,
-            subtitle: '匯入、匯出資料',
+            subtitle: S.transitDescription,
           ),
         ),
         Tutorial(
           id: 'home.order_attr',
-          index: 0,
-          title: '顧客設定',
-          message: '這裡可以設定顧客資訊，例如：\n'
-              '內用，加價一成；\n'
-              '外帶，維持原價。',
+          title: S.orderAttributeTutorialTitle,
+          message: S.orderAttributeTutorialContent,
           spotlightBuilder: const SpotlightRectBuilder(),
           child: _buildRouteTile(
             id: 'order_attrs',
             icon: Icons.assignment_ind_sharp,
             route: Routes.orderAttr,
             title: S.orderAttributeTitle,
-            subtitle: '內用、外帶等等',
+            subtitle: S.orderAttributeDescription,
           ),
         ),
         _buildRouteTile(
           id: 'quantity',
           icon: Icons.exposure_sharp,
           route: Routes.quantity,
-          title: S.quantityTitle,
-          subtitle: '半糖、微糖等等',
+          title: S.stockQuantityTitle,
+          subtitle: S.stockQuantityDescription,
         ),
         _buildRouteTile(
           id: 'feature_request',
           icon: Icons.lightbulb_sharp,
           route: Routes.featureRequest,
-          title: S.featureRequestTitle,
-          subtitle: '使用 Google 表單提供回饋',
+          title: S.settingElfTitle,
+          subtitle: S.settingElfDescription,
         ),
         _buildRouteTile(
           id: 'setting',
           icon: Icons.settings_sharp,
           route: Routes.features,
-          title: S.settingTitle,
-          subtitle: '外觀、語言、提示',
+          title: S.settingFeatureTitle,
+          subtitle: S.settingFeatureDescription,
         ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           TextButton(
@@ -175,7 +167,7 @@ class _HeaderInfoList extends StatelessWidget {
             id: 'menu1',
             context: context,
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
-            subtitle: '產品',
+            subtitle: S.menuProductHeaderInfo,
             route: Routes.menu,
             query: {'mode': 'products'},
           ),
@@ -184,7 +176,7 @@ class _HeaderInfoList extends StatelessWidget {
             id: 'menu2',
             context: context,
             title: menu.length,
-            subtitle: '種類',
+            subtitle: S.menuCatalogHeaderInfo,
             route: Routes.menu,
           ),
           const SizedBox(width: 16),
@@ -192,7 +184,7 @@ class _HeaderInfoList extends StatelessWidget {
             id: 'order_attrs',
             context: context,
             title: attrs.length,
-            subtitle: '顧客設定',
+            subtitle: S.orderAttributeHeaderInfo,
             route: Routes.orderAttr,
           ),
         ],

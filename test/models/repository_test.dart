@@ -22,15 +22,15 @@ void main() {
 
       test('Cashier', () async {
         when(cache.get(any)).thenReturn(null);
-        final currency = CurrencySetting()..initialize();
+        CurrencySetting.instance.initialize();
         final cashier = Cashier();
 
         // ignore: invalid_use_of_protected_member
-        expect(currency.hasListeners, isTrue);
+        expect(CurrencySetting.instance.hasListeners, isTrue);
 
         cashier.dispose();
         // ignore: invalid_use_of_protected_member
-        expect(currency.hasListeners, isFalse);
+        expect(CurrencySetting.instance.hasListeners, isFalse);
       });
     });
 
@@ -43,7 +43,7 @@ void main() {
         final dirtyData = [
           {'count': '', 'unit': 2}
         ];
-        CurrencySetting().unitList = [1, 2, 3];
+        CurrencySetting.instance.unitList = [1, 2, 3];
 
         final cashier = Cashier();
         await cashier.deleteFavorite(0);
@@ -63,7 +63,6 @@ void main() {
     group('Cashier', () {
       test('should handler error parsing', () async {
         final cashier = Cashier();
-        CurrencySetting();
         CurrencySetting.instance.unitList = [1];
 
         await cashier.setCurrent([
@@ -74,7 +73,6 @@ void main() {
       });
 
       test('#findPossibleChange', () async {
-        CurrencySetting();
         final cashier = Cashier();
         await cashier.setCurrent([
           {'unit': 10},
@@ -103,7 +101,6 @@ void main() {
       });
 
       test('#update', () async {
-        CurrencySetting();
         final cashier = Cashier();
         await cashier.setCurrent([
           {'unit': 5, 'count': 3},
@@ -115,7 +112,6 @@ void main() {
       });
 
       test('#paid', () async {
-        CurrencySetting();
         final cashier = Cashier();
         await cashier.setCurrent([
           {'unit': 5},

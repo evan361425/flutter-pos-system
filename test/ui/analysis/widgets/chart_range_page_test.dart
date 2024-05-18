@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 
 import '../../../test_helpers/translator.dart';
@@ -16,7 +16,6 @@ void main() {
         start: today.subtract(const Duration(days: 7)),
         end: today,
       );
-      final format = DateFormat.MMMd('zh_TW');
 
       DateTimeRange? selected;
       await tester.pumpWidget(
@@ -38,30 +37,30 @@ void main() {
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();
 
-      expect(find.text('最近7日'), findsOneWidget);
-      expect(find.text(range.format(format)), findsAtLeastNWidgets(1));
-      expect(find.text('本週'), findsOneWidget);
-      expect(find.text('上週'), findsOneWidget);
+      expect(find.text(S.analysisChartRangeLast7Days), findsOneWidget);
+      expect(find.text(range.format('en')), findsAtLeastNWidgets(1));
+      expect(find.text(S.analysisChartRangeThisWeek), findsOneWidget);
+      expect(find.text(S.analysisChartRangeLastWeek), findsOneWidget);
 
-      await tester.tap(find.text('日期'));
+      await tester.tap(find.text(S.analysisChartRangeTabName('day')));
       await tester.pumpAndSettle();
 
-      expect(find.text('昨日'), findsOneWidget);
-      await tester.tap(find.text('今日'));
+      expect(find.text(S.analysisChartRangeYesterday), findsOneWidget);
+      await tester.tap(find.text(S.analysisChartRangeToday));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('月'));
+      await tester.tap(find.text(S.analysisChartRangeTabName('month')));
       await tester.pumpAndSettle();
 
-      expect(find.text('最近30日'), findsOneWidget);
-      expect(find.text('本月'), findsOneWidget);
-      expect(find.text('上月'), findsOneWidget);
+      expect(find.text(S.analysisChartRangeLast30Days), findsOneWidget);
+      expect(find.text(S.analysisChartRangeThisMonth), findsOneWidget);
+      expect(find.text(S.analysisChartRangeLastMonth), findsOneWidget);
 
-      await tester.tap(find.text('自訂'));
+      await tester.tap(find.text(S.analysisChartRangeTabName('custom')));
       await tester.pumpAndSettle();
 
       await tester.tap(
-        find.text(DateTimeRange(start: today, end: tomorrow).format(format)),
+        find.text(DateTimeRange(start: today, end: tomorrow).format('en')),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'), warnIfMissed: false);

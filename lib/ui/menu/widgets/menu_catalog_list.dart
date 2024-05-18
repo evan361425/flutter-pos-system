@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
@@ -29,13 +29,13 @@ class MenuCatalogList extends StatelessWidget {
         warningContentBuilder: _warningContentBuilder,
         actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
           BottomSheetAction(
-            title: Text(S.menuCatalogUpdate),
+            title: Text(S.menuCatalogTitleUpdate),
             leading: const Icon(KIcons.modal),
             routePathParameters: {'id': catalog.id},
             route: Routes.menuCatalogModal,
           ),
           BottomSheetAction(
-            title: Text(S.menuProductReorder),
+            title: Text(S.menuProductTitleReorder),
             leading: const Icon(KIcons.reorder),
             route: Routes.menuCatalogReorder,
             routePathParameters: {'id': catalog.id},
@@ -60,7 +60,7 @@ class MenuCatalogList extends StatelessWidget {
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
-        emptyText: S.menuCatalogListEmptyProduct,
+        emptyText: S.menuCatalogEmptyProducts,
       ),
       onLongPress: showActions,
       onTap: () => onSelected(catalog),
@@ -68,8 +68,8 @@ class MenuCatalogList extends StatelessWidget {
   }
 
   Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
-    final moreCtx = S.menuCatalogDialogDeletionContent(catalog.length);
-    return Text(S.dialogDeletionContent(catalog.name, moreCtx));
+    final more = S.menuCatalogDialogDeletionContent(catalog.length);
+    return Text(S.dialogDeletionContent(catalog.name, '$more\n\n'));
   }
 }
 

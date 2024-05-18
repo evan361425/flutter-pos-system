@@ -5,3 +5,5 @@ const double kSpacing3 = 18.0;
 const double kSpacing4 = 22.0;
 const double kSpacing5 = 24.0;
 const bool isLocalTest = String.fromEnvironment('appFlavor') == 'debug';
+const bool isInternalTest = String.fromEnvironment('appFlavor') == 'dev';
+const bool isProd = String.fromEnvironment('appFlavor') == 'prod';

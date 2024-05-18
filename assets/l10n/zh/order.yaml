@@ -1,0 +1,147 @@
+$prefix: order
+title: 點餐
+btn: 點餐
+snackbar:
+  cashier:
+    notEnough: 收銀機錢不夠找囉！
+    usingSmallMoney: 收銀機使用小錢去找零
+    usingSmallMoneyHelper: |-
+      找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。
+
+      例如，售價「65」，消費者支付「100」，此時應找「35」
+      如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。
+
+      怎麼避免本提示：
+      • 到換錢頁面把各幣值補足。
+      • 到[設定頁]({link})關閉收銀機的相關提示。
+action:
+  checkout: 結帳
+  exchange: 換錢
+  stash: 暫存本次點餐
+  review: 訂單記錄
+loader:
+  meta:
+    totalRevenue: 總營收：{revenue}
+    totalCost: 總成本：{cost}
+    totalCount: 總數：{count}
+  empty: 查無點餐紀錄
+catalogList:
+  empty: 尚未設定產品種類
+productList:
+  tutorial:
+    title: 開始點餐！
+    content:
+    - |-
+      透過圖片點餐更方便！
+      可以至「設定」>「[每行顯示幾個產品]({link})」調整
+      讓這裡僅使用文字點餐。
+    - link:
+cart:
+  action:
+    bulkify: 批量操作
+    toggle: 反選
+    selectAll: 全選
+    discount: 打折
+    _discount:
+      $prefix: discount
+      label: 折扣
+      hint: 例如：50，代表打五折（半價）
+      helper: 這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。
+      suffix: 折
+    changePrice: 變價
+    _changePrice:
+      $prefix: changePrice
+      label: 價錢
+      hint: 每項產品的價錢
+      prefix: ''
+      suffix: 元
+    changeCount: 變更數量
+    _changeCount:
+      $prefix: changeCount
+      label: 數量
+      hint: 產品數量
+      suffix: 個
+    free: 招待
+    delete: 刪除
+  snapshot:
+    tutorial:
+      title: 購物車
+      content: |-
+        為了讓點選產品可以更方便，
+        我們把點餐後的產品設定至於此面板。
+        如果需要一次顯示所有訊息的排版（適合大螢幕），
+        可以至「設定」>「[點餐的外觀]({link})」調整。
+    empty: 尚未點餐
+  meta:
+    totalPrice: 總價：{price}
+    totalCount: 總數：{count}
+  product:
+    price:
+    - '0': 免費
+      other: '{price}元'
+    increase: 數量加一
+    defaultQuantity: 預設份量
+    ingredient: "{name}（{quantity}）"
+  ingredient:
+    status:
+    - emptyCart: 請選擇產品來設定其成分
+      differentProducts: 請選擇相同的產品來設定其成分
+      noNeedIngredient: 這個產品沒有可以設定的成分
+  quantity:
+    notAble: 請選擇成分來設定份量
+    label: '{name}（{amount}）'
+    defaultLabel: 預設值（{amount}）
+checkout:
+  emptyCart: 請先進行點單。
+  action:
+    stash: 暫存
+    confirm: 確認
+  stash:
+    tab: 暫存
+    empty: 目前無任何暫存餐點。
+    noProducts: 沒有任何產品
+    action:
+      checkout: 結帳
+      restore: 還原
+    dialog:
+      calculator: 結帳計算機
+      restore:
+        title: 還原暫存訂單
+        content: 此動作將會覆蓋掉現在購物車內的訂單。
+      delete:
+        name: 訂單
+  attribute:
+    tab: 顧客設定
+  cashier:
+    tab: 收銀機
+    calculator:
+      label:
+        paid: 付額
+        change: 找錢
+    snapshot:
+      label:
+        change: 找錢：{change}
+  snackbar:
+    paidFailed: 付額小於訂單總價，無法結帳。
+objectView:
+  empty: 查無點餐紀錄
+  change: 找錢
+  price:
+    total: 訂單總價：{price}
+    products: 產品總價
+    attributes: 顧客設定總價
+  cost: 成本
+  profit: 淨利
+  paid: 付額
+  divider:
+    attribute: 顧客設定
+    product: 產品資訊
+  product:
+    price: 總價
+    cost: 總成本
+    count: 總數
+    singlePrice: 單價
+    originalPrice: 折扣前單價
+    catalog: 產品種類
+    ingredient: 成分
+    defaultQuantity: 預設

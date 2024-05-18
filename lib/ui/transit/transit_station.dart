@@ -7,11 +7,11 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 
 import 'google_sheet/views.dart' as gs;
-import 'plain_text_widgets/views.dart' as pt;
+import 'plain_text/views.dart' as pt;
 
-enum TransitType {
+enum TransitCatalog {
   order,
-  basic,
+  model,
 }
 
 enum TransitMethod {
@@ -22,7 +22,7 @@ enum TransitMethod {
 class TransitStation extends StatefulWidget {
   final TransitMethod method;
 
-  final TransitType type;
+  final TransitCatalog catalog;
 
   final DateTimeRange? range;
 
@@ -34,7 +34,7 @@ class TransitStation extends StatefulWidget {
 
   const TransitStation({
     super.key,
-    required this.type,
+    required this.catalog,
     required this.method,
     this.exporter,
     this.notifier,
@@ -48,7 +48,7 @@ class TransitStation extends StatefulWidget {
 class _TransitStationState extends State<TransitStation> with TickerProviderStateMixin {
   final loading = GlobalKey<LoadingWrapperState>();
 
-  /// 這個是用來顯示「正在執行中」的資訊，避免匯出時被中斷。
+  /// This is used to display the "in progress" information to avoid interruption during export.
   late final ValueNotifier<String> stateNotifier;
 
   late final TabController tabController;
@@ -59,7 +59,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
       key: loading,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(S.transitMethod(widget.method.name)),
+          title: Text(S.transitMethodName(widget.method.name)),
           leading: const PopButton(),
           bottom: _buildAppBarBottom(),
         ),
@@ -102,13 +102,13 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   PreferredSizeWidget? _buildAppBarBottom() {
-    switch (widget.type) {
-      case TransitType.basic:
+    switch (widget.catalog) {
+      case TransitCatalog.model:
         return TabBar(
           controller: tabController,
           tabs: [
-            Tab(text: S.btnExport),
-            Tab(text: S.btnImport),
+            Tab(text: S.transitExportBtn),
+            Tab(text: S.transitImportBtn),
           ],
         );
       default:
@@ -117,8 +117,8 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   Widget _buildBody() {
-    switch (widget.type) {
-      case TransitType.basic:
+    switch (widget.catalog) {
+      case TransitCatalog.model:
         return TabBarView(
           key: const Key('transit.basic_tab'),
           controller: tabController,
@@ -127,7 +127,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
             _buildScreen(_Combination.importBasic),
           ],
         );
-      case TransitType.order:
+      case TransitCatalog.order:
         return _buildScreen(_Combination.exportOrder);
     }
   }

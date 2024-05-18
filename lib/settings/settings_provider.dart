@@ -11,23 +11,22 @@ import 'setting.dart';
 import 'theme_setting.dart';
 
 class SettingsProvider extends ChangeNotifier {
-  static late SettingsProvider instance;
+  static SettingsProvider instance = SettingsProvider._();
 
-  static final allSettings = List<Setting>.from(<Setting>[
-    LanguageSetting(),
-    ThemeSetting(),
-    CurrencySetting(),
-    OrderAwakeningSetting(),
-    OrderOutlookSetting(),
-    OrderProductAxisCountSetting(),
-    CheckoutWarningSetting(),
-    CollectEventsSetting(),
+  final settings = List<Setting>.from(<Setting>[
+    LanguageSetting.instance,
+    ThemeSetting.instance,
+    CurrencySetting.instance,
+    OrderAwakeningSetting.instance,
+    OrderOutlookSetting.instance,
+    OrderProductAxisCountSetting.instance,
+    CheckoutWarningSetting.instance,
+    CollectEventsSetting.instance,
   ], growable: false);
 
-  final List<Setting> settings;
+  SettingsProvider._();
 
-  SettingsProvider(this.settings) {
-    instance = this;
+  void initialize() {
     for (var setting in settings) {
       setting.initialize();
       if (setting.registryForApp) {
@@ -35,10 +34,4 @@ class SettingsProvider extends ChangeNotifier {
       }
     }
   }
-
-  T getSetting<T extends Setting>() {
-    return settings.firstWhere((setting) => setting is T) as T;
-  }
-
-  static T of<T extends Setting>() => instance.getSetting<T>();
 }

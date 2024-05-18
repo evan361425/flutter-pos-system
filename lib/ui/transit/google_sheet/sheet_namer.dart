@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
-import 'package:possystem/components/style/more_button.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/translator.dart';
@@ -35,7 +35,7 @@ class SheetNamerState extends State<SheetNamer> {
     final secondary = widget.action == null
         ? IconButton(
             icon: const Icon(KIcons.edit),
-            tooltip: '修改標題',
+            tooltip: S.transitGSSheetNameUpdate,
             onPressed: editSheetName,
           )
         : EntryMoreButton(
@@ -67,10 +67,10 @@ class SheetNamerState extends State<SheetNamer> {
 
   void showActions() async {
     final result = await showCircularBottomSheet<int>(context, actions: [
-      const BottomSheetAction(
-        key: Key('btn.edit'),
-        title: Text('修改標題'),
-        leading: Icon(KIcons.edit),
+      BottomSheetAction(
+        key: const Key('btn.edit'),
+        title: Text(S.transitGSSheetNameUpdate),
+        leading: const Icon(KIcons.edit),
         returnValue: 0,
       ),
       BottomSheetAction(
@@ -115,13 +115,13 @@ class SheetNamerState extends State<SheetNamer> {
 class SheetNamerProperties {
   final SheetType type;
 
-  // 表單標題
+  /// The name of the sheet
   String name;
 
-  // 初始是否啟用
+  /// Whether the sheet is enabled
   bool checked;
 
-  // 用作 autocomplete
+  /// Use as autocomplete
   Iterable<String>? hints;
 
   SheetNamerProperties(
@@ -132,6 +132,6 @@ class SheetNamerProperties {
   });
 
   String get labelText {
-    return S.transitGSSheetLabel(S.transitType(type.name));
+    return S.transitGSSheetNameLabel(S.transitModelName(type.name));
   }
 }

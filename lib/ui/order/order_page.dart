@@ -9,7 +9,6 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
@@ -53,7 +52,7 @@ class _OrderPageState extends State<OrderPage> {
       },
     );
 
-    final outlook = SettingsProvider.of<OrderOutlookSetting>();
+    final outlook = OrderOutlookSetting.instance.value;
 
     return TutorialWrapper(
       child: Scaffold(
@@ -66,11 +65,11 @@ class _OrderPageState extends State<OrderPage> {
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),
-              child: Text(S.orderActionsCheckout),
+              child: Text(S.orderActionCheckout),
             ),
           ],
         ),
-        body: outlook.value == OrderOutlookTypes.slidingPanel
+        body: outlook == OrderOutlookTypes.slidingPanel
             ? DraggableSheetView(
                 row1: orderCatalogListView,
                 row2: orderProductListView,
@@ -107,7 +106,7 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   void initState() {
-    if (SettingsProvider.of<OrderAwakeningSetting>().value) {
+    if (OrderAwakeningSetting.instance.value) {
       Wakelock.enable();
     }
     // rebind menu/attributes if changed
@@ -128,7 +127,7 @@ class _OrderPageState extends State<OrderPage> {
 }
 
 void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
-  status = SettingsProvider.of<CheckoutWarningSetting>().shouldShow(status);
+  status = CheckoutWarningSetting.instance.shouldShow(status);
 
   switch (status) {
     case CheckoutStatus.ok:
@@ -137,13 +136,13 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showSnackBar(context, S.actSuccess);
       break;
     case CheckoutStatus.cashierNotEnough:
-      showSnackBar(context, S.orderCashierPaidNotEnough);
+      showSnackBar(context, S.orderSnackbarCashierNotEnough);
       break;
     case CheckoutStatus.cashierUsingSmall:
       showMoreInfoSnackBar(
         context,
-        S.orderCashierPaidUsingSmallMoney,
-        Text(S.orderCashierPaidUsingSmallMoneyHint),
+        S.orderSnackbarCashierUsingSmallMoney,
+        Text(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
       );
       break;
     default:

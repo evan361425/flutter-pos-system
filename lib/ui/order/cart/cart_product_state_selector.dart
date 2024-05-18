@@ -72,14 +72,14 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
               key: const Key('order.quantity.default'),
               onSelected: (_) => _changeQuantity(null),
               selected: quantityId == null,
-              label: Text(S.orderCartQuantityDefault(ingredient.amount)),
+              label: Text(S.orderCartQuantityDefaultLabel(ingredient.amount)),
             ),
             for (final q in ingredient.items)
               ChoiceChip(
                 key: Key('order.quantity.${q.id}'),
                 onSelected: (_) => _changeQuantity(q.id),
                 selected: quantityId == q.id,
-                label: Text('${q.name}（${q.amount.toStringAsFixed(1)}）'),
+                label: Text(S.orderCartQuantityLabel(q.name, q.amount)),
               ),
           ],
         ),

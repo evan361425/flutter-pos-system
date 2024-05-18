@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -12,7 +10,6 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
-import 'package:spotlight_ant/spotlight_ant.dart';
 
 class AnalysisView extends StatefulWidget {
   final int? tabIndex;
@@ -58,26 +55,36 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             ),
           ]);
         },
-        child: SliverList.list(children: const [
+        child: SliverList.list(children: [
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              RouteCircularButton(
-                key: Key('anal.order'),
-                icon: Icons.store_sharp,
-                route: Routes.order,
-                text: '點餐',
+              Expanded(
+                child: Tutorial(
+                  id: 'anal.add_chart',
+                  title: S.analysisChartTutorialTitle,
+                  message: S.analysisChartTutorialContent,
+                  child: RouteCircularButton(
+                    key: const Key('anal.add_chart'),
+                    route: Routes.chartNew,
+                    icon: KIcons.add,
+                    text: S.analysisChartTitleCreate,
+                  ),
+                ),
               ),
-              SizedBox.square(dimension: 96.0),
-              RouteCircularButton(
-                key: Key('anal.history'),
-                icon: Icons.calendar_month_sharp,
-                route: Routes.history,
-                text: '紀錄',
+              const Spacer(),
+              Expanded(
+                child: RouteCircularButton(
+                  key: const Key('anal.history'),
+                  icon: Icons.calendar_month_sharp,
+                  route: Routes.history,
+                  text: S.analysisHistoryBtn,
+                ),
               ),
             ],
           ),
-          GoalsCardView(),
+          const GoalsCardView(),
         ]),
       ),
     );
@@ -86,26 +93,8 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   SliverAppBar _buildChartHeader() {
     return SliverAppBar(
       pinned: true,
-      title: const Text('圖表分析'),
+      title: Text(S.analysisChartTitle),
       toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
-      actions: [
-        Tutorial(
-          id: 'anal.add_chart',
-          message: '開始設計圖表追蹤你的銷售狀況吧！',
-          spotlightBuilder: const SpotlightRectBuilder(borderRadius: 28),
-          child: ElevatedButton.icon(
-            key: const Key('anal.add_chart'),
-            onPressed: () => context.pushNamed(
-              Routes.chartOrderModal,
-              pathParameters: {
-                'id': '0',
-              },
-            ),
-            icon: const Icon(KIcons.add),
-            label: const Text('新增圖表'),
-          ),
-        ),
-      ],
       bottom: AppBar(
         primary: false,
         centerTitle: false,
@@ -117,7 +106,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             key: const Key('anal.chart_range'),
             onPressed: _goToChartRange,
             child: Text(
-              range.value.format(DateFormat.MMMd(S.localeName)),
+              range.value.format(S.localeName),
             ),
           ),
         ),
@@ -136,7 +125,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             onPressed: _showActions,
             enableFeedback: true,
             iconSize: 16,
-            tooltip: '設定',
+            tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
             icon: const Icon(Icons.settings_sharp),
           ),
         ],
@@ -186,10 +175,15 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
     await showCircularBottomSheet<int>(
       context,
       actions: <BottomSheetAction<int>>[
-        const BottomSheetAction(
-          title: Text('排序圖表'),
-          leading: Icon(KIcons.reorder),
+        BottomSheetAction(
+          title: Text(S.analysisChartTitleReorder),
+          leading: const Icon(KIcons.reorder),
           route: Routes.chartReorder,
+        ),
+        BottomSheetAction(
+          title: Text(S.analysisChartTitleCreate),
+          leading: const Icon(KIcons.add),
+          route: Routes.chartNew,
         ),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/translator.dart';
 
 class MoreButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -51,8 +52,8 @@ class NavToButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      tooltip: '前往',
-      icon: const Icon(KIcons.navTo),
+      tooltip: S.btnNavTo,
+      icon: const Icon(Icons.open_in_new_sharp),
     );
   }
 }

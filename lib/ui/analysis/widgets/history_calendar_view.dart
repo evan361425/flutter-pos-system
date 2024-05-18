@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -12,22 +11,22 @@ import 'package:table_calendar/table_calendar.dart';
 int _hashDate(DateTime e) => e.day + e.month * 100 + e.year * 10000;
 int _hashMonth(DateTime e) => e.month + e.year * 100;
 
-class CalendarView extends StatefulWidget {
+class HistoryCalendarView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
   final bool isPortrait;
 
-  const CalendarView({
+  const HistoryCalendarView({
     super.key,
     required this.notifier,
     required this.isPortrait,
   });
 
   @override
-  State<CalendarView> createState() => _CalendarViewState();
+  State<HistoryCalendarView> createState() => _HistoryCalendarViewState();
 }
 
-class _CalendarViewState extends State<CalendarView> {
+class _HistoryCalendarViewState extends State<HistoryCalendarView> {
   final List<int> _loadedMonths = <int>[];
 
   final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(
@@ -53,16 +52,16 @@ class _CalendarViewState extends State<CalendarView> {
         shouldFillViewport: widget.isPortrait ? false : true,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        locale: SettingsProvider.instance.getSetting<LanguageSetting>().value.toString(),
+        locale: LanguageSetting.instance.value.locale.toString(),
         // header
         // chinese will be hidden if using default value
         daysOfWeekHeight: 20.0,
         headerStyle: const HeaderStyle(formatButtonShowsNext: false),
-        // show next format
+        // show next format, so k/v are not matching
         availableCalendarFormats: {
-          CalendarFormat.month: S.analysisCalendarTwoWeek,
-          CalendarFormat.twoWeeks: S.analysisCalendarWeek,
-          CalendarFormat.week: S.analysisCalendarMonth,
+          CalendarFormat.month: S.twoWeeks,
+          CalendarFormat.twoWeeks: S.singleWeek,
+          CalendarFormat.week: S.singleMonth,
         },
         // no need holiday/weekend days
         holidayPredicate: (day) => false,
@@ -129,7 +128,7 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  /// the day is UTC!!!
+  /// the day is UTC formatted
   void _onDaySelected(DateTime day) {
     widget.notifier.value = Util.getDateRange(now: day.toLocal());
     setState(() {
@@ -137,7 +136,7 @@ class _CalendarViewState extends State<CalendarView> {
     });
   }
 
-  /// the [day] is UTC!!!
+  /// the [day] is UTC formatted
   void _searchPageData(DateTime day) {
     // make calender page stay in current page
     _focusedDay = day;
@@ -147,7 +146,7 @@ class _CalendarViewState extends State<CalendarView> {
     }
   }
 
-  /// the [day] is UTC!!!
+  /// the [day] is UTC formatted
   void _searchCountInMonth(DateTime day) async {
     final local = day.toLocal();
     // add/sub 7 days for first/last few days on next/last month

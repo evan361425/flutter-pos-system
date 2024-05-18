@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/mixin/item_modal.dart';
+import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
@@ -29,7 +30,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
   late FocusNode _nameFocusNode;
 
   @override
-  String get title => widget.replenishment?.name ?? S.stockReplenishmentCreate;
+  String get title => widget.replenishment?.name ?? S.stockReplenishmentTitleCreate;
 
   @override
   List<Widget> buildFormFields() {
@@ -55,12 +56,13 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
           focusNode: _nameFocusNode,
           validator: (name) {
             return widget.replenishment?.name != name && Replenisher.instance.hasName(name)
-                ? S.stockReplenishmentNameRepeatError
+                ? S.stockReplenishmentNameErrorRepeat
                 : null;
           },
         ),
       )),
-      TextDivider(label: S.stockReplenishmentIngredientListTitle),
+      TextDivider(label: S.stockReplenishmentIngredientsDivider),
+      HintText(S.stockReplenishmentIngredientsHelper),
       for (final ing in Stock.instance.itemList) _buildIngredientField(ing),
     ];
   }

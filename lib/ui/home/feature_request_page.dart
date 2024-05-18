@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/translator.dart';
 
 class FeatureRequestPage extends StatelessWidget {
   const FeatureRequestPage({super.key});
@@ -25,9 +26,7 @@ class FeatureRequestPage extends StatelessWidget {
             ),
             const SizedBox(height: 14.0),
             Linkify.fromString(
-              '覺得這裡還少了什麼嗎？\n'
-              '歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。\n'
-              '也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。',
+              S.settingElfContent,
               textAlign: TextAlign.center,
             )
           ]),

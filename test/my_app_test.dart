@@ -4,9 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/my_app.dart';
-import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
-import 'package:possystem/settings/theme_setting.dart';
 import 'package:provider/provider.dart';
 
 import 'mocks/mock_cache.dart';
@@ -20,19 +18,13 @@ void main() {
     when(cache.get('tutorial.home.order_attr')).thenReturn(true);
     await Firebase.initializeApp();
 
-    final settings = SettingsProvider([
-      ThemeSetting(),
-      LanguageSetting(),
-    ]);
     final app = MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: settings),
+        ChangeNotifierProvider.value(value: SettingsProvider.instance),
         ChangeNotifierProvider.value(value: Menu()),
         ChangeNotifierProvider.value(value: OrderAttributes()),
       ],
-      builder: (_, __) => MyApp(
-        settings: settings,
-      ),
+      builder: (_, __) => const MyApp(),
     );
 
     await tester.pumpWidget(app);

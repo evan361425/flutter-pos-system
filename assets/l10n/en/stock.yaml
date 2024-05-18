@@ -1,0 +1,121 @@
+$prefix: stock
+tab: Inventory
+updatedAt:
+- 'Last Restock: {updatedAt}'
+- updatedAt: {type: DateTime, format: MMMEd}
+ingredient:
+  emptyBody: Once ingredients are added, you can start tracking their inventory!
+  title:
+    create: Add Ingredient
+    update: Edit Ingredient
+    updateAmount: Edit Inventory
+  tutorial:
+    title: Add Ingredient
+    content: |-
+      Ingredients help us track product inventory.
+
+      You can add ingredients in "Menu"
+      and then manage inventory here.
+  dialogDeletionContent:
+  - =0: No products currently use this ingredient
+    other: Deleting this ingredient will also remove it from {count} products
+  - Indicates how many products will be affected when deleting the ingredient
+  - count: {type: int, mode: plural}
+  productsCount:
+  - '{count} products using it'
+  - When editing an ingredient, it indicates how many products are using it and allows for navigation to the product page
+  - count: {type: int, description: Number of products}
+  name:
+    label: Ingredient Name
+    hint: e.g., Cheese
+    error:
+      repeat: Ingredient name already exists
+  amount:
+    label: Current Amount
+    maxLabel: Maximum Amount
+    maxHelper: |-
+      Setting this value helps you see how much of the ingredient is being used.
+      Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased.
+    shortHelper:
+    - If not set maximum amount, every time increase the amount will be considered as the maximum amount
+    - Auxiliary text used for quickly increasing inventory
+replenishment:
+  button: Purchase
+  emptyBody: Purchasing helps you quickly adjust ingredient inventory
+  title:
+    list: Purchase List
+    create: Add Purchase
+    update: Edit Purchase
+  meta:
+    affect:
+    - Affects {count} Ingredients
+    - Indicates in the purchase list how many ingredients are affected
+    - count: {type: int}
+  never:
+  - Never Restocked
+  - The stock page displays the last restock time; if never restocked, this text is set
+  apply:
+    button: Apply Purchase
+    confirm:
+      button: Apply
+      title: Apply Purchase?
+      column:
+      - name: Name
+        amount: Amount
+      - value:
+      hint: After apply, following ingredients will be adjusted
+  tutorial:
+    title: Ingredient Purchases
+    content: |-
+      Through purchases, you no longer need to set the inventory of each ingredient one by one.
+      Set up purchases now and adjust multiple ingredients at once!
+  name:
+    label: Purchase Name
+    hint: e.g., Costco Purchase
+    error:
+      repeat: Purchase name already exists
+  ingredients:
+    divider: Ingredients
+    helper: Click to set the quantity of different ingredients to be purchased
+  ingredientAmount:
+    hint: Set the amount to increase/decrease
+quantity:
+  title: Quantity
+  description: Half Sugar, Low Sugar, etc.
+  _title:
+    $prefix: title
+    create: Add Quantity
+    update: Edit Quantity
+  emptyBody: |-
+    Quantity allows for quick adjustments to the amount of ingredients, such as:
+    Half Sugar, Low Sugar.
+  meta:
+    proportion:
+    - 'Default Ratio: {proportion}'
+    - Text explaining default ratios in subheadings of quantity items
+    - proportion: {type: num, format: decimalPattern}
+  dialogDeletionContent:
+  - =0: No product ingredients currently use this quantity
+    other: Deleting this quantity will also remove it from {count} product ingredients
+  - Indicates how many product ingredients will be affected when deleting the quantity
+  - count: {type: int, mode: plural}
+  name:
+    label: Quantity Name
+    hint: e.g., Small or Large
+    error:
+      repeat: Quantity name already exists
+  proportion:
+    label: Default Ratio
+    helper: |-
+      Applied when this quantity is used for an ingredient.
+
+      For example:
+      if this quantity is "Large" and the default ratio is "1.5",
+      and there's a product "Cheeseburger" with the ingredient "Cheese,"
+      which uses "2" units of cheese per burger,
+      when adding this quantity,
+      the quantity of "Cheese" will automatically be set to "3" (2 * 1.5).
+
+      If set to "1," there's no effect.
+
+      If set to "0," the ingredient won't be used.

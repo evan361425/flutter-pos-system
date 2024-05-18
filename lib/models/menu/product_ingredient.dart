@@ -106,7 +106,9 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
   @override
   String get statusName {
-    // 當產品是新的，代表產品成份一定也是新的，這樣就只需要輸出是否為「新的庫存成分」
+    // When the product is new, it means that the product
+    // ingredient must also be new, so only need to output
+    // whether it is a "new inventory ingredient"
     if (product.status == ModelStatus.staged) {
       return ingredient.status == ModelStatus.staged ? 'stagedIng' : 'normal';
     }

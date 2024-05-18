@@ -11,7 +11,7 @@ class OrderAttributeReorder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReorderableScaffold(
       items: OrderAttributes.instance.itemList,
-      title: S.orderAttributeReorder,
+      title: S.orderAttributeTitleReorder,
       handleSubmit: (List<OrderAttribute> items) => OrderAttributes.instance.reorderItems(items),
     );
   }

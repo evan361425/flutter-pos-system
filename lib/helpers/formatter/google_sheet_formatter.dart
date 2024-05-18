@@ -37,7 +37,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
         _toCD(S.menuProductNameLabel),
         _toCD(S.menuProductPriceLabel),
         _toCD(S.menuProductCostLabel),
-        _toCD(S.transitProductIngredientInfoTitle, S.transitProductIngredientInfoGSNote),
+        _toCD(S.transitGSModelProductIngredientTitle, S.transitGSModelProductIngredientNote),
       ];
 
   @override
@@ -71,7 +71,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
         _toCD(S.stockIngredientNameLabel),
         _toCD(S.stockIngredientAmountLabel),
-        _toCD(S.stockIngredientTotalAmountLabel),
+        _toCD(S.stockIngredientAmountMaxLabel),
       ];
 
   @override
@@ -89,8 +89,8 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
 
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
-        _toCD(S.quantityNameLabel),
-        _toCD(S.quantityProportionLabel, S.quantityProportionHelper),
+        _toCD(S.stockQuantityNameLabel),
+        _toCD(S.stockQuantityProportionLabel, S.stockQuantityProportionHelper),
       ];
 
   @override
@@ -108,7 +108,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   @override
   List<GoogleSheetCellData> getHeader() => <GoogleSheetCellData>[
         _toCD(S.stockReplenishmentNameLabel),
-        _toCD(S.transitReplenishmentTitle, S.transitReplenishmentGSNote)
+        _toCD(S.transitGSModelReplenishmentTitle, S.transitGSModelReplenishmentNote)
       ];
 
   @override
@@ -129,18 +129,18 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
   @override
   List<GoogleSheetCellData> getHeader() {
     final note = OrderAttributeMode.values
-        .map((e) => '${S.orderAttributeModeNames(e.name)} -  ${S.orderAttributeModeDescriptions(e.name)}')
+        .map((e) => '${S.orderAttributeModeName(e.name)} -  ${S.orderAttributeModeHelper(e.name)}')
         .join('\n');
     return <GoogleSheetCellData>[
       _toCD(S.orderAttributeNameLabel),
-      _toCD(S.orderAttributeModeTitle, note),
-      _toCD(S.transitOrderAttributeOptionTitle, S.transitOrderAttributeOptionGSNote),
+      _toCD(S.orderAttributeModeDivider, note),
+      _toCD(S.transitGSModelAttributeOptionTitle, S.transitGSModelAttributeOptionNote),
     ];
   }
 
   @override
   List<List<GoogleSheetCellData>> getRows() {
-    final options = OrderAttributeMode.values.map((e) => S.orderAttributeModeNames(e.name)).toList();
+    final options = OrderAttributeMode.values.map((e) => S.orderAttributeModeName(e.name)).toList();
 
     return target.itemList.map((e) {
       final info = [
@@ -150,7 +150,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes> {
         GoogleSheetCellData(stringValue: e.name),
         GoogleSheetCellData(
           options: options,
-          stringValue: S.orderAttributeModeNames(e.mode.name),
+          stringValue: S.orderAttributeModeName(e.mode.name),
         ),
         GoogleSheetCellData(stringValue: info),
       ];

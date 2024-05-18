@@ -22,20 +22,20 @@ class QuantityPage extends StatelessWidget {
     final body = quantities.isEmpty
         ? Center(
             child: EmptyBody(
-            helperText: '份量可以快速調整成分的量，例如：\n半糖、微糖。',
+            helperText: S.stockQuantityEmptyBody,
             onPressed: handleCreate,
           ))
         : StockQuantityList(quantities: quantities.itemList);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.quantityTitle),
+        title: Text(S.stockQuantityTitle),
         leading: const PopButton(),
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('quantity.add'),
         onPressed: handleCreate,
-        tooltip: S.menuQuantityCreate,
+        tooltip: S.stockQuantityTitleCreate,
         child: const Icon(KIcons.add),
       ),
       body: body,

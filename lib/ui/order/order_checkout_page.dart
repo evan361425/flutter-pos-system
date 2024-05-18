@@ -7,12 +7,12 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_calculator.dart';
-import 'package:possystem/ui/order/cashier/order_cashier_snapshot.dart';
-import 'package:possystem/ui/order/cashier/stashed_order_list_view.dart';
+import 'package:possystem/ui/order/checkout/checkout_cashier_calculator.dart';
+import 'package:possystem/ui/order/checkout/checkout_cashier_snapshot.dart';
+import 'package:possystem/ui/order/checkout/stashed_order_list_view.dart';
 import 'package:possystem/ui/order/widgets/order_object_view.dart';
 
-import 'order_setting_view.dart';
+import 'checkout/checkout_attribute_view.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({super.key});
@@ -53,12 +53,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
                     ),
                   ),
                   onPressed: _stash,
-                  child: const Text('暫存'),
+                  child: Text(S.orderCheckoutActionStash),
                 ),
                 TextButton(
                   key: const Key('order.details.confirm'),
                   onPressed: _checkout,
-                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                  child: Text(S.orderCheckoutActionConfirm),
                 ),
               ],
         // disable shadow after scrolled
@@ -75,8 +75,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
   Widget buildBody(BuildContext context) {
     if (Cart.instance.isEmpty) {
       return TabBarView(controller: _controller, children: [
-        if (hasAttr) OderSettingView(price: price),
-        const Center(child: HintText('請先進行點單。')),
+        if (hasAttr) CheckoutAttributeView(price: price),
+        Center(child: HintText(S.orderCheckoutEmptyCart)),
         const StashedOrderListView(),
       ]);
     }
@@ -86,9 +86,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
         child: GestureDetector(
           onTap: () => draggableController?.reset(),
           child: TabBarView(controller: _controller, children: [
-            if (hasAttr) OderSettingView(price: price),
+            if (hasAttr) CheckoutAttributeView(price: price),
             ValueListenableBuilder(
-              key: const Key('evan'),
               valueListenable: paid,
               builder: (context, value, child) => OrderObjectView(
                 order: Cart.instance.toObject(paid: value),
@@ -110,14 +109,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
                 height: snapshotHeight,
                 baseline: -2 * snapshotHeight,
                 valueScalar: -1,
-                child: OrderCashierSnapshot(price: price, paid: paid),
+                child: CheckoutCashierSnapshot(price: price, paid: paid),
               ),
               Expanded(
                 child: SingleChildScrollView(
                   controller: scroll,
                   child: SizedBox(
                     height: calculatorHeight,
-                    child: OrderCashierCalculator(
+                    child: CheckoutCashierCalculator(
                       onSubmit: _checkout,
                       price: price,
                       paid: paid,
@@ -156,9 +155,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
     );
 
     tabs = [
-      if (hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderSetAttributeTitle),
-      Tab(key: const Key('order.details.order'), text: S.orderCashierTitle),
-      const Tab(key: Key('order.details.stashed'), text: '暫存訂單'),
+      if (hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
+      Tab(key: const Key('order.details.order'), text: S.orderCheckoutCashierTab),
+      Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
     ];
   }
 
@@ -176,7 +175,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
     // send success message
     if (mounted) {
       if (status == CheckoutStatus.paidNotEnough) {
-        showSnackBar(context, S.orderCashierPaidFailed);
+        showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
       } else if (context.canPop()) {
         context.pop(status);
       }

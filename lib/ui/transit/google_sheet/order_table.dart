@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/translator.dart';
 
 import 'order_formatter.dart';
 
@@ -26,25 +27,25 @@ class _OrderTableState extends State<OrderTable> {
           headers: OrderFormatter.orderHeaders,
           data: OrderFormatter.formatOrder(widget.order),
           expandableIndexes: const [
-            OrderFormatter.orderSetAttrIndex,
-            OrderFormatter.orderProductIndex,
+            OrderFormatter.orderDetailsAttrIndex,
+            OrderFormatter.orderDetailsProductIndex,
           ],
         ),
-        const TextDivider(label: '訂單顧客設定'),
+        TextDivider(label: S.transitGSOrderAttributeTitle),
         SimpleTable(
-          headers: OrderFormatter.orderSetAttrHeaders,
-          data: OrderFormatter.formatOrderSetAttr(widget.order),
+          headers: OrderFormatter.orderDetailsAttrHeaders,
+          data: OrderFormatter.formatOrderDetailsAttr(widget.order),
         ),
-        const TextDivider(label: '訂單產品細項'),
+        TextDivider(label: S.transitGSOrderProductTitle),
         SimpleTable(
-          headers: OrderFormatter.orderProductHeaders,
-          data: OrderFormatter.formatOrderProduct(widget.order),
-          expandableIndexes: const [OrderFormatter.orderIngredientIndex],
+          headers: OrderFormatter.orderDetailsProductHeaders,
+          data: OrderFormatter.formatOrderDetailsProduct(widget.order),
+          expandableIndexes: const [OrderFormatter.orderDetailsIngredientIndex],
         ),
-        const TextDivider(label: '訂單成份細項'),
+        TextDivider(label: S.transitGSOrderIngredientTitle),
         SimpleTable(
-          headers: OrderFormatter.orderIngredientHeaders,
-          data: OrderFormatter.formatOrderIngredient(widget.order),
+          headers: OrderFormatter.orderDetailsIngredientHeaders,
+          data: OrderFormatter.formatOrderDetailsIngredient(widget.order),
         ),
       ]),
     );
@@ -100,7 +101,7 @@ class SimpleTable extends StatelessWidget {
       yield Padding(
         padding: const EdgeInsets.all(4.0),
         child: idxOf != -1
-            ? const HintText('詳見下欄')
+            ? HintText(S.transitGSOrderExpandableHint)
             : Text(
                 cell.toString(),
                 textAlign: cell is String ? TextAlign.end : TextAlign.start,

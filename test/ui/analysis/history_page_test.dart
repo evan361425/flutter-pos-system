@@ -4,9 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/language_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:provider/provider.dart';
@@ -25,14 +22,8 @@ void main() {
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
       )).thenReturn(true);
-      final settings = SettingsProvider([
-        LanguageSetting(),
-        CurrencySetting(),
-      ]);
-
       return MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: Seller.instance),
         ],
         builder: (_, __) => MaterialApp.router(
@@ -138,7 +129,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // change format
-      await tester.tap(find.text(S.analysisCalendarMonth));
+      await tester.tap(find.text(S.singleMonth));
       await tester.pumpAndSettle();
 
       expect(find.text('50'), findsOneWidget);
@@ -163,10 +154,10 @@ void main() {
       await tester.tap(find.byKey(const Key('history.export')));
       await tester.pumpAndSettle();
       // dropdown have multiple child for items
-      await tester.tap(find.text(S.transitMethod('plainText')).last);
+      await tester.tap(find.text(S.transitMethodName('plainText')).last);
       await tester.pumpAndSettle();
 
-      expect(find.text(S.transitMethod('plainText')), findsOneWidget);
+      expect(find.text(S.transitMethodName('plainText')), findsOneWidget);
     });
 
     setUpAll(() {

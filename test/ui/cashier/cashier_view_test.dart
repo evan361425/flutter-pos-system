@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
-import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:provider/provider.dart';
 
@@ -24,20 +23,15 @@ void main() {
       )).thenReturn(true);
       when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
 
-      final settings = SettingsProvider([CurrencySetting.instance]);
-
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: Cashier.instance),
-          ChangeNotifierProvider.value(value: settings),
-        ],
+      return ChangeNotifierProvider.value(
+        value: Cashier.instance,
         builder: (_, __) => MaterialApp.router(
           routerConfig: GoRouter(routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const Scaffold(body: CashierView()),
               routes: Routes.routes,
-            )
+            ),
           ]),
         ),
       );
@@ -77,7 +71,7 @@ void main() {
       await tester.tap(find.byKey(const Key('cashier.surplus')));
       await tester.pumpAndSettle();
 
-      expect(find.text('尚未設定，請點選右上角「設為預設」'), findsOneWidget);
+      expect(find.text(S.cashierSurplusErrorEmptyDefault), findsOneWidget);
     });
 
     testWidgets('should execute surplus', (tester) async {
@@ -128,7 +122,7 @@ void main() {
         String number, [
         String action = 'confirm',
       ]) async {
-        await tester.tap(find.text('幣值：$unit'));
+        await tester.tap(find.text(S.cashierUnitLabel(unit)));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextFormField), number);
         await tester.tap(find.byKey(Key('slider_dialog.$action')));
@@ -177,7 +171,6 @@ void main() {
     });
 
     setUp(() {
-      CurrencySetting();
       Cashier();
     });
 

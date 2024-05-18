@@ -1,0 +1,82 @@
+$prefix: cashier
+tab: 收銀
+unitLabel:
+- 幣值：{unit}
+- unit:
+counter:
+  label:
+  - 數量
+  - 設定幣值數量時的標籤
+toDefault:
+  title: 設為預設
+  tutorial:
+    title: 收銀機預設狀態
+    content: |-
+      在下面設定完收銀機各幣值的數量後，
+      按這裡設定預設狀態！
+      設定好的數量就會是各個幣值狀態條的「最大值」。
+  dialog:
+    title: 調整收銀臺預設？
+    content: |-
+      這將會把目前的收銀機狀態設定為預設狀態。
+      此動作將會覆蓋掉先前的設定。
+changer:
+  title: 換錢
+  button: 套用
+  tutorial:
+    title: 收銀機換錢
+    content: |-
+      一百塊換成 10 個十塊之類。
+      幫助快速調整收銀機狀態。
+  error:
+    noSelection: 請選擇要套用的組合
+    notEnough: "{unit} 元不夠換"
+    invalidHead: "{count} 個 {unit} 元沒辦法換"
+    invalidBody: "{count} 個 {unit} 元"
+  favorite:
+    tab: 常用
+    hint: 選完後請點選「套用」來使用該組合
+    emptyBody: 這裡可以幫助你快速轉換不同幣值
+    item:
+      from: 用 {count} 個 {unit} 元換
+      to: "{count} 個 {unit} 元"
+  custom:
+    tab: 自訂
+    addBtn: 新增常用
+    count:
+      label: 數量
+    unit:
+      label: 幣值
+      addBtn: 新增幣種
+    divider:
+      from: 從收銀機中拿出
+      to: 換
+surplus:
+  title: 結餘
+  button: 結餘
+  tutorial:
+    title: 每日結餘
+    content: |-
+      結餘可以幫助我們在每天打烊時，
+      計算現有金額和預設金額的差異。
+  error:
+    emptyDefault: 尚未設定預設狀態
+  tableHint: 若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！
+  columnName:
+  - unit: 單位
+    currentCount: 現有
+    diffCount: 差異
+    defaultCount: 預設
+  counter:
+    label: 幣值{unit}的數量
+    shortLabel: 數量
+  currentTotal:
+    label: 現有總額
+    helper: |-
+      現在收銀機應該要有的總額。
+      若你發現現金和這值對不上，想一想今天有沒有用收銀機的錢買東西？
+  diffTotal:
+    label: 差額
+    helper: |-
+      和收銀機最一開始的總額的差額。
+      這可以快速幫你了解今天收銀機多了多少錢唷。
