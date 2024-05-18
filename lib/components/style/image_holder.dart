@@ -30,7 +30,7 @@ class ImageHolder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.background;
+    final color = Theme.of(context).colorScheme.surface;
     final textColor = Theme.of(context).textTheme.bodyMedium!.color;
     final colors = [color, color.withAlpha(180), color.withAlpha(10)];
 

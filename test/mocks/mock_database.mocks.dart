@@ -202,7 +202,9 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
       ) as _i3.Future<int>);
 
   @override
-  _i3.Future<T> transaction<T>(_i3.Future<T> Function(_i2.DatabaseExecutor)? action) => (super.noSuchMethod(
+  _i3.Future<T> transaction<T>(
+          _i3.Future<T> Function(_i2.DatabaseExecutor)? action) =>
+      (super.noSuchMethod(
         Invocation.method(
           #transaction,
           [action],
@@ -255,7 +257,8 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
             #escapeTable: escapeTable,
           },
         ),
-        returnValue: _i3.Future<List<Map<String, Object?>>>.value(<Map<String, Object?>>[]),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
 
   @override
@@ -380,7 +383,8 @@ class MockDatabaseExecutor extends _i1.Mock implements _i2.DatabaseExecutor {
             #offset: offset,
           },
         ),
-        returnValue: _i3.Future<List<Map<String, Object?>>>.value(<Map<String, Object?>>[]),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
 
   @override
@@ -396,7 +400,8 @@ class MockDatabaseExecutor extends _i1.Mock implements _i2.DatabaseExecutor {
             arguments,
           ],
         ),
-        returnValue: _i3.Future<List<Map<String, Object?>>>.value(<Map<String, Object?>>[]),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
 
   @override

@@ -27,7 +27,7 @@ class LoadingWrapperState extends State<LoadingWrapper> {
       if (_isLoading)
         Positioned.fill(
           child: Container(
-            color: Theme.of(context).colorScheme.background.withAlpha(30),
+            color: Theme.of(context).colorScheme.surface.withAlpha(30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

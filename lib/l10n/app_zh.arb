@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-18T08:05:55.671229Z",
+  "@@last_modified": "2024-05-18T10:48:03.067210Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -493,7 +493,7 @@
   "transitGSErrorCreateSpreadsheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的編輯。",
   "transitGSErrorSpreadsheetEmpty": "請先選擇試算表",
   "transitGSErrorSpreadsheetIdEmpty": "不能為空",
-  "transitGSErrorSpreadsheetIdInvalid": "不合法的文字，必須包含：\n/spreadsheets/d/<ID>/\n或者直接給 ID（英文+數字+底線+減號的組合）",
+  "transitGSErrorSpreadsheetIdInvalid": "不合法的文字，必須包含：\n• /spreadsheets/d/<ID>/\n• 或者直接給 ID（英文+數字+底線+減號的組合）",
   "transitGSErrorCreateSheet": "無法在試算表中建立表單",
   "transitGSErrorCreateSheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的建立；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
   "transitGSErrorSheetRepeat": "表單名稱重複",
@@ -976,7 +976,7 @@
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
   },
-  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！\n",
+  "dialogDeletionContent": "確定要刪除「{name}」嗎？\n\n{more}此動作將無法復原！",
   "@dialogDeletionContent": {
     "description": "Content displayed on the DeleteDialog.",
     "placeholders": {
@@ -1151,7 +1151,7 @@
   "@orderAttributeModeName": {
     "description": "name"
   },
-  "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。\n例如：外送 + 30塊錢、環保杯 - 5塊錢。\n} changeDiscount{選取設定時，會根據折扣影響總價。\n例如：內用 + 10% 服務費、親友價 - 10%。\n} other{UNKNOWN}}",
+  "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。\n例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。\n例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
     "description": "Explanation of customer setting categories",
     "placeholders": {

@@ -48,7 +48,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
                 TextButton(
                   key: const Key('order.details.stash'),
                   style: ButtonStyle(
-                    foregroundColor: MaterialStatePropertyAll(
+                    foregroundColor: WidgetStatePropertyAll(
                       theme.textTheme.bodyMedium!.color,
                     ),
                   ),

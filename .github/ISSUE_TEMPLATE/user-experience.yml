@@ -1,30 +1,30 @@
 name: 😺 使用者體驗
 description: POS系統目前哪裡不好用
 labels:
-  - "ux"
+- "ux"
 body:
-  - type: textarea
-    id: feature
-    attributes:
-      label: 哪個功能不好用
-      description: 哪個頁面的功能，為什麼不好用？
-    validations:
+- type: textarea
+  id: feature
+  attributes:
+    label: 哪個功能不好用
+    description: 哪個頁面的功能，為什麼不好用？
+  validations:
+    required: true
+- type: textarea
+  id: expected
+  attributes:
+    label: 你預期這功能長什麼樣子？
+    description: 怎麼操作，怎麼呈現。
+  validations:
+    required: true
+- type: textarea
+  id: more
+  attributes:
+    label: 任何想要補充的。
+- type: checkboxes
+  id: checks
+  attributes:
+    label: 開新的 issue 前
+    options:
+    - label: 我有檢查其他 [issue](https://github.com/evan361425/flutter-pos-system/issues) 了
       required: true
-  - type: textarea
-    id: expected
-    attributes:
-      label: 你預期這功能長什麼樣子？
-      description: 怎麼操作，怎麼呈現。
-    validations:
-      required: true
-  - type: textarea
-    id: more
-    attributes:
-      label: 任何想要補充的。
-  - type: checkboxes
-    id: checks
-    attributes:
-      label: 開新的 issue 前
-      options:
-        - label: 我有檢查其他 [issue](https://github.com/evan361425/flutter-pos-system/issues) 了
-          required: true

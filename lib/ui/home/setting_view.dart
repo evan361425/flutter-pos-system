@@ -206,10 +206,10 @@ class _HeaderInfoList extends StatelessWidget {
     return ElevatedButton(
       key: Key('setting_header.$id'),
       style: const ButtonStyle(
-        fixedSize: MaterialStatePropertyAll(Size.square(128)),
-        padding: MaterialStatePropertyAll(EdgeInsets.zero),
-        // shadowColor: MaterialStatePropertyAll(Colors.transparent),
-        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+        fixedSize: WidgetStatePropertyAll(Size.square(128)),
+        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        // shadowColor: WidgetStatePropertyAll(Colors.transparent),
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
           borderRadius: borderRadius,
           side: BorderSide(color: Colors.transparent),
         )),

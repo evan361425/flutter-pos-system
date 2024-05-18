@@ -50,7 +50,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ColoredBox(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
               child: widget.row1,
             ),
             Expanded(

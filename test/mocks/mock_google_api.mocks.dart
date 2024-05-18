@@ -44,7 +44,8 @@ class _FakeAppsResource_1 extends _i1.SmartFake implements _i2.AppsResource {
         );
 }
 
-class _FakeChangesResource_2 extends _i1.SmartFake implements _i2.ChangesResource {
+class _FakeChangesResource_2 extends _i1.SmartFake
+    implements _i2.ChangesResource {
   _FakeChangesResource_2(
     Object parent,
     Invocation parentInvocation,
@@ -54,7 +55,8 @@ class _FakeChangesResource_2 extends _i1.SmartFake implements _i2.ChangesResourc
         );
 }
 
-class _FakeChannelsResource_3 extends _i1.SmartFake implements _i2.ChannelsResource {
+class _FakeChannelsResource_3 extends _i1.SmartFake
+    implements _i2.ChannelsResource {
   _FakeChannelsResource_3(
     Object parent,
     Invocation parentInvocation,
@@ -64,7 +66,8 @@ class _FakeChannelsResource_3 extends _i1.SmartFake implements _i2.ChannelsResou
         );
 }
 
-class _FakeCommentsResource_4 extends _i1.SmartFake implements _i2.CommentsResource {
+class _FakeCommentsResource_4 extends _i1.SmartFake
+    implements _i2.CommentsResource {
   _FakeCommentsResource_4(
     Object parent,
     Invocation parentInvocation,
@@ -74,7 +77,8 @@ class _FakeCommentsResource_4 extends _i1.SmartFake implements _i2.CommentsResou
         );
 }
 
-class _FakeDrivesResource_5 extends _i1.SmartFake implements _i2.DrivesResource {
+class _FakeDrivesResource_5 extends _i1.SmartFake
+    implements _i2.DrivesResource {
   _FakeDrivesResource_5(
     Object parent,
     Invocation parentInvocation,
@@ -94,7 +98,8 @@ class _FakeFilesResource_6 extends _i1.SmartFake implements _i2.FilesResource {
         );
 }
 
-class _FakePermissionsResource_7 extends _i1.SmartFake implements _i2.PermissionsResource {
+class _FakePermissionsResource_7 extends _i1.SmartFake
+    implements _i2.PermissionsResource {
   _FakePermissionsResource_7(
     Object parent,
     Invocation parentInvocation,
@@ -104,7 +109,8 @@ class _FakePermissionsResource_7 extends _i1.SmartFake implements _i2.Permission
         );
 }
 
-class _FakeRepliesResource_8 extends _i1.SmartFake implements _i2.RepliesResource {
+class _FakeRepliesResource_8 extends _i1.SmartFake
+    implements _i2.RepliesResource {
   _FakeRepliesResource_8(
     Object parent,
     Invocation parentInvocation,
@@ -114,7 +120,8 @@ class _FakeRepliesResource_8 extends _i1.SmartFake implements _i2.RepliesResourc
         );
 }
 
-class _FakeRevisionsResource_9 extends _i1.SmartFake implements _i2.RevisionsResource {
+class _FakeRevisionsResource_9 extends _i1.SmartFake
+    implements _i2.RevisionsResource {
   _FakeRevisionsResource_9(
     Object parent,
     Invocation parentInvocation,
@@ -124,7 +131,8 @@ class _FakeRevisionsResource_9 extends _i1.SmartFake implements _i2.RevisionsRes
         );
 }
 
-class _FakeTeamdrivesResource_10 extends _i1.SmartFake implements _i2.TeamdrivesResource {
+class _FakeTeamdrivesResource_10 extends _i1.SmartFake
+    implements _i2.TeamdrivesResource {
   _FakeTeamdrivesResource_10(
     Object parent,
     Invocation parentInvocation,
@@ -184,7 +192,8 @@ class _FakeLabelList_15 extends _i1.SmartFake implements _i2.LabelList {
         );
 }
 
-class _FakeModifyLabelsResponse_16 extends _i1.SmartFake implements _i2.ModifyLabelsResponse {
+class _FakeModifyLabelsResponse_16 extends _i1.SmartFake
+    implements _i2.ModifyLabelsResponse {
   _FakeModifyLabelsResponse_16(
     Object parent,
     Invocation parentInvocation,
@@ -204,7 +213,8 @@ class _Fake$Channel01_17 extends _i1.SmartFake implements _i3.$Channel01 {
         );
 }
 
-class _FakeSpreadsheetsResource_18 extends _i1.SmartFake implements _i4.SpreadsheetsResource {
+class _FakeSpreadsheetsResource_18 extends _i1.SmartFake
+    implements _i4.SpreadsheetsResource {
   _FakeSpreadsheetsResource_18(
     Object parent,
     Invocation parentInvocation,
@@ -225,7 +235,8 @@ class _FakeSpreadsheetsDeveloperMetadataResource_19 extends _i1.SmartFake
         );
 }
 
-class _FakeSpreadsheetsSheetsResource_20 extends _i1.SmartFake implements _i4.SpreadsheetsSheetsResource {
+class _FakeSpreadsheetsSheetsResource_20 extends _i1.SmartFake
+    implements _i4.SpreadsheetsSheetsResource {
   _FakeSpreadsheetsSheetsResource_20(
     Object parent,
     Invocation parentInvocation,
@@ -235,7 +246,8 @@ class _FakeSpreadsheetsSheetsResource_20 extends _i1.SmartFake implements _i4.Sp
         );
 }
 
-class _FakeSpreadsheetsValuesResource_21 extends _i1.SmartFake implements _i4.SpreadsheetsValuesResource {
+class _FakeSpreadsheetsValuesResource_21 extends _i1.SmartFake
+    implements _i4.SpreadsheetsValuesResource {
   _FakeSpreadsheetsValuesResource_21(
     Object parent,
     Invocation parentInvocation,
@@ -245,7 +257,8 @@ class _FakeSpreadsheetsValuesResource_21 extends _i1.SmartFake implements _i4.Sp
         );
 }
 
-class _FakeBatchUpdateSpreadsheetResponse_22 extends _i1.SmartFake implements _i4.BatchUpdateSpreadsheetResponse {
+class _FakeBatchUpdateSpreadsheetResponse_22 extends _i1.SmartFake
+    implements _i4.BatchUpdateSpreadsheetResponse {
   _FakeBatchUpdateSpreadsheetResponse_22(
     Object parent,
     Invocation parentInvocation,
@@ -265,7 +278,8 @@ class _FakeSpreadsheet_23 extends _i1.SmartFake implements _i4.Spreadsheet {
         );
 }
 
-class _FakeAppendValuesResponse_24 extends _i1.SmartFake implements _i4.AppendValuesResponse {
+class _FakeAppendValuesResponse_24 extends _i1.SmartFake
+    implements _i4.AppendValuesResponse {
   _FakeAppendValuesResponse_24(
     Object parent,
     Invocation parentInvocation,
@@ -275,7 +289,8 @@ class _FakeAppendValuesResponse_24 extends _i1.SmartFake implements _i4.AppendVa
         );
 }
 
-class _FakeBatchClearValuesResponse_25 extends _i1.SmartFake implements _i4.BatchClearValuesResponse {
+class _FakeBatchClearValuesResponse_25 extends _i1.SmartFake
+    implements _i4.BatchClearValuesResponse {
   _FakeBatchClearValuesResponse_25(
     Object parent,
     Invocation parentInvocation,
@@ -296,7 +311,8 @@ class _FakeBatchClearValuesByDataFilterResponse_26 extends _i1.SmartFake
         );
 }
 
-class _FakeBatchGetValuesResponse_27 extends _i1.SmartFake implements _i4.BatchGetValuesResponse {
+class _FakeBatchGetValuesResponse_27 extends _i1.SmartFake
+    implements _i4.BatchGetValuesResponse {
   _FakeBatchGetValuesResponse_27(
     Object parent,
     Invocation parentInvocation,
@@ -317,7 +333,8 @@ class _FakeBatchGetValuesByDataFilterResponse_28 extends _i1.SmartFake
         );
 }
 
-class _FakeBatchUpdateValuesResponse_29 extends _i1.SmartFake implements _i4.BatchUpdateValuesResponse {
+class _FakeBatchUpdateValuesResponse_29 extends _i1.SmartFake
+    implements _i4.BatchUpdateValuesResponse {
   _FakeBatchUpdateValuesResponse_29(
     Object parent,
     Invocation parentInvocation,
@@ -338,7 +355,8 @@ class _FakeBatchUpdateValuesByDataFilterResponse_30 extends _i1.SmartFake
         );
 }
 
-class _FakeClearValuesResponse_31 extends _i1.SmartFake implements _i4.ClearValuesResponse {
+class _FakeClearValuesResponse_31 extends _i1.SmartFake
+    implements _i4.ClearValuesResponse {
   _FakeClearValuesResponse_31(
     Object parent,
     Invocation parentInvocation,
@@ -358,7 +376,8 @@ class _FakeValueRange_32 extends _i1.SmartFake implements _i4.ValueRange {
         );
 }
 
-class _FakeUpdateValuesResponse_33 extends _i1.SmartFake implements _i4.UpdateValuesResponse {
+class _FakeUpdateValuesResponse_33 extends _i1.SmartFake
+    implements _i4.UpdateValuesResponse {
   _FakeUpdateValuesResponse_33(
     Object parent,
     Invocation parentInvocation,
@@ -854,7 +873,8 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
           ],
           {#$fields: $fields},
         ),
-        returnValue: _i5.Future<_i2.ModifyLabelsResponse>.value(_FakeModifyLabelsResponse_16(
+        returnValue: _i5.Future<_i2.ModifyLabelsResponse>.value(
+            _FakeModifyLabelsResponse_16(
           this,
           Invocation.method(
             #modifyLabels,
@@ -1004,13 +1024,15 @@ class MockSheetsApi extends _i1.Mock implements _i4.SheetsApi {
 /// A class which mocks [SpreadsheetsResource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResource {
+class MockSpreadsheetsResource extends _i1.Mock
+    implements _i4.SpreadsheetsResource {
   MockSpreadsheetsResource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.SpreadsheetsDeveloperMetadataResource get developerMetadata => (super.noSuchMethod(
+  _i4.SpreadsheetsDeveloperMetadataResource get developerMetadata =>
+      (super.noSuchMethod(
         Invocation.getter(#developerMetadata),
         returnValue: _FakeSpreadsheetsDeveloperMetadataResource_19(
           this,
@@ -1051,7 +1073,8 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
           ],
           {#$fields: $fields},
         ),
-        returnValue: _i5.Future<_i4.BatchUpdateSpreadsheetResponse>.value(_FakeBatchUpdateSpreadsheetResponse_22(
+        returnValue: _i5.Future<_i4.BatchUpdateSpreadsheetResponse>.value(
+            _FakeBatchUpdateSpreadsheetResponse_22(
           this,
           Invocation.method(
             #batchUpdate,
@@ -1148,7 +1171,8 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
 /// A class which mocks [SpreadsheetsValuesResource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.SpreadsheetsValuesResource {
+class MockSpreadsheetsValuesResource extends _i1.Mock
+    implements _i4.SpreadsheetsValuesResource {
   MockSpreadsheetsValuesResource() {
     _i1.throwOnMissingStub(this);
   }
@@ -1182,7 +1206,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
             #$fields: $fields,
           },
         ),
-        returnValue: _i5.Future<_i4.AppendValuesResponse>.value(_FakeAppendValuesResponse_24(
+        returnValue: _i5.Future<_i4.AppendValuesResponse>.value(
+            _FakeAppendValuesResponse_24(
           this,
           Invocation.method(
             #append,
@@ -1218,7 +1243,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           ],
           {#$fields: $fields},
         ),
-        returnValue: _i5.Future<_i4.BatchClearValuesResponse>.value(_FakeBatchClearValuesResponse_25(
+        returnValue: _i5.Future<_i4.BatchClearValuesResponse>.value(
+            _FakeBatchClearValuesResponse_25(
           this,
           Invocation.method(
             #batchClear,
@@ -1246,8 +1272,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           ],
           {#$fields: $fields},
         ),
-        returnValue:
-            _i5.Future<_i4.BatchClearValuesByDataFilterResponse>.value(_FakeBatchClearValuesByDataFilterResponse_26(
+        returnValue: _i5.Future<_i4.BatchClearValuesByDataFilterResponse>.value(
+            _FakeBatchClearValuesByDataFilterResponse_26(
           this,
           Invocation.method(
             #batchClearByDataFilter,
@@ -1281,7 +1307,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
             #$fields: $fields,
           },
         ),
-        returnValue: _i5.Future<_i4.BatchGetValuesResponse>.value(_FakeBatchGetValuesResponse_27(
+        returnValue: _i5.Future<_i4.BatchGetValuesResponse>.value(
+            _FakeBatchGetValuesResponse_27(
           this,
           Invocation.method(
             #batchGet,
@@ -1312,8 +1339,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           ],
           {#$fields: $fields},
         ),
-        returnValue:
-            _i5.Future<_i4.BatchGetValuesByDataFilterResponse>.value(_FakeBatchGetValuesByDataFilterResponse_28(
+        returnValue: _i5.Future<_i4.BatchGetValuesByDataFilterResponse>.value(
+            _FakeBatchGetValuesByDataFilterResponse_28(
           this,
           Invocation.method(
             #batchGetByDataFilter,
@@ -1341,7 +1368,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           ],
           {#$fields: $fields},
         ),
-        returnValue: _i5.Future<_i4.BatchUpdateValuesResponse>.value(_FakeBatchUpdateValuesResponse_29(
+        returnValue: _i5.Future<_i4.BatchUpdateValuesResponse>.value(
+            _FakeBatchUpdateValuesResponse_29(
           this,
           Invocation.method(
             #batchUpdate,
@@ -1370,7 +1398,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           {#$fields: $fields},
         ),
         returnValue:
-            _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>.value(_FakeBatchUpdateValuesByDataFilterResponse_30(
+            _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>.value(
+                _FakeBatchUpdateValuesByDataFilterResponse_30(
           this,
           Invocation.method(
             #batchUpdateByDataFilter,
@@ -1400,7 +1429,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
           ],
           {#$fields: $fields},
         ),
-        returnValue: _i5.Future<_i4.ClearValuesResponse>.value(_FakeClearValuesResponse_31(
+        returnValue: _i5.Future<_i4.ClearValuesResponse>.value(
+            _FakeClearValuesResponse_31(
           this,
           Invocation.method(
             #clear,
@@ -1482,7 +1512,8 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
             #$fields: $fields,
           },
         ),
-        returnValue: _i5.Future<_i4.UpdateValuesResponse>.value(_FakeUpdateValuesResponse_33(
+        returnValue: _i5.Future<_i4.UpdateValuesResponse>.value(
+            _FakeUpdateValuesResponse_33(
           this,
           Invocation.method(
             #update,

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-18T08:05:55.647664Z",
+  "@@last_modified": "2024-05-18T10:48:03.044199Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -493,7 +493,7 @@
   "transitGSErrorCreateSpreadsheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to edit spreadsheets.",
   "transitGSErrorSpreadsheetEmpty": "Please Select a Spreadsheet First",
   "transitGSErrorSpreadsheetIdEmpty": "Cannot be Empty",
-  "transitGSErrorSpreadsheetIdInvalid": "Invalid text. It must include:\n/spreadsheets/d/<ID>/\nOr provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
+  "transitGSErrorSpreadsheetIdInvalid": "Invalid text. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
   "transitGSErrorCreateSheet": "Unable to Create Sheet in Spreadsheet",
   "transitGSErrorCreateSheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to create sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
   "transitGSErrorSheetRepeat": "Sheet name duplicate",
@@ -1151,7 +1151,7 @@
   "@orderAttributeModeName": {
     "description": "name"
   },
-  "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the order price.} changePrice{Selecting this setting may affect the order price.\nFor example: Takeout +$30, Eco Cup -$5.\n} changeDiscount{Selecting this setting will affect the total price based on the discount.\nFor example: Dine-in +10% service charge, Friends & Family Discount -10%.\n} other{UNKNOWN}}",
+  "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the order price.} changePrice{Selecting this setting may affect the order price.\nFor example: Takeout +$30, Eco Cup -$5.} changeDiscount{Selecting this setting will affect the total price based on the discount.\nFor example: Dine-in +10% service charge, Friends & Family Discount -10%.} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
     "description": "Explanation of customer setting categories",
     "placeholders": {
@@ -1348,7 +1348,7 @@
   "menuIngredientSearchErrorEmpty": "Ingredient must be set, please click to set.",
   "menuIngredientSearchErrorRepeat": "Product already has the same ingredient, cannot select repeatedly.",
   "menuIngredientAmountLabel": "Amount Used",
-  "menuIngredientAmountHelper": "Default amount used.\nIf customers are able to adjust the amount,\nset different quantities in \"Quantity.\"\n",
+  "menuIngredientAmountHelper": "Default amount used.\nIf customers are able to adjust the amount,\nset different quantities in \"Quantity.\"",
   "menuQuantityTitleCreate": "Add Quantity",
   "menuQuantityTitleUpdate": "Edit Quantity",
   "menuQuantityMetaAmount": "Amount: {amount}",
