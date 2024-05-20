@@ -27,9 +27,13 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   late TextEditingController _nameController;
   late TextEditingController _amountController;
   late TextEditingController _totalAmountController;
-  late FocusNode _nameFocusNode;
-  late FocusNode _amountFocusNode;
-  late FocusNode _totalAmountFocusNode;
+  late TextEditingController _groupCostAmountController;
+  late TextEditingController _groupAmountAmountController;
+  final _nameFocusNode = FocusNode();
+  final _amountFocusNode = FocusNode();
+  final _totalAmountFocusNode = FocusNode();
+  final _groupCostFocusNode = FocusNode();
+  final _groupAmountFocusNode = FocusNode();
 
   @override
   String get title => widget.ingredient?.name ?? S.stockIngredientTitleCreate;
@@ -74,9 +78,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         p(TextFormField(
           key: const Key('stock.ingredient.name'),
           controller: _nameController,
-          textInputAction: TextInputAction.done,
-          textCapitalization: TextCapitalization.words,
           focusNode: _nameFocusNode,
+          textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             labelText: S.stockIngredientNameLabel,
             hintText: S.stockIngredientNameHint,
@@ -97,9 +101,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         p(TextFormField(
           key: const Key('stock.ingredient.amount'),
           controller: _amountController,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
           focusNode: _amountFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountLabel,
             filled: false,
@@ -113,13 +117,13 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         p(TextFormField(
           key: const Key('stock.ingredient.totalAmount'),
           controller: _totalAmountController,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
           focusNode: _totalAmountFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountMaxLabel,
             helperText: S.stockIngredientAmountMaxHelper,
-            helperMaxLines: 5,
+            helperMaxLines: 6,
             filled: false,
           ),
           validator: Validator.positiveNumber(
@@ -128,21 +132,59 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
             focusNode: _totalAmountFocusNode,
           ),
         )),
+        p(TextFormField(
+          key: const Key('stock.ingredient.groupCost'),
+          controller: _groupCostAmountController,
+          focusNode: _groupCostFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: '單位進價',
+            helperText: '每次補貨時，每單位的價錢\n方便快速計算補貨',
+            helperMaxLines: 3,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            '單位進價',
+            allowNull: true,
+            focusNode: _groupCostFocusNode,
+          ),
+        )),
+        p(TextFormField(
+          key: const Key('stock.ingredient.groupAmount'),
+          controller: _groupAmountAmountController,
+          focusNode: _groupAmountFocusNode,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          onFieldSubmitted: handleFieldSubmit,
+          decoration: const InputDecoration(
+            labelText: '進貨單位',
+            helperText: '每次補貨「進貨單位」個成分，就需要「單位進價」的價錢。\n例如，每 30 份起司要價 100 元，\n「進貨單位」就填寫 30，「單位進價」就填寫 100。',
+            helperMaxLines: 5,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            S.stockIngredientAmountMaxLabel,
+            allowNull: true,
+            focusNode: _groupAmountFocusNode,
+          ),
+        )),
       ];
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.ingredient?.name);
 
-    final amount = widget.ingredient?.currentAmount.toString() ?? '';
-    final totalAmount = widget.ingredient?.totalAmount?.toString() ?? '';
+    final amount = widget.ingredient?.currentAmount.toShortString() ?? '';
+    final totalAmount = widget.ingredient?.totalAmount?.toShortString() ?? '';
+    final groupCost = widget.ingredient?.groupCost?.toShortString() ?? '';
+    final groupAmount = widget.ingredient?.groupAmount?.toString() ?? '1';
+
+    _nameController = TextEditingController(text: widget.ingredient?.name);
     _amountController = TextEditingController(text: amount);
     _totalAmountController = TextEditingController(text: totalAmount);
-
-    _nameFocusNode = FocusNode();
-    _amountFocusNode = FocusNode();
-    _totalAmountFocusNode = FocusNode();
+    _groupCostAmountController = TextEditingController(text: groupCost);
+    _groupAmountAmountController = TextEditingController(text: groupAmount);
   }
 
   @override
@@ -150,9 +192,13 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     _nameController.dispose();
     _amountController.dispose();
     _totalAmountController.dispose();
+    _groupCostAmountController.dispose();
+    _groupAmountAmountController.dispose();
     _nameFocusNode.dispose();
     _amountFocusNode.dispose();
     _totalAmountFocusNode.dispose();
+    _groupCostFocusNode.dispose();
+    _groupAmountFocusNode.dispose();
     super.dispose();
   }
 
@@ -189,7 +235,21 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
       lastAmount: amount,
       currentAmount: amount,
       totalAmount: num.tryParse(_totalAmountController.text),
+      groupCost: num.tryParse(_groupCostAmountController.text),
+      groupAmount: num.tryParse(_groupAmountAmountController.text),
       fromModal: true,
     );
+  }
+}
+
+extension IntOrDouble on num {
+  String toShortString() {
+    // if it has decimal, show it, else show int
+    final rounded = round();
+    if (this == rounded) {
+      return rounded.toString();
+    }
+
+    return toStringAsFixed(2);
   }
 }

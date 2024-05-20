@@ -114,12 +114,13 @@ class _IngredientTile extends StatelessWidget {
   }
 
   Future<void> editAmount(BuildContext context) async {
-    final result = await showDialog<String>(
+    final result = await showAdaptiveDialog<String>(
       context: context,
       builder: (BuildContext context) => SliderTextDialog(
         title: Text(ingredient.name),
         value: ingredient.currentAmount.toDouble(),
         max: ingredient.maxAmount,
+        builder: (child) => child,
         decoration: InputDecoration(
           label: Text(S.stockIngredientAmountLabel),
           helperText: S.stockIngredientAmountShortHelper,
@@ -132,6 +133,36 @@ class _IngredientTile extends StatelessWidget {
     if (result != null) {
       await ingredient.setAmount(num.tryParse(result) ?? 0);
     }
+  }
+}
+
+class _DialogTabView extends StatelessWidget {
+  final Widget textWithSlider;
+
+  const _DialogTabView(this.textWithSlider);
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0, // TODO: cache last index
+      child: Column(
+        children: [
+          const TabBar(tabs: [
+            Tab(key: Key('stock.dialog.amount'), text: '數量'),
+            Tab(key: Key('stock.dialog.money'), text: '價錢'),
+          ]),
+          Expanded(
+            child: TabBarView(
+              children: [
+                textWithSlider,
+                // TODO: add money tab
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

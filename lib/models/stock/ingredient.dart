@@ -14,11 +14,11 @@ class Ingredient extends Model<IngredientObject>
   /// total amount in stock
   num? totalAmount;
 
-  /// warning threshold
-  num? warningAmount;
+  /// how many cost for every [groupAmount] ingredient, make it easy to replenish.
+  num? groupCost;
 
-  /// alert threshold
-  num? alertAmount;
+  /// see [groupCost]
+  num? groupAmount;
 
   /// amount after last replenishment
   num? lastAmount;
@@ -34,8 +34,8 @@ class Ingredient extends Model<IngredientObject>
     super.name = 'ingredient',
     this.currentAmount = 0.0,
     this.totalAmount,
-    this.warningAmount,
-    this.alertAmount,
+    this.groupCost,
+    this.groupAmount,
     this.lastAmount,
     this.updatedAt,
   });
@@ -44,8 +44,8 @@ class Ingredient extends Model<IngredientObject>
         id: object.id,
         name: object.name ?? '',
         currentAmount: object.currentAmount ?? 0,
-        warningAmount: object.warningAmount,
-        alertAmount: object.alertAmount,
+        groupCost: object.groupCost,
+        groupAmount: object.groupAmount,
         lastAmount: object.lastAmount,
         totalAmount: object.totalAmount,
         updatedAt: object.updatedAt,
@@ -99,8 +99,8 @@ class Ingredient extends Model<IngredientObject>
         id: id,
         name: name,
         currentAmount: currentAmount,
-        warningAmount: warningAmount,
-        alertAmount: alertAmount,
+        groupCost: groupCost,
+        groupAmount: groupAmount,
         totalAmount: totalAmount,
         lastAmount: lastAmount,
         updatedAt: updatedAt,

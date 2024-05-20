@@ -5,35 +5,35 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 
 class IngredientObject extends ModelObject<Ingredient> {
+  String? id;
+  String? name;
+  num? currentAmount;
+  num? totalAmount;
+  num? groupCost;
+  num? groupAmount;
+  num? lastAmount;
+  DateTime? updatedAt;
+  bool fromModal;
+
   IngredientObject({
     this.id,
     this.name,
     this.currentAmount,
     this.totalAmount,
-    this.warningAmount,
-    this.alertAmount,
+    this.groupCost,
+    this.groupAmount,
     this.lastAmount,
     this.updatedAt,
     this.fromModal = false,
   });
-
-  String? id;
-  String? name;
-  num? currentAmount;
-  num? totalAmount;
-  num? warningAmount;
-  num? alertAmount;
-  num? lastAmount;
-  DateTime? updatedAt;
-  bool fromModal;
 
   @override
   Map<String, Object?> toMap() {
     return {
       'name': name,
       'currentAmount': currentAmount,
-      'warningAmount': warningAmount,
-      'alertAmount': alertAmount,
+      'groupCost': groupCost,
+      'groupAmount': groupAmount,
       'lastAmount': lastAmount,
       'totalAmount': totalAmount,
       'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
@@ -48,6 +48,14 @@ class IngredientObject extends ModelObject<Ingredient> {
     if (name != null && name != model.name) {
       model.name = name!;
       result['$prefix.name'] = name!;
+    }
+    if (groupCost != null && groupCost != model.groupCost) {
+      model.groupCost = groupCost;
+      result['$prefix.groupCost'] = groupCost!;
+    }
+    if (groupAmount != null && groupAmount != model.groupAmount) {
+      model.groupAmount = groupAmount;
+      result['$prefix.groupAmount'] = groupAmount!;
     }
     if (currentAmount != null && currentAmount != model.currentAmount) {
       model.currentAmount = currentAmount!;
@@ -78,8 +86,8 @@ class IngredientObject extends ModelObject<Ingredient> {
       id: data['id'] as String,
       name: data['name'] as String,
       currentAmount: data['currentAmount'] as num?,
-      warningAmount: data['warningAmount'] as num?,
-      alertAmount: data['alertAmount'] as num?,
+      groupCost: data['groupCost'] as num?,
+      groupAmount: data['groupAmount'] as int?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
       updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),

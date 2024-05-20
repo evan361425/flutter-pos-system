@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 
 class SliderTextDialog extends StatefulWidget {
-  const SliderTextDialog({
-    super.key,
-    required this.value,
-    required this.max,
-    this.min = 0.0,
-    this.validator,
-    this.decoration,
-    this.title,
-  });
-
   final String? Function(String?)? validator;
   final Widget? title;
   final InputDecoration? decoration;
   final num value;
   final double min;
   final double max;
+  final Widget Function(Widget child)? builder;
+
+  const SliderTextDialog({
+    super.key,
+    required this.value,
+    required this.max,
+    this.builder,
+    this.min = 0.0,
+    this.validator,
+    this.decoration,
+    this.title,
+  });
 
   @override
   State<SliderTextDialog> createState() => _SliderTextDialogState();
@@ -35,40 +37,12 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    final textField = TextFormField(
-      key: const Key('slider_dialog.text'),
-      controller: textController,
-      onSaved: onSubmit,
-      onFieldSubmitted: onSubmit,
-      autofocus: !withSlider,
-      keyboardType: TextInputType.number,
-      validator: widget.validator,
-      decoration: widget.decoration,
-      textInputAction: TextInputAction.done,
-    );
 
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: widget.title,
-      content: SingleChildScrollView(
-        child: Form(
-          key: form,
-          child: Column(children: [
-            textField,
-            if (withSlider)
-              Slider(
-                value: sliderValue,
-                max: sliderMax,
-                min: widget.min,
-                label: sliderValue.round().toString(),
-                onChanged: (double value) {
-                  setState(() {
-                    textController.text = value.round().toString();
-                    sliderValue = value;
-                  });
-                },
-              ),
-          ]),
-        ),
+      content: Form(
+        key: form,
+        child: widget.builder?.call(textWithSlider) ?? textWithSlider,
       ),
       actions: [
         PopButton(
@@ -83,6 +57,35 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       ],
     );
   }
+
+  Widget get textWithSlider => SingleChildScrollView(
+        child: Column(children: [
+          TextFormField(
+            key: const Key('slider_dialog.text'),
+            controller: textController,
+            onSaved: onSubmit,
+            onFieldSubmitted: onSubmit,
+            autofocus: !withSlider,
+            keyboardType: TextInputType.number,
+            validator: widget.validator,
+            decoration: widget.decoration,
+            textInputAction: TextInputAction.done,
+          ),
+          if (withSlider)
+            Slider(
+              value: sliderValue,
+              max: sliderMax,
+              min: widget.min,
+              label: sliderValue.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  textController.text = value.round().toString();
+                  sliderValue = value;
+                });
+              },
+            ),
+        ]),
+      );
 
   void onSubmit(String? value) {
     if (form.currentState!.validate()) {
