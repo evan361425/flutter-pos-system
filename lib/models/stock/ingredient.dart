@@ -14,11 +14,14 @@ class Ingredient extends Model<IngredientObject>
   /// total amount in stock
   num? totalAmount;
 
-  /// how many cost for every [groupAmount] ingredient, make it easy to replenish.
-  num? groupCost;
+  /// how many price for every [replenishQuantity] ingredient when replenish.
+  num? replenishPrice;
 
-  /// see [groupCost]
-  num groupAmount;
+  /// see [replenishPrice]
+  num replenishQuantity;
+
+  /// last price for replenish
+  num? replenishLastPrice;
 
   /// amount after last replenishment
   num? lastAmount;
@@ -34,8 +37,8 @@ class Ingredient extends Model<IngredientObject>
     super.name = 'ingredient',
     this.currentAmount = 0.0,
     this.totalAmount,
-    this.groupCost,
-    this.groupAmount = 1.0,
+    this.replenishPrice,
+    this.replenishQuantity = 1.0,
     this.lastAmount,
     this.updatedAt,
   });
@@ -44,8 +47,8 @@ class Ingredient extends Model<IngredientObject>
         id: object.id,
         name: object.name ?? '',
         currentAmount: object.currentAmount ?? 0,
-        groupCost: object.groupCost,
-        groupAmount: object.groupAmount ?? 1,
+        replenishPrice: object.replenishPrice,
+        replenishQuantity: object.replenishQuantity ?? 1,
         lastAmount: object.lastAmount,
         totalAmount: object.totalAmount,
         updatedAt: object.updatedAt,
@@ -54,6 +57,8 @@ class Ingredient extends Model<IngredientObject>
   factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
     final amount = (row.length > 1 ? double.tryParse(row[1]) : null) ?? 0;
     final total = row.length > 2 ? double.tryParse(row[2]) : null;
+    final replPrice = row.length > 3 ? num.tryParse(row[3]) : null;
+    final replQuantity = row.length > 4 ? num.tryParse(row[4]) : null;
     final status = ori == null
         ? ModelStatus.staged
         : (amount == ori.currentAmount && total == ori.totalAmount ? ModelStatus.normal : ModelStatus.updated);
@@ -63,6 +68,8 @@ class Ingredient extends Model<IngredientObject>
       name: row[0],
       currentAmount: amount,
       totalAmount: total,
+      replenishPrice: replPrice,
+      replenishQuantity: replQuantity ?? 1,
       status: status,
     );
   }
@@ -99,8 +106,8 @@ class Ingredient extends Model<IngredientObject>
         id: id,
         name: name,
         currentAmount: currentAmount,
-        groupCost: groupCost,
-        groupAmount: groupAmount,
+        replenishPrice: replenishPrice,
+        replenishQuantity: replenishQuantity,
         totalAmount: totalAmount,
         lastAmount: lastAmount,
         updatedAt: updatedAt,

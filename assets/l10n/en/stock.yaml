@@ -32,13 +32,35 @@ ingredient:
       repeat: Ingredient name already exists
   amount:
     label: Current Amount
-    maxLabel: Maximum Amount
-    maxHelper: |-
+  amountMax:
+    label: Maximum Amount
+    helper: |-
       Setting this value helps you see how much of the ingredient is being used.
       Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased.
-    shortHelper:
-    - If not set maximum amount, every time increase the amount will be considered as the maximum amount
-    - Auxiliary text used for quickly increasing inventory
+  replenishPrice:
+    label: Restock Price
+    helper: |-
+      The price per unit each time you restock
+      Helps you quickly calculate restocking
+  replenishQuantity:
+    label: Restock Unit
+    helper: |-
+      The amount of ingredient you can restock per Restock Price.
+      For example, if 30 units of cheese cost 100 dollars,
+      fill in "30" for "Restock Unit" and "100" for "Restock Price."
+  replenishDialog:
+    quantity:
+      tab: Quantity
+      label: Current Amount
+      helper:
+      - If not set maximum amount, every time increase the amount will be considered as the maximum amount
+      - Auxiliary text used for quickly increasing inventory
+    price:
+      tab: Price
+      label: Total Price
+      emptyBody: |
+        Set the restock price first to calculate the amount directly from the price.
+      calculatedQuantityPrefix: Quantity
 replenishment:
   button: Purchase
   emptyBody: Purchasing helps you quickly adjust ingredient inventory

@@ -3,13 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/slider_text_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
 class StockIngredientList extends StatelessWidget {
@@ -116,18 +119,27 @@ class _IngredientTile extends StatelessWidget {
   Future<void> editAmount(BuildContext context) async {
     final result = await showAdaptiveDialog<String>(
       context: context,
-      builder: (BuildContext context) => SliderTextDialog(
-        title: Text(ingredient.name),
-        value: ingredient.currentAmount.toDouble(),
-        max: ingredient.maxAmount,
-        builder: (child) => child,
-        decoration: InputDecoration(
-          label: Text(S.stockIngredientAmountLabel),
-          helperText: S.stockIngredientAmountShortHelper,
-          helperMaxLines: 3,
-        ),
-        validator: Validator.positiveNumber(S.stockIngredientAmountLabel),
-      ),
+      builder: (BuildContext context) {
+        final controller = TextEditingController(text: ingredient.replenishLastPrice?.toAmountString() ?? '');
+        return SliderTextDialog(
+          title: Text(ingredient.name),
+          value: ingredient.currentAmount.toDouble(),
+          max: ingredient.maxAmount,
+          builder: (child, onSubmit) => _DialogTabView(
+            ingredient: ingredient,
+            quantityTab: child,
+            onSubmit: onSubmit,
+            controller: controller,
+          ),
+          confirmController: controller,
+          decoration: InputDecoration(
+            label: Text(S.stockIngredientReplenishDialogQuantityLabel),
+            helperText: S.stockIngredientReplenishDialogQuantityHelper,
+            helperMaxLines: 3,
+          ),
+          validator: Validator.positiveNumber(S.stockIngredientReplenishDialogQuantityLabel),
+        );
+      },
     );
 
     if (result != null) {
@@ -136,33 +148,118 @@ class _IngredientTile extends StatelessWidget {
   }
 }
 
-class _DialogTabView extends StatelessWidget {
-  final Widget textWithSlider;
+class _DialogTabView extends StatefulWidget {
+  final Ingredient ingredient;
 
-  const _DialogTabView(this.textWithSlider);
+  final Widget quantityTab;
+
+  final void Function(String?) onSubmit;
+
+  final TextEditingController controller;
+
+  const _DialogTabView({
+    required this.ingredient,
+    required this.onSubmit,
+    required this.controller,
+    required this.quantityTab,
+  });
+
+  @override
+  State<_DialogTabView> createState() => _DialogTabViewState();
+}
+
+class _DialogTabViewState extends State<_DialogTabView> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0, // TODO: cache last index
-      child: Column(
-        children: [
-          const TabBar(tabs: [
-            Tab(key: Key('stock.dialog.amount'), text: '數量'),
-            Tab(key: Key('stock.dialog.money'), text: '價錢'),
-          ]),
-          Expanded(
-            child: TabBarView(
-              children: [
-                textWithSlider,
-                // TODO: add money tab
-              ],
-            ),
+    return Column(
+      children: [
+        TabBar(controller: _tabController, tabs: [
+          Tab(key: const Key('stock.repl.quantity'), text: S.stockIngredientReplenishDialogQuantityTab),
+          Tab(key: const Key('stock.repl.price'), text: S.stockIngredientReplenishDialogPriceTab),
+        ]),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              widget.quantityTab,
+              if (widget.ingredient.replenishPrice == null)
+                Center(
+                  child: EmptyBody(
+                    content: S.stockIngredientReplenishDialogPriceEmptyBody,
+                    routeName: Routes.ingredientModal,
+                    pathParameters: {'id': widget.ingredient.id},
+                  ),
+                )
+              else
+                buildPriceTab(),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  Widget buildPriceTab() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      TextFormField(
+        key: const Key('stock.repl.price.text'),
+        controller: widget.controller,
+        onSaved: widget.onSubmit,
+        onFieldSubmitted: widget.onSubmit,
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(label: Text(S.stockIngredientReplenishDialogPriceLabel)),
+        validator: Validator.positiveNumber(S.stockIngredientReplenishDialogPriceLabel),
+        textInputAction: TextInputAction.done,
+      ),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        const Text('÷', style: TextStyle(color: Colors.grey, inherit: true)),
+        Text(widget.ingredient.replenishPrice!.toAmountString()),
+      ]),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        const Text('x', style: TextStyle(color: Colors.grey, inherit: true)),
+        Text(widget.ingredient.replenishQuantity.toAmountString()),
+      ]),
+      const Divider(),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text(
+          S.stockIngredientReplenishDialogPriceCalculatedQuantityPrefix,
+          style: const TextStyle(color: Colors.grey, inherit: true),
+        ),
+        ListenableBuilder(
+          listenable: widget.controller,
+          builder: (context, _) {
+            final price = num.tryParse(widget.controller.text);
+            if (price == null) return const SizedBox(width: 4.0);
+
+            final quantity = price / widget.ingredient.replenishPrice! * widget.ingredient.replenishQuantity;
+            return Text(quantity.toAmountString());
+          },
+        ),
+      ]),
+    ]);
+  }
+
+  @override
+  void initState() {
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: Cache.instance.get<int>('stock.replenishBy') ?? 0,
+    );
+    _tabController.addListener(() {
+      Cache.instance.set('stock.replenishBy', _tabController.index);
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    widget.controller.dispose();
+    super.dispose();
   }
 }
 

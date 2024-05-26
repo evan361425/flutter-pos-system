@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-18T10:48:03.044199Z",
+  "@@last_modified": "2024-05-26T01:42:18.541984Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -125,10 +125,20 @@
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
   "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
-  "stockIngredientAmountShortHelper": "If not set maximum amount, every time increase the amount will be considered as the maximum amount",
-  "@stockIngredientAmountShortHelper": {
+  "stockIngredientReplenishPriceLabel": "Restock Price",
+  "stockIngredientReplenishPriceHelper": "The price per unit each time you restock\nHelps you quickly calculate restocking",
+  "stockIngredientReplenishQuantityLabel": "Restock Unit",
+  "stockIngredientReplenishQuantityHelper": "The amount of ingredient you can restock per Restock Price.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"",
+  "stockIngredientReplenishDialogQuantityTab": "Quantity",
+  "stockIngredientReplenishDialogQuantityLabel": "Current Amount",
+  "stockIngredientReplenishDialogQuantityHelper": "If not set maximum amount, every time increase the amount will be considered as the maximum amount",
+  "@stockIngredientReplenishDialogQuantityHelper": {
     "description": "Auxiliary text used for quickly increasing inventory"
   },
+  "stockIngredientReplenishDialogPriceTab": "Price",
+  "stockIngredientReplenishDialogPriceLabel": "Total Price",
+  "stockIngredientReplenishDialogPriceEmptyBody": "Set the restock price first to calculate the amount directly from the price.\n",
+  "stockIngredientReplenishDialogPriceCalculatedQuantityPrefix": "Quantity",
   "stockReplenishmentButton": "Purchase",
   "stockReplenishmentEmptyBody": "Purchasing helps you quickly adjust ingredient inventory",
   "stockReplenishmentTitleList": "Purchase List",

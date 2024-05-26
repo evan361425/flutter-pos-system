@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-18T10:48:03.067210Z",
+  "@@last_modified": "2024-05-26T01:42:18.577714Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -124,11 +124,21 @@
   "stockIngredientNameErrorRepeat": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
-  "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n\n填空或不填寫則每次增加庫存，都會自動設定這值，\n這是假設每次補貨都會讓庫存達到最大值。",
-  "stockIngredientAmountShortHelper": "若沒有設定最大庫存量，增加庫存會重設最大值。",
-  "@stockIngredientAmountShortHelper": {
+  "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n填空或不填寫則每次增加庫存，都會自動設定這值，",
+  "stockIngredientReplenishPriceLabel": "補貨單價",
+  "stockIngredientReplenishPriceHelper": "每次補貨時，每單位的價錢\n方便快速計算補貨",
+  "stockIngredientReplenishQuantityLabel": "補貨單位",
+  "stockIngredientReplenishQuantityHelper": "每補貨單價可以補貨多少成分。\n例如，每 30 份起司要價 100 元，\n「補貨單位」就填寫 30，「補貨單價」就填寫 100。",
+  "stockIngredientReplenishDialogQuantityTab": "數量",
+  "stockIngredientReplenishDialogQuantityLabel": "現有庫存",
+  "stockIngredientReplenishDialogQuantityHelper": "若沒有設定最大庫存量，增加本值會重設最大庫存量。",
+  "@stockIngredientReplenishDialogQuantityHelper": {
     "description": "Auxiliary text used for quickly increasing inventory"
   },
+  "stockIngredientReplenishDialogPriceTab": "價格",
+  "stockIngredientReplenishDialogPriceLabel": "補貨價格",
+  "stockIngredientReplenishDialogPriceEmptyBody": "趕緊設定單價，讓你可以利用補貨的金額直接算出補貨的量。",
+  "stockIngredientReplenishDialogPriceCalculatedQuantityPrefix": "數量",
   "stockReplenishmentButton": "採購",
   "stockReplenishmentEmptyBody": "採購可以幫你快速調整成分的庫存",
   "stockReplenishmentTitleList": "採購列表",

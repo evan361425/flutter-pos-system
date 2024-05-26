@@ -9,8 +9,9 @@ class IngredientObject extends ModelObject<Ingredient> {
   String? name;
   num? currentAmount;
   num? totalAmount;
-  num? groupCost;
-  num? groupAmount;
+  num? replenishPrice;
+  num? replenishQuantity;
+  num? replenishLastPrice;
   num? lastAmount;
   DateTime? updatedAt;
   bool fromModal;
@@ -20,8 +21,9 @@ class IngredientObject extends ModelObject<Ingredient> {
     this.name,
     this.currentAmount,
     this.totalAmount,
-    this.groupCost,
-    this.groupAmount,
+    this.replenishPrice,
+    this.replenishQuantity,
+    this.replenishLastPrice,
     this.lastAmount,
     this.updatedAt,
     this.fromModal = false,
@@ -32,8 +34,9 @@ class IngredientObject extends ModelObject<Ingredient> {
     return {
       'name': name,
       'currentAmount': currentAmount,
-      'groupCost': groupCost,
-      'groupAmount': groupAmount,
+      'replenishPrice': replenishPrice,
+      'replenishQuantity': replenishQuantity,
+      'replenishLastPrice': replenishLastPrice,
       'lastAmount': lastAmount,
       'totalAmount': totalAmount,
       'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
@@ -49,13 +52,17 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (groupCost != null && groupCost != model.groupCost) {
-      model.groupCost = groupCost;
-      result['$prefix.groupCost'] = groupCost!;
+    if (replenishPrice != null && replenishPrice != model.replenishPrice) {
+      model.replenishPrice = replenishPrice;
+      result['$prefix.replenishPrice'] = replenishPrice!;
     }
-    if (groupAmount != null && groupAmount != model.groupAmount) {
-      model.groupAmount = groupAmount;
-      result['$prefix.groupAmount'] = groupAmount!;
+    if (replenishQuantity != null && replenishQuantity != model.replenishQuantity) {
+      model.replenishQuantity = replenishQuantity!;
+      result['$prefix.replenishQuantity'] = replenishQuantity!;
+    }
+    if (replenishLastPrice != null && replenishLastPrice != model.replenishLastPrice) {
+      model.replenishLastPrice = replenishLastPrice;
+      result['$prefix.replenishLastPrice'] = replenishLastPrice!;
     }
     if (currentAmount != null && currentAmount != model.currentAmount) {
       model.currentAmount = currentAmount!;
@@ -86,8 +93,9 @@ class IngredientObject extends ModelObject<Ingredient> {
       id: data['id'] as String,
       name: data['name'] as String,
       currentAmount: data['currentAmount'] as num?,
-      groupCost: data['groupCost'] as num?,
-      groupAmount: data['groupAmount'] as int?,
+      replenishPrice: data['replenishPrice'] as num?,
+      replenishQuantity: data['replenishQuantity'] as num?,
+      replenishLastPrice: data['replenishLastPrice'] as num?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
       updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),
