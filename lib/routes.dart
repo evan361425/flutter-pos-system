@@ -6,6 +6,7 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
 import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
+import 'package:possystem/ui/menu/widgets/product_ingredient_reorder.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
 
 import 'models/repository/menu.dart';
@@ -261,10 +262,10 @@ class Routes {
         path: 'p/:id/reorder',
         redirect: _redirectIfMissed(
           path: '/menu',
-          hasItem: (id) => Menu.instance.hasItem(id),
+          hasItem: (id) => Menu.instance.getProduct(id) != null,
         ),
-        builder: (ctx, state) => ProductReorder(
-          Menu.instance.getItem(state.pathParameters['id']!)!,
+        builder: (ctx, state) => ProductIngredientReorder(
+          Menu.instance.getProduct(state.pathParameters['id']!)!,
         ),
       ),
       GoRoute(
