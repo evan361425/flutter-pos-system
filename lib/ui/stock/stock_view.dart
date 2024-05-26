@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -29,10 +28,9 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
     // so we don't need to watch Stock.instance
     if (Stock.instance.isEmpty) {
       return Center(
-        key: const Key('stock.empty'),
         child: EmptyBody(
-          helperText: S.stockIngredientEmptyBody,
-          onPressed: () => context.pushNamed(Routes.ingredientNew),
+          content: S.stockIngredientEmptyBody,
+          routeName: Routes.ingredientNew,
         ),
       );
     }

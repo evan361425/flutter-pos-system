@@ -40,9 +40,10 @@ class OrderAttributePage extends StatelessWidget {
       body: attrs.isEmpty
           ? Center(
               child: EmptyBody(
-              onPressed: handleCreate,
-              helperText: S.orderAttributeEmptyBody,
-            ))
+                onPressed: handleCreate,
+                content: S.orderAttributeEmptyBody,
+              ),
+            )
           : OrderAttributeList(attrs.itemList),
     );
   }

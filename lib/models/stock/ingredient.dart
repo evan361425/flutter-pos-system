@@ -18,7 +18,7 @@ class Ingredient extends Model<IngredientObject>
   num? groupCost;
 
   /// see [groupCost]
-  num? groupAmount;
+  num groupAmount;
 
   /// amount after last replenishment
   num? lastAmount;
@@ -35,7 +35,7 @@ class Ingredient extends Model<IngredientObject>
     this.currentAmount = 0.0,
     this.totalAmount,
     this.groupCost,
-    this.groupAmount,
+    this.groupAmount = 1.0,
     this.lastAmount,
     this.updatedAt,
   });
@@ -45,7 +45,7 @@ class Ingredient extends Model<IngredientObject>
         name: object.name ?? '',
         currentAmount: object.currentAmount ?? 0,
         groupCost: object.groupCost,
-        groupAmount: object.groupAmount,
+        groupAmount: object.groupAmount ?? 1,
         lastAmount: object.lastAmount,
         totalAmount: object.totalAmount,
         updatedAt: object.updatedAt,

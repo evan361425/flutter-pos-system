@@ -133,7 +133,7 @@ class _MenuPageState extends State<MenuPage> {
     if (Menu.instance.isEmpty) {
       return Center(
         child: EmptyBody(
-          helperText: S.menuCatalogEmptyBody,
+          content: S.menuCatalogEmptyBody,
           onPressed: _handleCreate,
         ),
       );
@@ -158,7 +158,7 @@ class _MenuPageState extends State<MenuPage> {
     return Center(
       child: EmptyBody(
         key: const Key('catalog.empty'),
-        helperText: S.menuProductEmptyBody,
+        content: S.menuProductEmptyBody,
         onPressed: _handleCreate,
       ),
     );

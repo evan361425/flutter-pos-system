@@ -22,9 +22,10 @@ class QuantityPage extends StatelessWidget {
     final body = quantities.isEmpty
         ? Center(
             child: EmptyBody(
-            helperText: S.stockQuantityEmptyBody,
-            onPressed: handleCreate,
-          ))
+              content: S.stockQuantityEmptyBody,
+              onPressed: handleCreate,
+            ),
+          )
         : StockQuantityList(quantities: quantities.itemList);
 
     return Scaffold(

@@ -72,7 +72,7 @@ class _ProductPageState extends State<ProductPage> {
       return [
         SliverToBoxAdapter(
           child: EmptyBody(
-            helperText: S.menuIngredientEmptyBody,
+            content: S.menuIngredientEmptyBody,
             onPressed: _handleCreateIng,
           ),
         )

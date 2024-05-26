@@ -96,7 +96,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       return Center(
         child: EmptyBody(
           onPressed: createImage,
-          helperText: S.imageGalleryEmpty,
+          content: S.imageGalleryEmpty,
         ),
       );
     }
