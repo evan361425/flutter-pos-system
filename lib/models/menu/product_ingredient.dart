@@ -13,6 +13,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
     with
         ModelStorage<ProductIngredientObject>,
         ModelSearchable<ProductIngredientObject>,
+        ModelOrderable<ProductIngredientObject>,
         Repository<ProductQuantity>,
         RepositoryStorage<ProductQuantity> {
   /// Connect to parent object
@@ -33,11 +34,13 @@ class ProductIngredient extends Model<ProductIngredientObject>
   ProductIngredient({
     super.id,
     super.status = ModelStatus.normal,
+    int index = 0,
     super.name = '',
     Ingredient? ingredient,
     this.amount = 0,
     Map<String, ProductQuantity>? quantities,
   }) {
+    this.index = index;
     if (quantities != null) replaceItems(quantities);
 
     if (ingredient != null) this.ingredient = ingredient;
@@ -65,6 +68,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
     return ProductIngredient(
       id: object.id,
+      index: object.index!,
       ingredient: ingredient,
       amount: object.amount!,
       quantities: {for (var quantity in quantities) quantity!.id: quantity},
@@ -89,6 +93,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
     return ProductIngredient(
       id: ori?.id,
+      index: ori?.index ?? 0,
       ingredient: ingredient,
       amount: amount,
       status: status,
@@ -137,6 +142,7 @@ class ProductIngredient extends Model<ProductIngredientObject>
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
         id: id,
+        index: index,
         ingredientId: ingredient.id,
         amount: amount,
         quantities: items.map((e) => e.toObject()).toList(),

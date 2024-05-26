@@ -257,6 +257,17 @@ class Routes {
         ),
       ),
       GoRoute(
+        name: menuProductReorder,
+        path: 'p/:id/reorder',
+        redirect: _redirectIfMissed(
+          path: '/menu',
+          hasItem: (id) => Menu.instance.hasItem(id),
+        ),
+        builder: (ctx, state) => ProductReorder(
+          Menu.instance.getItem(state.pathParameters['id']!)!,
+        ),
+      ),
+      GoRoute(
         name: menuProduct,
         path: 'p/:id',
         redirect: _redirectIfMissed(
@@ -435,6 +446,7 @@ class Routes {
   static const menuReorder = '/menu/reorder';
   static const menuCatalogModal = '/menu/catalog/modal';
   static const menuCatalogReorder = '/menu/catalog/reorder';
+  static const menuProductReorder = '/menu/product/reorder';
   static const menuProduct = '/menu/product';
   static const menuProductModal = '/menu/product/modal';
   static const menuProductDetails = '/menu/product/details';
