@@ -14,14 +14,14 @@ class Ingredient extends Model<IngredientObject>
   /// total amount in stock
   num? totalAmount;
 
-  /// how many price for every [replenishQuantity] ingredient when replenish.
-  num? replenishPrice;
+  /// how many price for every [restockQuantity] ingredient when replenish.
+  num? restockPrice;
 
-  /// see [replenishPrice]
-  num replenishQuantity;
+  /// see [restockPrice]
+  num restockQuantity;
 
   /// last price for replenish
-  num? replenishLastPrice;
+  num? restockLastPrice;
 
   /// amount after last replenishment
   num? lastAmount;
@@ -37,8 +37,8 @@ class Ingredient extends Model<IngredientObject>
     super.name = 'ingredient',
     this.currentAmount = 0.0,
     this.totalAmount,
-    this.replenishPrice,
-    this.replenishQuantity = 1.0,
+    this.restockPrice,
+    this.restockQuantity = 1.0,
     this.lastAmount,
     this.updatedAt,
   });
@@ -47,8 +47,8 @@ class Ingredient extends Model<IngredientObject>
         id: object.id,
         name: object.name ?? '',
         currentAmount: object.currentAmount ?? 0,
-        replenishPrice: object.replenishPrice,
-        replenishQuantity: object.replenishQuantity ?? 1,
+        restockPrice: object.restockPrice,
+        restockQuantity: object.restockQuantity ?? 1,
         lastAmount: object.lastAmount,
         totalAmount: object.totalAmount,
         updatedAt: object.updatedAt,
@@ -68,8 +68,8 @@ class Ingredient extends Model<IngredientObject>
       name: row[0],
       currentAmount: amount,
       totalAmount: total,
-      replenishPrice: replPrice,
-      replenishQuantity: replQuantity ?? 1,
+      restockPrice: replPrice,
+      restockQuantity: replQuantity ?? 1,
       status: status,
     );
   }
@@ -106,8 +106,8 @@ class Ingredient extends Model<IngredientObject>
         id: id,
         name: name,
         currentAmount: currentAmount,
-        replenishPrice: replenishPrice,
-        replenishQuantity: replenishQuantity,
+        restockPrice: restockPrice,
+        restockQuantity: restockQuantity,
         totalAmount: totalAmount,
         lastAmount: lastAmount,
         updatedAt: updatedAt,

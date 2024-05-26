@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/models/repository/stock.dart';
 
 class SliderTextDialog extends StatefulWidget {
   final String? Function(String?)? validator;
@@ -11,7 +12,7 @@ class SliderTextDialog extends StatefulWidget {
   final double min;
   final double max;
   final Widget Function(Widget child, void Function(String?) onSubmit)? builder;
-  final TextEditingController? confirmController;
+  final ValueNotifier<String?>? currentValue;
 
   const SliderTextDialog({
     super.key,
@@ -22,7 +23,7 @@ class SliderTextDialog extends StatefulWidget {
     this.validator,
     this.decoration,
     this.title,
-    this.confirmController,
+    this.currentValue,
   });
 
   @override
@@ -31,7 +32,6 @@ class SliderTextDialog extends StatefulWidget {
 
 class _SliderTextDialogState extends State<SliderTextDialog> {
   late final TextEditingController textController;
-  late final TextEditingController confirmController;
   late double sliderValue;
   late final double sliderMax;
   late final bool withSlider;
@@ -48,7 +48,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
 
     return AlertDialog.adaptive(
       title: widget.title,
-      content: Form(key: form, child: child),
+      content: SingleChildScrollView(child: Form(key: form, child: child)),
       actions: [
         PopButton(
           key: const Key('slider_dialog.cancel'),
@@ -56,7 +56,13 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
         ),
         FilledButton(
           key: const Key('slider_dialog.confirm'),
-          onPressed: () => onSubmit(confirmController.text),
+          onPressed: () {
+            if (widget.currentValue != null) {
+              onSubmit(widget.currentValue!.value);
+            } else {
+              onSubmit(textController.text);
+            }
+          },
           child: Text(local.okButtonLabel),
         ),
       ],
@@ -64,34 +70,32 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   }
 
   Widget buildTextWithSlider() {
-    return SingleChildScrollView(
-      child: Column(children: [
-        TextFormField(
-          key: const Key('slider_dialog.text'),
-          controller: textController,
-          onSaved: onSubmit,
-          onFieldSubmitted: onSubmit,
-          autofocus: !withSlider,
-          keyboardType: TextInputType.number,
-          validator: widget.validator,
-          decoration: widget.decoration,
-          textInputAction: TextInputAction.done,
+    return Column(children: [
+      TextFormField(
+        key: const Key('slider_dialog.text'),
+        controller: textController,
+        onSaved: onSubmit,
+        onFieldSubmitted: onSubmit,
+        autofocus: !withSlider,
+        keyboardType: TextInputType.number,
+        validator: widget.validator,
+        decoration: widget.decoration,
+        textInputAction: TextInputAction.done,
+      ),
+      if (withSlider)
+        Slider(
+          value: sliderValue,
+          max: sliderMax,
+          min: widget.min,
+          label: sliderValue.round().toString(),
+          onChanged: (double value) {
+            setState(() {
+              textController.text = value.round().toString();
+              sliderValue = value;
+            });
+          },
         ),
-        if (withSlider)
-          Slider(
-            value: sliderValue,
-            max: sliderMax,
-            min: widget.min,
-            label: sliderValue.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                textController.text = value.round().toString();
-                sliderValue = value;
-              });
-            },
-          ),
-      ]),
-    );
+    ]);
   }
 
   void onSubmit(String? value) {
@@ -103,9 +107,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController(text: widget.value.toString());
-    textController.dispose();
-    confirmController = widget.confirmController ?? textController;
+    textController = TextEditingController(text: widget.value.toAmountString());
     sliderValue = widget.value.toDouble();
     sliderMax = max(widget.max, sliderValue);
     withSlider = widget.max > 0;

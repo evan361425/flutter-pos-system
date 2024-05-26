@@ -8,7 +8,9 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
+import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
@@ -120,7 +122,7 @@ class _IngredientTile extends StatelessWidget {
     final result = await showAdaptiveDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        final controller = TextEditingController(text: ingredient.replenishLastPrice?.toAmountString() ?? '');
+        final currentValue = ValueNotifier<String?>('');
         return SliderTextDialog(
           title: Text(ingredient.name),
           value: ingredient.currentAmount.toDouble(),
@@ -129,15 +131,15 @@ class _IngredientTile extends StatelessWidget {
             ingredient: ingredient,
             quantityTab: child,
             onSubmit: onSubmit,
-            controller: controller,
+            currentValue: currentValue,
           ),
-          confirmController: controller,
+          currentValue: currentValue,
           decoration: InputDecoration(
-            label: Text(S.stockIngredientReplenishDialogQuantityLabel),
-            helperText: S.stockIngredientReplenishDialogQuantityHelper,
+            label: Text(S.stockIngredientRestockDialogQuantityLabel),
+            helperText: S.stockIngredientRestockDialogQuantityHelper,
             helperMaxLines: 3,
           ),
-          validator: Validator.positiveNumber(S.stockIngredientReplenishDialogQuantityLabel),
+          validator: Validator.positiveNumber(S.stockIngredientRestockDialogQuantityLabel),
         );
       },
     );
@@ -155,49 +157,67 @@ class _DialogTabView extends StatefulWidget {
 
   final void Function(String?) onSubmit;
 
-  final TextEditingController controller;
+  final ValueNotifier<String?> currentValue;
 
   const _DialogTabView({
     required this.ingredient,
     required this.onSubmit,
-    required this.controller,
     required this.quantityTab,
+    required this.currentValue,
   });
 
   @override
   State<_DialogTabView> createState() => _DialogTabViewState();
 }
 
-class _DialogTabViewState extends State<_DialogTabView> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _DialogTabViewState extends State<_DialogTabView> {
+  late ReplenishBy replenishBy;
+  late final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(controller: _tabController, tabs: [
-          Tab(key: const Key('stock.repl.quantity'), text: S.stockIngredientReplenishDialogQuantityTab),
-          Tab(key: const Key('stock.repl.price'), text: S.stockIngredientReplenishDialogPriceTab),
-        ]),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              widget.quantityTab,
-              if (widget.ingredient.replenishPrice == null)
-                Center(
-                  child: EmptyBody(
-                    content: S.stockIngredientReplenishDialogPriceEmptyBody,
-                    routeName: Routes.ingredientModal,
-                    pathParameters: {'id': widget.ingredient.id},
-                  ),
-                )
-              else
-                buildPriceTab(),
-            ],
+    final child = replenishBy == ReplenishBy.quantity
+        ? widget.quantityTab
+        : widget.ingredient.restockPrice == null
+            ? Center(
+                child: EmptyBody(
+                  content: S.stockIngredientRestockDialogPriceEmptyBody,
+                  routeName: Routes.ingredientModal,
+                  pathParameters: {'id': widget.ingredient.id},
+                ),
+              )
+            : DefaultTextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!,
+                child: buildPriceTab(),
+              );
+
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (popped) async {
+        if (popped && widget.currentValue.value != null) {
+          final price = num.tryParse(controller.text);
+          if (price != null) {
+            await widget.ingredient.update(IngredientObject(
+              restockLastPrice: price,
+            ));
+          }
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          child,
+          const SizedBox(height: 8.0),
+          ElevatedButton.icon(
+            onPressed: switchMethod,
+            // switch method, so the label is opposite
+            label: Text(replenishBy == ReplenishBy.quantity
+                ? S.stockIngredientRestockDialogPriceBtn
+                : S.stockIngredientRestockDialogQuantityBtn),
+            icon: const Icon(Icons.currency_exchange_sharp),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -205,37 +225,53 @@ class _DialogTabViewState extends State<_DialogTabView> with SingleTickerProvide
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       TextFormField(
         key: const Key('stock.repl.price.text'),
-        controller: widget.controller,
+        controller: controller,
         onSaved: widget.onSubmit,
         onFieldSubmitted: widget.onSubmit,
         autofocus: true,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(label: Text(S.stockIngredientReplenishDialogPriceLabel)),
-        validator: Validator.positiveNumber(S.stockIngredientReplenishDialogPriceLabel),
+        textAlign: TextAlign.end,
+        decoration: InputDecoration(
+          label: Text(S.stockIngredientRestockDialogPriceLabel),
+          prefix: const Text(r'$'),
+        ),
+        validator: Validator.positiveNumber(S.stockIngredientRestockDialogPriceLabel),
         textInputAction: TextInputAction.done,
       ),
+      const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('÷', style: TextStyle(color: Colors.grey, inherit: true)),
-        Text(widget.ingredient.replenishPrice!.toAmountString()),
+        const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+        Text('\$${widget.ingredient.restockPrice!.toAmountString()}'),
       ]),
+      const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('x', style: TextStyle(color: Colors.grey, inherit: true)),
-        Text(widget.ingredient.replenishQuantity.toAmountString()),
+        const Text('*', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+        Text(widget.ingredient.restockQuantity.toAmountString()),
+      ]),
+      const SizedBox(height: 8.0),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text(
+          '+${S.stockIngredientRestockDialogPriceOldAmount}',
+          style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
+        ),
+        Text(widget.ingredient.currentAmount.toAmountString()),
       ]),
       const Divider(),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(
-          S.stockIngredientReplenishDialogPriceCalculatedQuantityPrefix,
-          style: const TextStyle(color: Colors.grey, inherit: true),
-        ),
+        const Text('=', style: TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true)),
         ListenableBuilder(
-          listenable: widget.controller,
+          listenable: controller,
           builder: (context, _) {
-            final price = num.tryParse(widget.controller.text);
-            if (price == null) return const SizedBox(width: 4.0);
+            final price = num.tryParse(controller.text);
+            if (price == null) {
+              widget.currentValue.value = null;
+              return Text(widget.ingredient.currentAmount.toAmountString());
+            }
 
-            final quantity = price / widget.ingredient.replenishPrice! * widget.ingredient.replenishQuantity;
-            return Text(quantity.toAmountString());
+            final quantity = price / widget.ingredient.restockPrice! * widget.ingredient.restockQuantity;
+            final value = (quantity + widget.ingredient.currentAmount).toAmountString();
+            widget.currentValue.value = value;
+            return Text(value);
           },
         ),
       ]),
@@ -244,22 +280,24 @@ class _DialogTabViewState extends State<_DialogTabView> with SingleTickerProvide
 
   @override
   void initState() {
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: Cache.instance.get<int>('stock.replenishBy') ?? 0,
-    );
-    _tabController.addListener(() {
-      Cache.instance.set('stock.replenishBy', _tabController.index);
-    });
+    final index = Cache.instance.get<int>('stock.replenishBy') ?? 0;
+    replenishBy = ReplenishBy.values.elementAtOrNull(index) ?? ReplenishBy.quantity;
+    controller = TextEditingController(text: widget.ingredient.restockLastPrice?.toAmountString() ?? '');
     super.initState();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
-    widget.controller.dispose();
+    controller.dispose();
     super.dispose();
+  }
+
+  void switchMethod() {
+    final other = replenishBy == ReplenishBy.quantity ? ReplenishBy.price : ReplenishBy.quantity;
+    Cache.instance.set('stock.replenishBy', other.index);
+    setState(() {
+      replenishBy = other;
+    });
   }
 }
 

@@ -72,6 +72,8 @@ class _StockTransformer extends ModelTransformer<Stock> {
         _toCD(S.stockIngredientNameLabel),
         _toCD(S.stockIngredientAmountLabel),
         _toCD(S.stockIngredientAmountMaxLabel),
+        _toCD(S.stockIngredientRestockPriceLabel),
+        _toCD(S.stockIngredientRestockQuantityLabel),
       ];
 
   @override
@@ -80,6 +82,8 @@ class _StockTransformer extends ModelTransformer<Stock> {
             GoogleSheetCellData(stringValue: ingredient.name),
             GoogleSheetCellData(numberValue: ingredient.currentAmount),
             GoogleSheetCellData(numberValue: ingredient.totalAmount),
+            GoogleSheetCellData(numberValue: ingredient.restockPrice),
+            GoogleSheetCellData(numberValue: ingredient.restockQuantity),
           ])
       .toList();
 }

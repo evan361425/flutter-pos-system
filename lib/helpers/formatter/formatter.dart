@@ -266,11 +266,11 @@ class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
           allowNull: true,
         )(row.length > 1 ? row[1] : null) ??
         Validator.positiveNumber(
-          S.stockIngredientReplenishPriceLabel,
+          S.stockIngredientRestockPriceLabel,
           allowNull: true,
         )(row.length > 2 ? row[2] : null) ??
         Validator.positiveNumber(
-          S.stockIngredientReplenishQuantityLabel,
+          S.stockIngredientRestockQuantityLabel,
           allowNull: true,
         )(row.length > 3 ? row[3] : null);
   }

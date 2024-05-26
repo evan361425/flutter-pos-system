@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-05-26T01:42:18.541984Z",
+  "@@last_modified": "2024-05-26T10:18:05.578491Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -85,7 +85,7 @@
   "settingReportTitle": "Collect Error Messages and Events",
   "settingReportDescription": "Send error messages when the app encounters issues, helping the app improve",
   "stockTab": "Inventory",
-  "stockUpdatedAt": "Last Restock: {updatedAt}",
+  "stockUpdatedAt": "Last Purchased: {updatedAt}",
   "@stockUpdatedAt": {
     "placeholders": {
       "updatedAt": {
@@ -125,20 +125,25 @@
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
   "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
-  "stockIngredientReplenishPriceLabel": "Restock Price",
-  "stockIngredientReplenishPriceHelper": "The price per unit each time you restock\nHelps you quickly calculate restocking",
-  "stockIngredientReplenishQuantityLabel": "Restock Unit",
-  "stockIngredientReplenishQuantityHelper": "The amount of ingredient you can restock per Restock Price.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"",
-  "stockIngredientReplenishDialogQuantityTab": "Quantity",
-  "stockIngredientReplenishDialogQuantityLabel": "Current Amount",
-  "stockIngredientReplenishDialogQuantityHelper": "If not set maximum amount, every time increase the amount will be considered as the maximum amount",
-  "@stockIngredientReplenishDialogQuantityHelper": {
+  "stockIngredientRestockPriceLabel": "Restock Price",
+  "stockIngredientRestockPriceHelper": "The price per unit each time you restock.\nWhen restocking, you can restock by price instead of quantity.",
+  "stockIngredientRestockQuantityLabel": "Restock Unit",
+  "stockIngredientRestockQuantityHelper": "The amount of ingredient you can restock per Restock Price.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"",
+  "stockIngredientRestockDialogQuantityTab": "Quantity",
+  "stockIngredientRestockDialogQuantityBtn": "Use Quantity",
+  "stockIngredientRestockDialogQuantityLabel": "Current Amount",
+  "stockIngredientRestockDialogQuantityHelper": "If Maximum Amount is not set, every time increase the amount will be considered as the Maximum Amount",
+  "@stockIngredientRestockDialogQuantityHelper": {
     "description": "Auxiliary text used for quickly increasing inventory"
   },
-  "stockIngredientReplenishDialogPriceTab": "Price",
-  "stockIngredientReplenishDialogPriceLabel": "Total Price",
-  "stockIngredientReplenishDialogPriceEmptyBody": "Set the restock price first to calculate the amount directly from the price.\n",
-  "stockIngredientReplenishDialogPriceCalculatedQuantityPrefix": "Quantity",
+  "stockIngredientRestockDialogPriceTab": "Price",
+  "stockIngredientRestockDialogPriceBtn": "Use Price",
+  "stockIngredientRestockDialogPriceLabel": "Total Price",
+  "stockIngredientRestockDialogPriceEmptyBody": "Set the restock price first to calculate the amount directly from the price.\n",
+  "stockIngredientRestockDialogPriceOldAmount": "Origin",
+  "@stockIngredientRestockDialogPriceOldAmount": {
+    "description": "The original amount before the restock"
+  },
   "stockReplenishmentButton": "Purchase",
   "stockReplenishmentEmptyBody": "Purchasing helps you quickly adjust ingredient inventory",
   "stockReplenishmentTitleList": "Purchase List",
@@ -153,9 +158,9 @@
       }
     }
   },
-  "stockReplenishmentNever": "Never Restocked",
+  "stockReplenishmentNever": "Never Purchased",
   "@stockReplenishmentNever": {
-    "description": "The stock page displays the last restock time; if never restocked, this text is set"
+    "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
   "stockReplenishmentApplyButton": "Apply Purchase",
   "stockReplenishmentApplyConfirmButton": "Apply",
@@ -1023,7 +1028,7 @@
   "@emptyBodyTitle": {
     "description": "Text displayed on EmptyBody, informing the user that there are no items yet. This is the default text."
   },
-  "emptyBodyAction": "Set Up Now",
+  "emptyBodyAction": "SETUP",
   "btnNavTo": "View",
   "@btnNavTo": {
     "description": "Button text to navigate to another screen in trailing."

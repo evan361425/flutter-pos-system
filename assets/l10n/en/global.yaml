@@ -62,7 +62,7 @@ emptyBody:
   title:
   - Oops! It's empty here.
   - Text displayed on EmptyBody, informing the user that there are no items yet. This is the default text.
-  action: Set Up Now
+  action: SETUP
 btn:
   navTo:
   - View

@@ -9,9 +9,9 @@ class IngredientObject extends ModelObject<Ingredient> {
   String? name;
   num? currentAmount;
   num? totalAmount;
-  num? replenishPrice;
-  num? replenishQuantity;
-  num? replenishLastPrice;
+  num? restockPrice;
+  num? restockQuantity;
+  num? restockLastPrice;
   num? lastAmount;
   DateTime? updatedAt;
   bool fromModal;
@@ -21,9 +21,9 @@ class IngredientObject extends ModelObject<Ingredient> {
     this.name,
     this.currentAmount,
     this.totalAmount,
-    this.replenishPrice,
-    this.replenishQuantity,
-    this.replenishLastPrice,
+    this.restockPrice,
+    this.restockQuantity,
+    this.restockLastPrice,
     this.lastAmount,
     this.updatedAt,
     this.fromModal = false,
@@ -34,9 +34,9 @@ class IngredientObject extends ModelObject<Ingredient> {
     return {
       'name': name,
       'currentAmount': currentAmount,
-      'replenishPrice': replenishPrice,
-      'replenishQuantity': replenishQuantity,
-      'replenishLastPrice': replenishLastPrice,
+      'restockPrice': restockPrice,
+      'restockQuantity': restockQuantity,
+      'restockLastPrice': restockLastPrice,
       'lastAmount': lastAmount,
       'totalAmount': totalAmount,
       'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
@@ -52,17 +52,17 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (replenishPrice != null && replenishPrice != model.replenishPrice) {
-      model.replenishPrice = replenishPrice;
-      result['$prefix.replenishPrice'] = replenishPrice!;
+    if (restockPrice != null && restockPrice != model.restockPrice) {
+      model.restockPrice = restockPrice;
+      result['$prefix.restockPrice'] = restockPrice!;
     }
-    if (replenishQuantity != null && replenishQuantity != model.replenishQuantity) {
-      model.replenishQuantity = replenishQuantity!;
-      result['$prefix.replenishQuantity'] = replenishQuantity!;
+    if (restockQuantity != null && restockQuantity != model.restockQuantity) {
+      model.restockQuantity = restockQuantity!;
+      result['$prefix.restockQuantity'] = restockQuantity!;
     }
-    if (replenishLastPrice != null && replenishLastPrice != model.replenishLastPrice) {
-      model.replenishLastPrice = replenishLastPrice;
-      result['$prefix.replenishLastPrice'] = replenishLastPrice!;
+    if (restockLastPrice != null && restockLastPrice != model.restockLastPrice) {
+      model.restockLastPrice = restockLastPrice;
+      result['$prefix.restockLastPrice'] = restockLastPrice!;
     }
     if (currentAmount != null && currentAmount != model.currentAmount) {
       model.currentAmount = currentAmount!;
@@ -93,9 +93,9 @@ class IngredientObject extends ModelObject<Ingredient> {
       id: data['id'] as String,
       name: data['name'] as String,
       currentAmount: data['currentAmount'] as num?,
-      replenishPrice: data['replenishPrice'] as num?,
-      replenishQuantity: data['replenishQuantity'] as num?,
-      replenishLastPrice: data['replenishLastPrice'] as num?,
+      restockPrice: data['restockPrice'] as num?,
+      restockQuantity: data['restockQuantity'] as num?,
+      restockLastPrice: data['restockLastPrice'] as num?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
       updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),
