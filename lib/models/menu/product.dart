@@ -16,7 +16,8 @@ class Product extends Model<ProductObject>
         ModelSearchable<ProductObject>,
         ModelImage<ProductObject>,
         Repository<ProductIngredient>,
-        RepositoryStorage<ProductIngredient> {
+        RepositoryStorage<ProductIngredient>,
+        RepositoryOrderable<ProductIngredient> {
   /// Connect to parent object
   late final Catalog catalog;
 

@@ -39,7 +39,7 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
-        helperText: S.cashierChangerFavoriteEmptyBody,
+        content: S.cashierChangerFavoriteEmptyBody,
         onPressed: widget.emptyAction,
       );
     }

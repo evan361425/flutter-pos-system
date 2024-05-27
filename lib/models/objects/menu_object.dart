@@ -77,6 +77,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
 
   final String? id;
   final String? ingredientId;
+  final int? index;
   final num? amount;
   final List<ProductQuantityObject> quantities;
 
@@ -89,6 +90,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
   ProductIngredientObject({
     this.id,
     this.ingredientId,
+    this.index,
     this.amount,
     List<ProductQuantityObject>? quantities,
     this.version = 2,
@@ -104,6 +106,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
     return ProductIngredientObject(
       id: id as String,
       ingredientId: ingredientId as String,
+      index: data['index'] as int? ?? 0,
       amount: data['amount'] as num,
       version: version,
       quantities: quantities.entries
@@ -137,6 +140,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
   @override
   Map<String, Object> toMap() {
     return {
+      'index': index ?? 0,
       'ingredientId': ingredientId!,
       'amount': amount!,
       'quantities': {for (var quantity in quantities) quantity.id: quantity.toMap()},

@@ -1,7 +1,7 @@
 $prefix: stock
 tab: Inventory
 updatedAt:
-- 'Last Restock: {updatedAt}'
+- 'Last Purchased: {updatedAt}'
 - updatedAt: {type: DateTime, format: MMMEd}
 ingredient:
   emptyBody: Once ingredients are added, you can start tracking their inventory!
@@ -32,13 +32,39 @@ ingredient:
       repeat: Ingredient name already exists
   amount:
     label: Current Amount
-    maxLabel: Maximum Amount
-    maxHelper: |-
+  amountMax:
+    label: Maximum Amount
+    helper: |-
       Setting this value helps you see how much of the ingredient is being used.
       Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased.
-    shortHelper:
-    - If not set maximum amount, every time increase the amount will be considered as the maximum amount
-    - Auxiliary text used for quickly increasing inventory
+  restockPrice:
+    label: Restock Price
+    helper: |-
+      The price per unit each time you restock.
+      When restocking, you can restock by price instead of quantity.
+  restockQuantity:
+    label: Restock Unit
+    helper: |-
+      The amount of ingredient you can restock per Restock Price.
+      For example, if 30 units of cheese cost 100 dollars,
+      fill in "30" for "Restock Unit" and "100" for "Restock Price."
+  restockDialog:
+    quantity:
+      tab: Quantity
+      btn: Use Quantity
+      label: Current Amount
+      helper:
+      - If Maximum Amount is not set, every time increase the amount will be considered as the Maximum Amount
+      - Auxiliary text used for quickly increasing inventory
+    price:
+      tab: Price
+      btn: Use Price
+      label: Total Price
+      emptyBody: |
+        Set the restock price first to calculate the amount directly from the price.
+      oldAmount:
+      - Origin
+      - The original amount before the restock
 replenishment:
   button: Purchase
   emptyBody: Purchasing helps you quickly adjust ingredient inventory
@@ -52,8 +78,8 @@ replenishment:
     - Indicates in the purchase list how many ingredients are affected
     - count: {type: int}
   never:
-  - Never Restocked
-  - The stock page displays the last restock time; if never restocked, this text is set
+  - Never Purchased
+  - The stock page displays the last replenishment time; if never replenished, this text is set
   apply:
     button: Apply Purchase
     confirm:

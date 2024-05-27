@@ -36,7 +36,7 @@ class ReplenishmentPage extends StatelessWidget {
             return Center(
               child: EmptyBody(
                 onPressed: goToCreate,
-                helperText: S.stockReplenishmentEmptyBody,
+                content: S.stockReplenishmentEmptyBody,
               ),
             );
           }

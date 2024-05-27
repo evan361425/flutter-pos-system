@@ -5,35 +5,38 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 
 class IngredientObject extends ModelObject<Ingredient> {
+  String? id;
+  String? name;
+  num? currentAmount;
+  num? totalAmount;
+  num? restockPrice;
+  num? restockQuantity;
+  num? restockLastPrice;
+  num? lastAmount;
+  DateTime? updatedAt;
+  bool fromModal;
+
   IngredientObject({
     this.id,
     this.name,
     this.currentAmount,
     this.totalAmount,
-    this.warningAmount,
-    this.alertAmount,
+    this.restockPrice,
+    this.restockQuantity,
+    this.restockLastPrice,
     this.lastAmount,
     this.updatedAt,
     this.fromModal = false,
   });
-
-  String? id;
-  String? name;
-  num? currentAmount;
-  num? totalAmount;
-  num? warningAmount;
-  num? alertAmount;
-  num? lastAmount;
-  DateTime? updatedAt;
-  bool fromModal;
 
   @override
   Map<String, Object?> toMap() {
     return {
       'name': name,
       'currentAmount': currentAmount,
-      'warningAmount': warningAmount,
-      'alertAmount': alertAmount,
+      'restockPrice': restockPrice,
+      'restockQuantity': restockQuantity,
+      'restockLastPrice': restockLastPrice,
       'lastAmount': lastAmount,
       'totalAmount': totalAmount,
       'updatedAt': updatedAt == null ? null : Util.toUTC(now: updatedAt),
@@ -48,6 +51,18 @@ class IngredientObject extends ModelObject<Ingredient> {
     if (name != null && name != model.name) {
       model.name = name!;
       result['$prefix.name'] = name!;
+    }
+    if (restockPrice != null && restockPrice != model.restockPrice) {
+      model.restockPrice = restockPrice;
+      result['$prefix.restockPrice'] = restockPrice!;
+    }
+    if (restockQuantity != null && restockQuantity != model.restockQuantity) {
+      model.restockQuantity = restockQuantity!;
+      result['$prefix.restockQuantity'] = restockQuantity!;
+    }
+    if (restockLastPrice != null && restockLastPrice != model.restockLastPrice) {
+      model.restockLastPrice = restockLastPrice;
+      result['$prefix.restockLastPrice'] = restockLastPrice!;
     }
     if (currentAmount != null && currentAmount != model.currentAmount) {
       model.currentAmount = currentAmount!;
@@ -78,8 +93,9 @@ class IngredientObject extends ModelObject<Ingredient> {
       id: data['id'] as String,
       name: data['name'] as String,
       currentAmount: data['currentAmount'] as num?,
-      warningAmount: data['warningAmount'] as num?,
-      alertAmount: data['alertAmount'] as num?,
+      restockPrice: data['restockPrice'] as num?,
+      restockQuantity: data['restockQuantity'] as num?,
+      restockLastPrice: data['restockLastPrice'] as num?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
       updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),

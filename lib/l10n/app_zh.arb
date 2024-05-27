@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-18T10:48:03.067210Z",
+  "@@last_modified": "2024-05-27T00:52:27.195998Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -124,10 +124,25 @@
   "stockIngredientNameErrorRepeat": "成分名稱重複",
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
-  "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n\n填空或不填寫則每次增加庫存，都會自動設定這值，\n這是假設每次補貨都會讓庫存達到最大值。",
-  "stockIngredientAmountShortHelper": "若沒有設定最大庫存量，增加庫存會重設最大值。",
-  "@stockIngredientAmountShortHelper": {
+  "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n填空或不填寫則每次增加庫存，都會自動設定這值，",
+  "stockIngredientRestockPriceLabel": "補貨單價",
+  "stockIngredientRestockPriceHelper": "每次補貨時，每單位的價錢，補貨的時候可以透過價錢補貨而非單純的數量數量。",
+  "stockIngredientRestockQuantityLabel": "補貨單位",
+  "stockIngredientRestockQuantityHelper": "每補貨單價可以補貨多少成分。例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。",
+  "stockIngredientRestockDialogQuantityTab": "數量",
+  "stockIngredientRestockDialogQuantityBtn": "使用數量",
+  "stockIngredientRestockDialogQuantityLabel": "現有庫存",
+  "stockIngredientRestockDialogQuantityHelper": "若沒有設定最大庫存量，增加本值會重設最大庫存量。",
+  "@stockIngredientRestockDialogQuantityHelper": {
     "description": "Auxiliary text used for quickly increasing inventory"
+  },
+  "stockIngredientRestockDialogPriceTab": "價格",
+  "stockIngredientRestockDialogPriceBtn": "使用價錢",
+  "stockIngredientRestockDialogPriceLabel": "補貨價格",
+  "stockIngredientRestockDialogPriceEmptyBody": "趕緊設定單價，讓你可以利用補貨的金額直接算出補貨的量。",
+  "stockIngredientRestockDialogPriceOldAmount": "原始庫存",
+  "@stockIngredientRestockDialogPriceOldAmount": {
+    "description": "The original amount before the restock"
   },
   "stockReplenishmentButton": "採購",
   "stockReplenishmentEmptyBody": "採購可以幫你快速調整成分的庫存",
@@ -145,7 +160,7 @@
   },
   "stockReplenishmentNever": "尚未補貨過",
   "@stockReplenishmentNever": {
-    "description": "The stock page displays the last restock time; if never restocked, this text is set"
+    "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
   "stockReplenishmentApplyButton": "套用採購",
   "stockReplenishmentApplyConfirmButton": "套用",
@@ -785,14 +800,28 @@
       }
     }
   },
-  "transitPTFormatModelStockIngredientDetails": "{exist, plural, =0{} other{，最大量有 {max} 個}}",
-  "@transitPTFormatModelStockIngredientDetails": {
+  "transitPTFormatModelStockIngredientMaxAmount": "{exist, plural, =0{} other{，最大量有 {max} 個}}",
+  "@transitPTFormatModelStockIngredientMaxAmount": {
     "description": "String(max) are used so that regex can be inserted here during import to obtain information",
     "placeholders": {
       "exist": {
         "type": "int"
       },
       "max": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelStockIngredientRestockPrice": "{exist, plural, =0{} other{且每 {quantity} 個成本要價 {price} 元}}",
+  "@transitPTFormatModelStockIngredientRestockPrice": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "price": {
         "type": "String"
       }
     }

@@ -37,3 +37,5 @@ class Replenisher extends ChangeNotifier with Repository<Replenishment>, Reposit
     await super.commitStaged();
   }
 }
+
+enum ReplenishBy { quantity, price }

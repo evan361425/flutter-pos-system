@@ -54,6 +54,50 @@ void main() {
   }
 
   group('Product Page', () {
+    testWidgets('Reorder Ingredients', (WidgetTester tester) async {
+      Stock().replaceItems({
+        'p-1': Ingredient(id: 'p-1', name: 'p-1'),
+        'p-2': Ingredient(id: 'p-2', name: 'p-2'),
+        'p-3': Ingredient(id: 'p-3', name: 'p-3'),
+      });
+      Quantities();
+      final p1 = ProductIngredient(id: 'p-1', name: 'p-1', index: 1, ingredient: Stock.instance.getItem('p-1'));
+      final p2 = ProductIngredient(id: 'p-2', name: 'p-2', index: 2, ingredient: Stock.instance.getItem('p-2'));
+      final p = Product(id: 'p', name: 'p', ingredients: {
+        'p-1': p1,
+        'p-2': p2,
+        'p-3': ProductIngredient(id: 'p-3', name: 'p-3', index: 3, ingredient: Stock.instance.getItem('p-3')),
+      });
+      final catalog = Catalog(id: 'c', products: {'p': p..prepareItem()})..prepareItem();
+      Menu().replaceItems({'c': catalog});
+
+      await tester.pumpWidget(buildApp(p));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('item_more_action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.reorder));
+      await tester.pumpAndSettle();
+
+      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+
+      await tester.tap(find.byKey(const Key('reorder.save')));
+      await tester.pumpAndSettle();
+
+      final y1 = tester.getCenter(find.byKey(const Key('product_ingredient.p-1'))).dy;
+      final y2 = tester.getCenter(find.byKey(const Key('product_ingredient.p-2'))).dy;
+      final itemList = p.itemList;
+      expect(y1, greaterThan(y2));
+      expect(itemList[0].id, equals('p-2'));
+      expect(itemList[1].id, equals('p-1'));
+      expect(itemList[2].id, equals('p-3'));
+
+      verify(storage.set(
+        any,
+        argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1})),
+      ));
+    });
+
     testWidgets('Update image', (WidgetTester tester) async {
       final newImage = await createImage('test-image');
       final product = Product(id: 'p-1', imagePath: 'wrong-path');

@@ -119,6 +119,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
       await widget.product.addItem(ProductIngredient(
         ingredient: Stock.instance.getItem(ingredientId),
         amount: object.amount!,
+        index: widget.product.newIndex,
       ));
     } else {
       await widget.ingredient!.update(object);

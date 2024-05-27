@@ -137,7 +137,7 @@ void main() {
       ], child: buildApp()));
     }
 
-    testWidgets('edit amount of ingredient', (tester) async {
+    testWidgets('edit amount by quantity', (tester) async {
       await buildAppWithIngredients();
       Stock.instance.getItem('i-1')!.totalAmount = 54321;
       Stock.instance.getItem('i-2')!.lastAmount = 900.56;
@@ -167,7 +167,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final w = find.byKey(const Key('slider_dialog.text')).evaluate().single.widget as TextFormField;
-      expect(w.controller!.text, equals('10.0'));
+      expect(w.controller!.text, equals('10'));
 
       await tester.tap(find.byType(Slider));
       expect(w.controller!.text, equals('27161'));
@@ -175,6 +175,53 @@ void main() {
       await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
       await tester.pumpAndSettle();
       expect(ingredient.currentAmount, equals(27161));
+    });
+
+    testWidgets('edit amount by price', (tester) async {
+      await buildAppWithIngredients();
+      final ing = Stock.instance.getItem('i-2')!;
+      ing.currentAmount = 1;
+      ing.restockPrice = 2;
+      ing.restockQuantity = 3;
+      ing.restockLastPrice = 4;
+      when(cache.set('stock.replenishBy', 1)).thenAnswer((_) => Future.value(true));
+
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+        ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
+      ], child: buildApp()));
+
+      await tester.tap(find.byKey(const Key('stock.i-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('stock.repl.switch')));
+      await tester.pumpAndSettle();
+      verify(cache.set('stock.replenishBy', 1));
+
+      await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      when(cache.get('stock.replenishBy')).thenReturn(1);
+      await tester.tap(find.byKey(const Key('stock.i-2')));
+      await tester.pumpAndSettle();
+
+      final tf = find.byKey(const Key('stock.repl.price.text')).evaluate().single.widget as TextFormField;
+      expect(tf.controller!.text, equals('4'));
+
+      await tester.enterText(find.byKey(const Key('stock.repl.price.text')), 'abc');
+      await tester.pumpAndSettle();
+      expect(find.text('1'), findsNWidgets(2)); // original value
+
+      await tester.enterText(find.byKey(const Key('stock.repl.price.text')), '6.6');
+      await tester.pumpAndSettle();
+      expect(find.text('10.90'), findsOneWidget); // 6.6 / 2 * 3 + 1
+
+      await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      expect(ing.currentAmount, equals(10.9));
+      expect(ing.restockLastPrice, equals(6.6));
+      verifyNever(cache.set('stock.replenishBy', any));
     });
 
     testWidgets('edit ingredient', (tester) async {
@@ -187,9 +234,13 @@ void main() {
 
       await tester.enterText(find.byKey(const Key('stock.ingredient.amount')), '1');
       await tester.enterText(find.byKey(const Key('stock.ingredient.totalAmount')), '');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.restockPrice')), '2');
+      await tester.enterText(find.byKey(const Key('stock.ingredient.restockQuantity')), '3');
 
       // go to product
-      await tester.tap(find.byKey(const Key('stock.ingredient.p-1')));
+      final p1 = find.byKey(const Key('stock.ingredient.p-1'));
+      await tester.dragUntilVisible(p1, find.byType(ListView), const Offset(0, -300));
+      await tester.tap(p1);
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
       await tester.pumpAndSettle();
@@ -215,6 +266,8 @@ void main() {
       expect(ingredient.name, equals('i-3'));
       expect(ingredient.currentAmount, equals(1));
       expect(ingredient.totalAmount, isNull);
+      expect(ingredient.restockPrice, equals(2));
+      expect(ingredient.restockQuantity, equals(3));
     });
 
     testWidgets('delete ingredient', (tester) async {
@@ -239,6 +292,7 @@ void main() {
     });
 
     setUp(() {
+      when(cache.get(any)).thenReturn(null);
       // disable tutorial
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),

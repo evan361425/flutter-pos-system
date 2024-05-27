@@ -158,13 +158,14 @@ void main() {
                 'ingredients': {
                   'pi-1': {
                     'ingredientId': 'i-1',
+                    'index': 0,
                     'amount': 5,
                     'quantities': {
                       'pq-1': {'quantityId': 'q-1', 'amount': 5, 'additionalCost': 5, 'additionalPrice': 10},
                       pq2.id: {'quantityId': 'q-2', 'amount': -5, 'additionalCost': 0, 'additionalPrice': 0}
                     }
                   },
-                  pi2.id: {'ingredientId': 'i-2', 'amount': 5, 'quantities': {}}
+                  pi2.id: {'ingredientId': 'i-2', 'index': 0, 'amount': 5, 'quantities': {}}
                 }
               },
               'p-2': {

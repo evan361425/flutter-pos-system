@@ -24,12 +24,16 @@ class StockIngredientModal extends StatefulWidget {
 }
 
 class _StockIngredientModalState extends State<StockIngredientModal> with ItemModal<StockIngredientModal> {
-  late TextEditingController _nameController;
-  late TextEditingController _amountController;
-  late TextEditingController _totalAmountController;
-  late FocusNode _nameFocusNode;
-  late FocusNode _amountFocusNode;
-  late FocusNode _totalAmountFocusNode;
+  late TextEditingController nameController;
+  late TextEditingController amountController;
+  late TextEditingController totalAmountController;
+  late TextEditingController restockPriceController;
+  late TextEditingController restockQuantityController;
+  final _nameFocusNode = FocusNode();
+  final _amountFocusNode = FocusNode();
+  final _totalAmountFocusNode = FocusNode();
+  final _groupCostFocusNode = FocusNode();
+  final _groupAmountFocusNode = FocusNode();
 
   @override
   String get title => widget.ingredient?.name ?? S.stockIngredientTitleCreate;
@@ -63,7 +67,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
                 title: Text(
                   '${product.catalog.name} - ${product.name}',
                 ),
-                onTap: () => _handleTap(product),
+                onTap: () => handleProductTap(product),
               );
           }
         });
@@ -73,10 +77,10 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   List<Widget> buildFormFields() => <Widget>[
         p(TextFormField(
           key: const Key('stock.ingredient.name'),
-          controller: _nameController,
-          textInputAction: TextInputAction.done,
-          textCapitalization: TextCapitalization.words,
+          controller: nameController,
           focusNode: _nameFocusNode,
+          textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             labelText: S.stockIngredientNameLabel,
             hintText: S.stockIngredientNameHint,
@@ -96,10 +100,10 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         )),
         p(TextFormField(
           key: const Key('stock.ingredient.amount'),
-          controller: _amountController,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
+          controller: amountController,
           focusNode: _amountFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountLabel,
             filled: false,
@@ -112,14 +116,14 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         )),
         p(TextFormField(
           key: const Key('stock.ingredient.totalAmount'),
-          controller: _totalAmountController,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
+          controller: totalAmountController,
           focusNode: _totalAmountFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: S.stockIngredientAmountMaxLabel,
             helperText: S.stockIngredientAmountMaxHelper,
-            helperMaxLines: 5,
+            helperMaxLines: 6,
             filled: false,
           ),
           validator: Validator.positiveNumber(
@@ -128,43 +132,87 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
             focusNode: _totalAmountFocusNode,
           ),
         )),
+        p(TextFormField(
+          key: const Key('stock.ingredient.restockPrice'),
+          controller: restockPriceController,
+          focusNode: _groupCostFocusNode,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: S.stockIngredientRestockPriceLabel,
+            helperText: S.stockIngredientRestockPriceHelper,
+            helperMaxLines: 3,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            S.stockIngredientRestockPriceLabel,
+            allowNull: true,
+            focusNode: _groupCostFocusNode,
+          ),
+        )),
+        p(TextFormField(
+          key: const Key('stock.ingredient.restockQuantity'),
+          controller: restockQuantityController,
+          focusNode: _groupAmountFocusNode,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          onFieldSubmitted: handleFieldSubmit,
+          decoration: InputDecoration(
+            labelText: S.stockIngredientRestockQuantityLabel,
+            helperText: S.stockIngredientRestockQuantityHelper,
+            helperMaxLines: 5,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            S.stockIngredientRestockQuantityLabel,
+            allowNull: true,
+            focusNode: _groupAmountFocusNode,
+          ),
+        )),
       ];
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.ingredient?.name);
 
-    final amount = widget.ingredient?.currentAmount.toString() ?? '';
-    final totalAmount = widget.ingredient?.totalAmount?.toString() ?? '';
-    _amountController = TextEditingController(text: amount);
-    _totalAmountController = TextEditingController(text: totalAmount);
+    final amount = widget.ingredient?.currentAmount.toAmountString() ?? '';
+    final totalAmount = widget.ingredient?.totalAmount?.toAmountString() ?? '';
+    final rp = widget.ingredient?.restockPrice?.toAmountString() ?? '';
+    final rq = widget.ingredient?.restockQuantity.toAmountString() ?? '1';
 
-    _nameFocusNode = FocusNode();
-    _amountFocusNode = FocusNode();
-    _totalAmountFocusNode = FocusNode();
+    nameController = TextEditingController(text: widget.ingredient?.name);
+    amountController = TextEditingController(text: amount);
+    totalAmountController = TextEditingController(text: totalAmount);
+    restockPriceController = TextEditingController(text: rp);
+    restockQuantityController = TextEditingController(text: rq);
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _amountController.dispose();
-    _totalAmountController.dispose();
+    nameController.dispose();
+    amountController.dispose();
+    totalAmountController.dispose();
+    restockPriceController.dispose();
+    restockQuantityController.dispose();
     _nameFocusNode.dispose();
     _amountFocusNode.dispose();
     _totalAmountFocusNode.dispose();
+    _groupCostFocusNode.dispose();
+    _groupAmountFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Future<void> updateItem() async {
-    final object = _parseObject();
+    final object = parseObject();
 
     if (widget.isNew) {
       await Stock.instance.addItem(Ingredient(
         name: object.name!,
         currentAmount: object.currentAmount!,
         totalAmount: object.totalAmount,
+        restockPrice: object.restockPrice,
+        restockQuantity: object.restockQuantity ?? 1.0,
       ));
     } else {
       await widget.ingredient!.update(object);
@@ -175,20 +223,22 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     }
   }
 
-  void _handleTap(Product product) {
+  void handleProductTap(Product product) {
     context.pushNamed(
       Routes.menuProductModal,
       pathParameters: {'id': product.id},
     );
   }
 
-  IngredientObject _parseObject() {
-    final amount = num.tryParse(_amountController.text) ?? 0;
+  IngredientObject parseObject() {
+    final amount = num.tryParse(amountController.text) ?? 0;
     return IngredientObject(
-      name: _nameController.text,
+      name: nameController.text,
       lastAmount: amount,
       currentAmount: amount,
-      totalAmount: num.tryParse(_totalAmountController.text),
+      totalAmount: num.tryParse(totalAmountController.text),
+      restockPrice: num.tryParse(restockPriceController.text),
+      restockQuantity: num.tryParse(restockQuantityController.text),
       fromModal: true,
     );
   }

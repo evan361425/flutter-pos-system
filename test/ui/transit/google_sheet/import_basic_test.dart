@@ -321,7 +321,7 @@ void main() {
         await prepareImport(tester, 'stock', 1, true, [
           ['i1', 1],
           ['i2'],
-          ['i3', -2],
+          ['i3', 1, 1, -2],
         ], [
           'i1',
           'i2'

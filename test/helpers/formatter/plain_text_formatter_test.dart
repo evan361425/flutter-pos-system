@@ -142,26 +142,29 @@ void main() {
       stock.replaceItems({
         'i1': Ingredient(id: 'i1', name: 'i1'),
         'i2': Ingredient(id: 'i2', name: 'i2', currentAmount: 1.0),
-        'i3': Ingredient(
-          id: 'i3',
-          name: 'i3',
+        'i3': Ingredient(id: 'i3', name: 'i3', currentAmount: 1.0, totalAmount: 2.0),
+        'i4': Ingredient(
+          id: 'i4',
+          name: 'i4',
           currentAmount: 1.0,
-          totalAmount: 2.0,
+          restockPrice: 2.0,
+          restockQuantity: 3.0,
         ),
       });
 
       final items = format<Ingredient>(
         Formattable.stock,
-        'The inventory has 3 ingredients in total.\n'
+        'The inventory has 4 ingredients in total.\n'
         '\n'
         'Ingredient at 1 is called i1, with 0 amount.\n'
         'Ingredient at 2 is called i2, with 1 amount.\n'
-        'Ingredient at 3 is called i3, with 1 amount, with a maximum of 2 pieces.',
+        'Ingredient at 3 is called i3, with 1 amount, with a maximum of 2 pieces.\n'
+        'Ingredient at 4 is called i4, with 1 amount and 3 units of it cost \$2 to replenish.',
       );
 
       expect(
-        items.map((e) => e.item?.toObject().toMap().toString()).toList(),
-        equals(stock.items.map((e) => e.toObject().toMap().toString()).toList()),
+        items.map((e) => e.item?.toObject().toMap()).toList(),
+        equals(stock.items.map((e) => e.toObject().toMap()).toList()),
       );
     });
 

@@ -124,7 +124,7 @@ extension ToCurrency on num {
     // if it has decimal, show it, else show int
     final rounded = round();
     if (this == rounded) {
-      return round().toString();
+      return rounded.toString();
     }
 
     return toString();
