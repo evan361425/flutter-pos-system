@@ -325,9 +325,14 @@ PT:
         header: 本庫存共有 {count} 種成分。
         headerPrefix: 本庫存
         ingredient: 第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。
-        ingredientDetails:
-        - =0: ''
-          other: ，最大量有 {max} 個
+        _ingredient:
+          $prefix: ingredient
+          maxAmount:
+          - =0: ''
+            other: ，最大量有 {max} 個
+          restockPrice:
+          - =0: ''
+            other: '且每 {quantity} 個成本要價 {price} 元'
       quantities:
         meta:
           quantity: '{count} 種份量'

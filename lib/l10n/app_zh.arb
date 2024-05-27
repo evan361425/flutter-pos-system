@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-05-26T10:18:05.601175Z",
+  "@@last_modified": "2024-05-27T00:52:27.195998Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -800,14 +800,28 @@
       }
     }
   },
-  "transitPTFormatModelStockIngredientDetails": "{exist, plural, =0{} other{，最大量有 {max} 個}}",
-  "@transitPTFormatModelStockIngredientDetails": {
+  "transitPTFormatModelStockIngredientMaxAmount": "{exist, plural, =0{} other{，最大量有 {max} 個}}",
+  "@transitPTFormatModelStockIngredientMaxAmount": {
     "description": "String(max) are used so that regex can be inserted here during import to obtain information",
     "placeholders": {
       "exist": {
         "type": "int"
       },
       "max": {
+        "type": "String"
+      }
+    }
+  },
+  "transitPTFormatModelStockIngredientRestockPrice": "{exist, plural, =0{} other{且每 {quantity} 個成本要價 {price} 元}}",
+  "@transitPTFormatModelStockIngredientRestockPrice": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "price": {
         "type": "String"
       }
     }

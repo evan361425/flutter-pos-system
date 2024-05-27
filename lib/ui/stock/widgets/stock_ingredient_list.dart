@@ -122,12 +122,12 @@ class _IngredientTile extends StatelessWidget {
     final result = await showAdaptiveDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        final currentValue = ValueNotifier<String?>('');
+        final currentValue = ValueNotifier<String?>(null);
         return SliderTextDialog(
           title: Text(ingredient.name),
           value: ingredient.currentAmount.toDouble(),
           max: ingredient.maxAmount,
-          builder: (child, onSubmit) => _DialogTabView(
+          builder: (child, onSubmit) => _RestockDialog(
             ingredient: ingredient,
             quantityTab: child,
             onSubmit: onSubmit,
@@ -150,7 +150,7 @@ class _IngredientTile extends StatelessWidget {
   }
 }
 
-class _DialogTabView extends StatefulWidget {
+class _RestockDialog extends StatefulWidget {
   final Ingredient ingredient;
 
   final Widget quantityTab;
@@ -159,7 +159,7 @@ class _DialogTabView extends StatefulWidget {
 
   final ValueNotifier<String?> currentValue;
 
-  const _DialogTabView({
+  const _RestockDialog({
     required this.ingredient,
     required this.onSubmit,
     required this.quantityTab,
@@ -167,57 +167,63 @@ class _DialogTabView extends StatefulWidget {
   });
 
   @override
-  State<_DialogTabView> createState() => _DialogTabViewState();
+  State<_RestockDialog> createState() => _RestockDialogState();
 }
 
-class _DialogTabViewState extends State<_DialogTabView> {
+class _RestockDialogState extends State<_RestockDialog> {
   late ReplenishBy replenishBy;
   late final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    final child = replenishBy == ReplenishBy.quantity
-        ? widget.quantityTab
-        : widget.ingredient.restockPrice == null
-            ? Center(
-                child: EmptyBody(
-                  content: S.stockIngredientRestockDialogPriceEmptyBody,
-                  routeName: Routes.ingredientModal,
-                  pathParameters: {'id': widget.ingredient.id},
-                ),
-              )
-            : DefaultTextStyle(
-                style: Theme.of(context).textTheme.bodyLarge!,
-                child: buildPriceTab(),
-              );
-
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (popped) async {
-        if (popped && widget.currentValue.value != null) {
-          final price = num.tryParse(controller.text);
-          if (price != null) {
-            await widget.ingredient.update(IngredientObject(
-              restockLastPrice: price,
-            ));
-          }
-        }
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          child,
-          const SizedBox(height: 8.0),
-          ElevatedButton.icon(
-            onPressed: switchMethod,
-            // switch method, so the label is opposite
-            label: Text(replenishBy == ReplenishBy.quantity
-                ? S.stockIngredientRestockDialogPriceBtn
-                : S.stockIngredientRestockDialogQuantityBtn),
-            icon: const Icon(Icons.currency_exchange_sharp),
+    late Widget child;
+    if (replenishBy == ReplenishBy.quantity) {
+      child = widget.quantityTab;
+    } else {
+      if (widget.ingredient.restockPrice == null) {
+        child = Center(
+          child: EmptyBody(
+            content: S.stockIngredientRestockDialogPriceEmptyBody,
+            routeName: Routes.ingredientModal,
+            pathParameters: {'id': widget.ingredient.id},
           ),
-        ],
-      ),
+        );
+      } else {
+        child = DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyLarge!,
+          child: PopScope(
+            canPop: true,
+            onPopInvoked: (popped) async {
+              if (popped && widget.currentValue.value != null) {
+                final price = num.tryParse(controller.text);
+                if (price != null) {
+                  await widget.ingredient.update(IngredientObject(
+                    restockLastPrice: price,
+                  ));
+                }
+              }
+            },
+            child: buildPriceTab(),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        child,
+        const SizedBox(height: 8.0),
+        ElevatedButton.icon(
+          key: const Key('stock.repl.switch'),
+          onPressed: switchMethod,
+          // switch method, so the label is opposite
+          label: Text(replenishBy == ReplenishBy.quantity
+              ? S.stockIngredientRestockDialogPriceBtn
+              : S.stockIngredientRestockDialogQuantityBtn),
+          icon: const Icon(Icons.currency_exchange_sharp),
+        ),
+      ],
     );
   }
 
@@ -292,12 +298,12 @@ class _DialogTabViewState extends State<_DialogTabView> {
     super.dispose();
   }
 
-  void switchMethod() {
+  void switchMethod() async {
     final other = replenishBy == ReplenishBy.quantity ? ReplenishBy.price : ReplenishBy.quantity;
-    Cache.instance.set('stock.replenishBy', other.index);
     setState(() {
       replenishBy = other;
     });
+    await Cache.instance.set('stock.replenishBy', other.index);
   }
 }
 

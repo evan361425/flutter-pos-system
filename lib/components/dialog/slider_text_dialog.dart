@@ -32,7 +32,7 @@ class SliderTextDialog extends StatefulWidget {
 
 class _SliderTextDialogState extends State<SliderTextDialog> {
   late final TextEditingController textController;
-  late double sliderValue;
+  late ValueNotifier<double> sliderValue;
   late final double sliderMax;
   late final bool withSlider;
   final form = GlobalKey<FormState>();
@@ -70,32 +70,34 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   }
 
   Widget buildTextWithSlider() {
-    return Column(children: [
-      TextFormField(
-        key: const Key('slider_dialog.text'),
-        controller: textController,
-        onSaved: onSubmit,
-        onFieldSubmitted: onSubmit,
-        autofocus: !withSlider,
-        keyboardType: TextInputType.number,
-        validator: widget.validator,
-        decoration: widget.decoration,
-        textInputAction: TextInputAction.done,
-      ),
-      if (withSlider)
-        Slider(
-          value: sliderValue,
-          max: sliderMax,
-          min: widget.min,
-          label: sliderValue.round().toString(),
-          onChanged: (double value) {
-            setState(() {
-              textController.text = value.round().toString();
-              sliderValue = value;
-            });
-          },
+    return ListenableBuilder(
+      listenable: sliderValue,
+      builder: (_, __) => Column(children: [
+        TextFormField(
+          key: const Key('slider_dialog.text'),
+          controller: textController,
+          onSaved: onSubmit,
+          onFieldSubmitted: onSubmit,
+          autofocus: !withSlider,
+          keyboardType: TextInputType.number,
+          validator: widget.validator,
+          decoration: widget.decoration,
+          textInputAction: TextInputAction.done,
         ),
-    ]);
+        if (withSlider)
+          Slider(
+            value: sliderValue.value,
+            max: sliderMax,
+            min: widget.min,
+            label: sliderValue.value.round().toString(),
+            onChanged: (double value) {
+              textController.text = value.round().toString();
+              widget.currentValue?.value = textController.text;
+              sliderValue.value = value;
+            },
+          ),
+      ]),
+    );
   }
 
   void onSubmit(String? value) {
@@ -108,8 +110,8 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   void initState() {
     super.initState();
     textController = TextEditingController(text: widget.value.toAmountString());
-    sliderValue = widget.value.toDouble();
-    sliderMax = max(widget.max, sliderValue);
+    sliderValue = ValueNotifier(widget.value.toDouble());
+    sliderMax = max(widget.max, sliderValue.value);
     withSlider = widget.max > 0;
     if (!withSlider) {
       textController.selection = TextSelection(
@@ -117,6 +119,10 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
         extentOffset: textController.text.length,
       );
     }
+
+    textController.addListener(() {
+      widget.currentValue?.value = textController.text;
+    });
   }
 
   @override

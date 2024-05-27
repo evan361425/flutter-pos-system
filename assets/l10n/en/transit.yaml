@@ -450,12 +450,20 @@ PT:
           name:
           amount:
           details:
-        ingredientDetails:
-        - =0: ''
-          other: ', with a maximum of {max} pieces'
-        - String(max) are used so that regex can be inserted here during import to obtain information
-        - exist: {type: int, mode: plural}
-          max:
+        _ingredient:
+          $prefix: ingredient
+          maxAmount:
+          - =0: ''
+            other: ', with a maximum of {max} pieces'
+          - String(max) are used so that regex can be inserted here during import to obtain information
+          - exist: {type: int, mode: plural}
+            max:
+          restockPrice:
+          - =0: ''
+            other: ' and {quantity} units of it cost ${price} to replenish'
+          - exist: {type: int, mode: plural}
+            quantity:
+            price:
       quantities:
         meta:
           quantity:

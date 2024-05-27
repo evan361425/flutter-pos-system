@@ -133,7 +133,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
           ),
         )),
         p(TextFormField(
-          key: const Key('stock.ingredient.replPrice'),
+          key: const Key('stock.ingredient.restockPrice'),
           controller: restockPriceController,
           focusNode: _groupCostFocusNode,
           textInputAction: TextInputAction.next,
@@ -151,7 +151,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
           ),
         )),
         p(TextFormField(
-          key: const Key('stock.ingredient.replQuantity'),
+          key: const Key('stock.ingredient.restockQuantity'),
           controller: restockQuantityController,
           focusNode: _groupAmountFocusNode,
           textInputAction: TextInputAction.done,

@@ -236,10 +236,15 @@ class _StockTransformer extends ModelTransformer<Stock> {
             (counter++).toString(),
             ingredient.name,
             nf.format(ingredient.currentAmount),
-            S.transitPTFormatModelStockIngredientDetails(
-              ingredient.totalAmount == null ? 0 : 1,
-              nf.format(ingredient.totalAmount ?? 0),
-            ),
+            S.transitPTFormatModelStockIngredientMaxAmount(
+                  ingredient.totalAmount == null ? 0 : 1,
+                  nf.format(ingredient.totalAmount ?? 0),
+                ) +
+                S.transitPTFormatModelStockIngredientRestockPrice(
+                  ingredient.restockPrice == null ? 0 : 1,
+                  nf.format(ingredient.restockQuantity),
+                  nf.format(ingredient.restockPrice ?? 0),
+                ),
           ),
       ],
     ];
@@ -250,22 +255,33 @@ class _StockTransformer extends ModelTransformer<Stock> {
     final reBase = RegExp(_rePre +
         S.transitPTFormatModelStockIngredient(
           _reInt,
-          r'(?<name>[^，]+?)',
+          r'(?<name>.+?)',
           '(?<amount>$_reDig)',
-          '',
+          r'(?<details>.*)',
         ));
-    final reMax = RegExp(S.transitPTFormatModelStockIngredientDetails(1, '(?<max>$_reDig)'));
+    final reMax = RegExp(S.transitPTFormatModelStockIngredientMaxAmount(1, '(?<max>$_reDig)'));
+    final reRestock = RegExp(
+      S.transitPTFormatModelStockIngredientRestockPrice(1, '(?<q>$_reDig)', '(?<p>$_reDig)').replaceAll(r'$', r'\$'),
+    );
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final base = reBase.firstMatch(line.toString());
-      final max = reMax.firstMatch(line.toString());
       if (base != null) {
-        result.add([
-          base.namedGroup('name')!,
-          base.namedGroup('amount')!,
-          max?.namedGroup('max') ?? '',
-        ]);
+        final parsed = [base.namedGroup('name')!, base.namedGroup('amount')!];
+        final details = base.namedGroup('details');
+
+        if (details != null && details.isNotEmpty) {
+          final max = reMax.firstMatch(details);
+          parsed.add(max != null ? max.namedGroup('max')! : 'null');
+
+          final restock = reRestock.firstMatch(details);
+          if (restock != null) {
+            parsed.add(restock.namedGroup('p')!);
+            parsed.add(restock.namedGroup('q')!);
+          }
+        }
+        result.add(parsed);
       }
     }
 
@@ -302,7 +318,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
       _rePre +
           S.transitPTFormatModelQuantitiesQuantity(
             _reInt,
-            r'(?<name>[^，]+?)',
+            r'(?<name>.+?)',
             '(?<prop>$_reDig)',
           ),
     );
@@ -354,7 +370,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
       _rePre +
           S.transitPTFormatModelReplenisherReplenishment(
             _reInt,
-            r'(?<name>[^，]+?)',
+            r'(?<name>.+?)',
             '.*',
           ),
     );
