@@ -71,7 +71,7 @@ extra:
     property: G-P67FD9XP83
   alternate:
   - name: English
-    link: /flutter-pos-system/en/
+    link: /flutter-pos-system/
     lang: en
   - name: 繁體中文
     link: /flutter-pos-system/zh/
