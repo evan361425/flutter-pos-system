@@ -1,15 +1,15 @@
-# 本地端開發
+# Local Development
 
-正常程式碼開發只需要：
+For regular code development, simply run:
 
     flutter pub get
 
-就可以安裝你需要的東西了，但如果你想要建置應用程式，你需要三個東西：
+This will install the necessary dependencies. However, if you want to build the application, you need three things:
 
-- `/android/<any-name>.jks`，這是用來存放你的鑰匙的，確保你就是這個應用程式的擁有者，你可以這樣產生：
+- `/android/<any-name>.jks`: This is for storing your keys to ensure ownership of the application. You can generate it with:
 
 ```bash
-# 假設 <any-name> 為 my-jks
+# Assuming <any-name> is my-jks
 keytool -genkey -v -keystore android/app/my-jks.jks \
   -alias possystem \
   -keyalg RSA \
@@ -19,9 +19,9 @@ keytool -genkey -v -keystore android/app/my-jks.jks \
   -dname 'CN=possystem, OU=possystem, O=possystem, L=Unknown, ST=Unknown, C=Unknown'
 ```
 
-- `/android/key.properties`，用來告訴建置應用程式時，你的鑰匙放哪裡，他裡面需要這些東西（依照上述產生範例）：
+- `/android/key.properties`: This file tells the build process where your key is located. It should contain the following (based on the example above):
   - `keyAlias=possystem`
-  - `keyPassword=possystem`，keyPassword 如果你沒特別設定，預設和 storePassword 一樣
+  - `keyPassword=possystem` (If not specifically set, it defaults to the same as storePassword)
   - `storeFile=my-jks.jks`
   - `storePassword=possystem`
 
@@ -33,9 +33,7 @@ printf "keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s" \
   'possystem' > android/key.properties
 ```
 
-- `/android/app/google-services.json`，
-  你可以到 [Firebase Console](https://console.firebase.google.com/) 去產生，
-  但是記得要在 *專案設定* 裡面去設定剛剛產生的金鑰 SHA 憑證指紋，你可以這樣輸出：
+- `/android/app/google-services.json`: This can be generated from the [Firebase Console](https://console.firebase.google.com/). Remember to configure the SHA certificate fingerprint in *Project Settings* using:
 
 ```bash
 $ keytool -list -keystore android/app/my-jks.jks --storepass possystem
@@ -48,24 +46,22 @@ mykey, May 18, 2024, PrivateKeyEntry,
 Certificate fingerprint (SHA-256): 6F:14:57:54:CC:26:0A:4C:70:E3:28:1D:CE:D0:73:3F:72:19:49:96:8F:9A:1B:31:A5:E2:96:E4:44:14:E1:A1
 ```
 
-- 最後請更改 `/lib/firebase_compatible_options.dart` 裡面最下面的 `androidDebug` 設定。
-  你可以 `dart pub global activate flutterfire_cli` 安裝指令套件後 `flutterfire configure`，
-  然後把產生的檔案的設定資訊複製到 `firebase_compatible_options.dart` 中。
+- Finally, update the `androidDebug` setting at the bottom of `/lib/firebase_compatible_options.dart`. You can install the command-line tool with `dart pub global activate flutterfire_cli` and then run `flutterfire configure`. Copy the generated configuration into `firebase_compatible_options.dart`.
 
-## 測試
+## Testing
 
-在開始執行測試之前，你可以先把 mock 檔案準備好：
+Before running tests, prepare the mock files:
 
     make mock
 
-當想要開始測試，你可以：
+To start testing:
 
     make test
 
-如果想要測試加上 coverage，你可以：
+To run tests with coverage:
 
     make test-coverage
 
-最後產出的覆蓋率就可以打開以網頁格式打開：
+The generated coverage report can be viewed in a web format:
 
     open coverage/html/index.html

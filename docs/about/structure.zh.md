@@ -1,30 +1,24 @@
-# Architecture
+# 架構
 
-We use [Flutter](https://flutter.dev) to write all application-related logic.
-Flutter provides a wealth of resources for learning,
-including complete applications like [Gallery](https://github.com/flutter/gallery)
-and various [samples](https://github.com/flutter/samples).
+使用 [Flutter](https://flutter.dev) 去撰寫所有應用程式相關邏輯，
+他提供很多素材去做學習，包括各種應用程式的完成品，
+如 [Gallery](https://github.com/flutter/gallery) 和其他[小範例](https://github.com/flutter/samples)。
 
-Flutter uses [Skia](https://skia.org) as its graphics engine,
-enabling direct interaction with the underlying OS on all platforms
-(macOS, Linux, Windows, Web, iOS, Android).
-This minimizes the need for platform-specific interfaces,
-allowing a unified interface across multiple platforms.
+Flutter 透過 [Skia](https://skia.org) 來做繪圖工具，
+在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，
+減少和各平台的接口接觸，進而達到能在眾平台中統一介面。
 
-Of course, in certain scenarios, specific platform configurations are required.
-For example, iOS notifications need to be set up in XCode and [AppStoreConnect](http://appstoreconnect.apple.com).
-However, the overall business logic and application design can be written directly using Flutter.
+當然，在一些特殊情境上，仍需要單獨處理平台的設定。
+例如，iOS 的通知，便需要在 XCode 和 [AppStoreConnect](http://appstoreconnect.apple.com) 中設定。
+但整體的商務邏輯和應用程式設計都可以直接使用 Flutter 撰寫。
 
-Flutter is a framework, and the language used to write it is [Dart](https://dart.dev).
-Dart's style is similar to many object-oriented languages.
-Personally, I find it no different from other languages,
-mainly because it integrates well with IDEs, making it convenient to write.
-The documentation is also extensive. Here are a few detailed articles worth reading:
+Flutter 是一個框架，撰寫其框架的語言是 [Dart](https://dart.dev)，
+其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。
+這有幾個詳細說明的文章，無聊可以讀讀，
+[10-good-reasons-why-you-should-learn-dart](https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332)、
+[why-flutter-uses-dart](https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf)。
 
-- [10 good reasons why you should learn Dart](https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332)
-- [Why Flutter uses Dart](https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf)
-
-If you want to try it out right away, you can play with their online [compiler](https://dartpad.dev/?null_safety=true).
+如果想馬上來試試，可以玩玩看他們的線上 [compiler](https://dartpad.dev/?null_safety=true)。
 
 ## POS 系統在 Flutter 之上的架構
 

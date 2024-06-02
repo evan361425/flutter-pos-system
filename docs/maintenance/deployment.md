@@ -1,17 +1,17 @@
-# 部署流程
+# Deployment Process
 
-分為三個環境：
+Divided into three environments:
 
-- `internal`：內部測試用。
-- `beta`：對外的測試，同樣的檔案會推展到 `promote_to_production`。
-- `promote_to_production`：把 `beta` 的版本推到線上。
+- `internal`: For internal testing.
+- `beta`: For external testing. The same files will be pushed to `promote_to_production`.
+- `promote_to_production`: Pushes the `beta` version to production.
 
-分別的部署方式如下：
+Deployment steps for each environment are as follows:
 
 - `internal`
-  1. 執行 `make bump` 後，根據想要更新的版本輸入。
+  1. Run `make bump` and input the desired version update.
 - `beta`
-  1. 執行 `make bump-beta`。
+  1. Run `make bump-beta`.
 - `promote_to_production`
-  1. 把 GitHub 的 [draft release](https://github.com/evan361425/flutter-pos-system/releases) publish 出來。
-  2. 確認都沒問題後，可以把舊的 tag 清掉：`make clean-version`
+  1. Publish the [draft release](https://github.com/evan361425/flutter-pos-system/releases) on GitHub.
+  2. After confirming everything is fine, you can clean up old tags: `make clean-version`.

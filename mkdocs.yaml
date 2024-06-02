@@ -71,10 +71,10 @@ extra:
     property: G-P67FD9XP83
   alternate:
   - name: English
-    link: /en/
+    link: /flutter-pos-system/en/
     lang: en
   - name: 繁體中文
-    link: /zh/
+    link: /flutter-pos-system/zh/
     lang: zh
 
 plugins:

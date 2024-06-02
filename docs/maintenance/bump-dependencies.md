@@ -1,12 +1,12 @@
-# 更新相依套件
+# Update Dependencies
 
-分三種：
+There are three types:
 
-- dependencies，直接依賴的套件
-- dev_dependencies，開發環境依賴的套件
-- transitive，依賴套件的依賴套件
+- dependencies: Direct dependencies
+- dev_dependencies: Development environment dependencies
+- transitive: Dependencies of the dependencies
 
-## 如何查找哪些套件需要更新
+## How to Check Which Packages Need Updating
 
 ```bash
 $ make outdated
@@ -22,23 +22,23 @@ dev_dependencies:
 dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 ```
 
-但要注意幾件事：
+Note the following:
 
-- `Current` 代表現在的版本
-- `Upgradable` 代表依據[版本限制](https://dart.dev/tools/pub/dependencies#version-constraints)所能升級的最高版本
-- `Resolvable` 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本
-- `Latest` 代表這個套件目前最新的版本
+- `Current`: The current version
+- `Upgradable`: The highest version upgradable according to [version constraints](https://dart.dev/tools/pub/dependencies#version-constraints)
+- `Resolvable`: The highest version upgradable without conflicting with the current environment (mainly Dart/Flutter version)
+- `Latest`: The latest version of the package
 
-## 如何升級
+## How to Upgrade
 
-根據上面得到想要升級的版本後
+After identifying the version to upgrade to:
 
   flutter pub upgrade some_package
 
-這樣的方式可以同時升級 Transitive 的套件。
+This method also upgrades transitive dependencies.
 
-## 更新之後
+## After Updating
 
-請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：
+Remember to rerun the mock process, as new versions of packages may introduce new APIs:
 
   make mock
