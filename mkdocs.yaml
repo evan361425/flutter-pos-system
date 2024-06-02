@@ -81,22 +81,22 @@ plugins:
 - git-revision-date
 - search
 - i18n:
-  languages:
-  - locale: en
-    default: true
-    name: English
-    site_name: "POS System - Order & Checkout"
-  - locale: zh
-    name: 繁體中文
-    site_name: "POS 系統 - 點餐結帳"
-    nav_translations:
-      Contribute: 幫助
-      Structure: 架構
-      Maintenance: 維護
-      Deployment: 部署流程
-      Development: 本地端開發
-      Dependencies: 升版相依套件
-      Document: 文件
-      Code of Conduct: 開發公約
-      License: 使用許可
-      Privacy Policy: 隱私權規範
+    languages:
+    - locale: en
+      default: true
+      name: English
+      site_name: "POS System - Order & Checkout"
+    - locale: zh
+      name: 繁體中文
+      site_name: "POS 系統 - 點餐結帳"
+      nav_translations:
+        Contribute: 幫助
+        Structure: 架構
+        Maintenance: 維護
+        Deployment: 部署流程
+        Development: 本地端開發
+        Dependencies: 升版相依套件
+        Document: 文件
+        Code of Conduct: 開發公約
+        License: 使用許可
+        Privacy Policy: 隱私權規範

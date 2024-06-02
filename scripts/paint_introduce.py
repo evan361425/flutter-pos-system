@@ -13,9 +13,8 @@ langs = [
 ]
 
 for lang in langs:
-    folder = pp(
-        f"../android/fastlane/metadata/android/{lang["folder"]}/images/phoneScreenshots",
-    )
+    folder = lang["folder"]
+    folder = pp(f"../android/fastlane/metadata/android/{folder}/images/phoneScreenshots")
     space = 60
 
     images = [

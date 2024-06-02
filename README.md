@@ -6,11 +6,9 @@
 
 An open-source Flutter app designed for small restaurants and businesses.
 
-<div align="center" markdown>
 🌏
 [English](https://evan361425.github.io/flutter-pos-system/en/) |
 [**中文**](https://evan361425.github.io/flutter-pos-system/zh/)
-</div>
 
 ## Features
 
