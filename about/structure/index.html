@@ -477,19 +477,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pos-flutter" class="md-nav__link">
+  <a href="#pos-system-architecture-on-flutter" class="md-nav__link">
     <span class="md-ellipsis">
-      POS 系統在 Flutter 之上的架構
+      POS System Architecture on Flutter
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="POS 系統在 Flutter 之上的架構">
+    <nav class="md-nav" aria-label="POS System Architecture on Flutter">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#main-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      主要架構
+      Main Architecture
     </span>
   </a>
   
@@ -814,19 +814,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pos-flutter" class="md-nav__link">
+  <a href="#pos-system-architecture-on-flutter" class="md-nav__link">
     <span class="md-ellipsis">
-      POS 系統在 Flutter 之上的架構
+      POS System Architecture on Flutter
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="POS 系統在 Flutter 之上的架構">
+    <nav class="md-nav" aria-label="POS System Architecture on Flutter">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#main-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      主要架構
+      Main Architecture
     </span>
   </a>
   
@@ -941,141 +941,141 @@ The documentation is also extensive. Here are a few detailed articles worth read
 <li><a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">Why Flutter uses Dart</a></li>
 </ul>
 <p>If you want to try it out right away, you can play with their online <a href="https://dartpad.dev/?null_safety=true">compiler</a>.</p>
-<h2 id="pos-flutter">POS 系統在 Flutter 之上的架構<a class="headerlink" href="#pos-flutter" title="Permanent link">&para;</a></h2>
-<p>這裡嘗試讓初入的人了解應用程式架構。</p>
-<h3 id="_1">主要架構<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<h2 id="pos-system-architecture-on-flutter">POS System Architecture on Flutter<a class="headerlink" href="#pos-system-architecture-on-flutter" title="Permanent link">&para;</a></h2>
+<p>This aims to help beginners understand the app architecture.</p>
+<h3 id="main-architecture">Main Architecture<a class="headerlink" href="#main-architecture" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>.
-├── assets/             - 各種圖片，未來可能會放字體
-├── lib/                - 主要邏輯
-│   ├── components/     - 各種 UI 輔助元件
-│   ├── constants/      - 各種定死的標準，例如外觀顏色，常用圖標
-│   ├── helpers/        - 各地方常用函示，例如 Log
-│   ├── l10n/           - 應用程式內的文字，和各語言的翻譯（實質僅有 zh-TW）
-│   ├── models/         - 物件，例如產品、成份等等。會在這裡和 Services 接觸而非 UI 裡面
-│   ├── services/       - 和應用程式外部溝通的工具，例如 DB
-│   ├── settings/       - 使用者可以調整的設定，例如主題、語言和外觀
-│   ├── ui/             - 應用程式主要外觀設計
-│   ├── main.dart       - 處理 Services、Models 和 Firebase 的初始化
-│   ├── my_app.dart     - 建置主體 APP 位置
-│   ├── routes.dart     - 放置應用程式路徑位置
-│   └── translator.dart - 讓應用程式不需要每次都呼叫很長的翻譯物件
-└── test/               - 單元和元件測試，架構和 lib/ 一樣
+├── assets/             - Various images, potentially fonts in the future
+├── lib/                - Main logic
+│   ├── components/     - Various UI helper components
+│   ├── constants/      - Fixed standards, like colors, commonly used icons
+│   ├── helpers/        - Commonly used functions, like Log
+│   ├── l10n/           - In-app text and translations (only zh-TW)
+│   ├── models/         - Objects, like products, ingredients, etc., interacting with Services rather than UI
+│   ├── services/       - Tools for external communication, like DB
+│   ├── settings/       - User-adjustable settings, like theme, language, appearance
+│   ├── ui/             - Main app design
+│   ├── main.dart       - Handles initialization of Services, Models, and Firebase
+│   ├── my_app.dart     - Builds the main APP
+│   ├── routes.dart     - Application routes
+│   └── translator.dart - Avoids repetitive long translation object calls
+└── test/               - Unit and component tests, mirroring lib/ structure
 </code></pre></div>
 <h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>components/                     - 各種 UI 輔助元件
-├── dialog/                     - 對話框
-│    ├── confirm_dialog         - 確認通知
-│    ├── delete_dialog          - 刪除通知
-│    ├── single_text_dialog     - 可輸入文字的對話框
-│    └── slider_text_dialog     - 滑動有數字屬性的對話框
-├── mixin/                      - 輔助型元件
-│    └── item_modal             - 編輯物件（如產品、成分）用的模組
-├── models/                     - 和物件有關的 UI 元件
-├── scaffold/                   - 框架類元件
-│    ├── item_list_scaffold     - 目前僅有設定時會用到，未來可能會直接搬到 setting_screen
-│    └── reorderable_scaffold   - 可以重新排列物件的框架
-└── style/                      - 不會過 test 的元件
-     └── ...                    - 小東西，不列舉
+<div class="highlight"><pre><span></span><code>components/                     - Various UI helper components
+├── dialog/                     - Dialogs
+│    ├── confirm_dialog         - Confirmation dialog
+│    ├── delete_dialog          - Delete dialog
+│    ├── single_text_dialog     - Text input dialog
+│    └── slider_text_dialog     - Slider dialog with numerical attributes
+├── mixin/                      - Helper components
+│    └── item_modal             - Module for editing objects (e.g., products, ingredients)
+├── models/                     - UI components related to objects
+├── scaffold/                   - Scaffold components
+│    ├── item_list_scaffold     - Used for settings, might move to setting_screen
+│    └── reorderable_scaffold   - Reorderable scaffold
+└── style/                      - Components not passing tests
+     └── ...                    - Miscellaneous, not listed
 </code></pre></div>
 <h3 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>constants/     - 各種定死的標準，例如外觀顏色，常用圖標
-├── app_themes - 外觀顏色
-├── constant   - 數字類的標準，如 padding、margin 的大小
-└── icons      - 常用圖標
+<div class="highlight"><pre><span></span><code>constants/     - Fixed standards, like colors, commonly used icons
+├── app_themes - Colors
+├── constant   - Numeric standards, like padding, margin sizes
+└── icons      - Commonly used icons
 </code></pre></div>
 <h3 id="helpers">Helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>helpers/          - 各地方常用函示，例如 Log
-├── exporter/     - 包裝匯出資料的 API
-├── formater/     - 格式化資料
-├── launcher      - 包裝「點擊連結會跳出瀏覽器」
-├── logger        - 輸出，包括輸出到 Firebase Analytics
-├── util          - 雜項
-└── validator     - 驗證輸入的工具，例如文字必須為數字且必須大於一
+<div class="highlight"><pre><span></span><code>helpers/          - Commonly used functions, like Log
+├── exporter/     - API for exporting data
+├── formater/     - Data formatting
+├── launcher      - Opens browser on link click
+├── logger        - Output, including to Firebase Analytics
+├── util          - Miscellaneous
+└── validator     - Input validation tools, e.g., text must be numeric and greater than one
 </code></pre></div>
 <h3 id="models">Models<a class="headerlink" href="#models" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>models/                          - 物件，例如產品、成份等等。會在這裡和 Services 接觸而非 UI 裡面
-├── constumer/                   - 菜單
-│    ├── customer_setting_option - 顧客設定的選項
-│    └── customer_setting        - 顧客設定
-├── menu/                        - 菜單
-│    ├── catalog                 - 產品種類
-│    ├── product_ingredient      - 產品的成分
-│    ├── product_quantity        - 產品的份量
-│    └── product                 - 產品
-├── objects/                     - 用來做 I/O 的物件
-│    ├── cashier_object          - 收銀機的物件
-│    ├── customer_object         - 顧客設定的物件
-│    ├── menu_object             - 菜單的物件
-│    ├── order_attributeobject   - 訂單屬性（上面的顧客設定）
-│    ├── order_object            - 訂單的物件
-│    └── stock_object            - 庫存的物件
-├── order/                       - 訂單
-│    └── order_product           - 訂單的產品設定
-├── repository/                  - 物件庫
-│    ├── cart_ingredients        - 訂單時，產品的成份管理
-│    ├── cart                    - 訂單的物件庫，購物車
-│    ├── cashier                 - 收銀機的物件庫
-│    ├── customer_settings       - 顧客設定的物件庫
-│    ├── menu                    - 菜單的物件庫
-│    ├── quantities              - 份量的物件庫
-│    ├── replenisher             - 補貨的物件庫
-│    ├── seller                  - 點單的物件庫，賣家，用來處理把訂單丟進 DB
-│    └── stock                   - 庫存的物件庫，雖然 inventory 這名稱比較適合，但為時已晚
-├── stock/                       - 庫存
-│    ├── ingredient              - 庫存的成份
-│    ├── quantity                - 庫存的成分數量
-│    └── replenishment           - 庫存的補貨
-├── model_object                 - object 的基本物件
-├── model                        - model 的基本物件
-├── repository                   - repository 的基本物件
-└── xfile                        - 包裝檔案系統的 API
+<div class="highlight"><pre><span></span><code>models/                          - Objects, like products, ingredients, etc., interacting with Services rather than UI
+├── constumer/                   - Customer settings
+│    ├── customer_setting_option - Customer setting options
+│    └── customer_setting        - Customer settings
+├── menu/                        - Menu
+│    ├── catalog                 - Product categories
+│    ├── product_ingredient      - Product ingredients
+│    ├── product_quantity        - Product quantities
+│    └── product                 - Products
+├── objects/                     - I/O objects
+│    ├── cashier_object          - Cashier objects
+│    ├── customer_object         - Customer setting objects
+│    ├── menu_object             - Menu objects
+│    ├── order_attributeobject   - Order attribute objects (customer settings)
+│    ├── order_object            - Order objects
+│    └── stock_object            - Stock objects
+├── order/                       - Orders
+│    └── order_product           - Order product settings
+├── repository/                  - Object repositories
+│    ├── cart_ingredients        - Manages ingredients in orders
+│    ├── cart                    - Cart repository
+│    ├── cashier                 - Cashier repository
+│    ├── customer_settings       - Customer settings repository
+│    ├── menu                    - Menu repository
+│    ├── quantities              - Quantities repository
+│    ├── replenisher             - Replenisher repository
+│    ├── seller                  - Seller repository, handles DB order submissions
+│    └── stock                   - Stock repository (inventory)
+├── stock/                       - Stock
+│    ├── ingredient              - Stock ingredients
+│    ├── quantity                - Stock ingredient quantities
+│    └── replenishment           - Stock replenishments
+├── model_object                 - Base object
+├── model                        - Base model
+├── repository                   - Base repository
+└── xfile                        - API for filesystem
 </code></pre></div>
 <h3 id="services">Services<a class="headerlink" href="#services" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>services/               - 和應用程式外部溝通的工具，例如 DB
-├── auth                - 驗證邏輯，使用者的登入等等
-├── cache               - 記錄使用者的設定和行為，例如是否看過 tutorial
-├── database            - 紀錄點單等多筆的資料，Sqlite
-├── database_migrations - database 不同版本時整合的紀錄
-├── image_dumper        - 管理 image 的存取
-└── storage             - 紀錄菜單和庫存等高變種的資料，NoSQL
+<div class="highlight"><pre><span></span><code>services/               - Tools for external communication, like DB
+├── auth                - Authentication logic, user login, etc.
+├── cache               - User settings and behavior tracking, like tutorial completion
+├── database            - Records multiple data points, SQLite
+├── database_migrations - Database version integration records
+├── image_dumper        - Manages image access
+└── storage             - Records high-variance data like menus and stock, NoSQL
 </code></pre></div>
 <h3 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>settings/                    - 使用者可以調整的設定，例如主題、語言
-├── cashier_warning          - 收銀機的告警設定
-├── collect_event            - 收集使用者錯誤訊息設定
-├── currency                 - 幣種，目前尚無使用，僅是預先做好，未來有需要可以開
-├── language                 - 語言
-├── order_awakening          - 點餐時是否關閉螢幕的設定
-├── order_outlook            - 點餐時的外觀設定
-├── order_product_axis_count - 點餐時的外觀設定
-├── theme                    - 主題，目前僅有日光和暗色
-├── setting                  - 設定的介面
-└── settings_provier         - 管理所有設定的介面
+<div class="highlight"><pre><span></span><code>settings/                    - User-adjustable settings, like theme, language
+├── cashier_warning          - Cashier warning settings
+├── collect_event            - User error message collection settings
+├── currency                 - Currency settings (pre-built for future use)
+├── language                 - Language settings
+├── order_awakening          - Screen on/off settings during ordering
+├── order_outlook            - Ordering appearance settings
+├── order_product_axis_count - Ordering appearance settings
+├── theme                    - Themes (daylight and dark)
+├── setting                  - Settings interface
+└── settings_provider        - Manages all settings interfaces
 </code></pre></div>
 <h3 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">&para;</a></h3>
-<p>基本的框架為：</p>
-<div class="highlight"><pre><span></span><code>feature/             - 特定功能
-├── ...              - 功能下的子功能，若有會列出來
-├── widgets/         - 功能的輔助物件，不會在下表中列出來
-└── feature_screen   - 功能的架構，不會在下表中列出來
+<p>Basic framework:</p>
+<div class="highlight"><pre><span></span><code>feature/             - Specific features
+├── ...              - Sub-features, if any, will be listed
+├── widgets/         - Helper objects for features, not listed below
+└── feature_screen   - Feature framework, not listed below
 </code></pre></div>
-<p>各介面：</p>
-<div class="highlight"><pre><span></span><code>ui/                    - 應用程式主要外觀設計
-├── analysis/          - 分析點單
-├── cashier/           - 收銀機
-│    └── changer       - 換錢
-├── customer/          - 顧客設定
-├── home/              - 主頁
-├── menu/              - 菜單
-│    ├── catalog/      - 產品種類
-│    └── product/      - 產品
-├── order/             - 點單
-│    ├── cart          - 購物車
-│    └── cashier       - 結帳
-├── setting/           - 設定
-└── stock/             - 庫存
-     ├── quantity      - 成分數量
-     └── replenishment - 補貨
+<p>Interfaces:</p>
+<div class="highlight"><pre><span></span><code>ui/                    - Main app design
+├── analysis/          - Order analysis
+├── cashier/           - Cashier
+│    └── changer       - Change money
+├── customer/          - Customer settings
+├── home/              - Home
+├── menu/              - Menu
+│    ├── catalog/      - Product categories
+│    └── product/      - Products
+├── order/             - Order
+│    ├── cart          - Cart
+│    └── cashier       - Checkout
+├── setting/           - Settings
+└── stock/             - Stock
+     ├── quantity      - Ingredient quantities
+     └── replenishment - Replenishment
 </code></pre></div>
 
 
