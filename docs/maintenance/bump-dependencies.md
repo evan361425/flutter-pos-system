@@ -33,7 +33,7 @@ Note the following:
 
 After identifying the version to upgrade to:
 
-  flutter pub upgrade some_package
+    flutter pub upgrade some_package
 
 This method also upgrades transitive dependencies.
 
@@ -41,4 +41,4 @@ This method also upgrades transitive dependencies.
 
 Remember to rerun the mock process, as new versions of packages may introduce new APIs:
 
-  make mock
+    make mock

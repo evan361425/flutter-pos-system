@@ -33,7 +33,7 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 
 根據上面得到想要升級的版本後
 
-  flutter pub upgrade some_package
+    flutter pub upgrade some_package
 
 這樣的方式可以同時升級 Transitive 的套件。
 
@@ -41,4 +41,4 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 
 請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：
 
-  make mock
+    make mock
