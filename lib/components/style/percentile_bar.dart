@@ -57,7 +57,6 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
       vsync: this,
     );
 
-    // TODO: use single color
     final colorTween = TweenSequence([
       TweenSequenceItem(
         tween: ColorTween(
@@ -82,7 +81,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.at != widget.at) {
+    if (oldWidget.at != widget.at || oldWidget.total != widget.total) {
       _controller.animateTo(widget.total == 0 ? 1.0 : widget.at / widget.total);
     }
   }

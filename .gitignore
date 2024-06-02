@@ -56,3 +56,4 @@ services.*.tar
 coverage/
 android/build/*
 site/
+Pipfile.lock

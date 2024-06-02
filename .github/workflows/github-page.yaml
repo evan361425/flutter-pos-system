@@ -37,6 +37,7 @@ jobs:
           pip install mkdocs
           pip install mkdocs-material
           pip install mkdocs-git-revision-date-plugin
+          pip install mkdocs-static-i18n
 
       - name: Build
         if: ${{ github.ref != 'refs/heads/master' }}

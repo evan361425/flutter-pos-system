@@ -1,0 +1,1 @@
+offline point-of-sale (POS) system that has inventory system and cash register.

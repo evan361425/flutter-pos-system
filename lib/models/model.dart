@@ -135,16 +135,21 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
     final name = this.name.toLowerCase();
     pattern = pattern.toLowerCase();
 
-    final score = name.split(' ').fold<int>(0, (value, e) {
-      final addition = e.startsWith(pattern)
-          ? 2
-          : e.contains(pattern)
-              ? 1
-              : 0;
-      return value + addition;
-    });
+    pattern.split(' ');
 
-    return score;
+    int score = 0;
+    for (final p in pattern.split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty)) {
+      score += name.split(' ').fold<int>(0, (value, e) {
+        final addition = e.startsWith(p)
+            ? 2
+            : e.contains(p)
+                ? 1
+                : 0;
+        return value + addition;
+      });
+    }
+
+    return score + (name == pattern ? 999 : 0);
   }
 }
 

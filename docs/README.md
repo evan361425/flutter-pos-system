@@ -1,26 +1,36 @@
-# POS 系統
+# POS System
 
-![Introduction](images/index-introduction.png)
+![Introduction](https://evan361425.github.io/flutter-pos-system/images/index-introduction.png)
 
-本 POS 系統的特色。
+Key features of this POS system:
 
-- 完全允許離線使用
-- 本系統不會遠端紀錄個資，只會存在你的手機裡，所以可以安心使用
-- 庫存系統幫助你紀錄現有成份庫存
-- 設定顧客資訊
-- 收銀機方便做每日結餘
-- 訂單、菜單等資訊的匯出與備份
-- 客製化折線圖、圓餅圖的分析
+- Offline usage: Use the system even without an internet connection.
+- Privacy-focused: No personal data is stored remotely, only on your device.
+- Inventory system: Track your ingredient inventory.
+- Customer information: Record customer details like age and gender for analysis.
+- Cash register: Easily calculate daily balances and track cash on hand.
+- Export and backup: Export orders, menus, and other data outside the app.
+- Analytics: Create custom line charts and pie charts for analysis.
 
-## 下載
+## Download
 
-- Android 可以至 [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem) 下載。
-- iOS 要再等等，已排程準備。
+- **Android**: Download from [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem).
+- **iOS**: Coming soon.
 
-## 貢獻
+## Contribute
 
-想要幫助 POS 系統更完善？我們很樂意你的幫忙！POS 系統是一個開源的專案，並且透過大家一點一點的幫助建構出來的。查看[相關文件](about/contribute.md)暸解如何讓 POS 系統更好！
+Want to help make POS System even better? We'd love your help!
+POS System is an open-source project that's built one contribution at a time.
+Check out the [documentation](https://evan361425.github.io/flutter-pos-system/about/contribute)
+to learn how you can make POS System better!
 
-## 深入瞭解
+## Learn More
 
-為了加速你暸解本系統的概略架構，我們也提供了一些簡單的[說明文件](about/structure.md)，希望可以讓你更快融入本專案，對於 Flutter 初學者來說，亦是一個不錯的開始！
+To help you quickly get an [overview of the project's structure](https://evan361425.github.io/flutter-pos-system/about/structure),
+we also provide some simple documentation to help you
+get involved in the project more quickly.
+It's also a great starting point for Flutter beginners!
+
+## License
+
+Please refer to the [LICENSE](LICENSE)。

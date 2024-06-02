@@ -61,7 +61,7 @@ cart:
       hint: e.g., 30 means 70% off
       helper: The number here represents the "percentage" off, i.e., 85 means 15% off. For precise prices, use "Price Change".
       suffix: '%'
-    changePrice: Price Change
+    changePrice: Change Price
     _changePrice:
       $prefix: changePrice
       label: Price
@@ -148,9 +148,9 @@ checkout:
       delete:
         name: order
   attribute:
-    tab: Customer Settings
+    tab: Customer
   cashier:
-    tab: Cashier
+    tab: Checkout
     calculator:
       label:
         paid: Paid

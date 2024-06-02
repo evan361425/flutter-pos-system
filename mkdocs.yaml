@@ -8,20 +8,20 @@ edit_uri: https://github.com/evan361425/flutter-pos-system/edit/master
 
 nav:
 - README.md
-- 幫助: about/contribute.md
-- 架構: about/structure.md
-- 維運:
-  - 部署流程: maintenance/deployment.md
-  - 本地端開發: maintenance/development.md
-  - 升版相依套件: maintenance/bump-dependencies.md
-- 文件:
-  - 開發公約: CODE_OF_CONDUCT.md
-  - 使用許可: LICENSE.md
-  - 隱私權規範: PRIVACY_POLICY.md
+- Contribute: about/contribute.md
+- Structure: about/structure.md
+- Maintenance:
+  - Deployment: maintenance/deployment.md
+  - Development: maintenance/development.md
+  - Dependencies: maintenance/bump-dependencies.md
+- Document:
+  - Code of Conduct: CODE_OF_CONDUCT.md
+  - License: LICENSE.md
+  - Privacy Policy: PRIVACY_POLICY.md
 
 theme:
   name: material
-  language: "zh-TW"
+  language: "zh"
   features:
   - search.suggest
   - search.highlight
@@ -69,7 +69,34 @@ extra:
   analytics:
     provider: google
     property: G-P67FD9XP83
+  alternate:
+  - name: English
+    link: /en/
+    lang: en
+  - name: 繁體中文
+    link: /zh/
+    lang: zh
 
 plugins:
 - git-revision-date
 - search
+- i18n:
+  languages:
+  - locale: en
+    default: true
+    name: English
+    site_name: "POS System - Order & Checkout"
+  - locale: zh
+    name: 繁體中文
+    site_name: "POS 系統 - 點餐結帳"
+    nav_translations:
+      Contribute: 幫助
+      Structure: 架構
+      Maintenance: 維護
+      Deployment: 部署流程
+      Development: 本地端開發
+      Dependencies: 升版相依套件
+      Document: 文件
+      Code of Conduct: 開發公約
+      License: 使用許可
+      Privacy Policy: 隱私權規範

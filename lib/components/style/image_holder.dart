@@ -31,7 +31,7 @@ class ImageHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.surface;
-    final textColor = Theme.of(context).textTheme.bodyMedium!.color;
+    final style = Theme.of(context).textTheme.bodyMedium;
     final colors = [color, color.withAlpha(180), color.withAlpha(10)];
 
     Widget body = Container(
@@ -51,7 +51,11 @@ class ImageHolder extends StatelessWidget {
               end: Alignment.topCenter,
             ),
           ),
-          child: Text(title, textAlign: TextAlign.center),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: style?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
@@ -68,7 +72,7 @@ class ImageHolder extends StatelessWidget {
       aspectRatio: 1,
       child: Material(
         type: MaterialType.transparency,
-        textStyle: TextStyle(color: textColor),
+        textStyle: TextStyle(color: style?.color),
         child: Ink.image(
           padding: EdgeInsets.zero,
           image: image,

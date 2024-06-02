@@ -45,10 +45,10 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
           labelText: S.analysisChartModalNameLabel,
           filled: false,
         ),
-        maxLength: 30,
+        maxLength: 50,
         validator: Validator.textLimit(
           S.analysisChartModalNameLabel,
-          16,
+          50,
           focusNode: _nameFocusNode,
         ),
       )),
