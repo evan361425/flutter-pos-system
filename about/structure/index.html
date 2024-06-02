@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -487,7 +487,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       主要架構
     </span>
@@ -824,7 +824,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       主要架構
     </span>
@@ -918,25 +918,32 @@
   
 
 
-<h1 id="_1">架構<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>使用 <a href="https://flutter.dev">Flutter</a> 去撰寫所有應用程式相關邏輯，
-他提供很多素材去做學習，包括各種應用程式的完成品，
-如 <a href="https://github.com/flutter/gallery">Gallery</a> 和其他<a href="https://github.com/flutter/samples">小範例</a>。</p>
-<p>Flutter 透過 <a href="https://skia.org">Skia</a> 來做繪圖工具，
-在所有平台（macOS、Linux、Windows、Website、iOS APP、Android APP）中都利用該套件直接和底層 OS 接觸，
-減少和各平台的接口接觸，進而達到能在眾平台中統一介面。</p>
-<p>當然，在一些特殊情境上，仍需要單獨處理平台的設定。
-例如，iOS 的通知，便需要在 XCode 和 <a href="http://appstoreconnect.apple.com">AppStoreConnect</a> 中設定。
-但整體的商務邏輯和應用程式設計都可以直接使用 Flutter 撰寫。</p>
-<p>Flutter 是一個框架，撰寫其框架的語言是 <a href="https://dart.dev">Dart</a>，
-其風格類似於很多物件導向的語言。個人是覺得和其他語言沒什麼差別，主要是覺得他和 IDE 融合得很好，撰寫起來很方便，相關文件也很充足。
-這有幾個詳細說明的文章，無聊可以讀讀，
-<a href="https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332">10-good-reasons-why-you-should-learn-dart</a>、
-<a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">why-flutter-uses-dart</a>。</p>
-<p>如果想馬上來試試，可以玩玩看他們的線上 <a href="https://dartpad.dev/?null_safety=true">compiler</a>。</p>
+<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
+<p>We use <a href="https://flutter.dev">Flutter</a> to write all application-related logic.
+Flutter provides a wealth of resources for learning,
+including complete applications like <a href="https://github.com/flutter/gallery">Gallery</a>
+and various <a href="https://github.com/flutter/samples">samples</a>.</p>
+<p>Flutter uses <a href="https://skia.org">Skia</a> as its graphics engine,
+enabling direct interaction with the underlying OS on all platforms
+(macOS, Linux, Windows, Web, iOS, Android).
+This minimizes the need for platform-specific interfaces,
+allowing a unified interface across multiple platforms.</p>
+<p>Of course, in certain scenarios, specific platform configurations are required.
+For example, iOS notifications need to be set up in XCode and <a href="http://appstoreconnect.apple.com">AppStoreConnect</a>.
+However, the overall business logic and application design can be written directly using Flutter.</p>
+<p>Flutter is a framework, and the language used to write it is <a href="https://dart.dev">Dart</a>.
+Dart's style is similar to many object-oriented languages.
+Personally, I find it no different from other languages,
+mainly because it integrates well with IDEs, making it convenient to write.
+The documentation is also extensive. Here are a few detailed articles worth reading:</p>
+<ul>
+<li><a href="https://medium.com/hackernoon/10-good-reasons-why-you-should-learn-dart-4b257708a332">10 good reasons why you should learn Dart</a></li>
+<li><a href="https://hackernoon.com/why-flutter-uses-dart-dd635a054ebf">Why Flutter uses Dart</a></li>
+</ul>
+<p>If you want to try it out right away, you can play with their online <a href="https://dartpad.dev/?null_safety=true">compiler</a>.</p>
 <h2 id="pos-flutter">POS 系統在 Flutter 之上的架構<a class="headerlink" href="#pos-flutter" title="Permanent link">&para;</a></h2>
 <p>這裡嘗試讓初入的人了解應用程式架構。</p>
-<h3 id="_2">主要架構<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<h3 id="_1">主要架構<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>.
 ├── assets/             - 各種圖片，未來可能會放字體
 ├── lib/                - 主要邏輯
@@ -1090,7 +1097,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2024-04-06
+    2024-06-02
   </span>
 
     

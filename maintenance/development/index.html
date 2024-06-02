@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#local-development" class="md-skip">
           Skip to content
         </a>
       
@@ -561,9 +561,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
-      測試
+      Testing
     </span>
   </a>
   
@@ -741,9 +741,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
-      測試
+      Testing
     </span>
   </a>
   
@@ -767,15 +767,15 @@
   
 
 
-<h1 id="_1">本地端開發<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>正常程式碼開發只需要：</p>
+<h1 id="local-development">Local Development<a class="headerlink" href="#local-development" title="Permanent link">&para;</a></h1>
+<p>For regular code development, simply run:</p>
 <div class="highlight"><pre><span></span><code>flutter pub get
 </code></pre></div>
-<p>就可以安裝你需要的東西了，但如果你想要建置應用程式，你需要三個東西：</p>
+<p>This will install the necessary dependencies. However, if you want to build the application, you need three things:</p>
 <ul>
-<li><code>/android/&lt;any-name&gt;.jks</code>，這是用來存放你的鑰匙的，確保你就是這個應用程式的擁有者，你可以這樣產生：</li>
+<li><code>/android/&lt;any-name&gt;.jks</code>: This is for storing your keys to ensure ownership of the application. You can generate it with:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="c1"># 假設 &lt;any-name&gt; 為 my-jks</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Assuming &lt;any-name&gt; is my-jks</span>
 keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w"> </span>-keystore<span class="w"> </span>android/app/my-jks.jks<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-alias<span class="w"> </span>possystem<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-keyalg<span class="w"> </span>RSA<span class="w"> </span><span class="se">\</span>
@@ -785,9 +785,9 @@ keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w">
 <span class="w">  </span>-dname<span class="w"> </span><span class="s1">&#39;CN=possystem, OU=possystem, O=possystem, L=Unknown, ST=Unknown, C=Unknown&#39;</span>
 </code></pre></div>
 <ul>
-<li><code>/android/key.properties</code>，用來告訴建置應用程式時，你的鑰匙放哪裡，他裡面需要這些東西（依照上述產生範例）：</li>
+<li><code>/android/key.properties</code>: This file tells the build process where your key is located. It should contain the following (based on the example above):</li>
 <li><code>keyAlias=possystem</code></li>
-<li><code>keyPassword=possystem</code>，keyPassword 如果你沒特別設定，預設和 storePassword 一樣</li>
+<li><code>keyPassword=possystem</code> (If not specifically set, it defaults to the same as storePassword)</li>
 <li><code>storeFile=my-jks.jks</code></li>
 <li><code>storePassword=possystem</code></li>
 </ul>
@@ -798,9 +798,7 @@ keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w">
 <span class="w">  </span><span class="s1">&#39;possystem&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>android/key.properties
 </code></pre></div>
 <ul>
-<li><code>/android/app/google-services.json</code>，
-  你可以到 <a href="https://console.firebase.google.com/">Firebase Console</a> 去產生，
-  但是記得要在 <em>專案設定</em> 裡面去設定剛剛產生的金鑰 SHA 憑證指紋，你可以這樣輸出：</li>
+<li><code>/android/app/google-services.json</code>: This can be generated from the <a href="https://console.firebase.google.com/">Firebase Console</a>. Remember to configure the SHA certificate fingerprint in <em>Project Settings</em> using:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>keytool<span class="w"> </span>-list<span class="w"> </span>-keystore<span class="w"> </span>android/app/my-jks.jks<span class="w"> </span>--storepass<span class="w"> </span>possystem
 Keystore<span class="w"> </span>type:<span class="w"> </span>PKCS12
@@ -812,21 +810,19 @@ mykey,<span class="w"> </span>May<span class="w"> </span><span class="m">18</spa
 Certificate<span class="w"> </span>fingerprint<span class="w"> </span><span class="o">(</span>SHA-256<span class="o">)</span>:<span class="w"> </span>6F:14:57:54:CC:26:0A:4C:70:E3:28:1D:CE:D0:73:3F:72:19:49:96:8F:9A:1B:31:A5:E2:96:E4:44:14:E1:A1
 </code></pre></div>
 <ul>
-<li>最後請更改 <code>/lib/firebase_compatible_options.dart</code> 裡面最下面的 <code>androidDebug</code> 設定。
-  你可以 <code>dart pub global activate flutterfire_cli</code> 安裝指令套件後 <code>flutterfire configure</code>，
-  然後把產生的檔案的設定資訊複製到 <code>firebase_compatible_options.dart</code> 中。</li>
+<li>Finally, update the <code>androidDebug</code> setting at the bottom of <code>/lib/firebase_compatible_options.dart</code>. You can install the command-line tool with <code>dart pub global activate flutterfire_cli</code> and then run <code>flutterfire configure</code>. Copy the generated configuration into <code>firebase_compatible_options.dart</code>.</li>
 </ul>
-<h2 id="_2">測試<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>在開始執行測試之前，你可以先把 mock 檔案準備好：</p>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<p>Before running tests, prepare the mock files:</p>
 <div class="highlight"><pre><span></span><code>make mock
 </code></pre></div>
-<p>當想要開始測試，你可以：</p>
+<p>To start testing:</p>
 <div class="highlight"><pre><span></span><code>make test
 </code></pre></div>
-<p>如果想要測試加上 coverage，你可以：</p>
+<p>To run tests with coverage:</p>
 <div class="highlight"><pre><span></span><code>make test-coverage
 </code></pre></div>
-<p>最後產出的覆蓋率就可以打開以網頁格式打開：</p>
+<p>The generated coverage report can be viewed in a web format:</p>
 <div class="highlight"><pre><span></span><code>open coverage/html/index.html
 </code></pre></div>
 
@@ -849,7 +845,7 @@ Certificate<span class="w"> </span>fingerprint<span class="w"> </span><span clas
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2024-05-18
+    2024-06-02
   </span>
 
     

@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#update-dependencies" class="md-skip">
           Skip to content
         </a>
       
@@ -582,27 +582,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#how-to-check-which-packages-need-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      如何查找哪些套件需要更新
+      How to Check Which Packages Need Updating
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#how-to-upgrade" class="md-nav__link">
     <span class="md-ellipsis">
-      如何升級
+      How to Upgrade
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#after-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      更新之後
+      After Updating
     </span>
   </a>
   
@@ -759,27 +759,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#how-to-check-which-packages-need-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      如何查找哪些套件需要更新
+      How to Check Which Packages Need Updating
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#how-to-upgrade" class="md-nav__link">
     <span class="md-ellipsis">
-      如何升級
+      How to Upgrade
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#after-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      更新之後
+      After Updating
     </span>
   </a>
   
@@ -803,14 +803,14 @@
   
 
 
-<h1 id="_1">更新相依套件<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>分三種：</p>
+<h1 id="update-dependencies">Update Dependencies<a class="headerlink" href="#update-dependencies" title="Permanent link">&para;</a></h1>
+<p>There are three types:</p>
 <ul>
-<li>dependencies，直接依賴的套件</li>
-<li>dev_dependencies，開發環境依賴的套件</li>
-<li>transitive，依賴套件的依賴套件</li>
+<li>dependencies: Direct dependencies</li>
+<li>dev_dependencies: Development environment dependencies</li>
+<li>transitive: Dependencies of the dependencies</li>
 </ul>
-<h2 id="_2">如何查找哪些套件需要更新<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="how-to-check-which-packages-need-updating">How to Check Which Packages Need Updating<a class="headerlink" href="#how-to-check-which-packages-need-updating" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>make<span class="w"> </span>outdated
 Showing<span class="w"> </span>outdated<span class="w"> </span>packages.
 <span class="o">[</span>*<span class="o">]</span><span class="w"> </span>indicates<span class="w"> </span>versions<span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>not<span class="w"> </span>the<span class="w"> </span>latest<span class="w"> </span>available.
@@ -823,19 +823,19 @@ some_package<span class="w">   </span>*3.2.0<span class="w">    </span>*3.2.0<sp
 dev_dependencies:
 dev_package<span class="w">    </span>*1.0.0<span class="w">    </span>*1.0.0<span class="w">      </span>*1.1.0<span class="w">      </span><span class="m">1</span>.1.0
 </code></pre></div>
-<p>但要注意幾件事：</p>
+<p>Note the following:</p>
 <ul>
-<li><code>Current</code> 代表現在的版本</li>
-<li><code>Upgradable</code> 代表依據<a href="https://dart.dev/tools/pub/dependencies#version-constraints">版本限制</a>所能升級的最高版本</li>
-<li><code>Resolvable</code> 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本</li>
-<li><code>Latest</code> 代表這個套件目前最新的版本</li>
+<li><code>Current</code>: The current version</li>
+<li><code>Upgradable</code>: The highest version upgradable according to <a href="https://dart.dev/tools/pub/dependencies#version-constraints">version constraints</a></li>
+<li><code>Resolvable</code>: The highest version upgradable without conflicting with the current environment (mainly Dart/Flutter version)</li>
+<li><code>Latest</code>: The latest version of the package</li>
 </ul>
-<h2 id="_3">如何升級<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>根據上面得到想要升級的版本後</p>
+<h2 id="how-to-upgrade">How to Upgrade<a class="headerlink" href="#how-to-upgrade" title="Permanent link">&para;</a></h2>
+<p>After identifying the version to upgrade to:</p>
 <p>flutter pub upgrade some_package</p>
-<p>這樣的方式可以同時升級 Transitive 的套件。</p>
-<h2 id="_4">更新之後<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：</p>
+<p>This method also upgrades transitive dependencies.</p>
+<h2 id="after-updating">After Updating<a class="headerlink" href="#after-updating" title="Permanent link">&para;</a></h2>
+<p>Remember to rerun the mock process, as new versions of packages may introduce new APIs:</p>
 <p>make mock</p>
 
 
@@ -857,7 +857,7 @@ dev_package<span class="w">    </span>*1.0.0<span class="w">    </span>*1.0.0<sp
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2024-05-18
+    2024-06-02
   </span>
 
     
