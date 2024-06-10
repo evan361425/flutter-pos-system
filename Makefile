@@ -50,7 +50,7 @@ bump-dev: ## Bump development version
   git commit -m "chore: bump to $$version+$$code"; \
   id=$$( echo "$$code" | awk '{print substr($0,length($0)-2)}' | awk '{$1=$1+0; print}' ); \
   git tag "v$$version-rc$$id"; \
-  git push --tags
+	git push --follow-tags
 
 .PHONY: bump
 bump: ## Bump beta version
