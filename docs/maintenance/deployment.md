@@ -1,6 +1,6 @@
 # Deployment Process
 
-Divided into three environments:
+Divided into three environments (or `lane` in Fastlane):
 
 - `internal`: For internal testing.
 - `beta`: For external testing. The same files will be pushed to `promote_to_production`.
@@ -8,10 +8,9 @@ Divided into three environments:
 
 Deployment steps for each environment are as follows:
 
-- `internal`
-  1. Run `make bump` and input the desired version update.
-- `beta`
-  1. Run `make bump-beta`.
-- `promote_to_production`
-  1. Publish the [draft release](https://github.com/evan361425/flutter-pos-system/releases) on GitHub.
-  2. After confirming everything is fine, you can clean up old tags: `make clean-version`.
+- `internal`: run `make bump-dev` and there will be two different input:
+  1. If we are bumping for new version, enter new tag, ex. `1.2.3`.
+  2. If we are bumping build code only, enter empty text.
+- `beta`: run `make bump`.
+- `promote_to_production`: publish the
+  [draft release](https://github.com/evan361425/flutter-pos-system/releases) on GitHub.

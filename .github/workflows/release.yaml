@@ -8,7 +8,7 @@ on:
         required: false
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+-beta" # Release only
+      - "v[0-9]+.[0-9]+.[0-9]+" # Release only
 
 jobs:
   check-version:
@@ -37,7 +37,7 @@ jobs:
           script: |
             return context.eventName === 'workflow_dispatch'
               ? '${{ github.event.inputs.tag }}'
-              : context.payload.ref.replace(/\/?refs\/tags\//, '').replace(/-beta$/, '');
+              : context.payload.ref.replace(/\/?refs\/tags\//, '');
 
       - name: Check version
         run: test '${{ steps.tag.outputs.result }}' = 'v${{ steps.pubspec_version.outputs.version }}'
@@ -86,19 +86,23 @@ jobs:
 
       - name: Push to GitHub
         run: |
-          file="android/fastlane/metadata/android/zh-TW/changelogs/${{ needs.check-version.outputs.build_code }}.txt"
+          file='android/fastlane/metadata/android/%s/changelogs/${{ needs.check-version.outputs.build_code }}.txt'
+          echo "${{ needs.get-release.outputs.changelog }}" > $(printf "$file" "en")
+          bash android/fastlane/translate-changelog.sh "$file" '${{ secrets.GOOGLE_AI_API_KEY }}'
+          
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          echo "${{ needs.get-release.outputs.changelog }}" > "$file"
           git add --all
           git commit . -m "doc: changelog for ${{ needs.check-version.outputs.tag }}"
           git push
 
-          git tag ${{ needs.check-version.outputs.tag }}
-          git push origin --tags
+          # Replace the tag to reference the most recent commit
+          git tag -f ${{ needs.check-version.outputs.tag }}
+          git push -f origin --tags
 
-          curl -X PATCH \
-            -H 'Accept: application/vnd.github.v3+json' \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
-            "https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ needs.get-release.outputs.release_id }}"
+        # If you want to update the release tag, you can use the following code.
+        # curl -X PATCH \
+        #   -H 'Accept: application/vnd.github.v3+json' \
+        #   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        #   -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
+        #   "https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ needs.get-release.outputs.release_id }}"
