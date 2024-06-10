@@ -108,7 +108,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: "zulu"
-          java-version: "12.x"
+          java-version: "21.x"
 
       # Setup the flutter environment.
       - name: Set up Flutter
