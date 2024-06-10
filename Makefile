@@ -46,14 +46,17 @@ bump-dev: ## Bump development version
 	fi; \
   sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
   rm pubspec.yaml.bk; \
+	git add pubspec.yaml; \
   git commit -m "chore: bump to $$version+$$code"; \
   id=$$( echo "$$code" | awk '{print substr($0,length($0)-2)}' | awk '{$1=$1+0; print}' ); \
-  git tag "$$version-rc$$id"; \
+  git tag "v$$version-rc$$id"; \
   git push --tags
 
 .PHONY: bump
 bump: ## Bump beta version
   @version=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
+	read -p "This will bump to beta lane, are you sure? (y/n): " confirm; \
+	if [[ $$confirm != "y" ]]; then exit 1; fi; \
   code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
   code=$$(($$code + 1)); \
   sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
