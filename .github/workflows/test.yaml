@@ -14,6 +14,7 @@ on:
       - "pubspec.yaml"
       - "pubspec.lock"
       - "mkdocs.yaml"
+      - "Makefile"
       - ".github/**"
   pull_request:
 
