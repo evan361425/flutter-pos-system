@@ -10,7 +10,7 @@ on:
       - "**.md"
       - "docs/**"
       - "scripts/**"
-      - "android/fastlane/**"
+      - "android/**"
       - "pubspec.yaml"
       - "pubspec.lock"
       - "mkdocs.yaml"
