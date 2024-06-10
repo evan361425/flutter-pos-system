@@ -64,6 +64,7 @@ dependencies:
   flutter_native_splash: ^2.4.0 # 24, 03-17
   package_info_plus: ^8.0.0 # 23, 08-02
   visibility_detector: ^0.4.0+2 # 23, 03-09
+  cupertino_icons: ^1.0.8 # This is for google-package which use it in some case
 
 dev_dependencies:
   flutter_test:
