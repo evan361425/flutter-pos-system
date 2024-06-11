@@ -87,7 +87,7 @@ jobs:
       - name: Push to GitHub
         run: |
           file='android/fastlane/metadata/android/%s/changelogs/${{ needs.check-version.outputs.build_code }}.txt'
-          echo "${{ needs.get-release.outputs.changelog }}" > $(printf "$file" "en")
+          echo "${{ needs.get-release.outputs.changelog }}" > $(printf "$file" "en-US")
           bash android/fastlane/translate-changelog.sh "$file" '${{ secrets.GOOGLE_AI_API_KEY }}'
           
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"

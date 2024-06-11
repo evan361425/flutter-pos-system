@@ -22,7 +22,7 @@ function main() {
 zh-TW Traditional Chinese
 "
   
-  changelog="$(cat "$(printf "$changelogFile" 'en')")"
+  changelog="$(cat "$(printf "$changelogFile" 'en-US')")"
 
   for lang in $languages; do
     local langCode langName prompt changelog
