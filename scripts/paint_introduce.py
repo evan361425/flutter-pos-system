@@ -9,7 +9,7 @@ def pp(file):
 
 langs = [
     {"folder": "zh-TW", "titles": ["分析訂單", "點餐", "庫存系統"], "suffix": ".zh"},
-    {"folder": "en", "titles": ["Analysis", "Checkout", "Inventory"], "suffix": ""},
+    {"folder": "en-US", "titles": ["Analysis", "Checkout", "Inventory"], "suffix": ""},
 ]
 
 for lang in langs:

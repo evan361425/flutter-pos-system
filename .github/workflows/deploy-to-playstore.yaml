@@ -12,6 +12,10 @@ on:
         description: "GitHub tag"
         required: true
         default: "latest"
+      ref:
+        description: "GitHub ref, if not provided, will use the tag"
+        required: false
+        default: ""
   workflow_run:
     workflows:
       - Add Artifacts for Release
@@ -35,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
-      tag: ${{ steps.tag.outputs.result }}
+      ref: ${{ github.event.inputs.ref || steps.tag.outputs.result }}
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.value }}
@@ -123,7 +127,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.var.outputs.tag }}
+          ref: ${{ needs.var.outputs.ref }}
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
