@@ -129,9 +129,10 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7"
+          ruby-version: "3.3"
           bundler-cache: true
           working-directory: android
+      - run: bundle exec fastlane --version
 
       # Get flutter dependencies.
       - name: Build dependencies
@@ -168,7 +169,6 @@ jobs:
       # Naturally, promote_to_production only deploys.
       - name: Fastlane building
         run: |
-          bundle exec fastlane --version
           bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           SUPPLY_UPLOAD_MAX_RETRIES: 5
