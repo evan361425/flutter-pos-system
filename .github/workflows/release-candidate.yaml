@@ -149,7 +149,7 @@ jobs:
       # Build the application.
       - name: Start building
         run: |
-          flutter build apk --release --info \
+          flutter build apk --release --verbose \
             --flavor dev \
             --dart-define=appFlavor=dev \
             --dart-define=logLevel=info
