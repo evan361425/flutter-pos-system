@@ -133,6 +133,7 @@ jobs:
           bundler-cache: true
           working-directory: android
       - run: bundle exec fastlane --version
+        working-directory: android
 
       # Get flutter dependencies.
       - name: Build dependencies
