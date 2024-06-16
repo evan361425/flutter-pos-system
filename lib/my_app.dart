@@ -57,6 +57,7 @@ class MyApp extends StatelessWidget {
             S = localizations;
             Intl.systemLocale = S.localeName;
             Intl.defaultLocale = S.localeName;
+            LanguageSetting.instance.systemLanguage = S.localeName;
             initializeDateFormatting(S.localeName);
 
             FlutterNativeSplash.remove();
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
           // depending on the user's locale.
-          locale: LanguageSetting.instance.value.locale,
+          locale: LanguageSetting.instance.value?.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
 

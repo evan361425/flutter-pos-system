@@ -81,7 +81,7 @@ class FeaturesPage extends StatelessWidget {
           key: const Key('feature.language'),
           leading: const Icon(Icons.language_outlined),
           title: Text(S.settingLanguageTitle),
-          subtitle: Text(LanguageSetting.instance.value.title),
+          subtitle: Text(LanguageSetting.instance.language.title),
           trailing: const Icon(Icons.arrow_forward_ios_sharp),
           onTap: () => navigateTo(Feature.language),
         ),
@@ -229,7 +229,7 @@ enum Feature {
       case Feature.theme:
         return ThemeSetting.instance.value.index;
       case Feature.language:
-        return LanguageSetting.instance.value.index;
+        return LanguageSetting.instance.language.index;
       case Feature.orderOutlook:
         return OrderOutlookSetting.instance.value.index;
       case Feature.checkoutWarning:

@@ -229,7 +229,7 @@ class _HeaderInfoList extends StatelessWidget {
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(title.toString(), style: theme.textTheme.headlineMedium),
-          Text(subtitle, style: theme.textTheme.bodyMedium),
+          Text(subtitle, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
         ]),
       ),
     );

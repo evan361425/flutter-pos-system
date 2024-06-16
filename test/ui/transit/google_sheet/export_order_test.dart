@@ -63,13 +63,13 @@ void main() {
       );
 
       await tester.pumpWidget(MaterialApp(
-        locale: LanguageSetting.defaultValue.locale,
+        locale: LanguageSetting.instance.language.locale,
         localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
           DefaultWidgetsLocalizations.delegate,
           DefaultMaterialLocalizations.delegate,
           DefaultCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [LanguageSetting.defaultValue.locale],
+        supportedLocales: [LanguageSetting.instance.language.locale],
         home: TransitStation(
           catalog: TransitCatalog.order,
           method: TransitMethod.googleSheet,

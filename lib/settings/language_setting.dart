@@ -1,15 +1,17 @@
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
-class LanguageSetting extends Setting<Language> {
+/// Language setting allow given null language which means system default.
+class LanguageSetting extends Setting<Language?> {
+  Language _systemLanguage = Language.en;
+
   static final instance = LanguageSetting._();
 
-  static const defaultValue = Language.en;
-
   LanguageSetting._() {
-    value = defaultValue;
+    value = Language.en;
   }
 
   @override
@@ -18,15 +20,21 @@ class LanguageSetting extends Setting<Language> {
   @override
   bool get registryForApp => true;
 
+  set systemLanguage(String locale) {
+    _systemLanguage = parseLanguage(locale)!;
+  }
+
+  Language get language => value ?? _systemLanguage;
+
   @override
   void initialize() {
-    value = parseLanguage(service.get<String>(key)) ?? defaultValue;
+    value = parseLanguage(service.get<String>(key));
     notifyListeners();
   }
 
   @override
-  Future<void> updateRemotely(Language data) {
-    return service.set<String>(key, data.locale.toString());
+  Future<void> updateRemotely(Language? data) {
+    return service.set<String>(key, data?.locale.toString() ?? '');
   }
 
   Language? parseLanguage(String? value) {
@@ -34,10 +42,7 @@ class LanguageSetting extends Setting<Language> {
 
     final codes = value.split('_');
 
-    return Language.values.firstWhere(
-      (e) => e.locale.languageCode == codes[0],
-      orElse: () => defaultValue,
-    );
+    return Language.values.firstWhereOrNull((e) => e.locale.languageCode == codes[0]);
   }
 }
 
