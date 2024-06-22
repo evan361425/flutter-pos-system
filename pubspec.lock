@@ -1110,10 +1110,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotlight_ant
-      sha256: a295d3dea0f54bc8bb82042c166e1ca0bedb9c97353ec3f1d67bc3ed5b6fd73e
+      sha256: "30c1fb6dbb2356dc92e61da332bd5cf7bf63e4b74c1414c618caab34127ed96a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   sprintf:
     dependency: transitive
     description:

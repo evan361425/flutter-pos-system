@@ -1,6 +1,11 @@
 $prefix: order
 title: 點餐
 btn: 點餐
+tutorial:
+  title: 開始點餐！
+  content: |
+    一旦設定好菜單，就可以開始點餐囉
+    讓我們趕緊進去看看有什麼吧！
 snackbar:
   cashier:
     notEnough: 收銀機錢不夠找囉！

@@ -51,7 +51,7 @@ export:
   preview:
     btn: 預覽
     title: 預覽輸出結果
-  btn: 匯入
+  btn: 匯出
 import:
   preview:
     btn: 預覽
@@ -66,7 +66,7 @@ import:
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。
     quantity:
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。
-  btn: 匯出
+  btn: 匯入
   error:
     columnCount: 資料量不足，需要 {columns} 個欄位
     duplicate: 將忽略本行，相同的項目已於前面出現
