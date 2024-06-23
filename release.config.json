@@ -1,29 +1,25 @@
 {
   "categories": [
     {
-      "title": "## 🚀 功能",
+      "title": "## 🚀 Features",
       "labels": ["enhancement"]
     },
     {
-      "title": "## 🐛 修正",
+      "title": "## 🐛 Bugs",
       "labels": ["bug"]
     }
   ],
-  "ignore_labels": [
-    "ignore"
-  ],
+  "ignore_labels": ["ignore"],
   "sort": "ASC",
-  "template": "${{CHANGELOG}}\n\n## 👻 其他\n\n${{UNCATEGORIZED}}\n",
+  "template": "${{CHANGELOG}}\n\n## 👻 Others\n\n${{UNCATEGORIZED}}\n",
   "pr_template": "- ${{TITLE}} #${{NUMBER}} : ${{AUTHOR}}",
-  "empty_template": "沒找到相關的 PR，可能需要查找 DIFF",
-  "max_tags_to_fetch": 200,
-  "max_pull_requests": 200,
+  "empty_template": "Caught some bugs, time to clean up!",
+  "max_tags_to_fetch": 10,
+  "max_pull_requests": 20,
   "max_back_track_time_days": 365,
   "exclude_merge_branches": [],
   "tag_resolver": {
     "method": "semver"
   },
-  "base_branches": [
-    "master"
-  ]
+  "base_branches": ["master"]
 }

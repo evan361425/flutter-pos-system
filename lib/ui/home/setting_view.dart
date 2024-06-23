@@ -6,7 +6,7 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
-import 'package:possystem/helpers/setup_menu.dart';
+import 'package:possystem/helpers/setup_example.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
@@ -72,7 +72,7 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             disable: Menu.instance.isNotEmpty,
             action: () async {
               if (_tutorialCheckbox.currentState?.createExampleMenu == true) {
-                await helpSetupMenu();
+                await setupExampleMenu();
               } else {
                 await context.pushNamed(Routes.menu);
               }

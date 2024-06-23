@@ -9,7 +9,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 
-Future<void> helpSetupMenu() async {
+Future<void> setupExampleMenu() async {
   if (Menu.instance.isNotEmpty) return;
 
   log('setting stock', name: 'example menu');
