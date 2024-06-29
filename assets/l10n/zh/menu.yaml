@@ -4,13 +4,43 @@ subtitle: 產品種類、產品
 tutorial:
   title: 建立屬於你的菜單
   content: 首先我們來開始建立一份菜單吧！
+  createExample: 幫助建立一份範例菜單以供測試。
 search:
   hint: 搜尋產品、成分、份量
   notFound: 搜尋不到相關資訊，打錯字了嗎？
+example:
+  catalog:
+    burger: 漢堡
+    drink: 飲品
+    side: 點心
+    other: 其他
+  product:
+    cheeseBurger: 起司漢堡
+    veggieBurger: 蔬菜漢堡
+    hamBurger: 火腿漢堡
+    cola: 可樂
+    coffee: 咖啡
+    fries: 薯條
+    straw: 吸管
+    plasticBag: 塑膠袋
+  ingredient:
+    cheese: 起司
+    lettuce: 萵苣
+    tomato: 番茄
+    bun: 麵包
+    chili: 醬料
+    ham: 火腿
+    cola: 可樂罐
+    coffee: 濾掛咖啡包
+    fries: 薯條（300g）
+    straw: 吸管（根）
+    plasticBag: 塑膠袋（個）
+  quantity:
+    small: 少量
+    large: 增量
+    none: 無
 catalog:
   headerInfo: 種類
-  tutorial:
-    title: Create First Catalog
   emptyBody: |-
     我們會把相似「產品」放在「產品種類」中，
     到時候點餐會比較方便，例如：

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -16,6 +17,7 @@ import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -112,6 +114,85 @@ void main() {
       await navAndCheck('home.analysis', 'anal.history');
     });
 
+    testWidgets('Setup example menu', (tester) async {
+      when(cache.get(any)).thenReturn(null);
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: SettingsProvider.instance),
+          ChangeNotifierProvider.value(value: Menu()),
+          ChangeNotifierProvider.value(value: Stock()),
+          ChangeNotifierProvider.value(value: Quantities()),
+          ChangeNotifierProvider.value(value: OrderAttributes()),
+        ],
+        child: MaterialApp.router(
+          routerConfig: GoRouter(observers: [
+            MyApp.routeObserver
+          ], routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const HomePage(tab: HomeTab.setting),
+            )
+          ]),
+          theme: AppThemes.lightTheme,
+          darkTheme: AppThemes.darkTheme,
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 5));
+
+      // set up example menu
+      await tester.tapAt(Offset.zero);
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
+
+      expect(find.text(S.orderTutorialTitle), findsOneWidget);
+      expect(Menu.instance.isNotEmpty, isTrue);
+      verify(cache.set('tutorial.home.menu', true));
+    });
+
+    testWidgets('Disable example menu', (tester) async {
+      when(cache.get(any)).thenReturn(null);
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: SettingsProvider.instance),
+          ChangeNotifierProvider.value(value: Menu()),
+          ChangeNotifierProvider.value(value: Stock()),
+          ChangeNotifierProvider.value(value: Quantities()),
+          ChangeNotifierProvider.value(value: OrderAttributes()),
+        ],
+        child: MaterialApp.router(
+          routerConfig: GoRouter(observers: [
+            MyApp.routeObserver
+          ], routes: [
+            GoRoute(
+              path: '/',
+              routes: Routes.routes,
+              builder: (_, __) => const HomePage(tab: HomeTab.setting),
+            )
+          ]),
+          theme: AppThemes.lightTheme,
+          darkTheme: AppThemes.darkTheme,
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 5));
+
+      // set up example menu
+      await tester.tap(find.text(S.menuTutorialCreateExample));
+      await tester.tapAt(Offset.zero);
+      await tester.pump(const Duration(milliseconds: 5));
+      await tester.pump(const Duration(milliseconds: 5));
+
+      expect(find.text(S.orderTutorialTitle), findsOneWidget);
+      expect(Menu.instance.isNotEmpty, isFalse);
+      verify(cache.set('tutorial.home.menu', true));
+    });
+
     setUp(() {
       // setup currency
       when(cache.get('currency')).thenReturn(null);
@@ -129,6 +210,7 @@ void main() {
     });
 
     setUpAll(() {
+      Tutorial.debug = true;
       initializeAuth();
       initializeCache();
       initializeStorage();

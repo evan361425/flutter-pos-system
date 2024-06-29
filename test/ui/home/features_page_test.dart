@@ -22,7 +22,7 @@ void main() {
       return ChangeNotifierProvider.value(
         value: SettingsProvider.instance..initialize(),
         builder: (_, __) => MaterialApp.router(
-          locale: LanguageSetting.defaultValue.locale,
+          locale: LanguageSetting.instance.language.locale,
           routerConfig: GoRouter(initialLocation: Routes.features, routes: [
             GoRoute(
               path: '/',

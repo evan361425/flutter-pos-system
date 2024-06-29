@@ -12,7 +12,6 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
-import 'debug/setup_menu.dart';
 import 'firebase_compatible_options.dart';
 import 'helpers/logger.dart';
 import 'models/repository/cashier.dart';
@@ -65,10 +64,6 @@ void main() async {
       await Analysis().initialize();
       // Last for setup ingredient and quantity
       await Menu().initialize();
-
-      if (isLocalTest) {
-        await debugSetupMenu();
-      }
 
       /// Why use provider?
       /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget

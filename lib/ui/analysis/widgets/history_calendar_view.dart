@@ -52,7 +52,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         shouldFillViewport: widget.isPortrait ? false : true,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        locale: LanguageSetting.instance.value.locale.toString(),
+        locale: LanguageSetting.instance.language.locale.toString(),
         // header
         // chinese will be hidden if using default value
         daysOfWeekHeight: 20.0,

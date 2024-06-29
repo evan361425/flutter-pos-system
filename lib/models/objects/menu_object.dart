@@ -271,9 +271,9 @@ class ProductQuantityObject extends ModelObject<ProductQuantity> {
     return ProductQuantityObject(
       id: id as String,
       quantityId: quantityId as String,
-      amount: data['amount'] as num,
-      additionalCost: data['additionalCost'] as num,
-      additionalPrice: data['additionalPrice'] as num,
+      amount: data['amount'] as num? ?? 0,
+      additionalCost: data['additionalCost'] as num? ?? 0,
+      additionalPrice: data['additionalPrice'] as num? ?? 0,
       version: version,
     );
   }

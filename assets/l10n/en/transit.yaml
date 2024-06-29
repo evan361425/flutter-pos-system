@@ -67,7 +67,7 @@ export:
   preview:
     btn: Preview
     title: Preview Output Result
-  btn: Import
+  btn: Export
 import:
   preview:
     btn: Preview
@@ -86,7 +86,7 @@ import:
       header: After import, old ingredients won't be removed to avoid affecting the "Menu" status.
     quantity:
       header: After import, old quantities won't be removed to avoid affecting the "Menu" status.
-  btn: Export
+  btn: Import
   error:
     columnCount:
     - Insufficient data, {columns} columns required

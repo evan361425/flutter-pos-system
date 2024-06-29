@@ -16,7 +16,7 @@ Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       firstDate: DateTime(2021, 1),
       lastDate: DateTime.now(),
-      locale: LanguageSetting.instance.value.locale,
+      locale: LanguageSetting.instance.language.locale,
 
       /// TODO: should fix this bug
       /// Wrapping the design, because the background will use a slightly

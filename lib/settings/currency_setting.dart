@@ -24,7 +24,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   CurrencySetting._() {
     value = defaultValue;
     LanguageSetting.instance.addListener(() {
-      formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
+      formatter = NumberFormat.compact(locale: LanguageSetting.instance.language.locale.toString());
     });
   }
 
@@ -33,7 +33,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
 
   String get recordName => '新台幣';
 
-  NumberFormat formatter = NumberFormat.compact(locale: LanguageSetting.instance.value.locale.toString());
+  NumberFormat formatter = NumberFormat.compact(locale: LanguageSetting.instance.language.locale.toString());
 
   /// Ceiling [value] to currency least value
   ///

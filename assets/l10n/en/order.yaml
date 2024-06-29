@@ -1,6 +1,11 @@
 $prefix: order
 title: Ordering
 btn: Order
+tutorial:
+  title: Ordering!
+  content: |
+    Once you have set up your menu, you can start ordering!
+    Let's tap and go see what's available!
 snackbar:
   cashier:
     notEnough: Insufficient cash in the cashier!
