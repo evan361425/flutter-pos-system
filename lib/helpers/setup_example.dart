@@ -14,15 +14,15 @@ Future<void> setupExampleMenu() async {
 
   log('setting stock', name: 'example menu');
   for (final e in [
-    Ingredient(id: 'cheese', name: S.menuExampleIngredientCheese, currentAmount: 30, totalAmount: 30),
-    Ingredient(id: 'lettuce', name: S.menuExampleIngredientLettuce, currentAmount: 70, totalAmount: 70),
-    Ingredient(id: 'tomato', name: S.menuExampleIngredientTomato, currentAmount: 100, totalAmount: 100),
-    Ingredient(id: 'bun', name: S.menuExampleIngredientBun, currentAmount: 50, totalAmount: 50),
-    Ingredient(id: 'chili', name: S.menuExampleIngredientChili, currentAmount: 500, totalAmount: 500),
-    Ingredient(id: 'ham', name: S.menuExampleIngredientHam, currentAmount: 5, totalAmount: 5),
-    Ingredient(id: 'cola', name: S.menuExampleIngredientCola, currentAmount: 20, totalAmount: 20),
-    Ingredient(id: 'coffee', name: S.menuExampleIngredientCoffee, currentAmount: 50, totalAmount: 50),
-    Ingredient(id: 'fries', name: S.menuExampleIngredientFries, currentAmount: 3, totalAmount: 3),
+    Ingredient(id: 'cheese', name: '🧀 ${S.menuExampleIngredientCheese}', currentAmount: 30, totalAmount: 30),
+    Ingredient(id: 'lettuce', name: '🥬 ${S.menuExampleIngredientLettuce}', currentAmount: 70, totalAmount: 70),
+    Ingredient(id: 'tomato', name: '🍅 ${S.menuExampleIngredientTomato}', currentAmount: 100, totalAmount: 100),
+    Ingredient(id: 'bun', name: '🍞 ${S.menuExampleIngredientBun}', currentAmount: 50, totalAmount: 50),
+    Ingredient(id: 'chili', name: '🌶 ${S.menuExampleIngredientChili}', currentAmount: 500, totalAmount: 500),
+    Ingredient(id: 'ham', name: '🍖 ${S.menuExampleIngredientHam}', currentAmount: 5, totalAmount: 5),
+    Ingredient(id: 'cola', name: '🥤 ${S.menuExampleIngredientCola}', currentAmount: 20, totalAmount: 20),
+    Ingredient(id: 'coffee', name: '☕️ ${S.menuExampleIngredientCoffee}', currentAmount: 50, totalAmount: 50),
+    Ingredient(id: 'fries', name: '🍟 ${S.menuExampleIngredientFries}', currentAmount: 3, totalAmount: 3),
     Ingredient(id: 'straw', name: S.menuExampleIngredientStraw, currentAmount: 50, totalAmount: 50),
     Ingredient(id: 'plasticBag', name: S.menuExampleIngredientPlasticBag, currentAmount: 50, totalAmount: 50),
   ]) {
@@ -44,7 +44,7 @@ Future<void> setupExampleMenu() async {
     Catalog.fromObject(CatalogObject.build({
       "id": "burger",
       "index": 1,
-      "name": S.menuExampleCatalogBurger,
+      "name": '🍔 ${S.menuExampleCatalogBurger}',
       "createdAt": now,
       "products": {
         "cheese-burger": {
@@ -126,7 +126,7 @@ Future<void> setupExampleMenu() async {
     Catalog.fromObject(CatalogObject.build({
       "id": "drink",
       "index": 2,
-      "name": S.menuExampleCatalogDrink,
+      "name": '🍻 ${S.menuExampleCatalogDrink}',
       "createdAt": now,
       "products": {
         "cola": {
@@ -155,7 +155,7 @@ Future<void> setupExampleMenu() async {
     Catalog.fromObject(CatalogObject.build({
       "id": "side",
       "index": 3,
-      "name": S.menuExampleCatalogSide,
+      "name": '🍰 ${S.menuExampleCatalogSide}',
       "createdAt": now,
       "products": {
         "fries": {
@@ -179,7 +179,7 @@ Future<void> setupExampleMenu() async {
     Catalog.fromObject(CatalogObject.build({
       "id": "other",
       "index": 4,
-      "name": S.menuExampleCatalogOther,
+      "name": '🛍 ${S.menuExampleCatalogOther}',
       "createdAt": now,
       "products": {
         "plastic-bag": {

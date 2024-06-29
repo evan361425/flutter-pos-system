@@ -42,9 +42,10 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
                 // 0 if menu tutorial is not shown (only index 0 will trigger tutorial)
                 index: Menu.instance.isNotEmpty ? 0 : 1,
                 spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
-                title: S.menuTutorialTitle,
-                message: S.menuTutorialContent,
+                title: S.orderTutorialTitle,
+                message: S.orderTutorialContent,
                 child: FloatingActionButton.extended(
+                  heroTag: 'order.tutorial',
                   onPressed: null,
                   icon: const Icon(Icons.store_sharp),
                   label: Text(S.orderBtn),
@@ -73,8 +74,6 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             action: () async {
               if (_tutorialCheckbox.currentState?.createExampleMenu == true) {
                 await setupExampleMenu();
-              } else {
-                await context.pushNamed(Routes.menu);
               }
             },
             child: _buildRouteTile(
@@ -259,7 +258,7 @@ class _HeaderInfoList extends StatelessWidget {
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(title.toString(), style: theme.textTheme.headlineMedium),
-          Text(subtitle, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+          Flexible(child: Text(subtitle, textAlign: TextAlign.center)),
         ]),
       ),
     );
@@ -278,10 +277,14 @@ class _TutorialCreateExampleMenuListTileState extends State<_TutorialCreateExamp
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      value: createExampleMenu,
-      onChanged: (v) => setState(() => createExampleMenu = v!),
-      title: Text(S.menuTutorialCreateExample),
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: CheckboxListTile(
+        value: createExampleMenu,
+        onChanged: (v) => setState(() => createExampleMenu = v!),
+        tileColor: Theme.of(context).primaryColor,
+        title: Text(S.menuTutorialCreateExample, style: const TextStyle(color: Colors.white)),
+      ),
     );
   }
 }

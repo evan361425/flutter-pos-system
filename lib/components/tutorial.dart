@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -56,17 +55,10 @@ class Tutorial extends StatelessWidget {
 
   final Widget child;
 
-  final SpotlightDurationConfig duration;
-
-  /// route to be pushed after the tutorial is dismissed
-  ///
-  /// if [action] is provided, this will be ignored
-  final String? route;
-
   /// action to be executed after the tutorial is dismissed
   final Future<void> Function()? action;
 
-  final bool _hasAction;
+  static bool debug = false;
 
   const Tutorial({
     super.key,
@@ -79,16 +71,9 @@ class Tutorial extends StatelessWidget {
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
     this.monitorVisibility = false,
-    this.route,
     this.action,
     required this.child,
-    this.duration = const SpotlightDurationConfig(
-      bump: Duration(milliseconds: 500),
-      zoomIn: Duration(milliseconds: 600),
-      zoomOut: Duration(milliseconds: 600),
-      contentFadeIn: Duration(milliseconds: 200),
-    ),
-  }) : _hasAction = route != null || action != null;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -96,37 +81,27 @@ class Tutorial extends StatelessWidget {
       return child;
     }
 
-    final goSkip = _hasAction ? () => SpotlightAntAction.skip : null;
+    final theme = Theme.of(context);
+    SpotlightAnt.debug = true;
     return SpotlightAnt(
       enable: enabled,
       index: index,
-      duration: duration,
+      duration: debug ? SpotlightDurationConfig.zero : const SpotlightDurationConfig(),
       monitorId: monitorVisibility ? 'tutorial.$id' : null,
       onDismiss: _onDismiss,
-      onDismissed: _hasAction
-          ? () async {
-              await (action?.call() ?? context.pushNamed(route!));
-
-              // try start the next tutorial, if exists
-              if (context.mounted) {
-                SpotlightShow.maybeOf(context)?.start();
-              }
-            }
-          : null,
+      onDismissed: action,
       spotlight: SpotlightConfig(
         builder: spotlightBuilder,
         padding: padding,
-        onTap: goSkip,
       ),
-      backdrop: SpotlightBackdropConfig(onTap: goSkip),
+      backdrop: const SpotlightBackdropConfig(),
       action: const SpotlightActionConfig(
         enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
       ),
       content: SpotlightContent(
+        fontSize: theme.textTheme.titleMedium!.fontSize,
         child: Column(children: [
-          if (title != null)
-            // headline medium style
-            Text(title!, style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold, wordSpacing: 0.25)),
+          if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
           const SizedBox(height: 16),
           Text(message),
           if (below != null) below!,

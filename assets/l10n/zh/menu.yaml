@@ -10,10 +10,10 @@ search:
   notFound: 搜尋不到相關資訊，打錯字了嗎？
 example:
   catalog:
-    burger: '🍔 漢堡'
-    drink: '🍻 飲品'
-    side: '🍰 點心'
-    other: '🛍 其他'
+    burger: 漢堡
+    drink: 飲品
+    side: 點心
+    other: 其他
   product:
     cheeseBurger: 起司漢堡
     veggieBurger: 蔬菜漢堡
@@ -24,15 +24,15 @@ example:
     straw: 吸管
     plasticBag: 塑膠袋
   ingredient:
-    cheese: '🧀 起司'
-    lettuce: '🥬 萵苣'
-    tomato: '🍅 番茄'
-    bun: '🍞 麵包'
-    chili: '🌶 醬料'
-    ham: '🍖 火腿'
-    cola: '🥤 可樂罐'
-    coffee: '☕️ 濾掛咖啡包'
-    fries: '🍟 薯條（300g）'
+    cheese: 起司
+    lettuce: 萵苣
+    tomato: 番茄
+    bun: 麵包
+    chili: 醬料
+    ham: 火腿
+    cola: 可樂罐
+    coffee: 濾掛咖啡包
+    fries: 薯條（300g）
     straw: 吸管（根）
     plasticBag: 塑膠袋（個）
   quantity:
