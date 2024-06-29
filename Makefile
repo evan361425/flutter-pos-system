@@ -24,8 +24,8 @@ test-coverage: ## Run tests with coverage
 	@open coverage/html/index.html
 
 ##@ Build
-.PHONY: bump
-bump: ## Bump development version
+.PHONY: bump-dev
+bump-dev: ## Bump development version
 	@current=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
 	read -p "Enter new version (empty means bump build code only, current is $$current): " version; \
 	if [[ -n $$version ]]; then \
@@ -38,7 +38,7 @@ bump: ## Bump development version
 			exit 1; \
 		fi; \
 		code="$$(echo $$version | cut -d'.' -f1)$$(printf "%02d" $$(echo $$version | cut -d'.' -f2))"; \
-		code="$$code$$(printf "%02d" $$(echo $$version | cut -d'.' -f3))000"; \
+		code="$$code$$(printf "%02d" $$(echo $$version | cut -d'.' -f3))001"; \
 	else \
     version=$$current; \
 		code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
@@ -46,20 +46,23 @@ bump: ## Bump development version
 	fi; \
   sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
   rm pubspec.yaml.bk; \
+	git add pubspec.yaml; \
   git commit -m "chore: bump to $$version+$$code"; \
   id=$$( echo "$$code" | awk '{print substr($0,length($0)-2)}' | awk '{$1=$1+0; print}' ); \
-  git tag "$$version-rc$$id"; \
-  git push --tags
+  git tag "v$$version-rc$$id"; \
+	git push --follow-tags
 
-.PHONY: bump-beta
-bump-beta: ## Bump beta version
+.PHONY: bump
+bump: ## Bump beta version
   @version=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
+	read -p "This will bump to beta lane, are you sure? (y/n): " confirm; \
+	if [[ $$confirm != "y" ]]; then exit 1; fi; \
   code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
   code=$$(($$code + 1)); \
   sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
   rm pubspec.yaml.bk; \
   git commit -m "chore: bump to $$version+$$code"; \
-  git tag "$$version-beta"; \
+  git tag "$$version"; \
   git push --tags
 
 ##@ Tools

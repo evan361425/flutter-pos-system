@@ -5,13 +5,16 @@
       "labels": ["enhancement"]
     },
     {
-      "title": "## 🐛 Bugs",
+      "title": "## 🐛 Fixes",
       "labels": ["bug"]
+    },
+    {
+      "title": "##  📦 Others",
+      "labels": []
     }
   ],
   "ignore_labels": ["ignore"],
   "sort": "ASC",
-  "template": "${{CHANGELOG}}\n\n## 👻 Others\n\n${{UNCATEGORIZED}}\n",
   "pr_template": "- ${{TITLE}} #${{NUMBER}} : ${{AUTHOR}}",
   "empty_template": "Caught some bugs, time to clean up!",
   "max_tags_to_fetch": 10,

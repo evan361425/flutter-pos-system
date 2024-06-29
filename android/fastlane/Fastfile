@@ -36,8 +36,6 @@ platform :android do
   lane :internal do
     sh "flutter build appbundle -v --flavor dev --dart-define=appFlavor=dev --dart-define=logLevel=info"
 
-    changelog_from_git_commits
-
     upload_to_play_store(
       track: 'internal',
       rollout: '1',

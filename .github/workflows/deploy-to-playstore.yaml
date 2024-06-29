@@ -12,6 +12,10 @@ on:
         description: "GitHub tag"
         required: true
         default: "latest"
+      ref:
+        description: "GitHub ref, if not provided, will use the tag"
+        required: false
+        default: ""
   workflow_run:
     workflows:
       - Add Artifacts for Release
@@ -35,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
-      tag: ${{ steps.tag.outputs.result }}
+      ref: ${{ github.event.inputs.ref || steps.tag.outputs.result }}
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
       flavor: ${{ steps.flavor.outputs.value }}
@@ -123,15 +127,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.var.outputs.tag }}
+          ref: ${{ needs.var.outputs.ref }}
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7"
+          ruby-version: "3.3"
           bundler-cache: true
           working-directory: android
+      - run: bundle exec fastlane --version
+        working-directory: android
 
       # Get flutter dependencies.
       - name: Build dependencies
@@ -141,7 +147,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: "zulu"
-          java-version: "12.x"
+          java-version: "17"
 
       - name: Configure Google Services
         run: echo "$GOOGLE_SERVICES_JSON" > google-services.json
@@ -168,7 +174,6 @@ jobs:
       # Naturally, promote_to_production only deploys.
       - name: Fastlane building
         run: |
-          bundle exec fastlane --version
           bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
           SUPPLY_UPLOAD_MAX_RETRIES: 5
