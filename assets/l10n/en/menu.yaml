@@ -4,18 +4,48 @@ subtitle: Categories, Products
 tutorial:
   title: Create Your Menu
   content: Let's start by creating a menu!
+  createExample: Help create an example menu to test.
 search:
   hint: Search for products, ingredients, quantities
   notFound: Couldn't find relevant information. Did you misspell something?
+example:
+  catalog:
+    burger: Burgers
+    drink: Drinks
+    side: Side
+    other: Others
+  product:
+    cheeseBurger: Cheese Burger
+    veggieBurger: Veggie Burger
+    hamBurger: Ham Burger
+    cola: Cola
+    coffee: Coffee
+    fries: Fries
+    straw: Straw
+    plasticBag: Plastic Bag
+  ingredient:
+    cheese: Cheese
+    lettuce: Lettuce
+    tomato: Tomato
+    bun: Bun
+    chili: Chili Sauce
+    ham: Ham
+    cola: Can of Cola
+    coffee: Drip Coffee
+    fries: Bag of Fries
+    straw: Straw
+    plasticBag: Plastic Bag
+  quantity:
+    small: Small
+    large: Large
+    none: None
 catalog:
   headerInfo:
   - Categories
   - Displayed on the upper rectangle in homepage
-  tutorial:
-    title: Create First Catalog
   emptyBody: |-
-    Similar "products" will be grouped under "categories",
-    making it convenient for ordering, such as:
+    Similar products will be grouped under categories,
+    making ordering convenient, such as:
     • "Cheese Burger", "Veggie Burger" > "Burgers"
     • "Plastic Bag", "Eco Cup" > "Others"
   title:
@@ -26,7 +56,8 @@ catalog:
     reorder: Reorder Categories
   dialogDeletionContent:
   - =0: No products inside
-    other: Will delete {count} products together
+    =1: Will also delete {count} related product
+    other: Will also delete {count} related products
   - Warning message when deleting product categories on the menu page
   - count: {type: int, mode: plural}
   name:

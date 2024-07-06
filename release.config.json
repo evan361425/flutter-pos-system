@@ -17,8 +17,8 @@
   "sort": "ASC",
   "pr_template": "- ${{TITLE}} #${{NUMBER}} : ${{AUTHOR}}",
   "empty_template": "Caught some bugs, time to clean up!",
-  "max_tags_to_fetch": 200,
-  "max_pull_requests": 200,
+  "max_tags_to_fetch": 10,
+  "max_pull_requests": 20,
   "max_back_track_time_days": 365,
   "exclude_merge_branches": [],
   "tag_resolver": {

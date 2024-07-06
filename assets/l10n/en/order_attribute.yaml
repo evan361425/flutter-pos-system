@@ -17,6 +17,24 @@ tutorial:
   content: |-
     This is where you set customer information, such as dine-in, takeout, office worker, etc.
     This information helps us track who comes to consume and make better business strategies.
+  createExample: Help create an example to test.
+example:
+  age: Age
+  _age:
+    $prefix: age
+    child: Child
+    adult: Adult
+    senior: Senior
+  place: Place
+  _place:
+    $prefix: place
+    takeout: Takeout
+    dineIn: Dine-in
+  ecoFriendly: Eco-Friendly
+  _ecoFriendly:
+    $prefix: ecoFriendly
+    reusableBottle: Reusable Bottle
+    reusableBag: Reusable Bag
 meta:
   mode:
   - 'Mode: {name}'

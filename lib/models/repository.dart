@@ -224,7 +224,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) {
-    Log.ger('add start', storageStore.name, _items.toString());
+    Log.ger('add start', storageStore.name, item.toString());
 
     final data = item.toObject().toMap();
     return repoType == RepositoryStorageType.pureRepo

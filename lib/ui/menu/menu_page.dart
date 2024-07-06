@@ -76,7 +76,14 @@ class _MenuPageState extends State<MenuPage> {
               ),
             ],
           ),
-          floatingActionButton: widget.productOnly ? null : fab,
+          floatingActionButton: widget.productOnly
+              ? null
+              : FloatingActionButton(
+                  key: const Key('menu.add'),
+                  onPressed: _handleCreate,
+                  tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
+                  child: const Icon(KIcons.add),
+                ),
           body: PageView(
             controller: controller,
             // disable scrolling, only control by program
@@ -111,22 +118,6 @@ class _MenuPageState extends State<MenuPage> {
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
-
-  Widget get fab {
-    return Tutorial(
-      id: 'add_menu',
-      disable: Menu.instance.isNotEmpty,
-      title: S.menuCatalogTutorialTitle,
-      message: S.menuCatalogEmptyBody,
-      route: Routes.menuNew,
-      child: FloatingActionButton(
-        key: const Key('menu.add'),
-        onPressed: _handleCreate,
-        tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
-        child: const Icon(KIcons.add),
-      ),
-    );
   }
 
   Widget get firstView {

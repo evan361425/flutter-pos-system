@@ -18,7 +18,6 @@ void main() {
             id: '1',
             title: 'title1',
             message: 'message1',
-            duration: SpotlightDurationConfig.zero,
             child: Text('1'),
           ),
         ],
@@ -78,6 +77,7 @@ void main() {
   });
 
   setUpAll(() {
+    Tutorial.debug = true;
     initializeCache();
   });
 }
@@ -111,7 +111,6 @@ class _ScaffoldState extends State<_Scaffold> with TickerProviderStateMixin {
               id: '1',
               title: 'title1',
               message: 'message1',
-              duration: SpotlightDurationConfig.zero,
               child: Text('1'),
             ),
           ),
@@ -121,7 +120,6 @@ class _ScaffoldState extends State<_Scaffold> with TickerProviderStateMixin {
               id: '2',
               title: 'title2',
               message: 'message2',
-              duration: SpotlightDurationConfig.zero,
               child: Text('2'),
             ),
           ),

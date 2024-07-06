@@ -1,12 +1,6 @@
 $prefix: transit
 title: Data Transfer
 description: Importing and Exporting Store Information and Orders
-tutorial:
-  title: Sync Multiple Devices
-  content: |-
-    This is where you can import/export menu, inventory, order records, and other information.
-
-    We provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.
 method:
   title: Please Select Transfer Method
   name:
@@ -67,7 +61,7 @@ export:
   preview:
     btn: Preview
     title: Preview Output Result
-  btn: Import
+  btn: Export
 import:
   preview:
     btn: Preview
@@ -86,7 +80,7 @@ import:
       header: After import, old ingredients won't be removed to avoid affecting the "Menu" status.
     quantity:
       header: After import, old quantities won't be removed to avoid affecting the "Menu" status.
-  btn: Export
+  btn: Import
   error:
     columnCount:
     - Insufficient data, {columns} columns required

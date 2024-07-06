@@ -6,9 +6,11 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
+import 'package:possystem/helpers/setup_example.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -24,104 +26,129 @@ class SettingView extends StatefulWidget {
 
 class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
+  final GlobalKey<_TutorialCheckboxListTileState> _tutorialOrderAttrs = GlobalKey();
+  final GlobalKey<_TutorialCheckboxListTileState> _tutorialMenu = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    var orderAttrIndex = OrderAttributes.instance.isEmpty ? (Menu.instance.isEmpty ? 1 : 0) : -1;
     return TutorialWrapper(
       tab: tab,
-      child: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
-        const _HeaderInfoList(),
-        if (!isProd)
-          ListTile(
-            key: const Key('setting.debug'),
-            leading: const Icon(Icons.bug_report_sharp),
-            title: const Text('Debug'),
-            subtitle: const Text('For developer only'),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const DebugPage()),
+      child: Scaffold(
+        floatingActionButton: (Cache.instance.get<bool>('tutorial.home.order') ?? false)
+            ? null
+            : Tutorial(
+                id: 'home.order',
+                index: orderAttrIndex + 1,
+                spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
+                title: S.orderTutorialTitle,
+                message: S.orderTutorialContent,
+                child: FloatingActionButton.extended(
+                  heroTag: 'order.tutorial',
+                  onPressed: null,
+                  icon: const Icon(Icons.store_sharp),
+                  label: Text(S.orderBtn),
+                ),
+              ),
+        body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+          const _HeaderInfoList(),
+          if (!isProd)
+            ListTile(
+              key: const Key('setting.debug'),
+              leading: const Icon(Icons.bug_report_sharp),
+              title: const Text('Debug'),
+              subtitle: const Text('For developer only'),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DebugPage()),
+              ),
+            ),
+          Tutorial(
+            id: 'home.menu',
+            index: 0,
+            title: S.menuTutorialTitle,
+            message: S.menuTutorialContent,
+            below: _TutorialCheckboxListTile(key: _tutorialMenu, title: S.menuTutorialCreateExample),
+            spotlightBuilder: const SpotlightRectBuilder(),
+            disable: Menu.instance.isNotEmpty,
+            action: () async {
+              if (_tutorialMenu.currentState?.value == true) {
+                await setupExampleMenu();
+              }
+            },
+            child: _buildRouteTile(
+              id: 'menu',
+              icon: Icons.collections_sharp,
+              route: Routes.menu,
+              title: S.menuTitle,
+              subtitle: S.menuSubtitle,
             ),
           ),
-        Tutorial(
-          id: 'home.menu',
-          title: S.menuTutorialTitle,
-          message: S.menuTutorialContent,
-          spotlightBuilder: const SpotlightRectBuilder(),
-          disable: Menu.instance.isNotEmpty,
-          route: Routes.menu,
-          child: _buildRouteTile(
-            id: 'menu',
-            icon: Icons.collections_sharp,
-            route: Routes.menu,
-            title: S.menuTitle,
-            subtitle: S.menuSubtitle,
-          ),
-        ),
-        Tutorial(
-          id: 'home.exporter',
-          title: S.transitTutorialTitle,
-          message: S.transitTutorialContent,
-          spotlightBuilder: const SpotlightRectBuilder(),
-          child: _buildRouteTile(
-            id: 'exporter',
+          _buildRouteTile(
+            id: 'transit',
             icon: Icons.upload_file_sharp,
             route: Routes.transit,
             title: S.transitTitle,
             subtitle: S.transitDescription,
           ),
-        ),
-        Tutorial(
-          id: 'home.order_attr',
-          title: S.orderAttributeTutorialTitle,
-          message: S.orderAttributeTutorialContent,
-          spotlightBuilder: const SpotlightRectBuilder(),
-          child: _buildRouteTile(
-            id: 'order_attrs',
-            icon: Icons.assignment_ind_sharp,
-            route: Routes.orderAttr,
-            title: S.orderAttributeTitle,
-            subtitle: S.orderAttributeDescription,
+          Tutorial(
+            id: 'home.order_attr',
+            index: orderAttrIndex,
+            title: S.orderAttributeTutorialTitle,
+            message: S.orderAttributeTutorialContent,
+            below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
+            spotlightBuilder: const SpotlightRectBuilder(),
+            disable: OrderAttributes.instance.isNotEmpty,
+            action: () async {
+              if (_tutorialOrderAttrs.currentState?.value == true) {
+                await setupExampleOrderAttrs();
+              }
+            },
+            child: _buildRouteTile(
+              id: 'order_attrs',
+              icon: Icons.assignment_ind_sharp,
+              route: Routes.orderAttr,
+              title: S.orderAttributeTitle,
+              subtitle: S.orderAttributeDescription,
+            ),
           ),
-        ),
-        _buildRouteTile(
-          id: 'quantity',
-          icon: Icons.exposure_sharp,
-          route: Routes.quantity,
-          title: S.stockQuantityTitle,
-          subtitle: S.stockQuantityDescription,
-        ),
-        _buildRouteTile(
-          id: 'feature_request',
-          icon: Icons.lightbulb_sharp,
-          route: Routes.featureRequest,
-          title: S.settingElfTitle,
-          subtitle: S.settingElfDescription,
-        ),
-        _buildRouteTile(
-          id: 'setting',
-          icon: Icons.settings_sharp,
-          route: Routes.features,
-          title: S.settingFeatureTitle,
-          subtitle: S.settingFeatureDescription,
-        ),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          TextButton(
-            onPressed: _bottomLinks[0].launch,
-            child: Text(_bottomLinks[0].text),
+          _buildRouteTile(
+            id: 'quantity',
+            icon: Icons.exposure_sharp,
+            route: Routes.quantity,
+            title: S.stockQuantityTitle,
+            subtitle: S.stockQuantityDescription,
           ),
-          const Text(MetaBlock.string),
-          TextButton(
-            onPressed: _bottomLinks[1].launch,
-            child: Text(_bottomLinks[1].text),
+          _buildRouteTile(
+            id: 'feature_request',
+            icon: Icons.lightbulb_sharp,
+            route: Routes.featureRequest,
+            title: S.settingElfTitle,
+            subtitle: S.settingElfDescription,
           ),
-        ])
-      ]),
+          _buildRouteTile(
+            id: 'setting',
+            icon: Icons.settings_sharp,
+            route: Routes.features,
+            title: S.settingFeatureTitle,
+            subtitle: S.settingFeatureDescription,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            TextButton(
+              onPressed: _bottomLinks[0].launch,
+              child: Text(_bottomLinks[0].text),
+            ),
+            const Text(MetaBlock.string),
+            TextButton(
+              onPressed: _bottomLinks[1].launch,
+              child: Text(_bottomLinks[1].text),
+            ),
+          ])
+        ]),
+      ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -129,6 +156,9 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
 
     super.initState();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildRouteTile({
     required String id,
@@ -229,8 +259,34 @@ class _HeaderInfoList extends StatelessWidget {
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(title.toString(), style: theme.textTheme.headlineMedium),
-          Text(subtitle, style: theme.textTheme.bodyMedium),
+          Flexible(child: Text(subtitle, textAlign: TextAlign.center)),
         ]),
+      ),
+    );
+  }
+}
+
+class _TutorialCheckboxListTile extends StatefulWidget {
+  final String title;
+
+  const _TutorialCheckboxListTile({super.key, required this.title});
+
+  @override
+  State<_TutorialCheckboxListTile> createState() => _TutorialCheckboxListTileState();
+}
+
+class _TutorialCheckboxListTileState extends State<_TutorialCheckboxListTile> {
+  bool value = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: CheckboxListTile(
+        value: value,
+        onChanged: (v) => setState(() => value = v!),
+        tileColor: Theme.of(context).primaryColor,
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
       ),
     );
   }

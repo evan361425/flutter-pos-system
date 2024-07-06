@@ -15,6 +15,24 @@ tutorial:
   content: |-
     這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。
     這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
+  createExample: 幫助建立一份範例以供測試。
+example:
+  age: 年齡
+  _age:
+    $prefix: age
+    child: 小孩
+    adult: 成人
+    senior: 長者
+  place: 位置
+  _place:
+    $prefix: place
+    takeout: 外帶
+    dineIn: 內用
+  ecoFriendly: 環保
+  _ecoFriendly:
+    $prefix: ecoFriendly
+    reusableBottle: 環保杯
+    reusableBag: 環保袋
 meta:
   mode: 種類：{name}
   default: 預設：{name}
