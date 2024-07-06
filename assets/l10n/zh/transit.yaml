@@ -1,12 +1,6 @@
 $prefix: "transit"
 title: 資料轉移
 description: 匯入、匯出店家資訊和訂單
-tutorial:
-  title: 同步多台裝置
-  content: |-
-    這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。
-
-    我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。
 method:
   title: 請選擇欲轉移的方式
   name:

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-06-27T05:21:06.324318Z",
+  "@@last_modified": "2024-07-06T10:00:50.953962Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -213,8 +213,6 @@
   "stockQuantityProportionHelper": "Applied when this quantity is used for an ingredient.\n\nFor example:\nif this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\"\nwhich uses \"2\" units of cheese per burger,\nwhen adding this quantity,\nthe quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\n\nIf set to \"1,\" there's no effect.\n\nIf set to \"0,\" the ingredient won't be used.",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
-  "transitTutorialTitle": "Sync Multiple Devices",
-  "transitTutorialContent": "This is where you can import/export menu, inventory, order records, and other information.\n\nWe provide two methods: Google Sheets and plain text, making it convenient to sync data across different devices.",
   "transitMethodTitle": "Please Select Transfer Method",
   "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} other{UNKNOWN}}",
   "@transitMethodName": {
@@ -1158,6 +1156,17 @@
   },
   "orderAttributeTutorialTitle": "Customer Settings",
   "orderAttributeTutorialContent": "This is where you set customer information, such as dine-in, takeout, office worker, etc.\nThis information helps us track who comes to consume and make better business strategies.",
+  "orderAttributeTutorialCreateExample": "Help create an example to test.",
+  "orderAttributeExampleAge": "Age",
+  "orderAttributeExampleAgeChild": "Child",
+  "orderAttributeExampleAgeAdult": "Adult",
+  "orderAttributeExampleAgeSenior": "Senior",
+  "orderAttributeExamplePlace": "Place",
+  "orderAttributeExamplePlaceTakeout": "Takeout",
+  "orderAttributeExamplePlaceDineIn": "Dine-in",
+  "orderAttributeExampleEcoFriendly": "Eco-Friendly",
+  "orderAttributeExampleEcoFriendlyReusableBottle": "Reusable Bottle",
+  "orderAttributeExampleEcoFriendlyReusableBag": "Reusable Bag",
   "orderAttributeMetaMode": "Mode: {name}",
   "@orderAttributeMetaMode": {
     "placeholders": {

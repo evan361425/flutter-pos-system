@@ -26,12 +26,14 @@ class SettingView extends StatefulWidget {
 
 class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClientMixin {
   late final TutorialInTab? tab;
-  final GlobalKey<_TutorialCreateExampleMenuListTileState> _tutorialCheckbox = GlobalKey();
+  final GlobalKey<_TutorialCheckboxListTileState> _tutorialOrderAttrs = GlobalKey();
+  final GlobalKey<_TutorialCheckboxListTileState> _tutorialMenu = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    var orderAttrIndex = OrderAttributes.instance.isEmpty ? (Menu.instance.isEmpty ? 1 : 0) : -1;
     return TutorialWrapper(
       tab: tab,
       child: Scaffold(
@@ -39,8 +41,7 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             ? null
             : Tutorial(
                 id: 'home.order',
-                // 0 if menu tutorial is not shown (only index 0 will trigger tutorial)
-                index: Menu.instance.isNotEmpty ? 0 : 1,
+                index: orderAttrIndex + 1,
                 spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
                 title: S.orderTutorialTitle,
                 message: S.orderTutorialContent,
@@ -68,11 +69,11 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             index: 0,
             title: S.menuTutorialTitle,
             message: S.menuTutorialContent,
-            below: _TutorialCreateExampleMenuListTile(key: _tutorialCheckbox),
+            below: _TutorialCheckboxListTile(key: _tutorialMenu, title: S.menuTutorialCreateExample),
             spotlightBuilder: const SpotlightRectBuilder(),
             disable: Menu.instance.isNotEmpty,
             action: () async {
-              if (_tutorialCheckbox.currentState?.createExampleMenu == true) {
+              if (_tutorialMenu.currentState?.value == true) {
                 await setupExampleMenu();
               }
             },
@@ -84,26 +85,26 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
               subtitle: S.menuSubtitle,
             ),
           ),
-          Tutorial(
-            id: 'home.exporter',
-            index: 3,
-            title: S.transitTutorialTitle,
-            message: S.transitTutorialContent,
-            spotlightBuilder: const SpotlightRectBuilder(),
-            child: _buildRouteTile(
-              id: 'exporter',
-              icon: Icons.upload_file_sharp,
-              route: Routes.transit,
-              title: S.transitTitle,
-              subtitle: S.transitDescription,
-            ),
+          _buildRouteTile(
+            id: 'transit',
+            icon: Icons.upload_file_sharp,
+            route: Routes.transit,
+            title: S.transitTitle,
+            subtitle: S.transitDescription,
           ),
           Tutorial(
             id: 'home.order_attr',
-            index: 2,
+            index: orderAttrIndex,
             title: S.orderAttributeTutorialTitle,
             message: S.orderAttributeTutorialContent,
+            below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
             spotlightBuilder: const SpotlightRectBuilder(),
+            disable: OrderAttributes.instance.isNotEmpty,
+            action: () async {
+              if (_tutorialOrderAttrs.currentState?.value == true) {
+                await setupExampleOrderAttrs();
+              }
+            },
             child: _buildRouteTile(
               id: 'order_attrs',
               icon: Icons.assignment_ind_sharp,
@@ -150,14 +151,14 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void initState() {
     tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
 
     super.initState();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildRouteTile({
     required String id,
@@ -265,25 +266,27 @@ class _HeaderInfoList extends StatelessWidget {
   }
 }
 
-class _TutorialCreateExampleMenuListTile extends StatefulWidget {
-  const _TutorialCreateExampleMenuListTile({super.key});
+class _TutorialCheckboxListTile extends StatefulWidget {
+  final String title;
+
+  const _TutorialCheckboxListTile({super.key, required this.title});
 
   @override
-  State<_TutorialCreateExampleMenuListTile> createState() => _TutorialCreateExampleMenuListTileState();
+  State<_TutorialCheckboxListTile> createState() => _TutorialCheckboxListTileState();
 }
 
-class _TutorialCreateExampleMenuListTileState extends State<_TutorialCreateExampleMenuListTile> {
-  bool createExampleMenu = true;
+class _TutorialCheckboxListTileState extends State<_TutorialCheckboxListTile> {
+  bool value = true;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: CheckboxListTile(
-        value: createExampleMenu,
-        onChanged: (v) => setState(() => createExampleMenu = v!),
+        value: value,
+        onChanged: (v) => setState(() => value = v!),
         tileColor: Theme.of(context).primaryColor,
-        title: Text(S.menuTutorialCreateExample, style: const TextStyle(color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
       ),
     );
   }

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-06-27T05:21:06.347696Z",
+  "@@last_modified": "2024-07-06T10:00:50.976445Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -213,8 +213,6 @@
   "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n\n若設為「1」則無任何影響。\n\n若設為「0」則代表將不會使用此成分",
   "transitTitle": "資料轉移",
   "transitDescription": "匯入、匯出店家資訊和訂單",
-  "transitTutorialTitle": "同步多台裝置",
-  "transitTutorialContent": "這裡是用來匯入匯出菜單、庫存、訂單記錄等資訊的地方。\n\n我們提供了 Google 試算表和純文字兩種方式，讓您可以方便地在不同裝置間同步資料。",
   "transitMethodTitle": "請選擇欲轉移的方式",
   "transitMethodName": "{name, select, googleSheet{Google 試算表} plainText{純文字} other{UNKNOWN}}",
   "@transitMethodName": {
@@ -1158,6 +1156,17 @@
   },
   "orderAttributeTutorialTitle": "顧客設定",
   "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。",
+  "orderAttributeTutorialCreateExample": "幫助建立一份範例以供測試。",
+  "orderAttributeExampleAge": "年齡",
+  "orderAttributeExampleAgeChild": "小孩",
+  "orderAttributeExampleAgeAdult": "成人",
+  "orderAttributeExampleAgeSenior": "長者",
+  "orderAttributeExamplePlace": "位置",
+  "orderAttributeExamplePlaceTakeout": "外帶",
+  "orderAttributeExamplePlaceDineIn": "內用",
+  "orderAttributeExampleEcoFriendly": "環保",
+  "orderAttributeExampleEcoFriendlyReusableBottle": "環保杯",
+  "orderAttributeExampleEcoFriendlyReusableBag": "環保袋",
   "orderAttributeMetaMode": "種類：{name}",
   "@orderAttributeMetaMode": {
     "placeholders": {

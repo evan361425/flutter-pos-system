@@ -2,7 +2,11 @@ import 'dart:developer';
 
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/objects/menu_object.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
+import 'package:possystem/models/order/order_attribute.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -206,5 +210,51 @@ Future<void> setupExampleMenu() async {
     })),
   ]) {
     await Menu.instance.addItem(e);
+  }
+}
+
+Future<void> setupExampleOrderAttrs() async {
+  if (OrderAttributes.instance.isNotEmpty) return;
+
+  log('setting order attributes', name: 'example order attrs');
+  for (final e in [
+    OrderAttribute(
+      id: 'age',
+      name: S.orderAttributeExampleAge,
+      index: 1,
+      mode: OrderAttributeMode.statOnly,
+      options: {
+        'child': OrderAttributeOption(id: 'child', name: '${S.orderAttributeExampleAgeChild} (0-12)', index: 1),
+        'adult': OrderAttributeOption(
+            id: 'adult', name: '${S.orderAttributeExampleAgeAdult} (13-60)', index: 2, isDefault: true),
+        'senior': OrderAttributeOption(id: 'senior', name: '${S.orderAttributeExampleAgeSenior} (60+)', index: 3),
+      },
+    ),
+    OrderAttribute(
+      id: 'place',
+      name: S.orderAttributeExamplePlace,
+      index: 2,
+      mode: OrderAttributeMode.changeDiscount,
+      options: {
+        'takeout':
+            OrderAttributeOption(id: 'takeout', name: S.orderAttributeExamplePlaceTakeout, index: 1, isDefault: true),
+        'dine-in':
+            OrderAttributeOption(id: 'dine-in', name: S.orderAttributeExamplePlaceDineIn, index: 2, modeValue: 1.1),
+      },
+    ),
+    OrderAttribute(
+      id: 'eco-friendly',
+      name: S.orderAttributeExampleEcoFriendly,
+      index: 3,
+      mode: OrderAttributeMode.changePrice,
+      options: {
+        'reuseable-bag': OrderAttributeOption(
+            id: 'reuseable-bag', name: S.orderAttributeExampleEcoFriendlyReusableBag, index: 1, modeValue: -5),
+        'reuseable-bottle': OrderAttributeOption(
+            id: 'reuseable-bottle', name: S.orderAttributeExampleEcoFriendlyReusableBottle, index: 1, modeValue: -30),
+      },
+    ),
+  ]) {
+    await OrderAttributes.instance.addItem(e);
   }
 }

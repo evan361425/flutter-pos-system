@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/setup_example.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 
@@ -14,9 +15,11 @@ void main() {
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
 
       await setupExampleMenu();
+      await setupExampleOrderAttrs();
       verify(storage.add(any, any, any));
 
       await setupExampleMenu();
+      await setupExampleOrderAttrs();
       verifyNever(storage.add(any, any, any));
     });
 
@@ -26,6 +29,7 @@ void main() {
       Menu();
       Stock();
       Quantities();
+      OrderAttributes();
     });
   });
 }

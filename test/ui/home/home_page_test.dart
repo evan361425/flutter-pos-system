@@ -101,7 +101,7 @@ void main() {
       // rest
       await navAndPop('setting.debug', 'debug.list');
       await navAndPop('setting.menu', 'menu.search');
-      await navAndPop('setting.exporter', 'transit.google_sheet');
+      await navAndPop('setting.transit', 'transit.google_sheet');
       await navAndPop('setting.quantity', 'quantity.add');
       await navAndPop('setting.order_attrs', 'order_attributes.reorder');
       await dragDown();
@@ -114,83 +114,79 @@ void main() {
       await navAndCheck('home.analysis', 'anal.history');
     });
 
-    testWidgets('Setup example menu', (tester) async {
-      when(cache.get(any)).thenReturn(null);
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+    group('example menu', () {
+      setUp(() {
+        reset(cache);
+        when(cache.get(any)).thenReturn(null);
+        when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+      });
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: SettingsProvider.instance),
-          ChangeNotifierProvider.value(value: Menu()),
-          ChangeNotifierProvider.value(value: Stock()),
-          ChangeNotifierProvider.value(value: Quantities()),
-          ChangeNotifierProvider.value(value: OrderAttributes()),
-        ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(observers: [
-            MyApp.routeObserver
-          ], routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const HomePage(tab: HomeTab.setting),
-            )
-          ]),
-          theme: AppThemes.lightTheme,
-          darkTheme: AppThemes.darkTheme,
-        ),
-      ));
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(milliseconds: 5));
+      Widget buildApp() {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: SettingsProvider.instance),
+            ChangeNotifierProvider.value(value: Menu()),
+            ChangeNotifierProvider.value(value: Stock()),
+            ChangeNotifierProvider.value(value: Quantities()),
+            ChangeNotifierProvider.value(value: OrderAttributes()),
+          ],
+          child: MaterialApp.router(
+            routerConfig: GoRouter(observers: [
+              MyApp.routeObserver
+            ], routes: [
+              GoRoute(
+                path: '/',
+                routes: Routes.routes,
+                builder: (_, __) => const HomePage(tab: HomeTab.setting),
+              )
+            ]),
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+          ),
+        );
+      }
 
-      // set up example menu
-      await tester.tapAt(Offset.zero);
-      await tester.pump(const Duration(milliseconds: 5));
-      await tester.pump(const Duration(milliseconds: 5));
+      Future<void> startTutorial(WidgetTester tester) async {
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 5));
+      }
 
-      expect(find.text(S.orderTutorialTitle), findsOneWidget);
-      expect(Menu.instance.isNotEmpty, isTrue);
-      verify(cache.set('tutorial.home.menu', true));
-    });
+      Future<void> goNext(WidgetTester tester) async {
+        await tester.tapAt(Offset.zero);
+        await tester.pump(const Duration(milliseconds: 5));
+        await tester.pump(const Duration(milliseconds: 5));
+      }
 
-    testWidgets('Disable example menu', (tester) async {
-      when(cache.get(any)).thenReturn(null);
-      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+      testWidgets('Setup', (tester) async {
+        await tester.pumpWidget(buildApp());
+        expect(Menu.instance.isEmpty, isTrue);
+        expect(OrderAttributes.instance.isEmpty, isTrue);
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: SettingsProvider.instance),
-          ChangeNotifierProvider.value(value: Menu()),
-          ChangeNotifierProvider.value(value: Stock()),
-          ChangeNotifierProvider.value(value: Quantities()),
-          ChangeNotifierProvider.value(value: OrderAttributes()),
-        ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(observers: [
-            MyApp.routeObserver
-          ], routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const HomePage(tab: HomeTab.setting),
-            )
-          ]),
-          theme: AppThemes.lightTheme,
-          darkTheme: AppThemes.darkTheme,
-        ),
-      ));
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(milliseconds: 5));
+        await startTutorial(tester);
+        await goNext(tester);
 
-      // set up example menu
-      await tester.tap(find.text(S.menuTutorialCreateExample));
-      await tester.tapAt(Offset.zero);
-      await tester.pump(const Duration(milliseconds: 5));
-      await tester.pump(const Duration(milliseconds: 5));
+        expect(find.text(S.orderAttributeTutorialContent), findsOneWidget);
+        expect(Menu.instance.isNotEmpty, isTrue);
+        verify(cache.set('tutorial.home.menu', true));
 
-      expect(find.text(S.orderTutorialTitle), findsOneWidget);
-      expect(Menu.instance.isNotEmpty, isFalse);
-      verify(cache.set('tutorial.home.menu', true));
+        await goNext(tester);
+
+        expect(find.text(S.orderTutorialTitle), findsOneWidget);
+        expect(OrderAttributes.instance.isNotEmpty, isTrue);
+        verify(cache.set('tutorial.home.order_attr', true));
+      });
+
+      testWidgets('Disable example menu', (tester) async {
+        await tester.pumpWidget(buildApp());
+
+        await startTutorial(tester);
+        await tester.tap(find.text(S.menuTutorialCreateExample));
+        await goNext(tester);
+
+        expect(find.text(S.orderAttributeTutorialContent), findsOneWidget);
+        expect(Menu.instance.isNotEmpty, isFalse);
+        verify(cache.set('tutorial.home.menu', true));
+      });
     });
 
     setUp(() {
