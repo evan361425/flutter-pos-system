@@ -48,7 +48,7 @@ bump-dev: ## Bump development version
   rm pubspec.yaml.bk; \
 	git add pubspec.yaml; \
   git commit -m "chore: bump to $$version+$$code"; \
-  id=$$( echo "$$code" | awk '{print substr($0,length($0)-2)}' | awk '{$1=$1+0; print}' ); \
+  id=$$( echo "$$code" | awk '{print substr($$0,length($$0)-2)}' | awk '{$$1=$$1+0; print}' ); \
   git tag "v$$version-rc$$id"; \
 	git push --follow-tags
 
