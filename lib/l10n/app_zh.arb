@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-06T10:00:50.976445Z",
+  "@@last_modified": "2024-07-08T13:16:38.559010Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -125,10 +125,25 @@
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
   "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n填空或不填寫則每次增加庫存，都會自動設定這值，",
+  "stockIngredientRestockTitle": "每次補貨可以補貨多少成分。\n例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。\n這可以幫助你透過價錢快速補貨。",
   "stockIngredientRestockPriceLabel": "補貨單價",
-  "stockIngredientRestockPriceHelper": "每次補貨時，每單位的價錢，補貨的時候可以透過價錢補貨而非單純的數量數量。",
   "stockIngredientRestockQuantityLabel": "補貨單位",
-  "stockIngredientRestockQuantityHelper": "每補貨單價可以補貨多少成分。例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。",
+  "stockIngredientRestockDialogTitle": "目前每{quantity}個要價{price}元",
+  "@stockIngredientRestockDialogTitle": {
+    "description": "Headline of the dialog for setting the restock price",
+    "placeholders": {
+      "quantity": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientRestockDialogSubtitle": "請輸入購買價格",
+  "@stockIngredientRestockDialogSubtitle": {
+    "description": "Helper text to remind users to enter the purchase price"
+  },
   "stockIngredientRestockDialogQuantityTab": "數量",
   "stockIngredientRestockDialogQuantityBtn": "使用數量",
   "stockIngredientRestockDialogQuantityLabel": "現有庫存",

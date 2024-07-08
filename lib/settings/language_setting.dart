@@ -6,12 +6,12 @@ import 'package:possystem/settings/setting.dart';
 
 /// Language setting allow given null language which means system default.
 class LanguageSetting extends Setting<Language?> {
-  Language _systemLanguage = Language.en;
+  Language? _systemLanguage;
 
   static final instance = LanguageSetting._();
 
   LanguageSetting._() {
-    value = Language.en;
+    value = null;
   }
 
   @override
@@ -20,11 +20,14 @@ class LanguageSetting extends Setting<Language?> {
   @override
   bool get registryForApp => true;
 
+  /// Set system language for fallback.
+  ///
+  /// This is not idempotent, it will only set once.
   set systemLanguage(String locale) {
-    _systemLanguage = parseLanguage(locale)!;
+    _systemLanguage ??= parseLanguage(locale)!;
   }
 
-  Language get language => value ?? _systemLanguage;
+  Language get language => value ?? _systemLanguage ?? Language.en;
 
   @override
   void initialize() {

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-06T10:00:50.953962Z",
+  "@@last_modified": "2024-07-08T13:16:38.533669Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -125,10 +125,25 @@
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
   "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
+  "stockIngredientRestockTitle": "The amount of ingredient you can restock each time.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"\nThis helps you quickly restock by price.",
   "stockIngredientRestockPriceLabel": "Restock Price",
-  "stockIngredientRestockPriceHelper": "The price per unit each time you restock.\nWhen restocking, you can restock by price instead of quantity.",
   "stockIngredientRestockQuantityLabel": "Restock Unit",
-  "stockIngredientRestockQuantityHelper": "The amount of ingredient you can restock per Restock Price.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"",
+  "stockIngredientRestockDialogTitle": "Each {quantity} costs {price} dollars",
+  "@stockIngredientRestockDialogTitle": {
+    "description": "Headline of the dialog for setting the restock price",
+    "placeholders": {
+      "quantity": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "stockIngredientRestockDialogSubtitle": "Please enter the purchase price",
+  "@stockIngredientRestockDialogSubtitle": {
+    "description": "Helper text to remind users to enter the purchase price"
+  },
   "stockIngredientRestockDialogQuantityTab": "Quantity",
   "stockIngredientRestockDialogQuantityBtn": "Use Quantity",
   "stockIngredientRestockDialogQuantityLabel": "Current Amount",

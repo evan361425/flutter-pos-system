@@ -57,6 +57,9 @@ class MyApp extends StatelessWidget {
             S = localizations;
             Intl.systemLocale = S.localeName;
             Intl.defaultLocale = S.localeName;
+            // if no setup language, it will use system language. We try to
+            // catch system language here. Only first time calling will take
+            // effect.
             LanguageSetting.instance.systemLanguage = S.localeName;
             initializeDateFormatting(S.localeName);
 

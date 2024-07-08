@@ -229,7 +229,7 @@ Future<void> setupExampleOrderAttrs() async {
             id: 'adult', name: '${S.orderAttributeExampleAgeAdult} (13-60)', index: 2, isDefault: true),
         'senior': OrderAttributeOption(id: 'senior', name: '${S.orderAttributeExampleAgeSenior} (60+)', index: 3),
       },
-    ),
+    )..prepareItem(),
     OrderAttribute(
       id: 'place',
       name: S.orderAttributeExamplePlace,
@@ -241,7 +241,7 @@ Future<void> setupExampleOrderAttrs() async {
         'dine-in':
             OrderAttributeOption(id: 'dine-in', name: S.orderAttributeExamplePlaceDineIn, index: 2, modeValue: 1.1),
       },
-    ),
+    )..prepareItem(),
     OrderAttribute(
       id: 'eco-friendly',
       name: S.orderAttributeExampleEcoFriendly,
@@ -253,7 +253,7 @@ Future<void> setupExampleOrderAttrs() async {
         'reuseable-bottle': OrderAttributeOption(
             id: 'reuseable-bottle', name: S.orderAttributeExampleEcoFriendlyReusableBottle, index: 1, modeValue: -30),
       },
-    ),
+    )..prepareItem(),
   ]) {
     await OrderAttributes.instance.addItem(e);
   }

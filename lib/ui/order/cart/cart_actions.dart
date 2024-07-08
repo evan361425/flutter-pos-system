@@ -7,39 +7,6 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
 
 class CartActions extends StatelessWidget {
-  static final List<BottomSheetAction> actions = <BottomSheetAction<CartActionTypes>>[
-    BottomSheetAction(
-      key: const Key('cart.action.discount'),
-      leading: const Icon(Icons.loyalty_sharp),
-      title: Text(S.orderCartActionDiscount),
-      returnValue: CartActionTypes.discount,
-    ),
-    BottomSheetAction(
-      key: const Key('cart.action.price'),
-      leading: const Icon(Icons.attach_money_sharp),
-      title: Text(S.orderCartActionChangePrice),
-      returnValue: CartActionTypes.price,
-    ),
-    BottomSheetAction(
-      key: const Key('cart.action.count'),
-      leading: const Icon(Icons.exposure_sharp),
-      title: Text(S.orderCartActionChangeCount),
-      returnValue: CartActionTypes.count,
-    ),
-    BottomSheetAction(
-      key: const Key('cart.action.free'),
-      leading: const Icon(Icons.free_breakfast_sharp),
-      title: Text(S.orderCartActionFree),
-      returnValue: CartActionTypes.free,
-    ),
-    BottomSheetAction(
-      key: const Key('cart.action.delete'),
-      leading: const Icon(KIcons.delete),
-      title: Text(S.orderCartActionDelete),
-      returnValue: CartActionTypes.delete,
-    ),
-  ];
-
   const CartActions({super.key});
 
   @override
@@ -127,7 +94,38 @@ class CartActions extends StatelessWidget {
   static void showActions(BuildContext context) async {
     final type = await showCircularBottomSheet<CartActionTypes>(
       context,
-      actions: actions,
+      actions: <BottomSheetAction<CartActionTypes>>[
+        BottomSheetAction(
+          key: const Key('cart.action.discount'),
+          leading: const Icon(Icons.loyalty_sharp),
+          title: Text(S.orderCartActionDiscount),
+          returnValue: CartActionTypes.discount,
+        ),
+        BottomSheetAction(
+          key: const Key('cart.action.price'),
+          leading: const Icon(Icons.attach_money_sharp),
+          title: Text(S.orderCartActionChangePrice),
+          returnValue: CartActionTypes.price,
+        ),
+        BottomSheetAction(
+          key: const Key('cart.action.count'),
+          leading: const Icon(Icons.exposure_sharp),
+          title: Text(S.orderCartActionChangeCount),
+          returnValue: CartActionTypes.count,
+        ),
+        BottomSheetAction(
+          key: const Key('cart.action.free'),
+          leading: const Icon(Icons.free_breakfast_sharp),
+          title: Text(S.orderCartActionFree),
+          returnValue: CartActionTypes.free,
+        ),
+        BottomSheetAction(
+          key: const Key('cart.action.delete'),
+          leading: const Icon(KIcons.delete),
+          title: Text(S.orderCartActionDelete),
+          returnValue: CartActionTypes.delete,
+        ),
+      ],
     );
 
     if (type != null) {
