@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -205,6 +206,14 @@ void main() {
       await tester.tap(find.byKey(const Key('stock.i-2')));
       await tester.pumpAndSettle();
 
+      await tester.tap(find.byIcon(KIcons.edit).last);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('stock.ing_restock.price')), '1.1');
+      await tester.enterText(find.byKey(const Key('stock.ing_restock.quantity')), '2.2');
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
       final tf = find.byKey(const Key('stock.repl.price.text')).evaluate().single.widget as TextFormField;
       expect(tf.controller!.text, equals('4'));
 
@@ -214,12 +223,12 @@ void main() {
 
       await tester.enterText(find.byKey(const Key('stock.repl.price.text')), '6.6');
       await tester.pumpAndSettle();
-      expect(find.text('10.90'), findsOneWidget); // 6.6 / 2 * 3 + 1
+      expect(find.text('14.20'), findsOneWidget); // 6.6 / 1.1 * 2.2 + 1
 
       await tester.tap(find.byKey(const Key('slider_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      expect(ing.currentAmount, equals(10.9));
+      expect(ing.currentAmount, equals(14.2));
       expect(ing.restockLastPrice, equals(6.6));
       verifyNever(cache.set('stock.replenishBy', any));
     });
@@ -234,8 +243,6 @@ void main() {
 
       await tester.enterText(find.byKey(const Key('stock.ingredient.amount')), '1');
       await tester.enterText(find.byKey(const Key('stock.ingredient.totalAmount')), '');
-      await tester.enterText(find.byKey(const Key('stock.ingredient.restockPrice')), '2');
-      await tester.enterText(find.byKey(const Key('stock.ingredient.restockQuantity')), '3');
 
       // go to product
       final p1 = find.byKey(const Key('stock.ingredient.p-1'));
@@ -266,8 +273,8 @@ void main() {
       expect(ingredient.name, equals('i-3'));
       expect(ingredient.currentAmount, equals(1));
       expect(ingredient.totalAmount, isNull);
-      expect(ingredient.restockPrice, equals(2));
-      expect(ingredient.restockQuantity, equals(3));
+      expect(ingredient.restockPrice, isNull);
+      expect(ingredient.restockQuantity, equals(1));
     });
 
     testWidgets('delete ingredient', (tester) async {
