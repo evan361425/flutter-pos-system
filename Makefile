@@ -61,6 +61,7 @@ bump: ## Bump beta version
 	code=$$(($$code + 1)); \
 	sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
 	rm pubspec.yaml.bk; \
+	git add pubspec.yaml; \
 	git commit -m "chore: bump to $$version+$$code"; \
 	git tag "$$version"; \
 	git push --follow-tags
