@@ -36,9 +36,7 @@ android {
 
   defaultConfig {
     applicationId "com.evanlu.possystem"
-    // should be flutter.minSdkVersion
-    // https://github.com/FirebaseExtended/flutterfire/issues/1401
-    minSdkVersion 21
+    minSdkVersion flutter.minSdkVersion
     targetSdkVersion flutter.targetSdkVersion
     multiDexEnabled true
     versionCode flutterVersionCode.toInteger()
