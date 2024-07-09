@@ -40,29 +40,29 @@ bump-dev: ## Bump development version
 		code="$$(echo $$version | cut -d'.' -f1)$$(printf "%02d" $$(echo $$version | cut -d'.' -f2))"; \
 		code="$$code$$(printf "%02d" $$(echo $$version | cut -d'.' -f3))001"; \
 	else \
-    version=$$current; \
+		version=$$current; \
 		code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
-    code=$$(($$code + 1)); \
+		code=$$(($$code + 1)); \
 	fi; \
-  sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
-  rm pubspec.yaml.bk; \
+	sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
+	rm pubspec.yaml.bk; \
 	git add pubspec.yaml; \
-  git commit -m "chore: bump to $$version+$$code"; \
-  id=$$( echo "$$code" | awk '{print substr($$0,length($$0)-2)}' | awk '{$$1=$$1+0; print}' ); \
-  git tag "v$$version-rc$$id"; \
+	git commit -m "chore: bump to $$version+$$code"; \
+	id=$$( echo "$$code" | awk '{print substr($$0,length($$0)-2)}' | awk '{$$1=$$1+0; print}' ); \
+	git tag "v$$version-rc$$id"; \
 	git push --follow-tags
 
 .PHONY: bump
 bump: ## Bump beta version
-  @version=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
+	@version=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
 	read -p "This will bump to beta lane, are you sure? (y/n): " confirm; \
 	if [[ $$confirm != "y" ]]; then exit 1; fi; \
-  code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
-  code=$$(($$code + 1)); \
-  sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
-  rm pubspec.yaml.bk; \
-  git commit -m "chore: bump to $$version+$$code"; \
-  git tag "$$version"; \
+	code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
+	code=$$(($$code + 1)); \
+	sed -i.bk '5s/version: ............../version: '$$version+$$code'/' pubspec.yaml; \
+	rm pubspec.yaml.bk; \
+	git commit -m "chore: bump to $$version+$$code"; \
+	git tag "$$version"; \
 	git push --follow-tags
 
 ##@ Tools
