@@ -41,6 +41,7 @@ ingredient:
     The amount of ingredient you can restock each time.
     For example, if 30 units of cheese cost 100 dollars,
     fill in "30" for "Restock Unit" and "100" for "Restock Price."
+
     This helps you quickly restock by price.
   restockPrice:
     label: Restock Price

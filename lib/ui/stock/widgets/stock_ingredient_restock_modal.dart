@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -27,6 +28,7 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
 
   @override
   List<Widget> buildFormFields() => <Widget>[
+        p(CardInfoText(child: Text(S.stockIngredientRestockTitle))),
         p(TextFormField(
           key: const Key('stock.ing_restock.price'),
           controller: priceController,

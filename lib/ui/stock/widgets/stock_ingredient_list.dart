@@ -231,13 +231,14 @@ class _RestockDialogState extends State<_RestockDialog> {
   Widget buildPriceTab() {
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       ListTile(
+        contentPadding: EdgeInsets.zero,
         title: Text(S.stockIngredientRestockDialogTitle(
           widget.ingredient.restockQuantity.toAmountString(),
           widget.ingredient.restockPrice!.toAmountString(),
         )),
         subtitle: Text(S.stockIngredientRestockDialogSubtitle),
         trailing: IconButton(
-          icon: const Icon(Icons.edit),
+          icon: const Icon(KIcons.edit),
           onPressed: () => context.pushNamed(Routes.ingredientRestockModal, pathParameters: {
             'id': widget.ingredient.id,
           }),
@@ -273,7 +274,7 @@ class _RestockDialogState extends State<_RestockDialog> {
       const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(
-          '+${S.stockIngredientRestockDialogPriceOldAmount}',
+          '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
           style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
         ),
         Text(widget.ingredient.currentAmount.toAmountString()),

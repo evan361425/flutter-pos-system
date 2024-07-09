@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -142,7 +143,7 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showMoreInfoSnackBar(
         context,
         S.orderSnackbarCashierUsingSmallMoney,
-        Text(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
+        Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
       );
       break;
     default:

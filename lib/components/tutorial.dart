@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -103,7 +104,7 @@ class Tutorial extends StatelessWidget {
         child: Column(children: [
           if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
           const SizedBox(height: 16),
-          Text(message),
+          Linkify.fromString(message),
           if (below != null) below!,
         ]),
       ),
