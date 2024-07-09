@@ -33,10 +33,7 @@ class Linkify extends StatelessWidget {
                       style: linkStyle,
                       recognizer: TapGestureRecognizer()..onTap = element.launch,
                     )
-                  : TextSpan(
-                      text: element.text,
-                      style: bodyTheme,
-                    ),
+                  : TextSpan(text: element.text),
             )
             .toList(),
       ),

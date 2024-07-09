@@ -8,6 +8,7 @@ import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
 import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
 import 'package:possystem/ui/menu/widgets/product_ingredient_reorder.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
+import 'package:possystem/ui/stock/widgets/stock_ingredient_restock_modal.dart';
 
 import 'models/repository/menu.dart';
 import 'models/repository/order_attributes.dart';
@@ -329,6 +330,14 @@ class Routes {
         },
       ),
       GoRoute(
+        name: ingredientRestockModal,
+        path: 'i/:id/restock',
+        builder: (ctx, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return StockIngredientRestockModal(ingredient: Stock.instance.getItem(id));
+        },
+      ),
+      GoRoute(
         name: quantity,
         path: 'quantities',
         builder: (ctx, state) => const QuantityPage(),
@@ -463,6 +472,7 @@ class Routes {
 
   static const ingredientNew = '/stock/new';
   static const ingredientModal = '/stock/ingredient/modal';
+  static const ingredientRestockModal = '/stock/ingredient/restock/modal';
   static const quantity = '/stock/quantities';
   static const quantityNew = '/stock/quantity/new';
   static const quantityModal = '/stock/quantity/modal';

@@ -27,13 +27,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   late TextEditingController nameController;
   late TextEditingController amountController;
   late TextEditingController totalAmountController;
-  late TextEditingController restockPriceController;
-  late TextEditingController restockQuantityController;
   final _nameFocusNode = FocusNode();
   final _amountFocusNode = FocusNode();
   final _totalAmountFocusNode = FocusNode();
-  final _groupCostFocusNode = FocusNode();
-  final _groupAmountFocusNode = FocusNode();
 
   @override
   String get title => widget.ingredient?.name ?? S.stockIngredientTitleCreate;
@@ -132,43 +128,6 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
             focusNode: _totalAmountFocusNode,
           ),
         )),
-        p(TextFormField(
-          key: const Key('stock.ingredient.restockPrice'),
-          controller: restockPriceController,
-          focusNode: _groupCostFocusNode,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientRestockPriceLabel,
-            helperText: S.stockIngredientRestockPriceHelper,
-            helperMaxLines: 3,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientRestockPriceLabel,
-            allowNull: true,
-            focusNode: _groupCostFocusNode,
-          ),
-        )),
-        p(TextFormField(
-          key: const Key('stock.ingredient.restockQuantity'),
-          controller: restockQuantityController,
-          focusNode: _groupAmountFocusNode,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
-          onFieldSubmitted: handleFieldSubmit,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientRestockQuantityLabel,
-            helperText: S.stockIngredientRestockQuantityHelper,
-            helperMaxLines: 5,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientRestockQuantityLabel,
-            allowNull: true,
-            focusNode: _groupAmountFocusNode,
-          ),
-        )),
       ];
 
   @override
@@ -177,14 +136,10 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
 
     final amount = widget.ingredient?.currentAmount.toAmountString() ?? '';
     final totalAmount = widget.ingredient?.totalAmount?.toAmountString() ?? '';
-    final rp = widget.ingredient?.restockPrice?.toAmountString() ?? '';
-    final rq = widget.ingredient?.restockQuantity.toAmountString() ?? '1';
 
     nameController = TextEditingController(text: widget.ingredient?.name);
     amountController = TextEditingController(text: amount);
     totalAmountController = TextEditingController(text: totalAmount);
-    restockPriceController = TextEditingController(text: rp);
-    restockQuantityController = TextEditingController(text: rq);
   }
 
   @override
@@ -192,13 +147,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     nameController.dispose();
     amountController.dispose();
     totalAmountController.dispose();
-    restockPriceController.dispose();
-    restockQuantityController.dispose();
     _nameFocusNode.dispose();
     _amountFocusNode.dispose();
     _totalAmountFocusNode.dispose();
-    _groupCostFocusNode.dispose();
-    _groupAmountFocusNode.dispose();
     super.dispose();
   }
 
@@ -211,8 +162,6 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         name: object.name!,
         currentAmount: object.currentAmount!,
         totalAmount: object.totalAmount,
-        restockPrice: object.restockPrice,
-        restockQuantity: object.restockQuantity ?? 1.0,
       ));
     } else {
       await widget.ingredient!.update(object);
@@ -234,11 +183,8 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     final amount = num.tryParse(amountController.text) ?? 0;
     return IngredientObject(
       name: nameController.text,
-      lastAmount: amount,
       currentAmount: amount,
       totalAmount: num.tryParse(totalAmountController.text),
-      restockPrice: num.tryParse(restockPriceController.text),
-      restockQuantity: num.tryParse(restockQuantityController.text),
       fromModal: true,
     );
   }

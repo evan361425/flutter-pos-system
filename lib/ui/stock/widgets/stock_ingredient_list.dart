@@ -176,43 +176,10 @@ class _RestockDialogState extends State<_RestockDialog> {
 
   @override
   Widget build(BuildContext context) {
-    late Widget child;
-    if (replenishBy == ReplenishBy.quantity) {
-      child = widget.quantityTab;
-    } else {
-      if (widget.ingredient.restockPrice == null) {
-        child = Center(
-          child: EmptyBody(
-            content: S.stockIngredientRestockDialogPriceEmptyBody,
-            routeName: Routes.ingredientModal,
-            pathParameters: {'id': widget.ingredient.id},
-          ),
-        );
-      } else {
-        child = DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyLarge!,
-          child: PopScope(
-            canPop: true,
-            onPopInvoked: (popped) async {
-              if (popped && widget.currentValue.value != null) {
-                final price = num.tryParse(controller.text);
-                if (price != null) {
-                  await widget.ingredient.update(IngredientObject(
-                    restockLastPrice: price,
-                  ));
-                }
-              }
-            },
-            child: buildPriceTab(),
-          ),
-        );
-      }
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        child,
+        buildChild(),
         const SizedBox(height: 8.0),
         ElevatedButton.icon(
           key: const Key('stock.repl.switch'),
@@ -227,8 +194,56 @@ class _RestockDialogState extends State<_RestockDialog> {
     );
   }
 
+  Widget buildChild() {
+    if (replenishBy == ReplenishBy.quantity) {
+      return widget.quantityTab;
+    }
+
+    if (widget.ingredient.restockPrice == null) {
+      return Center(
+        child: EmptyBody(
+          content: S.stockIngredientRestockDialogPriceEmptyBody,
+          routeName: Routes.ingredientRestockModal,
+          pathParameters: {'id': widget.ingredient.id},
+        ),
+      );
+    }
+
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.bodyLarge!,
+      child: PopScope(
+        canPop: true,
+        onPopInvoked: (popped) async {
+          if (popped && widget.currentValue.value != null) {
+            final price = num.tryParse(controller.text);
+            if (price != null) {
+              await widget.ingredient.update(IngredientObject(
+                restockLastPrice: price,
+              ));
+            }
+          }
+        },
+        child: buildPriceTab(),
+      ),
+    );
+  }
+
   Widget buildPriceTab() {
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(S.stockIngredientRestockDialogTitle(
+          widget.ingredient.restockQuantity.toAmountString(),
+          widget.ingredient.restockPrice!.toAmountString(),
+        )),
+        subtitle: Text(S.stockIngredientRestockDialogSubtitle),
+        trailing: IconButton(
+          icon: const Icon(KIcons.edit),
+          onPressed: () => context.pushNamed(Routes.ingredientRestockModal, pathParameters: {
+            'id': widget.ingredient.id,
+          }),
+        ),
+      ),
       TextFormField(
         key: const Key('stock.repl.price.text'),
         controller: controller,
@@ -247,6 +262,8 @@ class _RestockDialogState extends State<_RestockDialog> {
       const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+        // this money is independent to currency, so we don't need use
+        // currency to format it.
         Text('\$${widget.ingredient.restockPrice!.toAmountString()}'),
       ]),
       const SizedBox(height: 8.0),
@@ -257,7 +274,7 @@ class _RestockDialogState extends State<_RestockDialog> {
       const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(
-          '+${S.stockIngredientRestockDialogPriceOldAmount}',
+          '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
           style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
         ),
         Text(widget.ingredient.currentAmount.toAmountString()),

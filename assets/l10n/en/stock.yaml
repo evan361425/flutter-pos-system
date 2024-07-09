@@ -37,18 +37,25 @@ ingredient:
     helper: |-
       Setting this value helps you see how much of the ingredient is being used.
       Leave blank or don't fill it in, and the value will automatically be set each time inventory is increased.
+  restockTitle: |-
+    The amount of ingredient you can restock each time.
+    For example, if 30 units of cheese cost 100 dollars,
+    fill in "30" for "Restock Unit" and "100" for "Restock Price."
+
+    This helps you quickly restock by price.
   restockPrice:
     label: Restock Price
-    helper: |-
-      The price per unit each time you restock.
-      When restocking, you can restock by price instead of quantity.
   restockQuantity:
     label: Restock Unit
-    helper: |-
-      The amount of ingredient you can restock per Restock Price.
-      For example, if 30 units of cheese cost 100 dollars,
-      fill in "30" for "Restock Unit" and "100" for "Restock Price."
   restockDialog:
+    title:
+    - Each {quantity} costs {price} dollars
+    - Headline of the dialog for setting the restock price
+    - quantity:
+      price:
+    subtitle:
+    - Please enter the purchase price
+    - Helper text to remind users to enter the purchase price
     quantity:
       tab: Quantity
       btn: Use Quantity

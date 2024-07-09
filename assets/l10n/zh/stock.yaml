@@ -28,15 +28,19 @@ ingredient:
     helper: |-
       設定這個值可以幫助你一眼看出用了多少成分。
       填空或不填寫則每次增加庫存，都會自動設定這值，
+  restockTitle: |-
+    每次補貨可以補貨多少成分。
+    例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。
+
+    這可以幫助你透過價錢快速補貨。
   restockPrice:
     label: 補貨單價
-    helper: |-
-      每次補貨時，每單位的價錢，補貨的時候可以透過價錢補貨而非單純的數量數量。
   restockQuantity:
     label: 補貨單位
-    helper: |-
-      每補貨單價可以補貨多少成分。例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。
   restockDialog:
+    title:
+    - 目前每{quantity}個要價{price}元
+    subtitle: 請輸入購買價格
     quantity:
       tab: 數量
       btn: 使用數量
