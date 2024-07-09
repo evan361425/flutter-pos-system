@@ -63,7 +63,7 @@ bump: ## Bump beta version
   rm pubspec.yaml.bk; \
   git commit -m "chore: bump to $$version+$$code"; \
   git tag "$$version"; \
-  git push --tags
+	git push --follow-tags
 
 ##@ Tools
 .PHONY: mock
