@@ -105,9 +105,9 @@ jobs:
           git tag -f ${{ needs.check-version.outputs.tag }}
           git push -f origin --tags
 
-        # If you want to update the release tag, you can use the following code.
-        # curl -X PATCH \
-        #   -H 'Accept: application/vnd.github.v3+json' \
-        #   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-        #   -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
-        #   "https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ needs.get-release.outputs.release_id }}"
+          # Update release tag name for later deploy to playstore
+          curl -X PATCH \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"tag_name":"${{ needs.check-version.outputs.tag }}"}' \
+            "https://api.github.com/repos/evan361425/flutter-pos-system/releases/${{ needs.get-release.outputs.release_id }}"
