@@ -24,12 +24,14 @@ zh-TW Traditional Chinese
   
   changelog="$(cat "$(printf "$changelogFile" 'en-US')")"
 
-  for lang in $languages; do
+  while IFS= read -r lang; do
     local langCode langName prompt changelog
     langCode="$(echo "$lang" | cut -d' ' -f1)"
     langName="$(echo "$lang" | cut -d' ' -f2-)"
+    echo "Translating changelog to $langName ($langCode)..."
 
     prompt="$(printf "$(cat android/fastlane/translate-prompt.txt)" "$langName")"
+    echo "Prompt: $prompt"
 
     curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$googleApiKey" \
       -H 'Content-Type: application/json' \
@@ -45,7 +47,7 @@ zh-TW Traditional Chinese
         ]}')" \
       | jq -r '.candidates[0].content.parts[0].text' \
       > "$(printf "$changelogFile" "$langCode")"
-  done
+  done <<< "$languages"
 }
 
 main "$@"
