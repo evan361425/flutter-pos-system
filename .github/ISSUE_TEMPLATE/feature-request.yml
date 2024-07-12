@@ -1,32 +1,32 @@
-name: 💡 功能提議
-description: 對於 POS系統 提供建議或想法
+name: 💡 Feature Proposal
+description: Suggest ideas or improvements for the POS system
 labels:
 - "enhancement"
 body:
 - type: textarea
   id: expected
   attributes:
-    label: 你預期這功能長什麼樣子？
-    description: 怎麼操作，怎麼呈現。
+    label: What do you expect this feature to look like?
+    description: How should it operate and display?
   validations:
     required: true
 - type: textarea
   id: problems
   attributes:
-    label: 這個功能是和你遇到的問題有關？
-    description: 每次想要... 就發現不能...
+    label: Is this feature related to a problem you are experiencing?
+    description: Whenever I want to..., I find that I can't...
 - type: textarea
   id: alternative
   attributes:
-    label: 沒有這功能時，你都怎麼做？
+    label: How do you manage without this feature?
 - type: textarea
   id: more
   attributes:
-    label: 任何想要補充的。
+    label: Any additional comments?
 - type: checkboxes
   id: checks
   attributes:
-    label: 開新的 issue 前
+    label: Before opening a new issue
     options:
-    - label: 我有檢查其他 [issue](https://github.com/evan361425/flutter-pos-system/issues) 了
+    - label: I have checked other [issues](https://github.com/evan361425/flutter-pos-system/issues)
       required: true
