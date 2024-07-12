@@ -87,7 +87,7 @@ jobs:
       - name: Push to GitHub
         run: |
           file='android/fastlane/metadata/android/%s/changelogs/${{ needs.check-version.outputs.build_code }}.txt'
-          printf "$file" "en-US"
+          printf "Source file: $file\n" "en-US"
 
           printf '%s\n' "$(cat <<EOF
           ${{ needs.get-release.outputs.changelog }}

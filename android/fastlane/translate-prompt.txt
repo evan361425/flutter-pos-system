@@ -1,4 +1,4 @@
 Translate the following product changelog from English to %s.
 Ensuring that each bullet point maintains the same prefix.
 You should not give me any other information or anything prefix.
-Thank you very much.
+Thank you.

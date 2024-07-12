@@ -17,6 +17,21 @@ set -eo pipefail
 # Supported languages:
 # - zh-TW Traditional Chinese
 
+#######################################
+# Trim leading and trailing whitespace
+# Usage:
+#   trim_string "   example   string    "
+# Arguments:
+#   $1: The string to trim
+# Outputs:
+#   The trimmed string
+#######################################
+function trim_string() {
+    : "${1#"${1%%[![:space:]]*}"}"
+    : "${_%"${_##*[![:space:]]}"}"
+    printf '%s' "$_"
+}
+
 function main() {
   local changelogFile="$1" googleApiKey="$2" languages="
 zh-TW Traditional Chinese
@@ -25,6 +40,11 @@ zh-TW Traditional Chinese
   changelog="$(cat "$(printf "$changelogFile" 'en-US')")"
 
   while IFS= read -r lang; do
+    lang="$(trim_string "$lang")"
+    if [ -z "$lang" ]; then
+      continue
+    fi
+
     local langCode langName prompt changelog
     langCode="$(echo "$lang" | cut -d' ' -f1)"
     langName="$(echo "$lang" | cut -d' ' -f2-)"
