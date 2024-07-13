@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -56,8 +57,10 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ],
         ),
-        body: OrientationBuilder(
-          builder: (context, orientation) => orientation == Orientation.portrait ? _buildPortrait() : _buildLandscape(),
+        body: LayoutBuilder(
+          builder: (context, box) {
+            return Breakpoint.find(box: box) <= Breakpoint.medium ? _buildPortrait() : _buildLandscape();
+          },
         ),
       ),
     );
