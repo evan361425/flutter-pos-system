@@ -59,7 +59,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         body: LayoutBuilder(
           builder: (context, box) {
-            return Breakpoint.find(box: box) <= Breakpoint.medium ? _buildPortrait() : _buildLandscape();
+            return Breakpoint.find(box: box) <= Breakpoint.medium ? _buildSingleColumn() : _buildTwoColumns();
           },
         ),
       ),
@@ -78,14 +78,36 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
-  Widget _buildCalendar({required bool isPortrait}) {
+  Widget _buildTwoColumns() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _buildCalendar(shouldFillViewport: true)),
+        Expanded(child: _buildOrderList()),
+      ],
+    );
+  }
+
+  Widget _buildSingleColumn() {
+    return Column(children: [
+      PhysicalModel(
+        elevation: 5,
+        color: Theme.of(context).colorScheme.surface,
+        shadowColor: Colors.transparent,
+        child: _buildCalendar(shouldFillViewport: false),
+      ),
+      Expanded(child: _buildOrderList()),
+    ]);
+  }
+
+  Widget _buildCalendar({required bool shouldFillViewport}) {
     return Tutorial(
       id: 'history.calendar',
       title: S.analysisHistoryCalendarTutorialTitle,
       message: S.analysisHistoryCalendarTutorialContent,
       spotlightBuilder: const SpotlightRectBuilder(),
       child: HistoryCalendarView(
-        isPortrait: isPortrait,
+        shouldFillViewport: shouldFillViewport,
         notifier: notifier,
       ),
     );
@@ -93,27 +115,5 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildOrderList() {
     return HistoryOrderList(notifier: notifier);
-  }
-
-  Widget _buildLandscape() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: _buildCalendar(isPortrait: false)),
-        Expanded(child: _buildOrderList()),
-      ],
-    );
-  }
-
-  Widget _buildPortrait() {
-    return Column(children: [
-      PhysicalModel(
-        elevation: 5,
-        color: Theme.of(context).colorScheme.surface,
-        shadowColor: Colors.transparent,
-        child: _buildCalendar(isPortrait: true),
-      ),
-      Expanded(child: _buildOrderList()),
-    ]);
   }
 }

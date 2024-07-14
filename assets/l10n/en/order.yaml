@@ -46,14 +46,12 @@ loader:
 catalogList:
   empty: No product categories set yet
 productList:
-  tutorial:
-    title: Start Ordering!
-    content:
-    - |-
-      Ordering through images is more convenient!
-      You can go to "Settings" > "[Items Per Row]({link})" to adjust
-      and allow text-only ordering here.
-    - link:
+  view:
+    helper:
+    - grid: Grid
+      list: List
+    - Product list display mode
+  noIngredient: No ingredients
 cart:
   action:
     bulkify: Bulk Actions
@@ -82,15 +80,6 @@ cart:
     free: Free
     delete: Delete
   snapshot:
-    tutorial:
-      title: Cart
-      content:
-      - |-
-        To make selecting products more convenient,
-        we've placed the products you've ordered here.
-        If you need a layout that shows all information at once (suitable for large screens),
-        go to "Settings" > "[Ordering Layout]({link})" to adjust.
-      - link:
     empty: No items in cart
   meta:
     totalPrice:

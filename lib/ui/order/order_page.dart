@@ -4,12 +4,12 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
@@ -32,8 +32,15 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   late final PageController _pageController;
+
+  /// Change the catalog index and pass to [OrderProductListView] and [OrderCatalogListView]
   late final ValueNotifier<int> _catalogIndexNotifier;
-  final _Notifier resetNotifier = _Notifier();
+
+  /// Used to update the view of [OrderProductListView]
+  late final ValueNotifier<ProductListView> _viewNotifier;
+
+  /// Reset panel to initial state, used by [DraggableSheetView]
+  final _Notifier _resetNotifier = _Notifier();
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +49,21 @@ class _OrderPageState extends State<OrderPage> {
     final orderCatalogListView = OrderCatalogListView(
       catalogs: catalogs,
       indexNotifier: _catalogIndexNotifier,
+      viewNotifier: _viewNotifier,
       onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final orderProductListView = PageView.builder(
-      controller: _pageController,
-      onPageChanged: (index) => _catalogIndexNotifier.value = index,
-      itemCount: catalogs.length,
-      itemBuilder: (context, index) {
-        return OrderProductListView(products: catalogs[index].itemList);
-      },
+    final orderProductListView = ListenableBuilder(
+      listenable: _viewNotifier,
+      builder: (context, _) => PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) => _catalogIndexNotifier.value = index,
+        itemCount: catalogs.length,
+        itemBuilder: (context, index) => OrderProductListView(
+          products: catalogs[index].itemList,
+          view: _viewNotifier.value,
+        ),
+      ),
     );
-
-    final outlook = OrderOutlookSetting.instance.value;
 
     return TutorialWrapper(
       child: Scaffold(
@@ -70,29 +80,33 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ],
         ),
-        body: outlook == OrderOutlookTypes.slidingPanel
-            ? DraggableSheetView(
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3_1: const CartProductSelector(),
-                row3_2Builder: (scroll, scrollable) => Expanded(
-                  child: CartProductList(
-                    scrollController: scroll,
-                    scrollable: scrollable,
-                  ),
-                ),
-                row3_3: const CartMetadataView(),
-                row4: const CartProductStateSelector(),
-                resetNotifier: resetNotifier,
-              )
-            : OrientatedView(
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3_1: const CartProductSelector(),
-                row3_2: const Expanded(child: CartProductList()),
-                row3_3: const CartMetadataView(),
-                row4: const CartProductStateSelector(),
-              ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return Breakpoint.find(box: constraints) <= Breakpoint.medium
+                ? DraggableSheetView(
+                    row1: orderCatalogListView,
+                    row2: orderProductListView,
+                    row3_1: const CartProductSelector(),
+                    row3_2Builder: (scroll, scrollable) => Expanded(
+                      child: CartProductList(
+                        scrollController: scroll,
+                        scrollable: scrollable,
+                      ),
+                    ),
+                    row3_3: const CartMetadataView(),
+                    row4: const CartProductStateSelector(),
+                    resetNotifier: _resetNotifier,
+                  )
+                : OrientatedView(
+                    row1: orderCatalogListView,
+                    row2: orderProductListView,
+                    row3_1: const CartProductSelector(),
+                    row3_2: const Expanded(child: CartProductList()),
+                    row3_3: const CartMetadataView(),
+                    row4: const CartProductStateSelector(),
+                  );
+          },
+        ),
       ),
     );
   }
@@ -102,6 +116,8 @@ class _OrderPageState extends State<OrderPage> {
     Wakelock.disable();
     _pageController.dispose();
     _catalogIndexNotifier.dispose();
+    _viewNotifier.dispose();
+    _resetNotifier.dispose();
     super.dispose();
   }
 
@@ -115,6 +131,7 @@ class _OrderPageState extends State<OrderPage> {
 
     _pageController = PageController();
     _catalogIndexNotifier = ValueNotifier<int>(0);
+    _viewNotifier = ValueNotifier<ProductListView>(ProductListView.grid);
     super.initState();
   }
 
@@ -122,7 +139,7 @@ class _OrderPageState extends State<OrderPage> {
     final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
     if (status != null && mounted) {
       handleCheckoutStatus(context, status);
-      resetNotifier.notify();
+      _resetNotifier.notify();
     }
   }
 }
@@ -158,4 +175,13 @@ class _Notifier extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
+}
+
+enum ProductListView {
+  grid(Icons.grid_view_sharp),
+  list(Icons.view_list_sharp);
+
+  final IconData icon;
+
+  const ProductListView(this.icon);
 }
