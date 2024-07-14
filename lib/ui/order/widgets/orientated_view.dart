@@ -23,46 +23,19 @@ class OrientatedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OrientationBuilder(
-      builder: (BuildContext context, Orientation orientation) {
-        return orientation == Orientation.portrait ? _portrait(context) : _landscape(context);
-      },
-    );
-  }
-
-  Widget _portrait(BuildContext context) {
-    return Column(
-      key: const Key('order.orientation.portrait'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ColoredBox(
-          color: Theme.of(context).colorScheme.surface,
-          child: row1,
-        ),
-        Expanded(child: row2),
-        Expanded(flex: 3, child: wrapRow3(context)),
-        row4,
-      ],
-    );
-  }
-
-  Widget _landscape(BuildContext context) {
     return Row(
-      key: const Key('order.orientation.landscape'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 300.0),
-            child: Column(
-              children: [
-                Expanded(child: wrapRow3(context)),
-                row4,
-              ],
-            ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400.0),
+          child: Column(
+            children: [
+              Expanded(child: wrapRow3(context)),
+              row4,
+            ],
           ),
         ),
-        Flexible(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-08T13:16:38.559010Z",
+  "@@last_modified": "2024-07-14T08:32:30.288748Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -125,7 +125,7 @@
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
   "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n填空或不填寫則每次增加庫存，都會自動設定這值，",
-  "stockIngredientRestockTitle": "每次補貨可以補貨多少成分。\n例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。\n這可以幫助你透過價錢快速補貨。",
+  "stockIngredientRestockTitle": "每次補貨可以補貨多少成分。\n例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。\n\n這可以幫助你透過價錢快速補貨。",
   "stockIngredientRestockPriceLabel": "補貨單價",
   "stockIngredientRestockQuantityLabel": "補貨單位",
   "stockIngredientRestockDialogTitle": "目前每{quantity}個要價{price}元",
@@ -1643,6 +1643,10 @@
         "type": "String"
       }
     }
+  },
+  "orderProductListViewHelper": "{name, select, auto{自動} grid{圖片} list{列表} other{UNKNOWN}}",
+  "@orderProductListViewHelper": {
+    "description": "Product list display mode"
   },
   "orderCartActionBulkify": "批量操作",
   "orderCartActionToggle": "反選",

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-08T13:16:38.533669Z",
+  "@@last_modified": "2024-07-14T08:32:30.264101Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -125,7 +125,7 @@
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
   "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
-  "stockIngredientRestockTitle": "The amount of ingredient you can restock each time.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"\nThis helps you quickly restock by price.",
+  "stockIngredientRestockTitle": "The amount of ingredient you can restock each time.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"\n\nThis helps you quickly restock by price.",
   "stockIngredientRestockPriceLabel": "Restock Price",
   "stockIngredientRestockQuantityLabel": "Restock Unit",
   "stockIngredientRestockDialogTitle": "Each {quantity} costs {price} dollars",
@@ -1643,6 +1643,10 @@
         "type": "String"
       }
     }
+  },
+  "orderProductListViewHelper": "{name, select, auto{Auto} grid{Grid} list{List} other{UNKNOWN}}",
+  "@orderProductListViewHelper": {
+    "description": "Product list display mode"
   },
   "orderCartActionBulkify": "Bulk Actions",
   "orderCartActionToggle": "Toggle",
