@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/scrollable_draggable_sheet.dart';
-import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/routes.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_snapshot.dart';
-import 'package:spotlight_ant/spotlight_ant.dart';
 
 class DraggableSheetView extends StatefulWidget {
   final Widget row1;
@@ -88,14 +84,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
               baselineSize: controller.snapSizes[1],
               child: widget.row3_1,
             ),
-            Tutorial(
-              id: 'order.sliding_collapsed',
-              padding: const EdgeInsets.fromLTRB(-4, snapshotHeight + DraggableIndicator.height, -4, 0),
-              title: S.orderCartSnapshotTutorialTitle,
-              message: S.orderCartSnapshotTutorialContent(Routes.getRoute('features/orderOutlook')),
-              spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16),
-              child: widget.row3_2Builder(scroll, scrollable),
-            ),
+            widget.row3_2Builder(scroll, scrollable),
             FixedHeightClipper(
               controller: controller,
               height: buttonHeight,

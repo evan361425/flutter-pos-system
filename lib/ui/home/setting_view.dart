@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/linkify.dart';
-import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/footer.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
@@ -134,17 +133,7 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
             title: S.settingFeatureTitle,
             subtitle: S.settingFeatureDescription,
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            TextButton(
-              onPressed: _bottomLinks[0].launch,
-              child: Text(_bottomLinks[0].text),
-            ),
-            const Text(MetaBlock.string),
-            TextButton(
-              onPressed: _bottomLinks[1].launch,
-              child: Text(_bottomLinks[1].text),
-            ),
-          ])
+          const Footer(),
         ]),
       ),
     );
@@ -291,8 +280,3 @@ class _TutorialCheckboxListTileState extends State<_TutorialCheckboxListTile> {
     );
   }
 }
-
-const _bottomLinks = <LinkifyData>[
-  LinkifyData('Privacy Policy', 'https://evan361425.github.io/flutter-pos-system/PRIVACY_POLICY/'),
-  LinkifyData('License', 'https://evan361425.github.io/flutter-pos-system/LICENSE/'),
-];

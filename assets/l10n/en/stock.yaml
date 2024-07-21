@@ -113,7 +113,7 @@ replenishment:
   ingredientAmount:
     hint: Set the amount to increase/decrease
 quantity:
-  title: Quantity
+  title: Quantities
   description: Half Sugar, Low Sugar, etc.
   _title:
     $prefix: title

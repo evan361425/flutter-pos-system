@@ -8,6 +8,16 @@ multiChoices: 可以選擇多種
 totalCount:
 - other: 總共 {count} 項
 searchCount: 搜尋到 {count} 個結果
+title:
+- analysis: 分析
+  stock: 庫存
+  cashier: 收銀
+  setting: 設定
+  menu: 菜單
+  transit: 資料轉移
+  orderAttribute: 顧客設定
+  stockQuantity: 份量
+  settingElf: 建議
 dialog:
   deletionTitle: 刪除確認通知
   deletionContent: |-

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-14T08:32:30.288748Z",
+  "@@last_modified": "2024-07-20T09:28:45.230142Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1014,6 +1014,7 @@
       }
     }
   },
+  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} setting{設定} menu{菜單} transit{資料轉移} orderAttribute{顧客設定} stockQuantity{份量} settingElf{建議} other{UNKNOWN}}",
   "dialogDeletionTitle": "刪除確認通知",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1635,19 +1636,11 @@
   },
   "orderLoaderEmpty": "查無點餐紀錄",
   "orderCatalogListEmpty": "尚未設定產品種類",
-  "orderProductListTutorialTitle": "開始點餐！",
-  "orderProductListTutorialContent": "透過圖片點餐更方便！\n可以至「設定」>「[每行顯示幾個產品]({link})」調整\n讓這裡僅使用文字點餐。",
-  "@orderProductListTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
-  "orderProductListViewHelper": "{name, select, auto{自動} grid{圖片} list{列表} other{UNKNOWN}}",
+  "orderProductListViewHelper": "{name, select, grid{圖片} list{列表} other{UNKNOWN}}",
   "@orderProductListViewHelper": {
     "description": "Product list display mode"
   },
+  "orderProductListNoIngredient": "無設定成分",
   "orderCartActionBulkify": "批量操作",
   "orderCartActionToggle": "反選",
   "orderCartActionSelectAll": "全選",
@@ -1667,15 +1660,6 @@
   "orderCartActionChangeCountSuffix": "個",
   "orderCartActionFree": "招待",
   "orderCartActionDelete": "刪除",
-  "orderCartSnapshotTutorialTitle": "購物車",
-  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「[點餐的外觀]({link})」調整。",
-  "@orderCartSnapshotTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
   "orderCartSnapshotEmpty": "尚未點餐",
   "orderCartMetaTotalPrice": "總價：{price}",
   "@orderCartMetaTotalPrice": {

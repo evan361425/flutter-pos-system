@@ -10,7 +10,9 @@ import 'package:possystem/translator.dart';
 import 'transit_station.dart';
 
 class TransitPage extends StatefulWidget {
-  const TransitPage({super.key});
+  final bool withScaffold;
+
+  const TransitPage({super.key, this.withScaffold = true});
 
   @override
   State<TransitPage> createState() => _TransitPageState();
@@ -21,7 +23,7 @@ class _TransitPageState extends State<TransitPage> {
 
   @override
   Widget build(BuildContext context) {
-    final body = ListView(children: [
+    final list = ListView(children: [
       ChoiceChipWithHelp<TransitCatalog>(
         key: selector,
         values: TransitCatalog.values,
@@ -54,22 +56,26 @@ class _TransitPageState extends State<TransitPage> {
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
     ]);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.transitTitle),
-        leading: const PopButton(),
-      ),
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          selector.currentState?.updateSelectedIndex(
-            details.velocity.pixelsPerSecond.dx,
-          );
-        },
-        // fill the screen to allow drag from white space
-        child: SizedBox(height: double.infinity, child: body),
-      ),
+    // allow scroll as TabView
+    final body = GestureDetector(
+      onHorizontalDragEnd: (details) {
+        selector.currentState?.updateSelectedIndex(
+          details.velocity.pixelsPerSecond.dx,
+        );
+      },
+      // fill the screen to allow drag from white space
+      child: SizedBox(height: double.infinity, child: list),
     );
+
+    return widget.withScaffold
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text(S.transitTitle),
+              leading: const PopButton(),
+            ),
+            body: body,
+          )
+        : body;
   }
 
   void _goToStation(BuildContext context, TransitMethod method) {

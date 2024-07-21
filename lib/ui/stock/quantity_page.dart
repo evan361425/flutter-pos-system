@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 import 'widgets/stock_quantity_list.dart';
 
 class QuantityPage extends StatelessWidget {
-  const QuantityPage({super.key});
+  final bool withAppbar;
+
+  const QuantityPage({super.key, this.withAppbar = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +31,12 @@ class QuantityPage extends StatelessWidget {
         : StockQuantityList(quantities: quantities.itemList);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.stockQuantityTitle),
-        leading: const PopButton(),
-      ),
+      appBar: withAppbar
+          ? AppBar(
+              title: Text(S.stockQuantityTitle),
+              leading: const PopButton(),
+            )
+          : null,
       floatingActionButton: FloatingActionButton(
         key: const Key('quantity.add'),
         onPressed: handleCreate,
