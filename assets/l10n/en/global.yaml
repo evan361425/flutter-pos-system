@@ -25,6 +25,16 @@ searchCount:
 - Found {count} results
 - Total count displayed on the SearchScaffold.
 - count: {type: int, format: compact}
+title:
+- analysis: Stats
+  stock: Inventory
+  cashier: Cashier
+  setting: Settings
+  menu: Menu
+  transit: Data Transfer
+  orderAttribute: Customer Settings
+  stockQuantity: Quantities
+  settingElf: Suggestions
 dialog:
   deletionTitle:
   - Delete Confirmation

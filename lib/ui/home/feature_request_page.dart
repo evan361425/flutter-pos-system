@@ -4,34 +4,41 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/translator.dart';
 
 class FeatureRequestPage extends StatelessWidget {
-  const FeatureRequestPage({super.key});
+  final bool withScaffold;
+
+  const FeatureRequestPage({super.key, this.withScaffold = true});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(leading: const PopButton()),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              decoration: const BoxDecoration(
-                // moon white
-                color: Color(0xFFF4F6F0),
-                shape: BoxShape.circle,
-              ),
-              child: Image.asset(
-                'assets/feature_request_please.gif',
-                key: const Key('feature_request_please'),
-              ),
+    final child = Center(
+      child: SingleChildScrollView(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            decoration: const BoxDecoration(
+              // moon white
+              color: Color(0xFFF4F6F0),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: 14.0),
-            Linkify.fromString(
-              S.settingElfContent,
-              textAlign: TextAlign.center,
-            )
-          ]),
-        ),
+            child: Image.asset(
+              'assets/feature_request_please.gif',
+              key: const Key('feature_request_please'),
+            ),
+          ),
+          const SizedBox(height: 14.0),
+          Linkify.fromString(
+            S.settingElfContent,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32.0),
+        ]),
       ),
     );
+
+    return withScaffold
+        ? Scaffold(
+            appBar: AppBar(leading: const PopButton()),
+            body: child,
+          )
+        : child;
   }
 }

@@ -83,7 +83,6 @@ class Tutorial extends StatelessWidget {
     }
 
     final theme = Theme.of(context);
-    SpotlightAnt.debug = true;
     return SpotlightAnt(
       enable: enabled,
       index: index,

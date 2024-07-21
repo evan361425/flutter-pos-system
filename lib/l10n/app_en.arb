@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-14T08:32:30.264101Z",
+  "@@last_modified": "2024-07-20T09:28:45.193029Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -197,7 +197,7 @@
   "stockReplenishmentIngredientsDivider": "Ingredients",
   "stockReplenishmentIngredientsHelper": "Click to set the quantity of different ingredients to be purchased",
   "stockReplenishmentIngredientAmountHint": "Set the amount to increase/decrease",
-  "stockQuantityTitle": "Quantity",
+  "stockQuantityTitle": "Quantities",
   "stockQuantityDescription": "Half Sugar, Low Sugar, etc.",
   "stockQuantityTitleCreate": "Add Quantity",
   "stockQuantityTitleUpdate": "Edit Quantity",
@@ -1014,6 +1014,7 @@
       }
     }
   },
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} setting{Settings} menu{Menu} transit{Data Transfer} orderAttribute{Customer Settings} stockQuantity{Quantities} settingElf{Suggestions} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1635,19 +1636,11 @@
   },
   "orderLoaderEmpty": "No order records found",
   "orderCatalogListEmpty": "No product categories set yet",
-  "orderProductListTutorialTitle": "Start Ordering!",
-  "orderProductListTutorialContent": "Ordering through images is more convenient!\nYou can go to \"Settings\" > \"[Items Per Row]({link})\" to adjust\nand allow text-only ordering here.",
-  "@orderProductListTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
-  "orderProductListViewHelper": "{name, select, auto{Auto} grid{Grid} list{List} other{UNKNOWN}}",
+  "orderProductListViewHelper": "{name, select, grid{Grid} list{List} other{UNKNOWN}}",
   "@orderProductListViewHelper": {
     "description": "Product list display mode"
   },
+  "orderProductListNoIngredient": "No ingredients",
   "orderCartActionBulkify": "Bulk Actions",
   "orderCartActionToggle": "Toggle",
   "orderCartActionSelectAll": "Select All",
@@ -1667,15 +1660,6 @@
   "orderCartActionChangeCountSuffix": "items",
   "orderCartActionFree": "Free",
   "orderCartActionDelete": "Delete",
-  "orderCartSnapshotTutorialTitle": "Cart",
-  "orderCartSnapshotTutorialContent": "To make selecting products more convenient,\nwe've placed the products you've ordered here.\nIf you need a layout that shows all information at once (suitable for large screens),\ngo to \"Settings\" > \"[Ordering Layout]({link})\" to adjust.",
-  "@orderCartSnapshotTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
   "orderCartSnapshotEmpty": "No items in cart",
   "orderCartMetaTotalPrice": "Price: {price}",
   "@orderCartMetaTotalPrice": {
