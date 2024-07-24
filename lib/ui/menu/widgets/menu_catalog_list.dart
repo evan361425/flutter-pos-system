@@ -11,17 +11,21 @@ import 'package:possystem/translator.dart';
 class MenuCatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
+  final Widget? tailing;
+
   final void Function(Catalog) onSelected;
 
   const MenuCatalogList(
     this.catalogs, {
     super.key,
     required this.onSelected,
+    this.tailing,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Catalog, _Action>(
+      tailing: tailing,
       delegate: SlidableItemDelegate(
         items: catalogs,
         deleteValue: _Action.delete,
@@ -35,10 +39,9 @@ class MenuCatalogList extends StatelessWidget {
             route: Routes.menuCatalogModal,
           ),
           BottomSheetAction(
-            title: Text(S.menuProductTitleReorder),
+            title: Text(S.menuCatalogTitleReorder),
             leading: const Icon(KIcons.reorder),
             route: Routes.menuCatalogReorder,
-            routePathParameters: {'id': catalog.id},
           ),
         ],
         handleDelete: (item) => item.remove(),

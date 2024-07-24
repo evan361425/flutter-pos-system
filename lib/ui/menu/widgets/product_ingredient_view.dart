@@ -59,6 +59,12 @@ class ProductIngredientView extends StatelessWidget {
           routePathParameters: {'id': ingredient.product.id},
           routeQueryParameters: {'iid': ingredient.id},
         ),
+        BottomSheetAction(
+          title: Text(S.menuIngredientTitleReorder),
+          leading: const Icon(KIcons.reorder),
+          route: Routes.menuIngredientReorder,
+          routePathParameters: {'id': ingredient.product.id},
+        ),
       ],
       warningContent: Text(S.dialogDeletionContent(ingredient.name, '')),
       deleteCallback: () => ingredient.remove(),

@@ -48,8 +48,8 @@ catalog:
     • 「塑膠袋」、「環保杯」整合進「其他」
   title:
     create: 新增產品種類
-    update: 編輯產品種類
-    reorder: 排序產品種類
+    update: 編輯
+    reorder: 排序
   dialogDeletionContent:
   - =0: 其內無任何產品
     other: 將會一同刪除掉 {count} 個產品
@@ -64,10 +64,12 @@ product:
   emptyBody: |-
     「產品」是菜單裡的基本單位，例如：
     「起司漢堡」、「可樂」
+  notSelected:
+  - 請先選擇產品種類
   title:
     create: 新增產品
-    update: 編輯產品
-    reorder: 排序產品
+    update: 編輯
+    reorder: 排序
     updateImage: 更新照片
   meta:
     title: 產品
@@ -92,8 +94,8 @@ ingredient:
     「起司漢堡」有「起司」、「麵包」等成分
   title:
     create: 新增成分
-    update: 編輯成分
-    reorder: 排序成分
+    update: 編輯
+    reorder: 排序
   meta:
     amount: 使用量：{amount}
   search:
@@ -110,7 +112,7 @@ ingredient:
 quantity:
   title:
     create: 新增份量
-    update: 編輯份量
+    update: 編輯
   meta:
     amount: 使用量：{amount}
     additionalPrice: 額外售價：{price}

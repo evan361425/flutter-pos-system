@@ -93,6 +93,9 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   SliverAppBar _buildChartHeader() {
     return SliverAppBar(
       pinned: true,
+      // avoid drawer take precedence
+      leadingWidth: 0,
+      leading: const SizedBox.shrink(),
       title: Text(S.analysisChartTitle),
       toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
       bottom: AppBar(

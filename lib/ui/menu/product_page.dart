@@ -136,10 +136,9 @@ class _ProductPageState extends State<ProductPage> {
           returnValue: _Action.changeImage,
         ),
         BottomSheetAction(
-          title: Text(S.menuProductTitleUpdateImage),
+          title: Text(S.menuIngredientTitleReorder),
           leading: const Icon(KIcons.reorder),
-          returnValue: _Action.reorder,
-          route: Routes.menuProductReorder,
+          route: Routes.menuIngredientReorder,
           routePathParameters: {'id': widget.product.id},
         ),
       ],
@@ -167,5 +166,4 @@ class _ProductPageState extends State<ProductPage> {
 enum _Action {
   delete,
   changeImage,
-  reorder,
 }

@@ -68,20 +68,23 @@ class ImageHolder extends StatelessWidget {
       );
     }
 
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Material(
-        type: MaterialType.transparency,
-        textStyle: TextStyle(color: style?.color),
-        child: Ink.image(
-          padding: EdgeInsets.zero,
-          image: image,
-          fit: BoxFit.cover,
-          onImageError: (error, stack) {
-            Log.err(error, 'image_holder_error', stack);
-            onImageError?.call();
-          },
-          child: body,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 256, maxWidth: 256),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Material(
+          type: MaterialType.transparency,
+          textStyle: TextStyle(color: style?.color),
+          child: Ink.image(
+            padding: EdgeInsets.zero,
+            image: image,
+            fit: BoxFit.cover,
+            onImageError: (error, stack) {
+              Log.err(error, 'image_holder_error', stack);
+              onImageError?.call();
+            },
+            child: body,
+          ),
         ),
       ),
     );

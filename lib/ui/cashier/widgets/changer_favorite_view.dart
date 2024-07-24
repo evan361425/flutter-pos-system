@@ -30,12 +30,6 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
   String? errorMessage;
 
   @override
-  void didChangeDependencies() {
-    context.watch<Cashier>();
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (Cashier.instance.favoriteIsEmpty) {
       return EmptyBody(
@@ -74,6 +68,12 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
       ),
       Expanded(child: SlidableItemList(delegate: delegate)),
     ]);
+  }
+
+  @override
+  void didChangeDependencies() {
+    context.watch<Cashier>();
+    super.didChangeDependencies();
   }
 
   Future<bool> handleApply() async {

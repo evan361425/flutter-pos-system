@@ -11,9 +11,9 @@ import 'package:provider/provider.dart';
 import 'widgets/order_attribute_list.dart';
 
 class OrderAttributePage extends StatelessWidget {
-  final bool withAppbar;
+  final bool withScaffold;
 
-  const OrderAttributePage({super.key, this.withAppbar = true});
+  const OrderAttributePage({super.key, this.withScaffold = true});
 
   @override
   Widget build(BuildContext context) {
@@ -21,28 +21,37 @@ class OrderAttributePage extends StatelessWidget {
 
     handleCreate() => context.pushNamed(Routes.orderAttrNew);
 
-    return Scaffold(
-      appBar: withAppbar
-          ? AppBar(
+    final body = attrs.isEmpty
+        ? Center(
+            child: EmptyBody(
+              onPressed: handleCreate,
+              content: S.orderAttributeEmptyBody,
+            ),
+          )
+        : OrderAttributeList(attrs.itemList);
+
+    return withScaffold
+        ? Scaffold(
+            appBar: AppBar(
               title: Text(S.orderAttributeTitle),
               leading: const PopButton(),
-              actions: const [OrderAttributeAction()],
-            )
-          : null,
-      floatingActionButton: FloatingActionButton(
-        onPressed: handleCreate,
-        tooltip: S.orderAttributeTitleCreate,
-        child: const Icon(KIcons.add),
-      ),
-      body: attrs.isEmpty
-          ? Center(
-              child: EmptyBody(
-                onPressed: handleCreate,
-                content: S.orderAttributeEmptyBody,
-              ),
-            )
-          : OrderAttributeList(attrs.itemList),
-    );
+              actions: [
+                IconButton(
+                  key: const Key('order_attributes.reorder'),
+                  tooltip: S.orderAttributeTitleReorder,
+                  onPressed: () => context.pushNamed(Routes.orderAttrReorder),
+                  icon: const Icon(KIcons.reorder),
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: handleCreate,
+              tooltip: S.orderAttributeTitleCreate,
+              child: const Icon(KIcons.add),
+            ),
+            body: body,
+          )
+        : body;
   }
 }
 
@@ -52,10 +61,9 @@ class OrderAttributeAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: const Key('order_attributes.reorder'),
-      tooltip: S.orderAttributeTitleReorder,
-      onPressed: () => context.pushNamed(Routes.orderAttrReorder),
-      icon: const Icon(KIcons.reorder),
+      tooltip: S.orderAttributeTitleCreate,
+      onPressed: () => context.pushNamed(Routes.orderAttrNew),
+      icon: const Icon(KIcons.add),
     );
   }
 }
