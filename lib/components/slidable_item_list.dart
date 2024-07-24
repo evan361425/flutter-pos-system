@@ -10,10 +10,13 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
   final String? hintText;
 
+  final Widget? tailing;
+
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
+    this.tailing,
   });
 
   @override
@@ -31,6 +34,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
           (index, item) => delegate.build(context, item, index),
         ))
           widget,
+        if (tailing != null) tailing!,
       ],
     );
   }

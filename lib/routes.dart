@@ -3,47 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/replenisher.dart';
+import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
 import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
+import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
+import 'package:possystem/ui/cashier/changer_page.dart';
+import 'package:possystem/ui/cashier/surplus_page.dart';
+import 'package:possystem/ui/home/feature_request_page.dart';
+import 'package:possystem/ui/home/features_page.dart';
+import 'package:possystem/ui/home/home_page.dart';
+import 'package:possystem/ui/image_gallery_page.dart';
+import 'package:possystem/ui/menu/menu_page.dart';
+import 'package:possystem/ui/menu/product_page.dart';
+import 'package:possystem/ui/menu/widgets/catalog_modal.dart';
+import 'package:possystem/ui/menu/widgets/catalog_reorder.dart';
+import 'package:possystem/ui/menu/widgets/product_ingredient_modal.dart';
 import 'package:possystem/ui/menu/widgets/product_ingredient_reorder.dart';
+import 'package:possystem/ui/menu/widgets/product_modal.dart';
+import 'package:possystem/ui/menu/widgets/product_quantity_modal.dart';
+import 'package:possystem/ui/menu/widgets/product_reorder.dart';
+import 'package:possystem/ui/order/order_checkout_page.dart';
+import 'package:possystem/ui/order/order_page.dart';
+import 'package:possystem/ui/order_attr/order_attribute_page.dart';
+import 'package:possystem/ui/order_attr/widgets/order_attribute_modal.dart';
+import 'package:possystem/ui/order_attr/widgets/order_attribute_option_modal.dart';
+import 'package:possystem/ui/order_attr/widgets/order_attribute_option_reorder.dart';
+import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
+import 'package:possystem/ui/stock/quantity_page.dart';
+import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
+import 'package:possystem/ui/stock/widgets/replenishment_modal.dart';
+import 'package:possystem/ui/stock/widgets/stock_ingredient_modal.dart';
 import 'package:possystem/ui/stock/widgets/stock_ingredient_restock_modal.dart';
-
-import 'models/repository/menu.dart';
-import 'models/repository/order_attributes.dart';
-import 'models/repository/quantities.dart';
-import 'models/repository/replenisher.dart';
-import 'models/repository/stock.dart';
-import 'ui/analysis/widgets/history_order_modal.dart';
-import 'ui/cashier/changer_page.dart';
-import 'ui/cashier/surplus_page.dart';
-import 'ui/home/feature_request_page.dart';
-import 'ui/home/features_page.dart';
-import 'ui/home/home_page.dart';
-import 'ui/image_gallery_page.dart';
-import 'ui/menu/menu_page.dart';
-import 'ui/menu/product_page.dart';
-import 'ui/menu/widgets/catalog_modal.dart';
-import 'ui/menu/widgets/catalog_reorder.dart';
-import 'ui/menu/widgets/product_ingredient_modal.dart';
-import 'ui/menu/widgets/product_modal.dart';
-import 'ui/menu/widgets/product_quantity_modal.dart';
-import 'ui/menu/widgets/product_reorder.dart';
-import 'ui/order/order_checkout_page.dart';
-import 'ui/order/order_page.dart';
-import 'ui/order_attr/order_attribute_page.dart';
-import 'ui/order_attr/widgets/order_attribute_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_modal.dart';
-import 'ui/order_attr/widgets/order_attribute_option_reorder.dart';
-import 'ui/order_attr/widgets/order_attribute_reorder.dart';
-import 'ui/stock/quantity_page.dart';
-import 'ui/stock/replenishment_page.dart';
-import 'ui/stock/widgets/replenishment_modal.dart';
-import 'ui/stock/widgets/stock_ingredient_modal.dart';
-import 'ui/stock/widgets/stock_quantity_modal.dart';
-import 'ui/transit/transit_page.dart';
-import 'ui/transit/transit_station.dart';
+import 'package:possystem/ui/stock/widgets/stock_quantity_modal.dart';
+import 'package:possystem/ui/transit/transit_page.dart';
+import 'package:possystem/ui/transit/transit_station.dart';
 
 String serializeRange(DateTimeRange range) {
   final f = DateFormat('y-M-d');
@@ -236,11 +235,6 @@ class Routes {
         },
       ),
       GoRoute(
-        name: menuReorder,
-        path: 'reorder',
-        builder: (ctx, state) => const CatalogReorder(),
-      ),
-      GoRoute(
         name: menuCatalogModal,
         path: 'c/:id/modal',
         builder: (ctx, state) => CatalogModal(
@@ -249,6 +243,11 @@ class Routes {
       ),
       GoRoute(
         name: menuCatalogReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const CatalogReorder(),
+      ),
+      GoRoute(
+        name: menuProductReorder,
         path: 'c/:id/reorder',
         redirect: _redirectIfMissed(
           path: '/menu',
@@ -256,17 +255,6 @@ class Routes {
         ),
         builder: (ctx, state) => ProductReorder(
           Menu.instance.getItem(state.pathParameters['id']!)!,
-        ),
-      ),
-      GoRoute(
-        name: menuProductReorder,
-        path: 'p/:id/reorder',
-        redirect: _redirectIfMissed(
-          path: '/menu',
-          hasItem: (id) => Menu.instance.getProduct(id) != null,
-        ),
-        builder: (ctx, state) => ProductIngredientReorder(
-          Menu.instance.getProduct(state.pathParameters['id']!)!,
         ),
       ),
       GoRoute(
@@ -306,6 +294,17 @@ class Routes {
                 ingredient: ing,
               );
             },
+          ),
+          GoRoute(
+            name: menuIngredientReorder,
+            path: 'reorder',
+            redirect: _redirectIfMissed(
+              path: '/menu',
+              hasItem: (id) => Menu.instance.getProduct(id) != null,
+            ),
+            builder: (ctx, state) => ProductIngredientReorder(
+              Menu.instance.getProduct(state.pathParameters['id']!)!,
+            ),
           ),
         ],
       ),
@@ -453,13 +452,13 @@ class Routes {
   static const menu = '/menu';
   static const menuNew = '/menu/new';
   static const menuSearch = '/menu/search';
-  static const menuReorder = '/menu/reorder';
   static const menuCatalogModal = '/menu/catalog/modal';
   static const menuCatalogReorder = '/menu/catalog/reorder';
-  static const menuProductReorder = '/menu/product/reorder';
   static const menuProduct = '/menu/product';
   static const menuProductModal = '/menu/product/modal';
+  static const menuProductReorder = '/menu/product/reorder';
   static const menuProductDetails = '/menu/product/details';
+  static const menuIngredientReorder = '/menu/ingredient/reorder';
 
   static const history = '/history/order';
   static const historyModal = '/history/order/modal';

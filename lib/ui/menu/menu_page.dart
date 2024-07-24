@@ -16,6 +16,9 @@ import 'widgets/menu_catalog_list.dart';
 import 'widgets/menu_product_list.dart';
 
 class MenuPage extends StatefulWidget {
+  // TODO: set for wide screen
+  final bool withScaffold;
+
   final Catalog? catalog;
 
   final bool productOnly;
@@ -24,6 +27,7 @@ class MenuPage extends StatefulWidget {
     super.key,
     this.catalog,
     this.productOnly = false,
+    this.withScaffold = true,
   });
 
   @override
@@ -36,66 +40,46 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: selected == null,
-      onPopInvoked: _onPopInvoked,
-      child: TutorialWrapper(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(selected?.name ?? S.menuTitle),
-            leading: PopButton(
-              onPressed: () {
-                if (_onPopInvoked(selected == null)) {
-                  if (context.mounted && context.canPop()) {
-                    context.pop();
-                  }
-                }
-              },
+    if (widget.withScaffold) {
+      final fab = widget.productOnly
+          ? null
+          : FloatingActionButton(
+              key: const Key('menu.add'),
+              onPressed: selected == null ? _handleCatalogCreate : _handleProductCreate,
+              tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
+              child: const Icon(KIcons.add),
+            );
+
+      return PopScope(
+        canPop: selected == null,
+        onPopInvoked: _onPopInvoked,
+        child: TutorialWrapper(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(selected?.name ?? S.menuTitle),
+              leading: PopButton(onPressed: _handlePop),
+              actions: const [MenuAction()],
             ),
-            actions: [
-              if (!widget.productOnly)
-                IconButton(
-                  tooltip: selected == null ? S.menuCatalogTitleReorder : S.menuProductTitleReorder,
-                  onPressed: () {
-                    selected == null
-                        ? context.pushNamed(Routes.menuReorder)
-                        : context.pushNamed(
-                            Routes.menuCatalogReorder,
-                            pathParameters: {'id': selected!.id},
-                          );
-                  },
-                  icon: const Icon(KIcons.reorder),
-                ),
-              SearchBarWrapper(
-                key: const Key('menu.search'),
-                hintText: S.menuSearchHint,
-                initData: Menu.instance.searchProducts(),
-                search: (text) async => Menu.instance.searchProducts(text: text),
-                itemBuilder: _searchItemBuilder,
-                emptyBuilder: _searchEmptyBuilder,
-              ),
-            ],
-          ),
-          floatingActionButton: widget.productOnly
-              ? null
-              : FloatingActionButton(
-                  key: const Key('menu.add'),
-                  onPressed: _handleCreate,
-                  tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
-                  child: const Icon(KIcons.add),
-                ),
-          body: PageView(
-            controller: controller,
-            // disable scrolling, only control by program
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              firstView,
-              secondView,
-            ],
+            floatingActionButton: fab,
+            body: PageView(
+              controller: controller,
+              // disable scrolling, only control by program
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                firstView,
+                secondView,
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
+    return Row(children: [
+      Expanded(child: firstView),
+      const VerticalDivider(),
+      Expanded(child: secondView),
+    ]);
   }
 
   @override
@@ -125,7 +109,7 @@ class _MenuPageState extends State<MenuPage> {
       return Center(
         child: EmptyBody(
           content: S.menuCatalogEmptyBody,
-          onPressed: _handleCreate,
+          onPressed: _handleCatalogCreate,
         ),
       );
     }
@@ -137,21 +121,43 @@ class _MenuPageState extends State<MenuPage> {
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
       onSelected: _handleSelected,
+      tailing: widget.withScaffold
+          ? null
+          : ListTile(
+              leading: const Icon(KIcons.add),
+              title: Text(S.menuCatalogTitleCreate),
+              tileColor: Theme.of(context).colorScheme.surface,
+              onTap: _handleCatalogCreate,
+            ),
     );
   }
 
   Widget get secondView {
-    if (selected?.isNotEmpty == true) {
-      return MenuProductList(catalog: selected);
+    if (selected == null) {
+      return Center(child: Text(S.menuProductNotSelected));
     }
 
-    // empty or not exist
-    return Center(
-      child: EmptyBody(
-        key: const Key('catalog.empty'),
-        content: S.menuProductEmptyBody,
-        onPressed: _handleCreate,
-      ),
+    if (selected!.isEmpty) {
+      // empty or not exist
+      return Center(
+        child: EmptyBody(
+          key: const Key('catalog.empty'),
+          content: S.menuProductEmptyBody,
+          onPressed: _handleProductCreate,
+        ),
+      );
+    }
+
+    return MenuProductList(
+      catalog: selected,
+      tailing: widget.withScaffold
+          ? null
+          : ListTile(
+              leading: const Icon(KIcons.add),
+              title: Text(S.menuProductTitleCreate),
+              tileColor: Theme.of(context).colorScheme.surface,
+              onTap: _handleProductCreate,
+            ),
     );
   }
 
@@ -159,7 +165,66 @@ class _MenuPageState extends State<MenuPage> {
     setState(() {
       selected = catalog;
     });
-    _goTo(1);
+    _pageSlideTo(1);
+  }
+
+  Future<void> _handleCatalogCreate() async {
+    // only catalog modal will return ID
+    final catalog = await context.pushNamed(Routes.menuNew);
+
+    if (catalog is Catalog) {
+      _handleSelected(catalog);
+    }
+  }
+
+  Future<void> _handleProductCreate() {
+    return context.pushNamed(
+      Routes.menuNew,
+      queryParameters: {'id': selected?.id},
+    );
+  }
+
+  void _handlePop() {
+    if (_onPopInvoked(selected == null)) {
+      if (context.mounted && context.canPop()) {
+        context.pop();
+      }
+    }
+  }
+
+  bool _onPopInvoked(bool didPop) {
+    if (!didPop) {
+      _pageSlideTo(0).then((_) => setState(() => selected = null));
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> _pageSlideTo(int index) async {
+    if (widget.withScaffold) {
+      return controller.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
+    }
+  }
+}
+
+class MenuAction extends StatelessWidget {
+  const MenuAction({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchBarWrapper(
+      key: const Key('menu.search'),
+      hintText: S.menuSearchHint,
+      initData: Menu.instance.searchProducts(),
+      search: (text) async => Menu.instance.searchProducts(text: text),
+      itemBuilder: _searchItemBuilder,
+      emptyBuilder: _searchEmptyBuilder,
+    );
   }
 
   Widget _searchItemBuilder(BuildContext context, Product item) {
@@ -179,35 +244,6 @@ class _MenuPageState extends State<MenuPage> {
     return ListTile(
       title: Text(S.menuSearchNotFound),
       leading: const Icon(KIcons.warn),
-    );
-  }
-
-  void _handleCreate() async {
-    // only catalog modal will return ID
-    final catalog = await context.pushNamed(
-      Routes.menuNew,
-      queryParameters: {'id': selected?.id},
-    );
-
-    if (catalog is Catalog) {
-      _handleSelected(catalog);
-    }
-  }
-
-  bool _onPopInvoked(bool didPop) {
-    if (!didPop) {
-      _goTo(0).then((_) => setState(() => selected = null));
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<void> _goTo(int index) {
-    return controller.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.ease,
     );
   }
 }

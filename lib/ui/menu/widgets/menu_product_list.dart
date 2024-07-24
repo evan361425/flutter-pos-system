@@ -14,14 +14,18 @@ import 'package:possystem/translator.dart';
 class MenuProductList extends StatelessWidget {
   final Catalog? catalog;
 
+  final Widget? tailing;
+
   const MenuProductList({
     super.key,
     required this.catalog,
+    this.tailing,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList(
+      tailing: tailing,
       delegate: SlidableItemDelegate<Product, int>(
         items: catalog?.itemList ?? Menu.instance.products.toList(),
         deleteValue: 0,
@@ -40,6 +44,12 @@ class MenuProductList extends StatelessWidget {
         leading: const Icon(KIcons.modal),
         route: Routes.menuProductModal,
         routePathParameters: {'id': product.id},
+      ),
+      BottomSheetAction(
+        title: Text(S.menuProductTitleReorder),
+        leading: const Icon(KIcons.reorder),
+        route: Routes.menuProductReorder,
+        routePathParameters: {'id': product.catalog.id},
       ),
     ];
   }

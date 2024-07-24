@@ -51,16 +51,18 @@ class CashierSurplus extends StatelessWidget {
         ],
       ),
       body: Column(children: [
-        _DataWithLabel(
-          data: cashier.currentTotal.toCurrency(),
-          label: S.cashierSurplusCurrentTotalLabel,
-          helper: S.cashierSurplusCurrentTotalHelper,
-        ),
-        _DataWithLabel(
-          data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
-          label: S.cashierSurplusDiffTotalLabel,
-          helper: S.cashierSurplusDiffTotalHelper,
-        ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          _DataWithLabel(
+            data: cashier.currentTotal.toCurrency(),
+            label: S.cashierSurplusCurrentTotalLabel,
+            helper: S.cashierSurplusCurrentTotalHelper,
+          ),
+          _DataWithLabel(
+            data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
+            label: S.cashierSurplusDiffTotalLabel,
+            helper: S.cashierSurplusDiffTotalHelper,
+          ),
+        ]),
         const Divider(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),

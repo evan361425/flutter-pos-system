@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-20T09:28:45.193029Z",
+  "@@last_modified": "2024-07-24T06:05:55.078189Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1340,8 +1340,8 @@
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
   },
-  "menuCatalogTitleUpdate": "Edit Category",
-  "menuCatalogTitleReorder": "Reorder Categories",
+  "menuCatalogTitleUpdate": "Edit",
+  "menuCatalogTitleReorder": "Reorder",
   "menuCatalogDialogDeletionContent": "{count, plural, =0{No products inside} =1{Will also delete {count} related product} other{Will also delete {count} related products}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "Warning message when deleting product categories on the menu page",
@@ -1360,9 +1360,13 @@
     "description": "Displayed on the upper rectangle in homepage"
   },
   "menuProductEmptyBody": "\"Products\" are the basic units in the menu, such as:\n\"Cheese Burger\", \"Cola\"",
+  "menuProductNotSelected": "Please select a category first",
+  "@menuProductNotSelected": {
+    "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
+  },
   "menuProductTitleCreate": "Add Product",
-  "menuProductTitleUpdate": "Edit Product",
-  "menuProductTitleReorder": "Reorder Products",
+  "menuProductTitleUpdate": "Edit",
+  "menuProductTitleReorder": "Reorder",
   "menuProductTitleUpdateImage": "Update Photo",
   "menuProductMetaTitle": "Product",
   "@menuProductMetaTitle": {
@@ -1402,8 +1406,8 @@
   "menuProductEmptyIngredients": "No ingredients set yet",
   "menuIngredientEmptyBody": "You can set ingredients for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients",
   "menuIngredientTitleCreate": "Add Ingredient",
-  "menuIngredientTitleUpdate": "Edit Ingredient",
-  "menuIngredientTitleReorder": "Reorder Ingredients",
+  "menuIngredientTitleUpdate": "Edit",
+  "menuIngredientTitleReorder": "Reorder",
   "menuIngredientMetaAmount": "Amount: {amount}",
   "@menuIngredientMetaAmount": {
     "placeholders": {
@@ -1430,7 +1434,7 @@
   "menuIngredientAmountLabel": "Amount Used",
   "menuIngredientAmountHelper": "Default amount used.\nIf customers are able to adjust the amount,\nset different quantities in \"Quantity.\"",
   "menuQuantityTitleCreate": "Add Quantity",
-  "menuQuantityTitleUpdate": "Edit Quantity",
+  "menuQuantityTitleUpdate": "Edit",
   "menuQuantityMetaAmount": "Amount: {amount}",
   "@menuQuantityMetaAmount": {
     "placeholders": {

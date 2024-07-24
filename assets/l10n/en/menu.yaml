@@ -52,8 +52,8 @@ catalog:
     create:
     - Add Category
     - FloatingActionButton description on the menu page
-    update: Edit Category
-    reorder: Reorder Categories
+    update: Edit
+    reorder: Reorder
   dialogDeletionContent:
   - =0: No products inside
     =1: Will also delete {count} related product
@@ -73,10 +73,13 @@ product:
   emptyBody: |-
     "Products" are the basic units in the menu, such as:
     "Cheese Burger", "Cola"
+  notSelected:
+  - Please select a category first
+  - When not selecting a category, the product list will not be displayed. This message will be displayed in the product list
   title:
     create: Add Product
-    update: Edit Product
-    reorder: Reorder Products
+    update: Edit
+    reorder: Reorder
     updateImage: Update Photo
   meta:
     title:
@@ -111,8 +114,8 @@ ingredient:
     "Cheeseburger" with "Cheese", "Bun" as ingredients
   title:
     create: Add Ingredient
-    update: Edit Ingredient
-    reorder: Reorder Ingredients
+    update: Edit
+    reorder: Reorder
   meta:
     amount:
     - 'Amount: {amount}'
@@ -137,7 +140,7 @@ ingredient:
 quantity:
   title:
     create: Add Quantity
-    update: Edit Quantity
+    update: Edit
   meta:
     amount:
     - 'Amount: {amount}'
