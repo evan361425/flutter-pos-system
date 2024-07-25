@@ -8,6 +8,7 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/routes.dart';
@@ -16,26 +17,37 @@ import 'package:provider/provider.dart';
 
 class OrderAttributeList extends StatelessWidget {
   final List<OrderAttribute> attributes;
-
+  final Widget? leading;
   final Widget tailing;
 
-  const OrderAttributeList({super.key, required this.attributes, required this.tailing});
+  const OrderAttributeList({
+    super.key,
+    required this.attributes,
+    this.leading,
+    required this.tailing,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: <Widget>[
-      const SizedBox(height: 8.0),
-      Center(child: HintText(S.totalCount(attributes.length))),
-      const SizedBox(height: 8.0),
-      for (final attribute in attributes)
-        ChangeNotifierProvider<OrderAttribute>.value(
-          value: attribute,
-          child: const _OrderAttributeCard(),
-        ),
-      tailing,
-      // Floating action button offset
-      const SizedBox(height: 72.0),
-    ]);
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+        child: ListView(children: <Widget>[
+          if (leading != null) leading!,
+          const SizedBox(height: 8.0),
+          Center(child: HintText(S.totalCount(attributes.length))),
+          const SizedBox(height: 8.0),
+          for (final attribute in attributes)
+            ChangeNotifierProvider<OrderAttribute>.value(
+              value: attribute,
+              child: const _OrderAttributeCard(),
+            ),
+          tailing,
+          // Floating action button offset
+          const SizedBox(height: 72.0),
+        ]),
+      ),
+    );
   }
 }
 
@@ -104,10 +116,9 @@ class _OrderAttributeCard extends StatelessWidget {
   }
 
   Widget buildActions(BuildContext context, OrderAttribute attr) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton.icon(
+    return Row(children: [
+      Expanded(
+        child: ElevatedButton.icon(
           onPressed: () => context.pushNamed(
             Routes.orderAttrNew,
             queryParameters: {'id': attr.id},
@@ -115,13 +126,13 @@ class _OrderAttributeCard extends StatelessWidget {
           label: Text(S.orderAttributeOptionTitleCreate),
           icon: const Icon(KIcons.add),
         ),
-        const SizedBox(width: 8.0),
-        EntryMoreButton(
-          key: Key('$key.more'),
-          onPressed: () => showActions(context, attr),
-        ),
-      ],
-    );
+      ),
+      const SizedBox(width: 8.0),
+      EntryMoreButton(
+        key: Key('$key.more'),
+        onPressed: () => showActions(context, attr),
+      ),
+    ]);
   }
 }
 

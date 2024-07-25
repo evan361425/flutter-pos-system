@@ -30,6 +30,18 @@ class OrderAttributePage extends StatelessWidget {
           )
         : OrderAttributeList(
             attributes: attrs.itemList,
+            leading: withScaffold
+                ? null
+                : const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Material(
+                        elevation: 1.0,
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        child: _ReorderAction(),
+                      ),
+                    ]),
+                  ),
             tailing: ElevatedButton.icon(
               onPressed: handleCreate,
               label: Text(S.orderAttributeTitleCreate),
@@ -46,22 +58,12 @@ class OrderAttributePage extends StatelessWidget {
             ),
             body: body,
           )
-        : Column(children: [
-            const Material(
-              elevation: 1.0,
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                _ReorderAction(),
-              ]),
-            ),
-            const SizedBox(height: 12.0),
-            body,
-          ]);
+        : body;
   }
 }
 
 class _ReorderAction extends StatelessWidget {
-  const _ReorderAction({super.key});
+  const _ReorderAction();
 
   @override
   Widget build(BuildContext context) {

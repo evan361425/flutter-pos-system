@@ -18,31 +18,43 @@ import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
 class StockIngredientList extends StatelessWidget {
-  final List<Ingredient> ingredients;
+  final Widget leading;
 
-  const StockIngredientList({super.key, required this.ingredients});
+  const StockIngredientList({
+    super.key,
+    required this.leading,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final updatedAt = latestUpdatedAt();
+    return ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
+      leading,
+      const SizedBox(height: 4.0),
+      ListenableBuilder(
+        listenable: Stock.instance,
+        builder: (context, child) {
+          final updatedAt = latestUpdatedAt();
 
-    return Column(
-      children: [
-        Center(
-          child: HintText([
-            updatedAt == null ? S.stockReplenishmentNever : S.stockUpdatedAt(updatedAt),
-            S.totalCount(ingredients.length),
-          ].join(MetaBlock.string)),
-        ),
-        const SizedBox(height: 2.0),
-        for (final item in ingredients) _IngredientTile(item),
-      ],
-    );
+          return Column(
+            children: [
+              Center(
+                child: HintText([
+                  updatedAt == null ? S.stockReplenishmentNever : S.stockUpdatedAt(updatedAt),
+                  S.totalCount(Stock.instance.length),
+                ].join(MetaBlock.string)),
+              ),
+              const SizedBox(height: 2.0),
+              for (final item in Stock.instance.itemList) _IngredientTile(item),
+            ],
+          );
+        },
+      ),
+    ]);
   }
 
   DateTime? latestUpdatedAt() {
     DateTime? latest;
-    for (var ingredient in ingredients) {
+    for (var ingredient in Stock.instance.items) {
       if (latest == null) {
         latest = ingredient.updatedAt;
       } else if (ingredient.updatedAt?.isAfter(latest) == true) {
