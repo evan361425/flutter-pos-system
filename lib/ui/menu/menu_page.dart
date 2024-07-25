@@ -58,7 +58,7 @@ class _MenuPageState extends State<MenuPage> {
             appBar: AppBar(
               title: Text(selected?.name ?? S.menuTitle),
               leading: PopButton(onPressed: _handlePop),
-              actions: const [MenuAction()],
+              actions: const [_SearchAction()],
             ),
             floatingActionButton: fab,
             body: PageView(
@@ -90,7 +90,7 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   void initState() {
-    selected = widget.catalog;
+    selected = widget.catalog ?? (widget.withScaffold ? null : Menu.instance.itemList.firstOrNull);
     controller = PageController(
       // go to product if has selected catalog
       initialPage: widget.catalog == null ? 0 : 1,
@@ -118,17 +118,19 @@ class _MenuPageState extends State<MenuPage> {
       return const MenuProductList(catalog: null);
     }
 
-    return MenuCatalogList(
-      Menu.instance.itemList, // put it here to handle reload
-      onSelected: _handleSelected,
-      tailing: widget.withScaffold
-          ? null
-          : ListTile(
-              leading: const Icon(KIcons.add),
-              title: Text(S.menuCatalogTitleCreate),
-              tileColor: Theme.of(context).colorScheme.surface,
-              onTap: _handleCatalogCreate,
-            ),
+    return Column(
+      children: [
+        if (!widget.withScaffold) const _SearchAction(withTextFiled: true),
+        MenuCatalogList(
+          Menu.instance.itemList, // put it here to handle reload
+          onSelected: _handleSelected,
+          tailing: ElevatedButton.icon(
+            onPressed: _handleCatalogCreate,
+            label: Text(S.menuCatalogTitleCreate),
+            icon: const Icon(KIcons.add),
+          ),
+        ),
+      ],
     );
   }
 
@@ -212,14 +214,17 @@ class _MenuPageState extends State<MenuPage> {
   }
 }
 
-class MenuAction extends StatelessWidget {
-  const MenuAction({super.key});
+class _SearchAction extends StatelessWidget {
+  final bool withTextFiled;
+
+  const _SearchAction({this.withTextFiled = false});
 
   @override
   Widget build(BuildContext context) {
     return SearchBarWrapper(
       key: const Key('menu.search'),
       hintText: S.menuSearchHint,
+      text: withTextFiled ? '' : null,
       initData: Menu.instance.searchProducts(),
       search: (text) async => Menu.instance.searchProducts(text: text),
       itemBuilder: _searchItemBuilder,

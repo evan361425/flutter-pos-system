@@ -17,7 +17,9 @@ import 'package:provider/provider.dart';
 class OrderAttributeList extends StatelessWidget {
   final List<OrderAttribute> attributes;
 
-  const OrderAttributeList(this.attributes, {super.key});
+  final Widget tailing;
+
+  const OrderAttributeList({super.key, required this.attributes, required this.tailing});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class OrderAttributeList extends StatelessWidget {
           value: attribute,
           child: const _OrderAttributeCard(),
         ),
+      tailing,
       // Floating action button offset
       const SizedBox(height: 72.0),
     ]);
@@ -42,47 +45,36 @@ class _OrderAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attr = context.watch<OrderAttribute>();
-    final mode = S.orderAttributeModeName(attr.mode.name);
     final key = 'order_attributes.${attr.id}';
     final theme = Theme.of(context);
+    final subtitle = RichText(
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
+          TextSpan(text: S.orderAttributeMetaMode(S.orderAttributeModeName(attr.mode.name))),
+          MetaBlock.span(),
+          attr.defaultOption?.name != null
+              ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
+              : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
+                  TextSpan(
+                    text: S.orderAttributeMetaNoDefault,
+                    style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                  ),
+                ]),
+        ],
+        // disable parent text style
+        style: theme.textTheme.bodyMedium,
+      ),
+    );
 
     return ExpansionTile(
       key: Key(key),
       title: Text(attr.name),
-      subtitle: RichText(
-        overflow: TextOverflow.ellipsis,
-        text: TextSpan(
-          children: [
-            TextSpan(text: S.orderAttributeMetaMode(mode)),
-            MetaBlock.span(),
-            attr.defaultOption?.name != null
-                ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
-                : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
-                    TextSpan(
-                      text: S.orderAttributeMetaNoDefault,
-                      style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
-                    ),
-                  ]),
-          ],
-          // disable parent text style
-          style: theme.textTheme.bodyMedium,
-        ),
-      ),
+      subtitle: subtitle,
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        ListTile(
-          key: Key('$key.add'),
-          leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.orderAttributeOptionTitleCreate),
-          onTap: () => context.pushNamed(
-            Routes.orderAttrNew,
-            queryParameters: {'id': attr.id},
-          ),
-          trailing: EntryMoreButton(
-            key: Key('$key.more'),
-            onPressed: () => showActions(context, attr),
-          ),
-        ),
+        buildActions(context, attr),
+        const SizedBox(height: 12.0),
         for (final item in attr.itemList) _OptionTile(item),
       ],
     );
@@ -108,6 +100,27 @@ class _OrderAttributeCard extends StatelessWidget {
       ],
       warningContent: Text(S.dialogDeletionContent(attr.name, '')),
       deleteCallback: () => attr.remove(),
+    );
+  }
+
+  Widget buildActions(BuildContext context, OrderAttribute attr) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => context.pushNamed(
+            Routes.orderAttrNew,
+            queryParameters: {'id': attr.id},
+          ),
+          label: Text(S.orderAttributeOptionTitleCreate),
+          icon: const Icon(KIcons.add),
+        ),
+        const SizedBox(width: 8.0),
+        EntryMoreButton(
+          key: Key('$key.more'),
+          onPressed: () => showActions(context, attr),
+        ),
+      ],
     );
   }
 }

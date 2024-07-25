@@ -28,7 +28,15 @@ class QuantityPage extends StatelessWidget {
               onPressed: handleCreate,
             ),
           )
-        : StockQuantityList(quantities: quantities.itemList);
+        : StockQuantityList(
+            quantities: quantities.itemList,
+            tailing: ElevatedButton.icon(
+              key: const Key('quantity.add'),
+              onPressed: handleCreate,
+              label: Text(S.stockQuantityTitleCreate),
+              icon: const Icon(KIcons.add),
+            ),
+          );
 
     return withScaffold
         ? Scaffold(
@@ -36,27 +44,8 @@ class QuantityPage extends StatelessWidget {
               title: Text(S.stockQuantityTitle),
               leading: const PopButton(),
             ),
-            floatingActionButton: FloatingActionButton(
-              key: const Key('quantity.add'),
-              onPressed: handleCreate,
-              tooltip: S.stockQuantityTitleCreate,
-              child: const Icon(KIcons.add),
-            ),
             body: body,
           )
         : body;
-  }
-}
-
-class QuantityAction extends StatelessWidget {
-  const QuantityAction({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: S.orderAttributeTitleCreate,
-      onPressed: () => context.pushNamed(Routes.quantityNew),
-      icon: const Icon(KIcons.add),
-    );
   }
 }

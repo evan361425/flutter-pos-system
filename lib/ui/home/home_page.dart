@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math' show min;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/router_pop_scope.dart';
@@ -40,7 +41,7 @@ class HomePage extends StatelessWidget {
               initialIndex: min(tab.index, 3),
               child: _WithTab(tab: tab),
             )
-          : _WithDrawer(tab: tab);
+          : _WithDrawer(tab: tab, breakpoint: breakpoint);
     });
   }
 }
@@ -151,7 +152,9 @@ class _WithTabState extends State<_WithTab> {
 class _WithDrawer extends StatefulWidget {
   final HomeTab tab;
 
-  const _WithDrawer({required this.tab});
+  final Breakpoint breakpoint;
+
+  const _WithDrawer({required this.tab, required this.breakpoint});
 
   @override
   _WithDrawerState createState() => _WithDrawerState();
@@ -160,64 +163,18 @@ class _WithDrawer extends StatefulWidget {
 class _WithDrawerState extends State<_WithDrawer> {
   final navHistory = Queue<HomeTab>();
   final scaffold = GlobalKey<ScaffoldState>();
+  late bool useDrawer;
+  ValueNotifier<bool> railExpanded = ValueNotifier(false);
   late HomeTab tab;
 
   @override
   Widget build(BuildContext context) {
     final needNested = tab == HomeTab.analysis;
-    final List<Widget> actions = tab.action == null ? const [] : [tab.action!];
 
     return RouterPopScope(
       canPop: navHistory.isEmpty,
       onPopInvoked: _pop,
-      child: Scaffold(
-        key: scaffold,
-        appBar: needNested
-            ? null
-            : AppBar(
-                title: Text(S.title(tab.name)),
-                flexibleSpace: const _FlexibleSpace(),
-                actions: actions,
-              ),
-        floatingActionButton: _FAB(),
-        drawer: Drawer(
-          child: SafeArea(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                const SizedBox(height: 48),
-                for (final e in HomeTab.values)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ListTile(
-                      title: Text(S.title(e.name)),
-                      selected: tab == e,
-                      visualDensity: VisualDensity.compact,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      onTap: () => _navTo(e),
-                    ),
-                  ),
-                const Footer(),
-              ],
-            ),
-          ),
-        ),
-        body: needNested
-            ? NestedScrollView(
-                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    pinned: true,
-                    title: Text(S.title(tab.name)),
-                    flexibleSpace: const _FlexibleSpace(),
-                    actions: actions,
-                  ),
-                ],
-                body: tab.view,
-              )
-            : tab.view,
-      ),
+      child: needNested ? _buildWithNestedScrollView() : _buildSimple(),
     );
   }
 
@@ -225,6 +182,95 @@ class _WithDrawerState extends State<_WithDrawer> {
   void initState() {
     super.initState();
     tab = widget.tab;
+    useDrawer = widget.breakpoint <= Breakpoint.large;
+  }
+
+  Widget _buildSimple() {
+    return Scaffold(
+      key: scaffold,
+      appBar: AppBar(
+        title: Text(S.title(tab.name)),
+        flexibleSpace: const _FlexibleSpace(),
+      ),
+      floatingActionButton: _FAB(),
+      drawer: useDrawer ? _buildDrawer() : null,
+      body: _buildBody(),
+    );
+  }
+
+  /// Which means body have [CustomScrollView]
+  Widget _buildWithNestedScrollView() {
+    return Scaffold(
+      key: scaffold,
+      floatingActionButton: _FAB(),
+      drawer: useDrawer ? _buildDrawer() : null,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+          SliverAppBar(
+            pinned: true,
+            title: Text(S.title(tab.name)),
+            flexibleSpace: const _FlexibleSpace(),
+          ),
+        ],
+        body: _buildBody(),
+      ),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const SizedBox(height: 48),
+            for (final e in HomeTab.values)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
+                child: ListTile(
+                  title: Text(S.title(e.name)),
+                  selected: tab == e,
+                  visualDensity: VisualDensity.compact,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  onTap: () => _navTo(e),
+                ),
+              ),
+            const Footer(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (useDrawer) {
+      return tab.view;
+    }
+
+    return Row(children: [
+      ListenableBuilder(
+        listenable: railExpanded,
+        builder: (context, child) => NavigationRail(
+          extended: railExpanded.value,
+          onDestinationSelected: (int index) => _navTo(HomeTab.values[index]),
+          labelType: NavigationRailLabelType.all,
+          destinations: [
+            for (final e in HomeTab.values)
+              if (railExpanded.value || e.important)
+                NavigationRailDestination(
+                  icon: Icon(e.icon),
+                  selectedIcon: Icon(e.selectedIcon),
+                  label: Text(S.title(e.name)),
+                ),
+          ],
+          selectedIndex: 0,
+        ),
+      ),
+      const VerticalDivider(),
+      Expanded(child: tab.view),
+    ]);
   }
 
   void _navTo(HomeTab tab) {
@@ -306,18 +352,65 @@ class _Tab extends StatelessWidget {
 
 // The order is important for the drawer scaffold
 enum HomeTab {
-  analysis(view: AnalysisView()),
-  stock(view: StockView()),
-  cashier(view: CashierView()),
-  orderAttribute(view: OrderAttributePage(withScaffold: false), action: OrderAttributeAction()),
-  menu(view: MenuPage(withScaffold: false), action: MenuAction()),
-  stockQuantity(view: QuantityPage(withScaffold: false), action: QuantityAction()),
-  transit(view: TransitPage(withScaffold: false)),
-  settingElf(view: FeatureRequestPage(withScaffold: false)),
-  setting(view: FeaturesPage(withScaffold: false));
+  analysis(
+    view: AnalysisView(),
+    icon: Icons.analytics_outlined,
+    selectedIcon: Icons.analytics,
+    important: true,
+  ),
+  stock(
+    view: StockView(),
+    icon: Icons.inventory_outlined,
+    selectedIcon: Icons.inventory,
+    important: true,
+  ),
+  cashier(
+    view: CashierView(),
+    icon: Icons.monetization_on_outlined,
+    selectedIcon: Icons.monetization_on,
+    important: true,
+  ),
+  orderAttribute(
+    view: OrderAttributePage(withScaffold: false),
+    icon: Icons.people_alt_outlined,
+    selectedIcon: Icons.people_alt,
+  ),
+  menu(
+    view: MenuPage(withScaffold: false),
+    icon: Icons.menu_book_outlined,
+    selectedIcon: Icons.menu_book,
+  ),
+  stockQuantity(
+    view: QuantityPage(withScaffold: false),
+    icon: Icons.difference,
+    selectedIcon: Icons.difference_outlined,
+  ),
+  transit(
+    view: TransitPage(withScaffold: false),
+    icon: Icons.local_shipping_outlined,
+    selectedIcon: Icons.local_shipping,
+  ),
+  settingElf(
+    view: FeatureRequestPage(withScaffold: false),
+    icon: Icons.star_border_outlined,
+    selectedIcon: Icons.star,
+  ),
+  setting(
+    view: FeaturesPage(withScaffold: false),
+    icon: Icons.settings_outlined,
+    selectedIcon: Icons.settings,
+  ),
+  ;
 
   final Widget view;
-  final Widget? action;
+  final IconData icon;
+  final IconData selectedIcon;
+  final bool important;
 
-  const HomeTab({this.view = const SizedBox(), this.action});
+  const HomeTab({
+    required this.view,
+    required this.icon,
+    required this.selectedIcon,
+    this.important = false,
+  });
 }
