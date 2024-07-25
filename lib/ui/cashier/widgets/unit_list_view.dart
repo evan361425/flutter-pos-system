@@ -9,14 +9,17 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
 class UnitListView extends StatelessWidget {
-  const UnitListView({super.key});
+  final Widget leading;
+
+  const UnitListView({super.key, required this.leading});
 
   @override
   Widget build(BuildContext context) {
     final cashier = context.watch<Cashier>();
     int i = 0;
 
-    return Column(children: [
+    return ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
+      leading,
       for (final item in cashier.currentUnits) _itemWidget(context, item, i++),
     ]);
   }

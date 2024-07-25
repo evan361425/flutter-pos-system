@@ -7,15 +7,15 @@ import 'package:possystem/translator.dart';
 
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
-
   final String? hintText;
-
+  final Widget? leading;
   final Widget? tailing;
 
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
+    this.leading,
     this.tailing,
   });
 
@@ -24,6 +24,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 76),
       children: <Widget>[
+        if (leading != null) leading!,
         Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 2.0),

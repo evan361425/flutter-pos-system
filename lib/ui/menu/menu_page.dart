@@ -118,19 +118,20 @@ class _MenuPageState extends State<MenuPage> {
       return const MenuProductList(catalog: null);
     }
 
-    return Column(
-      children: [
-        if (!widget.withScaffold) const _SearchAction(withTextFiled: true),
-        MenuCatalogList(
-          Menu.instance.itemList, // put it here to handle reload
-          onSelected: _handleSelected,
-          tailing: ElevatedButton.icon(
-            onPressed: _handleCatalogCreate,
-            label: Text(S.menuCatalogTitleCreate),
-            icon: const Icon(KIcons.add),
-          ),
-        ),
-      ],
+    return MenuCatalogList(
+      Menu.instance.itemList, // put it here to handle reload
+      leading: widget.withScaffold
+          ? null
+          : const Padding(
+              padding: EdgeInsets.fromLTRB(8, 8, 0, 0),
+              child: _SearchAction(withTextFiled: true),
+            ),
+      onSelected: _handleSelected,
+      tailing: ElevatedButton.icon(
+        onPressed: _handleCatalogCreate,
+        label: Text(S.menuCatalogTitleCreate),
+        icon: const Icon(KIcons.add),
+      ),
     );
   }
 

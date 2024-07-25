@@ -31,10 +31,10 @@ enum Breakpoint {
   ///
   /// - Desktop
   /// - Ultra-wide
-  extraLarge(1600, 0x7FFFFFFFFFFFFFFF);
+  extraLarge(1600, double.maxFinite);
 
-  final int min;
-  final int max;
+  final double min;
+  final double max;
 
   const Breakpoint(this.min, this.max);
 

@@ -40,7 +40,7 @@ class RouteCircularButton extends StatelessWidget {
             onPressed: onTap ??
                 () async {
                   final result = await context.pushNamed(route!);
-                  if (result == true) {
+                  if (result == true && popTrueShowSuccess) {
                     if (context.mounted) {
                       showSnackBar(context, S.actSuccess);
                     }
@@ -55,6 +55,38 @@ class RouteCircularButton extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RouteIconButton extends StatelessWidget {
+  final String tooltip;
+  final Icon icon;
+  final String route;
+  final bool popTrueShowSuccess;
+
+  const RouteIconButton({
+    super.key,
+    required this.tooltip,
+    required this.icon,
+    required this.route,
+    this.popTrueShowSuccess = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      iconSize: 32,
+      onPressed: () async {
+        final result = await context.pushNamed(route);
+        if (result == true && popTrueShowSuccess) {
+          if (context.mounted) {
+            showSnackBar(context, S.actSuccess);
+          }
+        }
+      },
+      icon: icon,
     );
   }
 }

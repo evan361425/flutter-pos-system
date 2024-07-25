@@ -365,7 +365,7 @@ enum HomeTab {
     important: true,
   ),
   cashier(
-    view: CashierView(),
+    view: CashierView(circularActions: false),
     icon: Icons.monetization_on_outlined,
     selectedIcon: Icons.monetization_on,
     important: true,
