@@ -29,21 +29,48 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final breakpoint = Breakpoint.find(box: constraints);
-      return breakpoint <= Breakpoint.medium ? buildWithTab(context) : _WithDrawer(tab: tab);
+
+      return breakpoint <= Breakpoint.medium
+          // Using DefaultTabController so descendant widgets can access the controller.
+          // This allow building constant tab views, otherwise after push page,
+          // the home page will rebuild(cause by go_route) and cause the tutorial to show again.
+          // see https://github.com/flutter/flutter/issues/132049
+          ? DefaultTabController(
+              length: 4,
+              initialIndex: min(tab.index, 3),
+              child: _WithTab(tab: tab),
+            )
+          : _WithDrawer(tab: tab);
     });
   }
+}
 
-  Widget buildWithTab(BuildContext context) {
-    // Using DefaultTabController so descendant widgets can access the controller.
-    // This allow building constant tab views, otherwise after push page,
-    // the home page will rebuild(cause by go_route) and cause the tutorial to show again.
-    // see https://github.com/flutter/flutter/issues/132049
-    // TODO: add PopScope to prevent back button
-    return DefaultTabController(
-      length: 4,
-      initialIndex: min(tab.index, 3),
+class _WithTab extends StatefulWidget {
+  final HomeTab tab;
+
+  const _WithTab({required this.tab});
+
+  @override
+  State<_WithTab> createState() => _WithTabState();
+}
+
+class _WithTabState extends State<_WithTab> {
+  final navHistory = Queue<int>();
+  final canPop = ValueNotifier<bool>(true);
+  late TabController controller;
+  // prevent adding the history index while popping
+  bool isPopping = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: canPop,
+      builder: (context, child) => RouterPopScope(
+        canPop: navHistory.isEmpty,
+        onPopInvoked: _pop,
+        child: child!,
+      ),
       child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: _FAB(),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -76,6 +103,48 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    controller = DefaultTabController.of(context);
+    controller.addListener(_monitorNav);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_monitorNav);
+    super.dispose();
+  }
+
+  _monitorNav() {
+    // when animation is done and the index is changed
+    if (!controller.indexIsChanging && controller.index != controller.previousIndex) {
+      if (isPopping) {
+        isPopping = false;
+        return;
+      }
+
+      final index = controller.index;
+      if (navHistory.length >= 3) {
+        navHistory.removeFirst();
+      }
+      navHistory.add(index);
+      canPop.value = false;
+    }
+  }
+
+  void _pop(bool didPop) {
+    if (navHistory.isNotEmpty) {
+      navHistory.removeLast();
+
+      if (mounted) {
+        isPopping = true;
+        controller.animateTo(navHistory.lastOrNull ?? 0);
+        canPop.value = navHistory.isEmpty;
+      }
+    }
   }
 }
 
@@ -235,15 +304,15 @@ class _Tab extends StatelessWidget {
   }
 }
 
-// only used in drawer
+// The order is important for the drawer scaffold
 enum HomeTab {
   analysis(view: AnalysisView()),
   stock(view: StockView()),
   cashier(view: CashierView()),
-  menu(view: MenuPage(withScaffold: false), action: MenuAction()),
-  transit(view: TransitPage(withScaffold: false)),
   orderAttribute(view: OrderAttributePage(withScaffold: false), action: OrderAttributeAction()),
+  menu(view: MenuPage(withScaffold: false), action: MenuAction()),
   stockQuantity(view: QuantityPage(withScaffold: false), action: QuantityAction()),
+  transit(view: TransitPage(withScaffold: false)),
   settingElf(view: FeatureRequestPage(withScaffold: false)),
   setting(view: FeaturesPage(withScaffold: false));
 

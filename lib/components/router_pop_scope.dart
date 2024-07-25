@@ -24,7 +24,6 @@ class RouterPopScope extends StatefulWidget {
 }
 
 class _RouterPopScopeState extends State<RouterPopScope> {
-  final bool _enable = Platform.isAndroid;
   ModalRoute? _route;
   BackButtonDispatcher? _parentBackBtnDispatcher;
   ChildBackButtonDispatcher? _backBtnDispatcher;
@@ -64,7 +63,7 @@ class _RouterPopScopeState extends State<RouterPopScope> {
   }
 
   void _updateBackButtonDispatcher() {
-    if (!_enable) return;
+    if (!Platform.isAndroid) return;
 
     var dispatcher = Router.maybeOf(context)?.backButtonDispatcher;
     if (dispatcher != _parentBackBtnDispatcher) {
@@ -94,6 +93,6 @@ class _RouterPopScopeState extends State<RouterPopScope> {
     if (_route != null && _route!.isFirst && _route!.isCurrent) {
       widget.onPopInvoked?.call(widget.canPop);
     }
-    return widget.canPop;
+    return !widget.canPop;
   }
 }

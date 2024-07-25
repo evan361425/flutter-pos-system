@@ -130,6 +130,7 @@ class TutorialInTab {
   final int index;
 
   bool hasRegistered = false;
+  bool isShowing = false;
 
   TutorialInTab({
     this.controller,
@@ -152,9 +153,23 @@ class TutorialInTab {
     }
 
     void handler() {
-      if (shouldShow && context.mounted) {
+      // when user quickly swipe the tab, the show will start but the page is changed
+      // monitoring performance will prevent this
+      if (isShowing) {
+        final show = SpotlightShow.maybeOf(context);
+        if (show?.isPerforming == true) {
+          // if performing but should not show, finish the show and start watching again
+          if (!shouldShow) {
+            isShowing = false;
+            show?.finish();
+          }
+        } else {
+          cont?.removeListener(handler);
+          isShowing = false;
+        }
+      } else if (shouldShow && context.mounted) {
         SpotlightShow.maybeOf(context)?.start();
-        cont?.removeListener(handler);
+        isShowing = true;
       }
     }
 
