@@ -59,7 +59,8 @@ class _GoalsCardViewState extends State<GoalsCardView> {
 
     return LayoutBuilder(builder: (context, constraint) {
       final compact = constraint.maxWidth < 600;
-      return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+      final align = goal!.profit == 0 ? MainAxisAlignment.start : MainAxisAlignment.spaceAround;
+      return Row(mainAxisAlignment: align, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
           _GoalItem(
             current: metric.count,

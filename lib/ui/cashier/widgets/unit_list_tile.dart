@@ -6,25 +6,19 @@ import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 
-class UnitListView extends StatelessWidget {
-  final Widget leading;
+class UnitListTile extends StatelessWidget {
+  final CashierUnitObject item;
+  final int index;
 
-  const UnitListView({super.key, required this.leading});
+  const UnitListTile({
+    super.key,
+    required this.item,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final cashier = context.watch<Cashier>();
-    int i = 0;
-
-    return ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
-      leading,
-      for (final item in cashier.currentUnits) _itemWidget(context, item, i++),
-    ]);
-  }
-
-  Widget _itemWidget(BuildContext context, CashierUnitObject item, int index) {
     final max = Cashier.instance.defaultAt(index)?.count ?? 0;
     return ListTile(
       title: Text(S.cashierUnitLabel(item.unit.toCurrencyLong())),

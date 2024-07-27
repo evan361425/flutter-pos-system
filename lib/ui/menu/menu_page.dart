@@ -120,7 +120,7 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      leading: widget.withScaffold
+      action: widget.withScaffold
           ? null
           : const Padding(
               padding: EdgeInsets.fromLTRB(8, 8, 0, 0),

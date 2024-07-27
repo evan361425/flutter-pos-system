@@ -10,7 +10,7 @@ import 'package:possystem/translator.dart';
 
 class MenuCatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
-  final Widget? leading;
+  final Widget? action;
   final Widget? tailing;
   final void Function(Catalog) onSelected;
 
@@ -18,14 +18,14 @@ class MenuCatalogList extends StatelessWidget {
     this.catalogs, {
     super.key,
     required this.onSelected,
-    this.leading,
+    required this.action,
     this.tailing,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Catalog, _Action>(
-      leading: leading,
+      actions: action == null ? const [] : [action!],
       tailing: tailing,
       delegate: SlidableItemDelegate(
         items: catalogs,

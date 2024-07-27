@@ -17,13 +17,15 @@ import 'package:provider/provider.dart';
 
 class OrderAttributeList extends StatelessWidget {
   final List<OrderAttribute> attributes;
-  final Widget? leading;
+
   final Widget tailing;
+
+  final Widget? action;
 
   const OrderAttributeList({
     super.key,
     required this.attributes,
-    this.leading,
+    this.action,
     required this.tailing,
   });
 
@@ -33,10 +35,20 @@ class OrderAttributeList extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
         child: ListView(children: <Widget>[
-          if (leading != null) leading!,
           const SizedBox(height: 8.0),
-          Center(child: HintText(S.totalCount(attributes.length))),
-          const SizedBox(height: 8.0),
+          Row(children: [
+            Expanded(child: Center(child: HintText(S.totalCount(attributes.length)))),
+            if (action != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Material(
+                  elevation: 1.0,
+                  borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                  child: Row(children: [action!]),
+                ),
+              )
+          ]),
+          const SizedBox(height: 4.0),
           for (final attribute in attributes)
             ChangeNotifierProvider<OrderAttribute>.value(
               value: attribute,

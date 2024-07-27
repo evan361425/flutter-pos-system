@@ -9,7 +9,7 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-import 'widgets/unit_list_view.dart';
+import 'widgets/unit_list_tile.dart';
 
 class CashierView extends StatefulWidget {
   final int? tabIndex;
@@ -38,7 +38,21 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-          child: UnitListView(leading: _buildActions()),
+          child: ListenableBuilder(
+            listenable: Cashier.instance,
+            builder: (context, _) {
+              var i = 0;
+              return ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
+                _buildActions(),
+                const SizedBox(height: 4.0),
+                for (final item in Cashier.instance.currentUnits)
+                  UnitListTile(
+                    item: item,
+                    index: i++,
+                  ),
+              ]);
+            },
+          ),
         ),
       ),
     );
@@ -119,7 +133,6 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
                 key: const Key('cashier.defaulter'),
                 tooltip: S.cashierToDefaultTitle,
                 icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border : Icons.star),
-                iconSize: RouteIconButton.iconSize,
                 onPressed: _handleSetDefault,
               ),
             ),
@@ -144,7 +157,6 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
               child: IconButton(
                 key: const Key('cashier.surplus'),
                 icon: const Icon(Icons.coffee_sharp),
-                iconSize: RouteIconButton.iconSize,
                 tooltip: S.cashierSurplusTitle,
                 onPressed: _handleSurplus,
               ),

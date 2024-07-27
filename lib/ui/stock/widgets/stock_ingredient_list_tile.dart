@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/slider_text_dialog.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/empty_body.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -17,70 +15,24 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
-class StockIngredientList extends StatelessWidget {
-  final Widget leading;
+class StockIngredientListTile extends StatelessWidget {
+  final Ingredient item;
 
-  const StockIngredientList({
+  const StockIngredientListTile({
     super.key,
-    required this.leading,
+    required this.item,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: const EdgeInsets.only(bottom: 76, top: 16), children: [
-      leading,
-      const SizedBox(height: 4.0),
-      ListenableBuilder(
-        listenable: Stock.instance,
-        builder: (context, child) {
-          final updatedAt = latestUpdatedAt();
-
-          return Column(
-            children: [
-              Center(
-                child: HintText([
-                  updatedAt == null ? S.stockReplenishmentNever : S.stockUpdatedAt(updatedAt),
-                  S.totalCount(Stock.instance.length),
-                ].join(MetaBlock.string)),
-              ),
-              const SizedBox(height: 2.0),
-              for (final item in Stock.instance.itemList) _IngredientTile(item),
-            ],
-          );
-        },
-      ),
-    ]);
-  }
-
-  DateTime? latestUpdatedAt() {
-    DateTime? latest;
-    for (var ingredient in Stock.instance.items) {
-      if (latest == null) {
-        latest = ingredient.updatedAt;
-      } else if (ingredient.updatedAt?.isAfter(latest) == true) {
-        latest = ingredient.updatedAt;
-      }
-    }
-
-    return latest;
-  }
-}
-
-class _IngredientTile extends StatelessWidget {
-  final Ingredient ingredient;
-
-  const _IngredientTile(this.ingredient);
-
-  @override
-  Widget build(BuildContext context) {
     return ListTile(
-      key: Key('stock.${ingredient.id}'),
-      title: Text(ingredient.name),
-      subtitle: PercentileBar(ingredient.currentAmount, ingredient.maxAmount),
+      key: Key('stock.${item.id}'),
+      title: Text(item.name),
+      subtitle: PercentileBar(item.currentAmount, item.maxAmount),
       onLongPress: () => showActions(context),
       onTap: () => editAmount(context),
       trailing: IconButton(
-        key: Key('stock.${ingredient.id}.edit'),
+        key: Key('stock.${item.id}.edit'),
         tooltip: S.stockIngredientTitleUpdate,
         onPressed: () => editIngredient(context),
         icon: const Icon(KIcons.edit),
@@ -91,18 +43,18 @@ class _IngredientTile extends StatelessWidget {
   void editIngredient(BuildContext context) {
     context.pushNamed(
       Routes.ingredientModal,
-      pathParameters: {'id': ingredient.id},
+      pathParameters: {'id': item.id},
     );
   }
 
   void showActions(BuildContext context) async {
-    final count = Menu.instance.getIngredients(ingredient.id).length;
+    final count = Menu.instance.getIngredients(item.id).length;
     final more = S.stockIngredientDialogDeletionContent(count);
 
     final result = await BottomSheetActions.withDelete<_Actions>(
       context,
       deleteValue: _Actions.delete,
-      warningContent: Text(S.dialogDeletionContent(ingredient.name, '$more\n\n')),
+      warningContent: Text(S.dialogDeletionContent(item.name, '$more\n\n')),
       deleteCallback: delete,
       actions: [
         BottomSheetAction(
@@ -115,7 +67,7 @@ class _IngredientTile extends StatelessWidget {
           title: Text(S.stockIngredientTitleUpdate),
           leading: const Icon(KIcons.edit),
           route: Routes.ingredientModal,
-          routePathParameters: {'id': ingredient.id},
+          routePathParameters: {'id': item.id},
         ),
       ],
     );
@@ -126,8 +78,8 @@ class _IngredientTile extends StatelessWidget {
   }
 
   Future<void> delete() async {
-    await ingredient.remove();
-    return Menu.instance.removeIngredients(ingredient.id);
+    await item.remove();
+    return Menu.instance.removeIngredients(item.id);
   }
 
   Future<void> editAmount(BuildContext context) async {
@@ -136,11 +88,11 @@ class _IngredientTile extends StatelessWidget {
       builder: (BuildContext context) {
         final currentValue = ValueNotifier<String?>(null);
         return SliderTextDialog(
-          title: Text(ingredient.name),
-          value: ingredient.currentAmount.toDouble(),
-          max: ingredient.maxAmount,
+          title: Text(item.name),
+          value: item.currentAmount.toDouble(),
+          max: item.maxAmount,
           builder: (child, onSubmit) => _RestockDialog(
-            ingredient: ingredient,
+            ingredient: item,
             quantityTab: child,
             onSubmit: onSubmit,
             currentValue: currentValue,
@@ -157,7 +109,7 @@ class _IngredientTile extends StatelessWidget {
     );
 
     if (result != null) {
-      await ingredient.setAmount(num.tryParse(result) ?? 0);
+      await item.setAmount(num.tryParse(result) ?? 0);
     }
   }
 }

@@ -30,18 +30,7 @@ class OrderAttributePage extends StatelessWidget {
           )
         : OrderAttributeList(
             attributes: attrs.itemList,
-            leading: withScaffold
-                ? null
-                : const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      Material(
-                        elevation: 1.0,
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        child: _ReorderAction(),
-                      ),
-                    ]),
-                  ),
+            action: withScaffold ? null : const _ReorderAction(),
             tailing: ElevatedButton.icon(
               onPressed: handleCreate,
               label: Text(S.orderAttributeTitleCreate),
