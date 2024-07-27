@@ -46,6 +46,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+          // TODO: action put after metadata or above it
           child: StockIngredientList(leading: _buildActions()),
         ),
       ),

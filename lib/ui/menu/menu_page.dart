@@ -155,11 +155,10 @@ class _MenuPageState extends State<MenuPage> {
       catalog: selected,
       tailing: widget.withScaffold
           ? null
-          : ListTile(
-              leading: const Icon(KIcons.add),
-              title: Text(S.menuProductTitleCreate),
-              tileColor: Theme.of(context).colorScheme.surface,
-              onTap: _handleProductCreate,
+          : ElevatedButton.icon(
+              onPressed: _handleProductCreate,
+              label: Text(S.menuProductTitleCreate),
+              icon: const Icon(KIcons.add),
             ),
     );
   }

@@ -68,7 +68,7 @@ goals:
     title: Cost
   achievedRate:
   - |-
-    Profit Achievement
+    Profit Goal
     {rate}
   - rate:
 chart:
