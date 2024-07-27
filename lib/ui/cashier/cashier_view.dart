@@ -13,6 +13,7 @@ import 'widgets/unit_list_view.dart';
 
 class CashierView extends StatefulWidget {
   final int? tabIndex;
+
   final bool circularActions;
 
   const CashierView({
@@ -118,7 +119,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
                 key: const Key('cashier.defaulter'),
                 tooltip: S.cashierToDefaultTitle,
                 icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border : Icons.star),
-                iconSize: 32,
+                iconSize: RouteIconButton.iconSize,
                 onPressed: _handleSetDefault,
               ),
             ),
@@ -143,7 +144,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
               child: IconButton(
                 key: const Key('cashier.surplus'),
                 icon: const Icon(Icons.coffee_sharp),
-                iconSize: 32,
+                iconSize: RouteIconButton.iconSize,
                 tooltip: S.cashierSurplusTitle,
                 onPressed: _handleSurplus,
               ),

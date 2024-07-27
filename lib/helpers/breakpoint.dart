@@ -63,7 +63,7 @@ enum Breakpoint {
     T? large,
     T? expanded,
     T? medium,
-    T? compact,
+    required T compact,
   }) {
     switch (this) {
       case Breakpoint.extraLarge:

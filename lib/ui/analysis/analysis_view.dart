@@ -3,8 +3,10 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
@@ -14,7 +16,13 @@ import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 class AnalysisView extends StatefulWidget {
   final int? tabIndex;
 
-  const AnalysisView({super.key, this.tabIndex});
+  final bool circularActions;
+
+  const AnalysisView({
+    super.key,
+    this.tabIndex,
+    this.circularActions = true,
+  });
 
   @override
   State<AnalysisView> createState() => _AnalysisViewState();
@@ -35,62 +43,30 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       child: ListenableBuilder(
         listenable: Analysis.instance,
         builder: (context, child) {
-          final items = Analysis.instance.itemList;
-          return CustomScrollView(slivers: <Widget>[
-            child!,
-            _buildChartHeader(),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 76),
-              sliver: SliverList.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: ChartCardView(
-                      chart: items.elementAt(index),
-                      range: range,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ]);
+          return LayoutBuilder(builder: (context, constraints) {
+            final bp = Breakpoint.find(box: constraints);
+            return CustomScrollView(slivers: <Widget>[
+              child!,
+              _buildChartHeader(),
+              _buildCharts(Analysis.instance.itemList, bp),
+            ]);
+          });
         },
         child: SliverList.list(children: [
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Tutorial(
-                  id: 'anal.add_chart',
-                  title: S.analysisChartTutorialTitle,
-                  message: S.analysisChartTutorialContent,
-                  child: RouteCircularButton(
-                    key: const Key('anal.add_chart'),
-                    route: Routes.chartNew,
-                    icon: KIcons.add,
-                    text: S.analysisChartTitleCreate,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Expanded(
-                child: RouteCircularButton(
-                  key: const Key('anal.history'),
-                  icon: Icons.calendar_month_sharp,
-                  route: Routes.history,
-                  text: S.analysisHistoryBtn,
-                ),
-              ),
-            ],
+          GoalsCardView(
+            action: RouteIconButton(
+              key: const Key('anal.history'),
+              route: Routes.history,
+              icon: const Icon(Icons.calendar_month_sharp),
+              tooltip: S.analysisHistoryBtn,
+            ),
           ),
-          const GoalsCardView(),
         ]),
       ),
     );
   }
 
-  SliverAppBar _buildChartHeader() {
+  Widget _buildChartHeader() {
     return SliverAppBar(
       pinned: true,
       // avoid drawer take precedence
@@ -98,6 +74,19 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       leading: const SizedBox.shrink(),
       title: Text(S.analysisChartTitle),
       toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
+      actions: [
+        Tutorial(
+          id: 'anal.add_chart',
+          title: S.analysisChartTutorialTitle,
+          message: S.analysisChartTutorialContent,
+          child: RouteIconButton(
+            key: const Key('anal.add_chart'),
+            route: Routes.chartNew,
+            icon: const Icon(KIcons.add),
+            tooltip: S.analysisChartTitleCreate,
+          ),
+        ),
+      ],
       bottom: AppBar(
         primary: false,
         centerTitle: false,
@@ -108,9 +97,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           builder: (context, child) => TextButton(
             key: const Key('anal.chart_range'),
             onPressed: _goToChartRange,
-            child: Text(
-              range.value.format(S.localeName),
-            ),
+            child: Text(range.value.format(S.localeName)),
           ),
         ),
         actions: [
@@ -132,6 +119,26 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             icon: const Icon(Icons.settings_sharp),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCharts(List<Chart> items, Breakpoint bp) {
+    return SliverPadding(
+      padding: const EdgeInsets.only(bottom: 76),
+      sliver: SliverGrid.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: bp.lookup<int>(expanded: 2, large: 3, compact: 1),
+        ),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return Center(
+            child: ChartCardView(
+              chart: items.elementAt(index),
+              range: range,
+            ),
+          );
+        },
       ),
     );
   }

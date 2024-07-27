@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/circular_loading.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -19,6 +20,8 @@ class ReloadableCard<T> extends StatefulWidget {
 
   final bool wrappedByCard;
 
+  final Widget? action;
+
   const ReloadableCard({
     super.key,
     required this.id,
@@ -27,6 +30,7 @@ class ReloadableCard<T> extends StatefulWidget {
     this.title,
     this.notifiers,
     this.wrappedByCard = true,
+    this.action,
   });
 
   @override
@@ -49,15 +53,22 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(children: [
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 432),
-        child: SizedBox(
-          width: double.infinity,
-          child: buildWrapper(buildTarget()),
+    return Column(children: [
+      if (widget.title != null)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
+          child: buildTitle(),
         ),
-      ),
-      if (reloadable) buildReloading(),
+      Stack(children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+          child: SizedBox(
+            width: double.infinity,
+            child: buildWrapper(buildTarget()),
+          ),
+        ),
+        if (reloadable) buildReloading(),
+      ]),
     ]);
   }
 
@@ -101,18 +112,12 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
     if (widget.wrappedByCard) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.title != null) buildTitle(),
-            Card(
-              margin: const EdgeInsets.only(top: 8.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: child,
-              ),
-            ),
-          ],
+        child: Card(
+          margin: const EdgeInsets.only(top: 8.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: child,
+          ),
         ),
       );
     }
@@ -124,10 +129,14 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   }
 
   Widget buildTitle() {
-    return Text(
-      widget.title!,
-      style: Theme.of(context).textTheme.headlineSmall,
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text(
+        widget.title!,
+        style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24),
+        overflow: TextOverflow.ellipsis,
+      ),
+      if (widget.action != null) widget.action!,
+    ]);
   }
 
   Widget buildReloading() {
