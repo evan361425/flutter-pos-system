@@ -8,14 +8,14 @@ import 'package:possystem/translator.dart';
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
   final String? hintText;
-  final Widget? leading;
+  final List<Widget> actions;
   final Widget? tailing;
 
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
-    this.leading,
+    this.actions = const <Widget>[],
     this.tailing,
   });
 
@@ -24,13 +24,20 @@ class SlidableItemList<T, Action> extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 76),
       children: <Widget>[
-        if (leading != null) leading!,
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: HintText(hintText ?? S.totalCount(delegate.items.length)),
-          ),
-        ),
+        const SizedBox(height: 2.0),
+        Row(children: [
+          Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+          if (actions.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Material(
+                elevation: 1.0,
+                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                child: Row(children: actions),
+              ),
+            ),
+        ]),
+        const SizedBox(height: 4.0),
         for (final widget in delegate.items.mapIndexed(
           (index, item) => delegate.build(context, item, index),
         ))

@@ -65,8 +65,6 @@ class RouteIconButton extends StatelessWidget {
   final String route;
   final bool popTrueShowSuccess;
 
-  static const iconSize = 28.0;
-
   const RouteIconButton({
     super.key,
     required this.tooltip,
@@ -79,7 +77,6 @@ class RouteIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       tooltip: tooltip,
-      iconSize: iconSize,
       onPressed: () async {
         final result = await context.pushNamed(route);
         if (result == true && popTrueShowSuccess) {
