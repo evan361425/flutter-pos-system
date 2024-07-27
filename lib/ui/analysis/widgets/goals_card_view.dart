@@ -47,7 +47,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     final enabled = Cache.instance.get<bool>('analysis.goals');
     // If the user disabled the goals, we don't need to load the data.
     // which is currently only option(goals is a beta feature).
-    if (enabled == true) {
+    if (enabled != true) {
       goal = OrderSummary(at: DateTime(0));
     }
 
