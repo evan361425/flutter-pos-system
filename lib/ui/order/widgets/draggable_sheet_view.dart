@@ -116,7 +116,11 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     ]);
 
     Cart.instance.addListener(showStateSelectorIfStartOrder);
-    widget.resetNotifier?.addListener(() => controller.reset());
+    widget.resetNotifier?.addListener(() {
+      if (controller.isAttached) {
+        controller.reset();
+      }
+    });
   }
 
   @override
@@ -128,7 +132,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
 
   void showStateSelectorIfStartOrder() {
     // first order
-    if (Cart.instance.products.length == 1 && controller.snapIndex.value == 0) {
+    if (controller.isAttached && Cart.instance.products.length == 1 && controller.snapIndex.value == 0) {
       controller.jumpTo(controller.snapSizes[1]);
     }
   }

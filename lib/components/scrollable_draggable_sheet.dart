@@ -174,15 +174,17 @@ class ScrollableDraggableController extends DraggableScrollableController implem
   double get maxSnap => snapSizes[snapSizes.length - 1];
 
   Future<void> animateToClosestSnap(double velocity) async {
-    final index = getNextSnapIndex(velocity);
-    await animateTo(
-      snapSizes[index],
-      duration: const Duration(milliseconds: 120),
-      curve: Curves.bounceOut,
-    );
-    // only update the value after correctly move to target
-    isDrag = false;
-    snapIndex.value = index;
+    if (isAttached) {
+      final index = getNextSnapIndex(velocity);
+      await animateTo(
+        snapSizes[index],
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.bounceOut,
+      );
+      // only update the value after correctly move to target
+      isDrag = false;
+      snapIndex.value = index;
+    }
   }
 
   void updateSnapIndex(double size) {

@@ -159,7 +159,7 @@ class TransitOrderList extends StatelessWidget {
           child: Linkify.fromString([
             S.transitOrderCapacityContent,
             if (warning != null) '\n$warning',
-          ].join()),
+          ].join('')),
         )
       ]),
     ]);
