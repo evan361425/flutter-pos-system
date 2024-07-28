@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 
 import 'dialog/delete_dialog.dart';
 
@@ -13,6 +14,42 @@ Future<T?> showCircularBottomSheet<T>(
   final size = MediaQuery.sizeOf(context);
   // TODO: show menu if in medium screen as m3 recommended:
   // https://m3.material.io/foundations/layout/applying-layout/window-size-classes
+  final bp = Breakpoint.find(width: size.width);
+
+  if (bp <= Breakpoint.compact) {
+    // copy from [flutter/src/material/popup_menu.dart]
+    final RenderBox widget = context.findRenderObject()! as RenderBox;
+    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final Offset offset = Offset(0.0, widget.size.height);
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        widget.localToGlobal(offset, ancestor: overlay),
+        widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      clipBehavior: Clip.hardEdge,
+      items: <PopupMenuEntry<T>>[
+        for (final action in actions)
+          PopupMenuItem(
+            value: action.returnValue,
+            onTap: () => action.onTap(context),
+            child: Row(children: [
+              if (action.leading != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: action.leading!,
+                ),
+              action.title,
+            ]),
+          ),
+      ],
+    );
+  }
 
   return showModalBottomSheet<T>(
     context: context,
@@ -59,20 +96,22 @@ class BottomSheetAction<T> {
       enableFeedback: true,
       leading: leading,
       title: title,
-      onTap: () {
-        if (route == null) {
-          // pop off bottom sheet
-          Navigator.of(context).pop(returnValue);
-          return;
-        }
+      onTap: () => onTap(context),
+    );
+  }
 
-        Navigator.of(context).pop();
-        context.pushNamed(
-          route!,
-          pathParameters: routePathParameters,
-          queryParameters: routeQueryParameters,
-        );
-      },
+  void onTap(BuildContext context) {
+    if (route == null) {
+      // pop off bottom sheet
+      Navigator.of(context).pop(returnValue);
+      return;
+    }
+
+    Navigator.of(context).pop();
+    context.pushNamed(
+      route!,
+      pathParameters: routePathParameters,
+      queryParameters: routeQueryParameters,
     );
   }
 }
