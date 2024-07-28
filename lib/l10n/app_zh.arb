@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-24T06:05:55.104510Z",
+  "@@last_modified": "2024-07-28T03:26:15.201562Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1164,7 +1164,7 @@
   "orderAttributeDescription": "內用、外帶等幫助分析的資訊",
   "orderAttributeTitleCreate": "新增顧客設定",
   "orderAttributeTitleUpdate": "編輯顧客設定",
-  "orderAttributeTitleReorder": "排序顧客設定",
+  "orderAttributeTitleReorder": "排序",
   "orderAttributeEmptyBody": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。",
   "orderAttributeHeaderInfo": "顧客設定",
   "@orderAttributeHeaderInfo": {
