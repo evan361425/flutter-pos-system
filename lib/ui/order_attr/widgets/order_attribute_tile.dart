@@ -4,71 +4,29 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/buttons.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 
-class OrderAttributeList extends StatelessWidget {
-  final List<OrderAttribute> attributes;
+class OrderAttributeTile extends StatelessWidget {
+  final OrderAttribute attr;
 
-  final Widget tailing;
-
-  final Widget? action;
-
-  const OrderAttributeList({
-    super.key,
-    required this.attributes,
-    this.action,
-    required this.tailing,
-  });
+  const OrderAttributeTile({super.key, required this.attr});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-        child: ListView(children: <Widget>[
-          const SizedBox(height: 8.0),
-          Row(children: [
-            Expanded(child: Center(child: HintText(S.totalCount(attributes.length)))),
-            if (action != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Material(
-                  elevation: 1.0,
-                  borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                  child: Row(children: [action!]),
-                ),
-              )
-          ]),
-          const SizedBox(height: 4.0),
-          for (final attribute in attributes)
-            ChangeNotifierProvider<OrderAttribute>.value(
-              value: attribute,
-              child: const _OrderAttributeCard(),
-            ),
-          tailing,
-          // Floating action button offset
-          const SizedBox(height: 72.0),
-        ]),
-      ),
+    return ListenableBuilder(
+      listenable: attr,
+      builder: (context, child) => _buildTile(context),
     );
   }
-}
 
-class _OrderAttributeCard extends StatelessWidget {
-  const _OrderAttributeCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final attr = context.watch<OrderAttribute>();
+  Widget _buildTile(BuildContext context) {
     final key = 'order_attributes.${attr.id}';
     final theme = Theme.of(context);
     final subtitle = RichText(
@@ -97,14 +55,34 @@ class _OrderAttributeCard extends StatelessWidget {
       subtitle: subtitle,
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        buildActions(context, attr),
-        const SizedBox(height: 12.0),
+        _buildActions(context),
+        const SizedBox(height: kInternalLargeSpacing),
         for (final item in attr.itemList) _OptionTile(item),
       ],
     );
   }
 
-  void showActions(BuildContext context, OrderAttribute attr) {
+  Widget _buildActions(BuildContext context) {
+    return Row(children: [
+      Expanded(
+        child: ElevatedButton.icon(
+          onPressed: () => context.pushNamed(
+            Routes.orderAttrNew,
+            queryParameters: {'id': attr.id},
+          ),
+          label: Text(S.orderAttributeOptionTitleCreate),
+          icon: const Icon(KIcons.add),
+        ),
+      ),
+      const SizedBox(width: kInternalSpacing),
+      EntryMoreButton(
+        key: Key('$key.more'),
+        onPressed: () => _showActions(context),
+      ),
+    ]);
+  }
+
+  void _showActions(BuildContext context) {
     BottomSheetActions.withDelete<int>(
       context,
       deleteValue: 0,
@@ -125,26 +103,6 @@ class _OrderAttributeCard extends StatelessWidget {
       warningContent: Text(S.dialogDeletionContent(attr.name, '')),
       deleteCallback: () => attr.remove(),
     );
-  }
-
-  Widget buildActions(BuildContext context, OrderAttribute attr) {
-    return Row(children: [
-      Expanded(
-        child: ElevatedButton.icon(
-          onPressed: () => context.pushNamed(
-            Routes.orderAttrNew,
-            queryParameters: {'id': attr.id},
-          ),
-          label: Text(S.orderAttributeOptionTitleCreate),
-          icon: const Icon(KIcons.add),
-        ),
-      ),
-      const SizedBox(width: 8.0),
-      EntryMoreButton(
-        key: Key('$key.more'),
-        onPressed: () => showActions(context, attr),
-      ),
-    ]);
   }
 }
 

@@ -45,10 +45,10 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
         widget.attribute.name,
         style: Theme.of(context).textTheme.headlineSmall,
       ),
-      const SizedBox(height: kSpacing0),
+      const SizedBox(height: kInternalSpacing),
       Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 14.0, 10.0, 14.0),
-        child: Wrap(spacing: kSpacing0, children: [
+        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+        child: Wrap(spacing: kInternalSpacing, children: [
           for (final option in widget.attribute.itemList)
             ChoiceChip(
               key: Key('order.attr.${widget.attribute.id}.${option.id}'),
@@ -61,6 +61,7 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
             )
         ]),
       ),
+      const SizedBox(height: kInternalLargeSpacing),
     ]);
   }
 

@@ -4,6 +4,7 @@ import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -120,10 +121,10 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      action: widget.withScaffold
+      leading: widget.withScaffold
           ? null
           : const Padding(
-              padding: EdgeInsets.fromLTRB(8, 8, 0, 0),
+              padding: EdgeInsets.only(left: kHorizontalSpacing),
               child: _SearchAction(withTextFiled: true),
             ),
       onSelected: _handleSelected,

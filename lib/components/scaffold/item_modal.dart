@@ -32,7 +32,10 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
       child: Form(
         key: formKey,
         child: Column(
-          children: buildFormFields()..add(const SizedBox(height: 76)),
+          children: [
+            ...buildFormFields(),
+            const SizedBox(height: kFABSpacing),
+          ],
         ),
       ),
     );
@@ -71,7 +74,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Padding widget
   Widget p(Widget child) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
       child: child,
     );
   }

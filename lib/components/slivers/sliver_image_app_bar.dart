@@ -34,7 +34,6 @@ class SliverImageAppBar extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
-        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
         background: model.useDefaultImage ? background : Hero(tag: model, child: background),
       ),
       actions: actions,

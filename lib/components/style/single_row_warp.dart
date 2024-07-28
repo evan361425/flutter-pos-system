@@ -21,9 +21,9 @@ class SingleRowWrap extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kSpacing1),
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
           child: Wrap(
-            spacing: kSpacing1,
+            spacing: kInternalSpacing,
             children: children,
           ),
         ),

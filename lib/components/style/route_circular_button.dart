@@ -1,60 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/translator.dart';
 
-class RouteCircularButton extends StatelessWidget {
-  final String text;
-
-  final IconData icon;
+class RouteElevatedIconButton extends StatelessWidget {
+  final Icon icon;
 
   final String? route;
 
+  final String label;
+
   final bool popTrueShowSuccess;
 
-  final VoidCallback? onTap;
-
-  const RouteCircularButton({
+  const RouteElevatedIconButton({
     super.key,
-    required this.text,
     required this.icon,
-    this.route,
+    required this.route,
+    required this.label,
     this.popTrueShowSuccess = false,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: text, // text will be ellipsis, so show full text in tooltip
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(14),
-              maximumSize: const Size(96, 96),
-            ),
-            onPressed: onTap ??
-                () async {
-                  final result = await context.pushNamed(route!);
-                  if (result == true && popTrueShowSuccess) {
-                    if (context.mounted) {
-                      showSnackBar(context, S.actSuccess);
-                    }
-                  }
-                },
-            child: Icon(icon, size: 32),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            text,
-            style: const TextStyle(overflow: TextOverflow.ellipsis),
-          ),
-        ],
-      ),
+    return ElevatedButton.icon(
+      icon: icon,
+      label: Text(label),
+      onPressed: () async {
+        final result = await context.pushNamed(route!);
+        if (result == true && popTrueShowSuccess) {
+          if (context.mounted) {
+            showSnackBar(context, S.actSuccess);
+          }
+        }
+      },
     );
   }
 }
@@ -62,30 +41,42 @@ class RouteCircularButton extends StatelessWidget {
 class RouteIconButton extends StatelessWidget {
   final String tooltip;
   final Icon icon;
-  final String route;
+  final String? route;
+  final VoidCallback? onPressed;
   final bool popTrueShowSuccess;
 
   const RouteIconButton({
     super.key,
     required this.tooltip,
     required this.icon,
-    required this.route,
+    this.route,
+    this.onPressed,
     this.popTrueShowSuccess = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    final iconWithLabel = bp <= Breakpoint.medium
+        ? icon
+        : Row(children: [
+            icon,
+            const SizedBox(width: 4),
+            Text(tooltip),
+          ]);
+
     return IconButton(
       tooltip: tooltip,
-      onPressed: () async {
-        final result = await context.pushNamed(route);
-        if (result == true && popTrueShowSuccess) {
-          if (context.mounted) {
-            showSnackBar(context, S.actSuccess);
-          }
-        }
-      },
-      icon: icon,
+      onPressed: onPressed ??
+          () async {
+            final result = await context.pushNamed(route!);
+            if (result == true && popTrueShowSuccess) {
+              if (context.mounted) {
+                showSnackBar(context, S.actSuccess);
+              }
+            }
+          },
+      icon: iconWithLabel,
     );
   }
 }
