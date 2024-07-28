@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-24T06:05:55.078189Z",
+  "@@last_modified": "2024-07-28T03:26:15.159222Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1164,7 +1164,7 @@
   "orderAttributeDescription": "Information for analysis such as dine-in, takeout, etc.",
   "orderAttributeTitleCreate": "Add Customer Setting",
   "orderAttributeTitleUpdate": "Edit Customer Setting",
-  "orderAttributeTitleReorder": "Reorder Customer Settings",
+  "orderAttributeTitleReorder": "Reorder",
   "orderAttributeEmptyBody": "Customer settings help us track who comes to consume, such as:\n20-30 years old, takeout, office workers, etc.",
   "orderAttributeHeaderInfo": "Customer Settings",
   "@orderAttributeHeaderInfo": {
@@ -1860,7 +1860,7 @@
   "analysisGoalsProfitTitle": "Profit",
   "analysisGoalsProfitDescription": "Profit is the balance after deducting operating costs from operating income and is crucial for the company's ongoing operations.\nProfit directly reflects operational efficiency and cost management capabilities.\nUnlike revenue, profit considers the business expenses, including raw material costs, labor, rent, etc.\nIt's a more practical indicator that helps you evaluate the effectiveness and sustainability of operations.",
   "analysisGoalsCostTitle": "Cost",
-  "analysisGoalsAchievedRate": "Profit Achievement\n{rate}",
+  "analysisGoalsAchievedRate": "Profit Goal\n{rate}",
   "@analysisGoalsAchievedRate": {
     "placeholders": {
       "rate": {
