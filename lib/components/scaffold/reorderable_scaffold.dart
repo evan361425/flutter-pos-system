@@ -50,7 +50,7 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
         children: [
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(kSpacing0),
+              padding: const EdgeInsets.only(top: kTopSpacing, bottom: kInternalSpacing),
               child: HintText(S.totalCount(widget.items.length)),
             ),
           ),

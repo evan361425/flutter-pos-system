@@ -21,7 +21,7 @@ class OrderProductListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kSpacing1),
+      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
       child: _buildView(context),
     );
   }
@@ -33,6 +33,7 @@ class OrderProductListView extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        // each width should between 200 and 320
         return _buildGridView(Breakpoint.find(box: constraints).lookup(
           compact: 2,
           medium: 3,

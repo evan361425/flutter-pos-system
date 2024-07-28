@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
@@ -16,12 +17,9 @@ import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 class AnalysisView extends StatefulWidget {
   final int? tabIndex;
 
-  final bool circularActions;
-
   const AnalysisView({
     super.key,
     this.tabIndex,
-    this.circularActions = true,
   });
 
   @override
@@ -125,13 +123,27 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
 
   Widget _buildCharts(List<Chart> items, Breakpoint bp) {
     return SliverPadding(
-      padding: const EdgeInsets.only(bottom: 76),
+      padding: const EdgeInsets.only(bottom: kFABSpacing),
       sliver: SliverGrid.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: bp.lookup<int>(expanded: 2, large: 3, compact: 1),
         ),
-        itemCount: items.length,
+        itemCount: items.length + 1,
         itemBuilder: (context, index) {
+          if (index == items.length) {
+            return Center(
+              child: SizedBox(
+                width: 200,
+                height: 200,
+                child: RouteElevatedIconButton(
+                  icon: const Icon(KIcons.add),
+                  route: Routes.chartNew,
+                  label: S.analysisChartTitleCreate,
+                ),
+              ),
+            );
+          }
+
           return Center(
             child: ChartCardView(
               chart: items.elementAt(index),

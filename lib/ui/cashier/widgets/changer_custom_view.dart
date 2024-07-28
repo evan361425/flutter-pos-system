@@ -75,7 +75,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     final targetEntries = <Widget>[
       for (var entry in targets.asMap().entries)
         Padding(
-          padding: const EdgeInsets.only(top: kSpacing1),
+          padding: const EdgeInsets.only(top: kInternalSpacing),
           child: _wrapInRow(
               TextFormField(
                 key: Key('changer.custom.target.${entry.key}.count'),
@@ -93,7 +93,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                 style: Theme.of(context).textTheme.bodyMedium,
                 onChanged: (value) => setState(() => entry.value.unit = value),
                 onSaved: (value) => entry.value.unit = value,
-                items: ChangerCustomViewState._unitDropdownMenuItems(),
+                items: _unitDropdownMenuItems(),
               ),
               entry.key == 0
                   ? null
@@ -110,7 +110,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
 
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(kSpacing2),
+        padding: const EdgeInsets.all(kTopSpacing),
         child: Form(
           key: formKey,
           child: Column(
@@ -135,7 +135,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
               ),
               ...targetEntries,
               // add bottom
-              const SizedBox(height: kSpacing1),
+              const SizedBox(height: kInternalSpacing),
               OutlinedButton.icon(
                 onPressed: () => setState(() {
                   targets.add(CashierChangeEntryObject());
@@ -273,7 +273,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   Widget _wrapInRow(Widget a, Widget b, [Widget? c]) {
     return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
       Flexible(flex: 1, child: a),
-      const SizedBox(width: kSpacing1),
+      const SizedBox(width: kInternalSpacing),
       Flexible(flex: 1, child: b),
       if (c != null) c,
     ]);
@@ -286,7 +286,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     });
   }
 
-  static List<DropdownMenuItem<num>> _unitDropdownMenuItems() {
+  List<DropdownMenuItem<num>> _unitDropdownMenuItems() {
     return CurrencySetting.instance.unitList.map((unit) {
       return DropdownMenuItem(value: unit, child: Text(unit.toString()));
     }).toList();

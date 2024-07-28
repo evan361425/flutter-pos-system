@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
   final String? hintText;
   final List<Widget> actions;
+  final Widget? leading;
   final Widget? tailing;
 
   const SlidableItemList({
@@ -16,20 +18,21 @@ class SlidableItemList<T, Action> extends StatelessWidget {
     required this.delegate,
     this.hintText,
     this.actions = const <Widget>[],
+    this.leading,
     this.tailing,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.only(bottom: 76),
+      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
       children: <Widget>[
-        const SizedBox(height: 2.0),
+        if (leading != null) leading!,
         Row(children: [
           Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
           if (actions.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+              padding: const EdgeInsets.only(right: kHorizontalSpacing),
               child: Material(
                 elevation: 1.0,
                 borderRadius: const BorderRadius.all(Radius.circular(6.0)),
@@ -37,7 +40,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
               ),
             ),
         ]),
-        const SizedBox(height: 4.0),
+        const SizedBox(height: kInternalSpacing),
         for (final widget in delegate.items.mapIndexed(
           (index, item) => delegate.build(context, item, index),
         ))

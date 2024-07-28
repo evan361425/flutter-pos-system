@@ -353,19 +353,19 @@ class _Tab extends StatelessWidget {
 // The order is important for the drawer scaffold
 enum HomeTab {
   analysis(
-    view: AnalysisView(circularActions: false),
+    view: AnalysisView(),
     icon: Icons.analytics_outlined,
     selectedIcon: Icons.analytics,
     important: true,
   ),
   stock(
-    view: StockView(circularActions: false),
+    view: StockView(),
     icon: Icons.inventory_outlined,
     selectedIcon: Icons.inventory,
     important: true,
   ),
   cashier(
-    view: CashierView(circularActions: false),
+    view: CashierView(),
     icon: Icons.monetization_on_outlined,
     selectedIcon: Icons.monetization_on,
     important: true,

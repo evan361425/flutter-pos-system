@@ -10,7 +10,9 @@ Future<T?> showCircularBottomSheet<T>(
   bool useRootNavigator = true,
 }) {
   Feedback.forLongPress(context);
-  final size = MediaQuery.of(context).size;
+  final size = MediaQuery.sizeOf(context);
+  // TODO: show menu if in medium screen as m3 recommended:
+  // https://m3.material.io/foundations/layout/applying-layout/window-size-classes
 
   return showModalBottomSheet<T>(
     context: context,

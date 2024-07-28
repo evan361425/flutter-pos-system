@@ -62,10 +62,9 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
     );
 
     return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(kSpacing1),
-        child: HintText(S.cashierChangerFavoriteHint),
-      ),
+      const SizedBox(height: kTopSpacing),
+      HintText(S.cashierChangerFavoriteHint),
+      const SizedBox(height: kInternalSpacing),
       Expanded(child: SlidableItemList(delegate: delegate)),
     ]);
   }
