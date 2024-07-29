@@ -42,7 +42,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
         ]),
         const SizedBox(height: kInternalSpacing),
         for (final widget in delegate.items.mapIndexed(
-          (index, item) => delegate.build(context, item, index),
+          (index, item) => delegate.build(item, index),
         ))
           widget,
         if (tailing != null) tailing!,
@@ -51,15 +51,12 @@ class SlidableItemList<T, Action> extends StatelessWidget {
   }
 }
 
+typedef ActorBuilder = void Function([BuildContext?]) Function(BuildContext context);
+
 class SlidableItemDelegate<T, U> {
   final List<T> items;
 
-  final Widget Function(
-    BuildContext context,
-    T item,
-    int index,
-    VoidCallback showActions,
-  ) tileBuilder;
+  final Widget Function(T item, int index, ActorBuilder actorBuilder) tileBuilder;
 
   final Future<void> Function(T item) handleDelete;
 
@@ -85,22 +82,20 @@ class SlidableItemDelegate<T, U> {
     this.handleAction,
   });
 
-  Widget build(
-    BuildContext context,
-    T item,
-    int index,
-  ) {
-    return SlideToDelete(
-      item: item,
-      deleteCallback: () => handleDelete(item),
-      warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
-      child: tileBuilder(
-        context,
-        item,
-        index,
-        () => showActions(context, item),
-      ),
-    );
+  Widget build(T item, int index) {
+    // using builder to create context for correct position to show menu
+    return Builder(builder: (context) {
+      return SlideToDelete(
+        item: item,
+        deleteCallback: () => handleDelete(item),
+        warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
+        child: tileBuilder(
+          item,
+          index,
+          (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
+        ),
+      );
+    });
   }
 
   Future<void> showActions(BuildContext context, T item) async {

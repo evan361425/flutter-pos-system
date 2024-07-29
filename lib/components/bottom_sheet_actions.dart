@@ -12,56 +12,55 @@ Future<T?> showCircularBottomSheet<T>(
 }) {
   Feedback.forLongPress(context);
   final size = MediaQuery.sizeOf(context);
-  // TODO: show menu if in medium screen as m3 recommended:
-  // https://m3.material.io/foundations/layout/applying-layout/window-size-classes
   final bp = Breakpoint.find(width: size.width);
 
   if (bp <= Breakpoint.compact) {
-    // copy from [flutter/src/material/popup_menu.dart]
-    final RenderBox widget = context.findRenderObject()! as RenderBox;
-    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-    final Offset offset = Offset(0.0, widget.size.height);
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        widget.localToGlobal(offset, ancestor: overlay),
-        widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    showMenu(
+    return showModalBottomSheet<T>(
       context: context,
-      position: position,
+      useRootNavigator: useRootNavigator,
       clipBehavior: Clip.hardEdge,
-      items: <PopupMenuEntry<T>>[
-        for (final action in actions)
-          PopupMenuItem(
-            value: action.returnValue,
-            onTap: () => action.onTap(context),
-            child: Row(children: [
-              if (action.leading != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: action.leading!,
-                ),
-              action.title,
-            ]),
-          ),
-      ],
+      constraints: BoxConstraints(maxWidth: size.width - 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => SingleChildScrollView(
+        child: BottomSheetActions(actions: actions),
+      ),
     );
   }
 
-  return showModalBottomSheet<T>(
+  // copy from [flutter/src/material/popup_menu.dart]
+  final RenderBox widget = context.findRenderObject()! as RenderBox;
+  final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+  final Offset offset = Offset(0, widget.size.height);
+  final RelativeRect position = RelativeRect.fromRect(
+    Rect.fromPoints(
+      widget.localToGlobal(offset, ancestor: overlay),
+      widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+    ),
+    Offset.zero & overlay.size,
+  );
+
+  return showMenu(
     context: context,
+    position: position,
     useRootNavigator: useRootNavigator,
     clipBehavior: Clip.hardEdge,
-    constraints: BoxConstraints(maxWidth: size.width - 24),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    useSafeArea: true,
-    isScrollControlled: true,
-    builder: (context) => SingleChildScrollView(
-      child: BottomSheetActions(actions: actions),
-    ),
+    items: <PopupMenuEntry<T>>[
+      for (final action in actions)
+        PopupMenuItem(
+          value: action.returnValue,
+          onTap: () => action.onTap(context),
+          child: Row(children: [
+            if (action.leading != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: action.leading!,
+              ),
+            action.title,
+          ]),
+        ),
+    ],
   );
 }
 

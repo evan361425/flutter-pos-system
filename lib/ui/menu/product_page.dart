@@ -116,7 +116,7 @@ class _ProductPageState extends State<ProductPage> {
     super.dispose();
   }
 
-  void _showActions() async {
+  void _showActions(BuildContext context) async {
     final result = await BottomSheetActions.withDelete<_Action>(
       context,
       deleteCallback: widget.product.remove,

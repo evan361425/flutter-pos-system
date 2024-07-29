@@ -109,13 +109,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             iconSize: 16,
             icon: const Icon(Icons.arrow_forward_ios_sharp),
           ),
-          IconButton(
-            onPressed: _showActions,
-            enableFeedback: true,
-            iconSize: 16,
-            tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-            icon: const Icon(Icons.settings_sharp),
-          ),
+          _MoreButton(),
         ],
       ),
     );
@@ -192,22 +186,31 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       days: interval,
     );
   }
+}
 
-  void _showActions() async {
-    await showCircularBottomSheet<int>(
-      context,
-      actions: <BottomSheetAction<int>>[
-        BottomSheetAction(
-          title: Text(S.analysisChartTitleReorder),
-          leading: const Icon(KIcons.reorder),
-          route: Routes.chartReorder,
-        ),
-        BottomSheetAction(
-          title: Text(S.analysisChartTitleCreate),
-          leading: const Icon(KIcons.add),
-          route: Routes.chartNew,
-        ),
-      ],
+class _MoreButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => showCircularBottomSheet<int>(
+        context,
+        actions: <BottomSheetAction<int>>[
+          BottomSheetAction(
+            title: Text(S.analysisChartTitleReorder),
+            leading: const Icon(KIcons.reorder),
+            route: Routes.chartReorder,
+          ),
+          BottomSheetAction(
+            title: Text(S.analysisChartTitleCreate),
+            leading: const Icon(KIcons.add),
+            route: Routes.chartNew,
+          ),
+        ],
+      ),
+      enableFeedback: true,
+      iconSize: 16,
+      tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+      icon: const Icon(Icons.settings_sharp),
     );
   }
 }

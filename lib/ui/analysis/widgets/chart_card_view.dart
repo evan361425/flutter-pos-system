@@ -42,10 +42,7 @@ class ChartCardView extends StatelessWidget {
                 ),
               ),
             ),
-            MoreButton(
-              key: Key('chart.${chart.id}.more'),
-              onPressed: () => _showActions(context),
-            ),
+            _MoreButton(chart),
           ]),
           buildChart(context, metric),
         ]);
@@ -76,23 +73,6 @@ class ChartCardView extends StatelessWidget {
           metrics: metrics as List<OrderMetricPerItem>,
         );
     }
-  }
-
-  void _showActions(BuildContext context) async {
-    await BottomSheetActions.withDelete<int>(
-      context,
-      deleteCallback: chart.remove,
-      deleteValue: 0,
-      warningContent: Text(S.dialogDeletionContent(chart.name, '')),
-      actions: <BottomSheetAction<int>>[
-        BottomSheetAction(
-          title: Text(S.analysisChartCardTitleUpdate),
-          leading: const Icon(KIcons.modal),
-          route: Routes.chartModal,
-          routePathParameters: {'id': chart.id},
-        ),
-      ],
-    );
   }
 }
 
@@ -229,6 +209,38 @@ class _CircularChart extends StatelessWidget {
             overflowMode: OverflowMode.shift,
             labelIntersectAction: LabelIntersectAction.none,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+// Separate the more button to correct showMenu position
+class _MoreButton extends StatelessWidget {
+  final Chart chart;
+
+  const _MoreButton(this.chart);
+
+  @override
+  Widget build(BuildContext context) {
+    return MoreButton(
+      key: Key('chart.${chart.id}.more'),
+      onPressed: _showActions,
+    );
+  }
+
+  void _showActions(BuildContext context) async {
+    await BottomSheetActions.withDelete<int>(
+      context,
+      deleteCallback: chart.remove,
+      deleteValue: 0,
+      warningContent: Text(S.dialogDeletionContent(chart.name, '')),
+      actions: <BottomSheetAction<int>>[
+        BottomSheetAction(
+          title: Text(S.analysisChartCardTitleUpdate),
+          leading: const Icon(KIcons.modal),
+          route: Routes.chartModal,
+          routePathParameters: {'id': chart.id},
         ),
       ],
     );

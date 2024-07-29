@@ -121,7 +121,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     spreadsheet = widget.defaultSpreadsheet;
   }
 
-  Future<void> showActions() async {
+  void showActions(BuildContext context) async {
     final selected = await showCircularBottomSheet<_ActionTypes>(
       context,
       actions: <BottomSheetAction<_ActionTypes>>[

@@ -30,7 +30,7 @@ class MenuCatalogList extends StatelessWidget {
       delegate: SlidableItemDelegate(
         items: catalogs,
         deleteValue: _Action.delete,
-        tileBuilder: _tileBuilder,
+        tileBuilder: (catalog, _, actorBuilder) => _Tile(catalog, actorBuilder, onSelected),
         warningContentBuilder: _warningContentBuilder,
         actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
           BottomSheetAction(
@@ -50,30 +50,36 @@ class MenuCatalogList extends StatelessWidget {
     );
   }
 
-  Widget _tileBuilder(
-    BuildContext context,
-    Catalog catalog,
-    int index,
-    VoidCallback showActions,
-  ) {
+  Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
+    final more = S.menuCatalogDialogDeletionContent(catalog.length);
+    return Text(S.dialogDeletionContent(catalog.name, '$more\n\n'));
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final Catalog catalog;
+  final ActorBuilder actorBuilder;
+  final void Function(Catalog) onSelected;
+
+  const _Tile(this.catalog, this.actorBuilder, this.onSelected);
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
+
     return ListTile(
       key: Key('catalog.${catalog.id}'),
       leading: catalog.avator,
       title: Text(catalog.name),
-      trailing: EntryMoreButton(onPressed: showActions),
+      trailing: EntryMoreButton(onPressed: actor),
       subtitle: MetaBlock.withString(
         context,
         catalog.itemList.map((product) => product.name),
         emptyText: S.menuCatalogEmptyProducts,
       ),
-      onLongPress: showActions,
+      onLongPress: actor,
       onTap: () => onSelected(catalog),
     );
-  }
-
-  Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
-    final more = S.menuCatalogDialogDeletionContent(catalog.length);
-    return Text(S.dialogDeletionContent(catalog.name, '$more\n\n'));
   }
 }
 
