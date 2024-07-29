@@ -39,7 +39,7 @@ class ProductIngredientView extends StatelessWidget {
           ),
           trailing: EntryMoreButton(
             key: Key('$key.more'),
-            onPressed: () => showActions(context),
+            onPressed: showActions,
           ),
         ),
         for (final item in ingredient.items) _QuantityTile(item),

@@ -27,7 +27,7 @@ class StockQuantityList extends StatelessWidget {
       delegate: SlidableItemDelegate(
         items: quantities,
         deleteValue: 0,
-        tileBuilder: _tileBuilder,
+        tileBuilder: (item, _, actorBuilder) => _Tile(item, actorBuilder),
         warningContentBuilder: _warningContentBuilder,
         handleDelete: _handleDelete,
         actionBuilder: (quantity) => [
@@ -48,29 +48,33 @@ class StockQuantityList extends StatelessWidget {
     return Menu.instance.removeQuantities(quantity.id);
   }
 
-  Widget _tileBuilder(
-    BuildContext context,
-    Quantity quantity,
-    int index,
-    VoidCallback showActions,
-  ) {
-    return ListTile(
-      key: Key('quantities.${quantity.id}'),
-      title: Text(quantity.name),
-      subtitle: Text(S.stockQuantityMetaProportion(quantity.defaultProportion)),
-      trailing: EntryMoreButton(onPressed: showActions),
-      onLongPress: showActions,
-      onTap: () => context.pushNamed(
-        Routes.quantityModal,
-        pathParameters: {'id': quantity.id},
-      ),
-    );
-  }
-
   Widget _warningContentBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
     final more = S.stockQuantityDialogDeletionContent(count);
 
     return Text(S.dialogDeletionContent(quantity.name, '$more\n\n'));
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final Quantity item;
+  final ActorBuilder actorBuilder;
+
+  const _Tile(this.item, this.actorBuilder);
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
+    return ListTile(
+      key: Key('quantities.${item.id}'),
+      title: Text(item.name),
+      subtitle: Text(S.stockQuantityMetaProportion(item.defaultProportion)),
+      trailing: EntryMoreButton(onPressed: actor),
+      onLongPress: actor,
+      onTap: () => context.pushNamed(
+        Routes.quantityModal,
+        pathParameters: {'id': item.id},
+      ),
+    );
   }
 }

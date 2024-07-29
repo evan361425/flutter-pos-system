@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/linkify.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -18,7 +20,6 @@ import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
 import 'widgets/draggable_sheet_view.dart';
-import 'widgets/order_actions.dart';
 import 'widgets/order_catalog_list_view.dart';
 import 'widgets/order_product_list_view.dart';
 import 'widgets/orientated_view.dart';
@@ -72,7 +73,7 @@ class _OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           leading: const PopButton(),
           actions: [
-            const OrderActions(key: Key('order.more')),
+            MoreButton(key: const Key('order.more'), onPressed: _showActions),
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),
@@ -142,6 +143,45 @@ class _OrderPageState extends State<OrderPage> {
       _resetNotifier.notify();
     }
   }
+
+  void _showActions(BuildContext context) async {
+    final result = await showCircularBottomSheet<_Action>(
+      context,
+      actions: [
+        BottomSheetAction(
+          key: const Key('order.action.exchange'),
+          title: Text(S.orderActionExchange),
+          leading: const Icon(Icons.change_circle_sharp),
+          returnValue: const _Action(route: Routes.cashierChanger),
+        ),
+        BottomSheetAction(
+          key: const Key('order.action.stash'),
+          title: Text(S.orderActionStash),
+          leading: const Icon(Icons.file_download_sharp),
+          returnValue: _Action(action: () => _handleStash(context)),
+        ),
+        BottomSheetAction(
+          key: const Key('order.action.history'),
+          title: Text(S.orderActionReview),
+          leading: const Icon(Icons.history_sharp),
+          returnValue: const _Action(route: Routes.history),
+        ),
+      ],
+    );
+
+    if (context.mounted && result != null) {
+      final success = await result.exec(context);
+
+      if (success == true && context.mounted) {
+        showSnackBar(context, S.actSuccess);
+      }
+    }
+  }
+
+  Future<bool?> _handleStash(BuildContext context) {
+    DraggableScrollableActuator.reset(context);
+    return Cart.instance.stash();
+  }
 }
 
 void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
@@ -174,6 +214,18 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
 class _Notifier extends ChangeNotifier {
   void notify() {
     notifyListeners();
+  }
+}
+
+class _Action {
+  final Future<bool?> Function()? action;
+
+  final String? route;
+
+  const _Action({this.action, this.route});
+
+  Future<bool?> exec(BuildContext context) {
+    return route == null ? action!() : context.pushNamed(route!);
   }
 }
 

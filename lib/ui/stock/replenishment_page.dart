@@ -84,17 +84,29 @@ class ReplenishmentPage extends StatelessWidget {
           ),
         ],
         handleAction: handler,
-        tileBuilder: (context, item, index, showActions) {
-          return ListTile(
-            key: Key('replenisher.${item.id}'),
-            title: Text(item.name),
-            subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
-            onTap: () => handler(item, _Actions.apply),
-            onLongPress: showActions,
-            trailing: EntryMoreButton(onPressed: showActions),
-          );
-        },
+        tileBuilder: (item, index, actorBuilder) => _Tile(item, actorBuilder, handler),
       ),
+    );
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final Replenishment item;
+  final ActorBuilder actorBuilder;
+  final void Function(Replenishment, _Actions) handler;
+
+  const _Tile(this.item, this.actorBuilder, this.handler);
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
+    return ListTile(
+      key: Key('replenisher.${item.id}'),
+      title: Text(item.name),
+      subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
+      onTap: () => handler(item, _Actions.apply),
+      onLongPress: actor,
+      trailing: EntryMoreButton(onPressed: actor),
     );
   }
 }

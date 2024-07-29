@@ -61,7 +61,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
     );
   }
 
-  Future<void> _showActions() async {
+  void _showActions(BuildContext context) async {
     if (createdAt == null) return;
 
     await BottomSheetActions.withDelete<_Action>(

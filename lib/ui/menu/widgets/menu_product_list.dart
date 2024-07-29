@@ -30,7 +30,7 @@ class MenuProductList extends StatelessWidget {
         items: catalog?.itemList ?? Menu.instance.products.toList(),
         deleteValue: 0,
         actionBuilder: _actionBuilder,
-        tileBuilder: _tileBuilder,
+        tileBuilder: (product, _, actorBuilder) => _Tile(product, actorBuilder),
         warningContentBuilder: _warningContentBuilder,
         handleDelete: (item) => item.remove(),
       ),
@@ -54,31 +54,35 @@ class MenuProductList extends StatelessWidget {
     ];
   }
 
-  Widget _tileBuilder(
-    BuildContext context,
-    Product product,
-    int index,
-    VoidCallback showActions,
-  ) {
+  Widget _warningContentBuilder(BuildContext context, Product product) {
+    return Text(S.dialogDeletionContent(product.name, ''));
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final Product product;
+  final ActorBuilder actorBuilder;
+
+  const _Tile(this.product, this.actorBuilder);
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
     return ListTile(
       key: Key('product.${product.id}'),
       leading: product.useDefaultImage ? product.avator : Hero(tag: product, child: product.avator),
       title: Text(product.name),
-      trailing: EntryMoreButton(onPressed: showActions),
+      trailing: EntryMoreButton(onPressed: actor),
       subtitle: MetaBlock.withString(
         context,
         product.items.map((e) => e.name),
         emptyText: S.menuProductEmptyIngredients,
       ),
-      onLongPress: showActions,
+      onLongPress: actor,
       onTap: () => context.pushNamed(
         Routes.menuProduct,
         pathParameters: {'id': product.id},
       ),
     );
-  }
-
-  Widget _warningContentBuilder(BuildContext context, Product product) {
-    return Text(S.dialogDeletionContent(product.name, ''));
   }
 }

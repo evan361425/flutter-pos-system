@@ -73,7 +73,7 @@ class StashedOrderListView extends StatelessWidget {
         key: Key('stashed_order.${order.id}'),
         title: Text(title),
         subtitle: MetaBlock.withString(context, products, emptyText: S.orderCheckoutStashNoProducts),
-        trailing: MoreButton(onPressed: () => _showActions(context, order)),
+        trailing: MoreButton(onPressed: (context) => _showActions(context, order)),
         onTap: () => _act(_Action.checkout, context, order),
         onLongPress: () => _showActions(context, order),
       ),

@@ -42,22 +42,11 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
       items: Cashier.instance.favoriteItems().toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),
-      tileBuilder: (context, item, index, showActions) => InkWell(
-        onLongPress: showActions,
-        child: RadioListTile<FavoriteItem>(
-          key: Key('changer.favorite.$index'),
-          value: item,
-          title: Text(S.cashierChangerFavoriteItemFrom(item.source.count!, item.source.unit!.toCurrency())),
-          subtitle: MetaBlock.withString(
-            context,
-            item.targets.map<String>((e) => S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency())),
-            textOverflow: TextOverflow.visible,
-          ),
-          secondary: EntryMoreButton(onPressed: showActions),
-          groupValue: selected,
-          selected: selected == item,
-          onChanged: (item) => setState(() => selected = item),
-        ),
+      tileBuilder: (item, index, actorBuilder) => _Tile(
+        item,
+        index,
+        actorBuilder,
+        (item) => setState(() => selected = item),
       ),
     );
 
@@ -94,5 +83,36 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
     await Cashier.instance.deleteFavorite(index);
 
     setState(() => selected = null);
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final FavoriteItem item;
+  final int index;
+  final ActorBuilder actorBuilder;
+  final void Function(FavoriteItem?) onChanged;
+
+  const _Tile(this.item, this.index, this.actorBuilder, this.onChanged);
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
+    return InkWell(
+      onLongPress: actor,
+      child: RadioListTile<FavoriteItem>(
+        key: Key('changer.favorite.$index'),
+        value: item,
+        title: Text(S.cashierChangerFavoriteItemFrom(item.source.count!, item.source.unit!.toCurrency())),
+        subtitle: MetaBlock.withString(
+          context,
+          item.targets.map<String>((e) => S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency())),
+          textOverflow: TextOverflow.visible,
+        ),
+        secondary: EntryMoreButton(onPressed: actor),
+        groupValue: ChangerFavoriteViewState.selected,
+        selected: ChangerFavoriteViewState.selected == item,
+        onChanged: onChanged,
+      ),
+    );
   }
 }

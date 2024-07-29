@@ -3,7 +3,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
 class MoreButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final void Function(BuildContext) onPressed;
 
   const MoreButton({
     super.key,
@@ -13,7 +13,7 @@ class MoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: onPressed,
+      onPressed: () => onPressed(context),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
       icon: const Icon(KIcons.more),
@@ -22,17 +22,14 @@ class MoreButton extends StatelessWidget {
 }
 
 class EntryMoreButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final void Function(BuildContext) onPressed;
 
-  const EntryMoreButton({
-    super.key,
-    required this.onPressed,
-  });
+  const EntryMoreButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: onPressed,
+      onPressed: () => onPressed(context),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
       icon: const Icon(KIcons.entryMore),

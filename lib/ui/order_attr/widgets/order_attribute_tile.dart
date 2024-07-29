@@ -77,13 +77,13 @@ class OrderAttributeTile extends StatelessWidget {
       const SizedBox(width: kInternalSpacing),
       EntryMoreButton(
         key: Key('$key.more'),
-        onPressed: () => _showActions(context),
+        onPressed: _showActions,
       ),
     ]);
   }
 
-  void _showActions(BuildContext context) {
-    BottomSheetActions.withDelete<int>(
+  void _showActions(BuildContext context) async {
+    await BottomSheetActions.withDelete<int>(
       context,
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
