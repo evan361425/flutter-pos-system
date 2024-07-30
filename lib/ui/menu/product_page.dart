@@ -6,6 +6,8 @@ import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -83,13 +85,26 @@ class _ProductPageState extends State<ProductPage> {
     final items = widget.product.itemList;
     return [
       SliverToBoxAdapter(
-        child: Center(child: HintText(S.totalCount(items.length))),
-      ),
-      SliverList(
-        delegate: SliverChildBuilderDelegate(
-          // Floating action button offset
-          (_, int index) => index == items.length ? const SizedBox(height: 72.0) : ProductIngredientView(items[index]),
-          childCount: items.length + 1,
+          child: Row(children: [
+        Expanded(
+          child: Center(child: HintText(S.totalCount(items.length))),
+        ),
+        RouteIconButton(
+          key: const Key('product.reorder'),
+          tooltip: S.menuIngredientTitleReorder,
+          icon: const Icon(KIcons.reorder),
+          route: Routes.menuIngredientReorder,
+          pathParameters: {'id': widget.product.id},
+        ),
+      ])),
+      SliverPadding(
+        padding: const EdgeInsets.only(bottom: kFABSpacing),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            // Floating action button offset
+            (_, int index) => ProductIngredientView(items[index]),
+            childCount: items.length,
+          ),
         ),
       ),
     ];
@@ -144,7 +159,7 @@ class _ProductPageState extends State<ProductPage> {
       ],
     );
 
-    if (result == _Action.changeImage && mounted) {
+    if (result == _Action.changeImage && context.mounted) {
       await widget.product.pickImage(context);
     }
   }

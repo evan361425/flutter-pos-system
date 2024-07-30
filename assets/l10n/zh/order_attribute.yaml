@@ -5,7 +5,7 @@ _title:
   $prefix: title
   create: 新增顧客設定
   update: 編輯顧客設定
-  reorder: 排序
+  reorder: 排序顧客設定
 emptyBody: |-
   顧客設定可以幫助我們統計哪些人來消費，例如：
   20-30歲、外帶、上班族。

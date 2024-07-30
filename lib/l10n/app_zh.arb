@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-28T03:26:15.201562Z",
+  "@@last_modified": "2024-07-30T00:44:00.979101Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1164,7 +1164,7 @@
   "orderAttributeDescription": "內用、外帶等幫助分析的資訊",
   "orderAttributeTitleCreate": "新增顧客設定",
   "orderAttributeTitleUpdate": "編輯顧客設定",
-  "orderAttributeTitleReorder": "排序",
+  "orderAttributeTitleReorder": "排序顧客設定",
   "orderAttributeEmptyBody": "顧客設定可以幫助我們統計哪些人來消費，例如：\n20-30歲、外帶、上班族。",
   "orderAttributeHeaderInfo": "顧客設定",
   "@orderAttributeHeaderInfo": {
@@ -1340,8 +1340,8 @@
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
   },
-  "menuCatalogTitleUpdate": "編輯",
-  "menuCatalogTitleReorder": "排序",
+  "menuCatalogTitleUpdate": "編輯產品種類",
+  "menuCatalogTitleReorder": "排序產品種類",
   "menuCatalogDialogDeletionContent": "{count, plural, =0{其內無任何產品} other{將會一同刪除掉 {count} 個產品}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "Warning message when deleting product categories on the menu page",
@@ -1365,8 +1365,8 @@
     "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
   },
   "menuProductTitleCreate": "新增產品",
-  "menuProductTitleUpdate": "編輯",
-  "menuProductTitleReorder": "排序",
+  "menuProductTitleUpdate": "編輯產品",
+  "menuProductTitleReorder": "排序產品",
   "menuProductTitleUpdateImage": "更新照片",
   "menuProductMetaTitle": "產品",
   "@menuProductMetaTitle": {
@@ -1406,8 +1406,8 @@
   "menuProductEmptyIngredients": "尚未設定成分",
   "menuIngredientEmptyBody": "你可以在產品中設定成分等資訊，例如：\n「起司漢堡」有「起司」、「麵包」等成分",
   "menuIngredientTitleCreate": "新增成分",
-  "menuIngredientTitleUpdate": "編輯",
-  "menuIngredientTitleReorder": "排序",
+  "menuIngredientTitleUpdate": "編輯成分",
+  "menuIngredientTitleReorder": "排序成分",
   "menuIngredientMetaAmount": "使用量：{amount}",
   "@menuIngredientMetaAmount": {
     "placeholders": {

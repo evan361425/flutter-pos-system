@@ -70,6 +70,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
     return Padding(
       padding: const EdgeInsets.only(right: kHorizontalSpacing),
       child: Row(children: [
+        const SizedBox(width: kInternalSpacing),
         Tutorial(
           id: 'cashier.default',
           index: 2,

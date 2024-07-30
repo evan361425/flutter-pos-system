@@ -9,17 +9,17 @@ import 'package:possystem/translator.dart';
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
   final String? hintText;
-  final List<Widget> actions;
   final Widget? leading;
   final Widget? tailing;
+  final Widget? action;
 
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
-    this.actions = const <Widget>[],
     this.leading,
     this.tailing,
+    this.action,
   });
 
   @override
@@ -30,14 +30,10 @@ class SlidableItemList<T, Action> extends StatelessWidget {
         if (leading != null) leading!,
         Row(children: [
           Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
-          if (actions.isNotEmpty)
+          if (action != null)
             Padding(
               padding: const EdgeInsets.only(right: kHorizontalSpacing),
-              child: Material(
-                elevation: 1.0,
-                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                child: Row(children: actions),
-              ),
+              child: action,
             ),
         ]),
         const SizedBox(height: kInternalSpacing),

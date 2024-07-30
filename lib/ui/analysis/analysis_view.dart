@@ -72,19 +72,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       leading: const SizedBox.shrink(),
       title: Text(S.analysisChartTitle),
       toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
-      actions: [
-        Tutorial(
-          id: 'anal.add_chart',
-          title: S.analysisChartTutorialTitle,
-          message: S.analysisChartTutorialContent,
-          child: RouteIconButton(
-            key: const Key('anal.add_chart'),
-            route: Routes.chartNew,
-            icon: const Icon(KIcons.add),
-            tooltip: S.analysisChartTitleCreate,
-          ),
-        ),
-      ],
+      actions: const [_MoreButton()],
       bottom: AppBar(
         primary: false,
         centerTitle: false,
@@ -109,7 +97,6 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             iconSize: 16,
             icon: const Icon(Icons.arrow_forward_ios_sharp),
           ),
-          _MoreButton(),
         ],
       ),
     );
@@ -125,14 +112,22 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == items.length) {
-            return Center(
+            return Align(
+              alignment: Alignment.topCenter,
               child: SizedBox(
                 width: 200,
                 height: 200,
-                child: RouteElevatedIconButton(
-                  icon: const Icon(KIcons.add),
-                  route: Routes.chartNew,
-                  label: S.analysisChartTitleCreate,
+                child: Tutorial(
+                  id: 'anal.add_chart',
+                  title: S.analysisChartTutorialTitle,
+                  message: S.analysisChartTutorialContent,
+                  monitorVisibility: true,
+                  child: RouteElevatedIconButton(
+                    key: const Key('anal.add_chart'),
+                    icon: const Icon(KIcons.add),
+                    route: Routes.chartNew,
+                    label: S.analysisChartTitleCreate,
+                  ),
                 ),
               ),
             );
@@ -189,6 +184,8 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
 }
 
 class _MoreButton extends StatelessWidget {
+  const _MoreButton();
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -208,7 +205,6 @@ class _MoreButton extends StatelessWidget {
         ],
       ),
       enableFeedback: true,
-      iconSize: 16,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
       icon: const Icon(Icons.settings_sharp),
     );
