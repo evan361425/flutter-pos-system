@@ -3,6 +3,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
+import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
@@ -10,8 +11,10 @@ import 'package:possystem/translator.dart';
 
 class MenuCatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
+
+  /// Search bar in wide screen
   final Widget? leading;
-  final Widget? tailing;
+  final Widget tailing;
   final void Function(Catalog) onSelected;
 
   const MenuCatalogList(
@@ -19,7 +22,7 @@ class MenuCatalogList extends StatelessWidget {
     super.key,
     required this.onSelected,
     this.leading,
-    this.tailing,
+    required this.tailing,
   });
 
   @override
@@ -27,6 +30,11 @@ class MenuCatalogList extends StatelessWidget {
     return SlidableItemList<Catalog, _Action>(
       leading: leading,
       tailing: tailing,
+      action: RouteIconButton(
+        tooltip: S.menuCatalogTitleReorder,
+        icon: const Icon(KIcons.reorder),
+        route: Routes.menuCatalogReorder,
+      ),
       delegate: SlidableItemDelegate(
         items: catalogs,
         deleteValue: _Action.delete,
@@ -40,9 +48,10 @@ class MenuCatalogList extends StatelessWidget {
             route: Routes.menuCatalogModal,
           ),
           BottomSheetAction(
-            title: Text(S.menuCatalogTitleReorder),
+            title: Text(S.menuProductTitleReorder),
             leading: const Icon(KIcons.reorder),
-            route: Routes.menuCatalogReorder,
+            route: Routes.menuProductReorder,
+            routePathParameters: {'id': catalog.id},
           ),
         ],
         handleDelete: (item) => item.remove(),

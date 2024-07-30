@@ -51,6 +51,7 @@ class _MenuPageState extends State<MenuPage> {
               child: const Icon(KIcons.add),
             );
 
+      print('canPop: ${selected == null}');
       return PopScope(
         canPop: selected == null,
         onPopInvoked: _onPopInvoked,

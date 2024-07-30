@@ -4,6 +4,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
+import 'package:possystem/components/style/route_circular_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
@@ -26,6 +27,12 @@ class MenuProductList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableItemList(
       tailing: tailing,
+      action: RouteIconButton(
+        tooltip: S.menuProductTitleReorder,
+        icon: const Icon(KIcons.reorder),
+        route: Routes.menuProductReorder,
+        pathParameters: {'id': catalog?.id ?? ''},
+      ),
       delegate: SlidableItemDelegate<Product, int>(
         items: catalog?.itemList ?? Menu.instance.products.toList(),
         deleteValue: 0,
@@ -46,10 +53,10 @@ class MenuProductList extends StatelessWidget {
         routePathParameters: {'id': product.id},
       ),
       BottomSheetAction(
-        title: Text(S.menuProductTitleReorder),
+        title: Text(S.menuIngredientTitleReorder),
         leading: const Icon(KIcons.reorder),
-        route: Routes.menuProductReorder,
-        routePathParameters: {'id': product.catalog.id},
+        route: Routes.menuIngredientReorder,
+        routePathParameters: {'id': product.id},
       ),
     ];
   }

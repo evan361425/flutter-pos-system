@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-28T03:26:15.159222Z",
+  "@@last_modified": "2024-07-30T00:44:00.921404Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1164,7 +1164,7 @@
   "orderAttributeDescription": "Information for analysis such as dine-in, takeout, etc.",
   "orderAttributeTitleCreate": "Add Customer Setting",
   "orderAttributeTitleUpdate": "Edit Customer Setting",
-  "orderAttributeTitleReorder": "Reorder",
+  "orderAttributeTitleReorder": "Reorder Customer Settings",
   "orderAttributeEmptyBody": "Customer settings help us track who comes to consume, such as:\n20-30 years old, takeout, office workers, etc.",
   "orderAttributeHeaderInfo": "Customer Settings",
   "@orderAttributeHeaderInfo": {
@@ -1340,8 +1340,8 @@
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
   },
-  "menuCatalogTitleUpdate": "Edit",
-  "menuCatalogTitleReorder": "Reorder",
+  "menuCatalogTitleUpdate": "Edit Category",
+  "menuCatalogTitleReorder": "Reorder Categories",
   "menuCatalogDialogDeletionContent": "{count, plural, =0{No products inside} =1{Will also delete {count} related product} other{Will also delete {count} related products}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "Warning message when deleting product categories on the menu page",
@@ -1365,8 +1365,8 @@
     "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
   },
   "menuProductTitleCreate": "Add Product",
-  "menuProductTitleUpdate": "Edit",
-  "menuProductTitleReorder": "Reorder",
+  "menuProductTitleUpdate": "Edit Product",
+  "menuProductTitleReorder": "Reorder Products",
   "menuProductTitleUpdateImage": "Update Photo",
   "menuProductMetaTitle": "Product",
   "@menuProductMetaTitle": {
@@ -1406,8 +1406,8 @@
   "menuProductEmptyIngredients": "No ingredients set yet",
   "menuIngredientEmptyBody": "You can set ingredients for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients",
   "menuIngredientTitleCreate": "Add Ingredient",
-  "menuIngredientTitleUpdate": "Edit",
-  "menuIngredientTitleReorder": "Reorder",
+  "menuIngredientTitleUpdate": "Edit Ingredient",
+  "menuIngredientTitleReorder": "Reorder Ingredients",
   "menuIngredientMetaAmount": "Amount: {amount}",
   "@menuIngredientMetaAmount": {
     "placeholders": {

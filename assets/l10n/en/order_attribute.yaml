@@ -5,7 +5,7 @@ _title:
   $prefix: title
   create: Add Customer Setting
   update: Edit Customer Setting
-  reorder: Reorder
+  reorder: Reorder Customer Settings
 emptyBody: |-
   Customer settings help us track who comes to consume, such as:
   20-30 years old, takeout, office workers, etc.

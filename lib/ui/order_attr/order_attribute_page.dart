@@ -51,15 +51,11 @@ class OrderAttributePage extends StatelessWidget {
           Expanded(
             child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length))),
           ),
-          Material(
-            elevation: 1.0,
-            borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-            child: RouteIconButton(
-              key: const Key('order_attributes.reorder'),
-              tooltip: S.orderAttributeTitleReorder,
-              route: Routes.orderAttrReorder,
-              icon: const Icon(KIcons.reorder),
-            ),
+          RouteIconButton(
+            key: const Key('order_attributes.reorder'),
+            tooltip: S.orderAttributeTitleReorder,
+            route: Routes.orderAttrReorder,
+            icon: const Icon(KIcons.reorder),
           ),
           const SizedBox(width: kHorizontalSpacing),
         ]),

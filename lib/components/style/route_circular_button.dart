@@ -13,12 +13,18 @@ class RouteElevatedIconButton extends StatelessWidget {
 
   final bool popTrueShowSuccess;
 
+  final Map<String, String> pathParameters;
+
+  final Map<String, String> queryParameters;
+
   const RouteElevatedIconButton({
     super.key,
     required this.icon,
     required this.route,
     required this.label,
     this.popTrueShowSuccess = false,
+    this.pathParameters = const {},
+    this.queryParameters = const {},
   });
 
   @override
@@ -27,7 +33,11 @@ class RouteElevatedIconButton extends StatelessWidget {
       icon: icon,
       label: Text(label),
       onPressed: () async {
-        final result = await context.pushNamed(route!);
+        final result = await context.pushNamed(
+          route!,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+        );
         if (result == true && popTrueShowSuccess) {
           if (context.mounted) {
             showSnackBar(context, S.actSuccess);
@@ -42,6 +52,7 @@ class RouteIconButton extends StatelessWidget {
   final String tooltip;
   final Icon icon;
   final String? route;
+  final Map<String, String> pathParameters;
   final VoidCallback? onPressed;
   final bool popTrueShowSuccess;
 
@@ -50,6 +61,7 @@ class RouteIconButton extends StatelessWidget {
     required this.tooltip,
     required this.icon,
     this.route,
+    this.pathParameters = const {},
     this.onPressed,
     this.popTrueShowSuccess = false,
   });
@@ -69,7 +81,7 @@ class RouteIconButton extends StatelessWidget {
       tooltip: tooltip,
       onPressed: onPressed ??
           () async {
-            final result = await context.pushNamed(route!);
+            final result = await context.pushNamed(route!, pathParameters: pathParameters);
             if (result == true && popTrueShowSuccess) {
               if (context.mounted) {
                 showSnackBar(context, S.actSuccess);
