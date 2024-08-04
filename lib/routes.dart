@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/dialog/dialog_page.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -12,7 +13,7 @@ import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
 import 'package:possystem/ui/analysis/widgets/chart_reorder.dart';
 import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
-import 'package:possystem/ui/cashier/changer_page.dart';
+import 'package:possystem/ui/cashier/changer_modal.dart';
 import 'package:possystem/ui/cashier/surplus_page.dart';
 import 'package:possystem/ui/home/feature_request_page.dart';
 import 'package:possystem/ui/home/features_page.dart';
@@ -117,22 +118,22 @@ class Routes {
     GoRoute(
       name: historyModal,
       path: 'history/o/:id/modal',
-      builder: (ctx, state) => HistoryOrderModal(
-        int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+      pageBuilder: (ctx, state) => MaterialDialogPage(
+        child: HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0),
       ),
     ),
     GoRoute(
       name: chartNew,
       path: 'chart/new',
-      builder: (ctx, state) => const ChartModal(),
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartModal()),
     ),
     GoRoute(
       name: chartModal,
       path: 'chart/o/:id/modal',
-      builder: (ctx, state) {
+      pageBuilder: (ctx, state) {
         final id = state.pathParameters['id']!;
         final chart = Analysis.instance.getItem(id);
-        return ChartModal(chart: chart);
+        return MaterialDialogPage(child: ChartModal(chart: chart));
       },
     ),
     GoRoute(
@@ -143,7 +144,7 @@ class Routes {
     GoRoute(
       name: cashierChanger,
       path: 'cashier/changer',
-      builder: (ctx, state) => const ChangerModal(),
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChangerModal()),
     ),
     GoRoute(
       name: cashierSurplus,
@@ -224,21 +225,23 @@ class Routes {
       GoRoute(
         name: menuNew,
         path: 'new',
-        builder: (ctx, state) {
+        pageBuilder: (ctx, state) {
           final id = state.uri.queryParameters['id'];
           final c = id == null ? null : Menu.instance.getItem(id);
 
           if (c == null) {
-            return const CatalogModal();
+            return const MaterialDialogPage(child: CatalogModal());
           }
-          return ProductModal(catalog: c);
+          return MaterialDialogPage(child: ProductModal(catalog: c));
         },
       ),
       GoRoute(
         name: menuCatalogModal,
         path: 'c/:id/modal',
-        builder: (ctx, state) => CatalogModal(
-          catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
+        pageBuilder: (ctx, state) => MaterialDialogPage(
+          child: CatalogModal(
+            catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
+          ),
         ),
       ),
       GoRoute(
@@ -271,27 +274,29 @@ class Routes {
           GoRoute(
             name: menuProductModal,
             path: 'modal',
-            builder: (ctx, state) {
+            pageBuilder: (ctx, state) {
               // verified for parent
               final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
-              return ProductModal(product: p, catalog: p.catalog);
+              return MaterialDialogPage(child: ProductModal(product: p, catalog: p.catalog));
             },
           ),
           GoRoute(
             name: menuProductDetails,
             path: 'details',
-            builder: (ctx, state) {
+            pageBuilder: (ctx, state) {
               // verified for parent
               final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
               final ing = p.getItem(state.uri.queryParameters['iid'] ?? '');
               final qid = state.uri.queryParameters['qid'];
               if (ing == null || qid == null) {
-                return ProductIngredientModal(product: p, ingredient: ing);
+                return MaterialDialogPage(child: ProductIngredientModal(product: p, ingredient: ing));
               }
 
-              return ProductQuantityModal(
-                quantity: ing.getItem(qid),
-                ingredient: ing,
+              return MaterialDialogPage(
+                child: ProductQuantityModal(
+                  quantity: ing.getItem(qid),
+                  ingredient: ing,
+                ),
               );
             },
           ),
@@ -318,22 +323,22 @@ class Routes {
       GoRoute(
         name: ingredientNew,
         path: 'new',
-        builder: (ctx, state) => const StockIngredientModal(),
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockIngredientModal()),
       ),
       GoRoute(
         name: ingredientModal,
         path: 'i/:id/modal',
-        builder: (ctx, state) {
+        pageBuilder: (ctx, state) {
           final id = state.pathParameters['id'] ?? '';
-          return StockIngredientModal(ingredient: Stock.instance.getItem(id));
+          return MaterialDialogPage(child: StockIngredientModal(ingredient: Stock.instance.getItem(id)));
         },
       ),
       GoRoute(
         name: ingredientRestockModal,
         path: 'i/:id/restock',
-        builder: (ctx, state) {
+        pageBuilder: (ctx, state) {
           final id = state.pathParameters['id'] ?? '';
-          return StockIngredientRestockModal(ingredient: Stock.instance.getItem(id));
+          return MaterialDialogPage(child: StockIngredientRestockModal(ingredient: Stock.instance.getItem(id)));
         },
       ),
       GoRoute(
@@ -349,9 +354,11 @@ class Routes {
           GoRoute(
             name: quantityModal,
             path: 'q/:id/modal',
-            builder: (ctx, state) {
+            pageBuilder: (ctx, state) {
               final id = state.pathParameters['id'] ?? '';
-              return StockQuantityModal(quantity: Quantities.instance.getItem(id));
+              return MaterialDialogPage(
+                child: StockQuantityModal(quantity: Quantities.instance.getItem(id)),
+              );
             },
           ),
         ],
@@ -369,10 +376,10 @@ class Routes {
           GoRoute(
             name: replenishmentModal,
             path: 'r/:id/modal',
-            builder: (ctx, state) {
+            pageBuilder: (ctx, state) {
               final id = state.pathParameters['id'] ?? '';
-              return ReplenishmentModal(
-                replenishment: Replenisher.instance.getItem(id),
+              return MaterialDialogPage(
+                child: ReplenishmentModal(replenishment: Replenisher.instance.getItem(id)),
               );
             },
           ),
@@ -401,29 +408,29 @@ class Routes {
       GoRoute(
         name: orderAttrNew,
         path: 'new',
-        builder: (ctx, state) {
+        pageBuilder: (ctx, state) {
           final id = state.uri.queryParameters['id'];
           final oa = id == null ? null : OrderAttributes.instance.getItem(id);
 
           if (oa == null) {
-            return const OrderAttributeModal();
+            return const MaterialDialogPage(child: OrderAttributeModal());
           }
-          return OrderAttributeOptionModal(oa);
+          return MaterialDialogPage(child: OrderAttributeOptionModal(oa));
         },
       ),
       GoRoute(
         name: orderAttrModal,
         path: 'a/:id/modal',
-        builder: (ctx, state) {
+        pageBuilder: (ctx, state) {
           final id = state.pathParameters['id'];
           final oid = state.uri.queryParameters['oid'];
           final oa = id == null ? null : OrderAttributes.instance.getItem(id);
 
           if (oid == null || oa == null) {
             // edit or new oa
-            return OrderAttributeModal(attribute: oa);
+            return MaterialDialogPage(child: OrderAttributeModal(attribute: oa));
           }
-          return OrderAttributeOptionModal(oa, option: oa.getItem(oid));
+          return MaterialDialogPage(child: OrderAttributeOptionModal(oa, option: oa.getItem(oid)));
         },
       ),
       GoRoute(

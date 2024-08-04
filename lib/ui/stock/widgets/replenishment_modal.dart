@@ -30,7 +30,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
   late FocusNode _nameFocusNode;
 
   @override
-  String get title => widget.replenishment?.name ?? S.stockReplenishmentTitleCreate;
+  String get title => widget.isNew ? S.stockReplenishmentTitleCreate : S.stockReplenishmentTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -45,7 +45,7 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.stockReplenishmentNameLabel,
-          hintText: S.stockReplenishmentNameHint,
+          hintText: widget.replenishment?.name ?? S.stockReplenishmentNameHint,
           filled: false,
         ),
         style: textTheme.titleLarge,

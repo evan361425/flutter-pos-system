@@ -49,7 +49,7 @@ changer:
       label: 幣值
       addBtn: 新增幣種
     divider:
-      from: 從收銀機中拿出
+      from: 拿
       to: 換
 surplus:
   title: 結餘

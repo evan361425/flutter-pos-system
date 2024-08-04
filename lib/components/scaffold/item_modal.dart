@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
@@ -11,31 +11,25 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        title: Text(title),
-        actions: [
-          TextButton(
-            key: const Key('modal.save'),
-            onPressed: () => handleSubmit(),
-            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+    return ResponsiveDialog(
+      title: Text(title),
+      actions: [
+        TextButton(
+          key: const Key('modal.save'),
+          onPressed: () => handleSubmit(),
+          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+        ),
+      ],
+      // SingleChildScrollView is required for Dialog
+      content: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              ...buildFormFields(),
+              const SizedBox(height: kDialogBottomSpacing),
+            ],
           ),
-        ],
-      ),
-      body: buildForm(),
-    );
-  }
-
-  Widget buildForm() {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            ...buildFormFields(),
-            const SizedBox(height: kFABSpacing),
-          ],
         ),
       ),
     );

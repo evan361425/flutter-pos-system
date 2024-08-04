@@ -69,19 +69,19 @@ name:
 option:
   title:
     create: Add Option
-    createWith:
-    - Add option for {name}
-    - name:
     update: Edit Option
     reorder: Reorder Options
   meta:
     default: Default
+    optionOf:
+    - option of {name}
+    - name:
   name:
     label: Option Name
     helper: |-
-      For example, possible options for age include:
-      - Under 20
-      - 20 to 30
+      For 'age', possible options are:
+      - ⇣ 20
+      - 20 ⇢ 30
     error:
       repeat: Name already exists
   mode:

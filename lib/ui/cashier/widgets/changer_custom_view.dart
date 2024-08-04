@@ -37,7 +37,6 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   num? sourceUnit;
 
   String errorMessage = '';
-  late FocusNode errorFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +65,8 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
         hint: Text(S.cashierChangerCustomUnitLabel),
         isDense: true,
         style: Theme.of(context).textTheme.bodyMedium,
-        validator: Validator.positiveNumber(S.cashierChangerCustomUnitLabel),
         onChanged: handleUnitChanged,
         items: _unitDropdownMenuItems(),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
       ),
     );
     final targetEntries = <Widget>[
@@ -108,44 +105,33 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
         )
     ];
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(kTopSpacing),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              actions,
-              TextDivider(label: S.cashierChangerCustomDividerFrom),
-              sourceEntry,
-              TextDivider(label: S.cashierChangerCustomDividerTo),
-              Focus(
-                focusNode: errorFocus,
-                child: Builder(builder: (context) {
-                  return Focus.of(context).hasFocus
-                      ? Center(
-                          child: Text(
-                            errorMessage,
-                            style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error),
-                          ),
-                        )
-                      : const SizedBox();
-                }),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+      child: Form(
+        key: formKey,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          actions,
+          if (errorMessage.isNotEmpty)
+            Center(
+              child: Text(
+                errorMessage,
+                style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error),
               ),
-              ...targetEntries,
-              // add bottom
-              const SizedBox(height: kInternalSpacing),
-              OutlinedButton.icon(
-                onPressed: () => setState(() {
-                  targets.add(CashierChangeEntryObject());
-                }),
-                icon: const Icon(KIcons.add),
-                label: Text(S.cashierChangerCustomUnitAddBtn),
-              )
-            ],
-          ),
-        ),
+            ),
+          TextDivider(label: S.cashierChangerCustomDividerFrom),
+          sourceEntry,
+          TextDivider(label: S.cashierChangerCustomDividerTo),
+          ...targetEntries,
+          // add bottom
+          const SizedBox(height: kInternalSpacing),
+          OutlinedButton.icon(
+            onPressed: () => setState(() {
+              targets.add(CashierChangeEntryObject());
+            }),
+            icon: const Icon(KIcons.add),
+            label: Text(S.cashierChangerCustomUnitAddBtn),
+          )
+        ]),
       ),
     );
   }
@@ -155,14 +141,12 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     super.initState();
     sourceCount = TextEditingController(text: '1');
     targetController = TextEditingController();
-    errorFocus = FocusNode();
   }
 
   @override
   void dispose() {
     sourceCount.dispose();
     targetController.dispose();
-    errorFocus.dispose();
     super.dispose();
   }
 
@@ -217,31 +201,31 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   }
 
   bool validate() {
-    final isValid = formKey.currentState!.validate();
-
-    if (isValid) {
-      formKey.currentState?.save();
-
-      final count = int.parse(sourceCount.text);
-      var total = count * sourceUnit!;
-
-      for (var target in targets) {
-        total -= target.total;
-      }
-
-      if (total == 0) {
-        return true;
-      }
-
-      var msg = S.cashierChangerErrorInvalidHead(count, sourceUnit!.toCurrency());
-      for (var target in targets) {
-        if (!target.isEmpty) {
-          msg += '\n •  ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
-        }
-      }
-      _setError(msg);
+    if (sourceUnit == null || sourceUnit! <= 0) {
+      _setError(S.invalidNumberPositive(S.cashierChangerCustomUnitLabel));
+      return false;
     }
 
+    formKey.currentState?.save();
+
+    final count = int.parse(sourceCount.text);
+    var total = count * sourceUnit!;
+
+    for (var target in targets) {
+      total -= target.total;
+    }
+
+    if (total == 0) {
+      return true;
+    }
+
+    var msg = S.cashierChangerErrorInvalidHead(count, sourceUnit!.toCurrency());
+    for (var target in targets) {
+      if (!target.isEmpty) {
+        msg += '\n •  ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
+      }
+    }
+    _setError(msg);
     return false;
   }
 
@@ -280,10 +264,11 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   }
 
   void _setError(String msg) {
-    setState(() {
-      errorFocus.requestFocus();
-      errorMessage = msg;
-    });
+    if (mounted) {
+      setState(() {
+        errorMessage = msg;
+      });
+    }
   }
 
   List<DropdownMenuItem<num>> _unitDropdownMenuItems() {

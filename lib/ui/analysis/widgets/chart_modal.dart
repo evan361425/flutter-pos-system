@@ -30,7 +30,7 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   final targetItems = <String>[];
 
   @override
-  String get title => widget.chart?.name ?? S.analysisChartTitleCreate;
+  String get title => widget.chart == null ? S.analysisChartTitleCreate : S.analysisChartTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -43,6 +43,7 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           labelText: S.analysisChartModalNameLabel,
+          hintText: widget.chart?.name,
           filled: false,
         ),
         maxLength: 50,
