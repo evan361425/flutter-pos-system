@@ -34,7 +34,7 @@ class FeaturesPage extends StatelessWidget {
     const flavor = String.fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
-      context.pushNamed(Routes.featuresChoices, pathParameters: {'feature': feature.name});
+      context.pushNamed(Routes.settingsChoices, pathParameters: {'feature': feature.name});
     }
 
     final body = ListView(children: <Widget>[

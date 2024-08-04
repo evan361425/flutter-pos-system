@@ -122,14 +122,14 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
           _buildRouteTile(
             id: 'feature_request',
             icon: Icons.lightbulb_sharp,
-            route: Routes.featureRequest,
+            route: Routes.elf,
             title: S.settingElfTitle,
             subtitle: S.settingElfDescription,
           ),
           _buildRouteTile(
             id: 'setting',
             icon: Icons.settings_sharp,
-            route: Routes.features,
+            route: Routes.settings,
             title: S.settingFeatureTitle,
             subtitle: S.settingFeatureDescription,
           ),
