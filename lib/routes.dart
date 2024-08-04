@@ -20,6 +20,7 @@ import 'package:possystem/ui/cashier/surplus_page.dart';
 import 'package:possystem/ui/home/feature_request_page.dart';
 import 'package:possystem/ui/home/features_page.dart';
 import 'package:possystem/ui/home/home_page.dart';
+import 'package:possystem/ui/home/setting_view.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:possystem/ui/menu/product_page.dart';
@@ -89,45 +90,27 @@ class Routes {
   // https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
   static final List<RouteBase> routes = [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => HomePage(shell: navigationShell),
+      builder: (context, state, navigationShell) {
+        return HomePage(shell: navigationShell);
+      },
       // the order of this list should strongly follow the order of the tabs
       branches: [
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.analysis'),
-          routes: [_analysisRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.stock'),
-          routes: [_stockRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.cashier'),
-          routes: [_cashierRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.order_attr'),
-          routes: [_orderAttrRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.menu'),
-          routes: [_menuRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.quantities'),
-          routes: [_quantitiesRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.transit'),
-          routes: [_transitRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.elf'),
-          routes: [_elfRoute],
-        ),
-        StatefulShellBranch(
-          navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'shell.settings'),
-          routes: [_settingsRoute],
-        ),
+        StatefulShellBranch(routes: [_analysisRoute]),
+        StatefulShellBranch(routes: [_stockRoute]),
+        StatefulShellBranch(routes: [_cashierRoute]),
+        StatefulShellBranch(routes: [_orderAttrRoute]),
+        StatefulShellBranch(routes: [_menuRoute]),
+        StatefulShellBranch(routes: [_quantitiesRoute]),
+        StatefulShellBranch(routes: [_transitRoute]),
+        StatefulShellBranch(routes: [_elfRoute]),
+        StatefulShellBranch(routes: [_settingsRoute]),
+        // this branch is entrypoint for mobile screen
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '$base/others',
+            builder: (ctx, state) => const SettingView(),
+          )
+        ]),
       ],
     ),
     ..._others,
@@ -136,7 +119,7 @@ class Routes {
   static final _others = [
     GoRoute(
       name: order,
-      path: 'order',
+      path: '$base/order',
       builder: (ctx, state) => const OrderPage(),
       routes: [
         GoRoute(
@@ -148,29 +131,28 @@ class Routes {
     ),
     GoRoute(
       name: history,
-      path: 'history/o',
+      path: '$base/history/o',
       builder: (ctx, state) => const HistoryPage(),
     ),
     GoRoute(
       name: historyModal,
-      path: 'history/o/:id/modal',
+      path: '$base/history/o/:id/modal',
       pageBuilder: (ctx, state) => MaterialDialogPage(
         child: HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0),
       ),
     ),
     GoRoute(
       name: imageGallery,
-      path: 'image_gallery',
+      path: '$base/image_gallery',
+      // TODO: use dialog
       builder: (ctx, state) => const ImageGalleryPage(),
     ),
   ];
 
   static final _analysisRoute = GoRoute(
-    path: 'anal',
-    pageBuilder: (ctx, state) {
-      final extra = state.extra;
-      return NoTransitionPage(child: AnalysisView(tabIndex: extra is int ? extra : 0));
-    },
+    name: anal,
+    path: base,
+    pageBuilder: (ctx, state) => const NoTransitionPage(child: AnalysisView()),
     routes: [
       GoRoute(
         name: chartNew,
@@ -195,10 +177,10 @@ class Routes {
   );
 
   static final _stockRoute = GoRoute(
-    path: 'stock',
+    name: stock,
+    path: '$base/stock',
     pageBuilder: (ctx, state) {
-      final extra = state.extra;
-      return NoTransitionPage(child: StockView(tabIndex: extra is int ? extra : 0));
+      return const NoTransitionPage(child: StockView());
     },
     routes: [
       GoRoute(
@@ -261,10 +243,9 @@ class Routes {
 
   static final _cashierRoute = GoRoute(
     name: cashier,
-    path: 'cashier',
+    path: '$base/cashier',
     pageBuilder: (ctx, state) {
-      final extra = state.extra;
-      return NoTransitionPage(child: CashierView(tabIndex: extra is int ? extra : 0));
+      return const NoTransitionPage(child: CashierView());
     },
     routes: [
       GoRoute(
@@ -282,7 +263,7 @@ class Routes {
 
   static final _menuRoute = GoRoute(
     name: menu,
-    path: 'menu',
+    path: '$base/menu',
     builder: (ctx, state) {
       final id = state.uri.queryParameters['id'];
       final mode = state.uri.queryParameters['mode'];
@@ -389,7 +370,7 @@ class Routes {
 
   static final _quantitiesRoute = GoRoute(
     name: quantity,
-    path: 'quantities',
+    path: '$base/quantities',
     builder: (ctx, state) => const QuantityPage(),
     routes: [
       GoRoute(
@@ -412,7 +393,7 @@ class Routes {
 
   static final _orderAttrRoute = GoRoute(
     name: orderAttr,
-    path: 'oa',
+    path: '$base/oa',
     builder: (ctx, state) => const OrderAttributePage(),
     routes: [
       GoRoute(
@@ -468,7 +449,7 @@ class Routes {
 
   static final _transitRoute = GoRoute(
     name: transit,
-    path: 'transit',
+    path: '$base/transit',
     builder: (ctx, state) => const TransitPage(),
     routes: [
       GoRoute(
@@ -499,13 +480,13 @@ class Routes {
 
   static final _elfRoute = GoRoute(
     name: elf,
-    path: 'elf',
+    path: '$base/elf',
     builder: (ctx, state) => const FeatureRequestPage(),
   );
 
   static final _settingsRoute = GoRoute(
     name: settings,
-    path: 'settings',
+    path: '$base/settings',
     builder: (ctx, state) => FeaturesPage(focus: state.uri.queryParameters['f']),
     routes: [
       GoRoute(
@@ -540,6 +521,7 @@ class Routes {
   static const orderAttrReorder = '/oa/reorder';
   static const orderAttrOptionReorder = '/oa/option/reorder';
 
+  static const stock = '/stock';
   static const ingredientNew = '/stock/new';
   static const ingredientModal = '/stock/ingredient/modal';
   static const ingredientRestockModal = '/stock/ingredient/restock/modal';
@@ -557,6 +539,8 @@ class Routes {
 
   static const order = '/order';
   static const orderDetails = '/order/details';
+
+  static const anal = '/anal';
   static const chartNew = '/chart/order/new';
   static const chartModal = '/chart/order/modal';
   static const chartReorder = '/chart/reorder';
