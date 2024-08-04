@@ -1,10 +1,7 @@
-import 'dart:collection';
 import 'dart:math' show min;
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/router_pop_scope.dart';
 import 'package:possystem/components/style/footer.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/helpers/breakpoint.dart';
@@ -32,120 +29,59 @@ class HomePage extends StatelessWidget {
       final breakpoint = Breakpoint.find(box: constraints);
 
       return breakpoint <= Breakpoint.medium
-          // Using DefaultTabController so descendant widgets can access the controller.
-          // This allow building constant tab views, otherwise after push page,
-          // the home page will rebuild(cause by go_route) and cause the tutorial to show again.
-          // see https://github.com/flutter/flutter/issues/132049
-          ? DefaultTabController(
-              length: 4,
-              initialIndex: min(shell.currentIndex, 3),
-              child: _WithTab(shell: shell),
-            )
+          ? _WithTab(shell: shell)
           : _WithDrawer(shell: shell, breakpoint: breakpoint);
     });
   }
 }
 
-class _WithTab extends StatefulWidget {
+class _WithTab extends StatelessWidget {
   final StatefulNavigationShell shell;
 
   const _WithTab({required this.shell});
 
   @override
-  State<_WithTab> createState() => _WithTabState();
-}
-
-class _WithTabState extends State<_WithTab> {
-  final navHistory = Queue<int>();
-  final canPop = ValueNotifier<bool>(true);
-  late TabController controller;
-  // prevent adding the history index while popping
-  bool isPopping = false;
-
-  @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: canPop,
-      builder: (context, child) => RouterPopScope(
-        canPop: navHistory.isEmpty,
-        onPopInvoked: _pop,
-        child: child!,
+    return Scaffold(
+      floatingActionButton: _FAB(),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              floating: true,
+              title: Text(S.appTitle),
+              centerTitle: true,
+              flexibleSpace: const _FlexibleSpace(),
+              // disable shadow after scrolled
+              // scrolledUnderElevation: 0,
+            ),
+          ];
+        },
+        body: shell,
       ),
-      child: Scaffold(
-        floatingActionButton: _FAB(),
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                pinned: true,
-                floating: true,
-                title: Text(S.appTitle),
-                centerTitle: true,
-                flexibleSpace: const _FlexibleSpace(),
-                // disable shadow after scrolled
-                scrolledUnderElevation: 0,
-                bottom: TabBar(tabs: [
-                  _Tab(key: const Key('home.analysis'), text: S.analysisTab),
-                  _Tab(key: const Key('home.stock'), text: S.stockTab),
-                  _Tab(key: const Key('home.cashier'), text: S.cashierTab),
-                  _Tab(key: const Key('home.setting'), text: S.settingTab),
-                ]),
-              ),
-            ];
-          },
-          body: const TabBarView(
-            children: [
-              AnalysisView(tabIndex: 0),
-              StockView(tabIndex: 1),
-              CashierView(tabIndex: 2),
-              SettingView(tabIndex: 3),
-            ],
-          ),
-        ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: min(shell.currentIndex, 3),
+        onDestinationSelected: (index) {
+          index = index == 3 ? HomeTab.others.index : index;
+          shell.goBranch(
+            index,
+            // A common pattern when using bottom navigation bars is to support
+            // navigating to the initial location when tapping the item that is
+            // already active. This example demonstrates how to support this behavior,
+            // using the initialLocation parameter of goBranch.
+            initialLocation: index == shell.currentIndex,
+          );
+        },
+        destinations: [
+          for (final HomeTab e in [HomeTab.analysis, HomeTab.stock, HomeTab.cashier, HomeTab.setting])
+            NavigationDestination(
+              icon: e.icon,
+              label: S.title(e.name),
+              selectedIcon: e.selectedIcon,
+            ),
+        ],
       ),
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    controller = DefaultTabController.of(context);
-    controller.addListener(_monitorNav);
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    controller.removeListener(_monitorNav);
-    super.dispose();
-  }
-
-  _monitorNav() {
-    // when animation is done and the index is changed
-    if (!controller.indexIsChanging && controller.index != controller.previousIndex) {
-      if (isPopping) {
-        isPopping = false;
-        return;
-      }
-
-      final index = controller.index;
-      if (navHistory.length >= 3) {
-        navHistory.removeFirst();
-      }
-      navHistory.add(index);
-      canPop.value = false;
-    }
-  }
-
-  void _pop(bool didPop) {
-    if (navHistory.isNotEmpty) {
-      navHistory.removeLast();
-
-      if (mounted) {
-        isPopping = true;
-        controller.animateTo(navHistory.lastOrNull ?? 0);
-        canPop.value = navHistory.isEmpty;
-      }
-    }
   }
 }
 
@@ -161,37 +97,31 @@ class _WithDrawer extends StatefulWidget {
 }
 
 class _WithDrawerState extends State<_WithDrawer> {
-  final navHistory = Queue<HomeTab>();
   final scaffold = GlobalKey<ScaffoldState>();
-  late bool useDrawer;
+  late bool withoutRail;
   ValueNotifier<bool> railExpanded = ValueNotifier(false);
-  late HomeTab tab;
 
   @override
   Widget build(BuildContext context) {
-    final needNested = tab == HomeTab.analysis;
+    final tab = HomeTab.values[widget.shell.currentIndex];
+    final needNested = tab.index == HomeTab.analysis.index;
 
-    return RouterPopScope(
-      canPop: navHistory.isEmpty,
-      onPopInvoked: _pop,
-      child: needNested ? _buildWithNestedScrollView() : _buildSimple(),
-    );
+    return needNested ? _buildWithNestedScrollView(tab) : _buildSimple(tab);
   }
 
   @override
   void didChangeDependencies() {
-    useDrawer = widget.breakpoint <= Breakpoint.large;
+    withoutRail = widget.breakpoint <= Breakpoint.large;
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
     super.initState();
-    tab = HomeTab.values[widget.shell.currentIndex];
-    useDrawer = widget.breakpoint <= Breakpoint.large;
+    withoutRail = widget.breakpoint <= Breakpoint.large;
   }
 
-  Widget _buildSimple() {
+  Widget _buildSimple(HomeTab tab) {
     return Scaffold(
       key: scaffold,
       appBar: AppBar(
@@ -199,17 +129,17 @@ class _WithDrawerState extends State<_WithDrawer> {
         flexibleSpace: const _FlexibleSpace(),
       ),
       floatingActionButton: _FAB(),
-      drawer: useDrawer ? _buildDrawer() : null,
+      drawer: withoutRail ? _buildDrawer(tab) : null,
       body: _buildBody(),
     );
   }
 
   /// Which means body have [CustomScrollView]
-  Widget _buildWithNestedScrollView() {
+  Widget _buildWithNestedScrollView(HomeTab tab) {
     return Scaffold(
       key: scaffold,
       floatingActionButton: _FAB(),
-      drawer: useDrawer ? _buildDrawer() : null,
+      drawer: withoutRail ? _buildDrawer(tab) : null,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
           SliverAppBar(
@@ -223,7 +153,7 @@ class _WithDrawerState extends State<_WithDrawer> {
     );
   }
 
-  Widget _buildDrawer() {
+  Widget _buildDrawer(HomeTab tab) {
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -234,6 +164,7 @@ class _WithDrawerState extends State<_WithDrawer> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
                 child: ListTile(
+                  leading: e.icon,
                   title: Text(S.title(e.name)),
                   selected: tab == e,
                   visualDensity: VisualDensity.compact,
@@ -251,8 +182,8 @@ class _WithDrawerState extends State<_WithDrawer> {
   }
 
   Widget _buildBody() {
-    if (useDrawer) {
-      return tab.view;
+    if (withoutRail) {
+      return widget.shell;
     }
 
     return Row(children: [
@@ -275,25 +206,14 @@ class _WithDrawerState extends State<_WithDrawer> {
         ),
       ),
       const VerticalDivider(),
-      Expanded(child: tab.view),
+      Expanded(child: widget.shell),
     ]);
   }
 
   void _navTo(HomeTab tab) {
     scaffold.currentState?.closeDrawer();
     if (mounted) {
-      widget.shell.goBranch(tab.index);
-      setState(() => this.tab = tab);
-    }
-  }
-
-  void _pop(bool didPop) {
-    if (navHistory.isNotEmpty) {
-      navHistory.removeLast();
-
-      if (mounted) {
-        setState(() => tab = navHistory.lastOrNull ?? HomeTab.analysis);
-      }
+      widget.shell.goBranch(tab.index, initialLocation: tab.index == widget.shell.currentIndex);
     }
   }
 }
@@ -403,7 +323,13 @@ enum HomeTab {
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
   ),
-  ;
+
+  /// The last items is entrypoint for mobile screen
+  others(
+    view: SettingView(),
+    icon: Icon(Icons.settings_outlined),
+    selectedIcon: Icon(Icons.settings),
+  );
 
   final Widget view;
   final Icon icon;

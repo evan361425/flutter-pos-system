@@ -12,6 +12,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/stock_ingredient_list_tile.dart';
+import 'package:provider/provider.dart';
 
 class StockView extends StatefulWidget {
   final int? tabIndex;
@@ -31,6 +32,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    context.watch<Stock>();
 
     // after pop from AddPage, this page will rebuild by TabView
     // so we don't need to watch Stock.instance
