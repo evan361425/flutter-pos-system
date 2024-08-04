@@ -59,17 +59,17 @@ name:
 option:
   title:
     create: 新增選項
-    createWith: 新增{name}的選項
     update: 編輯選項
     reorder: 排序選項
   meta:
     default: 預設
+    optionOf: '{name}的選項'
   name:
     label: 選項名稱
     helper: |-
       以年齡為例，可能的選項有：
-      - 20 歲以下
-      - 20 到 30 歲
+      - ⇣ 20
+      - 20 ⇢ 30
     error:
       repeat: 名稱不能重複
   mode:

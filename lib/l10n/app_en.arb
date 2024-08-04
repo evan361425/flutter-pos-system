@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-30T00:44:00.921404Z",
+  "@@last_modified": "2024-08-04T00:35:02.225346Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1218,19 +1218,19 @@
   "orderAttributeNameHint": "e.g., Age",
   "orderAttributeNameErrorRepeat": "Name already exists",
   "orderAttributeOptionTitleCreate": "Add Option",
-  "orderAttributeOptionTitleCreateWith": "Add option for {name}",
-  "@orderAttributeOptionTitleCreateWith": {
+  "orderAttributeOptionTitleUpdate": "Edit Option",
+  "orderAttributeOptionTitleReorder": "Reorder Options",
+  "orderAttributeOptionMetaDefault": "Default",
+  "orderAttributeOptionMetaOptionOf": "option of {name}",
+  "@orderAttributeOptionMetaOptionOf": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "orderAttributeOptionTitleUpdate": "Edit Option",
-  "orderAttributeOptionTitleReorder": "Reorder Options",
-  "orderAttributeOptionMetaDefault": "Default",
   "orderAttributeOptionNameLabel": "Option Name",
-  "orderAttributeOptionNameHelper": "For example, possible options for age include:\n- Under 20\n- 20 to 30",
+  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 ⇢ 30",
   "orderAttributeOptionNameErrorRepeat": "Name already exists",
   "orderAttributeOptionModeTitle": "Option Mode",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{No need to set \"Discount\" or \"Price Change\" because this setting is \"Normal\"} changePrice{Selecting this option during ordering will apply this price change} changeDiscount{Selecting this option during ordering will apply this discount} other{UNKNOWN}}",
@@ -1563,8 +1563,8 @@
   "cashierChangerCustomCountLabel": "Quantity",
   "cashierChangerCustomUnitLabel": "Currency",
   "cashierChangerCustomUnitAddBtn": "Add Currency",
-  "cashierChangerCustomDividerFrom": "Withdraw from Cash Register",
-  "cashierChangerCustomDividerTo": "Exchange",
+  "cashierChangerCustomDividerFrom": "Take",
+  "cashierChangerCustomDividerTo": "Exchange to",
   "cashierSurplusTitle": "Surplus",
   "cashierSurplusButton": "Surplus",
   "cashierSurplusTutorialTitle": "Daily Surplus",
@@ -1870,6 +1870,7 @@
   },
   "analysisChartTitle": "Chart Analysis",
   "analysisChartTitleCreate": "Create Chart",
+  "analysisChartTitleUpdate": "Edit Chart",
   "analysisChartTitleReorder": "Reorder Charts",
   "analysisChartTutorialTitle": "Chart Analysis",
   "analysisChartTutorialContent": "With charts, you can visualize data changes more intuitively.\nStart designing charts to track your sales performance now!",

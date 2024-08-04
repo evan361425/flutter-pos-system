@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
@@ -54,7 +55,11 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
       const SizedBox(height: kTopSpacing),
       HintText(S.cashierChangerFavoriteHint),
       const SizedBox(height: kInternalSpacing),
-      Expanded(child: SlidableItemList(delegate: delegate)),
+      for (final widget in delegate.items.mapIndexed(
+        (index, item) => delegate.build(item, index),
+      ))
+        widget,
+      const SizedBox(height: kFABSpacing),
     ]);
   }
 

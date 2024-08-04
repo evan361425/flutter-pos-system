@@ -76,6 +76,7 @@ chart:
   _title:
     $prefix: title
     create: Create Chart
+    update: Edit Chart
     reorder: Reorder Charts
   tutorial:
     title: Chart Analysis

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -26,18 +26,15 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        title: Text(S.analysisHistoryOrderTitle),
-        actions: [
-          MoreButton(
-            key: const Key('order_modal.more'),
-            onPressed: _showActions,
-          ),
-        ],
-      ),
-      body: FutureBuilder<OrderObject?>(
+    return ResponsiveDialog(
+      title: Text(S.analysisHistoryOrderTitle),
+      actions: [
+        MoreButton(
+          key: const Key('order_modal.more'),
+          onPressed: _showActions,
+        ),
+      ],
+      content: FutureBuilder<OrderObject?>(
         future: Seller.instance.getOrder(widget.orderId),
         builder: Util.handleSnapshot((context, order) {
           if (order == null) {

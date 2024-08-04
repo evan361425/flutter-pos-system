@@ -64,8 +64,8 @@ changer:
       label: Currency
       addBtn: Add Currency
     divider:
-      from: Withdraw from Cash Register
-      to: Exchange
+      from: Take
+      to: Exchange to
 surplus:
   title: Surplus
   button: Surplus

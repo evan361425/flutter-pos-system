@@ -41,7 +41,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   String quantityId = '';
 
   @override
-  String get title => widget.quantity?.name ?? S.menuQuantityTitleCreate;
+  String get title => widget.isNew ? S.menuQuantityTitleCreate : S.menuQuantityTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -52,7 +52,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: S.menuQuantitySearchLabel,
-        hintText: S.menuQuantitySearchHint,
+        hintText: widget.quantity?.name ?? S.menuQuantitySearchHint,
         validator: Validator.textLimit(S.menuQuantitySearchLabel, 30),
         formValidator: _validateQuantity,
         initData: Quantities.instance.itemList,

@@ -35,7 +35,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
   late bool isDefault;
 
   @override
-  String get title => widget.option?.name ?? S.orderAttributeOptionTitleCreateWith(widget.attribute.name);
+  String get title => widget.isNew ? S.orderAttributeOptionTitleCreate : S.orderAttributeOptionTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -56,6 +56,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
           );
 
     return [
+      HintText(S.orderAttributeOptionMetaOptionOf(widget.attribute.name)),
       p(TextFormField(
         key: const Key('order_attribute_option.name'),
         controller: _nameController,
@@ -64,7 +65,9 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.orderAttributeOptionNameLabel,
+          hintText: widget.option?.name,
           helperText: S.orderAttributeOptionNameHelper,
+          helperMaxLines: 3,
           filled: false,
         ),
         maxLength: 30,
@@ -87,7 +90,6 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
         onChanged: _toggledDefault,
         title: Text(S.orderAttributeOptionToDefaultLabel),
       ),
-      const SizedBox(height: 12.0),
       p(widget.attribute.shouldHaveModeValue
           ? TextFormField(
               key: const Key('order_attribute_option.modeValue'),
@@ -98,6 +100,7 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
               decoration: InputDecoration(
                 labelText: label,
                 helperText: helper,
+                helperMaxLines: 3,
                 hintText: hint,
                 filled: false,
               ),

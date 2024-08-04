@@ -7,7 +7,7 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/cashier/changer_page.dart';
+import 'package:possystem/ui/cashier/changer_modal.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -15,7 +15,7 @@ import '../../mocks/mock_storage.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Changer Page', () {
+  group('Changer Modal', () {
     num getUnitValue(Finder finder) {
       final w = finder.evaluate().single.widget as DropdownButtonFormField;
       return w.initialValue;

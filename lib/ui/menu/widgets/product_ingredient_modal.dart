@@ -37,7 +37,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
   String ingredientName = '';
 
   @override
-  String get title => widget.ingredient?.name ?? S.menuIngredientTitleCreate;
+  String get title => widget.isNew ? S.menuIngredientTitleCreate : S.menuIngredientTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -48,7 +48,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
         key: const Key('product_ingredient.search'),
         text: ingredientName,
         labelText: S.menuIngredientSearchLabel,
-        hintText: S.menuIngredientSearchHint,
+        hintText: widget.ingredient?.name ?? S.menuIngredientSearchHint,
         validator: Validator.textLimit(S.menuIngredientSearchLabel, 30),
         formValidator: _validateIngredient,
         initData: Stock.instance.itemList,

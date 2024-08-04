@@ -79,19 +79,16 @@ class SlidableItemDelegate<T, U> {
   });
 
   Widget build(T item, int index) {
-    // using builder to create context for correct position to show menu
-    return Builder(builder: (context) {
-      return SlideToDelete(
-        item: item,
-        deleteCallback: () => handleDelete(item),
-        warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
-        child: tileBuilder(
-          item,
-          index,
-          (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
-        ),
-      );
-    });
+    return SlideToDelete(
+      item: item,
+      deleteCallback: () => handleDelete(item),
+      warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
+      child: tileBuilder(
+        item,
+        index,
+        (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
+      ),
+    );
   }
 
   Future<void> showActions(BuildContext context, T item) async {

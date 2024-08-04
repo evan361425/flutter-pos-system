@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-30T00:44:00.979101Z",
+  "@@last_modified": "2024-08-04T00:35:02.254524Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1218,19 +1218,19 @@
   "orderAttributeNameHint": "例如：顧客年齡",
   "orderAttributeNameErrorRepeat": "名稱不能重複",
   "orderAttributeOptionTitleCreate": "新增選項",
-  "orderAttributeOptionTitleCreateWith": "新增{name}的選項",
-  "@orderAttributeOptionTitleCreateWith": {
+  "orderAttributeOptionTitleUpdate": "編輯選項",
+  "orderAttributeOptionTitleReorder": "排序選項",
+  "orderAttributeOptionMetaDefault": "預設",
+  "orderAttributeOptionMetaOptionOf": "{name}的選項",
+  "@orderAttributeOptionMetaOptionOf": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "orderAttributeOptionTitleUpdate": "編輯選項",
-  "orderAttributeOptionTitleReorder": "排序選項",
-  "orderAttributeOptionMetaDefault": "預設",
   "orderAttributeOptionNameLabel": "選項名稱",
-  "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
+  "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- ⇣ 20\n- 20 ⇢ 30",
   "orderAttributeOptionNameErrorRepeat": "名稱不能重複",
   "orderAttributeOptionModeTitle": "選項模式",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價} other{UNKNOWN}}",
@@ -1563,7 +1563,7 @@
   "cashierChangerCustomCountLabel": "數量",
   "cashierChangerCustomUnitLabel": "幣值",
   "cashierChangerCustomUnitAddBtn": "新增幣種",
-  "cashierChangerCustomDividerFrom": "從收銀機中拿出",
+  "cashierChangerCustomDividerFrom": "拿",
   "cashierChangerCustomDividerTo": "換",
   "cashierSurplusTitle": "結餘",
   "cashierSurplusButton": "結餘",
@@ -1870,6 +1870,7 @@
   },
   "analysisChartTitle": "圖表分析",
   "analysisChartTitleCreate": "新增圖表",
+  "analysisChartTitleUpdate": "編輯圖表",
   "analysisChartTitleReorder": "排序圖表",
   "analysisChartTutorialTitle": "圖表分析",
   "analysisChartTutorialContent": "透過圖表，你可以更直觀地看到數據變化。\n現在就開始設計圖表追蹤你的銷售狀況吧！。",

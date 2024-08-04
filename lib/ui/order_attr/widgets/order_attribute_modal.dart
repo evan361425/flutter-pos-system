@@ -26,7 +26,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
   final modeSelector = GlobalKey<ChoiceChipWithHelpState<OrderAttributeMode>>();
 
   @override
-  String get title => widget.attribute?.name ?? S.orderAttributeTitleCreate;
+  String get title => widget.isNew ? S.orderAttributeTitleCreate : S.orderAttributeTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -38,7 +38,7 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           labelText: S.orderAttributeNameLabel,
-          hintText: S.orderAttributeNameHint,
+          hintText: widget.attribute?.name ?? S.orderAttributeNameHint,
           filled: false,
         ),
         onFieldSubmitted: handleFieldSubmit,

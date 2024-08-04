@@ -36,7 +36,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
   String? _image;
 
   @override
-  String get title => widget.product?.name ?? S.menuProductTitleCreate;
+  String get title => widget.isNew ? S.menuProductTitleCreate : S.menuProductTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -53,7 +53,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.menuProductNameLabel,
-          hintText: S.menuProductNameHint,
+          hintText: widget.product?.name ?? S.menuProductNameHint,
           filled: false,
         ),
         maxLength: 30,
