@@ -23,7 +23,7 @@ void main() {
         value: SettingsProvider.instance..initialize(),
         builder: (_, __) => MaterialApp.router(
           locale: LanguageSetting.instance.language.locale,
-          routerConfig: GoRouter(initialLocation: Routes.features, routes: [
+          routerConfig: GoRouter(initialLocation: Routes.settings, routes: [
             GoRoute(
               path: '/',
               builder: (ctx, state) => const Text('Home'),

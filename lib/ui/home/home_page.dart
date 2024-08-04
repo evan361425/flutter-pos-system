@@ -22,9 +22,9 @@ import 'package:possystem/ui/stock/stock_view.dart';
 import 'package:possystem/ui/transit/transit_page.dart';
 
 class HomePage extends StatelessWidget {
-  final HomeTab tab;
+  final StatefulNavigationShell shell;
 
-  const HomePage({super.key, required this.tab});
+  const HomePage({super.key, required this.shell});
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +38,18 @@ class HomePage extends StatelessWidget {
           // see https://github.com/flutter/flutter/issues/132049
           ? DefaultTabController(
               length: 4,
-              initialIndex: min(tab.index, 3),
-              child: _WithTab(tab: tab),
+              initialIndex: min(shell.currentIndex, 3),
+              child: _WithTab(shell: shell),
             )
-          : _WithDrawer(tab: tab, breakpoint: breakpoint);
+          : _WithDrawer(shell: shell, breakpoint: breakpoint);
     });
   }
 }
 
 class _WithTab extends StatefulWidget {
-  final HomeTab tab;
+  final StatefulNavigationShell shell;
 
-  const _WithTab({required this.tab});
+  const _WithTab({required this.shell});
 
   @override
   State<_WithTab> createState() => _WithTabState();
@@ -150,11 +150,11 @@ class _WithTabState extends State<_WithTab> {
 }
 
 class _WithDrawer extends StatefulWidget {
-  final HomeTab tab;
+  final StatefulNavigationShell shell;
 
   final Breakpoint breakpoint;
 
-  const _WithDrawer({required this.tab, required this.breakpoint});
+  const _WithDrawer({required this.shell, required this.breakpoint});
 
   @override
   _WithDrawerState createState() => _WithDrawerState();
@@ -179,9 +179,15 @@ class _WithDrawerState extends State<_WithDrawer> {
   }
 
   @override
+  void didChangeDependencies() {
+    useDrawer = widget.breakpoint <= Breakpoint.large;
+    super.didChangeDependencies();
+  }
+
+  @override
   void initState() {
     super.initState();
-    tab = widget.tab;
+    tab = HomeTab.values[widget.shell.currentIndex];
     useDrawer = widget.breakpoint <= Breakpoint.large;
   }
 
@@ -260,8 +266,8 @@ class _WithDrawerState extends State<_WithDrawer> {
             for (final e in HomeTab.values)
               if (railExpanded.value || e.important)
                 NavigationRailDestination(
-                  icon: Icon(e.icon),
-                  selectedIcon: Icon(e.selectedIcon),
+                  icon: e.icon,
+                  selectedIcon: e.selectedIcon,
                   label: Text(S.title(e.name)),
                 ),
           ],
@@ -275,11 +281,8 @@ class _WithDrawerState extends State<_WithDrawer> {
 
   void _navTo(HomeTab tab) {
     scaffold.currentState?.closeDrawer();
-    if (navHistory.length >= 3) {
-      navHistory.removeFirst();
-    }
-    navHistory.add(tab);
     if (mounted) {
+      widget.shell.goBranch(tab.index);
       setState(() => this.tab = tab);
     }
   }
@@ -354,57 +357,57 @@ class _Tab extends StatelessWidget {
 enum HomeTab {
   analysis(
     view: AnalysisView(),
-    icon: Icons.analytics_outlined,
-    selectedIcon: Icons.analytics,
+    icon: Icon(Icons.analytics_outlined),
+    selectedIcon: Icon(Icons.analytics),
     important: true,
   ),
   stock(
     view: StockView(),
-    icon: Icons.inventory_outlined,
-    selectedIcon: Icons.inventory,
+    icon: Icon(Icons.inventory_outlined),
+    selectedIcon: Icon(Icons.inventory),
     important: true,
   ),
   cashier(
     view: CashierView(),
-    icon: Icons.monetization_on_outlined,
-    selectedIcon: Icons.monetization_on,
+    icon: Icon(Icons.monetization_on_outlined),
+    selectedIcon: Icon(Icons.monetization_on),
     important: true,
   ),
   orderAttribute(
     view: OrderAttributePage(withScaffold: false),
-    icon: Icons.people_alt_outlined,
-    selectedIcon: Icons.people_alt,
+    icon: Icon(Icons.assignment_ind_outlined),
+    selectedIcon: Icon(Icons.assignment_ind),
   ),
   menu(
     view: MenuPage(withScaffold: false),
-    icon: Icons.menu_book_outlined,
-    selectedIcon: Icons.menu_book,
+    icon: Icon(Icons.collections_outlined),
+    selectedIcon: Icon(Icons.collections),
   ),
-  stockQuantity(
+  quantities(
     view: QuantityPage(withScaffold: false),
-    icon: Icons.difference,
-    selectedIcon: Icons.difference_outlined,
+    icon: Icon(Icons.exposure),
+    selectedIcon: Icon(Icons.exposure_outlined),
   ),
   transit(
     view: TransitPage(withScaffold: false),
-    icon: Icons.local_shipping_outlined,
-    selectedIcon: Icons.local_shipping,
+    icon: Icon(Icons.local_shipping_outlined),
+    selectedIcon: Icon(Icons.local_shipping),
   ),
-  settingElf(
+  elf(
     view: FeatureRequestPage(withScaffold: false),
-    icon: Icons.star_border_outlined,
-    selectedIcon: Icons.star,
+    icon: Icon(Icons.lightbulb_outlined),
+    selectedIcon: Icon(Icons.lightbulb),
   ),
   setting(
     view: FeaturesPage(withScaffold: false),
-    icon: Icons.settings_outlined,
-    selectedIcon: Icons.settings,
+    icon: Icon(Icons.settings_outlined),
+    selectedIcon: Icon(Icons.settings),
   ),
   ;
 
   final Widget view;
-  final IconData icon;
-  final IconData selectedIcon;
+  final Icon icon;
+  final Icon selectedIcon;
   final bool important;
 
   const HomeTab({
