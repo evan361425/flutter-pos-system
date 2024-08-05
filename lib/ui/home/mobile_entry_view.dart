@@ -14,17 +14,14 @@ import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
-class SettingView extends StatefulWidget {
-  final int? tabIndex;
-
-  const SettingView({super.key, this.tabIndex});
+class MobileEntryView extends StatefulWidget {
+  const MobileEntryView({super.key});
 
   @override
-  State<SettingView> createState() => _SettingViewState();
+  State<MobileEntryView> createState() => _MobileEntryViewState();
 }
 
-class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClientMixin {
-  late final TutorialInTab? tab;
+class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAliveClientMixin {
   final GlobalKey<_TutorialCheckboxListTileState> _tutorialOrderAttrs = GlobalKey();
   final GlobalKey<_TutorialCheckboxListTileState> _tutorialMenu = GlobalKey();
 
@@ -33,117 +30,107 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
     super.build(context);
 
     var orderAttrIndex = OrderAttributes.instance.isEmpty ? (Menu.instance.isEmpty ? 1 : 0) : -1;
-    return TutorialWrapper(
-      tab: tab,
-      child: Scaffold(
-        floatingActionButton: (Cache.instance.get<bool>('tutorial.home.order') ?? false)
-            ? null
-            : Tutorial(
-                id: 'home.order',
-                index: orderAttrIndex + 1,
-                spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
-                title: S.orderTutorialTitle,
-                message: S.orderTutorialContent,
-                child: FloatingActionButton.extended(
-                  heroTag: 'order.tutorial',
-                  onPressed: null,
-                  icon: const Icon(Icons.store_sharp),
-                  label: Text(S.orderBtn),
-                ),
-              ),
-        body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
-          const _HeaderInfoList(),
-          if (!isProd)
-            ListTile(
-              key: const Key('setting.debug'),
-              leading: const Icon(Icons.bug_report_sharp),
-              title: const Text('Debug'),
-              subtitle: const Text('For developer only'),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const DebugPage()),
+    return Scaffold(
+      floatingActionButton: (Cache.instance.get<bool>('tutorial.home.order') ?? false)
+          ? null
+          : Tutorial(
+              id: 'home.order',
+              index: orderAttrIndex + 1,
+              spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
+              title: S.orderTutorialTitle,
+              message: S.orderTutorialContent,
+              child: FloatingActionButton.extended(
+                heroTag: 'order.tutorial',
+                onPressed: null,
+                icon: const Icon(Icons.store_sharp),
+                label: Text(S.orderBtn),
               ),
             ),
-          Tutorial(
-            id: 'home.menu',
-            index: 0,
-            title: S.menuTutorialTitle,
-            message: S.menuTutorialContent,
-            below: _TutorialCheckboxListTile(key: _tutorialMenu, title: S.menuTutorialCreateExample),
-            spotlightBuilder: const SpotlightRectBuilder(),
-            disable: Menu.instance.isNotEmpty,
-            action: () async {
-              if (_tutorialMenu.currentState?.value == true) {
-                await setupExampleMenu();
-              }
-            },
-            child: _buildRouteTile(
-              id: 'menu',
-              icon: Icons.collections_sharp,
-              route: Routes.menu,
-              title: S.menuTitle,
-              subtitle: S.menuSubtitle,
+      body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+        const _HeaderInfoList(),
+        if (!isProd)
+          ListTile(
+            key: const Key('setting.debug'),
+            leading: const Icon(Icons.bug_report_sharp),
+            title: const Text('Debug'),
+            subtitle: const Text('For developer only'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const DebugPage()),
             ),
           ),
-          _buildRouteTile(
-            id: 'transit',
-            icon: Icons.upload_file_sharp,
-            route: Routes.transit,
-            title: S.transitTitle,
-            subtitle: S.transitDescription,
+        Tutorial(
+          id: 'home.menu',
+          index: 0,
+          title: S.menuTutorialTitle,
+          message: S.menuTutorialContent,
+          below: _TutorialCheckboxListTile(key: _tutorialMenu, title: S.menuTutorialCreateExample),
+          spotlightBuilder: const SpotlightRectBuilder(),
+          disable: Menu.instance.isNotEmpty,
+          action: () async {
+            if (_tutorialMenu.currentState?.value == true) {
+              await setupExampleMenu();
+            }
+          },
+          child: _buildRouteTile(
+            id: 'menu',
+            icon: Icons.collections_sharp,
+            route: Routes.menu,
+            title: S.menuTitle,
+            subtitle: S.menuSubtitle,
           ),
-          Tutorial(
-            id: 'home.order_attr',
-            index: orderAttrIndex,
-            title: S.orderAttributeTutorialTitle,
-            message: S.orderAttributeTutorialContent,
-            below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
-            spotlightBuilder: const SpotlightRectBuilder(),
-            disable: OrderAttributes.instance.isNotEmpty,
-            action: () async {
-              if (_tutorialOrderAttrs.currentState?.value == true) {
-                await setupExampleOrderAttrs();
-              }
-            },
-            child: _buildRouteTile(
-              id: 'order_attrs',
-              icon: Icons.assignment_ind_sharp,
-              route: Routes.orderAttr,
-              title: S.orderAttributeTitle,
-              subtitle: S.orderAttributeDescription,
-            ),
+        ),
+        _buildRouteTile(
+          id: 'transit',
+          icon: Icons.upload_file_sharp,
+          route: Routes.transit,
+          title: S.transitTitle,
+          subtitle: S.transitDescription,
+        ),
+        Tutorial(
+          id: 'home.order_attr',
+          index: orderAttrIndex,
+          title: S.orderAttributeTutorialTitle,
+          message: S.orderAttributeTutorialContent,
+          below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
+          spotlightBuilder: const SpotlightRectBuilder(),
+          disable: OrderAttributes.instance.isNotEmpty,
+          action: () async {
+            if (_tutorialOrderAttrs.currentState?.value == true) {
+              await setupExampleOrderAttrs();
+            }
+          },
+          child: _buildRouteTile(
+            id: 'order_attrs',
+            icon: Icons.assignment_ind_sharp,
+            route: Routes.orderAttr,
+            title: S.orderAttributeTitle,
+            subtitle: S.orderAttributeDescription,
           ),
-          _buildRouteTile(
-            id: 'quantity',
-            icon: Icons.exposure_sharp,
-            route: Routes.quantity,
-            title: S.stockQuantityTitle,
-            subtitle: S.stockQuantityDescription,
-          ),
-          _buildRouteTile(
-            id: 'feature_request',
-            icon: Icons.lightbulb_sharp,
-            route: Routes.elf,
-            title: S.settingElfTitle,
-            subtitle: S.settingElfDescription,
-          ),
-          _buildRouteTile(
-            id: 'setting',
-            icon: Icons.settings_sharp,
-            route: Routes.settings,
-            title: S.settingFeatureTitle,
-            subtitle: S.settingFeatureDescription,
-          ),
-          const Footer(),
-        ]),
-      ),
+        ),
+        _buildRouteTile(
+          id: 'quantity',
+          icon: Icons.exposure_sharp,
+          route: Routes.quantity,
+          title: S.stockQuantityTitle,
+          subtitle: S.stockQuantityDescription,
+        ),
+        _buildRouteTile(
+          id: 'feature_request',
+          icon: Icons.lightbulb_sharp,
+          route: Routes.elf,
+          title: S.settingElfTitle,
+          subtitle: S.settingElfDescription,
+        ),
+        _buildRouteTile(
+          id: 'setting',
+          icon: Icons.settings_sharp,
+          route: Routes.settings,
+          title: S.settingFeatureTitle,
+          subtitle: S.settingFeatureDescription,
+        ),
+        const Footer(),
+      ]),
     );
-  }
-
-  @override
-  void initState() {
-    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
-
-    super.initState();
   }
 
   @override
@@ -160,7 +147,7 @@ class _SettingViewState extends State<SettingView> with AutomaticKeepAliveClient
       key: Key('setting.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
-      onTap: () => context.pushNamed(route),
+      onTap: () => context.pushNamed(route, extra: 'withScaffold'),
       title: Text(title),
       subtitle: Text(subtitle),
     );

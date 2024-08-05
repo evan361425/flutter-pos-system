@@ -1,37 +1,35 @@
-import 'dart:math' show min;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/footer.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
-import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/analysis/analysis_view.dart';
-import 'package:possystem/ui/cashier/cashier_view.dart';
-import 'package:possystem/ui/home/feature_request_page.dart';
-import 'package:possystem/ui/home/features_page.dart';
-import 'package:possystem/ui/home/setting_view.dart';
-import 'package:possystem/ui/menu/menu_page.dart';
-import 'package:possystem/ui/order_attr/order_attribute_page.dart';
-import 'package:possystem/ui/stock/quantity_page.dart';
-import 'package:possystem/ui/stock/stock_view.dart';
-import 'package:possystem/ui/transit/transit_page.dart';
 
 class HomePage extends StatelessWidget {
   final StatefulNavigationShell shell;
 
-  const HomePage({super.key, required this.shell});
+  final ValueNotifier<HomeMode> mode;
+
+  const HomePage({super.key, required this.shell, required this.mode});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final breakpoint = Breakpoint.find(box: constraints);
-
-      return breakpoint <= Breakpoint.medium
-          ? _WithTab(shell: shell)
-          : _WithDrawer(shell: shell, breakpoint: breakpoint);
-    });
+    return TutorialWrapper(
+      child: ListenableBuilder(
+        listenable: mode,
+        builder: (context, _) {
+          switch (mode.value) {
+            case HomeMode.bottomNavigationBar:
+              return _WithTab(shell: shell);
+            case HomeMode.drawer:
+              return _WithDrawer(shell: shell);
+            case HomeMode.rail:
+              return _WithRail(shell: shell);
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -60,9 +58,8 @@ class _WithTab extends StatelessWidget {
         body: shell,
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: min(shell.currentIndex, 3),
+        selectedIndex: shell.currentIndex,
         onDestinationSelected: (index) {
-          index = index == 3 ? HomeTab.others.index : index;
           shell.goBranch(
             index,
             // A common pattern when using bottom navigation bars is to support
@@ -85,43 +82,27 @@ class _WithTab extends StatelessWidget {
   }
 }
 
-class _WithDrawer extends StatefulWidget {
+class _WithDrawer extends StatelessWidget {
   final StatefulNavigationShell shell;
-
-  final Breakpoint breakpoint;
-
-  const _WithDrawer({required this.shell, required this.breakpoint});
-
-  @override
-  _WithDrawerState createState() => _WithDrawerState();
-}
-
-class _WithDrawerState extends State<_WithDrawer> {
   final scaffold = GlobalKey<ScaffoldState>();
-  late bool withoutRail;
-  ValueNotifier<bool> railExpanded = ValueNotifier(false);
+
+  _WithDrawer({required this.shell});
 
   @override
   Widget build(BuildContext context) {
-    final tab = HomeTab.values[widget.shell.currentIndex];
+    final tab = HomeTab.values[shell.currentIndex];
     final needNested = tab.index == HomeTab.analysis.index;
 
-    return needNested ? _buildWithNestedScrollView(tab) : _buildSimple(tab);
-  }
+    // Which means body have [CustomScrollView]
+    if (needNested) {
+      return Scaffold(
+        key: scaffold,
+        floatingActionButton: _FAB(),
+        drawer: _buildDrawer(tab),
+        body: _Nested(title: S.title(tab.name), body: shell),
+      );
+    }
 
-  @override
-  void didChangeDependencies() {
-    withoutRail = widget.breakpoint <= Breakpoint.large;
-    super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    withoutRail = widget.breakpoint <= Breakpoint.large;
-  }
-
-  Widget _buildSimple(HomeTab tab) {
     return Scaffold(
       key: scaffold,
       appBar: AppBar(
@@ -129,27 +110,8 @@ class _WithDrawerState extends State<_WithDrawer> {
         flexibleSpace: const _FlexibleSpace(),
       ),
       floatingActionButton: _FAB(),
-      drawer: withoutRail ? _buildDrawer(tab) : null,
-      body: _buildBody(),
-    );
-  }
-
-  /// Which means body have [CustomScrollView]
-  Widget _buildWithNestedScrollView(HomeTab tab) {
-    return Scaffold(
-      key: scaffold,
-      floatingActionButton: _FAB(),
-      drawer: withoutRail ? _buildDrawer(tab) : null,
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-          SliverAppBar(
-            pinned: true,
-            title: Text(S.title(tab.name)),
-            flexibleSpace: const _FlexibleSpace(),
-          ),
-        ],
-        body: _buildBody(),
-      ),
+      drawer: _buildDrawer(tab),
+      body: shell,
     );
   }
 
@@ -181,17 +143,48 @@ class _WithDrawerState extends State<_WithDrawer> {
     );
   }
 
-  Widget _buildBody() {
-    if (withoutRail) {
-      return widget.shell;
+  void _navTo(HomeTab tab) {
+    scaffold.currentState?.closeDrawer();
+    shell.goBranch(tab.index, initialLocation: tab.index == shell.currentIndex);
+  }
+}
+
+class _WithRail extends StatelessWidget {
+  final StatefulNavigationShell shell;
+  final ValueNotifier<bool> railExpanded = ValueNotifier(false);
+
+  _WithRail({required this.shell});
+
+  @override
+  Widget build(BuildContext context) {
+    final tab = HomeTab.values[shell.currentIndex];
+    final needNested = tab.index == HomeTab.analysis.index;
+
+    // Which means body have [CustomScrollView]
+    if (needNested) {
+      return Scaffold(
+        floatingActionButton: _FAB(),
+        body: _Nested(title: S.title(tab.name), body: _buildBody()),
+      );
     }
 
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.title(tab.name)),
+        flexibleSpace: const _FlexibleSpace(),
+      ),
+      floatingActionButton: _FAB(),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
     return Row(children: [
       ListenableBuilder(
         listenable: railExpanded,
         builder: (context, child) => NavigationRail(
           extended: railExpanded.value,
-          onDestinationSelected: (int index) => _navTo(HomeTab.values[index]),
+          onDestinationSelected: (int index) => shell.goBranch(index, initialLocation: index == shell.currentIndex),
           labelType: NavigationRailLabelType.all,
           destinations: [
             for (final e in HomeTab.values)
@@ -206,15 +199,30 @@ class _WithDrawerState extends State<_WithDrawer> {
         ),
       ),
       const VerticalDivider(),
-      Expanded(child: widget.shell),
+      Expanded(child: shell),
     ]);
   }
+}
 
-  void _navTo(HomeTab tab) {
-    scaffold.currentState?.closeDrawer();
-    if (mounted) {
-      widget.shell.goBranch(tab.index, initialLocation: tab.index == widget.shell.currentIndex);
-    }
+class _Nested extends StatelessWidget {
+  final String title;
+
+  final Widget body;
+
+  const _Nested({required this.title, required this.body});
+
+  @override
+  Widget build(BuildContext context) {
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+        SliverAppBar(
+          pinned: true,
+          title: Text(title),
+          flexibleSpace: const _FlexibleSpace(),
+        ),
+      ],
+      body: body,
+    );
   }
 }
 
@@ -248,98 +256,67 @@ class _FlexibleSpace extends StatelessWidget {
   }
 }
 
-class _Tab extends StatelessWidget {
-  final String text;
-
-  const _Tab({
-    super.key,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // fix the font size, avoid scaling
-    return MediaQuery.withNoTextScaling(
-      child: Tab(
-        iconMargin: const EdgeInsets.only(bottom: 6),
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 14),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-        ),
-      ),
-    );
-  }
-}
-
 // The order is important for the drawer scaffold
 enum HomeTab {
   analysis(
-    view: AnalysisView(),
     icon: Icon(Icons.analytics_outlined),
     selectedIcon: Icon(Icons.analytics),
     important: true,
   ),
   stock(
-    view: StockView(),
     icon: Icon(Icons.inventory_outlined),
     selectedIcon: Icon(Icons.inventory),
     important: true,
   ),
   cashier(
-    view: CashierView(),
     icon: Icon(Icons.monetization_on_outlined),
     selectedIcon: Icon(Icons.monetization_on),
     important: true,
   ),
   orderAttribute(
-    view: OrderAttributePage(withScaffold: false),
     icon: Icon(Icons.assignment_ind_outlined),
     selectedIcon: Icon(Icons.assignment_ind),
   ),
   menu(
-    view: MenuPage(withScaffold: false),
     icon: Icon(Icons.collections_outlined),
     selectedIcon: Icon(Icons.collections),
   ),
   quantities(
-    view: QuantityPage(withScaffold: false),
     icon: Icon(Icons.exposure),
     selectedIcon: Icon(Icons.exposure_outlined),
   ),
   transit(
-    view: TransitPage(withScaffold: false),
     icon: Icon(Icons.local_shipping_outlined),
     selectedIcon: Icon(Icons.local_shipping),
   ),
   elf(
-    view: FeatureRequestPage(withScaffold: false),
     icon: Icon(Icons.lightbulb_outlined),
     selectedIcon: Icon(Icons.lightbulb),
   ),
   setting(
-    view: FeaturesPage(withScaffold: false),
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
   ),
 
   /// The last items is entrypoint for mobile screen
   others(
-    view: SettingView(),
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
   );
 
-  final Widget view;
   final Icon icon;
   final Icon selectedIcon;
   final bool important;
 
   const HomeTab({
-    required this.view,
     required this.icon,
     required this.selectedIcon,
     this.important = false,
   });
+}
+
+enum HomeMode {
+  bottomNavigationBar,
+  drawer,
+  rail,
 }
